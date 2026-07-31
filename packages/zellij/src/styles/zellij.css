@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import './chrome.css';
 @import './sections.css';
+@import './motion.css';
 @import './guide.css';
 @import './themes.css';
 

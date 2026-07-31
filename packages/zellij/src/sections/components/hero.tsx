@@ -2,6 +2,7 @@ import type { SectionProps } from '../types';
 import type { HeroSection } from '../schemas';
 import { CtaGroup, SectionImage, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
+import { Parallax } from '../../motion/scroll-stage';
 
 export function Hero({ section, defaultMotion }: SectionProps<HeroSection>) {
   const motion = section.motion ?? defaultMotion;
@@ -50,14 +51,17 @@ export function Hero({ section, defaultMotion }: SectionProps<HeroSection>) {
           index={4}
           className={`zellij-hero-visual zellij-hero-visual-${section.visualStyle}`}
         >
-          <SectionImage
-            src={section.visual}
-            alt=""
-            ratio="16 / 9"
-            // The hero image is the LCP element on most landing pages.
-            priority
-            sizes="(max-width: 900px) 100vw, 1100px"
-          />
+          {/* Gentle parallax under `expressive`; inert otherwise. */}
+          <Parallax motion={motion} className="zellij-hero-parallax">
+            <SectionImage
+              src={section.visual}
+              alt=""
+              ratio="16 / 9"
+              // The hero image is the LCP element on most landing pages.
+              priority
+              sizes="(max-width: 900px) 100vw, 1100px"
+            />
+          </Parallax>
         </Reveal>
       ) : null}
     </SectionShell>

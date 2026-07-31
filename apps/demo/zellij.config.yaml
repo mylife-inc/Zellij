@@ -6,7 +6,7 @@ product:
 content: ./content
 theme: cupertino
 mode: system
-motion: subtle
+motion: expressive
 
 # Mirrors basePath in next.config.js — keep the two in sync (spec §13.4).
 basePath: ""

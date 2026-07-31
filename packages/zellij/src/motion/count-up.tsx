@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { MotionPreset } from '../config/schema';
+import { useResolvedMotion } from './use-motion';
 
 /** Splits "99.99%" or "12k" into a number and its trailing unit. */
 function parseValue(value: string): { number: number; suffix: string; decimals: number } | undefined {
@@ -32,16 +33,14 @@ export function CountUp({
   prefix?: string;
   suffix?: string;
 }) {
-  const parsed = motion === 'expressive' ? parseValue(value) : undefined;
+  // The hook is the single place reduced-motion collapses a preset (spec §6.5).
+  const resolved = useResolvedMotion(motion);
+  const parsed = resolved === 'expressive' ? parseValue(value) : undefined;
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState<string>(value);
 
   useEffect(() => {
     if (!parsed) {
-      setDisplay(value);
-      return;
-    }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setDisplay(value);
       return;
     }

@@ -10,6 +10,9 @@ sections:
 
   - type: pricing-table
     id: plans
+    # Per-section override (spec §6.5): pricing stays still on an otherwise
+    # animated page, so the numbers are readable the instant they appear.
+    motion: none
     heading: "Plans"
     subhead: "Every plan includes unlimited workflows and the full integration library."
     tiers:

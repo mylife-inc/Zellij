@@ -13,6 +13,15 @@ import { test, expect } from '@playwright/test';
  * crawls a few hundred pixels and never reaches the lower sections.
  */
 async function revealAll(page: import('@playwright/test').Page): Promise<void> {
+  // Wait for hydration first. The reveal observers are attached on mount, and
+  // under parallel test load scrolling can otherwise finish before that
+  // happens — leaving elements permanently "out" because nothing was watching
+  // when they passed through the viewport. An above-the-fold element reaching
+  // "in" is proof the observers are live.
+  await expect(page.locator('[data-zellij-reveal="in"]').first()).toBeAttached({
+    timeout: 15000,
+  });
+
   // Bring each element into view directly rather than stepping by a fixed pixel
   // amount on a fixed timer: under parallel test load an IntersectionObserver
   // callback can miss an element that the scroll swept past.
@@ -27,7 +36,7 @@ async function revealAll(page: import('@playwright/test').Page): Promise<void> {
   }
 
   await expect
-    .poll(async () => page.locator('[data-zellij-reveal="out"]').count(), { timeout: 5000 })
+    .poll(async () => page.locator('[data-zellij-reveal="out"]').count(), { timeout: 15000 })
     .toBe(0);
 }
 

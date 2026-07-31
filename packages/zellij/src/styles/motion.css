@@ -1,0 +1,116 @@
+/**
+ * The `expressive` preset (spec §6.5).
+ *
+ * Everything here is driven by `--zellij-progress`, a 0→1 scroll position
+ * written by the motion hooks, and every effect is transform/opacity only —
+ * never a layout-affecting property — so scroll-driven motion cannot contribute
+ * to CLS (spec §6.5, §11.6).
+ *
+ * Guide pages are excluded by construction: these selectors only match inside
+ * marketing sections, and motion is a marketing-layout concern.
+ */
+
+/* ------------------------------------------------- sticky-scroll showcase -- */
+
+/*
+ * The visual pins while the copy scrolls past. The extra height belongs to the
+ * outer element; the sticky child stays one viewport tall, so pinning adds
+ * scroll distance rather than pushing content around.
+ */
+[data-zellij-stage='pinned'] {
+  min-height: 190vh;
+}
+
+[data-zellij-stage='pinned'] .zellij-stage-sticky {
+  position: sticky;
+  top: calc(var(--zellij-nav-height) + 2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - var(--zellij-nav-height) - 4rem);
+}
+
+/*
+ * Scroll-linked ramp on the visual: it settles into place over the first half
+ * of the pinned region, then holds. `clamp()` keeps the values in range without
+ * any JavaScript branching.
+ */
+[data-zellij-stage='pinned'] .zellij-showcase-media {
+  --zellij-ramp: clamp(0, calc(var(--zellij-progress, 0) * 2.2), 1);
+  transform: scale(calc(0.9 + 0.1 * var(--zellij-ramp)));
+  opacity: calc(0.55 + 0.45 * var(--zellij-ramp));
+  will-change: transform, opacity;
+}
+
+/* The copy drifts up gently as the panel is scrolled through. */
+[data-zellij-stage='pinned'] .zellij-showcase-copy {
+  transform: translateY(calc(var(--zellij-progress, 0) * -1.5rem));
+}
+
+/* ---------------------------------------------------------- hero parallax -- */
+
+[data-zellij-parallax='on'] {
+  transform: translate3d(
+    0,
+    calc(var(--zellij-progress, 0) * var(--zellij-motion-distance) * 2.5),
+    0
+  );
+  will-change: transform;
+}
+
+/* ------------------------------------------------------- expressive extras -- */
+
+/* Cards lift a little further under expressive than under subtle. */
+[data-zellij-motion='expressive'] .zellij-feature-card:hover {
+  transform: translateY(-4px);
+}
+
+[data-zellij-motion='expressive'] .zellij-media {
+  transition: transform var(--zellij-motion-duration) var(--zellij-motion-ease);
+}
+
+/* ------------------------------------------------------------ safety net -- */
+
+/*
+ * Mandatory accessibility override (spec §6.5): reduced motion disables every
+ * scroll-driven effect regardless of configuration. The hooks already refuse to
+ * run, so this is belt-and-braces for any element rendered before hydration.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-zellij-stage='pinned'] {
+    min-height: 0;
+  }
+
+  [data-zellij-stage='pinned'] .zellij-stage-sticky {
+    position: static;
+    min-height: 0;
+  }
+
+  [data-zellij-stage='pinned'] .zellij-showcase-media,
+  [data-zellij-stage='pinned'] .zellij-showcase-copy,
+  [data-zellij-parallax='on'] {
+    transform: none;
+    opacity: 1;
+    will-change: auto;
+  }
+}
+
+/*
+ * Pinning needs vertical room to read as an effect rather than a jump, so it is
+ * skipped on short viewports and on touch-sized screens.
+ */
+@media (max-width: 900px), (max-height: 700px) {
+  [data-zellij-stage='pinned'] {
+    min-height: 0;
+  }
+
+  [data-zellij-stage='pinned'] .zellij-stage-sticky {
+    position: static;
+    min-height: 0;
+  }
+
+  [data-zellij-stage='pinned'] .zellij-showcase-media {
+    transform: none;
+    opacity: 1;
+  }
+}

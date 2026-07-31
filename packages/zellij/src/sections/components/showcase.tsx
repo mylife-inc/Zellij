@@ -2,6 +2,7 @@ import type { SectionProps } from '../types';
 import type { ShowcaseSection } from '../schemas';
 import { CtaLink, InlineMarkdown, SectionImage, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
+import { ScrollStage } from '../../motion/scroll-stage';
 
 /** The Apple "learn more" building block (spec §5.2 #5). */
 export function Showcase({ section, defaultMotion }: SectionProps<ShowcaseSection>) {
@@ -15,7 +16,9 @@ export function Showcase({ section, defaultMotion }: SectionProps<ShowcaseSectio
       background={section.background}
       className="zellij-showcase"
     >
-      <div className="zellij-showcase-inner">
+      {/* Under `expressive` this pins the panel and ramps the visual as the
+          page scrolls; under any other preset it is a plain block. */}
+      <ScrollStage motion={motion} className="zellij-showcase-inner">
         <Reveal motion={motion} className="zellij-showcase-copy">
           {section.eyebrow ? <p className="zellij-eyebrow">{section.eyebrow}</p> : null}
           <h2 className="zellij-showcase-headline">{section.headline}</h2>
@@ -37,7 +40,7 @@ export function Showcase({ section, defaultMotion }: SectionProps<ShowcaseSectio
             />
           </Reveal>
         ) : null}
-      </div>
+      </ScrollStage>
     </SectionShell>
   );
 }
