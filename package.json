@@ -18,6 +18,7 @@
     "start": "npm run start -w @shebka/zellij-demo",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test -w @shebka/zellij",
+    "test:e2e": "npm run build -w @shebka/zellij-demo && npm run test:e2e -w @shebka/zellij-demo",
     "lint": "npm run lint --workspaces --if-present"
   },
   "devDependencies": {
