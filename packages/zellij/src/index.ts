@@ -8,6 +8,13 @@
 export { createZellijPages } from './render/page';
 export type { ZellijPageProps } from './render/page';
 export { createZellijRootLayout } from './render/root-layout';
+export { createZellijSitemap, createZellijRobots } from './render/seo';
+
+export { buildSearchIndex, indexGuidePage, mdxToText } from './search/build-index';
+export type { SearchEntry } from './search/build-index';
+
+export { THEMES } from './themes/tokens';
+export type { ThemeTokens, Palette } from './themes/tokens';
 
 export * from './config/schema';
 export { loadZellijRuntime, resolveContentPaths } from './config/runtime';

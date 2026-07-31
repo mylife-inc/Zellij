@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnnouncementBar } from './announcement-bar';
 import { MobileDrawer } from './mobile-drawer';
 import { ThemeToggle } from './theme-toggle';
+import { SearchModal } from '../search/search-modal';
 import {
   useDismissOnOutside,
   useFocusTrap,
@@ -137,8 +138,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
             <button
               type="button"
               className="zellij-search-trigger"
-              aria-label="Search the guide"
-              // Wired to the ⌘K modal in M6.
+              // Opens the ⌘K modal (SearchModal listens for this attribute).
               data-zellij-search-trigger
             >
               <svg
@@ -155,7 +155,11 @@ export function NavBarClient({ model }: { model: NavModel }) {
                 <path d="m20 20-3.5-3.5" />
               </svg>
               <span className="zellij-search-label">Search</span>
-              <kbd className="zellij-kbd">⌘K</kbd>
+              {/* Decorative: the shortcut is not part of the button's name, and
+                  including it would mismatch the accessible label. */}
+              <kbd className="zellij-kbd" aria-hidden="true">
+                ⌘K
+              </kbd>
             </button>
           ) : null}
 
@@ -216,6 +220,8 @@ export function NavBarClient({ model }: { model: NavModel }) {
         cta={model.cta}
         isActive={isActive}
       />
+
+      {model.search ? <SearchModal basePath={model.basePath} /> : null}
     </header>
   );
 }

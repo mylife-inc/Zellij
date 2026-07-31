@@ -140,7 +140,10 @@ export const zellijConfigSchema = z.object({
   content: z.string().min(1).default('./content'),
   /** Mirrors next.config basePath so asset()/links stay prefix-correct (spec §13.4). */
   basePath: z.string().default(''),
+  /** Absolute site origin; required for absolute OG and canonical URLs. */
   siteUrl: z.url().optional(),
+  /** Content-relative social share image, e.g. assets/og.png. */
+  ogImage: z.string().optional(),
   theme: themeNameSchema.default('paper'),
   mode: z.enum(['light', 'dark', 'system']).default('system'),
   motion: motionPresetSchema.default('subtle'),

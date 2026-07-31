@@ -86,6 +86,7 @@ const IMAGES = [
   ['showcase-platform.png', 1600, 900, DEEP],
   ['showcase-security.png', 1600, 900, DEEP],
   ['video-poster.png', 1280, 720, DEEP],
+  ['og.png', 1200, 630, WARM],
   ['avatars/dana.png', 160, 160, WARM],
   ['avatars/samir.png', 160, 160, COOL],
 ];

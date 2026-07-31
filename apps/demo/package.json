@@ -2,20 +2,21 @@
   "name": "@shebka/zellij-demo",
   "version": "0.1.0",
   "private": true,
-  "description": "Reference Zellij wrapper app — the development playground and visual test bed.",
+  "description": "Reference Zellij wrapper app \u2014 the development playground and visual test bed.",
   "type": "module",
   "engines": {
     "node": ">=20.11"
   },
   "scripts": {
     "assets": "node scripts/make-placeholder-assets.mjs",
-    "predev": "npm run assets && zellij sync-assets",
+    "predev": "npm run assets && zellij prepare",
     "dev": "next dev",
-    "prebuild": "npm run assets && zellij sync-assets",
+    "prebuild": "npm run assets && zellij prepare",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "verify:basepath": "node scripts/verify-basepath.mjs"
   },
   "dependencies": {
     "@shebka/zellij": "*",

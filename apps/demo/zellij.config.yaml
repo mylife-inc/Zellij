@@ -4,6 +4,8 @@ product:
   logo: assets/logo.svg
 
 content: ./content
+siteUrl: https://acme.example.com
+ogImage: assets/og.png
 theme: cupertino
 mode: system
 motion: expressive

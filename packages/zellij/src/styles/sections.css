@@ -143,7 +143,9 @@
   border-radius: 999px;
   border: 1px solid color-mix(in srgb, var(--zellij-accent) 35%, transparent);
   background: color-mix(in srgb, var(--zellij-accent) 10%, transparent);
-  color: var(--zellij-accent);
+  /* Foreground colour, not the accent: accent-on-accent-tint lands around
+     4.1:1 in light themes, below the 4.5:1 AA threshold (spec §11.6). */
+  color: var(--zellij-fg);
   font-size: 0.8125rem;
   font-weight: 600;
 }
@@ -482,18 +484,33 @@
   gap: 0.5rem;
 }
 
+.zellij-carousel-dots {
+  gap: 0;
+}
+
+/* The dot is drawn small but the button meets the 24x24 minimum target size
+   (WCAG 2.2), with the visible dot rendered via a pseudo-element. */
 .zellij-carousel-dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: grid;
+  place-items: center;
   padding: 0;
   border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.zellij-carousel-dot::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
   background: var(--zellij-border);
-  cursor: pointer;
   transition: background-color 200ms ease, transform 200ms ease;
 }
 
-.zellij-carousel-dot[data-active='true'] {
+.zellij-carousel-dot[data-active='true']::before {
   background: var(--zellij-accent);
   transform: scale(1.3);
 }

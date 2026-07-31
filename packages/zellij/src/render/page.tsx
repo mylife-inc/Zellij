@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
-import { routeToSegments, segmentsToRoute, withBasePath } from '../content/paths';
+import { assetUrl, routeToSegments, segmentsToRoute, withBasePath } from '../content/paths';
 import type { GuidePage, MarketingPage } from '../content/types';
 import { MarketingPageView } from './marketing-page';
 import { GuidePageView } from './guide-page';
@@ -55,6 +55,8 @@ export function createZellijPages(options: ZellijRuntimeOptions = {}) {
     const title =
       resolved.kind === 'marketing' ? page.title : `${page.title} — ${site.config.product.name}`;
 
+    const canonical = withBasePath(page.route, site.config.basePath);
+
     const metadata: Metadata = {
       title,
       ...(description ? { description } : {}),
@@ -63,13 +65,25 @@ export function createZellijPages(options: ZellijRuntimeOptions = {}) {
         ...(description ? { description } : {}),
         siteName: site.config.product.name,
         type: 'website',
+        url: canonical,
+        ...(site.config.ogImage
+          ? { images: [{ url: assetUrl(site.config.ogImage), alt: title }] }
+          : {}),
       },
-      twitter: { card: 'summary_large_image', title, ...(description ? { description } : {}) },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        ...(description ? { description } : {}),
+        ...(site.config.ogImage ? { images: [assetUrl(site.config.ogImage)] } : {}),
+      },
+      robots: { index: true, follow: true },
     };
 
+    // metadataBase is what turns the relative URLs above into absolute ones,
+    // which OG and canonical tags require.
     if (site.config.siteUrl) {
       metadata.metadataBase = new URL(site.config.siteUrl);
-      metadata.alternates = { canonical: withBasePath(page.route, site.config.basePath) };
+      metadata.alternates = { canonical };
     }
 
     return metadata;
