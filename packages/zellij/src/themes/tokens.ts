@@ -534,15 +534,15 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
     },
   },
 
-  /* ---------------------------------------------------------------- apple */
-  apple: {
-    label: 'Apple',
+  /* ------------------------------------------------------------ cupertino */
+  cupertino: {
+    label: 'Cupertino',
     description:
-      'Very large tight headlines, centred compositions, and huge breathing room — the Apple product-page cadence.',
+      'Very large tight headlines, centred compositions, and huge breathing room — the Cupertino product-page cadence.',
     fonts: { heading: FONT_STACKS.system, body: FONT_STACKS.system, mono: FONT_STACKS.mono },
     geometry: {
       radius: '1.125rem',
-      // Apple's buttons are fully rounded pills.
+      // Fully rounded pill buttons.
       radiusButton: '980px',
       radiusMedia: '1.375rem',
       container: '69rem',
@@ -557,7 +557,7 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
     },
     motion: {
       duration: '650ms',
-      // Apple's easing is slow-out, very settled.
+      // Slow-out and very settled, in the Cupertino manner.
       ease: 'cubic-bezier(0.28, 0.11, 0.32, 1)',
       distance: '24px',
       stagger: '90ms',

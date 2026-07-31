@@ -31,9 +31,9 @@ describe('theme inventory', () => {
     expect(Object.keys(THEMES).sort()).toEqual([...THEME_NAMES].sort());
   });
 
-  it('includes the apple theme', () => {
-    expect(THEME_NAMES).toContain('apple');
-    expect(THEMES.apple.label).toBe('Apple');
+  it('includes the cupertino theme', () => {
+    expect(THEME_NAMES).toContain('cupertino');
+    expect(THEMES.cupertino.label).toBe('Cupertino');
   });
 
   /**
@@ -102,11 +102,11 @@ describe('emitThemeCss', () => {
   });
 
   it('emits geometry, type and motion tokens, not just colours', () => {
-    const css = emitThemeCss(configFor('apple'));
-    expect(css).toContain(`--zellij-radius-button: ${THEMES.apple.geometry.radiusButton}`);
-    expect(css).toContain(`--zellij-section-gap: ${THEMES.apple.geometry.sectionGap}`);
-    expect(css).toContain(`--zellij-motion-ease: ${THEMES.apple.motion.ease}`);
-    expect(css).toContain(`--zellij-display-scale: ${THEMES.apple.type.displayScale}`);
+    const css = emitThemeCss(configFor('cupertino'));
+    expect(css).toContain(`--zellij-radius-button: ${THEMES.cupertino.geometry.radiusButton}`);
+    expect(css).toContain(`--zellij-section-gap: ${THEMES.cupertino.geometry.sectionGap}`);
+    expect(css).toContain(`--zellij-motion-ease: ${THEMES.cupertino.motion.ease}`);
+    expect(css).toContain(`--zellij-display-scale: ${THEMES.cupertino.type.displayScale}`);
   });
 
   it.each(THEME_NAMES)('%s produces a complete token block', (name) => {

@@ -4,7 +4,7 @@ product:
   logo: assets/logo.svg
 
 content: ./content
-theme: apple
+theme: cupertino
 mode: system
 motion: subtle
 

@@ -6,8 +6,9 @@
  */
 
 /**
- * The `apple` theme resolves to SF Pro on Apple platforms through the system
- * stack — the real thing, and no download — falling back to Inter elsewhere.
+ * The `cupertino` theme resolves to SF Pro on Apple platforms through the
+ * system stack — the real thing, and no download — falling back to Inter
+ * elsewhere.
  */
 export const SYSTEM_SANS =
   '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", var(--zellij-font-inter), system-ui, sans-serif';
