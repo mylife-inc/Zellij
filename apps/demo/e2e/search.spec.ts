@@ -3,11 +3,18 @@ import { test, expect } from '@playwright/test';
 /** Covers the ⌘K guide search in spec §7.3 and §13.6. */
 
 async function openSearch(page: import('@playwright/test').Page): Promise<void> {
-  await page.keyboard.press('ControlOrMeta+k');
-  await expect(page.getByRole('dialog', { name: 'Search the guide' })).toBeVisible();
-  // The index and library load on first open.
+  // Retry the shortcut: a keypress dispatched before React has hydrated finds
+  // no listener attached, and the modal never opens. Easy to hit under load.
+  await expect(async () => {
+    await page.keyboard.press('ControlOrMeta+k');
+    await expect(page.getByRole('dialog', { name: 'Search the guide' })).toBeVisible({
+      timeout: 1000,
+    });
+  }).toPass({ timeout: 15000 });
+
+  // "Start typing" only appears once the index has actually loaded.
   await expect(page.locator('.zellij-search-empty')).toContainText(/Start typing/, {
-    timeout: 10000,
+    timeout: 15000,
   });
 }
 

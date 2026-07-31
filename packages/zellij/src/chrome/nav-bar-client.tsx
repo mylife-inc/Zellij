@@ -30,8 +30,85 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const scrolled = useScrolledPast(model.scrollThreshold);
   const hidden = useHideOnScrollDown(model.hideOnScrollDown, model.scrollThreshold);
   const activeAnchor = useScrollSpy(isLanding);
+  const hoverCapable = useHoverCapable();
 
-  const closeMenu = useCallback(() => setOpenMenu(null), []);
+  /*
+   * Opening is immediate; closing is deferred by a beat. Pointers travel in
+   * arcs, not straight lines, so a cursor heading from a trigger into its panel
+   * can clip a neighbouring item or the panel's edge on the way. Closing
+   * instantly on every pointer-leave makes the menu feel like it is dodging the
+   * user. Any re-entry within the grace period cancels the close.
+   */
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const cancelClose = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = undefined;
+  }, []);
+
+  const closeMenu = useCallback(() => {
+    cancelClose();
+    setOpenMenu(null);
+  }, [cancelClose]);
+
+  /*
+   * Hover intent, for the "menu aim" problem.
+   *
+   * A full-width panel's links sit far from the trigger that opened them, so a
+   * pointer travelling to one crosses neighbouring triggers along the bar. With
+   * a naive hover-to-open, each of those hijacks the menu and the panel the
+   * user was aiming at disappears from under them.
+   *
+   * Opening from rest is instant, because that is what makes a menu bar feel
+   * responsive. Switching away from an already-open menu requires a brief
+   * dwell — imperceptible when deliberate, but long enough that merely passing
+   * through a trigger does not steal the panel.
+   */
+  const switchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  const cancelSwitch = useCallback(() => {
+    clearTimeout(switchTimer.current);
+    switchTimer.current = undefined;
+  }, []);
+
+  const openMenuNow = useCallback(
+    (label: string) => {
+      cancelClose();
+      cancelSwitch();
+      setOpenMenu(label);
+    },
+    [cancelClose, cancelSwitch],
+  );
+
+  const requestOpen = useCallback(
+    (label: string) => {
+      cancelClose();
+      cancelSwitch();
+
+      setOpenMenu((current) => {
+        if (current === null || current === label) return label;
+        // Another panel is open: only switch if the pointer settles here.
+        switchTimer.current = setTimeout(() => setOpenMenu(label), 140);
+        return current;
+      });
+    },
+    [cancelClose, cancelSwitch],
+  );
+
+  const closeMenuSoon = useCallback(() => {
+    cancelClose();
+    cancelSwitch();
+    closeTimer.current = setTimeout(() => setOpenMenu(null), 260);
+  }, [cancelClose, cancelSwitch]);
+
+  useEffect(
+    () => () => {
+      cancelClose();
+      cancelSwitch();
+    },
+    [cancelClose, cancelSwitch],
+  );
+
   useDismissOnOutside(menuBarRef, openMenu !== null, closeMenu);
 
   // Transparent only while over the hero; solid everywhere else and once scrolled.
@@ -108,6 +185,17 @@ export function NavBarClient({ model }: { model: NavModel }) {
       data-solid={solid}
       data-hidden={hidden && !drawerOpen && openMenu === null}
       data-transparent-capable={transparentEligible}
+      /*
+       * The open/close region is the whole header — bar and panel together.
+       * A mega panel spans the full width, so its links sit far from the
+       * trigger that opened them; a pointer travelling to one crosses other
+       * nav items on the way. Closing per item would drop the panel mid-
+       * journey, which is exactly the dead-zone problem. Hovering a different
+       * trigger still switches panels, because each one opens on its own enter.
+       */
+      {...(hoverCapable
+        ? { onPointerEnter: cancelClose, onPointerLeave: closeMenuSoon }
+        : {})}
     >
       {model.announcement ? <AnnouncementBar announcement={model.announcement} /> : null}
 
@@ -124,9 +212,13 @@ export function NavBarClient({ model }: { model: NavModel }) {
                 item={item}
                 active={isItemActive(item)}
                 open={openMenu === item.label}
-                onOpen={() => setOpenMenu(item.label)}
+                onOpen={() => openMenuNow(item.label)}
+                onHover={() => requestOpen(item.label)}
+                onHoverEnd={cancelSwitch}
                 onClose={closeMenu}
-                onToggle={() => setOpenMenu((c) => (c === item.label ? null : item.label))}
+                onToggle={() =>
+                  openMenu === item.label ? closeMenu() : openMenuNow(item.label)
+                }
                 isActive={isActive}
               />
             ))}
@@ -231,12 +323,26 @@ interface NavItemProps {
   active: boolean;
   open: boolean;
   onOpen: () => void;
+  /** Pointer-driven open, subject to hover intent. */
+  onHover: () => void;
+  /** Pointer left this item before the switch dwell elapsed. */
+  onHoverEnd: () => void;
   onClose: () => void;
   onToggle: () => void;
   isActive: (href: string) => boolean;
 }
 
-function NavItem({ item, active, open, onOpen, onClose, onToggle, isActive }: NavItemProps) {
+function NavItem({
+  item,
+  active,
+  open,
+  onOpen,
+  onHover,
+  onHoverEnd,
+  onClose,
+  onToggle,
+  isActive,
+}: NavItemProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const hoverCapable = useHoverCapable();
   // Set when the panel is opened from the keyboard, so focus follows it in —
@@ -272,9 +378,11 @@ function NavItem({ item, active, open, onOpen, onClose, onToggle, isActive }: Na
   return (
     <li
       className="zellij-nav-item"
+      data-mega={isMega}
       // Hover opens on desktop only; touch devices use tap-to-expand, and
-      // keyboard uses ArrowDown/Escape (spec §5.5).
-      {...(hoverCapable ? { onPointerEnter: onOpen, onPointerLeave: onClose } : {})}
+      // keyboard uses ArrowDown/Escape (spec §5.5). Closing is the header's
+      // job, so moving between items swaps panels instead of dismissing them.
+      {...(hoverCapable ? { onPointerEnter: onHover, onPointerLeave: onHoverEnd } : {})}
     >
       <button
         type="button"

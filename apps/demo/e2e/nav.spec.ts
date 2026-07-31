@@ -1,4 +1,18 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+/**
+ * Hovers a nav trigger and waits for its panel.
+ *
+ * Retries the hover rather than assuming one is enough: a hover dispatched
+ * before React has hydrated lands on markup with no handlers attached, and the
+ * panel never opens. Under parallel load that is easy to hit.
+ */
+async function openPanel(page: Page, name: string, panel: string): Promise<void> {
+  await expect(async () => {
+    await page.getByRole('button', { name }).hover();
+    await expect(page.locator(panel)).toBeVisible({ timeout: 1000 });
+  }).toPass({ timeout: 15000 });
+}
 
 /**
  * Covers the nav acceptance criteria in spec §11.2a: sticky behavior sitewide,
@@ -72,6 +86,54 @@ test.describe('dropdown and mega panel', () => {
     await expect(mega.getByText('Install, configure, operate.')).toBeVisible();
     // Icons resolve server-side; three leaves declare one each.
     await expect(mega.locator('.zellij-mega-icon svg')).toHaveCount(3);
+  });
+
+  test('opens flush against the bar, with no gap to cross', async ({ page }) => {
+    await page.goto('/');
+    await openPanel(page, 'Resources', '.zellij-mega-panel');
+
+    const header = (await page.locator('.zellij-header').boundingBox())!;
+    const panel = (await page.locator('.zellij-mega-panel').boundingBox())!;
+
+    // Any positive gap is a dead zone the pointer would have to cross.
+    const gap = panel.y - (header.y + header.height);
+    expect(gap).toBeLessThanOrEqual(0);
+    expect(gap).toBeGreaterThan(-4);
+  });
+
+  /**
+   * The panel spans the full bar, so its links sit far from the trigger that
+   * opened them and a pointer travelling to one crosses neighbouring triggers.
+   * Without hover intent those hijack the menu and the panel vanishes mid-reach.
+   */
+  test('survives a slow diagonal reach into a far-side panel link', async ({ page }) => {
+    await page.goto('/');
+    await openPanel(page, 'Resources', '.zellij-mega-panel');
+
+    const link = page.locator('.zellij-mega-link').first();
+    const target = (await link.boundingBox())!;
+    await page.mouse.move(target.x + 40, target.y + 12, { steps: 30 });
+
+    await expect(page.locator('.zellij-mega-panel')).toBeVisible();
+    await link.click();
+    await expect(page).toHaveURL(/\/guide/);
+  });
+
+  test('a deliberate dwell on another trigger switches panels', async ({ page }) => {
+    await page.goto('/');
+    await openPanel(page, 'Resources', '.zellij-mega-panel');
+
+    await page.getByRole('button', { name: 'Solutions' }).hover();
+    await expect(page.locator('.zellij-dropdown')).toBeVisible();
+    await expect(page.locator('.zellij-mega-panel')).toBeHidden();
+  });
+
+  test('closes once the pointer leaves the header entirely', async ({ page }) => {
+    await page.goto('/');
+    await openPanel(page, 'Resources', '.zellij-mega-panel');
+
+    await page.mouse.move(700, 600, { steps: 10 });
+    await expect(page.locator('.zellij-mega-panel')).toBeHidden();
   });
 
   test('closes on Escape and returns focus to the trigger', async ({ page }) => {

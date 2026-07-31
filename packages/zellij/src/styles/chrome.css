@@ -81,6 +81,8 @@
 .zellij-nav-desktop {
   flex: 1;
   min-width: 0;
+  /* Stretch to the bar's full height so nav items can too. */
+  align-self: stretch;
 }
 
 .zellij-nav-list {
@@ -90,14 +92,33 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  height: 100%;
 }
 
 .zellij-nav-desktop[data-align='center'] .zellij-nav-list {
   justify-content: center;
 }
 
+/*
+ * Items span the bar's full height rather than just the link's. That makes the
+ * hover target reach the bar's bottom edge, so a panel anchored at `top: 100%`
+ * is contiguous with it — there is no strip of dead space for the pointer to
+ * cross on its way into the panel.
+ */
 .zellij-nav-item {
   position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/*
+ * Mega panels span the whole bar, Apple-style. Making the item a static box
+ * hands the panel's containing block to the sticky header, so it can stretch
+ * edge to edge while still opening flush beneath the bar.
+ */
+.zellij-nav-item[data-mega='true'] {
+  position: static;
 }
 
 .zellij-nav-link {
@@ -138,37 +159,76 @@
 
 /* -------------------------------------------------- dropdowns & mega menu -- */
 
+/*
+ * Both panel kinds hang directly off the bar — `top: 100%` with no offset — so
+ * the panel reads as an extension of the header rather than a floating card,
+ * and the pointer never leaves a hoverable surface on its way in.
+ */
 .zellij-dropdown,
 .zellij-mega-panel {
   position: absolute;
-  top: calc(100% + 0.5rem);
-  left: 0;
+  top: 100%;
+  /*
+   * Opaque, unlike the bar. Translucency reads well across a 3rem strip but
+   * not across a tall panel — page content shows through and competes with the
+   * menu's own type.
+   */
   background: var(--zellij-bg);
-  border: 1px solid var(--zellij-border);
-  border-radius: var(--zellij-radius);
-  box-shadow: 0 12px 32px -8px color-mix(in srgb, var(--zellij-fg) 22%, transparent);
-  padding: 0.5rem;
   z-index: 60;
-  animation: zellij-menu-in 160ms var(--zellij-motion-ease);
+  animation: zellij-menu-in 220ms var(--zellij-motion-ease);
+  transform-origin: top center;
 }
 
+/* A short list stays a compact panel — but flush against the bar. */
 .zellij-dropdown {
-  min-width: 14rem;
+  left: 0;
+  min-width: 15rem;
+  padding: 0.5rem;
+  border: 1px solid var(--zellij-border);
+  border-top: none;
+  border-radius: 0 0 var(--zellij-radius) var(--zellij-radius);
+  box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--zellij-fg) 26%, transparent);
 }
 
+/*
+ * The mega panel is a full-bleed band with no border, corner radius or shadow:
+ * it should read as the header unfurling, not as a card floating over the page.
+ * Only a closing hairline separates it from the content below.
+ */
 .zellij-mega-panel {
-  min-width: 34rem;
-  padding: 1.25rem;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 2.25rem 0 3rem;
+  border-bottom: 1px solid var(--zellij-border);
 }
 
+.zellij-mega-panel .zellij-mega-groups {
+  /* Aligned to the same container as the bar, so the first column lines up
+     with the logo rather than floating mid-page. */
+  max-width: var(--zellij-container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* The panel unfurls from the bar rather than floating up into place. */
 @keyframes zellij-menu-in {
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: scaleY(0.96) translateY(-2px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scaleY(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zellij-dropdown,
+  .zellij-mega-panel {
+    animation: none;
   }
 }
 
