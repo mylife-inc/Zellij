@@ -1,0 +1,47 @@
+{
+  "name": "@shebka/zellij",
+  "version": "0.1.0",
+  "description": "A shared Next.js engine that turns a folder of structured content into a complete product website.",
+  "license": "UNLICENSED",
+  "author": "Shebka LLC",
+  "type": "module",
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./content": "./src/content/index.ts",
+    "./config": "./src/config/index.ts",
+    "./styles.css": "./src/styles/zellij.css"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "next": "16.2.x",
+    "react": "19.2.x",
+    "react-dom": "19.2.x"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^1.28.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

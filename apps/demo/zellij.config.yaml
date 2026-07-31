@@ -1,0 +1,69 @@
+product:
+  name: Acme
+  tagline: "The operations platform your team already knows how to use"
+  logo: assets/logo.svg
+
+content: ./content
+theme: paper
+mode: system
+motion: subtle
+
+# Mirrors basePath in next.config.js — keep the two in sync (spec §13.4).
+basePath: ""
+
+overrides:
+  accent: "#E86A33"
+
+nav:
+  sticky: true
+  align: left
+  themeToggle: true
+  search: true
+  transparentOverHero: true
+  scrollThreshold: 80
+  links:
+    - { label: Features, href: /features }
+    - { label: Pricing, href: /pricing }
+    - label: Solutions
+      children:
+        - { label: For startups, href: /solutions/startups }
+        - { label: For enterprise, href: /solutions/enterprise }
+    - label: Resources
+      mega:
+        groups:
+          - heading: Learn
+            items:
+              - { label: Guide, href: /guide, description: "Install, configure, operate.", icon: book }
+              - { label: Quickstart, href: /guide/quickstart, description: "Ship in ten minutes.", icon: rocket }
+          - heading: Company
+            items:
+              - { label: About, href: /about, description: "Why we build Acme.", icon: users }
+    - { label: Security, href: /features#security }
+  cta:
+    - { label: "Get started", href: /guide/quickstart, style: primary }
+  social:
+    github: "https://github.com/shebka/acme"
+  announcement:
+    text: "Acme 2.0 is live —"
+    link: { label: "read the notes", href: /about }
+    dismissible: true
+
+footer:
+  columns:
+    - heading: Product
+      links:
+        - { label: Features, href: /features }
+        - { label: Pricing, href: /pricing }
+    - heading: Developers
+      links:
+        - { label: Guide, href: /guide }
+        - { label: Quickstart, href: /guide/quickstart }
+    - heading: Company
+      links:
+        - { label: About, href: /about }
+  legal: "© 2026 Shebka LLC"
+  social:
+    github: "https://github.com/shebka/acme"
+
+analytics:
+  provider: none

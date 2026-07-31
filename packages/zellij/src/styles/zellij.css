@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+
+/**
+ * Zellij base layer.
+ *
+ * Every visual value is a CSS custom property so themes ("glazes") can swap the
+ * whole site by redefining tokens — components never reference raw values
+ * (spec §6). M4 replaces this single default set with all 10 themes.
+ */
+
+@theme {
+  --color-zellij-bg: var(--zellij-bg);
+  --color-zellij-fg: var(--zellij-fg);
+  --color-zellij-muted: var(--zellij-muted);
+  --color-zellij-accent: var(--zellij-accent);
+  --color-zellij-border: var(--zellij-border);
+  --color-zellij-surface: var(--zellij-surface);
+}
+
+:root {
+  /* Palette — placeholder defaults; M4 supplies per-theme light/dark sets. */
+  --zellij-bg: #ffffff;
+  --zellij-fg: #14161a;
+  --zellij-muted: #5f6672;
+  --zellij-surface: #f7f8fa;
+  --zellij-border: #e4e7ec;
+  --zellij-accent: #E86A33;
+  --zellij-accent-fg: #ffffff;
+
+  /* Typography */
+  --zellij-font-heading: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --zellij-font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --zellij-font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Geometry */
+  --zellij-radius: 0.75rem;
+  --zellij-container: 72rem;
+  --zellij-prose-width: 70ch;
+  --zellij-section-gap: 6rem;
+
+  /* Nav — anchor scrolling offsets by this so targets clear the sticky bar (§5.4). */
+  --zellij-nav-height: 4rem;
+
+  /* Motion tokens — themes give these personality (spec §6.5). */
+  --zellij-motion-duration: 500ms;
+  --zellij-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --zellij-motion-distance: 16px;
+  --zellij-motion-stagger: 70ms;
+}
+
+[data-zellij-mode='dark'] {
+  --zellij-bg: #0d0f13;
+  --zellij-fg: #f2f4f7;
+  --zellij-muted: #9aa2af;
+  --zellij-surface: #16191f;
+  --zellij-border: #262b33;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-zellij-mode='system'] {
+    --zellij-bg: #0d0f13;
+    --zellij-fg: #f2f4f7;
+    --zellij-muted: #9aa2af;
+    --zellij-surface: #16191f;
+    --zellij-border: #262b33;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Anchor targets must never hide behind the sticky bar (spec §5.4). */
+  scroll-padding-top: calc(var(--zellij-nav-height) + 1rem);
+}
+
+body {
+  background: var(--zellij-bg);
+  color: var(--zellij-fg);
+  font-family: var(--zellij-font-body);
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--zellij-font-heading);
+  color: var(--zellij-fg);
+  text-wrap: balance;
+}
+
+/* Reduced motion is a hard override, regardless of config (spec §6.5). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.zellij-skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  background: var(--zellij-accent);
+  color: var(--zellij-accent-fg);
+  border-radius: 0 0 var(--zellij-radius) 0;
+}
+
+.zellij-skip-link:focus {
+  left: 0;
+}
+
+.zellij-container {
+  width: 100%;
+  max-width: var(--zellij-container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.zellij-section {
+  padding-block: var(--zellij-section-gap);
+  scroll-margin-top: calc(var(--zellij-nav-height) + 1rem);
+}
+
+.zellij-layout-stack-narrow .zellij-container {
+  max-width: 56rem;
+}
+
+.zellij-prose {
+  max-width: var(--zellij-prose-width);
+  margin-inline: auto;
+  padding: 3rem 1.5rem;
+}
+
+.zellij-lead {
+  color: var(--zellij-muted);
+  font-size: 1.125rem;
+}
+
+/* M1 scaffolding affordances — removed once real sections land in M3. */
+.zellij-section-placeholder {
+  border-bottom: 1px dashed var(--zellij-border);
+}
+
+.zellij-placeholder {
+  color: var(--zellij-muted);
+  font-size: 0.875rem;
+}
+
+.zellij-debug {
+  font-family: var(--zellij-font-mono);
+  font-size: 0.8125rem;
+  background: var(--zellij-surface);
+  border: 1px solid var(--zellij-border);
+  border-radius: var(--zellij-radius);
+  padding: 1rem;
+  margin-top: 0.75rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}

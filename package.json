@@ -1,0 +1,26 @@
+{
+  "name": "zellij-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zellij — a shared Next.js engine that turns structured content into a complete product website.",
+  "license": "UNLICENSED",
+  "author": "Shebka LLC",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "npm run dev -w @shebka/zellij-demo",
+    "build": "npm run build -w @shebka/zellij-demo",
+    "start": "npm run start -w @shebka/zellij-demo",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test -w @shebka/zellij",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}

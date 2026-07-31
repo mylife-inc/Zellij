@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# Zellij copies content assets here during the sync step (see spec §13.4)
+apps/demo/public/_zellij/
+
+.DS_Store
+*.log
+npm-debug.log*
+.env
+.env.local
+coverage/
+test-results/
+playwright-report/

@@ -1,0 +1,36 @@
+title: "Acme for enterprise"
+description: "Self-hosted deployment, granular permissions, and the audit guarantees regulated operations require."
+layout: stack-sidebar
+sections:
+  - type: hero
+    headline: "Run it in your cloud, on your terms"
+    subhead: "The full Acme stack deploys inside your own account, with the controls your security review expects."
+    cta:
+      - { label: "Talk to us", href: /about, style: primary }
+      - { label: "See features", href: /features, style: ghost }
+    visualStyle: framed
+
+  - type: showcase
+    eyebrow: "Deployment"
+    headline: "Self-hosted without the maintenance tax"
+    body: "Ship updates on your schedule with a supported upgrade path, signed releases, and no phone-home requirements."
+    background: tinted
+
+  - type: feature-grid
+    heading: "Controls"
+    columns: 3
+    items:
+      - { icon: key-round, title: "SSO & SCIM", body: "SAML, OIDC, and automated provisioning." }
+      - { icon: eye, title: "Field-level permissions", body: "Restrict visibility down to individual fields." }
+      - { icon: scroll-text, title: "Immutable audit log", body: "Every state change recorded and exportable." }
+
+  - type: video-embed
+    heading: "Deployment walkthrough"
+    src: assets/enterprise-deploy.mp4
+    poster: assets/video-poster.png
+    caption: "Deploying Acme into a private VPC, end to end."
+
+  - type: cta-banner
+    headline: "Start your security review"
+    body: "We will send the full documentation pack the same day."
+    cta: { label: "Contact us", href: /about, style: primary }

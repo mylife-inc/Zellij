@@ -1,0 +1,38 @@
+---
+title: Database
+description: Connecting Acme to Postgres, running migrations, and using read replicas.
+---
+
+# Database
+
+Acme requires Postgres 15 or newer.
+
+## Connection
+
+```bash
+export ACME_DATABASE_URL="postgres://acme:secret@db.internal:5432/acme?sslmode=require"
+```
+
+<Callout type="info">
+Always use `sslmode=require` outside local development.
+</Callout>
+
+## Migrations
+
+Migrations run automatically at startup. To run them manually:
+
+```bash
+acme db migrate
+```
+
+## Read replicas
+
+Point reporting queries at a replica to keep dashboards off the primary:
+
+```yaml title="acme.yaml"
+database:
+  primary: postgres://acme:secret@db-primary:5432/acme
+  replica: postgres://acme:secret@db-replica:5432/acme
+```
+
+<Screenshot src="assets/shot-reporting.png" caption="Reporting reads from the replica when one is configured." />

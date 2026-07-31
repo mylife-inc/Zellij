@@ -1,0 +1,23 @@
+title: "Acme for startups"
+description: "Set up the operational backbone once, and let it scale with you instead of being rebuilt every year."
+layout: stack
+sections:
+  - type: hero
+    headline: "Operational maturity, years before you'd expect it"
+    subhead: "Get the approval trails and reporting investors ask about without hiring an ops team to maintain them."
+    cta:
+      - { label: "Start on the free plan", href: /guide/quickstart, style: primary }
+    visualStyle: floating
+
+  - type: feature-grid
+    heading: "What early teams use most"
+    columns: 2
+    items:
+      - { icon: zap, title: "Ten-minute setup", body: "Your first workflow runs the same day you sign up." }
+      - { icon: trending-up, title: "Scales without a rebuild", body: "The workflow you write at ten people still works at three hundred." }
+      - { icon: wallet, title: "Free to start", body: "The Starter plan stays free forever, with no workflow expiry." }
+      - { icon: file-check, title: "Audit-ready early", body: "Clean trails from day one make your first compliance review painless." }
+
+  - type: cta-banner
+    headline: "Build the habit early"
+    cta: { label: "Get started", href: /guide/quickstart, style: primary }

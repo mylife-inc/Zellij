@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "zellij-demo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "-w", "@shebka/zellij-demo"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}
