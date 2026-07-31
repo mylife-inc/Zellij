@@ -57,7 +57,7 @@ sections:
     headline: "Built for the way operations really work"
     body: "Acme adapts to your process instead of forcing a rewrite. Start with one workflow, expand to the whole company."
     visual: assets/showcase-platform.png
-    background: tinted
+    background: inverted
     cta: { label: "Read the guide", href: /guide, style: secondary }
 
   - type: testimonial

@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './chrome.css';
+@import './sections.css';
 @import './guide.css';
 
 /**
@@ -28,6 +29,8 @@
   --zellij-border: #e4e7ec;
   --zellij-accent: #E86A33;
   --zellij-accent-fg: #ffffff;
+  --zellij-inverted-bg: #14161a;
+  --zellij-inverted-fg: #f7f8fa;
 
   /* Typography */
   --zellij-font-heading: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;

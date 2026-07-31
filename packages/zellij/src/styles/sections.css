@@ -1,0 +1,760 @@
+/**
+ * The 12 section tiles (spec §5.2). Design bar: generous whitespace, a
+ * deliberate type scale, subtle borders/shadows per theme. Every value is a
+ * token so themes restyle all of it.
+ */
+
+/* --------------------------------------------------------------- reveals -- */
+
+/* Transform/opacity only, so revealing can never shift layout (spec §6.5). */
+[data-zellij-reveal] {
+  transition:
+    opacity var(--zellij-motion-duration) var(--zellij-motion-ease),
+    transform var(--zellij-motion-duration) var(--zellij-motion-ease);
+}
+
+[data-zellij-reveal='out'] {
+  opacity: 0;
+}
+
+[data-zellij-reveal='out'][data-zellij-reveal-direction='up'] {
+  transform: translateY(var(--zellij-motion-distance));
+}
+
+[data-zellij-reveal='out'][data-zellij-reveal-direction='left'] {
+  transform: translateX(calc(var(--zellij-motion-distance) * -1.5));
+}
+
+[data-zellij-reveal='out'][data-zellij-reveal-direction='right'] {
+  transform: translateX(calc(var(--zellij-motion-distance) * 1.5));
+}
+
+[data-zellij-reveal='in'] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-zellij-reveal] {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------- section chrome -- */
+
+.zellij-section[data-zellij-background='tinted'] {
+  background: var(--zellij-surface);
+}
+
+.zellij-section[data-zellij-background='inverted'] {
+  background: var(--zellij-inverted-bg);
+  color: var(--zellij-inverted-fg);
+}
+
+.zellij-section[data-zellij-background='inverted'] :is(h1, h2, h3) {
+  color: var(--zellij-inverted-fg);
+}
+
+.zellij-section-header {
+  max-width: 46rem;
+  margin-bottom: 3.5rem;
+}
+
+.zellij-section-header[data-align='center'] {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.zellij-eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--zellij-accent);
+  margin: 0 0 0.75rem;
+}
+
+.zellij-section-heading {
+  font-size: clamp(1.875rem, 3.2vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.zellij-section-subhead {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--zellij-muted);
+  margin: 1rem 0 0;
+}
+
+.zellij-cta-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.zellij-section-header[data-align='center'] .zellij-cta-group {
+  justify-content: center;
+}
+
+/* Section buttons are larger than the nav's. */
+.zellij-section .zellij-button {
+  height: 2.875rem;
+  padding-inline: 1.5rem;
+  font-size: 1rem;
+}
+
+.zellij-section .zellij-button[data-style='primary']:hover {
+  transform: translateY(-1px);
+}
+
+.zellij-media {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--zellij-radius);
+  background: var(--zellij-surface);
+}
+
+.zellij-media img {
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------------ hero -- */
+
+.zellij-hero {
+  padding-block: clamp(4rem, 9vw, 7.5rem) clamp(3rem, 6vw, 5rem);
+  text-align: center;
+}
+
+.zellij-hero-copy {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.zellij-badge {
+  display: inline-block;
+  padding: 0.3125rem 0.875rem;
+  margin: 0 0 1.5rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--zellij-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--zellij-accent) 10%, transparent);
+  color: var(--zellij-accent);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.zellij-hero-headline {
+  font-size: clamp(2.25rem, 5.5vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  margin: 0;
+}
+
+.zellij-hero-subhead {
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--zellij-muted);
+  margin: 1.25rem auto 0;
+  max-width: 40rem;
+}
+
+.zellij-hero .zellij-cta-group {
+  justify-content: center;
+}
+
+.zellij-hero-visual {
+  max-width: 68rem;
+  margin: clamp(3rem, 5vw, 4.5rem) auto 0;
+  padding-inline: 1.5rem;
+}
+
+.zellij-hero-visual-floating .zellij-media {
+  box-shadow:
+    0 2px 6px -2px color-mix(in srgb, var(--zellij-fg) 14%, transparent),
+    0 30px 60px -20px color-mix(in srgb, var(--zellij-fg) 30%, transparent);
+}
+
+.zellij-hero-visual-framed .zellij-media {
+  border: 1px solid var(--zellij-border);
+  padding: 0;
+}
+
+.zellij-hero-visual-full-bleed {
+  max-width: none;
+  padding-inline: 0;
+}
+
+.zellij-hero-visual-full-bleed .zellij-media {
+  border-radius: 0;
+}
+
+/* ------------------------------------------------------------ logo strip -- */
+
+.zellij-logo-strip {
+  padding-block: 3rem;
+}
+
+.zellij-logo-strip-heading {
+  text-align: center;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--zellij-muted);
+  margin: 0 0 2rem;
+}
+
+.zellij-logo-strip-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem 3.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.zellij-logo-image {
+  height: 2rem;
+  width: auto;
+  /* Grayscale until hover (spec §5.2 #2). */
+  filter: grayscale(1);
+  opacity: 0.6;
+  color: var(--zellij-fg);
+  transition: filter 200ms ease, opacity 200ms ease;
+}
+
+.zellij-logo-item:hover .zellij-logo-image {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+/* ---------------------------------------------------------- feature grid -- */
+
+.zellij-feature-list {
+  display: grid;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+@media (min-width: 900px) {
+  .zellij-feature-list[data-columns='2'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .zellij-feature-list[data-columns='3'] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .zellij-feature-list[data-columns='4'] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.zellij-feature-card {
+  padding: 1.75rem;
+  border: 1px solid var(--zellij-border);
+  border-radius: var(--zellij-radius);
+  background: var(--zellij-bg);
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms var(--zellij-motion-ease);
+}
+
+.zellij-feature-card:hover {
+  border-color: color-mix(in srgb, var(--zellij-accent) 45%, var(--zellij-border));
+  box-shadow: 0 12px 28px -18px color-mix(in srgb, var(--zellij-fg) 40%, transparent);
+  transform: translateY(-2px);
+}
+
+.zellij-feature-link {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+.zellij-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 1.125rem;
+  border-radius: calc(var(--zellij-radius) * 0.7);
+  background: color-mix(in srgb, var(--zellij-accent) 12%, transparent);
+  color: var(--zellij-accent);
+}
+
+.zellij-feature-title {
+  font-size: 1.0625rem;
+  margin: 0 0 0.5rem;
+}
+
+.zellij-feature-body {
+  color: var(--zellij-muted);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* --------------------------------------------------------------- zigzag -- */
+
+.zellij-zigzag-rows {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(4rem, 7vw, 6.5rem);
+}
+
+.zellij-zigzag-row {
+  display: grid;
+  gap: 2.5rem;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .zellij-zigzag-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4rem;
+  }
+
+  .zellij-zigzag-row[data-align='image-left'] .zellij-zigzag-copy {
+    order: 2;
+  }
+}
+
+.zellij-zigzag-title {
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin: 0 0 1rem;
+}
+
+.zellij-zigzag-body {
+  color: var(--zellij-muted);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.zellij-zigzag-cta {
+  margin-top: 1.5rem;
+}
+
+.zellij-zigzag-media .zellij-media {
+  border: 1px solid var(--zellij-border);
+  box-shadow: 0 18px 40px -28px color-mix(in srgb, var(--zellij-fg) 45%, transparent);
+}
+
+/* -------------------------------------------------------------- showcase -- */
+
+.zellij-showcase-inner {
+  text-align: center;
+  max-width: 56rem;
+  margin-inline: auto;
+}
+
+.zellij-showcase-headline {
+  font-size: clamp(1.875rem, 3.6vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.zellij-showcase-body {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--zellij-muted);
+  margin: 1.125rem auto 2rem;
+  max-width: 40rem;
+}
+
+.zellij-section[data-zellij-background='inverted'] .zellij-showcase-body {
+  color: color-mix(in srgb, var(--zellij-inverted-fg) 75%, transparent);
+}
+
+.zellij-showcase-media {
+  margin-top: 3rem;
+}
+
+.zellij-showcase-media .zellij-media {
+  box-shadow: 0 24px 60px -30px color-mix(in srgb, #000 60%, transparent);
+}
+
+/* ----------------------------------------------------------------- stats -- */
+
+.zellij-stats-list {
+  display: grid;
+  gap: 2.5rem 1.5rem;
+  margin: 0;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  text-align: center;
+}
+
+.zellij-stat-value {
+  font-family: var(--zellij-font-heading);
+  font-size: clamp(2.25rem, 4.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--zellij-accent);
+  /* Keeps count-up from reflowing neighbours as digits change. */
+  font-variant-numeric: tabular-nums;
+}
+
+.zellij-stat-label {
+  margin: 0.625rem 0 0;
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+}
+
+/* ----------------------------------------------------------- testimonial -- */
+
+.zellij-quote {
+  max-width: 46rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.zellij-quote-text {
+  font-family: var(--zellij-font-heading);
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  margin: 0;
+  text-wrap: balance;
+}
+
+.zellij-quote-author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  text-align: left;
+}
+
+.zellij-quote-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.zellij-quote-name {
+  display: block;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.zellij-quote-role {
+  display: block;
+  color: var(--zellij-muted);
+  font-size: 0.875rem;
+}
+
+.zellij-carousel-viewport {
+  display: grid;
+}
+
+/* Slides stack so height stays stable between quotes. */
+.zellij-carousel-slide {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms var(--zellij-motion-ease);
+}
+
+.zellij-carousel-slide[data-active='true'] {
+  opacity: 1;
+  visibility: visible;
+}
+
+.zellij-carousel-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.zellij-carousel-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.zellij-carousel-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--zellij-border);
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.zellij-carousel-dot[data-active='true'] {
+  background: var(--zellij-accent);
+  transform: scale(1.3);
+}
+
+/* --------------------------------------------------------------- pricing -- */
+
+.zellij-pricing-list {
+  display: grid;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  align-items: start;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+
+/* A single tier should read as deliberate, not stretched (spec §5.2 #8). */
+.zellij-pricing-list[data-count='1'] {
+  max-width: 26rem;
+  margin-inline: auto;
+}
+
+.zellij-pricing-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1.75rem;
+  border: 1px solid var(--zellij-border);
+  border-radius: var(--zellij-radius);
+  background: var(--zellij-bg);
+}
+
+.zellij-pricing-card[data-highlighted='true'] {
+  border-color: var(--zellij-accent);
+  box-shadow: 0 20px 44px -28px color-mix(in srgb, var(--zellij-accent) 70%, transparent);
+}
+
+.zellij-pricing-flag {
+  align-self: flex-start;
+  padding: 0.25rem 0.625rem;
+  margin: 0 0 0.875rem;
+  border-radius: 999px;
+  background: var(--zellij-accent);
+  color: var(--zellij-accent-fg);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.zellij-pricing-name {
+  font-size: 1.0625rem;
+  margin: 0;
+}
+
+.zellij-pricing-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0.75rem 0 0;
+}
+
+.zellij-pricing-amount {
+  font-family: var(--zellij-font-heading);
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.zellij-pricing-period {
+  color: var(--zellij-muted);
+  font-size: 0.875rem;
+}
+
+.zellij-pricing-description {
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  margin: 0.875rem 0 0;
+}
+
+.zellij-section .zellij-pricing-cta {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.zellij-pricing-features {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid var(--zellij-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+}
+
+.zellij-pricing-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.zellij-pricing-features svg {
+  color: var(--zellij-accent);
+  flex-shrink: 0;
+  margin-top: 0.2em;
+}
+
+/* ------------------------------------------------------------------- faq -- */
+
+.zellij-faq-list {
+  max-width: 46rem;
+  margin-inline: auto;
+  border-top: 1px solid var(--zellij-border);
+}
+
+.zellij-faq-item {
+  border-bottom: 1px solid var(--zellij-border);
+}
+
+.zellij-faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 0;
+  font-family: var(--zellij-font-heading);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.zellij-faq-question::-webkit-details-marker {
+  display: none;
+}
+
+.zellij-faq-chevron {
+  flex-shrink: 0;
+  color: var(--zellij-muted);
+  transition: transform 200ms var(--zellij-motion-ease);
+}
+
+.zellij-faq-item[open] .zellij-faq-chevron {
+  transform: rotate(180deg);
+}
+
+.zellij-faq-answer {
+  padding-bottom: 1.375rem;
+  color: var(--zellij-muted);
+  line-height: 1.65;
+}
+
+.zellij-faq-answer p {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------ cta banner -- */
+
+.zellij-cta-banner-inner {
+  text-align: center;
+  max-width: 44rem;
+  margin-inline: auto;
+}
+
+.zellij-cta-banner-headline {
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.zellij-cta-banner-body {
+  color: var(--zellij-muted);
+  font-size: 1.0625rem;
+  margin: 1rem 0 0;
+}
+
+.zellij-cta-banner .zellij-cta-group {
+  justify-content: center;
+}
+
+/* -------------------------------------------------------- markdown prose -- */
+
+.zellij-prose-marketing {
+  margin-inline: 0;
+  max-width: 44rem;
+}
+
+.zellij-markdown-prose .zellij-section-header {
+  margin-bottom: 2rem;
+}
+
+/* ----------------------------------------------------------------- video -- */
+
+.zellij-video-figure {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.zellij-video-frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--zellij-radius);
+  background: var(--zellij-surface);
+  cursor: pointer;
+}
+
+.zellij-video-frame :is(iframe, video) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.zellij-video-poster img {
+  object-fit: cover;
+}
+
+.zellij-video-play {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  translate: -50% -50%;
+  display: grid;
+  place-items: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--zellij-bg) 90%, transparent);
+  color: var(--zellij-accent);
+  box-shadow: 0 8px 28px -8px color-mix(in srgb, #000 50%, transparent);
+  padding-left: 4px;
+  transition: transform 200ms var(--zellij-motion-ease);
+}
+
+.zellij-video-poster:hover .zellij-video-play {
+  transform: scale(1.06);
+}
+
+.zellij-video-caption {
+  margin-top: 0.875rem;
+  text-align: center;
+  color: var(--zellij-muted);
+  font-size: 0.875rem;
+}
+
+/* ----------------------------------------------------------------- focus -- */
+
+.zellij-section :is(a, button, summary):focus-visible {
+  outline: 2px solid var(--zellij-accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
