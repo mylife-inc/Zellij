@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import './chrome.css';
+@import './guide.css';
 
 /**
  * Zellij base layer.

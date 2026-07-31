@@ -8,7 +8,10 @@
     "node": ">=20.11"
   },
   "scripts": {
+    "assets": "node scripts/make-placeholder-assets.mjs",
+    "predev": "npm run assets && zellij sync-assets",
     "dev": "next dev",
+    "prebuild": "npm run assets && zellij sync-assets",
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",

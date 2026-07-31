@@ -28,4 +28,10 @@ export {
 export type { SectionDefinition } from './sections/registry';
 export * from './sections/schemas';
 
+export { mdxComponents } from './mdx/components';
+export { mdxOptions } from './mdx/pipeline';
+export { extractToc, slugifyHeading } from './guide/toc';
+export type { TocEntry } from './guide/toc';
+export { buildBreadcrumbs, findNeighbours, flattenSidebar } from './guide/navigation';
+
 export { ZellijContentError, formatZodError } from './errors';
