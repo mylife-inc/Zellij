@@ -128,9 +128,12 @@ test.describe('count-up stats', () => {
 
     const value = stats.locator('.zellij-stat-value').first();
     // Whatever it does mid-flight, it must end on exactly what the content says.
-    // The bound is generous on purpose: this asserts the settled value, not how
-    // quickly the animation runs under parallel test load.
-    await expect(value).toHaveText('40%', { timeout: 15000 });
+    //
+    // This once looked like load-related flake and was papered over with a long
+    // timeout. The real cause was CountUp re-running its own effect and
+    // cancelling its animation frame, so it froze on a partial number. With that
+    // fixed, the ordinary bound holds.
+    await expect(value).toHaveText('40%', { timeout: 5000 });
   });
 });
 

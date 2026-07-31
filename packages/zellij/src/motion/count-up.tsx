@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { MotionPreset } from '../config/schema';
 import { useResolvedMotion } from './use-motion';
 
@@ -35,7 +35,16 @@ export function CountUp({
 }) {
   // The hook is the single place reduced-motion collapses a preset (spec §6.5).
   const resolved = useResolvedMotion(motion);
-  const parsed = resolved === 'expressive' ? parseValue(value) : undefined;
+
+  // Memoised deliberately. This value is an effect dependency, and every
+  // animation frame calls setDisplay — so an object rebuilt each render would
+  // re-run the effect, whose cleanup cancels the pending frame. The count-up
+  // would kill itself mid-flight and freeze on a partial number.
+  const parsed = useMemo(
+    () => (resolved === 'expressive' ? parseValue(value) : undefined),
+    [resolved, value],
+  );
+
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState<string>(value);
 

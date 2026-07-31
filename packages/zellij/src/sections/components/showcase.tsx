@@ -17,8 +17,14 @@ export function Showcase({ section, defaultMotion }: SectionProps<ShowcaseSectio
       className="zellij-showcase"
     >
       {/* Under `expressive` this pins the panel and ramps the visual as the
-          page scrolls; under any other preset it is a plain block. */}
-      <ScrollStage motion={motion} className="zellij-showcase-inner">
+          page scrolls; under any other preset it is a plain block. Pinning is
+          skipped without a visual — there would be nothing to ramp, and the
+          reserved scroll distance would just be empty space. */}
+      <ScrollStage
+        motion={motion}
+        enabled={Boolean(section.visual)}
+        className="zellij-showcase-inner"
+      >
         <Reveal motion={motion} className="zellij-showcase-copy">
           {section.eyebrow ? <p className="zellij-eyebrow">{section.eyebrow}</p> : null}
           <h2 className="zellij-showcase-headline">{section.headline}</h2>

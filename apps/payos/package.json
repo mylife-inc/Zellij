@@ -1,0 +1,31 @@
+{
+  "name": "@shebka/payos-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PayOS product site — a Zellij wrapper over the real PayOS documentation.",
+  "type": "module",
+  "engines": { "node": ">=20.11" },
+  "scripts": {
+    "convert": "node scripts/convert-docs.mjs",
+    "predev": "npm run convert && zellij prepare",
+    "dev": "next dev",
+    "prebuild": "npm run convert && zellij prepare",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@shebka/zellij": "*",
+    "next": "16.2.12",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.9.3"
+  }
+}

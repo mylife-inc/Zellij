@@ -47,6 +47,10 @@ export function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
         </nav>
 
         <article className="zellij-prose">
+          {/* The title is rendered here, not in the body, so it stays a single
+              source of truth across <title>, sidebar, breadcrumbs and search. */}
+          <h1>{page.title}</h1>
+          {page.description ? <p className="zellij-lead">{page.description}</p> : null}
           <MDXRemote source={page.body} components={mdxComponents} options={mdxOptions()} />
         </article>
 

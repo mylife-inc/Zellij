@@ -8,7 +8,13 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 2rem;
-  max-width: var(--zellij-container);
+  /*
+   * Docs get their own width, wider than the theme's marketing container.
+   * A three-column layout (sidebar + prose + table of contents) inside a
+   * measured marketing container leaves too little for the prose column —
+   * on a narrow theme it drops to ~480px, which crushes reference tables.
+   */
+  max-width: min(84rem, 100%);
   margin-inline: auto;
   padding: 2rem 1.5rem 4rem;
   align-items: start;
@@ -230,6 +236,19 @@
   line-height: 1.7;
 }
 
+/*
+ * In the guide, the reading measure applies to text — not to the whole column.
+ * Tables, code blocks and screenshots use the full width available, which is
+ * what makes dense reference tables readable without horizontal scrolling.
+ */
+.zellij-guide-main .zellij-prose {
+  max-width: none;
+}
+
+.zellij-guide-main .zellij-prose > :is(p, ul, ol, blockquote, h1, h2, h3, h4, .zellij-lead) {
+  max-width: var(--zellij-prose-width);
+}
+
 .zellij-prose > * + * {
   margin-top: 1.25rem;
 }
@@ -298,12 +317,30 @@
   color: var(--zellij-muted);
 }
 
+/*
+ * Reference tables keep their natural column widths and scroll horizontally
+ * rather than being squeezed into the ~70ch reading measure. A dense
+ * three-column config table wrapped to that width degrades to two words per
+ * line, which is unreadable — and real documentation is full of them.
+ */
 .zellij-prose table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.9375rem;
   display: block;
   overflow-x: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+
+.zellij-prose th,
+.zellij-prose td {
+  /* Let a cell size to its content instead of wrapping mid-phrase. */
+  min-width: 8rem;
+}
+
+.zellij-prose td:last-child {
+  min-width: 22rem;
 }
 
 .zellij-prose th,

@@ -698,9 +698,16 @@
 
 /* -------------------------------------------------------- markdown prose -- */
 
-.zellij-prose-marketing {
+/*
+ * Specificity must beat the base `.zellij-prose` rule, which centres the column
+ * and adds its own padding. Both are single-class selectors and the base is
+ * declared after the imports, so it would otherwise win — leaving marketing
+ * prose indented and centred while its section heading sits flush left.
+ */
+.zellij-markdown-prose .zellij-prose-marketing {
   margin-inline: 0;
   max-width: 44rem;
+  padding: 0;
 }
 
 .zellij-markdown-prose .zellij-section-header {

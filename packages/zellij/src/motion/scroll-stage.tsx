@@ -18,14 +18,21 @@ export function ScrollStage({
   motion,
   children,
   className,
+  enabled = true,
 }: {
   motion: MotionPreset;
   children: ReactNode;
   className?: string;
+  /**
+   * Whether pinning is worth its cost here. Pinning reserves roughly two
+   * viewports of scroll, which only pays off when there is a visual to ramp —
+   * a text-only panel would make readers scroll past a long stretch of nothing.
+   */
+  enabled?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const resolved = useResolvedMotion(motion);
-  const expressive = resolved === 'expressive';
+  const expressive = resolved === 'expressive' && enabled;
 
   useScrollProgress(ref, expressive);
 

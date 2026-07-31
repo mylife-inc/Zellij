@@ -1,0 +1,62 @@
+product:
+  name: PayOS
+  tagline: "Sell your software anywhere, without building a payments team."
+
+content: ./content
+siteUrl: https://payos.shebka.net
+basePath: ""
+
+theme: cupertino
+mode: system
+motion: expressive
+
+nav:
+  sticky: true
+  align: left
+  themeToggle: true
+  search: true
+  transparentOverHero: true
+  links:
+    - { label: Why PayOS, href: /why }
+    - { label: Capabilities, href: /capabilities }
+    - label: Using PayOS
+      children:
+        - { label: For vendors, href: /guide/usage/vendor }
+        - { label: For customers, href: /guide/usage/customer }
+        - { label: For platform admins, href: /guide/usage/platform-admin }
+    - label: Docs
+      mega:
+        groups:
+          - heading: Start here
+            items:
+              - { label: Getting started, href: /guide/getting-started, description: "Run the stack and make a real sale.", icon: rocket }
+              - { label: Setup, href: /guide/setup, description: "The operator's local guide.", icon: terminal }
+          - heading: Operate
+            items:
+              - { label: Configuration, href: /guide/configuration, description: "Every environment variable.", icon: sliders-horizontal }
+              - { label: Deploy, href: /guide/deploy, description: "Railway, AWS, GCP, DigitalOcean.", icon: cloud }
+    - { label: Security, href: /capabilities#security }
+  cta:
+    - { label: "Get started", href: /guide/getting-started, style: primary }
+
+footer:
+  columns:
+    - heading: Product
+      links:
+        - { label: Why PayOS, href: /why }
+        - { label: Capabilities, href: /capabilities }
+    - heading: Documentation
+      links:
+        - { label: Getting started, href: /guide/getting-started }
+        - { label: Setup, href: /guide/setup }
+        - { label: Configuration, href: /guide/configuration }
+        - { label: Deploy, href: /guide/deploy }
+    - heading: Using PayOS
+      links:
+        - { label: For vendors, href: /guide/usage/vendor }
+        - { label: For customers, href: /guide/usage/customer }
+        - { label: For platform admins, href: /guide/usage/platform-admin }
+  legal: "© 2026 Shebka LLC. PayOS orchestrates payments — it never holds your funds."
+
+analytics:
+  provider: none

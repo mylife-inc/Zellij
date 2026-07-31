@@ -16,3 +16,4 @@ coverage/
 test-results/
 playwright-report/
 packages/zellij/dist/
+apps/payos/content/guide/

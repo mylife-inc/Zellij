@@ -1,0 +1,100 @@
+title: "PayOS — Sell your software anywhere, without building a payments team"
+description: "Hosted pricing and checkout across 12 payment providers, software license keys with anti-piracy enforcement, and a self-service customer portal — with zero payment code on your own website."
+layout: landing
+sections:
+  - type: hero
+    badge: "Orchestration, not custody"
+    headline: "Sell your software anywhere, without building a payments team"
+    subhead: "A hosted pricing page, a checkout that speaks to 12 payment providers, license keys with anti-piracy enforcement, and a self-service customer portal — all from one dashboard, with zero payment code on your own website."
+    cta:
+      - { label: "Get started", href: /guide/getting-started, style: primary }
+      - { label: "Why PayOS", href: /why, style: ghost }
+
+  - type: showcase
+    id: custody
+    eyebrow: "Your money stays yours"
+    headline: "PayOS never holds your funds"
+    body: "You connect your *own* provider accounts — your Stripe, your PayPal, your BTCPay. Money flows straight from the buyer to you. PayOS is the orchestration layer on top: replaceable plumbing, never a custodian."
+    background: tinted
+
+  - type: feature-grid
+    id: capabilities
+    heading: "What you get, in one line each"
+    subhead: "Describe a product once. Everything below comes with it — for that product and every future one."
+    columns: 3
+    items:
+      - icon: credit-card
+        title: "12 providers, one dashboard"
+        body: "Stripe, PayPal, Square, Braintree, Adyen, Mollie, Authorize.net, Paddle, Lemon Squeezy, Coinbase Commerce, BTCPay, NOWPayments — plus Apple Pay and Google Pay as wallet methods."
+      - icon: layout-template
+        title: "Hosted pricing & checkout"
+        body: "Vendor-branded pages at a stable URL. PCI scope stays with the processor; your site just links to them."
+      - icon: key-round
+        title: "Licensing & anti-piracy"
+        body: "Key issuance on confirmed payment, online validation, machine-activation caps, signed offline-grace receipts, and revoke-on-refund."
+      - icon: repeat
+        title: "Subscriptions, refunds, crypto"
+        body: "Recurring billing and cancellation, refunds initiated *and* observed, and a manual-review path for crypto under- and over-payments."
+      - icon: mail
+        title: "Magic-link customer portal"
+        body: "Buyers view purchases, reveal keys, manage machines, and cancel subscriptions themselves. No passwords to store, reset, or leak."
+      - icon: webhook
+        title: "Server-to-server integration"
+        body: "Signed outbound webhooks, a scoped query API, and entitlement checks keep your backend in sync without polling."
+
+  - type: stats-band
+    stats:
+      - { value: "12", label: "Payment providers behind one interface" }
+      - { value: "4", label: "Clouds deployed by one command" }
+      - { value: "0", label: "Payment code on your website" }
+      - { value: "0", label: "Funds ever held by PayOS" }
+
+  - type: showcase
+    id: integration
+    eyebrow: "The whole integration"
+    headline: "Your website's only job is a redirect link"
+    body: "Every product gets a public, vendor-branded pricing page and checkout at a stable URL. No SDKs, no card fields, and no PCI DSS audit scope beyond SAQ-A. Buyers land back on your success URL when they're done."
+    background: inverted
+    cta: { label: "See the capabilities", href: /capabilities, style: secondary }
+
+  - type: markdown-prose
+    id: comparison
+    heading: "PayOS vs. building it yourself"
+    body: |
+      | Capability | Build it yourself | With PayOS |
+      |---|---|---|
+      | Payment provider integrations | One project *per provider*, maintained forever | Connect with a click; 12 providers behind one interface |
+      | Pricing & checkout pages | Design, build, and PCI-scope per product | Hosted, branded, zero payment code on your site |
+      | New provider later | Another integration sprint | A click in the dashboard |
+      | Licensing / anti-piracy | A second SaaS to integrate and wire up | Built in, atomic with payment |
+      | Customer portal | An auth system + account UI + support load | Included, passwordless, self-service |
+      | Webhooks (verify/dedup/retry) | Your problem, per provider | Handled; one signed event vocabulary |
+      | Refund reconciliation | Hand-rolled, easy to get wrong | Initiated *and* observed refunds reconciled |
+      | Cross-provider analytics | Stitch together N dashboards | One view, per period/country/product/provider |
+      | Where your money lives | Wherever you built it | Your own provider accounts — never held by PayOS |
+      | Time to first sale on product #2 | Rebuild most of the above | Describe the product; done |
+
+      **The bottom line:** PayOS turns "build and maintain a payments platform"
+      into "describe a product and share a link."
+
+  - type: faq
+    id: faq
+    heading: "Common questions"
+    items:
+      - question: "Does PayOS hold my money?"
+        answer: "No. You connect your own provider accounts and funds settle directly with you. PayOS is an orchestrator, not a merchant of record — which is also why there is no money-transmitter licensing on our side."
+      - question: "What does this do to my PCI scope?"
+        answer: "All checkout happens on the provider's hosted pages — PayOS never renders a card field. Your site carries no payment code, keeping you within SAQ-A."
+      - question: "Do I need a real payment provider account to try it?"
+        answer: "No. The demo vendor ships with a built-in mock provider, so you can run the entire platform and complete a full purchase offline. Connecting a *real* provider does require that provider's own merchant account — that is what keeps your money yours."
+      - question: "Can someone else be the merchant of record?"
+        answer: "Yes. Bring a Paddle or Lemon Squeezy account and PayOS supports them as ordinary providers, labelling their settlements accordingly. It is your choice, per product."
+      - question: "Can I self-host it?"
+        answer: "Yes. The same container images run locally via Docker and on Railway, AWS, GCP, or DigitalOcean, deployed with one command."
+
+  - type: cta-banner
+    headline: "Run it end to end in a couple of minutes"
+    body: "Clone, start the stack, and complete a real purchase — no payment provider account required."
+    cta:
+      - { label: "Get started", href: /guide/getting-started, style: primary }
+      - { label: "Read the setup guide", href: /guide/setup, style: ghost }

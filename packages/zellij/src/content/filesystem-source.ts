@@ -247,7 +247,12 @@ export class FileSystemContentSource implements ContentSource {
           sourceFile: label,
           title,
           ...(fm.data.description ? { description: fm.data.description } : {}),
-          body: content,
+          // The layout renders the title as the page's h1, so a leading h1 in
+          // the body is removed rather than rendered twice. This keeps the
+          // title authoritative in one place — used for <title>, the sidebar,
+          // breadcrumbs, search, and the visible heading alike — whether the
+          // author wrote it in frontmatter or as a markdown h1.
+          body: stripLeadingH1(content),
         });
       } catch (err) {
         errors.push(
@@ -280,6 +285,14 @@ export class FileSystemContentSource implements ContentSource {
 function firstHeading(markdown: string): string | undefined {
   const match = markdown.match(/^#\s+(.+)$/m);
   return match?.[1]?.trim();
+}
+
+/**
+ * Removes a document-opening h1. Only a leading one: an `#` appearing later is
+ * either intentional or inside a code fence, and neither should be touched.
+ */
+function stripLeadingH1(markdown: string): string {
+  return markdown.replace(/^\s*#\s+.+?(\n|$)/, '').replace(/^\n+/, '');
 }
 
 function deriveTitle(relFile: string): string {

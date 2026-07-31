@@ -212,7 +212,10 @@ export function SearchModal({ basePath }: { basePath: string }) {
         <div className="zellij-search-results" id="zellij-search-results" role="listbox">
           {status === 'error' ? (
             <p className="zellij-search-empty">Search is unavailable right now.</p>
-          ) : status === 'loading' && !loaded ? (
+          ) : !loaded ? (
+            // Keyed on `loaded`, not on `status`: the fetch starts in an effect
+            // after the first paint, so a status-only check reports "no results"
+            // for anything typed before the index arrives.
             <p className="zellij-search-empty">Loading…</p>
           ) : !query.trim() ? (
             <p className="zellij-search-empty">Start typing to search the guide.</p>
