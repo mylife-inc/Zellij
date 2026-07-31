@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-/** The 10 built-in themes ("glazes") — spec §6. */
+/**
+ * The built-in themes ("glazes") — spec §6. Ten from the original inventory,
+ * plus `apple`.
+ */
 export const THEME_NAMES = [
   'midnight',
   'paper',
@@ -12,6 +15,7 @@ export const THEME_NAMES = [
   'sunburst',
   'carbon',
   'porcelain',
+  'apple',
 ] as const;
 
 export const themeNameSchema = z.enum(THEME_NAMES);

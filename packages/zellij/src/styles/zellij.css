@@ -2,13 +2,18 @@
 @import './chrome.css';
 @import './sections.css';
 @import './guide.css';
+@import './themes.css';
 
 /**
  * Zellij base layer.
  *
  * Every visual value is a CSS custom property so themes ("glazes") can swap the
  * whole site by redefining tokens — components never reference raw values
- * (spec §6). M4 replaces this single default set with all 10 themes.
+ * (spec §6).
+ *
+ * The values below are fallbacks only. The active theme's tokens are emitted
+ * into <head> by the root layout with higher specificity, so these apply only
+ * if the engine's layout is not used.
  */
 
 @theme {
@@ -21,7 +26,7 @@
 }
 
 :root {
-  /* Palette — placeholder defaults; M4 supplies per-theme light/dark sets. */
+  /* Palette */
   --zellij-bg: #ffffff;
   --zellij-fg: #14161a;
   --zellij-muted: #5f6672;
@@ -39,9 +44,20 @@
 
   /* Geometry */
   --zellij-radius: 0.75rem;
+  --zellij-radius-button: 0.5rem;
+  --zellij-radius-media: 0.75rem;
   --zellij-container: 72rem;
   --zellij-prose-width: 70ch;
   --zellij-section-gap: 6rem;
+
+  /* Type character — themes vary these, not just the palette (spec §6). */
+  --zellij-tracking: -0.025em;
+  --zellij-heading-weight: 650;
+  --zellij-display-scale: 1;
+
+  /* Shadow character */
+  --zellij-shadow-card: 0 1px 2px rgb(0 0 0 / 0.06);
+  --zellij-shadow-float: 0 24px 56px -26px rgb(0 0 0 / 0.35);
 
   /* Nav — anchor scrolling offsets by this so targets clear the sticky bar (§5.4). */
   --zellij-nav-height: 4rem;
@@ -87,6 +103,8 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--zellij-font-heading);
+  font-weight: var(--zellij-heading-weight);
+  letter-spacing: var(--zellij-tracking);
   color: var(--zellij-fg);
   text-wrap: balance;
 }
@@ -146,26 +164,4 @@ h1, h2, h3, h4, h5, h6 {
 .zellij-lead {
   color: var(--zellij-muted);
   font-size: 1.125rem;
-}
-
-/* M1 scaffolding affordances — removed once real sections land in M3. */
-.zellij-section-placeholder {
-  border-bottom: 1px dashed var(--zellij-border);
-}
-
-.zellij-placeholder {
-  color: var(--zellij-muted);
-  font-size: 0.875rem;
-}
-
-.zellij-debug {
-  font-family: var(--zellij-font-mono);
-  font-size: 0.8125rem;
-  background: var(--zellij-surface);
-  border: 1px solid var(--zellij-border);
-  border-radius: var(--zellij-radius);
-  padding: 1rem;
-  margin-top: 0.75rem;
-  overflow-x: auto;
-  white-space: pre-wrap;
 }

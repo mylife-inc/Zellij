@@ -280,7 +280,7 @@ nav:
 
 A theme is a named token set: color palette (light + dark), font pairing (heading/body, loaded via `next/font`), radius scale, spacing scale, shadow style, and per-section accent behavior.
 
-- Ship **10 built-in themes** with genuinely distinct personalities (different font pairings, palettes, radius/shadow character — not palette swaps):
+- Ship **11 built-in themes** with genuinely distinct personalities (different font pairings, palettes, radius/shadow character — not palette swaps):
   1. `midnight` — dark, electric accent, tight geometry (Linear-like)
   2. `paper` — light, warm, editorial serif headings (Stripe-docs-like)
   3. `terracotta` — warm Moroccan palette, generous curves (Shebka house style)
@@ -291,6 +291,9 @@ A theme is a named token set: color palette (light + dark), font pairing (headin
   8. `sunburst` — light, high-energy warm accent, playful radius
   9. `carbon` — near-black developer-tool aesthetic, monospace-flavored headings
   10. `porcelain` — ultra-minimal light, hairline borders, luxury feel
+  11. `apple` — the Apple product-page cadence: very large tight headlines in the system (SF) stack, centred copy in a narrow measure, a small unobtrusive nav, pill buttons, borderless filled cards, and deep vertical silence between sections
+
+  > **Note on `apple`.** This is a *visual style* — proportion, type scale, and rhythm — not Apple branding. It ships no Apple logo, wordmark, or asset, and the name is a style reference in the same spirit as the `midnight` (Linear-like) and `paper` (Stripe-docs-like) descriptions above. Rename it (e.g. `cupertino`) if a product prefers to avoid the trademark entirely.
 - Selected in `zellij.config.yaml` via `theme: terracotta`.
 - **Token override block** in config lets a product tweak (e.g. `accent: "#0EA5E9"`, `radius: lg`) without forking a theme.
 - Implementation: themes emit CSS custom properties on `:root`; Tailwind config maps utilities to those variables. Components never reference raw values.

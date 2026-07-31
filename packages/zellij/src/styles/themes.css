@@ -1,0 +1,174 @@
+/**
+ * Per-theme presentation character (spec §6).
+ *
+ * Most of a theme lives in tokens. These rules cover the parts of a theme's
+ * personality that a token cannot express — how a card is constructed, how the
+ * nav is proportioned — so themes differ structurally, not just by palette.
+ * Components still reference no raw values; this is theme CSS, keyed on the
+ * theme attribute the root layout sets.
+ */
+
+/* ---------------------------------------------------------------- apple -- */
+
+/*
+ * Apple's product pages read the way they do because of proportion, not colour:
+ * a small unobtrusive nav, very large tight headlines, centred copy in a narrow
+ * measure, borderless filled cards, and a lot of vertical silence between
+ * chapters.
+ */
+
+[data-zellij-theme='apple'] .zellij-nav-link,
+[data-zellij-theme='apple'] .zellij-nav-trigger {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+[data-zellij-theme='apple'] .zellij-logo-text {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+[data-zellij-theme='apple'] .zellij-header[data-solid='true'] {
+  background-color: color-mix(in srgb, var(--zellij-bg) 72%, transparent);
+  backdrop-filter: saturate(180%) blur(20px);
+}
+
+[data-zellij-theme='apple'] .zellij-hero-headline,
+[data-zellij-theme='apple'] .zellij-section-heading,
+[data-zellij-theme='apple'] .zellij-showcase-headline,
+[data-zellij-theme='apple'] .zellij-cta-banner-headline {
+  line-height: 1.05;
+  font-weight: 600;
+}
+
+/* Apple sets the sub-headline large and dark, closer to body copy than caption. */
+[data-zellij-theme='apple'] .zellij-hero-subhead,
+[data-zellij-theme='apple'] .zellij-section-subhead,
+[data-zellij-theme='apple'] .zellij-showcase-body {
+  font-size: clamp(1.125rem, 1.7vw, 1.4375rem);
+  line-height: 1.4;
+  color: var(--zellij-fg);
+  letter-spacing: -0.012em;
+}
+
+/* Their CTAs are text links with chevrons as often as they are buttons. */
+[data-zellij-theme='apple'] .zellij-section .zellij-button[data-style='ghost'] {
+  border-color: transparent;
+  color: var(--zellij-accent);
+  padding-inline: 0.5rem;
+}
+
+[data-zellij-theme='apple'] .zellij-section .zellij-button[data-style='ghost']:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Filled, borderless cards on the grey surface — no outlines anywhere. */
+[data-zellij-theme='apple'] .zellij-feature-card,
+[data-zellij-theme='apple'] .zellij-pricing-card {
+  border-color: transparent;
+  background: var(--zellij-surface);
+}
+
+[data-zellij-theme='apple'] .zellij-feature-card:hover {
+  border-color: transparent;
+  background: color-mix(in srgb, var(--zellij-surface) 80%, var(--zellij-fg) 4%);
+}
+
+[data-zellij-theme='apple'] .zellij-eyebrow {
+  letter-spacing: -0.01em;
+  text-transform: none;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--zellij-muted);
+}
+
+/* The signature: each section is its own full-width chapter with deep padding. */
+[data-zellij-theme='apple'] .zellij-showcase,
+[data-zellij-theme='apple'] .zellij-stats {
+  padding-block: calc(var(--zellij-section-gap) * 1.15);
+}
+
+[data-zellij-theme='apple'] .zellij-section-header {
+  margin-bottom: 4.5rem;
+  max-width: 40rem;
+}
+
+[data-zellij-theme='apple'] .zellij-faq-question {
+  font-weight: 500;
+}
+
+/* ----------------------------------------------------------------- mono -- */
+
+/* Brutalist: hard borders everywhere, hard offset shadows, no softening. */
+[data-zellij-theme='mono'] .zellij-feature-card,
+[data-zellij-theme='mono'] .zellij-pricing-card,
+[data-zellij-theme='mono'] .zellij-dropdown,
+[data-zellij-theme='mono'] .zellij-mega-panel {
+  border-width: 2px;
+  box-shadow: var(--zellij-shadow-card);
+}
+
+[data-zellij-theme='mono'] .zellij-feature-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--zellij-shadow-float);
+}
+
+[data-zellij-theme='mono'] .zellij-button {
+  border: 2px solid var(--zellij-fg);
+  font-weight: 700;
+}
+
+[data-zellij-theme='mono'] .zellij-eyebrow {
+  letter-spacing: 0.18em;
+}
+
+/* ------------------------------------------------------------ porcelain -- */
+
+/* Quiet luxury: hairlines, no shadows, wide letter-spaced eyebrows. */
+[data-zellij-theme='porcelain'] .zellij-feature-card,
+[data-zellij-theme='porcelain'] .zellij-pricing-card {
+  box-shadow: none;
+}
+
+[data-zellij-theme='porcelain'] .zellij-feature-card:hover {
+  transform: none;
+  border-color: var(--zellij-fg);
+}
+
+[data-zellij-theme='porcelain'] .zellij-hero-headline,
+[data-zellij-theme='porcelain'] .zellij-section-heading {
+  font-weight: 400;
+}
+
+[data-zellij-theme='porcelain'] .zellij-eyebrow {
+  letter-spacing: 0.22em;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------- aurora -- */
+
+/* Glassy surfaces with a soft glow behind the accent. */
+[data-zellij-theme='aurora'] .zellij-feature-card,
+[data-zellij-theme='aurora'] .zellij-pricing-card {
+  background: color-mix(in srgb, var(--zellij-surface) 70%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+[data-zellij-theme='aurora'] .zellij-section[data-zellij-background='tinted'] {
+  background:
+    radial-gradient(60% 80% at 50% 0%, color-mix(in srgb, var(--zellij-accent) 14%, transparent), transparent),
+    var(--zellij-surface);
+}
+
+/* --------------------------------------------------------------- carbon -- */
+
+/* Developer-tool: monospace headings want tighter, smaller display type. */
+[data-zellij-theme='carbon'] .zellij-eyebrow,
+[data-zellij-theme='carbon'] .zellij-logo-text {
+  font-family: var(--zellij-font-mono);
+}
+
+[data-zellij-theme='carbon'] .zellij-feature-card {
+  background: var(--zellij-surface);
+}
