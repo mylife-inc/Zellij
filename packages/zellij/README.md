@@ -186,7 +186,8 @@ nav:
   hideOnScrollDown: false
   transparentOverHero: true        # applies to `layout: landing` pages
   scrollThreshold: 80
-  themeToggle: true
+  themeToggle: true                # light/dark toggle
+  themeSwitcher: true              # theme picker — see Themes
   search: true                     # enables the ⌘K modal
   links:
     - { label: Features, href: /features }
@@ -470,6 +471,22 @@ Themes differ structurally, not just by palette: font pairing, radius scale, sha
 Only the **active** theme's tokens are emitted into the page, so the engine can ship many themes at no cost to a consuming site. Fonts use `next/font` with `preload: false` — every theme's `@font-face` rules are present, but browsers download only the families in use. `cupertino` uses the system stack and downloads nothing.
 
 To adjust without forking a theme, use `overrides` (see [Config reference](#config-reference)).
+
+### Letting visitors choose
+
+Set `nav.themeSwitcher: true` to add a picker to the bar. Selecting a theme
+restyles the whole site immediately — colours, typography, geometry and motion —
+and the choice is remembered.
+
+It is **opt-in** because it changes what ships. Normally only the active theme's
+tokens are emitted; a runtime switcher needs every theme's tokens in the page,
+which costs roughly 19KB of inline CSS (about 4KB over the wire). Sites that
+pick a theme at build time pay none of that.
+
+Switching is a single attribute write on `<html>` — no re-render, no request —
+because every theme's rules are already present, scoped by name. The same
+scoping paints each swatch in the picker with the theme it represents, so the
+preview cannot drift from the real thing.
 
 ---
 

@@ -1,7 +1,9 @@
 import type { Site } from '../content/site';
 import { Icon } from '../icons';
 import { NavBarClient } from './nav-bar-client';
-import type { NavItemModel, NavLeafModel, NavModel } from './nav-model';
+import { THEMES } from '../themes/tokens';
+import { THEME_NAMES } from '../config/schema';
+import type { NavItemModel, NavLeafModel, NavModel, ThemeOption } from './nav-model';
 
 /**
  * Server half of the nav. Resolves icons and derives the route metadata the
@@ -62,6 +64,16 @@ export function NavBar({ site }: { site: Site }) {
     transparentOverHero: config.nav.transparentOverHero,
     scrollThreshold: config.nav.scrollThreshold,
     themeToggle: config.nav.themeToggle,
+    themeSwitcher: config.nav.themeSwitcher,
+    // Sent as data rather than imported client-side, so the theme token tables
+    // stay out of the browser bundle.
+    themes: config.nav.themeSwitcher
+      ? THEME_NAMES.map<ThemeOption>((name) => ({
+          name,
+          label: THEMES[name].label,
+          description: THEMES[name].description,
+        }))
+      : [],
     search: config.nav.search,
     items,
     cta: config.nav.cta,

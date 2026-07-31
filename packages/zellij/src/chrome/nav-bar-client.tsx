@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnnouncementBar } from './announcement-bar';
 import { MobileDrawer } from './mobile-drawer';
 import { ThemeToggle } from './theme-toggle';
+import { ThemeSwitcher } from './theme-switcher';
 import { SearchModal } from '../search/search-modal';
 import {
   useDismissOnOutside,
@@ -18,11 +19,15 @@ import {
 } from './hooks';
 import type { NavItemModel, NavLeafModel, NavModel } from './nav-model';
 
+/** Reserved key for the theme picker in the bar's open-panel state. */
+const THEME_MENU = '\u0000theme';
+
 export function NavBarClient({ model }: { model: NavModel }) {
   const pathname = usePathname() || '/';
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const menuBarRef = useRef<HTMLUListElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   const isLanding = model.landingRoutes.includes(pathname);
   const transparentEligible = model.transparentOverHero && isLanding;
@@ -65,10 +70,27 @@ export function NavBarClient({ model }: { model: NavModel }) {
    * through a trigger does not steal the panel.
    */
   const switchTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pendingLabel = useRef<string | undefined>(undefined);
 
   const cancelSwitch = useCallback(() => {
     clearTimeout(switchTimer.current);
     switchTimer.current = undefined;
+    pendingLabel.current = undefined;
+  }, []);
+
+  /*
+   * Cancels a pending switch only if it is the one this item scheduled.
+   *
+   * Leaving one item and entering the next do not arrive in a guaranteed order —
+   * the browser may deliver the leave *after* the enter. An unconditional cancel
+   * then kills the switch the new item just scheduled, and the panel never
+   * opens at all.
+   */
+  const cancelSwitchFor = useCallback((label: string) => {
+    if (pendingLabel.current !== label) return;
+    clearTimeout(switchTimer.current);
+    switchTimer.current = undefined;
+    pendingLabel.current = undefined;
   }, []);
 
   const openMenuNow = useCallback(
@@ -87,8 +109,21 @@ export function NavBarClient({ model }: { model: NavModel }) {
 
       setOpenMenu((current) => {
         if (current === null || current === label) return label;
-        // Another panel is open: only switch if the pointer settles here.
-        switchTimer.current = setTimeout(() => setOpenMenu(label), 140);
+        /*
+         * Another panel is open: only switch if the pointer settles here.
+         *
+         * The dwell is matched to the close grace rather than tuned short. A
+         * pointer crossing this trigger on its way to the open panel can appear
+         * stationary for longer than you would guess — a busy main thread
+         * stretches the gap between move events — and every one of those
+         * moments would otherwise steal the panel out from under the user.
+         * Switching still feels immediate when it is what was meant.
+         */
+        pendingLabel.current = label;
+        switchTimer.current = setTimeout(() => {
+          pendingLabel.current = undefined;
+          setOpenMenu(label);
+        }, 260);
         return current;
       });
     },
@@ -109,7 +144,29 @@ export function NavBarClient({ model }: { model: NavModel }) {
     [cancelClose, cancelSwitch],
   );
 
-  useDismissOnOutside(menuBarRef, openMenu !== null, closeMenu);
+  /*
+   * Dismissal is scoped to the header, not the menu bar list. The theme picker
+   * sits in the actions area, outside that list — scoping to the list counted a
+   * click on one of its options as "outside" and tore the panel down before the
+   * click could land.
+   */
+  useDismissOnOutside(headerRef, openMenu !== null, closeMenu);
+
+  /*
+   * Escape closes whatever is open, wherever focus happens to be. The per-panel
+   * focus traps only see the key once focus is inside them, which leaves a
+   * hover-opened panel with no keyboard dismissal at all.
+   */
+  useEffect(() => {
+    if (openMenu === null) return;
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') closeMenu();
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [openMenu, closeMenu]);
 
   // Transparent only while over the hero; solid everywhere else and once scrolled.
   const solid = !transparentEligible || scrolled || openMenu !== null;
@@ -181,6 +238,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
 
   return (
     <header
+      ref={headerRef}
       className={headerClasses}
       data-solid={solid}
       data-hidden={hidden && !drawerOpen && openMenu === null}
@@ -214,7 +272,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
                 open={openMenu === item.label}
                 onOpen={() => openMenuNow(item.label)}
                 onHover={() => requestOpen(item.label)}
-                onHoverEnd={cancelSwitch}
+                onHoverEnd={() => cancelSwitchFor(item.label)}
                 onClose={closeMenu}
                 onToggle={() =>
                   openMenu === item.label ? closeMenu() : openMenuNow(item.label)
@@ -253,6 +311,19 @@ export function NavBarClient({ model }: { model: NavModel }) {
                 ⌘K
               </kbd>
             </button>
+          ) : null}
+
+          {model.themeSwitcher ? (
+            <ThemeSwitcher
+              themes={model.themes}
+              open={openMenu === THEME_MENU}
+              onOpen={() => openMenuNow(THEME_MENU)}
+              onToggle={() =>
+                openMenu === THEME_MENU ? closeMenu() : openMenuNow(THEME_MENU)
+              }
+              onClose={closeMenu}
+              {...(hoverCapable ? { onHover: () => requestOpen(THEME_MENU) } : {})}
+            />
           ) : null}
 
           {model.themeToggle ? <ThemeToggle /> : null}

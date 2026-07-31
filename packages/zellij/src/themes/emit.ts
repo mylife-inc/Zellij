@@ -96,6 +96,8 @@ export function emitThemeCss(config: ZellijConfig): string {
   const root = [...structuralVars(theme), ...paletteVars(theme.light), ...overrides];
   const dark = [...paletteVars(theme.dark), ...overrides];
 
+  if (config.nav.themeSwitcher) return emitAllThemes(config);
+
   // Selectors are deliberately doubled (`:root:root`) to raise specificity above
   // the fallback tokens in zellij.css. That keeps this correct no matter which
   // order Next emits the stylesheet link and this inline <style>.
@@ -104,6 +106,47 @@ export function emitThemeCss(config: ZellijConfig): string {
     `:root[data-zellij-mode="dark"]{${dark.join('')}}`,
     `@media (prefers-color-scheme: dark){:root[data-zellij-mode="system"]{${dark.join('')}}}`,
   ].join('');
+}
+
+/**
+ * Every theme's tokens, each scoped to its own name — the stylesheet a runtime
+ * switcher needs (`nav.themeSwitcher`).
+ *
+ * Two selectors per rule, and both earn their place:
+ *
+ *   `:root[data-zellij-theme="x"]`  styles the page when <html> carries the
+ *                                   name, which is what switching changes.
+ *   `[data-zellij-theme="x"]`       styles *any* element carrying it, so a
+ *                                   swatch in the picker paints itself in the
+ *                                   theme it represents with no JavaScript.
+ *
+ * Nothing here is emitted at `:root:root`. The active theme must not outrank
+ * the others, or setting the attribute would have no effect.
+ */
+function emitAllThemes(config: ZellijConfig): string {
+  const overrides = overrideVars(config.overrides);
+  const blocks: string[] = [];
+
+  for (const [name, theme] of Object.entries(THEMES)) {
+    const self = `[data-zellij-theme="${name}"]`;
+
+    // Structural tokens — fonts, geometry, motion — do not vary by colour mode,
+    // so they are emitted once. Repeating them in each mode block roughly
+    // trebled the stylesheet, and it is inlined in <head> on every page.
+    const base = [...structuralVars(theme), ...paletteVars(theme.light), ...overrides].join('');
+    const dark = [...paletteVars(theme.dark), ...overrides].join('');
+
+    blocks.push(`:root${self},${self}{${base}}`);
+    blocks.push(
+      `:root${self}[data-zellij-mode="dark"],[data-zellij-mode="dark"] ${self}{${dark}}`,
+    );
+    blocks.push(
+      `@media (prefers-color-scheme: dark){` +
+        `:root${self}[data-zellij-mode="system"],[data-zellij-mode="system"] ${self}{${dark}}}`,
+    );
+  }
+
+  return blocks.join('');
 }
 
 export { THEMES };

@@ -8,10 +8,17 @@ import { test, expect, type Page } from '@playwright/test';
  * panel never opens. Under parallel load that is easy to hit.
  */
 async function openPanel(page: Page, name: string, panel: string): Promise<void> {
+  /*
+   * Each attempt moves the pointer away first. `toPass` retries the block, but
+   * hovering an element the pointer already sits on fires no new pointerenter —
+   * so without this every retry is a silent no-op and the helper just waits out
+   * its timeout.
+   */
   await expect(async () => {
+    await page.mouse.move(10, 400);
     await page.getByRole('button', { name }).hover();
-    await expect(page.locator(panel)).toBeVisible({ timeout: 1000 });
-  }).toPass({ timeout: 15000 });
+    await expect(page.locator(panel)).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 20000 });
 }
 
 /**

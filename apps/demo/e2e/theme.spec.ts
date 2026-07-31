@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('theme tokens', () => {
-  test('emits the active theme into the document, not every theme', async ({ page }) => {
+  test('emits theme tokens into the document', async ({ page }) => {
     await page.goto('/');
 
     const style = page.locator('style#zellij-theme');
@@ -20,8 +20,12 @@ test.describe('theme tokens', () => {
     expect(css).toContain('--zellij-accent');
     expect(css).toContain('--zellij-font-heading');
     expect(css).toContain('--zellij-motion-duration');
-    // One theme's worth of tokens: light block, dark block, system media query.
-    expect(css.match(/--zellij-accent:/g)?.length).toBeLessThanOrEqual(4);
+
+    // This demo enables `nav.themeSwitcher`, so every theme's tokens ship.
+    // The default — active theme only — is covered by the emitThemeCss unit
+    // tests, since it cannot be observed from a page that opted in.
+    expect(css).toContain('[data-zellij-theme="carbon"]');
+    expect(css).toContain('[data-zellij-theme="cupertino"]');
   });
 
   test('components resolve their styling from tokens', async ({ page }) => {
@@ -102,5 +106,111 @@ test.describe('dark mode', () => {
     await expect
       .poll(async () => token.evaluate((el) => getComputedStyle(el).color))
       .not.toBe(darkColor);
+  });
+});
+
+test.describe('theme switcher', () => {
+  test.skip(({ isMobile }) => Boolean(isMobile), 'the picker lives in the desktop bar');
+
+  async function openSwitcher(page: import('@playwright/test').Page): Promise<void> {
+  /*
+   * Each attempt moves the pointer away first. `toPass` retries the block, but
+   * hovering an element the pointer already sits on fires no new pointerenter —
+   * so without this every retry is a silent no-op and the helper just waits out
+   * its timeout.
+   */
+    await expect(async () => {
+      await page.mouse.move(10, 400);
+      await page.getByRole('button', { name: 'Change theme' }).hover();
+      await expect(page.locator('.zellij-theme-panel')).toBeVisible({ timeout: 2000 });
+    }).toPass({ timeout: 20000 });
+  }
+
+  test('opens flush against the bar and lists every built-in theme', async ({ page }) => {
+    await page.goto('/');
+    await openSwitcher(page);
+
+    const header = (await page.locator('.zellij-header').boundingBox())!;
+    const panel = (await page.locator('.zellij-theme-panel').boundingBox())!;
+    expect(panel.y - (header.y + header.height)).toBeLessThanOrEqual(0);
+
+    await expect(page.locator('.zellij-theme-option')).toHaveCount(11);
+  });
+
+  /**
+   * Each swatch carries the theme it previews, so it is painted by that theme's
+   * own rules. Two themes with different heading fonts must therefore render
+   * their swatches differently — proof the preview is the real thing.
+   */
+  test('previews each theme using that theme\'s own tokens', async ({ page }) => {
+    await page.goto('/');
+    await openSwitcher(page);
+
+    // Polled: the swatch is styled by CSS custom properties, and the computed
+    // value can lag the panel becoming visible by a frame.
+    await expect
+      .poll(async () =>
+        page.evaluate(() => {
+          const font = (name: string) => {
+            const el = document.querySelector(
+              `.zellij-theme-swatch[data-zellij-theme="${name}"] .zellij-theme-swatch-text`,
+            );
+            return el ? getComputedStyle(el).fontFamily : '';
+          };
+          return { carbon: font('carbon'), paper: font('paper') };
+        }),
+      )
+      .toEqual(
+        expect.objectContaining({
+          carbon: expect.stringContaining('JetBrains'),
+          paper: expect.stringContaining('Source Serif'),
+        }),
+      );
+  });
+
+  test('restyles the whole site when a theme is chosen', async ({ page }) => {
+    await page.goto('/');
+    await openSwitcher(page);
+
+    const read = () =>
+      page.evaluate(() => ({
+        theme: document.documentElement.getAttribute('data-zellij-theme'),
+        bg: getComputedStyle(document.body).backgroundColor,
+        heading: getComputedStyle(document.querySelector('h1')!).fontFamily,
+        radius: getComputedStyle(document.documentElement)
+          .getPropertyValue('--zellij-radius')
+          .trim(),
+      }));
+
+    const before = await read();
+    await page.locator('.zellij-theme-option').filter({ hasText: 'Carbon' }).click();
+    await expect(page.locator('.zellij-theme-panel')).toBeHidden();
+
+    const after = await read();
+    expect(after.theme).toBe('carbon');
+    // Not just colour: typography and geometry switch too.
+    expect(after.heading).not.toBe(before.heading);
+    expect(after.radius).not.toBe(before.radius);
+  });
+
+  test('remembers the choice across navigation', async ({ page }) => {
+    await page.goto('/');
+    await openSwitcher(page);
+    await page.locator('.zellij-theme-option').filter({ hasText: 'Forest' }).click();
+
+    await page.goto('/pricing');
+    await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
+  });
+
+  test('marks the active theme and is keyboard reachable', async ({ page }) => {
+    await page.goto('/');
+    await openSwitcher(page);
+
+    const selected = page.locator('.zellij-theme-option[data-selected="true"]');
+    await expect(selected).toHaveCount(1);
+    await expect(selected).toContainText('Cupertino');
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('.zellij-theme-panel')).toBeHidden();
   });
 });

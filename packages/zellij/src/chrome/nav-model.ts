@@ -23,6 +23,12 @@ export interface AnnouncementModel {
   dismissible: boolean;
 }
 
+export interface ThemeOption {
+  name: string;
+  label: string;
+  description: string;
+}
+
 export interface NavModel {
   productName: string;
   logo?: string;
@@ -33,6 +39,9 @@ export interface NavModel {
   transparentOverHero: boolean;
   scrollThreshold: number;
   themeToggle: boolean;
+  themeSwitcher: boolean;
+  /** Populated only when the switcher is enabled. */
+  themes: ThemeOption[];
   search: boolean;
   items: NavItemModel[];
   cta: Cta[];

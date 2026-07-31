@@ -24,6 +24,7 @@ nav:
   sticky: true
   align: left
   themeToggle: true
+  themeSwitcher: true
   search: true
   transparentOverHero: true
   scrollThreshold: 80

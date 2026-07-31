@@ -11,6 +11,15 @@ function configFor(theme: ThemeName, overrides: Record<string, string> = {}) {
   });
 }
 
+function switcherConfig(theme: ThemeName, overrides: Record<string, string> = {}) {
+  return zellijConfigSchema.parse({
+    product: { name: 'Test' },
+    theme,
+    nav: { themeSwitcher: true },
+    ...(Object.keys(overrides).length > 0 ? { overrides } : {}),
+  });
+}
+
 const PALETTE_KEYS = [
   'bg',
   'fg',
@@ -165,5 +174,56 @@ describe('token overrides', () => {
   it('accepts legitimate non-hex colour syntax', () => {
     const css = emitThemeCss(configFor('paper', { accent: 'rgb(232 106 51)' }));
     expect(css).toContain('--zellij-accent: rgb(232 106 51)');
+  });
+});
+
+describe('runtime theme switching', () => {
+  it('ships only the active theme by default', () => {
+    const css = emitThemeCss(configFor('forest'));
+    expect(css).toContain(THEMES.forest.light.accent);
+    expect(css).not.toContain(THEMES.carbon.light.accent);
+  });
+
+  it('ships every theme when the switcher is enabled', () => {
+    const css = emitThemeCss(switcherConfig('forest'));
+    for (const name of THEME_NAMES) {
+      expect(css, `${name} missing`).toContain(`[data-zellij-theme="${name}"]`);
+      expect(css, `${name} light palette missing`).toContain(THEMES[name].light.accent);
+      expect(css, `${name} dark palette missing`).toContain(THEMES[name].dark.accent);
+    }
+  });
+
+  /**
+   * The active theme must not be emitted at a higher specificity than the
+   * others, or switching the attribute on <html> would have no visible effect.
+   */
+  it('gives no theme precedence over the others', () => {
+    const css = emitThemeCss(switcherConfig('forest'));
+    expect(css).not.toContain(':root:root');
+  });
+
+  /**
+   * Each rule also matches the bare attribute, so a swatch carrying
+   * `data-zellij-theme` paints itself in the theme it previews.
+   */
+  it('scopes tokens to any element carrying the theme name, not just :root', () => {
+    const css = emitThemeCss(switcherConfig('paper'));
+    expect(css).toContain('[data-zellij-theme="carbon"]{');
+    expect(css).toContain('[data-zellij-mode="dark"] [data-zellij-theme="carbon"]');
+  });
+
+  it('switches structural tokens, not only colours', () => {
+    const css = emitThemeCss(switcherConfig('paper'));
+    // mono is square; sunburst is round. Both must be present and distinct.
+    expect(css).toContain(`--zellij-radius: ${THEMES.mono.geometry.radius}`);
+    expect(css).toContain(`--zellij-radius: ${THEMES.sunburst.geometry.radius}`);
+    expect(css).toContain(`--zellij-font-heading: ${THEMES.carbon.fonts.heading}`);
+  });
+
+  it('applies token overrides to every theme', () => {
+    const css = emitThemeCss(switcherConfig('paper', { accent: '#E86A33' }));
+    const occurrences = css.match(/--zellij-accent: #E86A33/g) ?? [];
+    // One per theme per mode block (light, dark, system).
+    expect(occurrences.length).toBeGreaterThanOrEqual(THEME_NAMES.length * 2);
   });
 });

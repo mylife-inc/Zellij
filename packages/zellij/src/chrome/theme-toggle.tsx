@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 type Mode = 'light' | 'dark' | 'system';
 
 export const THEME_STORAGE_KEY = 'zellij:mode';
+export const THEME_NAME_STORAGE_KEY = 'zellij:theme';
 
 /**
  * Runs before first paint to apply a stored mode preference, so the page never
@@ -18,10 +19,13 @@ export const THEME_STORAGE_KEY = 'zellij:mode';
  */
 export const themeInitScript = `
 (function(){try{
+  var d = document.documentElement;
   var m = localStorage.getItem('${THEME_STORAGE_KEY}');
   if (m === 'light' || m === 'dark' || m === 'system') {
-    document.documentElement.setAttribute('data-zellij-mode', m);
+    d.setAttribute('data-zellij-mode', m);
   }
+  var t = localStorage.getItem('${THEME_NAME_STORAGE_KEY}');
+  if (t && /^[a-z-]+$/.test(t)) d.setAttribute('data-zellij-theme', t);
 }catch(e){}})();
 `.trim();
 

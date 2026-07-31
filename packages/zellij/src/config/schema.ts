@@ -91,6 +91,12 @@ export const navSchema = z.object({
   transparentOverHero: z.boolean().default(true),
   scrollThreshold: z.number().int().nonnegative().default(80),
   themeToggle: z.boolean().default(false),
+  /**
+   * Adds a theme picker to the bar. Opt-in because it changes what ships: the
+   * engine normally emits only the active theme's tokens, and a runtime
+   * switcher needs every theme's tokens present in the page.
+   */
+  themeSwitcher: z.boolean().default(false),
   search: z.boolean().default(false),
   links: z.array(navItemSchema).default([]),
   cta: z.array(ctaSchema).default([]),
