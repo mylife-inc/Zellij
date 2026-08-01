@@ -114,43 +114,37 @@ export function ThemeSwitcher({
                     className="zellij-theme-card"
                     data-selected={active === theme.name}
                     aria-pressed={active === theme.name}
+                    title={theme.description}
                     onClick={() => choose(theme.name)}
                   >
+                    {/*
+                      A chip, not a mock-up. It carries the theme it names, so
+                      it fills with that theme's accent and rings itself in that
+                      theme's background — enough to identify a theme at a
+                      glance, in a fraction of the space a preview would take.
+                    */}
                     <span
-                      className="zellij-theme-card-preview"
+                      className="zellij-theme-chip"
                       data-zellij-theme={theme.name}
                       aria-hidden="true"
-                    >
-                      <span className="zellij-theme-card-bar" />
-                      <span className="zellij-theme-card-body">
-                        <span className="zellij-theme-card-heading">Aa</span>
-                        <span className="zellij-theme-card-dots">
-                          <span data-dot="accent" />
-                          <span data-dot="fg" />
-                          <span data-dot="border" />
-                        </span>
-                      </span>
-                    </span>
-
-                    <span className="zellij-theme-card-label">
-                      {theme.label}
-                      {active === theme.name ? (
-                        <svg
-                          className="zellij-theme-check"
-                          width="15"
-                          height="15"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.6"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <path d="M20 6 9 17l-5-5" />
-                        </svg>
-                      ) : null}
-                    </span>
+                    />
+                    <span className="zellij-theme-card-label">{theme.label}</span>
+                    {active === theme.name ? (
+                      <svg
+                        className="zellij-theme-check"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M20 6 9 17l-5-5" />
+                      </svg>
+                    ) : null}
                   </button>
                 </li>
               ))}

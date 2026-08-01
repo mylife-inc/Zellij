@@ -2,7 +2,9 @@ import { z } from 'zod';
 
 /**
  * The built-in themes ("glazes") — spec §6. Ten from the original inventory,
- * plus `cupertino`.
+ * plus four drawn from design specs: `cupertino`, `studio`, `iris`, and
+ * `meridian`. The latter three carry neutral names for the same reason
+ * `cupertino` does — they capture a design language, not a brand.
  */
 export const THEME_NAMES = [
   'midnight',
@@ -16,6 +18,9 @@ export const THEME_NAMES = [
   'carbon',
   'porcelain',
   'cupertino',
+  'studio',
+  'iris',
+  'meridian',
 ] as const;
 
 export const themeNameSchema = z.enum(THEME_NAMES);

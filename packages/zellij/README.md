@@ -450,7 +450,7 @@ Code blocks are highlighted at build time by Shiki, with a copy button, filename
 
 ## Themes
 
-Set `theme:` in config. Eleven are built in:
+Set `theme:` in config. Fourteen are built in:
 
 | Theme | Personality |
 | --- | --- |
@@ -465,6 +465,12 @@ Set `theme:` in config. Eleven are built in:
 | `carbon` | Near-black developer tool, monospace headings |
 | `porcelain` | Ultra-minimal, hairline borders, quiet luxury |
 | `cupertino` | Very large tight headlines in the system (SF) stack, centred copy, pill buttons, deep vertical silence |
+| `studio` | Editorial creative studio — warm paper, monochrome type, a luminous violet accent |
+| `iris` | Bright enterprise SaaS — near-white neutrals, roomy rounded surfaces, a violet brand |
+| `meridian` | Warm cream over deep navy ink with an electric blue — calm, human, trustworthy |
+
+Like `cupertino`, the last three carry neutral names: they capture a design
+language taken from a spec, not a brand.
 
 Themes differ structurally, not just by palette: font pairing, radius scale, shadow character, display scale, letter-spacing, and motion personality all vary. `mono` moves in 220 ms; `aurora` in 760 ms.
 

@@ -134,38 +134,34 @@ test.describe('theme switcher', () => {
     const panel = (await page.locator('.zellij-theme-panel').boundingBox())!;
     expect(panel.y - (header.y + header.height)).toBeLessThanOrEqual(0);
 
-    await expect(page.locator('.zellij-theme-card')).toHaveCount(11);
+    await expect(page.locator('.zellij-theme-card')).toHaveCount(14);
   });
 
   /**
-   * Each swatch carries the theme it previews, so it is painted by that theme's
-   * own rules. Two themes with different heading fonts must therefore render
-   * their swatches differently — proof the preview is the real thing.
+   * Each chip carries the theme it stands for, so it is coloured by that
+   * theme's own rules rather than a hand-maintained copy that could drift.
    */
-  test('previews each theme using that theme\'s own tokens', async ({ page }) => {
+  test('colours each chip from the theme it names', async ({ page }) => {
     await page.goto('/');
     await openSwitcher(page);
 
-    // Polled: the swatch is styled by CSS custom properties, and the computed
+    // Polled: the chip is styled by CSS custom properties, and the computed
     // value can lag the panel becoming visible by a frame.
     await expect
       .poll(async () =>
         page.evaluate(() => {
-          const font = (name: string) => {
-            const el = document.querySelector(
-              `.zellij-theme-card-preview[data-zellij-theme="${name}"] .zellij-theme-card-heading`,
-            );
-            return el ? getComputedStyle(el).fontFamily : '';
+          const fill = (name: string) => {
+            const el = document.querySelector(`.zellij-theme-chip[data-zellij-theme="${name}"]`);
+            return el ? getComputedStyle(el).backgroundColor : '';
           };
-          return { carbon: font('carbon'), paper: font('paper') };
+          return {
+            forest: fill('forest'),
+            iris: fill('iris'),
+            distinct: fill('forest') !== fill('iris') && fill('forest') !== '',
+          };
         }),
       )
-      .toEqual(
-        expect.objectContaining({
-          carbon: expect.stringContaining('JetBrains'),
-          paper: expect.stringContaining('Source Serif'),
-        }),
-      );
+      .toEqual(expect.objectContaining({ distinct: true }));
   });
 
   test('restyles the whole site when a theme is chosen', async ({ page }) => {

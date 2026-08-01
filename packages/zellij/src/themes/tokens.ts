@@ -585,4 +585,153 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
       invertedFg: '#f5f5f7',
     },
   },
+  /* --------------------------------------------------------------- studio */
+  /* Source: the "Lighter" creative-agency spec — warm paper, monochrome-first,
+     luminous violet accent, very soft geometry. */
+  studio: {
+    label: 'Studio',
+    description: 'Editorial creative studio — warm paper, monochrome type, a luminous violet accent.',
+    fonts: { heading: FONT_STACKS.outfit, body: FONT_STACKS.inter, mono: FONT_STACKS.mono },
+    geometry: {
+      radius: '1.5rem',
+      radiusButton: '999px',
+      radiusMedia: '1.75rem',
+      container: '75rem',
+      sectionGap: '7.5rem',
+      navHeight: '4.25rem',
+    },
+    type: { tracking: '-0.035em', headingWeight: '650', displayScale: '1.08' },
+    shadow: {
+      card: '0 1px 2px rgb(16 18 20 / 0.05)',
+      float: '0 32px 70px -34px rgb(16 18 20 / 0.4)',
+    },
+    motion: {
+      duration: '620ms',
+      ease: 'cubic-bezier(0.16, 1, 0.3, 1)',
+      distance: '24px',
+      stagger: '90ms',
+    },
+    light: {
+      bg: '#f4f1ea',
+      fg: '#101214',
+      muted: '#5e646b',
+      surface: '#ffffff',
+      border: '#e3dfd6',
+      accent: '#6f6ff6',
+      accentFg: '#ffffff',
+      invertedBg: '#101214',
+      invertedFg: '#f7f4ee',
+    },
+    dark: {
+      bg: '#0f1113',
+      fg: '#f2efe9',
+      muted: '#9aa0a7',
+      surface: '#17191c',
+      border: '#262a2e',
+      accent: '#9d9dff',
+      accentFg: '#0f1113',
+      invertedBg: '#17191c',
+      invertedFg: '#f7f4ee',
+    },
+  },
+
+  /* ----------------------------------------------------------------- iris */
+  /* Source: the Synthesia spec — bright enterprise SaaS, violet brand, roomy
+     rounded surfaces on near-white neutrals. */
+  iris: {
+    label: 'Iris',
+    description: 'Bright enterprise SaaS — near-white neutrals, roomy rounded surfaces, a violet brand.',
+    fonts: { heading: FONT_STACKS.inter, body: FONT_STACKS.inter, mono: FONT_STACKS.mono },
+    geometry: {
+      radius: '0.875rem',
+      radiusButton: '999px',
+      radiusMedia: '1.125rem',
+      container: '73rem',
+      sectionGap: '6.5rem',
+      navHeight: '4rem',
+    },
+    type: { tracking: '-0.03em', headingWeight: '700', displayScale: '1.02' },
+    shadow: {
+      card: '0 1px 2px rgb(17 17 17 / 0.06)',
+      float: '0 26px 56px -28px rgb(95 53 245 / 0.35)',
+    },
+    motion: {
+      duration: '440ms',
+      ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      distance: '16px',
+      stagger: '60ms',
+    },
+    light: {
+      bg: '#ffffff',
+      fg: '#111111',
+      muted: '#5f5f66',
+      surface: '#f7f5f2',
+      border: '#e5e1dc',
+      accent: '#5f35f5',
+      accentFg: '#ffffff',
+      invertedBg: '#111111',
+      invertedFg: '#f7f5f2',
+    },
+    dark: {
+      bg: '#0e0d14',
+      fg: '#f2f1f7',
+      muted: '#a09eb0',
+      surface: '#17161f',
+      border: '#272536',
+      accent: '#a78bfa',
+      accentFg: '#0e0d14',
+      invertedBg: '#17161f',
+      invertedFg: '#f2f1f7',
+    },
+  },
+
+  /* ------------------------------------------------------------- meridian */
+  /* Source: the August Health spec — warm cream ground, deep navy ink, and an
+     electric blue that carries every call to action. */
+  meridian: {
+    label: 'Meridian',
+    description: 'Warm cream over deep navy ink, with an electric blue — calm, human, trustworthy.',
+    fonts: { heading: FONT_STACKS.interTight, body: FONT_STACKS.inter, mono: FONT_STACKS.mono },
+    geometry: {
+      radius: '1rem',
+      radiusButton: '999px',
+      radiusMedia: '1.25rem',
+      container: '72rem',
+      sectionGap: '7rem',
+      navHeight: '4.25rem',
+    },
+    type: { tracking: '-0.03em', headingWeight: '700', displayScale: '1.04' },
+    shadow: {
+      card: '0 1px 3px rgb(21 17 61 / 0.07)',
+      float: '0 28px 60px -30px rgb(21 17 61 / 0.42)',
+    },
+    motion: {
+      duration: '560ms',
+      ease: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      distance: '18px',
+      stagger: '80ms',
+    },
+    light: {
+      bg: '#fbf6ea',
+      fg: '#15113d',
+      muted: '#5e5a70',
+      surface: '#ffffff',
+      border: '#e6decf',
+      accent: '#4865ff',
+      accentFg: '#ffffff',
+      invertedBg: '#15113d',
+      invertedFg: '#fbf6ea',
+    },
+    dark: {
+      bg: '#12102b',
+      fg: '#f2eee2',
+      muted: '#a7a2bd',
+      surface: '#1a1740',
+      border: '#2a2757',
+      accent: '#8b9dff',
+      accentFg: '#12102b',
+      invertedBg: '#1a1740',
+      invertedFg: '#f2eee2',
+    },
+  },
 };
