@@ -333,6 +333,59 @@ describe('guide sidebar', () => {
     await expect(loadSite(source)).rejects.toThrow(/nonexistent-page/);
   });
 
+  /**
+   * The schema has always allowed a group inside a group. The resolver only
+   * walked one level, so the nested structure was dropped — valid input,
+   * silently missing output, and no error to say so.
+   */
+  it('keeps groups nested inside groups', async () => {
+    const source = await makeSite({
+      config: BASE_CONFIG,
+      files: {
+        'marketing/landing.yaml': MINIMAL_LANDING,
+        'guide/index.mdx': '# Guide\n',
+        'guide/intro.mdx': '# Intro\n',
+        'guide/cache.mdx': '# Cache\n',
+        'guide/_sidebar.yaml': [
+          '- label: Guide',
+          '  items:',
+          '    - intro',
+          '    - label: Advanced',
+          '      items:',
+          '        - label: Tuning',
+          '          items:',
+          '            - cache',
+        ].join('\n'),
+      },
+    });
+
+    const site = await loadSite(source);
+    const root = site.sidebar[0];
+    if (root?.kind !== 'group') throw new Error('expected a top-level group');
+
+    const advanced = root.children.find((n) => n.kind === 'group' && n.label === 'Advanced');
+    expect(advanced, 'nested group was dropped').toBeDefined();
+    if (advanced?.kind !== 'group') throw new Error('expected Advanced to be a group');
+
+    const tuning = advanced.children[0];
+    if (tuning?.kind !== 'group') throw new Error('expected Tuning to be a group');
+    expect(tuning.children).toEqual([{ kind: 'link', label: 'Cache', route: '/guide/cache' }]);
+  });
+
+  it('omits a group with no resolvable entries rather than rendering an empty one', async () => {
+    const source = await makeSite({
+      config: BASE_CONFIG,
+      files: {
+        'marketing/landing.yaml': MINIMAL_LANDING,
+        'guide/index.mdx': '# Guide\n',
+        'guide/_sidebar.yaml': '- label: Empty\n  items: []\n',
+      },
+    });
+
+    const site = await loadSite(source);
+    expect(site.sidebar).toEqual([]);
+  });
+
   it('warns (but still builds) when a guide page is missing from the sidebar', async () => {
     const source = await makeSite({
       config: BASE_CONFIG,

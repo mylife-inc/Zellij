@@ -167,3 +167,100 @@ test.describe('guide theming', () => {
       .not.toBe(lightColor);
   });
 });
+
+/**
+ * Covers the collapsible guide navigation: arbitrary nesting from
+ * `_sidebar.yaml`, expand/collapse, persistence, and the rule that the group
+ * containing the current page is always open.
+ */
+test.describe('guide navigation tree', () => {
+  test.skip(({ isMobile }) => Boolean(isMobile), 'the sidebar is desktop-only');
+
+  // Page bodies link to the same routes, so every lookup is scoped to the nav.
+  const nav = (page: import('@playwright/test').Page) =>
+    page.getByRole('navigation', { name: 'Guide' });
+
+  test('renders groups nested inside groups', async ({ page }) => {
+    await page.goto('/guide/quickstart');
+
+    const nested = page.locator('.zellij-guide-sidebar-group[data-depth="1"]');
+    await expect(nested).toHaveCount(1);
+    await expect(nested.getByRole('button', { name: 'Data' })).toBeVisible();
+  });
+
+  test('collapses and expands a group', async ({ page }) => {
+    await page.goto('/guide/quickstart');
+
+    const toggle = nav(page).getByRole('button', { name: 'Configuration' });
+    const child = nav(page).getByRole('link', { name: 'Configuration overview' });
+
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(child).toBeVisible();
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child).toBeHidden();
+
+    await toggle.click();
+    await expect(child).toBeVisible();
+  });
+
+  test('remembers collapsed groups across navigation', async ({ page }) => {
+    await page.goto('/guide/quickstart');
+    await nav(page).getByRole('button', { name: 'Configuration' }).click();
+    await expect(nav(page).getByRole('link', { name: 'Configuration overview' })).toBeHidden();
+
+    await page.goto('/guide/installation');
+    await expect(nav(page).getByRole('button', { name: 'Configuration' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+  });
+
+  /**
+   * Otherwise a reader who collapsed a group and then followed a link into it
+   * would land on a page that is invisible in the navigation.
+   */
+  test('forces open the group containing the current page', async ({ page }) => {
+    await page.goto('/guide/quickstart');
+    await nav(page).getByRole('button', { name: 'Configuration' }).click();
+    await expect(nav(page).getByRole('button', { name: 'Configuration' })).toHaveAttribute(
+      'aria-expanded',
+      'false',
+    );
+
+    // Navigate into the collapsed branch — it must reopen.
+    await page.goto('/guide/config/database');
+    await expect(nav(page).getByRole('button', { name: 'Configuration' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    await expect(nav(page).getByRole('button', { name: 'Data' })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+    await expect(nav(page).getByRole('link', { name: 'Database' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+  });
+
+  test('keeps prev/next and breadcrumbs correct through nesting', async ({ page }) => {
+    await page.goto('/guide/config/database');
+
+    const crumbs = page.getByRole('navigation', { name: 'Breadcrumb' });
+    await expect(crumbs).toContainText('Configuration');
+    await expect(crumbs).toContainText('Data');
+
+    // Reading order is depth-first, so the previous page is the one above it.
+    await expect(page.locator('[data-direction="prev"]')).toContainText('Configuration overview');
+  });
+
+  test('is keyboard operable', async ({ page }) => {
+    await page.goto('/guide/quickstart');
+    const toggle = nav(page).getByRole('button', { name: 'Configuration' });
+    await toggle.focus();
+    await page.keyboard.press('Enter');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+});

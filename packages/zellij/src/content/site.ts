@@ -1,6 +1,6 @@
 import { ZellijContentError } from '../errors';
 import type { ZellijConfig, NavItem } from '../config/schema';
-import type { ContentSource, GuidePage, MarketingPage, SidebarSection } from './types';
+import type { ContentSource, GuidePage, MarketingPage, SidebarNode } from './types';
 import type { SidebarEntry } from './page-schema';
 import { guideRouteFromFile, isExternal, normalizeRoute, splitAnchor } from './paths';
 
@@ -8,7 +8,7 @@ export interface Site {
   config: ZellijConfig;
   marketingPages: MarketingPage[];
   guidePages: GuidePage[];
-  sidebar: SidebarSection[];
+  sidebar: SidebarNode[];
   /** Every valid internal route on the site. */
   routes: Set<string>;
   /** route → set of section anchor ids declared on that page. */
@@ -71,12 +71,12 @@ function resolveSidebar(
   entries: readonly SidebarEntry[],
   guidePages: readonly GuidePage[],
   warnings: string[],
-): SidebarSection[] {
+): SidebarNode[] {
   const byRoute = new Map(guidePages.map((p) => [p.route, p]));
   const referenced = new Set<string>();
   const missing: string[] = [];
 
-  function resolveLeaf(slug: string): { label: string; route: string } | undefined {
+  function resolveLeaf(slug: string): SidebarNode | undefined {
     const route = guideRouteFromFile(slug);
     const page = byRoute.get(route);
     if (!page) {
@@ -84,24 +84,34 @@ function resolveSidebar(
       return undefined;
     }
     referenced.add(route);
-    return { label: page.title, route };
+    return { kind: 'link', label: page.title, route };
   }
 
-  const sections: SidebarSection[] = [];
+  /**
+   * Walks the authored tree to any depth. The previous version resolved only
+   * string entries one level down, so a group nested inside a group was
+   * silently discarded — valid per the schema, gone from the output, with no
+   * error to say so.
+   */
+  function resolveNodes(nodes: readonly SidebarEntry[]): SidebarNode[] {
+    const out: SidebarNode[] = [];
 
-  for (const entry of entries) {
-    if (typeof entry === 'string') {
-      const leaf = resolveLeaf(entry);
-      if (leaf) sections.push({ label: leaf.label, items: [leaf] });
-      continue;
+    for (const node of nodes) {
+      if (typeof node === 'string') {
+        const leaf = resolveLeaf(node);
+        if (leaf) out.push(leaf);
+        continue;
+      }
+
+      const children = resolveNodes(node.items);
+      // An empty group would render as an unopenable heading.
+      if (children.length > 0) out.push({ kind: 'group', label: node.label, children });
     }
 
-    const items = entry.items
-      .map((item) => (typeof item === 'string' ? resolveLeaf(item) : undefined))
-      .filter((x): x is { label: string; route: string } => Boolean(x));
-
-    sections.push({ label: entry.label, items });
+    return out;
   }
+
+  const tree = resolveNodes(entries);
 
   if (missing.length > 0) {
     throw new ZellijContentError(
@@ -118,7 +128,7 @@ function resolveSidebar(
     }
   }
 
-  return sections;
+  return tree;
 }
 
 /** Collects every internal href declared in nav and footer config. */

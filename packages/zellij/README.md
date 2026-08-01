@@ -401,7 +401,8 @@ Nothing loads until play is pressed — no iframe, no `<video>` — so third-par
 
 ## Guide docs & MDX components
 
-`guide/_sidebar.yaml` defines nav order, which also drives previous/next links:
+`guide/_sidebar.yaml` defines nav order, which also drives previous/next links
+and breadcrumbs. Groups nest to any depth, and every group is collapsible:
 
 ```yaml
 - label: Getting Started
@@ -411,9 +412,16 @@ Nothing loads until play is pressed — no iframe, no `<video>` — so third-par
 - label: Configuration
   items:
     - config/overview
+    - label: Data                    # a group inside a group
+      items:
+        - config/database
 ```
 
-A sidebar entry with no matching file is a build **error**. A file missing from the sidebar is a **warning** — the page still builds.
+Groups start expanded. A reader's collapsed groups are remembered, but the group
+containing the current page is always opened — otherwise following a link into a
+collapsed branch would land on a page invisible in the navigation.
+
+A sidebar entry with no matching file is a build **error**. A file missing from the sidebar is a **warning** — the page still builds. A group whose entries all fail to resolve is omitted rather than rendered empty.
 
 These components are available in every guide file without imports:
 

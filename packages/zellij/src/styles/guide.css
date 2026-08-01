@@ -48,26 +48,79 @@
   }
 }
 
-.zellij-guide-sidebar-section + .zellij-guide-sidebar-section {
-  margin-top: 1.75rem;
+.zellij-guide-sidebar-nav {
+  font-size: 0.9375rem;
 }
 
-.zellij-guide-sidebar-heading {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--zellij-muted);
-  margin: 0 0 0.625rem;
-}
-
-.zellij-guide-sidebar-nav ul {
+.zellij-guide-sidebar-list {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
+}
+
+/* Top-level groups get breathing room; nested ones stay tight. */
+.zellij-guide-sidebar-list[data-depth='0'] > li + li {
+  margin-top: 0.25rem;
+}
+
+.zellij-guide-sidebar-group[data-depth='0'] + .zellij-guide-sidebar-group[data-depth='0'] {
+  margin-top: 1rem;
+}
+
+.zellij-guide-sidebar-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  width: 100%;
+  padding: 0.3125rem 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--zellij-muted);
+  cursor: pointer;
+  text-align: left;
+  transition: color 150ms ease;
+}
+
+.zellij-guide-sidebar-toggle:hover {
+  color: var(--zellij-fg);
+}
+
+/* A nested group reads as a label, not a section heading. */
+.zellij-guide-sidebar-group[data-depth='1'] > .zellij-guide-sidebar-toggle,
+.zellij-guide-sidebar-group[data-depth='2'] > .zellij-guide-sidebar-toggle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.zellij-guide-sidebar-chevron {
+  flex-shrink: 0;
+  transition: transform 180ms var(--zellij-motion-ease);
+}
+
+.zellij-guide-sidebar-chevron[data-open='true'] {
+  transform: rotate(90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zellij-guide-sidebar-chevron {
+    transition: none;
+  }
+}
+
+/* Children indent under their group, aligned past the chevron. */
+.zellij-guide-sidebar-group > div > .zellij-guide-sidebar-list {
+  margin-top: 0.25rem;
+  padding-left: 1.0625rem;
 }
 
 .zellij-guide-sidebar-link {
@@ -77,7 +130,6 @@
   border-left: 2px solid var(--zellij-border);
   color: var(--zellij-muted);
   text-decoration: none;
-  font-size: 0.9375rem;
   transition: color 150ms ease, border-color 150ms ease;
 }
 

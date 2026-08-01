@@ -26,15 +26,25 @@ export interface GuidePage {
   body: string;
 }
 
-export interface SidebarSection {
-  label: string;
-  items: SidebarLink[];
-}
+/**
+ * A resolved guide navigation tree.
+ *
+ * Nesting is arbitrary depth because `_sidebar.yaml` allows it — a group may
+ * contain groups. Modelling it as a flat section-plus-items pair silently threw
+ * that structure away.
+ */
+export type SidebarNode = SidebarLink | SidebarGroup;
 
 export interface SidebarLink {
+  kind: 'link';
   label: string;
   route: string;
-  children?: SidebarLink[];
+}
+
+export interface SidebarGroup {
+  kind: 'group';
+  label: string;
+  children: SidebarNode[];
 }
 
 export interface ResolvedAsset {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { extractToc, slugifyHeading } from './toc';
 import { buildBreadcrumbs, findNeighbours, flattenSidebar } from './navigation';
-import type { SidebarSection } from '../content/types';
+import type { SidebarNode } from '../content/types';
 
 describe('slugifyHeading', () => {
   it('matches the slugs rehype-slug generates', () => {
@@ -51,19 +51,44 @@ describe('extractToc', () => {
   });
 });
 
-const SIDEBAR: SidebarSection[] = [
+const SIDEBAR: SidebarNode[] = [
   {
+    kind: 'group',
     label: 'Getting Started',
-    items: [
-      { label: 'Quickstart', route: '/guide/quickstart' },
-      { label: 'Installation', route: '/guide/installation' },
+    children: [
+      { kind: 'link', label: 'Quickstart', route: '/guide/quickstart' },
+      { kind: 'link', label: 'Installation', route: '/guide/installation' },
     ],
   },
   {
+    kind: 'group',
     label: 'Configuration',
-    items: [
-      { label: 'Configuration overview', route: '/guide/config/overview' },
-      { label: 'Database', route: '/guide/config/database' },
+    children: [
+      { kind: 'link', label: 'Configuration overview', route: '/guide/config/overview' },
+      { kind: 'link', label: 'Database', route: '/guide/config/database' },
+    ],
+  },
+];
+
+/** A group inside a group — the shape the resolver used to discard. */
+const NESTED: SidebarNode[] = [
+  {
+    kind: 'group',
+    label: 'Guide',
+    children: [
+      { kind: 'link', label: 'Intro', route: '/guide/intro' },
+      {
+        kind: 'group',
+        label: 'Advanced',
+        children: [
+          {
+            kind: 'group',
+            label: 'Tuning',
+            children: [{ kind: 'link', label: 'Cache', route: '/guide/adv/cache' }],
+          },
+          { kind: 'link', label: 'Scaling', route: '/guide/adv/scaling' },
+        ],
+      },
     ],
   },
 ];
@@ -91,6 +116,30 @@ describe('guide navigation', () => {
 
   it('returns no neighbours for a page absent from the sidebar', () => {
     expect(findNeighbours(SIDEBAR, '/guide/orphan')).toEqual({});
+  });
+
+  it('walks nested groups when flattening reading order', () => {
+    expect(flattenSidebar(NESTED).map((entry) => entry.route)).toEqual([
+      '/guide/intro',
+      '/guide/adv/cache',
+      '/guide/adv/scaling',
+    ]);
+  });
+
+  it('finds neighbours across nesting levels', () => {
+    const { previous, next } = findNeighbours(NESTED, '/guide/adv/cache');
+    expect(previous?.route).toBe('/guide/intro');
+    expect(next?.route).toBe('/guide/adv/scaling');
+  });
+
+  it('includes every ancestor group in breadcrumbs, not just the first', () => {
+    expect(buildBreadcrumbs(NESTED, '/guide/adv/cache', 'Cache')).toEqual([
+      { label: 'Guide', route: '/guide' },
+      { label: 'Guide' },
+      { label: 'Advanced' },
+      { label: 'Tuning' },
+      { label: 'Cache' },
+    ]);
   });
 
   it('builds breadcrumbs from the sidebar section, not the file path', () => {
