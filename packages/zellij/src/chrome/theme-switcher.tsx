@@ -12,9 +12,9 @@ import type { ThemeOption } from './nav-model';
  * the page (see `emitThemeCss` under `nav.themeSwitcher`), so the whole site
  * repaints from CSS with no re-render and no request.
  *
- * The swatches carry `data-zellij-theme` themselves, which means each one is
- * painted by the very rules it represents — the preview cannot drift from the
- * real thing, because it *is* the real thing.
+ * Each card carries `data-zellij-theme` itself, which means it is painted by
+ * the very rules it represents — the preview cannot drift from the real thing,
+ * because it *is* the real thing.
  */
 export function ThemeSwitcher({
   themes,
@@ -99,49 +99,63 @@ export function ThemeSwitcher({
 
       {open ? (
         <div className="zellij-theme-panel" id="zellij-theme-panel" ref={panelRef}>
-          <p className="zellij-theme-panel-heading">Theme</p>
-          <ul className="zellij-theme-list">
-            {themes.map((theme) => (
-              <li key={theme.name}>
-                <button
-                  type="button"
-                  className="zellij-theme-option"
-                  data-selected={active === theme.name}
-                  aria-pressed={active === theme.name}
-                  onClick={() => choose(theme.name)}
-                >
+          <div className="zellij-theme-panel-inner">
+            <p className="zellij-theme-panel-heading">Theme</p>
+
+            <ul className="zellij-theme-grid">
+              {themes.map((theme) => (
+                <li key={theme.name}>
                   {/*
-                    The swatch declares the theme it previews, so the emitted
-                    rules for that theme paint it — including in dark mode.
+                    The card declares the theme it previews, so every token it
+                    paints with — colour, type, radius — comes from that theme.
                   */}
-                  <span className="zellij-theme-swatch" data-zellij-theme={theme.name}>
-                    <span className="zellij-theme-swatch-accent" />
-                    <span className="zellij-theme-swatch-text">Aa</span>
-                  </span>
-                  <span className="zellij-theme-option-copy">
-                    <span className="zellij-theme-option-name">{theme.label}</span>
-                    <span className="zellij-theme-option-description">{theme.description}</span>
-                  </span>
-                  {active === theme.name ? (
-                    <svg
-                      className="zellij-theme-check"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
+                  <button
+                    type="button"
+                    className="zellij-theme-card"
+                    data-selected={active === theme.name}
+                    aria-pressed={active === theme.name}
+                    onClick={() => choose(theme.name)}
+                  >
+                    <span
+                      className="zellij-theme-card-preview"
+                      data-zellij-theme={theme.name}
                       aria-hidden="true"
                     >
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
-                  ) : null}
-                </button>
-              </li>
-            ))}
-          </ul>
+                      <span className="zellij-theme-card-bar" />
+                      <span className="zellij-theme-card-body">
+                        <span className="zellij-theme-card-heading">Aa</span>
+                        <span className="zellij-theme-card-dots">
+                          <span data-dot="accent" />
+                          <span data-dot="fg" />
+                          <span data-dot="border" />
+                        </span>
+                      </span>
+                    </span>
+
+                    <span className="zellij-theme-card-label">
+                      {theme.label}
+                      {active === theme.name ? (
+                        <svg
+                          className="zellij-theme-check"
+                          width="15"
+                          height="15"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.6"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          aria-hidden="true"
+                        >
+                          <path d="M20 6 9 17l-5-5" />
+                        </svg>
+                      ) : null}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       ) : null}
     </div>

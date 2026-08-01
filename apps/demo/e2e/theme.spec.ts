@@ -134,7 +134,7 @@ test.describe('theme switcher', () => {
     const panel = (await page.locator('.zellij-theme-panel').boundingBox())!;
     expect(panel.y - (header.y + header.height)).toBeLessThanOrEqual(0);
 
-    await expect(page.locator('.zellij-theme-option')).toHaveCount(11);
+    await expect(page.locator('.zellij-theme-card')).toHaveCount(11);
   });
 
   /**
@@ -153,7 +153,7 @@ test.describe('theme switcher', () => {
         page.evaluate(() => {
           const font = (name: string) => {
             const el = document.querySelector(
-              `.zellij-theme-swatch[data-zellij-theme="${name}"] .zellij-theme-swatch-text`,
+              `.zellij-theme-card-preview[data-zellij-theme="${name}"] .zellij-theme-card-heading`,
             );
             return el ? getComputedStyle(el).fontFamily : '';
           };
@@ -183,7 +183,7 @@ test.describe('theme switcher', () => {
       }));
 
     const before = await read();
-    await page.locator('.zellij-theme-option').filter({ hasText: 'Carbon' }).click();
+    await page.locator('.zellij-theme-card').filter({ hasText: 'Carbon' }).click();
     await expect(page.locator('.zellij-theme-panel')).toBeHidden();
 
     const after = await read();
@@ -196,7 +196,7 @@ test.describe('theme switcher', () => {
   test('remembers the choice across navigation', async ({ page }) => {
     await page.goto('/');
     await openSwitcher(page);
-    await page.locator('.zellij-theme-option').filter({ hasText: 'Forest' }).click();
+    await page.locator('.zellij-theme-card').filter({ hasText: 'Forest' }).click();
 
     await page.goto('/pricing');
     await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
@@ -206,7 +206,7 @@ test.describe('theme switcher', () => {
     await page.goto('/');
     await openSwitcher(page);
 
-    const selected = page.locator('.zellij-theme-option[data-selected="true"]');
+    const selected = page.locator('.zellij-theme-card[data-selected="true"]');
     await expect(selected).toHaveCount(1);
     await expect(selected).toContainText('Cupertino');
 

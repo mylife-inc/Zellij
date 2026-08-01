@@ -948,8 +948,8 @@
 
 /*
  * Static, not relative: like the mega panel, this hands the panel's containing
- * block to the sticky header so it can hang flush beneath the bar rather than
- * float below the icon with a gap to cross.
+ * block to the sticky header so the panel can span the bar and hang flush
+ * beneath it rather than float below the icon with a gap to cross.
  */
 .zellij-theme-switcher {
   position: static;
@@ -957,117 +957,154 @@
   align-items: center;
 }
 
+/* A full-bleed band, matching the mega panel: no border, radius or shadow. */
 .zellij-theme-panel {
   position: absolute;
   top: 100%;
-  /*
-   * The containing block is the full-width header, so `right: 0` would pin the
-   * panel to the viewport edge rather than under the bar's own content. This
-   * lines its right edge up with the container's padding edge, and falls back
-   * to that padding once the viewport is narrower than the container.
-   */
-  right: max(1.5rem, calc((100vw - var(--zellij-container)) / 2 + 1.5rem));
-  width: min(23rem, calc(100vw - 2rem));
-  max-height: min(30rem, calc(100vh - var(--zellij-nav-height) - 2rem));
-  overflow-y: auto;
-  padding: 0.75rem;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 2.25rem 0 2.75rem;
   background: var(--zellij-bg);
-  border: 1px solid var(--zellij-border);
-  border-top: none;
-  border-radius: 0 0 var(--zellij-radius) var(--zellij-radius);
-  box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--zellij-fg) 26%, transparent);
+  border-bottom: 1px solid var(--zellij-border);
   z-index: 60;
   animation: zellij-menu-in 220ms var(--zellij-motion-ease);
   transform-origin: top center;
 }
 
+.zellij-theme-panel-inner {
+  max-width: var(--zellij-container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
 .zellij-theme-panel-heading {
-  margin: 0.25rem 0 0.5rem 0.5rem;
+  margin: 0 0 1.25rem;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--zellij-muted);
 }
 
-.zellij-theme-list {
+.zellij-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 1rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.zellij-theme-option {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+/*
+ * The card carries its own `data-zellij-theme`, so every variable below
+ * resolves to the theme being previewed rather than the one in force.
+ */
+.zellij-theme-card {
+  display: block;
   width: 100%;
-  padding: 0.5rem;
+  padding: 0;
   border: none;
-  border-radius: calc(var(--zellij-radius) * 0.6);
   background: none;
   font-family: inherit;
-  color: var(--zellij-fg);
-  text-align: left;
   cursor: pointer;
-  transition: background-color 150ms ease;
+  text-align: left;
 }
 
-.zellij-theme-option:hover,
-.zellij-theme-option[data-selected='true'] {
-  background: var(--zellij-surface);
-}
-
-/*
- * The swatch carries its own `data-zellij-theme`, so these variables resolve to
- * the theme being previewed rather than the one currently applied.
- */
-.zellij-theme-swatch {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  flex-shrink: 0;
-  border-radius: calc(var(--zellij-radius) * 0.6);
-  border: 1px solid var(--zellij-border);
-  background: var(--zellij-bg);
+.zellij-theme-card-preview {
+  display: block;
   overflow: hidden;
+  border: 1px solid var(--zellij-border);
+  border-radius: var(--zellij-radius);
+  background: var(--zellij-bg);
+  box-shadow: var(--zellij-shadow-card);
+  transition: transform 180ms var(--zellij-motion-ease);
 }
 
-.zellij-theme-swatch-text {
-  font-family: var(--zellij-font-heading);
-  font-weight: var(--zellij-heading-weight);
-  font-size: 0.8125rem;
-  color: var(--zellij-fg);
+.zellij-theme-card:hover .zellij-theme-card-preview {
+  transform: translateY(-2px);
 }
 
-.zellij-theme-swatch-accent {
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 0.375rem;
+.zellij-theme-card[data-selected='true'] .zellij-theme-card-preview {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  color: var(--zellij-accent);
+}
+
+/* A miniature of the site: accent bar, heading in the theme's own face. */
+.zellij-theme-card-bar {
+  display: block;
+  height: 0.5rem;
   background: var(--zellij-accent);
 }
 
-.zellij-theme-option-copy {
+.zellij-theme-card-body {
   display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  min-width: 0;
-  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.75rem 0.875rem 0.875rem;
+  background: var(--zellij-surface);
 }
 
-.zellij-theme-option-name {
-  font-size: 0.9375rem;
-  font-weight: 600;
+.zellij-theme-card-heading {
+  font-family: var(--zellij-font-heading);
+  font-weight: var(--zellij-heading-weight);
+  letter-spacing: var(--zellij-tracking);
+  font-size: 1.375rem;
+  line-height: 1;
+  color: var(--zellij-fg);
 }
 
-.zellij-theme-option-description {
-  font-size: 0.75rem;
-  line-height: 1.35;
+.zellij-theme-card-dots {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.zellij-theme-card-dots span {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+}
+
+.zellij-theme-card-dots span[data-dot='accent'] {
+  background: var(--zellij-accent);
+}
+
+.zellij-theme-card-dots span[data-dot='fg'] {
+  background: var(--zellij-fg);
+}
+
+.zellij-theme-card-dots span[data-dot='border'] {
+  background: var(--zellij-muted);
+}
+
+/*
+ * The label sits outside the preview, so it reads in the *current* theme —
+ * a name rendered in the theme it names would be unreadable on some of them.
+ */
+.zellij-theme-card-label {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
   color: var(--zellij-muted);
 }
 
+.zellij-theme-card:hover .zellij-theme-card-label,
+.zellij-theme-card[data-selected='true'] .zellij-theme-card-label {
+  color: var(--zellij-fg);
+}
+
 .zellij-theme-check {
-  flex-shrink: 0;
   color: var(--zellij-accent);
+  flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .zellij-theme-grid {
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  }
 }
