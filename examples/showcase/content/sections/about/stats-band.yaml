@@ -1,0 +1,8 @@
+type: stats-band
+stats:
+  - value: "2021"
+    label: Founded
+  - value: "48"
+    label: Team members
+  - value: "9"
+    label: Countries

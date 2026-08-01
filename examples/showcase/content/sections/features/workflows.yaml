@@ -1,0 +1,14 @@
+type: feature-grid
+id: workflows
+heading: Workflows
+columns: 3
+items:
+  - icon: workflow
+    title: Visual builder
+    body: Drag-and-drop process design with branching and parallel paths.
+  - icon: timer
+    title: SLA tracking
+    body: Set targets per step and escalate automatically when they slip.
+  - icon: repeat
+    title: Recurring runs
+    body: Schedule processes daily, weekly, or on a custom cadence.

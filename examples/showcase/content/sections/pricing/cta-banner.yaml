@@ -1,0 +1,7 @@
+type: cta-banner
+headline: Still deciding?
+body: The Starter plan is free forever and takes ten minutes to set up.
+cta:
+  label: Get started
+  href: /guide/quickstart
+  style: primary

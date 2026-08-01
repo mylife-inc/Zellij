@@ -1,0 +1,106 @@
+---
+title: The CLI
+description: check, prepare, sync-assets and search-index.
+---
+
+Four commands, all build-time. Nothing here runs in production.
+
+| Command | Does |
+| --- | --- |
+| `zellij check [dir]` | Validates a content root and prints every problem, without building |
+| `zellij prepare` | `sync-assets` and `search-index` together — the usual choice |
+| `zellij sync-assets` | Copies `<content>/assets/**` into `public/_zellij/assets/**` |
+| `zellij search-index` | Writes `public/_zellij/search-index.json` |
+
+```json title="package.json"
+{
+  "scripts": {
+    "predev": "zellij prepare",
+    "prebuild": "zellij prepare"
+  }
+}
+```
+
+## check
+
+The fast loop for content authors. It loads the whole folder — the same code
+the build uses — and reports everything wrong with it, without starting
+Next.js.
+
+```bash title="terminal"
+npx zellij check
+```
+
+```
+✓ /Users/you/acme/content
+  site        Acme · theme cupertino
+  pages       6
+  guides      1 (5 pages) · /guide
+  menu        Features · Pricing · Solutions · Resources · Security
+  home        /
+  routes      11
+
+  ! sections/unused.yaml is not referenced by any page in pages.yaml.
+```
+
+It exits non-zero when the folder would fail a build, so it works as a
+pre-commit hook or a CI step on the content repository alone — no Node app, no
+install of the site, just the folder.
+
+<Callout type="info" title="check runs from the package build">
+It needs the whole content loader, whose relative imports carry no file
+extensions — and Node's ESM resolver requires them. So this one command runs
+from a bundled build rather than from source. A published install always has
+it; inside the Zellij repo it needs `npm run build -w @shebka/zellij` once.
+</Callout>
+
+## sync-assets
+
+Content lives outside the Next app, so assets have to be bridged into it. This
+copies `assets/**` into `public/_zellij/assets/**`, which is what turns the
+authored path `assets/hero.png` into the served path
+`/_zellij/assets/hero.png`.
+
+It replaces rather than merges, so a deleted asset does not linger in `public/`.
+
+## search-index
+
+Walks every guide folder, extracts text from the MDX, splits it per heading and
+writes a static JSON index. The ⌘K modal fetches that file and loads FlexSearch
+on first open.
+
+Sections pages are excluded by design.
+
+## Build errors
+
+Invalid content fails the build loudly, with the file, the path inside it and
+what was expected. Errors are aggregated so everything can be fixed in one
+pass rather than one per run.
+
+| Failure | Behaviour |
+| --- | --- |
+| Malformed YAML or MDX | Error naming the file and the parser message |
+| Unknown section `type` | Error listing every valid type |
+| Unknown lucide icon name | Error naming the icon and the export it looked for |
+| Section reference with no file | Error listing the sections that do exist |
+| `page:` naming no page or guide folder | Error listing the available names |
+| A page and a guide folder sharing a name | Error naming both |
+| Two sections on one page with the same `id` | Error — `#id` would be ambiguous |
+| A nav, CTA or footer link to a nonexistent route | Error naming the label and href |
+| An anchor no section declares | Error listing the anchors that page has |
+
+And the warnings, which do not stop a build:
+
+| Situation | Behaviour |
+| --- | --- |
+| A section file no page references | Warning |
+| A guide page missing from its sidebar | Warning — the page still builds |
+| A folder with content but no `_sidebar.yaml` | Warning — the folder is skipped |
+| An unknown key in `site.yaml` | Warning — forward compatibility |
+
+<Callout type="tip" title="Unknown keys inside a section file are accepted silently">
+Sections gain fields far more often than the top-level schema does, so a
+content folder written for a newer engine still builds on an older one. The
+cost is that a typo in a section file is not reported — which is one more
+reason to run `zellij check` and read what it says about unused files.
+</Callout>

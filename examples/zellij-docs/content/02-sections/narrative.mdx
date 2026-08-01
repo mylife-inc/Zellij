@@ -1,0 +1,106 @@
+---
+title: Narrative
+description: zigzag, markdown-prose, timeline and faq — sections that carry an argument.
+---
+
+## zigzag
+
+Alternating text and image rows. The standard way to explain three or four
+things in sequence without a wall of prose.
+
+```yaml
+type: zigzag
+heading: How it works
+rows:
+  - title: Route work the way your team already works
+    body: Branches, parallel steps and conditions, **without** a scripting language.
+    image: assets/workflows.png
+    align: image-right              # image-right | image-left
+    cta: { label: See workflows, href: /features#workflows }
+  - title: Sign-off that leaves a trail
+    body: Every decision recorded with who, when and on what version.
+    image: assets/approvals.png
+    align: image-left
+```
+
+`body` accepts inline markdown — bold, italic, code spans and links. Not block
+markdown: for that, use `markdown-prose` or a guide page.
+
+## markdown-prose
+
+The escape hatch. Free-form prose inside marketing styling, for the page that
+needs a paragraph the tiles do not cover.
+
+```yaml
+type: markdown-prose
+heading: Why we build Acme
+body: |
+  Operations teams deserve better than a spreadsheet with opinions.
+
+  We started this as an internal tool, and it stayed one for two years.
+```
+
+A `.md` or `.mdx` file under `sections/` is this type without saying so:
+
+```mdx title="sections/home/story.md"
+---
+background: tinted
+---
+
+## Why we build Acme
+
+Operations teams deserve better than a spreadsheet with opinions.
+```
+
+<Callout type="tip" title="Reach for this last">
+If a page needs a lot of `markdown-prose`, it probably wants to be a guide page
+instead — that layout has a sidebar, an on-this-page rail and search, and prose
+is what it is for.
+</Callout>
+
+## timeline
+
+A dated sequence: company history, a roadmap, milestones, the chapters of a
+book. Rendered as an ordered list, because that is what it is.
+
+```yaml
+type: timeline
+heading: The story so far
+subhead: Four people and a spreadsheet, then everything that followed.
+items:
+  - date: 2019
+    title: A spreadsheet that would not die
+    body: Acme started as an internal tool for one operations team.
+    icon: sprout
+    image: assets/first.png
+  - date: Q3 2024
+    title: Self-hosting, because regulators asked
+    body: The same images, on your own cloud.
+    icon: server
+```
+
+`date` is free text, not a date type — `1984`, `Q3`, `Chapter one` and
+`Some time in the eighties` all belong. A bare year is accepted and
+stringified, since YAML hands `2019` over as a number.
+
+Items reveal from the side under `subtle` and `expressive`, which reads as the
+sequence assembling itself as you scroll.
+
+## faq
+
+An accordion of question and answer pairs.
+
+```yaml
+type: faq
+heading: Reasonable questions
+items:
+  - question: Do I have to write React?
+    answer: >-
+      No. A wrapper app is three files and under thirty lines, and none of it
+      changes as your site grows.
+  - question: Can I add my own section type?
+    answer: Yes — `registerSection` takes a schema and a component.
+```
+
+Built on `<details>`, so it expands and collapses with no JavaScript at all and
+is keyboard operable for free. Answers accept inline markdown.

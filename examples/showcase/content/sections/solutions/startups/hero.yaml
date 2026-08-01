@@ -1,0 +1,8 @@
+type: hero
+headline: Operational maturity, years before you'd expect it
+subhead: Get the approval trails and reporting investors ask about without hiring an ops team to maintain them.
+cta:
+  - label: Start on the free plan
+    href: /guide/quickstart
+    style: primary
+visualStyle: floating

@@ -1,0 +1,13 @@
+type: hero
+badge: Acme 2.0 is here
+headline: The operations platform your team already knows how to use
+subhead: Unify workflows, approvals, and reporting in one place. Run it as SaaS or deploy the whole stack in your own cloud.
+cta:
+  - label: Get started
+    href: /guide/quickstart
+    style: primary
+  - label: See features
+    href: /features
+    style: ghost
+visual: assets/hero-dashboard.png
+visualStyle: floating

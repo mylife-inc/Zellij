@@ -1,0 +1,24 @@
+type: feature-grid
+id: capabilities
+heading: Everything your operation needs
+subhead: One platform instead of six tools and a spreadsheet.
+columns: 3
+items:
+  - icon: refresh-cw
+    title: Automated reconciliation
+    body: Match records across every connected system, continuously.
+  - icon: shield-check
+    title: Compliance built in
+    body: Audit trails, retention policies, and approvals out of the box.
+  - icon: workflow
+    title: Visual workflows
+    body: Design approval chains without writing a line of code.
+  - icon: bar-chart-3
+    title: Live reporting
+    body: Dashboards that update as work happens, not overnight.
+  - icon: plug
+    title: 200+ integrations
+    body: Connect the tools your team already uses.
+  - icon: lock
+    title: Self-hostable
+    body: Deploy the full stack inside your own cloud account.

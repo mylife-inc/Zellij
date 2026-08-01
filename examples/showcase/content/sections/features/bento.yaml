@@ -1,0 +1,31 @@
+type: bento-grid
+id: platform-bento
+heading: One platform, not five tools
+subhead: Everything below is included in every plan.
+items:
+  - title: Automations that read like sentences
+    body: When a request is approved by finance, notify the requester and open the fulfilment task.
+    image: assets/bento-automation.png
+    span: large
+    href: /features#workflows
+  - title: Roles and rules
+    body: Permissions by team, by record, or by field.
+    icon: shield
+    span: normal
+  - title: Audit trail
+    body: Immutable, exportable, complete.
+    icon: file-check
+    span: normal
+    background: tinted
+  - title: Insight without an analyst
+    body: Ask a question in plain language and save the answer as a view.
+    image: assets/bento-insights.png
+    span: wide
+  - title: Import anything
+    body: CSV, API, or a shared inbox.
+    icon: upload
+    span: normal
+  - title: SLAs that page someone
+    body: Escalation paths that reach a human.
+    icon: bell
+    span: normal

@@ -1,0 +1,10 @@
+type: zigzag
+rows:
+  - title: See every process in one view
+    body: Stop stitching together status from email threads. Acme shows the state of every workflow, owner, and deadline on a single board.
+    image: assets/shot-workflows.png
+    align: image-right
+  - title: Approvals that actually move
+    body: Route work by rule, escalate on delay, and give approvers one-click context. No more chasing.
+    image: assets/shot-approvals.png
+    align: image-left

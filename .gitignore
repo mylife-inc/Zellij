@@ -5,7 +5,7 @@ dist/
 *.tsbuildinfo
 
 # Zellij copies content assets here during the sync step (see spec §13.4)
-apps/demo/public/_zellij/
+examples/*/public/_zellij/
 
 .DS_Store
 *.log
@@ -15,5 +15,9 @@ npm-debug.log*
 coverage/
 test-results/
 playwright-report/
-packages/zellij/dist/
-apps/payos/content/guide/
+engine/packages/zellij/dist/
+# PayOS guide pages are converted from MkDocs sources by scripts/convert-docs.mjs.
+# The sidebars and the hand-written index are not, so they stay tracked.
+examples/payos/content/01-guide/*.mdx
+!examples/payos/content/01-guide/index.mdx
+examples/payos/content/02-using-payos/*.mdx

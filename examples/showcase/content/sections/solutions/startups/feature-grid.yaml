@@ -1,0 +1,16 @@
+type: feature-grid
+heading: What early teams use most
+columns: 2
+items:
+  - icon: zap
+    title: Ten-minute setup
+    body: Your first workflow runs the same day you sign up.
+  - icon: trending-up
+    title: Scales without a rebuild
+    body: The workflow you write at ten people still works at three hundred.
+  - icon: wallet
+    title: Free to start
+    body: The Starter plan stays free forever, with no workflow expiry.
+  - icon: file-check
+    title: Audit-ready early
+    body: Clean trails from day one make your first compliance review painless.

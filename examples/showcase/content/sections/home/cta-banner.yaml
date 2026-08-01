@@ -1,0 +1,10 @@
+type: cta-banner
+headline: Ready to see it on your own process?
+body: Set up your first workflow in about ten minutes.
+cta:
+  - label: Get started
+    href: /guide/quickstart
+    style: primary
+  - label: Compare plans
+    href: /pricing
+    style: ghost

@@ -1,0 +1,10 @@
+type: testimonial
+quotes:
+  - quote: We replaced four tools and a very tired spreadsheet. Onboarding took an afternoon.
+    author: Dana Whitfield
+    role: VP Operations, Northwind
+    avatar: assets/avatars/dana.png
+  - quote: The audit trail alone justified the switch. Our compliance review went from weeks to days.
+    author: Samir Haddad
+    role: Head of Risk, Globex
+    avatar: assets/avatars/samir.png

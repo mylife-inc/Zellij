@@ -1,0 +1,11 @@
+type: hero
+headline: Run it in your cloud, on your terms
+subhead: The full Acme stack deploys inside your own account, with the controls your security review expects.
+cta:
+  - label: Talk to us
+    href: /about
+    style: primary
+  - label: See features
+    href: /features
+    style: ghost
+visualStyle: framed

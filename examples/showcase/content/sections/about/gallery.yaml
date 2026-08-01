@@ -1,0 +1,26 @@
+type: gallery
+id: gallery
+heading: Around the place
+subhead: Click any photo to see it full size.
+columns: 3
+# Block style, not `{ a: 1, b: 2 }`: an unquoted comma ends an entry inside a
+# flow mapping, so `caption: Lisbon, 2024` quietly becomes `caption: Lisbon`.
+items:
+  - image: assets/gallery/office.png
+    alt: The Lisbon office on a Tuesday
+    caption: Lisbon, 2024
+  - image: assets/gallery/offsite.png
+    alt: The team at the spring offsite
+    caption: Spring offsite
+  - image: assets/gallery/workshop.png
+    alt: A customer workshop in progress
+    caption: Customer workshop
+  - image: assets/gallery/launch.png
+    alt: Launch day for Acme 2.0
+    caption: Launch day
+  - image: assets/gallery/studio.png
+    alt: The design studio wall
+    caption: The wall
+  - image: assets/gallery/summit.png
+    alt: The operations summit stage
+    caption: Operations summit

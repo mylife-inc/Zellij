@@ -1,0 +1,13 @@
+type: feature-grid
+heading: Controls
+columns: 3
+items:
+  - icon: key-round
+    title: SSO & SCIM
+    body: SAML, OIDC, and automated provisioning.
+  - icon: eye
+    title: Field-level permissions
+    body: Restrict visibility down to individual fields.
+  - icon: scroll-text
+    title: Immutable audit log
+    body: Every state change recorded and exportable.

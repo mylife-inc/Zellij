@@ -1,0 +1,13 @@
+type: media-panel
+id: tour
+heading: Take a closer look.
+title: A guided tour of workflows, approvals and reporting
+body: Twelve minutes, no signup, the whole product end to end.
+image: assets/panel-tour.png
+alt: ""
+align: left
+tone: dark
+ratio: ultrawide
+scrim: 0.45
+cta:
+  - { label: Watch the tour, href: /guide/quickstart, style: primary }

@@ -1,0 +1,66 @@
+name: Acme
+tagline: "The operations platform your team already knows how to use"
+
+brand:
+  logo:
+    src: assets/logo.svg
+    dark: assets/logo-dark.svg
+    alt: Acme
+    # No href: a single-site setup, so the mark goes to this site's own "/".
+
+theme: cupertino
+mode: system
+motion: expressive
+
+# The landing page rather than the first menu item, which is Features.
+home: home
+
+siteUrl: https://acme.example.com
+ogImage: assets/og.png
+
+# Mirrors basePath in next.config.js — keep the two in sync (spec §13.4).
+basePath: ""
+
+# Token overrides let a site tweak a theme without forking it (spec §6).
+# Left commented so switching `theme:` shows each theme's own palette; uncomment
+# to pin a brand accent regardless of theme.
+# overrides:
+#   accent: "#E86A33"
+#   radius: lg
+
+nav:
+  sticky: true
+  align: left
+  themeToggle: true
+  themeSwitcher: true
+  search: true
+  transparentOverHero: true
+  scrollThreshold: 80
+  cta:
+    - { label: "Get started", href: /guide/quickstart, style: primary }
+  social:
+    github: "https://github.com/shebka/acme"
+  announcement:
+    text: "Acme 2.0 is live —"
+    link: { label: "read the notes", href: /about }
+    dismissible: true
+
+footer:
+  columns:
+    - heading: Product
+      links:
+        - { label: Features, page: features }
+        - { label: Pricing, page: pricing }
+    - heading: Developers
+      links:
+        - { label: Guide, page: guide }
+        - { label: Quickstart, href: /guide/quickstart }
+    - heading: Company
+      links:
+        - { label: About, page: about }
+  legal: "© 2026 Shebka LLC"
+  social:
+    github: "https://github.com/shebka/acme"
+
+analytics:
+  provider: none

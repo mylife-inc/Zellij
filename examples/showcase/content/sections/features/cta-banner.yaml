@@ -1,0 +1,6 @@
+type: cta-banner
+headline: See Acme on your own workflow
+cta:
+  label: Read the quickstart
+  href: /guide/quickstart
+  style: primary

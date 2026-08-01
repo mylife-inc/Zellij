@@ -1,0 +1,43 @@
+# The top bar. Search, the theme picker and the colour toggle are built in and
+# configured in site.yaml — this file declares the menu items and nothing else.
+
+- name: Features
+  page: features
+
+- name: Pricing
+  page: pricing
+
+- name: Solutions
+  items:
+    - { name: For startups, page: solutions/startups }
+    - { name: For enterprise, page: solutions/enterprise }
+
+# A child with its own `items` becomes a heading column, so this drawer renders
+# as a full-width panel rather than a compact dropdown.
+- name: Resources
+  items:
+    - name: Learn
+      items:
+        - name: Guide
+          page: guide
+          description: "Install, configure, operate."
+          icon: book
+        - name: Quickstart
+          url: /guide/quickstart
+          description: "Ship in ten minutes."
+          icon: rocket
+    - name: Company
+      items:
+        - name: About
+          page: about
+          description: "Why we build Acme."
+          icon: users
+        # Leaving the site: marked with an outbound icon and opened in a new tab.
+        - name: GitHub
+          url: "https://github.com/shebka/acme"
+          description: "Source, issues, releases."
+          icon: code
+
+# `url` takes any href, so an anchor into a page works here too.
+- name: Security
+  url: /features#security

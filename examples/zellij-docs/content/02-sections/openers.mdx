@@ -1,0 +1,95 @@
+---
+title: Openers
+description: hero, showcase, media-panel and cta-banner — the sections that start and end a page.
+---
+
+## hero
+
+The top of a page. One per page, and it renders an `h1`.
+
+```yaml
+type: hero
+badge: Acme 2.0 is here            # optional
+headline: Operations that run themselves
+subhead: One system for workflows, approvals and reporting.
+cta:                                # up to 2
+  - { label: Get started, href: /guide, style: primary }
+  - { label: See features, href: /features, style: ghost }
+visual: assets/hero.png
+visualStyle: floating               # floating | framed | full-bleed
+titleGradient: [accent, fg]
+```
+
+The hero image is the LCP element on most landing pages, so it loads with
+priority. Everything below it is lazy. Under `motion: expressive` the visual
+takes a gentle parallax.
+
+## showcase
+
+One large panel: eyebrow, headline, body, visual. The "learn more" building
+block.
+
+```yaml
+type: showcase
+eyebrow: Platform
+headline: Built for the way operations actually work
+body: Branches, parallel steps and conditions, without a scripting language.
+visual: assets/platform.png
+background: inverted
+cta: { label: Read more, href: /features }
+```
+
+Under `motion: expressive` the panel pins and its visual ramps as the page
+scrolls past. With no `visual` the pinning is skipped — there would be nothing
+to ramp, and the reserved scroll distance would just be empty space.
+
+## media-panel
+
+A rounded panel filled edge to edge with one image *or* video, with the copy
+laid over it.
+
+```yaml
+type: media-panel
+heading: Take a closer look.        # optional, above the panel
+title: A guided tour of the platform
+body: Twelve minutes, no signup.
+image: assets/tour.png              # exactly one of image | video
+# video: assets/tour.mp4
+# poster: assets/tour-poster.png
+alt: ""
+align: left                         # left | center | right
+tone: dark                          # light | dark | auto
+ratio: ultrawide                    # ultrawide | wide | square | portrait
+scrim: 0.45                         # 0–1, darkens the media behind the copy
+cta: [{ label: Watch, href: /tour }]
+# href: /tour                       # makes the whole panel a link
+```
+
+<Callout type="info" title="tone is not a guess the engine can make">
+Zellij cannot see the artwork, so it cannot know whether white or black copy
+will be legible over it. `tone` is how you say. `auto` keeps the theme's own
+foreground, which is right for light, flat imagery.
+</Callout>
+
+`ratio` sets the panel's shape, but it is a floor rather than a cage: the panel
+grows past it when the copy needs more room, so a long title is never clipped.
+On a phone the copy takes the full width and the frame turns portrait.
+
+Setting `href` makes the whole panel a link, and the CTAs are dropped — a link
+inside a link is not a thing.
+
+## cta-banner
+
+The end of a page.
+
+```yaml
+type: cta-banner
+headline: Ready to ship?
+body: Three files, then write content.
+background: { gradient: [accent, inverted-bg] }
+cta:
+  - { label: Get started, href: /guide, style: primary }
+  - { label: Talk to us, href: /contact, style: ghost }
+```
+
+`cta` accepts a single object or a list of up to two.

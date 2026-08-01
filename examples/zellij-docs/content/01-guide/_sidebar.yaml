@@ -1,0 +1,25 @@
+title: Guide
+order: 1
+description: Install Zellij, learn the content model, and ship a site.
+
+nav:
+  - label: Start here
+    items:
+      - index
+      - quickstart
+  # Not "The content model": a group sharing a name with a page inside it makes
+  # the breadcrumb read "Guide / The content model / The content model".
+  - label: Authoring
+    items:
+      - content-model
+      - pages-and-sections
+      - menu
+      - guide-folders
+  - label: Look and feel
+    items:
+      - themes
+      - motion
+  - label: Shipping
+    items:
+      - cli
+      - deploying
