@@ -3,11 +3,42 @@
  * Zellij's build-time CLI. Wrapper apps run these as predev/prebuild steps
  * (spec §13.4, §13.6).
  */
-import { init } from '../src/cli/init.ts';
-import { syncAssets } from '../src/cli/sync-assets.ts';
-import { writeSearchIndex } from '../src/cli/write-search-index.ts';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const [command, ...rest] = process.argv.slice(2);
+
+/**
+ * Loads a command from source where that works, and from the build where it
+ * does not.
+ *
+ * Running the TypeScript directly is what keeps engine development free of a
+ * compile step: edit a CLI file, run the command, see the change. That stops
+ * working the moment the package is installed as a dependency — Node refuses to
+ * strip types from anything under `node_modules` — and it never worked for the
+ * commands whose imports reach into the content loader, whose relative
+ * specifiers carry no file extensions for Node's resolver to follow.
+ *
+ * So: source first, but only when this file is not itself inside node_modules,
+ * and the bundled build whenever that fails to resolve.
+ */
+const installed = fileURLToPath(import.meta.url).split(path.sep).includes('node_modules');
+
+async function load(name) {
+  if (!installed) {
+    try {
+      return await import(`../src/cli/${name}.ts`);
+    } catch (err) {
+      // A missing extension surfaces as ERR_MODULE_NOT_FOUND too, so both the
+      // "no such file" and "cannot resolve its imports" cases land here and
+      // fall through to the bundle. Anything else is a real bug in the source
+      // and is worth failing on rather than papering over with a stale build.
+      if (err?.code !== 'ERR_MODULE_NOT_FOUND') throw err;
+    }
+  }
+
+  return import(`../dist/cli/${name}-bundle.js`);
+}
 
 /** `--flag value` and `--flag=value`, plus bare `--flag` for booleans. */
 function parseFlags(args) {
@@ -36,18 +67,26 @@ function parseFlags(args) {
 }
 
 switch (command) {
-  case 'sync-assets':
+  case 'sync-assets': {
+    const { syncAssets } = await load('sync-assets');
     await syncAssets(process.cwd());
     break;
-  case 'search-index':
+  }
+  case 'search-index': {
+    const { writeSearchIndex } = await load('write-search-index');
     await writeSearchIndex(process.cwd());
     break;
-  case 'prepare':
+  }
+  case 'prepare': {
     // The usual prebuild pair.
+    const { syncAssets } = await load('sync-assets');
+    const { writeSearchIndex } = await load('write-search-index');
     await syncAssets(process.cwd());
     await writeSearchIndex(process.cwd());
     break;
+  }
   case 'init': {
+    const { init } = await load('init');
     const { flags, positional } = parseFlags(rest);
     const target = positional[0] ?? '.';
 
@@ -73,7 +112,7 @@ switch (command) {
   }
 
   case 'check': {
-    const { check } = await loadCheck();
+    const { check } = await load('check');
     const contentDir = rest.find((arg) => !arg.startsWith('-'));
     const result = await check(contentDir ? { contentDir } : {});
     if (!result.ok) process.exit(1);
@@ -94,21 +133,4 @@ switch (command) {
         `Unknown command: ${command ?? '(none)'}`,
     );
     process.exit(1);
-}
-
-/**
- * `check` needs the whole content loader, whose relative imports carry no file
- * extensions — Node's ESM resolver requires them, so this one command runs from
- * the bundled build rather than from source.
- */
-async function loadCheck() {
-  try {
-    return await import('../dist/cli/check-bundle.js');
-  } catch {
-    console.error(
-      `zellij check needs the package build.\n` +
-        `  Run: npm run build -w @shebka/zellij`,
-    );
-    process.exit(1);
-  }
 }

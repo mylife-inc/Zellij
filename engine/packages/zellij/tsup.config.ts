@@ -31,14 +31,26 @@ export default defineConfig([
     },
   },
   /**
-   * `zellij check` is the one CLI command that needs the whole content loader.
-   * Node's ESM resolver requires file extensions on relative imports, which the
-   * source does not carry, so this entry is bundled — the only place in the
-   * package where bundling is correct, since nothing in this graph is a React
-   * Server Component.
+   * The CLI, bundled.
+   *
+   * Node's ESM resolver requires file extensions on relative imports and the
+   * source does not carry them, so the unbundled build above cannot be executed
+   * directly — only compiled by a bundler, which is what a consuming app does
+   * with everything else in the package.
+   *
+   * `bin/zellij.mjs` runs from source inside this monorepo, where the files sit
+   * outside `node_modules` and Node will strip their types. Once the package is
+   * installed as a dependency that stops working, so these are what actually
+   * run for a consumer. Bundling is correct here for the same reason it is
+   * wrong above: nothing in this graph is a React Server Component.
    */
   {
-    entry: { 'cli/check-bundle': 'src/cli/check.ts' },
+    entry: {
+      'cli/check-bundle': 'src/cli/check.ts',
+      'cli/init-bundle': 'src/cli/init.ts',
+      'cli/sync-assets-bundle': 'src/cli/sync-assets.ts',
+      'cli/write-search-index-bundle': 'src/cli/write-search-index.ts',
+    },
     format: ['esm'],
     dts: false,
     sourcemap: false,

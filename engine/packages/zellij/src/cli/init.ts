@@ -55,6 +55,28 @@ function installable(range: string): string {
   return minor ? `^${minor[1]}.${minor[2]}.0` : range;
 }
 
+/*
+ * `install-links` makes npm copy a `file:` dependency into node_modules instead
+ * of symlinking it. Without it the engine stays a link pointing outside the
+ * app, and Turbopack will not compile sources it cannot see beneath the project
+ * root — the app installs cleanly and then fails to resolve `@shebka/zellij`,
+ * which reads like a missing package rather than a link it declined to follow.
+ */
+const NPMRC = `install-links=true
+`;
+
+/*
+ * The engine's stylesheet opens with `@import 'tailwindcss'`, so a consuming
+ * app needs Tailwind's PostCSS plugin wired up before any Zellij CSS resolves.
+ * That is the engine's requirement rather than the site's, so the scaffold
+ * supplies it — without this the app installs, then fails its first build on a
+ * missing module the author never asked for.
+ */
+const POSTCSS_CONFIG = `const config = { plugins: { '@tailwindcss/postcss': {} } };
+
+export default config;
+`;
+
 const GITIGNORE = `node_modules/
 .next/
 out/
@@ -247,6 +269,8 @@ export async function init(options: InitOptions): Promise<string> {
     },
     dependencies,
     devDependencies: {
+      '@tailwindcss/postcss': '^4.3.3',
+      tailwindcss: '^4.3.3',
       '@types/node': '^22.10.2',
       '@types/react': '^19.2.0',
       '@types/react-dom': '^19.2.0',
@@ -259,6 +283,8 @@ export async function init(options: InitOptions): Promise<string> {
     'tsconfig.json': `${JSON.stringify(TSCONFIG, null, 2)}\n`,
     'next.config.js': NEXT_CONFIG,
     '.gitignore': GITIGNORE,
+    '.npmrc': NPMRC,
+    'postcss.config.mjs': POSTCSS_CONFIG,
     'src/app/layout.tsx': LAYOUT,
     'src/app/[[...slug]]/page.tsx': PAGE,
     'README.md': readme(name, port, version),
