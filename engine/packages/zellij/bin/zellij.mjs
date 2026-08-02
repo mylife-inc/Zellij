@@ -96,7 +96,16 @@ switch (command) {
       ...(flags.name ? { name: flags.name } : {}),
       ...(flags.port ? { port: Number(flags.port) } : {}),
       ...(flags.force ? { force: true } : {}),
+      ...(flags['content-only'] ? { contentOnly: true } : {}),
     });
+
+    if (flags['content-only']) {
+      console.log(
+        `[zellij] Wrote a content folder to ${created}\n\n` +
+          `  zellij check ${target}\n`,
+      );
+      break;
+    }
 
     const steps = [
       ...(target === '.' ? [] : [`cd ${target}`]),
@@ -108,6 +117,18 @@ switch (command) {
         steps.map((step) => `  ${step}`).join('\n') +
         '\n',
     );
+    break;
+  }
+
+  case 'context': {
+    const { writeContext } = await load('context');
+    const { flags, positional } = parseFlags(rest);
+    const target = flags.out ?? positional[0];
+
+    const written = await writeContext(typeof target === 'string' ? target : undefined);
+    if (written !== '(stdout)') {
+      console.log(`[zellij] Wrote the agent context file to ${written}`);
+    }
     break;
   }
 
@@ -126,6 +147,9 @@ switch (command) {
         `                   --name <name>     package name\n` +
         `                   --port <n>        dev port\n` +
         `                   --force           write into a non-empty directory\n` +
+        `                   --content-only    write just the content folder\n` +
+        `  context [file] write a single reference describing Zellij's content\n` +
+        `                   model, for an AI agent to author a folder from\n` +
         `  check [dir]    validate a content root without building\n` +
         `  prepare        sync assets and build the search index\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +

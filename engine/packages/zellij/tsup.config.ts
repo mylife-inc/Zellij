@@ -47,6 +47,7 @@ export default defineConfig([
   {
     entry: {
       'cli/check-bundle': 'src/cli/check.ts',
+      'cli/context-bundle': 'src/cli/context.ts',
       'cli/init-bundle': 'src/cli/init.ts',
       'cli/sync-assets-bundle': 'src/cli/sync-assets.ts',
       'cli/write-search-index-bundle': 'src/cli/write-search-index.ts',

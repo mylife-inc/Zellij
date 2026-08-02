@@ -28,6 +28,14 @@ export interface InitOptions {
   port?: number;
   /** Write into a directory that already has files in it. */
   force?: boolean;
+  /**
+   * Write only the content folder, with no app around it.
+   *
+   * For a project that wants documentation in its own repository and will build
+   * it elsewhere — in CI, or from the base image — where a Next.js app checked
+   * in beside the source would be scaffolding nobody maintains.
+   */
+  contentOnly?: boolean;
 }
 
 /** The engine's own package root, found from this file rather than from the caller's cwd. */
@@ -227,6 +235,16 @@ export async function init(options: InitOptions): Promise<string> {
           `  Pass --force to write into it anyway, or choose another directory.`,
       );
     }
+  }
+
+  if (options.contentOnly) {
+    const root = options.content ? target : path.join(target);
+    for (const [rel, body] of Object.entries(starterContent(name))) {
+      const file = path.join(root, rel);
+      await mkdir(path.dirname(file), { recursive: true });
+      await writeFile(file, body, 'utf8');
+    }
+    return root;
   }
 
   const { version, peers } = await enginePackage();
