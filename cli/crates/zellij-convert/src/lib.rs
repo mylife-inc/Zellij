@@ -8,6 +8,11 @@
 //! A converter is registered by existing rather than by being listed anywhere,
 //! so adding one touches no file that is not about that format.
 
+pub mod emit;
+pub mod mdx;
+pub mod mkdocs;
+pub mod model;
+
 use camino::{Utf8Path, Utf8PathBuf};
 
 /// How strongly a source looks like a given format.

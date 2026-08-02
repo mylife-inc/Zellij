@@ -183,6 +183,13 @@ fn main() {
         Command::List(ListTarget::Sections) => list_sections(),
         Command::Explain { ref section_type } => explain(section_type),
         Command::Context { ref file } => write_context(file.as_deref()),
+        Command::Detect { ref dir } => detect(dir),
+        Command::Convert {
+            ref source,
+            ref out,
+            ref from,
+            dry_run,
+        } => convert(source, out, from.as_deref(), dry_run),
         _ => {
             eprintln!("not implemented yet — see specs/zellij-cli-spec.md");
             std::process::exit(1);
@@ -317,6 +324,102 @@ fn write_context(file: Option<&str>) -> zellij_core::Result<()> {
             println!("Wrote the Zellij reference to {path}");
         }
         None => print!("{}", zellij_core::schema::CONTEXT_MARKDOWN),
+    }
+
+    Ok(())
+}
+
+fn detect(dir: &str) -> zellij_core::Result<()> {
+    let source = camino::Utf8Path::new(dir);
+    let found = zellij_convert::detect(source);
+
+    if found.is_empty() {
+        println!("Nothing here looks like a documentation tool this build knows.");
+        println!(
+            "\nIf the folder is plain Markdown with no configuration, there is no\nstructure to convert from. Write the reference with `zel context` and\nask an AI agent to author the folder instead."
+        );
+        return Ok(());
+    }
+
+    for (converter, confidence) in found {
+        let strength = if confidence >= zellij_convert::Confidence::CERTAIN {
+            "certain"
+        } else {
+            "likely"
+        };
+        println!("{:<12} {}  ({strength})", converter.id(), converter.label());
+    }
+
+    Ok(())
+}
+
+fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij_core::Result<()> {
+    use zellij_core::Error;
+
+    let source = camino::Utf8Path::new(source);
+    let out = camino::Utf8Path::new(out);
+
+    let converter = match from {
+        Some(id) => zellij_convert::all()
+            .find(|converter| converter.id() == id)
+            .ok_or_else(|| Error::UnknownFormat {
+                path: source.to_owned(),
+            })?,
+        None => {
+            let found = zellij_convert::detect(source);
+            // Guessing between two plausible formats produces a conversion
+            // that is wrong in ways nobody notices until much later, so an
+            // ambiguous tree is a question rather than a coin toss.
+            match found.first() {
+                Some((converter, _)) => *converter,
+                None => {
+                    return Err(Error::UnknownFormat {
+                        path: source.to_owned(),
+                    });
+                }
+            }
+        }
+    };
+
+    println!("Converting {source} as {}", converter.label());
+
+    let conversion = converter.convert(source, &zellij_convert::ConvertOptions::default())?;
+
+    if dry_run {
+        println!("\nWould write {} files into {out}:", conversion.files.len());
+        for file in &conversion.files {
+            println!("  {}", file.path);
+        }
+    } else {
+        // Nothing is written until the whole conversion has succeeded, so a
+        // failure halfway through leaves no half-built folder behind for
+        // someone to mistake for a finished one.
+        for file in &conversion.files {
+            let target = out.join(&file.path);
+            if let Some(parent) = target.parent() {
+                std::fs::create_dir_all(parent)?;
+            }
+            std::fs::write(&target, &file.body)?;
+        }
+        println!("\nWrote {} files into {out}", conversion.files.len());
+    }
+
+    if !conversion.unmapped.is_empty() {
+        println!(
+            "\n{} thing(s) could not be carried over:",
+            conversion.unmapped.len()
+        );
+        for entry in &conversion.unmapped {
+            println!("  {}: {}", entry.source, entry.reason);
+        }
+    }
+
+    for note in &conversion.notes {
+        println!("\nNote: {note}");
+    }
+
+    if !dry_run {
+        println!("\nValidate it with `zel check {out}`.");
     }
 
     Ok(())
