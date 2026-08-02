@@ -1,4 +1,6 @@
-# The Zellij CLI — specification
+# `zel` — the Zellij CLI
+
+**Specification**
 
 A single native binary through which a person does everything with Zellij:
 scaffold a content folder, convert one from another tool, validate it, build it,
@@ -23,7 +25,7 @@ account on a private repository, and without learning what a wrapper app is.
 
 1. **No Node on the host.** The binary depends on nothing but itself and, for
    the commands that build, a container runtime.
-2. **The engine validates, not the CLI.** `zellij check` runs the real schemas
+2. **The engine validates, not the CLI.** `zel check` runs the real schemas
    inside the container. Reimplementing them in Rust would produce a second
    source of truth that disagrees with the first the week after it is written.
 3. **Never write over someone's work.** Conversion and scaffolding emit into a
@@ -44,7 +46,7 @@ mean reimplementing the engine.
 | Embedded in the binary | The agent context file, generated from the schemas at release time |
 
 The context file is the interesting case: it is *generated* by Node in CI,
-committed, and compiled into the binary with `include_str!`. So `zellij context`
+committed, and compiled into the binary with `include_str!`. So `zel context`
 needs neither Node nor Docker, and still cannot drift.
 
 ---
@@ -53,7 +55,7 @@ needs neither Node nor Docker, and still cannot drift.
 
 | Artefact | Where | Who can get it |
 | --- | --- | --- |
-| `zellij` binary | GitHub Releases, per platform | Anyone with the release URL |
+| `zel` binary | GitHub Releases, per platform | Anyone with the release URL |
 | `ghcr.io/mylife-inc/zellij-base` | GHCR, public | Anyone |
 | Engine source | Private repository | The team |
 
@@ -65,50 +67,81 @@ Checksums published alongside; the installer verifies before moving into place.
 
 ---
 
-## 3. Command surface
+## 3. What it can do
 
-    zellij <command> [arguments] [--flags]
+    zel <command> [arguments] [--flags]
 
 Global flags: `--quiet`, `--verbose`, `--json`, `--no-color`, `--yes`,
-`--config <file>`.
+`--config <file>`, `--cwd <dir>`.
 
-### 3.1 Starting a project
+Two shapes of command, deliberately. **Primitives** do one thing and compose.
+**Workflows** run a sequence people actually ask for as a unit — converting a
+folder, building an image and pushing it is one intention, not three, and a tool
+that only offers the three makes its user assemble something the tool already
+knows how to assemble.
+
+### 3.1 Creating
 
 | Command | Does |
 | --- | --- |
-| `zellij new [dir]` | Writes a content folder that already validates. `--minimal` for the smallest thing that builds, `--full` for one example of every section type. |
-| `zellij eject [dir]` | Extracts the Next.js wrapper out of the base image onto disk, engine already installed. For someone who wants to run `next dev` themselves. |
-| `zellij context [file]` | Writes the reference an AI agent authors from. Embedded in the binary; needs nothing else. |
+| `zel new app [dir]` | A Next.js wrapper app with the engine installed. `--with-docs` adds a starter content folder so there is something to open. `--from <dir>` wraps an existing content folder instead. |
+| `zel new docs [dir]` | Just the content folder — for a repository that keeps documentation beside its source and builds elsewhere. `--full` writes one example of every section type. |
+| `zel new section <type> [name]` | A section file with its required fields filled in and its optional ones listed as commented defaults. |
+| `zel new page <name>` | A page in `pages.yaml`, and the section files it references. |
+| `zel new guide <name>` | A guide folder with `_sidebar.yaml` and an index page. |
+| `zel eject [dir]` | Pulls the wrapper app out of the base image onto disk, engine already installed. No clone, no npm. |
 
-`zellij new` covers use-case 3. `zellij context` covers use-case 1, and the
-fallback half of use-case 2.
+`zel new section` is the one people will use daily. Nineteen types with their
+own fields is more than anyone holds in their head, and the failure it prevents
+— writing a plausible section that the build rejects — is the most common way
+to lose ten minutes.
 
-### 3.2 Converting from another tool
+    $ zel new section pricing-table sections/home/plans.yaml
+    $ zel new section --interactive
+    ? Which section type?     › pricing-table
+    ? How many tiers?         › 3
+    ? Highlight which tier?   › Team
+    ✓ Wrote sections/home/plans.yaml
 
-    zellij convert <source> --out <dir> [--from <format>] [--dry-run]
+Interactive when a terminal is attached and no arguments are given; every
+prompt has a flag, so the same thing is scriptable:
 
-Reads a documentation tree written for another tool and emits a Zellij content
-folder beside it. Never in place.
+    zel new section pricing-table --tiers 3 --highlight Team --out sections/home/plans.yaml
 
-| Flag | Does |
+### 3.2 Understanding
+
+| Command | Does |
 | --- | --- |
-| `--from` | Force a format instead of detecting. |
-| `--out` | Destination. Required — there is no default that could not surprise someone. |
-| `--dry-run` | Report what would be written, write nothing. |
-| `--assets copy\|link\|skip` | What to do with images. Default `copy`. |
+| `zel explain <type>` | Every field of a section type, its defaults, and a worked example ready to paste. The answer to "what does a bento grid take again?". |
+| `zel list sections` | All nineteen, one line each. |
+| `zel list themes` | All fourteen, with what distinguishes them. |
+| `zel list formats` | What `convert` recognises. |
+| `zel list targets` | What `build` can produce. |
+| `zel context [file]` | The reference an AI agent authors a content folder from. |
+
+`explain` and `context` are the same knowledge at two scales: one section for a
+person, the whole model for an agent. Both are generated from the schemas, so
+neither can drift.
+
+### 3.3 Converting
+
+| Command | Does |
+| --- | --- |
+| `zel detect <dir>` | Says what tool a documentation folder was written for, and how sure it is. Changes nothing. |
+| `zel convert <src> --out <dir>` | Converts into a new folder. `--from` to force a format, `--dry-run` to see the plan, `--assets copy\|link\|skip`. |
 
 Detection reports a confidence, and an ambiguous tree asks rather than guesses.
-When nothing is recognised, the command does **not** attempt a conversion: it
+When nothing is recognised the command does **not** attempt a conversion: it
 explains that the tree has no machine-readable structure and points at
-`zellij context` and an AI agent, which is the honest answer.
+`zel context` and an AI agent, which is the honest answer rather than a
+plausible wrong one.
 
 **What a converter can and cannot do.** Every one of these tools describes a
 *documentation tree*. Zellij has that, and also marketing pages built from
 nineteen section types with no equivalent anywhere else. So a converter produces
 a faithful guide folder, a `site.yaml` carrying whatever identity it can find,
 and a `pages.yaml` with a single hero for the author to build on. It does not
-invent a landing page. This is stated in the report, every time, so nobody
-expects otherwise.
+invent a landing page, and it says so in the report every time.
 
 Formats, in the order they are worth doing:
 
@@ -119,7 +152,7 @@ Formats, in the order they are worth doing:
 | Docusaurus | `sidebars.js` + `docusaurus.config.js` | Hard — JavaScript, not data |
 | Sphinx | `conf.py` + `toctree` in reST | Hard — Python, and reST is not Markdown |
 | Jekyll / Hugo | front-matter conventions, `_data` | Medium |
-| Plain folder | No config at all | Fall back to the agent |
+| Plain Markdown | No config at all | Infer from folder shape, or fall back to the agent |
 
 Docusaurus deserves a note: `sidebars.js` is a JavaScript module, so parsing it
 is not enough. The plan is to read the common declarative shapes with a JS
@@ -127,40 +160,79 @@ is not enough. The plan is to read the common declarative shapes with a JS
 computes its exports. Half-evaluating someone's JavaScript is how a converter
 produces a wrong sidebar that looks right.
 
-### 3.3 Working on content
+### 3.4 Working
 
 | Command | Does |
 | --- | --- |
-| `zellij check [dir]` | Validates. Runs the engine in the container. `--json` for CI. |
-| `zellij dev [dir]` | Development server with hot reload, content bind-mounted. |
-| `zellij build [dir]` | Builds the site. `--out <dir>` to extract the result. |
-| `zellij serve [dir]` | Serves a built site locally. |
-| `zellij add <type> [name]` | Writes a new section file of that type, with its required fields filled in and its optional ones listed as comments. |
-| `zellij list sections` | Every section type and what it is for. |
-| `zellij fmt [dir]` | Canonical formatting for the YAML files. |
+| `zel check [dir]` | Validates against the real schemas. `--json` for CI. |
+| `zel dev [dir]` | Development server with hot reload: content is bind-mounted, so editing a Markdown file updates the browser. This is the command an author leaves running. |
+| `zel build [dir]` | Builds. See targets below. |
+| `zel serve [dir]` | Serves what `build` produced, locally. |
+| `zel fmt [dir]` | Canonical formatting for the YAML. |
+| `zel watch [dir]` | Re-runs `check` on every change, without a server. For a repository that only wants its documentation kept valid. |
 
-`zellij add` is the authoring aid that matters most: nineteen section types is
-more than anyone will remember, and a stub with the right fields is faster than
-reading a reference.
+### 3.5 Building — what comes out
 
-### 3.4 Shipping
+`--target` decides the artefact, and the artefact decides where it can be
+hosted. These are genuinely different products, not build flags:
+
+| Target | Produces | Runs on | Image size |
+| --- | --- | --- | --- |
+| `static` *(default)* | A folder of HTML, CSS and JS | Netlify, Cloudflare, GitHub Pages, S3 — free tiers everywhere | — |
+| `node` | A traced Node server | Any Node host | — |
+| `image:static` | Container, nginx serving the static folder | Any registry | ~30 MB |
+| `image:node` | Container, Node serving the app | Any registry | ~150 MB |
+
+`static` is the default because most documentation sites are read far more than
+they are written, a CDN serves them better than a server would, and it is the
+only target that costs nothing to host.
+
+The trade-off worth knowing: static loses `next/image` optimisation, so images
+are served as authored. For a documentation site that is usually the right
+trade; for a marketing site heavy with photography it is not, and `image:node`
+exists for exactly that.
+
+### 3.6 Shipping
 
 | Command | Does |
 | --- | --- |
-| `zellij image build [dir]` | Builds a deployable image from a content folder. Generates the multi-stage Dockerfile; the user never writes one. |
-| `zellij image push` | Pushes to a registry. |
-| `zellij deploy <target>` | `netlify`, `vercel`, `cloudflare`, `s3`, `ghpages`. Static output where the target wants static. |
-| `zellij ci init <provider>` | Writes a pipeline — `github`, `gitlab`, `circle` — that builds and publishes on push. |
+| `zel deploy netlify\|vercel\|cloudflare\|ghpages\|s3` | Builds `static` and pushes it. |
+| `zel image build` | Builds a deployable image. Writes the multi-stage Dockerfile itself; the user never sees one. |
+| `zel image push [registry]` | Pushes it. |
+| `zel image run` | Runs it locally — the last check before it goes anywhere. |
+| `zel ci init github\|gitlab\|circle` | Writes a pipeline that does all of the above on push. |
 
-### 3.5 Housekeeping
+### 3.7 Workflows
+
+One command for a sequence somebody would otherwise script, and get subtly
+wrong — forgetting to validate before building is the usual one.
+
+| Command | Runs |
+| --- | --- |
+| `zel migrate <src> --out <dir>` | `detect` → `convert` → `check` → report. The whole of use-case 2. |
+| `zel publish [dir]` | `check` → `build` → `deploy`. Stops at the first failure. |
+| `zel ship <src>` | `convert` → `check` → `image build` → `image push`. Existing documentation to a pushed image, in one line. |
+
+    $ zel ship ./docs --registry ghcr.io/acme --tag v2.1.0
+    ✓ Detected MkDocs (certain)
+    ✓ Converted 47 pages, 3 unmapped — see report
+    ✓ Content valid
+    ✓ Built image:static — 31 MB
+    ✓ Pushed ghcr.io/acme/docs:v2.1.0
+
+Every workflow is the primitives in order, with nothing that cannot also be
+done by hand. A workflow that could do something its primitives could not would
+be a place for behaviour to hide.
+
+### 3.8 Housekeeping
 
 | Command | Does |
 | --- | --- |
-| `zellij doctor` | Checks the container runtime, the image, versions, and disk. First thing to ask for in a bug report. |
-| `zellij pull` | Pulls or updates the base image. |
-| `zellij version` | Binary version, image version, engine version. |
-| `zellij upgrade` | Self-update from GitHub Releases. |
-| `zellij completions <shell>` | Shell completions. |
+| `zel doctor` | Container runtime, image, versions, disk. The first thing to ask for in a bug report. |
+| `zel pull` | Pulls or updates the base image. |
+| `zel version` | Binary, image and engine versions. |
+| `zel upgrade` | Self-update from GitHub Releases. |
+| `zel completions <shell>` | Shell completions. |
 
 ---
 
@@ -252,7 +324,7 @@ Exit codes: `0` success · `1` general failure · `2` invalid usage ·
 - Unit tests per converter, over checked-in fixture projects.
 - **Golden-file tests**: each fixture has an expected content folder, and the
   test asserts the conversion matches it byte for byte.
-- **The real gate**: every fixture's conversion is fed to `zellij check`. A
+- **The real gate**: every fixture's conversion is fed to `zel check`. A
   converter is correct when the engine accepts what it produced — not when it
   produces what a developer expected.
 - `trycmd` for the command surface itself, so `--help` output stays honest.
@@ -284,29 +356,34 @@ Precedence: flags, then environment (`ZELLIJ_*`), then file, then defaults.
 
 ## 6. Open questions
 
-1. **Is `zellij dev` worth the complexity?** It needs a bind mount, a
-   long-running container and signal handling. The alternative is `zellij eject`
-   plus the user's own `npm run dev`. I lean towards shipping `eject` first and
-   `dev` once the rest is proven.
-2. **Static or standalone by default?** Static deploys anywhere and costs
-   nothing to host, but loses `next/image` optimisation. Standalone keeps
-   everything and needs a Node runtime. Proposal: static by default, since most
-   documentation sites are hosted on a CDN.
-3. **Does `convert` need to run `check` itself?** It requires Docker, which the
-   other conversion commands do not. Proposal: attempt it, and degrade to a
-   warning when no container runtime is present rather than failing.
-4. **Which converter first?** MkDocs is the easiest and a clean proof of the
+1. **Does `convert` run `check` itself?** It would need Docker, which no other
+   part of conversion does. Proposal: attempt it, and degrade to a warning when
+   no container runtime is present rather than failing.
+2. **Which converter first?** MkDocs is easiest and the cleanest proof of the
    plugin design. Docusaurus is the most common in the wild and the hardest.
+3. **How far does `zel new section --interactive` go?** Prompting for every
+   field of a nineteen-item pricing table is worse than opening an editor.
+   Proposal: prompt only for what has no sensible default, and write the rest as
+   commented-out lines the author can uncomment.
 
----
+**Settled**
+
+- The binary is `zel`. `zellij` collides with the terminal multiplexer of the
+  same name, whose users commonly alias it to `zj`.
+- The default build target is `static`.
+- `zel dev` is in scope. It is the command an author leaves running while they
+  write, which makes it worth its complexity: a bind-mounted content folder and
+  a container running `next dev`, so editing a Markdown file updates the
+  browser. `zel eject` still exists for anyone who would rather run the app
+  themselves.
 
 ## 7. Order of work
 
 1. Workspace, `zellij-core`, error and output plumbing, `doctor`, `version`.
 2. `context`, `new` — neither needs Docker, both are immediately useful.
-3. `zellij-engine` with the Docker backend; `check`, `build`, `serve`.
+3. `zellij-engine` with the Docker backend; `check`, `build`, `serve`, `dev`.
 4. `zellij-convert` with the trait, the registry, and MkDocs.
 5. VitePress, then Jekyll/Hugo, then Docusaurus.
-6. `eject`, `add`, `list`, `fmt`.
+6. `eject`, `new section`, `explain`, `fmt`.
 7. Deployment and `ci init`.
 8. Release packaging and the install script.

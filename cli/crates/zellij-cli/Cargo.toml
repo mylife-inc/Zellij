@@ -9,7 +9,7 @@ authors.workspace = true
 repository.workspace = true
 
 [[bin]]
-name = "zellij"
+name = "zel"
 path = "src/main.rs"
 
 [dependencies]
