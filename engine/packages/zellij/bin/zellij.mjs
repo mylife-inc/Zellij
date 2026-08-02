@@ -138,6 +138,31 @@ switch (command) {
     break;
   }
 
+  case 'features': {
+    const { setFeatures, FEATURE_NAMES } = await load('init');
+    const { positional } = parseFlags(rest);
+    const [list, dir = '.'] = positional;
+
+    if (list === undefined) {
+      console.error(
+        `Usage: zellij features <list> [dir]\n\n` +
+          `  Available: ${FEATURE_NAMES.join(', ')}, all, none\n` +
+          `  Example:   zellij features maths,diagrams`,
+      );
+      process.exit(1);
+    }
+
+    const wanted = list === 'none' ? [] : list.split(',').map((f) => f.trim()).filter(Boolean);
+    const applied = await setFeatures(dir, wanted);
+
+    console.log(
+      applied.length > 0
+        ? `[zellij] Features on: ${applied.join(', ')}`
+        : `[zellij] Features off. Neither maths nor diagrams will be installed.`,
+    );
+    break;
+  }
+
   case 'check': {
     const { check } = await load('check');
     const contentDir = rest.find((arg) => !arg.startsWith('-'));
@@ -158,6 +183,9 @@ switch (command) {
         `                                     maths, diagrams, all (default none)\n` +
         `  context [file] write a single reference describing Zellij's content\n` +
         `                   model, for an AI agent to author a folder from\n` +
+        `  features <list> [dir]\n` +
+        `                 turn optional features on in an existing app, before\n` +
+        `                   installing: maths, diagrams, all, none\n` +
         `  check [dir]    validate a content root without building\n` +
         `  prepare        sync assets and build the search index\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +

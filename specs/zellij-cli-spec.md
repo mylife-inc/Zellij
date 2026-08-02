@@ -205,7 +205,29 @@ are served as authored. For a documentation site that is usually the right
 trade; for a marketing site heavy with photography it is not, and `image:node`
 exists for exactly that.
 
-### 3.6 Shipping
+### 3.6 Optional features
+
+Mathematics and diagrams cost about fifty and a hundred megabytes to install,
+and most documentation wants neither. They are optional dependencies of the
+engine, so a site that does not ask for them never fetches them — and the
+engine renders without them rather than failing over a package nobody wanted.
+
+There are two ways to the same place, and they exist for different people:
+
+| | |
+| --- | --- |
+| `ghcr.io/…/zellij-base:-maths`, `:-diagrams`, `:-all` | Baked in. Pick the image and build. |
+| `--build-arg FEATURES=all` on the plain image | Chosen at build time, one image to pull. |
+
+The second is what `zel build --features` uses. Since the base image installs
+nothing, the two cost the same: the feature only decides what a *site build*
+fetches, never what an image weighs. The variants exist because naming an image
+is sometimes clearer than remembering a flag.
+
+`zel features <list>` applies the same change to an app on disk, which is what
+the build argument runs inside the container.
+
+### 3.7 Shipping
 
 | Command | Does |
 | --- | --- |
@@ -215,7 +237,7 @@ exists for exactly that.
 | `zel image run` | Runs it locally — the last check before it goes anywhere. |
 | `zel ci init github\|gitlab\|circle` | Writes a pipeline that does all of the above on push. |
 
-### 3.7 Workflows
+### 3.8 Workflows
 
 One command for a sequence somebody would otherwise script, and get subtly
 wrong — forgetting to validate before building is the usual one.
@@ -237,7 +259,7 @@ Every workflow is the primitives in order, with nothing that cannot also be
 done by hand. A workflow that could do something its primitives could not would
 be a place for behaviour to hide.
 
-### 3.8 Housekeeping
+### 3.9 Housekeeping
 
 | Command | Does |
 | --- | --- |

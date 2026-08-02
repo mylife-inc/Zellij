@@ -6,6 +6,10 @@
 #   docker build -f site.Dockerfile --build-arg CONTENT=docs -t my-docs .
 #   docker run --rm -p 3000:3000 my-docs
 #
+# For documentation with formulas or diagrams in it:
+#
+#   docker build -f site.Dockerfile --build-arg FEATURES=all ...
+#
 # To build against a base image you built yourself:
 #
 #   docker build -f site.Dockerfile \
@@ -20,6 +24,14 @@ ARG ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base
 ARG ZELLIJ_VERSION=latest
 ARG CONTENT=content
 
+# Optional engine features: maths, diagrams, all, or empty for neither.
+#
+# The published image variants have these baked in, and this is the other way
+# to the same place: take the plain image and ask for what this site needs, at
+# the moment it is built. Nothing is installed in the base image, so turning a
+# feature on here costs no more than having pulled the variant that had it.
+ARG FEATURES=
+
 # ------------------------------------------------------------------- build
 FROM ${ZELLIJ_IMAGE}:${ZELLIJ_VERSION} AS build
 
@@ -30,6 +42,13 @@ WORKDIR /app
 # content had and yours does not cannot survive into your site.
 RUN rm -rf /app/content
 COPY ${CONTENT}/ /app/content/
+
+ARG FEATURES
+
+# Before installing, because the point of asking is to change what gets fetched.
+RUN if [ -n "$FEATURES" ]; then \
+      node /opt/zellij/bin/zellij.mjs features "$FEATURES" /app; \
+    fi
 
 # The base image carries the engine and a manifest, and nothing else. This is
 # where the manifest becomes an installation — deferred to here because it is

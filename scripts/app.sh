@@ -56,7 +56,8 @@ Zellij development commands
     zimage [features]   Build the base image. features: none | maths | diagrams | all
     zimage-all          Build all four variants, the way CI publishes them
     zimage-push [tag]   Push it to GHCR
-    zsite <content>     Build a site image from a content folder
+    zsite <content> [tag] [features]
+                        Build a site image. features: maths | diagrams | all
     zimage-size         What the images weigh, and where it goes
 
   Publishing
@@ -191,13 +192,15 @@ zimage-push() {
 zsite() {
   local content="${1:-examples/payos/content}"
   local tag="${2:-zellij-site:local}"
+  local features="${3:-}"
 
-  _zsay "Building a site image from $content"
+  _zsay "Building a site image from $content${features:+ (features: $features)}"
   (cd "$ZELLIJ_ROOT" && docker build \
     -f docker/site.Dockerfile \
     --build-arg ZELLIJ_IMAGE=zellij-base \
     --build-arg ZELLIJ_VERSION=local \
     --build-arg "CONTENT=$content" \
+    --build-arg "FEATURES=$features" \
     -t "$tag" .)
 }
 

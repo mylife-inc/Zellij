@@ -239,6 +239,67 @@ any problem it finds.
   };
 }
 
+
+/**
+ * The packages each optional feature needs.
+ *
+ * One definition, used both when an app is generated and when an existing one
+ * is retuned. A second copy — in a Dockerfile, say, where it would be three
+ * lines of shell — is a copy that disagrees the first time a version moves.
+ */
+const FEATURE_PACKAGES: Record<string, Record<string, string>> = {
+  maths: { 'remark-math': '^6.0.0', 'rehype-mathjax': '^7.1.0' },
+  diagrams: { mermaid: '^11.16.0' },
+};
+
+export const FEATURE_NAMES = Object.keys(FEATURE_PACKAGES);
+
+function featureDependencies(features: readonly string[]): Record<string, string> {
+  // `all` is spelled out rather than passed through, so the manifest records
+  // what was actually asked for and still reads clearly a year later.
+  const wanted = new Set(
+    features.flatMap((feature) => (feature === 'all' ? FEATURE_NAMES : [feature])),
+  );
+
+  const unknown = [...wanted].filter((feature) => !(feature in FEATURE_PACKAGES));
+  if (unknown.length > 0) {
+    throw new Error(
+      `Unknown feature(s): ${unknown.join(', ')}\n  Available: ${FEATURE_NAMES.join(', ')}, all`,
+    );
+  }
+
+  return Object.assign({}, ...[...wanted].map((feature) => FEATURE_PACKAGES[feature]));
+}
+
+/**
+ * Turns optional features on in an app that already exists.
+ *
+ * This is what lets one base image serve every combination: the published
+ * variants have their features baked in, and anyone using the plain one can
+ * ask for maths or diagrams at the moment they build, before anything is
+ * installed. Editing the manifest is all it takes, because the features are
+ * only ever a question of which packages get fetched.
+ */
+export async function setFeatures(target: string, features: readonly string[]): Promise<string[]> {
+  const manifest = path.join(path.resolve(target), 'package.json');
+  const parsed = JSON.parse(await readFile(manifest, 'utf8')) as {
+    dependencies?: Record<string, string>;
+  };
+
+  const wanted = featureDependencies(features);
+
+  // Every optional package is cleared first, so turning a feature off works as
+  // well as turning one on — otherwise the only way back would be a fresh app.
+  const all = Object.assign({}, ...Object.values(FEATURE_PACKAGES)) as Record<string, string>;
+  const dependencies = { ...parsed.dependencies };
+  for (const name of Object.keys(all)) delete dependencies[name];
+
+  parsed.dependencies = { ...dependencies, ...wanted };
+  await writeFile(manifest, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8');
+
+  return Object.keys(wanted);
+}
+
 /**
  * Generates a Next.js app around a content folder.
  *
@@ -293,22 +354,7 @@ export async function init(options: InitOptions): Promise<string> {
     dependencies[pkg] = installable(range);
   }
 
-  // `all` is spelled out rather than passed through, so the manifest records
-  // what was actually asked for and still reads clearly a year later.
-  const wanted = new Set(
-    (options.features ?? []).flatMap((feature) =>
-      feature === 'all' ? ['maths', 'diagrams'] : [feature],
-    ),
-  );
-
-  const optional: Record<string, string> = {};
-  if (wanted.has('maths')) {
-    optional['remark-math'] = '^6.0.0';
-    optional['rehype-mathjax'] = '^7.1.0';
-  }
-  if (wanted.has('diagrams')) {
-    optional['mermaid'] = '^11.16.0';
-  }
+  const optional = featureDependencies(options.features ?? []);
 
   const packageJson = {
     name,

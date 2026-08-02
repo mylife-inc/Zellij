@@ -8,6 +8,7 @@
 //! A converter is registered by existing rather than by being listed anywhere,
 //! so adding one touches no file that is not about that format.
 
+pub mod docusaurus;
 pub mod emit;
 pub mod mdx;
 pub mod mkdocs;
