@@ -13,7 +13,7 @@ test.describe('sticky nav', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'desktop nav only');
 
   test('is sticky sitewide and stays pinned while scrolling', async ({ page }) => {
-    await page.goto('/features');
+    await page.goto('/lumen-3-pro');
     const header = page.locator('.zellij-header');
     await expect(header).toHaveCSS('position', 'sticky');
 
@@ -38,7 +38,8 @@ test.describe('sticky nav', () => {
   });
 
   test('renders solid from the start on non-landing layouts', async ({ page }) => {
-    await page.goto('/pricing');
+    // Both showcase screens are `landing`; the guide is the docs layout.
+    await page.goto('/guide');
     const header = page.locator('.zellij-header');
     await expect(header).toHaveAttribute('data-transparent-capable', 'false');
     await expect(header).toHaveAttribute('data-solid', 'true');
@@ -50,35 +51,35 @@ test.describe('dropdown and mega panel', () => {
 
   test('opens a simple dropdown and navigates', async ({ page }) => {
     await page.goto('/');
-    const trigger = page.getByRole('button', { name: 'Solutions' });
+    const trigger = page.getByRole('button', { name: 'Shop' });
 
     await expect(trigger).toHaveAttribute('aria-expanded', 'false');
     await trigger.click();
     await expect(trigger).toHaveAttribute('aria-expanded', 'true');
 
     const dropdown = page.locator('.zellij-dropdown');
-    await expect(dropdown.getByRole('link', { name: 'For startups' })).toBeVisible();
+    await expect(dropdown.getByRole('link', { name: 'Trade in' })).toBeVisible();
 
-    await dropdown.getByRole('link', { name: 'For enterprise' }).click();
-    await expect(page).toHaveURL(/\/solutions\/enterprise$/);
+    await dropdown.getByRole('link', { name: 'Compare models' }).click();
+    await expect(page).toHaveURL(/\/lumen-3-pro#buy$/);
   });
 
   test('opens a mega panel with grouped, described links and icons', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Resources' }).click();
+    await page.getByRole('button', { name: 'Explore' }).click();
 
     const mega = page.locator('.zellij-mega-panel');
     await expect(mega).toBeVisible();
-    await expect(mega.getByText('Learn')).toBeVisible();
-    await expect(mega.getByText('Company')).toBeVisible();
-    await expect(mega.getByText('Install, configure, operate.')).toBeVisible();
+    await expect(mega.getByText('The product')).toBeVisible();
+    await expect(mega.getByText('More', { exact: true })).toBeVisible();
+    await expect(mega.getByText('Grade 5 titanium, twelve grams lighter.')).toBeVisible();
     // Icons resolve server-side; every leaf in this panel declares one.
     await expect(mega.locator('.zellij-mega-icon svg')).toHaveCount(4);
   });
 
   test('opens flush against the bar, with no gap to cross', async ({ page }) => {
     await page.goto('/');
-    await openPanel(page, 'Resources', '.zellij-mega-panel');
+    await openPanel(page, 'Explore', '.zellij-mega-panel');
 
     const header = (await page.locator('.zellij-header').boundingBox())!;
     const panel = (await page.locator('.zellij-mega-panel').boundingBox())!;
@@ -96,7 +97,7 @@ test.describe('dropdown and mega panel', () => {
    */
   test('survives a slow diagonal reach into a far-side panel link', async ({ page }) => {
     await page.goto('/');
-    await openPanel(page, 'Resources', '.zellij-mega-panel');
+    await openPanel(page, 'Explore', '.zellij-mega-panel');
 
     const link = page.locator('.zellij-mega-link').first();
     const target = (await link.boundingBox())!;
@@ -104,21 +105,21 @@ test.describe('dropdown and mega panel', () => {
 
     await expect(page.locator('.zellij-mega-panel')).toBeVisible();
     await link.click();
-    await expect(page).toHaveURL(/\/guide/);
+    await expect(page).toHaveURL(/\/lumen-3-pro#design$/);
   });
 
   test('a deliberate dwell on another trigger switches panels', async ({ page }) => {
     await page.goto('/');
-    await openPanel(page, 'Resources', '.zellij-mega-panel');
+    await openPanel(page, 'Explore', '.zellij-mega-panel');
 
-    await page.getByRole('button', { name: 'Solutions' }).hover();
+    await page.getByRole('button', { name: 'Shop' }).hover();
     await expect(page.locator('.zellij-dropdown')).toBeVisible();
     await expect(page.locator('.zellij-mega-panel')).toBeHidden();
   });
 
   test('closes once the pointer leaves the header entirely', async ({ page }) => {
     await page.goto('/');
-    await openPanel(page, 'Resources', '.zellij-mega-panel');
+    await openPanel(page, 'Explore', '.zellij-mega-panel');
 
     await page.mouse.move(700, 600, { steps: 10 });
     await expect(page.locator('.zellij-mega-panel')).toBeHidden();
@@ -126,7 +127,7 @@ test.describe('dropdown and mega panel', () => {
 
   test('closes on Escape and returns focus to the trigger', async ({ page }) => {
     await page.goto('/');
-    const trigger = page.getByRole('button', { name: 'Resources' });
+    const trigger = page.getByRole('button', { name: 'Explore' });
     await trigger.click();
     await expect(page.locator('.zellij-mega-panel')).toBeVisible();
 
@@ -137,7 +138,7 @@ test.describe('dropdown and mega panel', () => {
 
   test('opens with ArrowDown and moves focus into the panel', async ({ page }) => {
     await page.goto('/');
-    const trigger = page.getByRole('button', { name: 'Resources' });
+    const trigger = page.getByRole('button', { name: 'Explore' });
     await trigger.focus();
     await page.keyboard.press('ArrowDown');
 
@@ -149,9 +150,9 @@ test.describe('dropdown and mega panel', () => {
     await page.goto('/');
     // Scope to the main nav — the footer links share these labels.
     const mainNav = page.getByRole('navigation', { name: 'Main' });
-    await mainNav.getByRole('link', { name: 'Features', exact: true }).focus();
+    await mainNav.getByRole('link', { name: 'Specs', exact: true }).focus();
     await page.keyboard.press('ArrowRight');
-    await expect(mainNav.getByRole('link', { name: 'Pricing', exact: true })).toBeFocused();
+    await expect(mainNav.getByRole('link', { name: 'Guide', exact: true })).toBeFocused();
   });
 });
 
@@ -159,25 +160,24 @@ test.describe('active state', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'desktop nav only');
 
   test('marks the current page with aria-current', async ({ page }) => {
-    await page.goto('/features');
-    await expect(page.locator('.zellij-nav-link[aria-current="page"]')).toHaveText('Features');
+    await page.goto('/lumen-3-pro');
+    await expect(page.locator('.zellij-nav-link[aria-current="page"]')).toHaveText('Lumen 3 Pro');
   });
 
   test('keeps the parent item active on nested routes', async ({ page }) => {
-    await page.goto('/solutions/startups');
-    await expect(
-      page.locator('.zellij-nav-trigger[data-active="true"]'),
-    ).toContainText('Solutions');
+    // `Explore` points at /guide; this route sits below it.
+    await page.goto('/guide/quickstart');
+    await expect(page.locator('.zellij-nav-trigger[data-active="true"]')).toContainText('Explore');
   });
 });
 
 test.describe('anchor links', () => {
   test('scroll to a section without hiding it behind the sticky bar', async ({ page }) => {
-    await page.goto('/features#security');
+    await page.goto('/lumen-3-pro#design');
 
     const header = page.locator('.zellij-header');
     const headerBox = await header.boundingBox();
-    const targetBox = await page.locator('#security').boundingBox();
+    const targetBox = await page.locator('#design').boundingBox();
 
     expect(headerBox).not.toBeNull();
     expect(targetBox).not.toBeNull();
@@ -195,7 +195,7 @@ test.describe('announcement bar', () => {
     await page.getByRole('button', { name: 'Dismiss announcement' }).click();
     await expect(bar).toBeHidden();
 
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     await expect(page.locator('.zellij-announcement')).toBeHidden();
   });
 });
@@ -212,7 +212,7 @@ test.describe('theme toggle', () => {
     await expect(html).not.toHaveAttribute('data-zellij-mode', 'system');
 
     const chosen = await html.getAttribute('data-zellij-mode');
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     await expect(html).toHaveAttribute('data-zellij-mode', chosen!);
   });
 });
@@ -230,11 +230,11 @@ test.describe('mobile drawer', () => {
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
 
     // Nested items are accordions on mobile.
-    const solutions = drawer.getByRole('button', { name: 'Solutions' });
-    await expect(solutions).toHaveAttribute('aria-expanded', 'false');
-    await solutions.click();
-    await expect(solutions).toHaveAttribute('aria-expanded', 'true');
-    await expect(drawer.getByRole('link', { name: /For startups/ })).toBeVisible();
+    const shop = drawer.getByRole('button', { name: 'Shop' });
+    await expect(shop).toHaveAttribute('aria-expanded', 'false');
+    await shop.click();
+    await expect(shop).toHaveAttribute('aria-expanded', 'true');
+    await expect(drawer.getByRole('link', { name: /Trade in/ })).toBeVisible();
 
     await page.keyboard.press('Escape');
     await expect(drawer).toBeHidden();
@@ -254,7 +254,7 @@ test.describe('mobile drawer', () => {
   test('pins the CTA at the bottom of the drawer', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Open navigation' }).click();
-    await expect(page.locator('.zellij-drawer-cta').getByRole('link', { name: 'Get started' })).toBeVisible();
+    await expect(page.locator('.zellij-drawer-cta').getByRole('link', { name: 'Buy' })).toBeVisible();
   });
 });
 

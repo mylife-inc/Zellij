@@ -1,5 +1,6 @@
 import type { Site } from '../content/site';
 import type { SectionsPage } from '../content/types';
+import { pageHeadingSectionTypes } from '../sections/registry';
 import { SectionRenderer } from './section-renderer';
 
 /**
@@ -18,6 +19,12 @@ export function SectionsPageView({ site, page }: { site: Site; page: SectionsPag
     />
   ));
 
+  // A page built entirely from sections that render no `<h1>` still needs one.
+  // It is hidden rather than shown: on a page like a promo grid the tiles carry
+  // the visual weight, and a second visible title would only compete with them.
+  const withHeading = pageHeadingSectionTypes();
+  const needsHeading = !page.sections.some((section) => withHeading.has(section.type));
+
   const main = (
     <main
       id="content"
@@ -25,6 +32,7 @@ export function SectionsPageView({ site, page }: { site: Site; page: SectionsPag
       data-zellij-layout={page.layout}
       data-zellij-motion={motion}
     >
+      {needsHeading ? <h1 className="zellij-visually-hidden">{page.title}</h1> : null}
       {page.layout === 'stack-sidebar' ? (
         <div className="zellij-sidebar-grid">
           <div className="zellij-sidebar-main">{sections}</div>

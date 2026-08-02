@@ -1,65 +1,40 @@
+# Two screens, mirroring the shape of a consumer-electronics site: a landing
+# grid of promo tiles that each link through, and the product page you reach
+# from one of them.
+
 - name: home
-  title: Acme — The operations platform your team already knows how to use
-  description: Acme unifies your workflows, approvals, and reporting into one system your whole company can actually run.
+  title: Lumen
+  description: >-
+    Lumen 3 Pro, Lumen 3, Watch and Buds. Titanium, a display you can read in
+    the sun, and a battery that outlasts the day you actually had.
   layout: landing
   sections:
-    - home/hero
-    - home/logo-strip
-    - home/capabilities
-    - home/explore
-    - home/zigzag
-    - home/stats-band
-    - home/tour
-    - home/platform
-    - home/testimonial
-    - home/cta-banner
-- name: about
-  title: About — Acme
-  description: Why we build Acme, who we build it for, and how to reach the team.
-  layout: stack-narrow
+    - home/family
+    - home/buying
+
+- name: lumen-3-pro
+  title: Lumen 3 Pro — titanium, featherweight, relentless
+  description: >-
+    Grade 5 titanium, four cameras, a 2,600-nit display and thirty-one hours of
+    video. From £999.
+  layout: landing
   sections:
-    - about/story
-    - about/story-so-far
-    - about/people
-    - about/gallery
-    - about/stats-band
-    - about/cta-banner
-- name: features
-  title: Features — Acme
-  description: Workflows, approvals, reporting, and security features that make Acme the system of record for your operation.
-  layout: stack-sidebar
-  navHighlight: features
-  sections:
-    - features/hero
-    - features/bento
-    - features/workflows
-    - features/reporting
-    - features/security
-    - features/faq
-    - features/cta-banner
-- name: pricing
-  title: Pricing — Acme
-  description: Simple per-seat pricing with a free tier to start and self-hosting available on every paid plan.
-  navHighlight: pricing
-  sections:
-    - pricing/hero
-    - pricing/plans
-    - pricing/faq
-    - pricing/cta-banner
-- name: solutions/enterprise
-  title: Acme for enterprise
-  description: Self-hosted deployment, granular permissions, and the audit guarantees regulated operations require.
-  layout: stack-sidebar
-  sections:
-    - solutions/enterprise/hero
-    - solutions/enterprise/showcase
-    - solutions/enterprise/feature-grid
-    - solutions/enterprise/video-embed
-    - solutions/enterprise/cta-banner
-- name: solutions/startups
-  title: Acme for startups
-  description: Set up the operational backbone once, and let it scale with you instead of being rebuilt every year.
-  sections:
-    - solutions/startups/hero
-    - solutions/startups/feature-grid
-    - solutions/startups/cta-banner
+    - pro/hero
+    - pro/carriers
+    - pro/tour
+    - pro/design
+    - pro/film
+    - pro/camera
+    - pro/finishes
+    - pro/highlights
+    - pro/inbox
+    - pro/privacy
+    - pro/specs
+    - pro/generations
+    - pro/reviews
+    - pro/makers
+    - pro/trade
+    - pro/compare
+    - pro/faq
+    - pro/footnotes
+    - pro/cta

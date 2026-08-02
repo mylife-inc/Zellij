@@ -24,7 +24,7 @@ test.describe('sticky-scroll showcase', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'desktop viewports only');
 
   test('pins the panel and reserves scroll distance for it', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const stage = page.locator('[data-zellij-stage="pinned"]');
     await expect(stage).toHaveCount(1);
 
@@ -37,7 +37,7 @@ test.describe('sticky-scroll showcase', () => {
   });
 
   test('advances scroll progress from 0 to 1 through the pinned region', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const box = (await page.locator('[data-zellij-stage="pinned"]').boundingBox())!;
 
     await scrollTo(page, Math.max(0, box.y - 200));
@@ -56,17 +56,22 @@ test.describe('sticky-scroll showcase', () => {
   });
 
   test('holds the visual in place while progress advances', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const box = (await page.locator('[data-zellij-stage="pinned"]').boundingBox())!;
     const sticky = page.locator('.zellij-stage-sticky');
 
-    // Sample inside the pinned window. The sticky child is about one viewport
-    // tall inside a ~1.9-viewport stage, so it releases in the last third —
-    // sampling at 0.5 lands on the release, not the hold.
-    await scrollTo(page, box.y + box.height * 0.1);
+    // The pin holds only while the stage still has travel left underneath its
+    // sticky child, so the hold window is `stage - sticky` tall. Deriving the
+    // sample points from the measured heights keeps this test honest when the
+    // section's content — and so the stage's height — changes.
+    const stickyHeight = (await sticky.boundingBox())!.height;
+    const hold = box.height - stickyHeight;
+    expect(hold).toBeGreaterThan(0);
+
+    await scrollTo(page, box.y + hold * 0.2);
     const first = (await sticky.boundingBox())!.y;
 
-    await scrollTo(page, box.y + box.height * 0.35);
+    await scrollTo(page, box.y + hold * 0.7);
     const second = (await sticky.boundingBox())!.y;
 
     // Pinned: the element stays put in the viewport as the page scrolls under it.
@@ -74,7 +79,7 @@ test.describe('sticky-scroll showcase', () => {
   });
 
   test('ramps the visual with transform and opacity only', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const box = (await page.locator('[data-zellij-stage="pinned"]').boundingBox())!;
     const media = page.locator('[data-zellij-stage="pinned"] .zellij-showcase-media');
 
@@ -103,7 +108,7 @@ test.describe('hero parallax', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'desktop viewports only');
 
   test('translates the hero visual as the page scrolls', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const parallax = page.locator('[data-zellij-parallax="on"]');
     await expect(parallax).toHaveCount(1);
 
@@ -122,7 +127,7 @@ test.describe('hero parallax', () => {
 
 test.describe('count-up stats', () => {
   test('animates numbers into place and settles on the authored value', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const stats = page.locator('[data-zellij-section="stats-band"]');
     await stats.scrollIntoViewIfNeeded();
 
@@ -133,13 +138,13 @@ test.describe('count-up stats', () => {
     // timeout. The real cause was CountUp re-running its own effect and
     // cancelling its animation frame, so it froze on a partial number. With that
     // fixed, the ordinary bound holds.
-    await expect(value).toHaveText('40%', { timeout: 5000 });
+    await expect(value).toHaveText('6.3″', { timeout: 5000 });
   });
 });
 
 test.describe('per-section motion override', () => {
   test('a section may opt out of the page preset', async ({ page }) => {
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
 
     const pricing = page.locator('[data-zellij-section="pricing-table"]');
     await expect(pricing).toHaveAttribute('data-zellij-motion', 'none');
@@ -162,7 +167,7 @@ test.describe('reduced motion overrides everything', () => {
    */
   test('disables pinning, parallax and reveals', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
 
     // The stage renders as an ordinary block: no reserved scroll distance.
     await expect(page.locator('.zellij-stage-sticky')).toHaveCount(0);
@@ -178,8 +183,8 @@ test.describe('reduced motion overrides everything', () => {
 
   test('stats show their final value without counting', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
-    await expect(page.locator('.zellij-stat-value').first()).toHaveText('40%');
+    await page.goto('/lumen-3-pro');
+    await expect(page.locator('.zellij-stat-value').first()).toHaveText('6.3″');
   });
 
   test('the page is not made taller by motion that cannot run', async ({ page, isMobile }) => {
@@ -188,7 +193,7 @@ test.describe('reduced motion overrides everything', () => {
     // viewports anyway, so there is no reserved distance to reclaim.
     test.skip(Boolean(isMobile), 'pinning is desktop-only');
 
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     // The pin is installed on hydration, so measuring earlier would compare the
     // un-pinned server markup against itself.
     await expect(page.locator('[data-zellij-stage="pinned"]')).toBeAttached();

@@ -165,7 +165,9 @@ test.describe('theme switcher', () => {
   });
 
   test('restyles the whole site when a theme is chosen', async ({ page }) => {
-    await page.goto('/');
+    // The product page, so the `h1` read below is the visible hero headline
+    // rather than the landing page's hidden fallback heading.
+    await page.goto('/lumen-3-pro');
     await openSwitcher(page);
 
     const read = () =>
@@ -194,7 +196,7 @@ test.describe('theme switcher', () => {
     await openSwitcher(page);
     await page.locator('.zellij-theme-card').filter({ hasText: 'Forest' }).click();
 
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
   });
 

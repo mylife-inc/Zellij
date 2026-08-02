@@ -8,7 +8,7 @@
     "node": ">=20.11"
   },
   "scripts": {
-    "assets": "node scripts/make-placeholder-assets.mjs",
+    "assets": "node scripts/make-assets.mjs",
     "predev": "npm run assets && zellij prepare",
     "dev": "next dev --port 4300",
     "prebuild": "npm run assets && zellij prepare",

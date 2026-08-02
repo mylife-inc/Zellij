@@ -1,11 +1,11 @@
 ---
 title: Installation
-description: Production deployment options for Acme, hosted and self-managed.
+description: Production deployment options for Lumen, hosted and self-managed.
 ---
 
 # Installation
 
-Acme runs as a managed service or entirely inside your own cloud account.
+Lumen runs as a managed service or entirely inside your own cloud account.
 
 ## Hosted
 
@@ -20,24 +20,24 @@ Self-hosting requires an Enterprise plan and a Postgres 15+ instance you control
 <CodeGroup>
 ```bash title="docker"
 docker run -d \
-  --name acme \
-  -e ACME_DATABASE_URL="postgres://user:pass@host:5432/acme" \
+  --name lumen \
+  -e LUMEN_DATABASE_URL="postgres://user:pass@host:5432/lumen" \
   -p 8080:8080 \
-  ghcr.io/acme/platform:2.0
+  ghcr.io/lumen/platform:2.0
 ```
 
 ```yaml title="kubernetes"
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: acme
+  name: lumen
 spec:
   replicas: 2
   template:
     spec:
       containers:
-        - name: acme
-          image: ghcr.io/acme/platform:2.0
+        - name: lumen
+          image: ghcr.io/lumen/platform:2.0
           ports:
             - containerPort: 8080
 ```

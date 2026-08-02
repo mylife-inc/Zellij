@@ -1,7 +1,0 @@
-type: cta-banner
-headline: Want to talk to us?
-body: We read everything that comes in, and we answer quickly.
-cta:
-  label: Read the guide first
-  href: /guide
-  style: secondary

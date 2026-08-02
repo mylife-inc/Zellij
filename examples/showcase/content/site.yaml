@@ -1,66 +1,53 @@
-name: Acme
-tagline: "The operations platform your team already knows how to use"
+name: Lumen
+tagline: Light, captured.
 
 brand:
   logo:
     src: assets/logo.svg
     dark: assets/logo-dark.svg
-    alt: Acme
-    # No href: a single-site setup, so the mark goes to this site's own "/".
+    alt: Lumen
 
 theme: cupertino
 mode: system
 motion: expressive
 
-# The landing page rather than the first menu item, which is Features.
 home: home
 
-siteUrl: https://acme.example.com
+siteUrl: https://lumen.example.com
 ogImage: assets/og.png
-
-# Mirrors basePath in next.config.js — keep the two in sync (spec §13.4).
 basePath: ""
-
-# Token overrides let a site tweak a theme without forking it (spec §6).
-# Left commented so switching `theme:` shows each theme's own palette; uncomment
-# to pin a brand accent regardless of theme.
-# overrides:
-#   accent: "#E86A33"
-#   radius: lg
 
 nav:
   sticky: true
-  align: left
+  align: center
   themeToggle: true
   themeSwitcher: true
   search: true
   transparentOverHero: true
-  scrollThreshold: 80
+  scrollThreshold: 60
   cta:
-    - { label: "Get started", href: /guide/quickstart, style: primary }
+    - { label: Buy, href: "/lumen-3-pro#buy", style: primary }
   social:
-    github: "https://github.com/shebka/acme"
+    github: "https://github.com/shebka/zellij"
   announcement:
-    text: "Acme 2.0 is live —"
-    link: { label: "read the notes", href: /about }
+    text: "Lumen 3 Pro is here —"
+    link: { label: "see what changed", href: /lumen-3-pro }
     dismissible: true
 
 footer:
   columns:
-    - heading: Product
+    - heading: Shop
       links:
-        - { label: Features, page: features }
-        - { label: Pricing, page: pricing }
-    - heading: Developers
+        - { label: Lumen 3 Pro, page: lumen-3-pro }
+        - { label: Trade in, href: "/lumen-3-pro#trade" }
+    - heading: Learn
       links:
         - { label: Guide, page: guide }
-        - { label: Quickstart, href: /guide/quickstart }
-    - heading: Company
+        - { label: Specifications, href: "/lumen-3-pro#specs" }
+    - heading: Support
       links:
-        - { label: About, page: about }
-  legal: "© 2026 Shebka LLC"
-  social:
-    github: "https://github.com/shebka/acme"
+        - { label: Getting started, href: /guide/quickstart }
+  legal: "© 2026 Lumen — a fictional brand, built to exercise Zellij."
 
 analytics:
   provider: none

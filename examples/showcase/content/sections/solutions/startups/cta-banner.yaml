@@ -1,6 +1,0 @@
-type: cta-banner
-headline: Build the habit early
-cta:
-  label: Get started
-  href: /guide/quickstart
-  style: primary

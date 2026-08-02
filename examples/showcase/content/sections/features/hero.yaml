@@ -1,8 +1,0 @@
-type: hero
-headline: Every capability, in one platform
-subhead: The building blocks teams use to run their operation on Acme.
-cta:
-  - label: Start free
-    href: /guide/quickstart
-    style: primary
-visualStyle: framed

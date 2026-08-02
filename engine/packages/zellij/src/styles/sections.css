@@ -1562,3 +1562,182 @@ a.zellij-bento-tile:hover {
   color: var(--zellij-fg);
   cursor: pointer;
 }
+
+/* ------------------------------------------------------------ promo grid -- */
+
+.zellij-promo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.zellij-promo-grid[data-gap='none'] { gap: 0; }
+.zellij-promo-grid[data-gap='tight'] { gap: 0.625rem; }
+
+.zellij-promo-cell {
+  display: flex;
+  grid-column: span 2;
+}
+
+.zellij-promo-cell[data-width='half'] {
+  grid-column: span 1;
+}
+
+.zellij-promo-tile {
+  position: relative;
+  display: grid;
+  /* `minmax(0, …)`: a `1fr` track has an `auto` minimum, so long copy would
+     size the tile to its max-content width and run past the grid. */
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--zellij-radius-media);
+  background: var(--zellij-surface);
+  color: inherit;
+  text-decoration: none;
+  isolation: isolate;
+}
+
+/* The ratio is a floor, not a cage: a tile grows when its copy needs more
+   room, rather than clipping it. */
+.zellij-promo-tile::before {
+  content: '';
+  grid-area: 1 / 1;
+  pointer-events: none;
+  aspect-ratio: var(--zellij-promo-ratio, 4 / 3);
+}
+
+.zellij-promo-tile[data-height='short'] { --zellij-promo-ratio: 16 / 9; }
+.zellij-promo-tile[data-height='tall'] { --zellij-promo-ratio: 4 / 3; }
+.zellij-promo-tile[data-height='full'] { --zellij-promo-ratio: 3 / 4; }
+
+.zellij-promo-cell[data-width='full'] .zellij-promo-tile[data-height='short'] {
+  --zellij-promo-ratio: 21 / 8;
+}
+.zellij-promo-cell[data-width='full'] .zellij-promo-tile[data-height='tall'] {
+  --zellij-promo-ratio: 16 / 9;
+}
+
+.zellij-promo-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.zellij-promo-image,
+.zellij-promo-tile .zellij-panel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 700ms var(--zellij-motion-ease);
+}
+
+/* The focal point keeps the subject clear of the copy. */
+.zellij-promo-tile[data-focus='top'] .zellij-promo-image { object-position: 50% 0%; }
+.zellij-promo-tile[data-focus='bottom'] .zellij-promo-image { object-position: 50% 100%; }
+
+a.zellij-promo-tile:hover .zellij-promo-image {
+  transform: scale(1.03);
+}
+
+.zellij-promo-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, #000 0%, transparent 60%);
+}
+
+.zellij-promo-scrim[data-align='bottom'] {
+  background: linear-gradient(0deg, #000 0%, transparent 60%);
+}
+
+.zellij-promo-scrim[data-align='center'] {
+  background: radial-gradient(ellipse at center, #000 0%, transparent 70%);
+}
+
+.zellij-promo-copy {
+  grid-area: 1 / 1;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: clamp(1.75rem, 4vw, 3.25rem);
+}
+
+.zellij-promo-copy[data-align='top'] { justify-content: flex-start; }
+.zellij-promo-copy[data-align='center'] { justify-content: center; }
+.zellij-promo-copy[data-align='bottom'] { justify-content: flex-end; }
+
+.zellij-promo-tile[data-tone='dark'] .zellij-promo-copy { color: #f5f5f7; }
+.zellij-promo-tile[data-tone='light'] .zellij-promo-copy { color: #1d1d1f; }
+
+.zellij-promo-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  opacity: 0.75;
+}
+
+.zellij-promo-title {
+  font-family: var(--zellij-font-heading);
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
+  font-weight: var(--zellij-heading-weight);
+  letter-spacing: var(--zellij-tracking);
+  line-height: 1.08;
+  text-wrap: balance;
+  max-width: 20ch;
+}
+
+.zellij-promo-body {
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  opacity: 0.85;
+  max-width: 36ch;
+}
+
+.zellij-promo-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+}
+
+.zellij-promo-links a {
+  color: var(--zellij-accent);
+  font-size: 1.0625rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Over dark artwork the theme accent can fall below contrast; the tone the
+   author set is the reliable signal, so links follow it. */
+.zellij-promo-tile[data-tone='dark'] .zellij-promo-links a { color: #6cb6ff; }
+
+.zellij-promo-links a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .zellij-promo-cell[data-width='half'] {
+    grid-column: span 2;
+  }
+
+  .zellij-promo-tile[data-height='short'],
+  .zellij-promo-cell[data-width='full'] .zellij-promo-tile[data-height='short'] {
+    --zellij-promo-ratio: 4 / 3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zellij-promo-image,
+  a.zellij-promo-tile:hover .zellij-promo-image {
+    transition: none;
+    transform: none;
+  }
+}

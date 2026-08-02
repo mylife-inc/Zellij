@@ -136,7 +136,7 @@ test.describe('code blocks', () => {
 
   test('highlights the lines named in the fence meta', async ({ page }) => {
     await page.goto('/guide/config/overview');
-    // ```yaml title="acme.yaml" {2,5-6} → three highlighted lines.
+    // ```yaml title="lumen.yaml" {2,5-6} → three highlighted lines.
     await expect(page.locator('.line.highlighted')).toHaveCount(3);
   });
 
@@ -149,7 +149,7 @@ test.describe('code blocks', () => {
     await expect(page.locator('.zellij-code-copy').first()).toContainText('Copied');
 
     const clipboard = await page.evaluate(() => navigator.clipboard.readText());
-    expect(clipboard).toContain('npm install -g @acme/cli');
+    expect(clipboard).toContain('npm install -g @lumen/cli');
   });
 });
 

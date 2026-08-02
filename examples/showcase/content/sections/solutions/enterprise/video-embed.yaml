@@ -1,5 +1,0 @@
-type: video-embed
-heading: Deployment walkthrough
-src: assets/enterprise-deploy.mp4
-poster: assets/video-poster.png
-caption: Deploying Acme into a private VPC, end to end.

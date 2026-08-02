@@ -29,20 +29,43 @@ async function revealAll(page: import('@playwright/test').Page): Promise<void> {
   // Handles are captured up front on purpose. A live `[data-zellij-reveal="out"]`
   // locator would re-resolve to a different element as each one reveals, so it
   // could never be observed reaching "in".
-  const handles = await page.locator('[data-zellij-reveal]').elementHandles();
+  //
+  // The sweep repeats because the observer samples once per frame while these
+  // scrolls land many times per frame, so a single pass can jump straight over
+  // an element. Rescrolling only what is still hidden converges in a pass or
+  // two and stays honest: an element that genuinely never reveals still fails.
+  //
+  // Carousel cards parked off the right edge of their rail are excluded
+  // throughout: they reveal on horizontal scroll, which this never performs.
+  const hidden = '[data-zellij-reveal="out"]:not(.zellij-scroll-card-shell)';
 
-  for (const handle of handles) {
-    await handle.scrollIntoViewIfNeeded();
+  for (let pass = 0; pass < 4; pass++) {
+    const handles = await page.locator(pass === 0 ? '[data-zellij-reveal]' : hidden).elementHandles();
+    if (handles.length === 0) break;
+
+    for (const handle of handles) {
+      await handle.scrollIntoViewIfNeeded().catch(() => {});
+    }
+    await page.waitForTimeout(150);
   }
 
   await expect
-    .poll(async () => page.locator('[data-zellij-reveal="out"]').count(), { timeout: 15000 })
+    .poll(async () => page.locator(hidden).count(), { timeout: 15000 })
     .toBe(0);
 }
 
 test.describe('section inventory', () => {
-  test('landing page renders each declared section type in order', async ({ page }) => {
+  test('the landing page renders its declared sections in order', async ({ page }) => {
     await page.goto('/');
+    const types = await page
+      .locator('[data-zellij-section]')
+      .evaluateAll((nodes) => nodes.map((n) => n.getAttribute('data-zellij-section')));
+
+    expect(types).toEqual(['promo-grid', 'card-carousel']);
+  });
+
+  test('the product page renders its declared sections in order', async ({ page }) => {
+    await page.goto('/lumen-3-pro');
     const types = await page
       .locator('[data-zellij-section]')
       .evaluateAll((nodes) => nodes.map((n) => n.getAttribute('data-zellij-section')));
@@ -50,22 +73,35 @@ test.describe('section inventory', () => {
     expect(types).toEqual([
       'hero',
       'logo-strip',
-      'feature-grid',
       'card-carousel',
-      'zigzag',
-      'stats-band',
       'media-panel',
+      'video-embed',
+      'zigzag',
+      'gallery',
+      'bento-grid',
+      'feature-grid',
       'showcase',
+      'stats-band',
+      'timeline',
       'testimonial',
+      'team-grid',
+      'media-panel',
+      'pricing-table',
+      'faq',
+      'markdown-prose',
       'cta-banner',
     ]);
   });
 
-  test('every v1 section type appears somewhere in the demo', async ({ page }) => {
-    const routes = ['/', '/features', '/pricing', '/about', '/solutions/enterprise'];
+  /**
+   * The showcase is the visual test bed, so a type nobody exercises is a type
+   * nobody has looked at. This fails when a section is added to the engine and
+   * not to the site.
+   */
+  test('every section type the engine ships appears in the showcase', async ({ page }) => {
     const seen = new Set<string>();
 
-    for (const route of routes) {
+    for (const route of ['/', '/lumen-3-pro']) {
       await page.goto(route);
       const types = await page
         .locator('[data-zellij-section]')
@@ -85,6 +121,7 @@ test.describe('section inventory', () => {
       'markdown-prose',
       'media-panel',
       'pricing-table',
+      'promo-grid',
       'showcase',
       'stats-band',
       'team-grid',
@@ -98,12 +135,12 @@ test.describe('section inventory', () => {
 
 test.describe('hero', () => {
   test('renders headline, badge, CTAs and a priority visual', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const hero = page.locator('[data-zellij-section="hero"]');
 
-    await expect(hero.getByRole('heading', { level: 1 })).toContainText('operations platform');
-    await expect(hero.locator('.zellij-badge')).toContainText('Acme 2.0');
-    await expect(hero.getByRole('link', { name: 'Get started' })).toBeVisible();
+    await expect(hero.getByRole('heading', { level: 1 })).toContainText('Lumen 3 Pro');
+    await expect(hero.locator('.zellij-badge')).toContainText('New');
+    await expect(hero.getByRole('link', { name: 'Buy', exact: true })).toBeVisible();
 
     const image = hero.locator('.zellij-media img');
     await expect(image).toHaveAttribute('src', /_next\/image/);
@@ -115,7 +152,7 @@ test.describe('hero', () => {
   });
 
   test('lazy-loads non-hero imagery', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     await expect(page.locator('[data-zellij-section="zigzag"] img').first()).toHaveAttribute(
       'loading',
       'lazy',
@@ -125,7 +162,7 @@ test.describe('hero', () => {
 
 test.describe('feature grid', () => {
   test('honours the declared column count and renders icons', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const grid = page.locator('[data-zellij-section="feature-grid"]').first();
     await expect(grid.locator('.zellij-feature-list')).toHaveAttribute('data-columns', '3');
     await expect(grid.locator('.zellij-feature-card')).toHaveCount(6);
@@ -135,7 +172,7 @@ test.describe('feature grid', () => {
 
 test.describe('logo strip', () => {
   test('renders logos greyscale until hover', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const logo = page.locator('.zellij-logo-strip .zellij-logo-image').first();
     await expect(logo).toHaveCSS('filter', /grayscale\(1\)/);
   });
@@ -143,7 +180,7 @@ test.describe('logo strip', () => {
 
 test.describe('pricing table', () => {
   test('marks exactly one tier as highlighted', async ({ page }) => {
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     await expect(page.locator('.zellij-pricing-card')).toHaveCount(3);
     await expect(page.locator('.zellij-pricing-card[data-highlighted="true"]')).toHaveCount(1);
     await expect(page.locator('.zellij-pricing-flag')).toHaveText('Most popular');
@@ -152,7 +189,7 @@ test.describe('pricing table', () => {
 
 test.describe('faq', () => {
   test('expands and collapses answers, and works without JavaScript', async ({ page }) => {
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     const item = page.locator('.zellij-faq-item').first();
     const answer = item.locator('.zellij-faq-answer');
 
@@ -165,7 +202,7 @@ test.describe('faq', () => {
   });
 
   test('is keyboard operable', async ({ page }) => {
-    await page.goto('/pricing');
+    await page.goto('/lumen-3-pro');
     const summary = page.locator('.zellij-faq-item').first().locator('summary');
     await summary.focus();
     await page.keyboard.press('Enter');
@@ -175,7 +212,7 @@ test.describe('faq', () => {
 
 test.describe('testimonial carousel', () => {
   test('moves between quotes and keeps hidden slides out of the tab order', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const carousel = page.locator('.zellij-carousel');
     await expect(carousel.locator('.zellij-carousel-slide')).toHaveCount(2);
 
@@ -194,7 +231,7 @@ test.describe('testimonial carousel', () => {
 
 test.describe('video embed', () => {
   test('loads nothing until play is pressed', async ({ page }) => {
-    await page.goto('/solutions/enterprise');
+    await page.goto('/lumen-3-pro');
     const video = page.locator('[data-zellij-section="video-embed"]');
 
     await expect(video.locator('video, iframe')).toHaveCount(0);
@@ -207,32 +244,36 @@ test.describe('video embed', () => {
 
 test.describe('markdown-prose', () => {
   test('renders inline markdown inside marketing styling', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/lumen-3-pro');
     const prose = page.locator('[data-zellij-section="markdown-prose"]');
     await expect(prose.locator('.zellij-prose')).toBeVisible();
-    await expect(prose).toContainText('Operations teams are the connective tissue');
+    await expect(prose).toContainText('Battery figures are continuous local video playback');
   });
 });
 
-test.describe('showcase backgrounds', () => {
-  test('applies the declared background treatment', async ({ page }) => {
-    await page.goto('/');
+test.describe('section backgrounds', () => {
+  test('applies the treatment each section declares', async ({ page }) => {
+    await page.goto('/lumen-3-pro');
+
     await expect(page.locator('[data-zellij-section="showcase"]')).toHaveAttribute(
       'data-zellij-background',
       'inverted',
     );
-
-    await page.goto('/solutions/enterprise');
-    await expect(page.locator('[data-zellij-section="showcase"]')).toHaveAttribute(
+    await expect(page.locator('[data-zellij-section="markdown-prose"]')).toHaveAttribute(
       'data-zellij-background',
       'tinted',
     );
+    // A gradient is an object rather than a keyword: the attribute records the
+    // kind, and the stops resolve to an inline linear-gradient.
+    const cta = page.locator('[data-zellij-section="cta-banner"]');
+    await expect(cta).toHaveAttribute('data-zellij-background', 'gradient');
+    await expect(cta).toHaveAttribute('style', /linear-gradient\(/);
   });
 });
 
 test.describe('subtle motion', () => {
   test('reveals sections as they enter the viewport', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
 
     // Content far down the page starts hidden...
     const banner = page.locator('[data-zellij-section="cta-banner"] [data-zellij-reveal]').first();
@@ -243,14 +284,31 @@ test.describe('subtle motion', () => {
     await expect(banner).toHaveAttribute('data-zellij-reveal', 'in');
   });
 
-  test('reveals everything after a full scroll-through', async ({ page }) => {
-    await page.goto('/');
+  test('reveals everything a vertical scroll-through can reach', async ({ page }) => {
+    await page.goto('/lumen-3-pro');
     await revealAll(page);
-    await expect(page.locator('[data-zellij-reveal="out"]')).toHaveCount(0);
+
+    // Carousel cards parked off the right edge of their rail are excluded:
+    // scrolling down never brings them into view. The test below covers them.
+    await expect(
+      page.locator('[data-zellij-reveal="out"]:not(.zellij-scroll-card-shell)'),
+    ).toHaveCount(0);
+  });
+
+  test('reveals carousel cards when the rail is scrolled sideways', async ({ page }) => {
+    await page.goto('/lumen-3-pro');
+    const rail = page.locator('[data-zellij-section="card-carousel"] .zellij-carousel-track').first();
+    await rail.scrollIntoViewIfNeeded();
+
+    const cards = page.locator('[data-zellij-section="card-carousel"] .zellij-scroll-card-shell');
+    await expect(cards.last()).toHaveAttribute('data-zellij-reveal', 'out');
+
+    await rail.evaluate((el) => el.scrollTo({ left: el.scrollWidth, behavior: 'instant' }));
+    await expect(cards.last()).toHaveAttribute('data-zellij-reveal', 'in');
   });
 
   test('never animates layout-affecting properties', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     const property = await page
       .locator('[data-zellij-reveal]')
       .first()
@@ -272,7 +330,7 @@ test.describe('reduced motion', () => {
    */
   test('renders all content visible with no animation', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
     await expect(page.locator('.zellij-hero-headline')).toHaveAttribute(
       'data-zellij-reveal',
       'in',

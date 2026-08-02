@@ -1,25 +1,25 @@
 ---
 title: Configuration overview
-description: How Acme reads configuration and which settings matter most.
+description: How Lumen reads configuration and which settings matter most.
 ---
 
 # Configuration overview
 
-Acme reads configuration from environment variables first, then `acme.yaml`,
+Lumen reads configuration from environment variables first, then `lumen.yaml`,
 then built-in defaults. Environment variables always win.
 
 ## Core settings
 
 | Setting | Environment variable | Default |
 | --- | --- | --- |
-| Database URL | `ACME_DATABASE_URL` | — (required) |
-| Listen port | `ACME_PORT` | `8080` |
-| Log level | `ACME_LOG_LEVEL` | `info` |
-| Retention window | `ACME_RETENTION_DAYS` | `365` |
+| Database URL | `LUMEN_DATABASE_URL` | — (required) |
+| Listen port | `LUMEN_PORT` | `8080` |
+| Log level | `LUMEN_LOG_LEVEL` | `info` |
+| Retention window | `LUMEN_RETENTION_DAYS` | `365` |
 
 ## Example
 
-```yaml title="acme.yaml" {2,5-6}
+```yaml title="lumen.yaml" {2,5-6}
 server:
   port: 8080
   logLevel: info

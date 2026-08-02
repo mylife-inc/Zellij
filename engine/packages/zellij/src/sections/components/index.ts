@@ -12,6 +12,7 @@ import { LogoStrip } from './logo-strip';
 import { MarkdownProse } from './markdown-prose';
 import { MediaPanel } from './media-panel';
 import { PricingTable } from './pricing-table';
+import { PromoGrid } from './promo-grid';
 import { Showcase } from './showcase';
 import { StatsBand } from './stats-band';
 import { TeamGrid } from './team-grid';
@@ -43,6 +44,7 @@ export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never
   timeline: Timeline as ComponentType<SectionProps<never>>,
   'team-grid': TeamGrid as ComponentType<SectionProps<never>>,
   gallery: Gallery as ComponentType<SectionProps<never>>,
+  'promo-grid': PromoGrid as ComponentType<SectionProps<never>>,
 };
 
 export {
@@ -64,4 +66,5 @@ export {
   Timeline,
   TeamGrid,
   Gallery,
+  PromoGrid,
 };

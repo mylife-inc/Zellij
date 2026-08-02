@@ -1,7 +1,0 @@
-type: showcase
-id: security
-eyebrow: Security & compliance
-headline: Enterprise controls without the enterprise slog
-body: SSO, SCIM provisioning, field-level permissions, immutable audit logs, and configurable data retention. Self-host to keep every byte in your own cloud.
-visual: assets/showcase-security.png
-background: inverted

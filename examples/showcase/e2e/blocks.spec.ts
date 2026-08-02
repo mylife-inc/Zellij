@@ -17,16 +17,16 @@ test.describe('media panel', () => {
   });
 
   test('fills the panel with the image and lays the copy over it', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
 
-    const panel = page.locator('#tour');
+    const panel = page.locator('#design');
     await expect(panel).toBeVisible();
 
     const image = panel.locator('.zellij-panel-image');
     await expect(image).toBeVisible();
 
     const copy = panel.locator('.zellij-panel-copy');
-    await expect(copy).toContainText('A guided tour');
+    await expect(copy).toContainText('Grade 5 titanium');
     await expect(copy).toHaveAttribute('data-align', 'left');
 
     // The copy sits over the media, not beside it.
@@ -37,8 +37,8 @@ test.describe('media panel', () => {
         return { left, width };
       };
       return {
-        media: rect('#tour .zellij-panel-media'),
-        text: rect('#tour .zellij-panel-copy'),
+        media: rect('#design .zellij-panel-media'),
+        text: rect('#design .zellij-panel-copy'),
       };
     });
 
@@ -51,7 +51,7 @@ test.describe('media panel', () => {
    * the panel first shipped: the title overflowed the top and the CTA the foot.
    */
   test('grows to fit copy taller than its ratio', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/lumen-3-pro');
 
     // Both boxes in one evaluation: two sequential boundingBox() calls can
     // straddle the webfont relayout, and then the panel and its copy are
@@ -63,8 +63,8 @@ test.describe('media panel', () => {
         return { top, height };
       };
       return {
-        outer: rect('#tour .zellij-panel-surface'),
-        inner: rect('#tour .zellij-panel-copy'),
+        outer: rect('#design .zellij-panel-surface'),
+        inner: rect('#design .zellij-panel-copy'),
       };
     });
 
@@ -73,9 +73,9 @@ test.describe('media panel', () => {
   });
 
   test('keeps the CTA clickable over the media', async ({ page }) => {
-    await page.goto('/');
-    await page.locator('#tour').getByRole('link', { name: 'Watch the tour' }).click();
-    await expect(page).toHaveURL(/\/guide\/quickstart$/);
+    await page.goto('/lumen-3-pro');
+    await page.locator('#design').getByRole('link', { name: 'See the design' }).click();
+    await expect(page).toHaveURL(/\/lumen-3-pro#specs$/);
   });
 });
 
@@ -83,16 +83,16 @@ test.describe('card carousel', () => {
   test('renders every card in the declared order', async ({ page }) => {
     await page.goto('/');
 
-    const titles = page.locator('#explore .zellij-card-title');
+    const titles = page.locator('#buying .zellij-card-title');
     await expect(titles).toHaveCount(5);
-    await expect(titles.first()).toHaveText('Route work the way your team already works.');
+    await expect(titles.first()).toHaveText('Turn the one in your pocket into credit.');
   });
 
   test('aligns the first card with the container, not the viewport edge', async ({ page }) => {
     await page.goto('/');
 
-    const heading = await page.locator('#explore .zellij-section-heading').boundingBox();
-    const first = await page.locator('#explore [data-zellij-card]').first().boundingBox();
+    const heading = await page.locator('#buying .zellij-section-heading').boundingBox();
+    const first = await page.locator('#buying [data-zellij-card]').first().boundingBox();
 
     // Mandatory snapping used to scroll the leading padding away, putting the
     // first card flush against the viewport.
@@ -103,7 +103,7 @@ test.describe('card carousel', () => {
     test.skip(page.viewportSize()!.width < 700, 'the arrows are a desktop affordance');
     await page.goto('/');
 
-    const section = page.locator('#explore');
+    const section = page.locator('#buying');
     const previous = section.getByRole('button', { name: 'Scroll left' });
     const next = section.getByRole('button', { name: 'Scroll right' });
     const track = section.locator('.zellij-carousel-track');
@@ -122,7 +122,7 @@ test.describe('card carousel', () => {
 
   test('is scrollable by keyboard', async ({ page }) => {
     await page.goto('/');
-    const track = page.locator('#explore .zellij-carousel-track');
+    const track = page.locator('#buying .zellij-carousel-track');
 
     // A scrollable region must be reachable without a pointer (WCAG 2.1.1).
     await expect(track).toHaveAttribute('tabindex', '0');
@@ -133,15 +133,15 @@ test.describe('card carousel', () => {
 
   test('routes from a card to its destination', async ({ page }) => {
     await page.goto('/');
-    await page.locator('#explore [data-zellij-card]').first().click();
-    await expect(page).toHaveURL(/\/features#workflows$/);
+    await page.locator('#buying [data-zellij-card]').first().click();
+    await expect(page).toHaveURL(/\/lumen-3-pro#trade$/);
   });
 });
 
 test.describe('gradients', () => {
   test('clips a gradient to the heading glyphs', async ({ page }) => {
-    await page.goto('/');
-    const heading = page.locator('#explore .zellij-section-heading');
+    await page.goto('/lumen-3-pro');
+    const heading = page.locator('.zellij-hero-headline');
 
     await expect(heading).toHaveClass(/zellij-gradient-text/);
 
@@ -163,7 +163,7 @@ test.describe('page width', () => {
    * unclipped, that widened the document and gave every page a horizontal
    * scrollbar on a narrow viewport.
    */
-  for (const path of ['/', '/features', '/pricing', '/solutions/enterprise']) {
+  for (const path of ['/', '/lumen-3-pro', '/guide', '/guide/quickstart']) {
     test(`nothing on ${path} widens the page`, async ({ page }) => {
       await page.goto(path);
       const { scrollWidth, innerWidth } = await page.evaluate(() => ({
@@ -178,9 +178,9 @@ test.describe('page width', () => {
 test.describe('bento grid', () => {
   test('gives tiles the spans they declare', async ({ page }) => {
     test.skip(page.viewportSize()!.width < 900, 'spans collapse below the tablet breakpoint');
-    await page.goto('/features');
+    await page.goto('/lumen-3-pro');
 
-    const cells = page.locator('#platform-bento .zellij-bento-cell');
+    const cells = page.locator('#highlights .zellij-bento-cell');
     await expect(cells).toHaveCount(6);
     await expect(cells.first()).toHaveAttribute('data-span', 'large');
 
@@ -193,10 +193,10 @@ test.describe('bento grid', () => {
 
   test('collapses to one column on a phone', async ({ page }) => {
     test.skip(page.viewportSize()!.width >= 600, 'narrow viewports only');
-    await page.goto('/features');
+    await page.goto('/lumen-3-pro');
 
     const boxes = await page
-      .locator('#platform-bento .zellij-bento-cell')
+      .locator('#highlights .zellij-bento-cell')
       .evaluateAll((nodes) => nodes.map((n) => n.getBoundingClientRect().x));
     expect(new Set(boxes).size).toBe(1);
   });
@@ -204,52 +204,50 @@ test.describe('bento grid', () => {
 
 test.describe('timeline', () => {
   test('is an ordered list with a date and title per entry', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/lumen-3-pro');
 
-    const list = page.locator('#history ol.zellij-timeline-list');
+    const list = page.locator('#generations ol.zellij-timeline-list');
     await expect(list).toBeVisible();
 
     const items = list.locator('li');
-    await expect(items).toHaveCount(4);
+    await expect(items).toHaveCount(3);
     // A bare year in YAML arrives as a number; it must still render.
-    await expect(items.first().locator('.zellij-timeline-date')).toHaveText('2019');
-    await expect(items.first().locator('.zellij-timeline-title')).toHaveText(
-      'A spreadsheet that would not die',
-    );
+    await expect(items.first().locator('.zellij-timeline-date')).toHaveText('2024');
+    await expect(items.first().locator('.zellij-timeline-title')).toHaveText('Lumen 1');
   });
 });
 
 test.describe('team grid', () => {
   test('renders each person with name, role and photo', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/lumen-3-pro');
 
-    const cards = page.locator('#people .zellij-team-card');
+    const cards = page.locator('#makers .zellij-team-card');
     await expect(cards).toHaveCount(3);
-    await expect(cards.first().locator('.zellij-team-name')).toHaveText('Ada Okonjo');
-    await expect(cards.first().locator('.zellij-team-role')).toHaveText('Engineering');
+    await expect(cards.first().locator('.zellij-team-name')).toHaveText('Rowan Ellis');
+    await expect(cards.first().locator('.zellij-team-role')).toHaveText('Industrial design');
     // A portrait's alt is the person.
-    await expect(cards.first().locator('img')).toHaveAttribute('alt', 'Ada Okonjo');
+    await expect(cards.first().locator('img')).toHaveAttribute('alt', 'Rowan Ellis');
   });
 
   test('names the person in each link, for links read out of context', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/lumen-3-pro');
     await expect(
-      page.locator('#people').getByRole('link', { name: 'Ada Okonjo — Writing' }),
+      page.locator('#makers').getByRole('link', { name: 'Rowan Ellis — Design notes' }),
     ).toBeVisible();
   });
 });
 
 test.describe('gallery lightbox', () => {
   test('opens, pages and closes', async ({ page }) => {
-    await page.goto('/about');
+    await page.goto('/lumen-3-pro');
 
     const dialog = page.locator('.zellij-lightbox');
     await expect(dialog).toBeHidden();
 
-    await page.locator('#gallery .zellij-gallery-opener').first().click();
+    await page.locator('#finishes .zellij-gallery-opener').first().click();
     await expect(dialog).toBeVisible();
     await expect(page.locator('.zellij-lightbox-count')).toHaveText('1 of 6');
-    await expect(page.locator('.zellij-lightbox-caption')).toHaveText('Lisbon, 2024');
+    await expect(page.locator('.zellij-lightbox-caption')).toHaveText('Graphite');
 
     await page.keyboard.press('ArrowRight');
     await expect(page.locator('.zellij-lightbox-count')).toHaveText('2 of 6');
@@ -266,8 +264,8 @@ test.describe('gallery lightbox', () => {
    * put it in document flow, so it opened far above the viewport.
    */
   test('sits centred in the viewport', async ({ page }) => {
-    await page.goto('/about');
-    await page.locator('#gallery .zellij-gallery-opener').first().click();
+    await page.goto('/lumen-3-pro');
+    await page.locator('#finishes .zellij-gallery-opener').first().click();
 
     const box = (await page.locator('.zellij-lightbox').boundingBox())!;
     const viewport = page.viewportSize()!;
@@ -279,8 +277,8 @@ test.describe('gallery lightbox', () => {
   });
 
   test('opens the image the tile names, not always the first', async ({ page }) => {
-    await page.goto('/about');
-    await page.locator('#gallery .zellij-gallery-opener').nth(2).click();
+    await page.goto('/lumen-3-pro');
+    await page.locator('#finishes .zellij-gallery-opener').nth(2).click();
     await expect(page.locator('.zellij-lightbox-count')).toHaveText('3 of 6');
   });
 });

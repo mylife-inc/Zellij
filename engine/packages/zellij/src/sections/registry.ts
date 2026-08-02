@@ -48,6 +48,13 @@ export interface SectionDefinition<TSchema extends z.ZodTypeAny = z.ZodTypeAny> 
   readonly schema: TSchema;
   /** Rendering component. Attached in the sections barrel; loaders only need the schema. */
   readonly component?: unknown;
+  /**
+   * True when the section renders the page's `<h1>`. A page that stacks only
+   * sections without one — a grid of promo tiles, say — would otherwise ship no
+   * top-level heading at all, which costs it both the document outline screen
+   * readers navigate by and the heading search engines read as the page title.
+   */
+  readonly providesPageHeading?: boolean;
 }
 
 const registry = new Map<string, SectionDefinition>();
@@ -58,6 +65,13 @@ export function registerSection(definition: SectionDefinition): void {
 
 export function getSection(type: string): SectionDefinition | undefined {
   return registry.get(type);
+}
+
+/** Section types that render the page `<h1>` themselves. */
+export function pageHeadingSectionTypes(): Set<string> {
+  return new Set(
+    [...registry.values()].filter((def) => def.providesPageHeading).map((def) => def.type),
+  );
 }
 
 export function registeredSectionTypes(): string[] {

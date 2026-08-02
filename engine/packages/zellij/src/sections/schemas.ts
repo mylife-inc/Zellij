@@ -312,9 +312,56 @@ export const gallerySchema = baseSectionSchema.extend({
     .min(2),
 });
 
+/**
+ * A grid of full-bleed promo tiles: image behind, copy over it, one or two
+ * links. The landing-page building block for a product family.
+ *
+ * Distinct from `bento-grid`, where the image sits *below* the copy in a card.
+ * Here the image is the tile, which is what gives a product page its weight.
+ *
+ * A tile carries `links` rather than being one big link, because a tile that
+ * is itself a link cannot contain links — set `href` for the whole-tile form,
+ * and then `links` is dropped.
+ */
+export const promoGridSchema = baseSectionSchema.extend({
+  type: z.literal('promo-grid'),
+  heading: z.string().optional(),
+  gap: z.enum(['none', 'tight', 'normal']).default('normal'),
+  items: z
+    .array(
+      z.object({
+        eyebrow: z.string().optional(),
+        title: z.string().min(1),
+        body: z.string().optional(),
+        image: asset.optional(),
+        video: asset.optional(),
+        alt: z.string().default(''),
+        /** Full width, or half so two sit side by side. */
+        width: z.enum(['full', 'half']).default('full'),
+        /** Where the copy sits in the tile. */
+        align: z.enum(['top', 'center', 'bottom']).default('top'),
+        /**
+         * Which part of the image to keep in frame. Copy sits over the tile, so
+         * without this the subject and the words end up in the same place —
+         * `bottom` is the usual answer when the copy is at the top.
+         */
+        focus: z.enum(['top', 'center', 'bottom']).default('center'),
+        tone: z.enum(['light', 'dark', 'auto']).default('auto'),
+        scrim: z.number().min(0).max(1).default(0),
+        height: z.enum(['short', 'tall', 'full']).default('tall'),
+        links: z
+          .array(z.object({ label: z.string().min(1), href: z.string().min(1) }))
+          .max(2)
+          .default([]),
+        href: z.string().optional(),
+      }),
+    )
+    .min(1),
+});
+
 /** Registration order is the order shown in "valid types" build errors. */
 const ALL = [
-  { type: 'hero', schema: heroSchema },
+  { type: 'hero', schema: heroSchema, providesPageHeading: true },
   { type: 'logo-strip', schema: logoStripSchema },
   { type: 'feature-grid', schema: featureGridSchema },
   { type: 'zigzag', schema: zigzagSchema },
@@ -332,6 +379,7 @@ const ALL = [
   { type: 'timeline', schema: timelineSchema },
   { type: 'team-grid', schema: teamGridSchema },
   { type: 'gallery', schema: gallerySchema },
+  { type: 'promo-grid', schema: promoGridSchema },
 ] as const;
 
 export function registerBuiltinSections(): void {
@@ -359,6 +407,7 @@ export type BentoGridSection = z.infer<typeof bentoGridSchema>;
 export type TimelineSection = z.infer<typeof timelineSchema>;
 export type TeamGridSection = z.infer<typeof teamGridSchema>;
 export type GallerySection = z.infer<typeof gallerySchema>;
+export type PromoGridSection = z.infer<typeof promoGridSchema>;
 
 export type AnySection =
   | HeroSection
@@ -378,4 +427,5 @@ export type AnySection =
   | BentoGridSection
   | TimelineSection
   | TeamGridSection
-  | GallerySection;
+  | GallerySection
+  | PromoGridSection;

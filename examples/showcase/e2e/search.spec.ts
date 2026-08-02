@@ -113,7 +113,7 @@ test.describe('SEO', () => {
     const content = (selector: string) =>
       page.locator(selector).first().getAttribute('content');
 
-    expect(await content('meta[property="og:title"]')).toContain('Acme');
+    expect(await content('meta[property="og:title"]')).toContain('Lumen');
     expect(await content('meta[property="og:url"]')).toMatch(/^https:\/\//);
     expect(await content('meta[property="og:image"]')).toMatch(/^https:\/\/.*og\.png$/);
     expect(await content('meta[name="twitter:card"]')).toBe('summary_large_image');
@@ -126,7 +126,7 @@ test.describe('SEO', () => {
     const sitemap = await request.get('/sitemap.xml');
     expect(sitemap.status()).toBe(200);
     const xml = await sitemap.text();
-    expect(xml).toContain('<loc>https://acme.example.com/</loc>');
+    expect(xml).toContain('<loc>https://lumen.example.com/</loc>');
     expect(xml).toContain('/guide/quickstart');
 
     const robots = await request.get('/robots.txt');
@@ -135,10 +135,10 @@ test.describe('SEO', () => {
   });
 
   test('gives each page its own title and description', async ({ page }) => {
-    await page.goto('/pricing');
-    const pricingTitle = await page.title();
+    await page.goto('/');
+    const homeTitle = await page.title();
 
-    await page.goto('/features');
-    expect(await page.title()).not.toBe(pricingTitle);
+    await page.goto('/lumen-3-pro');
+    expect(await page.title()).not.toBe(homeTitle);
   });
 });

@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-description: Get a working Acme workflow running in about ten minutes.
+description: Get a working Lumen workflow running in about ten minutes.
 ---
 
 # Quickstart
@@ -16,7 +16,7 @@ You need Node.js 20.11 or newer. Check with `node --version`.
     The CLI drives setup and deployment.
 
     ```bash
-    npm install -g @acme/cli
+    npm install -g @lumen/cli
     ```
   </Step>
 
@@ -24,7 +24,7 @@ You need Node.js 20.11 or newer. Check with `node --version`.
     Sign in once; the token is cached in your home directory.
 
     ```bash
-    acme login
+    lumen login
     ```
   </Step>
 
@@ -32,7 +32,7 @@ You need Node.js 20.11 or newer. Check with `node --version`.
     Scaffold a workflow from the approval template.
 
     ```bash title="terminal"
-    acme workflow create --template approval --name "Invoice review"
+    lumen workflow create --template approval --name "Invoice review"
     ```
   </Step>
 
@@ -40,7 +40,7 @@ You need Node.js 20.11 or newer. Check with `node --version`.
     Trigger the workflow and watch it move through its steps.
 
     ```bash
-    acme workflow run "Invoice review"
+    lumen workflow run "Invoice review"
     ```
   </Step>
 </Steps>
@@ -50,7 +50,7 @@ You need Node.js 20.11 or newer. Check with `node --version`.
 <Tabs>
   <Tab label="CLI">
     ```bash
-    acme workflow status "Invoice review"
+    lumen workflow status "Invoice review"
     ```
   </Tab>
   <Tab label="Dashboard">

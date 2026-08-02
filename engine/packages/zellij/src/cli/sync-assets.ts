@@ -27,7 +27,17 @@ export async function syncAssets(appRoot: string = process.cwd()): Promise<void>
   await mkdir(path.dirname(destination), { recursive: true });
   await cp(source, destination, { recursive: true });
 
-  console.log(`[zellij] Synced assets → public/_zellij/assets`);
+  /*
+   * Drop Next's optimized-image cache.
+   *
+   * The cache is keyed by request URL, and a replaced asset keeps the same one,
+   * so `next build` alone will happily serve the previous version of an image
+   * that changed on disk — indefinitely, and with no warning. Editing an image
+   * and seeing the old one is a genuinely disorienting way to lose an hour.
+   */
+  await rm(path.join(appRoot, '.next', 'cache', 'images'), { recursive: true, force: true });
+
+  console.log(`[zellij] Synced assets → public/_zellij/assets (image cache cleared)`);
 }
 
 /**
