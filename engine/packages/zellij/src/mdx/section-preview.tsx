@@ -25,7 +25,7 @@ export interface SectionPreviewProps {
  * stops parsing, or the section it names stops rendering, the docs site fails
  * to build instead of describing something that no longer works.
  */
-export function SectionPreview({
+export async function SectionPreview({
   example,
   label,
   site,
@@ -46,7 +46,7 @@ export function SectionPreview({
     <MDXRemote
       source={['```yaml', found.source.trimEnd(), '```'].join('\n')}
       components={{ pre: CodeBlock }}
-      options={mdxOptions()}
+      options={await mdxOptions()}
     />
   );
 

@@ -27,6 +27,23 @@ jobs:
       contents: read
       packages: write
 
+    # One Dockerfile, four images. The features only change which optional
+    # dependencies the generated package.json asks for, so the variants cost
+    # almost nothing to publish and save a site build from fetching a hundred
+    # megabytes of diagram library it has no diagrams for.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - features: none
+            suffix: ''
+          - features: maths
+            suffix: '-maths'
+          - features: diagrams
+            suffix: '-diagrams'
+          - features: all
+            suffix: '-all'
+
     steps:
       - uses: actions/checkout@v4
 
@@ -43,6 +60,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+          flavor: |
+            suffix=${{ matrix.suffix }},onlatest=true
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -54,6 +73,8 @@ jobs:
         with:
           context: .
           file: docker/base.Dockerfile
+          build-args: |
+            ZELLIJ_FEATURES=${{ matrix.features }}
           # arm64 as well as amd64: a lot of authors are on Apple silicon, and
           # emulating the wrong architecture locally turns a fast build slow.
           platforms: linux/amd64,linux/arm64
@@ -63,7 +84,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      # Only the default variant is smoke-tested: the others differ by three
+      # lines of JSON, and building four sites to learn the same thing is time
+      # every push would pay for.
       - name: Prove the image can build a site
+        if: matrix.features == 'none'
         run: |
           docker build \
             --build-arg ZELLIJ_VERSION=${{ github.ref_name }} \

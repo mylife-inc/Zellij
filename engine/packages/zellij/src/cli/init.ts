@@ -29,6 +29,16 @@ export interface InitOptions {
   /** Write into a directory that already has files in it. */
   force?: boolean;
   /**
+   * Optional engine features to install: `maths`, `diagrams`, or `all`.
+   *
+   * These are the expensive ones — roughly fifty megabytes for MathJax and a
+   * hundred for Mermaid — and most documentation wants neither. They are
+   * optional dependencies of the engine, so leaving them out of the manifest
+   * means they are never fetched, and the engine renders without them rather
+   * than failing over a package nobody asked for.
+   */
+  features?: string[];
+  /**
    * Write only the content folder, with no app around it.
    *
    * For a project that wants documentation in its own repository and will build
@@ -283,6 +293,23 @@ export async function init(options: InitOptions): Promise<string> {
     dependencies[pkg] = installable(range);
   }
 
+  // `all` is spelled out rather than passed through, so the manifest records
+  // what was actually asked for and still reads clearly a year later.
+  const wanted = new Set(
+    (options.features ?? []).flatMap((feature) =>
+      feature === 'all' ? ['maths', 'diagrams'] : [feature],
+    ),
+  );
+
+  const optional: Record<string, string> = {};
+  if (wanted.has('maths')) {
+    optional['remark-math'] = '^6.0.0';
+    optional['rehype-mathjax'] = '^7.1.0';
+  }
+  if (wanted.has('diagrams')) {
+    optional['mermaid'] = '^11.16.0';
+  }
+
   const packageJson = {
     name,
     version: '0.1.0',
@@ -301,7 +328,7 @@ export async function init(options: InitOptions): Promise<string> {
       check: 'zellij check',
       typecheck: 'tsc --noEmit',
     },
-    dependencies,
+    dependencies: { ...dependencies, ...optional },
     devDependencies: {
       '@tailwindcss/postcss': '^4.3.3',
       tailwindcss: '^4.3.3',

@@ -14,7 +14,7 @@ import { mdxOptions } from '../mdx/pipeline';
  * Docs layout: left sidebar, prose column, right-hand "On this page" rail,
  * breadcrumbs, and previous/next links (spec §7).
  */
-export function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
+export async function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
   const toc = extractToc(page.body);
   // A site can have any number of guide trees, so a page navigates within its
   // own — `page.guide` is the route of the folder it came from.
@@ -58,7 +58,7 @@ export function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
               source of truth across <title>, sidebar, breadcrumbs and search. */}
           <h1>{page.title}</h1>
           {page.description ? <p className="zellij-lead">{page.description}</p> : null}
-          <MDXRemote source={page.body} components={mdxComponents(site)} options={mdxOptions()} />
+          <MDXRemote source={page.body} components={mdxComponents(site)} options={await mdxOptions()} />
         </article>
 
         {previous || next ? (

@@ -97,6 +97,9 @@ switch (command) {
       ...(flags.port ? { port: Number(flags.port) } : {}),
       ...(flags.force ? { force: true } : {}),
       ...(flags['content-only'] ? { contentOnly: true } : {}),
+      ...(typeof flags.features === 'string' && flags.features !== 'none'
+        ? { features: flags.features.split(',').map((f) => f.trim()).filter(Boolean) }
+        : {}),
     });
 
     if (flags['content-only']) {
@@ -151,6 +154,8 @@ switch (command) {
         `                   --port <n>        dev port\n` +
         `                   --force           write into a non-empty directory\n` +
         `                   --content-only    write just the content folder\n` +
+        `                   --features <list> optional engine features to install:\n` +
+        `                                     maths, diagrams, all (default none)\n` +
         `  context [file] write a single reference describing Zellij's content\n` +
         `                   model, for an AI agent to author a folder from\n` +
         `  check [dir]    validate a content root without building\n` +

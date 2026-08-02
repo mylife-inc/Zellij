@@ -11,7 +11,7 @@ import { mdxOptions } from '../../mdx/pipeline';
  * MDX pipeline and component set, so there is one MDX path in the engine and
  * `<Callout>` and friends work here too.
  */
-export function MarkdownProse({ section, site, defaultMotion }: SectionProps<MarkdownProseSection>) {
+export async function MarkdownProse({ section, site, defaultMotion }: SectionProps<MarkdownProseSection>) {
   const motion = section.motion ?? defaultMotion;
 
   return (
@@ -30,7 +30,7 @@ export function MarkdownProse({ section, site, defaultMotion }: SectionProps<Mar
         {...(section.titleGradient ? { titleGradient: section.titleGradient } : {})}
       />
       <div className="zellij-prose zellij-prose-marketing">
-        <MDXRemote source={section.body} components={mdxComponents(site)} options={mdxOptions()} />
+        <MDXRemote source={section.body} components={mdxComponents(site)} options={await mdxOptions()} />
       </div>
     </SectionShell>
   );

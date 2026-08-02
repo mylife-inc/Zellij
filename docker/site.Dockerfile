@@ -31,12 +31,14 @@ WORKDIR /app
 RUN rm -rf /app/content
 COPY ${CONTENT}/ /app/content/
 
+# The base image carries the engine and a manifest, and nothing else. This is
+# where the manifest becomes an installation — deferred to here because it is
+# the first moment the content, and so which optional features it needs, is
+# known.
+RUN npm install --install-links
+
 # Fails the build on a broken link or an invalid section, naming the file —
 # rather than publishing a site with a dead page in it.
-#
-# Through the copy npm installed, not the one at /opt/zellij: that one is only
-# ever an install source and has no node_modules beside it, so the CLI cannot
-# resolve its own dependencies from there.
 RUN npx zellij check content
 
 RUN npm run build
