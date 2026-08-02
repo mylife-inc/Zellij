@@ -21,3 +21,6 @@ engine/packages/zellij/dist/
 examples/payos/content/01-guide/*.mdx
 !examples/payos/content/01-guide/index.mdx
 examples/payos/content/02-using-payos/*.mdx
+
+# Rust build output
+cli/target/

@@ -1,0 +1,20 @@
+[package]
+name = "zellij-cli"
+description = "The Zellij command line."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "zellij"
+path = "src/main.rs"
+
+[dependencies]
+zellij-core.workspace = true
+zellij-convert.workspace = true
+zellij-engine.workspace = true
+camino.workspace = true
+clap.workspace = true

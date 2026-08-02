@@ -44,6 +44,18 @@ export function withZellij(config = {}) {
       formats: ['image/avif', 'image/webp'],
       ...config.images,
     },
+
+    /*
+     * `standalone` traces the server and its dependencies into one directory,
+     * which is what lets a container ship the built site without `node_modules`
+     * — the difference between a runtime image of tens of megabytes and one of
+     * several hundred.
+     *
+     * Driven by the environment because the same content folder is built both
+     * ways: locally by an author, and in a container by CI. Neither should have
+     * to keep a second config around to say so.
+     */
+    ...(process.env['ZELLIJ_OUTPUT'] ? { output: process.env['ZELLIJ_OUTPUT'] } : {}),
   };
 }
 

@@ -1,0 +1,15 @@
+[package]
+name = "zellij-convert"
+description = "Converters from other documentation tools into a Zellij content folder."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+zellij-core.workspace = true
+camino.workspace = true
+thiserror.workspace = true
+inventory.workspace = true
