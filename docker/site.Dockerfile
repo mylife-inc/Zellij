@@ -6,14 +6,22 @@
 #   docker build -f site.Dockerfile --build-arg CONTENT=docs -t my-docs .
 #   docker run --rm -p 3000:3000 my-docs
 #
+# To build against a base image you built yourself:
+#
+#   docker build -f site.Dockerfile \
+#     --build-arg ZELLIJ_IMAGE=zellij-base --build-arg ZELLIJ_VERSION=test ...
+#
 # The engine never reaches the image you deploy: the build stage is discarded
 # and only the compiled site survives into the runtime stage.
 
+# The base image, overridable so it can be pulled from a mirror, or pointed at
+# a locally built one while working on the image itself.
+ARG ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base
 ARG ZELLIJ_VERSION=latest
 ARG CONTENT=content
 
 # ------------------------------------------------------------------- build
-FROM ghcr.io/mylife-inc/zellij-base:${ZELLIJ_VERSION} AS build
+FROM ${ZELLIJ_IMAGE}:${ZELLIJ_VERSION} AS build
 
 ARG CONTENT
 WORKDIR /app
@@ -25,7 +33,11 @@ COPY ${CONTENT}/ /app/content/
 
 # Fails the build on a broken link or an invalid section, naming the file —
 # rather than publishing a site with a dead page in it.
-RUN node /opt/zellij/bin/zellij.mjs check /app/content
+#
+# Through the copy npm installed, not the one at /opt/zellij: that one is only
+# ever an install source and has no node_modules beside it, so the CLI cannot
+# resolve its own dependencies from there.
+RUN npx zellij check content
 
 RUN npm run build
 

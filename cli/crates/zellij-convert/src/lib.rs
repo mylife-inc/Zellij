@@ -73,7 +73,11 @@ pub trait Converter: Send + Sync {
 
     fn detect(&self, source: &Utf8Path) -> Confidence;
 
-    fn convert(&self, source: &Utf8Path, options: &ConvertOptions) -> zellij_core::Result<Conversion>;
+    fn convert(
+        &self,
+        source: &Utf8Path,
+        options: &ConvertOptions,
+    ) -> zellij_core::Result<Conversion>;
 }
 
 inventory::collect!(&'static dyn Converter);

@@ -27,7 +27,14 @@ static SCHEMA: LazyLock<Value> = LazyLock::new(|| {
 });
 
 /// Fields shared by every section, described once rather than nineteen times.
-const SHARED_FIELDS: &[&str] = &["type", "id", "motion", "background", "padding", "titleGradient"];
+const SHARED_FIELDS: &[&str] = &[
+    "type",
+    "id",
+    "motion",
+    "background",
+    "padding",
+    "titleGradient",
+];
 
 /// One field of a section, in the terms someone writing YAML thinks in.
 #[derive(Debug, Clone)]
@@ -176,7 +183,10 @@ fn describe(field: &Value) -> String {
 
     match field.get("type").and_then(Value::as_str) {
         Some("array") => {
-            let inner = field.get("items").map(describe).unwrap_or_else(|| "any".into());
+            let inner = field
+                .get("items")
+                .map(describe)
+                .unwrap_or_else(|| "any".into());
             format!("list of {inner}")
         }
         Some("object") => "object".to_owned(),

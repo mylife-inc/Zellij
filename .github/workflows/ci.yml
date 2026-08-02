@@ -1,0 +1,101 @@
+# Everything that must hold before a change lands.
+name: CI
+
+on:
+  push:
+    branches: [main, content-model]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engine:
+    name: Engine
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npx vitest run --root engine/packages/zellij
+      - run: npm run build --workspace @shebka/zellij
+
+  # The guarantee that the CLI and the engine cannot disagree.
+  #
+  # `zel explain` and `zel context` are compiled from a JSON file the engine
+  # generates. Nothing stops someone adding a field to a zod schema and not
+  # regenerating it — nothing except this, which regenerates and fails if the
+  # committed copy has fallen behind. The tool that scaffolds a section and the
+  # engine that validates it stay the same definition by construction.
+  schema:
+    name: Embedded schema is current
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+
+      - name: Regenerate
+        run: |
+          node engine/packages/zellij/bin/zellij.mjs context \
+            cli/crates/zellij-core/generated/schema.json --json
+          node engine/packages/zellij/bin/zellij.mjs context \
+            cli/crates/zellij-core/generated/context.md
+
+      - name: Fail if it changed
+        run: |
+          if ! git diff --quiet -- cli/crates/zellij-core/generated; then
+            echo "::error::The engine's schemas have changed and the CLI's embedded copy has not."
+            echo
+            echo "Regenerate and commit:"
+            echo "  npm run build --workspace @shebka/zellij"
+            echo "  node engine/packages/zellij/bin/zellij.mjs context cli/crates/zellij-core/generated/schema.json --json"
+            echo "  node engine/packages/zellij/bin/zellij.mjs context cli/crates/zellij-core/generated/context.md"
+            echo
+            git diff --stat -- cli/crates/zellij-core/generated
+            exit 1
+          fi
+          echo "Embedded schema matches the engine."
+
+  cli:
+    name: CLI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo fmt --all --check
+        working-directory: cli
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+        working-directory: cli
+      - run: cargo test --workspace
+        working-directory: cli
+
+  e2e:
+    name: Showcase end to end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+        working-directory: examples/showcase
+      - run: npx playwright test
+        working-directory: examples/showcase

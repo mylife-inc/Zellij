@@ -25,7 +25,9 @@ impl Project {
     /// one's.
     pub fn discover(start: &Utf8Path) -> Result<Self> {
         if Self::looks_like_content(start) {
-            return Ok(Self { content: start.to_owned() });
+            return Ok(Self {
+                content: start.to_owned(),
+            });
         }
 
         for candidate in ["content", "docs", "documentation"] {
@@ -35,7 +37,9 @@ impl Project {
             }
         }
 
-        Err(Error::NoContentFolder { path: start.to_owned() })
+        Err(Error::NoContentFolder {
+            path: start.to_owned(),
+        })
     }
 
     fn looks_like_content(path: &Utf8Path) -> bool {

@@ -13,12 +13,14 @@ same way: pages are composed from a fixed vocabulary of **sections**, styled by
 Zellij/
 ├── specs/          The documents this was designed from
 ├── engine/         The engine — @shebka/zellij
+├── cli/            `zel`, the command line (Rust)
+├── docker/         The base image, and the one a site is built from
 └── examples/       Three sites built with it
 ```
 
 ## The engine
 
-[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 18
+[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 19
 section types, 14 themes, a documentation renderer, ⌘K search, and a build that
 refuses to ship broken content.
 
@@ -83,3 +85,35 @@ wherever they disagree.
 ---
 
 © 2026 Shebka LLC
+
+## Using it without this repository
+
+The engine is private; the image is not. A site is built from a public base
+image that has the engine already installed, so nobody needs access to this
+source to publish documentation with it.
+
+```bash
+docker build -f site.Dockerfile --build-arg CONTENT=docs -t my-docs .
+```
+
+[`docker/site.Dockerfile`](docker/site.Dockerfile) is the half that gets copied
+into another repository. It validates the content folder before building, so a
+broken link fails the build rather than shipping a dead page, and its runtime
+stage carries only the compiled site — the engine never reaches what gets
+deployed.
+
+## The command line
+
+[`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
+converting one from another documentation tool, validating it, building it and
+shipping it. It needs no Node — the commands that build use the container, and
+the ones that describe Zellij's own content model read a schema the engine
+generates and the binary compiles in.
+
+```bash
+zel explain bento-grid      # every field, with a worked example
+zel new section hero        # a section file, fields filled in
+zel context reference.md    # the whole model, for an AI agent
+```
+
+[`specs/zellij-cli-spec.md`](specs/zellij-cli-spec.md) is the full surface.

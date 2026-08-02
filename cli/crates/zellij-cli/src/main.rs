@@ -212,9 +212,15 @@ fn list_formats() -> zellij_core::Result<()> {
 
 fn list_targets() -> zellij_core::Result<()> {
     for (name, description) in [
-        ("static", "HTML, CSS and JS. Hosts free on any CDN. The default."),
+        (
+            "static",
+            "HTML, CSS and JS. Hosts free on any CDN. The default.",
+        ),
         ("node", "A traced Node server. Keeps image optimisation."),
-        ("image:static", "Container, nginx serving the static folder. ~30 MB."),
+        (
+            "image:static",
+            "Container, nginx serving the static folder. ~30 MB.",
+        ),
         ("image:node", "Container, Node serving the app. ~150 MB."),
     ] {
         println!("{name:<14} {description}");
@@ -227,7 +233,10 @@ fn list_sections() -> zellij_core::Result<()> {
     for section_type in zellij_core::schema::section_types() {
         let fields = zellij_core::schema::fields_of(&section_type).unwrap_or_default();
         let required = fields.iter().filter(|field| field.required).count();
-        println!("{section_type:<16} {} fields, {required} required", fields.len());
+        println!(
+            "{section_type:<16} {} fields, {required} required",
+            fields.len()
+        );
     }
 
     println!("\nRun `zel explain <type>` for any of them.");
@@ -287,7 +296,10 @@ fn explain(section_type: &str) -> zellij_core::Result<()> {
                     .map(|value| format!("  (default {value})"))
                     .unwrap_or_default();
                 let mark = if nested.required { "*" } else { " " };
-                println!("  {mark}{:<13} {}{}", nested.name, nested.type_name, default);
+                println!(
+                    "  {mark}{:<13} {}{}",
+                    nested.name, nested.type_name, default
+                );
             }
             println!("  * required\n");
         }
