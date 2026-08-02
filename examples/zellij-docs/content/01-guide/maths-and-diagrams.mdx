@@ -146,6 +146,62 @@ sequenceDiagram
   S-->>A: fails the build on a broken link
 ```
 
+### Colour-coded maps
+
+A mindmap is the quickest way to draw a hierarchy, but its renderer draws no
+arrowheads and gives you one colour per branch and no say in which. When the
+picture is the point — a structure someone will study rather than glance at —
+reach for a flowchart and colour the branches yourself:
+
+````md
+```mermaid
+flowchart LR
+  P([Business Plan])
+
+  P --> S1[1. Executive Summary]
+  P --> S2[2. Business Description]
+  S2 --> S2a[Mission Statement]
+  S2 --> S2b[Ownership]
+
+  classDef gold  fill:#fff,stroke:#c8a02c,stroke-width:2px,color:#8a6d1b
+  classDef slate fill:#fff,stroke:#4a4f57,stroke-width:2px,color:#33373d
+
+  class S1 gold
+  class S2,S2a,S2b slate
+```
+````
+
+```mermaid
+flowchart LR
+  P([Business Plan])
+
+  P --> S1[1. Executive Summary]
+  P --> S2[2. Business Description]
+  S2 --> S2a[Mission Statement]
+  S2 --> S2b[Ownership]
+  P --> S3[3. Product]
+  S3 --> S3a[Opportunities]
+  S3 --> S3b[Threats]
+
+  classDef gold  fill:#fff,stroke:#c8a02c,stroke-width:2px,color:#8a6d1b
+  classDef slate fill:#fff,stroke:#4a4f57,stroke-width:2px,color:#33373d
+  classDef green fill:#fff,stroke:#2f855a,stroke-width:2px,color:#276749
+
+  class S1 gold
+  class S2,S2a,S2b slate
+  class S3,S3a,S3b green
+```
+
+<Callout type="info" title="Which one to reach for">
+`mindmap` costs one line per node and picks its own colours from the theme —
+right for a structure you are sketching. A `flowchart` with `classDef` costs
+more to write and gives you arrowheads, curve control and the exact palette you
+want — right for a diagram that has to carry a page. Colours in a `classDef` are
+literal, so unlike everything else in Zellij they do not follow the theme; pick
+values that read on a light and a dark background, or keep them for pages where
+that does not matter.
+</Callout>
+
 <Callout type="tip" title="Only pages with a diagram pay for one">
 Mermaid lays a diagram out by measuring text, so it needs a browser and cannot
 run during the build the way the maths does. The library is imported the moment

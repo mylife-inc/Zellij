@@ -12,6 +12,65 @@ function prefersDark(): boolean {
   return window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
+/** Resolves a CSS colour of any notation to `[r, g, b]` by letting the browser parse it. */
+function toRgb(colour: string): [number, number, number] {
+  const probe = document.createElement('span');
+  probe.style.color = colour;
+  probe.style.display = 'none';
+  document.body.append(probe);
+  const resolved = getComputedStyle(probe).color;
+  probe.remove();
+
+  const parts = resolved.match(/-?[\d.]+/g);
+  if (!parts || parts.length < 3) return [0, 0, 0];
+  return [Number(parts[0]), Number(parts[1]), Number(parts[2])];
+}
+
+function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
+  const [rn, gn, bn] = [r / 255, g / 255, b / 255];
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const l = (max + min) / 2;
+  if (max === min) return [0, 0, l];
+
+  const d = max - min;
+  const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+  const h =
+    max === rn
+      ? ((gn - bn) / d + (gn < bn ? 6 : 0)) / 6
+      : max === gn
+        ? ((bn - rn) / d + 2) / 6
+        : ((rn - gn) / d + 4) / 6;
+  return [h * 360, s, l];
+}
+
+/**
+ * A branch palette, spun out of the theme's own accent.
+ *
+ * Colour is how a mindmap tells one branch from another, so a single fill makes
+ * every limb look alike — but Mermaid's stock palette belongs to no theme in
+ * particular. Rotating the accent's hue keeps the family resemblance while
+ * still giving each branch its own identity, and it works for any accent the
+ * site happens to have rather than a list of colours we picked in advance.
+ *
+ * The golden-angle step is what keeps neighbouring branches far apart in hue
+ * instead of drifting through near-identical shades.
+ */
+function branchPalette(accent: string, count: number, dark: boolean): string[] {
+  const [h, s, l] = rgbToHsl(...toRgb(accent));
+
+  // Saturation and lightness are pinned rather than inherited: a very pale or
+  // very dark accent would otherwise produce a set of branches nobody can tell
+  // apart, or read against the page.
+  const saturation = Math.round(Math.min(Math.max(s, 0.45), 0.7) * 100);
+  const lightness = dark ? 68 : 42;
+
+  return Array.from({ length: count }, (_, i) => {
+    const hue = Math.round((h + i * 137.5) % 360);
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  });
+}
+
 /**
  * Dresses Mermaid in the site's own tokens.
  *
@@ -20,7 +79,7 @@ function prefersDark(): boolean {
  * from somewhere else. Reading the live custom properties keeps a diagram in
  * step with whatever theme is showing, including one switched at runtime.
  */
-function themeVariables(): Record<string, string> {
+function themeVariables(dark: boolean): Record<string, string> {
   const styles = getComputedStyle(document.documentElement);
   const token = (name: string, fallback: string) =>
     styles.getPropertyValue(`--zellij-${name}`).trim() || fallback;
@@ -64,17 +123,26 @@ function themeVariables(): Record<string, string> {
      * structure is already carried by its shape, so colour has nothing left to
      * say and only competes with the page.
      *
-     * The border token rather than the surface one because a mindmap paints its
-     * connectors in the branch colour too — surface-on-surface drew the lines
-     * in the page's own background and lost them. Mermaid styles those lines
-     * through an id selector, so CSS cannot take them back afterwards.
+     * `cScale` sets the branch's node outline, its label and the connector
+     * running into it, all three at once — Mermaid offers no way to separate
+     * them, and styles them through an id selector that CSS cannot outrank
+     * afterwards. So the palette has to be right here or not at all.
      */
     ...Object.fromEntries(
-      Array.from({ length: 12 }, (_, i) => [
-        [`cScale${i}`, border],
-        [`cScaleLabel${i}`, fg],
-        [`cScaleInv${i}`, fg],
-      ]).flat(),
+      branchPalette(accent, 12, dark)
+        .map((colour, i) => {
+          // Mermaid numbers sections from -1, so index 0 is the root rather
+          // than a branch. It gets the plain foreground: the root is the one
+          // node that belongs to no branch, and colouring it made its label
+          // unreadable against its own fill in dark mode.
+          const ink = i === 0 ? fg : colour;
+          return [
+            [`cScale${i}`, i === 0 ? border : colour],
+            [`cScaleLabel${i}`, ink],
+            [`cScaleInv${i}`, ink],
+          ];
+        })
+        .flat(),
     ),
   };
 }
@@ -137,11 +205,23 @@ export function Mermaid({ code }: { code?: string }) {
           // the markup below is Mermaid's own SVG rather than anything the
           // diagram's author could smuggle through it.
           securityLevel: 'strict',
-          theme: 'base',
+          /*
+           * `neutral` and `neo` together are what make a mindmap's nodes
+           * outlines rather than blocks of colour: only that pairing fills a
+           * node from `mainBkg` while stroking it with the branch's own colour.
+           * `neo` also thins Mermaid's connectors from seventeen pixels to two,
+           * which is most of the difference between a diagram that looks drawn
+           * and one that looks extruded.
+           */
+          theme: 'neutral',
+          look: 'neo',
           themeVariables: {
-            ...themeVariables(),
+            ...themeVariables(dark),
             darkMode: dark ? 'true' : 'false',
           },
+          // Straight-line elbows read as a wiring diagram; curves read as a
+          // map, which is what these mostly are.
+          flowchart: { curve: 'basis' },
           fontFamily: getComputedStyle(document.body).fontFamily,
         });
 

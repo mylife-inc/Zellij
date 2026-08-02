@@ -3,10 +3,37 @@
  * Zellij's build-time CLI. Wrapper apps run these as predev/prebuild steps
  * (spec §13.4, §13.6).
  */
+import { init } from '../src/cli/init.ts';
 import { syncAssets } from '../src/cli/sync-assets.ts';
 import { writeSearchIndex } from '../src/cli/write-search-index.ts';
 
 const [command, ...rest] = process.argv.slice(2);
+
+/** `--flag value` and `--flag=value`, plus bare `--flag` for booleans. */
+function parseFlags(args) {
+  const flags = {};
+  const positional = [];
+
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    if (!arg.startsWith('--')) {
+      positional.push(arg);
+      continue;
+    }
+
+    const [name, inline] = arg.slice(2).split('=');
+    if (inline !== undefined) {
+      flags[name] = inline;
+    } else if (args[i + 1] && !args[i + 1].startsWith('--')) {
+      flags[name] = args[i + 1];
+      i += 1;
+    } else {
+      flags[name] = true;
+    }
+  }
+
+  return { flags, positional };
+}
 
 switch (command) {
   case 'sync-assets':
@@ -20,6 +47,31 @@ switch (command) {
     await syncAssets(process.cwd());
     await writeSearchIndex(process.cwd());
     break;
+  case 'init': {
+    const { flags, positional } = parseFlags(rest);
+    const target = positional[0] ?? '.';
+
+    const created = await init({
+      target,
+      ...(flags.content ? { content: flags.content } : {}),
+      ...(flags.name ? { name: flags.name } : {}),
+      ...(flags.port ? { port: Number(flags.port) } : {}),
+      ...(flags.force ? { force: true } : {}),
+    });
+
+    const steps = [
+      ...(target === '.' ? [] : [`cd ${target}`]),
+      'npm install',
+      'npm run dev',
+    ];
+    console.log(
+      `[zellij] Wrote a wrapper app to ${created}\n\n` +
+        steps.map((step) => `  ${step}`).join('\n') +
+        '\n',
+    );
+    break;
+  }
+
   case 'check': {
     const { check } = await loadCheck();
     const contentDir = rest.find((arg) => !arg.startsWith('-'));
@@ -30,6 +82,11 @@ switch (command) {
   default:
     console.error(
       `Usage: zellij <command>\n\n` +
+        `  init [dir]     generate a Next.js wrapper app around a content folder\n` +
+        `                   --content <path>  use an existing content folder\n` +
+        `                   --name <name>     package name\n` +
+        `                   --port <n>        dev port\n` +
+        `                   --force           write into a non-empty directory\n` +
         `  check [dir]    validate a content root without building\n` +
         `  prepare        sync assets and build the search index\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +

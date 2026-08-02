@@ -64,16 +64,10 @@ export function mdxOptions() {
       rehypePlugins: [
         rehypeSlug,
         rehypeMermaid,
-        [
-          rehypeMathjax,
-          {
-            svg: {
-              // Long derivations get a scrollbar rather than widening the page.
-              overflow: 'linebreak',
-              displayAlign: 'left',
-            },
-          },
-        ],
+        // Display maths is left-aligned to sit with the prose rather than
+        // centred over it. Width is handled in CSS: a long derivation gets its
+        // own scrollbar instead of widening the page.
+        [rehypeMathjax, { svg: { displayAlign: 'left' } }],
         [
           rehypeShiki,
           {
