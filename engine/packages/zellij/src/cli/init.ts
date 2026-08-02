@@ -132,6 +132,22 @@ export const generateMetadata = zellij.generateMetadata;
 export default zellij.Page;
 `;
 
+/*
+ * A documentation site nobody can find is a documentation site nobody reads,
+ * and both of these are one line. Leaving them to the author meant every site
+ * built from the container image shipped without them — the scaffold is the
+ * only place that knows they should exist.
+ */
+const SITEMAP = `import { createZellijSitemap } from '@shebka/zellij';
+
+export default createZellijSitemap();
+`;
+
+const ROBOTS = `import { createZellijRobots } from '@shebka/zellij';
+
+export default createZellijRobots();
+`;
+
 const NEXT_CONFIG = `import { withZellij } from '@shebka/zellij/next-config';
 
 /**
@@ -305,6 +321,8 @@ export async function init(options: InitOptions): Promise<string> {
     'postcss.config.mjs': POSTCSS_CONFIG,
     'src/app/layout.tsx': LAYOUT,
     'src/app/[[...slug]]/page.tsx': PAGE,
+    'src/app/sitemap.ts': SITEMAP,
+    'src/app/robots.ts': ROBOTS,
     'README.md': readme(name, port, version),
   };
 
