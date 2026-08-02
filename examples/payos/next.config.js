@@ -1,4 +1,6 @@
+import { withZellij } from '@shebka/zellij/next-config';
+
 /** @type {import('next').NextConfig} */
-export default {
-  transpilePackages: ['@shebka/zellij'],
-};
+export default withZellij({
+  typedRoutes: false,
+});

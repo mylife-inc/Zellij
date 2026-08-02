@@ -1,0 +1,90 @@
+import { describe, expect, it } from 'vitest';
+import type { Element, Root } from 'hast';
+
+import { rehypeMermaid } from './rehype-mermaid';
+
+/** A ```<lang> fence as rehype sees it: <pre><code class="language-<lang>">. */
+function fence(lang: string, code: string): Element {
+  return {
+    type: 'element',
+    tagName: 'pre',
+    properties: {},
+    children: [
+      {
+        type: 'element',
+        tagName: 'code',
+        properties: { className: [`language-${lang}`] },
+        children: [{ type: 'text', value: code }],
+      },
+    ],
+  };
+}
+
+function run(tree: Root): Root {
+  (rehypeMermaid as unknown as () => (tree: Root) => void)()(tree);
+  return tree;
+}
+
+const root = (...children: Root['children']): Root => ({ type: 'root', children });
+
+describe('rehypeMermaid', () => {
+  it('replaces a mermaid fence with a diagram element carrying its source', () => {
+    const tree = run(root(fence('mermaid', 'flowchart LR\n  A --> B\n')));
+
+    expect(tree.children).toHaveLength(1);
+    const node = tree.children[0] as Element;
+    expect(node.tagName).toBe('mermaid-diagram');
+    expect(node.properties?.['code']).toBe('flowchart LR\n  A --> B');
+    // The <pre> goes with it: a diagram nested in a code box is not a diagram.
+    expect(node.children).toEqual([]);
+  });
+
+  it('leaves every other language alone', () => {
+    const tree = run(root(fence('ts', 'const a = 1;\n'), fence('yaml', 'type: hero\n')));
+
+    expect(tree.children.map((child) => (child as Element).tagName)).toEqual(['pre', 'pre']);
+  });
+
+  it('finds fences nested inside other elements', () => {
+    const tree = run(
+      root({
+        type: 'element',
+        tagName: 'div',
+        properties: {},
+        children: [fence('mermaid', 'mindmap\n  root((A))')],
+      }),
+    );
+
+    const wrapper = tree.children[0] as Element;
+    expect((wrapper.children[0] as Element).tagName).toBe('mermaid-diagram');
+  });
+
+  it('converts every fence in a document, not just the first', () => {
+    const tree = run(
+      root(fence('mermaid', 'graph TD'), fence('ts', 'x'), fence('mermaid', 'pie title P')),
+    );
+
+    expect(tree.children.map((child) => (child as Element).tagName)).toEqual([
+      'mermaid-diagram',
+      'pre',
+      'mermaid-diagram',
+    ]);
+  });
+
+  it('keeps a code element that is not inside a pre untouched', () => {
+    // Inline `code` spans carry no language class, and must never be swallowed.
+    const tree = run(
+      root({
+        type: 'element',
+        tagName: 'p',
+        properties: {},
+        children: [
+          { type: 'element', tagName: 'code', properties: {}, children: [{ type: 'text', value: 'mermaid' }] },
+        ],
+      }),
+    );
+
+    const paragraph = tree.children[0] as Element;
+    expect((paragraph.children[0] as Element).tagName).toBe('code');
+  });
+});

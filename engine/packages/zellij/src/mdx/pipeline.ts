@@ -1,9 +1,13 @@
 import rehypeShiki from '@shikijs/rehype';
 import { transformerMetaHighlight } from '@shikijs/transformers';
 import type { ShikiTransformer } from 'shiki';
+import rehypeMathjax from 'rehype-mathjax';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import type { Pluggable } from 'unified';
+
+import { rehypeMermaid } from './rehype-mermaid';
 
 /**
  * Shiki themes are chosen per mode; CSS variables select which one is visible,
@@ -51,9 +55,25 @@ export function mdxOptions() {
   return {
     parseFrontmatter: false,
     mdxOptions: {
-      remarkPlugins: [remarkGfm] as Pluggable[],
+      // `remarkMath` reads $…$ and $$…$$ into maths nodes; `rehypeMathjax`
+      // renders them. Rendering happens here, at build time, so a page of
+      // theorems ships as SVG with no maths library, no stylesheet and no web
+      // fonts behind it — and the glyphs inherit `currentColor`, so a formula
+      // follows the theme into dark mode like any other text.
+      remarkPlugins: [remarkGfm, remarkMath] as Pluggable[],
       rehypePlugins: [
         rehypeSlug,
+        rehypeMermaid,
+        [
+          rehypeMathjax,
+          {
+            svg: {
+              // Long derivations get a scrollbar rather than widening the page.
+              overflow: 'linebreak',
+              displayAlign: 'left',
+            },
+          },
+        ],
         [
           rehypeShiki,
           {

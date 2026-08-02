@@ -823,3 +823,138 @@ a.zellij-card:hover {
   border-radius: 0;
 }
 
+
+/* ------------------------------------------------------------ mathematics -- */
+
+/*
+ * MathJax renders to SVG at build time, so there is no stylesheet or web font
+ * behind a formula and the glyphs are drawn in `currentColor` — which is what
+ * lets a theorem follow the theme into dark mode without being told to.
+ */
+/*
+ * Inline maths sits in the sentence it belongs to. MathJax draws every formula
+ * into an SVG it marks `display: block`, which is right for a display equation
+ * and wrong inside a line of prose — a block box in an inline context breaks
+ * the line before and after it, so `$a_k$` threw every symbol onto a line of
+ * its own. Vertical alignment is left alone: MathJax computes the exact baseline
+ * shift per formula and writes it as an inline style.
+ */
+.zellij-prose mjx-container:not([display='true']) > svg {
+  display: inline-block;
+}
+
+.zellij-prose mjx-container[display='true'] {
+  display: block;
+  margin-block: 1.25rem;
+  padding-block: 0.125rem;
+  /* A long derivation scrolls rather than widening the page. Only display
+     maths: `overflow` has no effect on an inline box anyway. */
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* -------------------------------------------------------------- theorems -- */
+
+.zellij-theorem {
+  position: relative;
+  margin-block: 1.5rem;
+  padding: 1.125rem 1.25rem;
+  border-left: 3px solid var(--zellij-border);
+  border-radius: 0 var(--zellij-radius) var(--zellij-radius) 0;
+  background: var(--zellij-surface);
+}
+
+/* A statement is asserted; a proof is an argument. Only the first gets weight. */
+.zellij-theorem[data-kind='proof'] {
+  background: none;
+  border-left-color: transparent;
+  padding-block: 0.5rem;
+}
+
+.zellij-theorem[data-kind='definition'],
+.zellij-theorem[data-kind='remark'],
+.zellij-theorem[data-kind='example'] {
+  border-left-color: var(--zellij-accent);
+}
+
+.zellij-theorem-head {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+}
+
+.zellij-theorem-label {
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.zellij-theorem-title {
+  color: var(--zellij-muted);
+}
+
+/* The body is italic in print for statements, upright for proofs and examples. */
+.zellij-theorem[data-kind='theorem'] .zellij-theorem-body,
+.zellij-theorem[data-kind='lemma'] .zellij-theorem-body,
+.zellij-theorem[data-kind='corollary'] .zellij-theorem-body,
+.zellij-theorem[data-kind='proposition'] .zellij-theorem-body {
+  font-style: italic;
+}
+
+/* ...but not the maths inside it: a slanted formula is a different formula. */
+.zellij-theorem-body mjx-container {
+  font-style: normal;
+}
+
+.zellij-theorem-body > :first-child {
+  margin-top: 0;
+}
+
+.zellij-theorem-body > :last-child {
+  margin-bottom: 0;
+}
+
+.zellij-theorem-qed {
+  display: block;
+  text-align: right;
+  margin-top: -1.25rem;
+  font-size: 1rem;
+}
+
+/* -------------------------------------------------------------- diagrams -- */
+
+.zellij-mermaid {
+  margin-block: 1.5rem;
+  text-align: center;
+}
+
+.zellij-mermaid-canvas svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/*
+ * Before the drawing arrives the source stands in for it, so a reader without
+ * JavaScript gets the definition rather than a gap. It is deliberately plain:
+ * it is a fallback, not a code sample anyone chose to publish.
+ */
+.zellij-mermaid-source {
+  margin: 0;
+  padding: 1rem 1.125rem;
+  overflow-x: auto;
+  text-align: left;
+  font-family: var(--zellij-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--zellij-muted);
+  background: var(--zellij-surface);
+  border: 1px solid var(--zellij-border);
+  border-radius: var(--zellij-radius);
+}
+
+.zellij-mermaid-error {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--zellij-danger, #b42318);
+  text-align: left;
+}
+

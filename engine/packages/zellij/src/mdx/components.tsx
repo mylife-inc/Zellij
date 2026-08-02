@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 
 import { Callout } from './callout';
+import { Mermaid } from './mermaid';
+import { Proof, Theorem } from './theorem';
 import { Card, CardGrid } from './card';
 import { CodeBlock } from './code-block';
 import { Screenshot } from './screenshot';
@@ -75,6 +77,11 @@ export function mdxComponents(site?: Site) {
     CodeGroup,
     Card,
     CardGrid,
+    Theorem,
+    Proof,
+    // Emitted by `rehypeMermaid` in place of a ```mermaid fence. A custom tag
+    // rather than a `<div>` precisely so it can be claimed here.
+    'mermaid-diagram': Mermaid,
     Screenshot: (props: Parameters<typeof Screenshot>[0]) => (
       <Screenshot basePath={basePath} {...props} />
     ),
