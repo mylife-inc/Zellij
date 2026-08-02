@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 #
 # The Zellij base image: a Next.js wrapper app with the engine already
 # installed, and nothing else. It carries no content — a site image is built
@@ -9,18 +8,23 @@
 # also how the wrapper app is obtained without cloning: see `docker cp` below.
 
 # --------------------------------------------------------------- engine build
-FROM node:22-alpine AS engine
+FROM node:24-alpine AS engine
 
 WORKDIR /src
 
-# The manifests alone first, so a change to the engine's source does not
-# invalidate the dependency layer.
-COPY package.json package-lock.json ./
-COPY engine/packages/zellij/package.json engine/packages/zellij/
-RUN npm ci --ignore-scripts
+# The whole repository, minus what .dockerignore excludes.
+#
+# A manifests-first copy would cache dependencies better, but the root manifest
+# declares the example apps as workspaces and `npm ci` refuses to run without
+# every one of their package.json files present. Listing them here would make
+# the image build fail — confusingly, and in a file about the engine — the day
+# somebody adds an example. This stage is discarded, and the image is built on
+# release rather than on every commit, so the cache is worth less than the
+# guarantee that it keeps working.
+COPY . .
 
-COPY engine/ engine/
-RUN npm run build --workspace @shebka/zellij
+RUN npm ci --ignore-scripts \
+ && npm run build --workspace @shebka/zellij
 
 # Strip the package to what a consumer needs: the build output, the CLI, the
 # stylesheet source the app imports, and the manifests. The engine's own
@@ -31,7 +35,7 @@ RUN mkdir -p /out \
 
 
 # ------------------------------------------------------------------ base image
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 # `git` is absent on purpose: nothing here clones anything, and leaving it out
 # keeps the attack surface down.

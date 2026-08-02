@@ -125,7 +125,10 @@ switch (command) {
     const { flags, positional } = parseFlags(rest);
     const target = flags.out ?? positional[0];
 
-    const written = await writeContext(typeof target === 'string' ? target : undefined);
+    const written = await writeContext(
+      typeof target === 'string' ? target : undefined,
+      flags.json ? 'json' : 'markdown',
+    );
     if (written !== '(stdout)') {
       console.log(`[zellij] Wrote the agent context file to ${written}`);
     }

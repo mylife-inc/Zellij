@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 #
 # Builds a documentation site from a content folder. Copy this into your own
 # repository — it needs nothing from Zellij's source, only the public base
@@ -32,7 +31,7 @@ RUN npm run build
 
 
 # ----------------------------------------------------------------- runtime
-FROM node:22-alpine AS runtime
+FROM node:24-alpine AS runtime
 
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

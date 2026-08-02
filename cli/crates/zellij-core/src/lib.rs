@@ -7,6 +7,7 @@
 
 pub mod error;
 pub mod project;
+pub mod schema;
 
 pub use error::{Error, Result};
 pub use project::Project;

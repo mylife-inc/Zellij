@@ -128,7 +128,20 @@ neither can drift.
 | Command | Does |
 | --- | --- |
 | `zel detect <dir>` | Says what tool a documentation folder was written for, and how sure it is. Changes nothing. |
-| `zel convert <src> --out <dir>` | Converts into a new folder. `--from` to force a format, `--dry-run` to see the plan, `--assets copy\|link\|skip`. |
+| `zel convert <src> --out <dir>` | Converts into a new folder. `--from` to force a format, `--dry-run` to see the plan, `--assets copy\|link\|skip`, `--validate` to check the result. |
+
+`--validate` is opt-in because it is the one part of conversion that needs a
+container. Asked for and available, the result is checked against the real
+schemas. Asked for and unavailable, the conversion still completes and the tool
+says what was skipped and why:
+
+    ✓ Converted 47 pages into ./content
+    ! Skipped validation: no container runtime found.
+      Install Docker and run `zel check ./content` to validate.
+
+Not a failure. Someone converting documentation on a machine without Docker has
+still got their documentation converted, and telling them otherwise would be
+punishing them for a dependency they did not choose to need.
 
 Detection reports a confidence, and an ambiguous tree asks rather than guesses.
 When nothing is recognised the command does **not** attempt a conversion: it
@@ -356,21 +369,22 @@ Precedence: flags, then environment (`ZELLIJ_*`), then file, then defaults.
 
 ## 6. Open questions
 
-1. **Does `convert` run `check` itself?** It would need Docker, which no other
-   part of conversion does. Proposal: attempt it, and degrade to a warning when
-   no container runtime is present rather than failing.
-2. **Which converter first?** MkDocs is easiest and the cleanest proof of the
+1. **Which converter first?** MkDocs is easiest and the cleanest proof of the
    plugin design. Docusaurus is the most common in the wild and the hardest.
-3. **How far does `zel new section --interactive` go?** Prompting for every
-   field of a nineteen-item pricing table is worse than opening an editor.
-   Proposal: prompt only for what has no sensible default, and write the rest as
-   commented-out lines the author can uncomment.
+   Leaning MkDocs, on the grounds that the first one built is really a test of
+   the plugin boundary rather than of the format.
 
 **Settled**
 
 - The binary is `zel`. `zellij` collides with the terminal multiplexer of the
   same name, whose users commonly alias it to `zj`.
 - The default build target is `static`.
+- `zel convert --validate` is opt-in, and degrades to a message rather than a
+  failure when no container runtime is present.
+- `zel new section` prompts only for fields with no sensible default, and writes
+  the rest as commented lines with a note on what each means. The goal is that
+  nobody has to remember a section's fields — not that every field is answered
+  in a prompt, which for a pricing table would be worse than opening an editor.
 - `zel dev` is in scope. It is the command an author leaves running while they
   write, which makes it worth its complexity: a bind-mounted content folder and
   a container running `next dev`, so editing a Markdown file updates the

@@ -180,6 +180,9 @@ fn main() {
     let result = match cli.command {
         Command::List(ListTarget::Formats) => list_formats(),
         Command::List(ListTarget::Targets) => list_targets(),
+        Command::List(ListTarget::Sections) => list_sections(),
+        Command::Explain { ref section_type } => explain(section_type),
+        Command::Context { ref file } => write_context(file.as_deref()),
         _ => {
             eprintln!("not implemented yet — see specs/zellij-cli-spec.md");
             std::process::exit(1);
@@ -215,6 +218,93 @@ fn list_targets() -> zellij_core::Result<()> {
         ("image:node", "Container, Node serving the app. ~150 MB."),
     ] {
         println!("{name:<14} {description}");
+    }
+
+    Ok(())
+}
+
+fn list_sections() -> zellij_core::Result<()> {
+    for section_type in zellij_core::schema::section_types() {
+        let fields = zellij_core::schema::fields_of(&section_type).unwrap_or_default();
+        let required = fields.iter().filter(|field| field.required).count();
+        println!("{section_type:<16} {} fields, {required} required", fields.len());
+    }
+
+    println!("\nRun `zel explain <type>` for any of them.");
+    Ok(())
+}
+
+/// Everything a section takes, and an example to paste.
+///
+/// This is the command that exists so nobody has to remember nineteen sets of
+/// fields. It prints what is required first, because that is what someone is
+/// actually asking when they run it.
+fn explain(section_type: &str) -> zellij_core::Result<()> {
+    use zellij_core::schema;
+
+    if !schema::is_section_type(section_type) {
+        eprintln!("`{section_type}` is not a section type. Try `zel list sections`.");
+        std::process::exit(2);
+    }
+
+    let fields = schema::fields_of(section_type).unwrap_or_default();
+    let (required, optional): (Vec<_>, Vec<_>) =
+        fields.into_iter().partition(|field| field.required);
+
+    println!("{section_type}\n");
+
+    if !required.is_empty() {
+        println!("Required");
+        for field in &required {
+            println!("  {:<14} {}", field.name, field.type_name);
+        }
+        println!();
+    }
+
+    if !optional.is_empty() {
+        println!("Optional");
+        for field in &optional {
+            let default = field
+                .default
+                .as_ref()
+                .map(|value| format!("  (default {value})"))
+                .unwrap_or_default();
+            println!("  {:<14} {}{}", field.name, field.type_name, default);
+        }
+        println!();
+    }
+
+    // A field like `items` *is* the section, and "list of object" names its
+    // existence without saying what may go in it — which is exactly enough to
+    // write something plausible that the build rejects.
+    for field in required.iter().chain(optional.iter()).filter(|f| f.nested) {
+        if let Some(inner) = schema::nested_fields(section_type, &field.name) {
+            println!("Each entry in `{}`", field.name);
+            for nested in inner {
+                let default = nested
+                    .default
+                    .as_ref()
+                    .map(|value| format!("  (default {value})"))
+                    .unwrap_or_default();
+                let mark = if nested.required { "*" } else { " " };
+                println!("  {mark}{:<13} {}{}", nested.name, nested.type_name, default);
+            }
+            println!("  * required\n");
+        }
+    }
+
+    println!("Every section also takes: id, background, padding, motion, titleGradient.");
+    println!("\nWrite one with `zel new section {section_type}`.");
+    Ok(())
+}
+
+fn write_context(file: Option<&str>) -> zellij_core::Result<()> {
+    match file {
+        Some(path) => {
+            std::fs::write(path, zellij_core::schema::CONTEXT_MARKDOWN)?;
+            println!("Wrote the Zellij reference to {path}");
+        }
+        None => print!("{}", zellij_core::schema::CONTEXT_MARKDOWN),
     }
 
     Ok(())
