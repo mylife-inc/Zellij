@@ -7,14 +7,7 @@ description: logo-strip, stats-band, testimonial and team-grid — sections that
 
 Customer or partner marks, greyscale until hover.
 
-```yaml
-type: logo-strip
-heading: Trusted by teams at
-logos:
-  - assets/logos/northwind.svg
-  - assets/logos/globex.svg
-  - assets/logos/initech.svg
-```
+<SectionPreview example="logo-strip" />
 
 Rendered as plain `<img>` rather than through `next/image`, deliberately: these
 are small SVGs where the optimizer adds a request and saves nothing.
@@ -23,15 +16,7 @@ are small SVGs where the optimizer adds a request and saves nothing.
 
 Three to five numbers.
 
-```yaml
-type: stats-band
-heading: By the numbers
-stats:
-  - { value: 12, label: Regions, suffix: "+" }
-  - { value: "99.9", label: Uptime, suffix: "%" }
-  - { value: 4, label: Clouds }
-  - { value: 40, label: Faster onboarding, prefix: "−", suffix: "%" }
-```
+<SectionPreview example="stats-band" />
 
 Numeric values count up as the band enters the viewport, and render at their
 final value under `motion: none` or reduced motion. `value` is free text, so
@@ -48,18 +33,7 @@ layout nobody wants.
 
 One quote, or a carousel of up to five.
 
-```yaml
-type: testimonial
-heading: What people say
-quotes:
-  - quote: We replaced four tools and a spreadsheet with this.
-    author: Dana Whitfield
-    role: Head of Operations, Northwind
-    avatar: assets/avatars/dana.png
-  - quote: The audit trail alone paid for it.
-    author: Samir Haddad
-    role: Compliance Lead, Globex
-```
+<SectionPreview example="testimonial" />
 
 With more than one quote it becomes a carousel with dots and arrows. Every
 slide stays in the DOM so the quotes remain crawlable and reachable without
@@ -70,19 +44,7 @@ order.
 
 People: a board, a faculty, a team, a list of contributors.
 
-```yaml
-type: team-grid
-heading: Who builds it
-columns: 3                          # 2 | 3 | 4
-people:
-  - name: Ada Okonjo
-    role: Engineering
-    bio: Built the workflow engine twice — once to learn what it should be.
-    photo: assets/team/ada.png
-    links:
-      - { label: Writing, href: /blog/ada }
-      - { label: Mastodon, href: "https://example.social/@ada" }
-```
+<SectionPreview example="team-grid" />
 
 <Callout type="tip" title="A portrait's alt is the person">
 Zellij uses the name as the image's alt text rather than describing the

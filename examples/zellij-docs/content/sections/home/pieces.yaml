@@ -11,7 +11,7 @@ items:
     image: assets/card-content.png
     href: /guide/content-model
   - eyebrow: Sections
-    title: Eighteen ways to say something
+    title: Nineteen ways to say something
     body: Heroes, carousels, timelines, galleries, pricing, proof.
     image: assets/card-sections.png
     href: /sections

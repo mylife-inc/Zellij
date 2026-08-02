@@ -114,7 +114,54 @@ const IMAGES = {
 
   'bento-model.png': emblem({ width: 1200, height: 750, from: SEA[0], to: SEA[1], scale: 0.8 }),
   'bento-themes.png': emblem({ width: 1200, height: 750, from: DUSK[0], to: DUSK[1], scale: 0.8 }),
+
+  /*
+   * Artwork for the documentation examples under `content/examples`. A gallery
+   * needs six images and a team grid three before either shows what it does, so
+   * they are derived here alongside everything else rather than committed.
+   */
+  'example/tile-1.png': emblem({ width: 900, height: 900, from: SEA[0], to: SEA[1] }),
+  'example/tile-2.png': emblem({ width: 900, height: 900, from: CLAY[0], to: CLAY[1], angle: 0.2 }),
+  'example/tile-3.png': emblem({ width: 900, height: 900, from: DUSK[0], to: DUSK[1], angle: 0.8 }),
+  'example/tile-4.png': emblem({ width: 900, height: 900, from: SLATE[0], to: SLATE[1] }),
+  'example/tile-5.png': emblem({ width: 900, height: 900, from: INK[0], to: INK[1], angle: 0.3 }),
+  'example/tile-6.png': emblem({ width: 900, height: 900, from: SEA[1], to: SEA[0], angle: 0.6 }),
+
+  'example/person-1.png': emblem({ width: 600, height: 600, from: SEA[0], to: SEA[1], scale: 0.6 }),
+  'example/person-2.png': emblem({ width: 600, height: 600, from: CLAY[0], to: CLAY[1], scale: 0.6 }),
+  'example/person-3.png': emblem({ width: 600, height: 600, from: DUSK[0], to: DUSK[1], scale: 0.6 }),
+
+  'example/wide-1.png': emblem({ width: 1600, height: 900, from: DUSK[0], to: DUSK[1], scale: 0.7 }),
+  'example/wide-2.png': emblem({ width: 1600, height: 900, from: SLATE[0], to: SLATE[1], scale: 0.7 }),
+  'example/poster.png': emblem({ width: 1600, height: 900, from: INK[0], to: INK[1], scale: 0.7 }),
+
+  /*
+   * Promo tiles carry their copy over the artwork, so the emblem is pushed to
+   * one side and scaled down. Centred artwork behind centred copy is what the
+   * first attempt looked like, and neither was readable.
+   */
+  'example/promo-wide.png': emblem({
+    width: 2000,
+    height: 900,
+    from: INK[0],
+    to: INK[1],
+    scale: 0.42,
+    align: 0.95,
+  }),
+  // `count: 0` leaves the field bare. These tiles are close to square, so the
+  // centred copy reaches every part of them and there is nowhere an emblem can
+  // sit without landing under a word.
+  'example/promo-1.png': emblem({ width: 1000, height: 900, from: DUSK[0], to: DUSK[1], count: 0, angle: 0.3 }),
+  'example/promo-2.png': emblem({ width: 1000, height: 900, from: SEA[0], to: SEA[1], count: 0, angle: 0.7 }),
+
+  /* Stand-in customer wordmarks for the logo strip. */
+  'example/mark-1.png': emblem({ width: 480, height: 200, from: SLATE[0], to: SLATE[0], scale: 0.7 }),
+  'example/mark-2.png': emblem({ width: 480, height: 200, from: SLATE[0], to: SLATE[0], scale: 0.6 }),
+  'example/mark-3.png': emblem({ width: 480, height: 200, from: SLATE[0], to: SLATE[0], scale: 0.8 }),
+  'example/mark-4.png': emblem({ width: 480, height: 200, from: SLATE[0], to: SLATE[0], scale: 0.5 }),
 };
+
+await mkdir(path.join(root, 'example'), { recursive: true });
 
 for (const [name, image] of Object.entries(IMAGES)) {
   encodePng(image, path.join(root, name));

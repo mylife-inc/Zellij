@@ -305,25 +305,51 @@
   margin-top: 1.25rem;
 }
 
-.zellij-prose h1 {
-  font-size: clamp(2rem, 4vw, 2.5rem);
-  line-height: 1.15;
-  letter-spacing: -0.025em;
-  margin: 0 0 0.5rem;
-}
+/*
+ * Scoped with a hole in it, because a `<SectionPreview>` renders a real section
+ * inside this prose. These rules select bare elements, so they outrank the
+ * section's own class-based typography and a previewed section came out with
+ * prose's heading margins and prose's list indent — a preview that did not
+ * match the page it was previewing.
+ *
+ * Prose rules that name a class of their own (links, code, tables) are left
+ * alone: sections style those themselves and the measurements agreed.
+ *
+ * `:scope` is written out so each rule keeps the specificity it had as
+ * `.zellij-prose h2`. Without it the bare `h2` loses to `.zellij-prose > * + *`
+ * and every heading's spacing quietly changes. Where `@scope` is unsupported
+ * these five rules drop and guide prose falls back to its default spacing —
+ * plainer, still readable.
+ */
+@scope (.zellij-prose) to (.zellij-preview-frame) {
+  :scope h1 {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 0.5rem;
+  }
 
-.zellij-prose h2 {
-  font-size: 1.5rem;
-  letter-spacing: -0.02em;
-  margin-top: 3rem;
-  padding-top: 0.5rem;
-  scroll-margin-top: calc(var(--zellij-nav-height) + 1.5rem);
-}
+  :scope h2 {
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    margin-top: 3rem;
+    padding-top: 0.5rem;
+    scroll-margin-top: calc(var(--zellij-nav-height) + 1.5rem);
+  }
 
-.zellij-prose h3 {
-  font-size: 1.1875rem;
-  margin-top: 2rem;
-  scroll-margin-top: calc(var(--zellij-nav-height) + 1.5rem);
+  :scope h3 {
+    font-size: 1.1875rem;
+    margin-top: 2rem;
+    scroll-margin-top: calc(var(--zellij-nav-height) + 1.5rem);
+  }
+
+  :scope :is(ul, ol) {
+    padding-left: 1.5rem;
+  }
+
+  :scope li + li {
+    margin-top: 0.375rem;
+  }
 }
 
 /* Specificity must beat `.zellij-prose a`, or headings inherit link colour. */
@@ -342,15 +368,6 @@
 .zellij-prose a {
   color: var(--zellij-accent);
   text-underline-offset: 3px;
-}
-
-.zellij-prose ul,
-.zellij-prose ol {
-  padding-left: 1.5rem;
-}
-
-.zellij-prose li + li {
-  margin-top: 0.375rem;
 }
 
 .zellij-prose :not(pre) > code {
@@ -738,3 +755,71 @@ a.zellij-card:hover {
   outline-offset: 2px;
   border-radius: 4px;
 }
+
+/* -------------------------------------------------- section previews -- */
+
+/*
+ * A documented section, shown as both source and render. The frame around the
+ * preview is doing real work: sections are built to span the viewport, and the
+ * guide column is a fraction of one, so without a container to scope them to
+ * they would break out of the prose they are illustrating.
+ */
+.zellij-section-preview {
+  margin: 1.75rem 0;
+}
+
+.zellij-section-preview-label {
+  font-family: var(--zellij-font-mono);
+  font-size: 0.8125rem;
+  color: var(--zellij-muted);
+  margin-bottom: 0.5rem;
+}
+
+.zellij-section-preview .zellij-tabpanel {
+  padding: 0;
+}
+
+.zellij-preview-frame {
+  /* A containing block for the section's own full-bleed and sticky machinery,
+     so both resolve against the frame rather than the page. */
+  container-type: inline-size;
+  position: relative;
+  overflow: hidden;
+  background: var(--zellij-bg);
+
+  /* Sections centre their content in a container sized for a full viewport.
+     Left alone, that container is wider than the frame, so everything inside
+     overflows and `overflow: hidden` clips it — which reads as a section that
+     renders blank. Narrowing the token is what makes the frame a viewport
+     rather than a window onto a page that is too big for it. */
+  --zellij-container: 100%;
+}
+
+/*
+ * Sections size their padding for a full page. At preview scale that leaves
+ * more air than content, so the frame tightens it without touching the
+ * section's own rules.
+ */
+.zellij-preview-frame .zellij-section {
+  --zellij-section-padding: 2rem;
+  padding-block: 2rem;
+}
+
+.zellij-preview-frame .zellij-container {
+  padding-inline: 1.25rem;
+}
+
+/* Headline sizes are chosen for a full page. Scaling them to the frame's own
+   width keeps a preview legible instead of letting one word fill it. The
+   preview stays interactive — trying a carousel or an FAQ toggle is half of
+   what it is for — so nothing here removes it from the tab order. */
+.zellij-preview-frame :is(h1, h2, h3, h4) {
+  font-size: clamp(1.375rem, 4.5cqi, 2.5rem);
+  line-height: 1.15;
+}
+
+.zellij-section-preview .zellij-code {
+  border: none;
+  border-radius: 0;
+}
+

@@ -729,3 +729,81 @@ describe('anchor uniqueness', () => {
     ).rejects.toThrow(/two sections with id: top/);
   });
 });
+
+/* ------------------------------------------------------ documentation examples */
+
+describe('examples/', () => {
+  it('loads each file, keyed by its name, with the source kept verbatim', async () => {
+    const source = 'type: hero\nheadline: Ship it\n# a trailing comment\n';
+    const site = await load({
+      'site.yaml': SITE,
+      'pages.yaml': ONE_PAGE,
+      'sections/hero.yaml': HERO,
+      'examples/hero-basic.yaml': source,
+    });
+
+    const example = site.examples.get('hero-basic');
+    expect(example).toBeDefined();
+    // Verbatim, comments included: the source tab shows the file, not a
+    // re-serialization of what the parser made of it.
+    expect(example?.source).toBe(source);
+    expect(example?.section).toMatchObject({ type: 'hero', headline: 'Ship it' });
+  });
+
+  it('names nested examples by their path below examples/', async () => {
+    const site = await load({
+      'site.yaml': SITE,
+      'pages.yaml': ONE_PAGE,
+      'sections/hero.yaml': HERO,
+      'examples/openers/hero.yaml': HERO,
+    });
+
+    expect([...site.examples.keys()]).toEqual(['openers/hero']);
+  });
+
+  it('fails the build when an example does not validate', async () => {
+    await expect(
+      load({
+        'site.yaml': SITE,
+        'pages.yaml': ONE_PAGE,
+        'sections/hero.yaml': HERO,
+        // A documented example that the engine would reject is worse than no
+        // example: it shows readers something that cannot work.
+        'examples/broken.yaml': 'type: hero\n',
+      }),
+    ).rejects.toThrow(/examples\/broken\.yaml/);
+  });
+
+  it('fails on an unknown section type, naming the file', async () => {
+    await expect(
+      load({
+        'site.yaml': SITE,
+        'pages.yaml': ONE_PAGE,
+        'sections/hero.yaml': HERO,
+        'examples/nope.yaml': 'type: carousel\n',
+      }),
+    ).rejects.toThrow(/examples\/nope\.yaml/);
+  });
+
+  it('is empty, not absent, when the folder does not exist', async () => {
+    const site = await load({
+      'site.yaml': SITE,
+      'pages.yaml': ONE_PAGE,
+      'sections/hero.yaml': HERO,
+    });
+
+    expect(site.examples.size).toBe(0);
+  });
+
+  it('does not treat examples/ as a guide folder', async () => {
+    const { site, warnings } = await loadWithWarnings({
+      'site.yaml': SITE,
+      'pages.yaml': ONE_PAGE,
+      'sections/hero.yaml': HERO,
+      'examples/hero.yaml': HERO,
+    });
+
+    expect(site.guides).toEqual([]);
+    expect(warnings.filter((w) => w.includes('examples/'))).toEqual([]);
+  });
+});

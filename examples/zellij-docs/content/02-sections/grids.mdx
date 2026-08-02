@@ -7,20 +7,7 @@ description: feature-grid, bento-grid, card-carousel and pricing-table — layin
 
 Equal-weight cards. The workhorse.
 
-```yaml
-type: feature-grid
-heading: Everything you need
-subhead: Included in every plan.
-columns: 3                          # 2 | 3 | 4
-items:
-  - icon: workflow
-    title: Workflows
-    body: Branches and conditions, no scripting language.
-    href: /features#workflows       # optional — makes the card a link
-  - icon: shield
-    title: Compliance
-    body: PCI scope reduction out of the box.
-```
+<SectionPreview example="feature-grid" />
 
 `icon` is a [lucide](https://lucide.dev) name in kebab-case. Icons resolve on
 the server, so none of the icon library reaches the browser, and an unknown
@@ -32,21 +19,7 @@ Asymmetric tiles. Use it where a few things genuinely matter more than the
 others — that is the difference from `feature-grid`, which weights everything
 equally.
 
-```yaml
-type: bento-grid
-heading: One platform, not five tools
-items:
-  - title: Automations that read like sentences
-    body: When a request is approved by finance, open the fulfilment task.
-    image: assets/automation.png
-    span: large                     # normal | wide | tall | large
-    href: /features#workflows
-  - title: Roles and rules
-    body: Permissions by team, by record, or by field.
-    icon: shield
-    span: normal
-    background: tinted              # per tile
-```
+<SectionPreview example="bento-grid" />
 
 Spans are cells on a four-column grid: `normal` is 1×1, `wide` 2×1, `tall` 1×2,
 `large` 2×2. On a tablet the grid drops to two columns and `large` becomes
@@ -61,20 +34,7 @@ a card with a picture stuck under it.
 A horizontally scrolling row, snapped, with the next card peeking past the
 container edge so the row reads as scrollable before anything moves.
 
-```yaml
-type: card-carousel
-heading: Why teams pick Acme
-subhead: Everything below is in every plan.
-link: { label: Browse the guide, href: /guide }   # trailing link on the heading row
-cardWidth: medium                                 # narrow | medium | wide
-items:
-  - eyebrow: Workflows
-    title: Route work the way your team already works.
-    body: Branches, parallel steps and conditions.
-    image: assets/workflows.png
-    href: /features#workflows
-    background: tinted
-```
+<SectionPreview example="card-carousel" />
 
 <Callout type="info" title="The browser does the scrolling">
 `scroll-snap` on a plain overflow container, so a trackpad, a touch drag,
@@ -86,28 +46,34 @@ hide entirely when the row fits.
 The track is focusable so it can be scrolled by keyboard even when the cards
 inside are not links.
 
+## promo-grid
+
+Large linked tiles, each carrying its own artwork and its own destination. This
+is the landing-page format a consumer product site uses: the tiles *are* the
+navigation, and the page has almost no prose of its own.
+
+<SectionPreview example="promo-grid" />
+
+Widths are `full` or `half`, and two `half` tiles pair up on a wide viewport and
+stack below it. `height` picks `short`, `tall` or `full` — `full` is a tile that
+fills the viewport, which is what makes a page of them read as a sequence of
+screens rather than a list.
+
+A tile links in one of two ways, and they are exclusive: give it `links` for up
+to two labelled links laid over the artwork, or give it `href` to make the whole
+tile one big target. A link inside a link is not a thing.
+
+<Callout type="info" title="scrim earns its place here">
+Artwork that a title has to sit on top of is rarely uniform enough for the title
+to stay legible across it. `scrim` darkens the image behind the copy — `0` for
+flat artwork you chose to be quiet, up to about `0.4` for a photograph.
+</Callout>
+
 ## pricing-table
 
 One to four tiers.
 
-```yaml
-type: pricing-table
-heading: Simple pricing
-subhead: Per seat, per month.
-tiers:
-  - name: Free
-    price: "$0"
-    period: forever
-    description: For trying it out.
-    features: [Up to 3 users, Community support]
-    cta: { label: Start free, href: /guide }
-  - name: Team
-    price: "$12"
-    period: per user / month
-    features: [Unlimited users, SSO, Priority support]
-    cta: { label: Start a trial, href: /guide }
-    highlighted: true
-```
+<SectionPreview example="pricing-table" />
 
 Exactly one tier may be `highlighted`. A single "Contact us" tier renders
 gracefully — the layout does not assume three.

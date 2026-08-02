@@ -95,7 +95,37 @@ nothing points at it.
 No imports needed:
 
 `<Callout>`, `<Steps>` / `<Step>`, `<Tabs>` / `<Tab>`, `<CodeGroup>`,
-`<Card>` / `<CardGrid>`, `<Screenshot>`.
+`<Card>` / `<CardGrid>`, `<Screenshot>`, `<SectionPreview>`.
+
+### SectionPreview
+
+Shows a section's source and what that source renders to, in two tabs. Put the
+example in a YAML file under `examples/` and name it:
+
+```mdx
+<SectionPreview example="hero" />
+```
+
+```yaml title="content/examples/hero.yaml"
+type: hero
+headline: A folder of content is a website
+cta: [{ label: Get started, href: /guide }]
+```
+
+The preview is the real section, rendered by the same code a page uses, and the
+source tab is the file itself rather than a copy of it. That is the point:
+neither half can drift from the other, and an example that stops validating
+fails the build instead of quietly documenting something that no longer works.
+`zellij check` counts them.
+
+Examples never animate — a reveal that waits for a scroll would leave the frame
+blank until the reader happened to scroll it into view, and an empty preview
+reads as a broken one.
+
+<Callout type="tip" title="Only where a page has sections">
+Any registered section type works, including your own. Files nest, and a file
+at `examples/openers/hero.yaml` is named `openers/hero`.
+</Callout>
 
 Code fences are highlighted at build time by Shiki — no highlighter reaches the
 browser — with a copy button, filename labels and line highlighting:

@@ -20,7 +20,13 @@ import { validateSections, type AuthoredMenuItem } from './model-schema';
 import { assetUrl, normalizeRoute } from './paths';
 import { loadGuideFolder, readSidebarFile } from './guide-folder';
 import { exists, walk } from './fs-utils';
-import type { ContentSource, GuideTree, ResolvedAsset, SectionsPage } from './types';
+import type {
+  ContentSource,
+  GuideTree,
+  ResolvedAsset,
+  SectionExample,
+  SectionsPage,
+} from './types';
 
 /* --------------------------------------------------- the old config file */
 
@@ -312,6 +318,11 @@ export class LegacyContentSource implements ContentSource {
     });
 
     return tree.pages.length > 0 ? [tree] : [];
+  }
+
+  /** The legacy layout predates documentation examples and never carries any. */
+  async listExamples(): Promise<SectionExample[]> {
+    return [];
   }
 
   async resolveAsset(relPath: string): Promise<ResolvedAsset> {

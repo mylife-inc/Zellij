@@ -13,7 +13,6 @@ import { mdxOptions } from '../../mdx/pipeline';
  */
 export function MarkdownProse({ section, site, defaultMotion }: SectionProps<MarkdownProseSection>) {
   const motion = section.motion ?? defaultMotion;
-  const { basePath } = site.config;
 
   return (
     <SectionShell
@@ -31,7 +30,7 @@ export function MarkdownProse({ section, site, defaultMotion }: SectionProps<Mar
         {...(section.titleGradient ? { titleGradient: section.titleGradient } : {})}
       />
       <div className="zellij-prose zellij-prose-marketing">
-        <MDXRemote source={section.body} components={mdxComponents(basePath)} options={mdxOptions()} />
+        <MDXRemote source={section.body} components={mdxComponents(site)} options={mdxOptions()} />
       </div>
     </SectionShell>
   );

@@ -58,7 +58,7 @@ export function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
               source of truth across <title>, sidebar, breadcrumbs and search. */}
           <h1>{page.title}</h1>
           {page.description ? <p className="zellij-lead">{page.description}</p> : null}
-          <MDXRemote source={page.body} components={mdxComponents(site.config.basePath)} options={mdxOptions()} />
+          <MDXRemote source={page.body} components={mdxComponents(site)} options={mdxOptions()} />
         </article>
 
         {previous || next ? (

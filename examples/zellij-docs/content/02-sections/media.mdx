@@ -7,20 +7,7 @@ description: gallery and video-embed — pictures and film, without the weight.
 
 A grid of images, each openable full size.
 
-```yaml
-type: gallery
-heading: Around the place
-subhead: Click any photo to see it full size.
-columns: 3                          # 2 | 3 | 4
-lightbox: true                      # false for a plain grid
-items:
-  - image: assets/gallery/office.png
-    alt: The Lisbon office on a Tuesday
-    caption: Lisbon, 2024
-  - image: assets/gallery/offsite.png
-    alt: The team at the spring offsite
-    caption: Spring offsite
-```
+<SectionPreview example="gallery" />
 
 <Callout type="info" title="The viewer is a native dialog">
 Escape, the focus trap and the inert backdrop come from the platform's
@@ -36,13 +23,7 @@ description of a photograph.
 
 A self-hosted file or a YouTube/Vimeo URL.
 
-```yaml
-type: video-embed
-heading: See it in ninety seconds
-src: assets/tour.mp4                # or https://www.youtube.com/watch?v=...
-poster: assets/tour-poster.png
-caption: The whole product, end to end.
-```
+<SectionPreview example="video-embed" />
 
 Nothing loads until the visitor presses play. A poster image and a play button
 is all that ships — which matters most for third-party embeds, where the

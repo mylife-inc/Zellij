@@ -5,9 +5,12 @@ import { Callout } from './callout';
 import { Card, CardGrid } from './card';
 import { CodeBlock } from './code-block';
 import { Screenshot } from './screenshot';
+import { SectionPreview, type SectionPreviewProps } from './section-preview';
 import { Step, Steps } from './steps';
 import { CodeGroup, Tab, Tabs } from './tabs';
 import { isExternal } from '../content/paths';
+import type { Site } from '../content/site';
+import { ZellijContentError } from '../errors';
 
 /** Internal links route through next/link so they get basePath and prefetching. */
 function MdxLink({ href, children, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement>) {
@@ -51,11 +54,13 @@ function heading(Tag: 'h2' | 'h3' | 'h4') {
 /**
  * The component set available in every guide file without imports (spec §7.2).
  *
- * `mdxComponents(basePath)` rather than a constant, because `<Screenshot>`
- * renders through `next/image` and has to bake the prefix into its source —
- * MDX components receive nothing from the page, so the renderer supplies it.
+ * A factory rather than a constant, because MDX components receive nothing from
+ * the page they render in and two of them need it: `<Screenshot>` has to bake
+ * the basePath into its `next/image` source, and `<SectionPreview>` needs the
+ * site to look an example up and to render it.
  */
-export function mdxComponents(basePath = '') {
+export function mdxComponents(site?: Site) {
+  const basePath = site?.config.basePath ?? '';
   return {
     a: MdxLink,
     pre: CodeBlock,
@@ -73,6 +78,14 @@ export function mdxComponents(basePath = '') {
     Screenshot: (props: Parameters<typeof Screenshot>[0]) => (
       <Screenshot basePath={basePath} {...props} />
     ),
+    SectionPreview: (props: SectionPreviewProps) => {
+      if (!site) {
+        throw new ZellijContentError(
+          '<SectionPreview> needs the site in scope, and this MDX was compiled without it.',
+        );
+      }
+      return <SectionPreview site={site} {...props} />;
+    },
   };
 }
 

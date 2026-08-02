@@ -10,6 +10,7 @@ import type {
   GuideTree,
   MenuItem,
   MenuLink,
+  SectionExample,
   SectionsPage,
 } from './types';
 
@@ -34,6 +35,8 @@ export interface Site {
   routes: Set<string>;
   /** route → set of section anchor ids declared on that page. */
   anchors: Map<string, Set<string>>;
+  /** Documentation examples from `examples/`, keyed by name. Usually empty. */
+  examples: Map<string, SectionExample>;
   warnings: string[];
 }
 
@@ -45,11 +48,14 @@ export async function loadSite(source: ContentSource): Promise<Site> {
   const warnings: string[] = [];
 
   const config = await source.loadSiteConfig();
-  const [authoredMenu, pages, guides] = await Promise.all([
+  const [authoredMenu, pages, guides, exampleList] = await Promise.all([
     source.loadMenu(),
     source.listPages(),
     source.listGuides(),
+    source.listExamples(),
   ]);
+
+  const examples = new Map(exampleList.map((example) => [example.name, example]));
 
   sortGuides(guides);
 
@@ -82,6 +88,7 @@ export async function loadSite(source: ContentSource): Promise<Site> {
     guidePages,
     menu,
     footer,
+    examples,
     ...(home ? { home } : {}),
     ...(homeRedirect ? { homeRedirect } : {}),
     routes,

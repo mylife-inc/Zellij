@@ -101,7 +101,19 @@
   width: fit-content;
 }
 
-.zellij-section-header[data-align='center'] .zellij-gradient-text {
+/*
+ * Shrink-wrapping pins the box to the inline start, which goes unnoticed while
+ * a heading is long enough to fill its line and then strands a short one at the
+ * left of a centred section. Every context that centres its heading has to
+ * centre the shrunken box too.
+ *
+ * `inline-block` would do this for all of them at once by making the box answer
+ * to `text-align` — but it also makes the heading inline-level, so in a hero it
+ * flows up alongside the badge above it.
+ */
+.zellij-section-header[data-align='center'] .zellij-gradient-text,
+.zellij-hero-copy .zellij-gradient-text,
+.zellij-cta-banner-inner .zellij-gradient-text {
   margin-inline: auto;
 }
 
@@ -1364,6 +1376,14 @@ a.zellij-bento-tile:hover {
   margin: 0;
   padding: 0;
   grid-template-columns: repeat(var(--zellij-team-cols, 3), minmax(0, 1fr));
+  /*
+   * Cards start at the top of the row rather than stretching to fill it. The
+   * row is as tall as its longest bio, and a card that stretches to match can
+   * end up with its photo pushed down — visible the moment one person has links
+   * and the others do not. The cards carry no background, so equal heights buy
+   * nothing, and the photos lining up is the whole point of a row of faces.
+   */
+  align-items: start;
 }
 
 .zellij-team-list[data-columns='2'] { --zellij-team-cols: 2; }

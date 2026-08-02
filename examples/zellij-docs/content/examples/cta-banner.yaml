@@ -1,0 +1,7 @@
+type: cta-banner
+headline: Ready to ship?
+body: Three files, then write content.
+background: { gradient: [accent, inverted-bg] }
+cta:
+  - { label: Get started, href: /guide, style: primary }
+  - { label: Browse sections, href: /sections, style: ghost }

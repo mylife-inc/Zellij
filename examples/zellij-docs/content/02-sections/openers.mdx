@@ -7,18 +7,14 @@ description: hero, showcase, media-panel and cta-banner — the sections that st
 
 The top of a page. One per page, and it renders an `h1`.
 
-```yaml
-type: hero
-badge: Acme 2.0 is here            # optional
-headline: Operations that run themselves
-subhead: One system for workflows, approvals and reporting.
-cta:                                # up to 2
-  - { label: Get started, href: /guide, style: primary }
-  - { label: See features, href: /features, style: ghost }
-visual: assets/hero.png
-visualStyle: floating               # floating | framed | full-bleed
-titleGradient: [accent, fg]
-```
+<SectionPreview example="hero" />
+
+| field | |
+| --- | --- |
+| `badge` | Optional pill above the headline. |
+| `cta` | Up to two. `style` is `primary` or `ghost`. |
+| `visualStyle` | `floating`, `framed` or `full-bleed`. |
+| `titleGradient` | Two or three token names, clipped to the glyphs. |
 
 The hero image is the LCP element on most landing pages, so it loads with
 priority. Everything below it is lazy. Under `motion: expressive` the visual
@@ -29,15 +25,7 @@ takes a gentle parallax.
 One large panel: eyebrow, headline, body, visual. The "learn more" building
 block.
 
-```yaml
-type: showcase
-eyebrow: Platform
-headline: Built for the way operations actually work
-body: Branches, parallel steps and conditions, without a scripting language.
-visual: assets/platform.png
-background: inverted
-cta: { label: Read more, href: /features }
-```
+<SectionPreview example="showcase" />
 
 Under `motion: expressive` the panel pins and its visual ramps as the page
 scrolls past. With no `visual` the pinning is skipped — there would be nothing
@@ -48,22 +36,7 @@ to ramp, and the reserved scroll distance would just be empty space.
 A rounded panel filled edge to edge with one image *or* video, with the copy
 laid over it.
 
-```yaml
-type: media-panel
-heading: Take a closer look.        # optional, above the panel
-title: A guided tour of the platform
-body: Twelve minutes, no signup.
-image: assets/tour.png              # exactly one of image | video
-# video: assets/tour.mp4
-# poster: assets/tour-poster.png
-alt: ""
-align: left                         # left | center | right
-tone: dark                          # light | dark | auto
-ratio: ultrawide                    # ultrawide | wide | square | portrait
-scrim: 0.45                         # 0–1, darkens the media behind the copy
-cta: [{ label: Watch, href: /tour }]
-# href: /tour                       # makes the whole panel a link
-```
+<SectionPreview example="media-panel" />
 
 <Callout type="info" title="tone is not a guess the engine can make">
 Zellij cannot see the artwork, so it cannot know whether white or black copy
@@ -82,14 +55,6 @@ inside a link is not a thing.
 
 The end of a page.
 
-```yaml
-type: cta-banner
-headline: Ready to ship?
-body: Three files, then write content.
-background: { gradient: [accent, inverted-bg] }
-cta:
-  - { label: Get started, href: /guide, style: primary }
-  - { label: Talk to us, href: /contact, style: ghost }
-```
+<SectionPreview example="cta-banner" />
 
 `cta` accepts a single object or a list of up to two.

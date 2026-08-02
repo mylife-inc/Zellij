@@ -18,16 +18,29 @@ import { deriveLabel, sectionName, slugifyPath } from './naming';
 import { assetUrl, normalizeRoute } from './paths';
 import { loadGuideFolder, readSidebarFile } from './guide-folder';
 import { exists, subdirectories, walk } from './fs-utils';
-import type { ContentSource, GuideTree, ResolvedAsset, SectionsPage } from './types';
+import type {
+  ContentSource,
+  GuideTree,
+  ResolvedAsset,
+  SectionExample,
+  SectionsPage,
+} from './types';
 
 export const SITE_FILE = 'site.yaml';
 export const MENU_FILE = 'menu.yaml';
 export const PAGES_FILE = 'pages.yaml';
 export const SECTIONS_DIR = 'sections';
+export const EXAMPLES_DIR = 'examples';
 export const ASSETS_DIR = 'assets';
 
 /** Folders that are part of the layout and so are never guide folders. */
-const RESERVED_DIRS = new Set([SECTIONS_DIR, ASSETS_DIR, 'public', 'node_modules']);
+const RESERVED_DIRS = new Set([
+  SECTIONS_DIR,
+  EXAMPLES_DIR,
+  ASSETS_DIR,
+  'public',
+  'node_modules',
+]);
 
 export interface FolderContentSourceOptions {
   /** Absolute path to the content root. */
@@ -269,6 +282,46 @@ export class FolderContentSource implements ContentSource {
     }
 
     return trees;
+  }
+
+  /**
+   * Reads every YAML file under `examples/`. These are not part of any page:
+   * they exist so a guide can show a section's source next to what that source
+   * renders. Validating them here means a documentation example that no longer
+   * parses fails the build, rather than quietly documenting something the
+   * engine would reject.
+   */
+  async listExamples(): Promise<SectionExample[]> {
+    const dir = this.file(EXAMPLES_DIR);
+    const files = await walk(dir, (name) => /\.ya?ml$/i.test(name));
+
+    const examples: SectionExample[] = [];
+    const errors: ZellijContentError[] = [];
+
+    for (const relFile of files) {
+      const label = `${EXAMPLES_DIR}/${relFile}`;
+      try {
+        const source = await readFile(path.join(dir, relFile), 'utf8');
+        const raw = (await parseYamlString(label, source)) as Record<string, unknown>;
+        examples.push({
+          name: sectionName(relFile),
+          sourceFile: label,
+          source,
+          section: validateSection(label, raw),
+        });
+      } catch (err) {
+        errors.push(
+          err instanceof ZellijContentError
+            ? err
+            : new ZellijContentError(`Failed to load ${label}: ${(err as Error).message}`, label),
+        );
+      }
+    }
+
+    if (errors.length > 0) {
+      throw aggregateErrors(`${errors.length} example file(s) could not be loaded:`, errors);
+    }
+    return examples;
   }
 
   async resolveAsset(relPath: string): Promise<ResolvedAsset> {

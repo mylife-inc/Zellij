@@ -74,6 +74,9 @@ function report(site: Site, contentDir: string, warnings: string[], legacy: bool
           site.guides.map((guide) => guide.route).join(', ')
         : ''),
   );
+  if (site.examples.size > 0) {
+    console.log(`  examples    ${site.examples.size} validated · examples/`);
+  }
   console.log(`  menu        ${site.menu.map((item) => item.label).join(' · ') || '(empty)'}`);
   console.log(`  home        ${site.homeRedirect ? `/ → ${site.homeRedirect}` : (site.home?.route ?? '(none)')}`);
   console.log(`  routes      ${site.routes.size}`);

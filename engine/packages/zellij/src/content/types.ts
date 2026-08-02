@@ -131,11 +131,30 @@ export interface ResolvedAsset {
  * `LegacyContentSource` for `marketing/` + `zellij.config.yaml`. Both produce
  * this same model, so nothing downstream knows which layout it came from.
  */
+/**
+ * A section written to be read as well as rendered — a documentation example.
+ *
+ * Both halves come from one file under `examples/`: the source is shown
+ * verbatim, and the parsed section is handed to the ordinary renderer. Nothing
+ * transcribes one into the other, so a documented example cannot drift from
+ * what it claims to produce, and a broken one fails the build like any other
+ * content rather than shipping a wrong screenshot.
+ */
+export interface SectionExample {
+  /** The name `<SectionPreview example="...">` refers to it by. */
+  name: string;
+  sourceFile: string;
+  /** Verbatim file contents, for the source tab. */
+  source: string;
+  section: AnySection;
+}
+
 export interface ContentSource {
   loadSiteConfig(): Promise<SiteConfig>;
   /** `undefined` when no menu is declared — the caller then derives one (design §10). */
   loadMenu(): Promise<AuthoredMenuItem[] | undefined>;
   listPages(): Promise<SectionsPage[]>;
   listGuides(): Promise<GuideTree[]>;
+  listExamples(): Promise<SectionExample[]>;
   resolveAsset(relPath: string): Promise<ResolvedAsset>;
 }
