@@ -1,0 +1,130 @@
+# Publishes `zel` binaries to a GitHub release.
+#
+# Tag-driven rather than push-driven: a release is a decision, and every commit
+# to main is not one.
+#
+#     git tag v0.2.0 && git push origin v0.2.0
+#
+# The binaries are the only way most people will get the tool — the source is
+# private — so this builds every platform rather than whatever the person
+# cutting the release happens to be sitting at.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  # Dispatch against a tag rather than taking one as input. An input reaching
+  # `ref:` or a shell is the ref-injection shape, and it buys nothing here —
+  # selecting the tag in the UI produces the same ref.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: ubuntu-24.04-arm
+            target: aarch64-unknown-linux-gnu
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-13
+            target: x86_64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+          key: ${{ matrix.target }}
+
+      # The schema is compiled into the binary, so a release built from a stale
+      # copy would ship a `zel explain` that describes a content model the
+      # engine no longer has. Checking here as well as in CI is cheap, and this
+      # is the artefact people actually download.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - name: Fail if the embedded schema is stale
+        shell: bash
+        run: |
+          node engine/packages/zellij/bin/zellij.mjs context \
+            cli/crates/zellij-core/generated/schema.json --json
+          node engine/packages/zellij/bin/zellij.mjs context \
+            cli/crates/zellij-core/generated/context.md
+          git diff --exit-code -- cli/crates/zellij-core/generated ||
+            { echo "::error::Regenerate the embedded schema and commit before tagging."; exit 1; }
+
+      - name: Build
+        working-directory: cli
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package
+        id: package
+        shell: bash
+        env:
+          VERSION: ${{ github.ref_name }}
+          TARGET: ${{ matrix.target }}
+        run: |
+          name="zel-${VERSION}-${TARGET}"
+          out="cli/target/${TARGET}/release"
+
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            7z a "${name}.zip" "./${out}/zel.exe"
+            archive="${name}.zip"
+          else
+            tar -czf "${name}.tar.gz" -C "$out" zel
+            archive="${name}.tar.gz"
+          fi
+
+          # Checksums travel with the binaries: the install script verifies one
+          # before putting anything on a PATH.
+          if command -v sha256sum >/dev/null; then
+            sha256sum "$archive" > "${archive}.sha256"
+          else
+            shasum -a 256 "$archive" > "${archive}.sha256"
+          fi
+
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: |
+            ${{ steps.package.outputs.archive }}
+            ${{ steps.package.outputs.archive }}.sha256
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Publish the release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: artifacts/*
