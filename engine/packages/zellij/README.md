@@ -673,7 +673,41 @@ kind: Deployment
 </CardGrid>
 
 <Screenshot src="assets/shot.png" caption="Optional." />
+
+<SectionPreview example="hero" />        <!-- source and rendered output, in tabs -->
+
+<Theorem kind="theorem" number="1" title="Cauchy–Schwarz">…</Theorem>
+<Proof>…</Proof>
 ```
+
+### Mathematics, diagrams and mindmaps
+
+| Written as | Rendered | Costs |
+| --- | --- | --- |
+| `$x$` and `$$x$$` | MathJax SVG, at build time | ~50 MB to install, nothing shipped |
+| ```` ```mermaid ```` | Mermaid, in the browser | ~100 MB to install, ~10 MB shipped |
+| ```` ```mindmap ```` | SVG, at build time | nothing — built in |
+
+Maths and Mermaid are **optional dependencies**. A site that does not ask for
+them never installs them, and the engine renders without them rather than
+failing over a package nobody wanted — `$…$` stays as written, and a mermaid
+fence renders as its source. Turn them on with `zel build --features
+maths,diagrams`, or by choosing the container image that has them.
+
+A mindmap is YAML, and is laid out during the build rather than in the browser:
+
+````mdx
+```mindmap
+Zellij:
+  Content: [site.yaml, menu.yaml]
+  Output: Static HTML
+```
+````
+
+A mapping is a node and its children, a list is siblings, a bare string is a
+leaf. Because the layout is arithmetic rather than rendering, no library reaches
+the browser and the colours are custom properties — so the drawing follows a
+theme change the way text does, instead of needing to be drawn again.
 
 Code blocks are highlighted at build time by Shiki, with a copy button, filename labels via ```` ```ts title="next.config.js" ````, and line highlighting via ```` ```ts {2,4-6} ````. Both light and dark themes are emitted and selected by CSS variable, so the theme toggle needs no re-highlighting and **no highlighter ships to the browser**.
 

@@ -12,15 +12,19 @@ nav:
   - label: Authoring
     items:
       - content-model
+      - site-config
       - pages-and-sections
       - menu
       - guide-folders
       - maths-and-diagrams
+      - converting
   - label: Look and feel
     items:
       - themes
       - motion
   - label: Shipping
     items:
+      - zel
       - cli
+      - containers
       - deploying

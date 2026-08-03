@@ -6,6 +6,23 @@ description: LaTeX formulas, theorem environments and Mermaid diagrams in guide 
 Guide pages carry mathematics and diagrams without any setup: the syntax is
 part of the MDX pipeline, and nothing needs enabling in `site.yaml`.
 
+## What each one costs
+
+Maths and diagrams are optional dependencies. A site that does not ask for them
+never installs them, and the engine renders without them rather than failing
+over a package nobody wanted.
+
+| | Install | Sent to the browser |
+| --- | --- | --- |
+| Mindmaps | nothing — built in | nothing |
+| Maths | ~50 MB | nothing (MathJax typesets to SVG at build time) |
+| Mermaid diagrams | ~100 MB | ~10 MB, and only on pages that have one |
+
+Turn them on with `zel build --features maths,diagrams`, or by picking the
+container image that has them. Ask for neither and `$…$` stays as written and a
+`mermaid` fence renders as its source — which is what a site with no formulas
+and no diagrams expects anyway.
+
 ## LaTeX
 
 Inline maths goes between single dollars, display maths between double ones.

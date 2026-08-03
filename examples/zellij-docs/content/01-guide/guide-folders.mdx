@@ -44,9 +44,59 @@ nav:
 </Tab>
 </Tabs>
 
-Entries name files relative to the folder, without an extension. Groups nest to
-any depth, and each group is collapsible — the state is remembered per tree, so
-two folders that both have an "Overview" group do not collapse together.
+### The file's own fields
+
+Only the mapping form takes these; a bare list is just `nav`.
+
+| Key | Type | |
+| --- | --- | --- |
+| `title` | string | What the folder is called in menus and breadcrumbs. Defaults to the folder name with its numeric prefix stripped. |
+| `description` | string | Used as the meta description of the folder's index page. |
+| `order` | number | Where this folder sits among others. Lower first. A numeric filename prefix does the same job. |
+| `route` | string | Mount somewhere other than the folder's own name — `route: /docs` serves `01-guide/` at `/docs`. |
+| `nav` | list | The tree. |
+
+### Entries, and how deep they go
+
+An entry is either a **page** — a filename without its extension — or a
+**group**, which is `label` plus `items`. Groups nest to any depth:
+
+```yaml title="guide/_sidebar.yaml"
+title: Guide
+nav:
+  - index
+  - label: Getting started
+    items:
+      - quickstart
+      - installation
+  - label: Configuration
+    items:
+      - config/overview
+      - label: Data
+        items:
+          - config/database
+          - label: Advanced
+            items:
+              - config/sharding
+              - config/replication
+```
+
+That is four levels — a page inside a group inside a group inside a group — and
+nothing stops you going further. Each group is collapsible, and the open state
+is remembered per tree, so two folders that both have an "Overview" group do not
+collapse together.
+
+<Callout type="tip" title="Depth is cheap; navigating it is not">
+The sidebar will render whatever you nest, but a reader four levels in has lost
+track of where they are. Two levels suits most documentation, and a third is
+usually a sign that a group wants to be its own guide folder — which costs one
+`_sidebar.yaml` and gets its own route.
+</Callout>
+
+Entries name files relative to the folder, without an extension: an entry
+`config/database` is `config/database.mdx` and serves at
+`/guide/config/database`. A page that exists on disk but appears in no `nav`
+entry is not part of the site, and `zel check` says so.
 
 ## Routes
 
