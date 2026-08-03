@@ -215,6 +215,14 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
 
+    # At job level, not step level. A step's `if` reading an `env` the same step
+    # declares is ambiguous in Actions, and the failure mode is the worst kind:
+    # the condition silently evaluates empty and the deploy is skipped on a
+    # release that looked green.
+    env:
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -235,21 +243,17 @@ jobs:
       # produced binaries and images is still a release, and someone cloning
       # this repository has no Netlify site to deploy to.
       - name: Deploy to Netlify
-        if: ${{ env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
         working-directory: examples/zellij-docs
+        env:
+          RELEASE: ${{ github.ref_name }}
         run: |
           npx --yes netlify-cli@latest deploy \
             --prod --dir out \
-            --message "Release ${{ github.ref_name }}"
+            --message "Release $RELEASE"
 
       - name: Say why the site was not deployed
-        if: ${{ env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == '' }}
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        if: env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == ''
         run: |
           echo "::warning::The site was built but not deployed."
           echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."

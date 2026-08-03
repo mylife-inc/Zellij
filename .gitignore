@@ -24,3 +24,6 @@ examples/payos/content/02-using-payos/*.mdx
 
 # Rust build output
 cli/target/
+
+# Local Netlify folder
+.netlify
