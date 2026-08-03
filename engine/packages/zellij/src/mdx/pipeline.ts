@@ -5,7 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import type { Pluggable } from 'unified';
 
-import { rehypeMermaid } from './rehype-mermaid';
+import { rehypeDiagrams } from './rehype-mermaid';
 
 /**
  * Mathematics is optional, and costs about fifty megabytes to install.
@@ -113,7 +113,7 @@ export async function mdxOptions() {
       remarkPlugins: [remarkGfm, ...remarkMaths!] as Pluggable[],
       rehypePlugins: [
         rehypeSlug,
-        rehypeMermaid,
+        rehypeDiagrams,
         ...rehypeMaths!,
         [
           rehypeShiki,

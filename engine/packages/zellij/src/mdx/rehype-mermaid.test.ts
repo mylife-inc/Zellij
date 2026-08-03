@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Element, Root } from 'hast';
 
-import { rehypeMermaid } from './rehype-mermaid';
+import { rehypeDiagrams } from './rehype-mermaid';
 
 /** A ```<lang> fence as rehype sees it: <pre><code class="language-<lang>">. */
 function fence(lang: string, code: string): Element {
@@ -21,7 +21,7 @@ function fence(lang: string, code: string): Element {
 }
 
 function run(tree: Root): Root {
-  (rehypeMermaid as unknown as () => (tree: Root) => void)()(tree);
+  (rehypeDiagrams as unknown as () => (tree: Root) => void)()(tree);
   return tree;
 }
 
@@ -86,5 +86,30 @@ describe('rehypeMermaid', () => {
 
     const paragraph = tree.children[0] as Element;
     expect((paragraph.children[0] as Element).tagName).toBe('code');
+  });
+});
+
+describe('mindmap fences', () => {
+  it('draws the diagram at build time rather than deferring it', () => {
+    const tree = run(root(fence('mindmap', 'Zellij:\n  Content: [site.yaml]\n')));
+
+    const figure = tree.children[0] as Element;
+    expect(figure.tagName).toBe('figure');
+
+    const svg = figure.children[0] as Element;
+    expect(svg.tagName).toBe('svg');
+    // Finished markup, not a component to hydrate: nothing about this diagram
+    // needs the browser.
+    expect(JSON.stringify(svg)).toContain('site.yaml');
+  });
+
+  it('fails the build on a mindmap it cannot read', () => {
+    // An empty box on the page would look like a styling problem and be
+    // debugged as one.
+    expect(() => run(root(fence('mindmap', '- a\n- b\n')))).toThrow(/mindmap/i);
+  });
+
+  it('names the problem when there is more than one root', () => {
+    expect(() => run(root(fence('mindmap', 'A: 1\nB: 2\n')))).toThrow(/one root/);
   });
 });

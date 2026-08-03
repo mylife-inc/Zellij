@@ -146,6 +146,62 @@ sequenceDiagram
   S-->>A: fails the build on a broken link
 ```
 
+## Mindmaps
+
+A `mindmap` fence is YAML, and it is drawn during the build rather than in the
+browser:
+
+````md
+```mindmap
+Zellij:
+  Content:
+    - site.yaml
+    - menu.yaml
+    - sections/
+  Guides: [_sidebar.yaml, MDX pages]
+  Output: Static HTML
+```
+````
+
+```mindmap
+Zellij:
+  Content:
+    - site.yaml
+    - menu.yaml
+    - sections/
+  Guides: [_sidebar.yaml, MDX pages]
+  Output: Static HTML
+```
+
+A mapping is a node and its children, a list is a set of siblings, and a bare
+string is a leaf. That is the whole syntax.
+
+<Callout type="info" title="Nothing runs in the browser">
+The layout is arithmetic — a tree of boxes, positioned — so it happens during
+the build and the page receives finished SVG. No library is downloaded, nothing
+appears after paint, and because the colours are custom properties the drawing
+follows a theme change the way text does, rather than having to be drawn again.
+</Callout>
+
+A deeper tree stays readable because each column is only as wide as its widest
+label:
+
+```mindmap
+Documentation:
+  Reference:
+    Sections:
+      - hero
+      - bento-grid
+    Config:
+      - site.yaml
+      - menu.yaml
+  Guides:
+    Getting started:
+      - Install
+      - First page
+  Publishing: [Static, Docker, Netlify]
+```
+
 ### Colour-coded maps
 
 A mindmap is the quickest way to draw a hierarchy, but its renderer draws no

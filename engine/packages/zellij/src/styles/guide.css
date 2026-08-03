@@ -958,3 +958,105 @@ a.zellij-card:hover {
   text-align: left;
 }
 
+
+/* -------------------------------------------------------------- mindmaps -- */
+
+/*
+ * Laid out during the build and shipped as SVG, so there is no library to load
+ * and nothing to redraw. Colour comes from custom properties, which is what
+ * lets the drawing follow a theme change the way text does — the failure the
+ * Mermaid diagrams have, where switching theme means rendering again.
+ *
+ * Branch colours are derived from the accent by rotating its hue. Relative
+ * colour syntax does that in one line; the plain value above each rule is what
+ * a browser without it uses, so the diagram is never uncoloured.
+ */
+.zellij-mindmap {
+  --zellij-branch-0: #2f6fb0;
+  --zellij-branch-1: #2f8f6a;
+  --zellij-branch-2: #b0682f;
+  --zellij-branch-3: #7a4fb0;
+  --zellij-branch-4: #b02f5e;
+  --zellij-branch-5: #2f95b0;
+
+  --zellij-branch-0: hsl(from var(--zellij-accent) h 52% 42%);
+  --zellij-branch-1: hsl(from var(--zellij-accent) calc(h + 62) 46% 38%);
+  --zellij-branch-2: hsl(from var(--zellij-accent) calc(h + 133) 48% 40%);
+  --zellij-branch-3: hsl(from var(--zellij-accent) calc(h + 199) 46% 44%);
+  --zellij-branch-4: hsl(from var(--zellij-accent) calc(h + 271) 44% 42%);
+  --zellij-branch-5: hsl(from var(--zellij-accent) calc(h + 318) 48% 40%);
+
+  margin-block: 1.75rem;
+  overflow-x: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+  .zellij-mindmap {
+    --zellij-branch-0: hsl(from var(--zellij-accent) h 58% 66%);
+    --zellij-branch-1: hsl(from var(--zellij-accent) calc(h + 62) 52% 64%);
+    --zellij-branch-2: hsl(from var(--zellij-accent) calc(h + 133) 54% 62%);
+    --zellij-branch-3: hsl(from var(--zellij-accent) calc(h + 199) 52% 68%);
+    --zellij-branch-4: hsl(from var(--zellij-accent) calc(h + 271) 50% 66%);
+    --zellij-branch-5: hsl(from var(--zellij-accent) calc(h + 318) 54% 64%);
+  }
+}
+
+.zellij-mindmap-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Big diagrams stay legible by scrolling rather than shrinking to nothing. */
+  min-width: 28rem;
+  font-family: var(--zellij-font-body);
+  font-size: 13px;
+}
+
+/* Curves, not elbows: the eye follows one continuous line out of the root. */
+.zellij-mindmap-edge {
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+
+.zellij-mindmap-node rect {
+  fill: var(--zellij-bg);
+  stroke-width: 1.5;
+}
+
+.zellij-mindmap-node text {
+  fill: var(--zellij-fg);
+  font-weight: 500;
+}
+
+/* The root belongs to no branch, so it takes the page's own ink. */
+.zellij-mindmap-node[data-branch='root'] rect {
+  fill: var(--zellij-fg);
+  stroke: var(--zellij-fg);
+}
+
+.zellij-mindmap-node[data-branch='root'] text {
+  fill: var(--zellij-bg);
+  font-weight: 650;
+}
+
+/* A deeper node is a detail of its branch, and reads lighter for it. */
+.zellij-mindmap-node[data-depth='2'] rect,
+.zellij-mindmap-node[data-depth='3'] rect,
+.zellij-mindmap-node[data-depth='4'] rect {
+  fill: var(--zellij-surface);
+}
+
+/* Each limb, and the link that reaches it, in one colour. */
+.zellij-mindmap-node[data-branch='0'] rect { stroke: var(--zellij-branch-0); }
+.zellij-mindmap-edge[data-branch='0'] { stroke: var(--zellij-branch-0); }
+.zellij-mindmap-node[data-branch='1'] rect { stroke: var(--zellij-branch-1); }
+.zellij-mindmap-edge[data-branch='1'] { stroke: var(--zellij-branch-1); }
+.zellij-mindmap-node[data-branch='2'] rect { stroke: var(--zellij-branch-2); }
+.zellij-mindmap-edge[data-branch='2'] { stroke: var(--zellij-branch-2); }
+.zellij-mindmap-node[data-branch='3'] rect { stroke: var(--zellij-branch-3); }
+.zellij-mindmap-edge[data-branch='3'] { stroke: var(--zellij-branch-3); }
+.zellij-mindmap-node[data-branch='4'] rect { stroke: var(--zellij-branch-4); }
+.zellij-mindmap-edge[data-branch='4'] { stroke: var(--zellij-branch-4); }
+.zellij-mindmap-node[data-branch='5'] rect { stroke: var(--zellij-branch-5); }
+.zellij-mindmap-edge[data-branch='5'] { stroke: var(--zellij-branch-5); }
