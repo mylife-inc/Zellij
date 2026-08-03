@@ -266,8 +266,21 @@ zdocs-publish() {
 # because a tag is the wrong place to discover a missing repository variable —
 # by then the version number is spent.
 _zrelease_preflight() {
-  gh repo view "$(_zrepo)" >/dev/null 2>&1 ||
-    _zdie "gh cannot reach $(_zrepo). Try: gh auth login" || return 1
+  local err
+  if ! err="$(gh repo view "$(_zrepo)" --json name 2>&1 >/dev/null)"; then
+    _zwarn "gh cannot reach $(_zrepo):"
+    printf '    %s\n' "$err"
+    cat >&2 <<'EOF'
+    git push works over SSH; gh does not. It needs a token that can see a
+    private repository — the `repo` scope on a classic token, or a
+    fine-grained token granting this repository Contents and Variables.
+
+      gh auth status          what the current token is and what it can do
+      unset GITHUB_TOKEN      if an ambient one is shadowing a stored login
+      gh auth login           store one instead
+EOF
+    return 1
+  fi
 
   local deploy; deploy="$(_zvar DEPLOY_DOCS)"
   [ "$deploy" = "true" ] && return 0
