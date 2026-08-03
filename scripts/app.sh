@@ -63,6 +63,8 @@ Zellij development commands
   Publishing
     zrelease <version>  Cut a release: checks, tags, and hands the rest to CI
     zrelease-watch      Follow the release CI is running
+    zdocs-publish [on|off]
+                        Whether releases publish the docs site. No argument reports.
     znetlify            Build and deploy the docs site by hand
 
   Housekeeping
@@ -218,6 +220,75 @@ zimage-size() {
 
 # --------------------------------------------------------------- publishing
 
+_zrepo() { echo "${ZELLIJ_OWNER}/Zellij"; }
+
+# The value of a repository variable, or empty. `variable list` rather than
+# `variable get` because the latter is recent and this has to work on whatever
+# gh a machine happens to have.
+_zvar() {
+  gh variable list --repo "$(_zrepo)" --json name,value \
+    --jq ".[] | select(.name == \"$1\") | .value" 2>/dev/null
+}
+
+_zsecret_exists() {
+  gh secret list --repo "$(_zrepo)" --json name \
+    --jq ".[] | select(.name == \"$1\") | .name" 2>/dev/null | grep -q .
+}
+
+# Is the documentation site allowed to publish? Reports, and with an argument
+# sets. Separated from zrelease so it can be answered without cutting one.
+zdocs-publish() {
+  command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
+
+  case "${1:-status}" in
+    on|true|yes)
+      gh variable set DEPLOY_DOCS --body true --repo "$(_zrepo)" || return 1
+      _zsay "The next release will publish the docs to $ZELLIJ_SITE_DOMAIN"
+      ;;
+    off|false|no)
+      gh variable set DEPLOY_DOCS --body false --repo "$(_zrepo)" || return 1
+      _zsay "Releases will build the docs but not publish them"
+      ;;
+    status)
+      local v; v="$(_zvar DEPLOY_DOCS)"
+      printf '  DEPLOY_DOCS          %s\n' "${v:-unset}"
+      printf '  NETLIFY_AUTH_TOKEN   %s\n' "$(_zsecret_exists NETLIFY_AUTH_TOKEN && echo set || echo missing)"
+      printf '  NETLIFY_SITE_ID      %s\n' "$(_zsecret_exists NETLIFY_SITE_ID && echo set || echo missing)"
+      printf '  %-20s %s\n' "$ZELLIJ_SITE_DOMAIN" \
+        "$(dig +short "$ZELLIJ_SITE_DOMAIN" 2>/dev/null | head -1 || echo 'does not resolve')"
+      ;;
+    *) _zdie "Usage: zdocs-publish [on|off|status]" ;;
+  esac
+}
+
+# Everything about a release that is settled outside this repository: whether
+# CI may publish the site, whether it has the credentials to. Checked here
+# because a tag is the wrong place to discover a missing repository variable —
+# by then the version number is spent.
+_zrelease_preflight() {
+  gh repo view "$(_zrepo)" >/dev/null 2>&1 ||
+    _zdie "gh cannot reach $(_zrepo). Try: gh auth login" || return 1
+
+  local deploy; deploy="$(_zvar DEPLOY_DOCS)"
+  [ "$deploy" = "true" ] && return 0
+
+  if ! _zsecret_exists NETLIFY_AUTH_TOKEN || ! _zsecret_exists NETLIFY_SITE_ID; then
+    _zwarn "Netlify credentials are not in the repository secrets — the site will be built, not published."
+    return 0
+  fi
+
+  printf '\033[1;33m?\033[0m Publish the documentation site to %s with this release? [y/N] ' \
+    "$ZELLIJ_SITE_DOMAIN"
+  local reply; read -r reply
+  case "$reply" in
+    [yY]*)
+      gh variable set DEPLOY_DOCS --body true --repo "$(_zrepo)" || return 1
+      _zsay "DEPLOY_DOCS=true"
+      ;;
+    *) _zwarn "Leaving it off. The site will be built and not published." ;;
+  esac
+}
+
 zrelease() {
   local version="$1"
   [ -n "$version" ] || _zdie "Usage: zrelease v0.2.0" || return 1
@@ -231,6 +302,8 @@ zrelease() {
   git -C "$ZELLIJ_ROOT" rev-parse "$version" >/dev/null 2>&1 &&
     _zdie "$version already exists. Releases are not re-cut; pick the next one." && return 1
 
+  _zrelease_preflight || return 1
+
   # Locally first, because a tag is public the moment it is pushed and a
   # release that fails in CI has already been announced by its own tag.
   _zsay "Checking before tagging"
@@ -240,13 +313,16 @@ zrelease() {
   git -C "$ZELLIJ_ROOT" tag -a "$version" -m "$version" || return 1
   git -C "$ZELLIJ_ROOT" push origin "$version" || return 1
 
+  local docs_dest="built, not published"
+  [ "$(_zvar DEPLOY_DOCS)" = "true" ] && docs_dest="→ $ZELLIJ_SITE_DOMAIN"
+
   cat <<EOF
 
   Tagged and pushed. GitHub is now building:
 
     · the four container images, for amd64 and arm64  → GHCR
     · zel for five platforms, with checksums          → the release page
-    · the documentation site                          → $ZELLIJ_SITE_DOMAIN
+    · the documentation site                          $docs_dest
 
   Watch it:  zrelease-watch
 EOF
@@ -308,6 +384,12 @@ zdoctor() {
   printf '  root       %s\n' "$ZELLIJ_ROOT"
   printf '  branch     %s\n' "$(git -C "$ZELLIJ_ROOT" branch --show-current 2>/dev/null)"
   printf '  image      %s\n' "$ZELLIJ_IMAGE"
+
+  if command -v gh >/dev/null 2>&1 && gh repo view "$(_zrepo)" >/dev/null 2>&1; then
+    echo
+    echo "Release settings"
+    zdocs-publish status
+  fi
 
   return $ok
 }
