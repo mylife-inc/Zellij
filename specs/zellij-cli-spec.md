@@ -186,15 +186,12 @@ produces a wrong sidebar that looks right.
 
 ### 3.5 Building — what comes out
 
-`--target` decides the artefact, and the artefact decides where it can be
-hosted. These are genuinely different products, not build flags:
+There are **two** targets, and the choice is about where the HTML is produced:
 
-| Target | Produces | Runs on | Image size |
-| --- | --- | --- | --- |
-| `static` *(default)* | A folder of HTML, CSS and JS | Netlify, Cloudflare, GitHub Pages, S3 — free tiers everywhere | — |
-| `node` | A traced Node server | Any Node host | — |
-| `image:static` | Container, nginx serving the static folder | Any registry | ~30 MB |
-| `image:node` | Container, Node serving the app | Any registry | ~150 MB |
+| Target | Produces | Runs on |
+| --- | --- | --- |
+| `static` *(default)* | A folder of HTML, CSS and JS | Netlify, Cloudflare, GitHub Pages, S3 — free tiers everywhere |
+| `image` | A container running the site on port 3000, ~150 MB | Railway, Fly.io, Cloud Run, ECS, any registry |
 
 `static` is the default because most documentation sites are read far more than
 they are written, a CDN serves them better than a server would, and it is the
@@ -202,8 +199,27 @@ only target that costs nothing to host.
 
 The trade-off worth knowing: static loses `next/image` optimisation, so images
 are served as authored. For a documentation site that is usually the right
-trade; for a marketing site heavy with photography it is not, and `image:node`
-exists for exactly that.
+trade; for a marketing site heavy with photography it is not, and `image` exists
+for exactly that.
+
+Neither target is a single-page application. Both ship real HTML for every
+route, with React rehydrating only the interactive parts. The difference is when
+the HTML is written to disk, not whether it exists.
+
+### Two rejected targets
+
+An earlier draft listed four. Two of them were not products:
+
+- **`node`** — a traced Node server, uncontainerised. That is an artefact for a
+  platform to consume, not a choice a user makes. Vercel builds it for you; on
+  any other host it would go in a container, which is `image`.
+- **`image:static`** — nginx serving the static folder. That is the static site
+  in a box: a packaging preference. Anyone who wants it can copy `dist/` into
+  whatever base image their organisation requires.
+
+Offering four choices where there are two made the decision look harder than it
+is. This was found by a reader of the documentation who could not tell the four
+apart, which is the correct test.
 
 ### 3.6 Optional features
 
@@ -231,11 +247,25 @@ the build argument runs inside the container.
 
 | Command | Does |
 | --- | --- |
-| `zel deploy netlify\|vercel\|cloudflare\|ghpages\|s3` | Builds `static` and pushes it. |
+| `zel deploy <provider> [dir]` | Checks, builds and uploads. |
 | `zel image build` | Builds a deployable image. Writes the multi-stage Dockerfile itself; the user never sees one. |
 | `zel image push [registry]` | Pushes it. |
 | `zel image run` | Runs it locally — the last check before it goes anywhere. |
+| `zel image dockerfile` | Prints the Dockerfile, for a pipeline that must own the build. |
 | `zel ci init github\|gitlab\|circle` | Writes a pipeline that does all of the above on push. |
+
+**The provider decides the target.** A CDN cannot run a container and a
+container host has nothing to do with a folder of HTML, so passing `--target` to
+`deploy` is an error naming the conflict rather than a silent override.
+
+| Provider | Target |
+| --- | --- |
+| `netlify`, `cloudflare`, `ghpages`, `s3`, `vercel` | `static` |
+| `fly`, `railway` | `image` |
+
+Credentials are read from the environment only — never a flag, never
+`zel.toml`, never written to disk. A missing one is reported *before* the build,
+because discovering it afterwards wastes the build.
 
 ### 3.8 Workflows
 

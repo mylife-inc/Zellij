@@ -42,9 +42,9 @@ footer:
         - { label: The content model, href: /guide/content-model }
     - heading: Reference
       links:
-        - { label: All sections, page: 02-sections }
+        - { label: All sections, page: 03-sections }
         - { label: Themes, href: /guide/themes }
-        - { label: CLI, href: /guide/cli }
+        - { label: CLI, href: /cli }
     - heading: More
       links:
         - { label: Why Zellij, page: why }

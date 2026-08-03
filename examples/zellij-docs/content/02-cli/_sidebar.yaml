@@ -1,0 +1,28 @@
+title: CLI
+order: 2
+description: zel — the one command for creating, converting, checking, building and shipping a site.
+
+nav:
+  - index
+  - label: Writing content
+    items:
+      - new
+      - explain
+      - context
+  - label: Bringing content across
+    items:
+      - convert
+  - label: Checking and running
+    items:
+      - check
+      - dev
+  - label: Shipping
+    items:
+      - build
+      - deploy
+      - image
+      - ci
+  - label: Reference
+    items:
+      - config
+      - doctor

@@ -28,4 +28,4 @@ items:
     title: Check before you ship.
     body: One command validates the whole content folder.
     image: assets/card-cli.png
-    href: /guide/cli
+    href: /cli

@@ -102,6 +102,36 @@ enum Command {
 
         #[arg(long)]
         out: Option<String>,
+
+        /// Image tag. `--target image` only.
+        #[arg(long)]
+        tag: Option<String>,
+    },
+
+    /// Build the site and put it online.
+    Deploy {
+        /// netlify | cloudflare | vercel | ghpages | s3 | fly | railway.
+        /// The provider decides the target: a CDN cannot run a container.
+        provider: String,
+
+        #[arg(default_value = ".")]
+        dir: String,
+
+        /// The site or project on the provider.
+        #[arg(long)]
+        site: Option<String>,
+    },
+
+    /// Build, run and push container images.
+    Image {
+        #[command(subcommand)]
+        action: ImageAction,
+    },
+
+    /// Write a pipeline that checks, builds and deploys on push.
+    Ci {
+        #[command(subcommand)]
+        action: CiAction,
     },
 
     /// Detect, convert and validate in one step.
@@ -121,8 +151,81 @@ enum Command {
         to: Option<String>,
     },
 
+    /// Convert, check, build and deploy in one step.
+    Ship {
+        source: String,
+
+        #[arg(long)]
+        provider: Option<String>,
+    },
+
+    /// Serve what `build` produced.
+    Serve {
+        #[arg(default_value = "dist")]
+        dir: String,
+
+        #[arg(long, default_value_t = 3000)]
+        port: u16,
+    },
+
+    /// Canonical formatting for the YAML.
+    Fmt {
+        #[arg(default_value = ".")]
+        dir: String,
+
+        /// Exit 1 if anything would change, and write nothing.
+        #[arg(long)]
+        check: bool,
+    },
+
     /// Check the environment: container runtime, image, versions.
     Doctor,
+}
+
+#[derive(Subcommand)]
+enum ImageAction {
+    /// The same as `build --target image`.
+    Build {
+        #[arg(default_value = ".")]
+        dir: String,
+
+        #[arg(long)]
+        tag: Option<String>,
+    },
+    /// Run it locally — the last check before it goes anywhere.
+    Run {
+        tag: Option<String>,
+
+        #[arg(long, default_value_t = 3000)]
+        port: u16,
+    },
+    /// Push it to a registry.
+    Push {
+        tag: String,
+
+        #[arg(long)]
+        registry: Option<String>,
+    },
+    /// Print the Dockerfile `image build` would have used.
+    Dockerfile {
+        #[arg(default_value = ".")]
+        dir: String,
+    },
+}
+
+#[derive(Subcommand)]
+enum CiAction {
+    /// Write a pipeline into the repository.
+    Init {
+        /// github | gitlab | circle.
+        system: String,
+
+        #[arg(long)]
+        deploy: Option<String>,
+
+        #[arg(long, default_value = "static")]
+        target: String,
+    },
 }
 
 #[derive(Subcommand)]
@@ -217,20 +320,22 @@ fn list_formats() -> zellij_core::Result<()> {
     Ok(())
 }
 
+// Two, not four. A traced Node server and an nginx-plus-static-folder image
+// were both on this list once; neither is a product anyone chooses. The first
+// is what a platform builds for you, the second is the static site in a box.
+// Offering four made a decision between two look harder than it is.
 fn list_targets() -> zellij_core::Result<()> {
     for (name, description) in [
         (
             "static",
-            "HTML, CSS and JS. Hosts free on any CDN. The default.",
+            "A folder of HTML, CSS and JS. Any CDN, free. The default.",
         ),
-        ("node", "A traced Node server. Keeps image optimisation."),
         (
-            "image:static",
-            "Container, nginx serving the static folder. ~30 MB.",
+            "image",
+            "A container running the site on port 3000. Any registry. ~150 MB.",
         ),
-        ("image:node", "Container, Node serving the app. ~150 MB."),
     ] {
-        println!("{name:<14} {description}");
+        println!("{name:<8} {description}");
     }
 
     Ok(())

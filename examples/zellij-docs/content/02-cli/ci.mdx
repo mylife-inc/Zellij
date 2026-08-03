@@ -1,0 +1,119 @@
+---
+title: zel ci
+description: A pipeline that checks, builds and deploys your site on every push.
+---
+
+<Callout type="warning" title="Planned">
+`zel ci` exits with `not implemented yet`. This page is the specification it is
+being written against.
+</Callout>
+
+```bash title="terminal"
+zel ci init github
+zel ci init github --deploy netlify --on push:main
+zel ci init gitlab --target image --registry ghcr.io/acme
+```
+
+Writes a pipeline into your repository. The pipeline installs `zel` and calls
+it — no Dockerfile in the file, no fifteen lines of `docker build` arguments to
+keep in step with a base image that changes.
+
+## Who this is for
+
+**A team with their own product repository**, keeping documentation beside the
+code it describes:
+
+```
+acme/
+├── src/                # the product
+├── docs/               # the content folder
+└── .github/workflows/
+    └── docs.yml        # written by zel ci init
+```
+
+A push that touches `docs/` publishes the site. A push that does not, does
+nothing. The documentation stays in the same review, the same branch and the
+same pull request as the change it documents, which is the only arrangement
+under which it stays accurate.
+
+This is separate from Zellij's own release pipeline, which builds the engine and
+publishes the base image. You never need that one.
+
+## What it writes
+
+```bash title="terminal"
+zel ci init github --deploy netlify
+```
+
+```yaml title=".github/workflows/docs.yml"
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mylife-inc/setup-zel@v1
+      - run: zel check docs
+      - run: zel deploy netlify docs
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+```
+
+Four steps, and the two that matter are the ones you would run by hand. The
+command prints which secrets you have to add and where.
+
+For a container target:
+
+```bash title="terminal"
+zel ci init github --target image --registry ghcr.io
+```
+
+```yaml title=".github/workflows/docs.yml"
+      - run: zel check docs
+      - run: zel image build docs --tag ghcr.io/acme/docs:${{ github.sha }}
+      - run: zel image push ghcr.io/acme/docs:${{ github.sha }}
+```
+
+## Options
+
+| | | |
+| --- | --- | --- |
+| `<system>` | `github`, `gitlab`, `circle` | — |
+| `--deploy <provider>` | Adds a deploy step | none — check and build only |
+| `--target <static\|image>` | | implied by `--deploy`, else `static` |
+| `--registry <host>` | For `image` | — |
+| `--content <path>` | The content folder | `content` |
+| `--on <event>` | `push:main`, `pr`, `tag` | `push:main` |
+| `--out <path>` | Where to write | the system's conventional path |
+
+Without `--deploy`, the pipeline validates and builds but publishes nothing —
+which is the right first step, and what you want on pull requests regardless.
+
+## Checking without publishing
+
+The most valuable pipeline is the one that fails a pull request whose
+documentation is broken, and it needs no credentials at all:
+
+```bash title="terminal"
+zel ci init github --on pr
+```
+
+```yaml
+      - run: zel check docs
+```
+
+`zel check` catches a link to a page somebody deleted, a section type that does
+not exist, and a sidebar entry pointing at a missing file — before review rather
+than after deploy.
+
+## See also
+
+- [`zel check`](/cli/check) — what the pipeline's first step does
+- [`zel deploy`](/cli/deploy) — providers and their credentials

@@ -7,8 +7,11 @@
 - name: Guide
   page: 01-guide
 
+- name: CLI
+  page: 02-cli
+
 - name: Sections
-  page: 02-sections
+  page: 03-sections
 
 # A child with its own `items` turns the drawer into a full-width panel.
 - name: Learn
@@ -29,7 +32,7 @@
           url: /guide/themes
           description: Fourteen glazes, one token system.
           icon: palette
-        - name: The CLI
-          url: /guide/cli
-          description: check, prepare, sync-assets.
+        - name: The zel command
+          url: /cli
+          description: One binary, from first folder to published site.
           icon: terminal

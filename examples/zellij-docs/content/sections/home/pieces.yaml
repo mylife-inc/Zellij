@@ -29,4 +29,4 @@ items:
     title: Validate before you build
     body: "`zellij check` reads the folder and reports everything wrong with it."
     image: assets/card-cli.png
-    href: /guide/cli
+    href: /cli

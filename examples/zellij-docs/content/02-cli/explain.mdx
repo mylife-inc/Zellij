@@ -1,0 +1,124 @@
+---
+title: zel explain and zel list
+description: What a section type takes, and what this build knows about.
+---
+
+<Callout type="tip" title="Available">
+Both commands work today. They read a schema compiled into the binary, so they
+need nothing installed and no container.
+</Callout>
+
+Nineteen section types with different fields is more than anyone remembers.
+These two commands are the reason you do not have to.
+
+## `zel explain <type>`
+
+Every field a section type takes, which are required, their defaults, and the
+fields of anything nested inside it.
+
+```bash title="terminal"
+zel explain hero
+```
+
+```
+hero
+
+Required
+  headline       string
+
+Optional
+  badge          string
+  cta            list of object  (default [])
+  subhead        string
+  visual         string
+  visualStyle    floating | framed | full-bleed  (default floating)
+
+Each entry in `cta`
+  *href          string
+  *label         string
+   style         primary | secondary | ghost  (default primary)
+  * required
+
+Every section also takes: id, background, padding, motion, titleGradient.
+
+Write one with `zel new section hero`.
+```
+
+Note what that gives you beyond a field list: the **allowed values** for
+`visualStyle`, the shape of each entry in `cta`, and the five fields every
+section shares regardless of type.
+
+This is generated from the same schemas that validate content, so it describes
+exactly what [`zel check`](/cli/check) will accept. It cannot drift from the
+engine, because CI fails if the copy compiled into the binary falls behind.
+
+### For a pipeline
+
+```bash title="terminal"
+zel explain hero --json
+```
+
+The JSON Schema for the type, suitable for generating an editor completion, a
+form, or a validator of your own.
+
+## `zel list`
+
+Four things this build knows about.
+
+```bash title="terminal"
+zel list sections
+```
+
+```
+bento-grid       3 fields, 1 required
+card-carousel    5 fields, 1 required
+cta-banner       3 fields, 1 required
+faq              2 fields, 1 required
+feature-grid     4 fields, 1 required
+gallery          5 fields, 1 required
+hero             6 fields, 1 required
+logo-strip       2 fields, 1 required
+…
+```
+
+| | |
+| --- | --- |
+| `zel list sections` | Every section type, with how many fields each takes |
+| `zel list themes` | All fourteen |
+| `zel list formats` | Every documentation format [`convert`](/cli/convert) recognises |
+| `zel list targets` | Everything [`build`](/cli/build) can produce |
+
+```bash title="terminal"
+zel list formats
+```
+
+```
+docusaurus     Docusaurus — sidebars.js and a docs folder
+mkdocs         MkDocs — mkdocs.yml with a nav tree
+```
+
+`formats` is worth running before a migration: converters are plugins compiled
+into the binary, so what it prints is what *your* build can read, not what the
+documentation claims exists.
+
+## The usual loop
+
+<Steps>
+<Step title="Find a type">
+`zel list sections` — or browse [the section reference](/sections).
+</Step>
+<Step title="Learn its fields">
+`zel explain pricing-table`
+</Step>
+<Step title="Create one">
+`zel new section pricing-table --out sections/home/plans.yaml`
+</Step>
+<Step title="Check it">
+`zel check`
+</Step>
+</Steps>
+
+## See also
+
+- [`zel context`](/cli/context) — the whole model in one file, for an AI agent
+- [The section reference](/sections) — the same information, with rendered previews

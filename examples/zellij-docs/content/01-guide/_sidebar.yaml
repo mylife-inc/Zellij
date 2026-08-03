@@ -24,7 +24,11 @@ nav:
       - motion
   - label: Shipping
     items:
-      - zel
-      - cli
       - containers
       - deploying
+  # The wrapper app is not on the path most people take — zel runs it in a
+  # container and they never see one. It is here because anyone who checks a
+  # wrapper into their own repository owns those npm scripts and can break them.
+  - label: Reference
+    items:
+      - wrapper

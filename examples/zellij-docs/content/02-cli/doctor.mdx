@@ -1,0 +1,91 @@
+---
+title: zel doctor
+description: What is installed, what is missing, and what version of everything.
+---
+
+<Callout type="warning" title="Planned">
+`zel doctor` exits with `not implemented yet`. This page is the specification it
+is being written against.
+</Callout>
+
+```bash title="terminal"
+zel doctor
+```
+
+```
+zel            0.4.1  (aarch64-apple-darwin)
+
+Container runtime
+  ✓ docker     27.4.0 via unix:///Users/you/.colima/default/docker.sock
+  ✓ engine     ghcr.io/mylife-inc/zellij-base:0.4.1  (local, 237 MB)
+
+Configuration
+  zel.toml     ./zel.toml
+  content      ./docs/external           (34 pages, 2 guides)
+  target       static
+  provider     netlify · acme-docs
+
+Credentials
+  ✓ NETLIFY_AUTH_TOKEN
+  ✗ NETLIFY_SITE_ID     not set — zel deploy netlify will stop before building
+```
+
+The first thing to include in a bug report, and the fastest way to find out why
+a command that worked yesterday does not today.
+
+## What it checks
+
+| | |
+| --- | --- |
+| The binary | Version and platform |
+| A container runtime | Docker, Podman, Colima — which one, and the socket |
+| The engine image | Present locally, its version, its size |
+| Configuration | Where `zel.toml` was found, and everything it resolved to |
+| The content folder | That it exists and what is in it |
+| Credentials | Which environment variables the configured provider needs, and whether they are set |
+
+Credential names only. `zel doctor` never prints a token value, so its output is
+safe to paste into an issue.
+
+<Callout type="tip" title="The socket question">
+The most common cause of "Docker is not running" is a runtime that *is* running
+on a socket the default context does not look at — Colima puts its socket in
+`~/.colima/default/docker.sock`. `zel doctor` reports the socket it found rather
+than telling you to start something that is already started.
+</Callout>
+
+## Exit code
+
+`0` if everything a command would need is present, `1` otherwise. It works as a
+CI preflight:
+
+```yaml
+      - run: zel doctor
+      - run: zel deploy
+```
+
+## Housekeeping
+
+<Callout type="warning" title="Planned">
+All four exit with `not implemented yet`.
+</Callout>
+
+| | |
+| --- | --- |
+| `zel version` | Binary, engine image and content-model versions |
+| `zel pull` | Pull or update the engine image ahead of time |
+| `zel upgrade` | Replace this binary with the latest release |
+| `zel completions <shell>` | `bash`, `zsh`, `fish`, `powershell` |
+
+```bash title="terminal"
+zel completions zsh > ~/.zfunc/_zel
+```
+
+`zel pull` is worth running before a flight, and in a CI image build — the first
+`zel dev` on a cold machine otherwise spends a minute fetching 237 MB with no
+indication that this is a one-off.
+
+## See also
+
+- [`zel.toml`](/cli/config) — what doctor is resolving
+- [Containers](/guide/containers) — what the engine image is

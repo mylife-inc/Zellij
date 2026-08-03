@@ -1,0 +1,171 @@
+---
+title: zel detect and zel convert
+description: Read a MkDocs or Docusaurus tree and write the Zellij equivalent beside it.
+---
+
+<Callout type="tip" title="Available">
+`detect` and `convert` work today. `migrate` is planned.
+</Callout>
+
+```bash title="terminal"
+zel detect ./docs
+zel convert ./docs --out ./content
+zel check ./content
+```
+
+The output goes in a **new folder**. The original is never touched, so a
+conversion you dislike costs nothing but the folder you delete.
+
+## `zel detect <dir>`
+
+Says what a folder was written for, and how sure it is.
+
+```bash title="terminal"
+zel detect ./docs
+```
+
+```
+MkDocs (certain)
+  mkdocs.yml with a nav tree of 47 entries
+  docs_dir: docs
+```
+
+Certainty matters. A folder with the format's own configuration file is
+certain; one that merely looks like a default layout is not, and an ambiguous
+tree asks rather than guessing. Guessing between two plausible formats produces
+a conversion that is wrong in ways nobody notices for a month.
+
+When nothing matches:
+
+```
+Nothing here looks like a documentation tool this build knows.
+
+If the folder is plain Markdown with no configuration, there is no
+structure to convert from. Write the reference with `zel context` and
+ask an AI agent to author the folder instead.
+```
+
+That is not a failure to be worked around. A folder of loose Markdown has no
+order, no grouping and no titles beyond the first heading — there is nothing to
+convert *from*, and inventing a structure would be a worse answer than saying so.
+
+## `zel convert <source>`
+
+```bash title="terminal"
+zel convert ./docs --out ./content
+zel convert ./docs --out ./content --from mkdocs
+zel convert ./docs --out ./content --dry-run
+```
+
+| | | |
+| --- | --- | --- |
+| `<source>` | Required. The folder to read | — |
+| `--out <path>` | Where to write. Never the source | required |
+| `--from <format>` | Force a format instead of detecting | detected |
+| `--dry-run` | Report the plan, write nothing | off |
+
+`--out` can never be the source. A conversion that overwrote the original would
+be unrecoverable, and there is no flag to permit it.
+
+## What is recognised
+
+```bash title="terminal"
+zel list formats
+```
+
+| Format | Read from | |
+| --- | --- | --- |
+| MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir` |
+| Docusaurus | `sidebars.js` | Categories, doc entries, links and nesting — when declarative |
+
+Converters are plugins compiled into the binary, so `zel list formats` prints
+what your build can actually read.
+
+## What does not come across
+
+**A landing page.** Every one of these tools describes a documentation tree.
+Zellij has that *and* marketing pages built from nineteen section types with no
+equivalent in the source. A conversion writes a faithful guide folder, a
+`site.yaml` carrying whatever identity it found, and a `pages.yaml` with one
+hero to build on — and says so, every time.
+
+**Links out of the sidebar.** A sidebar holds pages; an external link belongs in
+`menu.yaml`. Reported rather than dropped.
+
+**Pages the navigation never mentioned.** A page hidden from its own navigation
+may have been hidden deliberately, so it is listed rather than silently
+published.
+
+```
+2 thing(s) could not be carried over:
+  https://blog.acme.dev: "Blog" is an external link; sidebars hold pages. Add it to menu.yaml.
+  draft.md: on disk but absent from the navigation; not converted
+```
+
+## When Docusaurus computes its sidebar
+
+`sidebars.js` is a JavaScript module, not a data file. Most are data wearing
+JavaScript's clothes and read fine. Some are not:
+
+```js
+module.exports = require('./generated').map((item) => ({ ...item }));
+```
+
+That is not read at all. The converter falls back to the folder and names the
+construct that stopped it:
+
+> `sidebars.js` contains a require() call, so it was not read: this converter
+> parses declarative sidebars and will not guess at ones that compute their
+> exports. The pages below came from the folder instead, and their order is
+> alphabetical rather than yours.
+
+Declining is the point. A sidebar half-read from a file the converter did not
+understand would look finished and be wrong.
+
+## Markdown that is not MDX
+
+Zellij compiles guide pages as MDX, which is Markdown plus JSX. That addition is
+not free: `{` opens an expression and `<` opens a tag. Prose written for MkDocs
+has never had to care.
+
+| In the source | Becomes | |
+| --- | --- | --- |
+| `{timeout}` | `\{timeout\}` | In prose only |
+| `a < b` | `a &lt; b` | Unless it opens a real tag |
+| `<https://x.com>` | `[https://x.com](https://x.com)` | MDX has no autolinks |
+| ` ```sh {x} < y ``` ` | unchanged | Code is quoted by definition |
+
+<Callout type="warning" title="check does not compile MDX">
+[`zel check`](/cli/check) validates the content model — links, section types,
+sidebar entries. It does not compile your Markdown. A converted folder can pass
+`check` and still fail to build, so build it once with
+[`zel build`](/cli/build) before you throw the original away.
+</Callout>
+
+## `zel migrate`
+
+<Callout type="warning" title="Planned">
+Exits with `not implemented yet`.
+</Callout>
+
+`detect` → `convert` → `check`, with one report at the end.
+
+```bash title="terminal"
+zel migrate ./docs --out ./content
+```
+
+```
+✓ Detected MkDocs (certain)
+✓ Converted 47 pages into ./content
+! 2 things could not be carried over — see ./content/convert-report.md
+✓ Content valid
+```
+
+It does nothing the three commands cannot. It exists because forgetting to
+validate after a conversion is the mistake everybody makes once.
+
+## See also
+
+- [Converting existing docs](/guide/converting) — the concepts, and what to expect
+- [`zel context`](/cli/context) — when there is no structure to convert from
+- [`zel ship`](/cli/deploy#zel-ship) — convert and publish in one line

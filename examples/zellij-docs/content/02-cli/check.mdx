@@ -1,0 +1,146 @@
+---
+title: zel check
+description: Validate a content folder, and format it.
+---
+
+<Callout type="warning" title="Planned">
+`zel check` exits with `not implemented yet`. The same validation is available
+today inside a wrapper app as `npx zellij check` — see
+[The wrapper app](/guide/wrapper).
+</Callout>
+
+```bash title="terminal"
+zel check
+zel check ./docs
+zel check --json
+```
+
+Loads the whole content folder — the same code the build uses — and reports
+everything wrong with it, without starting Next.js. It takes about a second.
+
+```
+✓ ./content
+  site        Acme · theme cupertino
+  pages       6
+  guides      1 (5 pages) · /guide
+  menu        Features · Pricing · Solutions · Resources
+  home        /
+```
+
+And when something is wrong:
+
+```
+✗ ./content
+
+  pages.yaml:14
+    section "sections/home/pricing.yaml" does not exist
+
+  01-guide/_sidebar.yaml:9
+    "installation" is not a page in this guide
+    did you mean "install"?
+
+  01-guide/quickstart.mdx:31
+    link to /guide/themes/nord — no such page
+
+3 problems
+```
+
+Exit code is 0 or 1, so it works as a pipeline step without parsing anything.
+
+## What it validates
+
+| | |
+| --- | --- |
+| Every YAML file | Against its schema — unknown values fail, naming what is accepted |
+| Every section | The type exists, required fields are present, values are in range |
+| Every internal link | In `menu.yaml`, `site.yaml`'s footer, `pages.yaml`, and inside MDX prose |
+| Every sidebar entry | Names a page that exists in that guide |
+| Every asset reference | Resolves under `assets/` |
+| The home page | `home:` names a page that exists |
+
+An **unknown top-level key warns** rather than failing, so a folder written for
+a newer Zellij still builds on an older one. An **unknown value for a known key
+fails** — `theme: cupertno` is a typo, not forward compatibility.
+
+## What it does not validate
+
+`check` reads the content model. It does not compile your MDX.
+
+A guide page containing `set {timeout} to <n> seconds` is valid Markdown, valid
+as far as `check` is concerned, and a syntax error when MDX compiles it. This
+matters most after a [conversion](/cli/convert): build the site once before you
+throw the original away.
+
+## For a pipeline
+
+```bash title="terminal"
+zel check --json
+```
+
+```json
+{
+  "ok": false,
+  "root": "./content",
+  "problems": [
+    {
+      "file": "pages.yaml",
+      "line": 14,
+      "severity": "error",
+      "message": "section \"sections/home/pricing.yaml\" does not exist"
+    }
+  ]
+}
+```
+
+Every command supports `--json`, because a tool only a human can read cannot be
+used by a pipeline.
+
+## Options
+
+| | | |
+| --- | --- | --- |
+| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
+| `--json` | Machine-readable | off |
+| `--quiet` | Exit code only | off |
+| `--strict` | Treat warnings as errors | off |
+
+`--strict` is what you want in CI once a folder is clean — it stops an unknown
+key from accumulating quietly until an upgrade turns it into a failure.
+
+## `zel fmt`
+
+<Callout type="warning" title="Planned">
+Exits with `not implemented yet`.
+</Callout>
+
+Canonical formatting for the YAML: key order, indentation, quoting, and lists
+that are short enough written inline.
+
+```bash title="terminal"
+zel fmt              # rewrite in place
+zel fmt --check      # exit 1 if anything would change
+```
+
+`--check` in CI ends the diffs that are only about formatting.
+
+## `zel watch`
+
+<Callout type="warning" title="Planned">
+Exits with `not implemented yet`.
+</Callout>
+
+Re-runs `check` on every change, with no server and no container.
+
+```bash title="terminal"
+zel watch
+```
+
+For a repository that keeps documentation valid without ever building a site —
+the content lives beside the product and is published somewhere else, or not
+yet at all. [`zel dev`](/cli/dev) is what you want if you would rather see the
+pages.
+
+## See also
+
+- [`zel dev`](/cli/dev) — the same validation, plus a browser
+- [`zel ci`](/cli/ci) — running this on every pull request

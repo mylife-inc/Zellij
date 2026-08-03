@@ -1,0 +1,82 @@
+---
+title: zel context
+description: The whole content model as one file, for handing to an AI agent.
+---
+
+<Callout type="tip" title="Available">
+Works today. Reads a reference compiled into the binary — nothing to install.
+</Callout>
+
+```bash title="terminal"
+zel context zellij.md
+zel context                 # to stdout
+zel context --json          # the raw schemas
+```
+
+Writes one self-contained description of everything Zellij's content model is:
+
+- the folder layout, and what each file is for
+- the naming and routing rules — how `01-guide/quickstart.mdx` becomes `/guide/quickstart`
+- every field of `site.yaml`, `menu.yaml`, `pages.yaml` and `_sidebar.yaml`
+- all nineteen section types with their fields, defaults and allowed values
+- the MDX components available in a guide page
+- a worked example: a small site, complete and valid
+
+## What it is for
+
+You have Markdown, or notes, or a product and no documentation at all. Hand this
+file to an AI agent along with what you have, and ask for a content folder.
+
+```bash title="terminal"
+zel context zellij.md
+```
+
+> Read `zellij.md`. It describes a documentation site format. Using the notes in
+> `./notes/`, write a Zellij content folder into `./content` — a landing page, a
+> guide with one page per topic, and a `site.yaml` using the `cupertino` theme.
+
+Then hold it to account:
+
+```bash title="terminal"
+zel check ./content
+```
+
+That last step is the point. An agent given a precise schema and a validator
+that fails loudly converges quickly; an agent given prose and no way to check
+itself writes confident, invalid YAML.
+
+## Why it is generated rather than written
+
+The file comes from the engine's schemas, and CI fails if the copy compiled into
+the binary falls behind them.
+
+A stale reference is worse than none. An agent handed an outdated description
+writes YAML that looks right, reads right in review, and fails at build time in
+your repository — for a reason nobody involved can see, because the document
+everyone trusted was wrong.
+
+## Also useful for people
+
+It is a readable document. If you are learning the model and would rather have
+one file than a website, this is that file.
+
+```bash title="terminal"
+zel context | less
+```
+
+## Options
+
+| | | |
+| --- | --- | --- |
+| `[file]` | Where to write | stdout |
+| `--json` | The raw JSON Schemas instead of the prose reference | off |
+
+`--json` is for building tooling — an editor completion, a form generator, a
+validator in another language. For an agent, the prose file is better: it
+carries the conventions and the worked example that a schema cannot express.
+
+## See also
+
+- [`zel explain`](/cli/explain) — one type rather than all of them
+- [`zel check`](/cli/check) — what holds the agent to account
+- [Converting existing docs](/guide/converting) — when the source has structure worth keeping

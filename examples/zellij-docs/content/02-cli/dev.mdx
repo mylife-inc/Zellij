@@ -1,0 +1,109 @@
+---
+title: zel dev
+description: A development server with hot reload, without installing Node.
+---
+
+<Callout type="warning" title="Planned">
+`zel dev` exits with `not implemented yet`. This page is the specification it is
+being written against.
+</Callout>
+
+```bash title="terminal"
+zel dev
+zel dev ./docs --port 4000
+```
+
+```
+✓ Content valid — 6 pages, 1 guide
+  Engine  ghcr.io/mylife-inc/zellij-base:0.4.1
+  Serving http://localhost:3000
+
+  watching ./content
+```
+
+Edit a YAML file, save it, and the browser updates. Add a page to `pages.yaml`
+and the route appears. Break something and the error arrives in the terminal
+and in the browser, naming the file and the line.
+
+## The point of it
+
+You are writing content, not running a project. There is no `package.json` to
+install, no Node version to match, no lockfile — and nothing left behind in the
+folder when you stop.
+
+The engine runs in a container from a public image. Your content folder is
+mounted into it, so editing happens on your machine with your editor, and the
+container only reads.
+
+<Steps>
+<Step title="Validates first">
+The same pass as [`zel check`](/cli/check). A broken folder is reported in a
+second rather than after a compile.
+</Step>
+<Step title="Pulls the engine image">
+Once. Subsequent runs start immediately.
+</Step>
+<Step title="Installs what this site needs">
+Maths and diagram support only if your content uses them. Cached between runs,
+so this is a first-run cost.
+</Step>
+<Step title="Serves, and watches">
+Next.js in development mode, with your folder mounted.
+</Step>
+</Steps>
+
+## Options
+
+| | | |
+| --- | --- | --- |
+| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
+| `--port <n>` | | `3000` |
+| `--host <addr>` | Bind address — `0.0.0.0` to reach it from a phone | `127.0.0.1` |
+| `--open` | Open a browser | off |
+| `--features <list>` | Force `maths`, `diagrams`, `all` | from the content |
+| `--no-check` | Start without validating first | off |
+
+### Looking at it on a phone
+
+```bash title="terminal"
+zel dev --host 0.0.0.0
+```
+
+Prints the address on your network as well as localhost. Worth doing once per
+site — the mobile menu, the section stacking order and the type scale are the
+things a desktop browser will not show you.
+
+## When you have a wrapper app instead
+
+If you generated an app with [`zel new app`](/cli/new#zel-new-app-dir) and
+checked it into your repository, you already have Node and a `package.json`, and
+`npm run dev` is a shorter path than starting a container.
+
+`zel dev` is for the case where the content folder is all there is.
+
+## `zel serve`
+
+<Callout type="warning" title="Planned">
+Exits with `not implemented yet`.
+</Callout>
+
+Serves what [`zel build`](/cli/build) produced, with no watching and no
+rebuilding.
+
+```bash title="terminal"
+zel build
+zel serve ./dist
+```
+
+The last check before a deploy. A static build can differ from the development
+server in ways worth seeing once — a link that only resolves with a trailing
+slash, an image the export did not copy, a page that needed a server it will not
+have.
+
+For a container image, [`zel image run`](/cli/image#zel-image-run) is the
+equivalent.
+
+## See also
+
+- [`zel check`](/cli/check) — validation without a browser
+- [`zel build`](/cli/build) — what you serve
