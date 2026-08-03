@@ -61,8 +61,9 @@ Zellij development commands
     zimage-size         What the images weigh, and where it goes
 
   Publishing
-    zrelease <version>  Tag, build the binaries, publish a GitHub release
-    znetlify            Build the docs site and deploy it to Netlify
+    zrelease <version>  Cut a release: checks, tags, and hands the rest to CI
+    zrelease-watch      Follow the release CI is running
+    znetlify            Build and deploy the docs site by hand
 
   Housekeeping
     zroot               cd to the repository root
@@ -220,34 +221,41 @@ zimage-size() {
 zrelease() {
   local version="$1"
   [ -n "$version" ] || _zdie "Usage: zrelease v0.2.0" || return 1
+  [[ "$version" == v* ]] || _zdie "Versions start with v — try v$version" || return 1
 
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
 
-  git -C "$ZELLIJ_ROOT" diff --quiet ||
+  git -C "$ZELLIJ_ROOT" diff --quiet && git -C "$ZELLIJ_ROOT" diff --cached --quiet ||
     _zdie "Working tree is dirty. Commit before releasing." || return 1
 
+  git -C "$ZELLIJ_ROOT" rev-parse "$version" >/dev/null 2>&1 &&
+    _zdie "$version already exists. Releases are not re-cut; pick the next one." && return 1
+
+  # Locally first, because a tag is public the moment it is pushed and a
+  # release that fails in CI has already been announced by its own tag.
+  _zsay "Checking before tagging"
   zcheck || return 1
 
-  _zsay "Building release binaries"
-  (cd "$ZELLIJ_ROOT/cli" && cargo build --release) || return 1
+  _zsay "Tagging $version"
+  git -C "$ZELLIJ_ROOT" tag -a "$version" -m "$version" || return 1
+  git -C "$ZELLIJ_ROOT" push origin "$version" || return 1
 
-  local staging
-  staging="$(mktemp -d)"
-  local target
-  target="$(rustc -vV | awk '/host:/ {print $2}')"
-  local artefact="zel-${version}-${target}.tar.gz"
+  cat <<EOF
 
-  tar -czf "$staging/$artefact" -C "$ZELLIJ_ROOT/cli/target/release" zel
-  (cd "$staging" && shasum -a 256 "$artefact" > "$artefact.sha256")
+  Tagged and pushed. GitHub is now building:
 
-  _zsay "Publishing $version"
-  gh release create "$version" \
-    --repo "${ZELLIJ_OWNER}/Zellij" \
-    --title "$version" \
-    --generate-notes \
-    "$staging/$artefact" "$staging/$artefact.sha256" || return 1
+    · the four container images, for amd64 and arm64  → GHCR
+    · zel for five platforms, with checksums          → the release page
+    · the documentation site                          → $ZELLIJ_SITE_DOMAIN
 
-  _zwarn "Only $target was built here. The other platforms come from CI."
+  Watch it:  zrelease-watch
+EOF
+}
+
+zrelease-watch() {
+  command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
+  gh run watch --repo "${ZELLIJ_OWNER}/Zellij" \
+    "$(gh run list --repo "${ZELLIJ_OWNER}/Zellij" --workflow Release --limit 1 --json databaseId --jq '.[0].databaseId')"
 }
 
 znetlify() {

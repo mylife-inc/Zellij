@@ -1,13 +1,14 @@
-# Publishes `zel` binaries to a GitHub release.
+# The whole release, from one tag.
 #
-# Tag-driven rather than push-driven: a release is a decision, and every commit
-# to main is not one.
+#     zrelease v0.2.0
 #
-#     git tag v0.2.0 && git push origin v0.2.0
+# Tests, then everything a release produces, in parallel: the container images,
+# the CLI binaries for every platform, and the documentation site. Tag-driven
+# because a release is a decision, and every commit to main is not one.
 #
-# The binaries are the only way most people will get the tool — the source is
-# private — so this builds every platform rather than whatever the person
-# cutting the release happens to be sitting at.
+# Nothing here needs a token you have to create. `GITHUB_TOKEN` is issued to the
+# job and covers both GHCR and Releases; only Netlify needs secrets, and the
+# site is skipped rather than failed when they are absent.
 name: Release
 
 on:
@@ -20,51 +21,45 @@ on:
 
 permissions:
   contents: write
+  packages: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE: ${{ github.repository_owner }}/zellij-base
 
 jobs:
-  build:
-    name: ${{ matrix.target }}
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: ubuntu-24.04-arm
-            target: aarch64-unknown-linux-gnu
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: macos-13
-            target: x86_64-apple-darwin
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-
+  # ------------------------------------------------------------------ gate
+  # Everything downstream depends on this, so a release cannot be cut from
+  # code that does not pass what main has to pass.
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: cli
-          key: ${{ matrix.target }}
-
-      # The schema is compiled into the binary, so a release built from a stale
-      # copy would ship a `zel explain` that describes a content model the
-      # engine no longer has. Checking here as well as in CI is cheap, and this
-      # is the artefact people actually download.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+
       - run: npm ci
+      - run: npm run typecheck
+      - run: npx vitest run --root engine/packages/zellij
       - run: npm run build --workspace @shebka/zellij
-      - name: Fail if the embedded schema is stale
-        shell: bash
+
+      # The schema is compiled into the binary about to be published, so a
+      # stale copy would ship a `zel explain` describing a content model the
+      # engine no longer has.
+      - name: The embedded schema is current
         run: |
           node engine/packages/zellij/bin/zellij.mjs context \
             cli/crates/zellij-core/generated/schema.json --json
@@ -73,6 +68,106 @@ jobs:
           git diff --exit-code -- cli/crates/zellij-core/generated ||
             { echo "::error::Regenerate the embedded schema and commit before tagging."; exit 1; }
 
+      - run: cargo fmt --all --check
+        working-directory: cli
+      - run: cargo clippy --workspace --all-targets -- -D warnings
+        working-directory: cli
+      - run: cargo test --workspace
+        working-directory: cli
+
+  # ------------------------------------------------------------------ images
+  images:
+    name: Image (${{ matrix.features }})
+    needs: verify
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { features: none, suffix: '' }
+          - { features: maths, suffix: '-maths' }
+          - { features: diagrams, suffix: '-diagrams' }
+          - { features: all, suffix: '-all' }
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+          flavor: |
+            suffix=${{ matrix.suffix }},onlatest=true
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/base.Dockerfile
+          # A lot of authors are on Apple silicon, and emulating the wrong
+          # architecture locally turns a fast build slow.
+          platforms: linux/amd64,linux/arm64
+          push: true
+          build-args: ZELLIJ_FEATURES=${{ matrix.features }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # Only the default variant. The others differ by three lines of JSON, and
+      # building four sites to learn the same thing is time every release pays.
+      - name: The published image can build a site
+        if: matrix.features == 'none'
+        run: |
+          docker build \
+            --build-arg ZELLIJ_VERSION=latest \
+            --build-arg CONTENT=examples/payos/content \
+            -f docker/site.Dockerfile -t smoke .
+          docker run -d --name smoke -p 3000:3000 smoke
+          for _ in $(seq 1 30); do
+            if curl -fsS http://127.0.0.1:3000/ > /dev/null; then echo "serving"; exit 0; fi
+            sleep 2
+          done
+          docker logs smoke
+          exit 1
+
+  # ----------------------------------------------------------------- binaries
+  binaries:
+    name: zel (${{ matrix.target }})
+    needs: verify
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-latest, target: aarch64-apple-darwin }
+          - { os: macos-13, target: x86_64-apple-darwin }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc }
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+          key: ${{ matrix.target }}
+
       - name: Build
         working-directory: cli
         run: cargo build --release --target ${{ matrix.target }}
@@ -80,6 +175,8 @@ jobs:
       - name: Package
         id: package
         shell: bash
+        # Through the environment rather than interpolated: a ref name reaching
+        # a shell directly is one surprising character away from a problem.
         env:
           VERSION: ${{ github.ref_name }}
           TARGET: ${{ matrix.target }}
@@ -95,8 +192,8 @@ jobs:
             archive="${name}.tar.gz"
           fi
 
-          # Checksums travel with the binaries: the install script verifies one
-          # before putting anything on a PATH.
+          # Checksums travel with the binaries, so an install script can verify
+          # one before putting anything on a PATH.
           if command -v sha256sum >/dev/null; then
             sha256sum "$archive" > "${archive}.sha256"
           else
@@ -112,8 +209,55 @@ jobs:
             ${{ steps.package.outputs.archive }}
             ${{ steps.package.outputs.archive }}.sha256
 
+  # --------------------------------------------------------------------- docs
+  docs:
+    name: Documentation site
+    needs: verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+
+      - name: Build the site
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: npm run build
+
+      # Skipped rather than failed when the secrets are absent: a release that
+      # produced binaries and images is still a release, and someone cloning
+      # this repository has no Netlify site to deploy to.
+      - name: Deploy to Netlify
+        if: ${{ env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        working-directory: examples/zellij-docs
+        run: |
+          npx --yes netlify-cli@latest deploy \
+            --prod --dir out \
+            --message "Release ${{ github.ref_name }}"
+
+      - name: Say why the site was not deployed
+        if: ${{ env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == '' }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          echo "::warning::The site was built but not deployed."
+          echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."
+
+  # ------------------------------------------------------------------ publish
   publish:
-    needs: build
+    name: Publish the release
+    needs: [images, binaries, docs]
     runs-on: ubuntu-latest
 
     steps:
@@ -122,9 +266,22 @@ jobs:
           path: artifacts
           merge-multiple: true
 
-      - name: Publish the release
-        uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           generate_release_notes: true
           files: artifacts/*
+          body: |
+            ## Install
+
+            Download the archive for your platform below, verify it against its
+            `.sha256`, and put `zel` on your PATH.
+
+            ## Container images
+
+            ```
+            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}
+            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-maths
+            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-diagrams
+            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-all
+            ```

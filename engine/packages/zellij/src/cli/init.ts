@@ -150,10 +150,16 @@ export default zellij.Page;
  */
 const SITEMAP = `import { createZellijSitemap } from '@shebka/zellij';
 
+// A metadata route is dynamic by default, and \`output: export\` has nowhere to
+// run it — without this, asking for a static export fails on this file.
+export const dynamic = 'force-static';
+
 export default createZellijSitemap();
 `;
 
 const ROBOTS = `import { createZellijRobots } from '@shebka/zellij';
+
+export const dynamic = 'force-static';
 
 export default createZellijRobots();
 `;
