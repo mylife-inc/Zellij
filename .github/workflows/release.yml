@@ -215,13 +215,21 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
 
-    # At job level, not step level. A step's `if` reading an `env` the same step
-    # declares is ambiguous in Actions, and the failure mode is the worst kind:
-    # the condition silently evaluates empty and the deploy is skipped on a
-    # release that looked green.
+    # Two facts, neither of them a secret.
+    #
+    # `HAS_NETLIFY` is the *answer* to whether the credentials exist, not the
+    # credentials — the comparison happens before the value is bound, so this
+    # job carries a boolean. Putting the token here instead would hand it to
+    # `npm ci` and every install script in the dependency tree, for the sake of
+    # an `if` condition. The token is bound in the one step that deploys.
+    #
+    # `DEPLOY_DOCS` is a repository variable, and the deploy is off until it is
+    # set to `true`. Having the credentials on hand is not the same as being
+    # ready to publish — a domain still has to be pointed, and the first release
+    # should not be the thing that discovers it has not been.
     env:
-      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      HAS_NETLIFY: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+      DEPLOY_DOCS: ${{ vars.DEPLOY_DOCS }}
 
     steps:
       - uses: actions/checkout@v4
@@ -243,20 +251,29 @@ jobs:
       # produced binaries and images is still a release, and someone cloning
       # this repository has no Netlify site to deploy to.
       - name: Deploy to Netlify
-        if: env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != ''
+        if: env.DEPLOY_DOCS == 'true' && env.HAS_NETLIFY == 'true'
         working-directory: examples/zellij-docs
         env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           RELEASE: ${{ github.ref_name }}
         run: |
           npx --yes netlify-cli@latest deploy \
             --prod --dir out \
             --message "Release $RELEASE"
 
+      # The site is built either way, so a release that publishes binaries and
+      # images is still a release, and the build itself still proves the content
+      # exports cleanly.
       - name: Say why the site was not deployed
-        if: env.NETLIFY_AUTH_TOKEN == '' || env.NETLIFY_SITE_ID == ''
+        if: env.DEPLOY_DOCS != 'true' || env.HAS_NETLIFY != 'true'
         run: |
-          echo "::warning::The site was built but not deployed."
-          echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."
+          echo "::notice::The site was built but not deployed."
+          if [ "$DEPLOY_DOCS" != "true" ]; then
+            echo "Set the repository variable DEPLOY_DOCS=true to publish it."
+          else
+            echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."
+          fi
 
   # ------------------------------------------------------------------ publish
   publish:
