@@ -19,6 +19,9 @@ pub enum Error {
     #[error("no container runtime available: {reason}")]
     NoEngine { reason: String },
 
+    #[error("{path} is not shared with the container runtime")]
+    MountEmpty { path: Utf8PathBuf },
+
     #[error("the content folder is not valid")]
     ContentInvalid,
 
@@ -32,7 +35,7 @@ impl Error {
         match self {
             Error::NotEmpty { .. } | Error::UnknownFormat { .. } => 2,
             Error::ContentInvalid => 3,
-            Error::NoEngine { .. } => 4,
+            Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,
         }
     }

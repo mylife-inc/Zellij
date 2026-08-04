@@ -10,6 +10,16 @@ a container image on every push.
 **Needs:** `zel`, a GitHub repository. A container runtime only if you want to
 build locally as well.
 
+<Callout type="warning" title="What runs today">
+**This lab does not run yet.** `zel new project` and `zel ci init` both exit
+with `not implemented yet`.
+
+It is here because the arrangement is the valuable part and does not depend on
+the tool: create the two folders yourself, use
+[`zel new docs`](/cli/new#zel-new-docs-dir) for the documentation half — that
+works — and copy the pipeline below. `zel check` in CI works today.
+</Callout>
+
 The arrangement matters more than the commands. Documentation in the same
 repository as the code it describes stays in the same branch, the same review
 and the same pull request as the change it documents — which is the only
@@ -91,7 +101,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: mylife-inc/setup-zel@v1
 
       - run: zel check docs
@@ -164,7 +174,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: mylife-inc/setup-zel@v1
       - run: zel check docs --strict
 ```

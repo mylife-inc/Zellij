@@ -416,7 +416,29 @@ fn check(dir: &str) -> zellij_core::Result<()> {
 
     // The trait has to be in scope for its methods to be callable.
     use zellij_engine::Engine as _;
-    let report = engine.check(&content)?;
+    let report = match engine.check(&content) {
+        Ok(report) => report,
+        // Printed and exited here rather than returned: `main` prints the
+        // error itself, and this one needs several paragraphs after it rather
+        // than the same sentence twice.
+        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
+            eprintln!("error: {err}");
+            eprintln!();
+            eprintln!("  The folder exists, and the container was given an empty one. A bind");
+            eprintln!("  mount of a path the runtime cannot reach succeeds and mounts nothing,");
+            eprintln!("  so this would otherwise be reported as a site with no pages.");
+            eprintln!();
+            eprintln!("  Colima shares $HOME and not /tmp. Either work somewhere under your");
+            eprintln!("  home directory, or share the path:");
+            eprintln!();
+            eprintln!("    colima stop && colima start --mount '/tmp:w'");
+            eprintln!();
+            eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+            std::process::exit(err.exit_code());
+        }
+        Err(err) => return Err(err),
+    };
+
     print!("{}", report.output);
 
     if !report.ok {

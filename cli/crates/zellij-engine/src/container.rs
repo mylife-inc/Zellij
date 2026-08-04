@@ -84,6 +84,28 @@ impl ContainerEngine {
     }
 }
 
+/// Exit code the wrapper uses to say the mount arrived empty.
+///
+/// A number no engine command returns, so it cannot be confused with a real
+/// failure. 97 is arbitrary and outside anything Node or the checker uses.
+const EMPTY_MOUNT: i32 = 97;
+
+/// Check the mount before trusting it.
+///
+/// A bind mount of a path the runtime does not share does not fail — it
+/// succeeds, and the directory inside is empty. The checker then reports a
+/// content root with no pages, which is true of what it was shown and a lie
+/// about what was asked. Colima shares `$HOME` and not `/tmp`, so a folder in
+/// the wrong place produces a confident, wrong answer.
+///
+/// Folded into the same invocation rather than probed separately: a second
+/// container start would double the latency of the fast command.
+fn guarded(command: &str) -> String {
+    format!(
+        "if [ -z \"$(ls -A {MOUNTED_CONTENT} 2>/dev/null)\" ]; then exit {EMPTY_MOUNT}; fi; exec {command}"
+    )
+}
+
 impl Engine for ContainerEngine {
     fn check(&self, content: &Utf8Path) -> Result<CheckReport> {
         let mount = Self::content_mount(content)?;
@@ -92,8 +114,18 @@ impl Engine for ContainerEngine {
             .runtime
             .command()
             .args(["run", "--rm", "-v", &mount, &self.image])
-            .args(["node", ENGINE_CLI, "check", MOUNTED_CONTENT])
+            .args([
+                "sh",
+                "-c",
+                &guarded(&format!("node {ENGINE_CLI} check {MOUNTED_CONTENT}")),
+            ])
             .output()?;
+
+        if output.status.code() == Some(EMPTY_MOUNT) {
+            return Err(Error::MountEmpty {
+                path: content.to_owned(),
+            });
+        }
 
         // The engine prints its findings to both streams, and a reader wants
         // them in one piece rather than sorted by which one they came from.
