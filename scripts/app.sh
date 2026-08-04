@@ -64,6 +64,7 @@ Zellij development commands
     zrelease <version>  Cut a release: checks, tags, and hands the rest to CI
     zrelease-watch      Follow the release CI is running
     zlog [workflow]     Why the last run failed — the log, not the annotation
+    zrerun [workflow]   Re-run just the failed jobs
     zdocs-publish [on|off]
                         Whether releases publish the docs site. No argument reports.
     znetlify            Build and deploy the docs site by hand
@@ -238,6 +239,23 @@ _zsecret_exists() {
 
 # Is the documentation site allowed to publish? Reports, and with an argument
 # sets. Separated from zrelease so it can be answered without cutting one.
+# Re-run only the jobs that failed, once the cause has been dealt with.
+#
+#     zrerun                 the last Release run
+#     zrerun "Base image"    another workflow
+zrerun() {
+  command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
+
+  local workflow="${1:-Release}"
+  local id; id="$(_zrun_id "$workflow")"
+
+  [ -n "$id" ] || _zdie "No runs found for workflow \"$workflow\" in $(_zrepo)" || return 1
+
+  _zsay "Re-running the failed jobs of $workflow run $id"
+  gh run rerun "$id" --repo "$(_zrepo)" --failed || return 1
+  _zsay "Watch it: zrelease-watch — or zlog \"$workflow\" when it stops"
+}
+
 zdocs-publish() {
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
 
