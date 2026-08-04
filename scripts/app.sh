@@ -388,53 +388,30 @@ zlog() {
 
   [ -n "$id" ] || _zdie "No runs found for workflow \"$workflow\" in $repo" || return 1
 
-  # Per job rather than `--log-failed`, which refuses while any job in the run
-  # is still going — and the job you want to read about finished ten minutes
-  # ago. A finished job's log is available whatever the rest of the run is
-  # doing, so waiting for a slow matrix leg to time out is waiting for nothing.
-  local failed
-  failed="$(gh run view "$id" --repo "$repo" --json jobs \
-    --jq '.jobs[] | select(.conclusion == "failure") | "\(.databaseId)|\(.name)"' 2>/dev/null)"
-
-  if [ -z "$failed" ]; then
-    _zsay "$workflow run $id — nothing has failed"
-    gh run view "$id" --repo "$repo" --json status,conclusion,jobs --jq \
-      '"  run: \(.status) \(.conclusion // "")", (.jobs[] | "  \(.conclusion // .status)\t\(.name)")'
-    return 0
-  fi
-
-  _zsay "$workflow run $id — last $lines lines of each failed job"
-
-  # `local` is deliberately absent below: in zsh a piped `while` runs in a
-  # subshell outside function scope, where `typeset` *prints* an empty
-  # assignment instead of making one — which is how this printed `log=''` five
-  # times.
-  printf '%s\n' "$failed" | while IFS='|' read -r job_id name; do
-    printf '\n\033[1;31m✗ %s\033[0m\n' "$name"
-    gh api "repos/${repo}/actions/jobs/${job_id}/logs" 2>/dev/null | tail -n "$lines"
-  done
-
-  # GitHub withholds logs for a run it still considers in flight, at both the
-  # run level and the job level. Nothing here can work around that; say so
-  # rather than printing five job names and silence.
   local state
-  state="$(gh run view "$id" --repo "$repo" --json status --jq .status 2>/dev/null)"
+  state="$(gh run view "$id" --repo "$repo" --json status --jq .status)" || return 1
 
   if [ "$state" != "completed" ]; then
-    echo
-    _zwarn "Run $id is still \"$state\", and GitHub serves no logs until it completes."
+    _zwarn "Run $id is \"$state\". GitHub serves no logs — job or run — until a run reaches a terminal state."
     cat <<EOF
 
-  If the remaining jobs are not going anywhere, stop waiting for them:
+  Wait, or stop waiting:
 
     gh run cancel $id --repo $repo
-    zlog
+    zlog $workflow
 
-  Cancelling makes the logs available immediately. The failed jobs have
-  already failed; nothing is lost.
+  Cancelling loses nothing: the jobs that failed have already failed.
 EOF
+    return 1
   fi
 
+  _zsay "$workflow run $id — failing steps, last $lines lines"
+
+  # `--log-failed` on a completed run, which is the thing that works. An
+  # earlier version fetched each job's log from the REST API to avoid waiting
+  # for slow matrix legs; GitHub withholds those too, and `2>/dev/null` turned
+  # the refusal into five job names and silence. Errors are visible now.
+  gh run view "$id" --repo "$repo" --log-failed | tail -n "$lines"
 }
 
 znetlify() {
