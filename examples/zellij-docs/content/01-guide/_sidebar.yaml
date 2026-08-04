@@ -6,7 +6,13 @@ nav:
   - label: Start here
     items:
       - index
-      - quickstart
+      - quickstart/index
+      - label: Labs
+        items:
+          - quickstart/from-scratch
+          - quickstart/existing-docs
+          - quickstart/new-project
+          - quickstart/existing-repo
   # Not "The content model": a group sharing a name with a page inside it makes
   # the breadcrumb read "Guide / The content model / The content model".
   - label: Authoring

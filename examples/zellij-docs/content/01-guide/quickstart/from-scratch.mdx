@@ -1,0 +1,367 @@
+---
+title: Lab 1 — Start from nothing
+description: An empty folder to a published site, with the browser open the whole time.
+---
+
+**You have:** nothing. **You will have:** a site you wrote, running locally,
+then published.
+
+**Needs:** `zel`, and a container runtime for steps 2 onward. Check with
+`zel doctor`.
+
+<Steps>
+
+<Step title="Create a content folder">
+
+```bash title="terminal"
+zel new docs my-docs
+```
+
+```
+✓ my-docs
+  site.yaml           name, theme, nav bar, footer
+  pages.yaml          one landing page
+  menu.yaml           the top bar
+  sections/home/      hero.yaml, features.yaml
+  assets/
+
+  Next: zel dev my-docs
+```
+
+**What just happened.** You have a small site that is complete and correct — not
+a template with `TODO` in it. Every field written is a field the schema accepts,
+so each file is a working example of its own format. `zel check my-docs` passes
+right now.
+
+No `package.json`, no `node_modules`, nothing to install. This folder is
+**only** the words and the structure.
+
+<Callout type="tip" title="What about the Next.js app?">
+There isn't one, and you do not need one. `zel` runs the engine in a container
+and mounts this folder into it — so the application that renders your site is
+never in your repository.
+
+If you *do* want it on disk — because you deploy to Vercel, or you want to add
+your own React pages alongside — use `zel new app my-site --with-docs` instead.
+That writes the wrapper *and* a `content/` folder inside it, already wired
+together. Everything below works the same; you just run `npm run dev` instead of
+`zel dev`.
+</Callout>
+
+</Step>
+
+<Step title="Watch it while you write">
+
+```bash title="terminal"
+zel dev my-docs --open
+```
+
+```
+✓ Content valid — 1 page, 0 guides
+  Engine  ghcr.io/mylife-inc/zellij-base:0.1.0
+  Serving http://localhost:3000
+
+  watching my-docs
+```
+
+The first run pulls a 237 MB image; later ones start immediately.
+
+**Leave this running.** Open `my-docs/sections/home/hero.yaml` in your editor:
+
+```yaml title="my-docs/sections/home/hero.yaml"
+type: hero
+headline: Your product, explained
+subhead: Change this line and watch the browser.
+cta:
+  - { label: Read the guide, href: /guide, style: primary }
+```
+
+Save. The browser updates before you get back to it.
+
+Now break something on purpose — change `type: hero` to `type: heroo` — and
+save. The terminal and the browser both say:
+
+```
+my-docs/sections/home/hero.yaml
+  unknown section type "heroo"
+  did you mean "hero"?
+```
+
+That is the loop. You are never guessing whether a change was valid.
+
+</Step>
+
+<Step title="Add a page">
+
+```bash title="terminal"
+zel new page pricing --sections hero,pricing-table,faq
+```
+
+Three section files appear, and `pages.yaml` gains a route. The browser picks up
+`/pricing` without a restart.
+
+Not sure what a section type takes?
+
+```bash title="terminal"
+zel list sections          # all nineteen
+zel explain pricing-table  # one of them, in full
+```
+
+`explain` prints every field, which are required, the allowed values, and the
+shape of anything nested. It is generated from the same schemas that validate
+your content, so it describes exactly what will be accepted.
+
+</Step>
+
+<Step title="Add a guide">
+
+A landing page is sections. Documentation is Markdown.
+
+```bash title="terminal"
+zel new guide docs --title "Documentation"
+```
+
+```
+✓ 01-docs/_sidebar.yaml
+✓ 01-docs/index.mdx
+```
+
+Add pages by creating files. `01-docs/install.mdx`:
+
+```mdx title="my-docs/01-docs/install.mdx"
+---
+title: Installing
+description: Get it running in two minutes.
+---
+
+## Requirements
+
+Anything that runs a container.
+
+<Callout type="tip" title="On a Mac">
+`brew install colima && colima start`
+</Callout>
+```
+
+Then list it in the sidebar:
+
+```yaml title="my-docs/01-docs/_sidebar.yaml"
+title: Documentation
+order: 1
+
+nav:
+  - index
+  - install
+```
+
+It appears at `/docs/install`, in the sidebar, in the table of contents, and in
+⌘K search.
+
+</Step>
+
+<Step title="Validate before you ship">
+
+```bash title="terminal"
+zel check my-docs
+```
+
+```
+✓ my-docs
+  site        My Docs · theme paper
+  pages       2
+  guides      1 (2 pages) · /docs
+  menu        Documentation · Pricing
+  routes      5
+```
+
+Every internal link is resolved, every section type checked, every sidebar entry
+matched to a file that exists. It exits non-zero when something is wrong, so it
+works as a pre-commit hook.
+
+</Step>
+
+<Step title="Ship it">
+
+Two ways, and they produce genuinely different things. Pick one.
+
+## A · A static site on Netlify
+
+Free, fast, and nothing runs. Right for almost every documentation site.
+
+**Get a Netlify account and its CLI.** The CLI is the only npm thing in this
+lab, and only because Netlify's upload protocol is theirs:
+
+```bash title="terminal"
+npm install -g netlify-cli
+netlify login
+```
+
+A browser opens; authorise it.
+
+**Create a project.**
+
+```bash title="terminal"
+netlify sites:create --name my-docs
+```
+
+```
+Site Created
+
+Admin URL: https://app.netlify.com/projects/my-docs
+URL:       https://my-docs.netlify.app
+Project ID: 91774174-d4c2-41b5-aa4b-ac61eeadbf51
+```
+
+<Callout type="tip" title="Project ID is the site ID">
+Netlify's UI calls it **Project ID** and its API calls it the site ID. Same
+value.
+</Callout>
+
+**Put the credentials in your environment.**
+
+```bash title="terminal"
+export NETLIFY_SITE_ID=91774174-d4c2-41b5-aa4b-ac61eeadbf51
+export NETLIFY_AUTH_TOKEN=$(netlify api getUser --data '{}' > /dev/null 2>&1 && \
+  cat ~/.netlify/config.json | grep -o '"auth_token": *"[^"]*"' | head -1 | cut -d'"' -f4)
+```
+
+Or create a personal access token in **User settings → Applications → New
+access token** and export it directly. `zel` reads both from the environment and
+stores neither.
+
+**Deploy.**
+
+```bash title="terminal"
+zel deploy netlify my-docs
+```
+
+```
+✓ Content valid — 2 pages, 1 guide
+✓ Built static — 5 routes, 1.2 MB
+✓ Uploaded to my-docs
+  https://my-docs.netlify.app
+```
+
+`zel` builds the static target because Netlify hosts files — you never pass
+`--target`. See [why the provider decides](/cli/deploy#the-provider-decides-the-artefact).
+
+### A custom domain
+
+Say you own `example.com` and want the site at `docs.example.com`.
+
+<Steps>
+<Step title="Find who actually serves your DNS">
+
+```bash title="terminal"
+dig +short NS example.com
+```
+
+This is the step people skip, and it is the one that costs an afternoon. Where
+you *bought* the domain is often not where its DNS is *served*. A record added
+in the registrar's panel while the nameservers point elsewhere is inert — it
+publishes nothing, and `dig` keeps returning nothing however long you wait.
+
+Whatever that command prints is where the next step happens.
+
+</Step>
+<Step title="Add one CNAME, there">
+
+| Field | Value |
+| --- | --- |
+| Type | `CNAME` |
+| Name / Host | `docs` |
+| Points to | `my-docs.netlify.app` |
+| TTL | whatever it offers |
+
+Use the exact `*.netlify.app` hostname from `sites:create`. A CNAME to a
+hostname that does not exist fails silently.
+
+<Callout type="warning" title="Do not repoint your nameservers">
+Netlify offers to host your whole DNS zone. That means recreating **every**
+record — including `mail`. For one subdomain, a CNAME touches nothing else.
+</Callout>
+
+</Step>
+<Step title="Tell Netlify the name is yours">
+
+**Project → Domain management → Add a domain** → `docs.example.com`.
+
+Netlify verifies the CNAME it can already see, then issues a Let's Encrypt
+certificate. Until you do this, the request arrives at Netlify and gets a 404 —
+it has no way to know which project the hostname belongs to.
+
+</Step>
+<Step title="Confirm">
+
+```bash title="terminal"
+dig +short docs.example.com && curl -sI https://docs.example.com | head -1
+```
+
+```
+my-docs.netlify.app.
+13.52.188.95
+HTTP/2 200
+```
+
+</Step>
+</Steps>
+
+## B · A container, running locally
+
+Right when you need image optimisation, or when the site has to live wherever
+your other services live.
+
+```bash title="terminal"
+zel build my-docs --target image --tag my-docs:dev
+zel image run my-docs:dev
+```
+
+```
+✓ Built my-docs:dev — 148 MB
+✓ Serving http://localhost:3000
+```
+
+That is a Node runtime serving your site on port 3000 — the same artefact you
+would push to Railway, Fly.io, Cloud Run or ECS.
+
+```bash title="terminal"
+zel image push my-docs:dev --registry ghcr.io/you
+```
+
+You never wrote a Dockerfile. If your organisation requires one in the
+repository, [`zel image dockerfile`](/cli/image#zel-image-dockerfile) prints the
+one `zel` would have used.
+
+</Step>
+
+</Steps>
+
+## What you have
+
+```
+my-docs/
+├── site.yaml
+├── pages.yaml
+├── menu.yaml
+├── sections/home/
+├── 01-docs/
+└── assets/
+```
+
+A folder of text under version control, and a published site. No lockfile, no
+framework upgrade waiting for you, nothing that stops working because a
+dependency moved.
+
+## Next
+
+<CardGrid>
+  <Card title="Make it yours" href="/guide/themes" icon="palette">
+    Fourteen themes, one line in `site.yaml`.
+  </Card>
+  <Card title="Learn the sections" href="/sections" icon="layout-grid">
+    All nineteen, with rendered previews.
+  </Card>
+  <Card title="Publish on every push" href="/guide/quickstart/existing-repo" icon="git-branch">
+    Put this folder in a repository and let CI do the deploying.
+  </Card>
+</CardGrid>

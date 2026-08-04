@@ -1,0 +1,110 @@
+---
+title: Quickstart
+description: Install zel, pick the situation you are actually in, and follow it end to end.
+---
+
+Four hands-on labs. Each starts where you are, ends with a site somebody else
+can read, and says what every command does before you run it.
+
+First, the one thing they all need.
+
+## Install `zel`
+
+`zel` is the Zellij CLI — a single native binary. It needs no Node, no npm, and
+no clone of anything.
+
+```bash title="terminal"
+curl -fsSL https://zellij.shebka.net/install.sh | sh
+```
+
+<Callout type="info" title="What that script does">
+Detects your platform, finds the latest release, downloads the archive built
+for it, **verifies it against its published SHA-256**, and puts one binary in
+`~/.local/bin`. It writes nothing else and needs no privileges. Read it first if
+you would rather — [install.sh](/install.sh) is about a hundred lines of POSIX
+shell.
+</Callout>
+
+Pin a version, or install somewhere else:
+
+```bash title="terminal"
+ZEL_VERSION=v0.1.0 ZEL_INSTALL_DIR=/usr/local/bin \
+  curl -fsSL https://zellij.shebka.net/install.sh | sh
+```
+
+On Windows, or anywhere piping to a shell is not allowed: download the archive
+from [the releases page](https://github.com/mylife-inc/releases/releases?q=zellij),
+verify it against its `.sha256`, and put `zel` on your PATH.
+
+### Check it
+
+```bash title="terminal"
+zel --version
+zel doctor
+```
+
+`doctor` reports what is installed and what is missing.
+
+```
+Container runtime
+  ✓ docker     27.4.0 via unix:///Users/you/.colima/default/docker.sock
+  ✓ engine     ghcr.io/mylife-inc/zellij-base:0.1.0
+```
+
+Two of the four labs need that runtime line, because building a site means
+running the engine — a Next.js application that `zel` runs in a container so
+you never install Node. Any of Docker, Podman or Colima will do; on a Mac,
+`brew install colima && colima start` is the smallest of the three.
+
+Writing, converting and validating content need no runtime at all.
+
+---
+
+## Pick your lab
+
+<CardGrid>
+  <Card title="1 · Start from nothing" href="/guide/quickstart/from-scratch" icon="sparkles">
+    An idea and an empty folder. Scaffold a site, watch it in a browser while
+    you write, publish it. **~15 minutes.**
+  </Card>
+
+  <Card title="2 · Documentation you already have" href="/guide/quickstart/existing-docs" icon="arrow-right-left">
+    MkDocs, Docusaurus, or a pile of Markdown. Convert it — or have an AI agent
+    convert it — then edit and publish. **~20 minutes.**
+  </Card>
+
+  <Card title="3 · A new project, docs beside the code" href="/guide/quickstart/new-project" icon="folder-tree">
+    A repository with `docs/` and `product/` as siblings, and a pipeline that
+    turns the docs into a container image on every push. **~25 minutes.**
+  </Card>
+
+  <Card title="4 · A repository you already have" href="/guide/quickstart/existing-repo" icon="git-branch">
+    Code already on GitHub. Migrate the documentation in it and add the
+    pipeline. **~25 minutes.**
+  </Card>
+</CardGrid>
+
+### Which one is yours
+
+| If… | Go to |
+| --- | --- |
+| There is no documentation yet, and no repository to put it in | [Lab 1](/guide/quickstart/from-scratch) |
+| There is documentation, in some other tool or none | [Lab 2](/guide/quickstart/existing-docs) |
+| You are starting a codebase and want the docs to ship with it | [Lab 3](/guide/quickstart/new-project) |
+| The codebase exists and the docs need to catch up | [Lab 4](/guide/quickstart/existing-repo) |
+
+Labs 1 and 2 are about **writing**, and end with a published site. Labs 3 and 4
+are about **shipping from a repository**, and assume you have content already —
+from one of the first two, or the sample the scaffold writes.
+
+<Callout type="warning" title="Pre-1.0">
+Some `zel` commands are implemented and some are not. Every lab marks the steps
+that use one that is still landing, and gives the way round it. [The command
+reference](/cli) has the current state of each.
+</Callout>
+
+## After a lab
+
+- [The content model](/guide/content-model) — what the files you edited are
+- [Sections](/sections) — the nineteen blocks a landing page is built from
+- [The `zel` reference](/cli) — every command in full

@@ -263,6 +263,22 @@ enum NewTarget {
     Page { name: String },
     /// A guide folder with a sidebar and an index page.
     Guide { name: String },
+    /// A repository with documentation and a product as siblings, and a
+    /// pipeline that publishes the first on every push.
+    Project {
+        name: String,
+
+        /// What to put in the product folder: rust | go | java | kotlin |
+        /// python | node | none.
+        #[arg(long, default_value = "none")]
+        product_lang: String,
+
+        #[arg(long, default_value = "docs")]
+        docs_dir: String,
+
+        #[arg(long, default_value = "product")]
+        product_dir: String,
+    },
 }
 
 #[derive(Subcommand)]

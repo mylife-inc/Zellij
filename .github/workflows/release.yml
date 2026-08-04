@@ -281,11 +281,27 @@ jobs:
     needs: [images, binaries, docs]
     runs-on: ubuntu-latest
 
+    # This repository is private, and a private repository's release assets
+    # need a token to download — which makes a `curl … | sh` installer
+    # impossible. So the binaries are published twice: here, where the team can
+    # find them beside the code, and in a public repository that exists to hold
+    # artefacts for several private projects.
+    env:
+      RELEASES_REPO: mylife-inc/releases
+      HAS_RELEASES_TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN != '' }}
+
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           path: artifacts
           merge-multiple: true
+
+      # The installer is an artefact too. Publishing it beside the binaries
+      # means a pinned version can always be installed the same way the release
+      # it belongs to was.
+      - run: cp scripts/install.sh artifacts/install.sh
 
       - uses: softprops/action-gh-release@v2
         with:
@@ -295,8 +311,12 @@ jobs:
           body: |
             ## Install
 
-            Download the archive for your platform below, verify it against its
-            `.sha256`, and put `zel` on your PATH.
+            ```
+            curl -fsSL https://zellij.shebka.net/install.sh | sh
+            ```
+
+            Or download the archive for your platform below, verify it against
+            its `.sha256`, and put `zel` on your PATH.
 
             ## Container images
 
@@ -306,3 +326,32 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-diagrams
             ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-all
             ```
+
+      # The public half. Tagged `zellij-<version>` because the repository holds
+      # artefacts for several projects and `latest` there is not ours — the
+      # installer resolves the newest tag carrying this scope.
+      - name: Publish to the public releases repository
+        if: env.HAS_RELEASES_TOKEN == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          repository: ${{ env.RELEASES_REPO }}
+          token: ${{ secrets.RELEASES_GITHUB_TOKEN }}
+          tag_name: zellij-${{ github.ref_name }}
+          name: Zellij ${{ github.ref_name }}
+          files: artifacts/*
+          body: |
+            `zel` — the Zellij CLI, ${{ github.ref_name }}.
+
+            ```
+            curl -fsSL https://zellij.shebka.net/install.sh | sh
+            ```
+
+            Source lives in a private repository. These binaries, their
+            checksums and the installer are the public artefacts.
+
+      - name: Say why the public release was skipped
+        if: env.HAS_RELEASES_TOKEN != 'true'
+        run: |
+          echo "::warning::RELEASES_GITHUB_TOKEN is not set, so nothing was"
+          echo "published to ${RELEASES_REPO}. The installer at"
+          echo "https://zellij.shebka.net/install.sh will not find this release."
