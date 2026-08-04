@@ -87,11 +87,18 @@ jobs:
       # Only the default variant is smoke-tested: the others differ by three
       # lines of JSON, and building four sites to learn the same thing is time
       # every push would pay for.
+      # `meta.outputs.version` is the primary tag that was just pushed, not the
+      # ref it came from. On a branch those are the same word; on a tag they
+      # are not — `metadata-action` publishes semver without the leading `v`,
+      # so `v0.1.0-rc.2` here asked for an image nobody had pushed and the
+      # build failed in one second on a manifest that does not exist.
       - name: Prove the image can build a site
         if: matrix.features == 'none'
+        env:
+          VERSION: ${{ steps.meta.outputs.version }}
         run: |
           docker build \
-            --build-arg ZELLIJ_VERSION=${{ github.ref_name }} \
+            --build-arg ZELLIJ_VERSION="$VERSION" \
             --build-arg CONTENT=examples/payos/content \
             -f docker/site.Dockerfile -t zellij-smoke .
           docker run -d --name smoke -p 3000:3000 zellij-smoke

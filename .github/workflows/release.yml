@@ -129,9 +129,14 @@ jobs:
       # building four sites to learn the same thing is time every release pays.
       - name: The published image can build a site
         if: matrix.features == 'none'
+        env:
+          # The tag this job just pushed. `latest` would also resolve, and on a
+          # concurrent release it would resolve to somebody else's build — a
+          # smoke test that proves a different image works is worse than none.
+          VERSION: ${{ steps.meta.outputs.version }}
         run: |
           docker build \
-            --build-arg ZELLIJ_VERSION=latest \
+            --build-arg ZELLIJ_VERSION="$VERSION" \
             --build-arg CONTENT=examples/payos/content \
             -f docker/site.Dockerfile -t smoke .
           docker run -d --name smoke -p 3000:3000 smoke
