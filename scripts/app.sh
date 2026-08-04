@@ -407,7 +407,18 @@ zlog() {
 
   printf '%s\n' "$failed" | while IFS='|' read -r job_id name; do
     printf '\n\033[1;31m✗ %s\033[0m\n' "$name"
-    gh run view --repo "$repo" --job "$job_id" --log 2>/dev/null | tail -n "$lines"
+
+    # The REST endpoint, not `gh run view --job --log`: that one reads the
+    # run-level log archive, which GitHub does not assemble until the whole run
+    # finishes. This serves a single job's log as soon as that job is done.
+    local log
+    log="$(gh api "repos/${repo}/actions/jobs/${job_id}/logs" 2>/dev/null)"
+
+    if [ -z "$log" ]; then
+      printf '    (no log yet — the job may still be finalising)\n'
+    else
+      printf '%s\n' "$log" | tail -n "$lines"
+    fi
   done
 }
 
