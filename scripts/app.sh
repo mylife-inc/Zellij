@@ -383,12 +383,32 @@ zlog() {
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
 
   local workflow="${1:-Release}" lines="${2:-120}"
+  local repo; repo="$(_zrepo)"
   local id; id="$(_zrun_id "$workflow")"
 
-  [ -n "$id" ] || _zdie "No runs found for workflow \"$workflow\" in $(_zrepo)" || return 1
+  [ -n "$id" ] || _zdie "No runs found for workflow \"$workflow\" in $repo" || return 1
 
-  _zsay "$workflow run $id — failing steps, last $lines lines"
-  gh run view "$id" --repo "$(_zrepo)" --log-failed | tail -n "$lines"
+  # Per job rather than `--log-failed`, which refuses while any job in the run
+  # is still going — and the job you want to read about finished ten minutes
+  # ago. A finished job's log is available whatever the rest of the run is
+  # doing, so waiting for a slow matrix leg to time out is waiting for nothing.
+  local failed
+  failed="$(gh run view "$id" --repo "$repo" --json jobs \
+    --jq '.jobs[] | select(.conclusion == "failure") | "\(.databaseId)|\(.name)"' 2>/dev/null)"
+
+  if [ -z "$failed" ]; then
+    _zsay "$workflow run $id — nothing has failed"
+    gh run view "$id" --repo "$repo" --json status,conclusion,jobs --jq \
+      '"  run: \(.status) \(.conclusion // "")", (.jobs[] | "  \(.conclusion // .status)\t\(.name)")'
+    return 0
+  fi
+
+  _zsay "$workflow run $id — last $lines lines of each failed job"
+
+  printf '%s\n' "$failed" | while IFS='|' read -r job_id name; do
+    printf '\n\033[1;31m✗ %s\033[0m\n' "$name"
+    gh run view --repo "$repo" --job "$job_id" --log 2>/dev/null | tail -n "$lines"
+  done
 }
 
 znetlify() {
