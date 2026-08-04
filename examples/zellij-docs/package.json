@@ -8,7 +8,7 @@
     "node": ">=20.11"
   },
   "scripts": {
-    "assets": "node scripts/make-assets.mjs && cp ../../scripts/install.sh public/install.sh",
+    "assets": "node scripts/make-assets.mjs && mkdir -p public && cp ../../scripts/install.sh public/install.sh",
     "predev": "npm run assets && zellij prepare",
     "dev": "next dev --port 4320",
     "prebuild": "npm run assets && zellij prepare",
