@@ -334,6 +334,7 @@ fn main() {
         Command::Context { ref file } => write_context(file.as_deref()),
         Command::Detect { ref dir } => detect(dir),
         Command::Check { ref dir } => check(dir),
+        Command::Dev { ref dir, port } => dev(dir, port),
         Command::Doctor => doctor(),
         Command::New(NewTarget::Docs {
             ref dir,
@@ -422,18 +423,7 @@ fn check(dir: &str) -> zellij_core::Result<()> {
         // error itself, and this one needs several paragraphs after it rather
         // than the same sentence twice.
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
-            eprintln!("error: {err}");
-            eprintln!();
-            eprintln!("  The folder exists, and the container was given an empty one. A bind");
-            eprintln!("  mount of a path the runtime cannot reach succeeds and mounts nothing,");
-            eprintln!("  so this would otherwise be reported as a site with no pages.");
-            eprintln!();
-            eprintln!("  Colima shares $HOME and not /tmp. Either work somewhere under your");
-            eprintln!("  home directory, or share the path:");
-            eprintln!();
-            eprintln!("    colima stop && colima start --mount '/tmp:w'");
-            eprintln!();
-            eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+            report_empty_mount(&err);
             std::process::exit(err.exit_code());
         }
         Err(err) => return Err(err),
@@ -446,6 +436,46 @@ fn check(dir: &str) -> zellij_core::Result<()> {
     }
 
     Ok(())
+}
+
+fn dev(dir: &str, port: u16) -> zellij_core::Result<()> {
+    let content = resolve_content(dir)?;
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+
+    println!("  Engine   {}", engine.image());
+    if !engine.image_is_local() {
+        println!("           not pulled yet — this first run fetches ~237 MB");
+    }
+    println!("  Content  {content}");
+    println!("  Serving  http://localhost:{port}");
+    println!();
+    println!("  Edit anything under {content} and reload. Ctrl-C to stop.");
+    println!();
+
+    match engine.dev(&content, port) {
+        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
+            report_empty_mount(&err);
+            std::process::exit(err.exit_code());
+        }
+        other => other,
+    }
+}
+
+/// Shared by every command that mounts content, because every one of them can
+/// meet a runtime that silently shares nothing.
+fn report_empty_mount(err: &zellij_core::Error) {
+    eprintln!("error: {err}");
+    eprintln!();
+    eprintln!("  The folder exists, and the container was given an empty one. A bind");
+    eprintln!("  mount of a path the runtime cannot reach succeeds and mounts nothing,");
+    eprintln!("  so this would otherwise be reported as a site with no pages.");
+    eprintln!();
+    eprintln!("  Colima shares $HOME and not /tmp. Either work somewhere under your");
+    eprintln!("  home directory, or share the path:");
+    eprintln!();
+    eprintln!("    colima stop && colima start --mount '/tmp:w'");
+    eprintln!();
+    eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
 fn doctor() -> zellij_core::Result<()> {

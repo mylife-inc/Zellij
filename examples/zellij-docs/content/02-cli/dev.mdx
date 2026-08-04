@@ -1,11 +1,10 @@
 ---
 title: zel dev
-description: A development server with hot reload, without installing Node.
+description: A development server for a content folder, without installing Node.
 ---
 
-<Callout type="warning" title="Planned">
-`zel dev` exits with `not implemented yet`. This page is the specification it is
-being written against.
+<Callout type="tip" title="Available">
+Works today. `zel serve` is still planned.
 </Callout>
 
 ```bash title="terminal"
@@ -14,16 +13,27 @@ zel dev ./docs --port 4000
 ```
 
 ```
-✓ Content valid — 6 pages, 1 guide
-  Engine  ghcr.io/mylife-inc/zellij-base:0.4.1
-  Serving http://localhost:3000
+  Engine   ghcr.io/mylife-inc/zellij-base:latest
+  Content  ./content
+  Serving  http://localhost:3000
 
-  watching ./content
+  Edit anything under ./content and reload. Ctrl-C to stop.
+
+✓ /app/content
+  site        Acme · theme cupertino
+  pages       6
+  guides      1 (5 pages) · /guide
 ```
 
-Edit a YAML file, save it, and the browser updates. Add a page to `pages.yaml`
-and the route appears. Break something and the error arrives in the terminal
-and in the browser, naming the file and the line.
+Edit a YAML file, save it, reload the page. Add a page to `pages.yaml` and the
+route appears.
+
+<Callout type="info" title="Reload rather than watch">
+There is no websocket pushing content changes at the browser. Your folder lives
+outside the application — often on the other side of a container mount — so
+Next never learns that a YAML file changed, and nothing can tell the browser to
+refresh itself. Reloading re-reads the folder.
+</Callout>
 
 ## The point of it
 
@@ -58,20 +68,21 @@ Next.js in development mode, with your folder mounted.
 | --- | --- | --- |
 | `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
 | `--port <n>` | | `3000` |
-| `--host <addr>` | Bind address — `0.0.0.0` to reach it from a phone | `127.0.0.1` |
-| `--open` | Open a browser | off |
-| `--features <list>` | Force `maths`, `diagrams`, `all` | from the content |
-| `--no-check` | Start without validating first | off |
+
+`--open`, `--host` and `--features` are specified and not yet built.
 
 ### Looking at it on a phone
 
+The server inside the container binds to every interface, and the port is
+published to your machine — so your phone can reach it at your machine's
+address on the same network:
+
 ```bash title="terminal"
-zel dev --host 0.0.0.0
+ipconfig getifaddr en0     # macOS
 ```
 
-Prints the address on your network as well as localhost. Worth doing once per
-site — the mobile menu, the section stacking order and the type scale are the
-things a desktop browser will not show you.
+Worth doing once per site. The mobile menu, the section stacking order and the
+type scale are the things a desktop browser will not show you.
 
 ## When you have a wrapper app instead
 

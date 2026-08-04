@@ -90,13 +90,40 @@ async function createSource(
 }
 
 /**
- * Loads config + all content once per process. Next dev re-evaluates modules on
- * change, so a module-level cache is safe and keeps SSG builds fast.
+ * Loads config and all content, memoized.
+ *
+ * One page render calls this many times — every section, every link check —
+ * so without a cache a build re-reads the whole folder per component. That is
+ * what the cache is for.
+ *
+ * It used to be permanent, on the reasoning that Next dev re-evaluates modules
+ * when they change. It does — for modules *inside the Next project*. Content
+ * lives outside it, often on the other side of a container mount, so Next
+ * never learns a YAML file was edited, never re-evaluates this module, and the
+ * first load of the process is served until it is restarted. Editing a
+ * headline and reloading showed the old one for as long as the server ran.
+ *
+ * So in development the memo expires. The window is long enough to still
+ * collapse the many calls within a single render, and short enough that saving
+ * a file and switching to the browser shows the new text. A build sets
+ * NODE_ENV=production and keeps the permanent cache, because content cannot
+ * change underneath a build.
  */
+const DEV_TTL_MS = 250;
+
 let cached: Promise<ZellijRuntime> | undefined;
+let cachedAt = 0;
+
+function stillFresh(): boolean {
+  if (!cached) return false;
+  if (process.env.NODE_ENV === 'production') return true;
+  return Date.now() - cachedAt < DEV_TTL_MS;
+}
 
 export function loadZellijRuntime(options: ZellijRuntimeOptions = {}): Promise<ZellijRuntime> {
-  if (cached) return cached;
+  if (stillFresh()) return cached!;
+
+  cachedAt = Date.now();
 
   cached = (async () => {
     const warn = options.onWarning ?? ((message: string) => console.warn(`[zellij] ${message}`));

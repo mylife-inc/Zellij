@@ -23,11 +23,11 @@ Binaries are published on the repository's releases page — Linux, macOS and
 Windows, x86-64 and arm64, each with a `.sha256` beside it.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/latest/download/zel-installer.sh | sh
+curl -fsSL https://zellij.shebka.net/install.sh | sh
 ```
 
-Or download the archive for your platform, verify it, and put `zel` on your
-PATH.
+Or download the archive for your platform, verify it against its `.sha256`, and
+put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 ## What it does
 
@@ -41,7 +41,7 @@ PATH.
     beside it.
   </Card>
   <Card title="Check and run" icon="circle-check">
-    Validate the folder, and serve it locally with hot reload while you write.
+    Validate the folder, and serve it locally while you write.
   </Card>
   <Card title="Ship" icon="rocket">
     Produce a static site or a container image, and put either one online.
@@ -64,15 +64,15 @@ PATH.
 | [`zel detect`](/cli/convert#zel-detect-dir) | What tool a folder was written for | **Available** |
 | [`zel convert`](/cli/convert) | That folder, as Zellij content | **Available** |
 | [`zel migrate`](/cli/convert#zel-migrate) | detect, convert and check in one step | Planned |
-| [`zel check`](/cli/check) | Validate a content folder | Planned |
+| [`zel check`](/cli/check) | Validate a content folder | **Available** |
 | [`zel fmt`](/cli/check#zel-fmt) | Canonical formatting for the YAML | Planned |
-| [`zel dev`](/cli/dev) | Development server with hot reload | Planned |
+| [`zel dev`](/cli/dev) | Development server | **Available** |
 | [`zel serve`](/cli/dev#zel-serve) | Serve what `build` produced | Planned |
 | [`zel build`](/cli/build) | A static site, or a container image | Planned |
 | [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
 | [`zel image`](/cli/image) | Build, run and push container images | Planned |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | Planned |
-| [`zel doctor`](/cli/doctor) | What is installed, what is missing | Planned |
+| [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
 
 <Callout type="warning" title="Planned means planned">
 Zellij is pre-1.0, and the commands marked **Planned** exist in the binary but

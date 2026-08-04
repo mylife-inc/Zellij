@@ -24,6 +24,12 @@ const ENGINE_CLI: &str = "/opt/zellij/bin/zellij.mjs";
 /// mount can never collide with the image's own layout.
 const MOUNTED_CONTENT: &str = "/content";
 
+/// Where the wrapper app inside the image looks for content.
+///
+/// `check` mounts somewhere neutral because it only reads. `dev` and `build`
+/// run the application, and the application was generated with this path.
+const WRAPPER_CONTENT: &str = "/app/content";
+
 pub struct ContainerEngine {
     runtime: Runtime,
     image: String,
@@ -74,13 +80,77 @@ impl ContainerEngine {
     /// Read-only because the engine has no business writing into somebody's
     /// content, and a container that cannot is a container that will not.
     fn content_mount(content: &Utf8Path) -> Result<String> {
+        Self::mount_at(content, MOUNTED_CONTENT)
+    }
+
+    fn mount_at(content: &Utf8Path, target: &str) -> Result<String> {
         let absolute = content
             .canonicalize_utf8()
             .map_err(|_| Error::NoContentFolder {
                 path: content.to_owned(),
             })?;
 
-        Ok(format!("{absolute}:{MOUNTED_CONTENT}:ro"))
+        Ok(format!("{absolute}:{target}:ro"))
+    }
+
+    /// A named volume for the wrapper's `node_modules`, keyed by image.
+    ///
+    /// The base image installs nothing, so the first `zel dev` spends a couple
+    /// of minutes on `npm install`; keeping the result means the second starts
+    /// in seconds. Keyed by image because the four feature variants ask for
+    /// different dependencies, and sharing one volume between them would
+    /// install maths into the image that does not want it.
+    fn modules_volume(&self) -> String {
+        let key: String = self
+            .image
+            .chars()
+            .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
+            .collect();
+
+        format!("zellij-modules-{key}")
+    }
+
+    /// A development server, with the content folder mounted live.
+    ///
+    /// Runs in the foreground and streams the engine's output, so Ctrl-C stops
+    /// it the way Ctrl-C stops anything. `--init` gives the container a real
+    /// PID 1, without which the signal reaches a shell that ignores it.
+    pub fn dev(&self, content: &Utf8Path, port: u16) -> Result<()> {
+        let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
+        let ports = format!("{port}:3000");
+        let volume = format!("{}:/app/node_modules", self.modules_volume());
+
+        // Validate, install, serve — one container, in that order. Checking
+        // first means a broken folder is reported in a second rather than
+        // after a two-minute install.
+        let script = guarded(
+            WRAPPER_CONTENT,
+            &format!(
+                "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
+                 npm install --install-links --no-audit --no-fund --loglevel=error && \
+                 npm run dev -- --hostname 0.0.0.0"
+            ),
+        );
+
+        let status = self
+            .runtime
+            .command()
+            .args(["run", "--rm", "--init"])
+            .args(["-v", &mount])
+            .args(["-v", &volume])
+            .args(["-p", &ports])
+            .arg(&self.image)
+            .args(["sh", "-c", &script])
+            .status()?;
+
+        match status.code() {
+            Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
+                path: content.to_owned(),
+            }),
+            // 130 is Ctrl-C, which is how this command is meant to end.
+            Some(0) | Some(130) | None => Ok(()),
+            Some(_) => Err(Error::ContentInvalid),
+        }
     }
 }
 
@@ -100,10 +170,8 @@ const EMPTY_MOUNT: i32 = 97;
 ///
 /// Folded into the same invocation rather than probed separately: a second
 /// container start would double the latency of the fast command.
-fn guarded(command: &str) -> String {
-    format!(
-        "if [ -z \"$(ls -A {MOUNTED_CONTENT} 2>/dev/null)\" ]; then exit {EMPTY_MOUNT}; fi; exec {command}"
-    )
+fn guarded(mount: &str, command: &str) -> String {
+    format!("if [ -z \"$(ls -A {mount} 2>/dev/null)\" ]; then exit {EMPTY_MOUNT}; fi; {command}")
 }
 
 impl Engine for ContainerEngine {
@@ -117,7 +185,10 @@ impl Engine for ContainerEngine {
             .args([
                 "sh",
                 "-c",
-                &guarded(&format!("node {ENGINE_CLI} check {MOUNTED_CONTENT}")),
+                &guarded(
+                    MOUNTED_CONTENT,
+                    &format!("exec node {ENGINE_CLI} check {MOUNTED_CONTENT}"),
+                ),
             ])
             .output()?;
 
