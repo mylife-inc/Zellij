@@ -137,7 +137,7 @@ jobs:
         run: |
           docker build \
             --build-arg ZELLIJ_VERSION="$VERSION" \
-            --build-arg CONTENT=examples/payos/content \
+            --build-arg CONTENT=examples/showcase/content \
             -f docker/site.Dockerfile -t smoke .
           docker run -d --name smoke -p 3000:3000 smoke
           for _ in $(seq 1 30); do

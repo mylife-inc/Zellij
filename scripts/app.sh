@@ -47,6 +47,7 @@ Zellij development commands
     ze2e                The showcase end-to-end suite
     zschema             Regenerate the CLI's embedded schema
     zdrift              Fail if the embedded schema has fallen behind
+    zuncommitted [dir]  Files a fresh clone would not have. CI builds from a clone.
 
   Running
     zdev <example>      Development server for showcase | docs | payos
@@ -128,7 +129,39 @@ ztest() {
 
 ze2e() { (cd "$ZELLIJ_ROOT/examples/showcase" && npm run build && npx playwright test); }
 
+# Files on disk that a fresh clone would not have.
+#
+# CI builds from a checkout, not from your working tree. A content folder that
+# only validates because of generated files sitting in your directory passes
+# every local check and fails in the pipeline — with an error about missing
+# pages that is impossible to reproduce, because reproducing it locally uses
+# the very files that are missing.
+#
+# That happened: four payos guide pages are generated from MkDocs sources and
+# gitignored, and the base image smoke test built from that folder.
+zuncommitted() {
+  local dir="${1:-examples/showcase/content}"
+  local ignored
+
+  # Operating-system litter is excluded. It is ignored for good reason, CI
+  # genuinely does not need it, and a check that reports .DS_Store every time
+  # is a check people learn to scroll past — which is worse than not having
+  # one, because the day it reports something real it looks the same.
+  ignored="$(git -C "$ZELLIJ_ROOT" ls-files --others --ignored --exclude-standard -- "$dir" |
+    grep -v -E '/(\.DS_Store|Thumbs\.db|desktop\.ini)$')"
+
+  if [ -n "$ignored" ]; then
+    _zwarn "$dir holds files a fresh checkout would not have:"
+    printf '%s\n' "$ignored" | sed 's/^/    /'
+    printf '\n    CI builds from a clone. Commit them, or point CI elsewhere.\n'
+    return 1
+  fi
+
+  _zsay "$dir is fully committed"
+}
+
 zcheck() {
+  _zsay "Smoke content" && zuncommitted &&
   _zsay "Typecheck"      && (cd "$ZELLIJ_ROOT" && npm run typecheck) &&
   _zsay "Engine tests"   && (cd "$ZELLIJ_ROOT" && npx vitest run --root engine/packages/zellij) &&
   _zsay "Schema drift"   && zdrift &&
