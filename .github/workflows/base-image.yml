@@ -4,6 +4,18 @@
 # distributed to people who cannot clone the source. Nothing secret goes into
 # it — the engine is shipped as its build output, and the layer holding it is
 # the same layer everyone else pulls.
+#
+# Each architecture is built on a runner of that architecture and the results
+# are stitched into one manifest. Building both on an amd64 runner meant
+# emulating arm64 through QEMU, and QEMU running Node crashed:
+#
+#     [linux/arm64 engine 4/5] RUN npm ci --ignore-scripts
+#     qemu: uncaught target signal 4 (Illegal instruction)
+#
+# Intermittently, and in a different variant each time, so it read like flaky
+# infrastructure rather than the one deterministic thing it is: emulated
+# execution of a JIT. Native runners remove the emulator and most of the
+# build time with it.
 name: Base image
 
 on:
@@ -21,32 +33,31 @@ env:
   IMAGE: ${{ github.repository_owner }}/zellij-base
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+  # --------------------------------------------------------------- per arch
+  # Pushed by digest rather than by tag: a tag can only point at one thing, and
+  # two jobs racing to claim it would leave whichever finished last. The digests
+  # are collected and named in one place, below.
+  build:
+    name: ${{ matrix.features }} · ${{ matrix.platform.arch }}
+    runs-on: ${{ matrix.platform.runner }}
     permissions:
       contents: read
       packages: write
 
-    # One Dockerfile, four images. The features only change which optional
-    # dependencies the generated package.json asks for, so the variants cost
-    # almost nothing to publish and save a site build from fetching a hundred
-    # megabytes of diagram library it has no diagrams for.
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - features: none
-            suffix: ''
-          - features: maths
-            suffix: '-maths'
-          - features: diagrams
-            suffix: '-diagrams'
-          - features: all
-            suffix: '-all'
+        # One Dockerfile, four images. The features only change which optional
+        # dependencies the generated package.json asks for, so the variants cost
+        # almost nothing to publish and save a site build from fetching a
+        # hundred megabytes of diagram library it has no diagrams for.
+        features: [none, maths, diagrams, all]
+        platform:
+          - { arch: amd64, name: linux/amd64, runner: ubuntu-latest }
+          - { arch: arm64, name: linux/arm64, runner: ubuntu-24.04-arm }
 
     steps:
       - uses: actions/checkout@v7
-
       - uses: docker/setup-buildx-action@v3
 
       - name: Sign in to GHCR
@@ -55,6 +66,67 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/base.Dockerfile
+          platforms: ${{ matrix.platform.name }}
+          build-args: |
+            ZELLIJ_FEATURES=${{ matrix.features }}
+          outputs: type=image,name=${{ env.REGISTRY }}/${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=${{ matrix.features }}-${{ matrix.platform.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.features }}-${{ matrix.platform.arch }}
+
+      - name: Record the digest
+        env:
+          DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          mkdir -p /tmp/digests
+          touch "/tmp/digests/${DIGEST#sha256:}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: digest-${{ matrix.features }}-${{ matrix.platform.arch }}
+          path: /tmp/digests/*
+          retention-days: 1
+          if-no-files-found: error
+
+  # ------------------------------------------------------------------ manifest
+  merge:
+    name: Publish ${{ matrix.features }}
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { features: none, suffix: '' }
+          - { features: maths, suffix: '-maths' }
+          - { features: diagrams, suffix: '-diagrams' }
+          - { features: all, suffix: '-all' }
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digest-${{ matrix.features }}-*
+          merge-multiple: true
 
       - id: meta
         uses: docker/metadata-action@v5
@@ -68,57 +140,64 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: docker/base.Dockerfile
-          build-args: |
-            ZELLIJ_FEATURES=${{ matrix.features }}
-          # arm64 as well as amd64: a lot of authors are on Apple silicon, and
-          # emulating the wrong architecture locally turns a fast build slow.
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      - name: Stitch the architectures into one manifest
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf "${REGISTRY}/${IMAGE}@sha256:%s " *)
 
-      # Only the default variant is smoke-tested: the others differ by three
-      # lines of JSON, and building four sites to learn the same thing is time
-      # every push would pay for.
-      # `meta.outputs.version` is the primary tag that was just pushed, not the
-      # ref it came from. On a branch those are the same word; on a tag they
-      # are not — `metadata-action` publishes semver without the leading `v`,
-      # so `v0.1.0-rc.2` here asked for an image nobody had pushed and the
-      # build failed in one second on a manifest that does not exist.
-      - name: Prove the image can build a site
-        if: matrix.features == 'none'
+      - name: Show what was published
         env:
           VERSION: ${{ steps.meta.outputs.version }}
+        run: docker buildx imagetools inspect "${REGISTRY}/${IMAGE}:${VERSION}"
+
+  # --------------------------------------------------------------- smoke test
+  # Only the default variant: the others differ by three lines of JSON, and
+  # building four sites to learn the same thing is time every push would pay.
+  smoke:
+    name: The image can build a site
+    needs: merge
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build a site from it
+        env:
+          # The tag just published, not the ref it came from: on a tag push
+          # `metadata-action` publishes semver without the leading `v`, so
+          # `github.ref_name` asked for a manifest nobody had pushed.
+          VERSION: ${{ steps.meta.outputs.version }}
         run: |
-          # `--progress plain` because the default collapses the output of the
-          # step that fails, and a truncated failure costs a whole round trip
-          # to reproduce.
+          # examples/showcase rather than examples/payos: four of payos's guide
+          # pages are generated by a script and gitignored, so a fresh checkout
+          # has a sidebar pointing at files that do not exist — and the checker
+          # was right to refuse to build it.
           if ! docker build --progress plain \
             --build-arg ZELLIJ_VERSION="$VERSION" \
             --build-arg CONTENT=examples/showcase/content \
             -f docker/site.Dockerfile -t zellij-smoke .
           then
             echo "::group::What the image actually received"
-            # The last failure here was content the runner did not have: four
-            # payos guide pages are generated by a script and gitignored, so a
-            # fresh checkout has a sidebar pointing at files that do not exist.
-            # Listing the tree is what distinguishes "the image is broken" from
-            # "the checkout is incomplete", which took far too long to tell
-            # apart from the error alone.
             docker run --rm -v "$PWD/examples/showcase/content:/c:ro" \
               "${REGISTRY}/${IMAGE}:${VERSION}" sh -c 'find /c -type f | sort' || true
             echo "::endgroup::"
             exit 1
           fi
+
           docker run -d --name smoke -p 3000:3000 zellij-smoke
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:3000/ > /dev/null; then echo "serving"; exit 0; fi
             sleep 2
           done
