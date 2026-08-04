@@ -12,3 +12,6 @@ repository.workspace = true
 zellij-core.workspace = true
 camino.workspace = true
 thiserror.workspace = true
+
+[dev-dependencies]
+tempfile = "3"

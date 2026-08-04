@@ -10,12 +10,22 @@
 
 use camino::Utf8Path;
 
+pub mod container;
+pub mod runtime;
+
+pub use container::ContainerEngine;
+pub use runtime::Runtime;
+
+/// The public image a site is built from.
+pub const DEFAULT_IMAGE: &str = "ghcr.io/mylife-inc/zellij-base:latest";
+
+/// What `zel build` produces. Two, not four — see the CLI spec §3.5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BuildMode {
-    /// Static export, for a CDN.
+    /// A folder of HTML, CSS and JS, for a CDN.
     Static,
-    /// A traced Node server, for anything needing image optimisation.
-    Standalone,
+    /// A container running the site on a port.
+    Image,
 }
 
 #[derive(Debug, Default)]

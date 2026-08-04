@@ -333,6 +333,8 @@ fn main() {
         Command::Explain { ref section_type } => explain(section_type),
         Command::Context { ref file } => write_context(file.as_deref()),
         Command::Detect { ref dir } => detect(dir),
+        Command::Check { ref dir } => check(dir),
+        Command::Doctor => doctor(),
         Command::New(NewTarget::Docs {
             ref dir,
             ref name,
@@ -372,6 +374,104 @@ fn main() {
         std::process::exit(err.exit_code());
     }
 }
+
+// ----------------------------------------------------------------- checking
+
+/// Where the content is, when nobody said.
+///
+/// `./content` first because that is what `zel new docs` writes, then the
+/// current directory when it looks like a content root. A folder that merely
+/// holds Markdown is never assumed: guessing produces a build that looks
+/// finished and is about something else.
+fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
+    let given = Utf8PathBuf::from(dir);
+
+    if dir != "." {
+        return if given.is_dir() {
+            Ok(given)
+        } else {
+            Err(zellij_core::Error::NoContentFolder { path: given })
+        };
+    }
+
+    let conventional = given.join("content");
+    if looks_like_content(&conventional) {
+        return Ok(conventional);
+    }
+
+    if looks_like_content(&given) {
+        return Ok(given);
+    }
+
+    Err(zellij_core::Error::NoContentFolder { path: given })
+}
+
+fn looks_like_content(dir: &Utf8Path) -> bool {
+    dir.join("site.yaml").is_file() || dir.join("pages.yaml").is_file()
+}
+
+fn check(dir: &str) -> zellij_core::Result<()> {
+    let content = resolve_content(dir)?;
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+
+    // The trait has to be in scope for its methods to be callable.
+    use zellij_engine::Engine as _;
+    let report = engine.check(&content)?;
+    print!("{}", report.output);
+
+    if !report.ok {
+        return Err(zellij_core::Error::ContentInvalid);
+    }
+
+    Ok(())
+}
+
+fn doctor() -> zellij_core::Result<()> {
+    println!("zel            {}  ({})", env!("CARGO_PKG_VERSION"), TARGET);
+    println!();
+    println!("Container runtime");
+
+    match zellij_engine::ContainerEngine::detect(None) {
+        Ok(engine) => {
+            let runtime = engine.runtime();
+            println!(
+                "  ✓ {:<10} {} via {}",
+                runtime.program,
+                runtime.version,
+                runtime.endpoint()
+            );
+
+            let state = if engine.image_is_local() {
+                "local"
+            } else {
+                "not pulled — the first build will fetch it"
+            };
+            println!("  {:<12} {}  ({state})", "· engine", engine.image());
+        }
+        Err(err) => {
+            println!("  ✗ none");
+            for line in err.to_string().lines() {
+                println!("    {line}");
+            }
+            println!();
+            println!("  Commands that only read the content model still work:");
+            println!("  new, explain, list, context, detect, convert.");
+            return Err(err);
+        }
+    }
+
+    println!();
+    println!("Content");
+    match resolve_content(".") {
+        Ok(path) => println!("  ✓ {path}"),
+        Err(_) => println!("  · none here — `zel new docs` writes one"),
+    }
+
+    Ok(())
+}
+
+/// The triple this binary was built for, for bug reports.
+const TARGET: &str = env!("ZEL_TARGET");
 
 // ----------------------------------------------------------------- creating
 
