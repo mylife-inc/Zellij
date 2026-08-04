@@ -63,6 +63,7 @@ Zellij development commands
   Publishing
     zrelease <version>  Cut a release: checks, tags, and hands the rest to CI
     zrelease-watch      Follow the release CI is running
+    zlog [workflow]     Why the last run failed — the log, not the annotation
     zdocs-publish [on|off]
                         Whether releases publish the docs site. No argument reports.
     znetlify            Build and deploy the docs site by hand
@@ -341,10 +342,35 @@ zrelease() {
 EOF
 }
 
+_zrun_id() {
+  gh run list --repo "$(_zrepo)" --workflow "${1:-Release}" --limit 1 \
+    --json databaseId --jq '.[0].databaseId' 2>/dev/null
+}
+
 zrelease-watch() {
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
-  gh run watch --repo "${ZELLIJ_OWNER}/Zellij" \
-    "$(gh run list --repo "${ZELLIJ_OWNER}/Zellij" --workflow Release --limit 1 --json databaseId --jq '.[0].databaseId')"
+  gh run watch --repo "$(_zrepo)" "$(_zrun_id Release)"
+}
+
+# Why it failed, rather than that it failed.
+#
+# `gh run watch` prints annotations — "Process completed with exit code 1" —
+# which is the summary and never the cause. This prints the log of the steps
+# that actually failed.
+#
+#     zlog                 the last Release run
+#     zlog "Base image"    the last run of another workflow
+#     zlog CI 200          more lines
+zlog() {
+  command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
+
+  local workflow="${1:-Release}" lines="${2:-120}"
+  local id; id="$(_zrun_id "$workflow")"
+
+  [ -n "$id" ] || _zdie "No runs found for workflow \"$workflow\" in $(_zrepo)" || return 1
+
+  _zsay "$workflow run $id — failing steps, last $lines lines"
+  gh run view "$id" --repo "$(_zrepo)" --log-failed | tail -n "$lines"
 }
 
 znetlify() {
