@@ -97,10 +97,28 @@ jobs:
         env:
           VERSION: ${{ steps.meta.outputs.version }}
         run: |
-          docker build \
+          # `--progress plain` because the default collapses the output of the
+          # step that fails, and a truncated failure costs a whole round trip
+          # to reproduce.
+          if ! docker build --progress plain \
             --build-arg ZELLIJ_VERSION="$VERSION" \
             --build-arg CONTENT=examples/payos/content \
             -f docker/site.Dockerfile -t zellij-smoke .
+          then
+            echo "::group::What the image actually received"
+            # A previous failure claimed the payos sidebar referenced pages
+            # that did not exist, on content that validates everywhere else.
+            # If it happens again, the answer is either in this listing or in
+            # the checker's own view of the same folder — and both are one
+            # command away, rather than a day of not reproducing it.
+            docker run --rm -v "$PWD/examples/payos/content:/c:ro" \
+              "${REGISTRY}/${IMAGE}:${VERSION}" sh -c 'ls -la /c /c/01-guide' || true
+            docker run --rm -v "$PWD/examples/payos/content:/c:ro" \
+              "${REGISTRY}/${IMAGE}:${VERSION}" \
+              node /opt/zellij/bin/zellij.mjs check /c || true
+            echo "::endgroup::"
+            exit 1
+          fi
           docker run -d --name smoke -p 3000:3000 zellij-smoke
           for i in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:3000/ > /dev/null; then echo "serving"; exit 0; fi
