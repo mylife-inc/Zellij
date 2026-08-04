@@ -78,14 +78,25 @@ else
   say "Finding the latest release"
   # The shared repository holds releases for several projects, so `latest` is
   # not ours. Take the newest tag carrying our scope.
+  #
+  # Pre-releases are skipped: somebody running an install one-liner is asking
+  # for the stable version. A pinned ZEL_VERSION still installs whatever it
+  # names, which is how a release candidate gets tested.
+  #
+  # The filtering is in the pattern rather than a second `grep -v -- '-'`,
+  # because a lone dash as a grep argument is exactly the sort of thing one
+  # implementation somewhere reads as an option. `v0.1.0-rc.1` does not match
+  # here: the closing quote has to follow the digits.
   version="$(
     fetch "https://api.github.com/repos/$REPO/releases?per_page=100" |
-      sed -n 's/.*"tag_name": *"'"$SCOPE"'-\(v[^"]*\)".*/\1/p' |
+      sed -n 's/.*"tag_name": *"'"$SCOPE"'-\(v[0-9][0-9.]*\)".*/\1/p' |
       head -1
   )" || true
 
-  [ -n "$version" ] || die "Could not find a $SCOPE release in $REPO.
-    Set ZEL_VERSION to install a specific one."
+  [ -n "$version" ] || die "Found no stable $SCOPE release in $REPO.
+    There may be a pre-release: see
+    https://github.com/$REPO/releases
+    and install it with ZEL_VERSION=v0.0.0-rc.1"
 fi
 
 tag="${SCOPE}-${version}"
