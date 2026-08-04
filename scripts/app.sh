@@ -405,21 +405,36 @@ zlog() {
 
   _zsay "$workflow run $id — last $lines lines of each failed job"
 
+  # `local` is deliberately absent below: in zsh a piped `while` runs in a
+  # subshell outside function scope, where `typeset` *prints* an empty
+  # assignment instead of making one — which is how this printed `log=''` five
+  # times.
   printf '%s\n' "$failed" | while IFS='|' read -r job_id name; do
     printf '\n\033[1;31m✗ %s\033[0m\n' "$name"
-
-    # The REST endpoint, not `gh run view --job --log`: that one reads the
-    # run-level log archive, which GitHub does not assemble until the whole run
-    # finishes. This serves a single job's log as soon as that job is done.
-    local log
-    log="$(gh api "repos/${repo}/actions/jobs/${job_id}/logs" 2>/dev/null)"
-
-    if [ -z "$log" ]; then
-      printf '    (no log yet — the job may still be finalising)\n'
-    else
-      printf '%s\n' "$log" | tail -n "$lines"
-    fi
+    gh api "repos/${repo}/actions/jobs/${job_id}/logs" 2>/dev/null | tail -n "$lines"
   done
+
+  # GitHub withholds logs for a run it still considers in flight, at both the
+  # run level and the job level. Nothing here can work around that; say so
+  # rather than printing five job names and silence.
+  local state
+  state="$(gh run view "$id" --repo "$repo" --json status --jq .status 2>/dev/null)"
+
+  if [ "$state" != "completed" ]; then
+    echo
+    _zwarn "Run $id is still \"$state\", and GitHub serves no logs until it completes."
+    cat <<EOF
+
+  If the remaining jobs are not going anywhere, stop waiting for them:
+
+    gh run cancel $id --repo $repo
+    zlog
+
+  Cancelling makes the logs available immediately. The failed jobs have
+  already failed; nothing is lost.
+EOF
+  fi
+
 }
 
 znetlify() {
