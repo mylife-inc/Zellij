@@ -1,0 +1,17 @@
+[package]
+name = "zellij-scaffold"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "Writes the folders and files `zel new` creates."
+
+[dependencies]
+zellij-core.workspace = true
+camino.workspace = true
+
+[dev-dependencies]
+serde_yaml_ng.workspace = true
+tempfile = "3"

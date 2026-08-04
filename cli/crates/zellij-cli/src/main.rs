@@ -8,6 +8,7 @@
 //! what the tool offers and how it reports, never about how any of it works.
 //! See `specs/zellij-cli-spec.md` for the surface in full.
 
+use camino::{Utf8Path, Utf8PathBuf};
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
@@ -241,28 +242,57 @@ enum NewTarget {
     },
     /// A content folder on its own.
     Docs {
-        #[arg(default_value = ".")]
+        #[arg(default_value = "content")]
         dir: String,
 
-        /// One example of every section type.
+        /// The site name. Defaults to the directory's.
         #[arg(long)]
-        full: bool,
+        name: Option<String>,
+
+        /// One of the fourteen — `zel list themes`.
+        #[arg(long, default_value = "paper")]
+        theme: String,
+
+        /// Also create a guide folder.
+        #[arg(long)]
+        guide: bool,
+
+        /// site.yaml and one page, and nothing else.
+        #[arg(long)]
+        minimal: bool,
+
+        /// Write into a directory that is not empty.
+        #[arg(long)]
+        force: bool,
     },
     /// A section file, with its required fields filled in.
     Section {
-        section_type: Option<String>,
+        section_type: String,
 
         #[arg(long)]
         out: Option<String>,
-
-        /// Ask for the fields that have no sensible default.
-        #[arg(long, short)]
-        interactive: bool,
     },
     /// A page, and the section files it references.
-    Page { name: String },
+    Page {
+        name: String,
+
+        /// Comma-separated section types. Defaults to a single hero.
+        #[arg(long, value_delimiter = ',')]
+        sections: Vec<String>,
+
+        #[arg(long, default_value = ".")]
+        dir: String,
+    },
     /// A guide folder with a sidebar and an index page.
-    Guide { name: String },
+    Guide {
+        name: String,
+
+        #[arg(long)]
+        title: Option<String>,
+
+        #[arg(long, default_value = ".")]
+        dir: String,
+    },
     /// A repository with documentation and a product as siblings, and a
     /// pipeline that publishes the first on every push.
     Project {
@@ -303,6 +333,28 @@ fn main() {
         Command::Explain { ref section_type } => explain(section_type),
         Command::Context { ref file } => write_context(file.as_deref()),
         Command::Detect { ref dir } => detect(dir),
+        Command::New(NewTarget::Docs {
+            ref dir,
+            ref name,
+            ref theme,
+            guide,
+            minimal,
+            force,
+        }) => new_docs(dir, name.as_deref(), theme, guide, minimal, force),
+        Command::New(NewTarget::Section {
+            ref section_type,
+            ref out,
+        }) => new_section(section_type, out.as_deref()),
+        Command::New(NewTarget::Page {
+            ref name,
+            ref sections,
+            ref dir,
+        }) => new_page(name, sections, dir),
+        Command::New(NewTarget::Guide {
+            ref name,
+            ref title,
+            ref dir,
+        }) => new_guide(name, title.as_deref(), dir),
         Command::Convert {
             ref source,
             ref out,
@@ -319,6 +371,154 @@ fn main() {
         eprintln!("error: {err}");
         std::process::exit(err.exit_code());
     }
+}
+
+// ----------------------------------------------------------------- creating
+
+fn new_docs(
+    dir: &str,
+    name: Option<&str>,
+    theme: &str,
+    guide: bool,
+    minimal: bool,
+    force: bool,
+) -> zellij_core::Result<()> {
+    let target = Utf8PathBuf::from(dir);
+
+    // A directory named `.` would take its name from wherever the shell
+    // happens to be, which is right about as often as it is baffling.
+    let name = name.map(str::to_owned).unwrap_or_else(|| {
+        target
+            .canonicalize_utf8()
+            .ok()
+            .as_deref()
+            .and_then(Utf8Path::file_name)
+            .or_else(|| target.file_name())
+            .unwrap_or("Docs")
+            .to_owned()
+    });
+
+    let options = zellij_scaffold::DocsOptions {
+        name,
+        theme: theme.to_owned(),
+        guide,
+        minimal,
+    };
+
+    let written = zellij_scaffold::docs(&options).write(&target, force)?;
+
+    println!("✓ {target}");
+    for path in &written {
+        println!("  {path}");
+    }
+    println!("\n  Next: zel dev {target}");
+
+    Ok(())
+}
+
+fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()> {
+    if !zellij_core::schema::is_section_type(section_type) {
+        eprintln!("error: no section type called \"{section_type}\"");
+        eprintln!("       zel list sections — there are nineteen");
+        std::process::exit(2);
+    }
+
+    let body = zellij_scaffold::section_file(section_type);
+
+    let Some(out) = out else {
+        print!("{body}");
+        return Ok(());
+    };
+
+    let path = Utf8PathBuf::from(out);
+
+    // Writing over a section somebody has already filled in is unrecoverable,
+    // and there is no flag for it: `--out` a different file and move it.
+    if path.exists() {
+        eprintln!("error: {path} already exists");
+        std::process::exit(2);
+    }
+
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    std::fs::write(&path, body)?;
+
+    println!("✓ {path}");
+    println!("  zel explain {section_type} — every field it takes");
+
+    Ok(())
+}
+
+fn new_page(name: &str, sections: &[String], dir: &str) -> zellij_core::Result<()> {
+    for section_type in sections {
+        if !zellij_core::schema::is_section_type(section_type) {
+            eprintln!("error: no section type called \"{section_type}\"");
+            eprintln!("       zel list sections — there are nineteen");
+            std::process::exit(2);
+        }
+    }
+
+    let root = Utf8PathBuf::from(dir);
+    let (scaffold, entry) = zellij_scaffold::page(name, sections);
+    let written = scaffold.write(&root, true)?;
+
+    for path in &written {
+        println!("✓ {path}");
+    }
+
+    // pages.yaml is rewritten by hand rather than by us: parsing it and
+    // writing it back would lose the comments and the ordering somebody chose,
+    // and this is four lines to paste.
+    println!("\n  Add this to pages.yaml:\n");
+    for line in entry.lines() {
+        println!("    {line}");
+    }
+
+    Ok(())
+}
+
+fn new_guide(name: &str, title: Option<&str>, dir: &str) -> zellij_core::Result<()> {
+    let root = Utf8PathBuf::from(dir);
+    let order = next_guide_order(&root);
+    let title = title.map(str::to_owned).unwrap_or_else(|| {
+        let mut chars = name.chars();
+        match chars.next() {
+            Some(first) => first.to_uppercase().collect::<String>() + chars.as_str(),
+            None => name.to_owned(),
+        }
+    });
+
+    let written = zellij_scaffold::guide(name, &title, order).write(&root, true)?;
+
+    for path in &written {
+        println!("✓ {path}");
+    }
+
+    Ok(())
+}
+
+/// The lowest prefix no guide folder is already using.
+///
+/// Two guides sharing a number is a build error, and the caller is the only
+/// one that can see the directory — so the number is chosen here rather than
+/// guessed by the scaffold.
+fn next_guide_order(root: &Utf8Path) -> usize {
+    let Ok(entries) = std::fs::read_dir(root) else {
+        return 1;
+    };
+
+    let highest = entries
+        .flatten()
+        .filter_map(|entry| {
+            let name = entry.file_name().to_string_lossy().into_owned();
+            let (prefix, _) = name.split_once('-')?;
+            prefix.parse::<usize>().ok()
+        })
+        .max()
+        .unwrap_or(0);
+
+    highest + 1
 }
 
 fn list_formats() -> zellij_core::Result<()> {

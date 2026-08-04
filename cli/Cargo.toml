@@ -8,6 +8,7 @@ members = [
   "crates/zellij-cli",
   "crates/zellij-core",
   "crates/zellij-convert",
+  "crates/zellij-scaffold",
   "crates/zellij-engine",
 ]
 
@@ -22,6 +23,7 @@ repository = "https://github.com/mylife-inc/Zellij"
 [workspace.dependencies]
 zellij-core = { path = "crates/zellij-core" }
 zellij-convert = { path = "crates/zellij-convert" }
+zellij-scaffold = { path = "crates/zellij-scaffold" }
 zellij-engine = { path = "crates/zellij-engine" }
 
 anyhow = "1"

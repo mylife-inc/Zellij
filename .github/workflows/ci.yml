@@ -84,6 +84,43 @@ jobs:
       - run: cargo test --workspace
         working-directory: cli
 
+      # `zel new docs` promises a folder that validates. Rust can check the
+      # YAML parses; only the engine can say whether the content model accepts
+      # it. This caught `legal` written at the top level instead of under
+      # `footer:` — valid YAML, silently ignored, and the copyright line simply
+      # never appeared.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+
+      - name: What `zel new docs` writes is valid content
+        run: |
+          set -e
+          cargo build --manifest-path cli/Cargo.toml
+          zel=cli/target/debug/zel
+          check="node engine/packages/zellij/bin/zellij.mjs check"
+          work=$(mktemp -d)
+
+          "$zel" new docs "$work/plain"   --name Acme
+          "$zel" new docs "$work/guided"  --name Acme --guide
+          "$zel" new docs "$work/tiny"    --name Acme --minimal
+          "$zel" new docs "$work/themed"  --name Acme --theme cupertino --guide
+
+          for folder in plain guided tiny themed; do
+            echo "── $folder"
+            # A warning is a defect here even though it does not fail a build:
+            # the scaffold is the one folder that has no excuse for one.
+            output=$($check "$work/$folder" 2>&1)
+            echo "$output"
+            if echo "$output" | grep -q '!'; then
+              echo "::error::zel new docs --$folder produced warnings"
+              exit 1
+            fi
+          done
+
   e2e:
     name: Showcase end to end
     runs-on: ubuntu-latest

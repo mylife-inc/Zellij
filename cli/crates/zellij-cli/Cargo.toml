@@ -15,6 +15,7 @@ path = "src/main.rs"
 [dependencies]
 zellij-core.workspace = true
 zellij-convert.workspace = true
+zellij-scaffold.workspace = true
 zellij-engine.workspace = true
 camino.workspace = true
 clap.workspace = true
