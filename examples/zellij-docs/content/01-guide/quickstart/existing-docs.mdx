@@ -29,9 +29,7 @@ zel detect ./docs
 ```
 
 ```
-MkDocs (certain)
-  mkdocs.yml with a nav tree of 47 entries
-  docs_dir: docs
+mkdocs       MkDocs — mkdocs.yml with a nav tree  (certain)
 ```
 
 Three answers are possible, and they lead to different steps:
@@ -75,15 +73,26 @@ zel convert ./docs --out ./content
 ```
 
 ```
-✓ Detected MkDocs (certain)
-✓ 47 pages → ./content/01-guide
-✓ site.yaml from site_name and site_description
-✓ pages.yaml with one hero to build on
+Converting . as MkDocs — mkdocs.yml with a nav tree
 
-! 2 thing(s) could not be carried over:
-    https://blog.acme.dev: "Blog" is an external link; sidebars hold
-      pages. Add it to menu.yaml.
-    draft.md: on disk but absent from the navigation; not converted
+Would write 9 files into ../content:
+  01-guide/_sidebar.yaml
+  01-guide/index.mdx
+  01-guide/guide/install.mdx
+  01-guide/guide/configure.mdx
+  01-guide/api/index.mdx
+  01-guide/api/errors.mdx
+  site.yaml
+  pages.yaml
+  sections/home/hero.yaml
+
+2 thing(s) could not be carried over:
+  https://blog.acme.dev: "Blog" is an external link; sidebars hold pages. Add it to menu.yaml.
+  draft.md: on disk but absent from the navigation; not converted
+
+Note: Zellij also has marketing pages built from section types the source had
+no equivalent for. A landing page with one hero was written to build on; it is
+not a conversion of anything.
 ```
 
 **Read those warnings.** They are the three things a conversion cannot do:

@@ -25,9 +25,7 @@ zel detect ./docs
 ```
 
 ```
-MkDocs (certain)
-  mkdocs.yml with a nav tree of 47 entries
-  docs_dir: docs
+mkdocs       MkDocs — mkdocs.yml with a nav tree  (certain)
 ```
 
 Certainty matters. A folder with the format's own configuration file is
@@ -131,9 +129,24 @@ has never had to care.
 | In the source | Becomes | |
 | --- | --- | --- |
 | `{timeout}` | `\{timeout\}` | In prose only |
-| `a < b` | `a &lt; b` | Unless it opens a real tag |
+| `a < b` | `a &lt; b` | `<` is the syntax; `>` is just a character |
+| `<n>`, `<your-token>` | `&lt;n>`, `&lt;your-token>` | Nothing closes them |
+| `use <div> for layout` | `use &lt;div> for layout` | Naming a tag, not opening one |
+| `<br>` | `&lt;br>` | Valid HTML, invalid MDX |
+| `<div>…</div>`, `<br/>` | unchanged | Closed, so it is markup |
 | `<https://x.com>` | `[https://x.com](https://x.com)` | MDX has no autolinks |
 | ` ```sh {x} < y ``` ` | unchanged | Code is quoted by definition |
+
+**The test is whether the tag is closed, not what it is called.** MDX is JSX:
+every tag needs a closing tag or a slash, including the ones HTML lets you
+leave open. A tag that is genuinely markup is balanced, because whoever wrote
+it wanted it to render; a tag that is prose is not, because they were writing
+about it.
+
+Two earlier rules were both wrong, and both were caught by converting a real
+MkDocs tree and compiling the result — never by reading the code. "Looks like a
+tag name" accepted `<n>`. "Is a real HTML element" accepted the `<span>` in
+*use `<div>` and `<span>` for layout*.
 
 <Callout type="warning" title="check does not compile MDX">
 [`zel check`](/cli/check) validates the content model — links, section types,
@@ -156,8 +169,8 @@ zel migrate ./docs --out ./content
 
 ```
 ✓ Detected MkDocs (certain)
-✓ Converted 47 pages into ./content
-! 2 things could not be carried over — see ./content/convert-report.md
+✓ Converted 31 pages into ./content
+! 2 things could not be carried over
 ✓ Content valid
 ```
 
