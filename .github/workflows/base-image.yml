@@ -18,10 +18,16 @@
 # build time with it.
 name: Base image
 
+# Branches only. `release.yml` builds and publishes the same four images on a
+# version tag, and both workflows firing on `v*` meant sixteen image builds
+# instead of eight and two jobs racing to claim the same tags with
+# `imagetools create` — whichever finished last winning, silently.
+#
+# So: this one keeps `main` and `latest` current, and a release owns everything
+# a release publishes.
 on:
   push:
     branches: [main]
-    tags: ['v*']
   workflow_dispatch:
 
 concurrency:
@@ -134,10 +140,11 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           flavor: |
             suffix=${{ matrix.suffix }},onlatest=true
+          # No semver patterns: this workflow never sees a tag now, and a
+          # pattern that can never match is a claim about behaviour that does
+          # not exist.
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       # Everything this step depends on, before it depends on it. Two runs
@@ -203,10 +210,11 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
+          # No semver patterns: this workflow never sees a tag now, and a
+          # pattern that can never match is a claim about behaviour that does
+          # not exist.
           tags: |
             type=ref,event=branch
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build a site from it
