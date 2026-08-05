@@ -232,7 +232,7 @@ There are two ways to the same place, and they exist for different people:
 
 | | |
 | --- | --- |
-| `ghcr.io/…/zellij-base:-maths`, `:-diagrams`, `:-all` | Baked in. Pick the image and build. |
+| `ghcr.io/…/zellij-base:latest-maths`, `:latest-diagrams`, `:latest-all` | Baked in. Pick the image and build. |
 | `--build-arg FEATURES=all` on the plain image | Chosen at build time, one image to pull. |
 
 The second is what `zel build --features` uses. Since the base image installs

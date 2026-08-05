@@ -107,10 +107,14 @@ flag:
 
 | | |
 | --- | --- |
-| `zellij-base` | Nothing |
-| `zellij-base:-maths` | LaTeX |
-| `zellij-base:-diagrams` | Mermaid and mindmaps |
-| `zellij-base:-all` | Both |
+| `zellij-base:latest` | Nothing |
+| `zellij-base:latest-maths` | LaTeX |
+| `zellij-base:latest-diagrams` | Mermaid and mindmaps |
+| `zellij-base:latest-all` | Both |
+
+Every published version carries the same four, so `0.1.0`, `0.1.0-maths` and so
+on exist alongside them. Pin a version for anything that has to build the same
+way in a year.
 
 `zel` uses the plain image and passes the feature list, so all four cost the
 same.
