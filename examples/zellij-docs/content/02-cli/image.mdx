@@ -34,11 +34,20 @@ that everything about images is in one place.
 | `--features <list>` | `maths`, `diagrams`, `all` | from the content |
 | `--build-arg <k=v>` | Passed through | — |
 
-The result is a Node runtime serving the site on **port 3000**. A small
-documentation site comes out at about **75 MB** — Alpine, Node, and the traced
-subset of dependencies the site actually reached for. Neither the engine nor
-`node_modules` is in it: what you deploy contains the compiled site and nothing
-that built it.
+The result is a Node runtime serving the site on **port 3000** — Alpine, Node,
+and the traced subset of dependencies the site actually reached for. Neither the
+engine nor `node_modules` is in it: what you deploy contains the compiled site
+and nothing that built it.
+
+<Callout type="info" title="On image sizes">
+`docker images` reports around 320 MB for a small documentation site, and
+`docker save` of the same image produces 73 MB. Both are real: the first counts
+unpacked layers on disk, the second is the content itself. What a `docker pull`
+transfers is smaller again, because layers move compressed.
+
+Quoted figures here use `docker images`, so they can be compared with the base
+image on the same terms.
+</Callout>
 
 ## `zel image run`
 
