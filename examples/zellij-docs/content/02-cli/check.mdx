@@ -72,6 +72,11 @@ throw the original away.
 
 ## For a pipeline
 
+<Callout type="warning" title="Planned">
+`--json` is accepted and ignored — the output is the human report either way.
+The shape below is the specification.
+</Callout>
+
 ```bash title="terminal"
 zel check --json
 ```
@@ -91,20 +96,18 @@ zel check --json
 }
 ```
 
-Every command supports `--json`, because a tool only a human can read cannot be
-used by a pipeline.
+The intent is that every command supports `--json`, because a tool only a human
+can read cannot be used by a pipeline. None of them do yet.
 
 ## Options
 
 | | | |
 | --- | --- | --- |
 | `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--json` | Machine-readable | off |
-| `--quiet` | Exit code only | off |
-| `--strict` | Treat warnings as errors | off |
 
-`--strict` is what you want in CI once a folder is clean — it stops an unknown
-key from accumulating quietly until an upgrade turns it into a failure.
+`--json`, `--quiet` and `--strict` are specified and not yet built. `--strict`
+is the one worth waiting for in CI: once a folder is clean it stops an unknown
+key accumulating quietly until an upgrade turns it into a failure.
 
 ## `zel fmt`
 

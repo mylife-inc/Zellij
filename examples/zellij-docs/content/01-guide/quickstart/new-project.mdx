@@ -180,7 +180,7 @@ jobs:
         run: |
           curl -fsSL https://zellij.shebka.net/install.sh | sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - run: zel check docs --strict
+      - run: zel check docs
 ```
 
 A link to a page somebody deleted, a section type that does not exist, a
