@@ -10,12 +10,12 @@ then published.
 `zel doctor`.
 
 <Callout type="warning" title="What runs today">
-Steps 1 to 5 work now. **Step 6 uses commands that are still landing** —
-`zel build`, `zel deploy` and `zel image` exit with `not implemented yet`.
+Steps 1 to 5 work now, and so does most of step 6. The one gap is
+`zel deploy`, which is still landing; step 6 says what to do instead.
 
-The whole writing loop works: create a folder, serve it, edit, validate. What
-you cannot yet do is publish it with one command. [The reference](/cli) tracks
-the current state of each.
+The whole loop works: create a folder, serve it, edit, validate, and build
+either a static site or a container image. The one thing missing is uploading
+it in a single command. [The reference](/cli) tracks the state of each.
 </Callout>
 
 <Steps>
@@ -231,11 +231,15 @@ On Docker Desktop it is Settings → Resources → File sharing.
 
 <Step title="Ship it">
 
-<Callout type="warning" title="Planned">
-`zel build`, `zel deploy` and `zel image` exit with `not implemented yet`. The
-Netlify and DNS steps below are real and worth reading — the account, the
-project, the CNAME and the certificate are the same whichever tool uploads the
-folder. Only the one command that uploads it is missing.
+<Callout type="warning" title="One half runs, one does not">
+**B works today** — `zel build` and `zel image` produce a static folder and a
+container image, and the image serves.
+
+**A is not finished**: `zel deploy netlify` exits with `not implemented yet`.
+Everything else in it is real and worth reading — the account, the project, the
+CNAME and the certificate are the same whichever tool uploads the folder. Until
+`deploy` lands, build with `zel build` and upload the `dist` folder with
+Netlify's own CLI: `netlify deploy --prod --dir dist`.
 </Callout>
 
 Two ways, and they produce genuinely different things. Pick one.

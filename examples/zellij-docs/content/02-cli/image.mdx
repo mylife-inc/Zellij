@@ -3,9 +3,9 @@ title: zel image
 description: Build, run and push container images without writing a Dockerfile.
 ---
 
-<Callout type="warning" title="Planned">
-`zel image` exits with `not implemented yet`. This page is the specification it
-is being written against.
+<Callout type="tip" title="Available">
+`build`, `run`, `push` and `dockerfile` all work today. `--platform`,
+`--features` and `--build-arg` are specified and not yet built.
 </Callout>
 
 ```bash title="terminal"
@@ -34,7 +34,11 @@ that everything about images is in one place.
 | `--features <list>` | `maths`, `diagrams`, `all` | from the content |
 | `--build-arg <k=v>` | Passed through | — |
 
-The result is a Node runtime serving the site on **port 3000**, around 150 MB.
+The result is a Node runtime serving the site on **port 3000**. A small
+documentation site comes out at about **75 MB** — Alpine, Node, and the traced
+subset of dependencies the site actually reached for. Neither the engine nor
+`node_modules` is in it: what you deploy contains the compiled site and nothing
+that built it.
 
 ## `zel image run`
 
