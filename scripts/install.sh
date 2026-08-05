@@ -2,7 +2,7 @@
 #
 # Install `zel`, the Zellij CLI.
 #
-#     curl -fsSL https://zellij.shebka.net/install.sh | sh
+#     curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
 #
 # Binaries live in a public releases repository, because Zellij's own
 # repository is private and a private repository's release assets are not

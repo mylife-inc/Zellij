@@ -93,7 +93,7 @@ zel ci init github --target image --registry ghcr.io
 ```yaml title=".github/workflows/docs.yml"
       - name: Install zel
         run: |
-          curl -fsSL https://zellij.shebka.net/install.sh | sh
+          curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: zel check docs
       - run: zel image build docs --tag ghcr.io/acme/docs:${{ github.sha }}

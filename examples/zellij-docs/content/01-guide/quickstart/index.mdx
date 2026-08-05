@@ -14,22 +14,24 @@ First, the one thing they all need.
 no clone of anything.
 
 ```bash title="terminal"
-curl -fsSL https://zellij.shebka.net/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
 ```
 
 <Callout type="info" title="What that script does">
 Detects your platform, finds the latest release, downloads the archive built
 for it, **verifies it against its published SHA-256**, and puts one binary in
-`~/.local/bin`. It writes nothing else and needs no privileges. Read it first if
-you would rather — [install.sh](/install.sh) is about a hundred lines of POSIX
-shell.
+`~/.local/bin`. It writes nothing else and needs no privileges.
+
+Read it first if you would rather — it is about a hundred lines of POSIX
+shell, and it lives beside the binaries it installs:
+[install.sh](https://github.com/mylife-inc/releases/blob/main/zellij/install.sh).
 </Callout>
 
 Pin a version, or install somewhere else:
 
 ```bash title="terminal"
 ZEL_VERSION=v0.1.0 ZEL_INSTALL_DIR=/usr/local/bin \
-  curl -fsSL https://zellij.shebka.net/install.sh | sh
+  curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
 ```
 
 On Windows, or anywhere piping to a shell is not allowed: download the archive
