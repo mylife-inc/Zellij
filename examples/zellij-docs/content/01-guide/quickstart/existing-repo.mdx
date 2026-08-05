@@ -13,11 +13,11 @@ local steps.
 This is [Lab 3](/guide/quickstart/new-project) with an awkward first half: the
 repository exists, so nothing can be scaffolded around you.
 
-<Callout type="warning" title="What runs today">
-The conversion half works: `zel detect`, `zel convert` and `zel check` are all
-available. `zel migrate` — which is those three in one step — and `zel ci init`
-are not, so run the three yourself and write the workflow by hand from the one
-below.
+<Callout type="info" title="What runs today">
+Everything below runs. `zel migrate` and `zel ci init` are still landing, so two
+steps do by hand what one command will do later — running the three commands
+`migrate` composes, and pasting the pipeline `ci init` will write. Both are
+marked.
 </Callout>
 
 <Steps>
@@ -51,19 +51,20 @@ the AI route: `zel context` writes the reference, an agent does the conversion,
 Either way, write into a **new folder**:
 
 ```bash title="terminal"
-zel migrate docs --out docs-site
+zel convert docs --out docs-site
+zel check docs-site
 ```
 
-```
-✓ Detected MkDocs (certain)
-✓ Converted 31 pages into ./docs-site
-! 1 thing could not be carried over — see docs-site/convert-report.md
-✓ Content valid
-```
+Read what the conversion could not carry over before going further — external
+links belong in `menu.yaml`, and a page absent from the navigation was listed
+rather than published.
 
-`migrate` is `detect` → `convert` → `check` in one step. It does nothing the
-three cannot; it exists because forgetting to validate after a conversion is the
-mistake everybody makes once.
+<Callout type="warning" title="One command, later">
+`zel migrate docs --out docs-site` will be exactly these two with the detect in
+front, and one report at the end. It exits with `not implemented yet` for now.
+It will do nothing the commands above cannot; it exists because forgetting to
+validate after a conversion is the mistake everybody makes once.
+</Callout>
 
 </Step>
 
@@ -107,33 +108,26 @@ zel build docs           # and prove it compiles
 
 <Step title="Add the pipeline">
 
-```bash title="terminal"
-zel ci init github --target image --registry ghcr.io
-```
+Copy the workflow from [Lab 3, step 4](/guide/quickstart/new-project) — it is
+the same file, and the only line that changes is the path to your content
+folder.
 
-or, for a website rather than an image:
+<Callout type="tip" title="Write a separate workflow, not a step in yours">
+Scope it to `paths: ['docs/**']` and leave your existing pipelines alone. Your
+test suite should not run because somebody fixed a typo, and your documentation
+should not wait for it.
 
-```bash title="terminal"
-zel ci init github --deploy netlify
-```
-
-It writes `.github/workflows/docs.yml` and prints which secrets you have to add
-and where. It will not overwrite an existing workflow of the same name without
-`--force`.
-
-<Callout type="tip" title="You probably already have workflows">
-`zel ci init` writes a **separate** workflow rather than editing yours, and
-scopes it to `paths: ['docs/**']`. Your existing test and build pipelines are
-untouched, and a documentation change does not run your test suite.
+[`zel ci init github`](/cli/ci) will write exactly that, and refuse to overwrite
+an existing workflow without `--force`. It exits with `not implemented yet` for
+now.
 </Callout>
 
 </Step>
 
 <Step title="Add the check to pull requests">
 
-```bash title="terminal"
-zel ci init github --on pr
-```
+Add a second workflow on `pull_request`, running `zel check docs --strict` and
+nothing else.
 
 This is the step with the best return, and it costs nothing — no credentials, no
 registry, about fifteen seconds per run. From now on, a pull request that breaks
@@ -176,8 +170,11 @@ to try something is not a real option.
 
 ```bash title="terminal"
 netlify sites:create --name acme-docs-preview
-zel deploy netlify docs
+zel build docs --out dist
+netlify deploy --prod --dir dist
 ```
+
+`zel deploy netlify docs` will collapse those last two once it lands.
 
 </Step>
 <Step title="Circulate it">

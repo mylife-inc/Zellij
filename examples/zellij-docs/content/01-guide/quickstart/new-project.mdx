@@ -10,14 +10,13 @@ a container image on every push.
 **Needs:** `zel`, a GitHub repository. A container runtime only if you want to
 build locally as well.
 
-<Callout type="warning" title="What runs today">
-**This lab does not run yet.** `zel new project` and `zel ci init` both exit
-with `not implemented yet`.
+<Callout type="info" title="What runs today">
+Everything below runs, and two steps do by hand what one command will do later.
+`zel new project` and `zel ci init` are still landing, so step 1 creates the
+two folders itself and step 4 gives you the pipeline to paste. Both are marked.
 
-It is here because the arrangement is the valuable part and does not depend on
-the tool: create the two folders yourself, use
-[`zel new docs`](/cli/new#zel-new-docs-dir) for the documentation half — that
-works — and copy the pipeline below. `zel check` in CI works today.
+The rest — `zel new docs`, `zel dev`, `zel check`, `zel image build` — works
+now.
 </Callout>
 
 The arrangement matters more than the commands. Documentation in the same
@@ -29,29 +28,29 @@ arrangement under which it stays accurate.
 
 <Step title="Lay out the repository">
 
-```bash title="terminal"
-zel new project acme --product-lang rust
-```
-
-```
-✓ acme
-  docs/                 the content folder — validates already
-  product/              your code. Cargo.toml, src/main.rs
-  .github/workflows/docs.yml
-  README.md
-  .gitignore
-```
-
-`--product-lang` accepts `rust`, `go`, `java`, `kotlin`, `python`, `node`, or
-`none` for an empty folder you fill yourself. It only decides what goes in
-`product/` — a minimal, buildable starting point — and nothing about it is
-Zellij's business afterwards.
-
-Prefer different names?
+Two folders, side by side. The documentation half is one command:
 
 ```bash title="terminal"
-zel new project acme --docs-dir documentation --product-dir app
+mkdir acme && cd acme
+zel new docs docs --name Acme --guide
 ```
+
+The product half is your own tool's job — `cargo new product`, `go mod init`,
+`npm create`, whatever you were going to run anyway. Zellij has no opinion about
+it beyond staying out of it.
+
+```
+acme/
+├── docs/                 the content folder — validates already
+├── product/              your code
+└── .github/workflows/    step 4
+```
+
+<Callout type="warning" title="One command, later">
+`zel new project acme --product-lang rust` will do all of this, including a
+minimal buildable product folder and the pipeline. It exits with `not
+implemented yet` for now, which is why this step is three commands.
+</Callout>
 
 <Callout type="info" title="There is no Next.js app in here">
 Notice what is absent: no `package.json`, no `node_modules`, no wrapper. The
@@ -83,7 +82,11 @@ gh repo create acme --private --source=. --push
 
 </Step>
 
-<Step title="Read the pipeline you were given">
+<Step title="Add the pipeline">
+
+Create `.github/workflows/docs.yml` with this. [`zel ci init github --target
+image --registry ghcr.io`](/cli/ci) will write it for you once it lands.
+
 
 ```yaml title=".github/workflows/docs.yml"
 name: Documentation
@@ -102,7 +105,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: mylife-inc/setup-zel@v1
+      - name: Install zel
+        run: |
+          curl -fsSL https://zellij.shebka.net/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - run: zel check docs
 
@@ -120,13 +126,12 @@ Four steps. Worth noticing:
 - **`GITHUB_TOKEN` is the only credential**, and GitHub issues it to the job.
   `packages: write` is what lets it push to GHCR.
 
-Regenerate it with different choices at any time:
-
-```bash title="terminal"
-zel ci init github --target image --registry ghcr.io
-zel ci init github --deploy netlify          # a static site instead
-zel ci init gitlab --target image
-```
+<Callout type="info" title="The install step">
+`zel` is a single binary, so a pipeline installs it by downloading one. That
+needs a published release — until Zellij cuts its first, build the image with
+`docker build` using [`zel image dockerfile`](/cli/image#zel-image-dockerfile)
+to produce the Dockerfile, or run the steps from a machine that has `zel`.
+</Callout>
 
 </Step>
 
@@ -161,10 +166,6 @@ docker run -p 3000:3000 ghcr.io/you/acme/docs:<sha>
 The most valuable pipeline is the one that fails a pull request whose
 documentation is broken — and it needs no credentials at all.
 
-```bash title="terminal"
-zel ci init github --on pr
-```
-
 ```yaml title=".github/workflows/docs-check.yml"
 on:
   pull_request:
@@ -175,7 +176,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: mylife-inc/setup-zel@v1
+      - name: Install zel
+        run: |
+          curl -fsSL https://zellij.shebka.net/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: zel check docs --strict
 ```
 

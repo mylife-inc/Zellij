@@ -58,7 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: mylife-inc/setup-zel@v1
+      - name: Install zel
+        run: |
+          curl -fsSL https://zellij.shebka.net/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: zel check docs
       - run: zel deploy netlify docs
         env:

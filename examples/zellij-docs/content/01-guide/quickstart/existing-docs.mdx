@@ -11,13 +11,10 @@ words in a Zellij folder, checked, edited and published.
 The original is never modified. Everything below writes into a **new folder**,
 so a conversion you dislike costs you the folder you delete.
 
-<Callout type="warning" title="What runs today">
-Steps 1 to 3 work now — `zel detect`, `zel convert` and `zel context` are the
-oldest commands in the tool. **Steps 4 to 6 are still landing**: `zel dev`,
-`zel build` and `zel deploy` exit with `not implemented yet`.
-
-`zel check` works, so you can convert a tree and validate the result today.
-What you cannot yet do is preview or publish it in one command.
+<Callout type="info" title="What runs today">
+Steps 1 to 5 all run. The only gap is step 6: `zel deploy` is still landing, so
+build with `zel build` and upload the folder with your host's own tool — the
+step says how.
 </Callout>
 
 <Steps>
@@ -208,13 +205,19 @@ and not before.
 <Step title="Publish">
 
 Same as [Lab 1, step 6](/guide/quickstart/from-scratch) — a static site on
-Netlify, or a container image. The shortest version:
+Netlify, or a container image. The shortest version of each:
 
 ```bash title="terminal"
-export NETLIFY_SITE_ID=…
-export NETLIFY_AUTH_TOKEN=…
-zel deploy netlify ./content
+# a folder for a CDN
+zel build ./content --out dist
+netlify deploy --prod --dir dist
+
+# or a container
+zel image build ./content --tag acme-docs:v1
+zel image run acme-docs:v1
 ```
+
+`zel deploy netlify ./content` will collapse the first pair once it lands.
 
 </Step>
 
