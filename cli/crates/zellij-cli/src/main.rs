@@ -83,7 +83,7 @@ enum Command {
         dir: String,
     },
 
-    /// Development server with hot reload.
+    /// Development server. Edit content, reload the page.
     Dev {
         #[arg(default_value = ".")]
         dir: String,
