@@ -382,6 +382,53 @@ jobs:
             ```
 
       # The public half. Tagged `zellij-<version>` because the repository holds
+      # The installer lives beside the binaries, on a branch rather than as a
+      # release asset.
+      #
+      # An asset would need a release to point at, and `latest` in a repository
+      # shared by several projects is not necessarily ours — the same scoping
+      # problem the tags have. A file on `main` has one stable URL, needs no
+      # release, and can be read before installing:
+      #
+      #   raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh
+      #
+      # This runs **before** the release below, and not only for tidiness: a tag
+      # needs a commit to point at, and a repository that has never been pushed
+      # to has none. The first release into an empty releases repository fails
+      # at `git tag` unless something has committed first.
+      - name: Keep the installer current in the releases repository
+        if: env.HAS_RELEASES_TOKEN == 'true'
+        env:
+          TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+
+          git clone "https://x-access-token:${TOKEN}@github.com/${RELEASES_REPO}.git" /tmp/releases
+          cd /tmp/releases
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # An empty clone leaves HEAD unborn, and the branch it would be born
+          # on depends on the runner's git defaults. Name it.
+          git checkout -B main
+
+          mkdir -p zellij
+          cp "${GITHUB_WORKSPACE}/scripts/install.sh" zellij/install.sh
+          git add zellij/install.sh
+
+          # `--cached`, because plain `git diff` does not see a file that is not
+          # tracked yet — which is every file the first time, and reported the
+          # installer as unchanged when it had never been published at all.
+          if git diff --cached --quiet; then
+            echo "The installer is unchanged."
+            exit 0
+          fi
+
+          git commit -m "zellij: installer as of ${VERSION}"
+          git push -u origin main
+
       # artefacts for several projects and `latest` there is not ours — the
       # installer resolves the newest tag carrying this scope.
       - name: Publish to the public releases repository
@@ -403,42 +450,6 @@ jobs:
 
             Source lives in a private repository. These binaries, their
             checksums and the installer are the public artefacts.
-
-      # The installer lives beside the binaries, on a branch rather than as a
-      # release asset.
-      #
-      # An asset would need a release to point at, and `latest` in a repository
-      # shared by several projects is not necessarily ours — the same scoping
-      # problem the tags have. A file on `main` has one stable URL, needs no
-      # release, and can be read before installing:
-      #
-      #   raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh
-      #
-      # It also means the installer does not depend on the documentation site
-      # being deployed, which it did, which made every CI example unrunnable.
-      - name: Keep the installer current in the releases repository
-        if: env.HAS_RELEASES_TOKEN == 'true'
-        env:
-          TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
-          VERSION: ${{ github.ref_name }}
-        run: |
-          git clone --depth 1 \
-            "https://x-access-token:${TOKEN}@github.com/${RELEASES_REPO}.git" /tmp/releases
-
-          mkdir -p /tmp/releases/zellij
-          cp scripts/install.sh /tmp/releases/zellij/install.sh
-
-          cd /tmp/releases
-          if git diff --quiet -- zellij/install.sh; then
-            echo "The installer is unchanged."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add zellij/install.sh
-          git commit -m "zellij: installer as of ${VERSION}"
-          git push
 
       - name: Say why the public release was skipped
         if: env.HAS_RELEASES_TOKEN != 'true'
