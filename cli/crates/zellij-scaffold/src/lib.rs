@@ -12,6 +12,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use zellij_core::{Error, Result};
 
 mod content;
+pub mod pipeline;
 mod section;
 
 pub use section::section_file;

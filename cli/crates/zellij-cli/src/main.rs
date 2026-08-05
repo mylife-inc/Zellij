@@ -226,6 +226,10 @@ enum CiAction {
 
         #[arg(long, default_value = "static")]
         target: String,
+
+        /// The content folder, as the pipeline will refer to it.
+        #[arg(long)]
+        content: Option<String>,
     },
 }
 
@@ -351,6 +355,18 @@ fn main() {
             ImageAction::Dockerfile { dir } => image_dockerfile(dir),
         },
         Command::Doctor => doctor(),
+        Command::Ci { ref action } => match action {
+            CiAction::Init {
+                system,
+                deploy,
+                target,
+                content,
+            } => ci_init(system, deploy.as_deref(), target, content.as_deref()),
+        },
+        Command::Migrate {
+            ref source,
+            ref out,
+        } => migrate(source, out),
         Command::New(NewTarget::Docs {
             ref dir,
             ref name,
@@ -621,6 +637,107 @@ fn image_dockerfile(dir: &str) -> zellij_core::Result<()> {
     let _ = resolve_content(dir)?;
     print!("{}", zellij_engine::image::dockerfile(engine.image(), None));
     Ok(())
+}
+
+// ------------------------------------------------------------------ pipelines
+
+fn ci_init(
+    system: &str,
+    deploy: Option<&str>,
+    target: &str,
+    content: Option<&str>,
+) -> zellij_core::Result<()> {
+    use zellij_scaffold::pipeline::{self, CiOptions, Publish};
+
+    if system != "github" {
+        eprintln!("error: no generator for \"{system}\" yet");
+        eprintln!("       github is the only one implemented; gitlab and circle are planned");
+        std::process::exit(2);
+    }
+
+    // Before anything else. If the file is already there, "that exists" is
+    // what somebody needs to hear — not a question about which folder to use
+    // for a file this is not going to write.
+    let path = Utf8PathBuf::from(".github/workflows/docs.yml");
+    if path.exists() {
+        eprintln!("error: {path} already exists");
+        eprintln!("       move it aside, or write elsewhere with a redirect:");
+        eprintln!("         zel ci init github > my-pipeline.yml");
+        std::process::exit(2);
+    }
+
+    // What it publishes is one decision, expressed two ways. `--deploy netlify`
+    // says where; `--target image` says what. Asking for both is a contradiction
+    // rather than a combination.
+    let publish = match (deploy, target) {
+        (Some("netlify"), _) => Publish::Netlify,
+        (Some(other), _) => {
+            eprintln!("error: no pipeline for \"{other}\" yet");
+            eprintln!("       netlify is the only deploy target implemented");
+            std::process::exit(2);
+        }
+        (None, "image") => Publish::Image,
+        (None, _) => Publish::Nothing,
+    };
+
+    // The path as the *pipeline* will use it, which is relative to the
+    // repository root rather than to wherever this was run. Discovery only
+    // finds ./content, so anything else has to be said — and guessing "docs"
+    // because that is the common name would write a pipeline that points at
+    // nothing for everyone who chose a different one.
+    let content = match content {
+        Some(given) => given.to_owned(),
+        None => match resolve_content(".") {
+            Ok(path) => path.to_string(),
+            Err(_) => {
+                eprintln!("error: no content folder found, and none given");
+                eprintln!("       the pipeline needs the path as your repository sees it:");
+                eprintln!("         zel ci init {system} --content docs");
+                std::process::exit(2);
+            }
+        },
+    };
+
+    let options = CiOptions {
+        content,
+        publish,
+        registry: "ghcr.io".to_owned(),
+    };
+
+    if let Some(parent) = path.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
+    std::fs::write(&path, pipeline::github(&options))?;
+
+    println!("✓ {path}");
+    println!("  Validates {} on every pull request.", options.content);
+
+    let after = pipeline::afterwards(publish);
+    if !after.is_empty() {
+        println!();
+        println!("  Before it can publish:");
+        for line in after {
+            println!("    {line}");
+        }
+    }
+
+    Ok(())
+}
+
+// ------------------------------------------------------------------ workflows
+
+/// detect → convert → check, and stop at the first thing that fails.
+///
+/// It does nothing the three commands cannot. It exists because forgetting to
+/// validate after a conversion is the mistake everybody makes once.
+fn migrate(source: &str, out: &str) -> zellij_core::Result<()> {
+    detect(source)?;
+    println!();
+
+    convert(source, out, None, false)?;
+    println!();
+
+    check(out)
 }
 
 fn doctor() -> zellij_core::Result<()> {

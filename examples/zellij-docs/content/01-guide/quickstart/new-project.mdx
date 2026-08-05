@@ -11,12 +11,8 @@ a container image on every push.
 build locally as well.
 
 <Callout type="info" title="What runs today">
-Everything below runs, and two steps do by hand what one command will do later.
-`zel new project` and `zel ci init` are still landing, so step 1 creates the
-two folders itself and step 4 gives you the pipeline to paste. Both are marked.
-
-The rest — `zel new docs`, `zel dev`, `zel check`, `zel image build` — works
-now.
+Everything below runs. `zel new project` is still landing, so step 1 creates the
+two folders itself — it is marked. The rest is one command each.
 </Callout>
 
 The arrangement matters more than the commands. Documentation in the same
@@ -84,8 +80,11 @@ gh repo create acme --private --source=. --push
 
 <Step title="Add the pipeline">
 
-Create `.github/workflows/docs.yml` with this. [`zel ci init github --target
-image --registry ghcr.io`](/cli/ci) will write it for you once it lands.
+```bash title="terminal"
+zel ci init github --content docs --target image
+```
+
+It writes this, and prints what you still have to do that a file cannot:
 
 
 ```yaml title=".github/workflows/docs.yml"

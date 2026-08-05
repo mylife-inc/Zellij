@@ -14,10 +14,7 @@ This is [Lab 3](/guide/quickstart/new-project) with an awkward first half: the
 repository exists, so nothing can be scaffolded around you.
 
 <Callout type="info" title="What runs today">
-Everything below runs. `zel migrate` and `zel ci init` are still landing, so two
-steps do by hand what one command will do later — running the three commands
-`migrate` composes, and pasting the pipeline `ci init` will write. Both are
-marked.
+Every command in this lab runs.
 </Callout>
 
 <Steps>
@@ -51,20 +48,16 @@ the AI route: `zel context` writes the reference, an agent does the conversion,
 Either way, write into a **new folder**:
 
 ```bash title="terminal"
-zel convert docs --out docs-site
-zel check docs-site
+zel migrate docs --out docs-site
 ```
+
+`detect` → `convert` → `check`, stopping at the first failure. It does nothing
+the three commands cannot; it exists because forgetting to validate after a
+conversion is the mistake everybody makes once.
 
 Read what the conversion could not carry over before going further — external
 links belong in `menu.yaml`, and a page absent from the navigation was listed
 rather than published.
-
-<Callout type="warning" title="One command, later">
-`zel migrate docs --out docs-site` will be exactly these two with the detect in
-front, and one report at the end. It exits with `not implemented yet` for now.
-It will do nothing the commands above cannot; it exists because forgetting to
-validate after a conversion is the mistake everybody makes once.
-</Callout>
 
 </Step>
 
@@ -108,28 +101,28 @@ zel build docs           # and prove it compiles
 
 <Step title="Add the pipeline">
 
-Copy the workflow from [Lab 3, step 4](/guide/quickstart/new-project) — it is
-the same file, and the only line that changes is the path to your content
-folder.
+```bash title="terminal"
+zel ci init github --content docs --target image
+```
 
-<Callout type="tip" title="Write a separate workflow, not a step in yours">
-Scope it to `paths: ['docs/**']` and leave your existing pipelines alone. Your
-test suite should not run because somebody fixed a typo, and your documentation
-should not wait for it.
+<Callout type="tip" title="A separate workflow, not a step in yours">
+It writes `.github/workflows/docs.yml` scoped to `paths: ['docs/**']` and
+leaves your existing pipelines alone — your test suite should not run because
+somebody fixed a typo, and your documentation should not wait for it.
 
-[`zel ci init github`](/cli/ci) will write exactly that, and refuse to overwrite
-an existing workflow without `--force`. It exits with `not implemented yet` for
-now.
+It refuses to overwrite a workflow that is already there, and prints whatever
+you still have to do that a file cannot: the workflow permission, or the
+secrets.
 </Callout>
 
 </Step>
 
 <Step title="Add the check to pull requests">
 
-Add a second workflow on `pull_request`, running `zel check docs` and
-nothing else.
+Already done — the workflow above runs `zel check` on every pull request and
+publishes only on `main`.
 
-This is the step with the best return, and it costs nothing — no credentials, no
+This is the part with the best return, and it costs nothing — no credentials, no
 registry, about fifteen seconds per run. From now on, a pull request that breaks
 a documentation link fails before review.
 
