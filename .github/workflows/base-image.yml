@@ -140,9 +140,30 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
 
+      # Everything this step depends on, before it depends on it. Two runs
+      # failed here with eight green builds above them, and a bare
+      # `imagetools create` says nothing about which of its three inputs — the
+      # digests, the tags, the registry — was the problem.
+      - name: What the manifest will be built from
+        working-directory: /tmp/digests
+        run: |
+          echo "::group::Digests downloaded"
+          ls -la
+          echo "::endgroup::"
+
+          echo "::group::Tags metadata-action produced"
+          jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON"
+          echo "::endgroup::"
+
+          if [ -z "$(ls -A)" ]; then
+            echo "::error::No digest files. The build jobs uploaded none, or the download pattern matched none."
+            exit 1
+          fi
+
       - name: Stitch the architectures into one manifest
         working-directory: /tmp/digests
         run: |
+          set -x
           docker buildx imagetools create \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf "${REGISTRY}/${IMAGE}@sha256:%s " *)
