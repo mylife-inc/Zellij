@@ -213,10 +213,63 @@ impl Engine for ContainerEngine {
         })
     }
 
-    fn build(&self, _content: &Utf8Path, _out: &Utf8Path, _mode: BuildMode) -> Result<()> {
-        Err(Error::NoEngine {
-            reason: "build is not implemented yet".into(),
-        })
+    /// Build the site into `out`.
+    ///
+    /// Only `Static` so far. The container writes the export to a mounted
+    /// directory rather than to a volume we then copy out of: one fewer moving
+    /// part, and the result is on the host the moment the build finishes.
+    fn build(&self, content: &Utf8Path, out: &Utf8Path, mode: BuildMode) -> Result<()> {
+        if mode != BuildMode::Static {
+            return Err(Error::NoEngine {
+                reason: "only --target static is implemented so far".into(),
+            });
+        }
+
+        let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
+        let volume = format!("{}:/app/node_modules", self.modules_volume());
+
+        // The output directory has to exist before it can be mounted, and
+        // creating it here means `--out` can name somewhere that does not exist
+        // yet, which is what anyone would expect of an output path.
+        std::fs::create_dir_all(out)?;
+        let absolute_out = out
+            .canonicalize_utf8()
+            .map_err(|_| Error::NoContentFolder {
+                path: out.to_owned(),
+            })?;
+        let out_mount = format!("{absolute_out}:/out");
+
+        let script = guarded(
+            WRAPPER_CONTENT,
+            &format!(
+                "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
+                 npm install --install-links --no-audit --no-fund --loglevel=error && \
+                 npm run build && \
+                 rm -rf /out/* && cp -a out/. /out/"
+            ),
+        );
+
+        let status = self
+            .runtime
+            .command()
+            .args(["run", "--rm", "--init"])
+            .args(["-v", &mount])
+            .args(["-v", &volume])
+            .args(["-v", &out_mount])
+            // The image defaults to `standalone`, which is what a site image
+            // wants. A folder for a CDN is a different artefact.
+            .args(["-e", "ZELLIJ_OUTPUT=export"])
+            .arg(&self.image)
+            .args(["sh", "-c", &script])
+            .status()?;
+
+        match status.code() {
+            Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
+                path: content.to_owned(),
+            }),
+            Some(0) => Ok(()),
+            _ => Err(Error::ContentInvalid),
+        }
     }
 }
 

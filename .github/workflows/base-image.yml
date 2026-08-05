@@ -180,9 +180,24 @@ jobs:
     name: The image can build a site
     needs: merge
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
 
     steps:
       - uses: actions/checkout@v7
+
+      # This job pulled anonymously and got a 401, because the package is
+      # private. It is meant to be public — that is the whole distribution
+      # model — and making it so is a setting on the package, not something a
+      # workflow can assert. Signing in regardless: a smoke test should prove
+      # the image builds a site, not double as a visibility check, and it
+      # should keep working while that setting is being sorted out.
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - id: meta
         uses: docker/metadata-action@v5

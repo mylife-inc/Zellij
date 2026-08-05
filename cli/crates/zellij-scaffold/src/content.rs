@@ -69,6 +69,10 @@ fn site_yaml(name: &str, default_theme: bool, theme: &str, with_guide: bool) -> 
          \n\
          home: home\n\
          \n\
+         # The absolute origin. Canonical URLs, Open Graph tags and the sitemap\n\
+         # all need it, and without it the sitemap is generated empty.\n\
+         # siteUrl: https://example.com\n\
+         \n\
          nav:\n\
          \x20 sticky: true\n\
          \x20 search: true\n\

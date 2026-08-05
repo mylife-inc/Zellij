@@ -335,6 +335,12 @@ fn main() {
         Command::Detect { ref dir } => detect(dir),
         Command::Check { ref dir } => check(dir),
         Command::Dev { ref dir, port } => dev(dir, port),
+        Command::Build {
+            ref dir,
+            ref target,
+            ref out,
+            ..
+        } => build(dir, target, out.as_deref()),
         Command::Doctor => doctor(),
         Command::New(NewTarget::Docs {
             ref dir,
@@ -476,6 +482,65 @@ fn report_empty_mount(err: &zellij_core::Error) {
     eprintln!("    colima stop && colima start --mount '/tmp:w'");
     eprintln!();
     eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+}
+
+fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> {
+    use zellij_engine::{BuildMode, Engine as _};
+
+    let mode = match target {
+        "static" => BuildMode::Static,
+        "image" => BuildMode::Image,
+        other => {
+            eprintln!("error: no target called \"{other}\"");
+            eprintln!("       zel list targets — there are two");
+            std::process::exit(2);
+        }
+    };
+
+    let content = resolve_content(dir)?;
+    let out = Utf8PathBuf::from(out.unwrap_or("dist"));
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+
+    println!("  Engine   {}", engine.image());
+    println!("  Content  {content}");
+    println!("  Target   {target} → {out}");
+    println!();
+
+    match engine.build(&content, &out, mode) {
+        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
+            report_empty_mount(&err);
+            std::process::exit(err.exit_code());
+        }
+        Err(err) => Err(err),
+        Ok(()) => {
+            let pages = std::fs::read_dir(&out)
+                .map(|entries| entries.flatten().count())
+                .unwrap_or(0);
+            println!();
+            println!("✓ {out}  ({pages} entries)");
+
+            // A sitemap needs absolute URLs, so without `siteUrl` the engine
+            // has nothing to write and produces an empty one. It is valid XML
+            // and useless, and nothing else in the build says so — the site
+            // ships, search engines get an empty index, and nobody finds out
+            // for months.
+            let sitemap = out.join("sitemap.xml");
+            if let Ok(body) = std::fs::read_to_string(&sitemap)
+                && !body.contains("<loc>")
+            {
+                println!();
+                println!("! {sitemap} is empty.");
+                println!("  A sitemap lists absolute URLs, so it needs the site's origin.");
+                println!("  Set siteUrl in site.yaml:");
+                println!();
+                println!("    siteUrl: https://docs.example.com");
+            }
+
+            println!();
+            println!("  Serve it from any static host.");
+            Ok(())
+        }
+    }
 }
 
 fn doctor() -> zellij_core::Result<()> {
