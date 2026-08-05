@@ -11,8 +11,7 @@ a container image on every push.
 build locally as well.
 
 <Callout type="info" title="What runs today">
-Everything below runs. `zel new project` is still landing, so step 1 creates the
-two folders itself — it is marked. The rest is one command each.
+Every command in this lab runs.
 </Callout>
 
 The arrangement matters more than the commands. Documentation in the same
@@ -24,34 +23,34 @@ arrangement under which it stays accurate.
 
 <Step title="Lay out the repository">
 
-Two folders, side by side. The documentation half is one command:
+```bash title="terminal"
+zel new project acme --product-lang rust
+```
+
+```
+✓ acme
+  docs/                    the documentation, as Zellij content
+  product/                 yours
+  .github/workflows/docs.yml validates on every pull request, image on main
+  12 files
+
+  Write:  zel dev acme/docs
+  Code:   cd acme/product && cargo init
+```
+
+The `product/` folder is deliberately empty. `--product-lang` prints the command
+that starts a project in your language — with your project's name in it — and
+writes nothing: `cargo init` is better than anything Zellij would put there, and
+it is what you were going to run anyway.
 
 ```bash title="terminal"
-mkdir acme && cd acme
-zel new docs docs --name Acme --guide
+cd acme/product && cargo init
 ```
-
-The product half is your own tool's job — `cargo new product`, `go mod init`,
-`npm create`, whatever you were going to run anyway. Zellij has no opinion about
-it beyond staying out of it.
-
-```
-acme/
-├── docs/                 the content folder — validates already
-├── product/              your code
-└── .github/workflows/    step 4
-```
-
-<Callout type="warning" title="One command, later">
-`zel new project acme --product-lang rust` will do all of this, including a
-minimal buildable product folder and the pipeline. It exits with `not
-implemented yet` for now, which is why this step is three commands.
-</Callout>
 
 <Callout type="info" title="There is no Next.js app in here">
-Notice what is absent: no `package.json`, no `node_modules`, no wrapper. The
-pipeline builds your docs inside a container from a public image, and your
-repository stays a repository about your product.
+No `package.json`, no `node_modules`, no wrapper. The pipeline builds your
+documentation inside a container from a public image, and your repository stays
+a repository about your product.
 </Callout>
 
 </Step>

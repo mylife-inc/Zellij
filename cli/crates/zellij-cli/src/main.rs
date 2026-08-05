@@ -389,6 +389,12 @@ fn main() {
             ref title,
             ref dir,
         }) => new_guide(name, title.as_deref(), dir),
+        Command::New(NewTarget::Project {
+            ref name,
+            ref product_lang,
+            ref docs_dir,
+            ref product_dir,
+        }) => new_project(name, product_lang, docs_dir, product_dir),
         Command::Convert {
             ref source,
             ref out,
@@ -826,6 +832,61 @@ fn new_docs(
         println!("  {path}");
     }
     println!("\n  Next: zel dev {target}");
+
+    Ok(())
+}
+
+fn new_project(
+    name: &str,
+    product_lang: &str,
+    docs_dir: &str,
+    product_dir: &str,
+) -> zellij_core::Result<()> {
+    use zellij_scaffold::project::{self, ProjectOptions};
+
+    if !project::known_languages().contains(&product_lang) {
+        eprintln!("error: no hint for \"{product_lang}\"");
+        eprintln!("       known: {}", project::known_languages().join(", "));
+        eprintln!("       any of them only prints a command; nothing is generated");
+        std::process::exit(2);
+    }
+
+    let target = Utf8PathBuf::from(name);
+    let options = ProjectOptions {
+        name: name.to_owned(),
+        docs_dir: docs_dir.to_owned(),
+        product_dir: product_dir.to_owned(),
+        product_lang: product_lang.to_owned(),
+    };
+
+    let written = project::project(&options).write(&target, false)?;
+
+    println!("✓ {target}");
+    println!(
+        "  {:<24} the documentation, as Zellij content",
+        format!("{docs_dir}/")
+    );
+    println!("  {:<24} yours", format!("{product_dir}/"));
+    println!(
+        "  {:<24} validates on every pull request, image on main",
+        ".github/workflows/docs.yml"
+    );
+    println!("  {} files", written.len());
+
+    println!();
+    println!("  Write:  zel dev {target}/{docs_dir}");
+
+    // A hint rather than a scaffold. `cargo init` is better than anything a
+    // documentation tool would write in its place, and it is the command
+    // somebody would have run anyway.
+    match project::product_hint(product_lang, name) {
+        Some(hint) => {
+            println!("  Code:   cd {target}/{product_dir} && {hint}");
+        }
+        None => {
+            println!("  Code:   {target}/{product_dir} is empty — start it with your own tooling");
+        }
+    }
 
     Ok(())
 }

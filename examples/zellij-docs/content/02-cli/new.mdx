@@ -267,12 +267,8 @@ a prefix is a build error, and this is where it is prevented.
 
 ## `zel new project <name>`
 
-<Callout type="warning" title="Planned">
-Exits with `not implemented yet`.
-</Callout>
-
 A whole repository: documentation and a product as siblings, with a pipeline
-that publishes the first on every push.
+that validates the first on every pull request and publishes it on every push.
 
 ```bash title="terminal"
 zel new project acme --product-lang rust
@@ -280,28 +276,43 @@ zel new project acme --product-lang rust
 
 ```
 ✓ acme
-  docs/                 a content folder — validates already
-  product/              Cargo.toml, src/main.rs
-  .github/workflows/docs.yml
-  README.md
-  .gitignore
-```
+  docs/                    the documentation, as Zellij content
+  product/                 yours
+  .github/workflows/docs.yml validates on every pull request, image on main
+  12 files
 
-`--product-lang` takes `rust`, `go`, `java`, `kotlin`, `python`, `node`, or
-`none` for an empty folder you fill yourself. It decides only what goes in
-`product/` — a minimal, buildable starting point — and nothing about it is
-Zellij's business afterwards.
+  Write:  zel dev acme/docs
+  Code:   cd acme/product && cargo init
+```
 
 | | | |
 | --- | --- | --- |
-| `--product-lang <lang>` | What to put in the product folder | `none` |
+| `--product-lang <lang>` | Which starting command to suggest | `none` |
 | `--docs-dir <name>` | | `docs` |
 | `--product-dir <name>` | | `product` |
 | `--force` | Write into a directory that is not empty | off |
 
+<Callout type="info" title="The product folder is empty on purpose">
+An earlier draft of this page said `--product-lang` would write "a minimal,
+buildable starting point" into `product/`. It does not, and it should not.
+
+`cargo init`, `go mod init` and `npm init` exist, are better than anything a
+documentation tool would write in their place, and are what you were going to
+run anyway. Worse, the languages differ in how much opinion is required —
+Rust needs two files, a JVM project needs a build system chosen for you — so
+the useful cases would have been useful and the rest would have been wrong.
+
+So `--product-lang` prints the command for your language, with your project's
+name already in it, and writes nothing. `none` skips even that.
+</Callout>
+
 Notice what is absent: no `package.json`, no wrapper. The pipeline builds the
-docs inside a container from a public image, so the repository stays a
+documentation inside a container from a public image, so the repository stays a
 repository about your product.
+
+The `docs/` half is exactly what [`zel new docs`](/cli/new#zel-new-docs-dir)
+produces — the same scaffold, so the two cannot drift — and the pipeline is
+exactly what [`zel ci init github --target image`](/cli/ci) writes.
 
 [Lab 3](/guide/quickstart/new-project) walks this end to end.
 

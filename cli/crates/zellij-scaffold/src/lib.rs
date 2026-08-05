@@ -13,6 +13,7 @@ use zellij_core::{Error, Result};
 
 mod content;
 pub mod pipeline;
+pub mod project;
 mod section;
 
 pub use section::section_file;
