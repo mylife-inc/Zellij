@@ -339,8 +339,17 @@ fn main() {
             ref dir,
             ref target,
             ref out,
-            ..
-        } => build(dir, target, out.as_deref()),
+            ref tag,
+        } => match target.as_str() {
+            "image" => image_build(dir, tag.as_deref(), None),
+            _ => build(dir, target, out.as_deref()),
+        },
+        Command::Image { ref action } => match action {
+            ImageAction::Build { dir, tag } => image_build(dir, tag.as_deref(), None),
+            ImageAction::Run { tag, port } => image_run(tag.as_deref(), *port),
+            ImageAction::Push { tag, registry } => image_push(tag, registry.as_deref()),
+            ImageAction::Dockerfile { dir } => image_dockerfile(dir),
+        },
         Command::Doctor => doctor(),
         Command::New(NewTarget::Docs {
             ref dir,
@@ -541,6 +550,77 @@ fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> 
             Ok(())
         }
     }
+}
+
+/// A tag for a site nobody named: the content folder's own name.
+fn default_tag(content: &Utf8Path) -> String {
+    let name = content
+        .canonicalize_utf8()
+        .ok()
+        .as_deref()
+        .and_then(Utf8Path::file_name)
+        .or_else(|| content.file_name())
+        .unwrap_or("zellij-site")
+        .to_ascii_lowercase();
+
+    // Docker will not take a tag with characters a directory happily has.
+    let safe: String = name
+        .chars()
+        .map(|c| {
+            if c.is_ascii_alphanumeric() || c == '-' || c == '.' {
+                c
+            } else {
+                '-'
+            }
+        })
+        .collect();
+
+    format!("{}:latest", safe.trim_matches('-'))
+}
+
+fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_core::Result<()> {
+    let content = resolve_content(dir)?;
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+    let tag = tag
+        .map(str::to_owned)
+        .unwrap_or_else(|| default_tag(&content));
+
+    println!("  Engine   {}", engine.image());
+    println!("  Content  {content}");
+    println!("  Tag      {tag}");
+    println!();
+
+    engine.image_build(&content, &tag, features, None)?;
+
+    println!();
+    println!("✓ {tag}");
+    println!("  Run it:   zel image run {tag}");
+    println!("  Push it:  zel image push {tag} --registry ghcr.io/you");
+    Ok(())
+}
+
+fn image_run(tag: Option<&str>, port: u16) -> zellij_core::Result<()> {
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+    let tag = match tag {
+        Some(tag) => tag.to_owned(),
+        None => default_tag(&resolve_content(".")?),
+    };
+
+    println!("  Serving http://localhost:{port}  — Ctrl-C to stop");
+    println!();
+    engine.image_run(&tag, port)
+}
+
+fn image_push(tag: &str, registry: Option<&str>) -> zellij_core::Result<()> {
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+    engine.image_push(tag, registry)
+}
+
+fn image_dockerfile(dir: &str) -> zellij_core::Result<()> {
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
+    let _ = resolve_content(dir)?;
+    print!("{}", zellij_engine::image::dockerfile(engine.image(), None));
+    Ok(())
 }
 
 fn doctor() -> zellij_core::Result<()> {

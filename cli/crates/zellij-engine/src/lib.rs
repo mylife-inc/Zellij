@@ -11,6 +11,7 @@
 use camino::Utf8Path;
 
 pub mod container;
+pub mod image;
 pub mod runtime;
 
 pub use container::ContainerEngine;
