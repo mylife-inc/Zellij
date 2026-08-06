@@ -15,9 +15,39 @@ Six things can be created, and they are different in kind. `docs`, `app` and
 | `zel new app [dir]` | A Next.js wrapper around a content folder | `.` | Planned |
 | `zel new project <name>` | A repository with docs and product as siblings | `./<name>` | Planned |
 
-The four available ones are pure Rust with the schema compiled in — **no
-container runtime, no Node**. Writing content should not need Docker. The two
-planned ones produce a Node application, and will.
+The available ones are pure Rust with the schema compiled in — **no container
+runtime, no Node**. Writing content should not need Docker. `zel new app`
+produces a Node application, and will.
+
+## Which one you want
+
+<CardGrid>
+  <Card title="Nothing yet" icon="sparkles">
+    `zel new docs` — a content folder, and the only thing most people ever need.
+  </Card>
+  <Card title="A whole repository" icon="folder-tree">
+    `zel new project` — docs and product as siblings, with a pipeline.
+  </Card>
+  <Card title="Adding to a folder you have" icon="file-plus">
+    `zel new page`, `zel new guide`, `zel new section`.
+  </Card>
+  <Card title="You need the Next.js app" icon="package">
+    `zel new app` — for Vercel, or your own React pages alongside.
+  </Card>
+</CardGrid>
+
+If you are unsure, it is `zel new docs`. `zel dev`, `zel build` and `zel deploy`
+run the application in a container, so a content folder is a complete project —
+the app is for the cases where you specifically need it on disk.
+
+## What every one of them refuses to do
+
+**Write into a directory that already has something in it.** Without `--force`,
+a non-empty target is an error rather than a merge.
+
+Merging is how a scaffold quietly overwrites a file somebody spent an afternoon
+on. The check ignores dotfiles, so `git init` followed by `zel new docs` works —
+a directory containing only `.git` is empty as far as anyone is concerned.
 
 ---
 
@@ -61,9 +91,22 @@ site that is complete and correct on the day it is created:
 - Every field written is a field the schema accepts, so the file is a working
   example of its own format.
 
-That matters because the alternative — a skeleton with holes — makes your first
-experience of Zellij a validation error you did not cause. You start from
-something that works and edit it into something you want.
+That matters because the alternative — a skeleton with `TODO` in it — makes your
+first experience of Zellij a validation error you did not cause. You start from
+something that works and edit it into something you want, and at no point are
+you debugging the thing that was supposed to get you started.
+
+It is also why the generated `site.yaml` carries commented keys rather than a
+minimal file. A key you can see and uncomment is discoverable; a key you have to
+look up is not:
+
+```yaml title="content/site.yaml"
+theme: paper          # zel list themes — there are fourteen
+
+# The absolute origin. Canonical URLs, Open Graph tags and the sitemap
+# all need it, and without it the sitemap is generated empty.
+# siteUrl: https://example.com
+```
 
 ### Options
 

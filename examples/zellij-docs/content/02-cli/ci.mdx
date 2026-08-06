@@ -9,14 +9,40 @@ say so rather than writing something that will not run.
 </Callout>
 
 ```bash title="terminal"
-zel ci init github
-zel ci init github --deploy netlify --on push:main
-zel ci init gitlab --target image --registry ghcr.io/acme
+zel ci init github --content docs
+zel ci init github --content docs --target image
+zel ci init github --content docs --deploy netlify
 ```
 
-Writes a pipeline into your repository. The pipeline installs `zel` and calls
-it — no Dockerfile in the file, no fifteen lines of `docker build` arguments to
-keep in step with a base image that changes.
+```
+✓ .github/workflows/docs.yml
+  Validates docs on every pull request.
+
+  Before it can publish:
+    Settings → Actions → General → Workflow permissions → Read and write.
+    Without it the push fails with a 403 that reads like an authentication problem.
+```
+
+Writes a pipeline into your repository. It installs `zel` and calls it — no
+Dockerfile in the file, no fifteen lines of `docker build` arguments to keep in
+step with a base image that changes.
+
+## Why generate it rather than document it
+
+A workflow in a blog post is correct on the day it is written.
+
+Pipelines are the worst place for that. Nobody rereads a working one, so a flag
+that changed, an action that moved major version, or a base image that
+reorganised itself surfaces months later as a failure in a file whose author has
+forgotten writing it.
+
+**A generated pipeline tracks the commands it calls.** When `zel image build`
+gains a flag, the generator gains it too, and running `zel ci init` again gives
+you something that still works. The file says so in its own first line, so
+whoever finds it in a year knows to regenerate rather than repair.
+
+It also refuses to overwrite a workflow that already exists — regenerating is a
+decision, not something to discover afterwards.
 
 ## Who this is for
 
@@ -96,8 +122,37 @@ zel ci init github --target image --registry ghcr.io
 | `--on <event>` | `push:main`, `pr`, `tag` | `push:main` |
 | `--out <path>` | Where to write | the system's conventional path |
 
-Without `--deploy`, the pipeline validates and builds but publishes nothing —
-which is the right first step, and what you want on pull requests regardless.
+Without `--deploy` or `--target image` the pipeline only validates — which is
+the right first step, and what you want on pull requests regardless.
+
+## What it always writes
+
+Two properties, in every variant:
+
+**A check job that needs no credentials.** No registry, no secrets, about
+fifteen seconds. It runs on every pull request, and it is the part with the best
+return in the whole pipeline: a link to a page somebody deleted gets caught
+before review rather than after deploy.
+
+**A publish job gated on `github.event_name == 'push'`.** A pull request proves
+the content is valid; it does not need to produce an image nobody will pull. It
+also means a pull request from a fork — which cannot have your token — does not
+fail for a reason that has nothing to do with the change.
+
+## Scoped to your content folder
+
+```yaml
+on:
+  push:
+    paths: ['docs/**', '.github/workflows/docs.yml']
+```
+
+A separate workflow rather than a job added to yours, and scoped to the folder.
+Your test suite should not run because somebody fixed a typo, and your
+documentation should not wait for your test suite.
+
+The workflow file is in its own `paths` list so that editing the pipeline still
+runs it.
 
 ## Checking without publishing
 
