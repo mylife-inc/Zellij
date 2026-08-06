@@ -23,7 +23,17 @@ const root = path.resolve(import.meta.dirname, '..', 'content', 'assets');
 const brand = path.join(root, 'brand');
 
 const rosette = trim(decodePng(path.join(brand, 'zellij-rosette.png')));
-const wordmark = trim(decodePng(path.join(brand, 'zellij-wordmark.png')));
+
+/*
+ * The bar mark. Not trimmed: it is a circle on a transparent ground, and
+ * trimming to its ink would crop the antialiased edge and leave it a hair
+ * wider than tall — enough for a round thing beside text to look off-centre.
+ *
+ * `zellij-wordmark.png` is still in this folder and no longer derived from.
+ * It was what the bar used, and letters edge to edge is why the sizing there
+ * has to be so conservative; a round mark is free to be larger.
+ */
+const mark = decodePng(path.join(brand, 'zellij-mark.png'));
 
 /* ------------------------------------------------------------------ fields */
 
@@ -168,13 +178,14 @@ for (const [name, image] of Object.entries(IMAGES)) {
 }
 
 /*
- * The nav wordmark, at four times the 24px it renders at so it stays sharp on a
- * retina display. One file for both colour modes: the mark's greens, teals and
- * blues sit in the middle of the range and read on a light or a dark bar.
+ * The nav mark, at four times the 28px it renders at so it stays sharp on a
+ * retina display. One file for both colour modes: it is a full-colour tile on a
+ * transparent ground, and reads on a light or a dark bar.
+ *
+ * Square, from a square source. Deriving the height from the width the way the
+ * wordmark did would let a one-pixel difference in the source through as a
+ * visibly oval circle.
  */
-encodePng(
-  resize(wordmark, Math.round((96 * wordmark.width) / wordmark.height), 96),
-  path.join(root, 'logo.png'),
-);
+encodePng(resize(mark, 112, 112), path.join(root, 'logo.png'));
 
-console.log(`Derived ${Object.keys(IMAGES).length} images and 1 wordmark from the brand artwork.`);
+console.log(`Derived ${Object.keys(IMAGES).length} images and 1 mark from the brand artwork.`);

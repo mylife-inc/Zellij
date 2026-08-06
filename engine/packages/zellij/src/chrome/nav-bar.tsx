@@ -127,6 +127,7 @@ function buildBrand(site: Site): BrandModel {
       alt: logo.alt ?? name,
       href,
       external,
+      ...(logo.height ? { height: logo.height } : {}),
     },
     // A logo that leaves the site would otherwise take the only way home with
     // it, so the site's own name becomes that link.

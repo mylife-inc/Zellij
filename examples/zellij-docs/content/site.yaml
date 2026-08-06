@@ -3,10 +3,16 @@ tagline: Turn a folder of plain text into a website worth showing people.
 
 brand:
   logo:
-    # One file for both colour modes: the mark's greens, teals and blues sit in
-    # the middle of the range and read on a light or a dark bar.
+    # One file for both colour modes: the mark is a full-colour tile on a
+    # transparent ground, so it reads on a light or a dark bar.
     src: assets/logo.png
     alt: Zellij
+    # Taller than the default, which is sized for a wordmark. This mark is
+    # round, so its ink is spread over two dimensions instead of one — at the
+    # wordmark height it reads as a thumbnail rather than a logo. This sits it
+    # a little above the bar's icons, which is where the eye expects the thing
+    # that names the site.
+    height: 1.75rem
   # No `href`: this is a standalone site, so the mark goes to its own "/".
 
 theme: cupertino

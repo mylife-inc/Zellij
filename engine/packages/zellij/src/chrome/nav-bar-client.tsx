@@ -2,7 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 
 import { AnnouncementBar } from './announcement-bar';
 import { MobileDrawer } from './mobile-drawer';
@@ -28,6 +36,14 @@ import type { BrandModel, NavItemModel, NavLeafModel, NavModel } from './nav-mod
  */
 function NavBrand({ brand }: { brand: BrandModel }) {
   const { logo, title } = brand;
+
+  /*
+   * Set as the variable the stylesheet already falls back on, rather than as a
+   * height on the element: the rule that sizes the mark also caps its width and
+   * swaps light for dark, and an inline height would win over all of it in one
+   * of the two variants only.
+   */
+  const sizing = logo?.height ? ({ '--zellij-brand-height': logo.height } as CSSProperties) : undefined;
 
   const mark = logo ? (
     <>
@@ -61,6 +77,7 @@ function NavBrand({ brand }: { brand: BrandModel }) {
       className="zellij-brand"
       data-has-title={title ? 'true' : 'false'}
       data-has-dark={logo?.dark ? 'true' : 'false'}
+      style={sizing}
     >
       {logo?.external ? (
         <a className="zellij-logo" href={logo.href} aria-label={logo.alt}>

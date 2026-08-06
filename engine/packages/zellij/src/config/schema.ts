@@ -74,6 +74,26 @@ export const brandSchema = z.object({
       dark: z.string().optional(),
       alt: z.string().optional(),
       href: z.string().optional(),
+      /**
+       * How tall the mark sits in the bar, as a CSS length.
+       *
+       * The default suits a wordmark, whose cap height *is* its box: matched to
+       * the nav label size it reads far larger than the labels around it. A
+       * square or round mark is the opposite — the same box height leaves a
+       * thumbnail beside text it should be anchoring, since its ink is spread
+       * over two dimensions instead of one.
+       *
+       * There is no way to infer this from the file. A tall narrow crest and a
+       * wide wordmark can share a bounding box and want different heights, so
+       * the site says.
+       */
+      height: z
+        .string()
+        .regex(
+          /^\d+(\.\d+)?(rem|em|px)$/,
+          'must be a CSS length in rem, em or px — for example "1.75rem"',
+        )
+        .optional(),
     })
     .optional(),
   title: z.string().optional(),

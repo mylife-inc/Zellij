@@ -27,7 +27,15 @@ export interface NavItemModel {
 export interface BrandModel {
   /** Fallback wordmark and the accessible name when no logo image is set. */
   siteName: string;
-  logo?: { src: string; dark?: string; alt: string; href: string; external: boolean };
+  logo?: {
+    src: string;
+    dark?: string;
+    alt: string;
+    href: string;
+    external: boolean;
+    /** CSS length; absent means the wordmark-shaped default. */
+    height?: string;
+  };
   title?: { label: string; href: string };
 }
 
