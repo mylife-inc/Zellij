@@ -1,14 +1,13 @@
 ---
-title: zel detect and zel convert
+title: zel convert
 description: Read a MkDocs or Docusaurus tree and write the Zellij equivalent beside it.
 ---
 
 <Callout type="tip" title="Available">
-`detect` and `convert` work today. `migrate` is planned.
+Works today.
 </Callout>
 
 ```bash title="terminal"
-zel detect ./docs
 zel convert ./docs --out ./content
 zel check ./content
 ```
@@ -16,36 +15,8 @@ zel check ./content
 The output goes in a **new folder**. The original is never touched, so a
 conversion you dislike costs nothing but the folder you delete.
 
-## `zel detect <dir>`
-
-Says what a folder was written for, and how sure it is.
-
-```bash title="terminal"
-zel detect ./docs
-```
-
-```
-mkdocs       MkDocs — mkdocs.yml with a nav tree  (certain)
-```
-
-Certainty matters. A folder with the format's own configuration file is
-certain; one that merely looks like a default layout is not, and an ambiguous
-tree asks rather than guessing. Guessing between two plausible formats produces
-a conversion that is wrong in ways nobody notices for a month.
-
-When nothing matches:
-
-```
-Nothing here looks like a documentation tool this build knows.
-
-If the folder is plain Markdown with no configuration, there is no
-structure to convert from. Write the reference with `zel context` and
-ask an AI agent to author the folder instead.
-```
-
-That is not a failure to be worked around. A folder of loose Markdown has no
-order, no grouping and no titles beyond the first heading — there is nothing to
-convert *from*, and inventing a structure would be a worse answer than saying so.
+Run [`zel detect`](/cli/detect) first if you are not sure what the folder is,
+or [`zel migrate`](/cli/migrate) to do both and validate the result.
 
 ## `zel convert <source>`
 
@@ -155,30 +126,8 @@ sidebar entries. It does not compile your Markdown. A converted folder can pass
 [`zel build`](/cli/build) before you throw the original away.
 </Callout>
 
-## `zel migrate`
-
-<Callout type="tip" title="Available">
-Works today.
-</Callout>
-
-`detect` → `convert` → `check`, stopping at the first thing that fails.
-
-```bash title="terminal"
-zel migrate ./docs --out ./content
-```
-
-```
-✓ Detected MkDocs (certain)
-✓ Converted 31 pages into ./content
-! 2 things could not be carried over
-✓ Content valid
-```
-
-It does nothing the three commands cannot. It exists because forgetting to
-validate after a conversion is the mistake everybody makes once.
-
 ## See also
 
 - [Converting existing docs](/guide/converting) — the concepts, and what to expect
 - [`zel context`](/cli/context) — when there is no structure to convert from
-- [`zel ship`](/cli/deploy#zel-ship) — convert and publish in one line
+- [`zel ship`](/cli/ship) — convert and publish in one line

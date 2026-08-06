@@ -1,26 +1,40 @@
 title: CLI
 order: 2
-description: zel — the one command for creating, converting, checking, building and shipping a site.
+description: zel — one command for creating, converting, checking, building and shipping a site.
 
+# One page per command. They were grouped by task at first — detect, convert and
+# migrate on one page — which reads well and hides things: a reader looking for
+# `zel migrate` in the navigation could not find it.
 nav:
   - index
   - label: Writing content
     items:
       - new
       - explain
+      - list
       - context
   - label: Bringing content across
     items:
+      - detect
       - convert
-  - label: Checking and running
+      - migrate
+  - label: Checking
     items:
       - check
+      - fmt
+  - label: Running
+    items:
       - dev
-  - label: Shipping
+      - serve
+  - label: Building
     items:
       - build
-      - deploy
       - image
+  - label: Shipping
+    items:
+      - deploy
+      - publish
+      - ship
       - ci
   - label: Reference
     items:

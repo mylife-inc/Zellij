@@ -1,6 +1,6 @@
 ---
 title: zel check
-description: Validate a content folder, and format it.
+description: Validate a content folder against the schemas the build uses.
 ---
 
 <Callout type="tip" title="Available">
@@ -108,39 +108,6 @@ can read cannot be used by a pipeline. None of them do yet.
 `--json`, `--quiet` and `--strict` are specified and not yet built. `--strict`
 is the one worth waiting for in CI: once a folder is clean it stops an unknown
 key accumulating quietly until an upgrade turns it into a failure.
-
-## `zel fmt`
-
-<Callout type="warning" title="Planned">
-Exits with `not implemented yet`.
-</Callout>
-
-Canonical formatting for the YAML: key order, indentation, quoting, and lists
-that are short enough written inline.
-
-```bash title="terminal"
-zel fmt              # rewrite in place
-zel fmt --check      # exit 1 if anything would change
-```
-
-`--check` in CI ends the diffs that are only about formatting.
-
-## `zel watch`
-
-<Callout type="warning" title="Planned">
-Exits with `not implemented yet`.
-</Callout>
-
-Re-runs `check` on every change, with no server and no container.
-
-```bash title="terminal"
-zel watch
-```
-
-For a repository that keeps documentation valid without ever building a site —
-the content lives beside the product and is published somewhere else, or not
-yet at all. [`zel dev`](/cli/dev) is what you want if you would rather see the
-pages.
 
 ## See also
 

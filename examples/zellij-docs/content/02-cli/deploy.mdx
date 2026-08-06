@@ -118,40 +118,6 @@ four minutes.
 | `--preview` | A preview deploy rather than production | off |
 | `--dry-run` | Build and report, upload nothing | off |
 
-## `zel publish`
-
-`check` → `build` → `deploy`, which is what `deploy` already does. The name
-exists for the case where the three are configured separately in `zel.toml` and
-you want to say the whole thing:
-
-```bash title="terminal"
-zel publish
-```
-
-It does nothing its primitives cannot. A workflow command that could do
-something its parts could not would be a place for behaviour to hide.
-
-## `zel ship`
-
-The whole of a migration, in one line: take documentation written for another
-tool and put it online.
-
-```bash title="terminal"
-zel ship ./docs --provider netlify
-```
-
-```
-✓ Detected MkDocs (certain)
-✓ Converted 47 pages, 3 unmapped — see convert-report.md
-✓ Content valid
-✓ Built static — 47 routes
-✓ Uploaded to acme-docs
-  https://acme-docs.netlify.app
-```
-
-`detect` → `convert` → `check` → `build` → `deploy`. It stops at the first
-failure, and the conversion report is written whether or not the rest succeeds.
-
 ## See also
 
 - [`zel build`](/cli/build) — the two things a site can be

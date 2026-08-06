@@ -92,28 +92,6 @@ checked it into your repository, you already have Node and a `package.json`, and
 
 `zel dev` is for the case where the content folder is all there is.
 
-## `zel serve`
-
-<Callout type="warning" title="Planned">
-Exits with `not implemented yet`.
-</Callout>
-
-Serves what [`zel build`](/cli/build) produced, with no watching and no
-rebuilding.
-
-```bash title="terminal"
-zel build
-zel serve ./dist
-```
-
-The last check before a deploy. A static build can differ from the development
-server in ways worth seeing once — a link that only resolves with a trailing
-slash, an image the export did not copy, a page that needed a server it will not
-have.
-
-For a container image, [`zel image run`](/cli/image#zel-image-run) is the
-equivalent.
-
 ## See also
 
 - [`zel check`](/cli/check) — validation without a browser
