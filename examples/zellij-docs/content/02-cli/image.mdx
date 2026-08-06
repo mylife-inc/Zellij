@@ -14,12 +14,44 @@ zel image run acme-docs:v2
 zel image push acme-docs:v2 --registry ghcr.io/acme
 ```
 
+```
+  Engine   ghcr.io/mylife-inc/zellij-base:latest
+  Content  site
+  Tag      acme-docs:v2
+
+  …
+
+✓ acme-docs:v2
+  Run it:   zel image run acme-docs:v2
+  Push it:  zel image push acme-docs:v2 --registry ghcr.io/you
+```
+
 **You do not write a Dockerfile.** `zel` writes the multi-stage build itself,
 because the correct one is not obvious — it involves a base image you did not
 choose, an install step that depends on which features your content uses, and a
 runtime stage that must copy exactly three paths and no others. Getting it
 slightly wrong produces an image four times the size that still works, so
 nothing tells you.
+
+## What "you do not write a Dockerfile" buys you
+
+Three things, and they are worth naming because a generated file is normally a
+smell.
+
+**The base image is not yours to track.** The `FROM` line names an image whose
+tag, layout and contents are Zellij's business. A Dockerfile in your repository
+is correct on the day it is written and silently stale afterwards — the day the
+engine moves from `/opt/zellij` you find out by way of a build failure in a file
+you never touched.
+
+**The install step depends on your content.** Whether maths and diagram support
+get fetched is decided by what your pages use, and the step that decides it has
+to run before `npm install` or it changes nothing. That ordering is not
+something anyone should have to know.
+
+**The runtime stage is easy to get subtly wrong.** It copies exactly three paths.
+Copy a fourth — `node_modules`, say — and you get an image four times the size
+that works perfectly, so nothing tells you.
 
 ## `zel image build`
 
@@ -58,9 +90,15 @@ zel image run acme-docs:v2
 zel image run acme-docs:v2 --port 8080
 ```
 
-Waits for the server to answer, prints the URL, and streams the log until you
-stop it. With no tag it runs whatever the last `zel image build` produced in
-this folder.
+Publishes the container's port 3000 to `--port` on your machine and streams the
+log until you stop it. With no tag it runs whatever the last `zel image build`
+produced in this folder.
+
+**Do this once before pushing anything.** An image that builds is not an image
+that serves: a missing asset, a runtime that cannot find `server.js`, a page that
+needed something the runtime stage did not copy — all of them build cleanly and
+fail on the first request. Thirty seconds here is the difference between finding
+that out yourself and finding it out from a deployment.
 
 ## `zel image push`
 

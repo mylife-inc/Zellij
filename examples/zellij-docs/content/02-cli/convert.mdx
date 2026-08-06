@@ -12,29 +12,56 @@ zel convert ./docs --out ./content
 zel check ./content
 ```
 
+```
+Converting ./docs as MkDocs — mkdocs.yml with a nav tree
+
+Wrote 9 files into ./content
+  01-guide/_sidebar.yaml
+  01-guide/index.mdx
+  01-guide/guide/install.mdx
+  …
+  site.yaml
+  pages.yaml
+  sections/home/hero.yaml
+
+2 thing(s) could not be carried over:
+  https://blog.acme.dev: "Blog" is an external link; sidebars hold pages. Add it to menu.yaml.
+  draft.md: on disk but absent from the navigation; not converted
+```
+
 The output goes in a **new folder**. The original is never touched, so a
 conversion you dislike costs nothing but the folder you delete.
 
-Run [`zel detect`](/cli/detect) first if you are not sure what the folder is,
-or [`zel migrate`](/cli/migrate) to do both and validate the result.
+Run [`zel detect`](/cli/detect) first if you are not sure what the folder is, or
+[`zel migrate`](/cli/migrate) to detect, convert and validate in one step.
 
-## `zel convert <source>`
+## Take the plan first
 
 ```bash title="terminal"
-zel convert ./docs --out ./content
-zel convert ./docs --out ./content --from mkdocs
 zel convert ./docs --out ./content --dry-run
 ```
+
+Prints exactly what it would write and what it could not carry over, and writes
+nothing. Worth the ten seconds on any tree you did not author yourself: the list
+of unmapped things is the real report, and reading it before there is a folder
+to be attached to makes it easier to act on.
+
+## Options
 
 | | | |
 | --- | --- | --- |
 | `<source>` | Required. The folder to read | — |
-| `--out <path>` | Where to write. Never the source | required |
+| `--out <path>` | Required. Where to write | — |
 | `--from <format>` | Force a format instead of detecting | detected |
 | `--dry-run` | Report the plan, write nothing | off |
 
-`--out` can never be the source. A conversion that overwrote the original would
-be unrecoverable, and there is no flag to permit it.
+**`--out` can never be the source, and there is no flag to permit it.** A
+conversion that overwrote the original would be unrecoverable — and the whole
+reason a migration is safe to try is that failing costs you a folder you delete.
+
+`--from` is for when [detection](/cli/detect) is unsure or wrong. Forcing a
+format that does not match produces a bad conversion rather than an error, so it
+is worth being right.
 
 ## What is recognised
 
@@ -54,16 +81,22 @@ what your build can actually read.
 
 **A landing page.** Every one of these tools describes a documentation tree.
 Zellij has that *and* marketing pages built from nineteen section types with no
-equivalent in the source. A conversion writes a faithful guide folder, a
-`site.yaml` carrying whatever identity it found, and a `pages.yaml` with one
-hero to build on — and says so, every time.
+equivalent anywhere in the source — there is no MkDocs concept that becomes a
+pricing table. So a conversion writes a faithful guide folder, a `site.yaml`
+carrying whatever identity it found, and a `pages.yaml` with one hero to build
+on, and says so every time.
+
+That is not a gap in the converter. It is the part Zellij has that the source
+did not, and the part you get to write.
 
 **Links out of the sidebar.** A sidebar holds pages; an external link belongs in
-`menu.yaml`. Reported rather than dropped.
+[`menu.yaml`](/guide/menu). Reported rather than dropped, because silently
+losing a link to your blog is the kind of thing nobody notices for months.
 
-**Pages the navigation never mentioned.** A page hidden from its own navigation
-may have been hidden deliberately, so it is listed rather than silently
-published.
+**Pages the navigation never mentioned.** A file on disk that no `nav` entry
+points at may have been hidden deliberately — a draft, a scratch page, something
+withdrawn. Publishing it because it happened to be in the folder would be a
+worse mistake than leaving it out, so it is listed and skipped.
 
 ```
 2 thing(s) could not be carried over:

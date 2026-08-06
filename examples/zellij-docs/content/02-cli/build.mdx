@@ -126,6 +126,52 @@ is.
 | `--platform <list>` | Image architectures | the host's |
 | `--no-check` | Skip validation. Not recommended | off |
 
+## What you get
+
+```
+  Engine   ghcr.io/mylife-inc/zellij-base:latest
+  Content  ./content
+  Target   static → dist
+
+  …
+
+✓ dist  (19 entries)
+
+  Serve it from any static host.
+```
+
+```
+dist/
+├── index.html          one file per route
+├── guide.html
+├── guide/
+│   └── setup.html
+├── 404.html
+├── sitemap.xml
+├── robots.txt
+├── _next/static/…      CSS and JS, content-hashed
+└── _zellij/assets/…    your images
+```
+
+<Callout type="warning" title="An empty sitemap is a silent failure">
+A sitemap lists **absolute** URLs, so it needs to know the site's origin. Without
+`siteUrl` in `site.yaml` the engine has nothing to write and produces valid,
+empty XML — the site ships, search engines index nothing, and nobody finds out
+for months.
+
+`zel build` says so when it happens:
+
+```
+! dist/sitemap.xml is empty.
+  A sitemap lists absolute URLs, so it needs the site's origin.
+  Set siteUrl in site.yaml:
+
+    siteUrl: https://docs.example.com
+```
+
+A scaffolded folder carries a commented `siteUrl` for exactly this reason.
+</Callout>
+
 ## What it actually does
 
 <Steps>
@@ -133,8 +179,13 @@ is.
 And fails immediately if it cannot find one.
 </Step>
 <Step title="Validates it">
-The same pass as [`zel check`](/cli/check). A build that is going to fail on a
-broken link fails here, in a second, rather than after a four-minute compile.
+The same pass as [`zel check`](/cli/check), inside the same container. A build
+that is going to fail on a broken link fails here, in a second, rather than
+after a four-minute compile.
+
+This is not a convenience. A site with a dead internal link is a site that
+should not have been built, and catching it at the end — or not at all — is how
+one gets published.
 </Step>
 <Step title="Starts the engine container">
 Pulling `ghcr.io/mylife-inc/zellij-base` if it is not already local, mounting
