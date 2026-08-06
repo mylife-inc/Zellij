@@ -7,15 +7,60 @@
  * its config would otherwise break at once, with an error naming a package its
  * author never installed.
  *
- * Plain JavaScript, and deliberately importing nothing: Node loads
+ * Plain JavaScript, and importing nothing but Node builtins: Node loads
  * `next.config.js` itself, without Next's compiler, so this file cannot be
  * TypeScript and cannot reach into the engine's TypeScript source.
  */
 
-/** @typedef {Record<string, unknown> & { transpilePackages?: string[], serverExternalPackages?: string[], images?: Record<string, unknown> }} ZellijNextConfig */
+import { networkInterfaces } from 'node:os';
+
+/** @typedef {Record<string, unknown> & { transpilePackages?: string[], serverExternalPackages?: string[], images?: Record<string, unknown>, allowedDevOrigins?: string[] }} ZellijNextConfig */
 
 /** @param {string[]} mine @param {string[] | undefined} theirs @returns {string[]} */
 const union = (mine, theirs) => [...new Set([...mine, ...(theirs ?? [])])];
+
+/**
+ * Origins the dev server will answer `/_next/*` requests for.
+ *
+ * Next trusts `localhost` and the address it was told to bind — which for a dev
+ * server reachable from anywhere is `0.0.0.0`, an address no browser ever sends.
+ * So opening the site from a phone on the same network fails: the HMR socket and
+ * the client chunks are refused, React never hydrates, and every entrance reveal
+ * stays at `opacity: 0`. The page is *there*, and it is blank. Checking a docs
+ * site on a real phone is a normal thing to do, so it should just work.
+ *
+ * Three sources, all narrow on purpose:
+ *
+ * - This machine's own addresses. Exactly right for `npm run dev`, and unable
+ *   to over-permit — an attacker's page cannot present your LAN IP as its own
+ *   origin.
+ * - `*.local`, the mDNS name a phone gets from Bonjour. Reserved for link-local
+ *   use and unregistrable, so it cannot be claimed by a public host.
+ * - `ZELLIJ_DEV_ORIGINS`, comma-separated. Needed because `zel dev` runs the
+ *   engine in a container, where the interfaces enumerated below are the
+ *   container's and not the host's; `zel` passes the host's addresses in. Also
+ *   the way to add a tunnel — ngrok, Tailscale, a Codespaces forward.
+ *
+ * Deliberately *not* a private-range pattern like `10.*.*.*`: Next matches
+ * origins segment by segment, so that would also match `10.anything.example.com`
+ * — a subdomain any attacker can create, which is the exact request this check
+ * exists to refuse.
+ *
+ * @returns {string[]}
+ */
+function devOrigins() {
+  const own = Object.values(networkInterfaces())
+    .flatMap((addresses) => addresses ?? [])
+    .filter((address) => !address.internal)
+    .map((address) => address.address);
+
+  const configured = (process.env['ZELLIJ_DEV_ORIGINS'] ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  return [...new Set(['*.local', ...own, ...configured])];
+}
 
 /**
  * Merges the engine's requirements into a site's own Next config.
@@ -44,6 +89,9 @@ export function withZellij(config = {}) {
       formats: ['image/avif', 'image/webp'],
       ...config.images,
     },
+
+    // Ignored outside `next dev`, so there is no production cost to setting it.
+    allowedDevOrigins: union(devOrigins(), config.allowedDevOrigins),
 
     /*
      * `standalone` traces the server and its dependencies into one directory,

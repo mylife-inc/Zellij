@@ -8,6 +8,7 @@
 //! `build` and `dev` are not cheap, because they run the real application.
 
 use camino::Utf8Path;
+use std::net::UdpSocket;
 use std::process::Stdio;
 use zellij_core::{Error, Result};
 
@@ -132,6 +133,8 @@ impl ContainerEngine {
             ),
         );
 
+        let origins = format!("ZELLIJ_DEV_ORIGINS={}", dev_origins());
+
         let status = self
             .runtime
             .command()
@@ -139,6 +142,7 @@ impl ContainerEngine {
             .args(["-v", &mount])
             .args(["-v", &volume])
             .args(["-p", &ports])
+            .args(["-e", &origins])
             .arg(&self.image)
             .args(["sh", "-c", &script])
             .status()?;
@@ -152,6 +156,46 @@ impl ContainerEngine {
             Some(_) => Err(Error::ContentInvalid),
         }
     }
+}
+
+/// Origins the dev server inside the container should answer to.
+///
+/// Next's dev server refuses cross-origin requests for `/_next/*`, and trusts
+/// only `localhost` and the address it binds. Inside a container that address is
+/// the container's, so opening the site from a phone on the same network is
+/// refused: the client chunks never load, nothing hydrates, and the page renders
+/// as bare chrome above an empty body — which looks like a broken site rather
+/// than a blocked request.
+///
+/// The engine's Next config reads this variable and adds it to
+/// `allowedDevOrigins`. Only the host's own address goes in, so it permits the
+/// machine you are working on and nothing else. Anything already in the
+/// environment is preserved, which is how a tunnel — ngrok, Tailscale, a
+/// forwarded Codespaces port — gets added.
+fn dev_origins() -> String {
+    let existing = std::env::var("ZELLIJ_DEV_ORIGINS").unwrap_or_default();
+
+    match lan_address() {
+        Some(address) if existing.is_empty() => address,
+        Some(address) => format!("{existing},{address}"),
+        None => existing,
+    }
+}
+
+/// The address this machine is reachable at from the rest of the network.
+///
+/// Asked of the routing table rather than of the interface list: a laptop has
+/// several addresses — loopback, a bridge per container runtime, a VPN — and the
+/// one a phone can reach is whichever the default route would use.
+///
+/// Nothing is sent. Connecting a UDP socket only selects a route, which is
+/// enough for the kernel to say which local address it would send from. The
+/// destination is TEST-NET-1, reserved for documentation and routed nowhere, so
+/// there is no host on the other end even in principle.
+fn lan_address() -> Option<String> {
+    let socket = UdpSocket::bind("0.0.0.0:0").ok()?;
+    socket.connect("192.0.2.1:80").ok()?;
+    Some(socket.local_addr().ok()?.ip().to_string())
 }
 
 /// Exit code the wrapper uses to say the mount arrived empty.
