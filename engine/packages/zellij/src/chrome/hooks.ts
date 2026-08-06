@@ -96,7 +96,13 @@ export function useBodyScrollLock(locked: boolean): void {
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Keeps Tab focus inside `container` while `active` (spec §5.5 accessibility). */
+/**
+ * Makes `container` a modal dialog while `active` (spec §5.5 accessibility).
+ *
+ * Moves focus in when it opens, keeps Tab inside it, closes on Escape, and puts
+ * focus back where it came from on close. `container` must be focusable —
+ * `tabIndex={-1}` on the panel is enough.
+ */
 export function useFocusTrap(
   container: RefObject<HTMLElement | null>,
   active: boolean,
@@ -108,6 +114,26 @@ export function useFocusTrap(
     if (!node) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
+
+    /*
+     * Move focus into the dialog.
+     *
+     * Both overlays declare `aria-modal="true"`, which tells assistive
+     * technology that everything outside them is inert — and nothing was making
+     * that true. Opening the drawer left focus on the hamburger, so the first
+     * Tab went to the next thing in the header and a keyboard user carried on
+     * through the page behind the dialog, with the trap below never engaging
+     * because it only acts once focus is already inside.
+     *
+     * The panel takes focus rather than its first link, so a screen reader
+     * announces the dialog and its label before reading out a menu item; Tab
+     * still reaches the first link immediately after.
+     *
+     * `preventScroll` because the panel is fixed and full-height: without it a
+     * browser may scroll the page underneath to bring it into view, which is
+     * the position the page would be restored to on close.
+     */
+    if (!node.contains(document.activeElement)) node.focus({ preventScroll: true });
 
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {

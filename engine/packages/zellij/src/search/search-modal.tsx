@@ -181,6 +181,7 @@ export function SearchModal({ basePath }: { basePath: string }) {
         role="dialog"
         aria-modal="true"
         aria-label="Search the guide"
+        tabIndex={-1}
       >
         <div className="zellij-search-field">
           <svg

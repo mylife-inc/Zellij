@@ -74,7 +74,25 @@ test.describe('media panel', () => {
 
   test('keeps the CTA clickable over the media', async ({ page }) => {
     await page.goto('/lumen-3-pro');
-    await page.locator('#design').getByRole('link', { name: 'See the design' }).click();
+
+    const cta = page.locator('#design').getByRole('link', { name: 'See the design' });
+    await cta.scrollIntoViewIfNeeded();
+
+    /*
+     * Wait for the panel to finish revealing before clicking it.
+     *
+     * The section fades and translates in, and a click dispatched while it is
+     * still moving can land on the media behind the CTA rather than on the CTA
+     * — which is indistinguishable, from the URL, from the overlap this test
+     * exists to catch. Waiting for the reveal to settle means a failure here
+     * means what it says.
+     */
+    await expect(page.locator('#design [data-zellij-reveal]').first()).toHaveAttribute(
+      'data-zellij-reveal',
+      'in',
+    );
+
+    await cta.click();
     await expect(page).toHaveURL(/\/lumen-3-pro#specs$/);
   });
 });

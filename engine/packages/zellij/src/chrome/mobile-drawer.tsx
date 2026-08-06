@@ -80,7 +80,16 @@ export function MobileDrawer({ open, onClose, items, cta, isActive }: MobileDraw
         tabIndex={-1}
         onClick={onClose}
       />
-      <div className="zellij-drawer-panel" ref={panelRef} role="dialog" aria-modal="true" aria-label="Site navigation">
+      {/* `tabIndex={-1}` so the trap can move focus here on open: not reachable
+          by Tab, but focusable programmatically. */}
+      <div
+        className="zellij-drawer-panel"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Site navigation"
+        tabIndex={-1}
+      >
         <nav className="zellij-drawer-nav" aria-label="Mobile">
           <ul className="zellij-drawer-list">
             {items.map((item) => {

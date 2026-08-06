@@ -262,6 +262,55 @@ test.describe('mobile drawer', () => {
     await expect(drawer).toBeHidden();
   });
 
+  /*
+   * `aria-modal="true"` tells assistive technology that everything outside the
+   * dialog is inert. Nothing made that true: focus stayed on the hamburger, so
+   * the next Tab went to the header and onward through the page behind it.
+   */
+  test('moves focus into the dialog on open', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeVisible();
+    await expect(drawer).toBeFocused();
+  });
+
+  /*
+   * Closing puts focus back wherever it was, which is the trigger when the
+   * trigger had it. On WebKit a tap focuses nothing, so there is nothing to
+   * restore and the assertion would be about Safari's pointer model rather than
+   * about the drawer. The keyboard path it protects — Enter on the button,
+   * which does focus it — is Chromium's to demonstrate.
+   */
+  test('returns focus to the trigger on close', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Safari does not focus a button on tap');
+    await page.goto('/');
+
+    const trigger = page.getByRole('button', { name: 'Open navigation' });
+    await trigger.click();
+    await expect(page.getByRole('dialog', { name: 'Site navigation' })).toBeFocused();
+
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Site navigation' })).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('keeps Tab inside the drawer', async ({ page, browserName }) => {
+    test.skip(browserName === 'webkit', 'Safari does not Tab to links by default');
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeFocused();
+
+    // Far more presses than the drawer has focusable children: if the trap
+    // leaks, focus is somewhere in the page behind it well before this ends.
+    for (let i = 0; i < 25; i++) await page.keyboard.press('Tab');
+
+    await expect(drawer.locator(':focus')).toHaveCount(1);
+  });
+
   test('closes when the backdrop is tapped', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Open navigation' }).click();
