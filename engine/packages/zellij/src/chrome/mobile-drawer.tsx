@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useCallback, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useBodyScrollLock, useFocusTrap } from './hooks';
 import type { NavItemModel, NavLeafModel } from './nav-model';
 
@@ -50,7 +51,27 @@ export function MobileDrawer({ open, onClose, items, cta, isActive }: MobileDraw
     </li>
   );
 
-  return (
+  /*
+   * Rendered into `document.body` rather than where it sits in the tree.
+   *
+   * The drawer is a child of the header, and the header carries a
+   * `backdrop-filter` for its translucent blur. An element with a
+   * `backdrop-filter` becomes the containing block for its fixed-position
+   * descendants — so `position: fixed` on the root resolved against the
+   * header's 48px-tall box instead of the viewport. Opening the drawer part-way
+   * down a page gave a 48px sliver at the top of the screen with the CTA
+   * stranded under it, and nothing else: the panel was laid out against a box
+   * the height of the bar it came from.
+   *
+   * A portal is the fix rather than moving the blur, because the blur is not
+   * the problem — being inside anything is. `transform`, `filter`,
+   * `perspective`, `will-change` and `contain: paint` all capture fixed
+   * descendants the same way, and a header is exactly where such a property
+   * gets added later. Attached to the body, the panel has no ancestor left to
+   * be captured by, which is what "fixed to the viewport" was always meant to
+   * say.
+   */
+  return createPortal(
     <div className="zellij-drawer-root">
       <button
         type="button"
@@ -144,7 +165,8 @@ export function MobileDrawer({ open, onClose, items, cta, isActive }: MobileDraw
           </div>
         ) : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

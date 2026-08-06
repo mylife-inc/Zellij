@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 
 import { useFocusTrap } from '../chrome/hooks';
@@ -162,7 +163,10 @@ export function SearchModal({ basePath }: { basePath: string }) {
 
   if (!open) return null;
 
-  return (
+  // Portalled to the body for the same reason as the drawer: the header's
+  // `backdrop-filter` makes it the containing block for fixed descendants, so
+  // this overlay was laid out against an 80px bar rather than the viewport.
+  return createPortal(
     <div className="zellij-search-root" onKeyDown={onKeyDown}>
       <button
         type="button"
@@ -246,6 +250,7 @@ export function SearchModal({ basePath }: { basePath: string }) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
