@@ -377,6 +377,19 @@
   border-radius: 4px;
   background: var(--zellij-surface);
   border: 1px solid var(--zellij-border);
+
+  /*
+   * Inline code is usually an identifier, and identifiers have no spaces to
+   * break at. On a phone one long enough — `.github/workflows/docs.yml` is
+   * 238px against a 390px viewport — is a single unbreakable word that widens
+   * the whole document and leaves the page scrolling sideways by the overhang.
+   *
+   * `break-word` rather than `anywhere`: it breaks a token only when the token
+   * cannot fit, so a path splits on a narrow screen and nothing splits on a
+   * wide one. A code *block* is excluded by the selector and keeps scrolling
+   * instead — there, wrapping would corrupt the thing being shown.
+   */
+  overflow-wrap: break-word;
 }
 
 .zellij-prose blockquote {
@@ -549,6 +562,26 @@
   color: var(--zellij-callout-tint);
   flex-shrink: 0;
   margin-top: 0.125rem;
+}
+
+/*
+ * `min-width: 0` is what lets the callout hold something wider than itself.
+ *
+ * A flex item's automatic minimum size is its min-content width, so without
+ * this the body refuses to shrink below the widest thing inside it — and a
+ * reference table with three columns of minimums is 799px. On a phone that
+ * inflated the body past the callout, past the prose column and past the
+ * viewport, where it was clipped: the title lost its last word and the table
+ * lost its right-hand column, with no way to scroll to either.
+ *
+ * The table already asks to scroll horizontally. It could not, because its
+ * `min-width: 100%` resolved against a parent that had itself grown to the
+ * table's width — 100% of 799px is 799px, and there is nothing left to scroll.
+ * Letting the body shrink puts the table back inside the callout and hands the
+ * overflow to the scroll container that was always there to take it.
+ */
+.zellij-callout-body {
+  min-width: 0;
 }
 
 .zellij-callout-body > * + * {
