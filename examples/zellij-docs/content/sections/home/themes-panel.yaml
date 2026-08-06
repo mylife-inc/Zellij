@@ -10,6 +10,9 @@ alt: ""
 align: left
 tone: dark
 ratio: ultrawide
-scrim: 0.5
+# Raised from 0.5 when this became a photograph. A gradient field was dark and
+# even under the copy; carved stone is neither, and the body text was sitting on
+# whatever the picture happened to be doing behind it.
+scrim: 0.68
 cta:
   - { label: How theming works, href: /guide/themes, style: primary }

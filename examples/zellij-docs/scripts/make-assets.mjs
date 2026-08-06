@@ -35,6 +35,16 @@ const rosette = trim(decodePng(path.join(brand, 'zellij-rosette.png')));
  */
 const mark = decodePng(path.join(brand, 'zellij-mark.png'));
 
+/*
+ * Photographed tilework, for the two images large enough to deserve it.
+ *
+ * The hero and the themes panel used to be a rosette on a flat gradient, and
+ * the gradient was the weakest thing on the page: a colour chosen to be
+ * inoffensive behind artwork. These are the artwork.
+ */
+const heroField = decodePng(path.join(brand, 'tile-hero.png'));
+const panelField = decodePng(path.join(brand, 'tile-panel.png'));
+
 /* ------------------------------------------------------------------ fields */
 
 const INK = [
@@ -59,18 +69,69 @@ const SLATE = [
 ];
 
 /**
- * Rosettes over a gradient field.
+ * Scales an image to cover `width`×`height` and centre-crops what overflows.
  *
- * Deliberately not a dense tiling. The rosette carries the "ZELLIJ" wordmark at
- * its centre, so repeating it across a canvas reads as a watermark rather than
- * as tilework — one medallion, or a small cluster, says it once and says it
- * better.
+ * Cover rather than fit: a field with letterboxing down its sides is not a
+ * field. `drawOver` clips anything outside the canvas, so the crop is just a
+ * negative offset.
+ */
+function cover(source, width, height) {
+  const scale = Math.max(width / source.width, height / source.height);
+  const scaled = resize(source, Math.round(source.width * scale), Math.round(source.height * scale));
+
+  return drawOver(
+    createImage(width, height),
+    scaled,
+    Math.round((width - scaled.width) / 2),
+    Math.round((height - scaled.height) / 2),
+  );
+}
+
+/**
+ * Rosettes over a field.
+ *
+ * The field is a photograph of real tilework where one is given, and a gradient
+ * otherwise. Both exist because they answer different needs: the large
+ * showpieces earn a photograph, and the small cards do not — five detailed
+ * mosaics in a card row compete with the words next to them, and at card size
+ * the tilework is too small to be read as tilework anyway.
+ *
+ * Deliberately not a dense tiling of the *rosette*. It carries the "ZELLIJ"
+ * wordmark at its centre, so repeating it across a canvas reads as a watermark
+ * rather than as tilework — one medallion, or a small cluster, says it once and
+ * says it better.
  *
  * `align` shifts the cluster's centre horizontally (0 left, 0.5 centred, 1
  * right), which is how the wide panel keeps its artwork clear of the copy.
  */
-function emblem({ width, height, from, to, scale = 0.74, count = 1, align = 0.5, angle = 0.5 }) {
-  const canvas = gradientFill(createImage(width, height), from, to, angle);
+function emblem({
+  width,
+  height,
+  from,
+  to,
+  field,
+  scrim = 0,
+  scale = 0.74,
+  count = 1,
+  align = 0.5,
+  angle = 0.5,
+}) {
+  const canvas = field
+    ? cover(field, width, height)
+    : gradientFill(createImage(width, height), from, to, angle);
+
+  /*
+   * A photographed field needs holding back before the rosette goes on it.
+   *
+   * Tilework is pattern at every scale, and the rosette is a pattern too — laid
+   * straight over one another they interlock into noise and the "ZELLIJ" at the
+   * centre stops being legible. The gradient fields never needed this because
+   * being unremarkable was their whole job.
+   *
+   * This is what the media-panel section already does with `scrim` at render
+   * time, for the same reason and to the same end.
+   */
+  if (scrim > 0) drawOver(canvas, createImage(width, height, [10, 12, 20, 255]), 0, 0, scrim);
 
   const size = Math.round(height * scale);
   const tile = resize(rosette, size, Math.round((size * rosette.height) / rosette.width));
@@ -103,17 +164,23 @@ for (const stale of ['hero-mosaic.png', 'logo.svg', 'logo-dark.svg']) {
 await mkdir(root, { recursive: true });
 
 const IMAGES = {
-  'hero.png': emblem({ width: 1600, height: 900, from: INK[0], to: INK[1], scale: 0.82 }),
-  'panel-themes.png': emblem({
-    width: 2000,
-    height: 900,
-    from: DUSK[0],
-    to: DUSK[1],
-    scale: 0.78,
-    count: 2,
-    // The copy sits over the left of this panel, so the artwork keeps right.
-    align: 0.86,
-  }),
+  /*
+   * The two photographed fields carry no rosette — `count: 0`.
+   *
+   * Tried it with one. Tilework is pattern at every scale and so is the
+   * rosette, and laid over each other they interlock into noise: the "ZELLIJ"
+   * at the centre stopped being readable, and the medallion stopped reading as
+   * a shape. Holding the field back with a scrim fixed the legibility and cost
+   * the photograph its whites, which is most of why it is worth showing.
+   *
+   * So the field is the artwork here, and the mark in the bar says the name.
+   * That is what the rosette was doing on a gradient: standing in for a picture
+   * there wasn't one of.
+   */
+  'hero.png': emblem({ field: heroField, count: 0, width: 1600, height: 900 }),
+  // The section applies its own scrim over this one, which is what keeps the
+  // copy legible without dulling the image everywhere it is not needed.
+  'panel-themes.png': emblem({ field: panelField, count: 0, width: 2000, height: 900 }),
   'og.png': emblem({ width: 1200, height: 630, from: INK[0], to: INK[1], scale: 0.82 }),
 
   'card-content.png': emblem({ width: 800, height: 600, from: CLAY[0], to: CLAY[1] }),
