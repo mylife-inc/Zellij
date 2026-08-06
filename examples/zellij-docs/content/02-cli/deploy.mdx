@@ -106,6 +106,49 @@ If a credential is missing, the command says which variable and stops **before**
 building. Discovering a missing token after a four-minute build is a waste of
 four minutes.
 
+<Callout type="info" title="On your own machine you may need none of them">
+Every one of these providers has a CLI that stores a login. If `netlify login`
+or `gh auth login` has already happened, `zel deploy` uses what they stored and
+asks for nothing.
+
+The environment variables are for CI, where nobody can open a browser.
+</Callout>
+
+## What it deliberately will not do for you
+
+A reasonable question: since `zel deploy netlify` knows it needs a Netlify
+project, why not log you in and create one?
+
+**Logging in — no.** `netlify login` is an OAuth flow that opens a browser and
+waits. Reimplementing it means either a worse version of somebody else's
+authentication, or asking you to paste a token into a prompt — and a tool that
+asks for credentials is a tool you have to trust with them. Reading what the
+provider's own CLI already stored costs nothing and requires no such trust.
+
+**Creating a project — not silently.** `netlify sites:create` claims a name on
+somebody's account and is not obviously reversible. A deploy command that
+quietly creates infrastructure is one typo away from a second project nobody
+meant to make, on the wrong account, with a name now taken.
+
+**Exporting a token into your shell — never.** `zel` reads credentials and does
+not write them, anywhere. A tool that edits your environment or your shell
+profile is doing something you cannot see and did not ask for.
+
+<Callout type="tip" title="What would be reasonable">
+An explicit `--create` — *make the project if it does not exist, and say so* —
+is a fair thing to want, and is on the list. The distinction is that you asked
+for it.
+</Callout>
+
+Which leaves one command to run once, by hand, per site:
+
+```bash title="terminal"
+netlify login
+netlify sites:create --name acme-docs
+```
+
+And then `zel deploy netlify` for the rest of the project's life.
+
 ## Options
 
 | | | |
