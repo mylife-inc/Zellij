@@ -3,7 +3,8 @@ import { Icon } from '../icons';
 import { NavBarClient } from './nav-bar-client';
 import { THEMES } from '../themes/tokens';
 import { THEME_NAMES } from '../config/schema';
-import { assetUrl, isExternal, withBasePath } from '../content/paths';
+import { isExternal, withBasePath } from '../content/paths';
+import { assetHref } from '../content/asset-href';
 import type { MenuLink } from '../content/types';
 import type { BrandModel, NavItemModel, NavLeafModel, NavModel, ThemeOption } from './nav-model';
 
@@ -122,8 +123,8 @@ function buildBrand(site: Site): BrandModel {
   return {
     siteName: name,
     logo: {
-      src: withBasePath(assetUrl(logo.src), basePath),
-      ...(logo.dark ? { dark: withBasePath(assetUrl(logo.dark), basePath) } : {}),
+      src: assetHref(logo.src, basePath),
+      ...(logo.dark ? { dark: assetHref(logo.dark, basePath) } : {}),
       alt: logo.alt ?? name,
       href,
       external,

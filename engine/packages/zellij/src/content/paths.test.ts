@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  assetKey,
   assetUrl,
   guideRouteFromFile,
   isExternal,
@@ -78,6 +79,29 @@ describe('assetUrl', () => {
 
   it('passes external URLs through', () => {
     expect(assetUrl('https://cdn.example.com/a.png')).toBe('https://cdn.example.com/a.png');
+  });
+});
+
+describe('assetKey', () => {
+  /*
+   * The key a fingerprint is stored under. It has to agree with the path
+   * `zellij prepare` walked to in `public/_zellij/assets`, or every lookup
+   * misses and the fingerprinting silently does nothing.
+   */
+  it('strips the assets prefix and any leading ./', () => {
+    expect(assetKey('assets/hero.png')).toBe('hero.png');
+    expect(assetKey('./assets/hero.png')).toBe('hero.png');
+    expect(assetKey('hero.png')).toBe('hero.png');
+  });
+
+  it('keeps nesting, which is how the manifest is keyed', () => {
+    expect(assetKey('assets/brand/logo.png')).toBe('brand/logo.png');
+  });
+
+  it('agrees with assetUrl about what the path is', () => {
+    for (const input of ['assets/hero.png', './assets/brand/logo.png', 'a/b/c.svg']) {
+      expect(assetUrl(input)).toBe(`/_zellij/assets/${assetKey(input)}`);
+    }
   });
 });
 

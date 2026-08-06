@@ -4,7 +4,8 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import type { Cta, MotionPreset } from '../config/schema';
 import type { SectionBackground } from './registry';
-import { assetUrl, isExternal, withBasePath } from '../content/paths';
+import { isExternal } from '../content/paths';
+import { assetHref } from '../content/asset-href';
 import { Reveal } from '../motion/reveal';
 
 /** Palette tokens a gradient stop may name, so it follows the active theme. */
@@ -195,7 +196,7 @@ export function SectionImage({
       style={{ aspectRatio: ratio }}
     >
       <Image
-        src={withBasePath(assetUrl(src), basePath)}
+        src={assetHref(src, basePath)}
         alt={alt}
         fill
         sizes={sizes}

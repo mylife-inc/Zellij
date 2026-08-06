@@ -115,7 +115,17 @@ test.describe('SEO', () => {
 
     expect(await content('meta[property="og:title"]')).toContain('Lumen');
     expect(await content('meta[property="og:url"]')).toMatch(/^https:\/\//);
-    expect(await content('meta[property="og:image"]')).toMatch(/^https:\/\/.*og\.png$/);
+    /*
+     * The fingerprint belongs here as much as anywhere.
+     *
+     * A social card is cached by URL and by nobody you can reach: change the
+     * image and every service that has already scraped the page keeps serving
+     * the old one. The `?v=` is what makes a replaced OG image a different URL,
+     * so the assertion allows it rather than the absolute form alone.
+     */
+    expect(await content('meta[property="og:image"]')).toMatch(
+      /^https:\/\/.*og\.png(\?v=[0-9a-f]{8})?$/,
+    );
     expect(await content('meta[name="twitter:card"]')).toBe('summary_large_image');
     expect(await content('meta[name="description"]')).toBeTruthy();
 

@@ -1,7 +1,7 @@
 import type { SectionProps } from '../types';
 import type { LogoStripSection } from '../schemas';
 import { SectionShell } from '../shared';
-import { assetUrl, withBasePath } from '../../content/paths';
+import { assetHref } from '../../content/asset-href';
 import { Reveal } from '../../motion/reveal';
 
 export function LogoStrip({ section, site, defaultMotion }: SectionProps<LogoStripSection>) {
@@ -35,7 +35,7 @@ export function LogoStrip({ section, site, defaultMotion }: SectionProps<LogoStr
               eslint-disable-next-line @next/next/no-img-element
             */}
             <img
-              src={withBasePath(assetUrl(logo), basePath)}
+              src={assetHref(logo, basePath)}
               alt=""
               width={140}
               height={34}

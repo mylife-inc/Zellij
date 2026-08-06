@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 import type { SectionProps } from '../types';
 import type { MediaPanelSection } from '../schemas';
-import { assetUrl, isExternal, withBasePath } from '../../content/paths';
+import { isExternal } from '../../content/paths';
+import { assetHref } from '../../content/asset-href';
 import { CtaGroup, InlineMarkdown, SectionHeader, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { PanelVideo } from './panel-video';
@@ -22,14 +23,14 @@ export function MediaPanel({ section, site, defaultMotion }: SectionProps<MediaP
   // here — the same trap that made the nav logo 404 under a basePath.
   const media = section.video ? (
     <PanelVideo
-      src={withBasePath(assetUrl(section.video), basePath)}
-      {...(section.poster ? { poster: withBasePath(assetUrl(section.poster), basePath) } : {})}
+      src={assetHref(section.video, basePath)}
+      {...(section.poster ? { poster: assetHref(section.poster, basePath) } : {})}
       label={section.alt}
     />
   ) : (
     <Image
       className="zellij-panel-image"
-      src={withBasePath(assetUrl(section.image!), basePath)}
+      src={assetHref(section.image!, basePath)}
       alt={section.alt}
       fill
       sizes="(max-width: 900px) 100vw, 1200px"

@@ -1,6 +1,6 @@
 import type { SectionProps } from '../types';
 import type { GallerySection } from '../schemas';
-import { assetUrl, withBasePath } from '../../content/paths';
+import { assetHref } from '../../content/asset-href';
 import { SectionHeader, SectionImage, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { GalleryLightbox, type LightboxImage } from './gallery-lightbox';
@@ -60,7 +60,7 @@ export function Gallery({ section, site, defaultMotion }: SectionProps<GallerySe
   // Full-size sources are plain <img> in the dialog, so they need the prefix
   // applied here — next/image would have done it, but cannot size them.
   const images: LightboxImage[] = section.items.map((item) => ({
-    src: withBasePath(assetUrl(item.image), basePath),
+    src: assetHref(item.image, basePath),
     alt: item.alt,
     ...(item.caption ? { caption: item.caption } : {}),
   }));

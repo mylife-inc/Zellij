@@ -1,7 +1,8 @@
 import type { SectionProps } from '../types';
 import type { VideoEmbedSection } from '../schemas';
 import { SectionHeader, SectionShell } from '../shared';
-import { assetUrl, isExternal } from '../../content/paths';
+import { isExternal } from '../../content/paths';
+import { assetHref } from '../../content/asset-href';
 import { Reveal } from '../../motion/reveal';
 import { VideoPlayer } from './video-player';
 
@@ -36,8 +37,8 @@ export function VideoEmbed({ section, defaultMotion }: SectionProps<VideoEmbedSe
       <Reveal motion={motion}>
         <figure className="zellij-video-figure">
           <VideoPlayer
-            {...(embedUrl ? { embedUrl } : { fileUrl: assetUrl(section.src) })}
-            {...(section.poster ? { poster: assetUrl(section.poster) } : {})}
+            {...(embedUrl ? { embedUrl } : { fileUrl: assetHref(section.src) })}
+            {...(section.poster ? { poster: assetHref(section.poster) } : {})}
             label={section.heading ?? section.caption ?? 'Video'}
           />
           {section.caption ? (

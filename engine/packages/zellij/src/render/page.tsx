@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
-import { assetUrl, routeToSegments, segmentsToRoute, withBasePath } from '../content/paths';
+import { routeToSegments, segmentsToRoute, withBasePath } from '../content/paths';
+import { assetHref } from '../content/asset-href';
 import type { GuidePage, SectionsPage } from '../content/types';
 import { flattenSidebar } from '../guide/navigation';
 import { SectionsPageView } from './sections-page';
@@ -78,14 +79,14 @@ export function createZellijPages(options: ZellijRuntimeOptions = {}) {
         type: 'website',
         url: canonical,
         ...(site.config.ogImage
-          ? { images: [{ url: assetUrl(site.config.ogImage), alt: title }] }
+          ? { images: [{ url: assetHref(site.config.ogImage), alt: title }] }
           : {}),
       },
       twitter: {
         card: 'summary_large_image',
         title,
         ...(description ? { description } : {}),
-        ...(site.config.ogImage ? { images: [assetUrl(site.config.ogImage)] } : {}),
+        ...(site.config.ogImage ? { images: [assetHref(site.config.ogImage)] } : {}),
       },
       robots: { index: true, follow: true },
     };

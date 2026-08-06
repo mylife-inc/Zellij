@@ -32,12 +32,27 @@ export function isExternal(url: string): boolean {
  * Maps a content-relative asset path ("assets/hero.png" or "./assets/hero.png")
  * to its public URL. Returns a root-relative URL; callers that don't go through
  * `next/image` must additionally apply `withBasePath`.
+ *
+ * Prefer `assetHref` from `content/asset-href`, which applies the base path and
+ * the content fingerprint too. This stays because it is the part that is safe
+ * in a client bundle.
  */
 export function assetUrl(relPath: string): string {
   if (isExternal(relPath)) return relPath;
-  const clean = relPath.replace(/^\.?\//, '').replace(/^assets\//, '');
-  return `${ASSET_PUBLIC_PREFIX}/${clean}`;
+  return `${ASSET_PUBLIC_PREFIX}/${assetKey(relPath)}`;
 }
+
+/**
+ * The path an asset has *within* the assets folder — the key it is fingerprinted
+ * under. "assets/brand/logo.png" and "./brand/logo.png" both give
+ * "brand/logo.png".
+ */
+export function assetKey(relPath: string): string {
+  return relPath.replace(/^\.?\//, '').replace(/^assets\//, '');
+}
+
+/** Where `zellij prepare` writes the content hash of every synced asset. */
+export const ASSET_MANIFEST_FILE = 'asset-manifest.json';
 
 /**
  * Derives a marketing route from a content-relative filename.

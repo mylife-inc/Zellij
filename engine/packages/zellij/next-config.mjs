@@ -87,6 +87,22 @@ export function withZellij(config = {}) {
 
     images: {
       formats: ['image/avif', 'image/webp'],
+
+      /*
+       * Local images may carry a query string.
+       *
+       * Content assets are served under their author's filename, so `logo.png`
+       * stays `logo.png` across a rebrand and no cache has any reason to fetch
+       * it again. `zellij prepare` fingerprints them and the engine appends
+       * `?v=<hash>`, which makes a changed image a changed URL.
+       *
+       * Next 16 refuses a local `src` with a search param unless a pattern
+       * permits it, and a pattern with no `search` key permits any. `/**` is
+       * every local path, which is what was allowed before this key existed —
+       * the only thing widened is the query string.
+       */
+      localPatterns: [{ pathname: '/**' }],
+
       ...config.images,
     },
 

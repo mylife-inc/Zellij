@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { QuoteCard, type QuoteModel } from './testimonial';
+import { QuoteCard, type QuoteModel } from './quote-card';
 
 /**
  * Carousel of up to 5 quotes (spec §5.2 #7). All slides stay in the DOM so the

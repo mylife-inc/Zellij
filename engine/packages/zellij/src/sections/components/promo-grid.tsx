@@ -4,7 +4,8 @@ import type { ReactNode } from 'react';
 
 import type { SectionProps } from '../types';
 import type { PromoGridSection } from '../schemas';
-import { assetUrl, isExternal, withBasePath } from '../../content/paths';
+import { isExternal } from '../../content/paths';
+import { assetHref } from '../../content/asset-href';
 import { InlineMarkdown, SectionHeader, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { PanelVideo } from './panel-video';
@@ -41,13 +42,13 @@ export function PromoGrid({ section, site, defaultMotion }: SectionProps<PromoGr
               <div className="zellij-promo-media">
                 {item.video ? (
                   <PanelVideo
-                    src={withBasePath(assetUrl(item.video), basePath)}
+                    src={assetHref(item.video, basePath)}
                     label={item.alt}
                   />
                 ) : item.image ? (
                   <Image
                     className="zellij-promo-image"
-                    src={withBasePath(assetUrl(item.image), basePath)}
+                    src={assetHref(item.image, basePath)}
                     alt={item.alt}
                     fill
                     sizes={item.width === 'half' ? '(max-width: 900px) 100vw, 50vw' : '100vw'}

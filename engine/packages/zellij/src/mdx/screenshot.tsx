@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { assetUrl, withBasePath } from '../content/paths';
+import { assetHref } from '../content/asset-href';
 
 /**
  * Screenshots go through `next/image` so guide pages keep the same image
@@ -24,7 +24,7 @@ export function Screenshot({
   return (
     <figure className="zellij-screenshot">
       <Image
-        src={withBasePath(assetUrl(src), basePath)}
+        src={assetHref(src, basePath)}
         alt={alt ?? caption ?? ''}
         width={width}
         height={height}
