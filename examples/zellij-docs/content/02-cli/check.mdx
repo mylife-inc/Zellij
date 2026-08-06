@@ -11,11 +11,7 @@ so it needs a container runtime and about a second.
 ```bash title="terminal"
 zel check
 zel check ./docs
-zel check --json
 ```
-
-Loads the whole content folder — the same code the build uses — and reports
-everything wrong with it, without starting Next.js. It takes about a second.
 
 ```
 ✓ ./content
@@ -24,6 +20,7 @@ everything wrong with it, without starting Next.js. It takes about a second.
   guides      1 (5 pages) · /guide
   menu        Features · Pricing · Solutions · Resources
   home        /
+  routes      11
 ```
 
 And when something is wrong:
@@ -44,42 +41,119 @@ And when something is wrong:
 3 problems
 ```
 
-Exit code is 0 or 1, so it works as a pipeline step without parsing anything.
+## The one thing worth understanding
+
+**`check` runs the engine's own schemas, not a reimplementation of them.**
+
+That is why it needs a container, and it is the reason to trust it. The
+alternative — parsing YAML in Rust and checking it against rules written a
+second time — would produce a validator that agrees with the build on the day it
+is written and disagrees with it a month later. Every field added to a section
+type would need adding twice, and the failure mode is the worst kind: `check`
+passes, the build fails, and the two disagree about the same file.
+
+So the CLI does not know what a `hero` is. It mounts your folder read-only,
+starts the engine, and asks.
+
+The cost is a container runtime. The benefit is that anything `check` accepts,
+the build accepts — by construction, not by diligence.
 
 ## What it validates
 
 | | |
 | --- | --- |
-| Every YAML file | Against its schema — unknown values fail, naming what is accepted |
+| Every YAML file | Against its schema. Unknown values fail, naming what is accepted |
 | Every section | The type exists, required fields are present, values are in range |
 | Every internal link | In `menu.yaml`, `site.yaml`'s footer, `pages.yaml`, and inside MDX prose |
 | Every sidebar entry | Names a page that exists in that guide |
 | Every asset reference | Resolves under `assets/` |
 | The home page | `home:` names a page that exists |
 
-An **unknown top-level key warns** rather than failing, so a folder written for
-a newer Zellij still builds on an older one. An **unknown value for a known key
-fails** — `theme: cupertno` is a typo, not forward compatibility.
+### Errors against warnings
 
-## What it does not validate
+An **unknown top-level key warns**. A content folder written for a newer Zellij
+still builds on an older one, which is what lets a team upgrade the engine and
+the content separately.
 
-`check` reads the content model. It does not compile your MDX.
+An **unknown value for a known key fails**, naming the key and listing what it
+accepts. `theme: cupertno` is a typo, not forward compatibility, and treating it
+as one would render the wrong theme silently.
 
-A guide page containing `set {timeout} to <n> seconds` is valid Markdown, valid
-as far as `check` is concerned, and a syntax error when MDX compiles it. This
-matters most after a [conversion](/cli/convert): build the site once before you
-throw the original away.
-
-## For a pipeline
-
-<Callout type="warning" title="Planned">
-`--json` is accepted and ignored — the output is the human report either way.
-The shape below is the specification.
+<Callout type="tip" title="Unknown keys inside a section file are accepted silently">
+Sections gain fields far more often than the top-level schema does, so a folder
+written for a newer engine still builds. The cost is that a typo in a section
+file is not reported — which is one more reason to read what `check` says about
+files no page references.
 </Callout>
 
-```bash title="terminal"
-zel check --json
+## What it does not do
+
+**It does not compile your MDX.**
+
+`check` validates the content model. Guide pages are compiled as MDX — Markdown
+plus JSX — and that is a separate pass with its own failure modes. `{` opens an
+expression and `<` opens a tag, so:
+
 ```
+set {timeout} to <n> seconds
+```
+
+is good Markdown, valid as far as `check` is concerned, and a syntax error when
+the site builds.
+
+This matters most after a [conversion](/cli/convert), where prose written for a
+tool that never had to care meets a compiler that does. **Build the folder once
+before you throw the original away:**
+
+```bash title="terminal"
+zel build ./content
+```
+
+## Where it belongs
+
+**As a pre-commit hook.** It exits non-zero, takes a second, and catches the
+class of mistake that is invisible in a diff — a renamed page that three
+sidebars still point at.
+
+**As the first job in a pipeline.** [`zel ci init`](/cli/ci) writes exactly that:
+a check on every pull request, needing no credentials and no registry. A link to
+a page somebody deleted gets caught before review rather than after deploy.
+
+**Before every build.** [`zel build`](/cli/build), [`zel dev`](/cli/dev) and
+[`zel deploy`](/cli/deploy) all run it first, so a broken link fails in a second
+rather than after a four-minute compile.
+
+## When the folder is somewhere the runtime cannot see
+
+```
+error: my-docs is not shared with the container runtime
+```
+
+A bind mount of an unreachable path does not fail — it mounts an empty
+directory, and the checker faithfully reports a site with no pages. True of what
+it was shown, and a lie about what you asked.
+
+Colima shares `$HOME` and not `/tmp`:
+
+```bash title="terminal"
+colima stop && colima start --mount '/tmp:w'
+```
+
+## Options
+
+| | | |
+| --- | --- | --- |
+| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
+
+<Callout type="warning" title="Planned">
+`--json`, `--quiet` and `--strict` are specified and not yet built. `--json` is
+currently accepted and ignored — the output is the human report either way.
+
+`--strict` is the one worth waiting for in CI: once a folder is clean it stops
+an unknown key accumulating quietly until an upgrade turns it into a failure.
+</Callout>
+
+### The intended `--json`
 
 ```json
 {
@@ -99,17 +173,9 @@ zel check --json
 The intent is that every command supports `--json`, because a tool only a human
 can read cannot be used by a pipeline. None of them do yet.
 
-## Options
-
-| | | |
-| --- | --- | --- |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-
-`--json`, `--quiet` and `--strict` are specified and not yet built. `--strict`
-is the one worth waiting for in CI: once a folder is clean it stops an unknown
-key accumulating quietly until an upgrade turns it into a failure.
-
 ## See also
 
 - [`zel dev`](/cli/dev) — the same validation, plus a browser
+- [`zel fmt`](/cli/fmt) — formatting, which is a different question
 - [`zel ci`](/cli/ci) — running this on every pull request
+- [The wrapper app](/guide/wrapper) — `npx zellij check`, if you keep one
