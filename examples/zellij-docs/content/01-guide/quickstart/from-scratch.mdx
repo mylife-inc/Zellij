@@ -312,12 +312,68 @@ Deploy path:    /Users/you/dist
 Website URL:    https://my-docs.netlify.app
 ```
 
-<Callout type="info" title="No tokens needed here">
-`netlify login` already stored your credentials, and `netlify deploy` uses them.
-You do **not** need `NETLIFY_AUTH_TOKEN` or `NETLIFY_SITE_ID` on your own
-machine — those are for CI, where nobody can open a browser to log in. Lab 3 and
-Lab 4 set them as repository secrets for exactly that reason.
+<Callout type="info" title="No tokens needed for this">
+`netlify login` already stored your credentials and `netlify deploy` uses them,
+so nothing above needs an environment variable.
+
+You need them for **CI**, where nobody can open a browser to log in — and for
+that you have to get them out of Netlify and into your repository's secrets.
+That is the next section.
 </Callout>
+
+### Getting the two values CI needs
+
+**The site ID.** `sites:create` printed it as **Project ID**; Netlify's API calls
+the same value the site ID. If you have lost it:
+
+```bash title="terminal"
+netlify sites:list --json | jq -r '.[] | select(.name=="my-docs") | .site_id'
+```
+
+**The auth token.** `netlify login` wrote one into netlify-cli's config, and you
+can read it back rather than making a second one:
+
+```bash title="terminal"
+# macOS
+NETLIFY_CONFIG="$HOME/Library/Preferences/netlify/config.json"
+# Linux
+[ -f "$NETLIFY_CONFIG" ] || NETLIFY_CONFIG="$HOME/.config/netlify/config.json"
+
+export NETLIFY_SITE_ID=91774174-d4c2-41b5-aa4b-ac61eeadbf51
+export NETLIFY_AUTH_TOKEN=$(jq -r '.users[.userId].auth.token' "$NETLIFY_CONFIG")
+```
+
+Check it worked without printing the token:
+
+```bash title="terminal"
+echo "${#NETLIFY_AUTH_TOKEN} characters"    # 40, starting nfc_
+```
+
+<Callout type="warning" title="The path is not ~/.netlify">
+netlify-cli stores its config where the operating system puts application
+preferences, not in your home directory:
+
+| | |
+| --- | --- |
+| macOS | `~/Library/Preferences/netlify/config.json` |
+| Linux | `~/.config/netlify/config.json` |
+| Windows | `%APPDATA%\netlify\Config\config.json` |
+
+And the token is nested at `users.<userId>.auth.token` — there is no top-level
+`auth_token` key. Both of those are easy to get wrong in a way that produces an
+empty string rather than an error, which then fails in CI as a 401 that looks
+like a permissions problem.
+</Callout>
+
+**A personal access token works too**, and is the better choice for a shared
+pipeline: **User settings → Applications → New access token**. It can be revoked
+on its own without logging your laptop out, and it is not tied to your CLI
+session.
+
+Put both into the repository: **Settings → Secrets and variables → Actions →
+New repository secret**, as `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`. That is
+what [Lab 3](/guide/quickstart/new-project) and
+[Lab 4](/guide/quickstart/existing-repo) expect.
 
 Once [`zel deploy`](/cli/deploy) lands, those two commands become one:
 
