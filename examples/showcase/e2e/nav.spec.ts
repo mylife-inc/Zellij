@@ -241,6 +241,27 @@ test.describe('mobile drawer', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
   });
 
+  /*
+   * Escape, pressed straight after opening, with nothing else touched.
+   *
+   * The test above also presses Escape, and passed for years while this did
+   * not: it clicks an accordion inside the drawer first, and in Chromium
+   * clicking a button focuses it. The Escape handler was bound to the panel, so
+   * that click was what let the keystroke reach it — open the drawer and press
+   * Escape and nothing happened, in every browser.
+   */
+  test('closes on Escape without anything inside it being focused first', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeVisible();
+    await expect(drawer.locator(':focus')).toHaveCount(0);
+
+    await page.keyboard.press('Escape');
+    await expect(drawer).toBeHidden();
+  });
+
   test('closes when the backdrop is tapped', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Open navigation' }).click();
@@ -259,7 +280,7 @@ test.describe('mobile drawer', () => {
 });
 
 test.describe('accessibility', () => {
-  test('exposes landmarks and a working skip link', async ({ page }) => {
+  test('exposes landmarks and a working skip link', async ({ page, browserName }) => {
     await page.goto('/');
 
     await expect(page.locator('header')).toHaveCount(1);
@@ -269,7 +290,16 @@ test.describe('accessibility', () => {
     const skip = page.locator('.zellij-skip-link');
     await expect(skip).toHaveAttribute('href', '#content');
 
-    // The skip link must be the first thing keyboard users reach.
+    /*
+     * The skip link must be the first thing keyboard users reach.
+     *
+     * Not asserted on WebKit, where it is a statement about the browser rather
+     * than about the page: Safari ships with "Press Tab to highlight each item
+     * on a webpage" off, so Tab moves between form controls and skips links
+     * entirely. The skip link's markup and position are checked above on every
+     * engine; only the keystroke is Chromium's to answer for.
+     */
+    test.skip(browserName === 'webkit', 'Safari does not Tab to links by default');
     await page.keyboard.press('Tab');
     await expect(skip).toBeFocused();
   });

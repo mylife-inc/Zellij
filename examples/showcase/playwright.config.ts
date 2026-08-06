@@ -28,6 +28,20 @@ export default defineConfig({
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
+    /*
+     * Both projects above are Chromium, so until this one existed the engine
+     * had never been tested in the browser most of its mobile visitors use.
+     * Three layout bugs reached a phone through that gap — a drawer trapped in
+     * the header's containing block, a search overlay trapped the same way, and
+     * a callout a table could push off the screen. All three were found by hand
+     * on a real iPhone.
+     *
+     * WebKit is not a perfect stand-in for Safari, and it does not need to be:
+     * none of those were WebKit quirks. What was missing was a mobile viewport
+     * that anything ran against beyond the top of a page, and a second engine
+     * to disagree when Chromium is forgiving.
+     */
+    { name: 'mobile-safari', use: { ...devices['iPhone 14'] } },
   ],
   webServer: {
     command: `npx next start --port ${PORT}`,

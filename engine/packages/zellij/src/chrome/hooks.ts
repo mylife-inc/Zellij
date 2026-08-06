@@ -116,6 +116,9 @@ export function useFocusTrap(
         return;
       }
       if (event.key !== 'Tab') return;
+      // Tab is only meaningful once focus is inside; the document-wide listener
+      // would otherwise fight the page's own tab order.
+      if (!node.contains(document.activeElement)) return;
 
       const focusable = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(
         (el) => el.offsetParent !== null,
@@ -134,9 +137,23 @@ export function useFocusTrap(
       }
     };
 
-    node.addEventListener('keydown', onKeyDown);
+    /*
+     * Listened for on the document, not on the panel.
+     *
+     * Bound to the panel, Escape only closed the dialog when focus was already
+     * inside it — and nothing puts it there. Opening the drawer leaves focus on
+     * the hamburger, which is outside; the keydown then bubbles from the button
+     * to the document and never passes the panel at all.
+     *
+     * It looked like it worked because the test that covers it clicks an
+     * accordion inside the drawer first, and in Chromium clicking a button
+     * focuses it. WebKit does not focus a button on tap, so the same sequence
+     * left focus on the body and the dialog stayed open — but pressing Escape
+     * straight after opening never closed it in either engine.
+     */
+    document.addEventListener('keydown', onKeyDown);
     return () => {
-      node.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keydown', onKeyDown);
       previouslyFocused?.focus?.();
     };
   }, [container, active, onEscape]);

@@ -131,7 +131,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
+      # webkit for the mobile-safari project — see playwright.config.ts.
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run build
         working-directory: examples/showcase
       - run: npx playwright test

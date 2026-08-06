@@ -64,6 +64,17 @@ Workflows are versioned. Editing one creates a new version; in-flight runs finis
 on the version they started with.
 </Callout>
 
+<Callout type="warning" title="What a version pin does and does not cover">
+Pinning fixes the workflow definition. It does not fix what the steps reach out
+to, so a run can still change behaviour underneath a pin.
+
+| | Pinned by a version | |
+| --- | --- | --- |
+| `steps` | Yes | The definition itself, including order and conditions |
+| `secrets` | No | Resolved at run time, so a rotated credential takes effect immediately |
+| `connectors` | No | The remote service is free to change its own responses between runs |
+</Callout>
+
 ## Next steps
 
 - [Installation](/guide/installation) — production deployment options.
