@@ -68,6 +68,25 @@ const SLATE = [
   [198, 209, 226],
 ];
 
+/*
+ * The themes card, which used to be `DUSK` and was the wrong kind of dark.
+ *
+ * Two things went wrong at once, and the second was caused by the first. Next
+ * to three pastel siblings a near-black card does not read as one of a set, it
+ * reads as a mistake. And the rosette is drawn with a dark navy outline: on a
+ * light field that outline is what gives every petal its edge, and on a field
+ * darker than the outline it disappears, leaving the colours to end wherever
+ * they end. What looks like a rough picture is a picture with its edges
+ * swallowed.
+ *
+ * Lilac keeps the hue the card had — this is the card about colour, and it was
+ * the purple one — at a lightness that lets the outline do its job.
+ */
+const LILAC = [
+  [246, 242, 252],
+  [212, 200, 236],
+];
+
 /**
  * Scales an image to cover `width`×`height` and centre-crops what overflows.
  *
@@ -185,7 +204,7 @@ const IMAGES = {
 
   'card-content.png': emblem({ width: 800, height: 600, from: CLAY[0], to: CLAY[1] }),
   'card-sections.png': emblem({ width: 800, height: 600, from: SEA[0], to: SEA[1] }),
-  'card-themes.png': emblem({ width: 800, height: 600, from: DUSK[0], to: DUSK[1] }),
+  'card-themes.png': emblem({ width: 800, height: 600, from: LILAC[0], to: LILAC[1] }),
   'card-guides.png': emblem({ width: 800, height: 600, from: SLATE[0], to: SLATE[1] }),
   'card-cli.png': emblem({ width: 800, height: 600, from: INK[0], to: INK[1] }),
 

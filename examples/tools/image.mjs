@@ -193,6 +193,23 @@ export function resize(image, width, height) {
   const scaleX = image.width / width;
   const scaleY = image.height / height;
 
+  /*
+   * Enlarging needs interpolation, not averaging.
+   *
+   * The loop below averages every source pixel falling inside an output pixel,
+   * which is right for shrinking and degenerates when growing: with less than
+   * one source pixel per output pixel the range is a single pixel, and box
+   * averaging becomes nearest-neighbour. That is why the rosette had hard
+   * stepped edges everywhere it was drawn larger than the 366px it is authored
+   * at — which is most places, since a card medallion is 444px and a hero one
+   * was 738px.
+   *
+   * Bilinear cannot invent detail the source does not have, so an enlarged
+   * rosette is softer than a native one. Soft is what enlargement looks like;
+   * stepped is what a bug looks like.
+   */
+  if (scaleX < 1 || scaleY < 1) return enlarge(image, width, height, scaleX, scaleY);
+
   for (let y = 0; y < height; y += 1) {
     const y0 = Math.floor(y * scaleY);
     const y1 = Math.max(y0 + 1, Math.floor((y + 1) * scaleY));
@@ -226,6 +243,64 @@ export function resize(image, width, height) {
       out.data[o + 1] = Math.min(255, Math.round((g / n) * unpremultiply));
       out.data[o + 2] = Math.min(255, Math.round((b / n) * unpremultiply));
       out.data[o + 3] = Math.round(alpha);
+    }
+  }
+
+  return out;
+}
+
+/**
+ * Bilinear enlargement, sampling in premultiplied alpha.
+ *
+ * Premultiplied because a transparent pixel still carries a colour, and on a
+ * cut-out like the rosette that colour is arbitrary. Blending it straight would
+ * pull whatever is stored outside the shape into the edge and leave a halo all
+ * the way round.
+ */
+function enlarge(image, width, height, scaleX, scaleY) {
+  const out = createImage(width, height);
+  const maxX = image.width - 1;
+  const maxY = image.height - 1;
+
+  for (let y = 0; y < height; y += 1) {
+    // Pixel centres, so the sampled grid stays aligned with the source's.
+    const sy = Math.min(maxY, Math.max(0, (y + 0.5) * scaleY - 0.5));
+    const y0 = Math.floor(sy);
+    const y1 = Math.min(maxY, y0 + 1);
+    const wy = sy - y0;
+
+    for (let x = 0; x < width; x += 1) {
+      const sx = Math.min(maxX, Math.max(0, (x + 0.5) * scaleX - 0.5));
+      const x0 = Math.floor(sx);
+      const x1 = Math.min(maxX, x0 + 1);
+      const wx = sx - x0;
+
+      let r = 0;
+      let g = 0;
+      let b = 0;
+      let a = 0;
+
+      for (const [px, py, weight] of [
+        [x0, y0, (1 - wx) * (1 - wy)],
+        [x1, y0, wx * (1 - wy)],
+        [x0, y1, (1 - wx) * wy],
+        [x1, y1, wx * wy],
+      ]) {
+        const i = (py * image.width + px) * 4;
+        const alpha = image.data[i + 3] / 255;
+        r += image.data[i] * alpha * weight;
+        g += image.data[i + 1] * alpha * weight;
+        b += image.data[i + 2] * alpha * weight;
+        a += image.data[i + 3] * weight;
+      }
+
+      const o = (y * width + x) * 4;
+      const alpha = a / 255;
+      const unpremultiply = alpha > 0 ? 1 / alpha : 0;
+      out.data[o] = Math.min(255, Math.round(r * unpremultiply));
+      out.data[o + 1] = Math.min(255, Math.round(g * unpremultiply));
+      out.data[o + 2] = Math.min(255, Math.round(b * unpremultiply));
+      out.data[o + 3] = Math.round(a);
     }
   }
 
