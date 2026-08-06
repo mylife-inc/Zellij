@@ -43,6 +43,15 @@ const mark = decodePng(path.join(brand, 'zellij-mark.png'));
  * inoffensive behind artwork. These are the artwork.
  */
 const heroField = decodePng(path.join(brand, 'tile-hero.png'));
+
+/*
+ * The field for the two cards that used to be near-black.
+ *
+ * One photograph, two crops. Its centre is a single large rosette and its
+ * edges are the field of small ones around it, so `focus` gives each slot a
+ * different part of the same wall rather than the same picture twice.
+ */
+const cardField = decodePng(path.join(brand, 'tile-card.png'));
 const panelField = decodePng(path.join(brand, 'tile-panel.png'));
 
 /* ------------------------------------------------------------------ fields */
@@ -94,15 +103,39 @@ const LILAC = [
  * field. `drawOver` clips anything outside the canvas, so the crop is just a
  * negative offset.
  */
-function cover(source, width, height) {
+function cover(source, width, height, focus = [0.5, 0.5]) {
   const scale = Math.max(width / source.width, height / source.height);
   const scaled = resize(source, Math.round(source.width * scale), Math.round(source.height * scale));
 
+  // `focus` picks which part of the overflow survives — 0 keeps the left or
+  // top edge, 1 the right or bottom.
   return drawOver(
     createImage(width, height),
     scaled,
-    Math.round((width - scaled.width) / 2),
-    Math.round((height - scaled.height) / 2),
+    Math.round((width - scaled.width) * focus[0]),
+    Math.round((height - scaled.height) * focus[1]),
+  );
+}
+
+/**
+ * A rectangle out of an image, in fractions of its size.
+ *
+ * `cover` alone cannot make two slots look different: a square photograph
+ * filling a 4:3 and a 16:10 frame overflows only vertically, so shifting the
+ * focus slides it a little and shows the same thing. Taking a smaller region
+ * first is what changes the subject — this photograph has one large rosette at
+ * its centre and a field of small ones around it, and a corner of it is a
+ * different picture rather than the same picture nudged.
+ */
+function region(source, [x, y, width, height]) {
+  const w = Math.round(source.width * width);
+  const h = Math.round(source.height * height);
+
+  return drawOver(
+    createImage(w, h),
+    source,
+    -Math.round(source.width * x),
+    -Math.round(source.height * y),
   );
 }
 
@@ -134,9 +167,10 @@ function emblem({
   count = 1,
   align = 0.5,
   angle = 0.5,
+  focus,
 }) {
   const canvas = field
-    ? cover(field, width, height)
+    ? cover(field, width, height, focus)
     : gradientFill(createImage(width, height), from, to, angle);
 
   /*
@@ -206,10 +240,19 @@ const IMAGES = {
   'card-sections.png': emblem({ width: 800, height: 600, from: SEA[0], to: SEA[1] }),
   'card-themes.png': emblem({ width: 800, height: 600, from: LILAC[0], to: LILAC[1] }),
   'card-guides.png': emblem({ width: 800, height: 600, from: SLATE[0], to: SLATE[1] }),
-  'card-cli.png': emblem({ width: 800, height: 600, from: INK[0], to: INK[1] }),
+  // The corner of the wall rather than its centre: small rosettes, no single
+  // focal point, which suits a card whose words are the subject.
+  'card-cli.png': emblem({
+    field: region(cardField, [0, 0, 0.52, 0.52]),
+    count: 0,
+    width: 800,
+    height: 600,
+  }),
 
   'bento-model.png': emblem({ width: 1200, height: 750, from: SEA[0], to: SEA[1], scale: 0.8 }),
-  'bento-themes.png': emblem({ width: 1200, height: 750, from: DUSK[0], to: DUSK[1], scale: 0.8 }),
+  // The centre, where the big rosette is — this is the larger tile and can
+  // carry a focal point.
+  'bento-themes.png': emblem({ field: cardField, count: 0, width: 1200, height: 750 }),
 
   /*
    * Artwork for the documentation examples under `content/examples`. A gallery
