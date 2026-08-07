@@ -36,6 +36,18 @@ const rosette = trim(decodePng(path.join(brand, 'zellij-rosette.png')));
  */
 const mark = decodePng(path.join(brand, 'zellij-mark.png'));
 
+/*
+ * Three tile panels with the name already set into them, for the front of the
+ * carousel. Generated images rather than photographs, and each one keeps a
+ * faint mark in its bottom-right corner saying so — the crops below are chosen
+ * to fall outside it.
+ */
+const CARD_PHOTOS = {
+  a: decodePng(path.join(brand, 'card-photo-a.png')),
+  b: decodePng(path.join(brand, 'card-photo-b.png')),
+  c: decodePng(path.join(brand, 'card-photo-c.png')),
+};
+
 /**
  * Tilework, drawn.
  *
@@ -97,6 +109,26 @@ const LILAC = [
   [246, 242, 252],
   [212, 200, 236],
 ];
+
+/**
+ * Scales an image to cover `width`×`height` and crops what overflows.
+ *
+ * `focus` picks which part survives — 0 keeps the left or top edge, 1 the right
+ * or bottom. It is load-bearing here rather than cosmetic: each of these images
+ * carries a small generator watermark in its bottom-right corner, and the crop
+ * that fits a square source into a 4:3 card is chosen to land outside it.
+ */
+function cover(source, width, height, focus = [0.5, 0.5]) {
+  const scale = Math.max(width / source.width, height / source.height);
+  const scaled = resize(source, Math.round(source.width * scale), Math.round(source.height * scale));
+
+  return drawOver(
+    createImage(width, height),
+    scaled,
+    Math.round((width - scaled.width) * focus[0]),
+    Math.round((height - scaled.height) * focus[1]),
+  );
+}
 
 /**
  * A rosette on a gradient.
@@ -169,10 +201,10 @@ const IMAGES = {
   'panel-themes.png': tiles({ width: 2000, height: 900, cell: 182, palette: PALETTES.meknes }),
   'og.png': emblem({ width: 1200, height: 630, from: INK[0], to: INK[1], scale: 0.82 }),
 
-  'card-content.png': emblem({ width: 800, height: 600, from: CLAY[0], to: CLAY[1] }),
-  'card-sections.png': emblem({ width: 800, height: 600, from: SEA[0], to: SEA[1] }),
-  'card-themes.png': emblem({ width: 800, height: 600, from: LILAC[0], to: LILAC[1] }),
-  'card-guides.png': emblem({ width: 800, height: 600, from: SLATE[0], to: SLATE[1] }),
+  'card-content.png': cover(CARD_PHOTOS.a, 800, 600, [0.5, 0.24]),
+  'card-sections.png': cover(CARD_PHOTOS.b, 800, 600, [0.5, 0.24]),
+  'card-themes.png': cover(CARD_PHOTOS.c, 800, 600, [0.12, 0.5]),
+  'card-guides.png': tiles({ width: 800, height: 600, cell: 132, palette: PALETTES.meknes }),
   'card-cli.png': tiles({ width: 800, height: 600, cell: 132, palette: PALETTES.majorelle }),
 
   'bento-model.png': emblem({ width: 1200, height: 750, from: SEA[0], to: SEA[1], scale: 0.8 }),
