@@ -1,0 +1,13 @@
+- name: home
+  title: CodeSeal — source-at-rest encryption for Git
+  description: >-
+    CodeSeal encrypts your most sensitive source files before they leave your
+    machine, so what is committed to Git is unreadable to everyone but you.
+  layout: landing
+  sections:
+    - home/hero
+    - home/problem
+    - home/how
+    - home/security
+    - home/faq
+    - home/cta

@@ -1,0 +1,141 @@
+---
+title: Quickstart
+description: Take a repository you already have and seal something in it.
+---
+
+Ten minutes, one existing repository, and by the end there is a file in it your
+Git host cannot read.
+
+Use a repository you do not mind experimenting on. Everything here is
+reversible, but the first time you seal something is not the moment to find that
+out.
+
+<Callout type="info" title="Passphrase mode, for now">
+This walkthrough uses a single shared secret, which is the shortest path to
+seeing it work. It is also the mode you outgrow first — the moment a second
+person needs access you can withdraw, move to [per-recipient
+keys](/guide/teams). The repository does not have to be re-created to switch.
+</Callout>
+
+## Set the key
+
+```bash title="terminal"
+export SGIT_KEY="a-long-random-project-secret"
+```
+
+**Never pass a key as a command-line argument.** `sgit` will not accept one, and
+that is deliberate: arguments land in your shell history and in the process
+table, where any other user on the machine can read them. Environment variable
+or identity file, nowhere else.
+
+## Initialise
+
+```bash title="terminal"
+sgit init -s src/private config/prod_rules.yaml
+```
+
+`-s` takes the paths worth protecting. A directory is expanded into individual
+file entries rather than kept as a wildcard, so the manifest always says exactly
+what is covered — and adding a file to a protected folder later is a decision
+you make rather than one that happens to you.
+
+```
+✓ Wrote .sgit/manifest.yaml
+✓ Managed .gitignore + .gitattributes + hooks
+✓ Encrypted 7 files → .sgit/store/
+```
+
+<Callout type="tip" title="sgit init --wizard">
+The interactive version asks the same questions with the trade-offs written
+out, and is the better first run. It also sets up CI and can register the
+repository with a Portal, neither of which this walkthrough needs.
+</Callout>
+
+### What appeared in the repository
+
+```text title="repository layout"
+my-app/
+├── src/private/
+│   └── payment_engine.py          ← plaintext, local only, gitignored
+├── .sgit/
+│   ├── store/src/private/
+│   │   └── payment_engine.py.sgit ← ciphertext, committed
+│   └── manifest.yaml              ← what is protected, committed
+├── .gitignore                     ← a managed block was added
+└── .gitattributes                 ← a managed block was added
+```
+
+The plaintext file stays where it was and Git stops seeing it. What Git sees is
+the `.sgit` blob beside it.
+
+## Stage the ordinary files
+
+Nothing changes for source that is not protected:
+
+```bash title="terminal"
+git add .
+```
+
+## Encrypt and check
+
+```bash title="terminal"
+sgit encrypt
+sgit doctor
+```
+
+`doctor` is the one to trust. It exits non-zero if the repository is unsafe to
+commit or push — a protected file staged in plaintext, a manifest entry with no
+blob, a hook that has gone missing. Run it whenever something feels off.
+
+## Commit and push
+
+```bash title="terminal"
+sgit commit -m "protect the payment engine"
+sgit push origin main
+```
+
+Both wrap the Git command of the same name: encrypt what needs it, run the
+safety checks, then hand over to Git. The commit that lands is an ordinary Git
+commit.
+
+<Callout type="warning" title="Use `sgit push`, not `git push`">
+A raw `git push` still fires the installed pre-push hook, so it is not
+unprotected — but it skips the explicit wrapper, and the hook is easier to lose
+than the command is. Make `sgit push` the habit on a sealed repository.
+</Callout>
+
+## Confirm it worked
+
+The real test is what the remote holds. Look at the file on your host's web
+interface, or fetch it fresh:
+
+```bash title="terminal"
+git show HEAD:.sgit/store/src/private/payment_engine.py.sgit | head -c 200
+```
+
+Noise is the correct answer.
+
+## Where the plaintext comes back
+
+On another machine, or after a fresh clone:
+
+```bash title="terminal"
+export SGIT_KEY="a-long-random-project-secret"
+sgit decrypt
+```
+
+And for a command that needs plaintext without leaving it on disk afterwards:
+
+```bash title="terminal"
+sgit run-secure -- pytest
+```
+
+That decrypts, runs the command, and removes the plaintext when it exits —
+which is the same mechanism CI uses.
+
+## Next
+
+- [Commands](/guide/commands) — the full set, and which Git command each wraps
+- [Teams](/guide/teams) — per-person keys, and revoking one person's access
+- [CI and CD](/guide/ci) — letting a build read what it needs
+- [Security model](/guide/security) — what this did and did not just protect you from

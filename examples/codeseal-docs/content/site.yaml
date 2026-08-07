@@ -1,0 +1,41 @@
+name: CodeSeal
+tagline: Source-at-rest encryption for Git.
+
+theme: terracotta
+mode: system
+motion: subtle
+
+home: home
+
+siteUrl: https://codeseal.shebka.net
+basePath: ""
+
+nav:
+  sticky: true
+  align: left
+  themeToggle: true
+  search: true
+  transparentOverHero: true
+  cta:
+    - { label: Install CodeSeal, href: /guide/install, style: primary }
+
+footer:
+  columns:
+    - heading: Start
+      links:
+        - { label: Install, href: /guide/install }
+        - { label: Quickstart, href: /guide/quickstart }
+        - { label: Commands, href: /guide/commands }
+    - heading: Going further
+      links:
+        - { label: Teams and recipients, href: /guide/teams }
+        - { label: CI and CD, href: /guide/ci }
+        - { label: Reference, href: /guide/reference }
+    - heading: Understand
+      links:
+        - { label: Security model, href: /guide/security }
+        - { label: FAQ, href: /guide/faq }
+  legal: "© 2026 Shebka LLC"
+
+analytics:
+  provider: none

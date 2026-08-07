@@ -1,0 +1,11 @@
+type: hero
+badge: Source-at-rest encryption for Git
+headline: Seal your code. Protect what matters.
+subhead: >-
+  Your private repositories are hidden from the public, not from the platform.
+  CodeSeal encrypts your most sensitive files before they ever leave your
+  machine — so what is committed is unreadable to everyone but you.
+titleGradient: [accent, fg]
+cta:
+  - { label: Install CodeSeal, href: /guide/install, style: primary }
+  - { label: See how it works, href: "#how", style: ghost }

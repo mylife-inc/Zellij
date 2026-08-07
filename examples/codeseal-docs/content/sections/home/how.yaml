@@ -1,0 +1,30 @@
+type: timeline
+id: how
+eyebrow: How it works
+heading: A thin, careful layer over Git.
+subhead: >-
+  CodeSeal does not replace Git or your hosting provider. It encrypts the files
+  you nominate, manages the ignore rules and hooks for you, and stays out of the
+  way the rest of the time.
+items:
+  - date: "01"
+    title: Mark sensitive paths
+    body: >-
+      Tell CodeSeal which files or folders hold your secrets. A directory is
+      expanded into individual file entries in a versioned manifest, so what is
+      protected is always explicit.
+  - date: "02"
+    title: Encrypt locally
+    body: >-
+      Plaintext never leaves your machine. Encrypted blobs go to `.sgit/store/`,
+      and that is what Git sees.
+  - date: "03"
+    title: Commit and push safely
+    body: >-
+      `sgit commit` encrypts and checks before delegating to Git. `sgit push`
+      repeats the safety checks before sending ciphertext and manifest.
+  - date: "04"
+    title: Decrypt where authorised
+    body: >-
+      Teammates and CI runners holding a key decrypt on demand through
+      `sgit run-secure`.

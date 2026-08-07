@@ -1,0 +1,31 @@
+# The whole top bar. Search and the light/dark toggle are built in and
+# configured under `nav:` in site.yaml.
+
+- name: Guide
+  page: guide
+
+- name: Start here
+  items:
+    - name: Install
+      url: /guide/install
+      description: One binary, on your PATH.
+      icon: download
+    - name: Quickstart
+      url: /guide/quickstart
+      description: A sealed repository in ten minutes.
+      icon: rocket
+
+- name: Understand
+  items:
+    - name: Security model
+      url: /guide/security
+      description: What it protects, and what it does not.
+      icon: shield-check
+    - name: CI and CD
+      url: /guide/ci
+      description: Four modes, in decreasing order of trust.
+      icon: git-branch
+    - name: FAQ
+      url: /guide/faq
+      description: The questions that come up first.
+      icon: help-circle
