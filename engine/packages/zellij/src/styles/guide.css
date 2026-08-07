@@ -413,6 +413,32 @@
   max-width: 100%;
   border-collapse: collapse;
   font-size: 0.9375rem;
+
+  /*
+   * A scrollbar that is always there, because an invisible one is the same as
+   * no scrollbar at all.
+   *
+   * macOS hides overlay scrollbars until something scrolls, so a table with a
+   * column past its right edge looks exactly like a table with a column cut
+   * off. The content was always reachable; nothing said so. Styling the
+   * WebKit pseudo-elements opts this element out of overlay behaviour and
+   * leaves a permanent track, which is the whole affordance.
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--zellij-border) transparent;
+}
+
+.zellij-prose table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.zellij-prose table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.zellij-prose table::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--zellij-fg) 22%, transparent);
 }
 
 .zellij-prose th,
@@ -423,6 +449,29 @@
 
 .zellij-prose td:last-child {
   min-width: 22rem;
+}
+
+/*
+ * Narrower floors inside a callout, which is a narrower place.
+ *
+ * Those two minimums are tuned for a reference table across the full reading
+ * measure, where 22rem for the description column is what stops it wrapping to
+ * two words a line. A callout gives back none of that width: it is inset from
+ * the prose, then again by its icon and padding, and it is often inside a tab
+ * panel as well — a third of the measure can be gone before the table starts.
+ *
+ * Left at 8rem and 22rem, a plain two-column table needs 30rem in a box that
+ * is often 26, so it scrolled every time and always in the same place: the
+ * description column, clipped mid-sentence. The scrollbar above makes that
+ * recoverable. These make it rare.
+ */
+.zellij-callout th,
+.zellij-callout td {
+  min-width: 5rem;
+}
+
+.zellij-callout td:last-child {
+  min-width: 11rem;
 }
 
 .zellij-prose th,
