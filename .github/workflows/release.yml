@@ -76,7 +76,6 @@ jobs:
         working-directory: cli
 
   # ------------------------------------------------------------------ images
-  # ------------------------------------------------------------------ images
   # Each architecture on a runner of that architecture, then stitched into one
   # manifest. Emulating arm64 through QEMU crashed while running Node —
   # "qemu: uncaught target signal 4 (Illegal instruction)" — intermittently and
@@ -386,10 +385,7 @@ jobs:
     # attaches, and none if the documentation stopped building. A broken image
     # variant is visible on its own job and does not deserve to withhold the
     # thing people actually run.
-    if: |
-      always() &&
-      needs.binaries.result == 'success' &&
-      needs.docs.result == 'success'
+    if: ${{ always() && needs.binaries.result == 'success' && needs.docs.result == 'success' }}
 
     runs-on: ubuntu-latest
 
