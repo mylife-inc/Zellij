@@ -269,9 +269,13 @@ jobs:
 
           echo "archive=$archive" >> "$GITHUB_OUTPUT"
 
+      # `binary-` so the publish job can ask for these and nothing else. The
+      # run also carries eight `digest-*` artefacts that exist only to get a
+      # digest from an image build to the manifest merge, and a release has no
+      # use for them.
       - uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.target }}
+          name: binary-${{ matrix.target }}
           path: |
             ${{ steps.package.outputs.archive }}
             ${{ steps.package.outputs.archive }}.sha256
@@ -360,9 +364,25 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # The binaries and their checksums, and nothing else in the run.
+      #
+      # Without the pattern this asked for all twenty-one artefacts, and rc.5
+      # died here: four downloaded, the fifth failed its five retries, and the
+      # job went red before a single publish step ran. Thirteen of the
+      # twenty-one were never wanted — eight digests carrying a sha256 from an
+      # image build to the manifest merge, which is finished by the time this
+      # job starts.
+      #
+      # It was also wrong on success. `files: artifacts/*` below attaches what
+      # this downloads, so every one of those digest files would have been
+      # published as a release asset beside the binaries.
+      #
+      # Five artefacts instead of twenty-one is a smaller thing to go wrong, and
+      # a release that carries only what belongs in one.
       - uses: actions/download-artifact@v8
         with:
           path: artifacts
+          pattern: binary-*
           merge-multiple: true
 
       # The installer is an artefact too. Publishing it beside the binaries
