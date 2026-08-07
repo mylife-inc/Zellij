@@ -1,7 +1,24 @@
 name: CodeSeal
 tagline: Source-at-rest encryption for Git.
 
-theme: terracotta
+brand:
+  logo:
+    # The wax seal alone, cut out of the full lockup. The lockup carries the
+    # wordmark and the tagline underneath it, which at bar height would be
+    # three lines of unreadable text — the bar sets the name as text beside
+    # this, so the mark only has to be the mark.
+    src: assets/brand/mark.png
+    alt: CodeSeal
+    # Taller than the 1.125rem default, which is tuned for a wordmark: letters
+    # edge to edge read large at their box height, and a round mark reads small
+    # at the same one.
+    height: 1.75rem
+
+# `paper` rather than `terracotta`. CodeSeal's own site is a warm cream ground
+# with a deep wax red, and paper's #fdfcfa sits within a few points of its
+# #faf9f5 — where terracotta's #fff8f3 is pink, and its #e86a33 accent is
+# orange where the brand is oxblood.
+theme: paper
 mode: system
 motion: subtle
 
@@ -14,6 +31,10 @@ nav:
   sticky: true
   align: left
   themeToggle: true
+  # On because this site is also a Zellij demonstration. A real product site
+  # would leave it off — offering visitors fourteen palettes says the design
+  # was not a decision.
+  themeSwitcher: true
   search: true
   transparentOverHero: true
   cta:
@@ -36,6 +57,12 @@ footer:
         - { label: Security model, href: /guide/security }
         - { label: FAQ, href: /guide/faq }
   legal: "© 2026 Shebka LLC"
+
+# The exact wax red from the CodeSeal palette — hsl(354 70% 42%), which is the
+# colour sampled from the seal in the logo. Paper's own #9a3412 is the right
+# family and a shade too brown.
+overrides:
+  accent: "#b6202f"
 
 analytics:
   provider: none
