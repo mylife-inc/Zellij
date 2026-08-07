@@ -1761,3 +1761,189 @@ a.zellij-promo-tile:hover .zellij-promo-image {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------ hero-split -- */
+
+/*
+ * Copy on one side, something to look at on the other.
+ *
+ * Left-aligned rather than centred, which is not decoration: a centred column
+ * has a ragged left edge, and beside a hard-edged panel that reads as
+ * misalignment. Every element in the copy column shares one left edge.
+ */
+.zellij-hero-split {
+  padding-block: clamp(3.5rem, 8vw, 6.5rem) clamp(3rem, 6vw, 5rem);
+}
+
+.zellij-hero-split-grid {
+  display: grid;
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: center;
+}
+
+/*
+ * The copy is the wider column. A 6/5 split rather than an even one, because
+ * the headline is the message and the panel is evidence for it.
+ */
+@media (min-width: 60rem) {
+  .zellij-hero-split-grid {
+    grid-template-columns: 6fr 5fr;
+  }
+
+  /*
+   * `order` rather than swapping the markup. The copy comes first in the DOM
+   * whichever side it is displayed on, so a screen reader and a keyboard reach
+   * the headline before the illustration regardless of the layout choice.
+   */
+  .zellij-hero-split-grid[data-media='left'] .zellij-hero-split-copy {
+    order: 2;
+  }
+}
+
+.zellij-hero-split-copy {
+  text-align: left;
+  min-width: 0;
+}
+
+.zellij-hero-split .zellij-hero-headline {
+  font-size: calc(clamp(2rem, 4.6vw, 3.5rem) * var(--zellij-display-scale));
+}
+
+.zellij-hero-split .zellij-hero-subhead {
+  margin-inline: 0;
+  max-width: 34rem;
+}
+
+.zellij-hero-split .zellij-cta-group {
+  justify-content: flex-start;
+}
+
+.zellij-hero-split .zellij-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+.zellij-badge-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--zellij-accent);
+}
+
+/* The qualifiers under the buttons. */
+.zellij-hero-highlights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+  margin: 2.25rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.875rem;
+  color: var(--zellij-muted);
+}
+
+.zellij-hero-highlights li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.zellij-hero-highlight-icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--zellij-accent);
+  flex-shrink: 0;
+}
+
+.zellij-hero-split-media {
+  min-width: 0;
+}
+
+/*
+ * `zellij-headline-accent` is what a marked run falls back to when no
+ * `titleGradient` was given — "emphasise this" with no stops named means the
+ * accent colour.
+ */
+.zellij-headline-accent {
+  color: var(--zellij-accent);
+}
+
+/* -------------------------------------------------------------- terminal -- */
+
+/*
+ * A transcript, not a screenshot of one. Dark in every theme, including the
+ * light ones: a terminal that follows the page into white stops reading as a
+ * terminal, and this is a picture of a program running rather than part of the
+ * document's own surface.
+ */
+.zellij-terminal {
+  border-radius: calc(var(--zellij-radius) * 1.2);
+  overflow: hidden;
+  background: #12161f;
+  border: 1px solid #232a38;
+  box-shadow: 0 24px 60px -32px rgb(0 0 0 / 55%);
+}
+
+.zellij-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 0.875rem;
+  background: #1a1f2b;
+  border-bottom: 1px solid #232a38;
+}
+
+.zellij-terminal-lights {
+  display: inline-flex;
+  gap: 0.375rem;
+}
+
+.zellij-terminal-lights i {
+  width: 0.6875rem;
+  height: 0.6875rem;
+  border-radius: 999px;
+  background: #3a4254;
+}
+
+.zellij-terminal-lights i:nth-child(1) {
+  background: #ff5f57;
+}
+.zellij-terminal-lights i:nth-child(2) {
+  background: #febc2e;
+}
+.zellij-terminal-lights i:nth-child(3) {
+  background: #28c840;
+}
+
+.zellij-terminal-title {
+  font-family: var(--zellij-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8b93a7;
+}
+
+.zellij-terminal-body {
+  margin: 0;
+  padding: 1.125rem 1.25rem;
+  /* Long transcripts scroll inside the panel rather than widening the page. */
+  overflow-x: auto;
+  font-family: var(--zellij-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: #c8cede;
+  tab-size: 2;
+}
+
+.zellij-terminal-line[data-kind='command'] {
+  color: #f4f6fb;
+  font-weight: 600;
+}
+
+.zellij-terminal-line[data-kind='ok'] {
+  color: #56d364;
+}
+
+.zellij-terminal-line[data-kind='fail'] {
+  color: #ff7b72;
+}

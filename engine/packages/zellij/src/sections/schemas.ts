@@ -31,6 +31,57 @@ export const heroSchema = baseSectionSchema.extend({
   visualStyle: z.enum(['floating', 'framed', 'full-bleed']).default('floating'),
 });
 
+/**
+ * A hero with the copy on one side and something to look at on the other.
+ *
+ * Its own type rather than a `visualStyle` on `hero`, because it is not the
+ * same section arranged differently. It carries things a centred hero has no
+ * place for — a row of qualifiers under the buttons, a terminal transcript
+ * instead of a picture — and a variant would have meant one schema where half
+ * the fields are inert depending on another field's value, which is the shape
+ * that stops a section being able to change later.
+ *
+ * `hero` stays the right choice when the headline is the whole message.
+ */
+export const heroSplitSchema = baseSectionSchema.extend({
+  type: z.literal('hero-split'),
+  headline: z.string().min(1),
+  subhead: z.string().optional(),
+  badge: z.string().optional(),
+  badgeIcon: z.string().min(1).optional(),
+  cta: cta1or2.default([]),
+
+  /**
+   * Short qualifiers under the buttons — "Local-only plaintext", "Built in
+   * Rust". Three or four words each. They are the claims a reader checks
+   * before deciding whether the subhead is worth their time, and they are
+   * capped at four because a fifth turns a glance into a list.
+   */
+  highlights: z
+    .array(
+      z.object({
+        icon: z.string().min(1).optional(),
+        label: z.string().min(1),
+      }),
+    )
+    .max(4)
+    .default([]),
+
+  /** Which side the visual sits on. The copy takes the other. */
+  media: z.enum(['left', 'right']).default('right'),
+
+  /** An image, or a terminal transcript. */
+  visual: asset.optional(),
+  terminal: z
+    .object({
+      title: z.string().min(1).default('terminal'),
+      body: z.string().min(1),
+    })
+    .optional(),
+}).refine((section) => [section.visual, section.terminal].filter(Boolean).length === 1, {
+  message: 'a hero-split must declare exactly one of: visual, terminal',
+});
+
 export const logoStripSchema = baseSectionSchema.extend({
   type: z.literal('logo-strip'),
   heading: z.string().optional(),
@@ -362,6 +413,7 @@ export const promoGridSchema = baseSectionSchema.extend({
 /** Registration order is the order shown in "valid types" build errors. */
 const ALL = [
   { type: 'hero', schema: heroSchema, providesPageHeading: true },
+  { type: 'hero-split', schema: heroSplitSchema, providesPageHeading: true },
   { type: 'logo-strip', schema: logoStripSchema },
   { type: 'feature-grid', schema: featureGridSchema },
   { type: 'zigzag', schema: zigzagSchema },
@@ -390,6 +442,7 @@ export function registerBuiltinSections(): void {
 registerBuiltinSections();
 
 export type HeroSection = z.infer<typeof heroSchema>;
+export type HeroSplitSection = z.infer<typeof heroSplitSchema>;
 export type LogoStripSection = z.infer<typeof logoStripSchema>;
 export type FeatureGridSection = z.infer<typeof featureGridSchema>;
 export type ZigzagSection = z.infer<typeof zigzagSchema>;
@@ -411,6 +464,7 @@ export type PromoGridSection = z.infer<typeof promoGridSchema>;
 
 export type AnySection =
   | HeroSection
+  | HeroSplitSection
   | LogoStripSection
   | FeatureGridSection
   | ZigzagSection

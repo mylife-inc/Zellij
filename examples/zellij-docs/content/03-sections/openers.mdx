@@ -20,6 +20,68 @@ The hero image is the LCP element on most landing pages, so it loads with
 priority. Everything below it is lazy. Under `motion: expressive` the visual
 takes a gentle parallax.
 
+## hero-split
+
+The same job as `hero`, arranged as two columns: the copy on one side and
+something to look at on the other. Also renders the page's `h1`.
+
+<SectionPreview example="hero-split" />
+
+| field | |
+| --- | --- |
+| `badge`, `badgeIcon` | Pill above the headline, with an optional lucide icon. |
+| `highlights` | Up to four short qualifiers under the buttons. |
+| `media` | `left` or `right` — which side the visual takes. |
+| `visual` | An image. |
+| `terminal` | A transcript instead of an image. Exactly one of the two. |
+
+### Which opener
+
+`hero` when the headline is the whole message and a visual, if any, is
+supporting evidence below it. `hero-split` when the thing you are showing
+argues alongside the words rather than after them — a product shot, an
+interface, a session at a prompt.
+
+Its own type rather than a `visualStyle` on `hero`, deliberately. The two
+sections do not carry the same content: this one has qualifiers under the
+buttons and a transcript where the other has neither, and folding them
+together would have meant one schema where half the fields are inert
+depending on the value of another. That is the shape that stops a section
+being able to change later.
+
+### The terminal
+
+```yaml
+terminal:
+  title: terminal
+  body: |
+    $ zel new docs my-site
+    ✓ Wrote 8 files
+```
+
+Text, not a screenshot — so it can be selected, copied and read aloud, costs
+no download, and does not go stale the day the output changes. Lines starting
+`$` are set as commands and `✓` / `✗` as outcomes, which is the convention the
+transcript already uses for a human reader. Nothing else is interpreted.
+
+It stays dark under light themes on purpose: a terminal that follows the page
+into white stops reading as a terminal. Long lines scroll inside the panel
+rather than widening the page.
+
+### Emphasising part of a headline
+
+Wrap a run in asterisks and only that run takes the `titleGradient`:
+
+```yaml
+headline: Plain text in. *A site worth showing people out.*
+titleGradient: [accent, fg]
+```
+
+A headline of two sentences with both in gradient has no emphasis in it, only
+decoration. Marking one is what makes it land. Without `titleGradient` a marked
+run takes the accent colour, and a headline with no markers behaves exactly as
+it always did — so this changes nothing for content already written.
+
 ## showcase
 
 One large panel: eyebrow, headline, body, visual. The "learn more" building

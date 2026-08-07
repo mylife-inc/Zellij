@@ -647,6 +647,51 @@ describe('media-panel', () => {
   });
 });
 
+describe('hero-split', () => {
+  const split = (extra: string): Files => ({
+    'site.yaml': SITE,
+    'pages.yaml': '- name: home\n  sections: [opener]\n',
+    'sections/opener.yaml': `type: hero-split\nheadline: Ship it\n${extra}`,
+  });
+
+  it('accepts a terminal transcript', async () => {
+    const site = await load(split('terminal:\n  body: "$ zel dev"\n'));
+    expect(site.pages[0]?.sections[0]).toMatchObject({
+      type: 'hero-split',
+      media: 'right',
+      // The bar is labelled even when the author does not say so.
+      terminal: { title: 'terminal', body: '$ zel dev' },
+    });
+  });
+
+  it('accepts an image instead', async () => {
+    const site = await load(split('visual: assets/a.png\nmedia: left\n'));
+    expect(site.pages[0]?.sections[0]).toMatchObject({ type: 'hero-split', media: 'left' });
+  });
+
+  it('rejects declaring neither', async () => {
+    await expect(load(split(''))).rejects.toThrow(/exactly one of: visual, terminal/);
+  });
+
+  it('rejects declaring both', async () => {
+    await expect(
+      load(split('visual: assets/a.png\nterminal:\n  body: "$ zel dev"\n')),
+    ).rejects.toThrow(/exactly one of: visual, terminal/);
+  });
+
+  it('caps highlights at four', async () => {
+    const five = ['a', 'b', 'c', 'd', 'e'].map((l) => `    - label: ${l}`).join('\n');
+    await expect(
+      load(split(`terminal:\n  body: "$ x"\nhighlights:\n${five.replace(/^ {4}/gm, '  ')}\n`)),
+    ).rejects.toThrow(/highlights/);
+  });
+
+  it('renders the page heading, like hero', async () => {
+    const site = await load(split('terminal:\n  body: "$ zel dev"\n'));
+    expect(site.pages[0]?.sections[0]?.type).toBe('hero-split');
+  });
+});
+
 describe('card-carousel', () => {
   it('needs at least two cards to be a carousel', async () => {
     await expect(

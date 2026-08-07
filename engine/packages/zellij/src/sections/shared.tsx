@@ -66,6 +66,61 @@ export function gradientTextProps(
   };
 }
 
+/**
+ * A headline where only part of it takes the gradient.
+ *
+ * `*marked*` runs get the treatment and the rest stays the body colour. A
+ * headline with no markers behaves as it always did — the whole line is
+ * painted — so this changes nothing for existing content.
+ *
+ * The reason to want it: a two-sentence headline where both sentences are
+ * gradient has no emphasis in it, only decoration. Colouring the second and
+ * leaving the first in the text colour is what makes the second one land, and
+ * it is what most designs of this shape actually do.
+ *
+ * Marking without a `titleGradient` renders the marked run in the accent
+ * colour, which is the sane reading of "emphasise this" when no stops were
+ * given.
+ */
+export function GradientHeadline({
+  text,
+  stops,
+}: {
+  text: string;
+  stops?: readonly string[] | undefined;
+}) {
+  const parts = text.split(/\*([^*]+)\*/g);
+
+  // Odd indices are the marked runs — `split` with one capture group
+  // alternates between the text around the match and the match itself.
+  if (parts.length === 1) return <>{text}</>;
+
+  const image = stops ? gradientImage(stops, '100deg') : undefined;
+
+  return (
+    <>
+      {parts.map((part, index) =>
+        index % 2 === 1 ? (
+          <span
+            key={index}
+            className={image ? 'zellij-gradient-text' : 'zellij-headline-accent'}
+            {...(image ? { style: { backgroundImage: image } } : {})}
+          >
+            {part}
+          </span>
+        ) : (
+          part
+        ),
+      )}
+    </>
+  );
+}
+
+/** True when a headline marks part of itself for emphasis. */
+export function hasMarkedRun(text: string): boolean {
+  return /\*[^*]+\*/.test(text);
+}
+
 /** Shared frame for every section: anchor target, motion scope, container. */
 export function SectionShell({
   type,

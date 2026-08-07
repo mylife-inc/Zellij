@@ -8,6 +8,7 @@ import { Faq } from './faq';
 import { Gallery } from './gallery';
 import { FeatureGrid } from './feature-grid';
 import { Hero } from './hero';
+import { HeroSplit } from './hero-split';
 import { LogoStrip } from './logo-strip';
 import { MarkdownProse } from './markdown-prose';
 import { MediaPanel } from './media-panel';
@@ -27,6 +28,7 @@ import { Zigzag } from './zigzag';
  */
 export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never>>> = {
   hero: Hero as ComponentType<SectionProps<never>>,
+  'hero-split': HeroSplit as ComponentType<SectionProps<never>>,
   'logo-strip': LogoStrip as ComponentType<SectionProps<never>>,
   'feature-grid': FeatureGrid as ComponentType<SectionProps<never>>,
   zigzag: Zigzag as ComponentType<SectionProps<never>>,
