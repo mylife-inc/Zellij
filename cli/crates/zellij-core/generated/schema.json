@@ -2433,6 +2433,10 @@
                 },
                 "href": {
                   "type": "string"
+                },
+                "height": {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?(rem|em|px)$"
                 }
               },
               "required": [

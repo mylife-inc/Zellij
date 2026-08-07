@@ -67,7 +67,7 @@ a complete site.
 
 | field | type | |
 | --- | --- | --- |
-| `logo` | object { src, dark, alt, href } |  |
+| `logo` | object { src, dark, alt, href, height } |  |
 | `title` | string |  |
 
 **`brand.logo`**
@@ -78,6 +78,7 @@ a complete site.
 | `dark` | string |  |
 | `alt` | string |  |
 | `href` | string |  |
+| `height` | string |  |
 
 **`overrides`**
 

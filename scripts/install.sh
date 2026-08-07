@@ -116,7 +116,21 @@ fetch_to "$base/$archive" "$tmp/$archive" ||
 # A checksum that is never verified is decoration. If one is published, it has
 # to match; if the download is served over a compromised connection, this is
 # the only thing standing in the way.
-if fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
+#
+# So every path that cannot verify stops, rather than warning and carrying on.
+# This is a script people run as `curl … | sh`, which means whoever can
+# interfere with the download can also interfere with the checksum — and the
+# easiest way to do that is not to forge it but to make the request for it
+# fail. A warning is not a defence against that. It is the attack succeeding
+# with a note attached.
+#
+# Nothing legitimate is lost by refusing: the release workflow publishes a
+# `.sha256` beside every archive it uploads, so a missing one means the release
+# is broken or the response is not the one that was published. Both are reasons
+# to stop.
+if [ "${ZEL_INSECURE_SKIP_CHECKSUM:-}" = "1" ]; then
+  warn "ZEL_INSECURE_SKIP_CHECKSUM=1 — installing without verifying the download."
+elif fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
   say "Verifying"
   expected="$(cut -d' ' -f1 < "$tmp/$archive.sha256")"
 
@@ -125,24 +139,49 @@ if fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
   elif command -v shasum >/dev/null 2>&1; then
     actual="$(shasum -a 256 "$tmp/$archive" | cut -d' ' -f1)"
   else
-    actual=""
-    warn "No sha256sum or shasum — the download was not verified."
+    die "Neither sha256sum nor shasum is available, so the download cannot be
+    verified. Install one, or re-run with ZEL_INSECURE_SKIP_CHECKSUM=1 if you
+    accept an unverified binary."
   fi
 
-  if [ -n "$actual" ] && [ "$actual" != "$expected" ]; then
+  if [ "$actual" != "$expected" ]; then
     die "Checksum mismatch.
     expected $expected
     actual   $actual
     Nothing was installed."
   fi
 else
-  warn "No checksum published for $archive — the download was not verified."
+  die "No checksum could be fetched for $archive, so the download cannot be
+    verified. Every release publishes one beside its archive, so this means
+    either the release is incomplete or the response was not the published one.
+    Nothing was installed.
+
+    To install anyway: ZEL_INSECURE_SKIP_CHECKSUM=1"
 fi
 
 # ------------------------------------------------------------------- install
 
-tar -xzf "$tmp/$archive" -C "$tmp"
-[ -f "$tmp/zel" ] || die "The archive did not contain a zel binary."
+# Take one named member out of the archive, and check it is what it claims.
+#
+# A tarball is a list of paths chosen by whoever built it, and `tar -x` honours
+# that list — including symlinks, and including members that unpack outside the
+# directory you pointed it at. Naming `zel` means nothing else in the archive is
+# written to disk at all, which is the difference between extracting an archive
+# and trusting one.
+#
+# The `-L` check is the other half. A member named `zel` can be a symlink, and
+# a symlink survives `chmod +x` and `mv` perfectly well — what lands on your
+# PATH would be a pointer at whatever the archive chose.
+#
+# `--no-same-owner` is not in POSIX tar, so a shell that has not got it falls
+# through to the plain form rather than failing to install.
+tar --no-same-owner -xzf "$tmp/$archive" -C "$tmp" zel 2>/dev/null ||
+  tar -xzf "$tmp/$archive" -C "$tmp" zel 2>/dev/null ||
+  die "The archive did not contain a zel binary."
+
+if [ ! -f "$tmp/zel" ] || [ -L "$tmp/zel" ]; then
+  die "The archive's zel is not a regular file. Nothing was installed."
+fi
 
 mkdir -p "$INSTALL_DIR"
 # Move into place rather than copy over a running binary: replacing an
