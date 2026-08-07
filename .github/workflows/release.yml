@@ -170,9 +170,30 @@ jobs:
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest
 
+      # Says what it is about to do before doing it.
+      #
+      # The `diagrams` merge failed twice on rc.6 while the other three
+      # succeeded, and the log was unrecoverable afterwards — GitHub returned
+      # `BlobNotFound` for the job minutes later, so there was nothing to read.
+      # A failure that cannot be diagnosed after the fact has to diagnose itself
+      # at the time.
+      #
+      # Two of these are the whole question: how many digests arrived (two, one
+      # per architecture — anything else means an artefact went missing) and
+      # what tags are about to be written.
+      - name: What is being merged
+        working-directory: /tmp/digests
+        run: |
+          echo "digests downloaded:"
+          ls -la
+          echo "count: $(ls -1 | wc -l)  (expected 2)"
+          echo "tags:"
+          jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON"
+
       - name: Stitch the architectures into one manifest
         working-directory: /tmp/digests
         run: |
+          set -x
           docker buildx imagetools create \
             $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf "${REGISTRY}/${IMAGE}@sha256:%s " *)
@@ -350,6 +371,26 @@ jobs:
   publish:
     name: Publish the release
     needs: [manifests, binaries, docs]
+
+    # Runs after the images, and not because of them.
+    #
+    # This job publishes the binaries and the installer. It reads neither an
+    # image digest nor an image tag — the tags in the release body below are
+    # text. But `needs` is a hard gate as well as an ordering, so a failed
+    # manifest merge for one feature variant took the installer down with it,
+    # and that is most of why five releases in a row left
+    # `raw.githubusercontent.com/…/install.sh` returning 404.
+    #
+    # `always()` keeps the ordering and drops the gate, then the two conditions
+    # put back the gates that are real: no release without the binaries it
+    # attaches, and none if the documentation stopped building. A broken image
+    # variant is visible on its own job and does not deserve to withhold the
+    # thing people actually run.
+    if: |
+      always() &&
+      needs.binaries.result == 'success' &&
+      needs.docs.result == 'success'
+
     runs-on: ubuntu-latest
 
     # This repository is private, and a private repository's release assets
