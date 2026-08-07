@@ -18,6 +18,7 @@ import {
   resize,
   trim,
 } from '../../tools/image.mjs';
+import { PALETTES, field as tilework, wordmark } from '../../tools/zellij-pattern.mjs';
 
 const root = path.resolve(import.meta.dirname, '..', 'content', 'assets');
 const brand = path.join(root, 'brand');
@@ -35,24 +36,25 @@ const rosette = trim(decodePng(path.join(brand, 'zellij-rosette.png')));
  */
 const mark = decodePng(path.join(brand, 'zellij-mark.png'));
 
-/*
- * Photographed tilework, for the two images large enough to deserve it.
+/**
+ * Tilework, drawn.
  *
- * The hero and the themes panel used to be a rosette on a flat gradient, and
- * the gradient was the weakest thing on the page: a colour chosen to be
- * inoffensive behind artwork. These are the artwork.
- */
-const heroField = decodePng(path.join(brand, 'tile-hero.png'));
-
-/*
- * The field for the two cards that used to be near-black.
+ * These four images were photographs until the licence question came up. The
+ * geometry of zellij is public domain — it is centuries old and belongs to
+ * nobody — but a photograph of it belongs to whoever took it, and every
+ * candidate either carried a stock watermark or arrived without provenance.
  *
- * One photograph, two crops. Its centre is a single large rosette and its
- * edges are the field of small ones around it, so `focus` gives each slot a
- * different part of the same wall rather than the same picture twice.
+ * Drawing it settles that, and three other things: eight megabytes of JPEG
+ * leave the repository, each image is generated at exactly the size it is used
+ * at instead of resampled, and the palette is ours to choose.
  */
-const cardField = decodePng(path.join(brand, 'tile-card.png'));
-const panelField = decodePng(path.join(brand, 'tile-panel.png'));
+function tiles({ width, height, cell, palette, word = 0 }) {
+  // Grout scales with the image, or a 2000px panel and an 800px card would be
+  // laid by two different craftsmen.
+  const image = tilework({ width, height, cell, palette, grout: Math.max(1.5, width / 620) });
+  if (word > 0) wordmark(image, 'ZELLIJ', { size: word });
+  return image;
+}
 
 /* ------------------------------------------------------------------ fields */
 
@@ -97,56 +99,13 @@ const LILAC = [
 ];
 
 /**
- * Scales an image to cover `width`×`height` and centre-crops what overflows.
+ * A rosette on a gradient.
  *
- * Cover rather than fit: a field with letterboxing down its sides is not a
- * field. `drawOver` clips anything outside the canvas, so the crop is just a
- * negative offset.
- */
-function cover(source, width, height, focus = [0.5, 0.5]) {
-  const scale = Math.max(width / source.width, height / source.height);
-  const scaled = resize(source, Math.round(source.width * scale), Math.round(source.height * scale));
-
-  // `focus` picks which part of the overflow survives — 0 keeps the left or
-  // top edge, 1 the right or bottom.
-  return drawOver(
-    createImage(width, height),
-    scaled,
-    Math.round((width - scaled.width) * focus[0]),
-    Math.round((height - scaled.height) * focus[1]),
-  );
-}
-
-/**
- * A rectangle out of an image, in fractions of its size.
- *
- * `cover` alone cannot make two slots look different: a square photograph
- * filling a 4:3 and a 16:10 frame overflows only vertically, so shifting the
- * focus slides it a little and shows the same thing. Taking a smaller region
- * first is what changes the subject — this photograph has one large rosette at
- * its centre and a field of small ones around it, and a corner of it is a
- * different picture rather than the same picture nudged.
- */
-function region(source, [x, y, width, height]) {
-  const w = Math.round(source.width * width);
-  const h = Math.round(source.height * height);
-
-  return drawOver(
-    createImage(w, h),
-    source,
-    -Math.round(source.width * x),
-    -Math.round(source.height * y),
-  );
-}
-
-/**
- * Rosettes over a field.
- *
- * The field is a photograph of real tilework where one is given, and a gradient
- * otherwise. Both exist because they answer different needs: the large
- * showpieces earn a photograph, and the small cards do not — five detailed
- * mosaics in a card row compete with the words next to them, and at card size
- * the tilework is too small to be read as tilework anyway.
+ * Still how the small cards are made, and deliberately so. The four large
+ * images are drawn tilework; a card is 800×600 and at that size a lattice of
+ * stars is texture rather than pattern, and five of them in a row compete with
+ * the words beside them. One medallion on a quiet ground says what a card needs
+ * to say.
  *
  * Deliberately not a dense tiling of the *rosette*. It carries the "ZELLIJ"
  * wordmark at its centre, so repeating it across a canvas reads as a watermark
@@ -156,35 +115,8 @@ function region(source, [x, y, width, height]) {
  * `align` shifts the cluster's centre horizontally (0 left, 0.5 centred, 1
  * right), which is how the wide panel keeps its artwork clear of the copy.
  */
-function emblem({
-  width,
-  height,
-  from,
-  to,
-  field,
-  scrim = 0,
-  scale = 0.74,
-  count = 1,
-  align = 0.5,
-  angle = 0.5,
-  focus,
-}) {
-  const canvas = field
-    ? cover(field, width, height, focus)
-    : gradientFill(createImage(width, height), from, to, angle);
-
-  /*
-   * A photographed field needs holding back before the rosette goes on it.
-   *
-   * Tilework is pattern at every scale, and the rosette is a pattern too — laid
-   * straight over one another they interlock into noise and the "ZELLIJ" at the
-   * centre stops being legible. The gradient fields never needed this because
-   * being unremarkable was their whole job.
-   *
-   * This is what the media-panel section already does with `scrim` at render
-   * time, for the same reason and to the same end.
-   */
-  if (scrim > 0) drawOver(canvas, createImage(width, height, [10, 12, 20, 255]), 0, 0, scrim);
+function emblem({ width, height, from, to, scale = 0.74, count = 1, align = 0.5, angle = 0.5 }) {
+  const canvas = gradientFill(createImage(width, height), from, to, angle);
 
   const size = Math.round(height * scale);
   const tile = resize(rosette, size, Math.round((size * rosette.height) / rosette.width));
@@ -218,41 +150,33 @@ await mkdir(root, { recursive: true });
 
 const IMAGES = {
   /*
-   * The two photographed fields carry no rosette — `count: 0`.
+   * The four drawn fields.
    *
-   * Tried it with one. Tilework is pattern at every scale and so is the
-   * rosette, and laid over each other they interlock into noise: the "ZELLIJ"
-   * at the centre stopped being readable, and the medallion stopped reading as
-   * a shape. Holding the field back with a scrim fixed the legibility and cost
-   * the photograph its whites, which is most of why it is worth showing.
+   * No rosette laid over them. Tried that on the photographs and it was noise:
+   * tilework is pattern at every scale and so is the rosette, and one over the
+   * other left neither readable. The field is the artwork here — and now that
+   * it is drawn rather than photographed, the name can be set into it the way a
+   * zellij panel carries a calligraphic band, instead of floating a medallion
+   * on top.
    *
-   * So the field is the artwork here, and the mark in the bar says the name.
-   * That is what the rosette was doing on a gradient: standing in for a picture
-   * there wasn't one of.
+   * `cell` is the lattice pitch in finished pixels, and it is the only dial
+   * that matters: too large and three stars fill a hero, too small and the
+   * whole thing turns to texture. Roughly a tenth of the width holds up.
    */
-  'hero.png': emblem({ field: heroField, count: 0, width: 1600, height: 900 }),
-  // The section applies its own scrim over this one, which is what keeps the
-  // copy legible without dulling the image everywhere it is not needed.
-  'panel-themes.png': emblem({ field: panelField, count: 0, width: 2000, height: 900 }),
+  'hero.png': tiles({ width: 1600, height: 900, cell: 168, palette: PALETTES.fez, word: 0.115 }),
+  // The section lays its own scrim over this one, so it carries no wordmark of
+  // its own — the copy sitting on it is the message.
+  'panel-themes.png': tiles({ width: 2000, height: 900, cell: 182, palette: PALETTES.meknes }),
   'og.png': emblem({ width: 1200, height: 630, from: INK[0], to: INK[1], scale: 0.82 }),
 
   'card-content.png': emblem({ width: 800, height: 600, from: CLAY[0], to: CLAY[1] }),
   'card-sections.png': emblem({ width: 800, height: 600, from: SEA[0], to: SEA[1] }),
   'card-themes.png': emblem({ width: 800, height: 600, from: LILAC[0], to: LILAC[1] }),
   'card-guides.png': emblem({ width: 800, height: 600, from: SLATE[0], to: SLATE[1] }),
-  // The corner of the wall rather than its centre: small rosettes, no single
-  // focal point, which suits a card whose words are the subject.
-  'card-cli.png': emblem({
-    field: region(cardField, [0, 0, 0.52, 0.52]),
-    count: 0,
-    width: 800,
-    height: 600,
-  }),
+  'card-cli.png': tiles({ width: 800, height: 600, cell: 132, palette: PALETTES.majorelle }),
 
   'bento-model.png': emblem({ width: 1200, height: 750, from: SEA[0], to: SEA[1], scale: 0.8 }),
-  // The centre, where the big rosette is — this is the larger tile and can
-  // carry a focal point.
-  'bento-themes.png': emblem({ field: cardField, count: 0, width: 1200, height: 750 }),
+  'bento-themes.png': tiles({ width: 1200, height: 750, cell: 152, palette: PALETTES.fez }),
 
   /*
    * Artwork for the documentation examples under `content/examples`. A gallery
