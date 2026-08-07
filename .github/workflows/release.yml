@@ -201,6 +201,20 @@ jobs:
     needs: verify
     runs-on: ${{ matrix.os }}
 
+    # Both Darwin targets are built on the Apple Silicon runner.
+    #
+    # `macos-13` is the last Intel image GitHub offers, and it is being retired:
+    # rc.4 had every other job green — eight images, four manifests, the docs,
+    # four of five binaries — and sat *queued* for over an hour waiting for an
+    # Intel machine that never came. Nothing had failed. The release simply
+    # could not finish, and `publish` never started, which is why the installer
+    # was still missing from the public repository.
+    #
+    # Cross-compiling costs nothing here. Rust publishes `rust-std` for both
+    # Apple targets and the runner's SDK carries both architectures, so
+    # `--target x86_64-apple-darwin` on an arm64 host needs no extra linker and
+    # no emulation — unlike the arm64 *Linux* build, which is why that one is
+    # still on a native runner rather than under QEMU.
     strategy:
       fail-fast: false
       matrix:
@@ -208,7 +222,7 @@ jobs:
           - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
           - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
           - { os: macos-latest, target: aarch64-apple-darwin }
-          - { os: macos-13, target: x86_64-apple-darwin }
+          - { os: macos-latest, target: x86_64-apple-darwin }
           - { os: windows-latest, target: x86_64-pc-windows-msvc }
 
     steps:
