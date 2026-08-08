@@ -134,7 +134,11 @@ describe('section references', () => {
     expect(second?.headline).toBe('Hello');
     expect(second?.id).toBe('second');
     expect(second?.background).toBe('inverted');
-    expect(first?.background).toBeUndefined();
+    // The point of the pair: an override on one reference must not reach the
+    // other. `glow` is what a hero gets when nobody says otherwise, so the
+    // first one keeping it is the assertion — it read `toBeUndefined()` when a
+    // hero had no default ground, which tested the same thing by proxy.
+    expect(first?.background).toBe('glow');
   });
 
   it('accepts a gradient background as an override', async () => {

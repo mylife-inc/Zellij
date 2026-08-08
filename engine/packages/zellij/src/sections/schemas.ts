@@ -21,8 +21,21 @@ const text = z
   .transform((value) => String(value))
   .pipe(z.string().min(1));
 
+/*
+ * Both heroes default to `glow` — the only sections that do.
+ *
+ * A glow works by being the one lit thing on the page. Default it everywhere
+ * and pools stack down the scroll until none of them reads as a source, which
+ * is the same reason a page with everything emphasised has nothing emphasised.
+ * The opening section is where the effect is worth spending, so that is where
+ * it is spent.
+ *
+ * Still a default and not a fixture: `background: default` in the YAML turns it
+ * off, and any other named ground replaces it.
+ */
 export const heroSchema = baseSectionSchema.extend({
   type: z.literal('hero'),
+  background: backgroundSchema.default('glow'),
   headline: z.string().min(1),
   subhead: z.string().optional(),
   badge: z.string().optional(),
@@ -45,6 +58,7 @@ export const heroSchema = baseSectionSchema.extend({
  */
 export const heroSplitSchema = baseSectionSchema.extend({
   type: z.literal('hero-split'),
+  background: backgroundSchema.default('glow'),
   headline: z.string().min(1),
   subhead: z.string().optional(),
   badge: z.string().optional(),
