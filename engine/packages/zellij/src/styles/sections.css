@@ -1994,3 +1994,154 @@ a.zellij-promo-tile:hover .zellij-promo-image {
 .zellij-terminal-line[data-kind='fail'] {
   color: #ff7b72;
 }
+
+/* ----------------------------------------------------------- steps-panel -- */
+
+/*
+ * Numbered steps beside the result they produce.
+ *
+ * Every class here is prefixed `zellij-steps-panel-`, including the counter,
+ * and that is not verbosity for its own sake. The obvious names — `.zellij-step`
+ * and `.zellij-steps-list` — are already taken by the `<Steps>` component that
+ * guide pages use, which draws its own rail with `.zellij-step:not(:last-child)
+ * ::before { content: '' }`. Reusing them meant this section silently inherited
+ * that rule, and at 0,2,1 it outranks a plain `.zellij-step::before` — so the
+ * numbers resolved to an empty string and no amount of correct CSS here would
+ * have shown them. One stylesheet, one namespace.
+ *
+ * The heading spans both columns and is left-aligned, because the steps under
+ * it are left-aligned and a centred heading over a left-aligned list reads as
+ * two decisions rather than one.
+ */
+.zellij-steps-panel-grid {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+@media (min-width: 60rem) {
+  .zellij-steps-panel-grid {
+    grid-template-columns: 6fr 5fr;
+  }
+
+  /* `order`, not reordered markup: the steps stay first in the DOM whichever
+     side they are shown on, so a screen reader reaches them before the panel. */
+  .zellij-steps-panel-grid[data-media='left'] .zellij-steps-panel-list {
+    order: 2;
+  }
+}
+
+/*
+ * The numbers come from the list's own counter, so inserting a step in the
+ * middle renumbers the rest and nothing in the content says "03".
+ */
+.zellij-steps-panel-list {
+  counter-reset: zellij-steps-panel;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.zellij-steps-panel-item {
+  counter-increment: zellij-steps-panel;
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0.5rem;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+}
+
+.zellij-steps-panel-item::before {
+  content: counter(zellij-steps-panel, decimal-leading-zero);
+  grid-column: 1;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  /* Lining figures, so 01 and 02 occupy the same width and the titles beside
+     them start on one edge rather than shifting by a digit. */
+  font-variant-numeric: tabular-nums lining-nums;
+  color: color-mix(in srgb, var(--zellij-accent) 55%, var(--zellij-muted));
+}
+
+/*
+ * The rail is drawn on the marker column rather than as a border on the item,
+ * so it runs between the numbers and stops at the last one instead of hanging
+ * below it.
+ */
+/*
+ * The rail belongs to each step, not to the list.
+ *
+ * One line drawn down the whole column would be there before the steps are, and
+ * the steps reveal as they are scrolled to. A segment per item means the line
+ * arrives with the step it leads to, and the sequence draws itself on the way
+ * down. `bottom: -0.75rem` is the list's own gap, so consecutive segments meet
+ * and read as one line.
+ *
+ * Tinted with the accent rather than left at `--zellij-border`. On paper's
+ * ground the border token is #e7e2da against #fdfcfa — around 1.05:1, which is
+ * a line you can measure and cannot see. A fifth of the accent keeps it quiet
+ * and makes it visible, and it still moves with the theme.
+ */
+.zellij-steps-panel-item::after {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  top: 3.75rem;
+  bottom: -0.75rem;
+  width: 2px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--zellij-accent) 22%, var(--zellij-border));
+}
+
+.zellij-steps-panel-item:last-child::after {
+  display: none;
+}
+
+.zellij-steps-panel-copy {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.zellij-steps-panel-title {
+  font-size: 1.125rem;
+  font-weight: 650;
+  margin: 0.25rem 0 0;
+}
+
+.zellij-steps-panel-body {
+  color: var(--zellij-muted);
+  line-height: 1.6;
+  margin: 0.5rem 0 0;
+}
+
+.zellij-steps-panel-media {
+  min-width: 0;
+}
+
+/*
+ * The panel follows the steps down.
+ *
+ * Without this it scrolls away after the second step and the reader finishes
+ * the list with nothing to check it against — which is the whole reason the two
+ * are side by side. Sticky only where there are two columns; stacked, it would
+ * pin the panel over the steps below it.
+ *
+ * `--zellij-nav-height` plus a gap, so it clears the sticky bar rather than
+ * sliding under it.
+ */
+@media (min-width: 60rem) {
+  .zellij-steps-panel-sticky {
+    position: sticky;
+    top: calc(var(--zellij-nav-height) + 2rem);
+  }
+}
+
+.zellij-steps-panel-caption {
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 1rem 0 0;
+}

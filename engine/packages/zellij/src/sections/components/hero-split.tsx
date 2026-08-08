@@ -10,57 +10,7 @@ import {
 } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { resolveIcon } from '../../icons';
-
-/**
- * A terminal transcript, as text rather than a screenshot.
- *
- * A picture of a terminal is the obvious way to do this and the wrong one: it
- * cannot be selected or copied, it is unreadable to a screen reader, it ships
- * a few hundred kilobytes, and it is wrong the day the output changes. This is
- * a `<pre>`.
- *
- * Prompt and result lines are told apart by their first character, which is
- * the same convention the transcript already uses for a human reader — `$` is
- * a command someone typed, `✓` and `✗` are outcomes. Nothing else is
- * interpreted, so a line that happens to start with neither is left alone.
- */
-function Terminal({ title, body }: { title: string; body: string }) {
-  const lines = body.replace(/\n$/, '').split('\n');
-
-  return (
-    <div className="zellij-terminal">
-      <div className="zellij-terminal-bar">
-        <span className="zellij-terminal-lights" aria-hidden="true">
-          <i />
-          <i />
-          <i />
-        </span>
-        <span className="zellij-terminal-title">{title}</span>
-      </div>
-
-      <pre className="zellij-terminal-body">
-        <code>
-          {lines.map((line, index) => {
-            const kind = line.startsWith('$')
-              ? 'command'
-              : line.startsWith('✓')
-                ? 'ok'
-                : line.startsWith('✗')
-                  ? 'fail'
-                  : undefined;
-
-            return (
-              <span key={index} className="zellij-terminal-line" {...(kind ? { 'data-kind': kind } : {})}>
-                {line || ' '}
-                {'\n'}
-              </span>
-            );
-          })}
-        </code>
-      </pre>
-    </div>
-  );
-}
+import { Terminal } from './terminal';
 
 export function HeroSplit({ section, site, defaultMotion }: SectionProps<HeroSplitSection>) {
   const motion = section.motion ?? defaultMotion;

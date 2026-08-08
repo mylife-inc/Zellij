@@ -16,6 +16,7 @@ import { PricingTable } from './pricing-table';
 import { PromoGrid } from './promo-grid';
 import { Showcase } from './showcase';
 import { StatsBand } from './stats-band';
+import { StepsPanel } from './steps-panel';
 import { TeamGrid } from './team-grid';
 import { Testimonial } from './testimonial';
 import { Timeline } from './timeline';
@@ -44,6 +45,7 @@ export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never
   'card-carousel': CardCarousel as ComponentType<SectionProps<never>>,
   'bento-grid': BentoGrid as ComponentType<SectionProps<never>>,
   timeline: Timeline as ComponentType<SectionProps<never>>,
+  'steps-panel': StepsPanel as ComponentType<SectionProps<never>>,
   'team-grid': TeamGrid as ComponentType<SectionProps<never>>,
   gallery: Gallery as ComponentType<SectionProps<never>>,
   'promo-grid': PromoGrid as ComponentType<SectionProps<never>>,

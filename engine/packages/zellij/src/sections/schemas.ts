@@ -96,6 +96,65 @@ export const heroSplitSchema = baseSectionSchema.extend({
   message: 'a hero-split must declare exactly one of: visual, terminal',
 });
 
+/**
+ * Numbered steps beside a panel that shows their result.
+ *
+ * The pairing is the point. A list of steps tells you what to do and a picture
+ * of the outcome tells you what you get, and each is weaker alone: steps with
+ * no result leave you guessing what you are working toward, and a result with
+ * no steps is a screenshot. Side by side, the reader checks one against the
+ * other as they go.
+ *
+ * Distinct from `timeline`, which looks similar and answers a different
+ * question. A timeline is dated and its order is history — it happened in that
+ * sequence. These are numbered and their order is instruction — do this, then
+ * this. Merging them would mean a `date` that is sometimes an index.
+ *
+ * Numbers are rendered, never authored. An author writing "01", "02" into
+ * titles is one inserted step away from renumbering by hand, and the list is
+ * an `<ol>` — the sequence is already in the markup, and the markers only
+ * draw what the element means.
+ */
+export const stepsPanelSchema = baseSectionSchema
+  .extend({
+    type: z.literal('steps-panel'),
+    heading: z.string().optional(),
+    subhead: z.string().optional(),
+
+    /**
+     * Two at minimum, because one step is not a sequence, and six at most: past
+     * that the panel beside them has scrolled away and the pairing this section
+     * exists for stops happening.
+     */
+    steps: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          body: z.string().optional(),
+        }),
+      )
+      .min(2)
+      .max(6),
+
+    /** Which side the panel sits on. The steps take the other. */
+    media: z.enum(['left', 'right']).default('right'),
+
+    /** An image, or a terminal transcript. */
+    visual: asset.optional(),
+    terminal: z
+      .object({
+        title: z.string().min(1).default('terminal'),
+        body: z.string().min(1),
+      })
+      .optional(),
+
+    /** A line under the panel, for what the panel cannot say itself. */
+    caption: z.string().optional(),
+  })
+  .refine((section) => [section.visual, section.terminal].filter(Boolean).length === 1, {
+    message: 'a steps-panel must declare exactly one of: visual, terminal',
+  });
+
 export const logoStripSchema = baseSectionSchema.extend({
   type: z.literal('logo-strip'),
   heading: z.string().optional(),
@@ -443,6 +502,7 @@ const ALL = [
   { type: 'card-carousel', schema: cardCarouselSchema },
   { type: 'bento-grid', schema: bentoGridSchema },
   { type: 'timeline', schema: timelineSchema },
+  { type: 'steps-panel', schema: stepsPanelSchema },
   { type: 'team-grid', schema: teamGridSchema },
   { type: 'gallery', schema: gallerySchema },
   { type: 'promo-grid', schema: promoGridSchema },
@@ -457,6 +517,7 @@ registerBuiltinSections();
 
 export type HeroSection = z.infer<typeof heroSchema>;
 export type HeroSplitSection = z.infer<typeof heroSplitSchema>;
+export type StepsPanelSection = z.infer<typeof stepsPanelSchema>;
 export type LogoStripSection = z.infer<typeof logoStripSchema>;
 export type FeatureGridSection = z.infer<typeof featureGridSchema>;
 export type ZigzagSection = z.infer<typeof zigzagSchema>;
@@ -494,6 +555,7 @@ export type AnySection =
   | CardCarouselSection
   | BentoGridSection
   | TimelineSection
+  | StepsPanelSection
   | TeamGridSection
   | GallerySection
   | PromoGridSection;

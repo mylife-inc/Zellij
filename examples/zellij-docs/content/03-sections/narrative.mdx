@@ -1,6 +1,6 @@
 ---
 title: Narrative
-description: zigzag, markdown-prose, timeline and faq — sections that carry an argument.
+description: zigzag, markdown-prose, timeline, steps-panel and faq — sections that carry an argument.
 ---
 
 ## zigzag
@@ -51,6 +51,30 @@ stringified, since YAML hands `2019` over as a number.
 
 Items reveal from the side under `subtle` and `expressive`, which reads as the
 sequence assembling itself as you scroll.
+
+## steps-panel
+
+Numbered steps on one side, the result they produce on the other. For a process
+where the outcome is a shape somebody needs to recognise — a folder, a schema, a
+directory tree — and a list of instructions alone would leave them guessing what
+they are working toward.
+
+<SectionPreview example="steps-panel" />
+
+The numbers are drawn from the list's own counter and never authored. Writing
+`01`, `02` into the titles works right up until a step is inserted in the
+middle, and a screen reader would read every number twice.
+
+The panel is sticky beside the steps on a wide viewport, so it is still there at
+the last step; stacked on a narrow one, where pinning it would cover the steps
+below.
+
+<Callout type="tip" title="Not the same as timeline">
+The two look alike and answer different questions. A `timeline` is dated and its
+order is history — it happened in that sequence. A `steps-panel` is numbered and
+its order is instruction — do this, then this. If your items have real dates,
+you want `timeline`.
+</Callout>
 
 ## faq
 
