@@ -1782,12 +1782,17 @@ a.zellij-promo-tile:hover .zellij-promo-image {
 }
 
 /*
- * The copy is the wider column. A 6/5 split rather than an even one, because
+ * The copy is the wider column. A 7/5 split rather than an even one, because
  * the headline is the message and the panel is evidence for it.
+ *
+ * 7/5 and not 6/5: at the display size a hero headline is set in, a 6/5 column
+ * was a few characters short of holding a short opening sentence, so the line
+ * broke mid-phrase and the panel got space it had no use for. The measure a
+ * headline needs is set by the headline, not by splitting the row evenly.
  */
 @media (min-width: 60rem) {
   .zellij-hero-split-grid {
-    grid-template-columns: 6fr 5fr;
+    grid-template-columns: 7fr 5fr;
   }
 
   /*
