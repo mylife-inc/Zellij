@@ -68,6 +68,23 @@
   --zellij-motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --zellij-motion-distance: 16px;
   --zellij-motion-stagger: 70ms;
+
+  /*
+   * The `glow` section ground — see sections.css.
+   *
+   * Two knobs rather than one, because a glow is not the same effect in both
+   * modes. On a light ground the accent is already darker than the page and
+   * reads as a pool of colour at its own hue. On a dark ground it has to read
+   * as *emitted light*, and light is bright: the accent straight from the
+   * palette lands as a low-luminance smudge, however much of it you use.
+   *
+   * So dark mode lifts the core toward white instead of raising the opacity.
+   * Mixed, not replaced — a white glow would look identical under all fourteen
+   * themes, and the point of driving this from `--zellij-accent` is that Forest
+   * glows green.
+   */
+  --zellij-glow-core: var(--zellij-accent);
+  --zellij-glow-strength: 26%;
 }
 
 [data-zellij-mode='dark'] {
@@ -76,6 +93,8 @@
   --zellij-muted: #9aa2af;
   --zellij-surface: #16191f;
   --zellij-border: #262b33;
+  --zellij-glow-core: color-mix(in srgb, var(--zellij-accent) 62%, white);
+  --zellij-glow-strength: 30%;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -85,6 +104,8 @@
     --zellij-muted: #9aa2af;
     --zellij-surface: #16191f;
     --zellij-border: #262b33;
+    --zellij-glow-core: color-mix(in srgb, var(--zellij-accent) 62%, white);
+    --zellij-glow-strength: 30%;
   }
 }
 

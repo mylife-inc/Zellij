@@ -114,7 +114,7 @@
 .zellij-section[data-zellij-background='glow'] {
   background-image: radial-gradient(
     30rem 24rem at 58% 36%,
-    color-mix(in srgb, var(--zellij-accent) 26%, transparent),
+    color-mix(in srgb, var(--zellij-glow-core) var(--zellij-glow-strength), transparent),
     transparent 58%
   );
   background-repeat: no-repeat;
