@@ -110,10 +110,31 @@ function themeVariables(dark: boolean): Record<string, string> {
     // The one place the accent earns its keep: the arrows and highlights that
     // carry the diagram's meaning, rather than every box on it.
     edgeLabelBackground: bg,
+    /*
+     * Sequence diagrams keep their own set of tokens, and the ones left unset
+     * fall back to Mermaid's palette rather than to the ones above.
+     *
+     * `actorTextColor` was the one that showed: with `actorBkg` following the
+     * theme's surface and the text left at Mermaid's default, a dark theme drew
+     * near-black participant labels on a near-black box. The names were there
+     * and could not be read.
+     *
+     * `sequenceNumberColor` is the digit inside the numbered circle, and it has
+     * to oppose the circle rather than match the page — Mermaid fills that
+     * circle from `signalColor`, which is the foreground. So the digit takes
+     * the background: dark circle and light digit on a light page, and both
+     * inverted on a dark one.
+     */
     actorBkg: surface,
     actorBorder: accent,
+    actorTextColor: fg,
+    actorLineColor: token('muted', '#5f6672'),
     signalColor: fg,
     signalTextColor: fg,
+    sequenceNumberColor: bg,
+    noteBkgColor: surface,
+    noteTextColor: fg,
+    noteBorderColor: border,
 
     /*
      * Mindmaps and pie charts colour their branches from a numbered scale
@@ -222,6 +243,20 @@ export function Mermaid({ code }: { code?: string }) {
           // Straight-line elbows read as a wiring diagram; curves read as a
           // map, which is what these mostly are.
           flowchart: { curve: 'basis' },
+          /*
+           * `mirrorActors: false` drops the copy of every participant that
+           * Mermaid repeats along the bottom edge.
+           *
+           * That repetition earns its place in a diagram long enough that the
+           * lifelines outrun the labels — a printed protocol trace. On a web
+           * page the whole diagram is one glance, and the second row reads as a
+           * second set of participants until you work out that it is not.
+           *
+           * `useMaxWidth` lets a wide diagram shrink to its column instead of
+           * pushing a scrollbar onto the page, which matters most on a phone
+           * where a five-participant trace is wider than the screen.
+           */
+          sequence: { mirrorActors: false, useMaxWidth: true },
           fontFamily: getComputedStyle(document.body).fontFamily,
         });
 
