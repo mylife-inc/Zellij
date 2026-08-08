@@ -78,6 +78,48 @@
   color: var(--zellij-accent-fg);
 }
 
+/*
+ * `glow` — light spilled onto the section rather than paint rolled over it.
+ *
+ * Two radial pools of the theme's accent, both fading to nothing well before
+ * the edges, over the section's ordinary background. That last part is the
+ * whole effect: a gradient that reaches its edges reads as "this band is a
+ * different colour", and one that stops short reads as a light source behind
+ * the page. The section's own ground stays visible around it, which is what
+ * gives the depth.
+ *
+ * One pool, not two, and it sits just north-east of centre. Two large faint
+ * pools read as a wash over the whole band rather than as a source — the thing
+ * that makes this look like light is that you can see where it comes from. Near
+ * the middle also keeps it behind the content it is lighting, which is where a
+ * glow earns its place; in a corner it is just a tinted corner.
+ *
+ * The falloff is what makes it a spot. Reaching zero at 58% of the radius
+ * leaves a defined core with room to fade, where a stop out at 90% spreads the
+ * same colour so thinly it looks like dilute paint. Radius small enough to sit
+ * inside the section, so the fade completes and never meets an edge.
+ *
+ * `transparent` for the far stop, and the more precise alternative was tried
+ * and dropped. `rgb(from var(--zellij-accent) r g b / 0)` says what is actually
+ * meant — the accent's own channels at zero opacity — where `transparent` is
+ * defined as transparent *black*. Both render identically, because gradients
+ * interpolate in premultiplied space and never carry the hue through grey.
+ *
+ * So it comes down to what a stop costs when it is not understood. An
+ * unrecognised colour invalidates the whole declaration, and a section whose
+ * background is a glow then has no background at all — a silent, total
+ * failure for a purely decorative gain. `transparent` has been understood for
+ * as long as CSS has had gradients.
+ */
+.zellij-section[data-zellij-background='glow'] {
+  background-image: radial-gradient(
+    30rem 24rem at 58% 36%,
+    color-mix(in srgb, var(--zellij-accent) 26%, transparent),
+    transparent 58%
+  );
+  background-repeat: no-repeat;
+}
+
 /* The gradient itself is an inline style, because its stops come from content.
    This only supplies what the stops cannot: a foreground that stays legible. */
 .zellij-section[data-zellij-background='gradient'] {

@@ -1,4 +1,5 @@
 type: hero-split
+background: glow
 badge: Source-at-rest encryption for Git
 badgeIcon: shield-check
 

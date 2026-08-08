@@ -8,8 +8,18 @@ import { motionPresetSchema } from '../config/schema';
  */
 export const gradientStopsSchema = z.array(z.string().min(1)).min(2).max(3);
 
+/**
+ * `glow` is the odd one out and the reason this is worth a comment.
+ *
+ * The other named grounds fill the section edge to edge, which reads as "this
+ * band is a different colour". A glow does not fill anything: it is a soft
+ * radial pool of the theme's accent that fades to nothing well before the
+ * section's edges, so the page's own background stays visible around it. The
+ * effect is a light source rather than a fill, which is what makes it read as
+ * depth instead of as a coloured stripe.
+ */
 export const backgroundSchema = z.union([
-  z.enum(['default', 'tinted', 'inverted', 'accent']),
+  z.enum(['default', 'tinted', 'inverted', 'accent', 'glow']),
   z.object({ gradient: gradientStopsSchema }),
 ]);
 export type SectionBackground = z.infer<typeof backgroundSchema>;
