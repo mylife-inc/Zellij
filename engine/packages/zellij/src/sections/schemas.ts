@@ -122,9 +122,12 @@ export const stepsPanelSchema = baseSectionSchema
     subhead: z.string().optional(),
 
     /**
-     * Two at minimum, because one step is not a sequence, and six at most: past
-     * that the panel beside them has scrolled away and the pairing this section
-     * exists for stops happening.
+     * Two at minimum, because one step is not a sequence.
+     *
+     * Twelve at most, and the ceiling is about the panel rather than the list.
+     * The panel is sticky, so it stays beside the steps however many there are
+     * — but a legend that outruns a screen twice over has stopped being a
+     * legend and become an article, and an article belongs in a guide.
      */
     steps: z
       .array(
@@ -134,12 +137,12 @@ export const stepsPanelSchema = baseSectionSchema
         }),
       )
       .min(2)
-      .max(6),
+      .max(12),
 
     /** Which side the panel sits on. The steps take the other. */
     media: z.enum(['left', 'right']).default('right'),
 
-    /** An image, or a terminal transcript. */
+    /** An image, a terminal transcript, or a diagram. */
     visual: asset.optional(),
     terminal: z
       .object({
@@ -148,12 +151,76 @@ export const stepsPanelSchema = baseSectionSchema
       })
       .optional(),
 
+    /**
+     * Mermaid source, drawn in the browser and themed like every other diagram
+     * on the site.
+     *
+     * A sequence diagram beside a numbered legend is the pairing this section
+     * was built for, and it is the case a screenshot serves worst: an image
+     * carries one palette into a site with fourteen, cannot do dark mode, is
+     * unreadable to a screen reader, and is wrong the day a step changes.
+     */
+    diagram: z.string().min(1).optional(),
+
     /** A line under the panel, for what the panel cannot say itself. */
     caption: z.string().optional(),
   })
-  .refine((section) => [section.visual, section.terminal].filter(Boolean).length === 1, {
-    message: 'a steps-panel must declare exactly one of: visual, terminal',
-  });
+  .refine(
+    (section) =>
+      [section.visual, section.terminal, section.diagram].filter(Boolean).length === 1,
+    { message: 'a steps-panel must declare exactly one of: visual, terminal, diagram' },
+  );
+
+/**
+ * A row of cards, each carrying a snippet of configuration.
+ *
+ * For the page that has to compare options which differ mainly in what you
+ * write down — CI modes, deployment targets, auth strategies. The prose says
+ * what each one is for and the snippet says what it costs you, and a reader
+ * comparing them is really comparing the snippets.
+ *
+ * `feature-grid` is the wrong home for this even though it looks close. Its
+ * cards take an icon and a sentence, and the moment one of them holds twelve
+ * lines of YAML the row stops being a grid of equals: a card sized by a code
+ * block cannot sit beside a card sized by a sentence. This section makes the
+ * code the reason the cards exist and sizes them all to the largest.
+ *
+ * The code is not highlighted. Shiki runs at build time over MDX, and reaching
+ * it from a YAML section would mean either shipping a highlighter to the
+ * browser or threading a build step through the content loader — for snippets
+ * that are mostly keys and paths, where colour adds little.
+ */
+export const codeCardsSchema = baseSectionSchema.extend({
+  type: z.literal('code-cards'),
+  heading: z.string().optional(),
+  subhead: z.string().optional(),
+  eyebrow: z.string().optional(),
+
+  /**
+   * Two to four. One card is not a comparison, and a fifth pushes every card
+   * below a width where its snippet wraps into nonsense.
+   */
+  cards: z
+    .array(
+      z.object({
+        eyebrow: z.string().optional(),
+        title: z.string().min(1),
+        body: z.string().optional(),
+        /** Marks the one being recommended. At most one, unenforced. */
+        featured: z.boolean().default(false),
+        code: z.object({
+          title: z.string().min(1).optional(),
+          body: z.string().min(1),
+        }),
+        href: z.string().optional(),
+      }),
+    )
+    .min(2)
+    .max(4),
+
+  /** A closing line under the row — the caveat that applies to all of them. */
+  footnote: z.string().optional(),
+});
 
 export const logoStripSchema = baseSectionSchema.extend({
   type: z.literal('logo-strip'),
@@ -519,6 +586,7 @@ const ALL = [
   { type: 'bento-grid', schema: bentoGridSchema },
   { type: 'timeline', schema: timelineSchema },
   { type: 'steps-panel', schema: stepsPanelSchema },
+  { type: 'code-cards', schema: codeCardsSchema },
   { type: 'team-grid', schema: teamGridSchema },
   { type: 'gallery', schema: gallerySchema },
   { type: 'promo-grid', schema: promoGridSchema },
@@ -534,6 +602,7 @@ registerBuiltinSections();
 export type HeroSection = z.infer<typeof heroSchema>;
 export type HeroSplitSection = z.infer<typeof heroSplitSchema>;
 export type StepsPanelSection = z.infer<typeof stepsPanelSchema>;
+export type CodeCardsSection = z.infer<typeof codeCardsSchema>;
 export type LogoStripSection = z.infer<typeof logoStripSchema>;
 export type FeatureGridSection = z.infer<typeof featureGridSchema>;
 export type ZigzagSection = z.infer<typeof zigzagSchema>;
@@ -572,6 +641,7 @@ export type AnySection =
   | BentoGridSection
   | TimelineSection
   | StepsPanelSection
+  | CodeCardsSection
   | TeamGridSection
   | GallerySection
   | PromoGridSection;

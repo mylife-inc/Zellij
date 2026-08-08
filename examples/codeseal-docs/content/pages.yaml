@@ -11,3 +11,27 @@
     - home/security
     - home/faq
     - home/cta
+
+## The CI/CD page.
+##
+## A page of sections rather than a guide page, and the reason is the layout
+## rather than the words. Four cards comparing workflow snippets, then four
+## blocks each pairing a sequence diagram with a numbered legend — none of that
+## is prose, and putting it in MDX would have meant bespoke CSS serving exactly
+## one page.
+##
+## The guide keeps its own `/guide/ci`, which is the reference: every flag, every
+## command, in the layout built for reading. This one is for deciding which mode
+## you want.
+- name: cicd
+  title: CI/CD — build pipelines, sealed
+  description: >-
+    Four CI modes for CodeSeal, from a shared passphrase on the runner to builds
+    that GitHub can trigger but never observe.
+  layout: stack
+  sections:
+    - cicd/intro
+    - cicd/mode-1
+    - cicd/mode-2
+    - cicd/mode-3
+    - cicd/mode-4

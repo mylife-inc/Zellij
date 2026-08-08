@@ -2277,3 +2277,136 @@ a.zellij-promo-tile:hover .zellij-promo-image {
   color: var(--zellij-inverted-fg);
   border-color: color-mix(in srgb, var(--zellij-inverted-fg) 38%, transparent);
 }
+
+/* ----------------------------------------------------------- code-cards -- */
+
+/*
+ * A row of cards whose snippets are the thing being compared.
+ *
+ * `align-items: stretch` and a card laid out as a column with the code block
+ * pushed to the bottom by `margin-top: auto`. Cards in a comparison have to
+ * agree on where their code starts, or the eye reads the ragged tops as a
+ * difference between the options rather than a difference in how much prose
+ * each one needed.
+ */
+.zellij-code-cards-row {
+  display: grid;
+  gap: 1.25rem;
+  align-items: stretch;
+}
+
+@media (min-width: 52rem) {
+  .zellij-code-cards-row[data-count='2'] { grid-template-columns: repeat(2, 1fr); }
+  .zellij-code-cards-row[data-count='3'] { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Four across needs more room than three; below this they pair up rather than
+   going straight from four columns to one. */
+@media (min-width: 52rem) and (max-width: 74rem) {
+  .zellij-code-cards-row[data-count='4'] { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 74rem) {
+  .zellij-code-cards-row[data-count='4'] { grid-template-columns: repeat(4, 1fr); }
+}
+
+.zellij-code-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.5rem;
+  border-radius: var(--zellij-radius);
+  border: 1px solid var(--zellij-border);
+  background: var(--zellij-bg);
+  box-shadow: var(--zellij-shadow-card);
+}
+
+/* The recommended one, marked with the accent rather than with a badge —
+   a badge would need a word, and the word is already in the card. */
+.zellij-code-card[data-featured='true'] {
+  border-color: color-mix(in srgb, var(--zellij-accent) 45%, var(--zellij-border));
+  background: color-mix(in srgb, var(--zellij-accent) 4%, var(--zellij-bg));
+}
+
+.zellij-code-card-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--zellij-accent);
+  margin: 0 0 0.5rem;
+}
+
+.zellij-code-card-title {
+  font-size: 1.0625rem;
+  font-weight: 650;
+  margin: 0;
+}
+
+.zellij-code-card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.zellij-code-card-title a:hover {
+  text-decoration: underline;
+}
+
+.zellij-code-card-body {
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin: 0.5rem 0 0;
+}
+
+/* `auto` is what lines the snippets up across cards whose prose differs. */
+.zellij-code-card-code {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  min-width: 0;
+}
+
+.zellij-code-card-filename {
+  font-family: var(--zellij-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--zellij-muted);
+  margin: 0 0 0.5rem;
+  /* A workflow path is long and the card is narrow; truncate rather than let
+     it set the card's width. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zellij-code-card-code pre {
+  margin: 0;
+  padding: 0.875rem 1rem;
+  border-radius: var(--zellij-radius-button);
+  background: #12161f;
+  color: #c8cede;
+  font-family: var(--zellij-font-mono);
+  font-size: 0.75rem;
+  line-height: 1.6;
+  /* Snippets are configuration: long lines are normal and wrapping them would
+     change what they mean. Scroll inside the card instead. */
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+.zellij-code-cards-footnote {
+  margin: 1.75rem 0 0;
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 52rem;
+}
+
+/* A diagram in a steps-panel needs room to breathe and a ground to sit on. */
+.zellij-steps-panel-diagram {
+  padding: 1.25rem;
+  border-radius: var(--zellij-radius);
+  border: 1px solid var(--zellij-border);
+  background: var(--zellij-surface);
+}

@@ -81,3 +81,30 @@ gracefully — the layout does not assume three.
 `price` is free text, so `$12`, `From €9` and `Contact us` all belong. A bare
 number is accepted too and stringified, since YAML would otherwise hand it over
 as a number.
+
+## code-cards
+
+A row of cards whose snippets are the point. For comparing options that differ
+mainly in what you have to write down — CI modes, deployment targets, auth
+strategies.
+
+<SectionPreview example="code-cards" />
+
+Two to four cards. One is not a comparison, and a fifth pushes every card below
+the width at which its snippet still makes sense wrapped.
+
+`featured: true` marks the one you recommend, with the accent rather than a
+badge — a badge needs a word, and the word is already in the card.
+
+The snippets are `<pre>` elements, so they can be selected, copied and read
+aloud. They are **not** syntax-highlighted: Shiki runs at build time over MDX,
+and reaching it from a YAML section would mean either shipping a highlighter to
+the browser or threading a build step through the content loader — for snippets
+that are mostly keys and paths.
+
+<Callout type="tip" title="Not feature-grid with a code block bolted on">
+`feature-grid` cards take an icon and a sentence. The moment one holds twelve
+lines of YAML the row stops being a grid of equals — a card sized by a code
+block cannot sit beside a card sized by a sentence. This section makes the code
+the reason the cards exist and lines every snippet up at the same height.
+</Callout>

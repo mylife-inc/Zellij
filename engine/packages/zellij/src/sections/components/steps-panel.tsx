@@ -3,6 +3,7 @@ import type { StepsPanelSection } from '../schemas';
 import { InlineMarkdown, SectionHeader, SectionImage, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { Terminal } from './terminal';
+import { Mermaid } from '../../mdx/mermaid';
 
 /**
  * Numbered steps on one side, the result on the other.
@@ -68,7 +69,11 @@ export function StepsPanel({ section, site, defaultMotion }: SectionProps<StepsP
           className="zellij-steps-panel-media"
         >
           <div className="zellij-steps-panel-sticky">
-            {section.terminal ? (
+            {section.diagram ? (
+              <div className="zellij-steps-panel-diagram">
+                <Mermaid code={section.diagram} />
+              </div>
+            ) : section.terminal ? (
               <Terminal title={section.terminal.title} body={section.terminal.body} />
             ) : section.visual ? (
               <SectionImage

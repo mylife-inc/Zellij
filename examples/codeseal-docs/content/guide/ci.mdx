@@ -10,6 +10,13 @@ trust.
 The four modes differ in **who that something is**, and how long they hold the
 key. `sgit init --ci-mode <mode>` writes the matching workflow.
 
+<Callout type="tip" title="Deciding, rather than looking something up">
+This page is the reference — every flag, every command, in the order you run
+them. If you have not picked a mode yet, [the CI/CD
+page](/cicd) is the one to read first: it draws every message each mode sends,
+so you can see what you are trusting before you commit to it.
+</Callout>
+
 | mode | who decrypts | who sees plaintext |
 | --- | --- | --- |
 | `secrets` | your CI runner | your CI provider |
@@ -54,17 +61,34 @@ The runner never holds a long-lived key. It presents a bootstrap secret, gets a
 **single-use token with a sixty-second life**, redeems it for a wrapped runner
 key, unwraps it, and deletes it before the build starts.
 
-```text title="the handshake"
-runner  ──POST bootstrap secret──▸  Portal
-                                    verify hash, store token hash, TTL 60s
-runner  ◂───single-use token─────
-runner  ──redeem: Bearer token──▸   Portal
-                                    consume token (atomic)
-runner  ◂───wrapped runner key───
-runner    unwrap, DELETE keys, run-secure → build → clean
+<Steps>
+<Step title="Exchange the bootstrap secret for a token">
+`sgit ci request-token`. The Portal verifies the secret against a stored hash
+and mints a token that lives sixty seconds in Redis.
+</Step>
+<Step title="Redeem the token for a wrapped key">
+`sgit ci runner-key`. Consumed atomically, so a replay finds it already spent.
+</Step>
+<Step title="Unwrap locally, then delete both keys">
+`sgit ci unwrap-key`, then `rm` — before `build.sh` runs. The Portal stores the
+key encrypted to a wrapper public key it does not hold, so it cannot read what
+it hands out.
+</Step>
+<Step title="run-secure decrypts, builds, cleans">
+`sgit run-secure -- ./build.sh`, the same finale as Mode 1.
+</Step>
+</Steps>
+
+```bash title="the four calls, in order"
+sgit ci request-token > .ci-token
+sgit ci runner-key > runner.wrapped.age
+sgit ci unwrap-key -i wrapper.age -I runner.wrapped.age -o runner.key
+rm -f runner.wrapped.age wrapper.age   # gone before the build starts
+sgit run-secure -- ./build.sh
 ```
 
-The token is consumed atomically, so a replay finds it already spent.
+Every message this exchanges is drawn out, arrow by arrow, on
+[the CI/CD page](/cicd#mode-portal-key).
 
 **Choose it when** you want central audit and rotation — someone can see which
 builds requested keys and when — while builds stay on your existing CI.
@@ -96,18 +120,36 @@ the trust, it does not remove it.
 The most involved, and the one that keeps the Portal's existence out of your CI
 configuration.
 
-```text title="the flow"
-developer  ──git push (ciphertext)──▸  GitHub
-sgit push  ──auto-dispatch {sha}────▸  Portal
-                                        mint + encrypt a per-build token
-Portal     ──workflow_dispatch──────▸  GitHub  ──starts──▸  runner
-runner       unwrap-dispatch-token, run-secure → build → clean
+<Steps>
+<Step title="Your push notifies the Portal">
+`sgit push` sends the commit SHA when `auto_on_push` is set. Note the
+direction — your machine talks to the Portal, and the workflow never does.
+</Step>
+<Step title="The Portal mints a token bound to that commit">
+Encrypted to the dispatch public key in the manifest, so only the runner
+holding the matching private key can open it.
+</Step>
+<Step title="The Portal calls GitHub">
+`workflow_dispatch`, with the encrypted token as an input. This is the whole
+point of the mode: the connection opens outward, so your workflow needs no
+Portal URL and no Portal credentials.
+</Step>
+<Step title="The runner unwraps and builds">
+`sgit ci unwrap-dispatch-token`, then `run-secure`. The token was valid for one
+commit and is now spent.
+</Step>
+</Steps>
+
+```bash title="triggering by hand, when you do not want auto_on_push"
+sgit ci dispatch --commit-sha $(git rev-parse HEAD)
 ```
 
-Because `sgit push` dispatches, the Portal sees every change — which is the
-point if you need an audit trail that cannot be bypassed by pushing from
-somewhere else. The token is minted per build and decrypts only what that build
-needs.
+Because `sgit push` dispatches, the Portal sees every change — the point if you
+need an audit trail that cannot be sidestepped by pushing from somewhere else.
+
+The reversed trigger direction is the part worth seeing rather than reading:
+[the diagram](/cicd#mode-portal-dispatch) makes it obvious in a way this
+paragraph does not.
 
 **Choose it when** you need per-build scoping and a complete audit trail, and
 builds must stay on your existing CI.

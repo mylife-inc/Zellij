@@ -3,6 +3,7 @@ import type { SectionProps } from '../types';
 
 import { BentoGrid } from './bento-grid';
 import { CardCarousel } from './card-carousel';
+import { CodeCards } from './code-cards';
 import { CtaBanner } from './cta-banner';
 import { Faq } from './faq';
 import { Gallery } from './gallery';
@@ -46,6 +47,7 @@ export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never
   'bento-grid': BentoGrid as ComponentType<SectionProps<never>>,
   timeline: Timeline as ComponentType<SectionProps<never>>,
   'steps-panel': StepsPanel as ComponentType<SectionProps<never>>,
+  'code-cards': CodeCards as ComponentType<SectionProps<never>>,
   'team-grid': TeamGrid as ComponentType<SectionProps<never>>,
   gallery: Gallery as ComponentType<SectionProps<never>>,
   'promo-grid': PromoGrid as ComponentType<SectionProps<never>>,

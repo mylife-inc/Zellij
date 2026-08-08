@@ -22,7 +22,7 @@
       description: What it protects, and what it does not.
       icon: shield-check
     - name: CI and CD
-      url: /guide/ci
+      url: /cicd
       description: Four modes, in decreasing order of trust.
       icon: git-branch
     - name: FAQ
