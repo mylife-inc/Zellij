@@ -2,6 +2,7 @@ import type { SectionProps } from '../types';
 import type { CtaBannerSection } from '../schemas';
 import { CtaGroup, InlineMarkdown, SectionShell, gradientTextProps } from '../shared';
 import { Reveal } from '../../motion/reveal';
+import { CopyCommand } from './copy-command';
 
 export function CtaBanner({ section, defaultMotion }: SectionProps<CtaBannerSection>) {
   const motion = section.motion ?? defaultMotion;
@@ -27,6 +28,7 @@ export function CtaBanner({ section, defaultMotion }: SectionProps<CtaBannerSect
             <InlineMarkdown text={section.body} />
           </p>
         ) : null}
+        {section.command ? <CopyCommand command={section.command} /> : null}
         <CtaGroup cta={actions} />
       </Reveal>
     </SectionShell>

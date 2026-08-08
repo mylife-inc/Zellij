@@ -268,6 +268,22 @@ export const ctaBannerSchema = baseSectionSchema.extend({
   type: z.literal('cta-banner'),
   headline: z.string().min(1),
   body: z.string().optional(),
+
+  /**
+   * One line somebody is about to paste into a terminal, with a copy button.
+   *
+   * On the banner rather than in a section of its own: an install line is a
+   * call to action that happens to be executable, and it belongs beside the
+   * buttons offering the same thing by other routes. A `markdown-prose` code
+   * fence would put it in a different band with different padding and no
+   * relationship to the CTAs.
+   *
+   * Deliberately a single line and not a transcript — `terminal` on
+   * `hero-split` and `steps-panel` is for showing what a session looks like.
+   * This is for something to be run.
+   */
+  command: z.string().min(1).optional(),
+
   cta: z.union([ctaSchema, z.array(ctaSchema).max(2)]).optional(),
   background: backgroundSchema.default('tinted'),
 });

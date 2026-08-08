@@ -120,3 +120,21 @@ The end of a page.
 <SectionPreview example="cta-banner" />
 
 `cta` accepts a single object or a list of up to two.
+
+`command` puts one line and a copy button above the buttons, for the install
+one-liner somebody is about to paste into a terminal. It belongs here rather
+than in a section of its own: an install line is a call to action that happens
+to be executable, and it should sit beside the buttons offering the same thing
+by other routes.
+
+It is a single line, deliberately. To show what a session *looks like* — several
+commands and their output — use `terminal` on [`hero-split`](#hero-split) or
+[`steps-panel`](/sections/narrative#steps-panel) instead.
+
+<Callout type="tip" title="The copy button is an accelerator, not the only route">
+The command is real text, so selecting it and pressing ⌘C works whether or not
+the browser grants clipboard access — and it does not over plain HTTP. If the
+write is refused the button stays idle rather than claiming a copy that did not
+happen, since the cost of lying here is somebody pasting whatever was on their
+clipboard before into a shell.
+</Callout>

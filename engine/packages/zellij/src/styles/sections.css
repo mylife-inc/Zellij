@@ -2145,3 +2145,135 @@ a.zellij-promo-tile:hover .zellij-promo-image {
   line-height: 1.6;
   margin: 1rem 0 0;
 }
+
+/* --------------------------------------------------------------- command -- */
+
+/*
+ * An install line with a copy button, for the banner that offers it.
+ *
+ * Its own colours rather than the section's. A `cta-banner` is usually inverted
+ * or on a gradient, and a code box that inherits those is either invisible or
+ * the same colour as the panel it sits on. A terminal is dark wherever it
+ * appears, so this is too, and it reads as the same object as the transcripts
+ * elsewhere on the page.
+ */
+.zellij-command {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.75rem 0 0;
+  padding: 0.875rem 0.875rem 0.875rem 1.125rem;
+  border-radius: var(--zellij-radius);
+  background: #12161f;
+  border: 1px solid #262b38;
+  /* The line is the width it needs; the button keeps its own. */
+  max-width: 100%;
+}
+
+.zellij-command-text {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--zellij-font-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #dfe4ef;
+  /*
+   * Wraps rather than scrolls, and breaks anywhere.
+   *
+   * A install one-liner is mostly a URL, and a URL has no spaces to break at —
+   * left to itself it makes one long line and a horizontal scrollbar on a
+   * phone. Someone reading a command before running it should be able to see
+   * all of it at once, so this is the case where wrapping mid-token is right.
+   */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.zellij-command-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  align-self: flex-start;
+  padding: 0.4375rem 0.75rem;
+  border-radius: var(--zellij-radius-button);
+  border: 1px solid #2f3646;
+  background: #1a1f2b;
+  color: #aeb6c6;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color var(--zellij-motion-duration) var(--zellij-motion-ease),
+    border-color var(--zellij-motion-duration) var(--zellij-motion-ease);
+}
+
+.zellij-command-copy:hover {
+  color: #f2f4f7;
+  border-color: #46506a;
+}
+
+.zellij-command-copy:focus-visible {
+  outline: 2px solid var(--zellij-accent);
+  outline-offset: 2px;
+}
+
+/* The banner centres its copy, and a left-aligned command under centred text
+   reads as a mistake. */
+.zellij-cta-banner-inner .zellij-command {
+  margin-inline: auto;
+  width: fit-content;
+}
+
+@media (max-width: 40rem) {
+  .zellij-command {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.625rem;
+  }
+
+  .zellij-command-copy {
+    align-self: flex-end;
+  }
+}
+
+/* ------------------------------------------- legibility on dark grounds -- */
+
+/*
+ * Text that sets its own colour has to reconsider it on an inverted ground.
+ *
+ * `.zellij-section[data-zellij-background='inverted' | 'gradient' | 'accent']`
+ * sets a light `color` on the section, and anything that inherits it is fine.
+ * These two do not inherit: the banner's body asks for `--zellij-muted` and a
+ * ghost button asks for `--zellij-fg`, and both of those are tuned for a light
+ * page. On CodeSeal's gradient banner that measured 1.67:1 for the body and
+ * 1.82:1 for the button, against a 4.5:1 minimum — the words were there and
+ * could not be read.
+ *
+ * Both now derive from `--zellij-inverted-fg`, so they follow the same token
+ * the section set rather than carrying a second opinion about the foreground.
+ * The body keeps a step of hierarchy by dropping opacity rather than changing
+ * hue, which is what `--zellij-muted` was doing on a light ground. 90% and not
+ * a rounder 75%: a gradient is lightest at one end, and measured against that
+ * end 78% came to 4.16:1 — under the 4.5:1 that 17px text needs. The number is
+ * set by the worst point on the ground, not by the average.
+ */
+.zellij-section:is(
+    [data-zellij-background='inverted'],
+    [data-zellij-background='gradient'],
+    [data-zellij-background='accent']
+  )
+  .zellij-cta-banner-body {
+  color: color-mix(in srgb, var(--zellij-inverted-fg) 90%, transparent);
+}
+
+.zellij-section:is(
+    [data-zellij-background='inverted'],
+    [data-zellij-background='gradient'],
+    [data-zellij-background='accent']
+  )
+  .zellij-button[data-style='ghost'] {
+  color: var(--zellij-inverted-fg);
+  border-color: color-mix(in srgb, var(--zellij-inverted-fg) 38%, transparent);
+}
