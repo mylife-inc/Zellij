@@ -222,6 +222,51 @@ export const codeCardsSchema = baseSectionSchema.extend({
   footnote: z.string().optional(),
 });
 
+/**
+ * Two axes crossed, and a sentence in every cell.
+ *
+ * For the page that has to say "these choices are independent" — four CI modes
+ * against two encryption modes, five environments against three capabilities.
+ * The claim such a page is really making is that the grid is *full*: every
+ * combination is legal. A list of the eight combinations does not make that
+ * claim, and a reader has to count to check it. A grid makes it visible.
+ *
+ * A real `<table>` with real header cells, so a screen reader announces "row
+ * passphrase, column portal-key" when it reads a cell — which is the entire
+ * content of that cell's meaning, and exactly what a grid of divs loses.
+ */
+export const matrixSchema = baseSectionSchema
+  .extend({
+    type: z.literal('matrix'),
+    heading: z.string().optional(),
+    subhead: z.string().optional(),
+    eyebrow: z.string().optional(),
+
+    /** Names for the two axes, shown in the corner cell. */
+    rowAxis: z.string().optional(),
+    columnAxis: z.string().optional(),
+
+    columns: z.array(z.object({ label: z.string().min(1) })).min(2).max(5),
+
+    rows: z
+      .array(
+        z.object({
+          label: z.string().min(1),
+          /** A clause under the row's name — what this row *is*. */
+          description: z.string().optional(),
+          /** One per column, in order. */
+          cells: z.array(z.string().min(1)).min(2).max(5),
+        }),
+      )
+      .min(2)
+      .max(6),
+
+    footnote: z.string().optional(),
+  })
+  .refine((section) => section.rows.every((row) => row.cells.length === section.columns.length), {
+    message: 'every row needs exactly one cell per column',
+  });
+
 export const logoStripSchema = baseSectionSchema.extend({
   type: z.literal('logo-strip'),
   heading: z.string().optional(),
@@ -587,6 +632,7 @@ const ALL = [
   { type: 'timeline', schema: timelineSchema },
   { type: 'steps-panel', schema: stepsPanelSchema },
   { type: 'code-cards', schema: codeCardsSchema },
+  { type: 'matrix', schema: matrixSchema },
   { type: 'team-grid', schema: teamGridSchema },
   { type: 'gallery', schema: gallerySchema },
   { type: 'promo-grid', schema: promoGridSchema },
@@ -603,6 +649,7 @@ export type HeroSection = z.infer<typeof heroSchema>;
 export type HeroSplitSection = z.infer<typeof heroSplitSchema>;
 export type StepsPanelSection = z.infer<typeof stepsPanelSchema>;
 export type CodeCardsSection = z.infer<typeof codeCardsSchema>;
+export type MatrixSection = z.infer<typeof matrixSchema>;
 export type LogoStripSection = z.infer<typeof logoStripSchema>;
 export type FeatureGridSection = z.infer<typeof featureGridSchema>;
 export type ZigzagSection = z.infer<typeof zigzagSchema>;
@@ -642,6 +689,7 @@ export type AnySection =
   | TimelineSection
   | StepsPanelSection
   | CodeCardsSection
+  | MatrixSection
   | TeamGridSection
   | GallerySection
   | PromoGridSection;

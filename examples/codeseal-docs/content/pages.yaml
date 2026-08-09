@@ -30,7 +30,9 @@
     that GitHub can trigger but never observe.
   layout: stack
   sections:
+    - cicd/two-choices
     - cicd/intro
+    - cicd/matrix
     - cicd/mode-1
     - cicd/mode-2
     - cicd/mode-3

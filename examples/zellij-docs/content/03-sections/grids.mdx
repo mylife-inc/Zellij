@@ -108,3 +108,31 @@ lines of YAML the row stops being a grid of equals — a card sized by a code
 block cannot sit beside a card sized by a sentence. This section makes the code
 the reason the cards exist and lines every snippet up at the same height.
 </Callout>
+
+## matrix
+
+Two axes crossed, with a sentence in every cell. For the page whose real claim
+is that the grid is **full** — that every combination of the two choices is
+legal.
+
+<SectionPreview example="matrix" />
+
+A list of the six combinations makes the same claim, and a reader has to count
+to check it. A grid makes it visible at a glance, which is the whole reason to
+spend the width.
+
+It renders a real `<table>`: column names are `<th scope="col">`, each row's
+name is `<th scope="row">`. That is not markup pedantry — it is what makes a
+screen reader announce "passphrase, portal-key" before reading a cell, and the
+cell means nothing without it. A grid of `div`s looks identical and says, to
+anyone not looking at it, eight unrelated sentences.
+
+Below 60rem the same table restacks into one block per row, each cell labelled
+by its column. Only the CSS changes; the markup and the header associations do
+not, so the reading order survives the layout.
+
+<Callout type="tip" title="Two to five columns, two to six rows">
+Past that it is a spreadsheet, and a spreadsheet wants a page of its own rather
+than a section in the middle of an argument. `zel check` rejects a row whose
+cell count does not match the columns, so a matrix cannot go quietly crooked.
+</Callout>

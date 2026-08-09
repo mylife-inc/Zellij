@@ -183,7 +183,14 @@ export function SectionHeader({
       {heading ? (
         <h2 {...gradientTextProps(titleGradient, 'zellij-section-heading')}>{heading}</h2>
       ) : null}
-      {subhead ? <p className="zellij-section-subhead">{subhead}</p> : null}
+      {/* Inline markdown, like every other body field. A subhead is prose and
+          authors write prose with emphasis in it; without this the asterisks
+          reach the page as asterisks. */}
+      {subhead ? (
+        <p className="zellij-section-subhead">
+          <InlineMarkdown text={subhead} />
+        </p>
+      ) : null}
     </Reveal>
   );
 }
@@ -267,17 +274,49 @@ export function SectionImage({
  * content belongs in `markdown-prose` or a guide page.
  */
 export function InlineMarkdown({ text }: { text: string }): ReactNode {
-  const pattern = /(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
+  /*
+   * Bold's contents may contain single asterisks, so that emphasis can nest
+   * inside it: `(?:[^*]|\*(?!\*))+` is "anything but an asterisk, or an
+   * asterisk that does not begin a `**`". With a plain `[^*]+` the bold
+   * alternative simply failed to match `**a *b* c**`, the single-asterisk
+   * alternative matched the wrong pairs, and the sentence came apart.
+   *
+   * Bold is listed first for the same reason: `**` has to be tried before `*`,
+   * or every bold marker is read as two empty emphases.
+   */
+  const pattern = /((?:\*\*(?:[^*]|\*(?!\*))+\*\*)|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
   const parts = text.split(pattern).filter((part) => part !== '');
 
   return (
     <>
       {parts.map((part, index) => {
+        /*
+         * Emphasis recurses; code does not.
+         *
+         * One flat pass reads `**a `b` c**` as bold containing three literal
+         * backticks, because the bold alternative matched first and nothing
+         * looked inside it again. Naming a command inside a bold clause is
+         * ordinary writing, so the inside has to be parsed too.
+         *
+         * The recursion terminates because the inner text is always strictly
+         * shorter than the part it came from.
+         *
+         * Code is the exception on purpose: backticks mean "this is literal",
+         * and an asterisk in a shell glob is an asterisk.
+         */
         if (part.startsWith('**') && part.endsWith('**')) {
-          return <strong key={index}>{part.slice(2, -2)}</strong>;
+          return (
+            <strong key={index}>
+              <InlineMarkdown text={part.slice(2, -2)} />
+            </strong>
+          );
         }
         if (part.startsWith('*') && part.endsWith('*')) {
-          return <em key={index}>{part.slice(1, -1)}</em>;
+          return (
+            <em key={index}>
+              <InlineMarkdown text={part.slice(1, -1)} />
+            </em>
+          );
         }
         if (part.startsWith('`') && part.endsWith('`')) {
           return <code key={index}>{part.slice(1, -1)}</code>;

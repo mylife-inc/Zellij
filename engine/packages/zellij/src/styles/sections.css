@@ -2410,3 +2410,161 @@ a.zellij-promo-tile:hover .zellij-promo-image {
   border: 1px solid var(--zellij-border);
   background: var(--zellij-surface);
 }
+
+/* --------------------------------------------------------------- matrix -- */
+
+/*
+ * A grid whose point is that it is full.
+ *
+ * Wide: an ordinary table. Narrow: the same table restacked into one block per
+ * row, every cell labelled by its column from `data-column`. `display: block`
+ * on the parts is what does it — the header associations are in the markup, so
+ * changing the boxes cannot break what a screen reader reads.
+ */
+.zellij-matrix-scroll {
+  /* A five-column matrix will not fit a laptop at every font size, and a table
+     that overflows its section is worse than one that scrolls inside it. */
+  overflow-x: auto;
+  margin-top: 2rem;
+}
+
+.zellij-matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9375rem;
+}
+
+.zellij-matrix-corner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-family: var(--zellij-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--zellij-muted);
+  vertical-align: bottom;
+  padding: 0 1rem 0.75rem 0;
+}
+
+.zellij-matrix-column {
+  font-family: var(--zellij-font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--zellij-fg);
+  padding: 0 1rem 0.75rem;
+  border-bottom: 1px solid var(--zellij-border);
+  vertical-align: bottom;
+}
+
+.zellij-matrix-row {
+  padding: 1.25rem 1rem 1.25rem 0;
+  border-bottom: 1px solid var(--zellij-border);
+  vertical-align: top;
+  /* The row name is the narrow column: let the cells take the width. */
+  width: 1%;
+  white-space: nowrap;
+}
+
+.zellij-matrix-row-label {
+  display: block;
+  font-family: var(--zellij-font-mono);
+  font-weight: 650;
+  color: var(--zellij-fg);
+}
+
+.zellij-matrix-row-description {
+  display: block;
+  margin-top: 0.25rem;
+  font-family: var(--zellij-font-sans);
+  font-weight: 400;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--zellij-muted);
+  white-space: normal;
+  max-width: 14rem;
+}
+
+.zellij-matrix-table td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid var(--zellij-border);
+  vertical-align: top;
+  color: var(--zellij-muted);
+  line-height: 1.6;
+}
+
+.zellij-matrix-table tr:last-child :is(td, th) {
+  border-bottom: 0;
+}
+
+@media (max-width: 60rem) {
+  .zellij-matrix-scroll { overflow-x: visible; }
+
+  .zellij-matrix-table,
+  .zellij-matrix-table tbody,
+  .zellij-matrix-table tr,
+  .zellij-matrix-table td,
+  .zellij-matrix-table th {
+    display: block;
+  }
+
+  /* The column headings are carried on every cell by `data-column`, so the
+     header row has nothing left to say once the table stacks. `clip` rather
+     than `display: none`, which would take it out of the accessibility tree
+     along with the associations the cells depend on. */
+  .zellij-matrix-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .zellij-matrix-table tr {
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--zellij-border);
+    border-radius: var(--zellij-radius);
+    background: var(--zellij-surface);
+  }
+
+  .zellij-matrix-row {
+    width: auto;
+    white-space: normal;
+    padding: 0 0 1rem;
+    border-bottom: 1px solid var(--zellij-border);
+  }
+
+  .zellij-matrix-row-description { max-width: none; }
+
+  .zellij-matrix-table td {
+    padding: 1rem 0 0;
+    border-bottom: 0;
+  }
+
+  /* Each cell says which column it came from, since the header row is gone. */
+  .zellij-matrix-table td::before {
+    content: attr(data-column);
+    display: block;
+    margin-bottom: 0.3rem;
+    font-family: var(--zellij-font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--zellij-accent);
+  }
+}
+
+.zellij-matrix-footnote {
+  margin: 1.75rem 0 0;
+  color: var(--zellij-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  max-width: 54rem;
+}
