@@ -10,4 +10,4 @@ background: { gradient: [accent, inverted-bg] }
 command: curl -fsSL https://raw.githubusercontent.com/mylife-inc/CodeSeal/main/scripts/install.sh | sh
 cta:
   - { label: Install CodeSeal, href: /guide/install, style: primary }
-  - { label: Read the quickstart, href: /guide/quickstart, style: ghost }
+  - { label: Read the quickstart, href: /quickstart, style: ghost }

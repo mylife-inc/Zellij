@@ -7,7 +7,6 @@ nav:
     items:
       - index
       - install
-      - quickstart
 
   - label: Everyday use
     items:

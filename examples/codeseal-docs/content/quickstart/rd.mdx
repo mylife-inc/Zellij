@@ -1,0 +1,197 @@
+---
+title: RD · Recipient + Dispatch
+description: Keys on your machine, builds on GitHub, triggered by sgit push. The recommended combination.
+---
+
+**Every developer has their own keypair. No decryption key ever lives on
+GitHub. `sgit push` starts the build and sends the key material with it,
+sealed, for that one build.**
+
+This is the recommended pair. It is also the only one where the two properties
+people usually want — *per-person access* and *no long-lived key on the
+platform* — hold at the same time.
+
+<Callout type="info" title="What it costs, before you start">
+Your machine needs a GitHub credential. Something has to authenticate the API
+call that starts the build, and in this mode that something is you.
+
+The modes that need no local credential are the ones where GitHub holds the
+decryption key instead. Pick which secret you would rather have long-lived: a
+scoped, revocable token on your laptop, or a key on GitHub that decrypts your
+source.
+</Callout>
+
+## 1 · A GitHub token, once
+
+CodeSeal needs to call two GitHub APIs on your behalf: uploading the dispatch
+secret, and triggering builds.
+
+```bash title="terminal"
+sgit auth --instructions   # what to create, and with which scopes
+sgit auth                  # paste it; sgit validates before saving
+```
+
+`sgit auth` checks the token against `GET /user` before writing it, so a typo
+or an already-revoked token fails here rather than three commands later. It is
+stored at `0600` under `$CODESEAL`.
+
+<Callout type="tip" title="Fine-grained, scoped to this repository">
+`sgit auth` run inside a repository saves to `$CODESEAL/<project>/`, so a token
+scoped to one repository lives beside that project. A classic PAT covering
+everything can sit at the `$CODESEAL` root instead and serve every project.
+</Callout>
+
+## 2 · Seal the repository
+
+From the root of an existing Git repository:
+
+```bash title="terminal"
+sgit init --mode recipient --ci-mode portal-dispatch
+```
+
+It asks one question — the project name, defaulted from the directory — and
+then does everything else.
+
+**On your disk:**
+
+```text title="$CODESEAL/<project>/"
+admin.key       # the master key: adds and removes recipients
+identity.age    # yours; what decrypts your files
+ci-runner.key   # the runner's, sent inside each dispatch token
+dispatch.key    # unwraps that token; uploaded to GitHub
+```
+
+All `0600`, all outside the repository. **A key in the working tree is one
+`git add -A` from being published** — on a public repository that would hand
+over everything CodeSeal is protecting, so none of them are in there.
+
+**In the repository:**
+
+```text title="./"
+.sgit/manifest.yaml       # modes, project name, dispatch public key
+.sgit/recipients.yaml     # you, and ci-runner
+.github/workflows/…       # the workflow, generated
+```
+
+The project name is recorded in the manifest rather than derived from the
+folder, so renaming or re-cloning the repository still finds your keys.
+
+## 3 · Tell GitHub
+
+```bash title="terminal"
+sgit ci provision
+```
+
+Uploads `CODESEAL_DISPATCH_PRIVATE_KEY` — the one secret this mode needs. It
+unwraps a dispatch token and decrypts nothing on its own, which is why it can
+sit on GitHub without giving anything away.
+
+Then confirm the remote is genuinely ready:
+
+```bash title="terminal"
+sgit ci verify
+```
+
+```
+mylife-inc/your-repo is ready to build.
+```
+
+<Callout type="info" title="Why a separate command">
+`init` provisions automatically when a credential is available. `sgit ci
+provision` exists for every other case — no token yet, no remote yet, a rotated
+key — and it is re-runnable. Provisioning is not a moment you can miss.
+</Callout>
+
+## 4 · Protect something
+
+```bash title="terminal"
+sgit add-sensitive src/private
+sgit encrypt
+```
+
+Directory selections expand to individual file entries in the manifest, so what
+is protected stays explicit as the tree changes.
+
+Look at what Git can see:
+
+```bash title="terminal"
+git status --short
+```
+
+The plaintext is gitignored; `.sgit/store/` holds the ciphertext.
+
+## 5 · The everyday loop
+
+```bash title="terminal"
+sgit add -s src/private/payment.rs
+sgit commit -- -m "protect payments"
+sgit push origin main
+```
+
+```
+sgit push: auto-dispatch firing for branch main…
+sgit ci dispatch: queued build 018f2a…
+                 view at https://github.com/…/actions
+```
+
+That last line is the whole mode. `sgit push` pushes ciphertext, then calls
+GitHub's `workflow_dispatch` API with a token containing the runner key,
+encrypted to the dispatch public key. The runner opens it with the secret from
+step 3, decrypts, builds, and scrubs.
+
+To fire it automatically on every push, set it once in the manifest:
+
+```yaml title=".sgit/manifest.yaml"
+dispatch:
+  auto_on_push:
+    enabled: true
+    branches: [main]
+```
+
+<Callout type="warning" title="The first push often 404s, and it is fine">
+`workflow_dispatch` only works once the workflow is on the remote's default
+branch — and your first `sgit push` puts it there a second before the dispatch
+call goes out. GitHub has not registered it yet.
+
+Wait a moment and run `sgit ci dispatch`. It happens once per repository.
+</Callout>
+
+## 6 · Add someone
+
+They run:
+
+```bash title="terminal"
+sgit onboard --offline
+```
+
+which writes *their* identity to *their* `$CODESEAL/<project>/` and prints a
+public key. You add it:
+
+```bash title="terminal"
+export SGIT_ADMIN_IDENTITY=$(cat $CODESEAL/<project>/admin.key)
+sgit rekey add-recipient alice age1… developer
+```
+
+Every file's key is unwrapped with the admin key and rewrapped for Alice. The
+ciphertext does not change — only the small stanza beside it. Removing her is
+the same operation in reverse.
+
+**This is what the admin key is for**, and why it is stored rather than printed
+once. Lose it and nobody can ever be granted access again.
+
+## What you end up with
+
+| | |
+| --- | --- |
+| On GitHub | ciphertext, and one key that decrypts nothing by itself |
+| On your machine | every key, in one backed-up directory |
+| Adding a teammate | a rewrap; no shared secret changes |
+| Removing one | the same, and their key stops working |
+| To start a build | you, from a terminal |
+
+## See also
+
+- [PD](/quickstart/pd) — the same trigger model with one shared passphrase
+- [RS](/quickstart/rs) — per-developer keys, but builds start on their own
+- [CI/CD](/cicd) — every mode's message flow, drawn
+- [Security model](/guide/security) — what this protects against, and what it does not

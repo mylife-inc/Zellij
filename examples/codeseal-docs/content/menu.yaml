@@ -4,6 +4,9 @@
 - name: Guide
   page: guide
 
+- name: Quickstart
+  page: quickstart
+
 - name: Start here
   items:
     - name: Install
@@ -11,8 +14,8 @@
       description: One binary, on your PATH.
       icon: download
     - name: Quickstart
-      url: /guide/quickstart
-      description: A sealed repository in ten minutes.
+      url: /quickstart
+      description: Eight labs — pick your pair of modes.
       icon: rocket
 
 - name: Understand

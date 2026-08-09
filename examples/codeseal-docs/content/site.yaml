@@ -45,7 +45,7 @@ footer:
     - heading: Start
       links:
         - { label: Install, href: /guide/install }
-        - { label: Quickstart, href: /guide/quickstart }
+        - { label: Quickstart, href: /quickstart }
         - { label: Commands, href: /guide/commands }
     - heading: Going further
       links:
