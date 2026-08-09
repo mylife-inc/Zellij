@@ -11,14 +11,28 @@ The same trigger model as [RD](/quickstart/rd), with the simpler encryption
 mode. Right when you are one person, or a small team that already shares
 secrets and does not need per-person revocation.
 
-## 1 · A GitHub token, once
+## 1 · Create the token
+
+Do this first. `sgit init` uploads the secrets your workflow reads, and without
+a token it sets up everything except the half that makes builds run.
+
+**GitHub → Settings → Developer settings → Fine-grained tokens → Generate new**
+
+| | |
+| --- | --- |
+| Repository access | Only select repositories → **this one** |
+| Contents | **Read and write** — so you can push |
+| Actions | **Read and write** — so `sgit push` can trigger builds |
+| Secrets | **Read and write** — so `init` can upload them |
+
+Metadata: read is added for you.
 
 ```bash title="terminal"
-sgit auth
+export GITHUB_PAT=github_pat_…
 ```
 
-Needed for the same reason as RD: something has to authenticate the API call
-that starts the build.
+`GH_TOKEN` and `GITHUB_TOKEN` work too. If none is set and you are at a
+terminal, `init` offers to take it and stores it per project.
 
 ## 2 · Choose the passphrase, then seal
 
@@ -51,16 +65,25 @@ stopping them.
 generated workflow, and a managed `.gitignore` block. No admin key, no
 recipients file — passphrase mode has neither.
 
-## 3 · Tell GitHub
+## 3 · Check GitHub is ready
+
+`sgit init` uploaded `CODESEAL_DISPATCH_PRIVATE_KEY` as it went — that is what the token in step 1
+was for. Confirm it landed:
 
 ```bash title="terminal"
-sgit ci provision
 sgit ci verify
 ```
 
-One secret, `CODESEAL_DISPATCH_PRIVATE_KEY`. Note what is **not** uploaded: the
-passphrase itself never reaches GitHub's secret store. It travels inside each
-dispatch token, sealed, and is gone when the build ends.
+```
+mylife-inc/demo is ready to build.
+```
+
+Note what is **not** uploaded: the passphrase itself never reaches GitHub's secret store. It travels inside each dispatch token, sealed, and is gone when the build ends.
+
+<Callout type="info" title="If init said the secrets were not uploaded">
+Run `sgit ci provision`. Nothing is broken — that step is postponed, not lost,
+and `verify` tells you when it is done.
+</Callout>
 
 ## 4 · Protect something
 

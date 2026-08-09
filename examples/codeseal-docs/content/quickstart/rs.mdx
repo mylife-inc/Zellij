@@ -10,7 +10,29 @@ start on push with nothing running locally.**
 Choose this when builds must fire on their own: a team where not everyone runs
 `sgit`, a scheduled build, a merge queue.
 
-## 1 · Seal the repository
+## 1 · Create the token
+
+Do this first. `sgit init` uploads the secrets your workflow reads, and without
+a token it sets up everything except the half that makes builds run.
+
+**GitHub → Settings → Developer settings → Fine-grained tokens → Generate new**
+
+| | |
+| --- | --- |
+| Repository access | Only select repositories → **this one** |
+| Contents | **Read and write** — so you can push |
+| Secrets | **Read and write** — so `init` can upload them |
+
+Metadata: read is added for you.
+
+```bash title="terminal"
+export GITHUB_PAT=github_pat_…
+```
+
+`GH_TOKEN` and `GITHUB_TOKEN` work too. If none is set and you are at a
+terminal, `init` offers to take it and stores it per project.
+
+## 2 · Seal the repository
 
 ```bash title="terminal"
 sgit init --mode recipient --ci-mode secrets
@@ -31,25 +53,18 @@ The runner needs no token to open, because its key is already on GitHub. That
 is the trade this mode makes.
 </Callout>
 
-## 2 · Give the runner a key
+## 3 · Check GitHub is ready
 
-The CI runner is a recipient like any other. Mint it a keypair and register it:
+`sgit init` minted the CI runner's keypair, registered it as a recipient, and
+uploaded the private half as `CI_RUNNER_PRIVATE_KEY_B64` — that is what the
+token in step 1 was for. Confirm it landed:
 
 ```bash title="terminal"
-sgit keygen > ci-runner.tmp
-sgit rekey add-recipient ci-runner "$(grep -o 'age1[a-z0-9]*' ci-runner.tmp)" ci
+sgit ci verify
 ```
 
-Then hand GitHub the private half, base64-encoded, as
-`CI_RUNNER_PRIVATE_KEY_B64`:
-
-```bash title="terminal"
-sgit auth   # if you have not already
-sgit ci provision
 ```
-
-```bash title="terminal"
-rm ci-runner.tmp   # GitHub has it now; keep a copy in $CODESEAL if you want one
+mylife-inc/demo is ready to build.
 ```
 
 <Callout type="warning" title="This key decrypts everything, and it lives on GitHub">
@@ -57,19 +72,23 @@ Unlike [RD](/quickstart/rd), where the secret on GitHub only unwraps a token,
 here GitHub holds a key that opens your source directly, for as long as you
 leave it there.
 
-That is the price of builds that start by themselves. It is a reasonable price
-— it is what every CI system does with its secrets — but it should be a
-decision rather than a surprise.
+That is the price of builds that start by themselves. It is what every CI
+system does with its secrets — but it should be a decision rather than a
+surprise.
 </Callout>
 
-## 3 · Protect something
+<Callout type="info" title="If init said the secrets were not uploaded">
+Run `sgit ci provision`. Nothing is broken — that step is postponed, not lost.
+</Callout>
+
+## 4 · Protect something
 
 ```bash title="terminal"
 sgit add-sensitive src/private
 sgit encrypt
 ```
 
-## 4 · The everyday loop
+## 5 · The everyday loop
 
 ```bash title="terminal"
 sgit add -s src/private/payment.rs
@@ -80,7 +99,7 @@ sgit push origin main
 No dispatch line this time. GitHub sees the push, starts the workflow itself,
 and the runner decrypts with the key it already has.
 
-## 5 · Add someone
+## 6 · Add someone
 
 ```bash title="terminal"
 export SGIT_ADMIN_IDENTITY=$(cat $CODESEAL/<project>/admin.key)

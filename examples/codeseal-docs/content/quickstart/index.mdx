@@ -76,7 +76,7 @@ Two axes, and they are genuinely independent: **eight working combinations.**
 | --- | --- |
 | You want the strongest default and are willing to trigger builds yourself | [RD](/quickstart/rd) |
 | You are one person, and per-developer keys are ceremony you do not need | [PD](/quickstart/pd) |
-| Builds must start on their own, with no local credential | [RS](/quickstart/rs) or [PS](/quickstart/ps) |
+| Builds must start on their own, with nothing running locally | [RS](/quickstart/rs) or [PS](/quickstart/ps) |
 | You already run a Portal and want central audit | [RK](/quickstart/rk) or [PK](/quickstart/pk) |
 | Your CI provider is explicitly outside the trust boundary | [RB](/quickstart/rb) or [PB](/quickstart/pb) |
 
@@ -85,11 +85,13 @@ It keeps every decryption key on machines you control, needs no Portal, and
 gives each developer their own key — so removing someone is a rewrap rather
 than telling four people a new password.
 
-Its one cost is honest and worth knowing before you start: **your machine needs
-a GitHub credential**, because something has to authenticate the API call that
-starts the build. The modes that need no local credential are the ones where
-GitHub holds the decryption key instead. There is no arrangement with no
-long-lived secret anywhere.
+Its one cost, worth knowing before you start: **your machine needs a GitHub
+token permanently**, because every build you trigger is an API call. The other
+seven need one only at setup.
+
+There is no arrangement with no long-lived secret anywhere. The question is
+which one, and where — a scoped, revocable token on your laptop, or a key on
+GitHub that decrypts your source.
 </Callout>
 
 ## What every lab assumes
@@ -97,8 +99,22 @@ long-lived secret anywhere.
 - `sgit` on your PATH — see [Install](/guide/install)
 - `git`, and a repository you can push to
 - `$CODESEAL` set, or the default `~/Dev/config/codeseal`
+- **a fine-grained GitHub token** — step 1 of every lab
 
 Nothing else. No Docker, no Node, no Portal unless the lab's name says Portal.
+
+<Callout type="info" title="Why every lab starts with a token">
+`sgit init` uploads the secrets your workflow reads. Which secrets differ by
+mode, but **all eight modes have some** — and a repository whose secrets were
+never uploaded looks finished and produces no builds.
+
+The tool does that setup so you do not have to paste keys into a web form. The
+token is the one thing it cannot create for you: GitHub has no API for minting
+one, so a human clicks through the UI once.
+
+RD and PD keep needing it afterwards, to trigger each build. The other six do
+not.
+</Callout>
 
 <Callout type="warning" title="Back up $CODESEAL">
 Every lab writes keys to `$CODESEAL/<project>/`. That directory is what lets
