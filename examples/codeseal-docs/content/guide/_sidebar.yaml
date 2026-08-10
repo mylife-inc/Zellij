@@ -20,5 +20,6 @@ nav:
   - label: Understand
     items:
       - security
+      - portal
       - reference
       - faq

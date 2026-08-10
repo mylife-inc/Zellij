@@ -37,3 +37,23 @@
     - cicd/mode-2
     - cicd/mode-3
     - cicd/mode-4
+
+## The Portal page.
+##
+## Sections rather than a guide page: the argument it has to make is "you
+## probably do not need this", and that is a matrix and a diagram, not prose.
+## The guide keeps the reference under /guide/portal.
+- name: portal
+  title: The Portal — self-hosted key custody and builds
+  description: >-
+    An optional service you host. It holds the keys for four of CodeSeal's
+    eight setups, lends them one build at a time, and can run the build itself
+    so your CI provider never sees plaintext.
+  layout: stack
+  sections:
+    - portal/hero
+    - portal/need
+    - portal/capabilities
+    - portal/trust
+    - portal/run
+    - portal/cta

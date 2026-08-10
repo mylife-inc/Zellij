@@ -24,6 +24,10 @@
       url: /guide/security
       description: What it protects, and what it does not.
       icon: shield-check
+    - name: The Portal
+      url: /portal
+      description: Self-hosted key custody, and builds GitHub cannot see.
+      icon: server
     - name: CI and CD
       url: /cicd
       description: Four modes, in decreasing order of trust.
