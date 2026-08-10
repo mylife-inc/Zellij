@@ -94,10 +94,43 @@ CI runner keypair:
 All `0600`. A key in the working tree is one `git add -A` from being published,
 so none of them are there.
 
-**And in the repository:** the manifest, `recipients.yaml` naming you and
-`ci-runner`, the generated workflow, and `.sgit/ci-runner.age` — the runner key
-wrapped to every recipient, which is what lets a teammate trigger builds
-without anyone sending them a key.
+**And in the repository** — `init` lists this too, because it is a lot to do
+silently:
+
+```text title="output, continued"
+In the repository:
+  .sgit/manifest.yaml      what is protected, and how
+  .sgit/recipients.yaml    who can decrypt
+  .gitignore               managed block — keeps plaintext out of commits
+  .gitattributes           managed block — marks blobs binary, no diff/merge
+  .github/workflows/codeseal-portal-dispatch.yml    the only workflow for this mode
+  build.sh                 your build steps go here
+
+Git hooks installed (.git/hooks — never committed):
+  pre-commit     refuses a commit that would include plaintext
+  pre-push       re-checks before anything leaves the machine
+  post-checkout  decrypts what the new branch protects
+  post-merge     the same, after a merge brings new blobs
+```
+
+Plus `.sgit/ci-runner.age` — the runner key wrapped to every recipient, which
+is what lets a teammate trigger builds without anyone sending them a key.
+
+<Callout type="info" title="The hooks are the safety net, and they are not committed">
+Git hooks live in `.git/hooks`, which is never part of a commit. So they
+protect *your* clone and nobody else's: a teammate who clones the repository
+gets no hooks until they run `sgit init` or `sgit onboard` themselves.
+
+Encryption does not depend on them — `sgit commit` and `sgit push` do the same
+checks. The hooks are there for the times you use plain `git` out of habit.
+</Callout>
+
+<Callout type="tip" title="One workflow, not four">
+Only the workflow for the mode you chose is written. Earlier versions wrote all
+four, and since three of them trigger on push, every push ran three builds that
+failed on missing secrets. Switching modes — edit `ci.mode`, run `sgit
+workflows` — swaps the file and removes the old one.
+</Callout>
 
 <Callout type="info" title="If it says the secrets were not uploaded">
 ```

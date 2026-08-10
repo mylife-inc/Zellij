@@ -18,7 +18,7 @@ built.
 <Tab title="macOS, Linux and WSL">
 
 ```bash title="terminal"
-curl -fsSL https://raw.githubusercontent.com/mylife-inc/CodeSeal/main/scripts/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/codeseal/install.sh | sh
 ```
 
 ```
@@ -34,7 +34,7 @@ It is a short shell script and piping a stranger's script into `sh` is a habit
 worth being uncomfortable with. Download it, read it, then run it:
 
 ```bash title="terminal"
-curl -fsSL -o install.sh https://raw.githubusercontent.com/mylife-inc/CodeSeal/main/scripts/install.sh
+curl -fsSL -o install.sh https://raw.githubusercontent.com/mylife-inc/releases/main/codeseal/install.sh
 less install.sh
 sh install.sh
 ```
@@ -46,7 +46,7 @@ sh install.sh
 The installer is POSIX shell. On Windows, either run it **inside WSL** — which
 is the simpler path if you already have WSL — or take the archive directly:
 
-1. Open [the releases page](https://github.com/mylife-inc/CodeSeal/releases/latest)
+1. Open [the releases page](https://github.com/mylife-inc/releases/releases?q=codeseal)
 2. Download `sgit-<version>-x86_64-pc-windows-msvc.zip`
 3. Verify it against the published checksum:
 
@@ -72,7 +72,7 @@ Five targets are published for every release:
 | Windows | `x86_64-pc-windows-msvc` | `.zip` |
 
 Download the one matching your machine from
-[the latest release](https://github.com/mylife-inc/CodeSeal/releases/latest),
+[the latest `codeseal-*` release](https://github.com/mylife-inc/releases/releases?q=codeseal),
 check it, unpack it, and put `sgit` on your `PATH`.
 
 ## Verifying what you downloaded
