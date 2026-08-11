@@ -1,0 +1,61 @@
+# Written by `zel ci init github`. Regenerate rather than edit by hand —
+# this tracks the commands it calls.
+#
+# Separate from your existing workflows and scoped to the documentation
+# folder: a typo fix should not run your test suite, and your documentation
+# should not wait for it.
+name: Documentation
+
+on:
+  push:
+    branches: [main]
+    paths: ['docs/**', '.github/workflows/docs.yml']
+  pull_request:
+    paths: ['docs/**', '.github/workflows/docs.yml']
+
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CONTENT: docs
+
+jobs:
+  # Runs on every pull request and costs about fifteen seconds. No
+  # credentials, no registry. It catches a link to a page somebody
+  # deleted before review rather than after deploy.
+  check:
+    name: Content is valid
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zel
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - run: zel check "$CONTENT"
+
+  publish:
+    name: Netlify
+    needs: check
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install zel
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - run: zel build "$CONTENT" --out dist
+
+      # Netlify's own uploader, until `zel deploy` lands.
+      - name: Upload
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npx --yes netlify-cli@latest deploy --prod --dir dist

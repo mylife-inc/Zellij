@@ -78,6 +78,9 @@ pub fn github(options: &CiOptions) -> String {
          \x20   paths: ['{content}/**', '.github/workflows/docs.yml']\n\
          \x20 pull_request:\n\
          \x20   paths: ['{content}/**', '.github/workflows/docs.yml']\n\
+         \x20 # Re-deploy without a content change — after rotating a secret,\n\
+         \x20 # or to put the current `main` back up. `zel ci publish` calls this.\n\
+         \x20 workflow_dispatch:\n\
          \n\
          concurrency:\n\
          \x20 group: docs-${{{{ github.ref }}}}\n\
@@ -113,7 +116,10 @@ pub fn github(options: &CiOptions) -> String {
              \x20 publish:\n\
              \x20   name: Image\n\
              \x20   needs: check\n\
-             \x20   if: github.event_name == 'push'\n\
+             \x20   # Not `== 'push'`: that excluded workflow_dispatch, so a manual\n\
+             \x20   # run went green having deployed nothing. Everything except a\n\
+             \x20   # pull request should publish.\n\
+             \x20   if: github.event_name != 'pull_request'\n\
              \x20   runs-on: ubuntu-latest\n\
              \x20   permissions:\n\
              \x20     contents: read\n\
@@ -144,7 +150,10 @@ pub fn github(options: &CiOptions) -> String {
              \x20 publish:\n\
              \x20   name: Netlify\n\
              \x20   needs: check\n\
-             \x20   if: github.event_name == 'push'\n\
+             \x20   # Not `== 'push'`: that excluded workflow_dispatch, so a manual\n\
+             \x20   # run went green having deployed nothing. Everything except a\n\
+             \x20   # pull request should publish.\n\
+             \x20   if: github.event_name != 'pull_request'\n\
              \x20   runs-on: ubuntu-latest\n\
              \n\
              \x20   steps:\n\
@@ -165,8 +174,43 @@ pub fn github(options: &CiOptions) -> String {
     format!("{header}{check}{publish_job}")
 }
 
+/// The two values a Netlify deploy needs, and whether this shell has them.
+///
+/// Read rather than asked for. Anyone who has deployed from this machine has
+/// them somewhere already, and "add NETLIFY_SITE_ID to your secrets" is not
+/// advice — it is the problem restated. Knowing whether they are present is
+/// what lets the tool print the command that finishes the job instead.
+#[derive(Debug, Default, Clone)]
+pub struct NetlifyEnv {
+    pub site_id: Option<String>,
+    pub auth_token: Option<String>,
+}
+
+impl NetlifyEnv {
+    #[must_use]
+    pub fn from_env() -> Self {
+        let read = |name: &str| {
+            std::env::var(name)
+                .ok()
+                .map(|v| v.trim().to_string())
+                .filter(|v| !v.is_empty())
+        };
+        Self {
+            site_id: read("NETLIFY_SITE_ID"),
+            auth_token: read("NETLIFY_AUTH_TOKEN"),
+        }
+    }
+
+    #[must_use]
+    pub fn complete(&self) -> bool {
+        self.site_id.is_some() && self.auth_token.is_some()
+    }
+}
+
 /// What the caller has to do that a file cannot.
-pub fn afterwards(publish: Publish) -> Vec<String> {
+///
+/// `netlify` is only consulted for the Netlify target; the others ignore it.
+pub fn afterwards(publish: Publish, netlify: &NetlifyEnv) -> Vec<String> {
     match publish {
         Publish::Nothing => vec![],
         Publish::Image => vec![
@@ -174,11 +218,61 @@ pub fn afterwards(publish: Publish) -> Vec<String> {
             "Without it the push fails with a 403 that reads like an authentication problem."
                 .into(),
         ],
-        Publish::Netlify => vec![
-            "Add NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID to the repository secrets.".into(),
-            "The site ID is the Project ID on the Netlify project page.".into(),
-        ],
+        Publish::Netlify => netlify_guidance(netlify),
     }
+}
+
+/// Guidance that depends on what the shell already has.
+///
+/// Both present: print the two commands that copy them into the repository,
+/// reading from the environment rather than the clipboard. A secret pasted on
+/// a command line is a secret in shell history.
+///
+/// Either missing: say how to get *that one*. The site ID and the token come
+/// from different places and are confused constantly — one is per project and
+/// public-ish, the other is per account and a credential.
+fn netlify_guidance(env: &NetlifyEnv) -> Vec<String> {
+    let mut out = Vec::new();
+
+    if env.complete() {
+        out.push("NETLIFY_SITE_ID and NETLIFY_AUTH_TOKEN are both set here.".into());
+        out.push("Copy them into the repository — the values stay in the environment:".into());
+        out.push(String::new());
+        out.push("  gh secret set NETLIFY_SITE_ID     --body \"$NETLIFY_SITE_ID\"".into());
+        out.push("  gh secret set NETLIFY_AUTH_TOKEN  --body \"$NETLIFY_AUTH_TOKEN\"".into());
+        return out;
+    }
+
+    out.push("The deploy needs two values in the repository's secrets.".into());
+    out.push(String::new());
+
+    if env.site_id.is_some() {
+        out.push("NETLIFY_SITE_ID  — set here.".into());
+    } else {
+        out.push("NETLIFY_SITE_ID  — not set. It identifies the project:".into());
+        out.push("    netlify sites:list           # find the one you want".into());
+        out.push(
+            "    netlify link                 # or link this folder, then read .netlify/state.json"
+                .into(),
+        );
+        out.push("  It is also the \"Project ID\" on the project's Configuration page.".into());
+    }
+
+    out.push(String::new());
+
+    if env.auth_token.is_some() {
+        out.push("NETLIFY_AUTH_TOKEN — set here.".into());
+    } else {
+        out.push("NETLIFY_AUTH_TOKEN — not set. It is an account credential:".into());
+        out.push("    app.netlify.com → User settings → Applications → New access token".into());
+        out.push("  `netlify login` stores a token for your machine, but does not".into());
+        out.push("  print one you can give to CI. Create it in the UI.".into());
+    }
+
+    out.push(String::new());
+    out.push("Export both, re-run this command, and it will print the commands".into());
+    out.push("that copy them in.".into());
+    out
 }
 
 #[cfg(test)]
@@ -238,15 +332,36 @@ mod tests {
     // A pull request from a fork cannot have the token, and an image built from
     // one is not wanted anyway.
     #[test]
-    fn publishing_happens_only_on_a_push() {
+    fn publishing_never_happens_from_a_pull_request() {
         for publish in [Publish::Image, Publish::Netlify] {
             let out = github(&CiOptions {
                 publish,
                 ..Default::default()
             });
             assert!(
-                out.contains("if: github.event_name == 'push'"),
+                out.contains("if: github.event_name != 'pull_request'"),
                 "{publish:?} must not publish from a pull request:\n{out}"
+            );
+        }
+    }
+
+    /// The gate was `== 'push'`, which excluded `workflow_dispatch` — so a
+    /// manual run went green having deployed nothing, which is the worst
+    /// outcome available: it looks like a successful deploy.
+    #[test]
+    fn a_manual_run_actually_publishes() {
+        for publish in [Publish::Image, Publish::Netlify] {
+            let out = github(&CiOptions {
+                publish,
+                ..Default::default()
+            });
+            assert!(
+                out.contains("workflow_dispatch:"),
+                "{publish:?} must be runnable by hand:\n{out}"
+            );
+            assert!(
+                !out.contains("if: github.event_name == 'push'"),
+                "{publish:?} gate excludes workflow_dispatch:\n{out}"
             );
         }
     }

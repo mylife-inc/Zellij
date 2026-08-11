@@ -231,6 +231,24 @@ enum CiAction {
         #[arg(long)]
         content: Option<String>,
     },
+
+    /// Run the deploy pipeline now, on GitHub.
+    ///
+    /// The pipeline deploys on a push that touches the content folder, which
+    /// covers the ordinary case. This is for the times there is nothing to
+    /// commit: a rotated Netlify token, a site restored after a bad deploy, a
+    /// first run after adding the secrets.
+    ///
+    /// The build still happens on GitHub. Nothing is uploaded from here.
+    Publish {
+        /// The workflow file to run.
+        #[arg(long, default_value = "docs.yml")]
+        workflow: String,
+
+        /// The branch to run it on.
+        #[arg(long, default_value = "main")]
+        r#ref: String,
+    },
 }
 
 #[derive(Subcommand)]
@@ -362,6 +380,7 @@ fn main() {
                 target,
                 content,
             } => ci_init(system, deploy.as_deref(), target, content.as_deref()),
+            CiAction::Publish { workflow, r#ref } => ci_publish(workflow, r#ref),
         },
         Command::Migrate {
             ref source,
@@ -647,6 +666,96 @@ fn image_dockerfile(dir: &str) -> zellij_core::Result<()> {
 
 // ------------------------------------------------------------------ pipelines
 
+/// Ask GitHub to run the deploy pipeline.
+///
+/// Shells out to `gh` rather than speaking to the API directly. `zel` carries
+/// no HTTP client, and pulling one in — with its TLS stack — to make a single
+/// POST would add megabytes to a binary every user downloads, to save a
+/// dependency most people deploying to GitHub already have.
+///
+/// When `gh` is absent the exact request is printed instead. A tool that
+/// cannot do the thing should at least hand over the thing.
+fn ci_publish(workflow: &str, git_ref: &str) -> zellij_core::Result<()> {
+    let repo = github_repo();
+
+    if !on_path("gh") {
+        let slug = repo.unwrap_or_else(|| "<owner>/<repo>".into());
+        println!("gh is not installed. This is the request it would have made:");
+        println!();
+        println!("  curl -X POST \\");
+        println!("    -H \"Authorization: Bearer $GITHUB_TOKEN\" \\");
+        println!("    -H \"Accept: application/vnd.github+json\" \\");
+        println!(
+            "    https://api.github.com/repos/{slug}/actions/workflows/{workflow}/dispatches \\"
+        );
+        println!("    -d '{{\"ref\":\"{git_ref}\"}}'");
+        println!();
+        println!("  The token needs Actions: write on that repository.");
+        return Ok(());
+    }
+
+    let mut command = std::process::Command::new("gh");
+    command.args(["workflow", "run", workflow, "--ref", git_ref]);
+    if let Some(ref slug) = repo {
+        command.args(["--repo", slug]);
+    }
+
+    let status = match command.status() {
+        Ok(status) => status,
+        Err(err) => {
+            eprintln!("error: could not run gh: {err}");
+            std::process::exit(1);
+        }
+    };
+
+    if !status.success() {
+        eprintln!("error: gh could not start {workflow}");
+        eprintln!("       If it says the workflow was not found, it has to be on the");
+        eprintln!("       repository's default branch before GitHub will accept a run.");
+        std::process::exit(1);
+    }
+
+    println!("✓ {workflow} queued on {git_ref}");
+    if let Some(slug) = repo {
+        println!("  https://github.com/{slug}/actions");
+    }
+    Ok(())
+}
+
+/// `owner/repo` from the `origin` remote, when there is one to read.
+fn github_repo() -> Option<String> {
+    let out = std::process::Command::new("git")
+        .args(["remote", "get-url", "origin"])
+        .output()
+        .ok()?;
+    if !out.status.success() {
+        return None;
+    }
+    let url = String::from_utf8(out.stdout).ok()?;
+    let url = url.trim().trim_end_matches(".git").to_owned();
+
+    // Both forms: `git@host:owner/repo` and `https://host/owner/repo`. The
+    // host may be an SSH alias — `github-mylife-inc` rather than github.com —
+    // so this matches on shape rather than on the hostname.
+    let tail = url
+        .rsplit_once(':')
+        .map(|(_, t)| t.to_owned())
+        .unwrap_or(url);
+    let parts: Vec<&str> = tail.rsplit('/').take(2).collect();
+    (parts.len() == 2).then(|| format!("{}/{}", parts[1], parts[0]))
+}
+
+/// Is this program on the PATH?
+fn on_path(program: &str) -> bool {
+    std::process::Command::new(program)
+        .arg("--version")
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .status()
+        .map(|s| s.success())
+        .unwrap_or(false)
+}
+
 fn ci_init(
     system: &str,
     deploy: Option<&str>,
@@ -718,7 +827,10 @@ fn ci_init(
     println!("✓ {path}");
     println!("  Validates {} on every pull request.", options.content);
 
-    let after = pipeline::afterwards(publish);
+    // Read the environment at the moment of generating, so the guidance can
+    // be the command that finishes the job rather than a description of it.
+    let netlify = pipeline::NetlifyEnv::from_env();
+    let after = pipeline::afterwards(publish, &netlify);
     if !after.is_empty() {
         println!();
         println!("  Before it can publish:");
