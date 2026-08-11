@@ -54,6 +54,13 @@ export SGIT_KEY="$(openssl rand -base64 32)"
 ```
 
 ```bash title="terminal"
+sgit pb
+```
+
+`pb` is the shorthand for this pair, and takes every flag `init` takes.
+Spelled out, it is:
+
+```bash title="the same thing, in full"
 sgit init --mode passphrase --ci-mode portal-build
 ```
 
