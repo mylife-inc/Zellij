@@ -185,11 +185,28 @@ pub fn github(options: &CiOptions) -> String {
                  \x20     - run: zel build \"$CONTENT\" --out dist\n\
                  \n\
                  \x20     # Netlify's own uploader, until `zel deploy` lands.\n\
+                 \x20     #\n\
+                 \x20     # Run from outside the checkout, which matters in a workspace.\n\
+                 \x20     # netlify-cli walks up from the working directory looking for\n\
+                 \x20     # package.json, and when it finds a root with several packages it\n\
+                 \x20     # refuses to guess which one it is deploying:\n\
+                 \x20     #\n\
+                 \x20     #   Error: Projects detected: @acme/docs, @acme/site, ...\n\
+                 \x20     #\n\
+                 \x20     # The built site is plain static files with no relationship to any\n\
+                 \x20     # package, so moving it somewhere with no package.json above it\n\
+                 \x20     # removes the question rather than answering it.\n\
                  \x20     - name: Upload\n\
                  \x20       env:\n\
                  \x20         NETLIFY_AUTH_TOKEN: ${{{{ secrets.NETLIFY_AUTH_TOKEN }}}}\n\
                  {site}\
-                 \x20       run: npx --yes netlify-cli@latest deploy --prod --dir dist\n"
+                 \x20       run: |\n\
+                 \x20         set -eu\n\
+                 \x20         site=\"$RUNNER_TEMP/site\"\n\
+                 \x20         rm -rf \"$site\"\n\
+                 \x20         mv dist \"$site\"\n\
+                 \x20         cd \"$RUNNER_TEMP\"\n\
+                 \x20         npx --yes netlify-cli@latest deploy --prod --dir \"$site\"\n"
             )
         }
     };
