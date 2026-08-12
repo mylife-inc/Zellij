@@ -193,20 +193,26 @@ pub fn github(options: &CiOptions) -> String {
                  \x20     #\n\
                  \x20     #   Error: Projects detected: @acme/docs, @acme/site, ...\n\
                  \x20     #\n\
-                 \x20     # The built site is plain static files with no relationship to any\n\
-                 \x20     # package, so moving it somewhere with no package.json above it\n\
-                 \x20     # removes the question rather than answering it.\n\
+                 \x20     # It looks at the working directory, not at --dir. So this runs\n\
+                 \x20     # from $RUNNER_TEMP, where nothing walks up into a workspace, and\n\
+                 \x20     # points --dir at the output where it lies.\n\
+                 \x20     #\n\
+                 \x20     # It does NOT move the output first, which was the previous fix and\n\
+                 \x20     # failed: `zel build` writes dist from inside a container, as root,\n\
+                 \x20     # and the runner user cannot unlink what root created —\n\
+                 \x20     #\n\
+                 \x20     #   mv: cannot move 'dist' to '/home/runner/work/_temp/site': Permission denied\n\
+                 \x20     #\n\
+                 \x20     # Nothing needs to move. Only the working directory mattered.\n\
                  \x20     - name: Upload\n\
                  \x20       env:\n\
                  \x20         NETLIFY_AUTH_TOKEN: ${{{{ secrets.NETLIFY_AUTH_TOKEN }}}}\n\
                  {site}\
                  \x20       run: |\n\
                  \x20         set -eu\n\
-                 \x20         site=\"$RUNNER_TEMP/site\"\n\
-                 \x20         rm -rf \"$site\"\n\
-                 \x20         mv dist \"$site\"\n\
                  \x20         cd \"$RUNNER_TEMP\"\n\
-                 \x20         npx --yes netlify-cli@latest deploy --prod --dir \"$site\"\n"
+                 \x20         npx --yes netlify-cli@latest deploy --prod \\\n\
+                 \x20           --dir \"$GITHUB_WORKSPACE/dist\"\n"
             )
         }
     };
