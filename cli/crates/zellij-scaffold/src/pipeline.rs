@@ -22,6 +22,17 @@ pub struct CiOptions {
     pub publish: Publish,
     /// Where images go. Ignored unless publishing one.
     pub registry: String,
+    /// The Netlify project this deploys to. Ignored unless publishing there.
+    ///
+    /// Written into the workflow as a plain value, not a secret. It is an
+    /// identifier, not a credential — it appears in the project's own URL and
+    /// on its dashboard, and holding it grants nothing without the token.
+    ///
+    /// Keeping it in the file is worth more than hiding it: it is visible in
+    /// review, it travels with the repository, and it removes a provisioning
+    /// step that could half-succeed. Filing a non-secret under `secrets` also
+    /// teaches the wrong instinct about which is which.
+    pub site_id: Option<String>,
 }
 
 impl Default for CiOptions {
@@ -30,6 +41,7 @@ impl Default for CiOptions {
             content: "docs".into(),
             publish: Publish::Nothing,
             registry: "ghcr.io".into(),
+            site_id: None,
         }
     }
 }
@@ -57,6 +69,7 @@ pub fn github(options: &CiOptions) -> String {
         content,
         publish,
         registry,
+        site_id,
     } = options;
 
     let install = install_step();
@@ -145,30 +158,40 @@ pub fn github(options: &CiOptions) -> String {
              \x20         zel image push \"$TAG\"\n"
         ),
 
-        Publish::Netlify => format!(
-            "\n\
-             \x20 publish:\n\
-             \x20   name: Netlify\n\
-             \x20   needs: check\n\
-             \x20   # Not `== 'push'`: that excluded workflow_dispatch, so a manual\n\
-             \x20   # run went green having deployed nothing. Everything except a\n\
-             \x20   # pull request should publish.\n\
-             \x20   if: github.event_name != 'pull_request'\n\
-             \x20   runs-on: ubuntu-latest\n\
-             \n\
-             \x20   steps:\n\
-             \x20     - uses: actions/checkout@v4\n\
-             \n\
-             {install}\n\
-             \x20     - run: zel build \"$CONTENT\" --out dist\n\
-             \n\
-             \x20     # Netlify's own uploader, until `zel deploy` lands.\n\
-             \x20     - name: Upload\n\
-             \x20       env:\n\
-             \x20         NETLIFY_AUTH_TOKEN: ${{{{ secrets.NETLIFY_AUTH_TOKEN }}}}\n\
-             \x20         NETLIFY_SITE_ID: ${{{{ secrets.NETLIFY_SITE_ID }}}}\n\
-             \x20       run: npx --yes netlify-cli@latest deploy --prod --dir dist\n"
-        ),
+        Publish::Netlify => {
+            // The site id is written in plain when known, and falls back to a
+            // secret when it is not — so a workflow generated without one
+            // still works for anyone who already put it in their secrets.
+            let site = match site_id {
+                Some(id) => format!("\x20         NETLIFY_SITE_ID: {id}\n"),
+                None => "\x20         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}\n".to_owned(),
+            };
+
+            format!(
+                "\n\
+                 \x20 publish:\n\
+                 \x20   name: Netlify\n\
+                 \x20   needs: check\n\
+                 \x20   # Not `== 'push'`: that excluded workflow_dispatch, so a manual\n\
+                 \x20   # run went green having deployed nothing. Everything except a\n\
+                 \x20   # pull request should publish.\n\
+                 \x20   if: github.event_name != 'pull_request'\n\
+                 \x20   runs-on: ubuntu-latest\n\
+                 \n\
+                 \x20   steps:\n\
+                 \x20     - uses: actions/checkout@v4\n\
+                 \n\
+                 {install}\n\
+                 \x20     - run: zel build \"$CONTENT\" --out dist\n\
+                 \n\
+                 \x20     # Netlify's own uploader, until `zel deploy` lands.\n\
+                 \x20     - name: Upload\n\
+                 \x20       env:\n\
+                 \x20         NETLIFY_AUTH_TOKEN: ${{{{ secrets.NETLIFY_AUTH_TOKEN }}}}\n\
+                 {site}\
+                 \x20       run: npx --yes netlify-cli@latest deploy --prod --dir dist\n"
+            )
+        }
     };
 
     format!("{header}{check}{publish_job}")

@@ -98,6 +98,9 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
             content: docs_dir.clone(),
             publish: pipeline::Publish::Image,
             registry: "ghcr.io".into(),
+            // `zel new project` scaffolds an image pipeline; a Netlify site
+            // is a later decision, made by `zel ci init --deploy netlify`.
+            site_id: None,
         }),
     );
 
