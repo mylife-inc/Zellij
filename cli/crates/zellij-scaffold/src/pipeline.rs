@@ -210,9 +210,17 @@ pub fn github(options: &CiOptions) -> String {
                  {site}\
                  \x20       run: |\n\
                  \x20         set -eu\n\
+                 \x20         # Copy, not move: `zel build` writes dist from inside a\n\
+                 \x20         # container as root, and the runner cannot unlink what root\n\
+                 \x20         # created. Reading it is fine.\n\
+                 \x20         rm -rf \"$RUNNER_TEMP/site\"\n\
+                 \x20         cp -r dist \"$RUNNER_TEMP/site\"\n\
+                 \x20         # Deploy from $RUNNER_TEMP so netlify-cli finds no workspace\n\
+                 \x20         # above it, with a RELATIVE --dir: an absolute one was\n\
+                 \x20         # silently ignored and it published the working directory\n\
+                 \x20         # instead (publishOrigin: default, publish: .../_temp).\n\
                  \x20         cd \"$RUNNER_TEMP\"\n\
-                 \x20         npx --yes netlify-cli@latest deploy --prod \\\n\
-                 \x20           --dir \"$GITHUB_WORKSPACE/dist\"\n"
+                 \x20         npx --yes netlify-cli@latest deploy --prod --dir site\n"
             )
         }
     };
