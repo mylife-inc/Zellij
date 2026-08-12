@@ -103,6 +103,26 @@ export function withZellij(config = {}) {
        */
       localPatterns: [{ pathname: '/**' }],
 
+      /*
+       * A static export has no image optimizer, so it must not ask for one.
+       *
+       * `next/image` normally emits `/_next/image?url=…&w=640&q=75`, which is a
+       * *server route*. Export the site and that route does not exist: every
+       * image 404s while the PNG sits beside it, served fine, at the path the
+       * optimizer URL was pointing at. The page renders, the layout is right,
+       * and the pictures are missing — which reads as a broken build rather
+       * than as a configuration mismatch.
+       *
+       * Driven by the same variable as `output` below, so the two cannot
+       * disagree. A `standalone` build keeps the optimizer, because it ships a
+       * server that can run it.
+       *
+       * Found on the first public deploy of Zellij's own documentation, where
+       * `/_next/image?url=…card-guides.png` returned 404 and
+       * `/_zellij/assets/card-guides.png` returned 200.
+       */
+      ...(process.env['ZELLIJ_OUTPUT'] === 'export' ? { unoptimized: true } : {}),
+
       ...config.images,
     },
 
