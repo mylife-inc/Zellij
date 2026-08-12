@@ -198,6 +198,37 @@ fn lan_address() -> Option<String> {
     Some(socket.local_addr().ok()?.ip().to_string())
 }
 
+/// The `chown` that returns build output to the invoking user, or nothing.
+///
+/// Unix only, and deliberately best-effort: `|| true` so a runtime that maps
+/// ownership for us — Docker Desktop and Colima both virtualise it on macOS —
+/// cannot turn a successful build into a failure over a no-op.
+#[cfg(unix)]
+fn own_output_as(out: &Utf8Path) -> String {
+    use std::os::unix::fs::MetadataExt;
+
+    match std::fs::metadata(out) {
+        // Braces, so `|| true` applies to the chown and NOT to the whole `&&`
+        // chain before it. Without them a failed build was swallowed and
+        // `zel build` printed a tick over an empty output directory — the
+        // build error scrolled past above a success line.
+        Ok(meta) => format!(
+            " && {{ chown -R {}:{} /out || true; }}",
+            meta.uid(),
+            meta.gid()
+        ),
+        // If the directory cannot be read, the build is about to fail on the
+        // mount anyway, and with a better message than this could give.
+        Err(_) => String::new(),
+    }
+}
+
+/// Windows has no uid to hand back to.
+#[cfg(not(unix))]
+fn own_output_as(_out: &Utf8Path) -> String {
+    String::new()
+}
+
 /// Exit code the wrapper uses to say the mount arrived empty.
 ///
 /// A number no engine command returns, so it cannot be confused with a real
@@ -283,13 +314,32 @@ impl Engine for ContainerEngine {
             })?;
         let out_mount = format!("{absolute_out}:/out");
 
+        // Give the output back to whoever asked for it.
+        //
+        // The build runs as root, because it must: `npm install` writes into
+        // the image's own `/app`, and a container told `--user 1000` cannot.
+        // But that means everything it copies into the mounted `/out` is owned
+        // by root, on a directory the user created — so `rm -rf dist` needs
+        // sudo, and any tool that tries to move it fails:
+        //
+        //   mv: cannot move 'dist' to '/home/runner/work/_temp/site': Permission denied
+        //
+        // That was a CI failure, but it is not a CI problem: it happens to
+        // anyone who runs `zel build` and then tries to delete the folder.
+        //
+        // The ownership is read from the output directory itself, which was
+        // just created by this process and therefore carries the invoking
+        // user's ids — no `getuid` binding, and correct under `sudo` too, where
+        // the directory belongs to whoever the command really ran as.
+        let handback = own_output_as(out);
+
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
                 "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
                  npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
-                 rm -rf /out/* && cp -a out/. /out/"
+                 rm -rf /out/* && cp -a out/. /out/{handback}"
             ),
         );
 
