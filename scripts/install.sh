@@ -32,11 +32,26 @@ need tar
 command -v curl >/dev/null 2>&1 || command -v wget >/dev/null 2>&1 ||
   die "Either curl or wget is required."
 
+# Authenticated whenever a token is around, because the anonymous GitHub API
+# is rate-limited *by IP*, and CI runners share heavily-used address pools.
+# Four jobs of one matrix installing at once is enough to hit it: one gets
+# through and the rest get 403, on a public repository that needs no
+# credential to read. GITHUB_TOKEN is injected into every Actions job, so this
+# costs nothing to arrange and lifts the limit from 60 requests an hour to 1000.
 fetch() {
+  _tok="${GITHUB_TOKEN:-${GH_TOKEN:-}}"
   if command -v curl >/dev/null 2>&1; then
-    curl -fsSL "$1"
+    if [ -n "$_tok" ]; then
+      curl -fsSL -H "Authorization: Bearer $_tok" "$1"
+    else
+      curl -fsSL "$1"
+    fi
   else
-    wget -qO- "$1"
+    if [ -n "$_tok" ]; then
+      wget -qO- --header="Authorization: Bearer $_tok" "$1"
+    else
+      wget -qO- "$1"
+    fi
   fi
 }
 
@@ -88,11 +103,23 @@ else
   # because a lone dash as a grep argument is exactly the sort of thing one
   # implementation somewhere reads as an option. `v0.1.0-rc.1` does not match
   # here: the closing quote has to follow the digits.
+  # The request and the parse are separate, and the request's failure is not
+  # swallowed. `|| true` on the whole pipeline turned every transport failure
+  # into "found no stable release" — a sentence about the wrong thing. A 403
+  # from rate limiting reported a missing release, and the release was there.
+  if ! releases="$(fetch "https://api.github.com/repos/$REPO/releases?per_page=100")"; then
+    die "Could not ask GitHub which $SCOPE releases exist.
+    The request to api.github.com failed — commonly rate limiting, which is
+    per-IP and applies to anonymous requests even on a public repository.
+    Set GITHUB_TOKEN (Actions injects one) to raise the limit, or pin a
+    version with ZEL_VERSION to skip the lookup entirely."
+  fi
+
   version="$(
-    fetch "https://api.github.com/repos/$REPO/releases?per_page=100" |
+    printf '%s' "$releases" |
       sed -n 's/.*"tag_name": *"'"$SCOPE"'-\(v[0-9][0-9.]*\)".*/\1/p' |
       head -1
-  )" || true
+  )"
 
   [ -n "$version" ] || die "Found no stable $SCOPE release in $REPO.
     There may be a pre-release: see
