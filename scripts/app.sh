@@ -514,3 +514,116 @@ zclean() {
 }
 
 _zsay "Zellij commands loaded. Run zhelp."
+
+# ------------------------------------------------------------ local release
+
+# Publish `zel` from this machine, without GitHub Actions.
+#
+# `zrelease` tags and lets CI do the work, which is the right shape and is
+# currently blocked — the organisation's Actions spending is capped, and the
+# release workflow cannot run. This builds the binaries here and uploads them,
+# so a working `zel` exists for the pipelines that install one.
+#
+# Deliberately not a replacement. It skips everything a pipeline gives you:
+# a clean machine, a recorded environment, five platforms instead of two. Use
+# `zrelease` again the moment CI can run.
+ZELLIJ_RELEASES_REPO="${ZELLIJ_RELEASES_REPO:-mylife-inc/releases}"
+
+zrelease-local() {
+  local v="$1"
+  [ -n "$v" ] || { _zdie "Usage: zrelease-local v0.1.0"; return 1; }
+  [[ "$v" == v* ]] || { _zdie "Versions start with v — try v$v"; return 1; }
+
+  command -v gh >/dev/null || { _zdie "The GitHub CLI (gh) is not installed"; return 1; }
+  command -v docker >/dev/null || { _zdie "docker is required for the Linux build"; return 1; }
+
+  local scoped="zellij-$v"
+  if gh release view "$scoped" --repo "$ZELLIJ_RELEASES_REPO" >/dev/null 2>&1; then
+    _zdie "$scoped already exists in $ZELLIJ_RELEASES_REPO"
+    return 1
+  fi
+
+  _zsay "Checking before building"
+  zcheck || return 1
+
+  local stage
+  stage="$(mktemp -d)" || return 1
+
+  # macOS, natively. The Linux build runs in a glibc container because the
+  # installer resolves Linux to `unknown-linux-gnu`, and a musl binary under
+  # that name would be a lie about what it links against.
+  local host_target
+  host_target="$(rustc -vV | sed -n 's/^host: //p')"
+
+  _zsay "Building $host_target natively"
+  ( cd "$ZELLIJ_ROOT/cli" && cargo build --release --bin zel --target "$host_target" ) || return 1
+  _zrelease_local_package "$ZELLIJ_ROOT/cli/target/$host_target/release/zel" \
+    "$v" "$host_target" "$stage" || return 1
+
+  local linux_target=x86_64-unknown-linux-gnu
+  _zsay "Building $linux_target in a container"
+  docker run --rm \
+    -v "$ZELLIJ_ROOT/cli:/src" -w /src \
+    -v "$ZELLIJ_ROOT/cli/.cargo-gnu:/usr/local/cargo/registry" \
+    rust:bookworm sh -c "
+      set -e
+      export CARGO_TARGET_DIR=/src/target-gnu
+      cargo build --release --bin zel --target $linux_target
+    " || return 1
+  _zrelease_local_package "$ZELLIJ_ROOT/cli/target-gnu/$linux_target/release/zel" \
+    "$v" "$linux_target" "$stage" || return 1
+
+  ( cd "$stage" && shasum -a 256 ./*.tar.gz > SHA256SUMS && shasum -a 256 -c SHA256SUMS ) || return 1
+
+  _zsay "Publishing $scoped to $ZELLIJ_RELEASES_REPO"
+  ( cd "$stage" && gh release create "$scoped" \
+      --repo "$ZELLIJ_RELEASES_REPO" \
+      --title "Zellij $v" \
+      --notes "\`zel\` $v, built locally.
+
+\`\`\`
+curl -fsSL https://raw.githubusercontent.com/$ZELLIJ_RELEASES_REPO/main/zellij/install.sh | sh
+\`\`\`
+
+Two platforms rather than five — this was cut from a laptop while the
+release pipeline is unavailable." \
+      ./*.tar.gz SHA256SUMS ) || {
+    _zwarn "Publishing failed. Artefacts are in $stage"
+    return 1
+  }
+
+  rm -rf "$stage"
+  _zsay "$scoped published"
+  echo "  https://github.com/$ZELLIJ_RELEASES_REPO/releases/tag/$scoped"
+}
+
+# Tar one binary, after checking it is the one just built.
+#
+# A failed build leaves the previous binary where it was, and a release
+# carrying it looks identical to a good one until somebody hits the missing
+# fix. Asking the binary its version is the cheapest way to know.
+_zrelease_local_package() {
+  local bin="$1" v="$2" target="$3" stage="$4"
+
+  [ -f "$bin" ] || { _zdie "$target produced no binary at $bin"; return 1; }
+
+  # Only the host binary can be run here; the Linux one is checked by its
+  # timestamp instead, which catches the stale-artefact case just as well.
+  if [[ "$target" == *-apple-darwin ]]; then
+    local reported
+    reported="$("$bin" --version 2>/dev/null | awk '{print $2}')"
+    if [ "$reported" != "${v#v}" ]; then
+      _zdie "$target reports '$reported', expected '${v#v}'.
+   The version lives in cli/Cargo.toml under [workspace.package].
+   Bump it there and commit, or the release ships a binary that
+   misreports itself."
+      return 1
+    fi
+  fi
+
+  local dir="$stage/pkg-$target"
+  mkdir -p "$dir" && cp "$bin" "$dir/zel" || return 1
+  ( cd "$dir" && tar -czf "$stage/zel-$v-$target.tar.gz" zel ) || return 1
+  rm -rf "$dir"
+  echo "  packaged zel-$v-$target.tar.gz"
+}
