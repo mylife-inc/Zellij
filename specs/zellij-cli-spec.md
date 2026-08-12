@@ -60,7 +60,9 @@ needs neither Node nor Docker, and still cannot drift.
 | Engine source | Private repository | The team |
 
 Platforms: `x86_64-unknown-linux-gnu`, `aarch64-unknown-linux-gnu`,
-`x86_64-apple-darwin`, `aarch64-apple-darwin`, `x86_64-pc-windows-msvc`.
+`x86_64-apple-darwin`, `aarch64-apple-darwin`. Windows is served by WSL, where
+`zel` is a Linux binary — a native build would put the CLI on the far side of
+the filesystem boundary from every container mount it works through.
 
 Install: a shell script that picks the right asset, plus Homebrew later.
 Checksums published alongside; the installer verifies before moving into place.

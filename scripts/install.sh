@@ -57,8 +57,9 @@ case "$os" in
   Linux)  os_part="unknown-linux-gnu" ;;
   Darwin) os_part="apple-darwin" ;;
   MINGW*|MSYS*|CYGWIN*)
-    die "Windows is supported, but not by this script. Download the .zip from
-    https://github.com/$REPO/releases and put zel.exe on your PATH." ;;
+    die "Windows is not a published target. Releases carry Linux and macOS
+    builds only. Under WSL this script works as it does on any Linux, which is
+    the supported way to run zel on a Windows machine." ;;
   *) die "Unsupported operating system: $os" ;;
 esac
 
