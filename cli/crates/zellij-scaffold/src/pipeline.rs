@@ -257,12 +257,12 @@ pub fn afterwards(publish: Publish, netlify: &NetlifyEnv) -> Vec<String> {
 fn netlify_guidance(env: &NetlifyEnv) -> Vec<String> {
     let mut out = Vec::new();
 
+    // Nothing left to say when both are already handled: the site id is in
+    // the file and the token was uploaded before this ran. Printing "now set
+    // these two secrets" after doing exactly that is worse than silence — a
+    // reader who follows it does redundant work and learns to distrust the
+    // rest of the output.
     if env.complete() {
-        out.push("NETLIFY_SITE_ID and NETLIFY_AUTH_TOKEN are both set here.".into());
-        out.push("Copy them into the repository — the values stay in the environment:".into());
-        out.push(String::new());
-        out.push("  gh secret set NETLIFY_SITE_ID     --body \"$NETLIFY_SITE_ID\"".into());
-        out.push("  gh secret set NETLIFY_AUTH_TOKEN  --body \"$NETLIFY_AUTH_TOKEN\"".into());
         return out;
     }
 
