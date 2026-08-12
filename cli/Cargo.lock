@@ -521,7 +521,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-cli"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "camino",
  "clap",
@@ -533,7 +533,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-convert"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "camino",
  "inventory",
@@ -548,7 +548,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-core"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "camino",
  "serde",
@@ -558,7 +558,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-engine"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "camino",
  "tempfile",
@@ -568,7 +568,7 @@ dependencies = [
 
 [[package]]
 name = "zellij-scaffold"
-version = "0.1.0"
+version = "0.1.3"
 dependencies = [
  "camino",
  "serde_yaml_ng",

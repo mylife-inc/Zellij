@@ -71,6 +71,35 @@ cmd_binary() {
     In a sealed checkout this means the repository was not decrypted: run the
     codeseal-decrypt action before this script."
 
+  # The version being published has to be the version being built.
+  #
+  # It was not checked, and it was not the same. The workflow takes its version
+  # from a dispatch input and names every archive with it; nothing ever read
+  # `cli/Cargo.toml`. So `zel-v0.1.2-*.tar.gz` shipped a binary answering
+  # `zel 0.1.0`, and the release, the tag, the filenames and the checksums were
+  # all internally consistent and all wrong together.
+  #
+  # Nothing failed. It was found by installing the published release and
+  # running `--version`, which is the one check nobody automates.
+  #
+  # Checked against the manifest rather than the built binary, because it is
+  # exact and needs no ability to execute the artefact — this cross-compiles to
+  # four targets and can run at most one of them. It also fails in a second,
+  # before the build rather than after.
+  local declared
+  declared=$(awk '/^\[workspace\.package\]/{p=1} p&&/^version *=/{gsub(/[" ]/,"",$3); print $3; exit}' "$ROOT/cli/Cargo.toml")
+  [ -n "$declared" ] || die "Could not read the workspace version from cli/Cargo.toml."
+
+  if [ "$declared" != "${version#v}" ]; then
+    die "cli/Cargo.toml declares $declared, but this would publish ${version}.
+    The archive name would say ${version#v} and the binary inside would answer
+    $declared — a release that is wrong in a way nothing downstream can detect.
+
+    Bump the workspace version in cli/Cargo.toml to ${version#v} and commit it,
+    then publish again. The version belongs in git, so this script will not
+    edit it: a CI runner rewriting a tracked file is a change nobody reviews."
+  fi
+
   say "Building zel $version for $target"
   ( cd "$ROOT/cli" && cargo build --release --bin zel --target "$target" )
 
