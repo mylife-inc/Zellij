@@ -140,20 +140,53 @@ fetch_to "$base/$archive" "$tmp/$archive" ||
 #
 # SHA256SUMS is tried first: it is the conventional form, and a release that has
 # both is a release in transition rather than a reason to prefer the older one.
+# Finding the expected hash and checking it are separate, and the check is
+# written ONCE, outside the branches.
+#
+# The first version of this put the comparison inside the `.sha256` branch and
+# added the SHA256SUMS branch beside it. That branch found the hash, announced
+# "Verifying", and then fell out of the `if` — nothing hashed the download,
+# nothing compared anything, and the install proceeded. A fail-open path in the
+# one place that must fail closed, and it looked correct: it printed the
+# reassuring line and installed a working binary.
+#
+# The installation test passed *because* of the bug. Only a deliberately
+# corrupted archive shows the difference, which is what the test below does.
 if [ "${ZEL_INSECURE_SKIP_CHECKSUM:-}" = "1" ]; then
   warn "ZEL_INSECURE_SKIP_CHECKSUM=1 — installing without verifying the download."
-elif fetch_to "$base/SHA256SUMS" "$tmp/SHA256SUMS" 2>/dev/null &&
-     expected="$(awk -v want="$archive" '
-       # `shasum` writes "<hash>  ./<name>" or "<hash>  <name>"; accept either,
-       # and match the basename so a leading ./ cannot cause a false miss.
-       { name = $2; sub(/^\.\//, "", name); if (name == want) { print $1; exit } }
-     ' "$tmp/SHA256SUMS")" && [ -n "$expected" ]; then
-  say "Verifying against SHA256SUMS"
+else
+  # ---- find the expected hash -------------------------------------------
+  #
+  # Two formats, because two things produce releases and they chose
+  # differently. `SHA256SUMS` — one file listing every archive — is what the
+  # local release path writes and what CodeSeal publishes. A `.sha256` beside
+  # each archive is what the GitHub Actions workflow writes. Reading only the
+  # second is what broke the first CI install of `zel`.
+  expected=""
+  if fetch_to "$base/SHA256SUMS" "$tmp/SHA256SUMS" 2>/dev/null; then
+    # `shasum` writes "<hash>  ./<name>" or "<hash>  <name>"; accept either, and
+    # match on the basename so a leading ./ cannot cause a false miss.
+    expected="$(awk -v want="$archive" '
+      { name = $2; sub(/^\.\//, "", name); if (name == want) { print $1; exit } }
+    ' "$tmp/SHA256SUMS")"
+    [ -n "$expected" ] && say "Verifying against SHA256SUMS"
+  fi
 
-elif fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
-  say "Verifying"
-  expected="$(cut -d' ' -f1 < "$tmp/$archive.sha256")"
+  if [ -z "$expected" ] && fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
+    expected="$(cut -d' ' -f1 < "$tmp/$archive.sha256")"
+    [ -n "$expected" ] && say "Verifying"
+  fi
 
+  if [ -z "$expected" ]; then
+    die "No checksum could be fetched for $archive, so the download cannot be
+    verified. Looked for SHA256SUMS and for $archive.sha256; every release
+    publishes one of them, so this means either the release is incomplete or
+    the response was not the published one. Nothing was installed.
+
+    To install anyway: ZEL_INSECURE_SKIP_CHECKSUM=1"
+  fi
+
+  # ---- and check it ------------------------------------------------------
   if command -v sha256sum >/dev/null 2>&1; then
     actual="$(sha256sum "$tmp/$archive" | cut -d' ' -f1)"
   elif command -v shasum >/dev/null 2>&1; then
@@ -170,13 +203,6 @@ elif fetch_to "$base/$archive.sha256" "$tmp/$archive.sha256" 2>/dev/null; then
     actual   $actual
     Nothing was installed."
   fi
-else
-  die "No checksum could be fetched for $archive, so the download cannot be
-    verified. Looked for SHA256SUMS and for $archive.sha256; every release
-    publishes one of them, so this means either the release is incomplete or
-    the response was not the published one. Nothing was installed.
-
-    To install anyway: ZEL_INSECURE_SKIP_CHECKSUM=1"
 fi
 
 # ------------------------------------------------------------------- install
