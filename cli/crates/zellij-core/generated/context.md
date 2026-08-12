@@ -288,7 +288,7 @@ lists everything.
 
 ## Section types
 
-There are 19. Every section also accepts the shared fields `id` (URL anchor), `background`, `padding`, `motion` and `titleGradient`.
+There are 23. Every section also accepts the shared fields `id` (URL anchor), `background`, `padding`, `motion` and `titleGradient`.
 
 ### `bento-grid`
 
@@ -340,12 +340,42 @@ There are 19. Every section also accepts the shared fields `id` (URL anchor), `b
 | `background` | `default` \| `tinted` \| `inverted` \| `accent` |  |
 
 
+### `code-cards`
+
+| field | type | |
+| --- | --- | --- |
+| `heading` | string |  |
+| `subhead` | string |  |
+| `eyebrow` | string |  |
+| `cards` | list of object { eyebrow, title, body, featured, code, href } (min 2, max 4) | **required** |
+| `footnote` | string |  |
+
+**`cards`**
+
+| field | type | |
+| --- | --- | --- |
+| `eyebrow` | string |  |
+| `title` | string | **required** |
+| `body` | string |  |
+| `featured` | boolean | default `false` |
+| `code` | object { title, body } | **required** |
+| `href` | string |  |
+
+**`cards.code`**
+
+| field | type | |
+| --- | --- | --- |
+| `title` | string |  |
+| `body` | string | **required** |
+
+
 ### `cta-banner`
 
 | field | type | |
 | --- | --- | --- |
 | `headline` | string | **required** |
 | `body` | string |  |
+| `command` | string |  |
 | `cta` | object { label, href, style } \| list of object { label, href, style } (max 2) |  |
 
 **`cta`**
@@ -430,6 +460,43 @@ There are 19. Every section also accepts the shared fields `id` (URL anchor), `b
 | `style` | `primary` \| `secondary` \| `ghost` | default `"primary"` |
 
 
+### `hero-split`
+
+| field | type | |
+| --- | --- | --- |
+| `headline` | string | **required** |
+| `subhead` | string |  |
+| `badge` | string |  |
+| `badgeIcon` | string |  |
+| `cta` | list of object { label, href, style } (max 2) | default `[]` |
+| `highlights` | list of object { icon, label } (max 4) | default `[]` |
+| `media` | `left` \| `right` | default `"right"` |
+| `visual` | string |  |
+| `terminal` | object { title, body } |  |
+
+**`cta`**
+
+| field | type | |
+| --- | --- | --- |
+| `label` | string | **required** |
+| `href` | string | **required** |
+| `style` | `primary` \| `secondary` \| `ghost` | default `"primary"` |
+
+**`highlights`**
+
+| field | type | |
+| --- | --- | --- |
+| `icon` | string |  |
+| `label` | string | **required** |
+
+**`terminal`**
+
+| field | type | |
+| --- | --- | --- |
+| `title` | string | default `"terminal"` |
+| `body` | string | **required** |
+
+
 ### `logo-strip`
 
 | field | type | |
@@ -444,6 +511,34 @@ There are 19. Every section also accepts the shared fields `id` (URL anchor), `b
 | --- | --- | --- |
 | `heading` | string |  |
 | `body` | string | **required** |
+
+
+### `matrix`
+
+| field | type | |
+| --- | --- | --- |
+| `heading` | string |  |
+| `subhead` | string |  |
+| `eyebrow` | string |  |
+| `rowAxis` | string |  |
+| `columnAxis` | string |  |
+| `columns` | list of object { label } (min 2, max 5) | **required** |
+| `rows` | list of object { label, description, cells } (min 2, max 6) | **required** |
+| `footnote` | string |  |
+
+**`columns`**
+
+| field | type | |
+| --- | --- | --- |
+| `label` | string | **required** |
+
+**`rows`**
+
+| field | type | |
+| --- | --- | --- |
+| `label` | string | **required** |
+| `description` | string |  |
+| `cells` | list of string (min 2, max 5) | **required** |
 
 
 ### `media-panel`
@@ -572,6 +667,34 @@ There are 19. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `prefix` | string |  |
 | `suffix` | string |  |
+
+
+### `steps-panel`
+
+| field | type | |
+| --- | --- | --- |
+| `heading` | string |  |
+| `subhead` | string |  |
+| `steps` | list of object { title, body } (min 2, max 12) | **required** |
+| `media` | `left` \| `right` | default `"right"` |
+| `visual` | string |  |
+| `terminal` | object { title, body } |  |
+| `diagram` | string |  |
+| `caption` | string |  |
+
+**`steps`**
+
+| field | type | |
+| --- | --- | --- |
+| `title` | string | **required** |
+| `body` | string |  |
+
+**`terminal`**
+
+| field | type | |
+| --- | --- | --- |
+| `title` | string | default `"terminal"` |
+| `body` | string | **required** |
 
 
 ### `team-grid`
