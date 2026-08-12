@@ -27,3 +27,9 @@ cli/target/
 
 # Local Netlify folder
 .netlify
+
+# Cross-compile output from `zrelease-local`, which builds the Linux binary in
+# a container with its own target and cargo home so it cannot fight the native
+# build for the same lock files.
+cli/target-gnu/
+cli/.cargo-gnu/
