@@ -964,9 +964,8 @@ fn ci_init(
     println!("✓ {path}");
     println!("  Validates {} on every pull request.", options.content);
 
-    // Read the environment at the moment of generating, so the guidance can
-    // be the command that finishes the job rather than a description of it.
-    let netlify = pipeline::NetlifyEnv::from_env();
+    // What was resolved, not merely what is exported — `--site` counts.
+    let netlify = pipeline::NetlifyEnv::resolved(site_id.clone());
     let after = pipeline::afterwards(publish, &netlify);
     if !after.is_empty() {
         println!();

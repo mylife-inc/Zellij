@@ -255,6 +255,22 @@ impl NetlifyEnv {
         }
     }
 
+    /// What the command actually resolved, rather than what the shell holds.
+    ///
+    /// `--site` answers the site-id question as completely as an environment
+    /// variable does, and reading only the environment meant the guidance
+    /// announced "NETLIFY_SITE_ID — not set" and explained how to find it,
+    /// while writing the correct id into the file from the flag. Confidently
+    /// wrong, about something it had just done itself.
+    #[must_use]
+    pub fn resolved(site_id: Option<String>) -> Self {
+        let from_env = Self::from_env();
+        Self {
+            site_id: site_id.or(from_env.site_id),
+            auth_token: from_env.auth_token,
+        }
+    }
+
     #[must_use]
     pub fn complete(&self) -> bool {
         self.site_id.is_some() && self.auth_token.is_some()
@@ -324,8 +340,8 @@ fn netlify_guidance(env: &NetlifyEnv) -> Vec<String> {
     }
 
     out.push(String::new());
-    out.push("Export both, re-run this command, and it will print the commands".into());
-    out.push("that copy them in.".into());
+    out.push("The workflow is written either way. Export what is missing and".into());
+    out.push("re-run with --force, and it will print the commands that copy them in.".into());
     out
 }
 

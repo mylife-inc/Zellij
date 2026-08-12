@@ -108,7 +108,49 @@ impl ContainerEngine {
             .map(|c| if c.is_ascii_alphanumeric() { c } else { '-' })
             .collect();
 
-        format!("zellij-modules-{key}")
+        // Keyed by image *identity*, not by its tag.
+        //
+        // `:latest` is a moving target. Keying on the name alone means one
+        // volume serves every version the tag ever pointed at, and
+        // `npm install` reuses what it finds — so a freshly pulled image with a
+        // new engine is shadowed by whatever was installed months ago.
+        //
+        // That is not a stale cache in the harmless sense. It produced:
+        //
+        //   examples/matrix.yaml: unknown section type "matrix".
+        //
+        // from an image that knew the type perfectly well, and sent two people
+        // looking at the registry. The volume held an engine that knew `zigzag`
+        // and not `hero-split`, and no amount of rebuilding the image would
+        // have fixed it.
+        //
+        // The id changes whenever the image does, so a new image gets a new
+        // volume and the old one simply stops being used. Falling back to the
+        // tag when the id cannot be read keeps this working before the first
+        // pull, which is the one case where there is nothing stale to shadow.
+        match self.image_id() {
+            Some(id) => format!("zellij-modules-{key}-{}", &id[..id.len().min(12)]),
+            None => format!("zellij-modules-{key}"),
+        }
+    }
+
+    /// The image's content id, if it is on this machine.
+    fn image_id(&self) -> Option<String> {
+        let output = self
+            .runtime
+            .command()
+            .args(["image", "inspect", "--format", "{{.Id}}", &self.image])
+            .stderr(Stdio::null())
+            .output()
+            .ok()?;
+
+        if !output.status.success() {
+            return None;
+        }
+
+        let id = String::from_utf8(output.stdout).ok()?;
+        let id = id.trim().rsplit(':').next()?.to_string();
+        (!id.is_empty()).then_some(id)
     }
 
     /// A development server, with the content folder mounted live.
