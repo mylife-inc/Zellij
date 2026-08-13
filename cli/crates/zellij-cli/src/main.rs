@@ -589,6 +589,39 @@ fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> 
             let pages = std::fs::read_dir(&out)
                 .map(|entries| entries.flatten().count())
                 .unwrap_or(0);
+
+            // A build that produced nothing did not succeed, whatever the
+            // container said.
+            //
+            // `MountEmpty` above catches this from the input side — a content
+            // folder the runtime cannot reach mounts as empty. The *output*
+            // side fails the same way and had no such check: the container
+            // writes its pages into its own copy of a path that was never
+            // shared, exits cleanly, and the directory the caller is looking at
+            // stays empty. The count was already being printed, so this
+            // reported "✓ … (0 entries)" — a tick over nothing.
+            //
+            // Found by pointing `--out` at /tmp on a Colima host. It is the
+            // same mistake this binary already explains for the input folder,
+            // in the same message, and it deserved the same answer.
+            if pages == 0 {
+                eprintln!();
+                eprintln!("error: the build wrote nothing to {out}");
+                eprintln!();
+                eprintln!("  The engine reported success and the output folder is empty, which");
+                eprintln!("  happens when the container cannot reach the path you asked for: a");
+                eprintln!("  bind mount of an unshared directory succeeds and shares nothing, so");
+                eprintln!("  the pages were written inside the container and thrown away with it.");
+                eprintln!();
+                eprintln!("  Colima shares $HOME and not /tmp. Either write somewhere under your");
+                eprintln!("  home directory, or share the path:");
+                eprintln!();
+                eprintln!("    colima stop && colima start --mount '/tmp:w'");
+                eprintln!();
+                eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+                std::process::exit(1);
+            }
+
             println!();
             println!("✓ {out}  ({pages} entries)");
 
