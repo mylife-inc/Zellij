@@ -47,7 +47,9 @@ fn opens_a_tag(rest: &str, rest_of_document: &str) -> bool {
         return tag_name(rest).is_some();
     }
 
-    // Comments and doctypes.
+    // Doctypes pass through. Comments do not reach here — `escape_line`
+    // rewrites them before this is asked, because MDX has no HTML comment and
+    // letting one through fails the build rather than rendering nothing.
     if rest.starts_with('!') {
         return true;
     }
@@ -71,6 +73,51 @@ fn opens_a_tag(rest: &str, rest_of_document: &str) -> bool {
             Some('>' | ' ' | '\t') | None
         )
     })
+}
+
+/// Elements HTML lets you leave open and JSX does not.
+const VOID_ELEMENTS: [&str; 13] = [
+    "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track",
+    "wbr",
+];
+
+/// A void element written HTML-style at `rest`, as `(name, inside, end)`.
+///
+/// `inside` is everything between the name and the closing `>`; `end` is the
+/// byte offset of that `>` within `rest`. Quotes are tracked, because an
+/// attribute value may contain `>` — an alt text describing a flow, for one.
+fn void_element(rest: &str) -> Option<(&str, &str, usize)> {
+    let name = tag_name(rest)?;
+    if !VOID_ELEMENTS.contains(&name.to_ascii_lowercase().as_str()) {
+        return None;
+    }
+
+    let mut quote: Option<char> = None;
+    for (at, ch) in rest.char_indices() {
+        match (quote, ch) {
+            (Some(q), c) if c == q => quote = None,
+            (Some(_), _) => {}
+            (None, '"' | '\'') => quote = Some(ch),
+            (None, '>') => {
+                let inside = &rest[name.len()..at];
+                // Already self-closing; `opens_a_tag` handles that case.
+                return (!inside.trim_end().ends_with('/')).then_some((name, inside, at));
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
+/// The body of an HTML comment opening at `rest`, if one does.
+///
+/// `rest` begins just after the `<`, so a comment starts `!--` and ends `-->`.
+/// Returns what sits between them, which becomes the body of the MDX comment
+/// that replaces it.
+fn html_comment(rest: &str) -> Option<&str> {
+    let body = rest.strip_prefix("!--")?;
+    let end = body.find("-->")?;
+    Some(&body[..end])
 }
 
 /// The tag name at the start of `rest`, if it is shaped like one.
@@ -132,7 +179,39 @@ fn escape_line(line: &str, document: &str) -> String {
             '<' if !in_code_span => {
                 let rest = &line[index + 1..];
 
-                if let Some(url) = autolink(rest) {
+                // `](<path>)` is Markdown's angle-bracket link destination, the
+                // form used whenever a filename contains spaces or parentheses.
+                // Escaping the bracket turns a working link into literal text
+                // reading `](&lt;…>)`, which is how a converted page kept every
+                // one of its links to files whose names came from SharePoint and
+                // rendered not one of them.
+                if out.ends_with("](")
+                    && let Some(close) = rest.find('>')
+                {
+                    out.push(ch);
+                    out.push_str(&rest[..=close]);
+                    skip_until = index + 1 + close + 1;
+                } else if let Some((name, inside, end)) = void_element(rest) {
+                    // `<img src="…">` is valid HTML and invalid JSX, so MDX
+                    // rejects it. Escaping made the build pass and printed the
+                    // tag into the page as text — an image replaced by its own
+                    // source code, on a page whose whole point was the diagram.
+                    // Self-closing it is what the author meant and what MDX
+                    // accepts.
+                    out.push('<');
+                    out.push_str(name);
+                    out.push_str(inside.trim_end());
+                    out.push_str(" />");
+                    skip_until = index + 1 + end + 1;
+                } else if let Some(comment) = html_comment(rest) {
+                    // MDX is JSX: `<!-- … -->` is not a comment, it is a syntax
+                    // error on the `!`. `{/* … */}` is the equivalent and keeps
+                    // the author's note out of the rendered page.
+                    out.push_str("{/*");
+                    out.push_str(&comment.replace("*/", "* /"));
+                    out.push_str("*/}");
+                    skip_until = index + "<!--".len() + comment.len() + "-->".len();
+                } else if let Some(url) = autolink(rest) {
                     out.push_str(&format!("[{url}]({url})"));
                     // Past the closing '>' as well as the URL itself.
                     skip_until = index + 1 + url.len() + 1;
@@ -174,6 +253,46 @@ pub fn make_mdx_safe(source: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// MDX has no HTML comment: `<!--` is a syntax error on the `!`.
+    ///
+    /// MkDocs pages carry them routinely — "generated by, do not edit" notes at
+    /// the top of a file. Passing one through failed the build on a page nobody
+    /// had touched, with an error about an unexpected `!` that says nothing
+    /// about where it came from.
+    #[test]
+    fn turns_an_html_comment_into_an_mdx_comment() {
+        let out = make_mdx_safe("<!-- generated; do not edit -->\n\ntext\n");
+        assert!(out.contains("{/* generated; do not edit */}"), "{out}");
+        assert!(!out.contains("<!--"), "{out}");
+        assert!(out.contains("text"), "{out}");
+    }
+
+    /// The comment's own text must not be able to close the MDX comment early.
+    #[test]
+    fn a_comment_containing_a_close_marker_stays_one_comment() {
+        let out = make_mdx_safe("<!-- see */ here -->\n");
+        assert_eq!(out.matches("*/}").count(), 1, "{out}");
+    }
+
+    /// `](<path>)` is Markdown's destination form for names with spaces.
+    ///
+    /// Escaping the bracket leaves `](&lt;…>)` in the page: not a link, and not
+    /// obviously broken either — it renders as text that looks almost right.
+    /// Every link to a file whose name came from SharePoint took this form.
+    #[test]
+    fn leaves_an_angle_bracketed_link_destination_alone() {
+        let out = make_mdx_safe("see [the report](<../docs/Q3 Report (final).pdf>) for detail\n");
+        assert!(out.contains("](<../docs/Q3 Report (final).pdf>)"), "{out}");
+        assert!(!out.contains("&lt;"), "{out}");
+    }
+
+    /// The escape still applies to a `<` that is prose rather than a link.
+    #[test]
+    fn still_escapes_a_less_than_next_to_a_link() {
+        let out = make_mdx_safe("[a](b) and x < y\n");
+        assert!(out.contains("x &lt; y"), "{out}");
+    }
 
     #[test]
     fn escapes_braces_that_mdx_would_read_as_an_expression() {
@@ -233,11 +352,37 @@ mod tests {
         assert!(!out.contains("&lt;"), "{out}");
     }
 
-    // `<br>` is valid HTML and invalid MDX. `<br/>` is complete on its own.
+    // `<br>` is valid HTML and invalid MDX. `<br/>` is complete on its own, so
+    // the conversion closes it rather than escaping it.
     #[test]
-    fn escapes_a_void_element_written_html_style() {
+    fn closes_a_void_element_written_html_style() {
         let out = make_mdx_safe("one<br>two");
-        assert!(out.contains("&lt;br"), "{out}");
+        assert!(out.contains("<br />"), "{out}");
+        assert!(!out.contains("&lt;br"), "{out}");
+    }
+
+    /// An `<img>` is the case that matters: escaping printed the tag into the
+    /// page as text, so a page built around a diagram showed its own source
+    /// instead. The build was green throughout.
+    #[test]
+    fn closes_an_img_and_keeps_every_attribute() {
+        let out = make_mdx_safe(
+            "<img src=\"../assets/atlas/01-overview.png\" alt=\"users, hub and spoke\" loading=\"lazy\">\n",
+        );
+        assert!(
+            out.contains("src=\"../assets/atlas/01-overview.png\""),
+            "{out}"
+        );
+        assert!(out.contains("loading=\"lazy\" />"), "{out}");
+        assert!(!out.contains("&lt;img"), "{out}");
+    }
+
+    /// A `>` inside an attribute value must not be mistaken for the tag's end.
+    #[test]
+    fn closes_an_img_whose_alt_text_contains_an_angle_bracket() {
+        let out = make_mdx_safe("<img src=\"a.png\" alt=\"client -> server\">\n");
+        assert!(out.contains("alt=\"client -> server\" />"), "{out}");
+        assert!(!out.contains("&lt;img"), "{out}");
     }
 
     #[test]

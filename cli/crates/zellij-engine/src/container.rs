@@ -277,6 +277,15 @@ fn own_output_as(_out: &Utf8Path) -> String {
 /// failure. 97 is arbitrary and outside anything Node or the checker uses.
 const EMPTY_MOUNT: i32 = 97;
 
+/// Exit code the wrapper uses to say the content itself failed validation.
+///
+/// The build script runs `check` before it runs anything else, so once that has
+/// passed, a later failure is provably not the content's fault. Without a code
+/// of its own, every failure after it — a dependency conflict, a network blip,
+/// an out-of-memory kill — was reported as "the content folder is not valid",
+/// which sent us reading YAML while npm was the thing that had failed.
+const CONTENT_INVALID: i32 = 96;
+
 /// Check the mount before trusting it.
 ///
 /// A bind mount of a path the runtime does not share does not fail — it
@@ -378,7 +387,7 @@ impl Engine for ContainerEngine {
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
-                "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
+                "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
                  npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
                  rm -rf /out/* && cp -a out/. /out/{handback}"
@@ -403,8 +412,9 @@ impl Engine for ContainerEngine {
             Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
                 path: content.to_owned(),
             }),
+            Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
             Some(0) => Ok(()),
-            _ => Err(Error::ContentInvalid),
+            _ => Err(Error::BuildFailed),
         }
     }
 }

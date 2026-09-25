@@ -25,6 +25,15 @@ pub enum Error {
     #[error("the content folder is not valid")]
     ContentInvalid,
 
+    /// The content validated and the build still failed.
+    ///
+    /// Kept apart from `ContentInvalid` because the two send you to different
+    /// places. The build runs `check` first; everything after it is npm, Next
+    /// and the network, and reporting those as invalid content is a message
+    /// about the wrong thing — the output above the error is the real report.
+    #[error("the site build failed — see the output above")]
+    BuildFailed,
+
     #[error(transparent)]
     Io(#[from] std::io::Error),
 }
@@ -34,7 +43,7 @@ impl Error {
     pub fn exit_code(&self) -> i32 {
         match self {
             Error::NotEmpty { .. } | Error::UnknownFormat { .. } => 2,
-            Error::ContentInvalid => 3,
+            Error::ContentInvalid | Error::BuildFailed => 3,
             Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,
         }

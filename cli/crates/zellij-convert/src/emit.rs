@@ -8,6 +8,7 @@
 
 use camino::Utf8PathBuf;
 
+use crate::material::demote_material;
 use crate::mdx::make_mdx_safe;
 use crate::model::{DocTree, Entry};
 use crate::{Conversion, OutputFile, Unmapped};
@@ -164,7 +165,9 @@ pub fn emit(tree: &DocTree, read: impl Fn(&Utf8PathBuf) -> Option<String>) -> Co
             }
         }
         page.push_str("---\n\n");
-        page.push_str(make_mdx_safe(body).trim_start_matches('\n'));
+        // Material's own syntax first: `!!! note` and `{ .md-button }` are not
+        // Markdown, and escaping them for MDX only prints them into the page.
+        page.push_str(make_mdx_safe(&demote_material(body)).trim_start_matches('\n'));
 
         conversion.files.push(OutputFile {
             path: Utf8PathBuf::from(format!("{GUIDE_DIR}/{}.mdx", slug_for(source))),

@@ -10,6 +10,7 @@
 
 pub mod docusaurus;
 pub mod emit;
+pub mod material;
 pub mod mdx;
 pub mod mkdocs;
 pub mod model;
