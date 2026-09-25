@@ -70,7 +70,7 @@ export async function loadSite(source: ContentSource): Promise<Site> {
   if (home?.kind === 'sections' && !home.routeExplicit) home.route = '/';
   else if (home && home.route !== '/') homeRedirect = home.route;
 
-  const menu = resolveMenu(authoredMenu ?? deriveMenu(pages, guides, config.menuOverflowAfter), {
+  const menu = resolveMenu(authoredMenu ?? deriveMenu(pages, guides), {
     byName,
     overflowAfter: config.menuOverflowAfter,
   });

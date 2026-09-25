@@ -54,7 +54,15 @@ export function resolveMenu(
     };
   };
 
-  const items = authored.map((item): MenuItem => {
+  // Overflow applies to every menu, not only a derived one.
+  //
+  // `menuOverflowAfter` was read when the menu was derived from the content and
+  // ignored when a `menu.yaml` authored it — which is the case where it matters,
+  // because that is where someone adds a ninth item. The bar did not wrap or
+  // scroll; the last entries simply drew on top of the search field. A setting
+  // whose whole purpose is "how many fit" should not depend on how the list was
+  // produced.
+  const items = applyOverflow(authored, context.overflowAfter).map((item): MenuItem => {
     const where = `menu › ${item.name}`;
 
     if (!item.items) {
@@ -113,7 +121,6 @@ export function resolveMenu(
 export function deriveMenu(
   pages: readonly SectionsPage[],
   guides: readonly GuideTree[],
-  overflowAfter: number,
 ): AuthoredMenuItem[] {
   const named = new Set(pages.map((page) => page.name));
   const entries: AuthoredMenuItem[] = [
@@ -123,7 +130,8 @@ export function deriveMenu(
       .map((guide) => ({ name: guide.title, page: guide.name })),
   ];
 
-  return applyOverflow(entries, overflowAfter);
+  // Overflow is `resolveMenu`'s job, for every menu rather than only this one.
+  return entries;
 }
 
 /**
