@@ -272,6 +272,52 @@ jobs, including **305 browser passes, 124 conditional skips and no retries**,
 feature variants for Linux AMD64/ARM64 and passed published-image build/serve
 smoke acceptance. Previously recorded FAQ/WebKit flakes remain undiagnosed.
 
+### Deployment prefix and runtime isolation update — 2026-10-17
+
+Source commit `8463720` resolves **S6, S8 and S12**. The shared native
+`engine/packages/zellij/deployment-config.cjs` resolves content roots and the
+deployment prefix for both `withZellij()` and the runtime. It lives at package
+root so source, compiled modules and native Next configuration resolve the same
+file; package and container distributions include it.
+
+`site.yaml` supplies Next's basePath automatically. A wrapper may supply it when
+content omits it; explicit values must agree, including an explicitly empty
+prefix. Values are normalized and malformed prefixes rejected. Next embeds the
+effective value as reserved `ZELLIJ_BASE_PATH`; runtime configuration must agree
+with that build-time choice. Changing the prefix requires rebuilding. Custom
+content paths must match across preparation, runtime factories and the second
+argument of `withZellij(config, contentOptions)`.
+
+Runtime memoization is keyed by absolute application/configuration/content
+paths, runtime prefix and compiled prefix. Production retains each site's
+result; development retains the 250 ms TTL. Failed loads evict their entry so
+correcting a missing/invalid file can recover. Social metadata images now receive
+the same prefix as canonical URLs and other assets.
+
+The previous in-place showcase prefix script is replaced by an isolated,
+production-built wrapper fixture. Only its content declares the prefix; its
+custom content directory exercises preparation and rendering together. CI tests
+redirects, nested links, ordinary/optimized images, Next resources, metadata,
+sitemap, robots and search in Chromium and WebKit. Conversion exports now use
+the default CI image without a special Next-config override.
+
+Local evidence: **303 engine tests**, all workspace typechecks, engine packaging,
+packaged-CLI integration and all four example preparation/checks pass. The
+production prefix fixture passes Chromium with webpack and a local font-response
+fixture. One earlier normal-font build succeeded; another failed in Next's Google
+Fonts loader (new audit **S13**). Hosted acceptance uses normal fonts, Turbopack
+and WebKit and remains a gate; consult the PR containing this commit. The local
+font fixture is not shipped and does not resolve S13. No native binary release
+is included.
+
+Prior milestone completion: [PR #6](https://github.com/mylife-inc/Zellij/pull/6)
+merged as `d115a9a`. PR CI `39022447464` passed all four jobs, with **285 engine
+tests, 117 Rust tests, 311 browser passes, 124 conditional skips and no retries**.
+Main CI `39022871779` passed with 310 initial browser passes plus one successful
+retry of the existing mobile-WebKit FAQ interaction (`sections.spec.ts:191`).
+Its cause remains undiagnosed. Image run `39022871680` published all four feature
+variants for AMD64/ARM64 and passed published-image build/serve acceptance.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -296,6 +342,18 @@ The user's outstanding intentions, stated on 2026-10-16:
 - The current request was research and brainstorming, not implementation.
   This restriction describes that request; future explicit implementation
   requests can authorize work.
+
+### Additional CLI requirements — 2026-10-17
+
+The user requires MkDocs-equivalent documentation workflows, with command syntax
+free to differ: build a plain Markdown folder into a site that also works by
+double-clicking `index.html`, serve an existing static site over HTTP, and a
+`view` operation combining build, serve and browser launch. This is new required
+product scope, not implemented behavior. The [portable documentation contract](specs/zel-portable-docs.md)
+records plain-folder discovery, direct-file navigation/search/assets, offline
+acceptance and cross-platform serve/view requirements. Keep a core MkDocs
+capability comparison when implementing the Rust CLI. Today's Next static export
+assumes HTTP and must not be advertised as satisfying direct-file viewing.
 
 ## 2. Read these sources in this order
 
@@ -359,8 +417,8 @@ flowchart LR
 
 Rendering and preparation share content-source resolution. Search reads the
 canonical Site model and uses parsed heading IDs shared with the TOC/rendering
-pipeline. Preparation reads fresh data; rendering still has the global cache
-limitation recorded as S8. Derived assets/search still need manual preparation
+pipeline. Preparation reads fresh data; rendering caches separately by content
+and deployment configuration. Derived assets/search still need manual preparation
 after content edits during development.
 
 - npm workspaces: `engine/packages/*` and `examples/*`; committed npm lockfile.
@@ -384,6 +442,7 @@ after content edits during development.
 | --- | --- |
 | Public API | `engine/packages/zellij/src/index.ts` |
 | Next configuration | `engine/packages/zellij/next-config.mjs` |
+| Shared content/prefix bootstrap | `engine/packages/zellij/deployment-config.cjs` |
 | Runtime loading/cache | `src/config/runtime.ts` |
 | Config and content schemas | `src/config/schema.ts`, `src/content/model-schema.ts` |
 | Folder/legacy loaders | `src/content/folder-source.ts`, `src/content/legacy-source.ts` |
@@ -438,7 +497,8 @@ content/
 - A `marketing/` directory selects the legacy loader. Compatibility remains,
   despite the design's original one-release migration window.
 - Runtime memoization lasts for the process in production, 250 ms in dev.
-  Its cache is global and not keyed by runtime options.
+  Entries are keyed by content/configuration paths and deployment prefix;
+  failed loads are evicted. Content changes still require a production rebuild.
 
 ### Rendering inventory
 
@@ -550,17 +610,19 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after canonical search/preparation, subject to the user's v1 scope decision:
+Remaining order after deployment-prefix consistency, subject to the user's v1 scope decision:
 
-1. BasePath configuration/acceptance (S12), deeper link/asset validation (R13),
-   runtime isolation (S8) and development preparation watching (remaining S9).
-   R10–R12 and S2 are resolved above; R5 retains advanced migration limits.
-2. Finish the agreed CLI subset, configuration, and truthful help/docs.
+1. Deeper link/asset validation (R13) and development preparation watching
+   (remaining S9). R10–R12 and S2/S6/S8/S12 are resolved above; R5 retains
+   advanced migration limits. Investigate font-build reproducibility (S13).
+2. Finish the agreed CLI subset, configuration, and truthful help/docs, including
+   the required plain-Markdown portable build, static serve and composed view
+   workflows in [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
    been released for the completed source fixes.
-4. Close the other browser findings (S4/S5/S6), accessibility, SEO and
+4. Close the other browser findings (S4/S5), accessibility, SEO and
    performance acceptance. Diagnose the recorded browser flakes. Define a
    finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
