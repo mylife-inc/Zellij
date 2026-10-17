@@ -9,6 +9,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
+import { observeThemeFonts } from './assert-theme-fonts.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url);
@@ -77,6 +78,7 @@ try {
       context = await browser.newContext();
       await context.tracing.start({ screenshots: true, snapshots: true });
       const page = await context.newPage();
+      const checkFonts = observeThemeFonts(page, origin, prefix);
       const failures = [];
       page.on('pageerror', (error) => failures.push(error.message));
       page.on('response', (response) => {
@@ -86,6 +88,7 @@ try {
       await page.goto(`${origin}${prefix}/`);
       await expect(page).toHaveURL(`${origin}${prefix}/manual/intro`);
       await expect(page.locator('h1')).toHaveText('Introduction');
+      await checkFonts();
       const internal = await page.locator('a[href^="/"]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
       assert(internal.length > 0 && internal.every((href) => href === prefix || href.startsWith(`${prefix}/`)), `Every internal link must retain the prefix: ${JSON.stringify(internal)}`);
       const resources = await page.locator('link[rel="stylesheet"], link[as="font"], script[src]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href') ?? node.getAttribute('src')));

@@ -1,0 +1,6 @@
+# Hashes describe upstream bytes, including original whitespace/line endings.
+upstream/*.css -text -whitespace
+licenses/*.txt -text -whitespace
+files/*.woff2 binary
+# The generated stylesheet is compared with deterministic LF output.
+fonts.css text eol=lf

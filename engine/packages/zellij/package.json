@@ -33,7 +33,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "tsup && node scripts/fix-cjs-directives.mjs && node scripts/verify-build.mjs",
+    "build": "tsup && node scripts/fix-cjs-directives.mjs && node scripts/prepare-fonts.mjs && node scripts/verify-build.mjs",
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
