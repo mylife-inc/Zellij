@@ -126,6 +126,47 @@ actual static exports with matching Next/site basePath and binary comparisons.
 Consult PR #3 for hosted evidence before treating exports/browser checks as
 passed. No native CLI binary release is issued by this milestone.
 
+## Implementation record — scaffolding and discovery
+
+Commits `fe4240c` and `ee68282`
+([PR #4](https://github.com/mylife-inc/Zellij/pull/4)) address **R6, R7 and R8**
+while preserving the original reproductions below:
+
+- **R6:** Rust content generation and conversion share a string serializer;
+  Node content initialization uses equivalent YAML scalars. Quotes, hashes,
+  colon-space, implicit booleans/numbers, backslashes, CR/LF, tabs, Unicode
+  line separators and non-printable characters retain their exact values. Copyright strings are serialized
+  as whole values, and guide front matter uses the same policy.
+- **R7:** plain and minimal starters have no guide CTA unless a guide is
+  generated. The integration fixture loads actual CLI output with the engine
+  and renders Hero to verify each link against the generated route inventory.
+- **R8:** remove the CLI's duplicate two-file detector and use core discovery
+  for check/dev/build and other resolving commands. Preserve `content/` before
+  the current root, then support `docs/` and `documentation/`. Recognize
+  menu-only/sections-only/guide-only roots, reject misleading filesystem marker
+  types and hidden/reserved guide folders, and never search ancestors. Explicit
+  directory selection remains exact. Content validity still belongs to the
+  engine, and an empty menu-only root appropriately warns about no front page.
+
+Validation: **117 Rust tests**, **262 engine tests**, formatting, Clippy with
+warnings denied, workspace typechecks, engine package build, documentation
+content check and both existing conversion integration fixtures pass locally.
+The new scaffold integration check passes **40 Rust starter combinations,
+10 Node content starters and 10 guide titles**, checking metadata and rendered
+links. CI adds real-container discovery/check acceptance for four guide-only
+locations and a menu-only root; read the PR's checks for hosted outcomes.
+No native CLI release is issued here. Workflow input serialization and npm
+package-name validation are outside this content-metadata fix.
+
+The automated security-review plugin could not read its model response during
+the source commit; its review did not complete. The source commit succeeded.
+
+PR #3 subsequently merged as `dd99c2c`; main CI `39007109533` and image run
+`39007109576` passed. All four image variants published for AMD64/ARM64. The
+browser run had 296 initial passes, one successful retry and 114 conditional
+skips: a mobile-WebKit `/guide/quickstart` navigation error. Its cause, and the
+different FAQ interaction retry in PR CI, remain unproven.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

@@ -67,6 +67,11 @@ zel new docs ./product-docs
 zel new docs --name "Acme" --theme cupertino --guide
 ```
 
+Display names and guide titles are written as quoted YAML strings, so names
+such as `Acme: Docs` retain their punctuation. The starter includes a
+“Read the guide” button only when `--guide` also creates its destination;
+plain and minimal starters without a guide have no guide button.
+
 ### What it writes
 
 ```

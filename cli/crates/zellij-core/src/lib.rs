@@ -9,6 +9,7 @@ pub mod error;
 pub mod files;
 pub mod project;
 pub mod schema;
+pub mod yaml;
 
 pub use error::{Error, Result};
 pub use project::Project;

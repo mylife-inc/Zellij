@@ -5,6 +5,7 @@
 //! turned `{name}` into a runtime error class would be a poor trade.
 
 use crate::{DocsOptions, Scaffold, section};
+use zellij_core::yaml::string as yaml_string;
 
 pub(crate) fn docs_into(scaffold: &mut Scaffold, options: &DocsOptions) {
     let DocsOptions {
@@ -19,7 +20,7 @@ pub(crate) fn docs_into(scaffold: &mut Scaffold, options: &DocsOptions) {
         site_yaml(name, *theme == *"paper", theme, *with_guide),
     );
     scaffold.add("pages.yaml", pages_yaml(name, *minimal));
-    scaffold.add("sections/home/hero.yaml", hero_yaml(name));
+    scaffold.add("sections/home/hero.yaml", hero_yaml(name, *with_guide));
 
     if !minimal {
         scaffold.add("sections/home/features.yaml", FEATURES_YAML);
@@ -40,6 +41,9 @@ pub(crate) fn docs_into(scaffold: &mut Scaffold, options: &DocsOptions) {
 }
 
 fn site_yaml(name: &str, default_theme: bool, theme: &str, with_guide: bool) -> String {
+    let legal = yaml_string(&format!("© {name}"));
+    let name = yaml_string(name);
+    let theme = yaml_string(theme);
     let theme_line = if default_theme {
         format!("theme: {theme}          # zel list themes — there are fourteen")
     } else {
@@ -80,11 +84,12 @@ fn site_yaml(name: &str, default_theme: bool, theme: &str, with_guide: bool) -> 
          \n\
          footer:\n\
          {columns}\
-         \x20 legal: \"© {name}\"\n"
+         \x20 legal: {legal}\n"
     )
 }
 
 fn pages_yaml(name: &str, minimal: bool) -> String {
+    let name = yaml_string(name);
     let sections = if minimal {
         "    - home/hero\n"
     } else {
@@ -102,13 +107,18 @@ fn pages_yaml(name: &str, minimal: bool) -> String {
     )
 }
 
-fn hero_yaml(name: &str) -> String {
+fn hero_yaml(name: &str, with_guide: bool) -> String {
+    let name = yaml_string(name);
+    let cta = if with_guide {
+        "cta:\n  - { label: Read the guide, href: /guide, style: primary }\n"
+    } else {
+        ""
+    };
     format!(
         "type: hero\n\
          headline: {name}\n\
          subhead: Edit sections/home/hero.yaml and this line changes.\n\
-         cta:\n\
-         \x20 - {{ label: Read the guide, href: /guide, style: primary }}\n"
+         {cta}"
     )
 }
 
@@ -122,12 +132,13 @@ items:\n\
 \x20 - title: Checked before it ships\n\
 \x20   description: A broken link fails the build, not a reader.\n\
 \x20   icon: shield-check\n\
-\x20 - title: Nineteen section types\n\
+\x20 - title: Reusable section types\n\
 \x20   description: Run `zel list sections` to see them all.\n\
 \x20   icon: layout-grid\n";
 
 pub(crate) fn guide_into(scaffold: &mut Scaffold, name: &str, title: &str, order: usize) {
     let dir = format!("{order:02}-{name}");
+    let title = yaml_string(title);
 
     scaffold.add(
         format!("{dir}/_sidebar.yaml"),
@@ -178,10 +189,14 @@ pub(crate) fn page_into(name: &str, section_types: &[String]) -> (Scaffold, Stri
             format!("sections/{name}/{section_type}.yaml"),
             section::section_file(section_type),
         );
-        listed.push_str(&format!("    - {name}/{section_type}\n"));
+        listed.push_str(&format!(
+            "    - {}\n",
+            yaml_string(&format!("{name}/{section_type}"))
+        ));
     }
 
-    let title = title_case(name);
+    let title = yaml_string(&title_case(name));
+    let name = yaml_string(name);
     let entry = format!(
         "- name: {name}\n\
          \x20 title: {title}\n\

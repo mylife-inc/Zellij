@@ -147,6 +147,90 @@ pub fn page(name: &str, section_types: &[String]) -> (Scaffold, String) {
 mod tests {
     use super::*;
 
+    fn yaml(scaffold: &Scaffold, filename: &str) -> serde_yaml_ng::Value {
+        let (_, body) = scaffold.files().find(|(p, _)| p == filename).unwrap();
+        serde_yaml_ng::from_str(body).unwrap()
+    }
+
+    #[test]
+    fn display_names_and_titles_round_trip_without_changing_yaml_structure() {
+        for name in [
+            "Acme: Docs",
+            "A # comment",
+            "\"quoted\" \\ path",
+            "TRUE",
+            "Null",
+            "42",
+            "العربية Café",
+            "line\nnext\r\ntab\tend",
+            "a\u{85}b\u{2028}c\u{2029}d",
+            "a\u{7f}b\u{80}c\u{9f}d\u{fffe}e\u{ffff}",
+        ] {
+            let scaffold = docs(&DocsOptions {
+                name: name.into(),
+                ..Default::default()
+            });
+            let site = yaml(&scaffold, "site.yaml");
+            assert_eq!(site["name"].as_str(), Some(name));
+            assert_eq!(
+                site["footer"]["legal"].as_str(),
+                Some(format!("© {name}").as_str())
+            );
+            assert_eq!(
+                yaml(&scaffold, "pages.yaml")[0]["title"].as_str(),
+                Some(name)
+            );
+            assert_eq!(
+                yaml(&scaffold, "sections/home/hero.yaml")["headline"].as_str(),
+                Some(name)
+            );
+
+            let guide = guide("manual", name, 1);
+            assert_eq!(
+                yaml(&guide, "01-manual/_sidebar.yaml")["title"].as_str(),
+                Some(name)
+            );
+            let (_, mdx) = guide
+                .files()
+                .find(|(p, _)| p == "01-manual/index.mdx")
+                .unwrap();
+            let frontmatter: serde_yaml_ng::Value =
+                serde_yaml_ng::from_str(mdx.split("---\n").nth(1).unwrap()).unwrap();
+            assert_eq!(frontmatter["title"].as_str(), Some(name));
+        }
+    }
+
+    #[test]
+    fn guide_cta_only_exists_when_its_target_is_generated() {
+        for minimal in [false, true] {
+            for guide in [false, true] {
+                let scaffold = docs(&DocsOptions {
+                    minimal,
+                    guide,
+                    ..Default::default()
+                });
+                let hero = yaml(&scaffold, "sections/home/hero.yaml");
+                assert_eq!(hero.get("cta").is_some(), guide);
+                if guide {
+                    assert_eq!(hero["cta"][0]["href"].as_str(), Some("/guide"));
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn page_identifiers_that_look_like_yaml_values_remain_strings() {
+        for name in ["true", "null", "42"] {
+            let (_, entry) = page(name, &[]);
+            let pages: serde_yaml_ng::Value = serde_yaml_ng::from_str(&entry).unwrap();
+            assert_eq!(pages[0]["name"].as_str(), Some(name));
+            assert_eq!(
+                pages[0]["sections"][0].as_str(),
+                Some(format!("{name}/hero").as_str())
+            );
+        }
+    }
+
     fn temp() -> (tempfile::TempDir, Utf8PathBuf) {
         let dir = tempfile::tempdir().unwrap();
         let path = Utf8PathBuf::from_path_buf(dir.path().to_path_buf()).unwrap();
@@ -222,8 +306,8 @@ mod tests {
             .map(|(_, body)| body)
             .unwrap();
 
-        assert!(site.contains("name: Contoso"), "{site}");
-        assert!(site.contains("theme: cupertino"), "{site}");
+        assert!(site.contains(r#"name: "Contoso""#), "{site}");
+        assert!(site.contains(r#"theme: "cupertino""#), "{site}");
     }
 
     #[test]
@@ -283,7 +367,7 @@ mod tests {
                 .files()
                 .any(|(p, _)| p == "sections/pricing/faq.yaml")
         );
-        assert!(entry.contains("- name: pricing"), "{entry}");
+        assert!(entry.contains(r#"- name: "pricing""#), "{entry}");
         assert!(entry.contains("pricing/hero"), "{entry}");
         assert!(entry.contains("pricing/faq"), "{entry}");
     }

@@ -196,8 +196,19 @@ export default withZellij({
 });
 `;
 
+// Start with JSON quoting, then escape YAML's additional line breaks and
+// forbidden literal characters. Keep this entry point self-contained.
+function yamlString(value: string): string {
+  return JSON.stringify(value).replace(
+    /[\u007f-\u009f\u2028\u2029\ufffe\uffff]/g,
+    (char) => `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
+}
+
 /** A content folder that builds on the first run, so a new app is never a blank page. */
 function starterContent(name: string): Record<string, string> {
+  const legal = yamlString(`© ${name}`);
+  name = yamlString(name);
   return {
     'site.yaml': `name: ${name}
 tagline: Built with Zellij.
@@ -218,7 +229,7 @@ footer:
     - heading: Docs
       links:
         - { label: Guide, page: guide }
-  legal: "© ${name}"
+  legal: ${legal}
 `,
 
     'menu.yaml': `- { name: Guide, page: guide }
