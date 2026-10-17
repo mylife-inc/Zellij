@@ -62,7 +62,8 @@ put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 | [`zel check`](/cli/check) | Validate a content folder | **Available** |
 | [`zel fmt`](/cli/fmt) | Canonical formatting for the YAML | Planned |
 | [`zel dev`](/cli/dev) | Development server | **Available** |
-| [`zel serve`](/cli/serve) | Serve what `build` produced | Planned |
+| [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
+| [`zel view`](/cli/view) | Build Markdown, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
 | [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
 | [`zel image`](/cli/image) | Build, run and push container images | **Available** |
@@ -108,7 +109,9 @@ Commands that only read the content model — `explain`, `list`, `context`,
 
 Structured-content `check`, `dev`, and hosted `build` commands run the Next.js
 engine in a container from a public image. `zel build --target portable` runs
-natively and needs no external tools. Deployment commands remain planned.
+natively and needs no external tools. `serve` and `view` use a native local
+HTTP server; `view` can invoke the system browser launcher. Deployment commands
+remain planned.
 
 ```bash title="terminal"
 zel doctor

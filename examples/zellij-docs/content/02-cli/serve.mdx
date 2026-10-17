@@ -1,84 +1,87 @@
 ---
 title: zel serve
-description: Serve what build produced, with nothing watching and nothing rebuilding.
+description: Preview an existing static export over local HTTP, without rebuilding it.
 ---
 
-<Callout type="warning" title="Planned">
-`zel serve` exits with `not implemented yet`. Until it lands, any static file
-server does the same job — see [below](#until-it-lands).
+<Callout type="tip" title="Available in source">
+`zel serve` runs a native HTTP server. It needs no Docker, Node, or external
+server. Native release packages may lag current source; check your binary's help.
 </Callout>
 
 ```bash title="terminal"
-zel build
-zel serve ./dist
+zel serve ./docs-site
+zel serve ./dist --port 8080
+zel serve ./dist --port 0               # choose a free port
+zel serve ./dist --base-path /products/docs
 ```
 
-## Why not just use `zel dev`
+The server binds to **127.0.0.1** and prints its actual URL. Open that URL in a
+browser. Press **Ctrl-C** to stop the server; the exported files remain on disk.
+`serve` does not open a browser automatically. Use [`zel view`](/cli/view) to
+build Markdown, serve it, and open the browser together.
 
-Because they answer different questions.
+## What is served
 
-[`zel dev`](/cli/dev) runs the application. It resolves routes, renders on
-demand, and is forgiving in ways the finished site is not. `serve` hands over
-files from a folder exactly as a CDN would, and nothing else.
+The supplied directory must contain a regular `index.html`. Both portable
+Markdown output and hosted Zellij static exports can be served. Files are read
+as built, with MIME types for HTML, CSS, scripts, images, fonts, and downloads.
+GET and HEAD are supported; other HTTP methods return 405. Responses disable
+caching so reloading sees files replaced by another build.
 
-**A static build can differ from the development server**, and the differences
-are the kind that reach production:
-
-| | |
+| Request | File or response |
 | --- | --- |
-| Trailing slashes | `/guide` and `/guide/` are the same route in dev, and two different files on a CDN |
-| Missing assets | Something the export did not copy is served from memory in dev |
-| Absolute paths | A link that works from the root breaks under a `basePath` |
-| A page needing a server | Anything dynamic silently became a 404 during export |
+| `/` | `index.html` |
+| `/guide/setup.html` | The exact file |
+| `/guide/setup` | `guide/setup.html`, if present |
+| `/guide/` | `guide/index.html`, if present |
+| `/guide` when it is a directory with an index | Redirect to `/guide/`, preserving its query |
+| Missing file | `404.html` with status 404, or a plain 404 response |
 
-Seeing the export in a browser once, before it goes anywhere, catches all four
-in about a minute. It is the cheapest step in the whole pipeline and the one
-most often skipped.
+The server does not list directories or fall back to the home page for unknown
+routes. It rejects traversal, malformed URL encodings, hidden metadata paths,
+and symlinks/junctions inside the export. `.well-known` remains available.
+The supplied root itself may be an explicitly chosen filesystem alias; it is
+resolved before serving. HTTP requests cannot select a different root.
 
-## What it does
+## Deployment prefixes
 
-Serves `--out` from `zel build` over HTTP, with the same route-to-file mapping
-a static host uses:
+If a hosted export uses a `basePath` such as `/products/docs`, mount it at that
+same prefix:
 
+```bash title="terminal"
+zel serve ./dist --base-path /products/docs --port 8080
+# Serving at http://127.0.0.1:8080/products/docs/
 ```
-/            → index.html
-/guide       → guide.html
-/guide/setup → guide/setup.html
-anything else → 404.html
-```
 
-No watching, no rebuilding, no cache-busting. Change a file and the browser
-shows the change on reload, because it is reading the file.
+This controls the server mount. It does not rewrite HTML, change `site.yaml`, or
+change the prefix the site was built for. Paths outside the mount return 404.
+For ordinary portable output, leave the prefix at `/` unless you want to test
+a subdirectory deployment.
+
+## Build, serve, view, and dev
+
+- [`zel build`](/cli/build) creates an output directory and exits. Portable output
+  also works by double-clicking `index.html` without any server.
+- `zel serve` previews an existing output directory over HTTP. It does not
+  watch the Markdown source or rebuild pages.
+- [`zel view`](/cli/view) builds portable Markdown once, serves it, and opens a
+  browser. It also does not watch or reload automatically yet.
+- [`zel dev`](/cli/dev) runs the existing hosted YAML/MDX development workflow
+  through the container engine.
+
+This loopback server is for local preview. It does not provide public hosting,
+TLS, authentication, or image optimization. Use a static host or
+[`zel image run`](/cli/image#zel-image-run) for the corresponding deployment.
 
 ## Options
 
-| | | |
+| Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | The folder to serve | `dist` |
-| `--port <n>` | | `3000` |
+| `[dir]` | Existing static output directory | `dist` |
+| `--port <n>` | Local port; `0` chooses an available one | `3000` |
+| `--base-path <path>` | Absolute URL mount prefix | `/` |
 
-## Until it lands
-
-Any static server behaves the same way. From the folder:
-
-```bash title="terminal"
-python3 -m http.server 3000 --directory dist
-```
-
-<Callout type="warning" title="One difference worth knowing">
-`http.server` does not map `/guide` to `guide.html` — it will 404 where Netlify
-would serve the page. So it proves your assets and your absolute paths, and it
-cannot prove your routes.
-
-`npx serve dist` does the extensionless mapping and is closer to what a CDN
-does.
-</Callout>
-
-For a container image, [`zel image run`](/cli/image#zel-image-run) is the
-equivalent and works today.
-
-## See also
-
-- [`zel build`](/cli/build) — what you are serving
-- [`zel image run`](/cli/image#zel-image-run) — the same check, for an image
-- [`zel dev`](/cli/dev) — the writing loop, which is a different thing
+An occupied port produces an error; the server does not silently switch ports.
+Use `--port 0` when the particular port does not matter. Serving does not modify
+the export or require an ownership marker. Build's separate output-ownership
+rules still apply when producing or replacing an export.

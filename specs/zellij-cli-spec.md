@@ -195,7 +195,8 @@ produces a wrong sidebar that looks right.
 | `zel check [dir]` | Real schemas; implemented `--deep` static-reference/syntax checks and `--strict` warnings gate. JSON remains planned. |
 | `zel dev [dir]` | Development server with hot reload: content is bind-mounted, so editing a Markdown file updates the browser. This is the command an author leaves running. |
 | `zel build [dir]` | Builds. See targets below. |
-| `zel serve [dir]` | Serves what `build` produced, locally. |
+| `zel serve [dir]` | Implemented native loopback HTTP preview of an existing export; port/prefix and Ctrl-C support. |
+| `zel view [dir]` | Implemented portable build + loopback server + browser launch; --no-open and executable override. |
 | `zel fmt [dir]` | Canonical formatting for the YAML. |
 | `zel watch [dir]` | Re-runs `check` on every change, without a server. For a repository that only wants its documentation kept valid. |
 
@@ -222,7 +223,7 @@ font snapshot are embedded in the native renderer; build-time token generation
 is checked against the hosted engine in CI.
 
 See [portable requirements and implementation status](zel-portable-docs.md)
-for routing, Markdown support, offline acceptance and remaining serve/view work.
+for routing, Markdown support, offline acceptance and implemented serve/view contracts.
 Portable currently does not execute raw HTML/MDX, math or Mermaid. The hosted
 targets retain those engine features. Advanced navigation/config loading and
 plugin compatibility remain separate work.

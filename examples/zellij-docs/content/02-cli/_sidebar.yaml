@@ -26,6 +26,7 @@ nav:
     items:
       - dev
       - serve
+      - view
   - label: Building
     items:
       - build

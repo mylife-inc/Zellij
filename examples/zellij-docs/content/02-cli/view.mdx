@@ -1,0 +1,78 @@
+---
+title: zel view
+description: Build a Markdown folder, serve the portable site locally, and open a browser.
+---
+
+<Callout type="tip" title="Available in source">
+`view` composes the native portable builder and static server. It needs no
+Docker or Node. A default browser is used unless you choose one or pass `--no-open`.
+Native release packages may lag the source version.
+</Callout>
+
+```bash title="terminal"
+zel view ./docs
+zel view ./docs --port 0
+zel view ./docs --out ./published-docs --name "Acme documentation" --theme forest
+zel view ./docs --no-open --port 8080
+zel view ./docs --browser /path/to/browser
+```
+
+`view` builds the supplied Markdown directory, prints the actual local URL,
+and launches the system's default browser. The server remains in the terminal
+until **Ctrl-C**. The output stays on disk and still works by opening its
+`index.html` directly afterward.
+
+## Input and output
+
+Input is the same plain `.md`/`.markdown` folder accepted by
+[`zel build --target portable`](/cli/build#portable-markdown). Titles, automatic
+navigation, links, local assets, search, themes, validation, and rendering limits
+are identical. `view` always uses the portable target; structured YAML/MDX sites
+use `zel build --target static` followed by [`zel serve`](/cli/serve), or
+[`zel dev`](/cli/dev) for their development workflow.
+
+Output defaults to the sibling `<input-folder>-site`. For example,
+`zel view ./docs` produces `./docs-site`. `--out` can choose another directory
+outside the input. It must be new, empty, or a previous Zellij export. A failed
+build preserves the previous output and does not launch a browser.
+
+The selected loopback port is reserved before building. If it is occupied,
+`view` fails before changing the output. Use `--port 0` for an automatically
+chosen free port; the printed URL and browser launch use that actual port.
+
+## Browser behavior
+
+`--no-open` runs the build and server and prints the URL without invoking any
+browser launcher. It is useful on remote machines and in automated checks.
+
+`--browser` selects an executable. The URL is passed as one argument, without
+a shell. Quote an executable path containing spaces; this option does not
+accept a shell command or extra browser arguments. It cannot be combined with
+`--no-open`.
+
+If a launcher is missing or exits unsuccessfully, `view` prints a warning and
+keeps the server running. Open the printed URL manually. Launching a browser
+does not block HTTP responses or Ctrl-C shutdown.
+
+## Editing documents
+
+This command builds once. It does not yet watch Markdown or automatically reload
+an open browser. Stop and rerun it after editing, or run `zel build` again into
+the same owned output and refresh the browser. Portable watch/reload is still
+planned. Raw HTML rendering, MDX components, math, and Mermaid retain the
+portable builder's documented limits.
+
+## Options
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `[dir]` | Markdown source directory | `.` |
+| `--out <path>` | Portable output directory | Sibling `<input-folder>-site` |
+| `--name <text>` | Site header name | Input folder name |
+| `--theme <name>` | One of `zel list themes` | `cupertino` |
+| `--port <n>` | Loopback port; `0` chooses an available one | `3000` |
+| `--no-open` | Print the URL without opening a browser | Off |
+| `--browser <executable>` | Explicit browser executable | System default browser launcher |
+
+`--json` is currently limited to inspection commands and is rejected before a
+view build or server starts.

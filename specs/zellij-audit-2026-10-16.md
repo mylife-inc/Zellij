@@ -533,6 +533,55 @@ these guards. No file-security flags or HTTP fallback are used. Both engines
 now pass locally. WebKit additionally exposed missing focus restoration after
 pointer-opened search; the runtime now records and restores the opening control.
 
+Portable-build completion: [PR #12](https://github.com/mylife-inc/Zellij/pull/12)
+merged as `680779f` after final head `99c0f54` passed all seven jobs in
+`39063380795`. Native Linux/macOS/Windows portable checks passed in Chromium
+and WebKit. PR browser acceptance had 310 initial passes plus one successful
+retry of the existing mobile-WebKit FAQ test, with 124 conditional skips.
+Main CI `39064011730` passed all seven jobs, including 138 Linux Rust tests,
+325 engine tests and **311 browser passes, 124 skips, no retries**. Image run
+`39064011643` passed all 13 jobs and published four AMD64/ARM64 variants. The
+local debug binary was rebuilt from main; no native release was issued.
+
+## Implementation record — native serve and view
+
+Source commit `e33cd92` implements `zel serve` and `zel view`.
+`zellij-docs::server` uses tiny_http to serve existing static exports on IPv4
+loopback. It supports selected and ephemeral ports, MIME types, GET/HEAD,
+extensionless HTML, directory indexes/redirects, query preservation, custom
+404 responses and an explicit `--base-path` mount. It serves bytes unchanged,
+disables caching for preview and requires a regular root index.html. Traversal,
+malformed encodings, metadata paths, nested symlinks and Windows junctions are
+rejected; foreign Host headers are refused. There is no directory listing,
+home-page fallback, or automatic prefix rewriting.
+
+`zellij-cli/src/preview.rs` orchestrates the workflow. `view` reserves its port
+before building and calls the same portable helper as `build --target portable`.
+It builds plain Markdown only, prints the actual URL, and launches the system
+opener in a separate thread. `--no-open` suppresses launch; `--browser` selects
+one executable receiving the URL as one argument, without a shell. Missing or
+failing launchers warn while HTTP keeps running. Source files remain unchanged;
+build failures preserve owned output, and port conflicts fail before rebuilding.
+
+Ctrl-C (plus POSIX termination signals) stops normally with exit 0 and releases
+the listener. Response writers are bounded and do not block the control loop;
+shutdown can interrupt in-flight responses and retains all exported files.
+Neither serve nor view watches/rebuilds/reloads on edits. Portable raw HTML/MDX,
+math/Mermaid, richer navigation/config, and native release/installer work remain
+open. This preview server is not a public-hosting/TLS/authentication service.
+
+Local evidence: **143 Rust tests**, warnings-denied Clippy, formatting and
+updated deep/strict docs validation pass. Six new real-HTTP tests cover routing,
+MIME/HEAD/methods, port and prefix behavior, path/symlink containment and shutdown.
+`scripts/check-preview.mjs` checks the actual CLI without external tools on PATH,
+both browsers under a URL prefix, launch readiness/errors/no-open, source and
+failed-build preservation, and Ctrl-C with slow/incomplete requests. A compiled
+browser substitute requests the ready URL before recording launch; automated
+acceptance does not claim to exercise each machine's actual default GUI browser.
+Windows CI uses `scripts/fixtures/preview-console.rs` to create a private console
+for the tested child and send a real Ctrl-C event, rather than Node's force-kill.
+Cross-platform hosted acceptance is pending at this record.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
