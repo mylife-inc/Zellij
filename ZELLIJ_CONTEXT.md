@@ -80,6 +80,14 @@ execution sandbox's helper-process port restriction; the normal Turbopack
 build and container/browser acceptance are hosted CI gates. Consult PR #2's
 latest checks for their results. No new native CLI release is issued here.
 
+Hosted run `39004471983` at `d8c9f5d` passed all four jobs: engine, schema sync,
+CLI/container acceptance, and browsers. The normal Turbopack build and all 23
+template static exports passed; **297 browser tests passed**, with **114
+conditional skips and no retries**. A minimal (`--features none`) fresh wrapper
+also audited clean. Its lockfile still includes Mermaid, remark-math and
+rehype-mathjax through the engine's optional dependencies; audit follow-up S11
+tracks that feature-selection/package-size defect separately.
+
 CI reliability history: after PR #1, run `39001111736` initially stalled on
 repeated mobile-WebKit navigation timeouts. Its fresh-runner retry passed all
 294 tests (114 conditional skips). This is not a diagnosed/fixed browser bug.

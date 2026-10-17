@@ -85,6 +85,11 @@ normal Turbopack build cannot run inside this local sandbox's helper-process
 port restriction; see PR #2's latest hosted checks for that build, export and
 browser results before treating the change as release-ready.
 
+Hosted run `39004471983` at `d8c9f5d` subsequently passed every job, including
+the normal Turbopack production build, initial/failing/replacement exports,
+and static export of all 23 generated templates. The browser suite passed
+**297 tests**, with **114 conditional skips and no retries**.
+
 PR #1 merged as `6950589`. All four base-image feature variants were published
 for AMD64 and ARM64 by run `39001111783`; no new native binaries were released.
 Post-merge browser run `39001111736` had mobile-WebKit navigation timeouts on
@@ -407,6 +412,24 @@ The old single-platform comment in `scripts/publish.sh` is **not** evidence of
 today's image-platform coverage; the live manifest contains both architectures.
 Likewise, a missing local dependency is not evidence of a source-level build
 failure in a clean environment.
+
+### S11 — P3: feature selection does not produce the promised small dependency tree
+
+Observed during the dependency milestone, after the initial audit: generate a
+fresh wrapper with `zellij init ... --features none`, then resolve its lockfile
+with `npm install --package-lock-only --ignore-scripts`. Despite no direct
+math/diagram dependencies in the wrapper, the resolved tree still includes
+Mermaid 11.17.2, remark-math 6.0.0, and rehype-mathjax 7.1.0. The engine's own
+`optionalDependencies` request them, and ordinary npm installation includes
+optional dependencies. Both minimal and all-feature wrappers audit clean;
+this is a package-size/feature-selection defect, not a remaining advisory.
+
+**Sources:** `engine/packages/zellij/package.json`, `src/cli/init.ts` feature
+selection, `docker/base.Dockerfile`, and the container's ordinary npm install.
+**Acceptance:** optional packages are absent from an installed minimal wrapper,
+selected features actually install and render, and transitions between feature
+sets do not retain unrequested packages. Verify installed trees and image sizes,
+not only the wrapper's direct dependency list. This follow-up remains open.
 
 ## User-requested UI and platform work
 
