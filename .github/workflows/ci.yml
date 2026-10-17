@@ -109,6 +109,12 @@ jobs:
         run: node scripts/check-portable.mjs
       - name: Native HTTP preview, watch/reload, browser launch and console shutdown
         run: node scripts/check-preview.mjs
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: portable-preview-${{ matrix.os }}
+          path: test-results/preview-watch-*.zip
+          retention-days: 7
 
   cli:
     name: CLI

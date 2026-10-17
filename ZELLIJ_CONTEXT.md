@@ -711,6 +711,15 @@ client to attempt that poll, changes the source, observes actual publication,
 and then permits the real HTTP response. A session marker removes the delay on
 reloaded documents. Production code, reload assertions and timeouts are unchanged.
 
+
+Run `39069154907` passed Linux/macOS native acceptance, all broader checks,
+and Windows Chromium watch acceptance (including real Ctrl-C). Windows WebKit
+still timed out awaiting DOMContentLoaded in the deliberately paused first-poll
+scenario. The fixture now waits for navigation commit, then explicitly requires
+the rendered heading and attempted poll before editing. Failed watch runs retain
+Playwright traces plus browser readiness and CLI output for diagnosis. Full
+post-reload navigation, search, image and offline assertions remain in place.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a

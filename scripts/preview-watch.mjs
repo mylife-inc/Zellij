@@ -25,7 +25,10 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       assert.equal(response.status, 200); return response.json();
     };
     const browser = await ({ chromium, webkit })[engine].launch();
+    let context;
+    let page;
     let polling = true;
+    let probeError;
     const availability = [];
     const probe = (async () => {
       while (polling) {
@@ -34,9 +37,10 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
         availability.push(response.status);
         await delay(60);
       }
-    })();
+    })().catch(error => { probeError = error; });
     try {
-      const context = await browser.newContext({ serviceWorkers: 'block' });
+      context = await browser.newContext({ serviceWorkers: 'block' });
+      await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
       await context.route(/^https?:/, route => new URL(route.request().url()).origin === new URL(server.url).origin ? route.continue() : route.abort());
       // Delay only the first fetch initiation. Holding an intercepted request
       // can also hold browser lifecycle events (including WebKit's DOM ready).
@@ -57,9 +61,11 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
           return original(input, options);
         };
       });
-      const page = await context.newPage();
+      page = await context.newPage();
       const errors = []; page.on('pageerror', error => errors.push(error.message));
-      await page.goto(`${server.url}?sample=keep#anchor`, { waitUntil: 'domcontentloaded' });
+      // This race deliberately holds initial loading work. Require the actual
+      // document, rendered heading and attempted poll, not a lifecycle event.
+      await page.goto(`${server.url}?sample=keep#anchor`, { waitUntil: 'commit' });
       await expect(page.getByRole('heading', { name: 'Before watching', exact: true })).toBeVisible();
       await until(() => page.evaluate(() => window.__zelPollHeld), 'first browser status poll is held');
       const original = await status();
@@ -141,6 +147,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       const authored = await snapshot(source);
       const exported = await snapshot(output);
       polling = false; await probe;
+      assert.ifError(probeError);
       assert(availability.length > 10 && availability.every(code => code === 200), 'Publication must not expose a missing root index');
       await stop(server);
       assert.deepEqual(await snapshot(source), authored, 'Watching never rewrites authored source');
@@ -149,22 +156,42 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       assert.deepEqual(await snapshot(output), exported, 'Ctrl-C also stops the watcher');
       assert(!(await readdir(temp)).some(name => name.startsWith('.zel-build-')), 'No staging directories remain');
       assert.deepEqual(errors, []);
+      await context.tracing.stop();
       await context.close();
+      context = undefined;
 
       // Watch output is still a movable direct-file artifact with no polling.
       const moved = `${output}-moved-${engine}`;
       await rename(output, moved);
       const offline = await browser.newContext({ serviceWorkers: 'block', offline: engine === 'chromium' });
+      context = offline;
+      await offline.tracing.start({ screenshots: true, snapshots: true, sources: true });
       const requests = []; offline.on('request', request => requests.push(request.url()));
       await offline.route(/^https?:/, route => route.abort());
       const filePage = await offline.newPage();
+      page = filePage;
       await filePage.goto(pathToFileURL(path.join(moved, 'index.html')).href);
       await expect(filePage.getByRole('heading', { name: `Recovered ${engine}`, exact: true })).toBeVisible();
       await expect.poll(() => filePage.locator('article img').evaluate(img => img.naturalWidth)).toBe(177);
       assert(requests.every(url => ['file:', 'data:'].includes(new URL(url).protocol)));
       assert.equal(await filePage.locator('script[src*="preview.js"]').count(), 0);
-      await offline.close(); await rename(moved, output);
+      await offline.tracing.stop();
+      await offline.close(); context = undefined;
+      await rename(moved, output);
       console.log(`${engine}: watch edits/assets/search, failed-build preservation, deletion/root/link recovery, live reload, real Ctrl-C and offline artifact passed.`);
+    } catch (error) {
+      console.error(`${engine} watch failure. CLI output:\n${server.stdout}\n${server.stderr}`);
+      if (page && !page.isClosed()) {
+        console.error(await Promise.race([
+          page.evaluate(() => ({ url: location.href, ready: document.readyState, pollHeld: window.__zelPollHeld, headings: [...document.querySelectorAll('h1')].map(h => h.textContent) })),
+          delay(2000, 'Browser state unavailable', { ref: false }),
+        ]).catch(e => e.message));
+      }
+      if (context) {
+        await mkdir('test-results', { recursive: true });
+        await context.tracing.stop({ path: `test-results/preview-watch-${process.platform}-${engine}.zip` }).catch(e => console.error(e.message));
+      }
+      throw error;
     } finally {
       polling = false; await probe.catch(() => {});
       await browser.close();
