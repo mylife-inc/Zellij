@@ -138,15 +138,18 @@ jobs:
           test -f "$work/site/.zellij-output"
           cp "$work/site/index.html" "$work/previous.html"
 
-          # A failed real container build must preserve the complete export.
-          printf 'type: nonexistent-section\n' > "$work/content/sections/home/hero.yaml"
+          # Fail during MDX compilation, after the fast content check passes.
+          # The previous export must survive this late build failure too.
+          cp "$work/content/01-guide/index.mdx" "$work/guide.mdx"
+          printf '\n<Callout>\n' >> "$work/content/01-guide/index.mdx"
           if "$zel" build "$work/content" --out "$work/site"; then
-            echo '::error::Invalid content unexpectedly built'
+            echo '::error::Unclosed MDX component unexpectedly built'
             exit 1
           fi
           cmp "$work/previous.html" "$work/site/index.html"
 
           # Ordinary rebuilding replaces old output and removes stale pages.
+          cp "$work/guide.mdx" "$work/content/01-guide/index.mdx"
           printf 'type: hero\nheadline: Updated site\n' > "$work/content/sections/home/hero.yaml"
           printf 'obsolete\n' > "$work/site/obsolete.html"
           "$zel" build "$work/content" --out "$work/site"

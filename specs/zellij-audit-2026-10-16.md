@@ -4,12 +4,55 @@
 
 **Audited code:** local `main`, `6356b05deaddf5421b24d7c8a1e30f868d4923c0`
 **Scope:** study source/documentation, establish reusable context, identify
-unfinished work and defects. **No implementation fixes or remote changes.**
+unfinished work and defects. **The initial audit made no implementation fixes or remote changes.**
 
 Start with [ZELLIJ_CONTEXT.md](../ZELLIJ_CONTEXT.md) for the architecture and
 source map. This report records what was observed at this commit; future fixes
 should be recorded with their commit and verification rather than rewriting
 these historical observations as if they never occurred.
+
+## Implementation record — first safety and CI milestone
+
+The user subsequently authorized implementation and repository setup.
+[PR #1](https://github.com/mylife-inc/Zellij/pull/1) carries the three previously
+unpublished main commits plus the following changes. The findings below remain
+the historical evidence at `6356b05`; this table records their disposition.
+
+| Findings | Resolution and evidence |
+| --- | --- |
+| R1, R2: conversion containment and overwrite | `1a2e26b`: validate source and output paths, reject traversal/symlinks/overlap, require new/empty output, and preflight the complete write plan. CLI integration tests cover both converters and existing authored files. |
+| R3: page/guide overwrites | `1a2e26b`: add files without overwriting existing destinations; preflight catches late collisions before earlier sections are written. |
+| S1: destructive static output | `1a2e26b`: stage beside output and replace only empty or owned exports; failures retain the previous export. Unit tests cover overlap, unowned output, missing output mounts, rebuilds, and destination changes. CI adds real-container initial/failing/replacement builds. |
+| S7: authored `.zel-dockerfile` deletion | `1a2e26b`: stream Dockerfile on stdin; fake-runtime regression verifies both success and failure preserve authored content. |
+| R14: Clippy | `1a2e26b`: resolve the warnings-denied gate; local and hosted checks pass. |
+| Clean browser-job setup | `deda7a0`: build the engine helpers in the browser job's own checkout before the showcase build. Hosted run `39000366953` passes. |
+| Large-import file limits | `bd6b6c6`: close staged file descriptors before publishing; a 96-page conversion succeeds under a 64-descriptor limit. |
+| Current CLI/engine compatibility | `bd6b6c6`: build the CI engine image from the current checkout, including the previously unpublished React-range fix in `5001c37`. The old published image failed installation by selecting React 19.3 against the engine's 19.2 peer range. |
+
+Verification: 99 Rust tests (17 added), warnings-denied Clippy, formatting,
+227 engine unit tests, all workspace typechecks, engine package build, and
+showcase production build passed locally. Hosted browser run `39000366953`
+passed 294 tests, with 114 pre-existing conditional skips for device/browser
+cases. Check the PR's latest CI results for its real-container test and final
+merge status; these counts do not imply all product acceptance is complete.
+
+Repository setup: `mylife-inc/Zellij` is now public and defaults to `main`.
+Gitleaks 8.30.1 scanned all 134 reachable commits before publication and reported
+no detected leaks. The user's local AI settings were excluded. No history was
+rewritten. Native binaries have not been released by this milestone.
+
+The new static-export marker is an explicit ownership contract: every file
+inside an owned output is replaceable. Old unmarked exports need a new/empty
+output directory for their first build; never add the marker to authored data.
+Write preflight protects against known path/collision failures; it is not a
+claim of a filesystem-wide transaction under arbitrary concurrent modification
+or storage failure.
+
+Additional follow-up: locked dependency audit found 19 advisories (3 critical,
+6 high, 6 moderate, 4 low), including Next.js and Vitest. Remediate these with
+compatibility tests in a separate change. R4–R13 and S2–S6/S8–S10 remain open,
+as do the requested header work and native Windows support. See
+[project context](../ZELLIJ_CONTEXT.md) for the current next-work order.
 
 ## Assessment
 

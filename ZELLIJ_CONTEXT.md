@@ -6,7 +6,8 @@ Last studied: **2026-10-16**. Baseline: local `main` at
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
 defects, remaining work, evidence, and verification limits. Recheck dated facts
-before acting. This review created documentation only; it implemented no fixes.
+before acting. The initial review created documentation only; subsequent authorized work is
+recorded below.
 
 ### Implementation update — 2026-10-16
 
@@ -15,10 +16,27 @@ The user subsequently authorized implementation and the repository setup.
 Before the visibility change, Gitleaks 8.30.1 scanned all 134 reachable commits
 and reported no detected leaks. No historical rewrite was performed.
 
-Work is on `codex/safe-cli-writes`: shared output-path/collision checks,
-conversion source containment, protected page/guide creation, staged static
-exports, and streamed image Dockerfiles. Verification is in progress; consult
-the current Git/CI state before calling these findings resolved.
+Implementation is tracked in [PR #1](https://github.com/mylife-inc/Zellij/pull/1)
+on `codex/safe-cli-writes`. Commit `1a2e26b` adds shared output-path/collision
+checks, conversion source containment, protected page/guide creation, staged
+static exports, and streamed image Dockerfiles. `deda7a0` restores the browser
+job's engine-build prerequisite; `bd6b6c6` bounds file-descriptor use during
+large conversions and tests the CLI against an image built from its checkout.
+See the audit's implementation record for the resolved finding IDs.
+
+Verification established: **99 Rust tests**, warnings-denied Clippy, formatting,
+**227 engine tests**, workspace typechecking, and the engine/showcase production
+builds pass. Hosted browser run `39000366953` passed **294 tests**, with 114
+existing conditional skips across desktop/mobile Chromium and mobile WebKit.
+The CI workflow additionally exercises initial static export, failed-build
+preservation, and successful replacement using a real container. Consult the
+PR's latest checks and merge status before relying on a particular revision.
+
+Compatibility change: conversion requires a new/empty destination outside its
+source tree. Static export requires a new/empty directory outside content, or
+an export previously created with the `.zellij-output` ownership marker.
+Existing unmarked exports need a new/empty output on their first build with the
+new CLI; never mark an authored directory as generated output.
 
 A clean `npm ci` restored the missing local packages. `npm audit` also reported
 19 advisories (3 critical, 6 high, 6 moderate, 4 low). Next.js and Vitest upgrades
@@ -245,7 +263,10 @@ Build/dev install app dependencies inside the container. A pulled base image
 alone is therefore not a guarantee of offline builds. Dev rereads content on
 reload, but preparation of assets/search is not a complete file-watch loop.
 
-## 7. Where development stopped
+## 7. Where development stopped at the initial audit
+
+The following is the historical baseline, superseded where indicated by the
+implementation update above.
 
 Local `main` is three commits ahead of both the tracking ref and the live remote
 `main` observed on 2026-10-16:
@@ -298,14 +319,15 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Recommended order, subject to the user's v1 scope decision:
+Remaining order after the safety/CI milestone, subject to the user's v1 scope decision:
 
-1. Safe output paths and overwrite protections; converter links/assets;
+1. Compatibility-tested dependency remediation; converter links/assets;
    generated-content correctness and meaningful end-to-end validation.
 2. Header placement/width-aware overflow and the reproduced search/route bugs.
 3. Finish the agreed CLI subset, configuration, and truthful help/docs.
-4. Set repository/default-branch policy; restore CI; exercise releases and
-   installers on every supported platform, including native Windows if chosen.
+4. Exercise releases and installers on every supported platform, including
+   native Windows if chosen. Repository visibility/default branch are settled;
+   the restored CI baseline must remain green.
 5. Close browser/accessibility/basePath/SEO/performance acceptance and define
    a finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
