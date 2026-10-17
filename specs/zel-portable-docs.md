@@ -1,8 +1,8 @@
 # zel documentation workflow and portable HTML requirements
 
 Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
-`view --watch` is implemented in the next milestone, with hosted acceptance
-pending. The native renderer and server are separate from the hosted Next router.
+`view --watch` merged in PR #14 with all-platform acceptance. Portable `zel.yaml`
+configuration and navigation are the current implementation milestone. The native renderer and server are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
 same command syntax, including these three operations:
@@ -111,8 +111,8 @@ the existing export when validation or rendering fails.
   14-theme catalog, defaulting to cupertino.
 - Raw HTML is literal text with a warning; `.mdx` is rejected. No math rendering
   or Mermaid execution is enabled. Remote media remains remote. MkDocs plugins,
-  custom navigation/config, full-text search language processing and incremental
-  compilation are not implemented. `view --watch` performs full rebuilds and
+  full-text search language processing and incremental compilation are not
+  implemented. Optional `zel.yaml` supplies identity, branding and navigation. `view --watch` performs full rebuilds and
   reloads the HTTP preview after successful publication.
 
 Acceptance lives in `zellij-docs/tests/portable.rs`, the CLI's
@@ -129,7 +129,7 @@ installation, release packaging or container integration.
 | Capability | Native portable status | Next work |
 | --- | --- | --- |
 | Plain-folder static build and alternate output | Implemented | Expand real-document fixtures and rendering compatibility |
-| Markdown, titles, automatic navigation, themes | Core implemented | Explicit navigation/config, raw HTML policy, math/diagrams |
+| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` implemented | Raw HTML policy, math/diagrams, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Broken references/anchors/metadata fail build | Separate check command, warnings gate and structured reports |
 | Project scaffolding | Existing structured Zellij scaffolds | Decide portable starter/config workflow |
@@ -212,7 +212,39 @@ loopback/Host/path/method restrictions also apply to preview endpoints.
 
 Ctrl-C joins the watcher; a build still being staged is discarded after
 cancellation and its temporary directory is cleaned. Exported files remain.
-Options such as name/theme/output/port are fixed for the lifetime of the command.
+CLI name/theme overrides and output/port options are fixed for the lifetime of
+the command. File-based name/theme/branding/navigation are reread on each build.
 Native Linux/macOS/Windows CI uses the existing real-console lifecycle harness
 plus Chromium/WebKit editing, error recovery, search/media, continuous HTTP,
 shutdown, and moved direct-file acceptance in `scripts/preview-watch.mjs`.
+
+## Portable configuration and navigation — 2026-10-17
+
+Read only `zel.yaml` in the input Markdown root. Supported keys: optional `name`,
+`theme`, `brand.logo` (`src`, `alt`, optional absolute HTTP(S) `href`), and `nav`.
+All text is strictly typed; unknown/duplicate keys and invalid values fail before
+staging/publication. A present config selects portable automatic build dispatch;
+explicit target flags retain their meaning. CLI name/theme overrides win, then
+file settings, then existing defaults. The whole config must still be valid.
+
+Navigation is an ordered list of objects with exactly one of `page`, `children`,
+or external HTTP(S) `href`, plus an optional `label` (required for groups/links).
+Page values are exact source-relative Markdown filenames, including extension,
+with literal Unicode/spaces and forward slashes. Missing/duplicate/traversing
+paths and empty groups fail. Group nesting is bounded at 16. Omitted `nav` keeps
+automatic ordering; `nav: []` removes navigation. All pages are still validated,
+rendered and searched; unlisted pages have no previous/next links. Navigation
+labels/order drive the sidebar and depth-first previous/next sequence, while
+headings, search titles and folder breadcrumbs retain document metadata. A
+synthetic home uses configured navigation when present.
+
+Local logo images are copied through path/type/link checks and have encoded
+relative output URLs. Logo and site title remain at the left of the sticky bar;
+controls remain right-aligned. The logo can link to the company website while
+the title always links home. Nested lists remain usable without JavaScript.
+Watch reloads added/edited/removed configuration with existing preservation and
+error recovery. Browser preferences persist only explicit choices, so default
+config theme changes become visible; old automatically persisted defaults are
+not treated as explicit choices. The revised preference format may reset an
+older saved choice once. The portable config is distinct from hosted content
+settings and the still-planned general `zel.toml` command defaults.

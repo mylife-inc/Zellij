@@ -88,7 +88,9 @@ retains the export, and waits for an in-progress staged build to finish cleanup.
 
 Raw HTML rendering, MDX components, math, and Mermaid retain the portable
 builder's documented limits. Changing the name, theme, output, or port options
-requires restarting the command.
+requires restarting the command. Site name/theme, logo and navigation from
+[`zel.yaml`](/cli/config#portable-markdown) are reread on each watched build;
+CLI name/theme overrides remain in effect.
 
 ## Options
 
@@ -96,8 +98,8 @@ requires restarting the command.
 | --- | --- | --- |
 | `[dir]` | Markdown source directory | `.` |
 | `--out <path>` | Portable output directory | Sibling `<input-folder>-site` |
-| `--name <text>` | Site header name | Input folder name |
-| `--theme <name>` | One of `zel list themes` | `cupertino` |
+| `--name <text>` | Site header name | `zel.yaml` name, otherwise input folder name |
+| `--theme <name>` | One of `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--port <n>` | Loopback port; `0` chooses an available one | `3000` |
 | `--watch` | Rebuild on source edits and reload the HTTP preview after success | Off |
 | `--no-open` | Print the URL without opening a browser | Off |

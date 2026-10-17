@@ -1,18 +1,139 @@
 ---
-title: zel.toml
-description: Say once what every command would otherwise need told.
+title: Configuration
+description: Configure portable Markdown with zel.yaml; distinguish hosted settings and planned CLI defaults.
 ---
 
+<Callout type="tip" title="Available in source">
+Portable Markdown uses `zel.yaml`. Hosted YAML/MDX sites use `site.yaml` and the
+existing content model. The general command-defaults file `zel.toml` remains planned.
+Native release packages may lag the source version.
+</Callout>
+
+## Portable Markdown
+
+Place an optional `zel.yaml` directly inside the Markdown folder supplied to
+`zel build` or `zel view`. A plain folder still works without it. The file sets
+site identity, initial theme, a company logo/link, and documentation navigation.
+It does not require Node, Docker, or an internet connection.
+
+```yaml title="docs/zel.yaml"
+name: Acme documentation
+theme: forest
+brand:
+  logo:
+    src: assets/company.svg
+    alt: Acme company
+    href: https://example.com
+nav:
+  - page: README.md
+    label: Overview
+  - label: Getting started
+    children:
+      - page: guide/install.md
+        label: Installation
+      - page: guide/configuration.md
+  - label: Company website
+    href: https://example.com
+```
+
+```bash title="terminal"
+zel build ./docs
+zel view ./docs --watch
+zel build ./docs --name "Release documentation" --theme cupertino
+```
+
+### Selecting settings
+
+`--name` and `--theme` override their respective file settings. If a setting is
+absent from both flags and the file, the site name defaults to the source folder
+name and the theme to `cupertino`.
+Run `zel list themes` for accepted theme names. The complete configuration must
+be valid, even when flags override some settings.
+
+The builder reads only `<input>/zel.yaml`; it does not search parent folders or
+look for child `docs` directories. Its presence selects the portable target for
+an otherwise automatic `zel build`, including a folder with hosted markers.
+An explicit `--target static` or `--target image` still selects that target.
+`view` always uses the portable target.
+
+### Navigation
+
+`nav` is an ordered list. Each entry contains exactly one of:
+
+| Field | Meaning | Label |
+| --- | --- | --- |
+| `page` | Exact Markdown source path relative to this folder | Optional; defaults to the document title |
+| `children` | Another list of entries forming a group | Required |
+| `href` | An absolute `http://` or `https://` link | Required |
+
+Groups can nest up to 16 levels and must not be empty. Page paths include their
+`.md` or `.markdown` extension and use `/` separators. Write spaces and Unicode
+characters as they appear in filenames; these fields are filesystem paths, not
+percent-encoded URLs. Missing pages, repeated page entries, traversal, and an
+entry containing both `page` and `href` are errors.
+
+Sidebar links and previous/next links follow the configured page order, walking
+groups in order and skipping external links. Labels affect navigation; the
+page's authored heading, HTML title and search title remain unchanged.
+Breadcrumbs continue to describe source folders. If there is no root index or
+README, the generated home lists the configured navigation.
+
+All discovered Markdown documents are still validated, built, and searchable.
+Omitting a page from `nav` removes it from sidebar and previous/next navigation;
+it does not exclude or protect its content. Such pages remain reachable through
+ordinary links and search. `nav: []` intentionally removes navigation links.
+Omitting `nav` retains the automatic ordering described in [build](/cli/build).
+
+### Company branding
+
+`brand.logo.src` names a local image inside the Markdown folder. The builder
+copies it into the export, using relative links that still work after moving
+or opening the site directly. Remote logo sources, hidden/generated paths,
+symlinks and Windows junctions are refused. `alt` is required, nonempty text.
+Use an image format supported by your target browsers, such as SVG, PNG or WebP.
+
+The logo appears at the left of the sticky header. Its optional `href` opens the
+company's absolute HTTP(S) website; without it, the logo links to the docs home.
+The site name beside it always links home. Search and theme controls remain on
+the right. No external request occurs merely from displaying the company link;
+visiting an external website requires connectivity.
+
+### Editing and validation
+
+Unknown keys, duplicate YAML keys, incorrect value types, invalid theme names,
+and invalid navigation or branding fail before replacing the previous export.
+Names, labels, alt text and paths must be YAML strings; quote values such as
+`"2026"` if they should be text. The config file is not automatically published.
+Source and output ownership rules are the same as for an unconfigured build.
+
+`view --watch` notices config creation, edits, deletion, and logo changes. Invalid
+edits keep the last working site and show the preview error notice. Fixing the
+file rebuilds and reloads; deleting it restores defaults. CLI overrides stay in
+effect until restarting the command. Output paths and ports remain CLI options.
+
+An explicit visitor theme/appearance choice takes precedence over the site's
+initial theme and survives navigation. Merely loading a default no longer saves
+it as a visitor choice, so config theme changes can appear on reload. Preferences
+saved by older exports may reset once when switching to this explicit-choice
+format.
+
+`zel.yaml` is a portable-renderer format. It does not load MkDocs plugins,
+`mkdocs.yml`, hosted `site.yaml`/`_sidebar.yaml`, or the planned `zel.toml` below.
+The native validation-only command, portable project scaffold, richer rendering,
+and additional configuration fields remain future work.
+
+## Planned CLI defaults
+
 <Callout type="warning" title="Planned">
-`zel` does not read a configuration file yet. This page is the specification it
-is being written against.
+`zel.toml` is still planned and is not read by the CLI. The rest of this section
+describes that future command-defaults format; portable `zel.yaml` above is implemented.
 </Callout>
 
 Optional. Every setting has a flag, and every flag has a default. `zel.toml`
 exists so a repository can state its answers once instead of every command
 carrying them.
 
-## What it is really for
+### What it is really for
 
 Not saving keystrokes. The value is that **the answers become reviewable**.
 
@@ -48,7 +169,7 @@ zel dev
 zel deploy
 ```
 
-## Where it is found
+### Where it is found
 
 Searched upward from the current directory, stopping at the first one found or
 at a `.git` directory. So the file sits at the root of the repository and works
@@ -56,7 +177,7 @@ from any subdirectory inside it.
 
 Paths inside it are relative **to the file**, not to where you ran the command.
 
-## Precedence
+### Precedence
 
 <Steps>
 <Step title="A command-line flag">
@@ -72,9 +193,9 @@ be threaded through a script.
 </Step>
 </Steps>
 
-## Keys
+### Keys
 
-### Top level
+#### Top level
 
 | | | |
 | --- | --- | --- |
@@ -90,7 +211,7 @@ wrong in CI, where the property you want is that today's build and last month's
 build differ only by what you changed. An unpinned engine turns "the docs broke
 and nobody touched them" into a real sentence.
 
-### `[build]`
+#### `[build]`
 
 | | | |
 | --- | --- | --- |
@@ -102,7 +223,7 @@ and nobody touched them" into a real sentence.
 | `site_url` | Absolute origin | `siteUrl` in `site.yaml` |
 | `platform` | Image architectures | the host's |
 
-### `[deploy]`
+#### `[deploy]`
 
 | | | |
 | --- | --- | --- |
@@ -123,13 +244,13 @@ Credentials come from the environment. See
 [deploy credentials](/cli/deploy#credentials) for which variables each provider
 reads.
 
-### `[check]`
+#### `[check]`
 
 | | | |
 | --- | --- | --- |
 | `strict` | Warnings are errors | `false` |
 
-## A worked example
+### A worked example
 
 Documentation living inside a product repository, published to Netlify on every
 push to `main`:
@@ -161,7 +282,7 @@ strict = true
 The pipeline carries the secret and nothing else. Everything about *what* is
 built is in the repository, where it can be reviewed.
 
-## See also
+### See also
 
 - [`zel ci`](/cli/ci) — writes the pipeline above
 - [`zel doctor`](/cli/doctor) — prints the resolved configuration

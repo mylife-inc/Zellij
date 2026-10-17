@@ -102,7 +102,7 @@ enum Command {
         #[arg(default_value = ".")]
         dir: String,
 
-        /// Output: static for discovered Zellij content, portable for plain Markdown; see `zel list targets`.
+        /// Output: portable for zel.yaml/plain Markdown, static for discovered hosted content; see `zel list targets`.
         #[arg(long)]
         target: Option<String>,
 
@@ -113,11 +113,11 @@ enum Command {
         #[arg(long)]
         tag: Option<String>,
 
-        /// Portable Markdown site name (defaults to the source folder name).
+        /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
         #[arg(long)]
         name: Option<String>,
 
-        /// Portable Markdown theme; see `zel list themes`.
+        /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
         #[arg(long)]
         theme: Option<String>,
     },
@@ -646,7 +646,9 @@ fn build_dispatch(
     theme: Option<&str>,
 ) -> zellij_core::Result<()> {
     let target = target.unwrap_or_else(|| {
-        if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
+        if zellij_docs::has_config(Utf8Path::new(dir)) {
+            "portable"
+        } else if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
             "static"
         } else {
             "portable"
@@ -698,14 +700,7 @@ fn build_portable(
         .map(Utf8PathBuf::from)
         .map(Ok)
         .unwrap_or_else(|| zellij_docs::default_output(source))?;
-    let report = zellij_docs::build(
-        source,
-        &output,
-        zellij_docs::BuildOptions {
-            name,
-            theme: theme.unwrap_or("cupertino"),
-        },
-    )?;
+    let report = zellij_docs::build(source, &output, zellij_docs::BuildOptions { name, theme })?;
     for warning in report.warnings {
         eprintln!("warning: {warning}");
     }

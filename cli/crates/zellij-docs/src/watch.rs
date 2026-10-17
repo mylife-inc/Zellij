@@ -66,7 +66,7 @@ impl LiveReload {
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Snapshot(BTreeMap<Utf8PathBuf, (u64, u64)>);
-fn is_link(metadata: &fs::Metadata) -> bool {
+pub(crate) fn is_link(metadata: &fs::Metadata) -> bool {
     #[cfg(windows)]
     {
         use std::os::windows::fs::MetadataExt;
@@ -137,7 +137,7 @@ pub struct WatchOptions {
     pub source: Utf8PathBuf,
     pub output: Utf8PathBuf,
     pub name: Option<String>,
-    pub theme: String,
+    pub theme: Option<String>,
 }
 pub struct Watcher {
     stop: Arc<AtomicBool>,
@@ -176,7 +176,7 @@ impl Watcher {
                             &options.output,
                             BuildOptions {
                                 name: options.name.as_deref(),
-                                theme: &options.theme,
+                                theme: options.theme.as_deref(),
                             },
                         )
                         .map_err(|e| e.to_string())?;

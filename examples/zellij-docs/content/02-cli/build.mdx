@@ -25,10 +25,9 @@ zel build ./content --target image --tag acme-docs:v2
 | `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
 | `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
-Without `--target`, `zel` uses `static` when it discovers a structured Zellij
-content root; otherwise it treats the supplied directory as plain Markdown and
-uses `portable`. Use an explicit target when the folder contains both kinds of
-content. The portable target reads the supplied directory itself; it does not
+Without `--target`, a `zel.yaml` in the supplied directory selects `portable`.
+Otherwise, `zel` uses `static` when it discovers a structured Zellij content root,
+and `portable` for plain Markdown. An explicit target overrides this selection. The portable target reads the supplied directory itself; it does not
 look for a child `docs` directory.
 
 ## Portable Markdown
@@ -61,11 +60,14 @@ Documents keep their relative folders and change extension to `.html`.
 `index.md` becomes the directory's `index.html`. A `README.md` becomes
 `index.html` when that directory has no index document; otherwise it remains
 `README.html`. If there is no root home document, `zel` generates a home page
-listing all documents.
+listing documents, or the explicit navigation when configured.
 
-Home comes first. Other pages sort by optional numeric `order`, then by their
-output path. The sidebar and previous/next links use this order. Navigation
-configuration from MkDocs, Zellij YAML, or Docusaurus is not read by this target.
+By default, home comes first and other pages sort by optional numeric `order`,
+then by output path. Add [portable configuration](/cli/config#portable-markdown)
+in `zel.yaml` for nested navigation, explicit labels/order, site name/theme, and
+a company logo/link. The sidebar and previous/next links follow that navigation.
+MkDocs, hosted Zellij YAML, and Docusaurus navigation formats are not read by
+this target.
 
 Optional YAML front matter controls the page's navigation title, HTML title,
 summary metadata, and order:
@@ -158,10 +160,10 @@ output directory; do not add the marker by hand.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | Input directory | `.` |
-| `--target <portable\|static\|image>` | Explicit output target | Discover structured content, otherwise portable |
+| `--target <portable\|static\|image>` | Explicit output target | `zel.yaml`, then structured-content discovery, otherwise portable |
 | `--out <path>` | Output folder for `portable` or `static` | Portable: sibling `<input-name>-site`; static: `./dist` |
-| `--name <text>` | Portable site's header name | Input folder name |
-| `--theme <name>` | Portable theme; see `zel list themes` | `cupertino` |
+| `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
+| `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
 
 Options that do not apply to the selected target are rejected. `--base-path`,

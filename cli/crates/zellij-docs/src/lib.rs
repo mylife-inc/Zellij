@@ -6,6 +6,7 @@ use serde_json::json;
 use std::{collections::BTreeMap, fs};
 use zellij_core::{Error, Result, files, output::StaticOutput};
 
+mod config;
 mod links;
 mod markdown;
 mod page;
@@ -13,17 +14,26 @@ pub mod server;
 pub mod watch;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
 
+#[derive(Default)]
 pub struct BuildOptions<'a> {
     pub name: Option<&'a str>,
-    pub theme: &'a str,
+    pub theme: Option<&'a str>,
 }
-impl Default for BuildOptions<'_> {
-    fn default() -> Self {
-        Self {
-            name: None,
-            theme: "cupertino",
-        }
+
+pub fn has_config(root: &Utf8Path) -> bool {
+    config::present(root)
+}
+
+fn validate_theme(theme: &str) -> Result<()> {
+    if !zellij_core::schema::themes()
+        .iter()
+        .any(|t| t.name == theme)
+    {
+        return Err(Error::InvalidArgument(format!(
+            "unknown theme {theme:?}; run zel list themes"
+        )));
     }
+    Ok(())
 }
 pub struct BuildReport {
     pub pages: usize,
@@ -168,23 +178,21 @@ pub fn prepare(
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<PreparedBuild> {
-    if !zellij_core::schema::themes()
-        .iter()
-        .any(|t| t.name == options.theme)
-    {
-        return Err(Error::InvalidArgument(format!(
-            "unknown theme {:?}; run zel list themes",
-            options.theme
-        )));
-    }
     let root = source.canonicalize_utf8()?;
     if !root.is_dir() {
         return Err(files::unsafe_path(&root, "expected a Markdown directory"));
     }
     files::disjoint(&root, output)?;
+    let config = config::Config::load(&root)?;
     let name = options
         .name
+        .or(config.name.as_deref())
         .unwrap_or_else(|| root.file_name().unwrap_or("Documentation"));
+    let theme = options
+        .theme
+        .or(config.theme.as_deref())
+        .unwrap_or("cupertino");
+    validate_theme(theme)?;
     if name.trim().is_empty() {
         return Err(Error::InvalidArgument("site name must not be empty".into()));
     }
@@ -237,11 +245,20 @@ pub fn prepare(
             &b.output,
         ))
     });
+    let navigation = config::Navigation::resolve(&config, &pages)?;
+    let presentation = page::Presentation {
+        name,
+        theme,
+        logo: config.brand.as_ref().map(|b| &b.logo),
+    };
     let mut resolver = links::Resolver {
         root: &root,
         pages: &pages,
         assets: BTreeMap::new(),
     };
+    if let Some((path, bytes)) = config.logo(&root)? {
+        resolver.assets.insert(path, bytes);
+    }
     let mut files = BTreeMap::<Utf8PathBuf, Vec<u8>>::new();
     for (index, page) in pages.iter().enumerate() {
         let mut events = page.markdown.events.clone();
@@ -259,9 +276,9 @@ pub fn prepare(
         let mut body = String::new();
         pulldown_cmark::html::push_html(&mut body, markdown::highlight(events)?.into_iter());
         if page.source.as_str().is_empty() {
-            body = page::contents(page, &pages);
+            body = page::contents(page, &pages, &navigation);
         }
-        let html = page::render(name, options.theme, page, index, &pages, &body);
+        let html = page::render(&presentation, page, index, &pages, &navigation, &body);
         if files
             .insert(page.output.clone(), html.into_bytes())
             .is_some()

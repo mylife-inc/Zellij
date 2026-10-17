@@ -754,6 +754,56 @@ Clippy, formatting, deep/strict docs checks, and Chromium/WebKit actual CLI
 HTTP/watch plus moved direct-file acceptance. Cross-platform hosted CI remains
 pending at this entry; see PR #14 for the final exact revision and results.
 
+Watch/reload completion: [PR #14](https://github.com/mylife-inc/Zellij/pull/14)
+merged as `142965f` from final head `4f20092`. PR CI `39071150585` and merged-main
+CI `39071818383` each passed all seven jobs. Native Linux/macOS/Windows passed
+both Chromium and WebKit offline/HTTP/watch acceptance, including real Windows
+Ctrl-C. The CLI job passed 149 Linux Rust tests; engine tests remained 325, and
+website browser acceptance passed 311 tests with 124 conditional skips and no
+retries. Image run `39071818346` passed all 13 jobs and published all four
+AMD64/ARM64 variants. Native release packages were not issued.
+
+### Portable configuration, navigation and branding — 2026-10-17
+
+Source commit `4ba149f` adds optional `<Markdown-root>/zel.yaml` for site name,
+initial theme, local company logo/link and nested navigation. It has no parent
+search. A present file selects portable automatic build dispatch before hosted
+marker discovery; explicit targets still win. CLI name/theme flags override
+file values, then folder-name/cupertino defaults apply. The entire file must
+remain valid even when some settings are overridden.
+
+Navigation entries contain exactly one of `page`, `children`, or HTTP(S) `href`.
+Source-relative page filenames are exact and retain literal spaces/Unicode.
+Groups/links require labels; duplicate or missing pages, empty groups, traversal,
+unknown/duplicate keys and incorrectly typed values fail. Nesting is bounded at
+16 groups. Configured order and aliases drive sidebar and previous/next links;
+unlisted pages are still rendered, validated and searched, but have no paging.
+Omitting nav keeps automatic ordering; an empty list intentionally hides links.
+A synthetic home lists authored navigation. Folder breadcrumbs stay unchanged.
+
+Logo paths are checked for containment, image type and symlinks/junctions, copied
+locally, and linked with encoded relative URLs. The company logo can open its
+HTTP(S) website while the adjacent title links to documentation home. Mobile
+controls occupy a separate row to preserve title/logo space. Navigation and
+branding remain usable without JavaScript and after moving a direct-file export.
+
+Watch mode rereads configuration on creation, edit and deletion. Invalid settings
+preserve the last export and show the existing preview error notice; recovery
+rebuilds/reloads. Browser preferences now save only explicit visitor choices,
+so new project defaults take effect until overridden. The new versioned storage
+format may reset an older saved choice once. General `zel.toml` defaults remain
+planned; this portable format is distinct from hosted `site.yaml`.
+
+Local verification: 154 Rust tests, warnings-denied Clippy, formatting, deep/strict
+documentation validation and a fresh CLI build passed. Chromium/WebKit passed
+moved file://, HTTP and watch acceptance, including config addition/removal,
+error recovery, theme precedence, logo loading, nested navigation, alias paging,
+unlisted search, mobile layout and no-JavaScript use. Visual inspection caught
+mobile brand compression; the fixed layout and geometry assertions pass in both
+browsers. The existing three-platform CI matrix runs these added checks. Hosted
+acceptance is pending at this dated entry; consult the PR containing `4ba149f`
+for its final revision/results. No new native release packages are issued.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -786,8 +836,8 @@ free to differ: build a plain Markdown folder into a site that also works by
 double-clicking `index.html`, serve an existing static site over HTTP, and a
 `view` operation combining build, serve and browser launch. This is new required
 product scope. Native build, serve and view are implemented above; portable
-`view --watch` adds portable rebuild/reload, while richer rendering/configuration
-remain planned. The [portable documentation contract](specs/zel-portable-docs.md)
+`view --watch` adds portable rebuild/reload, and `zel.yaml` configures identity,
+branding and navigation. Richer rendering and additional configuration remain planned. The [portable documentation contract](specs/zel-portable-docs.md)
 records plain-folder discovery, direct-file navigation/search/assets, offline
 acceptance and cross-platform serve/view requirements. Keep a core MkDocs
 capability comparison when implementing the Rust CLI. Today's Next static export
@@ -989,9 +1039,10 @@ sidebar configurations are not executed. Other formats in the spec are plans.
 `new page` prints the `pages.yaml` entry for a person to paste; preserving
 comments by avoiding a rewrite is deliberate.
 
-No CLI config-file loader, deployment-provider crate, complete machine-readable
-diagnostics, or broad feature/build-option plumbing exists. Docs disagree on
-`zel.toml` versus the spec's `zellij.toml`; settle the name before implementation.
+Portable builds load `zel.yaml`; general command defaults in TOML are still
+planned. No deployment-provider crate, complete machine-readable diagnostics, or
+broad feature/build-option plumbing exists. Historical docs differ on general
+`zel.toml` versus `zellij.toml`; that future filename still needs reconciliation.
 Generated GitHub workflows support validation, GHCR images, and Netlify through
 its own CLI, despite the separate `zel deploy` command being a stub.
 
@@ -1057,12 +1108,12 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after native watch/reload, subject to the user's v1 scope decision:
+Remaining order after portable configuration, subject to the user's v1 scope decision:
 
-1. Complete hosted cross-platform acceptance of portable watch/reload. Native
-   build/serve/view and inspection acceptance have passed on merged main.
-2. Finish the agreed CLI subset and portable configuration, richer Markdown
-   rendering/navigation, and diagnostics in
+1. Complete hosted cross-platform acceptance of configuration/navigation/branding.
+   Native build/serve/view/watch acceptance has passed on merged main.
+2. Add native validation/structured diagnostics, then richer Markdown rendering
+   and a portable starter; finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
