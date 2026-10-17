@@ -233,7 +233,7 @@ fn unsupported_json_is_rejected_before_any_command_action() {
         &["new", "section", "hero", "--out", "hero.yaml"],
         &["convert", ".", "--out", "converted"],
         &["migrate", ".", "--out", "migrated"],
-        &["check"],
+        &["check", "--target", "static"],
         &["dev"],
         &["build"],
         &["doctor"],

@@ -20,6 +20,11 @@ identity, theme, company branding and nested navigation. CLI name/theme flags
 override those fields. This implemented project format is separate from the
 general TOML command defaults described in the original design below.
 
+Native portable `check` now shares that compiler without writing any files, with
+strict warnings and structured JSON diagnostics. Hosted checks still delegate to
+the engine. Both build and check choose portable for a `zel.yaml` root, otherwise
+hosted when discovered, otherwise portable; an explicit target overrides this.
+
 ---
 
 ## 1. What it is for
@@ -89,7 +94,8 @@ Planned global flags: `--quiet`, `--verbose`, `--json`, `--no-color`, `--yes`,
 `--config <file>`, `--cwd <dir>`.
 
 Current Rust output contract (2026-10-17): `--json` is implemented for `context`,
-all four `list` commands, `explain` and `detect`. Other commands reject it with
+all four `list` commands, `explain`, `detect`, and portable `check`. Other commands
+(including hosted `check --target static`) reject it with
 exit code 2 before executing. `--verbose` / `-v` is not implemented and is
 rejected; the earlier successful no-op has been removed. Other flags in the
 list above remain plans, not advertised capabilities.
@@ -197,7 +203,7 @@ produces a wrong sidebar that looks right.
 
 | Command | Does |
 | --- | --- |
-| `zel check [dir]` | Real schemas; implemented `--deep` static-reference/syntax checks and `--strict` warnings gate. JSON remains planned. |
+| `zel check [dir]` | Native portable compiler or hosted engine schemas. `--target portable\|static` selects explicitly. Native checks always validate references and support `--json`; hosted `--deep` adds static-reference/syntax checks. Both support `--strict`. Hosted JSON remains planned. |
 | `zel dev [dir]` | Hosted development server with mounted content and automatic preparation updates; page/image changes currently need a browser refresh. Portable Markdown uses `zel view --watch`. |
 | `zel build [dir]` | Builds. See targets below. |
 | `zel serve [dir]` | Implemented native loopback HTTP preview of an existing export; port/prefix and Ctrl-C support. |
@@ -393,7 +399,7 @@ never required of anyone else.
 
 `thiserror` for typed errors, `miette` for reporting, so a bad `site.yaml`
 prints with the offending line marked rather than as a stack trace. Full
-structured diagnostics remain a design goal. Currently, inspection commands
+hosted diagnostics remain a design goal. Currently, inspection commands
 support `--json` with these contracts:
 
 - `context`: the exact generated engine object (`sectionTypes`, `themes`,
@@ -413,6 +419,14 @@ Failures write human diagnostics to stderr, leave stdout empty, and exit
 nonzero. Arrays use engine registration order for sections/themes, ID order
 for formats, static/image order for targets, and descending confidence then ID
 for detection. Consumers key by identifier and tolerate additive fields.
+
+Portable `check --json` additionally emits a complete report on validation
+success **and failure**, leaving stderr empty. It includes schema version 1,
+target/root/strict/ok, nullable generated page count, and diagnostic severity,
+code, nullable source-relative filename and message. No structured line/column
+locations are claimed. Usage errors still use stderr and exit 2. The
+[portable contract](zel-portable-docs.md#native-validation-contract--2026-10-17)
+defines aggregation, scope, codes and exit behavior.
 
 Exit codes: `0` success · `1` general failure · `2` invalid usage ·
 `3` content invalid · `4` container runtime unavailable · `5` network failure.
