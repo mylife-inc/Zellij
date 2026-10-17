@@ -82,6 +82,9 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       assert.equal(new URL(page.url()).searchParams.get('sample'), 'keep');
       assert.equal(new URL(page.url()).hash, '#anchor');
       assert.notEqual((await status()).version, original.version);
+      // Static headings render before deferred enhancement scripts. Controls
+      // are revealed by site.js only once its synchronous setup is running.
+      await expect(page.locator('.controls')).toBeVisible();
       await page.keyboard.press('Control+k');
       await page.getByRole('searchbox').fill('Orion');
       await page.locator('#_zel-results a').click();

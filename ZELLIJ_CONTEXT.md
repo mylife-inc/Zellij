@@ -720,6 +720,14 @@ the rendered heading and attempted poll before editing. Failed watch runs retain
 Playwright traces plus browser readiness and CLI output for diagnosis. Full
 post-reload navigation, search, image and offline assertions remain in place.
 
+
+The trace from `39069833700` confirmed successful publication and browser reload:
+the page contained the updated heading and the new revision. It exposed an early
+search shortcut sent before deferred page enhancements initialized. The fixture
+now waits for the controls that site.js reveals before pressing the shortcut;
+static heading visibility alone is not JavaScript readiness. Production code is
+unchanged, and the first-poll race still must complete before these search checks.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
