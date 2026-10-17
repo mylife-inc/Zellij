@@ -101,9 +101,9 @@ enum Command {
         #[arg(default_value = ".")]
         dir: String,
 
-        /// What to produce — `zel list targets` for the differences.
-        #[arg(long, default_value = "static")]
-        target: String,
+        /// Output: static for discovered Zellij content, portable for plain Markdown; see `zel list targets`.
+        #[arg(long)]
+        target: Option<String>,
 
         #[arg(long)]
         out: Option<String>,
@@ -111,6 +111,14 @@ enum Command {
         /// Image tag. `--target image` only.
         #[arg(long)]
         tag: Option<String>,
+
+        /// Portable Markdown site name (defaults to the source folder name).
+        #[arg(long)]
+        name: Option<String>,
+
+        /// Portable Markdown theme; see `zel list themes`.
+        #[arg(long)]
+        theme: Option<String>,
     },
 
     /// Build the site and put it online.
@@ -398,10 +406,16 @@ fn main() {
             ref target,
             ref out,
             ref tag,
-        } => match target.as_str() {
-            "image" => image_build(dir, tag.as_deref(), None),
-            _ => build(dir, target, out.as_deref()),
-        },
+            ref name,
+            ref theme,
+        } => build_dispatch(
+            dir,
+            target.as_deref(),
+            out.as_deref(),
+            tag.as_deref(),
+            name.as_deref(),
+            theme.as_deref(),
+        ),
         Command::Image { ref action } => match action {
             ImageAction::Build { dir, tag } => image_build(dir, tag.as_deref(), None),
             ImageAction::Run { tag, port } => image_run(tag.as_deref(), *port),
@@ -568,6 +582,72 @@ fn report_empty_mount(err: &zellij_core::Error) {
     eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
+fn build_dispatch(
+    dir: &str,
+    target: Option<&str>,
+    out: Option<&str>,
+    tag: Option<&str>,
+    name: Option<&str>,
+    theme: Option<&str>,
+) -> zellij_core::Result<()> {
+    let target = target.unwrap_or_else(|| {
+        if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
+            "static"
+        } else {
+            "portable"
+        }
+    });
+    if target != "portable" && (name.is_some() || theme.is_some()) {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--name and --theme apply only to portable builds; configure hosted sites in site.yaml"
+                .into(),
+        ));
+    }
+    if target != "image" && tag.is_some() {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--tag requires --target image".into(),
+        ));
+    }
+    match target {
+        "portable" => {
+            let source = Utf8Path::new(dir);
+            let output = out
+                .map(Utf8PathBuf::from)
+                .map(Ok)
+                .unwrap_or_else(|| zellij_docs::default_output(source))?;
+            let report = zellij_docs::build(
+                source,
+                &output,
+                zellij_docs::BuildOptions {
+                    name,
+                    theme: theme.unwrap_or("cupertino"),
+                },
+            )?;
+            for warning in report.warnings {
+                eprintln!("warning: {warning}");
+            }
+            println!("✓ {output}  ({} HTML pages)", report.pages);
+            println!(
+                "  Open {} directly in your browser, or serve the folder over HTTP.",
+                output.join("index.html")
+            );
+            Ok(())
+        }
+        "static" => build(dir, target, out),
+        "image" => {
+            if out.is_some() {
+                return Err(zellij_core::Error::InvalidArgument(
+                    "--out does not apply to image builds; use --tag".into(),
+                ));
+            }
+            image_build(dir, tag, None)
+        }
+        _ => Err(zellij_core::Error::InvalidArgument(format!(
+            "unknown build target {target:?}; run zel list targets"
+        ))),
+    }
+}
+
 fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> {
     use zellij_engine::{BuildMode, Engine as _};
 
@@ -576,7 +656,7 @@ fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> 
         "image" => BuildMode::Image,
         other => {
             eprintln!("error: no target called \"{other}\"");
-            eprintln!("       zel list targets — there are two");
+            eprintln!("       zel list targets");
             std::process::exit(2);
         }
     };
@@ -1322,19 +1402,20 @@ fn list_formats(as_json: bool) -> zellij_core::Result<()> {
     Ok(())
 }
 
-// Two, not four. A traced Node server and an nginx-plus-static-folder image
-// were both on this list once; neither is a product anyone chooses. The first
-// is what a platform builds for you, the second is the static site in a box.
-// Offering four made a decision between two look harder than it is.
+// Portable Markdown is rendered natively; structured sites use the engine.
 fn list_targets(as_json: bool) -> zellij_core::Result<()> {
     let targets = [
         (
             "static",
-            "A folder of HTML, CSS and JS. Any CDN, free. The default.",
+            "A hosted YAML/MDX website. Requires HTTP and the container engine.",
         ),
         (
             "image",
             "A container running the site on port 3000. Any registry. ~150 MB.",
+        ),
+        (
+            "portable",
+            "A Markdown folder rendered natively. Open index.html without a server.",
         ),
     ];
     if as_json {

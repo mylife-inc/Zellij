@@ -474,6 +474,65 @@ after two existing math tests timed out during concurrent Rust compilation;
 timeouts and assertions were unchanged. Hosted full acceptance is pending.
 Native binary releases and portable build/serve/view are separate milestones.
 
+Hosted completion: [PR #11](https://github.com/mylife-inc/Zellij/pull/11)
+merged as `0a89131` after final source/help head `c411317` passed CI
+`39059091256`. Main CI `39059796288` also passed all four jobs: 125 Rust tests,
+325 engine tests, typechecks/schema sync, zero npm advisories, and **311 browser
+passes with 124 conditional skips and no retries**. Container/scaffold/conversion,
+font/license, production-prefix and development-watcher acceptance passed.
+Image run `39059796306` passed all 13 jobs, publishing all four feature variants
+for Linux AMD64/ARM64 and passing the default-image smoke test. No native binary
+release was issued.
+
+## Implementation record — native portable Markdown build
+
+Source commit `8f72022` adds the native `zellij-docs` crate and
+`zel build --target portable`. A plain Markdown folder selects it automatically;
+discovered structured Zellij content retains the hosted static default. The
+renderer parses Markdown with pulldown-cmark, highlights code with syntect, and
+writes full HTML pages with ordinary relative links. Embedded local scripts
+provide search, theme selection and mobile navigation without fetch/router data.
+The 14 themes are generated from engine tokens; the same pinned 75-font snapshot
+and license notices are embedded by Cargo. Building needs no Node, Docker or
+network. Source checkout builds do require the engine font snapshot in this repo.
+
+Output defaults to a sibling `<input-name>-site`; `--out`, `--name` and `--theme`
+configure publication. Index/README home selection, optional front-matter title/
+description/order, directory links, heading/footnote fragments, referenced
+assets, synthetic home, breadcrumbs and previous/next are implemented. The
+shared staged publisher moved from `zellij-engine` to `zellij-core::output`
+without changing the ownership/failed-build-preservation contract. Source and
+output are disjoint; nested symlinks, missing references, duplicate outputs and
+Windows-incompatible names fail before replacing output. URL paths normalize
+Windows separators at the filesystem boundary.
+
+Current limits: raw HTML is displayed literally with a warning; MDX is rejected.
+Math rendering, Mermaid execution, custom navigation/config, portable watch/reload,
+`serve` and `view` remain unfinished. External media is not downloaded. The
+[portable contract](zel-portable-docs.md) and CLI build docs carry the exact
+behavior and capability comparison. This is not complete MkDocs compatibility.
+
+Local acceptance: **137 Rust tests**, formatting, warnings-denied Clippy,
+generated-theme parity, deep/strict docs checks and Chromium file acceptance
+pass. The browser fixture builds without tools on PATH, preserves an old export
+on failure, moves output to a space/Unicode path, opens home and deep links with
+networking blocked, and checks search/anchors, local fonts/media, keyboard,
+themes, mobile layout and JavaScript-disabled content. Review caught and fixed
+Escape clearing the search field instead of closing its dialog. CI now includes
+native portable build/CLI/browser jobs on Linux, macOS and Windows, each with
+Chromium and WebKit. Hosted results are pending at this record; these jobs do
+not establish full native Windows container support or release/install coverage.
+
+Browser follow-up: the first hosted run passed Chromium but WebKit rejected
+its initial file navigation with offline emulation enabled. A minimal local
+file containing only an H1 reproduced that failure; HTTP-blocked file loading
+without emulation passed. WebKit acceptance therefore blocks HTTP requests
+explicitly and asserts that every observed request uses file/data URLs; Chromium
+also retains offline emulation. Both JavaScript and no-JavaScript contexts use
+these guards. No file-security flags or HTTP fallback are used. Both engines
+now pass locally. WebKit additionally exposed missing focus restoration after
+pointer-opened search; the runtime now records and restores the opening control.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

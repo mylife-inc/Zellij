@@ -76,6 +76,38 @@ jobs:
           fi
           echo "Embedded schema matches the engine."
 
+      - name: Portable theme tokens match the hosted engine
+        run: node scripts/prepare-portable.mjs
+
+  portable:
+    name: Portable docs (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo test --locked -p zellij-docs
+        working-directory: cli
+      - run: cargo test --locked -p zellij-cli --test portable_build
+        working-directory: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Native output works directly from disk without networking
+        run: node scripts/check-portable.mjs
+
   cli:
     name: CLI
     runs-on: ubuntu-latest

@@ -7,6 +7,7 @@
 
 pub mod error;
 pub mod files;
+pub mod output;
 pub mod project;
 pub mod schema;
 pub mod yaml;

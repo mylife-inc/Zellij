@@ -1,223 +1,167 @@
 ---
 title: zel build
-description: Two things a Zellij site can be — a folder of files, or a container that serves itself.
+description: Build portable Markdown documentation, a hosted Zellij website, or a container image.
 ---
 
-<Callout type="tip" title="Available">
-Works today. `--base-path`, `--site-url`, `--features` and `--platform` are
-specified and not yet built.
+<Callout type="tip" title="Available in source">
+The portable target runs entirely inside `zel`. It needs no Docker, Node, or
+network connection. The existing `static` and `image` targets use the container
+engine. Native release packages may lag the current source; check `zel list targets`.
 </Callout>
 
 ```bash title="terminal"
-zel build                        # a static site, into ./dist
-zel build --target image         # a container image
-zel build ./docs --out ./public  # a different content folder, a different output
+zel build ./docs                        # plain Markdown → ./docs-site
+zel build ./docs --out ./published-docs  # choose an output outside the input
+zel build ./docs --target portable --name "Acme docs" --theme forest
+zel build ./content --target static --out ./dist
+zel build ./content --target image --tag acme-docs:v2
 ```
 
-## There are two products, not four
+## Choose the output
 
-A Zellij site can be one of two things, and the choice is about **where the HTML
-is produced**:
+| Target | Input | Output and requirements |
+| --- | --- | --- |
+| `portable` | A plain Markdown folder | HTML with relative links and local support files. Double-click `index.html`; no server required. |
+| `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
+| `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
-| `--target static` *(default)* | A folder of HTML, CSS and JS | Netlify, Cloudflare Pages, GitHub Pages, S3, any CDN |
-| `--target image` | A container image running the site on port 3000 | Railway, Fly.io, Cloud Run, ECS, any registry |
+Without `--target`, `zel` uses `static` when it discovers a structured Zellij
+content root; otherwise it treats the supplied directory as plain Markdown and
+uses `portable`. Use an explicit target when the folder contains both kinds of
+content. The portable target reads the supplied directory itself; it does not
+look for a child `docs` directory.
 
-Everything else is a detail of those two.
+## Portable Markdown
 
-### `static` — the HTML already exists
+A folder of `.md` or `.markdown` documents is enough. No `_sidebar.yaml`,
+`site.yaml`, JavaScript project, or MkDocs configuration is required. Hidden
+entries and `node_modules` are excluded. Symbolic links inside the folder are
+rejected. MDX needs the hosted target and is rejected by portable builds.
 
-Every route is rendered to a file at build time.
-
-Choose an output directory outside the content folder. It must be new, empty,
-or a previous export produced by this version of `zel`. A successful export
-contains a `.zellij-output` marker identifying it as replaceable build output.
-Keep authored files elsewhere: rebuilding replaces the export as a whole.
-
-Builds run in a temporary sibling directory. A failed build leaves the previous
-export intact; a successful build replaces it, including removing obsolete
-pages. If an older export has no marker, choose a new output directory rather
-than adding the marker by hand.
-
-```
-dist/
-├── index.html
-├── guide/
-│   ├── index.html
-│   └── quickstart/index.html
-├── _next/static/…            # CSS and JS
-└── _zellij/assets/…          # your images
+```text
+docs/                         published-docs/
+├── README.md                 ├── index.html
+├── guide/                    ├── guide/
+│   ├── index.md              │   ├── index.html
+│   └── install.md            │   └── install.html
+└── images/logo.svg           ├── images/logo.svg
+                              └── _zellij/…
 ```
 
-A visitor requesting `/guide/quickstart` gets `guide/quickstart/index.html`
-straight from a CDN edge. No server runs. No process is warm or cold. Hosting is
-free nearly everywhere, and it cannot fall over under load, because there is
-nothing to fall over.
+The generated folder can be moved, copied to another computer, opened directly,
+or served by an ordinary HTTP file server. Keep the complete folder together.
+Navigation, breadcrumbs, previous/next links, heading anchors, offline search,
+local images, bundled fonts, syntax highlighting, and all 14 Zellij themes work
+without an HTTP server. Content and ordinary navigation remain available with
+JavaScript disabled; search and theme controls need JavaScript.
 
-**The one thing it gives up** is `next/image` optimisation — images are served
-at the size and format you authored them in, because there is no server to
-resize them on request. For documentation that is almost always the right trade.
-For a marketing site built on large photography it is the wrong one.
+### Pages, navigation, and titles
 
-### `image` — a server produces the HTML
+Documents keep their relative folders and change extension to `.html`.
+`index.md` becomes the directory's `index.html`. A `README.md` becomes
+`index.html` when that directory has no index document; otherwise it remains
+`README.html`. If there is no root home document, `zel` generates a home page
+listing all documents.
 
-A Docker image containing the Next.js application and a Node runtime, running
-`next start` and listening on **port 3000**.
+Home comes first. Other pages sort by optional numeric `order`, then by their
+output path. The sidebar and previous/next links use this order. Navigation
+configuration from MkDocs, Zellij YAML, or Docusaurus is not read by this target.
+
+Optional YAML front matter controls the page's navigation title, HTML title,
+summary metadata, and order:
+
+```markdown
+---
+title: Install the application
+description: Local setup instructions.
+order: 10
+---
+# Installation
+```
+
+Without `title`, the first H1 supplies the title, then the filename. A page
+without an H1 receives a title heading. The visible authored H1 is retained even
+when front matter supplies a different navigation title.
+
+### Links and assets
+
+Use ordinary Markdown links such as `[Install](guide/install.md#setup)` and
+`![Logo](images/logo.svg)`. Reference-style links also work. The builder rewrites
+local document links to their real HTML files, retains queries and fragments,
+validates heading/footnote fragments, and copies referenced local assets.
+Directories with a home document can be linked as `guide/`. Root-relative
+Markdown paths resolve inside the input folder and become portable relative
+links. All referenced local files must be inside that folder.
+
+Heading IDs derive from lowercase heading text with spaces replaced by hyphens
+and punctuation removed. Repeated headings receive `-1`, `-2`, and so on.
+Explicit IDs such as `## Setup {#install}` are supported and checked for
+collisions. Missing links, bad anchors, output collisions, and filenames that
+cannot be copied to Windows fail the build before replacing the previous site.
+
+Explicit `https:`, `http:`, `mailto:`, and `tel:` links remain external. Remote
+images are not downloaded or bundled, so they still require network access.
+Unused local files are not copied.
+
+### Markdown support and current limits
+
+The renderer supports headings, paragraphs, lists, emphasis, links, images,
+quotes, tables, task lists, strikethrough, footnotes, and fenced/indented code.
+Code highlighting is generated during the build and needs no browser library.
+
+Raw HTML is displayed as literal text and produces a warning. MDX components,
+MkDocs plugins/extensions, custom HTML widgets, math rendering, and Mermaid
+execution are not supported by this target yet. Math remains text and Mermaid
+fences remain code. Hosted Zellij sites retain their existing MDX, math, and
+diagram features. Portable build is the first part of the documentation
+workflow; native `serve`, composed `view`, and portable watch/reload remain planned.
+
+## Hosted static website
+
+`--target static` renders structured YAML/MDX content through the container
+engine. The result includes one HTML file per route, `_next` support files,
+search data, and copied assets. Serve it over HTTP with an appropriate static
+host. Its router and asset URLs assume HTTP; opening its `index.html` directly
+is not the portable workflow.
+
+Static export serves images as authored rather than using a running image
+optimizer. Configure the content's `site.yaml` for branding, theme, site URL,
+and deployment prefix. See [configuration](/cli/config) for the distinction
+between content configuration and planned CLI configuration.
+
+## Container image
 
 ```bash title="terminal"
-zel build --target image --tag acme-docs:v2
+zel build ./content --target image --tag acme-docs:v2
 docker run -p 3000:3000 acme-docs:v2
 ```
 
-Pages are still statically generated — the server is mostly handing over
-pre-rendered HTML. What the server adds is `next/image` on demand, response
-headers you control, and the ability to put the site behind whatever your
-platform does with a container.
+The image includes the Next application and runtime and serves on port 3000.
+Use this target when your deployment uses containers or needs server-side image
+optimization. `zel image build` is also available; see [image commands](/cli/image).
 
-<Callout type="info" title="Neither one is a single-page app">
-This is worth stating plainly, because "static site" and "SPA" are often used as
-if they meant the same thing.
+## Output ownership
 
-Zellij never produces a Vite-style single-page application — there is no empty
-`<div id="root">` filled in by JavaScript, and no client-side router that owns
-navigation. Both targets ship **real HTML for every route**, with React
-rehydrating only the interactive parts: the theme toggle, search, the mobile
-menu, a carousel.
+Both file targets require output outside the input tree. It must be new, empty,
+or a previous Zellij export containing its `.zellij-output` ownership marker.
+Keep authored files outside generated output: rebuilding replaces the export
+as a whole and removes obsolete generated pages.
 
-The difference between the two targets is when that HTML is written to disk, not
-whether it exists. A search engine, a text browser, or a visitor with JavaScript
-disabled sees a complete page either way.
-</Callout>
-
-## Which one you want
-
-<CardGrid>
-  <Card title="Choose static" icon="cloud">
-    You are shipping documentation or a marketing site, you want it to cost
-    nothing, and your images are already the right size. This is nearly
-    everyone.
-  </Card>
-  <Card title="Choose image" icon="container">
-    You need image optimisation, your platform deploys containers, you have to
-    sit behind a corporate proxy or an existing ingress, or the site must live
-    where your other services live.
-  </Card>
-</CardGrid>
-
-If you cannot decide, build `static`. Moving to `image` later is a flag, and the
-content does not change.
-
-### What happened to `node` and `image:static`
-
-Earlier drafts of this documentation listed four targets. Two of them were not
-products:
-
-- **`node`** — a traced Node server, uncontainerised. That is an artefact for a
-  platform to consume, not something you choose. Vercel builds it for you; on
-  any other host you would put it in a container, which is `image`.
-- **`image:static`** — nginx serving the static folder from a container. That is
-  the static site in a box: a packaging preference, not a different site. If you
-  want it, build `static` and copy `dist/` into whatever base image your
-  organisation requires.
-
-Offering four choices where there are two made the decision look harder than it
-is.
+Builds stage in a temporary sibling directory. Validation or rendering failures
+leave the previous export intact. For an older unmarked export, choose a new
+output directory; do not add the marker by hand.
 
 ## Options
 
-| | | |
+| Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--target <static\|image>` | What to produce | `static` |
-| `--out <path>` | Output folder — `static` only | `./dist` |
-| `--tag <name:version>` | Image tag — `image` only | `<site-name>:latest` |
-| `--base-path <path>` | Serve under a prefix, e.g. `/docs` | none |
-| `--site-url <url>` | Absolute origin, for canonicals and the sitemap | `siteUrl` in `site.yaml` |
-| `--features <list>` | `maths`, `diagrams`, `all` | from the content |
-| `--platform <list>` | Image architectures | the host's |
-| `--no-check` | Skip validation. Not recommended | off |
+| `[dir]` | Input directory | `.` |
+| `--target <portable\|static\|image>` | Explicit output target | Discover structured content, otherwise portable |
+| `--out <path>` | Output folder for `portable` or `static` | Portable: sibling `<input-name>-site`; static: `./dist` |
+| `--name <text>` | Portable site's header name | Input folder name |
+| `--theme <name>` | Portable theme; see `zel list themes` | `cupertino` |
+| `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
 
-## What you get
-
-```
-  Engine   ghcr.io/mylife-inc/zellij-base:latest
-  Content  ./content
-  Target   static → dist
-
-  …
-
-✓ dist  (19 entries)
-
-  Serve it from any static host.
-```
-
-```
-dist/
-├── index.html          one file per route
-├── guide.html
-├── guide/
-│   └── setup.html
-├── 404.html
-├── sitemap.xml
-├── robots.txt
-├── _next/static/…      CSS and JS, content-hashed
-└── _zellij/assets/…    your images
-```
-
-<Callout type="warning" title="An empty sitemap is a silent failure">
-A sitemap lists **absolute** URLs, so it needs to know the site's origin. Without
-`siteUrl` in `site.yaml` the engine has nothing to write and produces valid,
-empty XML — the site ships, search engines index nothing, and nobody finds out
-for months.
-
-`zel build` says so when it happens:
-
-```
-! dist/sitemap.xml is empty.
-  A sitemap lists absolute URLs, so it needs the site's origin.
-  Set siteUrl in site.yaml:
-
-    siteUrl: https://docs.example.com
-```
-
-A scaffolded folder carries a commented `siteUrl` for exactly this reason.
-</Callout>
-
-## What it actually does
-
-<Steps>
-<Step title="Resolves the content folder">
-And fails immediately if it cannot find one.
-</Step>
-<Step title="Validates it">
-The same pass as [`zel check`](/cli/check), inside the same container. A build
-that is going to fail on a broken link fails here, in a second, rather than
-after a four-minute compile.
-
-This is not a convenience. A site with a dead internal link is a site that
-should not have been built, and catching it at the end — or not at all — is how
-one gets published.
-</Step>
-<Step title="Starts the engine container">
-Pulling `ghcr.io/mylife-inc/zellij-base` if it is not already local, mounting
-your content folder read-only.
-</Step>
-<Step title="Installs what this site needs">
-The base image ships with nothing installed. Maths and diagram support are
-fetched only if your content uses them.
-</Step>
-<Step title="Builds">
-`next build`, with static export when the target is `static`.
-</Step>
-<Step title="Writes the artefact">
-The folder into `--out`, or the image into your local Docker daemon.
-</Step>
-</Steps>
-
-Steps 3 to 5 need a container runtime. `zel doctor` reports whether you have
-one.
-
-## See also
-
-- [`zel deploy`](/cli/deploy) — build and put it online in one step
-- [`zel image`](/cli/image) — building, running and pushing images in detail
-- [`zel serve`](/cli/serve) — check a `static` build before it goes anywhere
+Options that do not apply to the selected target are rejected. `--base-path`,
+`--site-url`, `--features`, `--platform`, and `--no-check` are not implemented
+Rust build flags. `--json` is currently limited to inspection commands.

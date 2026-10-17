@@ -201,40 +201,34 @@ produces a wrong sidebar that looks right.
 
 ### 3.5 Building — what comes out
 
-There are **two** targets, and the choice is about where the HTML is produced:
+Implemented targets (2026-10-17):
 
-| Target | Produces | Runs on |
+| Target | Produces | Requirements |
 | --- | --- | --- |
-| `static` *(default)* | A folder of HTML, CSS and JS | Netlify, Cloudflare, GitHub Pages, S3 — free tiers everywhere |
-| `image` | A container running the site on port 3000, ~150 MB | Railway, Fly.io, Cloud Run, ECS, any registry |
+| `portable` | A movable Markdown documentation site, including file-based navigation and search | Native `zel` only; open `index.html` without HTTP |
+| `static` | A Next static export from structured YAML/MDX content | Container engine to build, HTTP to browse |
+| `image` | A container serving the website on port 3000 | Container runtime |
 
-`static` is the default because most documentation sites are read far more than
-they are written, a CDN serves them better than a server would, and it is the
-only target that costs nothing to host.
+Without `--target`, structured-content discovery selects `static`; otherwise
+build treats the supplied directory as plain Markdown and selects `portable`.
+Explicit targets override discovery. Portable output defaults to the sibling
+`<input-name>-site`; static output remains `./dist`. Both require new, empty, or
+owned output outside the source tree and stage before replacing it.
 
-The trade-off worth knowing: static loses `next/image` optimisation, so images
-are served as authored. For a documentation site that is usually the right
-trade; for a marketing site heavy with photography it is not, and `image` exists
-for exactly that.
+`--name` and `--theme` apply only to portable builds. `--out` applies to either
+file target; `--tag` applies only to image builds. Invalid combinations fail
+before invoking a container or writing output. The shared theme catalog and
+font snapshot are embedded in the native renderer; build-time token generation
+is checked against the hosted engine in CI.
 
-Neither target is a single-page application. Both ship real HTML for every
-route, with React rehydrating only the interactive parts. The difference is when
-the HTML is written to disk, not whether it exists.
+See [portable requirements and implementation status](zel-portable-docs.md)
+for routing, Markdown support, offline acceptance and remaining serve/view work.
+Portable currently does not execute raw HTML/MDX, math or Mermaid. The hosted
+targets retain those engine features. Advanced navigation/config loading and
+plugin compatibility remain separate work.
 
-### Two rejected targets
-
-An earlier draft listed four. Two of them were not products:
-
-- **`node`** — a traced Node server, uncontainerised. That is an artefact for a
-  platform to consume, not a choice a user makes. Vercel builds it for you; on
-  any other host it would go in a container, which is `image`.
-- **`image:static`** — nginx serving the static folder. That is the static site
-  in a box: a packaging preference. Anyone who wants it can copy `dist/` into
-  whatever base image their organisation requires.
-
-Offering four choices where there are two made the decision look harder than it
-is. This was found by a reader of the documentation who could not tell the four
-apart, which is the correct test.
+The former `node` and `image:static` proposals remain omitted: they describe
+packaging of the hosted outputs, rather than additional rendering targets.
 
 ### 3.6 Optional features
 

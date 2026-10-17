@@ -539,6 +539,65 @@ math-rendering timeouts during a full Rust rebuild. The unchanged suite passed
 with two local workers and unchanged timeouts. Hosted full acceptance remains
 the next gate; no native binary release is part of this milestone.
 
+Hosted completion: [PR #11](https://github.com/mylife-inc/Zellij/pull/11)
+merged as `0a89131` after final source/help head `c411317` passed CI
+`39059091256`. Main CI `39059796288` also passed all four jobs: 125 Rust tests,
+325 engine tests, typechecks/schema sync, zero npm advisories, and **311 browser
+passes with 124 conditional skips and no retries**. Container/scaffold/conversion,
+font/license, production-prefix and development-watcher acceptance passed.
+Image run `39059796306` passed all 13 jobs, publishing all four feature variants
+for Linux AMD64/ARM64 and passing the default-image smoke test. No native binary
+release was issued.
+
+### Native portable Markdown build — 2026-10-17
+
+Source commit `8f72022` adds the native `zellij-docs` crate and
+`zel build --target portable`. A plain Markdown folder selects it automatically;
+discovered structured Zellij content retains the hosted static default. The
+renderer parses Markdown with pulldown-cmark, highlights code with syntect, and
+writes full HTML pages with ordinary relative links. Embedded local scripts
+provide search, theme selection and mobile navigation without fetch/router data.
+The 14 themes are generated from engine tokens; the same pinned 75-font snapshot
+and license notices are embedded by Cargo. Building needs no Node, Docker or
+network. Source checkout builds do require the engine font snapshot in this repo.
+
+Output defaults to a sibling `<input-name>-site`; `--out`, `--name` and `--theme`
+configure publication. Index/README home selection, optional front-matter title/
+description/order, directory links, heading/footnote fragments, referenced
+assets, synthetic home, breadcrumbs and previous/next are implemented. The
+shared staged publisher moved from `zellij-engine` to `zellij-core::output`
+without changing the ownership/failed-build-preservation contract. Source and
+output are disjoint; nested symlinks, missing references, duplicate outputs and
+Windows-incompatible names fail before replacing output. URL paths normalize
+Windows separators at the filesystem boundary.
+
+Current limits: raw HTML is displayed literally with a warning; MDX is rejected.
+Math rendering, Mermaid execution, custom navigation/config, portable watch/reload,
+`serve` and `view` remain unfinished. External media is not downloaded. The
+[portable contract](specs/zel-portable-docs.md) and CLI build docs carry the exact
+behavior and capability comparison. This is not complete MkDocs compatibility.
+
+Local acceptance: **137 Rust tests**, formatting, warnings-denied Clippy,
+generated-theme parity, deep/strict docs checks and Chromium file acceptance
+pass. The browser fixture builds without tools on PATH, preserves an old export
+on failure, moves output to a space/Unicode path, opens home and deep links with
+networking blocked, and checks search/anchors, local fonts/media, keyboard,
+themes, mobile layout and JavaScript-disabled content. Review caught and fixed
+Escape clearing the search field instead of closing its dialog. CI now includes
+native portable build/CLI/browser jobs on Linux, macOS and Windows, each with
+Chromium and WebKit. Hosted results are pending at this record; these jobs do
+not establish full native Windows container support or release/install coverage.
+
+Browser follow-up: the first hosted run passed Chromium but WebKit rejected
+its initial file navigation with offline emulation enabled. A minimal local
+file containing only an H1 reproduced that failure; HTTP-blocked file loading
+without emulation passed. WebKit acceptance therefore blocks HTTP requests
+explicitly and asserts that every observed request uses file/data URLs; Chromium
+also retains offline emulation. Both JavaScript and no-JavaScript contexts use
+these guards. No file-security flags or HTTP fallback are used. Both engines
+now pass locally. WebKit additionally exposed missing focus restoration after
+pointer-opened search; the runtime now records and restores the opening control.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -570,7 +629,8 @@ The user requires MkDocs-equivalent documentation workflows, with command syntax
 free to differ: build a plain Markdown folder into a site that also works by
 double-clicking `index.html`, serve an existing static site over HTTP, and a
 `view` operation combining build, serve and browser launch. This is new required
-product scope, not implemented behavior. The [portable documentation contract](specs/zel-portable-docs.md)
+product scope. The first portable build milestone is implemented above;
+serve/view remain planned. The [portable documentation contract](specs/zel-portable-docs.md)
 records plain-folder discovery, direct-file navigation/search/assets, offline
 acceptance and cross-platform serve/view requirements. Keep a core MkDocs
 capability comparison when implementing the Rust CLI. Today's Next static export
@@ -605,6 +665,7 @@ it does not replace this architectural and development-status context.
 | `cli/crates/zellij-core` | Errors, project discovery, embedded schemas and reference |
 | `cli/crates/zellij-scaffold` | Content/section/page/guide/project and GitHub workflow generators |
 | `cli/crates/zellij-convert` | Converter registry, MkDocs and Docusaurus readers, MDX/Material normalization |
+| `cli/crates/zellij-docs` | Native portable Markdown rendering, relative links, embedded offline assets/search |
 | `cli/crates/zellij-engine` | Container runtime detection, check/dev/build, Dockerfile and image operations |
 | `docker/base.Dockerfile` | Distributable wrapper/engine builder image |
 | `scripts/install.sh`, `scripts/publish.sh` | POSIX binary installation and release/image publishing |
@@ -614,7 +675,7 @@ it does not replace this architectural and development-status context.
 | `examples/payos`, `examples/codeseal-docs` | Real product integration examples |
 | `specs` | Product contracts, design history, and audit |
 
-There are **five Rust crates, four example apps, 23 section types, 14 themes,
+There are **six Rust crates, four example apps, 23 section types, 14 themes,
 and four page layouts**. Older references to 12/18/19 sections, 10 themes, or
 three apps should not guide new work.
 
@@ -634,13 +695,17 @@ flowchart LR
   Zel --> Content
   Zel --> Container[Container engine adapter]
   Container --> Render
+  Markdown[Plain Markdown] --> Portable[Native portable renderer]
+  Zel --> Portable
+  Portable --> Files[Movable HTML and local assets]
 ```
 
 Rendering and preparation share content-source resolution. Search reads the
 canonical Site model and uses parsed heading IDs shared with the TOC/rendering
 pipeline. Preparation reads fresh data; rendering caches separately by content
-and deployment configuration. Derived assets/search still need manual preparation
-after content edits during development.
+and deployment configuration. The implemented development watcher refreshes
+derived assets/search after content edits; automatic browser reload for every
+prepared-file change still requires further acceptance.
 
 - npm workspaces: `engine/packages/*` and `examples/*`; committed npm lockfile.
 - Engine package version `0.1.0`; Rust workspace version `0.1.3`.
@@ -835,10 +900,10 @@ does not prove MDX compiles or all links/images work.
 
 Remaining order after the font and inspection-output changes, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of the CLI inspection-output change (R9).
-   Preserve the offline build, browser font and CLI output checks as release gates.
+1. Complete hosted cross-platform acceptance of the portable Markdown build.
+   Preserve the offline/browser/font/CLI gates; PR #11 inspection acceptance passed.
 2. Finish the agreed CLI subset and configuration, including
-   the required plain-Markdown portable build, static serve and composed view
+   static serve, composed view and the remaining portable rendering capabilities
    workflows in [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
