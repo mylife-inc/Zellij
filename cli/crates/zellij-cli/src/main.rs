@@ -460,7 +460,7 @@ fn main() {
 /// Where the content is, when nobody said.
 ///
 /// `./content` first because that is what `zel new docs` writes, then the
-/// current directory when it looks like a content root. A folder that merely
+/// current root, then `./docs` and `./documentation`. A folder that merely
 /// holds Markdown is never assumed: guessing produces a build that looks
 /// finished and is about something else.
 fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
@@ -474,20 +474,7 @@ fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
         };
     }
 
-    let conventional = given.join("content");
-    if looks_like_content(&conventional) {
-        return Ok(conventional);
-    }
-
-    if looks_like_content(&given) {
-        return Ok(given);
-    }
-
-    Err(zellij_core::Error::NoContentFolder { path: given })
-}
-
-fn looks_like_content(dir: &Utf8Path) -> bool {
-    dir.join("site.yaml").is_file() || dir.join("pages.yaml").is_file()
+    Ok(zellij_core::Project::discover(&given)?.content)
 }
 
 fn check(dir: &str) -> zellij_core::Result<()> {

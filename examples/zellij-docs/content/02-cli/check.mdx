@@ -13,6 +13,16 @@ zel check
 zel check ./docs
 ```
 
+Without a directory argument, `zel` looks in `./content`, then the current
+directory, then `./docs` and `./documentation`. It recognizes `site.yaml`,
+`pages.yaml`, `menu.yaml`, a `sections/` directory, or a guide directory with
+`_sidebar.yaml`. A guide-only site does not need a `site.yaml` file. Hidden
+directories and asset/example folders are not treated as guides.
+
+An explicit directory selects that exact folder, including an empty folder;
+the engine reports its content errors or warnings. Discovery never searches
+parent directories. `dev`, `build` and the image commands use the same resolver.
+
 ```
 ✓ ./content
   site        Acme · theme cupertino

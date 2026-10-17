@@ -7,6 +7,7 @@
 //! not have to be understood by whoever adds support for the next tool.
 
 use camino::Utf8PathBuf;
+use zellij_core::yaml::string as yaml_string;
 
 use crate::material::demote_material;
 use crate::mdx::make_mdx_safe;
@@ -19,26 +20,6 @@ use crate::{Conversion, OutputFile, Unmapped};
 /// because that is what it is — the prefix is stripped from the route, so this
 /// serves at `/guide`.
 const GUIDE_DIR: &str = "01-guide";
-
-/// Quotes a string for YAML if it needs it.
-///
-/// Deliberately conservative: a title containing a colon, a quote or a leading
-/// character YAML reads as syntax will silently change meaning otherwise, and
-/// the failure appears as a wrong sidebar rather than as an error.
-fn yaml_string(value: &str) -> String {
-    let needs_quoting = value.is_empty()
-        || value.contains([':', '#', '"', '\'', '\n', '{', '}', '[', ']', ',', '&', '*'])
-        || value.starts_with(['-', '?', '|', '>', '@', '`', ' '])
-        || value.ends_with(' ')
-        || matches!(value, "true" | "false" | "null" | "yes" | "no")
-        || value.parse::<f64>().is_ok();
-
-    if needs_quoting {
-        format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
-    } else {
-        value.to_owned()
-    }
-}
 
 /// The slug a source file becomes, relative to the guide folder.
 ///
@@ -291,9 +272,9 @@ mod tests {
     fn writes_a_sidebar_that_nests() {
         let conversion = convert();
         let body = &file(&conversion, "01-guide/_sidebar.yaml").body;
-        assert!(body.contains("- index"));
-        assert!(body.contains("- label: Guides"));
-        assert!(body.contains("- guides/install"));
+        assert!(body.contains(r#"- "index""#));
+        assert!(body.contains(r#"- label: "Guides""#));
+        assert!(body.contains(r#"- "guides/install""#));
     }
 
     #[test]
@@ -306,10 +287,41 @@ mod tests {
     }
 
     #[test]
+    fn conversion_metadata_preserves_multiline_and_implicit_yaml_values() {
+        for title in [
+            "TRUE",
+            "Null",
+            "42",
+            "Acme: Docs #1",
+            "a\n\"b\"\\c\r\nالعربية",
+            "a\u{85}b\u{2028}c\u{2029}d",
+        ] {
+            let mut tree = tree();
+            tree.site_name = Some(title.into());
+            tree.description = Some(title.into());
+            tree.nav = vec![Entry::Page {
+                label: Some(title.into()),
+                source: "index.md".into(),
+            }];
+            let converted = emit(&tree, |_| Some("# Heading\n\nBody.\n".into()));
+            let site: serde_yaml_ng::Value =
+                serde_yaml_ng::from_str(&file(&converted, "site.yaml").body).unwrap();
+            assert_eq!(site["name"].as_str(), Some(title));
+            let sidebar: serde_yaml_ng::Value =
+                serde_yaml_ng::from_str(&file(&converted, "01-guide/_sidebar.yaml").body).unwrap();
+            assert_eq!(sidebar["description"].as_str(), Some(title));
+            let (metadata, _) = split_frontmatter(&file(&converted, "01-guide/index.mdx").body);
+            let metadata: serde_yaml_ng::Value =
+                serde_yaml_ng::from_str(metadata.unwrap()).unwrap();
+            assert_eq!(metadata["title"].as_str(), Some(title));
+        }
+    }
+
+    #[test]
     fn takes_the_title_from_the_navigation_before_the_heading() {
         let conversion = convert();
         let body = &file(&conversion, "01-guide/index.mdx").body;
-        assert!(body.contains("title: Home"));
+        assert!(body.contains(r#"title: "Home""#));
     }
 
     #[test]
