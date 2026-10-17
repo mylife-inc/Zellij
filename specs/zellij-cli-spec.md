@@ -15,6 +15,11 @@ The user's 2026-10-17 requirements add plain-Markdown-folder builds with direct
 `view` workflow. See [the portable documentation contract](zel-portable-docs.md)
 for acceptance criteria and the MkDocs capability comparison.
 
+Portable builds now read optional `zel.yaml` in the input Markdown root for
+identity, theme, company branding and nested navigation. CLI name/theme flags
+override those fields. This implemented project format is separate from the
+general TOML command defaults described in the original design below.
+
 ---
 
 ## 1. What it is for

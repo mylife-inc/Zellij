@@ -119,3 +119,63 @@ fn invalid_build_options_fail_before_creating_output() {
         assert!(failure.stdout.is_empty());
     }
 }
+
+#[test]
+fn portable_configuration_selects_native_build_and_flags_override_defaults() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir(root.join("docs")).unwrap();
+    fs::write(root.join("docs/README.md"), "# Home").unwrap();
+    fs::write(
+        root.join("docs/zel.yaml"),
+        "name: Configured\ntheme: forest\n",
+    )
+    .unwrap();
+    // An explicit portable config wins over hosted auto-discovery, while an
+    // explicit --target keeps its meaning. No external programs are available.
+    fs::write(root.join("docs/site.yaml"), "name: Hosted").unwrap();
+    let configured = run(root, &["build", "docs", "--out", "site"]);
+    assert!(
+        configured.status.success(),
+        "{}",
+        String::from_utf8_lossy(&configured.stderr)
+    );
+    let html = fs::read_to_string(root.join("site/index.html")).unwrap();
+    assert!(html.contains("Home · Configured"));
+    assert!(html.contains("data-zellij-theme=\"forest\""));
+    let overridden = run(
+        root,
+        &[
+            "build",
+            "docs",
+            "--out",
+            "site",
+            "--name",
+            "Override",
+            "--theme",
+            "cupertino",
+        ],
+    );
+    assert!(
+        overridden.status.success(),
+        "{}",
+        String::from_utf8_lossy(&overridden.stderr)
+    );
+    let html = fs::read_to_string(root.join("site/index.html")).unwrap();
+    assert!(html.contains("Home · Override"));
+    assert!(html.contains("data-zellij-theme=\"cupertino\""));
+    let explicit = run(
+        root,
+        &["build", "docs", "--target", "static", "--name", "No"],
+    );
+    assert!(String::from_utf8_lossy(&explicit.stderr).contains("only to portable builds"));
+    fs::remove_file(root.join("docs/zel.yaml")).unwrap();
+    fs::create_dir(root.join("docs/zel.yaml")).unwrap();
+    let invalid = run(root, &["build", "docs", "--out", "site"]);
+    assert!(!invalid.status.success());
+    assert!(String::from_utf8_lossy(&invalid.stderr).contains("regular file"));
+    assert_eq!(
+        fs::read_to_string(root.join("site/index.html")).unwrap(),
+        html
+    );
+}

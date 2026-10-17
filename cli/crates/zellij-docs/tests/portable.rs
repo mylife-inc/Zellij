@@ -186,7 +186,7 @@ fn themes_metadata_order_and_frontmatter_are_checked() {
         &out,
         BuildOptions {
             name: Some("Company & Docs"),
-            theme: "forest",
+            theme: Some("forest"),
         },
     )
     .unwrap();
@@ -201,7 +201,7 @@ fn themes_metadata_order_and_frontmatter_are_checked() {
             &out,
             BuildOptions {
                 name: None,
-                theme: "missing"
+                theme: Some("missing")
             }
         )
         .is_err()

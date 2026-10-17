@@ -11,18 +11,25 @@
   const storageKey = `zellij-docs:${rootURL.pathname}`;
   let saved = {};
   try { saved = JSON.parse(localStorage.getItem(storageKey) || '{}'); } catch {}
+  // Earlier builds saved defaults too; only the explicit-preference format
+  // can distinguish a visitor choice from the project's initial theme.
+  if (saved?.version !== 1) saved = {};
   const initialTheme = params.get('_zel_theme') || saved?.theme;
   const initialMode = params.get('_zel_mode') || saved?.mode;
-  if (validThemes.has(initialTheme)) theme.value = initialTheme;
-  if (validModes.has(initialMode)) mode.value = initialMode;
+  let preferredTheme = validThemes.has(initialTheme) ? initialTheme : undefined;
+  let preferredMode = validModes.has(initialMode) ? initialMode : undefined;
+  if (preferredTheme) theme.value = preferredTheme;
+  if (preferredMode) mode.value = preferredMode;
   const apply = () => {
     root.dataset.zellijTheme = theme.value;
     root.dataset.zellijMode = mode.value;
-    try { localStorage.setItem(storageKey, JSON.stringify({ theme: theme.value, mode: mode.value })); } catch {}
+    try { localStorage.setItem(storageKey, JSON.stringify({ version: 1, theme: preferredTheme, mode: preferredMode })); } catch {}
   };
+  // A project default is not a user preference: later config edits should
+  // apply until the visitor explicitly chooses a theme or appearance.
   apply();
-  theme.addEventListener('change', apply);
-  mode.addEventListener('change', apply);
+  theme.addEventListener('change', () => { preferredTheme = theme.value; apply(); });
+  mode.addEventListener('change', () => { preferredMode = mode.value; apply(); });
   document.querySelector('.controls').hidden = false;
   root.classList.add('js');
 
@@ -33,8 +40,8 @@
     if (!anchor) return;
     const url = new URL(anchor.href, location.href);
     if (url.protocol !== rootURL.protocol || url.host !== rootURL.host || !url.pathname.startsWith(rootURL.pathname) || !url.pathname.endsWith('.html')) return;
-    url.searchParams.set('_zel_theme', theme.value);
-    url.searchParams.set('_zel_mode', mode.value);
+    if (preferredTheme) url.searchParams.set('_zel_theme', preferredTheme);
+    if (preferredMode) url.searchParams.set('_zel_mode', preferredMode);
     anchor.href = url.href;
   });
 

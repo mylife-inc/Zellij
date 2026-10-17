@@ -18,6 +18,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
     await writeFile(readme, home('Before watching'));
     await writeFile(asset, svg(100));
     await rm(extra, { force: true });
+    await rm(path.join(source, 'zel.yaml'), { force: true });
     const server = await start(['view', source, '--out', output, '--port', '0', '--no-open', '--watch']);
     assert(server.stdout.includes('Watching Markdown and assets'));
     const status = async () => {
@@ -138,6 +139,35 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await writeFile(extra, `# Restored ${engine}\n`);
       await expect(page.getByRole('heading', { name: `Restored ${engine}`, exact: true })).toBeVisible({ timeout: 20000 });
 
+      // Config additions/edits/errors/removal use the same staged publication.
+      await page.goto(server.url);
+      const configPath = path.join(source, 'zel.yaml');
+      const config = (name, theme) => `name: ${name}\ntheme: ${theme}\nbrand:\n  logo:\n    src: assets/logo.svg\n    alt: Company\n    href: https://example.com/\nnav:\n  - page: README.md\n    label: Overview\n  - label: Guide\n    children:\n      - page: guide/extra.md\n        label: Extra reference\n`;
+      await writeFile(configPath, config('Configured preview', 'forest'));
+      await expect(page.locator('.brand')).toHaveText('Configured preview', { timeout: 20000 });
+      await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
+      await expect(page.locator('.brand-logo')).toHaveAttribute('href', 'https://example.com/');
+      await expect(page.getByRole('navigation', { name: 'Documentation', exact: true }).getByRole('link')).toHaveText(['Overview', 'Extra reference']);
+      await expect.poll(() => page.locator('.brand-logo img').evaluate(img => img.naturalWidth)).toBe(177);
+      const configuredOutput = await snapshot(output);
+      const configuredVersion = (await status()).version;
+      await writeFile(configPath, 'nav: [{page: absent.md}]');
+      await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
+      assert.equal((await status()).version, configuredVersion);
+      assert.deepEqual(await snapshot(output), configuredOutput);
+      await writeFile(configPath, config('Recovered configuration', 'cupertino'));
+      await expect(page.locator('.brand')).toHaveText('Recovered configuration', { timeout: 20000 });
+      await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'cupertino');
+      // Explicit visitor choices survive later changes to the project default.
+      await page.getByLabel('Theme', { exact: true }).selectOption('forest');
+      await writeFile(configPath, config('Changed default', 'cupertino'));
+      await expect(page.locator('.brand')).toHaveText('Changed default', { timeout: 20000 });
+      await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
+      await rm(configPath);
+      await expect(page.locator('.brand')).toHaveText(path.basename(source), { timeout: 20000 });
+      await expect(page.locator('.brand-logo')).toHaveCount(0);
+      await expect(page.getByRole('navigation', { name: 'Documentation', exact: true }).getByRole('link')).toHaveCount(3);
+
       const stable = await status();
       await writeFile(path.join(source, '.draft.md'), 'ignored');
       await mkdir(path.join(source, 'node_modules'));
@@ -180,7 +210,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await offline.tracing.stop();
       await offline.close(); context = undefined;
       await rename(moved, output);
-      console.log(`${engine}: watch edits/assets/search, failed-build preservation, deletion/root/link recovery, live reload, real Ctrl-C and offline artifact passed.`);
+      console.log(`${engine}: watch edits/assets/search/configuration, failed-build preservation, deletion/root/link recovery, live reload, real Ctrl-C and offline artifact passed.`);
     } catch (error) {
       console.error(`${engine} watch failure. CLI output:\n${server.stdout}\n${server.stderr}`);
       if (page && !page.isClosed()) {

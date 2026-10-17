@@ -51,7 +51,7 @@ pub fn view(dir: &str, options: ViewOptions<'_>) -> Result<()> {
                 source,
                 output: zellij_core::files::absolute_path(&output)?,
                 name: options.name.map(str::to_owned),
-                theme: options.theme.unwrap_or("cupertino").to_owned(),
+                theme: options.theme.map(str::to_owned),
             },
             initial,
             live,

@@ -19,7 +19,7 @@ zel publish
 [`zel deploy`](/cli/deploy), stopping at the first failure.
 
 It does nothing the three cannot, and it takes no arguments they do not.
-Everything about *what* gets published lives in [`zel.toml`](/cli/config):
+Everything about *what* gets published lives in [`zel.toml`](/cli/config#planned-cli-defaults):
 
 ```toml title="zel.toml"
 content = "docs"
@@ -88,4 +88,4 @@ netlify deploy --prod --dir dist
 
 - [`zel deploy`](/cli/deploy) — where the provider logic lives
 - [`zel ship`](/cli/ship) — the same idea, starting from another tool's docs
-- [`zel.toml`](/cli/config) — what makes this one word
+- [`zel.toml`](/cli/config#planned-cli-defaults) — what makes this one word
