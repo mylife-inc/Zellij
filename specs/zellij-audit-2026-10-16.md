@@ -418,6 +418,13 @@ asset referenced by the stylesheet and verifies its full HTTP response. Local
 webpack/Chromium dev acceptance passes. Final results are tracked on
 [PR #10](https://github.com/mylife-inc/Zellij/pull/10).
 
+Run `39054096571` passed 311 production browser tests without retries. The font
+check then fetched a stylesheet-relative notice URL relative to the page and
+received 404. Its trace confirmed `url(../media/licenses.3-xnmaabgbyei.txt)` in
+`/_next/static/chunks/...css`. The check now resolves against that stylesheet,
+retaining full-byte notice and deployment-prefix assertions. Local webpack
+production acceptance passes the emitted license asset.
+
 PR #9 merged as `bd01bdb`. Main CI `39052261993` passed all jobs with 311 browser
 passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
 dev acceptance. Image run `39052261989` published all four AMD64/ARM64 variants

@@ -36,12 +36,29 @@ export function observeThemeFonts(page, origin, prefix) {
     assert(allFaces.length >= manifest.families.reduce((count, family) => count + family.files.length, 0) && allFaces.every((status) => status === 'loaded'), 'All font weights and Unicode subsets must decode');
     assert(requests.length > 0 && requests.every((url) => url.startsWith(`${origin}${prefix}/_next/static/media/`)), `Fonts must be local and prefixed: ${JSON.stringify(requests)}`);
     const license = await page.evaluate(async () => {
-      const value = getComputedStyle(document.documentElement).getPropertyValue('--zellij-font-license-url').trim();
-      const match = /^url\(["']?([^"')]+)["']?\)$/.exec(value);
-      if (!match) throw new Error(`Missing bundled license URL: ${value}`);
-      const response = await fetch(match[1]);
-      if (!response.ok) throw new Error(`License request failed: ${response.status}`);
-      return { url: response.url, text: await response.text() };
+      const findNotice = (rules) => {
+        for (const rule of rules) {
+          const value = rule.style?.getPropertyValue('--zellij-font-license-url').trim();
+          if (value) return value;
+          if (rule.cssRules) {
+            const nested = findNotice(rule.cssRules);
+            if (nested) return nested;
+          }
+        }
+      };
+      for (const sheet of document.styleSheets) {
+        const value = findNotice(sheet.cssRules);
+        if (!value) continue;
+        const match = /^url\(["']?([^"')]+)["']?\)$/.exec(value);
+        if (!match) throw new Error(`Invalid bundled license URL: ${value}`);
+        // Turbopack emits ../media/... whereas webpack uses an absolute path.
+        // Read the asset relative to its stylesheet, not the current page.
+        const url = new URL(match[1], sheet.href ?? document.baseURI);
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`License request failed: ${response.status} ${url}`);
+        return { url: response.url, text: await response.text() };
+      }
+      throw new Error('Missing bundled font license reference');
     });
     assert(license.url.startsWith(`${origin}${prefix}/_next/static/media/`), 'Font license must be a local, prefixed asset');
     const expectedNotice = await readFile(new URL('../engine/packages/zellij/src/themes/fonts/licenses.txt', import.meta.url), 'utf8');

@@ -468,7 +468,14 @@ Its production font gate failed because Turbopack stripped license comments.
 Follow-up `21479d3` emits the combined notice as a real CSS URL asset and checks
 its deployed response byte-for-byte. Local webpack/Chromium dev acceptance
 passed this follow-up. [PR #10](https://github.com/mylife-inc/Zellij/pull/10)
-tracks final hosted verification. No native CLI release is made.
+tracks final hosted verification. Run `39054096571` passed all 311 production
+browser tests without retries, then exposed a test URL-resolution error:
+Turbopack emitted the notice relative to its stylesheet (`../media/...`), while
+the test fetched it relative to the page. The trace confirmed the emitted CSS
+reference; the check now resolves it against the owning stylesheet and still
+requires the complete notice bytes and local deployment prefix. The corrected
+license asset also passes local webpack production acceptance. No native CLI
+release is made.
 
 Prior milestone completion: [PR #9](https://github.com/mylife-inc/Zellij/pull/9)
 merged as `bd01bdb`. Main CI `39052261993` passed all four jobs, including **311
