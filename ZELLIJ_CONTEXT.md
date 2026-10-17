@@ -477,6 +477,16 @@ requires the complete notice bytes and local deployment prefix. The corrected
 license asset also passes local webpack production acceptance. No native CLI
 release is made.
 
+Run `39054561760` passed all engine/schema/CLI checks, offline build, and both
+Chromium/WebKit production font/prefix checks. Development passed Chromium but
+WebKit requested Next's own `/__nextjs_font/geist-latin.woff2` debug-overlay font,
+which the test mistakenly treated as a Zellij asset. The installed Next overlay
+middleware explicitly serves four local Geist font paths outside basePath.
+Development acceptance now recognizes only those exact local framework paths;
+all Zellij and remote font requests remain checked, and production has no
+exception. That run's main browser suite had 310 initial passes plus one known
+FAQ retry and 124 conditional skips. Consult PR #10 for final acceptance.
+
 Prior milestone completion: [PR #9](https://github.com/mylife-inc/Zellij/pull/9)
 merged as `bd01bdb`. Main CI `39052261993` passed all four jobs, including **311
 browser tests**, 124 conditional skips and **no retries**. Chromium/WebKit

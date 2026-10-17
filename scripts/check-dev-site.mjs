@@ -75,7 +75,7 @@ try {
     if (engine) {
       browser = await engine.launch();
       page = await browser.newPage();
-      const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix);
+      const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix, { development: true });
       await page.goto(`${origin}/manual`);
       await expect(page.getByRole('heading', { name: 'Watching', exact: true })).toBeVisible();
       await checkFonts();

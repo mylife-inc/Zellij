@@ -5,9 +5,14 @@ const manifest = JSON.parse(await readFile(new URL('../engine/packages/zellij/sr
 
 // Attach before navigation so even an unexpected external stylesheet request
 // is caught. The fixture deliberately contains no third-party resources.
-export function observeThemeFonts(page, origin, prefix) {
+export function observeThemeFonts(page, origin, prefix, { development = false } = {}) {
   const requests = [];
   page.on('request', (request) => {
+    const url = new URL(request.url());
+    // Next's dev-overlay middleware deliberately serves its own Geist fonts
+    // outside basePath. These four local framework fonts are not site assets.
+    // Production has no exception; neither do remote or other unprefixed URLs.
+    if (development && url.origin === origin && /^\/__nextjs_font\/geist(?:-mono)?-latin(?:-ext)?\.woff2$/.test(url.pathname)) return;
     if (request.resourceType() === 'font' || /fonts\.(googleapis|gstatic)\.com/.test(request.url())) requests.push(request.url());
   });
   return async () => {

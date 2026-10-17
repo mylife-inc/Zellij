@@ -425,6 +425,15 @@ received 404. Its trace confirmed `url(../media/licenses.3-xnmaabgbyei.txt)` in
 retaining full-byte notice and deployment-prefix assertions. Local webpack
 production acceptance passes the emitted license asset.
 
+Run `39054561760` passed engine/schema/CLI jobs and both production browser/font
+gates. Chromium dev passed; WebKit dev requested Next's own debug-overlay Geist
+font at `/__nextjs_font/geist-latin.woff2`, triggering the site's prefix assertion.
+Inspection of Next's installed `get-dev-overlay-font-middleware.js` confirms its
+four allowed local Geist paths intentionally bypass basePath. The development
+check now recognizes only those framework paths; all other font URLs retain the
+local-prefix assertion, and production has no exception. Production browser tests
+had 310 initial passes plus one successful known FAQ retry and 124 skips.
+
 PR #9 merged as `bd01bdb`. Main CI `39052261993` passed all jobs with 311 browser
 passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
 dev acceptance. Image run `39052261989` published all four AMD64/ARM64 variants
