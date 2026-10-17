@@ -403,11 +403,8 @@ export async function init(options: InitOptions): Promise<string> {
     // npm applies overrides only at the app root, never inside a dependency.
     overrides,
     scripts: {
-      // `prepare` syncs content assets into public/ and writes the search
-      // index. Both are derived from the content folder, so they run before
-      // every dev session and every build rather than being committed.
-      predev: 'zellij prepare',
-      dev: `next dev --port ${port}`,
+      // Development owns both initial preparation and ongoing updates.
+      dev: `zellij dev -- --port ${port}`,
       prebuild: 'zellij prepare',
       build: 'next build',
       start: `next start --port ${port}`,

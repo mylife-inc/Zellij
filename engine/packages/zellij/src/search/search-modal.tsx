@@ -67,6 +67,12 @@ export function SearchModal({ basePath }: { basePath: string }) {
   // A cancelled load must be restartable on reopen. Completed data is cached
   // for this deployment prefix; changing loading status cannot cancel a fetch.
   useEffect(() => {
+    if (!open && process.env.NODE_ENV === 'development') {
+      // Content is mutable in dev. Reopening must read the watcher's new index
+      // even when the browser has not navigated or reloaded the page.
+      setLoaded(undefined);
+      return;
+    }
     if (!open || loaded?.basePath === basePath) return;
     const controller = new AbortController();
     let cancelled = false;
@@ -76,7 +82,10 @@ export function SearchModal({ basePath }: { basePath: string }) {
       try {
         const [module, response] = await Promise.all([
           import('flexsearch'),
-          fetch(`${basePath}${SEARCH_INDEX_PATH}`, { signal: controller.signal }),
+          fetch(`${basePath}${SEARCH_INDEX_PATH}`, {
+            signal: controller.signal,
+            ...(process.env.NODE_ENV === 'development' ? { cache: 'no-store' as const } : {}),
+          }),
         ]);
         if (!response.ok) throw new Error(`index request failed: ${response.status}`);
 

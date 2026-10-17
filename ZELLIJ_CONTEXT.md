@@ -373,6 +373,68 @@ skips and no retries**. Separate Chromium/WebKit prefix acceptance passed with
 normal fonts and Turbopack. Image run `39026348423` published all four variants
 for AMD64/ARM64 and passed the published-image build/serve smoke test.
 
+### Development preparation update — 2026-10-17
+
+Source commit `8674908` completes the remaining preparation-watching part of
+**S9**. The Node helper now provides `zellij dev [--content <dir>] [--config <file>]
+-- [Next dev arguments]` and standalone `zellij prepare --watch`. Generated
+wrappers and all four examples use the supervised dev command. The base image
+uses that same generator, so Rust `zel dev` gets watching through its existing
+`npm run dev` invocation; no new Rust flag or native binary release is needed.
+Existing wrappers must update their dev script or run the standalone watcher.
+
+`src/cli/watch-preparation.ts` polls filesystem metadata every 500 ms, requires
+two stable snapshots, and serializes preparation. This covers bind mounts,
+custom/legacy content locations, root removal/recreation and symlinked roots.
+Generated output, Next output, node_modules and Git internals are excluded.
+Separate content/asset snapshots avoid copying images on prose-only edits and
+avoid rebuilding search for asset-only changes. Failed preparations do not
+acknowledge pending asset changes. Repeated identical errors are suppressed;
+corrected content recovers without restarting. Startup must prepare successfully.
+
+Search/manifest JSON is replaced through a sibling temporary file. Asset trees
+are copied and hashed before a short rename swap; failed copies preserve the
+old tree. This is not a transaction across the whole site, and an asset rename
+swap can briefly leave its directory absent. The dev supervisor owns Next's
+process, forwards signals, propagates its exit status, and closes the watcher.
+Search clears its loaded data on close and bypasses HTTP caching in development;
+production keeps the existing cache behavior.
+
+Local evidence: **324 engine tests** (seven watcher regressions), workspace
+typechecks, engine packaging, isolated installed-CLI process/exit acceptance,
+existing packaged preparation, and deep/strict docs validation pass. The real
+webpack dev server passes Chromium checks for updated search on reopen, rendered
+headings/images after reload, added/deleted pages, removed/restored assets,
+invalid-MDX recovery and released server port. CI adds the installed-package
+fixture, actual Rust/container dev acceptance and Chromium/WebKit dev acceptance
+with normal Turbopack. Consult the PR containing this commit for hosted results.
+
+Content edits still require browser reload for page/image changes. Automatic
+browser reload is future work; do not equate this watcher with full MkDocs live
+reload. Restart after deployment-prefix, wrapper-config or feature changes.
+Nested symlinks are not followed by the polling traversal. Portable Markdown
+build/serve/view remain unimplemented, as recorded in the portable contract.
+
+Browser verification exposed **S15**: MDX h2/h3/h4 links replace their accessible
+names with “Link to this section.” This remains an accessibility follow-up;
+S13, S14 and the existing mobile-WebKit flakes also remain open.
+
+PR #9's first normal-Turbopack dev gate exposed S13 again: IBM Plex Sans failed
+before browser acceptance with `next/font/google queries have exactly one entry`.
+This matches upstream Next issue #99114, whose fix #100158 is merged but was not
+in npm's stable 16.4.2 on 2026-10-17. See the audit for links and evidence limits.
+A retry does not resolve the build's Google Fonts dependency. Treat a stable
+font remedy as the next reliability priority before expanding the CLI surface.
+
+Prior milestone completion: [PR #8](https://github.com/mylife-inc/Zellij/pull/8)
+merged as `d4615ca`. PR CI `39036985726` and main CI `39037525173` passed all four
+jobs (317 engine tests, 117 Rust tests and the real deep/strict container/export
+fixture). Both browser runs had 310 initial passes plus one successful retry of
+the known mobile-WebKit FAQ interaction, with 124 conditional skips. Separate
+Chromium/WebKit prefix acceptance passed. Image run `39037525149` published all
+four feature variants for AMD64/ARM64 and passed published-image build/serve
+acceptance. No new native CLI release was made.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -511,6 +573,7 @@ after content edits during development.
 | Themes/motion | `src/themes`, `src/motion`, `src/styles/sections.css` |
 | Search and heading IDs | `src/search`, `src/cli/write-search-index.ts`, `src/mdx/headings.ts` |
 | Build-time operations | `src/cli/check.ts`, `sync-assets.ts`, `context.ts`, `init.ts` |
+| Development preparation | `src/cli/dev.ts`, `watch-preparation.ts`, `write-prepared-file.ts`; packaged/browser/container fixtures in `scripts/check-dev-*.mjs` |
 | Static reference validation | `src/cli/deep-check.ts`, `src/content/reference-schema.ts`, `src/content/inline-markdown.ts` |
 | Rust command truth | `cli/crates/zellij-cli/src/main.rs` — enum AND dispatch |
 | Release truth | `.github/workflows/release.yml`, `scripts/install.sh` |
@@ -666,21 +729,21 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after static reference validation, subject to the user's v1 scope decision:
+Remaining order after development preparation watching, subject to the user's v1 scope decision:
 
-1. Development preparation watching (remaining S9). R13 now has an opt-in
-   static-analysis gate with the limits above; it is not a full execution check.
-   R10–R12 and S2/S6/S8/S12 are resolved above; R5 retains advanced migration
-   limits. Investigate font-build reproducibility (S13).
-2. Finish the agreed CLI subset, configuration, and truthful help/docs, including
+1. Resolve font-build reproducibility (S13) with a compatible patched release or
+   reproducible local-font distribution; the new dev gate reproduced it again.
+2. Finish the agreed CLI subset, configuration, and truthful help/docs (R9), including
    the required plain-Markdown portable build, static serve and composed view
    workflows in [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
    been released for the completed source fixes.
-4. Close the other browser findings (S4/S5/S14), accessibility, SEO and
-   performance acceptance. Diagnose the recorded browser flakes. Define a
+4. Close the other browser findings (S4/S5/S14/S15), accessibility, SEO and
+   performance acceptance. Investigate automatic
+   browser reload, and the recorded browser flakes. R5 retains advanced migration
+   limits; R13's static gate does not execute arbitrary MDX components. Define a
    finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
 

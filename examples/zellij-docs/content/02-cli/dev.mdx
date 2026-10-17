@@ -66,28 +66,26 @@ machine on `--port`.
 **The first run takes a couple of minutes** — a 237 MB image and an install.
 Everything after is fast. Worth knowing before you assume it has hung.
 
-## Reload, not watch
+## Content watching and browser refresh
 
-There is no websocket pushing content changes at the browser, and that is worth
-understanding rather than working around.
+The current engine watches your mounted content folder. It polls for edits,
+additions and deletions, including changes to images and guide routes. After a
+short debounce it refreshes the public assets, fingerprints and search index.
+Removing the entire assets directory also removes its prepared copies.
 
-Next reloads when files **inside the Next project** change. Your content is not
-inside it — it is a folder elsewhere on your disk, on the other side of a
-container mount — so Next never learns a YAML file moved, and nothing can tell
-the browser to refresh itself.
+Save, switch to the browser, and reload to see page and image changes. Reopening
+the search dialog fetches the updated index in development. The engine's content
+cache expires between requests; automatic browser reload for content edits is
+not implemented yet.
 
-What happens instead: the engine re-reads the folder per request, so reloading
-shows the current file. Save, switch to the browser, reload.
+An invalid edit is reported in the terminal. The watcher keeps running and
+retries when you correct the content. Initial preparation must succeed before
+the server starts. Restart after changing the deployment prefix (`basePath`),
+wrapper configuration or installed features.
 
-<Callout type="info" title="This was a bug until recently">
-The runtime memoised the loaded site permanently, on the reasoning that Next
-re-evaluates modules when they change. It does — for its own modules. Content
-lives outside them, so the first read of the process was served for as long as
-the server ran, and editing a headline showed the old one until restart.
-
-The memo now expires in development. If you are on an older base image and edits
-are not appearing, that is why — `docker pull ghcr.io/mylife-inc/zellij-base:latest`.
-</Callout>
+This requires an engine image containing the watcher. Pull the current image
+with `docker pull ghcr.io/mylife-inc/zellij-base:latest` if an older image only
+updates assets/search at startup.
 
 ## Looking at it on a phone
 
@@ -135,9 +133,13 @@ Docker Desktop: Settings → Resources → File sharing.
 
 ## When you have a wrapper app instead
 
-If you generated an app with `zel new app` and checked it into your repository,
+If you generated an app with the Node command `zellij init` and checked it into your repository,
 you already have Node and a `package.json`, and `npm run dev` is a shorter path
 than starting a container.
+
+New wrappers use `zellij dev -- --port <port>`. Existing wrappers using
+`next dev` should switch to that script or run `zellij prepare --watch` alongside
+their server. Pass `--content <path>` when using a custom content directory.
 
 `zel dev` is for the case where the content folder is all there is — which is
 most cases, and the one Zellij is built around.

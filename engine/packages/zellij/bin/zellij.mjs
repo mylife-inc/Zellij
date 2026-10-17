@@ -71,8 +71,15 @@ function parseFlags(args) {
 switch (command) {
   case 'sync-assets':
   case 'search-index':
-  case 'prepare': {
-    const { flags, positional } = parseFlags(rest);
+  case 'prepare':
+  case 'dev': {
+    const separator = rest.indexOf('--');
+    const ownArgs = separator === -1 ? rest : rest.slice(0, separator);
+    const nextArgs = separator === -1 ? [] : rest.slice(separator + 1);
+    const watch = ownArgs.includes('--watch');
+    if (watch && command !== 'prepare') throw new Error('--watch is supported by prepare only; dev already watches.');
+    if (separator !== -1 && command !== 'dev') throw new Error('Only dev accepts Next.js arguments after --.');
+    const { flags, positional } = parseFlags(ownArgs.filter((arg) => arg !== '--watch'));
     for (const key of Object.keys(flags)) {
       if (!['content', 'config'].includes(key) || typeof flags[key] !== 'string' || !flags[key]) {
         throw new Error(`Expected --content <directory> or --config <legacy-config>; invalid --${key}`);
@@ -84,6 +91,11 @@ switch (command) {
       ...(flags.content ? { contentDir: flags.content } : {}),
       ...(flags.config ? { configFile: flags.config } : {}),
     };
+    if (command === 'dev' || watch) {
+      const { runDev } = await load('dev');
+      process.exitCode = await runDev(options, command === 'dev' ? nextArgs : undefined);
+      break;
+    }
     if (command !== 'search-index') {
       const { syncAssets } = await load('sync-assets');
       await syncAssets(options);
@@ -207,6 +219,9 @@ switch (command) {
         `                   --deep            check MDX syntax and local references\n` +
         `                   --strict          fail on warnings\n` +
         `  prepare        sync assets and build the search index\n` +
+        `                   --watch           keep prepared files up to date\n` +
+        `  dev [options] -- [Next.js dev options]\n` +
+        `                 prepare, watch content, and run the app's Next.js server\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +
         `  search-index   write the guide search index\n` +
         `                   preparation options: --content <dir>, --config <legacy-config>\n\n` +

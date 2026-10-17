@@ -342,6 +342,48 @@ and no retries. Chromium/WebKit prefix acceptance passed with normal fonts and
 Turbopack. Image run `39026348423` published all four feature variants for
 AMD64/ARM64 and passed published-image build/serve smoke acceptance.
 
+## Implementation record — development preparation watching
+
+Source commit `8674908` completes **S9's preparation watching**. `zellij dev`
+prepares content and owns a polling watcher plus the installed Next dev process.
+`zellij prepare --watch` exposes the same watcher independently. Generated apps,
+the four examples and consequently the base-image wrapper use this path; Rust
+`zel dev` retains its existing invocation. Existing wrappers need the updated
+script or standalone watcher. No native CLI release is part of this milestone.
+
+Polling metadata works across bind mounts, waits for stable saves, serializes
+updates and picks up edits during preparation on a later scan. Asset and content
+snapshots are separate, so prose edits do not recopy media. Custom paths, legacy
+config root changes, symlinked roots, asset removal/recreation and generated-file
+exclusion are covered. Nested symlinks are not traversed. Failed preparation
+remains observable and recovers on the next corrected edit; startup errors fail
+before Next launches. Pending asset changes are retained across prose failures.
+
+Prepared JSON files use temporary-file replacement. Asset copying/hashing occurs
+before replacing the old tree. There is a brief directory rename gap and no
+whole-site transaction. The supervisor forwards signals, propagates child exit
+codes and stops its watcher. Development search fetches fresh data on reopen;
+production behavior is unchanged. Browser reload for page/images is still
+manual. Deployment-prefix/config/feature changes require restart. This is not
+full browser live reload or the requested portable Markdown renderer.
+
+Local verification: **324 engine tests**, all workspace typechecks, packaging,
+isolated installed-CLI/process lifecycle checks, existing packaged preparation
+and deep/strict documentation checks pass. Real webpack/Chromium dev acceptance
+verifies search without page reload, rendered updates on reload, page/asset
+addition/deletion, malformed-MDX recovery and a released server port on shutdown.
+CI adds actual Rust/container dev, installed-package and Chromium/WebKit dev
+acceptance under normal Turbopack. See this source commit's PR for hosted results.
+
+The browser's accessibility tree revealed new **S15**, recorded below. It was
+not fixed by changing the watcher test to select the actual heading ID/text.
+
+PR #8 merged as `d4615ca`; PR CI `39036985726`, main CI `39037525173` and image
+run `39037525149` passed. Both browser runs had 310 initial passes and one
+successful retry of the known mobile-WebKit FAQ interaction, plus 124 conditional
+skips. Chromium/WebKit prefix acceptance passed. All four AMD64/ARM64 image
+variants published and the published default-image build/serve smoke test passed.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -712,6 +754,24 @@ the normal font path. Capture a failing response, assess a reproducible font
 source/fallback strategy, and verify theme/font output in clean production builds.
 Runtime self-hosted fonts do not remove this build-time external dependency.
 
+Additional evidence from PR #9 run `39048613896`: normal production and prefix
+builds passed, but the fresh Turbopack dev wrapper returned HTTP 500 before the
+watcher browser assertions. IBM Plex Sans failed with
+`next/font/google queries have exactly one entry` and unresolved internal font
+URLs. This matches [Next issue #99114](https://github.com/vercel/next.js/issues/99114),
+which reproduces both the earlier webpack null-regex error and this Turbopack
+query-parsing error with Google Fonts' extensionless `/l/font?kit=...` responses.
+The installed Next 16.4.2 loader still has the unsafe filename-extension regex.
+The exact Google response from this CI failure was not retained, so the URL
+shape is an upstream-supported explanation rather than a captured response.
+
+[Upstream fix #100158](https://github.com/vercel/next.js/pull/100158) merged on
+2026-10-15 as `98a73ead5bf711183e07398983c5c943f86328e7`. On 2026-10-17 the npm
+stable dist-tag was still 16.4.2; no stable dependency update carrying that fix
+was available. A fresh browser-job retry is verification of the watcher, not a
+font fix. Prioritize a compatible patched release or a reproducible local-font
+distribution; do not hide the failure by weakening the browser/build gate.
+
 ### S14 — P2: video-embed omits the deployment prefix for local media
 
 Found by source review during the deep-check milestone, not yet exercised in a
@@ -725,6 +785,21 @@ and other image sections already supply the prefix.
 embeds intact. Verify a real local video and poster under a nonempty prefix in
 production browser acceptance. Static content validation cannot establish that
 the renderer passes the right prefix to an existing asset. This remains open.
+
+### S15 — P2: guide headings lose their visible title in the accessibility tree
+
+Observed in Chromium's accessibility snapshot while exercising development:
+`## Updatedchromium` rendered visibly with the correct heading ID/text, but the
+h2 and its link were both named “Link to this section.” In
+`src/mdx/components.tsx:48`, the link wraps all heading text and sets that generic
+`aria-label`. This replaces the text used to compute the heading's accessible
+name. The same renderer handles h2/h3/h4, so heading navigation loses meaningful
+section names for assistive technology. This is browser-tree evidence, not a
+manual screen-reader test.
+
+**Acceptance:** preserve each heading's visible title in its accessible name
+while keeping its permalink discoverable and keyboard operable. Verify formatted
+headings and h2/h3/h4 in Chromium/WebKit accessibility trees. Remains open.
 
 ## User-requested UI and platform work
 

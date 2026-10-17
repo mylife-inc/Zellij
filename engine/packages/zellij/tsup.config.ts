@@ -51,6 +51,7 @@ export default defineConfig([
       'cli/init-bundle': 'src/cli/init.ts',
       'cli/sync-assets-bundle': 'src/cli/sync-assets.ts',
       'cli/write-search-index-bundle': 'src/cli/write-search-index.ts',
+      'cli/dev-bundle': 'src/cli/dev.ts',
     },
     format: ['esm'],
     dts: false,
