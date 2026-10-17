@@ -128,7 +128,7 @@ generated.
 | `zellij prepare` | `sync-assets` and `search-index` together — the usual choice |
 | `zellij sync-assets` | Copies `<content>/assets/**` → `public/_zellij/assets/**` |
 | `zellij search-index` | Writes `public/_zellij/search-index.json` |
-| `zellij check [dir]` | Validates a content root and prints every error and warning, without building |
+| `zellij check [dir] [--deep] [--strict]` | Fast content validation; optionally parse MDX and check static references, or fail on warnings |
 
 The preparation commands accept `--content <directory>` (absolute or relative
 to the wrapper root) and `--config <legacy-config>`. Set `--content` to the same
@@ -138,6 +138,15 @@ or the legacy configuration's content path. Preparation reads fresh content,
 uses canonical guide routes and heading IDs, and removes stale generated
 assets even when the source assets folder has been removed. It does not watch
 for further edits; rerun preparation after changing content or assets.
+
+`check --deep` checks static prose/section links, heading anchors, MDX syntax,
+section previews and schema-declared local media. `--strict` fails on warnings,
+including computed MDX references that cannot be verified without execution.
+Neither mode evaluates authored JavaScript or checks remote URLs. Literal menu
+`url:` destinations remain unchecked. Use the installed wrapper's optional math
+parser for math-enabled content. Keep a production build and browser checks;
+static analysis cannot verify arbitrary component execution or wrapper-owned
+public resources. The Rust equivalent is `zel check <dir> --deep --strict`.
 
 ### 4. Content
 

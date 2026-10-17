@@ -26,6 +26,12 @@ jobs:
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
 
+      - name: Authored examples pass deep and strict validation
+        run: |
+          for example in showcase zellij-docs codeseal-docs; do
+            node engine/packages/zellij/bin/zellij.mjs check "examples/$example/content" --deep --strict || exit 1
+          done
+
   # The guarantee that the CLI and the engine cannot disagree.
   #
   # `zel explain` and `zel context` are compiled from a JSON file the engine
@@ -105,6 +111,11 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-preparation.mjs cli/target/debug/zel --export
+
+      - name: Deep and strict checks match exported content
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-validation.mjs cli/target/debug/zel
 
       - name: Scaffold names, rendered links, and content discovery
         env:

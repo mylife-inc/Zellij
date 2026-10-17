@@ -215,6 +215,7 @@ export class FolderContentSource implements ContentSource {
     used: Set<string>,
   ): SectionsPage {
     const where = `${PAGES_FILE} › ${authored.name}`;
+    const sectionSources: string[] = [];
     const resolved = authored.sections.map((ref, index) => {
       const { section: name, ...overrides } = normalizeSectionRef(ref);
       const file = sections.get(name);
@@ -230,6 +231,7 @@ export class FolderContentSource implements ContentSource {
       }
 
       used.add(name);
+      sectionSources.push(file.sourceFile);
       // Overrides are merged before validation so a type's own defaults apply
       // to the merged result rather than to the file's value alone.
       return validateSection(`${where} › ${name}`, { ...file.raw, ...overrides });
@@ -248,6 +250,7 @@ export class FolderContentSource implements ContentSource {
       ...(authored.motion ? { motion: authored.motion } : {}),
       ...(authored.navHighlight ? { navHighlight: authored.navHighlight } : {}),
       sections: resolved,
+      sectionSources,
     };
   }
 

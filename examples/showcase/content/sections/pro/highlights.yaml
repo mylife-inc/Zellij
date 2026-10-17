@@ -6,7 +6,7 @@ items:
     body: Six performance cores, a 20-core GPU, and a neural engine that runs the camera pipeline in real time.
     image: assets/pro-chip.png
     span: large
-    href: "#chip"
+    href: "#specs"
   - title: 2,600 nits
     body: Readable in direct sun.
     icon: sun

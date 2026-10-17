@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { assetReferenceSchema, hrefReferenceSchema } from '../content/reference-schema';
 
 /**
  * The built-in themes ("glazes") — spec §6. Ten from the original inventory,
@@ -40,14 +41,14 @@ export const ctaStyleSchema = z.enum(['primary', 'secondary', 'ghost']);
 
 export const ctaSchema = z.object({
   label: z.string().min(1),
-  href: z.string().min(1),
+  href: hrefReferenceSchema.min(1),
   style: ctaStyleSchema.default('primary'),
 });
 export type Cta = z.infer<typeof ctaSchema>;
 
 export const announcementSchema = z.object({
   text: z.string().min(1),
-  link: z.object({ label: z.string().min(1), href: z.string().min(1) }).optional(),
+  link: z.object({ label: z.string().min(1), href: hrefReferenceSchema.min(1) }).optional(),
   dismissible: z.boolean().default(true),
 });
 
@@ -70,10 +71,10 @@ export type SocialConfig = z.infer<typeof socialSchema>;
 export const brandSchema = z.object({
   logo: z
     .object({
-      src: z.string().min(1),
-      dark: z.string().optional(),
+      src: assetReferenceSchema.min(1),
+      dark: assetReferenceSchema.optional(),
       alt: z.string().optional(),
-      href: z.string().optional(),
+      href: hrefReferenceSchema.optional(),
       /**
        * How tall the mark sits in the bar, as a CSS length.
        *
@@ -128,7 +129,7 @@ export type NavConfig = z.infer<typeof navSchema>;
 export const linkTargetSchema = z
   .object({
     label: z.string().min(1),
-    href: z.string().min(1).optional(),
+    href: hrefReferenceSchema.min(1).optional(),
     page: z.string().min(1).optional(),
   })
   .refine((link) => [link.href, link.page].filter(Boolean).length === 1, {
@@ -193,7 +194,7 @@ export const siteConfigSchema = z.object({
   /** Absolute site origin; required for absolute OG and canonical URLs. */
   siteUrl: z.url().optional(),
   /** Content-relative social share image, e.g. assets/og.png. */
-  ogImage: z.string().optional(),
+  ogImage: assetReferenceSchema.optional(),
 
   // `prefault` (not `default`) so an omitted block is parsed through its schema
   // and picks up all inner field defaults, rather than needing a full output value.

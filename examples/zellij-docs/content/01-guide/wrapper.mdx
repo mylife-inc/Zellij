@@ -97,11 +97,12 @@ site with no search and no images, which builds successfully. Run
 `zellij check` is the same validation [`zel check`](/cli/check) will run, and is
 available today. It checks configuration, referenced content, route ownership
 and supported navigation references. It does not compile MDX or verify every
-asset and prose link; retain a full build in CI. Use the fast check as a
-pre-commit hook or an earlier CI step:
+asset and prose link by default. Add `--deep` for static links, media, anchors
+and MDX syntax, and `--strict` to fail on warnings. Neither mode executes MDX;
+retain a full build in CI:
 
 ```bash title="terminal"
-npx zellij check
+npx zellij check --deep --strict
 ```
 
 ```

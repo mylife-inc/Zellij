@@ -295,6 +295,53 @@ These capabilities are **not implemented by this prefix milestone**. A Next
 HTTP static export is not direct-file acceptance. Core MkDocs capabilities must
 be compared during CLI work; plugin-specific parity is a separate scope choice.
 
+## Implementation record — deep and strict content checks
+
+Commit `86e5e2d` adds `--deep` and `--strict` to the Rust and Node check commands.
+It addresses **R13's static-reference/syntax portion**, preserving the default
+fast check and the original reproduction below. Build/dev/migrate do not silently
+enable the new modes. The original invalid fixture now reports its missing local
+image, nonexistent CTA route and malformed MDX in one run. Strict mode returns
+failure for warnings as well as errors.
+
+Deep analysis reads canonical routes, follows home/guide redirects and uses the
+renderer's heading/GFM IDs. It checks Markdown/reference-style links and images,
+literal HTML/JSX references, section CTAs/media, inline-prose links, social/brand
+media and SectionPreview examples. Schema metadata defines reference semantics;
+the Rust reference is regenerated from those same schemas. Inline tokenization
+is shared with rendering. Duplicate reference definitions use the first value,
+code examples stay literal, and authored MDX JavaScript is never evaluated.
+It detects missing/recursive previews and duplicate rendered IDs. Physical asset
+containment rejects escaping paths/symlinks and directories masquerading as files.
+
+The checker found four additional broken showcase anchor links to `#display`,
+`#chip` and `#battery`; these now point to existing highlights/specifications
+content. Fast navigation validation also stops mistaking query strings for part
+of a route. Error messages identify the source file and field/body position.
+
+Local evidence: **317 engine tests**, including 14 new validation regressions,
+**117 Rust tests**, formatting, warnings-denied Clippy, workspace typechecks,
+engine packaging, isolated packaged-checker/preparation integration, and all four
+local examples with `--deep --strict` pass. CI adds checks for the three fully
+tracked examples and a real Rust/container validation fixture whose accepted
+routes, anchors and assets are verified in a static export. Read this commit's
+PR for hosted browser/container results. No native binary release is included.
+
+R13's remaining boundaries are documented rather than hidden: parsing is not
+component/JavaScript execution; external URLs and literal menu `url:` are not
+requested/validated. Dynamic MDX, custom components, component ID props, srcSet
+and links without a page context warn. Strict mode fails these warnings. Custom
+wrapper public resources and SVG-internal fragments need build/browser checks.
+The optional math parser must be installed in the checking environment; the bare
+content-only image does not install optional packages. Complete execution and
+feature-specific validation therefore remain part of release acceptance.
+
+PR #7 merged as `ba30f9b`. PR CI `39025935776` and main CI `39026348416` passed
+303 engine tests, 117 Rust tests and 311 browser tests with 124 conditional skips
+and no retries. Chromium/WebKit prefix acceptance passed with normal fonts and
+Turbopack. Image run `39026348423` published all four feature variants for
+AMD64/ARM64 and passed published-image build/serve smoke acceptance.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -664,6 +711,20 @@ prefix browser acceptance to complete, but is not a product remedy. CI retains
 the normal font path. Capture a failing response, assess a reproducible font
 source/fallback strategy, and verify theme/font output in clean production builds.
 Runtime self-hosted fonts do not remove this build-time external dependency.
+
+### S14 — P2: video-embed omits the deployment prefix for local media
+
+Found by source review during the deep-check milestone, not yet exercised in a
+prefixed browser fixture. `src/sections/components/video-embed.tsx` does not take
+`site` from its props and calls `assetHref(section.src)` / `assetHref(section.poster)`
+without `site.config.basePath`. A local video under `/products/acme/docs` therefore
+gets an unprefixed URL despite the shared deployment configuration. The media-panel
+and other image sections already supply the prefix.
+
+**Acceptance:** apply the site's prefix to local video/poster URLs; leave external
+embeds intact. Verify a real local video and poster under a nonempty prefix in
+production browser acceptance. Static content validation cannot establish that
+the renderer passes the right prefix to an existing asset. This remains open.
 
 ## User-requested UI and platform work
 

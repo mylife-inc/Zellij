@@ -36,8 +36,14 @@ pub struct CheckReport {
     pub output: String,
 }
 
+#[derive(Debug, Default, Clone, Copy)]
+pub struct CheckOptions {
+    pub deep: bool,
+    pub strict: bool,
+}
+
 pub trait Engine: Send + Sync {
-    fn check(&self, content: &Utf8Path) -> zellij_core::Result<CheckReport>;
+    fn check(&self, content: &Utf8Path, options: CheckOptions) -> zellij_core::Result<CheckReport>;
 
     fn build(&self, content: &Utf8Path, out: &Utf8Path, mode: BuildMode)
     -> zellij_core::Result<()>;

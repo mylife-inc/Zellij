@@ -174,8 +174,16 @@ switch (command) {
 
   case 'check': {
     const { check } = await load('check');
-    const contentDir = rest.find((arg) => !arg.startsWith('-'));
-    const result = await check(contentDir ? { contentDir } : {});
+    const options = {};
+    let literal = false;
+    for (const arg of rest) {
+      if (!literal && arg === '--') { literal = true; continue; }
+      if (!literal && (arg === '--deep' || arg === '--strict')) options[arg.slice(2)] = true;
+      else if (!literal && arg.startsWith('-')) throw new Error(`Unknown check option: ${arg}`);
+      else if (options.contentDir !== undefined) throw new Error('check accepts one content directory.');
+      else options.contentDir = arg;
+    }
+    const result = await check(options);
     if (!result.ok) process.exit(1);
     break;
   }
@@ -196,6 +204,8 @@ switch (command) {
         `                 turn optional features on in an existing app, before\n` +
         `                   installing: maths, diagrams, all, none\n` +
         `  check [dir]    validate a content root without building\n` +
+        `                   --deep            check MDX syntax and local references\n` +
+        `                   --strict          fail on warnings\n` +
         `  prepare        sync assets and build the search index\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +
         `  search-index   write the guide search index\n` +

@@ -276,8 +276,9 @@ That is a complete site: a landing page and a guide.
 
 ## When you are done
 
-Run \`zellij check <folder>\`. Fix what it names. A clean run means the folder
-builds.
+Run \`zellij check <folder> --deep --strict\` to check static references and
+MDX syntax and fail on warnings. Then build the site. Checking does not execute
+MDX or prove that every component, expression, math formula or diagram renders.
 `;
 
 /** Assembles the whole document. */

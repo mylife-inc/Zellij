@@ -5,16 +5,22 @@ import { FolderContentSource } from '../content/folder-source';
 import { LegacyContentSource } from '../content/legacy-source';
 import { loadSite, type Site } from '../content/site';
 import { ZellijContentError } from '../errors';
+import { deepCheck } from './deep-check';
 
 export interface CheckOptions {
   /** Content root, absolute or relative to cwd. Defaults to ./content. */
   contentDir?: string;
   cwd?: string;
+  /** Parse MDX and validate statically known local links, anchors and media. */
+  deep?: boolean;
+  /** Treat warnings as a failed check, including unverifiable dynamic MDX. */
+  strict?: boolean;
 }
 
 export interface CheckResult {
   ok: boolean;
   warnings: string[];
+  errors: string[];
   site?: Site;
 }
 
@@ -22,8 +28,8 @@ export interface CheckResult {
  * Validates a content root without building anything — design §11.
  *
  * Checks the content model and its supported navigation references. MDX
- * compilation, prose links and complete asset validation need separate build
- * acceptance; this intentionally remains a fast check without Next.js.
+ * compilation still needs build acceptance. Deep mode adds nonexecuting static
+ * reference/syntax analysis; neither mode needs Next.js or downloads assets.
  */
 export async function check(options: CheckOptions = {}): Promise<CheckResult> {
   const cwd = options.cwd ?? process.cwd();
@@ -35,7 +41,7 @@ export async function check(options: CheckOptions = {}): Promise<CheckResult> {
 
   if (!(await exists(contentDir))) {
     console.error(`✗ No content root at ${contentDir}`);
-    return { ok: false, warnings };
+    return { ok: false, warnings, errors: [`No content root at ${contentDir}`] };
   }
 
   const legacy = await exists(path.join(contentDir, 'marketing'));
@@ -51,20 +57,25 @@ export async function check(options: CheckOptions = {}): Promise<CheckResult> {
     const site = await loadSite(source);
     warnings.push(...site.warnings);
 
-    report(site, contentDir, warnings, legacy);
-    return { ok: true, warnings, site };
+    const deep = options.deep ? await deepCheck(site, contentDir) : { errors: [], warnings: [] };
+    warnings.push(...deep.warnings);
+    const ok = deep.errors.length === 0 && !(options.strict && warnings.length > 0);
+    report(site, contentDir, warnings, legacy, ok);
+    for (const error of deep.errors) console.error(`  ✗ ${error}`);
+    if (options.strict && warnings.length) console.error(`Strict check failed: ${warnings.length} warning(s).`);
+    return { ok, warnings, errors: deep.errors, site };
   } catch (err) {
     for (const warning of warnings) console.warn(`  ! ${warning}`);
     console.error('');
     console.error(err instanceof ZellijContentError ? err.message : (err as Error).stack);
-    return { ok: false, warnings };
+    return { ok: false, warnings, errors: [(err as Error).message] };
   }
 }
 
-function report(site: Site, contentDir: string, warnings: string[], legacy: boolean): void {
+function report(site: Site, contentDir: string, warnings: string[], legacy: boolean, ok: boolean): void {
   const guidePageCount = site.guidePages.length;
 
-  console.log(`✓ ${contentDir}${legacy ? '  (legacy marketing/ layout)' : ''}`);
+  console.log(`${ok ? '✓' : '✗'} ${contentDir}${legacy ? '  (legacy marketing/ layout)' : ''}`);
   console.log(`  site        ${site.config.name} · theme ${site.config.theme}`);
   console.log(`  pages       ${site.pages.length}`);
   console.log(

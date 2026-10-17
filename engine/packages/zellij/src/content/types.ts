@@ -23,6 +23,8 @@ export interface SectionsPage {
   motion?: MotionPreset;
   navHighlight?: string;
   sections: AnySection[];
+  /** Authored section files, parallel to sections; legacy inline sections use sourceFile. */
+  sectionSources?: string[];
 }
 
 export interface GuidePage {

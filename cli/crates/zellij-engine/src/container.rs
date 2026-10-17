@@ -13,7 +13,7 @@ use std::process::Stdio;
 use zellij_core::{Error, Result};
 
 use crate::runtime::Runtime;
-use crate::{BuildMode, CheckReport, Engine};
+use crate::{BuildMode, CheckOptions, CheckReport, Engine};
 
 /// Where the engine's own CLI lives inside the image.
 const ENGINE_CLI: &str = "/opt/zellij/bin/zellij.mjs";
@@ -301,7 +301,7 @@ fn guarded(mount: &str, command: &str) -> String {
 }
 
 impl Engine for ContainerEngine {
-    fn check(&self, content: &Utf8Path) -> Result<CheckReport> {
+    fn check(&self, content: &Utf8Path, options: CheckOptions) -> Result<CheckReport> {
         let mount = Self::content_mount(content)?;
 
         let output = self
@@ -313,7 +313,11 @@ impl Engine for ContainerEngine {
                 "-c",
                 &guarded(
                     MOUNTED_CONTENT,
-                    &format!("exec node {ENGINE_CLI} check {MOUNTED_CONTENT}"),
+                    &format!(
+                        "exec node {ENGINE_CLI} check {MOUNTED_CONTENT}{}{}",
+                        if options.deep { " --deep" } else { "" },
+                        if options.strict { " --strict" } else { "" }
+                    ),
                 ),
             ])
             .output()?;

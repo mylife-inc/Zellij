@@ -186,7 +186,7 @@ produces a wrong sidebar that looks right.
 
 | Command | Does |
 | --- | --- |
-| `zel check [dir]` | Validates against the real schemas. `--json` for CI. |
+| `zel check [dir]` | Real schemas; implemented `--deep` static-reference/syntax checks and `--strict` warnings gate. JSON remains planned. |
 | `zel dev [dir]` | Development server with hot reload: content is bind-mounted, so editing a Markdown file updates the browser. This is the command an author leaves running. |
 | `zel build [dir]` | Builds. See targets below. |
 | `zel serve [dir]` | Serves what `build` produced, locally. |
