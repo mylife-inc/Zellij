@@ -1,7 +1,7 @@
 import { mkdir, readFile, readdir, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import matter from 'gray-matter';
+import { parseFrontmatter } from '../content/frontmatter';
 
 // Explicit extensions: this module runs under plain Node (via the bin script),
 // where ESM requires them. Both imports are leaves with no further dependencies,
@@ -92,7 +92,7 @@ async function readGuidePages(guideDir: string, relDir: string): Promise<GuidePa
 
   for (const relFile of files) {
     const raw = await readFile(path.join(guideDir, relFile), 'utf8');
-    const { data, content } = matter(raw);
+    const { data, content } = parseFrontmatter(raw);
     const frontmatter = data as { title?: string; description?: string; route?: string };
 
     const slug = stripExtension(relFile).replace(/(^|\/)index$/, '');

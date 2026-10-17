@@ -46,10 +46,17 @@ npm run check      # validate all three content roots
 ### 1. Install
 
 ```bash
-npm install @shebka/zellij next@16.2.x react@19.2.x react-dom@19.2.x
+npm install @shebka/zellij next@~16.4.2 react@19.2.x react-dom@19.2.x
 ```
 
-Node 20.11+ is required.
+Use Node 20.19+ on the 20.x line, or Node 22.12+. Development uses Node 24 (`.nvmrc`).
+
+The `zellij init` scaffold copies the engine manifest's dependency `overrides`
+into the app. Keep them when editing a generated app: npm only applies
+overrides from the root manifest. For a manually assembled wrapper, copy that
+map from `engine/packages/zellij/package.json` into the app's `package.json`
+before installing. It currently keeps the optional math/diagram dependencies
+on patched KaTeX and XML parser versions.
 
 ### 2. The wrapper app
 

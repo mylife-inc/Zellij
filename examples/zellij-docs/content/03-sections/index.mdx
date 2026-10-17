@@ -1,11 +1,27 @@
 ---
-title: All nineteen sections
+title: All 23 sections
 description: The section vocabulary, grouped by what each family is for.
 ---
 
 A section is one band of content. Pages are ordered lists of them, and the set
 is fixed on purpose — a small vocabulary is what keeps every page on a site
 looking like it belongs there.
+
+## Start from a template
+
+```bash
+zel new section code-cards --out content/sections/code-cards.yaml
+```
+
+Each built-in template is validated against the engine's schema before it is
+embedded in `zel`. Required fields are live; optional fields are commented out
+with examples. Replace the `TODO` text, and supply your own media for paths such
+as `assets/replace-me.svg` and `assets/replace-me.mp4` before publishing. Media
+paths are relative to the content folder; the command writes only the YAML file.
+
+For `hero-split`, `steps-panel`, and `media-panel`, keep exactly one of the media
+choices listed in the generated comment. After editing, use `zel check` and
+`zel build` to validate the content and its rendering.
 
 ## Fields every section has
 

@@ -5,7 +5,7 @@
   "description": "Apple-idiom product page for a fictional device \u2014 the visual test bed and the proof that Zellij builds beautiful marketing sites.",
   "type": "module",
   "engines": {
-    "node": ">=20.11"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "assets": "node scripts/make-assets.mjs",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@shebka/zellij": "*",
-    "next": "16.2.12",
+    "next": "16.4.2",
     "react": "19.2.8",
     "react-dom": "19.2.8"
   },

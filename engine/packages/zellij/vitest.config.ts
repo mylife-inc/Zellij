@@ -15,5 +15,6 @@ import { defineConfig } from 'vitest/config';
  * imported rather than assumed, and matches what Next emits in the real build.
  */
 export default defineConfig({
+  test: { dir: 'src' },
   esbuild: { jsx: 'automatic' },
 });

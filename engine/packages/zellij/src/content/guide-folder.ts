@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import matter from 'gray-matter';
+import { parseFrontmatter } from './frontmatter';
 
 import { ZellijContentError, aggregateErrors, formatZodError } from '../errors';
 import {
@@ -78,7 +78,7 @@ export async function loadGuideFolder(options: LoadGuideFolderOptions): Promise<
     const label = `${relDir}/${relFile}`;
     try {
       const raw = await readFile(path.join(dir, relFile), 'utf8');
-      const { data, content } = matter(raw);
+      const { data, content } = parseFrontmatter(raw);
 
       const fm = guideFrontmatterSchema.safeParse(data ?? {});
       if (!fm.success) throw formatZodError(label, fm.error);

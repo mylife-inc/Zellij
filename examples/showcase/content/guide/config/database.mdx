@@ -36,3 +36,17 @@ database:
 ```
 
 <Screenshot src="assets/shot-reporting.png" caption="Reporting reads from the replica when one is configured." />
+
+## Estimating query latency
+
+A request's total time is $t = t_q + t_n$, where query time and network time
+both contribute. For a batch of requests, the average is:
+
+$$
+\bar{t} = \frac{1}{n}\sum_{i=1}^{n} t_i
+$$
+
+```mermaid
+flowchart LR
+  Client --> Query["$$t_q + t_n$$"] --> Replica
+```

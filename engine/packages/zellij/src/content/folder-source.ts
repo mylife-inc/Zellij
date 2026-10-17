@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parse as parseYaml } from 'yaml';
-import matter from 'gray-matter';
+import { parseFrontmatter } from './frontmatter';
 
 import { ZellijContentError, aggregateErrors, formatZodError } from '../errors';
 import { KNOWN_SITE_KEYS, siteConfigSchema, type SiteConfig } from '../config/schema';
@@ -340,7 +340,7 @@ export class FolderContentSource implements ContentSource {
  * which is what a plain prose file is.
  */
 function readProseSection(label: string, raw: string): Record<string, unknown> {
-  const { data, content } = matter(raw);
+  const { data, content } = parseFrontmatter(raw);
   const fm = sectionFrontmatterSchema.safeParse(data ?? {});
   if (!fm.success) throw formatZodError(label, fm.error);
 

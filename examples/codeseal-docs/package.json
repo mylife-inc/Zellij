@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20.11"
+    "node": "^20.19.0 || >=22.12.0"
   },
   "scripts": {
     "predev": "zellij prepare",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@shebka/zellij": "*",
-    "next": "^16.2.0",
+    "next": "16.4.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
