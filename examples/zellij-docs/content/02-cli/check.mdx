@@ -11,6 +11,8 @@ so it needs a container runtime and about a second.
 ```bash title="terminal"
 zel check
 zel check ./docs
+zel check ./docs --deep
+zel check ./docs --deep --strict
 ```
 
 Without a directory argument, `zel` looks in `./content`, then the current
@@ -98,26 +100,49 @@ file is not reported — which is one more reason to read what `check` says abou
 files no page references.
 </Callout>
 
-## What it does not do
+## Deep checks
 
-**It does not compile your MDX, verify all local assets, or check links in prose and section content.**
+`--deep` adds static analysis to the fast content-model check:
 
-`check` validates the content model. Guide pages are compiled as MDX — Markdown
-plus JSX — and that is a separate pass with its own failure modes. `{` opens an
-expression and `<` opens a tag, so:
+- Parse guide and `markdown-prose` MDX without executing JavaScript. Report malformed syntax.
+- Check Markdown links and images, reference-style links, literal JSX `href`, `src`, `poster` and `id`, and `Screenshot` asset paths.
+- Check section CTAs, card links, inline-Markdown links and schema-declared media, including nested items, logos and social images.
+- Resolve relative links from the rendered page URL, including query strings and encoded paths. Check fragments against rendered heading IDs, explicit IDs and section anchors, following home/guide redirects.
+- Check section examples, including missing or recursive `SectionPreview` references, and reject duplicate rendered IDs.
+- Require referenced local media to exist as files inside the content's assets directory. Reject escaping paths and symlinks.
 
-```
-set {timeout} to <n> seconds
-```
+In YAML media and `<Screenshot>`, use `assets/image.png`. Ordinary Markdown/HTML
+images use their actual public URL, such as `/_zellij/assets/image.png`; a relative
+`assets/image.png` inside `/guide/setup` would request `/guide/assets/image.png`.
+A Markdown document link is also a website URL, not a source filename: use
+`/guide/install`, not `install.md`, unless a converter has rewritten it.
 
-is good Markdown, valid as far as `check` is concerned, and a syntax error when
-the site builds.
+Errors name the content file and field or body location. MDX coordinates are
+relative to the loaded body, after front matter and the leading title have been
+removed. Section examples rendered inside a page use that page's link context.
 
-This matters most after a [conversion](/cli/convert), where prose written for a
-tool that never had to care meets a compiler that does. **Build the folder once
-before you throw the original away:**
+## What still needs a build
+
+Deep checking parses MDX; it does not compile or execute it. Computed JSX props,
+JavaScript expressions/imports, custom components and `srcSet` candidates produce
+warnings because their generated links, assets or anchors cannot be established
+statically. A missing anchor on a page with unevaluated MDX is also a warning.
+`--strict` makes these warnings fail, rather than treating them as verified.
+
+External URLs are not requested. Wrapper-owned public files outside the content
+asset prefix, custom runtime output, and SVG-internal asset fragments are outside
+this content-folder contract. Literal menu `url:` entries retain their intentional
+unchecked behavior. Deep checking uses the optional math parser when installed;
+a bare content-only engine image has no optional dependency installation. For a
+math-enabled site, run the Node checker in its installed wrapper environment and
+retain the full build with the selected features.
+
+A valid parse does not prove that a component exists or accepts its props, that
+an expression runs successfully, or that math/diagrams compile. Build and browser
+acceptance are still required, especially after a conversion:
 
 ```bash title="terminal"
+zel check ./content --deep --strict
 zel build ./content
 ```
 
@@ -131,9 +156,9 @@ sidebars still point at.
 a check on every pull request, needing no credentials and no registry. A link to
 a page somebody deleted gets caught before review rather than after deploy.
 
-**Before every build.** [`zel build`](/cli/build), [`zel dev`](/cli/dev) and
-[`zel deploy`](/cli/deploy) all run it first, so a broken link fails in a second
-rather than after a four-minute compile.
+**Before a build.** `zel build` and `zel dev` run the fast check. Add an explicit
+`zel check --deep --strict` step when you want the stronger gate; they do not
+automatically enable it. `zel deploy` remains planned.
 
 ## When the folder is somewhere the runtime cannot see
 
@@ -156,13 +181,17 @@ colima stop && colima start --mount '/tmp:w'
 | | | |
 | --- | --- | --- |
 | `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
+| `--deep` | Parse MDX and validate static local references | Off by default |
+| `--strict` | Exit nonzero if any warning is reported | Off by default |
+
+`--strict` applies to either check mode: unknown top-level keys, unused sections
+and other existing warnings fail too. Use `--deep --strict` to include warnings
+about unverified dynamic MDX. The Node command accepts the same two flags:
+`npx zellij check ./content --deep --strict`.
 
 <Callout type="warning" title="Planned">
-`--json`, `--quiet` and `--strict` are specified and not yet built. `--json` is
-currently accepted and ignored — the output is the human report either way.
-
-`--strict` is the one worth waiting for in CI: once a folder is clean it stops
-an unknown key accumulating quietly until an upgrade turns it into a failure.
+`--json` and `--quiet` are not implemented. Rust's global `--json` is currently
+accepted and ignored; output remains the human report.
 </Callout>
 
 ### The intended `--json`

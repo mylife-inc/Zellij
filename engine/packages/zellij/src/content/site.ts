@@ -343,12 +343,13 @@ function validateLinks(
     const [routePart, anchor] = splitAnchor(href);
 
     // A bare "#anchor" can't be checked without knowing the current page.
-    if (routePart === '') {
+    const pathname = routePart.split('?')[0]!;
+    if (pathname === '') {
       warnings.push(`${where}: "${label}" uses a page-relative anchor "${href}" — not validated.`);
       continue;
     }
 
-    const route = normalizeRoute(routePart);
+    const route = normalizeRoute(pathname);
     if (!routes.has(route)) {
       problems.push(`  · ${where}: "${label}" → ${href}\n    No page resolves to "${route}".`);
       continue;

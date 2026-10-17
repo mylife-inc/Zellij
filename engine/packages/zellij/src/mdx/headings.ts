@@ -35,6 +35,19 @@ export interface HeadingOptions {
   remarkPlugins?: PluggableList;
 }
 
+/** Includes generated IDs such as GFM footnotes, using the same slug pass. */
+export function readAnchorIds(source: string, options: HeadingOptions = {}): string[] {
+  const processor = headingProcessor(options.remarkPlugins ?? []);
+  const tree = processor.runSync(processor.parse(source));
+  const ids: string[] = [];
+  function visit(node: Root | RootContent): void {
+    if (node.type === 'element' && typeof node.properties.id === 'string') ids.push(node.properties.id);
+    if ('children' in node) for (const child of node.children) visit(child);
+  }
+  visit(tree);
+  return ids;
+}
+
 export function readHeadings(source: string, options: HeadingOptions = {}): Heading[] {
   const processor = headingProcessor(options.remarkPlugins ?? []);
   const tree = processor.runSync(processor.parse(source));

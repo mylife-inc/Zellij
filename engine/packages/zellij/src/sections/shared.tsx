@@ -7,6 +7,7 @@ import type { SectionBackground } from './registry';
 import { isExternal } from '../content/paths';
 import { assetHref } from '../content/asset-href';
 import { Reveal } from '../motion/reveal';
+import { inlineParts } from '../content/inline-markdown';
 
 /** Palette tokens a gradient stop may name, so it follows the active theme. */
 const PALETTE_TOKENS = new Set([
@@ -284,8 +285,7 @@ export function InlineMarkdown({ text }: { text: string }): ReactNode {
    * Bold is listed first for the same reason: `**` has to be tried before `*`,
    * or every bold marker is read as two empty emphases.
    */
-  const pattern = /((?:\*\*(?:[^*]|\*(?!\*))+\*\*)|\*[^*]+\*|`[^`]+`|\[[^\]]+\]\([^)]+\))/g;
-  const parts = text.split(pattern).filter((part) => part !== '');
+  const parts = inlineParts(text);
 
   return (
     <>

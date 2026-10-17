@@ -81,6 +81,12 @@ enum Command {
     Check {
         #[arg(default_value = ".")]
         dir: String,
+        /// Parse MDX and check statically known local links, anchors and assets.
+        #[arg(long)]
+        deep: bool,
+        /// Fail when the engine reports warnings.
+        #[arg(long)]
+        strict: bool,
     },
 
     /// Development server. Edit content, reload the page.
@@ -367,7 +373,11 @@ fn main() {
         Command::Explain { ref section_type } => explain(section_type),
         Command::Context { ref file } => write_context(file.as_deref()),
         Command::Detect { ref dir } => detect(dir),
-        Command::Check { ref dir } => check(dir),
+        Command::Check {
+            ref dir,
+            deep,
+            strict,
+        } => check(dir, zellij_engine::CheckOptions { deep, strict }),
         Command::Dev { ref dir, port } => dev(dir, port),
         Command::Build {
             ref dir,
@@ -477,13 +487,13 @@ fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
     Ok(zellij_core::Project::discover(&given)?.content)
 }
 
-fn check(dir: &str) -> zellij_core::Result<()> {
+fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     // The trait has to be in scope for its methods to be callable.
     use zellij_engine::Engine as _;
-    let report = match engine.check(&content) {
+    let report = match engine.check(&content, options) {
         Ok(report) => report,
         // Printed and exited here rather than returned: `main` prints the
         // error itself, and this one needs several paragraphs after it rather
@@ -1011,7 +1021,7 @@ fn migrate(source: &str, out: &str) -> zellij_core::Result<()> {
     convert(source, out, None, false)?;
     println!();
 
-    check(out)
+    check(out, zellij_engine::CheckOptions::default())
 }
 
 fn doctor() -> zellij_core::Result<()> {

@@ -124,7 +124,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "items": {
           "minItems": 2,
@@ -137,7 +138,8 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "icon": {
                 "type": "string",
@@ -145,10 +147,12 @@
               },
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "href": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "href"
               },
               "span": {
                 "default": "normal",
@@ -254,7 +258,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "link": {
           "type": "object",
@@ -265,7 +270,8 @@
             },
             "href": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "zellijReference": "href"
             }
           },
           "required": [
@@ -296,14 +302,17 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "href": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "href"
               },
               "background": {
                 "type": "string",
@@ -399,7 +408,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "eyebrow": {
           "type": "string"
@@ -419,7 +429,8 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "featured": {
                 "default": false,
@@ -442,7 +453,8 @@
                 ]
               },
               "href": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "href"
               }
             },
             "required": [
@@ -452,7 +464,8 @@
           }
         },
         "footnote": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         }
       },
       "required": [
@@ -535,7 +548,8 @@
           "minLength": 1
         },
         "body": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "command": {
           "type": "string",
@@ -552,7 +566,8 @@
                 },
                 "href": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "zellijReference": "href"
                 },
                 "style": {
                   "default": "primary",
@@ -581,7 +596,8 @@
                   },
                   "href": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "zellijReference": "href"
                   },
                   "style": {
                     "default": "primary",
@@ -691,7 +707,8 @@
               },
               "answer": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "inline"
               }
             },
             "required": [
@@ -779,7 +796,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "columns": {
           "default": 3,
@@ -813,10 +831,12 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "href": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "href"
               }
             },
             "required": [
@@ -903,7 +923,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "columns": {
           "default": 3,
@@ -934,7 +955,8 @@
             "properties": {
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "alt": {
                 "default": "",
@@ -1048,7 +1070,8 @@
               },
               "href": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "href"
               },
               "style": {
                 "default": "primary",
@@ -1068,7 +1091,8 @@
         },
         "visual": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "visualStyle": {
           "default": "floating",
@@ -1182,7 +1206,8 @@
               },
               "href": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "href"
               },
               "style": {
                 "default": "primary",
@@ -1231,7 +1256,8 @@
         },
         "visual": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "terminal": {
           "type": "object",
@@ -1333,7 +1359,8 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "zellijReference": "asset"
           }
         }
       },
@@ -1416,7 +1443,8 @@
         },
         "body": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "mdx"
         }
       },
       "required": [
@@ -1497,7 +1525,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "eyebrow": {
           "type": "string"
@@ -1537,7 +1566,8 @@
                 "minLength": 1
               },
               "description": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "cells": {
                 "minItems": 2,
@@ -1545,7 +1575,8 @@
                 "type": "array",
                 "items": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "zellijReference": "inline"
                 }
               }
             },
@@ -1556,7 +1587,8 @@
           }
         },
         "footnote": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         }
       },
       "required": [
@@ -1644,19 +1676,23 @@
           "type": "string"
         },
         "body": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "image": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "video": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "poster": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "alt": {
           "default": "",
@@ -1709,7 +1745,8 @@
               },
               "href": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "href"
               },
               "style": {
                 "default": "primary",
@@ -1728,7 +1765,8 @@
           }
         },
         "href": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "href"
         }
       },
       "required": [
@@ -1808,7 +1846,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "tiers": {
           "minItems": 1,
@@ -1847,7 +1886,8 @@
                   },
                   "href": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "zellijReference": "href"
                   },
                   "style": {
                     "default": "primary",
@@ -1976,15 +2016,18 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "video": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "alt": {
                 "default": "",
@@ -2053,7 +2096,8 @@
                     },
                     "href": {
                       "type": "string",
-                      "minLength": 1
+                      "minLength": 1,
+                      "zellijReference": "href"
                     }
                   },
                   "required": [
@@ -2063,7 +2107,8 @@
                 }
               },
               "href": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "href"
               }
             },
             "required": [
@@ -2155,11 +2200,13 @@
           "minLength": 1
         },
         "body": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "visual": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "cta": {
           "type": "object",
@@ -2170,7 +2217,8 @@
             },
             "href": {
               "type": "string",
-              "minLength": 1
+              "minLength": 1,
+              "zellijReference": "href"
             },
             "style": {
               "default": "primary",
@@ -2378,7 +2426,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "steps": {
           "minItems": 2,
@@ -2392,7 +2441,8 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               }
             },
             "required": [
@@ -2410,7 +2460,8 @@
         },
         "visual": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "terminal": {
           "type": "object",
@@ -2434,7 +2485,8 @@
           "minLength": 1
         },
         "caption": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         }
       },
       "required": [
@@ -2515,7 +2567,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "columns": {
           "default": 3,
@@ -2548,11 +2601,13 @@
                 "type": "string"
               },
               "bio": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "photo": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "links": {
                 "default": [],
@@ -2566,7 +2621,8 @@
                     },
                     "href": {
                       "type": "string",
-                      "minLength": 1
+                      "minLength": 1,
+                      "zellijReference": "href"
                     }
                   },
                   "required": [
@@ -2679,7 +2735,8 @@
               },
               "avatar": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               }
             },
             "required": [
@@ -2767,7 +2824,8 @@
           "type": "string"
         },
         "subhead": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "inline"
         },
         "items": {
           "minItems": 2,
@@ -2790,11 +2848,13 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "icon": {
                 "type": "string",
@@ -2887,11 +2947,13 @@
         },
         "src": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "poster": {
           "type": "string",
-          "minLength": 1
+          "minLength": 1,
+          "zellijReference": "asset"
         },
         "caption": {
           "type": "string"
@@ -2985,11 +3047,13 @@
                 "minLength": 1
               },
               "body": {
-                "type": "string"
+                "type": "string",
+                "zellijReference": "inline"
               },
               "image": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "zellijReference": "asset"
               },
               "align": {
                 "default": "image-right",
@@ -3008,7 +3072,8 @@
                   },
                   "href": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "zellijReference": "href"
                   },
                   "style": {
                     "default": "primary",
@@ -3059,16 +3124,19 @@
               "properties": {
                 "src": {
                   "type": "string",
-                  "minLength": 1
+                  "minLength": 1,
+                  "zellijReference": "asset"
                 },
                 "dark": {
-                  "type": "string"
+                  "type": "string",
+                  "zellijReference": "asset"
                 },
                 "alt": {
                   "type": "string"
                 },
                 "href": {
-                  "type": "string"
+                  "type": "string",
+                  "zellijReference": "href"
                 },
                 "height": {
                   "type": "string",
@@ -3169,7 +3237,8 @@
           "format": "uri"
         },
         "ogImage": {
-          "type": "string"
+          "type": "string",
+          "zellijReference": "asset"
         },
         "nav": {
           "default": {},
@@ -3225,7 +3294,8 @@
                   },
                   "href": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "zellijReference": "href"
                   },
                   "style": {
                     "default": "primary",
@@ -3284,7 +3354,8 @@
                     },
                     "href": {
                       "type": "string",
-                      "minLength": 1
+                      "minLength": 1,
+                      "zellijReference": "href"
                     }
                   },
                   "required": [
@@ -3329,7 +3400,8 @@
                         },
                         "href": {
                           "type": "string",
-                          "minLength": 1
+                          "minLength": 1,
+                          "zellijReference": "href"
                         },
                         "page": {
                           "type": "string",

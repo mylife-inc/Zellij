@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { backgroundSchema, baseSectionSchema, registerSection } from './registry';
 import { ctaSchema } from '../config/schema';
+import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema, mdxReferenceSchema } from '../content/reference-schema';
 
 /**
  * The v1 section vocabulary — spec §5.2. Every entry here gets a schema now and
@@ -8,7 +9,7 @@ import { ctaSchema } from '../config/schema';
  * (a build-time, server-only module) never pulls React into its graph.
  */
 
-const asset = z.string().min(1);
+const asset = assetReferenceSchema.min(1);
 const cta1or2 = z.array(ctaSchema).max(2);
 
 /**
@@ -119,7 +120,7 @@ export const stepsPanelSchema = baseSectionSchema
   .extend({
     type: z.literal('steps-panel'),
     heading: z.string().optional(),
-    subhead: z.string().optional(),
+    subhead: inlineReferenceSchema.optional(),
 
     /**
      * Two at minimum, because one step is not a sequence.
@@ -133,7 +134,7 @@ export const stepsPanelSchema = baseSectionSchema
       .array(
         z.object({
           title: z.string().min(1),
-          body: z.string().optional(),
+          body: inlineReferenceSchema.optional(),
         }),
       )
       .min(2)
@@ -163,7 +164,7 @@ export const stepsPanelSchema = baseSectionSchema
     diagram: z.string().min(1).optional(),
 
     /** A line under the panel, for what the panel cannot say itself. */
-    caption: z.string().optional(),
+    caption: inlineReferenceSchema.optional(),
   })
   .refine(
     (section) =>
@@ -193,7 +194,7 @@ export const stepsPanelSchema = baseSectionSchema
 export const codeCardsSchema = baseSectionSchema.extend({
   type: z.literal('code-cards'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   eyebrow: z.string().optional(),
 
   /**
@@ -205,21 +206,21 @@ export const codeCardsSchema = baseSectionSchema.extend({
       z.object({
         eyebrow: z.string().optional(),
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         /** Marks the one being recommended. At most one, unenforced. */
         featured: z.boolean().default(false),
         code: z.object({
           title: z.string().min(1).optional(),
           body: z.string().min(1),
         }),
-        href: z.string().optional(),
+        href: hrefReferenceSchema.optional(),
       }),
     )
     .min(2)
     .max(4),
 
   /** A closing line under the row — the caveat that applies to all of them. */
-  footnote: z.string().optional(),
+  footnote: inlineReferenceSchema.optional(),
 });
 
 /**
@@ -239,7 +240,7 @@ export const matrixSchema = baseSectionSchema
   .extend({
     type: z.literal('matrix'),
     heading: z.string().optional(),
-    subhead: z.string().optional(),
+    subhead: inlineReferenceSchema.optional(),
     eyebrow: z.string().optional(),
 
     /** Names for the two axes, shown in the corner cell. */
@@ -253,15 +254,15 @@ export const matrixSchema = baseSectionSchema
         z.object({
           label: z.string().min(1),
           /** A clause under the row's name — what this row *is*. */
-          description: z.string().optional(),
+          description: inlineReferenceSchema.optional(),
           /** One per column, in order. */
-          cells: z.array(z.string().min(1)).min(2).max(5),
+          cells: z.array(inlineReferenceSchema.min(1)).min(2).max(5),
         }),
       )
       .min(2)
       .max(6),
 
-    footnote: z.string().optional(),
+    footnote: inlineReferenceSchema.optional(),
   })
   .refine((section) => section.rows.every((row) => row.cells.length === section.columns.length), {
     message: 'every row needs exactly one cell per column',
@@ -276,15 +277,15 @@ export const logoStripSchema = baseSectionSchema.extend({
 export const featureGridSchema = baseSectionSchema.extend({
   type: z.literal('feature-grid'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
   items: z
     .array(
       z.object({
         icon: z.string().min(1).optional(),
         title: z.string().min(1),
-        body: z.string().optional(),
-        href: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
+        href: hrefReferenceSchema.optional(),
       }),
     )
     .min(1),
@@ -297,7 +298,7 @@ export const zigzagSchema = baseSectionSchema.extend({
     .array(
       z.object({
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         image: asset.optional(),
         align: z.enum(['image-right', 'image-left']).default('image-right'),
         cta: ctaSchema.optional(),
@@ -310,7 +311,7 @@ export const showcaseSchema = baseSectionSchema.extend({
   type: z.literal('showcase'),
   eyebrow: z.string().optional(),
   headline: z.string().min(1),
-  body: z.string().optional(),
+  body: inlineReferenceSchema.optional(),
   visual: asset.optional(),
   background: backgroundSchema.default('default'),
   cta: ctaSchema.optional(),
@@ -351,7 +352,7 @@ export const testimonialSchema = baseSectionSchema.extend({
 export const pricingTableSchema = baseSectionSchema.extend({
   type: z.literal('pricing-table'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   tiers: z
     .array(
       z.object({
@@ -372,14 +373,14 @@ export const faqSchema = baseSectionSchema.extend({
   type: z.literal('faq'),
   heading: z.string().optional(),
   items: z
-    .array(z.object({ question: z.string().min(1), answer: z.string().min(1) }))
+    .array(z.object({ question: z.string().min(1), answer: inlineReferenceSchema.min(1) }))
     .min(1),
 });
 
 export const ctaBannerSchema = baseSectionSchema.extend({
   type: z.literal('cta-banner'),
   headline: z.string().min(1),
-  body: z.string().optional(),
+  body: inlineReferenceSchema.optional(),
 
   /**
    * One line somebody is about to paste into a terminal, with a copy button.
@@ -404,14 +405,14 @@ export const markdownProseSchema = baseSectionSchema.extend({
   type: z.literal('markdown-prose'),
   heading: z.string().optional(),
   /** Inline markdown body. The escape hatch for free-form pages (spec §5.2 #11). */
-  body: z.string().min(1),
+  body: mdxReferenceSchema.min(1),
 });
 
 export const videoEmbedSchema = baseSectionSchema.extend({
   type: z.literal('video-embed'),
   heading: z.string().optional(),
   /** Self-hosted mp4 (content-relative) or a YouTube/Vimeo URL. */
-  src: z.string().min(1),
+  src: asset,
   poster: asset.optional(),
   caption: z.string().optional(),
 });
@@ -431,7 +432,7 @@ export const mediaPanelSchema = baseSectionSchema
     /** Copy laid over the media. */
     eyebrow: z.string().optional(),
     title: z.string().optional(),
-    body: z.string().optional(),
+    body: inlineReferenceSchema.optional(),
     image: asset.optional(),
     /** Self-hosted video, played muted and looping; still under reduced motion. */
     video: asset.optional(),
@@ -445,7 +446,7 @@ export const mediaPanelSchema = baseSectionSchema
     /** Darkens the media behind the copy. 0 leaves the artwork untouched. */
     scrim: z.number().min(0).max(1).default(0),
     cta: cta1or2.default([]),
-    href: z.string().optional(),
+    href: hrefReferenceSchema.optional(),
   })
   .refine((section) => [section.image, section.video].filter(Boolean).length === 1, {
     message: 'a media-panel must declare exactly one of: image, video',
@@ -458,18 +459,18 @@ export const mediaPanelSchema = baseSectionSchema
 export const cardCarouselSchema = baseSectionSchema.extend({
   type: z.literal('card-carousel'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   /** Trailing link on the heading row, e.g. "Browse everything ›". */
-  link: z.object({ label: z.string().min(1), href: z.string().min(1) }).optional(),
+  link: z.object({ label: z.string().min(1), href: hrefReferenceSchema.min(1) }).optional(),
   cardWidth: z.enum(['narrow', 'medium', 'wide']).default('medium'),
   items: z
     .array(
       z.object({
         eyebrow: z.string().optional(),
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         image: asset.optional(),
-        href: z.string().optional(),
+        href: hrefReferenceSchema.optional(),
         /** Per-card surface, for a row that alternates tone. */
         background: z.enum(['default', 'tinted', 'inverted', 'accent']).optional(),
       }),
@@ -485,15 +486,15 @@ export const cardCarouselSchema = baseSectionSchema.extend({
 export const bentoGridSchema = baseSectionSchema.extend({
   type: z.literal('bento-grid'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   items: z
     .array(
       z.object({
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         icon: z.string().min(1).optional(),
         image: asset.optional(),
-        href: z.string().optional(),
+        href: hrefReferenceSchema.optional(),
         /** How many cells the tile claims on a wide viewport. */
         span: z.enum(['normal', 'wide', 'tall', 'large']).default('normal'),
         background: z.enum(['default', 'tinted', 'inverted', 'accent']).optional(),
@@ -509,14 +510,14 @@ export const bentoGridSchema = baseSectionSchema.extend({
 export const timelineSchema = baseSectionSchema.extend({
   type: z.literal('timeline'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   items: z
     .array(
       z.object({
         /** Free text, not a date type: "1984", "Q3", "Chapter one" all belong. */
         date: text,
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         image: asset.optional(),
         icon: z.string().min(1).optional(),
       }),
@@ -528,17 +529,17 @@ export const timelineSchema = baseSectionSchema.extend({
 export const teamGridSchema = baseSectionSchema.extend({
   type: z.literal('team-grid'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
   people: z
     .array(
       z.object({
         name: z.string().min(1),
         role: z.string().optional(),
-        bio: z.string().optional(),
+        bio: inlineReferenceSchema.optional(),
         photo: asset.optional(),
         links: z
-          .array(z.object({ label: z.string().min(1), href: z.string().min(1) }))
+          .array(z.object({ label: z.string().min(1), href: hrefReferenceSchema.min(1) }))
           .default([]),
       }),
     )
@@ -549,7 +550,7 @@ export const teamGridSchema = baseSectionSchema.extend({
 export const gallerySchema = baseSectionSchema.extend({
   type: z.literal('gallery'),
   heading: z.string().optional(),
-  subhead: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
   /** Opening an image full-size is the point of a gallery; opt out for a plain grid. */
   lightbox: z.boolean().default(true),
@@ -584,7 +585,7 @@ export const promoGridSchema = baseSectionSchema.extend({
       z.object({
         eyebrow: z.string().optional(),
         title: z.string().min(1),
-        body: z.string().optional(),
+        body: inlineReferenceSchema.optional(),
         image: asset.optional(),
         video: asset.optional(),
         alt: z.string().default(''),
@@ -602,10 +603,10 @@ export const promoGridSchema = baseSectionSchema.extend({
         scrim: z.number().min(0).max(1).default(0),
         height: z.enum(['short', 'tall', 'full']).default('tall'),
         links: z
-          .array(z.object({ label: z.string().min(1), href: z.string().min(1) }))
+          .array(z.object({ label: z.string().min(1), href: hrefReferenceSchema.min(1) }))
           .max(2)
           .default([]),
-        href: z.string().optional(),
+        href: hrefReferenceSchema.optional(),
       }),
     )
     .min(1),
