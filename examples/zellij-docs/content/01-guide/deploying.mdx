@@ -22,6 +22,15 @@ const zellij = createZellijPages({
 });
 ```
 
+Give preparation the same path in both `predev` and `prebuild`:
+
+```bash
+zellij prepare --content ../../docs/external
+```
+
+Use the same runtime options for the wrapper's page, root layout and metadata
+factories. Preparation does not infer options from your TypeScript files.
+
 That is what lets a product repository keep its content beside the product:
 
 ```

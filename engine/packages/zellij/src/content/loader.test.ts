@@ -506,6 +506,41 @@ describe('guide folders', () => {
 /* ------------------------------------------------------------- collisions */
 
 describe('collisions', () => {
+  it('rejects a physical page shadowing the configured home redirect', async () => {
+    await expect(load({
+      'site.yaml': 'name: Test\nhome: manual\n',
+      'manual/_sidebar.yaml': '- intro\n',
+      'manual/intro.mdx': '---\nroute: /\n---\n# Intro\n',
+    })).rejects.toThrow(/Route collisions[\s\S]*home redirect/);
+  });
+
+  it('rejects a section page shadowing a guide-root redirect', async () => {
+    await expect(load({
+      'site.yaml': SITE,
+      'pages.yaml': '- name: landing\n  route: /manual\n  sections: [hero]\n',
+      'sections/hero.yaml': HERO,
+      'manual/_sidebar.yaml': '- intro\n',
+      'manual/intro.mdx': '# Intro\n',
+    })).rejects.toThrow(/Route collisions[\s\S]*\/manual/);
+  });
+
+  it('rejects two guide roots sharing a redirect route', async () => {
+    await expect(load({
+      'first/_sidebar.yaml': 'route: /manual\nnav: [intro]\n',
+      'first/intro.mdx': '# Intro\n',
+      'second/_sidebar.yaml': 'route: /manual\nnav: [setup]\n',
+      'second/setup.mdx': '# Setup\n',
+    })).rejects.toThrow(/Route collisions[\s\S]*\/manual/);
+  });
+
+  it('allows a guide root and its own index to identify the same page', async () => {
+    const site = await load({
+      'manual/_sidebar.yaml': '- index\n',
+      'manual/index.mdx': '# Manual\n',
+    });
+    expect([...site.routes]).toEqual(['/manual', '/']);
+  });
+
   it('rejects a page and a guide folder sharing a name', async () => {
     await expect(
       load({

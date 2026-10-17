@@ -21,9 +21,9 @@ export interface CheckResult {
 /**
  * Validates a content root without building anything — design §11.
  *
- * Everything the build would reject is rejected here, and everything it would
- * warn about is printed. The point is a fast loop for content authors: no
- * Next.js, no compilation, no dev server.
+ * Checks the content model and its supported navigation references. MDX
+ * compilation, prose links and complete asset validation need separate build
+ * acceptance; this intentionally remains a fast check without Next.js.
  */
 export async function check(options: CheckOptions = {}): Promise<CheckResult> {
   const cwd = options.cwd ?? process.cwd();

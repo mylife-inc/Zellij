@@ -130,6 +130,15 @@ generated.
 | `zellij search-index` | Writes `public/_zellij/search-index.json` |
 | `zellij check [dir]` | Validates a content root and prints every error and warning, without building |
 
+The preparation commands accept `--content <directory>` (absolute or relative
+to the wrapper root) and `--config <legacy-config>`. Set `--content` to the same
+folder passed as `contentDir` to the rendering factories; for example,
+`zellij prepare --content ../../docs/external`. Without it, they use `./content`
+or the legacy configuration's content path. Preparation reads fresh content,
+uses canonical guide routes and heading IDs, and removes stale generated
+assets even when the source assets folder has been removed. It does not watch
+for further edits; rerun preparation after changing content or assets.
+
 ### 4. Content
 
 The content root is a folder of any name that describes itself entirely. Every

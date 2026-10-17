@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 /** Covers the ⌘K guide search in spec §7.3 and §13.6. */
 
-async function openSearch(page: import('@playwright/test').Page): Promise<void> {
+async function openSearchDialog(page: import('@playwright/test').Page): Promise<void> {
   // Retry the shortcut: a keypress dispatched before React has hydrated finds
   // no listener attached, and the modal never opens. Easy to hit under load.
   await expect(async () => {
@@ -11,7 +11,10 @@ async function openSearch(page: import('@playwright/test').Page): Promise<void> 
       timeout: 1000,
     });
   }).toPass({ timeout: 15000 });
+}
 
+async function openSearch(page: import('@playwright/test').Page): Promise<void> {
+  await openSearchDialog(page);
   // "Start typing" only appears once the index has actually loaded.
   await expect(page.locator('.zellij-search-empty')).toContainText(/Start typing/, {
     timeout: 15000,
@@ -35,6 +38,47 @@ test.describe('search index', () => {
 });
 
 test.describe('⌘K modal', () => {
+  test('recovers when closed during its first load and caches the completed retry', async ({ page }) => {
+    let requests = 0;
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => { release = resolve; });
+    await page.route('**/_zellij/search-index.json', async (route) => {
+      requests += 1;
+      if (requests === 1) await pending;
+      await route.fulfill({ json: [{ id: '/guide', route: '/guide', page: 'Guide', title: 'Retry fixture', text: 'Recovery works.' }] });
+    });
+    await page.goto('/guide');
+    await openSearchDialog(page);
+    await expect.poll(() => requests).toBe(1);
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Search the guide' })).toBeHidden();
+    release();
+    await openSearch(page);
+    await page.locator('.zellij-search-input').fill('Recovery');
+    await expect(page.locator('.zellij-search-result')).toContainText('Retry fixture');
+    expect(requests).toBe(2);
+    await page.keyboard.press('Escape');
+    await openSearch(page);
+    expect(requests).toBe(2);
+  });
+
+  test('can retry a failed index request on reopen', async ({ page }) => {
+    let requests = 0;
+    await page.route('**/_zellij/search-index.json', async (route) => {
+      requests += 1;
+      if (requests === 1) await route.fulfill({ status: 503, body: 'Unavailable' });
+      else await route.fulfill({ json: [{ id: '/guide', route: '/guide', page: 'Guide', title: 'Recovered', text: 'Retry succeeded.' }] });
+    });
+    await page.goto('/guide');
+    await openSearchDialog(page);
+    await expect(page.locator('.zellij-search-empty')).toContainText('unavailable');
+    await page.keyboard.press('Escape');
+    await openSearch(page);
+    await page.locator('.zellij-search-input').fill('Retry');
+    await expect(page.locator('.zellij-search-result')).toContainText('Recovered');
+    expect(requests).toBe(2);
+  });
+
   test('does not load the search library until opened', async ({ page }) => {
     const requests: string[] = [];
     page.on('request', (r) => {

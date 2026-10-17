@@ -43,11 +43,18 @@ payos/
 ```json title="package.json"
 {
   "scripts": {
-    "predev": "zellij prepare",
-    "prebuild": "zellij prepare"
+    "predev": "zellij prepare --content ../content",
+    "prebuild": "zellij prepare --content ../content"
   }
 }
 ```
+
+`--content` must name the same folder as the wrapper's `contentDir`, relative
+to the wrapper directory. Without it, preparation uses `./content` or the
+legacy config's `content` setting. The three preparation commands also accept
+`--config <file>` for a nondefault legacy configuration file. Paths with spaces
+need shell quoting. Missing content directories fail instead of producing an
+empty index.
 
 Four commands, all build-time. Nothing here runs in production, and nothing here
 is something you type — they exist because two things have to happen before
@@ -65,8 +72,12 @@ have to be bridged into it. It is what turns the authored path
 `assets/hero.png` into the served path `/_zellij/assets/hero.png`. It replaces
 rather than merges, so a deleted asset does not linger in `public/`.
 
-**`search-index`** walks every guide folder, extracts text from the MDX, splits
-it per heading and writes a static JSON index. The ⌘K modal fetches that file
+**`search-index`** uses the same resolved guide pages as rendering, including
+sidebar and page route overrides. It removes the title heading exactly as the
+page layout does, then parses heading IDs with the renderer's slug plugin.
+Search and the table of contents agree on formatted headings, repeated headings
+and code fences. This parses MDX syntax without evaluating authored JavaScript
+and writes a static JSON index. The ⌘K modal fetches that file
 and loads FlexSearch on first open. Section pages are excluded by design.
 
 <Callout type="tip" title="If you change the build command">
@@ -77,8 +88,10 @@ site with no search and no images, which builds successfully. Run
 </Callout>
 
 `zellij check` is the same validation [`zel check`](/cli/check) will run, and is
-available today. It exits non-zero when the folder would fail a build, so it
-works as a pre-commit hook or a CI step:
+available today. It checks configuration, referenced content, route ownership
+and supported navigation references. It does not compile MDX or verify every
+asset and prose link; retain a full build in CI. Use the fast check as a
+pre-commit hook or an earlier CI step:
 
 ```bash title="terminal"
 npx zellij check
@@ -110,8 +123,9 @@ than one per run.
 | Section reference with no file | Error listing the sections that do exist |
 | `page:` naming no page or guide folder | Error listing the available names |
 | A page and a guide folder sharing a name | Error naming both |
+| A guide-root or home redirect colliding with another route | Error naming both owners |
 | Two sections on one page with the same `id` | Error — `#id` would be ambiguous |
-| A nav, CTA or footer link to a nonexistent route | Error naming the label and href |
+| A navigation CTA, announcement or footer link to a nonexistent route | Error naming the label and href |
 | An anchor no section declares | Error listing the anchors that page has |
 
 And the warnings, which do not stop a build:

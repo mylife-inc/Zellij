@@ -46,8 +46,8 @@ And when something is wrong:
     "installation" is not a page in this guide
     did you mean "install"?
 
-  01-guide/quickstart.mdx:31
-    link to /guide/themes/nord — no such page
+  site.yaml
+    nav.cta: "Guide" → /missing-guide — no such route
 
 3 problems
 ```
@@ -66,18 +66,19 @@ passes, the build fails, and the two disagree about the same file.
 So the CLI does not know what a `hero` is. It mounts your folder read-only,
 starts the engine, and asks.
 
-The cost is a container runtime. The benefit is that anything `check` accepts,
-the build accepts — by construction, not by diligence.
+The cost is a container runtime. The benefit is that schema and content-model
+checks use the same implementation as rendering. A successful check is still
+followed by preparation and compilation, which can detect additional errors.
 
 ## What it validates
 
 | | |
 | --- | --- |
-| Every YAML file | Against its schema. Unknown values fail, naming what is accepted |
-| Every section | The type exists, required fields are present, values are in range |
-| Every internal link | In `menu.yaml`, `site.yaml`'s footer, `pages.yaml`, and inside MDX prose |
+| Site configuration and referenced content | Against their schemas. Unknown values fail, naming what is accepted |
+| Referenced sections and section examples | The type exists, required fields are present, values are in range |
+| Navigation references | Menu/footer `page:` targets, navigation CTAs, announcements and footer URLs; literal menu `url:` entries are intentionally unchecked |
 | Every sidebar entry | Names a page that exists in that guide |
-| Every asset reference | Resolves under `assets/` |
+| Route ownership | Physical pages, guide roots and home redirects cannot claim conflicting routes |
 | The home page | `home:` names a page that exists |
 
 ### Errors against warnings
@@ -99,7 +100,7 @@ files no page references.
 
 ## What it does not do
 
-**It does not compile your MDX.**
+**It does not compile your MDX, verify all local assets, or check links in prose and section content.**
 
 `check` validates the content model. Guide pages are compiled as MDX — Markdown
 plus JSX — and that is a separate pass with its own failure modes. `{` opens an

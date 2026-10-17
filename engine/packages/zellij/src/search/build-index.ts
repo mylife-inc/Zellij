@@ -1,13 +1,6 @@
-import GithubSlugger from 'github-slugger';
+import { readHeadings, type HeadingOptions } from '../mdx/headings';
+import { ZellijContentError } from '../errors';
 import type { GuidePage } from '../content/types';
-
-/**
- * This module is deliberately self-contained apart from `github-slugger`: the
- * build-time CLI imports it directly under Node, where every relative import
- * would need an explicit file extension. Keeping the graph to one hop means one
- * such import, and the app still consumes this module normally through the
- * bundler.
- */
 
 export interface SearchEntry {
   /** Stable id: route plus optional heading anchor. */
@@ -55,17 +48,10 @@ export function mdxToText(source: string): string {
  * Splits a guide page into one entry per h2/h3 section, so a hit lands on the
  * relevant heading rather than the top of a long page.
  */
-export function indexGuidePage(page: GuidePage): SearchEntry[] {
-  // A fresh slugger per page, matching how rehype-slug numbers duplicates, so
-  // a result's anchor resolves to the heading actually rendered.
-  const slugger = new GithubSlugger();
+export function indexGuidePage(page: GuidePage, options: HeadingOptions = {}): SearchEntry[] {
+  const headings = readHeadings(page.body, options).filter((heading) => heading.depth === 2 || heading.depth === 3);
   const entries: SearchEntry[] = [];
-
-  // Everything before the first h2/h3 belongs to the page itself.
-  const firstHeadingIndex = findFirstHeadingIndex(page.body);
-  const intro = mdxToText(
-    firstHeadingIndex === -1 ? page.body : page.body.slice(0, firstHeadingIndex),
-  );
+  const intro = mdxToText(page.body.slice(0, headings[0]?.start));
 
   entries.push({
     id: page.route,
@@ -75,24 +61,14 @@ export function indexGuidePage(page: GuidePage): SearchEntry[] {
     text: [page.description ?? '', intro].filter(Boolean).join(' ').trim(),
   });
 
-  for (const section of splitByHeadings(page.body)) {
-    // Every heading level is slugged, in document order, because rehype-slug
-    // does the same when rendering — skipping h1 would shift the -1, -2
-    // suffixes on duplicates and produce anchors that resolve nowhere.
-    const anchor = slugger.slug(section.heading);
-
-    // Only h2/h3 become their own search results.
-    if (section.level > 3) continue;
-    if (section.level < 2) continue;
-
-    const text = mdxToText(section.body);
+  for (const [index, heading] of headings.entries()) {
+    const text = mdxToText(page.body.slice(heading.end, headings[index + 1]?.start));
     if (!text) continue;
-
     entries.push({
-      id: `${page.route}#${anchor}`,
-      route: `${page.route}#${anchor}`,
+      id: `${page.route}#${heading.id}`,
+      route: `${page.route}#${heading.id}`,
       page: page.title,
-      title: section.heading,
+      title: heading.text,
       text,
     });
   }
@@ -101,61 +77,12 @@ export function indexGuidePage(page: GuidePage): SearchEntry[] {
 }
 
 /** Marketing pages are excluded from the index by design (spec §7.3). */
-export function buildSearchIndex(guidePages: readonly GuidePage[]): SearchEntry[] {
-  return guidePages.flatMap(indexGuidePage);
-}
-
-const HEADING = /^(#{1,6})\s+(.+?)\s*#*$/;
-
-interface Section {
-  level: number;
-  heading: string;
-  body: string;
-}
-
-/** Offset of the first h2/h3, i.e. where the page's introduction ends. */
-function findFirstHeadingIndex(source: string): number {
-  let offset = 0;
-  let inFence = false;
-
-  for (const line of source.split('\n')) {
-    const trimmed = line.trimStart();
-    if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) {
-      inFence = !inFence;
-    } else if (!inFence) {
-      const match = HEADING.exec(line);
-      if (match && match[1]!.length >= 2) return offset;
+export function buildSearchIndex(guidePages: readonly GuidePage[], options: HeadingOptions = {}): SearchEntry[] {
+  return guidePages.flatMap((page) => {
+    try {
+      return indexGuidePage(page, options);
+    } catch (error) {
+      throw new ZellijContentError(`Cannot index ${page.sourceFile}: ${(error as Error).message}`, page.sourceFile);
     }
-    offset += line.length + 1;
-  }
-  return -1;
-}
-
-/** All headings, every level, in document order — fenced code ignored. */
-function splitByHeadings(source: string): Section[] {
-  const sections: Section[] = [];
-  let current: { level: number; heading: string; body: string[] } | undefined;
-  let inFence = false;
-
-  const flush = (): void => {
-    if (current) {
-      sections.push({ level: current.level, heading: current.heading, body: current.body.join('\n') });
-    }
-  };
-
-  for (const line of source.split('\n')) {
-    const trimmed = line.trimStart();
-    if (trimmed.startsWith('```') || trimmed.startsWith('~~~')) inFence = !inFence;
-
-    const match = inFence ? null : HEADING.exec(line);
-    if (match) {
-      flush();
-      current = { level: match[1]!.length, heading: match[2]!, body: [] };
-    } else if (current) {
-      current.body.push(line);
-    }
-  }
-
-  flush();
-  return sections;
+  });
 }

@@ -1,4 +1,6 @@
 import path from 'node:path';
+import { stat } from 'node:fs/promises';
+import { ZellijContentError } from '../errors';
 import { FolderContentSource } from '../content/folder-source';
 import { LegacyContentSource } from '../content/legacy-source';
 import { exists } from '../content/fs-utils';
@@ -35,7 +37,7 @@ export function resolveContentPaths(options: ZellijRuntimeOptions = {}): {
   appRoot: string;
   configFile: string;
 } {
-  const appRoot = options.appRoot ?? process.cwd();
+  const appRoot = path.resolve(options.appRoot ?? process.cwd());
   const configFile = path.resolve(appRoot, options.configFile ?? 'zellij.config.yaml');
   return { appRoot, configFile };
 }
@@ -47,9 +49,9 @@ export function resolveContentPaths(options: ZellijRuntimeOptions = {}): {
  * read by the legacy source, which produces the same internal model. Anything
  * else is read as a content root proper.
  */
-async function createSource(
-  options: ZellijRuntimeOptions,
-  warn: (message: string) => void,
+export async function createContentSource(
+  options: ZellijRuntimeOptions = {},
+  warn: (message: string) => void = options.onWarning ?? ((message) => console.warn(`[zellij] ${message}`)),
 ): Promise<{ source: ContentSource; contentDir: string; layout: 'folder' | 'legacy' }> {
   const { appRoot, configFile } = resolveContentPaths(options);
 
@@ -65,6 +67,12 @@ async function createSource(
     const legacy = await bootstrap.loadLegacyConfig();
     contentDir = path.resolve(appRoot, legacy.content);
   }
+
+  const root = await stat(contentDir).catch((error: NodeJS.ErrnoException) => {
+    if (error.code !== 'ENOENT') throw error;
+    return undefined;
+  });
+  if (!root?.isDirectory()) throw new ZellijContentError(`No content directory at ${contentDir}`, contentDir);
 
   if (await exists(path.join(contentDir, 'marketing'))) {
     warn(
@@ -127,7 +135,7 @@ export function loadZellijRuntime(options: ZellijRuntimeOptions = {}): Promise<Z
 
   cached = (async () => {
     const warn = options.onWarning ?? ((message: string) => console.warn(`[zellij] ${message}`));
-    const { source, contentDir, layout } = await createSource(options, warn);
+    const { source, contentDir, layout } = await createContentSource(options, warn);
 
     const site = await loadSite(source);
     if (options.basePath !== undefined) site.config.basePath = options.basePath;

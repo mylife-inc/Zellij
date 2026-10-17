@@ -115,6 +115,13 @@ describe('indexGuidePage', () => {
     const entries = indexGuidePage(guide('# T\n\n## Empty\n\n```bash\nls\n```'));
     expect(entries.map((e) => e.title)).toEqual(['Test']);
   });
+
+  it('keeps deeper subsections searchable within their parent passage', () => {
+    const entries = indexGuidePage(guide('## Setup\n\nOverview.\n\n#### Detail\n\nUnique detail.\n\n## Detail\n\nNext passage.'));
+    expect(entries[1]?.text).toContain('Unique detail.');
+    expect(entries[1]?.text).not.toContain('Next passage.');
+    expect(entries[2]?.route).toBe('/guide/test#detail-1');
+  });
 });
 
 describe('buildSearchIndex', () => {
