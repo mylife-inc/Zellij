@@ -647,6 +647,53 @@ Windows CI uses `scripts/fixtures/preview-console.rs` to create a private consol
 for the tested child and send a real Ctrl-C event, rather than Node's force-kill.
 Cross-platform hosted acceptance is pending at this record.
 
+Native-preview completion: [PR #13](https://github.com/mylife-inc/Zellij/pull/13)
+merged as `bc95346` after head `4b4da4c` passed all seven jobs in
+`39066025208`. Main CI `39066685507` also passed all seven jobs: 144 Linux
+Rust tests, 325 engine tests, 311 website browser passes, 124 conditional skips,
+and no retries. Both Chromium and WebKit passed native direct-file and HTTP
+preview on Linux/macOS/Windows, including launcher failure recovery and real
+Ctrl-C. Image run `39066685512` passed all 13 jobs and published all four
+AMD64/ARM64 feature variants. No native binary release was issued.
+
+### Portable watch and live reload — 2026-10-17
+
+Source commit `2c44098` implements `zel view --watch`. Ordinary `view` remains
+one-time build/serve/open; `serve` remains unchanged-file preview. The watcher
+captures the resolved source before the initial build, polls streamed file-byte
+hashes, waits for two matching scans, and serializes full rebuilds. Hidden entries
+and node_modules are ignored. Same-size/preserved-timestamp edits are detected.
+Nested links, Windows junctions, special files and replacement root links are
+refused. Missing roots and invalid documents/assets recover on subsequent edits.
+Large trees require full scans/builds; no incremental compiler is implemented.
+
+`zellij-docs::prepare` returns a staged `PreparedBuild`; ordinary `build` publishes
+it immediately. Watch mode publishes under the shared `LiveReload` write lock,
+while HTTP holds a read lock through file resolution/opening and revision
+attachment. Responses do not hold it while streaming to clients. This excludes
+the publication rename gap from preview reads, without making multiple HTTP
+requests a single generation transaction. Failed builds retain the last export
+and revision and report their error in the terminal and a browser notice.
+
+Only watch HTTP responses receive `_zellij/preview.js` and revision polling.
+The version embedded in each HTML response detects updates even before its
+first poll. Success reloads the current URL, preserving query/fragment; deleted
+page 404 previews can recover on restoration. Files on disk receive no preview
+client or endpoint and remain movable/offline. Ctrl-C joins the worker and
+cleans staged work before reporting completion; exported files remain. Name,
+theme, output and port changes require restarting the command.
+
+Local evidence: **147 Rust tests**, formatting, warnings-denied Clippy, strict/
+deep docs validation, and actual CLI acceptance in Chromium and WebKit pass.
+Four added Rust regressions cover snapshots (including preserved timestamps and
+links), staged publication, HTTP revisions/endpoints/HEAD and unchanged output.
+The browser/process fixture additionally exercises the first-poll race, atomic
+saves, added/deleted pages, changed/missing assets, search refresh, error notice
+and recovery, temporary source loss, symlinks/junctions, ignored trees, continuous
+HTTP availability during publication, Ctrl-C, and moved offline exports. CI
+uses the same native Linux/macOS/Windows matrix and real Windows console helper.
+Hosted acceptance is pending at this record. No native release is issued.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -679,7 +726,8 @@ free to differ: build a plain Markdown folder into a site that also works by
 double-clicking `index.html`, serve an existing static site over HTTP, and a
 `view` operation combining build, serve and browser launch. This is new required
 product scope. Native build, serve and view are implemented above; portable
-watch/reload and richer rendering/configuration remain planned. The [portable documentation contract](specs/zel-portable-docs.md)
+`view --watch` adds portable rebuild/reload, while richer rendering/configuration
+remain planned. The [portable documentation contract](specs/zel-portable-docs.md)
 records plain-folder discovery, direct-file navigation/search/assets, offline
 acceptance and cross-platform serve/view requirements. Keep a core MkDocs
 capability comparison when implementing the Rust CLI. Today's Next static export
@@ -869,10 +917,10 @@ complete; see the audit before using writers on valuable content.
 
 | Status | Commands |
 | --- | --- |
-| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/themes/formats/targets`, `context` (Markdown/JSON), `detect`, `convert`, `doctor` |
+| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/themes/formats/targets`, `context` (Markdown/JSON), `detect`, `convert`, `doctor`, portable `build`, `serve`, `view` (optional `--watch`) |
 | Implemented container orchestration | `check` (optional `--deep`/`--strict`), `dev`, `build` static/image; `image build/run/push/dockerfile` |
 | Implemented workflows | `migrate` = detect/convert/check; `ci init github`; `ci publish` dispatches an existing workflow |
-| Declared but returns “not implemented yet” | `new app`, `deploy`, `serve`, `fmt`, `publish`, `ship` |
+| Declared but returns “not implemented yet” | `new app`, `deploy`, `fmt`, `publish`, `ship` |
 | Specified but not registered | `watch`, `eject`, `pull`, `upgrade`, `completions`, `version` subcommand (`--version` works) |
 | Output options | `--json` works for `context`, every `list`, `explain`, `detect`; other commands reject it before execution. `--verbose` / `-v` is rejected, not a successful no-op. |
 
@@ -949,13 +997,13 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the font and inspection-output changes, subject to the user's v1 scope decision:
+Remaining order after native watch/reload, subject to the user's v1 scope decision:
 
-1. Complete hosted cross-platform acceptance of native serve/view.
-   Portable build and PR #11 inspection acceptance have passed on merged main.
-2. Finish the agreed CLI subset and configuration, including portable
-   watch/reload and the remaining rendering/navigation capabilities
-   workflows in [the portable contract](specs/zel-portable-docs.md).
+1. Complete hosted cross-platform acceptance of portable watch/reload. Native
+   build/serve/view and inspection acceptance have passed on merged main.
+2. Finish the agreed CLI subset and portable configuration, richer Markdown
+   rendering/navigation, and diagnostics in
+   [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
