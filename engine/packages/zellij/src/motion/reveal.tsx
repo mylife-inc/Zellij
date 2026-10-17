@@ -43,30 +43,45 @@ export function Reveal({
   style?: CSSProperties;
 } & Record<string, unknown>) {
   const ref = useRef<HTMLElement>(null);
-  const [revealed, setRevealed] = useState(motion === 'none');
+  // Server content stays readable if JavaScript is disabled, blocked or late.
+  // Only an installed observer may hide an offscreen element for its entrance.
+  const [state, setState] = useState<'pending' | 'out' | 'in'>('pending');
+  const revealed = useRef(false);
 
   useEffect(() => {
-    if (motion === 'none') {
-      setRevealed(true);
-      return;
-    }
+    const show = (): void => {
+      revealed.current = true;
+      setState('in');
+    };
 
     // The accessibility override is mandatory and beats config (spec §6.5).
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (reduced.matches) {
-      setRevealed(true);
+    if (
+      revealed.current || motion === 'none' || reduced.matches ||
+      typeof IntersectionObserver === 'undefined'
+    ) {
+      show();
       return;
     }
 
     const node = ref.current;
     if (!node) return;
 
-    // Already in view on load (above the fold): reveal without waiting.
+    // Never hide content the reader already reached while hydration was loading.
+    const rect = node.getBoundingClientRect();
+    if (
+      rect.bottom > 0 && rect.top < window.innerHeight &&
+      rect.right > 0 && rect.left < window.innerWidth
+    ) {
+      show();
+      return;
+    }
+
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
-            setRevealed(true);
+            show();
             observer.disconnect();
           }
         }
@@ -75,6 +90,7 @@ export function Reveal({
     );
 
     observer.observe(node);
+    setState('out');
     return () => observer.disconnect();
   }, [motion]);
 
@@ -82,7 +98,7 @@ export function Reveal({
     <Tag
       ref={ref}
       className={className}
-      data-zellij-reveal={revealed ? 'in' : 'out'}
+      data-zellij-reveal={state}
       data-zellij-reveal-direction={direction}
       style={
         index > 0

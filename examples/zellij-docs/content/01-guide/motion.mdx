@@ -61,6 +61,20 @@ reason — `clip` rather than `hidden`, because `hidden` would make every sectio
 a scroll container and break the sticky pinning `expressive` relies on.
 </Callout>
 
+## Before JavaScript loads
+
+Entrance content is visible in the server-rendered page. If JavaScript is
+disabled or fails to load, text, links and native controls such as FAQ
+disclosures remain readable and usable. After hydration, only offscreen
+elements with an installed observer are hidden for their entrance animation.
+Content already in the viewport stays visible, including an FAQ opened before
+hydration completes.
+
+Document scrolling uses the browser's immediate behavior. This keeps focus and
+scroll-into-view operations from moving a control during a pointer press.
+Section entrance motion and horizontal carousel scrolling keep their own
+animation rules.
+
 ## Video
 
 A `media-panel` video is muted, looping and `playsinline`, and autoplay is
@@ -75,7 +89,9 @@ image and a play button is all that ships.
 
 The e2e suite covers this directly: that reveals fire on scroll, that nothing
 animates a layout-affecting property, and that under reduced motion every
-section renders visible with no animation at all.
+section renders visible with no animation at all. It also checks readable
+entrance content with JavaScript disabled and FAQ operation before and after
+delayed hydration.
 
 If you are writing tests against a Zellij site and measuring element positions,
 emulate reduced motion first. Measuring mid-reveal reads a position offset by
