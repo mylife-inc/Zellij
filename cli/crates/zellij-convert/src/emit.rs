@@ -45,7 +45,7 @@ fn yaml_string(value: &str) -> String {
 /// MkDocs serves `getting-started/index.md` at `getting-started/`; Zellij
 /// serves `getting-started/index.mdx` at the same place, so the shape carries
 /// over unchanged and only the extension moves.
-fn slug_for(source: &Utf8PathBuf) -> String {
+pub(crate) fn slug_for(source: &Utf8PathBuf) -> String {
     let without_extension = source.as_str().trim_end_matches(".markdown");
     let without_extension = without_extension
         .trim_end_matches(".mdx")
@@ -100,7 +100,7 @@ fn first_heading(body: &str) -> Option<String> {
 }
 
 /// Splits existing YAML frontmatter off a document, if it has any.
-fn split_frontmatter(source: &str) -> (Option<&str>, &str) {
+pub(crate) fn split_frontmatter(source: &str) -> (Option<&str>, &str) {
     let Some(rest) = source.strip_prefix("---\n") else {
         return (None, source);
     };

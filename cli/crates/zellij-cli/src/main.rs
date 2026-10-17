@@ -1465,7 +1465,13 @@ fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij
     let files: Vec<_> = conversion
         .files
         .iter()
-        .map(|file| (file.path.as_path(), file.body.as_str()))
+        .map(|file| (file.path.as_path(), file.body.as_bytes()))
+        .chain(
+            conversion
+                .assets
+                .iter()
+                .map(|asset| (asset.path.as_path(), asset.body.as_slice())),
+        )
         .collect();
     zellij_core::files::preflight(
         out,
@@ -1474,13 +1480,17 @@ fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij
     )?;
 
     if dry_run {
-        println!("\nWould write {} files into {out}:", conversion.files.len());
-        for file in &conversion.files {
-            println!("  {}", file.path);
+        println!("\nWould write {} files into {out}:", files.len());
+        for (path, _) in &files {
+            println!("  {path}");
         }
     } else {
         zellij_core::files::write_files(out, &files, false)?;
-        println!("\nWrote {} files into {out}", conversion.files.len());
+        println!(
+            "\nWrote {} files into {out} ({} assets)",
+            files.len(),
+            conversion.assets.len()
+        );
     }
 
     if !conversion.unmapped.is_empty() {

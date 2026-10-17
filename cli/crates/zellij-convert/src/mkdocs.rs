@@ -116,7 +116,7 @@ impl Converter for MkDocs {
     fn convert(
         &self,
         source: &Utf8Path,
-        _options: &ConvertOptions,
+        options: &ConvertOptions,
     ) -> zellij_core::Result<Conversion> {
         let config = config_path(source).ok_or_else(|| zellij_core::Error::UnknownFormat {
             path: source.to_owned(),
@@ -206,6 +206,7 @@ impl Converter for MkDocs {
 
         let documents = crate::read_documents(&tree, false)?;
         let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
+        crate::references::rewrite(&tree, &documents, None, options, &mut conversion)?;
 
         if derived {
             conversion.notes.push(

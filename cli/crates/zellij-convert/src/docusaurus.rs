@@ -164,7 +164,7 @@ impl Converter for Docusaurus {
     fn convert(
         &self,
         source: &Utf8Path,
-        _options: &ConvertOptions,
+        options: &ConvertOptions,
     ) -> zellij_core::Result<Conversion> {
         let root = zellij_core::files::contained_path(source, Utf8Path::new("docs"))?;
         if !root.is_dir() {
@@ -276,6 +276,7 @@ impl Converter for Docusaurus {
 
         let documents = crate::read_documents(&tree, true)?;
         let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
+        crate::references::rewrite(&tree, &documents, Some(source), options, &mut conversion)?;
 
         conversion.notes.extend(notes);
         Ok(conversion)

@@ -14,6 +14,7 @@ pub mod material;
 pub mod mdx;
 pub mod mkdocs;
 pub mod model;
+mod references;
 
 use camino::{Utf8Path, Utf8PathBuf};
 
@@ -70,6 +71,13 @@ pub struct OutputFile {
     pub body: String,
 }
 
+/// Referenced bytes, read and checked before any destination is written.
+#[derive(Debug, Clone)]
+pub struct OutputAsset {
+    pub path: Utf8PathBuf,
+    pub body: Vec<u8>,
+}
+
 /// Something in the source that has no Zellij equivalent.
 ///
 /// Reported rather than discarded. A converter that silently drops a page is
@@ -89,14 +97,20 @@ pub struct Unmapped {
 #[derive(Debug, Default)]
 pub struct Conversion {
     pub files: Vec<OutputFile>,
-    pub assets: Vec<Utf8PathBuf>,
+    pub assets: Vec<OutputAsset>,
     pub unmapped: Vec<Unmapped>,
     pub notes: Vec<String>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct ConvertOptions {
     pub copy_assets: bool,
+}
+
+impl Default for ConvertOptions {
+    fn default() -> Self {
+        Self { copy_assets: true }
+    }
 }
 
 pub trait Converter: Send + Sync {

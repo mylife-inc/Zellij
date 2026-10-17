@@ -141,7 +141,11 @@ pub fn preflight(root: &Utf8Path, paths: &[&Utf8Path], overwrite: bool) -> Resul
     Ok(())
 }
 
-pub fn write_files(root: &Utf8Path, files: &[(&Utf8Path, &str)], overwrite: bool) -> Result<()> {
+pub fn write_files<B: AsRef<[u8]>>(
+    root: &Utf8Path,
+    files: &[(&Utf8Path, B)],
+    overwrite: bool,
+) -> Result<()> {
     let paths: Vec<_> = files.iter().map(|(path, _)| *path).collect();
     preflight(root, &paths, overwrite)?;
     let mut staged = Vec::with_capacity(files.len());
@@ -150,7 +154,7 @@ pub fn write_files(root: &Utf8Path, files: &[(&Utf8Path, &str)], overwrite: bool
         let parent = target.parent().expect("contained file has a parent");
         fs::create_dir_all(parent)?;
         let mut temporary = tempfile::NamedTempFile::new_in(parent)?;
-        temporary.write_all(body.as_bytes())?;
+        temporary.write_all(body.as_ref())?;
         // Keep the temporary path, not an open descriptor for every page.
         // Large documentation imports can exceed the process's file limit.
         staged.push((temporary.into_temp_path(), target));

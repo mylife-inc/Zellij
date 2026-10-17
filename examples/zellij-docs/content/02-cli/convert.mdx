@@ -83,6 +83,35 @@ zel list formats
 Converters are plugins compiled into the binary, so `zel list formats` prints
 what your build can actually read.
 
+## Document links and assets
+
+Markdown links to converted documents become their Zellij routes. For example,
+`02-Setup/APIReference.md#install` becomes
+`/guide/setup/api-reference#install`. Nested paths, directory indexes, URL-encoded
+filenames, query strings, images and reference-style links are supported. Code
+examples are left alone. Extensionless links resolve only when there is one
+matching converted document.
+
+Referenced local files are copied byte-for-byte into `assets/imported/docs/`,
+keeping their source directory structure. Docusaurus also supports Markdown
+references to its default `static/` folder using `/img/logo.svg` or
+`@site/static/img/logo.svg`; those files go into `assets/imported/static/`.
+Copied images and downloads use the published asset URL, including the site's
+`basePath`. The dry-run plan lists asset files too.
+
+Relative `..` segments in links may traverse within the docs root. A reference
+that escapes the allowed root, uses a symlink, or targets Git metadata is
+rejected before output is written. Duplicate output filenames and public page
+routes are rejected too. Unlisted documents are reported, never copied as assets.
+
+Missing and ambiguous targets, unmapped root-relative URLs, and HTML/JSX
+`href`/`src` attributes appear in the conversion report. They need manual work.
+JavaScript imports, custom static directories, source route overrides, and
+plugin-generated URLs are not interpreted. Fragment text is retained, but
+source-specific heading IDs and fragments targeting the document's leading H1
+need review: Zellij renders that title outside the Markdown body. Always build
+and inspect the converted site before publishing it.
+
 ## What does not come across
 
 **A landing page.** Every one of these tools describes a documentation tree.

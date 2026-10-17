@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { AnchorHTMLAttributes, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactNode } from 'react';
 
 import { Callout } from './callout';
 import { Mermaid } from './mermaid';
@@ -10,7 +10,7 @@ import { Screenshot } from './screenshot';
 import { SectionPreview, type SectionPreviewProps } from './section-preview';
 import { Step, Steps } from './steps';
 import { CodeGroup, Tab, Tabs } from './tabs';
-import { isExternal } from '../content/paths';
+import { ASSET_PUBLIC_PREFIX, isExternal, withBasePath } from '../content/paths';
 import type { Site } from '../content/site';
 import { ZellijContentError } from '../errors';
 
@@ -65,6 +65,18 @@ export function mdxComponents(site?: Site) {
   const basePath = site?.config.basePath ?? '';
   return {
     a: MdxLink,
+    // Markdown images use ordinary <img>, so Next cannot add basePath for
+    // them. Imported assets are already public URLs; preserve other sources.
+    img: ({ src, ...props }: ImgHTMLAttributes<HTMLImageElement>) => (
+      <img
+        {...props}
+        src={
+          typeof src === 'string' && src.startsWith(`${ASSET_PUBLIC_PREFIX}/`)
+            ? withBasePath(src, basePath)
+            : src
+        }
+      />
+    ),
     pre: CodeBlock,
     h2: heading('h2'),
     h3: heading('h3'),
