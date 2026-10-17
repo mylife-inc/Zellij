@@ -30,7 +30,9 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
     const availability = [];
     const probe = (async () => {
       while (polling) {
-        availability.push((await fetch(server.url)).status);
+        const response = await fetch(server.url);
+        await response.arrayBuffer(); // Release the connection between probes.
+        availability.push(response.status);
         await delay(60);
       }
     })();
