@@ -663,6 +663,32 @@ now waits for the controls that site.js reveals before pressing the shortcut;
 static heading visibility alone is not JavaScript readiness. Production code is
 unchanged, and the first-poll race still must complete before these search checks.
 
+
+HTTP transport correction: traces from `39070119126` showed requests for
+site.js/search.js receiving no response, so the browser could not start its
+first poll. The earlier lifecycle/interception explanations above were
+provisional and did not explain the underlying failure. A standalone local
+64-connection burst reproduced missing responses in ordinary `serve`; closing
+answered keep-alive sockets immediately released the stuck requests. Inspection
+of tiny_http's task queue found that queued connections can outnumber idle
+workers, leaving connections unprocessed while those workers wait on persistent
+clients. This affects PR #13's server as well as watch mode.
+
+Source commit `6f14500` replaces the transport with Hyper HTTP/1 and Tokio:
+idle sockets are async tasks, file
+lookups use a bounded 16-thread blocking pool, and file bodies stream with
+backpressure. A maximum of 256 connections, a 10-second header-read timeout and
+cancellation on shutdown bound the preview service. Existing routing, host/path
+checks, byte-preserving serving, HEAD lengths and watch publication locks remain.
+The new regression queues 64 persistent requests plus idle preconnections,
+requires all responses without closing other clients, then reuses the sockets
+and shuts down with them open (eight bursts). Its initial 64-client version
+failed against tiny_http after five seconds; the replacement passed the server
+suite. Full local validation now passes: **148 Rust tests**, warnings-denied
+Clippy, formatting, deep/strict docs checks, and Chromium/WebKit actual CLI
+HTTP/watch plus moved direct-file acceptance. Cross-platform hosted CI remains
+pending at this entry; see PR #14 for the final exact revision and results.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
