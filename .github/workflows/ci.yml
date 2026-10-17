@@ -172,6 +172,16 @@ jobs:
           test -s "$work/site/_zellij/assets/replace-me.svg"
           test -s "$work/site/_zellij/assets/replace-me.mp4"
 
+      - name: Converted documents link to exported routes and assets
+        env:
+          ZELLIJ_IMAGE: zellij-conversion-ci
+        run: |
+          # Engine content and Next must currently be configured with the same
+          # prefix. This image changes only the fixture wrapper's Next config.
+          docker build -f scripts/fixtures/conversion.Dockerfile -t zellij-conversion-ci .
+          work=$(mktemp -d)
+          node scripts/check-conversion.mjs cli/target/debug/zel "$work/conversion" --export
+
   e2e:
     name: Showcase end to end
     runs-on: ubuntu-latest
