@@ -94,6 +94,46 @@ repeated mobile-WebKit navigation timeouts. Its fresh-runner retry passed all
 The separate automated security-review plugin failed its PR #2 commit review
 with HTTP 400; that review must not be represented as passed.
 
+### Conversion update — 2026-10-16
+
+The next authorized milestone is [PR #3](https://github.com/mylife-inc/Zellij/pull/3).
+Source commit `4196e6b` addresses R5's ordinary Markdown document links and
+referenced assets for both MkDocs and Docusaurus. A shared parser-based pass
+rewrites links to canonical engine routes, expands reference-style links,
+preserves query/fragment text and code examples, and copies binary assets into
+`assets/imported/docs/` or `assets/imported/static/`. Docusaurus's default
+`static/` paths are supported; unlisted documents remain unpublished.
+
+Assets participate in the same complete output preflight/staging as text.
+Escaping references, symlinks, case-only file conflicts, hidden document names,
+and duplicate public routes are rejected before writing. Missing or ambiguous
+references and HTML/JSX attributes are reported. Markdown images under the
+public asset prefix now receive the site's basePath in the MDX component map.
+
+R5 still has explicit migration limits: source-specific/custom heading IDs,
+fragments targeting a removed leading H1, HTML/JSX attributes and imports,
+custom static folders and source route overrides require manual work. Fragment
+text is retained, not universally validated or translated. Do not describe
+this milestone as full-fidelity migration of arbitrary MkDocs/Docusaurus sites.
+
+Local verification: **109 Rust tests**, **261 engine tests**, warnings-denied
+Clippy, formatting, all workspace typechecks, engine packaging and the updated
+documentation content check pass. `scripts/check-conversion.mjs` runs the real
+CLI and engine to check routes, an actual heading anchor, rendered image URLs
+under `/products/docs`, and copied binary bytes. Hosted CI adds static exports
+of both imports and checks actual HTML links, fragments and asset files. Read
+PR #3's latest checks before claiming hosted acceptance; no native CLI release
+is part of this milestone.
+
+Integration review exposed a separate prefix-configuration gap: generated
+Next config does not mirror `site.yaml`'s basePath. The CI fixture configures
+both explicitly using `scripts/fixtures/conversion.Dockerfile`. The existing
+showcase `verify-basepath.mjs` also replaces strings no longer present in its
+configuration, so it must not be trusted as current prefix acceptance (S12).
+
+PR #2 merged as `3408f37`; main run `39005197060` passed all checks, and base
+image run `39005197029` published all four feature variants for AMD64/ARM64.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a

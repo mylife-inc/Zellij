@@ -97,7 +97,8 @@ keeping their source directory structure. Docusaurus also supports Markdown
 references to its default `static/` folder using `/img/logo.svg` or
 `@site/static/img/logo.svg`; those files go into `assets/imported/static/`.
 Copied images and downloads use the published asset URL, including the site's
-`basePath`. The dry-run plan lists asset files too.
+`basePath` (also configure the same prefix in the wrapper's Next config).
+The dry-run plan lists asset files too.
 
 Relative `..` segments in links may traverse within the docs root. A reference
 that escapes the allowed root, uses a symlink, or targets Git metadata is

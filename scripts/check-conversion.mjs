@@ -1,5 +1,6 @@
 // Verify actual CLI output against engine routes, MDX rendering and asset bytes.
-// With --export, build both imports and inspect their generated HTML as well.
+// With --export, use the conversion.Dockerfile fixture image via ZELLIJ_IMAGE
+// to build both imports with matching Next basePath and inspect generated HTML.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
