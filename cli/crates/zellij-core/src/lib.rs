@@ -6,6 +6,7 @@
 //! grew a second front end.
 
 pub mod error;
+pub mod files;
 pub mod project;
 pub mod schema;
 

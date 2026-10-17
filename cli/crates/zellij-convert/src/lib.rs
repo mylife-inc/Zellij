@@ -17,6 +17,34 @@ pub mod model;
 
 use camino::{Utf8Path, Utf8PathBuf};
 
+/// Read the complete import before emitting anything. Both converters enforce
+/// the same boundary, including their .md/.mdx fallback and symlink behavior.
+fn read_documents(
+    tree: &model::DocTree,
+    mdx_fallback: bool,
+) -> zellij_core::Result<std::collections::BTreeMap<Utf8PathBuf, String>> {
+    let mut documents = std::collections::BTreeMap::new();
+    for relative in tree.pages() {
+        let path = zellij_core::files::contained_path(&tree.root, relative)?;
+        let mut body = std::fs::read_to_string(path);
+        if mdx_fallback
+            && matches!(&body, Err(error) if error.kind() == std::io::ErrorKind::NotFound)
+        {
+            let fallback = relative.with_extension("mdx");
+            let path = zellij_core::files::contained_path(&tree.root, &fallback)?;
+            body = std::fs::read_to_string(path);
+        }
+        match body {
+            Ok(body) => {
+                documents.insert(relative.clone(), body);
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(error.into()),
+        }
+    }
+    Ok(documents)
+}
+
 /// How strongly a source looks like a given format.
 ///
 /// A converter that found its own config file is certain. One inferring from

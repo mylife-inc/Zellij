@@ -122,6 +122,8 @@ impl Converter for MkDocs {
             path: source.to_owned(),
         })?;
 
+        let config =
+            zellij_core::files::contained_path(source, Utf8Path::new(config.file_name().unwrap()))?;
         let raw = std::fs::read_to_string(&config)?;
         let parsed: Value = serde_yaml_ng::from_str(&strip_python_tags(&raw)).map_err(|err| {
             zellij_core::Error::NoEngine {
@@ -134,7 +136,11 @@ impl Converter for MkDocs {
             .get("docs_dir")
             .and_then(Value::as_str)
             .unwrap_or("docs");
-        let root = source.join(docs_dir);
+        let root = if docs_dir == "." {
+            source.to_owned()
+        } else {
+            zellij_core::files::contained_path(source, Utf8Path::new(docs_dir))?
+        };
 
         let nav: Vec<Entry> = parsed
             .get("nav")
@@ -198,9 +204,8 @@ impl Converter for MkDocs {
             }
         }
 
-        let mut conversion = emit(&tree, |relative| {
-            std::fs::read_to_string(root.join(relative)).ok()
-        });
+        let documents = crate::read_documents(&tree, false)?;
+        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
 
         if derived {
             conversion.notes.push(

@@ -32,6 +32,12 @@ Wrote 9 files into ./content
 The output goes in a **new folder**. The original is never touched, so a
 conversion you dislike costs nothing but the folder you delete.
 
+An existing empty folder is also accepted. The source and output must not
+contain one another, including through a symbolic-link alias. These checks also
+run with `--dry-run`. Imported document paths must stay inside their docs root;
+parent paths, absolute paths, and symbolic links beneath that root are rejected.
+Conflicting output filenames are reported before any files are created.
+
 Run [`zel detect`](/cli/detect) first if you are not sure what the folder is, or
 [`zel migrate`](/cli/migrate) to detect, convert and validate in one step.
 

@@ -42,12 +42,17 @@ the app is for the cases where you specifically need it on disk.
 
 ## What every one of them refuses to do
 
-**Write into a directory that already has something in it.** Without `--force`,
-a non-empty target is an error rather than a merge.
+**Overwrite authored files without an explicit overwrite option.** `new docs`
+requires an empty directory unless `--force` is supplied. `new project` requires
+an empty directory. `new page` and `new guide` add files inside an existing
+content folder, but refuse collisions with existing files. Every generated
+destination is checked before writing, so a later collision does not leave
+earlier sections behind.
 
-Merging is how a scaffold quietly overwrites a file somebody spent an afternoon
-on. The check ignores dotfiles, so `git init` followed by `zel new docs` works —
+The empty-directory check ignores dotfiles, so `git init` followed by `zel new docs` works —
 a directory containing only `.git` is empty as far as anyone is concerned.
+Individual output paths are still checked, including hidden files and symbolic
+links. A generated path cannot escape its content root or write Git metadata.
 
 ---
 

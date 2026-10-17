@@ -13,6 +13,12 @@ pub enum Error {
     #[error("{path} already exists; pass --force to write into it anyway")]
     NotEmpty { path: Utf8PathBuf },
 
+    #[error("refusing unsafe path {path}: {reason}")]
+    UnsafePath { path: Utf8PathBuf, reason: String },
+
+    #[error("{path} already exists; choose a different destination")]
+    FileExists { path: Utf8PathBuf },
+
     #[error("could not tell what documentation tool {path} was written for")]
     UnknownFormat { path: Utf8PathBuf },
 
@@ -42,7 +48,10 @@ impl Error {
     /// The process exit code for this failure, as specified in §4.3.
     pub fn exit_code(&self) -> i32 {
         match self {
-            Error::NotEmpty { .. } | Error::UnknownFormat { .. } => 2,
+            Error::NotEmpty { .. }
+            | Error::UnknownFormat { .. }
+            | Error::UnsafePath { .. }
+            | Error::FileExists { .. } => 2,
             Error::ContentInvalid | Error::BuildFailed => 3,
             Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,

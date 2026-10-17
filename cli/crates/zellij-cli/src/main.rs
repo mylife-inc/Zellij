@@ -1188,17 +1188,16 @@ fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()>
 
     let path = Utf8PathBuf::from(out);
 
-    // Writing over a section somebody has already filled in is unrecoverable,
-    // and there is no flag for it: `--out` a different file and move it.
-    if path.exists() {
-        eprintln!("error: {path} already exists");
-        std::process::exit(2);
-    }
-
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)?;
-    }
-    std::fs::write(&path, body)?;
+    // The parent is an explicit user-selected root; the leaf must be new,
+    // including when an existing dangling symlink occupies that name.
+    let parent = path
+        .parent()
+        .filter(|p| !p.as_str().is_empty())
+        .unwrap_or(camino::Utf8Path::new("."));
+    let name = path
+        .file_name()
+        .ok_or_else(|| zellij_core::files::unsafe_path(&path, "expected a filename"))?;
+    zellij_core::files::write_files(parent, &[(camino::Utf8Path::new(name), &body)], false)?;
 
     println!("✓ {path}");
     println!("  zel explain {section_type} — every field it takes");
@@ -1217,7 +1216,7 @@ fn new_page(name: &str, sections: &[String], dir: &str) -> zellij_core::Result<(
 
     let root = Utf8PathBuf::from(dir);
     let (scaffold, entry) = zellij_scaffold::page(name, sections);
-    let written = scaffold.write(&root, true)?;
+    let written = scaffold.write_new(&root)?;
 
     for path in &written {
         println!("✓ {path}");
@@ -1245,7 +1244,7 @@ fn new_guide(name: &str, title: Option<&str>, dir: &str) -> zellij_core::Result<
         }
     });
 
-    let written = zellij_scaffold::guide(name, &title, order).write(&root, true)?;
+    let written = zellij_scaffold::guide(name, &title, order).write_new(&root)?;
 
     for path in &written {
         println!("✓ {path}");
@@ -1435,6 +1434,8 @@ fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij
 
     let source = camino::Utf8Path::new(source);
     let out = camino::Utf8Path::new(out);
+    zellij_core::files::disjoint(source, out)?;
+    zellij_core::files::empty_directory(out)?;
 
     let converter = match from {
         Some(id) => zellij_convert::all()
@@ -1461,6 +1462,16 @@ fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij
     println!("Converting {source} as {}", converter.label());
 
     let conversion = converter.convert(source, &zellij_convert::ConvertOptions::default())?;
+    let files: Vec<_> = conversion
+        .files
+        .iter()
+        .map(|file| (file.path.as_path(), file.body.as_str()))
+        .collect();
+    zellij_core::files::preflight(
+        out,
+        &files.iter().map(|(path, _)| *path).collect::<Vec<_>>(),
+        false,
+    )?;
 
     if dry_run {
         println!("\nWould write {} files into {out}:", conversion.files.len());
@@ -1468,16 +1479,7 @@ fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij
             println!("  {}", file.path);
         }
     } else {
-        // Nothing is written until the whole conversion has succeeded, so a
-        // failure halfway through leaves no half-built folder behind for
-        // someone to mistake for a finished one.
-        for file in &conversion.files {
-            let target = out.join(&file.path);
-            if let Some(parent) = target.parent() {
-                std::fs::create_dir_all(parent)?;
-            }
-            std::fs::write(&target, &file.body)?;
-        }
+        zellij_core::files::write_files(out, &files, false)?;
         println!("\nWrote {} files into {out}", conversion.files.len());
     }
 

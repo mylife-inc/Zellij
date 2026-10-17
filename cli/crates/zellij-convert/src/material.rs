@@ -26,10 +26,8 @@ fn opener(line: &str) -> Option<(String, usize)> {
 
     let (kind, remainder) = if let Some(r) = rest.strip_prefix("!!!") {
         ("admonition", r)
-    } else if let Some(r) = rest.strip_prefix("===") {
-        ("tab", r)
     } else {
-        return None;
+        ("tab", rest.strip_prefix("===")?)
     };
 
     let remainder = remainder.trim();

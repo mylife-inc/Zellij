@@ -6,12 +6,12 @@
 //! stage that must copy exactly three paths. Getting it slightly wrong yields
 //! an image four times the size that still works, so nothing tells you.
 //!
-//! It is written to a temporary file and the **content folder is the build
-//! context**, so `COPY . /app/content` needs no path arithmetic and no
-//! `.dockerignore` of ours.
+//! The Dockerfile is streamed on stdin and the **content folder is the build
+//! context**, so generation never changes the authored folder.
 
 use camino::Utf8Path;
 use std::io::Write;
+use std::process::Stdio;
 use zellij_core::{Error, Result};
 
 use crate::ContainerEngine;
@@ -98,31 +98,30 @@ impl ContainerEngine {
     ) -> Result<()> {
         let body = dockerfile(self.image(), features);
 
-        // Beside the content rather than in /tmp: Docker reads the Dockerfile
-        // through the same daemon that reads the context, and on a machine
-        // where /tmp is not shared with the runtime's virtual machine, a
-        // Dockerfile in /tmp is a file the daemon cannot see.
-        let path = content.join(".zel-dockerfile");
-        let mut file = std::fs::File::create(&path)?;
-        file.write_all(body.as_bytes())?;
-        drop(file);
-
+        // Stream the Dockerfile: no temporary file can overwrite authored
+        // content or accidentally become part of COPY's build context.
         let mut command = self.runtime().command();
         command
-            .args(["build", "-f", path.as_str(), "-t", tag])
-            .args(["--progress", "plain"]);
+            .args(["build", "-f", "-", "-t", tag])
+            .args(["--progress", "plain"])
+            .stdin(Stdio::piped());
 
         if let Some(platforms) = platforms {
             command.args(["--platform", platforms]);
         }
 
-        let status = command.arg(content.as_str()).status();
-
-        // Whatever happened, the generated file does not belong in somebody's
-        // content folder afterwards.
-        let _ = std::fs::remove_file(&path);
-
-        match status?.code() {
+        let mut child = command.arg(content.as_str()).spawn()?;
+        let written = child
+            .stdin
+            .take()
+            .expect("piped stdin")
+            .write_all(body.as_bytes());
+        if let Err(error) = written {
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(error.into());
+        }
+        match child.wait()?.code() {
             Some(0) => Ok(()),
             _ => Err(Error::ContentInvalid),
         }
@@ -175,6 +174,45 @@ impl ContainerEngine {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[cfg(unix)]
+    #[test]
+    fn streams_dockerfile_without_touching_existing_content_even_on_failure() {
+        use std::os::unix::fs::PermissionsExt;
+        let temp = tempfile::tempdir().unwrap();
+        let root = Utf8Path::from_path(temp.path()).unwrap();
+        let content = root.join("content");
+        std::fs::create_dir(&content).unwrap();
+        std::fs::write(content.join(".zel-dockerfile"), "authored").unwrap();
+        let program = root.join("runtime");
+        let engine = ContainerEngine::new(
+            crate::Runtime {
+                program: program.to_string(),
+                host: None,
+                version: "test".into(),
+            },
+            "base:test",
+        );
+        for code in [0, 1] {
+            std::fs::write(&program, format!("#!/bin/sh\n[ \"$1 $2 $3\" = 'build -f -' ] || exit 2\ncat > \"$(dirname \"$0\")/received\"\nexit {code}\n")).unwrap();
+            std::fs::set_permissions(&program, std::fs::Permissions::from_mode(0o755)).unwrap();
+            assert_eq!(
+                engine
+                    .image_build(&content, "site:test", None, None)
+                    .is_ok(),
+                code == 0
+            );
+            assert_eq!(
+                std::fs::read_to_string(content.join(".zel-dockerfile")).unwrap(),
+                "authored"
+            );
+            assert_eq!(std::fs::read_dir(&content).unwrap().count(), 1);
+            assert_eq!(
+                std::fs::read_to_string(root.join("received")).unwrap(),
+                dockerfile("base:test", None)
+            );
+        }
+    }
 
     #[test]
     fn the_runtime_stage_carries_neither_the_engine_nor_node_modules() {

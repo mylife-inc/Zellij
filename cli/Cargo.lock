@@ -525,6 +525,7 @@ version = "0.1.3"
 dependencies = [
  "camino",
  "clap",
+ "tempfile",
  "zellij-convert",
  "zellij-core",
  "zellij-engine",
@@ -553,6 +554,7 @@ dependencies = [
  "camino",
  "serde",
  "serde_json",
+ "tempfile",
  "thiserror",
 ]
 

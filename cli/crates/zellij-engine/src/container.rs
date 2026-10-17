@@ -351,19 +351,10 @@ impl Engine for ContainerEngine {
             });
         }
 
+        let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!("{}:/app/node_modules", self.modules_volume());
-
-        // The output directory has to exist before it can be mounted, and
-        // creating it here means `--out` can name somewhere that does not exist
-        // yet, which is what anyone would expect of an output path.
-        std::fs::create_dir_all(out)?;
-        let absolute_out = out
-            .canonicalize_utf8()
-            .map_err(|_| Error::NoContentFolder {
-                path: out.to_owned(),
-            })?;
-        let out_mount = format!("{absolute_out}:/out");
+        let out_mount = format!("{}:/out", output.directory);
 
         // Give the output back to whoever asked for it.
         //
@@ -382,7 +373,7 @@ impl Engine for ContainerEngine {
         // just created by this process and therefore carries the invoking
         // user's ids — no `getuid` binding, and correct under `sudo` too, where
         // the directory belongs to whoever the command really ran as.
-        let handback = own_output_as(out);
+        let handback = own_output_as(&output.directory);
 
         let script = guarded(
             WRAPPER_CONTENT,
@@ -390,7 +381,7 @@ impl Engine for ContainerEngine {
                 "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
                  npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
-                 rm -rf /out/* && cp -a out/. /out/{handback}"
+                 cp -a out/. /out/{handback}"
             ),
         );
 
@@ -413,7 +404,7 @@ impl Engine for ContainerEngine {
                 path: content.to_owned(),
             }),
             Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
-            Some(0) => Ok(()),
+            Some(0) => output.publish(),
             _ => Err(Error::BuildFailed),
         }
     }
