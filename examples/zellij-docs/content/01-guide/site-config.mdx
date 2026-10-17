@@ -28,7 +28,7 @@ siteUrl: https://acme.example.com
 | `brand` | object | Logo and title. See below. |
 | `siteUrl` | string | The absolute origin. Canonical URLs, OG tags and the sitemap need it; without it they are relative and worth less. |
 | `ogImage` | string | Path under `assets/`, used for social previews. |
-| `basePath` | string | A prefix when the site is not at the root of its domain. Set it in **both** here and `next.config.js`. |
+| `basePath` | string | A prefix when the site is not at the root of its domain. `withZellij()` passes it to Next automatically. Rebuild after changing it. |
 | `home` | string | Which page or guide `/` shows. Defaults to a page called `home`. |
 
 ### `brand`

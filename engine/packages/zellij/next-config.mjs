@@ -7,12 +7,13 @@
  * its config would otherwise break at once, with an error naming a package its
  * author never installed.
  *
- * Plain JavaScript, and importing nothing but Node builtins: Node loads
+ * Plain JavaScript with a shared configuration bootstrap: Node loads
  * `next.config.js` itself, without Next's compiler, so this file cannot be
  * TypeScript and cannot reach into the engine's TypeScript source.
  */
 
 import { networkInterfaces } from 'node:os';
+import { resolveContentLocation, resolveDeploymentBasePath } from './deployment-config.cjs';
 
 /** @typedef {Record<string, unknown> & { transpilePackages?: string[], serverExternalPackages?: string[], images?: Record<string, unknown>, allowedDevOrigins?: string[] }} ZellijNextConfig */
 
@@ -65,16 +66,26 @@ function devOrigins() {
 /**
  * Merges the engine's requirements into a site's own Next config.
  *
- * The site wins on every key it sets. Arrays are unioned rather than replaced,
- * so adding a package of your own to `serverExternalPackages` does not silently
+ * Explicit prefix settings must agree. Other site keys win. Arrays are unioned
+ * rather than replaced, so adding a package of your own to `serverExternalPackages` does not silently
  * drop the engine's.
  *
  * @param {ZellijNextConfig} [config]
+ * @param {import('./deployment-config.cjs').ContentLocationOptions} [contentOptions]
  * @returns {ZellijNextConfig}
  */
-export function withZellij(config = {}) {
+export function withZellij(config = {}, contentOptions = {}) {
+  const content = resolveContentLocation(contentOptions);
+  const basePath = resolveDeploymentBasePath(content.basePath, config.basePath);
+  if (config.env?.ZELLIJ_BASE_PATH !== undefined) {
+    resolveDeploymentBasePath(basePath, config.env.ZELLIJ_BASE_PATH);
+  }
   return {
     ...config,
+    basePath,
+    // Next inlines this build-time value in the server runtime too. A wrapper
+    // prefix must reach ordinary assets/metadata, not only Next's own links.
+    env: { ...config.env, ZELLIJ_BASE_PATH: basePath },
 
     // Zellij ships TypeScript source alongside its build output. In a monorepo
     // the source is what resolves, and Next has to compile it.

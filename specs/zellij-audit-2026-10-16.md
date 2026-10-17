@@ -248,6 +248,53 @@ main CI `39019556088` passed, with 305 browser passes, 124 conditional skips,
 no retries, 268 engine tests and 117 Rust tests. Image run `39019556101` published
 all four feature variants for AMD64/ARM64 and passed build/serve smoke acceptance.
 
+## Implementation record — deployment prefix and runtime isolation
+
+Commit `8463720` resolves **S6, S8 and S12** while preserving the original
+findings below. `withZellij()` and rendering share native content-root/prefix
+resolution. Content's basePath configures Next automatically; a wrapper may
+provide the value when content omits it. Explicit disagreements fail, including
+empty/nonempty conflicts. Normalization rejects malformed prefixes. Custom
+roots are supplied explicitly to preparation, runtime and Next configuration.
+The effective Next build value is embedded in reserved `ZELLIJ_BASE_PATH`, and
+runtime options cannot silently disagree with it. Prefix changes need a rebuild.
+
+The runtime cache now separates absolute application/configuration/content
+paths and prefix settings, preserves the development TTL, and evicts failed
+loads. OG/Twitter images receive the deployment prefix. Shared native bootstrap
+files are included in package and container output. Conversion CI exports use
+the ordinary image instead of a special prefix-config override.
+
+The stale showcase verifier now runs an isolated generated wrapper with a
+content-owned prefix and custom content folder. Its real production browser
+checks cover redirects, nested navigation, ordinary and optimized images, Next
+resources, metadata, sitemap/robots and search-result navigation. Failed browser
+checks retain traces. Hosted CI exercises Chromium and WebKit with Turbopack.
+
+Local evidence: **303 engine tests**, workspace typechecks, engine packaging,
+packaged-CLI integration and preparation/checks for all four examples pass.
+Production prefix acceptance passes Chromium with webpack and local font
+responses. The first normal-font build succeeded but exposed an overly strict
+fixture assertion that rejected a valid bare-prefix home URL; that assertion was
+corrected. A later normal-font build failed in Next's Google Fonts loader (S13).
+The temporary font fixture is local verification infrastructure, not a fix or a
+shipped fallback. Read this commit's PR for normal-font/Turbopack/WebKit results.
+No native binary release is issued here.
+
+PR #6 subsequently merged as `d115a9a`. PR CI `39022447464` passed all four jobs,
+285 engine tests, 117 Rust tests and 311 browser tests with 124 conditional skips
+and no retries. Main CI `39022871779` passed with 310 initial browser passes and
+one successful retry of the existing mobile-WebKit FAQ interaction. That flake
+remains undiagnosed. Image run `39022871680` published all four feature variants
+for AMD64/ARM64 and passed published-image build/serve smoke acceptance.
+
+New user scope is recorded in [the portable documentation contract](zel-portable-docs.md):
+build a plain Markdown folder into a navigable direct-file website, serve a
+generated site over HTTP, and compose build/server/browser launch in `view`.
+These capabilities are **not implemented by this prefix milestone**. A Next
+HTTP static export is not direct-file acceptance. Core MkDocs capabilities must
+be compared during CLI work; plugin-specific parity is a separate scope choice.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -598,6 +645,25 @@ used as prefix-deployment evidence.
 content-only builds; verify matching Next/content settings and fail clearly on
 disagreement. Exercise a served site under a nonempty prefix, including links,
 assets, search and Next resources, without relying on stale string replacements.
+
+### S13 — P2 follow-up: intermittent build-time font loading failure
+
+Observed after the initial audit while verifying `8463720`: one local webpack
+production build succeeded with normal Google Fonts, while a later build failed
+for `IBM_Plex_Sans` with `TypeError: Cannot read properties of null (reading '1')`.
+The installed Next loader at
+`node_modules/next/dist/compiled/@next/font/dist/google/loader.js:122` indexes
+`/\.(woff|woff2|eot|ttf|otf)$/.exec(googleFontFileUrl)[1]` without a null check.
+This suggests a fetched font URL did not match its expected filename extension;
+the original response/URL was not captured, so the provider condition and full
+root cause remain unproven. Do not describe it as a diagnosed network outage.
+
+**Source/follow-up:** `src/themes/fonts.ts` imports Google families at build time.
+A local Next font-response fixture using an installed valid font allowed the
+prefix browser acceptance to complete, but is not a product remedy. CI retains
+the normal font path. Capture a failing response, assess a reproducible font
+source/fallback strategy, and verify theme/font output in clean production builds.
+Runtime self-hosted fonts do not remove this build-time external dependency.
 
 ## User-requested UI and platform work
 

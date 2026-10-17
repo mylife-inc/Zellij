@@ -1,3 +1,6 @@
+import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import { describe, expect, it, afterEach } from 'vitest';
 // @ts-expect-error — plain JS, loaded by Node without types.
 import { withZellij } from '../../next-config.mjs';
@@ -59,5 +62,66 @@ describe('withZellij', () => {
   /** Local assets carry a `?v=` fingerprint, which Next 16 rejects by default. */
   it('permits a query string on local images', () => {
     expect(forOutput('export').images.localPatterns).toEqual([{ pathname: '/**' }]);
+  });
+});
+
+
+const roots: string[] = [];
+afterEach(async () => {
+  await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
+});
+
+async function wrapper(files: Record<string, string>) {
+  const appRoot = await mkdtemp(path.join(tmpdir(), 'zellij-prefix-'));
+  roots.push(appRoot);
+  for (const [name, value] of Object.entries(files)) {
+    await mkdir(path.dirname(path.join(appRoot, name)), { recursive: true });
+    await writeFile(path.join(appRoot, name), value);
+  }
+  return appRoot;
+}
+
+describe('deployment prefix', () => {
+  it('derives Next and rendering prefixes from content without editing Next config', async () => {
+    const appRoot = await wrapper({ 'content/site.yaml': 'basePath: /products/docs/\n' });
+    const config = withZellij({}, { appRoot });
+    expect(config.basePath).toBe('/products/docs');
+    expect(config.env.ZELLIJ_BASE_PATH).toBe('/products/docs');
+  });
+
+  it('uses the same explicit root and legacy configuration paths as preparation', async () => {
+    const appRoot = await wrapper({
+      'external/site.yaml': 'basePath: /external\n',
+      'legacy.yaml': 'product: { name: Old }\ncontent: external\n',
+    });
+    expect(withZellij({}, { appRoot, contentDir: 'external' }).basePath).toBe('/external');
+    expect(withZellij({}, { appRoot, configFile: 'legacy.yaml' }).basePath).toBe('/external');
+  });
+
+  it('reads the legacy prefix when marketing layout is selected', async () => {
+    const appRoot = await wrapper({
+      'zellij.config.yaml': 'product: { name: Old }\nbasePath: /old\n',
+      'content/marketing/index.yaml': 'title: Old\n',
+    });
+    expect(withZellij({}, { appRoot }).basePath).toBe('/old');
+  });
+
+  it('accepts a wrapper prefix when content does not set one and retains other env entries', async () => {
+    const appRoot = await wrapper({ 'content/site.yaml': 'name: Test\n' });
+    const config = withZellij({ basePath: '/wrapper', env: { CUSTOM: 'kept' } }, { appRoot });
+    expect(config.basePath).toBe('/wrapper');
+    expect(config.env).toEqual({ CUSTOM: 'kept', ZELLIJ_BASE_PATH: '/wrapper' });
+  });
+
+  it('rejects contradictory explicit prefixes, including an explicit empty prefix', async () => {
+    const appRoot = await wrapper({ 'content/site.yaml': 'basePath: /content\n' });
+    expect(() => withZellij({ basePath: '/wrapper' }, { appRoot })).toThrow(/basePath.*disagree/i);
+    expect(() => withZellij({ basePath: '' }, { appRoot })).toThrow(/basePath.*disagree/i);
+    expect(withZellij({ basePath: '/content' }, { appRoot }).basePath).toBe('/content');
+  });
+
+  it.each(['/a/../b', '//host/path', '/a?b', '/a#b', '/a\\b', '/a//b', '/a%2fb'])('rejects an invalid prefix: %s', async (basePath) => {
+    const appRoot = await wrapper({});
+    expect(() => withZellij({ basePath }, { appRoot })).toThrow(/basePath/);
   });
 });

@@ -23,6 +23,13 @@ const zellij = createZellijPages({
 });
 ```
 
+Give Next's configuration the same content root so it reads the site's prefix:
+
+```js title="next.config.js"
+import { withZellij } from '@shebka/zellij/next-config';
+export default withZellij({}, { contentDir: '../content' });
+```
+
 That is what lets a product repository keep documentation beside the product:
 
 ```

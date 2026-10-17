@@ -15,7 +15,7 @@ export function normalizeBasePath(basePath: string | undefined): string {
 /**
  * Prefixes an internal, root-relative URL with basePath. External URLs and
  * anchors pass through untouched. This is the only place prefixing happens for
- * non-`next/image` URLs — `next/image` and `next/link` apply basePath themselves.
+ * asset URLs — `next/link` applies basePath itself, but image sources need it explicitly.
  */
 export function withBasePath(url: string, basePath: string): string {
   if (isExternal(url) || url.startsWith('#')) return url;

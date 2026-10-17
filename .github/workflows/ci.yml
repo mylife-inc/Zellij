@@ -160,11 +160,8 @@ jobs:
 
       - name: Converted documents link to exported routes and assets
         env:
-          ZELLIJ_IMAGE: zellij-conversion-ci
+          ZELLIJ_IMAGE: zellij-ci
         run: |
-          # Engine content and Next must currently be configured with the same
-          # prefix. This image changes only the fixture wrapper's Next config.
-          docker build -f scripts/fixtures/conversion.Dockerfile -t zellij-conversion-ci .
           work=$(mktemp -d)
           node scripts/check-conversion.mjs cli/target/debug/zel "$work/conversion" --export
 
@@ -188,6 +185,8 @@ jobs:
         working-directory: examples/showcase
       - run: npx playwright test
         working-directory: examples/showcase
+      - name: Content-owned deployment prefix works in a production browser
+        run: node scripts/check-basepath.mjs
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

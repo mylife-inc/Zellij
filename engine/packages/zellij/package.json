@@ -23,7 +23,9 @@
     "src",
     "dist",
     "README.md",
-    "next-config.mjs"
+    "next-config.mjs",
+    "deployment-config.cjs",
+    "deployment-config.d.cts"
   ],
   "engines": {
     "node": "^20.19.0 || >=22.12.0"

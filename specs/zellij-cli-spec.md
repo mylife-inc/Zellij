@@ -6,7 +6,14 @@ A single native binary through which a person does everything with Zellij:
 scaffold a content folder, convert one from another tool, validate it, build it,
 serve it, and ship it.
 
-Status: **draft, for sign-off.** Nothing here is implemented yet.
+Status: **original design draft**. Consult [the project context](../ZELLIJ_CONTEXT.md)
+for current implementation status; this command inventory is not proof that a
+command is implemented.
+
+The user's 2026-10-17 requirements add plain-Markdown-folder builds with direct
+`file://` viewing, serving an existing output, and a combined build/serve/browser
+`view` workflow. See [the portable documentation contract](zel-portable-docs.md)
+for acceptance criteria and the MkDocs capability comparison.
 
 ---
 
