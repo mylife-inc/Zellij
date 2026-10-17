@@ -384,6 +384,35 @@ successful retry of the known mobile-WebKit FAQ interaction, plus 124 conditiona
 skips. Chromium/WebKit prefix acceptance passed. All four AMD64/ARM64 image
 variants published and the published default-image build/serve smoke test passed.
 
+## Implementation record — reproducible theme fonts
+
+Source commit `7963587` removes the build-time Google Fonts dependency (**S13**)
+using 75 pinned WOFF2 files across the twelve existing families. Original CSS,
+Unicode ranges, styles/weights, fallback metrics and OFL licenses are preserved;
+SHA-256 and source provenance are recorded in the manifest. Font files remain
+unmodified. Generated CSS rewrites relative asset URLs and family names while
+retaining public variables and non-preloaded loading behavior. Full license
+notices are included in compiled CSS as well as the package.
+
+The package build verifies hashes and deterministic CSS offline and copies the
+assets beside both compiled module formats. Git attributes preserve original
+upstream bytes across line-ending settings. No normal build fetches Google
+Fonts; npm dependency installation is a separate network requirement.
+
+Local verification: 324 engine tests, all workspace typechecks, package build,
+strict/deep docs check, and npm archive font/license contents pass. Actual
+webpack/Chromium production and development scenarios decode all font faces,
+verify lazy loading and prefixed local URLs, and retain deployed notices. The
+existing prefix/navigation/search/asset and watcher recovery checks also pass.
+Hosted CI adds a fresh Turbopack build with Docker network disabled after npm
+installation and Chromium/WebKit font acceptance. See the source commit's PR
+for hosted completion; no native binary release is part of this milestone.
+
+PR #9 merged as `bd01bdb`. Main CI `39052261993` passed all jobs with 311 browser
+passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
+dev acceptance. Image run `39052261989` published all four AMD64/ARM64 variants
+and passed the published default-image build/serve smoke test.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -771,6 +800,10 @@ stable dist-tag was still 16.4.2; no stable dependency update carrying that fix
 was available. A fresh browser-job retry is verification of the watcher, not a
 font fix. Prioritize a compatible patched release or a reproducible local-font
 distribution; do not hide the failure by weakening the browser/build gate.
+
+**Implementation:** `7963587` removes this external font-loading path using a
+pinned local distribution. See the implementation record above and its PR for
+verification; the historical failure evidence is retained here.
 
 ### S14 — P2: video-embed omits the deployment prefix for local media
 
