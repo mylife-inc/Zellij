@@ -815,6 +815,47 @@ remove external tools from PATH. All-platform CI includes native checker tests.
 Hosted acceptance is pending at this dated entry; consult the PR containing
 `7457daf` for its final head/results. No native package release is issued.
 
+Native validation completion: [PR #17](https://github.com/mylife-inc/Zellij/pull/17)
+merged as `c391dc3` from head `df82cdf`. PR CI `39078577656` and main CI
+`39079171966` each passed all seven jobs, including native Linux/macOS/Windows
+portable validation and Chromium/WebKit acceptance. Linux ran 165 Rust tests;
+the engine ran 325. PR website acceptance had 310 initial passes, 124 skips and
+one successful mobile-Safari FAQ retry; main passed 311 tests with 124 skips and
+no retries. Image run `39079171941` passed all 13 jobs and published all four
+AMD64/ARM64 variants. Local main/binary were updated; no native release issued.
+
+## Implementation record — progressive reveal and FAQ interaction
+
+Source commit `9acd934` fixes the audit's **S4** entrance-content visibility
+failure and a reproduced FAQ scrolling race. The changes affect the hosted
+engine; native portable rendering is unchanged.
+
+The browser investigation distinguishes established defects from the earlier CI symptom. At `c391dc3`, 30 instrumented ordinary mobile-WebKit FAQ trials and 60 original FAQ/keyboard/carousel repetitions all passed locally. The earlier CI first-click FAQ/carousel failures therefore have not been reproduced exactly or conclusively attributed to one cause.
+
+A related lost-click race is reproducible with a 200 ms pointer-down/up interval: 4 of 20 mobile-WebKit FAQ trials failed to close the answer. Event traces show the summary moving hundreds of pixels during a press and the click being retargeted to a surrounding section/div. A comparison changing only document scroll-behavior from smooth to auto passed 20/20. The product now uses immediate document scrolling to prevent default focus/scroll-into-view movement continuing through a press; entrance effects and horizontal carousel rules remain. The existing FAQ test now uses a real 200 ms press without action retries.
+
+The audit's S4 is independently confirmed: the new actual JavaScript-disabled browser regression fails against the baseline because entrance wrappers have opacity zero. Reveal now emits visible `pending` server markup, installs its observer before arming offscreen entrances, and never hides content already in view when hydration arrives. The six new cross-project browser cases verify visible wrappers with JavaScript disabled and native FAQ operation, plus opening a FAQ while Next scripts are held and preserving that state when scripts are released.
+
+CI now retains first-failure traces rather than tracing only a retry, and uploads failure traces/error context even when a later retry succeeds. This enables evidence-based diagnosis if the historical first-click flake recurs. Passing current acceptance is not proof that every prior flaky failure had the same cause.
+
+Local verification: **325 engine tests**, all workspace typechecks, engine
+packaging, a normal Turbopack production build, and deep/strict documentation
+validation passed. Full production browser acceptance passed **317 tests**,
+with **124 conditional skips and no retries**, across desktop/mobile Chromium
+and mobile WebKit. The corrected product passed **20/20** instrumented 200 ms
+press trials with its actual styles (no injected scrolling override). The six
+new no-JS/delayed-hydration cases also passed directly. No-JS coverage asserts
+computed opacity/transform, not only Playwright's visibility check, which allows
+opacity zero. See [Playwright's definition](https://playwright.dev/docs/actionability#visible).
+
+Baseline failure traces and experiment logs were captured under
+`/private/tmp/zellij-faq-*` and `zellij-reveal-*` on this machine. The important
+reproduction and limits are recorded here because temporary evidence may expire.
+Hosted acceptance is pending at this dated entry; consult the PR containing
+`9acd934` for its final revision/results. Native installers, S5/S14/S15 and the
+remaining portable capabilities are still open; the original sporadic CI
+first-click failures must not be marked conclusively diagnosed by this evidence.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
