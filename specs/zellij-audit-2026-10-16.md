@@ -133,8 +133,8 @@ reproductions below:
 
 - **R6:** Rust content generation and conversion share a string serializer;
   Node content initialization uses equivalent YAML scalars. Quotes, hashes,
-  colon-space, implicit booleans/numbers, backslashes, CR/LF, tabs and Unicode
-  line separators retain their exact values. Copyright strings are serialized
+  colon-space, implicit booleans/numbers, backslashes, CR/LF, tabs, Unicode
+  line separators and non-printable characters retain their exact values. Copyright strings are serialized
   as whole values, and guide front matter uses the same policy.
 - **R7:** plain and minimal starters have no guide CTA unless a guide is
   generated. The integration fixture loads actual CLI output with the engine
@@ -150,8 +150,8 @@ reproductions below:
 Validation: **117 Rust tests**, **262 engine tests**, formatting, Clippy with
 warnings denied, workspace typechecks, engine package build, documentation
 content check and both existing conversion integration fixtures pass locally.
-The new scaffold integration check passes **36 Rust starter combinations,
-9 Node content starters and 9 guide titles**, checking metadata and rendered
+The new scaffold integration check passes **40 Rust starter combinations,
+10 Node content starters and 10 guide titles**, checking metadata and rendered
 links. CI adds real-container discovery/check acceptance for four guide-only
 locations and a menu-only root; read the PR's checks for hosted outcomes.
 No native CLI release is issued here. Workflow input serialization and npm

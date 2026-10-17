@@ -61,7 +61,7 @@ async function verify(content, name, guide) {
   for (const link of links) assert(site.routes.has(link), `Broken starter link: ${link}`);
 }
 
-const names = ['Acme: Docs', 'A # comment', '"quoted" \\ path', 'TRUE', 'Null', '42', 'العربية Café', 'line\nnext\r\ntab\tend', 'a\u0085b\u2028c\u2029d'];
+const names = ['Acme: Docs', 'A # comment', '"quoted" \\ path', 'TRUE', 'Null', '42', 'العربية Café', 'line\nnext\r\ntab\tend', 'a\u0085b\u2028c\u2029d', 'a\u007fb\u0080c\u009fd\ufffee\uffff'];
 const variants = [[], ['--guide'], ['--minimal'], ['--minimal', '--guide', '--theme', 'cupertino']];
 for (const [index, name] of names.entries()) {
   for (const [variant, flags] of variants.entries()) {
@@ -79,7 +79,7 @@ for (const [index, name] of names.entries()) {
   assert.equal(site.guides[0].title, name);
   assert.equal(site.guidePages[0].title, name);
 }
-console.log('36 Rust starters, 9 Node starters and 9 guide titles: exact metadata and rendered links verified.');
+console.log('40 Rust starters, 10 Node starters and 10 guide titles: exact metadata and rendered links verified.');
 
 if (mode === '--container-check') {
   for (const location of ['', 'content', 'docs', 'documentation']) {

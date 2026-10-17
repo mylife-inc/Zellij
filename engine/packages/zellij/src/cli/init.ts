@@ -196,13 +196,13 @@ export default withZellij({
 });
 `;
 
-// JSON strings are YAML 1.2 scalars; YAML's additional line breaks must also
-// be escaped to preserve names exactly. Keep this entry point self-contained.
+// Start with JSON quoting, then escape YAML's additional line breaks and
+// forbidden literal characters. Keep this entry point self-contained.
 function yamlString(value: string): string {
-  return JSON.stringify(value)
-    .replace(/\u0085/g, '\\u0085')
-    .replace(/\u2028/g, '\\u2028')
-    .replace(/\u2029/g, '\\u2029');
+  return JSON.stringify(value).replace(
+    /[\u007f-\u009f\u2028\u2029\ufffe\uffff]/g,
+    (char) => `\\u${char.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
 }
 
 /** A content folder that builds on the first run, so a new app is never a blank page. */

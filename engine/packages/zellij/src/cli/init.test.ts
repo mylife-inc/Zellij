@@ -8,7 +8,7 @@ import { parse } from 'yaml';
 it('preserves display names as strings in all starter metadata', async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'zellij-names-'));
   try {
-    const names = ['Acme: Docs', 'A # comment', '"quoted" \\ path', 'TRUE', 'Null', '42', 'العربية Café', 'line\nnext\r\ntab\tend', 'a\u0085b\u2028c\u2029d'];
+    const names = ['Acme: Docs', 'A # comment', '"quoted" \\ path', 'TRUE', 'Null', '42', 'العربية Café', 'line\nnext\r\ntab\tend', 'a\u0085b\u2028c\u2029d', 'a\u007fb\u0080c\u009fd\ufffee\uffff'];
     for (const [index, name] of names.entries()) {
       const target = path.join(root, String(index));
       await init({ target, name, contentOnly: true });

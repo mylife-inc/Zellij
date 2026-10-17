@@ -164,6 +164,7 @@ mod tests {
             "العربية Café",
             "line\nnext\r\ntab\tend",
             "a\u{85}b\u{2028}c\u{2029}d",
+            "a\u{7f}b\u{80}c\u{9f}d\u{fffe}e\u{ffff}",
         ] {
             let scaffold = docs(&DocsOptions {
                 name: name.into(),

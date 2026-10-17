@@ -138,7 +138,8 @@ image run `39005197029` published all four feature variants for AMD64/ARM64.
 
 Commit `fe4240c` resolves the reproduced content-authoring findings **R6–R8**.
 Rust content scaffolds and converters share a JSON-backed YAML string scalar
-serializer, including explicit escapes for YAML's extra Unicode line breaks.
+serializer, including explicit escapes for YAML's extra Unicode line breaks and
+characters its parsers reject literally.
 The Node initializer uses the same representation. Names, copyright text,
 page identifiers, section references, guide titles and front matter preserve
 punctuation, implicit YAML values and multiline text. This covers generated
@@ -157,7 +158,7 @@ Local verification: **117 Rust tests**, **262 engine tests**, warnings-denied
 Clippy, formatting, workspace typechecks, engine packaging, documentation
 content validation, and both conversion fixtures pass. The new
 `scripts/check-scaffolds.mjs` checks exact metadata and rendered Hero links
-for **36 Rust starters, 9 Node content starters and 9 guide titles**. Hosted
+for **40 Rust starters, 10 Node content starters and 10 guide titles**. Hosted
 CI additionally exercises four guide-only discovery locations and a menu-only
 root through the real container engine. Hosted results are pending at this
 record; consult the PR before claiming acceptance. No native release is made.
