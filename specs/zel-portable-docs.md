@@ -1,8 +1,8 @@
 # zel documentation workflow and portable HTML requirements
 
-Status: portable build merged in PR #12; native `serve` and composed `view`
-implemented in the next milestone (hosted acceptance pending). The native
-renderer and server are separate from the hosted Next router.
+Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
+`view --watch` is implemented in the next milestone, with hosted acceptance
+pending. The native renderer and server are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
 same command syntax, including these three operations:
@@ -112,7 +112,8 @@ the existing export when validation or rendering fails.
 - Raw HTML is literal text with a warning; `.mdx` is rejected. No math rendering
   or Mermaid execution is enabled. Remote media remains remote. MkDocs plugins,
   custom navigation/config, full-text search language processing and incremental
-  rebuild/live reload are not implemented for this target.
+  compilation are not implemented. `view --watch` performs full rebuilds and
+  reloads the HTTP preview after successful publication.
 
 Acceptance lives in `zellij-docs/tests/portable.rs`, the CLI's
 `tests/portable_build.rs`, and `scripts/check-portable.mjs`. The browser fixture
@@ -133,8 +134,8 @@ installation, release packaging or container integration.
 | Strict diagnostics | Broken references/anchors/metadata fail build | Separate check command, warnings gate and structured reports |
 | Project scaffolding | Existing structured Zellij scaffolds | Decide portable starter/config workflow |
 | Serve an existing export | Implemented | Preserve cross-platform routing/containment/lifecycle acceptance |
-| View a source folder | Implemented | Portable watch/rebuild and richer configuration |
-| Development rebuild/reload | Existing hosted dev workflow only | Portable watch/rebuild and reload acceptance |
+| View a source folder | Implemented, including optional watch/reload | Richer configuration |
+| Development rebuild/reload | Portable `view --watch` implemented; hosted preparation watching implemented | Hosted automatic page reload, incremental compilation |
 | Deploy/publish | Existing images and generated provider workflows | Finish chosen CLI providers and release scope |
 | Native distribution | Portable OS CI added | Release/install smoke tests, Windows packaging/installer |
 
@@ -175,3 +176,41 @@ build preservation, junctions, and Ctrl-C with stalled clients. On Windows,
 console and sends a real Ctrl-C event; Node's forced process termination would
 not test the handler. The default desktop browser selection itself remains an
 OS-opener integration, not an automated GUI acceptance claim.
+
+
+## Portable watch contract — 2026-10-17
+
+`zel view <docs> --watch` adds full rebuilds and HTTP live reload. Ordinary
+`view` still builds once; `serve` continues to serve an existing artifact.
+The initial source snapshot precedes the initial build, so edits during startup
+are not lost. The source root is resolved once. The watcher pauses 300 ms between
+scans, hashes streamed bytes of visible regular files, and waits for two equal
+snapshots before rebuilding. Hidden entries and node_modules are excluded.
+Nested symlinks, Windows junctions, and special files are refused without
+following them. Repeated unchanged failures are not rebuilt or logged endlessly.
+Full scans/rebuilds can be expensive for very large trees; no incremental compiler
+or configurable watch roots are promised.
+
+`prepare` stages a complete portable export without publication. The watcher
+publishes it under the live-preview write lock; HTTP holds the read side while
+resolving/opening files and attaching a matching revision, not while streaming
+responses to clients. This excludes the directory-swap gap from preview reads.
+Separate HTTP requests can still span generations; this is not a whole-browser
+snapshot transaction. Failed builds retain the previous artifact and revision.
+Later edits, including fixes to missing documents/assets or a restored source
+root, recover. Changes made during a build are picked up by subsequent scans.
+
+Only watch HTTP responses receive the local reload script and revision endpoint.
+The embedded revision prevents a publication between HTML load and first poll
+from being missed. Revision changes reload the current URL; errors show a notice
+without reloading the last good page. Deleted-page 404 previews include the same
+client and recover after restoration. Reload requires JavaScript. All exports
+remain free of preview scripts/endpoints and work offline when moved. The
+loopback/Host/path/method restrictions also apply to preview endpoints.
+
+Ctrl-C joins the watcher; a build still being staged is discarded after
+cancellation and its temporary directory is cleaned. Exported files remain.
+Options such as name/theme/output/port are fixed for the lifetime of the command.
+Native Linux/macOS/Windows CI uses the existing real-console lifecycle harness
+plus Chromium/WebKit editing, error recovery, search/media, continuous HTTP,
+shutdown, and moved direct-file acceptance in `scripts/preview-watch.mjs`.

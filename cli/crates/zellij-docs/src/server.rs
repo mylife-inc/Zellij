@@ -1,9 +1,9 @@
-//! Loopback preview of an existing export. Files are served unchanged; this is
-//! not a build watcher, deployment server, or SPA fallback.
+//! Loopback preview. Ordinary serving leaves bytes unchanged; an explicitly
+//! enabled watch preview injects its reload client only into HTTP responses.
 use camino::{Utf8Path, Utf8PathBuf};
 use std::{
     fs::File,
-    io,
+    io::{self, Read},
     net::TcpListener,
     sync::{
         Arc,
@@ -16,6 +16,12 @@ use tiny_http::{Header, Method, Request, Response, ResponseBox};
 use zellij_core::{Error, Result, files};
 
 use crate::links::{decode, encode};
+use crate::watch::LiveReload;
+
+const WATCH_NOT_FOUND: &[u8] = br#"<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Page not found</title></head>
+<body><h1>Page not found</h1><p>This page is absent from the latest successful
+build. Restore it or navigate back to another page.</p></body></html>"#;
 
 pub fn listener(port: u16) -> Result<TcpListener> {
     TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).map_err(|error| {
@@ -39,6 +45,7 @@ struct Site {
     root: Utf8PathBuf,
     prefix: String,
     port: u16,
+    live: Option<Arc<LiveReload>>,
 }
 
 enum Resource {
@@ -90,7 +97,12 @@ impl StaticServer {
         })?;
         let prefix = prefix.trim_end_matches('/').to_owned();
         let port = listener.local_addr()?.port();
-        let site = Site { root, prefix, port };
+        let site = Site {
+            root,
+            prefix,
+            port,
+            live: None,
+        };
         match site.file("index.html") {
             Ok(Some(path)) if path.is_file() => {}
             _ => {
@@ -110,6 +122,14 @@ impl StaticServer {
 
     pub fn url(&self) -> &str {
         &self.url
+    }
+
+    pub fn with_reload(mut self, live: Arc<LiveReload>) -> Self {
+        // The site is only cloned by run(), which consumes this server.
+        Arc::get_mut(&mut self.site)
+            .expect("server has not started")
+            .live = Some(live);
+        self
     }
 
     pub fn run(self, stop: &AtomicBool) -> Result<()> {
@@ -241,6 +261,15 @@ impl Site {
     }
 
     fn response(&self, request: &Request) -> ResponseBox {
+        let revision = self.live.as_ref().map(|live| live.read());
+        let version = self
+            .live
+            .as_ref()
+            .zip(revision.as_ref())
+            .map(|(live, state)| live.version(state));
+        let reload = version
+            .as_deref()
+            .map(|v| (v, revision.as_ref().and_then(|s| s.error.as_deref())));
         let mut response = if !matches!(request.method(), Method::Get | Method::Head) {
             text_response(405, "Method not allowed\n").with_header(header("Allow", "GET, HEAD"))
         } else if request.headers().iter().any(|h| {
@@ -255,29 +284,86 @@ impl Site {
         }) {
             text_response(403, "Forbidden host\n")
         } else {
-            match self.resolve(request.url()) {
-                Ok(Resource::File(file, path)) => file_response(file, &path, 200),
-                Ok(Resource::Redirect(location)) => {
-                    match Header::from_bytes("Location", location) {
-                        Ok(location) => Response::empty(308).with_header(location).boxed(),
-                        Err(_) => text_response(400, "Bad request\n"),
-                    }
-                }
-                Err(404) => match self.file("404.html").ok().flatten().filter(|p| p.is_file()) {
-                    Some(path) => match File::open(&path) {
-                        Ok(file) => file_response(file, &path, 404),
-                        Err(_) => text_response(404, "Not found\n"),
-                    },
-                    None => text_response(404, "Not found\n"),
-                },
-                Err(400) => text_response(400, "Bad request\n"),
-                Err(403) => text_response(403, "Forbidden path\n"),
-                Err(_) => text_response(500, "Could not read file\n"),
-            }
+            self.content_response(request.url(), reload)
         };
         response.add_header(header("Cache-Control", "no-store"));
         response.add_header(header("X-Content-Type-Options", "nosniff"));
         response
+    }
+
+    fn content_response(&self, target: &str, reload: Option<(&str, Option<&str>)>) -> ResponseBox {
+        if let Some((version, error)) = reload {
+            let path = url_path(target.split('?').next().unwrap_or_default());
+            if path.as_deref() == Ok(&format!("{}/_zellij/preview.json", self.prefix)) {
+                return Response::from_string(
+                    serde_json::json!({"version": version, "error": error}).to_string(),
+                )
+                .with_header(header("Content-Type", "application/json; charset=utf-8"))
+                .boxed();
+            }
+            if path.as_deref() == Ok(&format!("{}/_zellij/preview.js", self.prefix)) {
+                return Response::from_string(include_str!("../assets/preview.js"))
+                    .with_header(header("Content-Type", "text/javascript; charset=utf-8"))
+                    .boxed();
+            }
+        }
+        let version = reload.map(|r| r.0);
+        match self.resolve(target) {
+            Ok(Resource::File(file, path)) => self.file_response(file, &path, 200, version),
+            Ok(Resource::Redirect(location)) => match Header::from_bytes("Location", location) {
+                Ok(location) => Response::empty(308).with_header(location).boxed(),
+                Err(_) => text_response(400, "Bad request\n"),
+            },
+            Err(404) => match self.file("404.html").ok().flatten().filter(|p| p.is_file()) {
+                Some(path) => match File::open(&path) {
+                    Ok(file) => self.file_response(file, &path, 404, version),
+                    Err(_) => text_response(404, "Not found\n"),
+                },
+                None => match version {
+                    Some(version) => self.html_response(WATCH_NOT_FOUND.to_vec(), 404, version),
+                    None => text_response(404, "Not found\n"),
+                },
+            },
+            Err(400) => text_response(400, "Bad request\n"),
+            Err(403) => text_response(403, "Forbidden path\n"),
+            Err(_) => text_response(500, "Could not read file\n"),
+        }
+    }
+
+    fn file_response(
+        &self,
+        mut file: File,
+        path: &Utf8Path,
+        status: u16,
+        version: Option<&str>,
+    ) -> ResponseBox {
+        if let Some(version) = version.filter(|_| {
+            path.extension()
+                .is_some_and(|e| e.eq_ignore_ascii_case("html"))
+        }) {
+            let mut body = Vec::new();
+            if file.read_to_end(&mut body).is_err() {
+                return text_response(500, "Could not read file\n");
+            }
+            return self.html_response(body, status, version);
+        }
+        file_response(file, path, status)
+    }
+
+    fn html_response(&self, mut body: Vec<u8>, status: u16, version: &str) -> ResponseBox {
+        let script = format!(
+            "<script src=\"{}/_zellij/preview.js?version={version}\" defer></script>",
+            encode(&self.prefix)
+        );
+        let position = body
+            .windows(7)
+            .rposition(|w| w.eq_ignore_ascii_case(b"</body>"))
+            .unwrap_or(body.len());
+        body.splice(position..position, script.bytes());
+        Response::from_data(body)
+            .with_status_code(status)
+            .with_header(header("Content-Type", "text/html; charset=utf-8"))
+            .boxed()
     }
 }
 

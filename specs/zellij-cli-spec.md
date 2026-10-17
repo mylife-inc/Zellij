@@ -193,10 +193,10 @@ produces a wrong sidebar that looks right.
 | Command | Does |
 | --- | --- |
 | `zel check [dir]` | Real schemas; implemented `--deep` static-reference/syntax checks and `--strict` warnings gate. JSON remains planned. |
-| `zel dev [dir]` | Development server with hot reload: content is bind-mounted, so editing a Markdown file updates the browser. This is the command an author leaves running. |
+| `zel dev [dir]` | Hosted development server with mounted content and automatic preparation updates; page/image changes currently need a browser refresh. Portable Markdown uses `zel view --watch`. |
 | `zel build [dir]` | Builds. See targets below. |
 | `zel serve [dir]` | Implemented native loopback HTTP preview of an existing export; port/prefix and Ctrl-C support. |
-| `zel view [dir]` | Implemented portable build + loopback server + browser launch; --no-open and executable override. |
+| `zel view [dir] [--watch]` | Implemented portable build + loopback server + browser launch; optional `--watch` rebuild/reload, `--no-open` and executable override. |
 | `zel fmt [dir]` | Canonical formatting for the YAML. |
 | `zel watch [dir]` | Re-runs `check` on every change, without a server. For a repository that only wants its documentation kept valid. |
 

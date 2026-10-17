@@ -205,6 +205,9 @@ enum Command {
         /// Browser executable to launch with the URL as its sole argument.
         #[arg(long)]
         browser: Option<String>,
+        /// Rebuild on source edits and reload the HTTP preview after success.
+        #[arg(long)]
+        watch: bool,
     },
 
     /// Canonical formatting for the YAML.
@@ -440,6 +443,7 @@ fn main() {
             port,
             no_open,
             ref browser,
+            watch,
         } => preview::view(
             dir,
             preview::ViewOptions {
@@ -449,6 +453,7 @@ fn main() {
                 port,
                 no_open,
                 browser: browser.as_deref(),
+                watch,
             },
         ),
         Command::Build {

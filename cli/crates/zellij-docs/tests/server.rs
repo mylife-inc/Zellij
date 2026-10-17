@@ -20,6 +20,9 @@ struct Running {
 impl Running {
     fn start(root: &std::path::Path, prefix: &str) -> Self {
         let server = StaticServer::bind(Utf8Path::from_path(root).unwrap(), 0, prefix).unwrap();
+        Self::from_server(server)
+    }
+    fn from_server(server: StaticServer) -> Self {
         let url = server.url().to_owned();
         let stop = Arc::new(AtomicBool::new(false));
         let signal = stop.clone();
@@ -50,6 +53,94 @@ impl Running {
         let status = headers.split_whitespace().nth(1).unwrap().parse().unwrap();
         (status, headers.to_lowercase(), bytes[end + 4..].to_vec())
     }
+}
+
+#[test]
+fn watch_http_tracks_published_revisions_without_modifying_exported_files() {
+    use zellij_docs::{BuildOptions, watch::LiveReload};
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    let source = root.join("source");
+    let output = root.join("site");
+    fs::create_dir(&source).unwrap();
+    fs::write(source.join("README.md"), "# First build").unwrap();
+    zellij_docs::build(&source, &output, BuildOptions::default()).unwrap();
+    let disk = fs::read(output.join("index.html")).unwrap();
+    let live = Arc::new(LiveReload::default());
+    let server = Running::from_server(
+        StaticServer::bind(&output, 0, "/preview")
+            .unwrap()
+            .with_reload(live.clone()),
+    );
+    let state = || {
+        serde_json::from_slice::<serde_json::Value>(
+            &server
+                .request("GET", "/preview/_zellij/preview.json", None)
+                .2,
+        )
+        .unwrap()
+    };
+    let first = state();
+    let html = server.request("GET", "/preview/", None).2;
+    assert!(String::from_utf8_lossy(&html).contains(&format!(
+        "/preview/_zellij/preview.js?version={}",
+        first["version"].as_str().unwrap()
+    )));
+    assert!(
+        server
+            .request("HEAD", "/preview/", None)
+            .1
+            .contains(&format!("content-length: {}", html.len()))
+    );
+    assert!(server.request("HEAD", "/preview/", None).2.is_empty());
+    assert_eq!(fs::read(output.join("index.html")).unwrap(), disk);
+    assert_eq!(
+        server.request("GET", "/preview/_zellij/preview.js", None).0,
+        200
+    );
+    assert_eq!(
+        server
+            .request("POST", "/preview/_zellij/preview.json", None)
+            .0,
+        405
+    );
+    assert_eq!(
+        server
+            .request(
+                "GET",
+                "/preview/_zellij/preview.json",
+                Some("untrusted.example")
+            )
+            .0,
+        403
+    );
+    assert_eq!(server.request("GET", "/_zellij/preview.json", None).0, 404);
+    live.failed("broken document".into());
+    assert_eq!(state()["version"], first["version"]);
+    assert_eq!(state()["error"], "broken document");
+    fs::write(source.join("README.md"), "# Second build").unwrap();
+    let prepared = zellij_docs::prepare(&source, &output, BuildOptions::default()).unwrap();
+    assert_eq!(fs::read(output.join("index.html")).unwrap(), disk);
+    assert_eq!(state()["version"], first["version"]);
+    live.publish(prepared).unwrap();
+    let second = state();
+    assert_ne!(second["version"], first["version"]);
+    assert!(second["error"].is_null());
+    let html = String::from_utf8(server.request("GET", "/preview/", None).2).unwrap();
+    assert!(html.contains("Second build"));
+    assert!(html.contains(second["version"].as_str().unwrap()));
+    let (status, _, missing) = server.request("GET", "/preview/removed.html", None);
+    assert_eq!(status, 404);
+    assert!(
+        String::from_utf8(missing)
+            .unwrap()
+            .contains("preview.js?version=")
+    );
+    assert!(
+        !fs::read_to_string(output.join("index.html"))
+            .unwrap()
+            .contains("preview.js")
+    );
 }
 impl Drop for Running {
     fn drop(&mut self) {

@@ -10,6 +10,7 @@ mod links;
 mod markdown;
 mod page;
 pub mod server;
+pub mod watch;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
 
 pub struct BuildOptions<'a> {
@@ -27,6 +28,19 @@ impl Default for BuildOptions<'_> {
 pub struct BuildReport {
     pub pages: usize,
     pub warnings: Vec<String>,
+}
+
+/// A complete export that has not replaced the previous site yet.
+/// Preview can hold its publication lock for only the final directory swap.
+pub struct PreparedBuild {
+    stage: StaticOutput,
+    report: BuildReport,
+}
+impl PreparedBuild {
+    pub fn publish(self) -> Result<BuildReport> {
+        self.stage.publish()?;
+        Ok(self.report)
+    }
 }
 struct Page {
     source: Utf8PathBuf,
@@ -146,6 +160,14 @@ pub fn build(
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<BuildReport> {
+    prepare(source, output, options)?.publish()
+}
+
+pub fn prepare(
+    source: &Utf8Path,
+    output: &Utf8Path,
+    options: BuildOptions<'_>,
+) -> Result<PreparedBuild> {
     if !zellij_core::schema::themes()
         .iter()
         .any(|t| t.name == options.theme)
@@ -308,9 +330,11 @@ pub fn build(
         .map(|(path, body)| (path.as_path(), body.as_slice()))
         .collect();
     files::write_files(&stage.directory, &writes, false)?;
-    stage.publish()?;
-    Ok(BuildReport {
-        pages: pages.len(),
-        warnings,
+    Ok(PreparedBuild {
+        stage,
+        report: BuildReport {
+            pages: pages.len(),
+            warnings,
+        },
     })
 }

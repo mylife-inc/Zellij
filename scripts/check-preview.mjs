@@ -9,6 +9,7 @@ import path from 'node:path';
 import net from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, webkit, expect } from '@playwright/test';
+import { checkWatch } from './preview-watch.mjs';
 
 const windows = process.platform === 'win32';
 const binary = path.resolve(process.argv[2] || `cli/target/debug/zel${windows ? '.exe' : ''}`);
@@ -151,6 +152,8 @@ try {
 
   const view = await start(['view', source, '--out', output, '--port', '0', '--no-open', '--name', 'Company docs', '--theme', 'forest']);
   const html = await body(view.url); assert(html.includes('Company docs')); assert(html.includes('data-zellij-theme="forest"'));
+  assert(!html.includes('_zellij/preview.js'));
+  assert.equal((await fetch(`${view.url}_zellij/preview.json`)).status, 404);
   assert.equal(await exists(record), false); await stop(view);
   const opened = await start(['view', source, '--port', '0', '--browser', browserExe]);
   await until(() => exists(record), 'browser executable successfully requested the ready site');
@@ -168,6 +171,7 @@ try {
   await rm(path.join(source, 'bad.md'));
   assert.deepEqual(await snapshot(source), sourceBefore);
   console.log('Native serve/view: HTTP bytes/MIME/routes, prefix, port conflicts, containment, ready browser launch, no-open/failure recovery and real Ctrl-C passed.');
+  await checkWatch({ temp, source, output, start, stop, snapshot, until });
 } finally {
   for (const state of active) {
     try { await stop(state); } catch { state.child.kill(); }
