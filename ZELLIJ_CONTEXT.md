@@ -318,6 +318,61 @@ retry of the existing mobile-WebKit FAQ interaction (`sections.spec.ts:191`).
 Its cause remains undiagnosed. Image run `39022871680` published all four feature
 variants for AMD64/ARM64 and passed published-image build/serve acceptance.
 
+### Deep and strict validation update — 2026-10-17
+
+Source commit `86e5e2d` addresses the static-validation portion of **R13**.
+Both `zel check <dir>` and `zellij check <dir>` accept `--deep` and `--strict`.
+The default remains the fast content-model check. Deep mode parses MDX without
+executing authored JavaScript and checks static prose/section links, heading,
+HTML and section anchors, local media and section previews. Strict mode fails
+on existing or new warnings. Build/dev/migrate retain fast checks unless the
+caller runs an explicit deep/strict gate first.
+
+Reference semantics are Zod metadata in `src/content/reference-schema.ts`, used
+by configuration/section schemas and exported in the generated Rust schema.
+Do not add a new link/media/inline-prose field without its reference annotation.
+`src/cli/deep-check.ts` uses canonical Site routes, redirect targets and the
+renderer's heading/GFM anchor pass. Inline prose shares tokenization with
+`InlineMarkdown`. Section source paths survive loading for useful diagnostics.
+MDX positions refer to the loaded body, after front matter/title removal.
+
+The checker preserves the first Markdown reference definition, follows
+home/guide redirects before checking fragments, and validates example references
+in their actual rendering page. It detects recursive previews and duplicate IDs.
+Asset paths must resolve to files inside the physical content/assets boundary;
+raw Markdown/HTML image URLs use `/_zellij/assets/...`, while Screenshot and
+schema-declared media use content asset paths. Fast navigation validation now
+ignores URL query strings when finding a route.
+
+Limits remain explicit: no component/JavaScript execution or remote HTTP checks;
+literal menu `url:` remains unchecked. Dynamic MDX, custom components, component
+ID props, srcSet and contextless relative links warn. Wrapper-owned public files
+outside the content asset prefix and SVG-internal fragments are not verified.
+Optional math parsing depends on the installed environment: use the installed
+wrapper for math-enabled deep checking; the bare container checker installs no
+optional dependencies. Full build/browser acceptance is still necessary.
+
+The checker exposed four broken showcase anchor links in `pro/tour.yaml` and
+`pro/highlights.yaml`; they now target existing highlights/specifications content.
+Local evidence: **317 engine tests**, **117 Rust tests**, workspace typechecks,
+formatting, warnings-denied Clippy, engine packaging, isolated packaged-checker
+and preparation integration, and all four local examples under `--deep --strict`
+pass. CI adds deep/strict validation for the three fully tracked examples (PayOS
+needs its generated docs), plus the real Rust/container command and static export.
+Consult this source commit's PR for hosted results. No native binary release is
+included; the new Rust flags require the current CLI source and matching image.
+
+Source review also found **S14**: video-embed omits basePath for local video and
+poster URLs. It remains a separate rendering fix, with prefixed browser acceptance
+needed. S13 font-build reproducibility and the prior browser flakes remain open.
+
+Prior milestone completion: [PR #7](https://github.com/mylife-inc/Zellij/pull/7)
+merged as `ba30f9b`. PR CI `39025935776` and main CI `39026348416` passed all four
+jobs, with **303 engine tests, 117 Rust tests, 311 browser passes, 124 conditional
+skips and no retries**. Separate Chromium/WebKit prefix acceptance passed with
+normal fonts and Turbopack. Image run `39026348423` published all four variants
+for AMD64/ARM64 and passed the published-image build/serve smoke test.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -456,6 +511,7 @@ after content edits during development.
 | Themes/motion | `src/themes`, `src/motion`, `src/styles/sections.css` |
 | Search and heading IDs | `src/search`, `src/cli/write-search-index.ts`, `src/mdx/headings.ts` |
 | Build-time operations | `src/cli/check.ts`, `sync-assets.ts`, `context.ts`, `init.ts` |
+| Static reference validation | `src/cli/deep-check.ts`, `src/content/reference-schema.ts`, `src/content/inline-markdown.ts` |
 | Rust command truth | `cli/crates/zellij-cli/src/main.rs` — enum AND dispatch |
 | Release truth | `.github/workflows/release.yml`, `scripts/install.sh` |
 
@@ -531,7 +587,7 @@ complete; see the audit before using writers on valuable content.
 | Status | Commands |
 | --- | --- |
 | Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/formats/targets`, `context` (Markdown), `detect`, `convert`, `doctor` |
-| Implemented container orchestration | `check`, `dev`, `build` static/image; `image build/run/push/dockerfile` |
+| Implemented container orchestration | `check` (optional `--deep`/`--strict`), `dev`, `build` static/image; `image build/run/push/dockerfile` |
 | Implemented workflows | `migrate` = detect/convert/check; `ci init github`; `ci publish` dispatches an existing workflow |
 | Declared but returns “not implemented yet” | `new app`, `list themes`, `deploy`, `serve`, `fmt`, `publish`, `ship` |
 | Specified but not registered | `watch`, `eject`, `pull`, `upgrade`, `completions`, `version` subcommand (`--version` works) |
@@ -610,11 +666,12 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after deployment-prefix consistency, subject to the user's v1 scope decision:
+Remaining order after static reference validation, subject to the user's v1 scope decision:
 
-1. Deeper link/asset validation (R13) and development preparation watching
-   (remaining S9). R10–R12 and S2/S6/S8/S12 are resolved above; R5 retains
-   advanced migration limits. Investigate font-build reproducibility (S13).
+1. Development preparation watching (remaining S9). R13 now has an opt-in
+   static-analysis gate with the limits above; it is not a full execution check.
+   R10–R12 and S2/S6/S8/S12 are resolved above; R5 retains advanced migration
+   limits. Investigate font-build reproducibility (S13).
 2. Finish the agreed CLI subset, configuration, and truthful help/docs, including
    the required plain-Markdown portable build, static serve and composed view
    workflows in [the portable contract](specs/zel-portable-docs.md).
@@ -622,7 +679,7 @@ Remaining order after deployment-prefix consistency, subject to the user's v1 sc
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
    been released for the completed source fixes.
-4. Close the other browser findings (S4/S5), accessibility, SEO and
+4. Close the other browser findings (S4/S5/S14), accessibility, SEO and
    performance acceptance. Diagnose the recorded browser flakes. Define a
    finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
