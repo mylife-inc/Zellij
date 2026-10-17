@@ -42,9 +42,8 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       context = await browser.newContext({ serviceWorkers: 'block' });
       await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
       await context.route(/^https?:/, route => new URL(route.request().url()).origin === new URL(server.url).origin ? route.continue() : route.abort());
-      // Delay only the first fetch initiation. Holding an intercepted request
-      // can also hold browser lifecycle events (including WebKit's DOM ready).
-      // Responses still come from the real server, after publication. Reloaded
+      // Delay only the first fetch initiation so publication definitely precedes
+      // the first response. Responses still come from the real server. Reloaded
       // documents use ordinary fetch, so the rest of this scenario is unpatched.
       await context.addInitScript(() => {
         if (!['http:', 'https:'].includes(location.protocol)) return;
@@ -63,8 +62,8 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       });
       page = await context.newPage();
       const errors = []; page.on('pageerror', error => errors.push(error.message));
-      // This race deliberately holds initial loading work. Require the actual
-      // document, rendered heading and attempted poll, not a lifecycle event.
+      // Wait for the actual document, heading and attempted poll before editing.
+      // The test gate deliberately pauses that poll until publication.
       await page.goto(`${server.url}?sample=keep#anchor`, { waitUntil: 'commit' });
       await expect(page.getByRole('heading', { name: 'Before watching', exact: true })).toBeVisible();
       await until(() => page.evaluate(() => window.__zelPollHeld), 'first browser status poll is held');

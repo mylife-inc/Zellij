@@ -172,6 +172,68 @@ fn fixture() -> tempfile::TempDir {
 }
 
 #[test]
+fn queued_keep_alive_connections_all_progress_without_closing_other_clients() {
+    use std::io::{BufRead, BufReader};
+    // Queue a browser-like burst before the server accepts any connections.
+    // Keep every answered socket open: completing a different request must not
+    // depend on an idle client closing its persistent connection.
+    let root = fixture();
+    for _ in 0..8 {
+        let listener = zellij_docs::server::listener(0).unwrap();
+        let address = listener.local_addr().unwrap();
+        // Browsers may preconnect without sending a request yet.
+        let _idle: Vec<_> = (0..8)
+            .map(|_| TcpStream::connect(address).unwrap())
+            .collect();
+        let mut clients = Vec::new();
+        for _ in 0..64 {
+            let mut socket = TcpStream::connect(address).unwrap();
+            socket
+                .set_read_timeout(Some(Duration::from_secs(5)))
+                .unwrap();
+            write!(socket, "GET / HTTP/1.1\r\nHost: {address}\r\n\r\n").unwrap();
+            clients.push(BufReader::new(socket));
+        }
+        let server = Running::from_server(
+            StaticServer::from_listener(Utf8Path::from_path(root.path()).unwrap(), listener, "/")
+                .unwrap(),
+        );
+        for round in 0..2 {
+            for client in &mut clients {
+                if round == 1 {
+                    write!(
+                        client.get_mut(),
+                        "GET / HTTP/1.1\r\nHost: {address}\r\n\r\n"
+                    )
+                    .unwrap();
+                }
+                let mut status = String::new();
+                client
+                    .read_line(&mut status)
+                    .expect("persistent client stalled");
+                assert!(status.starts_with("HTTP/1.1 200"), "{status}");
+                let mut length = None;
+                loop {
+                    let mut line = String::new();
+                    assert_ne!(client.read_line(&mut line).unwrap(), 0);
+                    if line == "\r\n" {
+                        break;
+                    }
+                    if let Some(value) = line.to_lowercase().strip_prefix("content-length:") {
+                        length = Some(value.trim().parse::<usize>().unwrap());
+                    }
+                }
+                let mut body = vec![0; length.unwrap()];
+                client.read_exact(&mut body).unwrap();
+                assert_eq!(body, b"<h1>Home</h1>");
+            }
+        }
+        // Idle persistent clients also must not delay shutdown.
+        drop(server);
+    }
+}
+
+#[test]
 fn serves_exact_bytes_pretty_routes_directories_queries_and_unicode() {
     let root = fixture();
     let server = Running::start(root.path(), "/");

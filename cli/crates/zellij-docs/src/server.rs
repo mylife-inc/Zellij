@@ -1,18 +1,31 @@
 //! Loopback preview. Ordinary serving leaves bytes unchanged; an explicitly
 //! enabled watch preview injects its reload client only into HTTP responses.
 use camino::{Utf8Path, Utf8PathBuf};
+use futures_util::TryStreamExt;
+use http_body_util::{BodyExt, Full, StreamBody, combinators::UnsyncBoxBody};
+use hyper::{
+    Method, Request, Response,
+    body::{Bytes, Frame},
+    header::HeaderValue,
+    server::conn::http1,
+    service::service_fn,
+};
+use hyper_util::rt::{TokioIo, TokioTimer};
 use std::{
+    convert::Infallible,
     fs::File,
     io::{self, Read},
     net::TcpListener,
     sync::{
         Arc,
-        atomic::{AtomicBool, AtomicUsize, Ordering},
+        atomic::{AtomicBool, Ordering},
     },
-    thread,
     time::Duration,
 };
-use tiny_http::{Header, Method, Request, Response, ResponseBox};
+use tokio_util::io::ReaderStream;
+
+type Body = UnsyncBoxBody<Bytes, io::Error>;
+type HttpResponse = Response<Body>;
 use zellij_core::{Error, Result, files};
 
 use crate::links::{decode, encode};
@@ -36,7 +49,7 @@ pub fn listener(port: u16) -> Result<TcpListener> {
 }
 
 pub struct StaticServer {
-    http: tiny_http::Server,
+    listener: TcpListener,
     site: Arc<Site>,
     url: String,
 }
@@ -112,9 +125,8 @@ impl StaticServer {
             }
         }
         let url = format!("http://127.0.0.1:{port}{}/", encode(&site.prefix));
-        let http = tiny_http::Server::from_listener(listener, None).map_err(io::Error::other)?;
         Ok(Self {
-            http,
+            listener,
             site: Arc::new(site),
             url,
         })
@@ -133,40 +145,60 @@ impl StaticServer {
     }
 
     pub fn run(self, stop: &AtomicBool) -> Result<()> {
-        // Bound concurrent response writers. The control thread never waits for
-        // a slow reader, so Ctrl-C can stop the CLI even during a large download.
-        // Dropping this server releases its listener; process exit closes any
-        // in-flight response sockets, without modifying the served files.
-        let active = Arc::new(AtomicUsize::new(0));
+        // Idle keep-alive sockets are async tasks, never blocked worker threads.
+        // File lookup/read work uses a bounded blocking pool; file bodies stream
+        // with backpressure instead of loading whole downloads into memory.
+        let runtime = tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .max_blocking_threads(16)
+            .build()?;
+        let result = runtime.block_on(self.serve(stop));
+        // serve drops its JoinSet, cancelling all connection tasks. Shutdown
+        // does not wait for a slow network reader or an idle persistent socket.
+        runtime.shutdown_timeout(Duration::from_secs(1));
+        result
+    }
+
+    async fn serve(self, stop: &AtomicBool) -> Result<()> {
+        self.listener.set_nonblocking(true)?;
+        let listener = tokio::net::TcpListener::from_std(self.listener)?;
+        let mut connections = tokio::task::JoinSet::new();
+        let mut shutdown = tokio::time::interval(Duration::from_millis(100));
         while !stop.load(Ordering::Acquire) {
-            if active.load(Ordering::Acquire) >= 16 {
-                thread::sleep(Duration::from_millis(10));
-                continue;
+            tokio::select! {
+                _ = shutdown.tick() => {}
+                _ = connections.join_next(), if !connections.is_empty() => {}
+                accepted = listener.accept(), if connections.len() < 256 => {
+                    let (stream, _) = match accepted {
+                        Ok(connection) => connection,
+                        Err(error) if matches!(error.kind(), io::ErrorKind::Interrupted | io::ErrorKind::ConnectionAborted) => continue,
+                        Err(error) => return Err(error.into()),
+                    };
+                    let site = self.site.clone();
+                    connections.spawn(async move {
+                        let service = service_fn(move |request: Request<hyper::body::Incoming>| {
+                            let site = site.clone();
+                            async move {
+                                // No request body is needed by this GET/HEAD server.
+                                let (parts, _) = request.into_parts();
+                                let response = tokio::task::spawn_blocking(move || {
+                                    site.response(&Request::from_parts(parts, ()))
+                                }).await.unwrap_or_else(|_| text_response(500, "Could not read file\n"));
+                                Ok::<_, Infallible>(response)
+                            }
+                        });
+                        // Malformed/disconnected clients end only their own connection.
+                        let _ = http1::Builder::new()
+                            .timer(TokioTimer::new())
+                            .header_read_timeout(Duration::from_secs(10))
+                            .max_buf_size(32 * 1024)
+                            .serve_connection(TokioIo::new(stream), service)
+                            .await;
+                    });
+                }
             }
-            let Some(request) = self.http.recv_timeout(Duration::from_millis(100))? else {
-                continue;
-            };
-            let site = self.site.clone();
-            active.fetch_add(1, Ordering::AcqRel);
-            let permit = ResponsePermit(active.clone());
-            thread::Builder::new()
-                .name("zel-http-response".into())
-                .spawn(move || {
-                    let _permit = permit;
-                    let response = site.response(&request);
-                    if let Err(error) = request.respond(response) {
-                        eprintln!("warning: could not finish HTTP response: {error}");
-                    }
-                })?;
         }
         Ok(())
-    }
-}
-
-struct ResponsePermit(Arc<AtomicUsize>);
-impl Drop for ResponsePermit {
-    fn drop(&mut self) {
-        self.0.fetch_sub(1, Ordering::AcqRel);
     }
 }
 
@@ -260,7 +292,7 @@ impl Site {
             })
     }
 
-    fn response(&self, request: &Request) -> ResponseBox {
+    fn response(&self, request: &Request<()>) -> HttpResponse {
         let revision = self.live.as_ref().map(|live| live.read());
         let version = self
             .live
@@ -270,12 +302,15 @@ impl Site {
         let reload = version
             .as_deref()
             .map(|v| (v, revision.as_ref().and_then(|s| s.error.as_deref())));
-        let mut response = if !matches!(request.method(), Method::Get | Method::Head) {
-            text_response(405, "Method not allowed\n").with_header(header("Allow", "GET, HEAD"))
-        } else if request.headers().iter().any(|h| {
-            let host = h.value.as_str().to_ascii_lowercase();
-            h.field.equiv("Host")
-                && !(self.port == 80 && ["localhost", "127.0.0.1"].contains(&host.as_str()))
+        let mut response = if !matches!(*request.method(), Method::GET | Method::HEAD) {
+            let mut response = text_response(405, "Method not allowed\n");
+            response
+                .headers_mut()
+                .insert("allow", HeaderValue::from_static("GET, HEAD"));
+            response
+        } else if request.headers().get_all("host").iter().any(|value| {
+            let host = value.to_str().unwrap_or_default().to_ascii_lowercase();
+            !(self.port == 80 && ["localhost", "127.0.0.1"].contains(&host.as_str()))
                 && ![
                     format!("127.0.0.1:{}", self.port),
                     format!("localhost:{}", self.port),
@@ -284,34 +319,51 @@ impl Site {
         }) {
             text_response(403, "Forbidden host\n")
         } else {
-            self.content_response(request.url(), reload)
+            self.content_response(
+                request.uri().path_and_query().map_or("/", |p| p.as_str()),
+                reload,
+            )
         };
-        response.add_header(header("Cache-Control", "no-store"));
-        response.add_header(header("X-Content-Type-Options", "nosniff"));
+        response
+            .headers_mut()
+            .insert("cache-control", HeaderValue::from_static("no-store"));
+        response.headers_mut().insert(
+            "x-content-type-options",
+            HeaderValue::from_static("nosniff"),
+        );
+        if request.method() == Method::HEAD {
+            *response.body_mut() = full(Bytes::new());
+        }
         response
     }
 
-    fn content_response(&self, target: &str, reload: Option<(&str, Option<&str>)>) -> ResponseBox {
+    fn content_response(&self, target: &str, reload: Option<(&str, Option<&str>)>) -> HttpResponse {
         if let Some((version, error)) = reload {
             let path = url_path(target.split('?').next().unwrap_or_default());
             if path.as_deref() == Ok(&format!("{}/_zellij/preview.json", self.prefix)) {
-                return Response::from_string(
+                return bytes_response(
+                    200,
                     serde_json::json!({"version": version, "error": error}).to_string(),
-                )
-                .with_header(header("Content-Type", "application/json; charset=utf-8"))
-                .boxed();
+                    "application/json; charset=utf-8",
+                );
             }
             if path.as_deref() == Ok(&format!("{}/_zellij/preview.js", self.prefix)) {
-                return Response::from_string(include_str!("../assets/preview.js"))
-                    .with_header(header("Content-Type", "text/javascript; charset=utf-8"))
-                    .boxed();
+                return bytes_response(
+                    200,
+                    include_str!("../assets/preview.js"),
+                    "text/javascript; charset=utf-8",
+                );
             }
         }
         let version = reload.map(|r| r.0);
         match self.resolve(target) {
             Ok(Resource::File(file, path)) => self.file_response(file, &path, 200, version),
-            Ok(Resource::Redirect(location)) => match Header::from_bytes("Location", location) {
-                Ok(location) => Response::empty(308).with_header(location).boxed(),
+            Ok(Resource::Redirect(location)) => match HeaderValue::from_str(&location) {
+                Ok(location) => {
+                    let mut response = text_response(308, "");
+                    response.headers_mut().insert("location", location);
+                    response
+                }
                 Err(_) => text_response(400, "Bad request\n"),
             },
             Err(404) => match self.file("404.html").ok().flatten().filter(|p| p.is_file()) {
@@ -336,7 +388,7 @@ impl Site {
         path: &Utf8Path,
         status: u16,
         version: Option<&str>,
-    ) -> ResponseBox {
+    ) -> HttpResponse {
         if let Some(version) = version.filter(|_| {
             path.extension()
                 .is_some_and(|e| e.eq_ignore_ascii_case("html"))
@@ -350,7 +402,7 @@ impl Site {
         file_response(file, path, status)
     }
 
-    fn html_response(&self, mut body: Vec<u8>, status: u16, version: &str) -> ResponseBox {
+    fn html_response(&self, mut body: Vec<u8>, status: u16, version: &str) -> HttpResponse {
         let script = format!(
             "<script src=\"{}/_zellij/preview.js?version={version}\" defer></script>",
             encode(&self.prefix)
@@ -360,20 +412,28 @@ impl Site {
             .rposition(|w| w.eq_ignore_ascii_case(b"</body>"))
             .unwrap_or(body.len());
         body.splice(position..position, script.bytes());
-        Response::from_data(body)
-            .with_status_code(status)
-            .with_header(header("Content-Type", "text/html; charset=utf-8"))
-            .boxed()
+        bytes_response(status, body, "text/html; charset=utf-8")
     }
 }
 
-fn header(name: &str, value: &str) -> Header {
-    Header::from_bytes(name, value).expect("static valid HTTP header")
+fn full(bytes: Bytes) -> Body {
+    Full::new(bytes)
+        .map_err(|never| match never {})
+        .boxed_unsync()
 }
-fn text_response(status: u16, text: &str) -> ResponseBox {
-    Response::from_string(text).with_status_code(status).boxed()
+fn bytes_response(status: u16, bytes: impl Into<Bytes>, content_type: &str) -> HttpResponse {
+    let bytes = bytes.into();
+    Response::builder()
+        .status(status)
+        .header("content-type", content_type)
+        .header("content-length", bytes.len())
+        .body(full(bytes))
+        .expect("valid response headers")
 }
-fn file_response(file: File, path: &Utf8Path, status: u16) -> ResponseBox {
+fn text_response(status: u16, text: &'static str) -> HttpResponse {
+    bytes_response(status, text, "text/plain; charset=utf-8")
+}
+fn file_response(file: File, path: &Utf8Path, status: u16) -> HttpResponse {
     let mime = mime_guess::from_path(path).first_or_octet_stream();
     let charset = mime.type_() == "text"
         || [
@@ -387,8 +447,14 @@ fn file_response(file: File, path: &Utf8Path, status: u16) -> ResponseBox {
     } else {
         mime.to_string()
     };
-    Response::from_file(file)
-        .with_status_code(status)
-        .with_header(header("Content-Type", &content_type))
-        .boxed()
+    let Ok(metadata) = file.metadata() else {
+        return text_response(500, "Could not read file\n");
+    };
+    let stream = ReaderStream::new(tokio::fs::File::from_std(file)).map_ok(Frame::data);
+    Response::builder()
+        .status(status)
+        .header("content-type", content_type)
+        .header("content-length", metadata.len())
+        .body(StreamBody::new(stream).boxed_unsync())
+        .expect("valid response headers")
 }

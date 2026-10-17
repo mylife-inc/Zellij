@@ -141,7 +141,7 @@ installation, release packaging or container integration.
 
 ## Native serve/view contract — 2026-10-17
 
-`zellij-docs::server` serves existing exports using tiny_http and MIME detection.
+`zellij-docs::server` serves existing exports using Hyper/Tokio and MIME detection.
 It binds only to 127.0.0.1, supports selected/ephemeral ports, prints the actual
 URL, serves GET/HEAD, and returns 405 for other methods. File bytes remain
 unchanged. Exact files, extensionless HTML routes, directory indexes and custom
@@ -163,9 +163,11 @@ automated launch acceptance uses a real substitute executable that requests the
 ready URL before recording success, avoiding GUI launches on test runners.
 
 Ctrl-C stops with exit 0 and releases the listener. POSIX termination signals
-are also handled. Response writers are bounded and do not block the control
-loop; shutdown can interrupt in-flight responses. Source and generated files
-are not deleted. Neither command watches, rebuilds or reloads on source edits.
+are also handled. Up to 256 async connections share a 16-thread filesystem
+pool; idle sockets and slow readers do not block the control loop. Requests have
+a 10-second header-read timeout, and file bodies stream with backpressure.
+Shutdown cancels in-flight responses. Source and generated files are not deleted.
+Ordinary `view` and `serve` do not watch; `view --watch` is described below.
 
 Real HTTP integration tests cover routes/MIME/HEAD/methods/prefixes/containment/
 port conflicts and listener release. `scripts/check-preview.mjs` exercises the
