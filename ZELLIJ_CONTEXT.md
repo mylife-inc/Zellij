@@ -703,6 +703,14 @@ releases the response only after publication. Reload assertions and timeouts
 are unchanged; production code is unchanged. Final hosted status belongs to
 [PR #14](https://github.com/mylife-inc/Zellij/pull/14).
 
+
+Run `39068818910` passed the corrected race on Chromium, but Linux WebKit also
+held DOMContentLoaded while a network request was intercepted. The final fixture
+therefore delays only the first fetch initiation in the page. It waits for the
+client to attempt that poll, changes the source, observes actual publication,
+and then permits the real HTTP response. A session marker removes the delay on
+reloaded documents. Production code, reload assertions and timeouts are unchanged.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a

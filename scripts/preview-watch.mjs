@@ -25,7 +25,6 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       assert.equal(response.status, 200); return response.json();
     };
     const browser = await ({ chromium, webkit })[engine].launch();
-    let releaseFirstPoll = () => {};
     let polling = true;
     const availability = [];
     const probe = (async () => {
@@ -39,22 +38,30 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
     try {
       const context = await browser.newContext({ serviceWorkers: 'block' });
       await context.route(/^https?:/, route => new URL(route.request().url()).origin === new URL(server.url).origin ? route.continue() : route.abort());
-      // Force publication between HTML loading and its first status response.
-      // A client that treats the first poll as its baseline would miss this edit.
-      const firstPoll = new Promise(resolve => { releaseFirstPoll = resolve; });
-      let holdPoll = true;
-      let pollSeen = false;
-      await context.route(`${server.url}_zellij/preview.json`, async route => {
-        pollSeen = true;
-        if (holdPoll) await firstPoll;
-        await route.continue();
+      // Delay only the first fetch initiation. Holding an intercepted request
+      // can also hold browser lifecycle events (including WebKit's DOM ready).
+      // Responses still come from the real server, after publication. Reloaded
+      // documents use ordinary fetch, so the rest of this scenario is unpatched.
+      await context.addInitScript(() => {
+        if (!['http:', 'https:'].includes(location.protocol)) return;
+        const key = '_zel_test_first_poll';
+        if (sessionStorage.getItem(key)) return;
+        const original = window.fetch.bind(window);
+        window.fetch = (input, options) => {
+          const url = new URL(input instanceof Request ? input.url : input, location.href);
+          if (url.pathname.endsWith('/_zellij/preview.json') && !sessionStorage.getItem(key)) {
+            sessionStorage.setItem(key, 'held');
+            window.__zelPollHeld = true;
+            return new Promise(resolve => { window.__zelReleasePoll = resolve; }).then(() => original(input, options));
+          }
+          return original(input, options);
+        };
       });
       const page = await context.newPage();
       const errors = []; page.on('pageerror', error => errors.push(error.message));
-      // A deliberately held request can delay load on some engines/runners.
       await page.goto(`${server.url}?sample=keep#anchor`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByRole('heading', { name: 'Before watching', exact: true })).toBeVisible();
-      await until(() => pollSeen, 'first browser status poll is held');
+      await until(() => page.evaluate(() => window.__zelPollHeld), 'first browser status poll is held');
       const original = await status();
       assert((await page.content()).includes('_zellij/preview.js?version='));
       assert(!(await readFile(path.join(output, 'index.html'), 'utf8')).includes('preview.js'));
@@ -64,7 +71,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await writeFile(path.join(source, '.edit.tmp'), home(`Updated ${engine}`));
       await rename(path.join(source, '.edit.tmp'), readme);
       await until(async () => (await status()).version !== original.version, 'publication before the initial browser poll');
-      holdPoll = false; releaseFirstPoll();
+      await page.evaluate(() => { window.__zelReleasePoll(); });
       await expect(page.getByRole('heading', { name: `Updated ${engine}`, exact: true })).toBeVisible({ timeout: 20000 });
       assert.equal(new URL(page.url()).searchParams.get('sample'), 'keep');
       assert.equal(new URL(page.url()).hash, '#anchor');
@@ -159,7 +166,6 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await offline.close(); await rename(moved, output);
       console.log(`${engine}: watch edits/assets/search, failed-build preservation, deletion/root/link recovery, live reload, real Ctrl-C and offline artifact passed.`);
     } finally {
-      releaseFirstPoll();
       polling = false; await probe.catch(() => {});
       await browser.close();
       if (!server.exit) await stop(server);
