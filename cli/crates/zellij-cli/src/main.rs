@@ -35,7 +35,7 @@ enum Command {
     #[command(subcommand)]
     New(NewTarget),
 
-    /// Show every field of a section type, with a worked example.
+    /// Show a section type's fields, defaults and allowed values.
     Explain {
         /// A section type — `zel list sections` for all of them.
         section_type: String,
@@ -1390,7 +1390,7 @@ fn list_themes(as_json: bool) -> zellij_core::Result<()> {
     Ok(())
 }
 
-/// Everything a section takes, and an example to paste.
+/// A section's fields, defaults and allowed values.
 ///
 /// This is the command that exists so nobody has to remember every set of
 /// fields. It prints what is required first, because that is what someone is

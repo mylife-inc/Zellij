@@ -127,8 +127,8 @@ prompt has a flag, so the same thing is scriptable:
 
 | Command | Does |
 | --- | --- |
-| `zel explain <type>` | Every field of a section type, its defaults, and a worked example ready to paste. The answer to "what does a bento grid take again?". |
-| `zel list sections` | All nineteen, one line each. |
+| `zel explain <type>` | A section type's fields, defaults and allowed values; `--json` returns its complete schema. Use `zel new section` for a ready-to-edit YAML template. |
+| `zel list sections` | All 23, one line each. |
 | `zel list themes` | All fourteen, with what distinguishes them. |
 | `zel list formats` | What `convert` recognises. |
 | `zel list targets` | What `build` can produce. |
