@@ -63,7 +63,7 @@ put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 | [`zel fmt`](/cli/fmt) | Canonical formatting for the YAML | Planned |
 | [`zel dev`](/cli/dev) | Development server | **Available** |
 | [`zel serve`](/cli/serve) | Serve what `build` produced | Planned |
-| [`zel build`](/cli/build) | A static site, or a container image | **Available** |
+| [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
 | [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
 | [`zel image`](/cli/image) | Build, run and push container images | **Available** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
@@ -90,33 +90,25 @@ zel check              # figure it out
 zel check ./docs       # this one
 ```
 
-With no argument, `zel` looks for, in order:
+For commands that discover structured content, the search order is `./content`,
+the current directory, `./docs`, then `./documentation`. Marker files such as
+`site.yaml`, `pages.yaml`, and `menu.yaml`, a `sections` directory, or guide
+folders with `_sidebar.yaml` identify a candidate. Discovery does not walk up
+the directory tree. An explicit content path is used as supplied.
 
-<Steps>
-<Step title="A zel.toml">
-Searching upward from the current directory. Its `content` key wins over
-everything else. See [Configuration](/cli/config).
-</Step>
-<Step title="A ./content folder">
-The conventional name, and what `zel new docs` creates.
-</Step>
-<Step title="The current directory">
-If it holds a `site.yaml` or a `pages.yaml`, it is the content root.
-</Step>
-</Steps>
-
-If none of those match, the command says so and stops. It never guesses at a
-folder that merely contains Markdown — a wrong guess produces a conversion or a
-build that looks finished and is not.
+CLI configuration loading from `zel.toml` is still planned. The portable build
+is a separate supported input: `zel build ./docs` uses the native Markdown
+renderer when no structured content is discovered. See [build](/cli/build)
+for explicit target selection and output rules.
 
 ## Where Docker comes in
 
 Commands that only read the content model — `explain`, `list`, `context`,
 `detect`, `convert`, `new` — are pure Rust and need nothing installed.
 
-Commands that produce a site — `check`, `dev`, `build`, `deploy` — run the
-engine, and the engine is a Next.js application. Rather than require Node,
-`zel` runs it in a container from a public image.
+Structured-content `check`, `dev`, and hosted `build` commands run the Next.js
+engine in a container from a public image. `zel build --target portable` runs
+natively and needs no external tools. Deployment commands remain planned.
 
 ```bash title="terminal"
 zel doctor

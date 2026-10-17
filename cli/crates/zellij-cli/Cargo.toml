@@ -17,6 +17,7 @@ zellij-core.workspace = true
 zellij-convert.workspace = true
 zellij-scaffold.workspace = true
 zellij-engine.workspace = true
+zellij-docs.workspace = true
 camino.workspace = true
 clap.workspace = true
 serde_json.workspace = true

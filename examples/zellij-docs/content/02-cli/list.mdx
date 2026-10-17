@@ -81,14 +81,14 @@ is one you will need the [AI route](/cli/context) for.
 ## `zel list targets`
 
 ```
-static   A folder of HTML, CSS and JS. Any CDN, free. The default.
-image    A container running the site on port 3000. Any registry. ~150 MB.
+static     A hosted YAML/MDX website; build with the container engine.
+image      A container running the site on port 3000.
+portable   A Markdown folder rendered natively; open index.html directly.
 ```
 
-What [`zel build`](/cli/build) can produce. Two, not four — earlier drafts
-listed `node` and `image:static`, and neither was a product anyone chooses
-between. [`zel build`](/cli/build#what-happened-to-node-and-imagestatic)
-explains why they went.
+What [`zel build`](/cli/build) can produce. Without an explicit target, build
+selects `static` for discovered structured Zellij content and `portable` for
+a plain Markdown folder. `image` must be requested explicitly.
 
 ## Machine-readable
 
@@ -108,7 +108,7 @@ array; errors go to stderr and return a nonzero exit code.
 
 Section field counts exclude the shared presentation fields, just like the
 human listing. Sections and themes use engine registration order; formats are
-sorted by ID; targets list `static` then `image`. Consumers should select by
+sorted by ID; targets list `static`, `image`, then `portable`. Consumers should select by
 identifier rather than array position. The theme names and descriptions come
 from the same generated catalog as the renderer.
 
