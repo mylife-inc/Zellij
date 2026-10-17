@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last studied: **2026-10-16**. Baseline: local `main` at
+Last refreshed: **2026-10-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 This is the starting point for future Zellij conversations in this checkout.
@@ -216,6 +216,62 @@ passed with 297 browser passes, 114 conditional skips and no retries. Main CI
 Image run `39010596751` published all four variants for Linux AMD64/ARM64 and
 passed the published-image build/serve smoke test.
 
+### Canonical search and preparation update — 2026-10-17
+
+Source commit `29654d3` resolves **R10–R12** and the interrupted search load
+**S2**. `createContentSource` in `src/config/runtime.ts` now supplies the shared
+folder/legacy selection and content-path contract for rendering and preparation.
+`writeSearchIndex` reads a fresh `loadSite` result, including canonical guide
+routes, frontmatter/sidebar overrides, unlisted pages and title-stripped bodies.
+Preparation bypasses the global rendering memo; S8 remains a separate issue.
+
+`src/mdx/headings.ts` parses Markdown/MDX without executing authored JavaScript.
+Search and the TOC use the renderer's `rehype-slug` semantics, including formatted,
+setext, quoted, indented, repeated and mathematical headings. All heading levels
+participate in duplicate IDs; only h2/h3 split search passages, so deeper
+subsections retain their text. Search stores unprefixed routes for Next's router.
+The existing regex-based prose cleanup is not a complete MDX text interpreter.
+Optional math loading is shared with rendering and stays external in CLI bundles;
+bundling MathJax broke its runtime paths and was caught using Zellij's own docs.
+
+`zellij prepare`, `sync-assets` and `search-index` accept `--content <dir>` and
+`--config <legacy-file>`, including inline values with spaces/equals signs.
+Helpers still accept an app-root string or now a `ZellijRuntimeOptions` object.
+Wrappers must pass the same explicit content root to preparation and rendering;
+preparation does not infer TypeScript configuration. Missing roots and malformed
+assets directories fail before clearing previous prepared files. Physical-path
+overlap checks protect source assets, including public-directory symlinks.
+Rerunning asset sync removes stale output even if the source assets folder has
+been deleted. Automatic dev watching is still absent: **S9 is only partly fixed**.
+
+Synthetic guide roots and configured home redirects now claim route ownership;
+only a guide and its own root page may intentionally share that route. The
+search dialog aborts cancelled requests, retries on reopen after cancellation
+or failure, and caches completed data for the current deployment prefix.
+
+Local verification: **285 engine tests**, all workspace typechecks, packaging,
+all four example preparation/content checks, and the packaged CLI integration
+fixture pass. The fixture covers canonical routes, actual optional math loading,
+custom paths, legacy config, invalid flags and asset removal. Four focused
+Chromium desktop/mobile recovery cases pass without retries. An initial broad
+run against the local dev server timed out in the existing `networkidle` check;
+production lazy-loading and WebKit acceptance remain hosted CI gates. The new
+recovery test's early-hydration click was corrected to use the existing retrying
+shortcut pattern. CI additionally exports a real container site and checks that
+each indexed route and anchor exists. Consult this commit's PR for hosted results.
+
+R13 documentation now states the fast check's actual limits. Complete prose-link
+and asset validation remain open, as do basePath synchronization/acceptance S12,
+remaining UI findings and native CLI/platform completion. No native binary
+release is made in this milestone.
+
+Prior milestone completion: [PR #5](https://github.com/mylife-inc/Zellij/pull/5)
+merged as `7fb5178`. PR CI `39019128511` and main CI `39019556088` passed all four
+jobs, including **305 browser passes, 124 conditional skips and no retries**,
+268 engine tests and 117 Rust tests. Image run `39019556101` published all four
+feature variants for Linux AMD64/ARM64 and passed published-image build/serve
+smoke acceptance. Previously recorded FAQ/WebKit flakes remain undiagnosed.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -301,9 +357,11 @@ flowchart LR
   Container --> Render
 ```
 
-The separate prepare/index path is an important weakness: it does not share all
-the canonical content resolver's rules. The audit reproduces resulting route
-and custom-content-directory discrepancies.
+Rendering and preparation share content-source resolution. Search reads the
+canonical Site model and uses parsed heading IDs shared with the TOC/rendering
+pipeline. Preparation reads fresh data; rendering still has the global cache
+limitation recorded as S8. Derived assets/search still need manual preparation
+after content edits during development.
 
 - npm workspaces: `engine/packages/*` and `examples/*`; committed npm lockfile.
 - Engine package version `0.1.0`; Rust workspace version `0.1.3`.
@@ -337,7 +395,7 @@ and custom-content-directory discrepancies.
 | Guide rendering | `src/render/guide-page.tsx`, `src/guide`, `src/mdx` |
 | Header and branding | `src/chrome/nav-bar.tsx`, `nav-bar-client.tsx`, `nav-overflow.ts`, `use-nav-overflow.ts`, `src/styles/chrome.css` |
 | Themes/motion | `src/themes`, `src/motion`, `src/styles/sections.css` |
-| Search | `src/search`, `src/cli/write-search-index.ts` |
+| Search and heading IDs | `src/search`, `src/cli/write-search-index.ts`, `src/mdx/headings.ts` |
 | Build-time operations | `src/cli/check.ts`, `sync-assets.ts`, `context.ts`, `init.ts` |
 | Rust command truth | `cli/crates/zellij-cli/src/main.rs` — enum AND dispatch |
 | Release truth | `.github/workflows/release.yml`, `scripts/install.sh` |
@@ -492,17 +550,17 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the header milestone, subject to the user's v1 scope decision:
+Remaining order after canonical search/preparation, subject to the user's v1 scope decision:
 
-1. Shared routing/preparation and validation (R10–R13), including the reproduced
-   search/anchor bugs and basePath configuration/acceptance (S12). R4 and R6–R8
-   have implementation records above; R5 still has advanced migration limits.
+1. BasePath configuration/acceptance (S12), deeper link/asset validation (R13),
+   runtime isolation (S8) and development preparation watching (remaining S9).
+   R10–R12 and S2 are resolved above; R5 retains advanced migration limits.
 2. Finish the agreed CLI subset, configuration, and truthful help/docs.
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
    been released for the completed source fixes.
-4. Close the other browser findings (S2/S4/S5/S6/S9), accessibility, SEO and
+4. Close the other browser findings (S4/S5/S6), accessibility, SEO and
    performance acceptance. Diagnose the recorded browser flakes. Define a
    finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.

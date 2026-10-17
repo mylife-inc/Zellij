@@ -101,6 +101,11 @@ jobs:
       - name: Build the engine image from this checkout
         run: docker build -f docker/base.Dockerfile -t zellij-ci .
 
+      - name: Packaged preparation matches exported routes and heading anchors
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-preparation.mjs cli/target/debug/zel --export
+
       - name: Scaffold names, rendered links, and content discovery
         env:
           ZELLIJ_IMAGE: zellij-ci
@@ -120,7 +125,7 @@ jobs:
           test -f "$work/site/.zellij-output"
           cp "$work/site/index.html" "$work/previous.html"
 
-          # Fail during MDX compilation, after the fast content check passes.
+          # Fail during MDX preparation, after the fast content check passes.
           # The previous export must survive this late build failure too.
           cp "$work/content/01-guide/index.mdx" "$work/guide.mdx"
           printf '\n<Callout>\n' >> "$work/content/01-guide/index.mdx"

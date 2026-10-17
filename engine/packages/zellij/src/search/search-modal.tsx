@@ -9,6 +9,7 @@ import { SEARCH_INDEX_PATH } from '../content/paths';
 import type { SearchEntry } from './build-index';
 
 interface Loaded {
+  basePath: string;
   entries: SearchEntry[];
   search: (query: string) => number[];
 }
@@ -63,17 +64,11 @@ export function SearchModal({ basePath }: { basePath: string }) {
     };
   }, []);
 
-  // Fetch the index and the search library the first time the modal opens.
-  //
-  // `started` is a ref, not state, on purpose: setting state here would
-  // re-run this effect, and its cleanup would cancel the very request it just
-  // kicked off — leaving the panel stuck on "Loading…" forever.
-  const started = useRef(false);
-
+  // A cancelled load must be restartable on reopen. Completed data is cached
+  // for this deployment prefix; changing loading status cannot cancel a fetch.
   useEffect(() => {
-    if (!open || started.current) return;
-    started.current = true;
-
+    if (!open || loaded?.basePath === basePath) return;
+    const controller = new AbortController();
     let cancelled = false;
     setStatus('loading');
 
@@ -81,7 +76,7 @@ export function SearchModal({ basePath }: { basePath: string }) {
       try {
         const [module, response] = await Promise.all([
           import('flexsearch'),
-          fetch(`${basePath}${SEARCH_INDEX_PATH}`),
+          fetch(`${basePath}${SEARCH_INDEX_PATH}`, { signal: controller.signal }),
         ]);
         if (!response.ok) throw new Error(`index request failed: ${response.status}`);
 
@@ -105,6 +100,7 @@ export function SearchModal({ basePath }: { basePath: string }) {
         });
 
         setLoaded({
+          basePath,
           entries,
           search: (value: string) => index.search(value, { limit: 8 }) as number[],
         });
@@ -112,7 +108,6 @@ export function SearchModal({ basePath }: { basePath: string }) {
       } catch {
         if (!cancelled) {
           // Allow a retry the next time the modal is opened.
-          started.current = false;
           setStatus('error');
         }
       }
@@ -120,8 +115,9 @@ export function SearchModal({ basePath }: { basePath: string }) {
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, [open, basePath]);
+  }, [open, basePath, loaded]);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -131,7 +127,8 @@ export function SearchModal({ basePath }: { basePath: string }) {
     }
   }, [open]);
 
-  const results = query.trim() && loaded ? loaded.search(query.trim()).map((i) => loaded.entries[i]!) : [];
+  const current = loaded?.basePath === basePath ? loaded : undefined;
+  const results = query.trim() && current ? current.search(query.trim()).map((i) => current.entries[i]!) : [];
 
   const go = useCallback(
     (entry: SearchEntry) => {
@@ -217,8 +214,8 @@ export function SearchModal({ basePath }: { basePath: string }) {
         <div className="zellij-search-results" id="zellij-search-results" role="listbox">
           {status === 'error' ? (
             <p className="zellij-search-empty">Search is unavailable right now.</p>
-          ) : !loaded ? (
-            // Keyed on `loaded`, not on `status`: the fetch starts in an effect
+          ) : !current ? (
+            // Keyed on resolved data, not on `status`: the fetch starts in an effect
             // after the first paint, so a status-only check reports "no results"
             // for anything typed before the index arrives.
             <p className="zellij-search-empty">Loading…</p>

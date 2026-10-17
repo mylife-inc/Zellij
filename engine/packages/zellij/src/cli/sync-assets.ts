@@ -1,9 +1,10 @@
-import { cp, mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { cp, mkdir, readdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
-import { parse as parseYaml } from 'yaml';
 import { readFile } from 'node:fs/promises';
 
+import { createContentSource, resolveContentPaths, type ZellijRuntimeOptions } from '../config/runtime';
+import { ZellijContentError } from '../errors';
 import { ASSET_MANIFEST_FILE } from '../content/paths';
 
 /**
@@ -15,22 +16,32 @@ import { ASSET_MANIFEST_FILE } from '../content/paths';
  * is the bridge between the authored path (`assets/hero.png`) and the served
  * path (`/_zellij/assets/hero.png`).
  */
-export async function syncAssets(appRoot: string = process.cwd()): Promise<void> {
-  const contentDir = await resolveContentDir(appRoot);
+export async function syncAssets(input: string | ZellijRuntimeOptions = {}): Promise<void> {
+  const options = typeof input === 'string' ? { appRoot: input } : input;
+  const { appRoot } = resolveContentPaths(options);
+  const { contentDir } = await createContentSource(options);
   const source = path.join(contentDir, 'assets');
   const destination = path.join(appRoot, 'public', '_zellij', 'assets');
 
-  if (!(await exists(source))) {
-    console.log(`[zellij] No assets directory at ${source} — nothing to sync.`);
-    return;
+  const [sourcePath, destinationPath] = await Promise.all([physicalPath(source), physicalPath(destination)]);
+  if (contains(sourcePath, destinationPath) || contains(destinationPath, sourcePath)) {
+    throw new ZellijContentError('Content assets and public/_zellij/assets must not overlap.', source);
   }
+  const assets = await stat(source).catch((error: NodeJS.ErrnoException) => {
+    if (error.code !== 'ENOENT') throw error;
+    return undefined;
+  });
+  if (assets && !assets.isDirectory()) {
+    throw new ZellijContentError('Content assets must be a directory.', source);
+  }
+  const hasAssets = assets !== undefined;
 
-  // Replace rather than merge, so deleted assets do not linger in public/.
+  // Replace rather than merge, including when the entire assets folder was
+  // removed. Re-running preparation must not retain stale assets or hashes.
   await rm(destination, { recursive: true, force: true });
   await mkdir(path.dirname(destination), { recursive: true });
-  await cp(source, destination, { recursive: true });
-
-  const fingerprints = await fingerprint(destination);
+  if (hasAssets) await cp(source, destination, { recursive: true });
+  const fingerprints = hasAssets ? await fingerprint(destination) : {};
   await writeFile(
     path.join(appRoot, 'public', '_zellij', ASSET_MANIFEST_FILE),
     `${JSON.stringify(fingerprints, null, 2)}\n`,
@@ -99,28 +110,17 @@ async function fingerprint(root: string): Promise<Record<string, string>> {
   return manifest;
 }
 
-/**
- * `./content` unless the legacy config names somewhere else. The content root
- * carries its own identity now, so no config file is required to find it.
- */
-async function resolveContentDir(appRoot: string): Promise<string> {
-  const configFile = path.join(appRoot, 'zellij.config.yaml');
-  if (await exists(configFile)) {
-    try {
-      const config = parseYaml(await readFile(configFile, 'utf8')) as { content?: string } | null;
-      return path.resolve(appRoot, config?.content ?? './content');
-    } catch {
-      // Unparseable config is the build's problem to report, not this step's.
-    }
-  }
-  return path.resolve(appRoot, 'content');
+function contains(parent: string, child: string): boolean {
+  const relative = path.relative(parent, child);
+  return relative === '' || (!path.isAbsolute(relative) && relative !== '..' && !relative.startsWith(`..${path.sep}`));
 }
 
-async function exists(target: string): Promise<boolean> {
+/** Resolve existing ancestors too, so a public-directory symlink cannot hide overlap. */
+async function physicalPath(target: string): Promise<string> {
   try {
-    await stat(target);
-    return true;
-  } catch {
-    return false;
+    return await realpath(target);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+    return path.join(await physicalPath(path.dirname(target)), path.basename(target));
   }
 }

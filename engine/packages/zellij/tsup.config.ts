@@ -17,7 +17,7 @@ import { defineConfig } from 'tsup';
  */
 export default defineConfig([
   {
-    entry: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/*.test.ts'],
+    entry: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/*.test.ts', '!src/**/*.test.tsx'],
     format: ['esm', 'cjs'],
     dts: true,
     sourcemap: true,
@@ -75,8 +75,10 @@ export default defineConfig([
      * them; if one ever does, the failure is loud rather than a silently
      * enormous CLI.
      */
-    noExternal: [/.*/],
-    external: ['react', 'react-dom', 'next', /^next\//],
+    // Keep optional math dynamic: bundling MathJax breaks its runtime paths.
+    noExternal: [/^(?!(?:remark-math|rehype-mathjax)(?:\/|$))/],
+    // Optional math plugins resolve from the consuming app, as in rendering.
+    external: ['react', 'react-dom', 'next', /^next\//, 'remark-math', 'rehype-mathjax'],
 
     /**
      * Some of what gets bundled is CommonJS that calls `require` at runtime —

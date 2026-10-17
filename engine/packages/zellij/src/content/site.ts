@@ -241,10 +241,16 @@ function collectRoutes(
 
   // A tree root with no index page is still a valid link target: it redirects
   // to the first page in its navigation.
-  for (const guide of guides) if (!routes.has(guide.route)) claim(guide.route, `${guide.sourceDir}/`);
+  for (const guide of guides) {
+    // Only this guide's own index may share its root. Another guide or a
+    // section page must not silently shadow the synthetic redirect.
+    if (!guide.pages.some((page) => page.route === guide.route)) {
+      claim(guide.route, `${guide.sourceDir}/ (guide root)`);
+    }
+  }
 
   // "/" is a real route even when it only redirects.
-  if (homeRedirect) routes.add('/');
+  if (homeRedirect) claim('/', 'site.yaml home redirect');
 
   if (clashes.length > 0) {
     throw new ZellijContentError(`Route collisions:\n${clashes.join('\n')}`);

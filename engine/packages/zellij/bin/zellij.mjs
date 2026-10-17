@@ -52,7 +52,9 @@ function parseFlags(args) {
       continue;
     }
 
-    const [name, inline] = arg.slice(2).split('=');
+    const equals = arg.indexOf('=');
+    const name = arg.slice(2, equals === -1 ? undefined : equals);
+    const inline = equals === -1 ? undefined : arg.slice(equals + 1);
     if (inline !== undefined) {
       flags[name] = inline;
     } else if (args[i + 1] && !args[i + 1].startsWith('--')) {
@@ -67,22 +69,29 @@ function parseFlags(args) {
 }
 
 switch (command) {
-  case 'sync-assets': {
-    const { syncAssets } = await load('sync-assets');
-    await syncAssets(process.cwd());
-    break;
-  }
-  case 'search-index': {
-    const { writeSearchIndex } = await load('write-search-index');
-    await writeSearchIndex(process.cwd());
-    break;
-  }
+  case 'sync-assets':
+  case 'search-index':
   case 'prepare': {
-    // The usual prebuild pair.
-    const { syncAssets } = await load('sync-assets');
-    const { writeSearchIndex } = await load('write-search-index');
-    await syncAssets(process.cwd());
-    await writeSearchIndex(process.cwd());
+    const { flags, positional } = parseFlags(rest);
+    for (const key of Object.keys(flags)) {
+      if (!['content', 'config'].includes(key) || typeof flags[key] !== 'string' || !flags[key]) {
+        throw new Error(`Expected --content <directory> or --config <legacy-config>; invalid --${key}`);
+      }
+    }
+    if (positional.length) throw new Error('Use --content <directory> to select the preparation content root.');
+    const options = {
+      appRoot: process.cwd(),
+      ...(flags.content ? { contentDir: flags.content } : {}),
+      ...(flags.config ? { configFile: flags.config } : {}),
+    };
+    if (command !== 'search-index') {
+      const { syncAssets } = await load('sync-assets');
+      await syncAssets(options);
+    }
+    if (command !== 'sync-assets') {
+      const { writeSearchIndex } = await load('write-search-index');
+      await writeSearchIndex(options);
+    }
     break;
   }
   case 'init': {
@@ -189,7 +198,8 @@ switch (command) {
         `  check [dir]    validate a content root without building\n` +
         `  prepare        sync assets and build the search index\n` +
         `  sync-assets    copy content assets into public/_zellij/assets\n` +
-        `  search-index   write the guide search index\n\n` +
+        `  search-index   write the guide search index\n` +
+        `                   preparation options: --content <dir>, --config <legacy-config>\n\n` +
         `Unknown command: ${command ?? '(none)'}`,
     );
     process.exit(1);
