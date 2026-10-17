@@ -523,6 +523,16 @@ native portable build/CLI/browser jobs on Linux, macOS and Windows, each with
 Chromium and WebKit. Hosted results are pending at this record; these jobs do
 not establish full native Windows container support or release/install coverage.
 
+Browser follow-up: the first hosted run passed Chromium but WebKit rejected
+its initial file navigation with offline emulation enabled. A minimal local
+file containing only an H1 reproduced that failure; HTTP-blocked file loading
+without emulation passed. WebKit acceptance therefore blocks HTTP requests
+explicitly and asserts that every observed request uses file/data URLs; Chromium
+also retains offline emulation. Both JavaScript and no-JavaScript contexts use
+these guards. No file-security flags or HTTP fallback are used. Both engines
+now pass locally. WebKit additionally exposed missing focus restoration after
+pointer-opened search; the runtime now records and restores the opening control.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

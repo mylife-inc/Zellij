@@ -10,7 +10,7 @@ engine. Native release packages may lag the current source; check `zel list targ
 </Callout>
 
 ```bash title="terminal"
-zel build ./docs                        # plain Markdown → ../docs-site beside docs
+zel build ./docs                        # plain Markdown → ./docs-site
 zel build ./docs --out ./published-docs  # choose an output outside the input
 zel build ./docs --target portable --name "Acme docs" --theme forest
 zel build ./content --target static --out ./dist

@@ -49,8 +49,20 @@
   const query = document.getElementById('_zel-query');
   const results = document.getElementById('_zel-results');
   const status = document.getElementById('_zel-status');
-  const open = () => { if (!dialog.open) dialog.showModal(); query.focus(); };
-  document.getElementById('_zel-search-open').addEventListener('click', open);
+  const searchButton = document.getElementById('_zel-search-open');
+  let returnFocus = searchButton;
+  const open = event => {
+    if (!dialog.open) {
+      // Safari does not focus buttons on pointer click. Remember the explicit
+      // trigger instead of relying solely on the dialog's native restoration.
+      returnFocus = event?.currentTarget === searchButton ? searchButton : document.activeElement;
+      if (!returnFocus || returnFocus === document.body) returnFocus = searchButton;
+      dialog.showModal();
+    }
+    query.focus();
+  };
+  dialog.addEventListener('close', () => { if (returnFocus?.isConnected) returnFocus.focus(); });
+  searchButton.addEventListener('click', open);
   document.addEventListener('keydown', event => {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); open(); }
     if (event.key === 'Escape') {

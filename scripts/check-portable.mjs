@@ -43,7 +43,9 @@ try {
   for (const engine of selected) {
     const browser = await ({ chromium, webkit })[engine].launch({ headless: true });
     try {
-      const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, offline: true });
+      // WebKit's emulated offline state rejects even a plain file:// heading
+      // before loading. Block HTTP directly for it; never relax file security.
+      const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, offline: engine !== 'webkit', serviceWorkers: 'block' });
       context.setDefaultTimeout(10000);
       const requests = [];
       const errors = [];
@@ -113,7 +115,9 @@ try {
       assert.deepEqual(errors, []);
       assert(requests.every(url => url.startsWith('file:') || url.startsWith('data:')), 'No network requests or HTTP server');
       await context.close();
-      const noJS = await browser.newContext({ javaScriptEnabled: false, offline: true });
+      const noJS = await browser.newContext({ javaScriptEnabled: false, offline: engine !== 'webkit', serviceWorkers: 'block' });
+      noJS.on('request', request => requests.push(request.url()));
+      await noJS.route(/^https?:/, route => route.abort());
       const plain = await noJS.newPage();
       await plain.goto(nested);
       await expect(plain.getByRole('heading', { name: 'Install now', exact: true })).toBeVisible();
@@ -121,6 +125,7 @@ try {
       await plain.locator('article').getByRole('link', { name: 'Home', exact: true }).click();
       await expect(plain.getByRole('heading', { name: 'Portable handbook' })).toBeVisible();
       await expect(plain.locator('article table')).toBeVisible();
+      assert(requests.every(url => url.startsWith('file:') || url.startsWith('data:')), 'No-JS content also needs no network');
       await noJS.close();
       console.log(`${engine}: moved file:// site, nested links, search, keyboard, themes, local fonts/media, mobile and no-JS content passed.`);
     } finally { await browser.close(); }
