@@ -449,7 +449,7 @@ family names and relative asset URLs that Next processes with the site prefix.
 license provenance and fallback metrics. Original CSS and OFL notices are kept.
 `prepare-fonts.mjs` verifies the snapshot entirely offline and copies it beside
 the compiled modules. Git attributes preserve hashed upstream bytes on Windows.
-Full license notices survive in deployed CSS. Updates are explicit, reviewed
+The stylesheet references a bundled file containing every full license notice. Updates are explicit, reviewed
 snapshot changes; normal builds never refresh fonts. Dependency installation
 can still require network access. This does not implement portable `file://`
 documentation or the requested Rust build/serve/view commands.
@@ -461,7 +461,14 @@ production-prefix and development-watcher acceptance pass, including all font
 faces decoding, lazy loading, local prefixed URLs and deployed notices. CI adds
 a fresh Turbopack site build with Docker `RUN --network=none` after dependency
 installation, plus Chromium/WebKit production and development font checks.
-Consult this commit's PR for hosted results; no native CLI release is made.
+The first hosted run `39053315323` passed the offline Turbopack build,
+engine/schema/CLI jobs and 310 production browser tests plus one successful
+retry of the known mobile-WebKit FAQ interaction (124 conditional skips).
+Its production font gate failed because Turbopack stripped license comments.
+Follow-up `21479d3` emits the combined notice as a real CSS URL asset and checks
+its deployed response byte-for-byte. Local webpack/Chromium dev acceptance
+passed this follow-up. [PR #10](https://github.com/mylife-inc/Zellij/pull/10)
+tracks final hosted verification. No native CLI release is made.
 
 Prior milestone completion: [PR #9](https://github.com/mylife-inc/Zellij/pull/9)
 merged as `bd01bdb`. Main CI `39052261993` passed all four jobs, including **311

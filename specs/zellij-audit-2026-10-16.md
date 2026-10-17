@@ -391,8 +391,9 @@ using 75 pinned WOFF2 files across the twelve existing families. Original CSS,
 Unicode ranges, styles/weights, fallback metrics and OFL licenses are preserved;
 SHA-256 and source provenance are recorded in the manifest. Font files remain
 unmodified. Generated CSS rewrites relative asset URLs and family names while
-retaining public variables and non-preloaded loading behavior. Full license
-notices are included in compiled CSS as well as the package.
+retaining public variables and non-preloaded loading behavior. A CSS URL
+emits the combined full license notice as a deployed asset as well as retaining
+the original notices in the package.
 
 The package build verifies hashes and deterministic CSS offline and copies the
 assets beside both compiled module formats. Git attributes preserve original
@@ -407,6 +408,15 @@ existing prefix/navigation/search/asset and watcher recovery checks also pass.
 Hosted CI adds a fresh Turbopack build with Docker network disabled after npm
 installation and Chromium/WebKit font acceptance. See the source commit's PR
 for hosted completion; no native binary release is part of this milestone.
+
+First hosted run `39053315323` passed engine/schema/CLI jobs and the network-disabled
+Turbopack build. Production browser tests had 310 initial passes and one successful
+retry of the known mobile-WebKit FAQ interaction, with 124 conditional skips.
+The production font gate correctly failed when Turbopack stripped license
+comments. Follow-up `21479d3` replaces the comment-only notice with an emitted
+asset referenced by the stylesheet and verifies its full HTTP response. Local
+webpack/Chromium dev acceptance passes. Final results are tracked on
+[PR #10](https://github.com/mylife-inc/Zellij/pull/10).
 
 PR #9 merged as `bd01bdb`. Main CI `39052261993` passed all jobs with 311 browser
 passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
