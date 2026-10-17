@@ -93,7 +93,7 @@ impl Snapshot {
                 let path = Utf8PathBuf::from_path_buf(entry.path())
                     .map_err(|p| io::Error::other(format!("non-UTF-8 path: {}", p.display())))?;
                 let name = path.file_name().unwrap_or_default();
-                if name.starts_with('.') || name == "node_modules" {
+                if crate::ignored_name(name) {
                     continue;
                 }
                 let metadata = fs::symlink_metadata(&path)?;

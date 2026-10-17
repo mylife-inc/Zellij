@@ -91,6 +91,9 @@ Use ordinary Markdown links such as `[Install](guide/install.md#setup)` and
 `![Logo](images/logo.svg)`. Reference-style links also work. The builder rewrites
 local document links to their real HTML files, retains queries and fragments,
 validates heading/footnote fragments, and copies referenced local assets.
+References into hidden paths or `node_modules` are rejected, matching the folders
+excluded from discovery and watch mode. Put published assets in a normal source
+folder such as `assets/`.
 Directories with a home document can be linked as `guide/`. Root-relative
 Markdown paths resolve inside the input folder and become portable relative
 links. All referenced local files must be inside that folder.

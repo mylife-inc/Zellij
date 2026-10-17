@@ -91,17 +91,17 @@ fn portable_path(path: &Utf8Path) -> Result<()> {
     Ok(())
 }
 
+fn ignored_name(name: &str) -> bool {
+    name.starts_with('.') || name == "node_modules"
+}
+
 fn discover(root: &Utf8Path) -> Result<Vec<Utf8PathBuf>> {
     let mut found = Vec::new();
     for entry in walkdir::WalkDir::new(root)
         .follow_links(false)
         .sort_by_file_name()
         .into_iter()
-        .filter_entry(|e| {
-            e.depth() == 0
-                || (!e.file_name().to_string_lossy().starts_with('.')
-                    && e.file_name() != "node_modules")
-        })
+        .filter_entry(|e| e.depth() == 0 || !ignored_name(&e.file_name().to_string_lossy()))
     {
         let entry = entry.map_err(|e| files::unsafe_path(root, e.to_string()))?;
         let path = Utf8Path::from_path(entry.path())

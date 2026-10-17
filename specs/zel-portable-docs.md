@@ -97,6 +97,8 @@ the existing export when validation or rendering fails.
 
 - `.md`/`.markdown`, nested folders and referenced local assets are supported;
   hidden entries and node_modules are excluded, nested symlinks rejected.
+  Explicit local references and configured logos cannot publish files from those
+  excluded paths; published assets must live in the watched source tree.
 - Index documents win over README for each directory's `index.html`. A missing
   root home is synthesized. Home sorts first, followed by numeric front-matter
   `order` and output path. Titles use front matter, first H1, then filename.
