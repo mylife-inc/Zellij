@@ -167,6 +167,45 @@ browser run had 296 initial passes, one successful retry and 114 conditional
 skips: a mobile-WebKit `/guide/quickstart` navigation error. Its cause, and the
 different FAQ interaction retry in PR CI, remain unproven.
 
+## Implementation record — header layout and width-aware overflow
+
+Commit `da1c222` addresses the requested header placement and width budgeting.
+The bar now spans the viewport with bounded edge padding, company branding at
+the left and controls at the right. Existing logo/home-link configuration is
+preserved and covered by a server-rendering test; the configured company link
+and light/dark asset URLs survive a deployment prefix.
+
+Desktop overflow uses measured label/control space instead of relying only on
+item count. Hidden links and nested groups remain available in More; the
+mobile drawer retains the complete resolved menu. Focus is restored when items
+move, stale panels close across the mobile breakpoint, and the drawer releases
+scroll lock. More panels support scrolling in short viewports; compact panels
+are bounded at both horizontal edges. Default mobile controls are 44px.
+
+Evidence: 268 engine unit tests, workspace typechecks, engine packaging and
+documentation validation passed locally. Focused desktop/mobile Chromium
+navigation passed 34 tests with 26 conditional skips. Six new desktop header
+cases pass, including the separately rerun compact-panel boundary regression;
+these cover 320–1600px, larger text, a wide brand, preserved nested/external
+links, focus and drawer cleanup. Final engine typechecking and the six focused
+unit tests pass after the positioning adjustment. The initial failures in the
+new stress/boundary tests were incorrect fixture widths, corrected to exercise
+the intended overflow type. Full production/browser/WebKit results belong to
+the PR containing this commit. This does not close the separate S2/S4/S5/S6/S9
+findings or constitute manual assistive-technology acceptance.
+
+The original UI observations below are retained as historical evidence; their
+centered-container/count-only implementation is superseded by this record.
+Search remains an icon opening a dialog. Site owners still supply their own
+company assets and destination through the existing branding configuration.
+
+PR #4 subsequently merged as `4be61dc`: PR CI `39010124427` passed 297 browser
+tests with 114 skips and no retries. Main CI `39010596721` passed with 296
+initial passes, one successful mobile-WebKit FAQ retry and 114 skips. The FAQ
+interaction flake remains undiagnosed. Image run `39010596751` published all
+four variants for AMD64/ARM64 and passed published-image smoke acceptance.
+No native CLI release was issued.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
