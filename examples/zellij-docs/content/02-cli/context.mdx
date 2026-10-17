@@ -19,7 +19,7 @@ Writes one self-contained description of everything Zellij's content model is:
 - the folder layout, and what each file is for
 - the naming and routing rules — how `01-guide/quickstart.mdx` becomes `/guide/quickstart`
 - every field of `site.yaml`, `menu.yaml`, `pages.yaml` and `_sidebar.yaml`
-- all nineteen section types with their fields, defaults and allowed values
+- all 23 section types with their fields, defaults and allowed values
 - the MDX components available inside a guide page
 - a worked example: a small site, complete and valid
 
@@ -101,6 +101,16 @@ zel context schema.json --json
 
 The raw JSON Schemas instead of the prose reference. For building tooling: an
 editor completion, a form generator, a validator in another language.
+
+The object contains `sectionTypes`, validated YAML `sectionTemplates`, each
+section's schema in `sections`, the schemas for content files in `files`, and
+the built-in `themes` catalog (`name`, `label`, `description`). It is the same
+generated JSON embedded in this binary and checked against the engine in CI.
+
+With no filename, stdout contains only that JSON. With a filename, the JSON
+goes into the file, stdout stays empty, and the confirmation goes to stderr.
+An existing file is replaced. Write failures return a nonzero exit code and a
+message on stderr.
 
 **For an agent, prefer the prose file.** The schemas describe what is valid; they
 do not carry the conventions — that a guide folder's numeric prefix is an

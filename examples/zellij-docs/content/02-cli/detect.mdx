@@ -30,7 +30,7 @@ tells you what that command is about to do.
 
 | | What it means | What to do |
 | --- | --- | --- |
-| A format, **certain** | The tool's own configuration file is present and readable | [`zel convert`](/cli/convert) |
+| A format, **certain** | The tool's own configuration file is present | [`zel convert`](/cli/convert) |
 | A format, **likely** | The folder matches a default layout, but nothing confirms it | Convert, and read the report closely |
 | Nothing recognised | No machine-readable structure | [The AI route](/cli/context) |
 
@@ -40,7 +40,8 @@ like `docs/` with some Markdown in it is a guess, and Zellij will not make a
 confident one — a wrong guess between two plausible formats produces a
 conversion that is wrong in ways nobody notices for a month.
 
-An ambiguous tree asks rather than choosing.
+If several formats match, `detect` lists them all, highest confidence first.
+Equal-confidence matches are sorted by format ID.
 
 ## When nothing is recognised
 
@@ -64,10 +65,13 @@ writes the whole content model as one file, an agent does the structuring, and
 
 ## What it looks at
 
-| Format | Decides on | Reads |
+| Format | Certain | Likely |
 | --- | --- | --- |
-| MkDocs | `mkdocs.yml` at the root | `nav`, `site_name`, `site_description`, `docs_dir` |
-| Docusaurus | `sidebars.js` beside a `docs/` folder | Categories, doc entries, links, nesting |
+| MkDocs | `mkdocs.yml` or `mkdocs.yaml` | `docs/index.md` without a config file |
+| Docusaurus | `docusaurus.config.js` or `.ts` | `sidebars.js`, `.ts`, `.json` or `.cjs` without a config file |
+
+Detection recognizes file names and layout. It does not parse configuration or
+validate its contents; conversion performs that work.
 
 What *your* binary can detect is what [`zel list formats`](/cli/list) prints.
 Converters are compiled in, so the answer is specific to the build you have
@@ -78,6 +82,17 @@ rather than to this page.
 | | | |
 | --- | --- | --- |
 | `<dir>` | Required. The folder to inspect | — |
+| `--json` | Machine-readable detection results | off |
+
+```bash title="terminal"
+zel detect ./docs --json
+```
+
+Stdout contains an object with `source` (the path as supplied) and `matches`.
+Each match has `id`, `label`, numeric `confidence` and `strength` (`certain` or
+`likely`). An existing directory with no recognized format returns
+`"matches": []` and exit code 0. A missing or inaccessible path fails; a path
+that is a file returns exit code 2. Errors go to stderr with empty stdout.
 
 No `--force`, no `--out`, nothing that writes. That is the point of it.
 

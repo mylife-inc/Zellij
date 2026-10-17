@@ -2,7 +2,7 @@
 //!
 //! Compiled in from `generated/schema.json`, which the engine emits from the
 //! same zod schemas that validate content at build time. The CLI cannot run a
-//! zod schema, and a hand-written copy of nineteen section definitions would
+//! zod schema, and a hand-written copy of the section definitions would
 //! disagree with the real ones within a release — so it embeds the real ones
 //! instead, and `zel explain` describes exactly what `zel check` enforces.
 //!
@@ -15,7 +15,8 @@
 use serde_json::Value;
 use std::sync::LazyLock;
 
-const SCHEMA_JSON: &str = include_str!("../generated/schema.json");
+/// The raw engine schemas and catalogs, as emitted by `zellij context --json`.
+pub const SCHEMA_JSON: &str = include_str!("../generated/schema.json");
 
 /// The agent-facing reference, embedded so `zel context` needs nothing at all.
 pub const CONTEXT_MARKDOWN: &str = include_str!("../generated/context.md");
@@ -26,7 +27,7 @@ static SCHEMA: LazyLock<Value> = LazyLock::new(|| {
     serde_json::from_str(SCHEMA_JSON).expect("embedded schema.json is not valid JSON")
 });
 
-/// Fields shared by every section, described once rather than nineteen times.
+/// Fields shared by every section, described once.
 const SHARED_FIELDS: &[&str] = &[
     "type",
     "id",
@@ -69,6 +70,27 @@ pub fn section_types() -> Vec<String> {
 
 pub fn is_section_type(name: &str) -> bool {
     section_types().iter().any(|known| known == name)
+}
+
+/// A built-in theme's author-facing metadata, generated from the engine tokens.
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+pub struct Theme {
+    pub name: String,
+    pub label: String,
+    pub description: String,
+}
+
+pub fn themes() -> &'static [Theme] {
+    static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| {
+        serde_json::from_value(SCHEMA["themes"].clone())
+            .expect("embedded schema.json has no valid theme catalog")
+    });
+    &THEMES
+}
+
+/// A section's complete JSON Schema, including shared and nested fields.
+pub fn section_schema(section_type: &str) -> Option<&'static Value> {
+    SCHEMA.get("sections")?.get(section_type)
 }
 
 /// Ready-to-edit YAML, validated against the full Zod schema when generated.

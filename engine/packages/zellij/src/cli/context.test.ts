@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildContext } from './context';
+import { buildContext, buildSchemaJson } from './context';
+import { siteConfigSchema, THEME_NAMES } from '../config/schema';
+import { THEMES } from '../themes/tokens';
 import { registeredSectionTypes } from '../sections/registry';
 import '../sections/schemas';
 
@@ -48,6 +50,17 @@ describe('agent context file', () => {
   it('lists the themes from the schema, not from memory', () => {
     expect(context).toContain('`cupertino`');
     expect(context).toContain('`meridian`');
+  });
+
+  it('exports the complete theme catalog used by the renderer and config validator', () => {
+    const catalog = JSON.parse(buildSchemaJson()).themes;
+    expect(catalog.map((theme: { name: string }) => theme.name)).toEqual([...THEME_NAMES]);
+    for (const theme of catalog) {
+      const name = siteConfigSchema.parse({ name: 'Catalog test', theme: theme.name }).theme;
+      expect(theme.label).toBe(THEMES[name].label);
+      expect(theme.description).toBe(THEMES[name].description);
+      expect(theme.description.length).toBeGreaterThan(0);
+    }
   });
 
   it('tells the agent how to know it is finished', () => {

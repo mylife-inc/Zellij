@@ -80,8 +80,14 @@ Checksums published alongside; the installer verifies before moving into place.
 
     zel <command> [arguments] [--flags]
 
-Global flags: `--quiet`, `--verbose`, `--json`, `--no-color`, `--yes`,
+Planned global flags: `--quiet`, `--verbose`, `--json`, `--no-color`, `--yes`,
 `--config <file>`, `--cwd <dir>`.
+
+Current Rust output contract (2026-10-17): `--json` is implemented for `context`,
+all four `list` commands, `explain` and `detect`. Other commands reject it with
+exit code 2 before executing. `--verbose` / `-v` is not implemented and is
+rejected; the earlier successful no-op has been removed. Other flags in the
+list above remain plans, not advertised capabilities.
 
 Two shapes of command, deliberately. **Primitives** do one thing and compose.
 **Workflows** run a sequence people actually ask for as a unit — converting a
@@ -386,9 +392,27 @@ never required of anyone else.
 ### 4.3 Errors and output
 
 `thiserror` for typed errors, `miette` for reporting, so a bad `site.yaml`
-prints with the offending line marked rather than as a stack trace. Every
-command supports `--json` with a stable schema, because a CLI that can only be
-read by a human cannot be used by a pipeline.
+prints with the offending line marked rather than as a stack trace. Full
+structured diagnostics remain a design goal. Currently, inspection commands
+support `--json` with these contracts:
+
+- `context`: the exact generated engine object (`sectionTypes`, `themes`,
+  `sectionTemplates`, `sections`, `files`, plus generator metadata). A filename
+  redirects the payload into that file and the confirmation to stderr.
+- `explain`: the selected section's complete JSON Schema.
+- `list`: one object containing `sections`, `themes`, `formats` or `targets`.
+  Section entries have `type`, `fields`, `required` (shared fields excluded);
+  themes have `name`, `label`, `description`; formats have `id`, `label`;
+  targets have `id`, `description`.
+- `detect`: `{ source, matches }`, with `id`, `label`, numeric `confidence` and
+  `strength` on each match. No match in an existing folder is a successful
+  empty array. Missing/unreadable paths fail; a non-directory is invalid usage.
+
+JSON success writes only the payload to stdout (or the requested context file).
+Failures write human diagnostics to stderr, leave stdout empty, and exit
+nonzero. Arrays use engine registration order for sections/themes, ID order
+for formats, static/image order for targets, and descending confidence then ID
+for detection. Consumers key by identifier and tolerate additive fields.
 
 Exit codes: `0` success · `1` general failure · `2` invalid usage ·
 `3` content invalid · `4` container runtime unavailable · `5` network failure.

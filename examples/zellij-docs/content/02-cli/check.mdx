@@ -190,8 +190,8 @@ about unverified dynamic MDX. The Node command accepts the same two flags:
 `npx zellij check ./content --deep --strict`.
 
 <Callout type="warning" title="Planned">
-`--json` and `--quiet` are not implemented. Rust's global `--json` is currently
-accepted and ignored; output remains the human report.
+`check --json` and `--quiet` are not implemented. Rust rejects them with exit
+code 2 before running the check; neither silently changes the report format.
 </Callout>
 
 ### The intended `--json`
@@ -211,8 +211,9 @@ accepted and ignored; output remains the human report.
 }
 ```
 
-The intent is that every command supports `--json`, because a tool only a human
-can read cannot be used by a pipeline. None of them do yet.
+The report above is a proposed format, not current output. JSON is currently
+available for `context`, `list`, `explain` and `detect`; structured validation
+reports remain planned.
 
 ## See also
 

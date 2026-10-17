@@ -125,11 +125,10 @@ The JSON Schema for the type. Enough to generate an editor completion, a form,
 or a validator in another language — and it will not drift, because it is the
 schema rather than a description of one.
 
-<Callout type="warning" title="Planned">
-`--json` is accepted and ignored today; the output is the human table either
-way. [`zel context --json`](/cli/context) does emit the raw schemas, for all
-nineteen at once.
-</Callout>
+Stdout contains only the selected section's JSON Schema, including shared and
+nested fields. An unknown type returns exit code 2 with a message on stderr
+and empty stdout. [`zel context --json`](/cli/context) emits all 23 schemas,
+validated YAML templates, content-file schemas and theme metadata together.
 
 ## Why not just read the website
 
