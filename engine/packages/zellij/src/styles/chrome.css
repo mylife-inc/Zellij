@@ -55,9 +55,8 @@
   align-items: center;
   gap: 1.5rem;
   height: var(--zellij-nav-height);
-  max-width: var(--zellij-container);
-  margin-inline: auto;
-  padding-inline: 1.5rem;
+  width: 100%;
+  padding-inline: clamp(1rem, 2vw, 2rem);
 }
 
 .zellij-logo {
@@ -82,8 +81,22 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  flex-shrink: 0;
+  flex: 0 1 auto;
+  max-width: 25%;
   min-width: 0;
+}
+
+.zellij-brand .zellij-logo {
+  min-width: 0;
+  flex-shrink: 1;
+}
+
+.zellij-logo-text,
+.zellij-brand-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .zellij-brand-image {
@@ -96,7 +109,8 @@
    */
   height: var(--zellij-brand-height, 1.125rem);
   width: auto;
-  max-width: 9rem;
+  max-width: min(9rem, 100%);
+  object-fit: contain;
 }
 
 /*
@@ -198,6 +212,29 @@
   height: 100%;
 }
 
+/* Before hydration, scrolling keeps links accessible without overlapping the
+   actions. Once measured, panels can extend outside the navigation region. */
+.zellij-nav-desktop[data-measured='false'] {
+  overflow-x: auto;
+}
+
+.zellij-nav-desktop[data-measured='false'][data-align] .zellij-nav-list {
+  justify-content: flex-start;
+}
+
+.zellij-nav-measure {
+  position: absolute;
+  visibility: hidden;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.zellij-nav-measure .zellij-nav-probe-label {
+  flex-shrink: 0;
+}
+
 .zellij-nav-desktop[data-align='center'] .zellij-nav-list {
   justify-content: center;
 }
@@ -208,11 +245,13 @@
  * is contiguous with it — there is no strip of dead space for the pointer to
  * cross on its way into the panel.
  */
-.zellij-nav-item {
+.zellij-nav-item,
+.zellij-nav-probe {
   position: relative;
   display: flex;
   align-items: center;
   height: 100%;
+  flex-shrink: 0;
 }
 
 /*
@@ -224,7 +263,8 @@
   position: static;
 }
 
-.zellij-nav-link {
+.zellij-nav-link,
+.zellij-nav-probe-label {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -247,7 +287,8 @@
   background: color-mix(in srgb, var(--zellij-fg) 6%, transparent);
 }
 
-.zellij-nav-link[data-active='true'] {
+.zellij-nav-link[data-active='true'],
+.zellij-nav-probe-label[data-active='true'] {
   color: var(--zellij-fg);
   font-weight: 600;
 }
@@ -293,6 +334,18 @@
   box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--zellij-fg) 26%, transparent);
 }
 
+.zellij-nav-item[data-nav-index='more'] .zellij-dropdown {
+  left: auto;
+  right: 0;
+  max-width: calc(100vw - 2rem);
+}
+
+.zellij-nav-item[data-nav-index='more'] > .zellij-dropdown,
+.zellij-nav-item[data-nav-index='more'] > .zellij-mega-panel {
+  max-height: calc(100dvh - 8rem);
+  overflow-y: auto;
+}
+
 /*
  * The mega panel is a full-bleed band with no border, corner radius or shadow:
  * it should read as the header unfurling, not as a card floating over the page.
@@ -307,8 +360,8 @@
 }
 
 .zellij-mega-panel .zellij-mega-groups {
-  /* Aligned to the same container as the bar, so the first column lines up
-     with the logo rather than floating mid-page. */
+  /* Keep long groups readable within the page measure; the bar itself uses
+     the full viewport to reserve room for navigation and controls. */
   max-width: var(--zellij-container);
   margin-inline: auto;
   padding-inline: 1.5rem;
@@ -709,6 +762,27 @@
 /* ------------------------------------------------------------- responsive -- */
 
 @media (max-width: 900px) {
+  .zellij-nav-inner {
+    gap: 0.5rem;
+  }
+
+  .zellij-brand {
+    flex: 1;
+    max-width: none;
+  }
+
+  .zellij-nav-actions {
+    gap: 0.25rem;
+  }
+
+  .zellij-nav-actions .zellij-icon-button,
+  .zellij-nav-actions .zellij-hamburger,
+  .zellij-nav-actions .zellij-search-trigger {
+    width: 2.75rem;
+    height: 2.75rem;
+    justify-content: center;
+  }
+
   .zellij-nav-desktop,
   .zellij-nav-cta,
   .zellij-kbd {

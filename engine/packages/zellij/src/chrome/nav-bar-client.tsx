@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -12,6 +13,8 @@ import {
   type ReactNode,
 } from 'react';
 
+import { overflowItem } from './nav-overflow';
+import { useNavOverflow } from './use-nav-overflow';
 import { AnnouncementBar } from './announcement-bar';
 import { MobileDrawer } from './mobile-drawer';
 import { ThemeToggle } from './theme-toggle';
@@ -104,6 +107,7 @@ function NavBrand({ brand }: { brand: BrandModel }) {
 
 /** Reserved key for the theme picker in the bar's open-panel state. */
 const THEME_MENU = '\u0000theme';
+const OVERFLOW_MENU = '\u0000overflow';
 
 export function NavBarClient({ model }: { model: NavModel }) {
   const pathname = usePathname() || '/';
@@ -111,6 +115,9 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const menuBarRef = useRef<HTMLUListElement>(null);
   const headerRef = useRef<HTMLElement>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const measureRef = useRef<HTMLUListElement>(null);
+  const focusAfterResize = useRef<number | 'more' | null>(null);
 
   const isLanding = model.landingRoutes.includes(pathname);
   const transparentEligible = model.transparentOverHero && isLanding;
@@ -226,6 +233,56 @@ export function NavBarClient({ model }: { model: NavModel }) {
     },
     [cancelClose, cancelSwitch],
   );
+
+  const onOverflowChange = useCallback((previous: number, next: number) => {
+    const focused = document.activeElement;
+    if (focused && menuBarRef.current?.contains(focused)) {
+      const index = focused.closest<HTMLElement>('[data-nav-index]')?.dataset.navIndex;
+      if (index === 'more' || (index !== undefined && Number(index) >= next)) {
+        focusAfterResize.current = next < model.items.length ? 'more' : Math.min(previous, next - 1);
+      }
+    }
+    closeMenu();
+    cancelSwitch();
+  }, [closeMenu, cancelSwitch, model.items.length]);
+
+  const { count: visibleCount, ready: measured } = useNavOverflow(navRef, measureRef, model.items.length, onOverflowChange);
+  const overflow = useMemo(() => overflowItem(model.items.slice(visibleCount)), [model.items, visibleCount]);
+
+  useEffect(() => {
+    const target = focusAfterResize.current;
+    if (target === null) return;
+    // Panel cleanup may restore the old trigger first; then move to a visible one.
+    const frame = requestAnimationFrame(() => {
+      menuBarRef.current?.querySelector<HTMLElement>(`[data-nav-index="${target}"] [data-zellij-navitem]`)?.focus();
+      focusAfterResize.current = null;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [visibleCount]);
+
+  useEffect(() => {
+    const media = window.matchMedia('(max-width: 900px)');
+    let frame = 0;
+    const changed = () => {
+      const focused = document.activeElement;
+      const restore = focused && (headerRef.current?.contains(focused) || focused.closest('.zellij-drawer-root'));
+      closeMenu();
+      cancelSwitch();
+      setDrawerOpen(false);
+      cancelAnimationFrame(frame);
+      if (restore) frame = requestAnimationFrame(() => {
+        const target = media.matches
+          ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
+          : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
+        target?.focus();
+      });
+    };
+    media.addEventListener('change', changed);
+    return () => {
+      cancelAnimationFrame(frame);
+      media.removeEventListener('change', changed);
+    };
+  }, [closeMenu, cancelSwitch]);
 
   /*
    * Dismissal is scoped to the header, not the menu bar list. The theme picker
@@ -343,23 +400,48 @@ export function NavBarClient({ model }: { model: NavModel }) {
       <div className="zellij-nav-inner">
         <NavBrand brand={model.brand} />
 
-        <nav className="zellij-nav-desktop" aria-label="Main" data-align={model.align}>
+        <nav ref={navRef} className="zellij-nav-desktop" aria-label="Main" data-align={model.align} data-measured={measured}>
           <ul className="zellij-nav-list" ref={menuBarRef} onKeyDown={onMenuBarKeyDown}>
-            {model.items.map((item) => (
+            {model.items.slice(0, visibleCount).map((item, index) => (
               <NavItem
-                key={item.label}
+                key={index}
+                itemKey={String(index)}
                 item={item}
                 active={isItemActive(item)}
-                open={openMenu === item.label}
-                onOpen={() => openMenuNow(item.label)}
-                onHover={() => requestOpen(item.label)}
-                onHoverEnd={() => cancelSwitchFor(item.label)}
+                open={openMenu === String(index)}
+                onOpen={() => openMenuNow(String(index))}
+                onHover={() => requestOpen(String(index))}
+                onHoverEnd={() => cancelSwitchFor(String(index))}
                 onClose={closeMenu}
                 onToggle={() =>
-                  openMenu === item.label ? closeMenu() : openMenuNow(item.label)
+                  openMenu === String(index) ? closeMenu() : openMenuNow(String(index))
                 }
                 isActive={isActive}
               />
+            ))}
+            {visibleCount < model.items.length ? (
+              <NavItem
+                itemKey="more"
+                item={overflow}
+                active={model.items.slice(visibleCount).some(isItemActive)}
+                open={openMenu === OVERFLOW_MENU}
+                onOpen={() => openMenuNow(OVERFLOW_MENU)}
+                onHover={() => requestOpen(OVERFLOW_MENU)}
+                onHoverEnd={() => cancelSwitchFor(OVERFLOW_MENU)}
+                onClose={closeMenu}
+                onToggle={() => openMenu === OVERFLOW_MENU ? closeMenu() : openMenuNow(OVERFLOW_MENU)}
+                isActive={isActive}
+              />
+            ) : null}
+          </ul>
+          <ul className="zellij-nav-list zellij-nav-measure" ref={measureRef} aria-hidden="true" inert>
+            {[...model.items, { label: 'More' }].map((item, index) => (
+              <li className="zellij-nav-probe" key={index}>
+                <span className="zellij-nav-probe-label" data-active={index < model.items.length ? isItemActive(item) : true}>
+                  {item.label}
+                  {item.href ? (item.external ? <ExternalIcon /> : null) : <Chevron />}
+                </span>
+              </li>
             ))}
           </ul>
         </nav>
@@ -471,6 +553,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
 }
 
 interface NavItemProps {
+  itemKey: string;
   item: NavItemModel;
   active: boolean;
   open: boolean;
@@ -485,6 +568,7 @@ interface NavItemProps {
 }
 
 function NavItem({
+  itemKey,
   item,
   active,
   open,
@@ -502,6 +586,29 @@ function NavItem({
   const focusPanelOnOpen = useRef(false);
   useFocusTrap(panelRef, open, onClose);
 
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!open || itemKey !== 'more' || item.mega || !panel) return;
+    const position = () => {
+      panel.style.right = '0px';
+      const bounds = panel.getBoundingClientRect();
+      const inset = 16;
+      const offset = Math.min(0, bounds.left - inset)
+        + Math.max(0, bounds.right - document.documentElement.clientWidth + inset);
+      panel.style.right = `${offset}px`;
+    };
+    position();
+    const observer = new ResizeObserver(position);
+    observer.observe(panel);
+    const list = panel.parentElement?.parentElement;
+    if (list) observer.observe(list);
+    window.addEventListener('resize', position);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', position);
+    };
+  }, [open, itemKey, item.mega]);
+
   useEffect(() => {
     if (!open || !focusPanelOnOpen.current) return;
     focusPanelOnOpen.current = false;
@@ -510,7 +617,7 @@ function NavItem({
 
   if (item.href) {
     return (
-      <li className="zellij-nav-item">
+      <li className="zellij-nav-item" data-nav-index={itemKey}>
         <MenuAnchor className="zellij-nav-link" target={item} active={active} navItem>
           {item.label}
         </MenuAnchor>
@@ -518,12 +625,13 @@ function NavItem({
     );
   }
 
-  const panelId = `zellij-menu-${slug(item.label)}`;
+  const panelId = `zellij-menu-${itemKey}`;
   const isMega = Boolean(item.mega);
 
   return (
     <li
       className="zellij-nav-item"
+      data-nav-index={itemKey}
       data-mega={isMega}
       // Hover opens on desktop only; touch devices use tap-to-expand, and
       // keyboard uses ArrowDown/Escape (spec §5.5). Closing is the header's
@@ -552,20 +660,7 @@ function NavItem({
         }}
       >
         {item.label}
-        <svg
-          className="zellij-chevron"
-          data-open={open}
-          width="14"
-          height="14"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <path d="m6 9 6 6 6-6" />
-        </svg>
+        <Chevron open={open} />
       </button>
 
       {open ? (
@@ -576,12 +671,12 @@ function NavItem({
         >
           {isMega ? (
             <div className="zellij-mega-groups">
-              {item.mega!.groups.map((group) => (
-                <div className="zellij-mega-group" key={group.heading}>
-                  <p className="zellij-mega-heading">{group.heading}</p>
+              {item.mega!.groups.map((group, index) => (
+                <div className="zellij-mega-group" key={index}>
+                  {group.heading ? <p className="zellij-mega-heading">{group.heading}</p> : null}
                   <ul>
-                    {group.items.map((leaf) => (
-                      <MegaLeaf key={leaf.href} leaf={leaf} active={isActive(leaf.href)} onNavigate={onClose} />
+                    {group.items.map((leaf, leafIndex) => (
+                      <MegaLeaf key={`${leafIndex}:${leaf.href}`} leaf={leaf} active={isActive(leaf.href)} onNavigate={onClose} />
                     ))}
                   </ul>
                 </div>
@@ -589,8 +684,8 @@ function NavItem({
             </div>
           ) : (
             <ul>
-              {item.children!.map((leaf) => (
-                <li key={leaf.href}>
+              {item.children!.map((leaf, leafIndex) => (
+                <li key={`${leafIndex}:${leaf.href}`}>
                   <MenuAnchor
                     className="zellij-dropdown-link"
                     target={leaf}
@@ -646,19 +741,7 @@ function MenuAnchor({
         {...(target.newTab ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
       >
         {children}
-        <svg
-          className="zellij-external-icon"
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          aria-hidden="true"
-        >
-          <path d="M7 17 17 7M9 7h8v8" />
-        </svg>
+        <ExternalIcon />
       </a>
     );
   }
@@ -707,4 +790,41 @@ function splitHref(href: string): [string, string | undefined] {
 
 function slug(label: string): string {
   return label.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+}
+
+function Chevron({ open = false }: { open?: boolean }) {
+  return (
+    <svg
+      className="zellij-chevron"
+      data-open={open}
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  );
+}
+
+function ExternalIcon() {
+  return (
+    <svg
+      className="zellij-external-icon"
+      width="12"
+      height="12"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
+      <path d="M7 17 17 7M9 7h8v8" />
+    </svg>
+  );
 }

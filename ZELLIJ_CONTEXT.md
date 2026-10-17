@@ -176,6 +176,46 @@ retry, with 114 conditional skips. The retry was a mobile-WebKit navigation
 error at `/guide/quickstart`; PR CI had a different FAQ interaction retry.
 These flakes remain undiagnosed, not repaired by the conversion changes.
 
+### Header layout and overflow update — 2026-10-17
+
+Source commit `da1c222` implements the requested viewport-wide header: branding
+at the left inset and search/theme/actions at the right. The existing
+`brand.logo.href` remains the company-site link; `brand.title` can retain a
+separate site-home link. No new branding schema or company assets are required
+by the engine change. Search continues to open its existing dialog.
+
+Desktop navigation measures the remaining space and inert copies of every
+label, including active font weight and icons. Trailing items move into More
+and return when space grows; resizing, loaded fonts and theme changes trigger
+measurement. Existing `menuOverflowAfter` remains the configured count limit.
+The overflow model preserves destinations, group headings, descriptions,
+icons and external/new-tab flags. The mobile drawer receives the full resolved
+menu, independently of the width-selected desktop prefix.
+
+Keyboard focus follows items that move into/out of overflow; breakpoint changes
+close stale panels and release drawer scroll lock. Tall More panels scroll,
+and compact More panels stay within the viewport at either edge. Mobile
+controls have 44px targets at the default root font size. The header was checked
+at widths from 320 to 1600px, including larger menu text and a wide brand.
+This is not a full WCAG audit or a claim of manual screen-reader acceptance.
+
+Local evidence: **268 engine tests**, workspace typechecks, engine packaging,
+and documentation validation pass. The focused desktop/mobile Chromium
+navigation run passed **34 tests** with **26 device-specific skips**. The six
+new desktop header cases also pass (the final compact-panel check was rerun
+separately after correcting its fixture width). Final engine typechecking and
+six focused unit tests pass after the positioning adjustment. Production builds,
+the full browser suite and mobile WebKit remain hosted CI gates; consult the
+PR containing `da1c222` for their outcomes. No native CLI release is made.
+
+Prior milestone completion: PR #4 merged as `4be61dc`. PR CI `39010124427`
+passed with 297 browser passes, 114 conditional skips and no retries. Main CI
+`39010596721` passed with 296 initial browser passes, one successful retry and
+114 skips. The retry was the previously observed mobile-WebKit FAQ interaction
+(answer hidden after clicking the summary); its cause remains undiagnosed.
+Image run `39010596751` published all four variants for Linux AMD64/ARM64 and
+passed the published-image build/serve smoke test.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -295,7 +335,7 @@ and custom-content-directory discrepancies.
 | Section registry/schemas | `src/sections/registry.ts`, `schemas.ts` |
 | Section rendering/layout | `src/render/section-renderer.tsx`, `sections-page.tsx` |
 | Guide rendering | `src/render/guide-page.tsx`, `src/guide`, `src/mdx` |
-| Header and branding | `src/chrome/nav-bar.tsx`, `nav-bar-client.tsx`, `src/styles/chrome.css` |
+| Header and branding | `src/chrome/nav-bar.tsx`, `nav-bar-client.tsx`, `nav-overflow.ts`, `use-nav-overflow.ts`, `src/styles/chrome.css` |
 | Themes/motion | `src/themes`, `src/motion`, `src/styles/sections.css` |
 | Search | `src/search`, `src/cli/write-search-index.ts` |
 | Build-time operations | `src/cli/check.ts`, `sync-assets.ts`, `context.ts`, `init.ts` |
@@ -330,7 +370,8 @@ content/
   `background`, `id`, `motion`, `padding`, and `titleGradient`.
 - `home` selects the home destination. Menus derive from content when absent;
   explicit menus can contain ordinary links, dropdowns, or mega-menu groups.
-- `menuOverflowAfter` folds excess items into More by **count**, not width.
+- `menuOverflowAfter` sets the count limit; the desktop client additionally
+  measures available width and moves trailing entries into More as needed.
 - Menu `page:` and footer references are resolved/validated. Literal `url:`
   entries deliberately bypass content lookup. Do not accidentally remove that
   deliberate escape hatch while expanding link validation.
@@ -451,19 +492,19 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the scaffolding milestone, subject to the user's v1 scope decision:
+Remaining order after the header milestone, subject to the user's v1 scope decision:
 
-1. Header placement and width-aware overflow: company logo on the left,
-   search/theme controls on the right; then the reproduced search/route bugs.
-2. Shared routing/preparation and validation (R10–R13), remaining advanced
-   migration cases (R5), and basePath configuration/acceptance (S12).
-   R4 and R6–R8 now have implementation records above.
-3. Finish the agreed CLI subset, configuration, and truthful help/docs.
-4. Exercise releases and installers on every supported platform, including
-   native Windows if chosen. Repository visibility/default branch are settled;
-   the restored CI baseline must remain green.
-5. Close browser/accessibility/SEO/performance acceptance and define a finite
-   release gate: no known blocking defects, rather than a promise that
+1. Shared routing/preparation and validation (R10–R13), including the reproduced
+   search/anchor bugs and basePath configuration/acceptance (S12). R4 and R6–R8
+   have implementation records above; R5 still has advanced migration limits.
+2. Finish the agreed CLI subset, configuration, and truthful help/docs.
+3. Exercise releases and installers on every supported platform, including
+   native Windows. Repository visibility/default branch are settled; the
+   restored CI baseline must remain green. No new native CLI binary has yet
+   been released for the completed source fixes.
+4. Close the other browser findings (S2/S4/S5/S6/S9), accessibility, SEO and
+   performance acceptance. Diagnose the recorded browser flakes. Define a
+   finite release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
 
 Versioned docs, i18n, remote content, CMS, comments, and A/B testing are explicit
