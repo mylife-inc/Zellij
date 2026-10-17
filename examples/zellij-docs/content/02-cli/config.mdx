@@ -88,7 +88,8 @@ Omitting `nav` retains the automatic ordering described in [build](/cli/build).
 
 `brand.logo.src` names a local image inside the Markdown folder. The builder
 copies it into the export, using relative links that still work after moving
-or opening the site directly. Remote logo sources, hidden/generated paths,
+or opening the site directly. Remote logo sources, hidden paths, `node_modules`,
+the reserved `_zellij` directory,
 symlinks and Windows junctions are refused. `alt` is required, nonempty text.
 Use an image format supported by your target browsers, such as SVG, PNG or WebP.
 

@@ -151,7 +151,7 @@ impl Config {
         };
         let relative = Utf8Path::new(&brand.logo.src);
         let file = regular(root, relative)?;
-        if relative.as_str().split('/').any(|p| p.starts_with('.'))
+        if relative.as_str().split('/').any(crate::ignored_name)
             || relative
                 .components()
                 .next()

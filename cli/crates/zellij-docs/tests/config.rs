@@ -106,6 +106,12 @@ fn cli_overrides_and_removing_configuration_restore_defaults() {
 #[test]
 fn invalid_configuration_preserves_the_previous_export() {
     let (_temp, source, out) = fixture();
+    fs::create_dir_all(source.join("assets/node_modules")).unwrap();
+    fs::copy(
+        source.join("company logo.svg"),
+        source.join("assets/node_modules/logo.svg"),
+    )
+    .unwrap();
     build(&source, &out, BuildOptions::default()).unwrap();
     let previous = fs::read(out.join("index.html")).unwrap();
     for config in [
@@ -136,6 +142,7 @@ fn invalid_configuration_preserves_the_previous_export() {
         "brand: {logo: {src: 'https://example.com/logo.png', alt: Logo}}",
         "brand: {logo: {src: '../logo.svg', alt: Logo}}",
         "brand: {logo: {src: 'missing.svg', alt: Logo}}",
+        "brand: {logo: {src: 'assets/node_modules/logo.svg', alt: Logo}}",
         "brand: {logo: {src: 'README.md', alt: Logo}}",
         "brand: {logo: {src: 'company logo.svg', alt: ''}}",
         "brand: {logo: {src: 'company logo.svg', alt: Logo, href: 'file:///tmp/a'}}",

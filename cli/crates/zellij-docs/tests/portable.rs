@@ -286,3 +286,32 @@ fn case_sensitive_sources_cannot_create_case_collisions_on_other_platforms() {
     assert!(build(&source, &out, BuildOptions::default()).is_err());
     assert!(!out.exists());
 }
+
+#[test]
+fn references_cannot_publish_files_excluded_from_discovery_and_watching() {
+    let (_temp, source, out) = fixture();
+    write(&source, "README.md", "# Previous site\n");
+    build(&source, &out, BuildOptions::default()).unwrap();
+    let previous = fs::read(out.join("index.html")).unwrap();
+    for path in [
+        ".private/logo.svg",
+        "assets/node_modules/logo.svg",
+        "assets/.logo.svg",
+    ] {
+        write(&source, path, "<svg xmlns=\"http://www.w3.org/2000/svg\"/>");
+        for reference in [format!("![Logo]({path})"), format!("[Download]({path})")] {
+            write(
+                &source,
+                "README.md",
+                format!("# Invalid reference\n\n{reference}\n"),
+            );
+            let error = build(&source, &out, BuildOptions::default())
+                .err()
+                .expect("excluded asset must fail");
+            assert!(error.to_string().contains("hidden paths or node_modules"));
+            assert_eq!(fs::read(out.join("index.html")).unwrap(), previous);
+            assert!(!out.join(path).exists());
+            assert!(source.join(path).is_file());
+        }
+    }
+}

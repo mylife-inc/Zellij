@@ -148,6 +148,11 @@ impl Resolver<'_> {
                 .map_err(|_| fail("asset escapes the documentation root"))?,
         );
         crate::portable_path(&relative)?;
+        if relative.as_str().split('/').any(crate::ignored_name) {
+            return Err(fail(
+                "local references cannot target hidden paths or node_modules",
+            ));
+        }
         if relative
             .components()
             .next()
