@@ -1,8 +1,7 @@
 /**
  * Font stacks are plain strings referencing the CSS variables that
- * `fonts.ts` defines. They live apart from the next/font loaders so the
- * token layer stays pure — importable, and testable, without the Next
- * compiler (next/font is a build-time macro and throws outside it).
+ * fonts/fonts.css defines. They live apart from the stylesheet import so the
+ * token layer stays pure — importable, and testable, without a CSS loader.
  */
 
 /**

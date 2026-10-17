@@ -435,6 +435,66 @@ Chromium/WebKit prefix acceptance passed. Image run `39037525149` published all
 four feature variants for AMD64/ARM64 and passed published-image build/serve
 acceptance. No new native CLI release was made.
 
+### Reproducible theme fonts — 2026-10-17
+
+Source commit `7963587` replaces the build-time Google Fonts loader with a
+pinned local snapshot, addressing **S13**. The twelve existing families retain
+normal styles, weight ranges, Unicode subsets, swap behavior, CSS variable
+names and metric-adjusted fallbacks. There are **75 unmodified WOFF2 files**
+(1,539,836 bytes total). Fonts are not preloaded; a browser requests only the
+families/subsets used by its page. The generated stylesheet uses namespaced
+family names and relative asset URLs that Next processes with the site prefix.
+
+`src/themes/fonts/manifest.json` records URLs, SHA-256, sizes, user agent, pinned
+license provenance and fallback metrics. Original CSS and OFL notices are kept.
+`prepare-fonts.mjs` verifies the snapshot entirely offline and copies it beside
+the compiled modules. Git attributes preserve hashed upstream bytes on Windows.
+The stylesheet references a bundled file containing every full license notice. Updates are explicit, reviewed
+snapshot changes; normal builds never refresh fonts. Dependency installation
+can still require network access. This does not implement portable `file://`
+documentation or the requested Rust build/serve/view commands.
+
+Local evidence: **324 engine tests**, workspace typechecks, engine build and
+strict/deep documentation checks pass. The npm archive contains all font files
+and notices for both source and compiled modules. Real webpack/Chromium
+production-prefix and development-watcher acceptance pass, including all font
+faces decoding, lazy loading, local prefixed URLs and deployed notices. CI adds
+a fresh Turbopack site build with Docker `RUN --network=none` after dependency
+installation, plus Chromium/WebKit production and development font checks.
+The first hosted run `39053315323` passed the offline Turbopack build,
+engine/schema/CLI jobs and 310 production browser tests plus one successful
+retry of the known mobile-WebKit FAQ interaction (124 conditional skips).
+Its production font gate failed because Turbopack stripped license comments.
+Follow-up `21479d3` emits the combined notice as a real CSS URL asset and checks
+its deployed response byte-for-byte. Local webpack/Chromium dev acceptance
+passed this follow-up. [PR #10](https://github.com/mylife-inc/Zellij/pull/10)
+tracks final hosted verification. Run `39054096571` passed all 311 production
+browser tests without retries, then exposed a test URL-resolution error:
+Turbopack emitted the notice relative to its stylesheet (`../media/...`), while
+the test fetched it relative to the page. The trace confirmed the emitted CSS
+reference; the check now resolves it against the owning stylesheet and still
+requires the complete notice bytes and local deployment prefix. The corrected
+license asset also passes local webpack production acceptance. No native CLI
+release is made.
+
+Run `39054561760` passed all engine/schema/CLI checks, offline build, and both
+Chromium/WebKit production font/prefix checks. Development passed Chromium but
+WebKit requested Next's own `/__nextjs_font/geist-latin.woff2` debug-overlay font,
+which the test mistakenly treated as a Zellij asset. The installed Next overlay
+middleware explicitly serves four local Geist font paths outside basePath.
+Development acceptance now recognizes only those exact local framework paths;
+all Zellij and remote font requests remain checked, and production has no
+exception. That run's main browser suite had 310 initial passes plus one known
+FAQ retry and 124 conditional skips. Consult PR #10 for final acceptance.
+
+Prior milestone completion: [PR #9](https://github.com/mylife-inc/Zellij/pull/9)
+merged as `bd01bdb`. Main CI `39052261993` passed all four jobs, including **311
+browser tests**, 124 conditional skips and **no retries**. Chromium/WebKit
+production-prefix and dev-watcher acceptance passed. Image run `39052261989`
+passed eight platform/feature builds, four multi-platform publications and the
+default-image build/serve smoke test. This successful run does not diagnose the
+previous FAQ/WebKit flakes. PR #9's final PR run had one successful FAQ retry.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -729,10 +789,10 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after development preparation watching, subject to the user's v1 scope decision:
+Remaining order after the font reliability change, subject to the user's v1 scope decision:
 
-1. Resolve font-build reproducibility (S13) with a compatible patched release or
-   reproducible local-font distribution; the new dev gate reproduced it again.
+1. Complete hosted acceptance of the pinned local-font distribution (S13);
+   preserve the new offline build and browser font checks as release gates.
 2. Finish the agreed CLI subset, configuration, and truthful help/docs (R9), including
    the required plain-Markdown portable build, static serve and composed view
    workflows in [the portable contract](specs/zel-portable-docs.md).

@@ -8,6 +8,7 @@ import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { fileURLToPath } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
+import { observeThemeFonts } from './assert-theme-fonts.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const binary = process.argv[2] === '--container' ? path.resolve(process.argv[3]) : undefined;
@@ -74,8 +75,10 @@ try {
     if (engine) {
       browser = await engine.launch();
       page = await browser.newPage();
+      const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix, { development: true });
       await page.goto(`${origin}/manual`);
       await expect(page.getByRole('heading', { name: 'Watching', exact: true })).toBeVisible();
+      await checkFonts();
       await expect(async () => {
         await page.keyboard.press('ControlOrMeta+k');
         await expect(page.getByRole('dialog')).toBeVisible({ timeout: 1000 });

@@ -772,7 +772,7 @@ language taken from a spec, not a brand.
 
 Themes differ structurally, not just by palette: font pairing, radius scale, shadow character, display scale, letter-spacing, and motion personality all vary. `mono` moves in 220 ms; `aurora` in 760 ms.
 
-Only the **active** theme's tokens are emitted into the page, so the engine can ship many themes at no cost to a consuming site. Fonts use `next/font` with `preload: false` — every theme's `@font-face` rules are present, but browsers download only the families in use. `cupertino` uses the system stack and downloads nothing.
+Only the **active** theme's tokens are emitted into the page. Theme fonts are pinned local WOFF2 assets, so development and production builds do not contact Google Fonts. Every theme's `@font-face` rules are present with their Unicode subsets, and the stylesheet references a bundled license notice file. Fonts are not preloaded: browsers download only the families and glyph subsets in use. `cupertino` prefers the system stack on Apple platforms and falls back to Inter elsewhere. See [font provenance and update instructions](src/themes/fonts/README.md).
 
 To adjust without forking a theme, use `overrides` (see [Config reference](#config-reference)).
 

@@ -384,6 +384,61 @@ successful retry of the known mobile-WebKit FAQ interaction, plus 124 conditiona
 skips. Chromium/WebKit prefix acceptance passed. All four AMD64/ARM64 image
 variants published and the published default-image build/serve smoke test passed.
 
+## Implementation record — reproducible theme fonts
+
+Source commit `7963587` removes the build-time Google Fonts dependency (**S13**)
+using 75 pinned WOFF2 files across the twelve existing families. Original CSS,
+Unicode ranges, styles/weights, fallback metrics and OFL licenses are preserved;
+SHA-256 and source provenance are recorded in the manifest. Font files remain
+unmodified. Generated CSS rewrites relative asset URLs and family names while
+retaining public variables and non-preloaded loading behavior. A CSS URL
+emits the combined full license notice as a deployed asset as well as retaining
+the original notices in the package.
+
+The package build verifies hashes and deterministic CSS offline and copies the
+assets beside both compiled module formats. Git attributes preserve original
+upstream bytes across line-ending settings. No normal build fetches Google
+Fonts; npm dependency installation is a separate network requirement.
+
+Local verification: 324 engine tests, all workspace typechecks, package build,
+strict/deep docs check, and npm archive font/license contents pass. Actual
+webpack/Chromium production and development scenarios decode all font faces,
+verify lazy loading and prefixed local URLs, and retain deployed notices. The
+existing prefix/navigation/search/asset and watcher recovery checks also pass.
+Hosted CI adds a fresh Turbopack build with Docker network disabled after npm
+installation and Chromium/WebKit font acceptance. See the source commit's PR
+for hosted completion; no native binary release is part of this milestone.
+
+First hosted run `39053315323` passed engine/schema/CLI jobs and the network-disabled
+Turbopack build. Production browser tests had 310 initial passes and one successful
+retry of the known mobile-WebKit FAQ interaction, with 124 conditional skips.
+The production font gate correctly failed when Turbopack stripped license
+comments. Follow-up `21479d3` replaces the comment-only notice with an emitted
+asset referenced by the stylesheet and verifies its full HTTP response. Local
+webpack/Chromium dev acceptance passes. Final results are tracked on
+[PR #10](https://github.com/mylife-inc/Zellij/pull/10).
+
+Run `39054096571` passed 311 production browser tests without retries. The font
+check then fetched a stylesheet-relative notice URL relative to the page and
+received 404. Its trace confirmed `url(../media/licenses.3-xnmaabgbyei.txt)` in
+`/_next/static/chunks/...css`. The check now resolves against that stylesheet,
+retaining full-byte notice and deployment-prefix assertions. Local webpack
+production acceptance passes the emitted license asset.
+
+Run `39054561760` passed engine/schema/CLI jobs and both production browser/font
+gates. Chromium dev passed; WebKit dev requested Next's own debug-overlay Geist
+font at `/__nextjs_font/geist-latin.woff2`, triggering the site's prefix assertion.
+Inspection of Next's installed `get-dev-overlay-font-middleware.js` confirms its
+four allowed local Geist paths intentionally bypass basePath. The development
+check now recognizes only those framework paths; all other font URLs retain the
+local-prefix assertion, and production has no exception. Production browser tests
+had 310 initial passes plus one successful known FAQ retry and 124 skips.
+
+PR #9 merged as `bd01bdb`. Main CI `39052261993` passed all jobs with 311 browser
+passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
+dev acceptance. Image run `39052261989` published all four AMD64/ARM64 variants
+and passed the published default-image build/serve smoke test.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -771,6 +826,10 @@ stable dist-tag was still 16.4.2; no stable dependency update carrying that fix
 was available. A fresh browser-job retry is verification of the watcher, not a
 font fix. Prioritize a compatible patched release or a reproducible local-font
 distribution; do not hide the failure by weakening the browser/build gate.
+
+**Implementation:** `7963587` removes this external font-loading path using a
+pinned local distribution. See the implementation record above and its PR for
+verification; the historical failure evidence is retained here.
 
 ### S14 — P2: video-embed omits the deployment prefix for local media
 

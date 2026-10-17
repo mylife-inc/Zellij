@@ -322,7 +322,7 @@ nav:
 
 ## 6. Themes ("Glazes")
 
-A theme is a named token set: color palette (light + dark), font pairing (heading/body, loaded via `next/font`), radius scale, spacing scale, shadow style, and per-section accent behavior.
+A theme is a named token set: color palette (light + dark), font pairing (heading/body, loaded from pinned local WOFF2 subsets), radius scale, spacing scale, shadow style, and per-section accent behavior. Font files, Unicode ranges, fallback metrics and licenses ship with the engine; ordinary builds must not fetch fonts from an external service.
 
 - Ship **11 built-in themes** with genuinely distinct personalities (different font pairings, palettes, radius/shadow character — not palette swaps):
   1. `midnight` — dark, electric accent, tight geometry (Linear-like)
@@ -502,7 +502,7 @@ Explicit non-goals for v1: versioned docs, i18n/locales, remote content, CMS int
 3. Switching `theme:` in the demo config visibly restyles the entire site; all 10 themes look intentional, not palette-swapped. Switching `motion:` between the three presets visibly changes site behavior; `prefers-reduced-motion` disables all animation regardless of config (automated or documented manual check).
 4. `next build` in the demo produces a fully static export-compatible output; build fails with clear messages on invalid YAML/MDX (test with fixture files).
 5. Set `basePath: '/products/acme/docs'` in the demo and verify (automated test or documented manual check) that all links, images, fonts, and search still work.
-6. Lighthouse on the built demo landing page: ≥95 performance, ≥95 accessibility, 100 SEO. Images via `next/image`, fonts via `next/font`, proper meta/OG tags from page frontmatter.
+6. Lighthouse on the built demo landing page: ≥95 performance, ≥95 accessibility, 100 SEO. Images via `next/image`, self-hosted fonts loaded only when used, proper meta/OG tags from page frontmatter.
 7. Fully responsive 360px → 1440px; keyboard-navigable accordion/tabs/search; semantic landmarks.
 8. TypeScript strict passes; zod schemas exported so wrapper repos can typecheck their own content in CI.
 9. README documents: wrapper setup from scratch, full config reference, every section schema with copy-pasteable YAML, every MDX component, theming/override guide.
