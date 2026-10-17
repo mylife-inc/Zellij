@@ -80,6 +80,18 @@ Past `menuOverflowAfter` items — seven by default, set it in `site.yaml` — t
 remainder collapses into one trailing drawer. A book with thirty chapters gets
 a usable bar with no configuration at all.
 
+The desktop header also measures the space between the brand and its controls.
+When labels do not fit, trailing items move into **More**; they return to the
+bar when more space becomes available. Dropdowns keep their destinations, and
+grouped menus keep their headings, descriptions and external-link behavior.
+This also responds to larger text, font and theme changes. `menuOverflowAfter`
+remains an upper limit, rather than a promise that every item will always fit.
+
+The bar spans the viewport with consistent edge padding: branding on the left,
+search and theme controls on the right. `nav.align` positions the menu within
+the remaining space. Search still opens the search dialog. On mobile, the
+navigation drawer contains the complete menu.
+
 <Callout type="warning" title="Declaring a menu turns derivation off">
 When `menu.yaml` exists it is the whole bar. Nothing is appended, so a folder
 you forgot to list will not appear. That is deliberate: a declared menu is a
