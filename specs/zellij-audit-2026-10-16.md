@@ -439,6 +439,41 @@ passes, 124 conditional skips and no retries, plus Chromium/WebKit prefix and
 dev acceptance. Image run `39052261989` published all four AMD64/ARM64 variants
 and passed the published default-image build/serve smoke test.
 
+PR #10 merged as `5a9e12c`. Exact-head CI `39055211438` passed all four jobs,
+324 engine and 117 Rust tests, 311 browser tests with 124 conditional skips and
+no retries, Chromium/WebKit production/dev font-license-prefix gates and the
+network-disabled Turbopack build. Main CI `39055788092` also passed, with one
+successful retry of the known mobile-WebKit FAQ interaction (310 initial passes,
+124 skips). Image run `39055788338` passed all eight platform/feature builds,
+four manifest publications and the default-image build/serve smoke. S13's
+hosted acceptance is complete; native CLI binaries have not been released.
+
+## Implementation record — CLI inspection output
+
+Source commit `4d659b4` fixes **R9**. `zel context --json` returns the engine's
+embedded JSON, including a generated theme catalog. `list themes` now uses the
+same names/labels/descriptions as the engine's renderer. JSON is supported for
+all lists, explain (complete section schema) and detection (ordered matches).
+Context file output respects the selected format and sends JSON-mode
+confirmation to stderr. Errors keep stdout empty and return nonzero.
+
+Unsupported `--json` commands fail with exit 2 before execution. The unused
+`--verbose` / `-v` parser option is removed and rejected. This implements the
+inspection subset and honest refusal required by R9, not universal structured
+diagnostics or verbose tracing. Detection now rejects missing/non-directory
+paths; valid folders with no match return an empty JSON array successfully.
+Docs/specs explain the current contracts and preserve the remaining plans.
+
+Local acceptance: 125 Rust tests (eight new binary integration tests),
+warnings-denied Clippy, formatting, 325 engine tests, workspace typechecks,
+engine build and deep/strict docs checks pass. Tests compare all 23 section
+schemas and all 14 themes to the embedded engine model, exercise file and
+stream output, and reject flags before writers/container commands run, with
+external tools absent from PATH. The engine suite passed with two local workers
+after two existing math tests timed out during concurrent Rust compilation;
+timeouts and assertions were unchanged. Hosted full acceptance is pending.
+Native binary releases and portable build/serve/view are separate milestones.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -667,6 +702,10 @@ fails. `--json` and `--verbose` are parsed globals but not consumed by dispatch.
 `list.mdx`.
 **Acceptance:** implement the documented output contract or clearly reject
 unsupported modes; a successful JSON mode must emit valid, stable JSON.
+
+**Resolution:** `4d659b4` implements the inspection JSON/theme contracts and
+rejects unsupported modes before execution. See the implementation record
+above for validation and remaining CLI scope.
 
 ### R10 — P2: search indexes routes and anchors different from rendered pages
 
@@ -936,7 +975,8 @@ testing unless the user changes scope.
 - CLI spec introduction still describes an unimplemented tool; content-model
   design has an early awaiting-signoff label and a later implemented status.
 - `new project` is implemented but listed as planned in part of the CLI docs.
-  `list themes` and JSON context are advertised as available but do not work.
+  `list themes` and JSON context were advertised before they worked; the R9
+  implementation record documents their correction.
 - Several labs demonstrate `--open`, config files, or feature flags the Rust
   parser does not support. CI documentation mentions options absent from the
   parser while omitting some implemented provisioning options.

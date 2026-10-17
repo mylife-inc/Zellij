@@ -21,7 +21,7 @@ you have.
 
 ## Why it exists
 
-Zellij has nineteen section types and fourteen themes. Nobody holds that in
+Zellij has 23 section types and fourteen themes. Nobody holds that in
 their head, and the failure it prevents is specific: writing a plausible
 section type that the build rejects, or picking a theme name that does not
 exist and finding out four minutes into a build.
@@ -96,9 +96,26 @@ explains why they went.
 zel list sections --json
 ```
 
-<Callout type="warning" title="Planned">
-`--json` is accepted and ignored. The output is the human table either way.
-</Callout>
+All four lists support `--json`. Stdout contains one object with the matching
+array; errors go to stderr and return a nonzero exit code.
+
+| Command | Array | Fields on each entry |
+| --- | --- | --- |
+| `list sections` | `sections` | `type`, `fields`, `required` |
+| `list themes` | `themes` | `name`, `label`, `description` |
+| `list formats` | `formats` | `id`, `label` |
+| `list targets` | `targets` | `id`, `description` |
+
+Section field counts exclude the shared presentation fields, just like the
+human listing. Sections and themes use engine registration order; formats are
+sorted by ID; targets list `static` then `image`. Consumers should select by
+identifier rather than array position. The theme names and descriptions come
+from the same generated catalog as the renderer.
+
+JSON is also available for [`context`](/cli/context), [`explain`](/cli/explain)
+and [`detect`](/cli/detect). Other Rust commands reject `--json` with exit code
+2 before running. `--verbose` / `-v` is not implemented and is rejected as an
+unknown option.
 
 ## See also
 

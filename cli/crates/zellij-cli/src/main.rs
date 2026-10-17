@@ -10,6 +10,8 @@
 
 use camino::{Utf8Path, Utf8PathBuf};
 use clap::{Parser, Subcommand};
+use serde_json::json;
+use std::io::Write;
 
 #[derive(Parser)]
 #[command(
@@ -22,13 +24,9 @@ struct Cli {
     #[command(subcommand)]
     command: Command,
 
-    /// Machine-readable output. Supported everywhere, because a tool only a
-    /// human can read cannot be used by a pipeline.
+    /// JSON output for context, list, explain and detect. Other commands reject it.
     #[arg(long, global = true)]
     json: bool,
-
-    #[arg(long, short, global = true)]
-    verbose: bool,
 }
 
 #[derive(Subcommand)]
@@ -37,7 +35,7 @@ enum Command {
     #[command(subcommand)]
     New(NewTarget),
 
-    /// Show every field of a section type, with a worked example.
+    /// Show a section type's fields, defaults and allowed values.
     Explain {
         /// A section type — `zel list sections` for all of them.
         section_type: String,
@@ -366,13 +364,29 @@ enum ListTarget {
 fn main() {
     let cli = Cli::parse();
 
+    if cli.json
+        && !matches!(
+            cli.command,
+            Command::Context { .. }
+                | Command::List(_)
+                | Command::Explain { .. }
+                | Command::Detect { .. }
+        )
+    {
+        eprintln!(
+            "error: --json is supported only by context, list, explain and detect; no command was run"
+        );
+        std::process::exit(2);
+    }
+
     let result = match cli.command {
-        Command::List(ListTarget::Formats) => list_formats(),
-        Command::List(ListTarget::Targets) => list_targets(),
-        Command::List(ListTarget::Sections) => list_sections(),
-        Command::Explain { ref section_type } => explain(section_type),
-        Command::Context { ref file } => write_context(file.as_deref()),
-        Command::Detect { ref dir } => detect(dir),
+        Command::List(ListTarget::Formats) => list_formats(cli.json),
+        Command::List(ListTarget::Targets) => list_targets(cli.json),
+        Command::List(ListTarget::Sections) => list_sections(cli.json),
+        Command::List(ListTarget::Themes) => list_themes(cli.json),
+        Command::Explain { ref section_type } => explain(section_type, cli.json),
+        Command::Context { ref file } => write_context(file.as_deref(), cli.json),
+        Command::Detect { ref dir } => detect(dir, cli.json),
         Command::Check {
             ref dir,
             deep,
@@ -1015,7 +1029,7 @@ fn ci_init(
 /// It does nothing the three commands cannot. It exists because forgetting to
 /// validate after a conversion is the mistake everybody makes once.
 fn migrate(source: &str, out: &str) -> zellij_core::Result<()> {
-    detect(source)?;
+    detect(source, false)?;
     println!();
 
     convert(source, out, None, false)?;
@@ -1273,8 +1287,28 @@ fn next_guide_order(root: &Utf8Path) -> usize {
     highest + 1
 }
 
-fn list_formats() -> zellij_core::Result<()> {
-    let converters: Vec<_> = zellij_convert::all().collect();
+fn print_json(value: &serde_json::Value) -> zellij_core::Result<()> {
+    let mut stdout = std::io::stdout().lock();
+    serde_json::to_writer_pretty(&mut stdout, value).map_err(std::io::Error::other)?;
+    writeln!(stdout)?;
+    Ok(())
+}
+
+fn list_formats(as_json: bool) -> zellij_core::Result<()> {
+    let mut converters: Vec<_> = zellij_convert::all().collect();
+    converters.sort_by_key(|converter| converter.id());
+
+    if as_json {
+        let formats: Vec<_> = converters
+            .iter()
+            .map(|converter| {
+                json!({
+                    "id": converter.id(), "label": converter.label(),
+                })
+            })
+            .collect();
+        return print_json(&json!({ "formats": formats }));
+    }
 
     if converters.is_empty() {
         println!("No converters are registered in this build.");
@@ -1292,8 +1326,8 @@ fn list_formats() -> zellij_core::Result<()> {
 // were both on this list once; neither is a product anyone chooses. The first
 // is what a platform builds for you, the second is the static site in a box.
 // Offering four made a decision between two look harder than it is.
-fn list_targets() -> zellij_core::Result<()> {
-    for (name, description) in [
+fn list_targets(as_json: bool) -> zellij_core::Result<()> {
+    let targets = [
         (
             "static",
             "A folder of HTML, CSS and JS. Any CDN, free. The default.",
@@ -1302,38 +1336,75 @@ fn list_targets() -> zellij_core::Result<()> {
             "image",
             "A container running the site on port 3000. Any registry. ~150 MB.",
         ),
-    ] {
+    ];
+    if as_json {
+        let targets: Vec<_> = targets
+            .iter()
+            .map(|(id, description)| {
+                json!({
+                    "id": id, "description": description,
+                })
+            })
+            .collect();
+        return print_json(&json!({ "targets": targets }));
+    }
+    for (name, description) in targets {
         println!("{name:<8} {description}");
     }
 
     Ok(())
 }
 
-fn list_sections() -> zellij_core::Result<()> {
+fn list_sections(as_json: bool) -> zellij_core::Result<()> {
+    let mut sections = Vec::new();
     for section_type in zellij_core::schema::section_types() {
         let fields = zellij_core::schema::fields_of(&section_type).unwrap_or_default();
         let required = fields.iter().filter(|field| field.required).count();
-        println!(
-            "{section_type:<16} {} fields, {required} required",
-            fields.len()
-        );
+        if as_json {
+            sections.push(json!({
+                "type": section_type, "fields": fields.len(), "required": required,
+            }));
+        } else {
+            println!(
+                "{section_type:<16} {} fields, {required} required",
+                fields.len()
+            );
+        }
     }
 
+    if as_json {
+        return print_json(&json!({ "sections": sections }));
+    }
     println!("\nRun `zel explain <type>` for any of them.");
     Ok(())
 }
 
-/// Everything a section takes, and an example to paste.
+fn list_themes(as_json: bool) -> zellij_core::Result<()> {
+    let themes = zellij_core::schema::themes();
+    if as_json {
+        return print_json(&json!({ "themes": themes }));
+    }
+    for theme in themes {
+        println!("{:<14} {} — {}", theme.name, theme.label, theme.description);
+    }
+    Ok(())
+}
+
+/// A section's fields, defaults and allowed values.
 ///
-/// This is the command that exists so nobody has to remember nineteen sets of
+/// This is the command that exists so nobody has to remember every set of
 /// fields. It prints what is required first, because that is what someone is
 /// actually asking when they run it.
-fn explain(section_type: &str) -> zellij_core::Result<()> {
+fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
     use zellij_core::schema;
 
-    if !schema::is_section_type(section_type) {
-        eprintln!("`{section_type}` is not a section type. Try `zel list sections`.");
-        std::process::exit(2);
+    let section = schema::section_schema(section_type).ok_or_else(|| {
+        zellij_core::Error::InvalidArgument(format!(
+            "`{section_type}` is not a section type. Try `zel list sections`."
+        ))
+    })?;
+    if as_json {
+        return print_json(section);
     }
 
     let fields = schema::fields_of(section_type).unwrap_or_default();
@@ -1390,21 +1461,61 @@ fn explain(section_type: &str) -> zellij_core::Result<()> {
     Ok(())
 }
 
-fn write_context(file: Option<&str>) -> zellij_core::Result<()> {
+fn write_context(file: Option<&str>, as_json: bool) -> zellij_core::Result<()> {
+    let body = if as_json {
+        zellij_core::schema::SCHEMA_JSON
+    } else {
+        zellij_core::schema::CONTEXT_MARKDOWN
+    };
     match file {
         Some(path) => {
-            std::fs::write(path, zellij_core::schema::CONTEXT_MARKDOWN)?;
-            println!("Wrote the Zellij reference to {path}");
+            std::fs::write(path, body)?;
+            if as_json {
+                eprintln!("Wrote the Zellij schemas to {path}");
+            } else {
+                println!("Wrote the Zellij reference to {path}");
+            }
         }
-        None => print!("{}", zellij_core::schema::CONTEXT_MARKDOWN),
+        None => std::io::stdout().lock().write_all(body.as_bytes())?,
     }
 
     Ok(())
 }
 
-fn detect(dir: &str) -> zellij_core::Result<()> {
+fn detect(dir: &str, as_json: bool) -> zellij_core::Result<()> {
     let source = camino::Utf8Path::new(dir);
-    let found = zellij_convert::detect(source);
+    if !std::fs::metadata(source)?.is_dir() {
+        return Err(zellij_core::Error::InvalidArgument(format!(
+            "{source} is not a directory"
+        )));
+    }
+    let mut found = zellij_convert::detect(source);
+    // Inventory registration order can differ across native builds. Keep ties
+    // deterministic without changing the converters' confidence scores.
+    found.sort_by(|a, b| {
+        b.1.partial_cmp(&a.1)
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .then_with(|| a.0.id().cmp(b.0.id()))
+    });
+
+    if as_json {
+        let matches: Vec<_> = found
+            .iter()
+            .map(|(converter, confidence)| {
+                json!({
+                    "id": converter.id(),
+                    "label": converter.label(),
+                    "confidence": confidence.0,
+                    "strength": if *confidence >= zellij_convert::Confidence::CERTAIN {
+                        "certain"
+                    } else {
+                        "likely"
+                    },
+                })
+            })
+            .collect();
+        return print_json(&json!({ "source": dir, "matches": matches }));
+    }
 
     if found.is_empty() {
         println!("Nothing here looks like a documentation tool this build knows.");

@@ -25,6 +25,78 @@
     "video-embed",
     "zigzag"
   ],
+  "themes": [
+    {
+      "name": "midnight",
+      "label": "Midnight",
+      "description": "Dark, electric accent, tight geometry — a product-tool aesthetic."
+    },
+    {
+      "name": "paper",
+      "label": "Paper",
+      "description": "Light, warm, editorial serif headings over a cream page."
+    },
+    {
+      "name": "terracotta",
+      "label": "Terracotta",
+      "description": "Warm Moroccan palette with generous curves — the Shebka house style."
+    },
+    {
+      "name": "mono",
+      "label": "Mono",
+      "description": "Austere black and white with a single hot accent and brutalist edges."
+    },
+    {
+      "name": "aurora",
+      "label": "Aurora",
+      "description": "Dark with soft gradient glows and glassy surfaces."
+    },
+    {
+      "name": "slate",
+      "label": "Slate",
+      "description": "Cool corporate blue-grey — enterprise-safe and unfussy."
+    },
+    {
+      "name": "forest",
+      "label": "Forest",
+      "description": "Deep greens, natural and calm."
+    },
+    {
+      "name": "sunburst",
+      "label": "Sunburst",
+      "description": "Light and high-energy, playful radius and a hot warm accent."
+    },
+    {
+      "name": "carbon",
+      "label": "Carbon",
+      "description": "Near-black developer-tool aesthetic with monospace-flavoured headings."
+    },
+    {
+      "name": "porcelain",
+      "label": "Porcelain",
+      "description": "Ultra-minimal light, hairline borders, quiet luxury."
+    },
+    {
+      "name": "cupertino",
+      "label": "Cupertino",
+      "description": "Very large tight headlines, centred compositions, and huge breathing room — the Cupertino product-page cadence."
+    },
+    {
+      "name": "studio",
+      "label": "Studio",
+      "description": "Editorial creative studio — warm paper, monochrome type, a luminous violet accent."
+    },
+    {
+      "name": "iris",
+      "label": "Iris",
+      "description": "Bright enterprise SaaS — near-white neutrals, roomy rounded surfaces, a violet brand."
+    },
+    {
+      "name": "meridian",
+      "label": "Meridian",
+      "description": "Warm cream over deep navy ink, with an electric blue — calm, human, trustworthy."
+    }
+  ],
   "sectionTemplates": {
     "bento-grid": "type: bento-grid\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
     "card-carousel": "type: card-carousel\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# link:\n#   label: TODO\n#   href: \"#\"\n# narrow | medium | wide\n# cardWidth: medium\n",

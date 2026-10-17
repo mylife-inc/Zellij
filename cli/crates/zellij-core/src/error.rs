@@ -7,6 +7,9 @@ use camino::Utf8PathBuf;
 /// not running" is the difference between a useful failure and a retry loop.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("{0}")]
+    InvalidArgument(String),
+
     #[error("no Zellij content folder found at {path}")]
     NoContentFolder { path: Utf8PathBuf },
 
@@ -48,7 +51,8 @@ impl Error {
     /// The process exit code for this failure, as specified in §4.3.
     pub fn exit_code(&self) -> i32 {
         match self {
-            Error::NotEmpty { .. }
+            Error::InvalidArgument(_)
+            | Error::NotEmpty { .. }
             | Error::UnknownFormat { .. }
             | Error::UnsafePath { .. }
             | Error::FileExists { .. } => 2,
