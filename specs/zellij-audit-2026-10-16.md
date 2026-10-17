@@ -754,6 +754,24 @@ the normal font path. Capture a failing response, assess a reproducible font
 source/fallback strategy, and verify theme/font output in clean production builds.
 Runtime self-hosted fonts do not remove this build-time external dependency.
 
+Additional evidence from PR #9 run `39048613896`: normal production and prefix
+builds passed, but the fresh Turbopack dev wrapper returned HTTP 500 before the
+watcher browser assertions. IBM Plex Sans failed with
+`next/font/google queries have exactly one entry` and unresolved internal font
+URLs. This matches [Next issue #99114](https://github.com/vercel/next.js/issues/99114),
+which reproduces both the earlier webpack null-regex error and this Turbopack
+query-parsing error with Google Fonts' extensionless `/l/font?kit=...` responses.
+The installed Next 16.4.2 loader still has the unsafe filename-extension regex.
+The exact Google response from this CI failure was not retained, so the URL
+shape is an upstream-supported explanation rather than a captured response.
+
+[Upstream fix #100158](https://github.com/vercel/next.js/pull/100158) merged on
+2026-10-15 as `98a73ead5bf711183e07398983c5c943f86328e7`. On 2026-10-17 the npm
+stable dist-tag was still 16.4.2; no stable dependency update carrying that fix
+was available. A fresh browser-job retry is verification of the watcher, not a
+font fix. Prioritize a compatible patched release or a reproducible local-font
+distribution; do not hide the failure by weakening the browser/build gate.
+
 ### S14 — P2: video-embed omits the deployment prefix for local media
 
 Found by source review during the deep-check milestone, not yet exercised in a

@@ -419,6 +419,13 @@ Browser verification exposed **S15**: MDX h2/h3/h4 links replace their accessibl
 names with “Link to this section.” This remains an accessibility follow-up;
 S13, S14 and the existing mobile-WebKit flakes also remain open.
 
+PR #9's first normal-Turbopack dev gate exposed S13 again: IBM Plex Sans failed
+before browser acceptance with `next/font/google queries have exactly one entry`.
+This matches upstream Next issue #99114, whose fix #100158 is merged but was not
+in npm's stable 16.4.2 on 2026-10-17. See the audit for links and evidence limits.
+A retry does not resolve the build's Google Fonts dependency. Treat a stable
+font remedy as the next reliability priority before expanding the CLI surface.
+
 Prior milestone completion: [PR #8](https://github.com/mylife-inc/Zellij/pull/8)
 merged as `d4615ca`. PR CI `39036985726` and main CI `39037525173` passed all four
 jobs (317 engine tests, 117 Rust tests and the real deep/strict container/export
@@ -724,15 +731,17 @@ does not prove MDX compiles or all links/images work.
 
 Remaining order after development preparation watching, subject to the user's v1 scope decision:
 
-1. Finish the agreed CLI subset, configuration, and truthful help/docs (R9), including
+1. Resolve font-build reproducibility (S13) with a compatible patched release or
+   reproducible local-font distribution; the new dev gate reproduced it again.
+2. Finish the agreed CLI subset, configuration, and truthful help/docs (R9), including
    the required plain-Markdown portable build, static serve and composed view
    workflows in [the portable contract](specs/zel-portable-docs.md).
-2. Exercise releases and installers on every supported platform, including
+3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet
    been released for the completed source fixes.
-3. Close the other browser findings (S4/S5/S14/S15), accessibility, SEO and
-   performance acceptance. Investigate font-build reproducibility (S13), automatic
+4. Close the other browser findings (S4/S5/S14/S15), accessibility, SEO and
+   performance acceptance. Investigate automatic
    browser reload, and the recorded browser flakes. R5 retains advanced migration
    limits; R13's static gate does not execute arbitrary MDX components. Define a
    finite release gate: no known blocking defects, rather than a promise that
