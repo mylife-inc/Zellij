@@ -739,6 +739,31 @@ browsers. The existing three-platform CI matrix runs these added checks. Hosted
 acceptance is pending at this dated entry; consult the PR containing `4ba149f`
 for its final revision/results. No new native release packages are issued.
 
+Configuration completion: [PR #15](https://github.com/mylife-inc/Zellij/pull/15)
+merged as `7b7222f` from head `92f2d10`. PR CI `39075396282` and main CI
+`39076012865` each passed all seven jobs, including Chromium/WebKit portable,
+HTTP and configuration/watch acceptance on native Linux/macOS/Windows. PR CI
+passed 155 Linux Rust tests and 311 website browser tests (124 conditional skips,
+no retries). Image run `39076012860` passed all 13 jobs and published all four
+AMD64/ARM64 variants. The local binary was rebuilt; no native release issued.
+
+## Implementation record — portable publication paths
+
+Source commit `90befda` fixes a publication/watch inconsistency found during
+final review. At `7b7222f`, a configured `node_modules/logo.svg` was successfully
+copied into an export, but watch snapshots exclude that directory and would not
+notice edits. Explicit Markdown asset links also bypassed hidden/dependency
+exclusions. Discovery, watch snapshots, logo configuration and referenced assets
+now share the same excluded-name rule. Hidden paths and `node_modules` cannot be
+published through those references. Authors must move published assets into a
+normal source folder such as `assets/`.
+
+Local verification: 18 configuration/portable/watch tests, warnings-denied Clippy,
+formatting and deep/strict docs validation passed. Regression fixtures contain
+real excluded files and check image/download references, logo configuration,
+source preservation and preservation of the previous export. Hosted acceptance
+is pending at this dated entry; consult the PR containing `90befda` for results.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
