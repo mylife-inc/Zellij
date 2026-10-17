@@ -694,6 +694,15 @@ HTTP availability during publication, Ctrl-C, and moved offline exports. CI
 uses the same native Linux/macOS/Windows matrix and real Windows console helper.
 Hosted acceptance is pending at this record. No native release is issued.
 
+
+Hosted follow-up: run `39068473117` exposed a race-fixture deadlock on Linux
+and macOS. The test held the first preview-status response but awaited the
+page's full load before allowing that response to continue. It now waits for
+DOMContentLoaded plus the actual intercepted request before editing, then
+releases the response only after publication. Reload assertions and timeouts
+are unchanged; production code is unchanged. Final hosted status belongs to
+[PR #14](https://github.com/mylife-inc/Zellij/pull/14).
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a

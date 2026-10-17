@@ -43,14 +43,18 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       // A client that treats the first poll as its baseline would miss this edit.
       const firstPoll = new Promise(resolve => { releaseFirstPoll = resolve; });
       let holdPoll = true;
+      let pollSeen = false;
       await context.route(`${server.url}_zellij/preview.json`, async route => {
+        pollSeen = true;
         if (holdPoll) await firstPoll;
         await route.continue();
       });
       const page = await context.newPage();
       const errors = []; page.on('pageerror', error => errors.push(error.message));
-      await page.goto(`${server.url}?sample=keep#anchor`);
+      // A deliberately held request can delay load on some engines/runners.
+      await page.goto(`${server.url}?sample=keep#anchor`, { waitUntil: 'domcontentloaded' });
       await expect(page.getByRole('heading', { name: 'Before watching', exact: true })).toBeVisible();
+      await until(() => pollSeen, 'first browser status poll is held');
       const original = await status();
       assert((await page.content()).includes('_zellij/preview.js?version='));
       assert(!(await readFile(path.join(output, 'index.html'), 'utf8')).includes('preview.js'));
