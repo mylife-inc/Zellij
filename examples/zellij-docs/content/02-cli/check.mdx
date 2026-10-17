@@ -19,8 +19,9 @@ directory, then `./docs` and `./documentation`. It recognizes `site.yaml`,
 `_sidebar.yaml`. A guide-only site does not need a `site.yaml` file. Hidden
 directories and asset/example folders are not treated as guides.
 
-An explicit directory selects that exact folder, including an empty folder;
-the engine reports its content errors or warnings. Discovery never searches
+A directory argument other than `.` selects that exact folder, including an
+empty folder; the engine reports its content errors or warnings. `.` uses the
+discovery order above. Discovery never searches
 parent directories. `dev`, `build` and the image commands use the same resolver.
 
 ```

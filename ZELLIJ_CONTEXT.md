@@ -136,7 +136,9 @@ image run `39005197029` published all four feature variants for AMD64/ARM64.
 
 ### Scaffolding and discovery update — 2026-10-16
 
-Commit `fe4240c` resolves the reproduced content-authoring findings **R6–R8**.
+Commits `fe4240c` and `ee68282`, tracked in
+[PR #4](https://github.com/mylife-inc/Zellij/pull/4), resolve the reproduced
+content-authoring findings **R6–R8**.
 Rust content scaffolds and converters share a JSON-backed YAML string scalar
 serializer, including explicit escapes for YAML's extra Unicode line breaks and
 characters its parsers reject literally.

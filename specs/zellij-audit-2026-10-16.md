@@ -128,8 +128,9 @@ passed. No native CLI binary release is issued by this milestone.
 
 ## Implementation record — scaffolding and discovery
 
-Commit `fe4240c` addresses **R6, R7 and R8** while preserving the original
-reproductions below:
+Commits `fe4240c` and `ee68282`
+([PR #4](https://github.com/mylife-inc/Zellij/pull/4)) address **R6, R7 and R8**
+while preserving the original reproductions below:
 
 - **R6:** Rust content generation and conversion share a string serializer;
   Node content initialization uses equivalent YAML scalars. Quotes, hashes,
