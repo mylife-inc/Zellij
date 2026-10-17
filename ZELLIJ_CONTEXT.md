@@ -495,6 +495,50 @@ passed eight platform/feature builds, four multi-platform publications and the
 default-image build/serve smoke test. This successful run does not diagnose the
 previous FAQ/WebKit flakes. PR #9's final PR run had one successful FAQ retry.
 
+PR #10 completion: merged as `5a9e12c` after exact-head run `39055211438`
+passed all four jobs: **324 engine tests**, **117 Rust tests**, schema sync,
+typechecks, warnings-denied Clippy, offline Turbopack build, and **311 browser
+passes / 124 conditional skips / no retries**. Main CI `39055788092` passed;
+its browser suite had 310 initial passes and one successful known mobile-WebKit
+FAQ retry. Both runs passed Chromium/WebKit production and development font,
+license and prefix gates. Image run `39055788338` passed eight feature/platform
+builds, four AMD64/ARM64 manifest publications and the default-image build/serve
+smoke test. This closes S13's hosted acceptance; it does not diagnose the FAQ
+flake or constitute a native CLI release.
+
+### Truthful CLI inspection output — 2026-10-17
+
+Source commit `4d659b4` resolves the reproduced **R9** behaviors. Rust `zel
+context --json` emits the exact embedded engine JSON; supplying a filename
+writes that format to the file with confirmation on stderr. `list themes`
+lists all 14 names, labels and descriptions, generated from the engine's config
+names and renderer tokens. The catalog is included in schema-sync CI.
+
+JSON is implemented for every `list`, `explain` and `detect` as well. Explain
+returns the selected full section schema. Lists return named arrays with stable
+identifiers; detect returns the supplied source path and ordered matches with
+numeric confidence and strength. Missing/non-directory sources fail instead
+of masquerading as no match. Equal-confidence detection and converter listings
+are deterministic across inventory registration order. See the CLI spec's
+output contract and command docs for exact fields.
+
+Other commands reject `--json` with exit 2 **before execution**. Unimplemented
+`--verbose` / `-v` is removed from the parser/help and rejected, rather than
+silently ignored. Errors remain human messages on stderr; JSON validation,
+conversion/build reports, verbose tracing and config loading remain future work.
+The existing Markdown context and human inspection formats are retained.
+
+Local acceptance: **125 Rust tests**, warnings-denied Clippy and formatting,
+**325 engine tests**, all workspace typechecks, engine package build and deep/
+strict docs validation pass. Eight new binary integration tests run with no
+external tools on PATH and cover exact embedded output, file/stdout/stderr
+behavior, all section schemas, theme/config agreement, detection, error codes,
+and refusal before command actions. A first engine run exposed a missing test
+fixture name (corrected); a subsequent default-concurrency run hit two existing
+math-rendering timeouts during a full Rust rebuild. The unchanged suite passed
+with two local workers and unchanged timeouts. Hosted full acceptance remains
+the next gate; no native binary release is part of this milestone.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -709,12 +753,12 @@ complete; see the audit before using writers on valuable content.
 
 | Status | Commands |
 | --- | --- |
-| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/formats/targets`, `context` (Markdown), `detect`, `convert`, `doctor` |
+| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/themes/formats/targets`, `context` (Markdown/JSON), `detect`, `convert`, `doctor` |
 | Implemented container orchestration | `check` (optional `--deep`/`--strict`), `dev`, `build` static/image; `image build/run/push/dockerfile` |
 | Implemented workflows | `migrate` = detect/convert/check; `ci init github`; `ci publish` dispatches an existing workflow |
-| Declared but returns “not implemented yet” | `new app`, `list themes`, `deploy`, `serve`, `fmt`, `publish`, `ship` |
+| Declared but returns “not implemented yet” | `new app`, `deploy`, `serve`, `fmt`, `publish`, `ship` |
 | Specified but not registered | `watch`, `eject`, `pull`, `upgrade`, `completions`, `version` subcommand (`--version` works) |
-| Accepted globals without behavior | `--json`, `--verbose` |
+| Output options | `--json` works for `context`, every `list`, `explain`, `detect`; other commands reject it before execution. `--verbose` / `-v` is rejected, not a successful no-op. |
 
 Converters: MkDocs and a limited Docusaurus implementation. Computed JS/TS
 sidebar configurations are not executed. Other formats in the spec are plans.
@@ -730,8 +774,8 @@ its own CLI, despite the separate `zel deploy` command being a stub.
 Docker, Podman, and nerdctl are probed; Colima socket handling exists.
 `ZELLIJ_IMAGE` overrides the default `ghcr.io/mylife-inc/zellij-base:latest`.
 Build/dev install app dependencies inside the container. A pulled base image
-alone is therefore not a guarantee of offline builds. Dev rereads content on
-reload, but preparation of assets/search is not a complete file-watch loop.
+alone is therefore not a guarantee of offline builds. Dev watches and prepares
+assets/search after content edits; the browser still needs a manual reload.
 
 ## 7. Where development stopped at the initial audit
 
@@ -789,11 +833,11 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the font reliability change, subject to the user's v1 scope decision:
+Remaining order after the font and inspection-output changes, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of the pinned local-font distribution (S13);
-   preserve the new offline build and browser font checks as release gates.
-2. Finish the agreed CLI subset, configuration, and truthful help/docs (R9), including
+1. Complete hosted acceptance of the CLI inspection-output change (R9).
+   Preserve the offline build, browser font and CLI output checks as release gates.
+2. Finish the agreed CLI subset and configuration, including
    the required plain-Markdown portable build, static serve and composed view
    workflows in [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
