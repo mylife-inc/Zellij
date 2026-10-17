@@ -151,7 +151,9 @@ pub fn write_files(root: &Utf8Path, files: &[(&Utf8Path, &str)], overwrite: bool
         fs::create_dir_all(parent)?;
         let mut temporary = tempfile::NamedTempFile::new_in(parent)?;
         temporary.write_all(body.as_bytes())?;
-        staged.push((temporary, target));
+        // Keep the temporary path, not an open descriptor for every page.
+        // Large documentation imports can exceed the process's file limit.
+        staged.push((temporary.into_temp_path(), target));
     }
     for (temporary, target) in staged {
         if overwrite {

@@ -121,10 +121,13 @@ jobs:
             fi
           done
 
+      - name: Build the engine image from this checkout
+        run: docker build -f docker/base.Dockerfile -t zellij-ci .
+
       - name: Static exports preserve the previous site on failure
         env:
-          # Exercise the native CLI against a known published engine image.
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base@sha256:cc2ececbb51e116f81372257b59c4f595f62039f22bbfde566e15bfe9e40697e
+          # Verify matching CLI/engine changes before publishing either one.
+          ZELLIJ_IMAGE: zellij-ci
         run: |
           set -euo pipefail
           zel="$PWD/cli/target/debug/zel"

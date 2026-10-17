@@ -173,6 +173,38 @@ fn conversion_and_new_page_still_write_valid_noncolliding_paths() {
 
 #[cfg(unix)]
 #[test]
+fn large_conversion_does_not_keep_one_descriptor_per_output() {
+    let temp = tempfile::tempdir().unwrap();
+    let source = temp.path().join("source");
+    let out = temp.path().join("out");
+    fs::create_dir_all(source.join("docs")).unwrap();
+    fs::write(source.join("mkdocs.yml"), "site_name: Large site\n").unwrap();
+    for index in 0..96 {
+        fs::write(source.join(format!("docs/page-{index}.md")), "# Page\n").unwrap();
+    }
+    let output = Command::new("sh")
+        .args([
+            "-c",
+            "ulimit -n 64; exec \"$@\"",
+            "zel-test",
+            env!("CARGO_BIN_EXE_zel"),
+            "convert",
+        ])
+        .arg(&source)
+        .arg("--out")
+        .arg(&out)
+        .output()
+        .unwrap();
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    assert!(out.join("01-guide/page-95.mdx").is_file());
+}
+
+#[cfg(unix)]
+#[test]
 fn converter_refuses_symlinked_documents() {
     let temp = tempfile::tempdir().unwrap();
     let source = temp.path().join("source");
