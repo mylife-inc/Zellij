@@ -1,7 +1,8 @@
 # Zellij — implementation audit and completion backlog
 
-**Date:** 2026-10-16 (America/Los_Angeles)  
-**Audited code:** local `main`, `6356b05deaddf5421b24d7c8a1e30f868d4923c0`  
+**Date:** 2026-10-16 (America/Los_Angeles)
+
+**Audited code:** local `main`, `6356b05deaddf5421b24d7c8a1e30f868d4923c0`
 **Scope:** study source/documentation, establish reusable context, identify
 unfinished work and defects. **No implementation fixes or remote changes.**
 
