@@ -206,6 +206,48 @@ interaction flake remains undiagnosed. Image run `39010596751` published all
 four variants for AMD64/ARM64 and passed published-image smoke acceptance.
 No native CLI release was issued.
 
+## Implementation record — canonical search and content preparation
+
+Commit `29654d3` resolves **R10–R12** and **S2**. Preparation and runtime share
+content-source/path resolution. Search consumes canonical `loadSite` pages,
+including sidebar/frontmatter route overrides and title-stripped bodies. A shared
+nonexecuting MDX parser uses the renderer's slug plugin for search and TOC IDs.
+Formatted, duplicate, setext, quoted, indented and mathematical headings are
+covered against actual rendered HTML; deeper subsections remain searchable.
+Optional math plugins stay dynamic in the CLI bundle so MathJax resolves its
+runtime files correctly. Both installed-math and isolated plain-content bundles
+are exercised.
+
+All three Node preparation commands now accept `--content`/`--config`, and their
+helpers accept the runtime options object as well as the existing app-root string.
+Missing roots, malformed asset directories and overlapping source/output paths
+(including symlinked parents) fail before removing prepared assets. Rerunning
+sync after deleting the source assets directory clears stale assets and hashes.
+This resolves only the deletion half of **S9**; automatic dev watching remains.
+Guide-root and home-redirect route collisions are rejected, while a guide's own
+root/index identity is allowed. Search load cancellation is restartable, failed
+requests retry on reopening, and successful data is cached by deployment prefix.
+
+Evidence: **285 engine tests**, workspace typechecks, engine packaging, preparation
+and checks for all four examples, and packaged-CLI integration pass locally.
+The four focused desktop/mobile Chromium recovery cases pass without retries.
+An initial broad dev-server run timed out on the existing `networkidle` condition;
+production/WebKit checks remain hosted gates. The new recovery fixture initially
+clicked before hydration; it now uses the existing retrying shortcut helper.
+CI adds a real static export and verifies each search URL and heading ID against
+its emitted HTML. Consult the PR containing this commit for hosted outcomes.
+
+**R13 remains open:** contradictory fast-check promises are corrected, but deeper
+prose-link/asset validation is still missing. S8 runtime memo isolation and S12
+basePath synchronization/acceptance are unchanged. Search's prose cleanup remains
+regex-based. No native CLI release is part of this milestone. Historical source
+locations and reproductions below describe the original audit revision.
+
+Prior milestone completion: PR #5 merged as `7fb5178`. PR CI `39019128511` and
+main CI `39019556088` passed, with 305 browser passes, 124 conditional skips,
+no retries, 268 engine tests and 117 Rust tests. Image run `39019556101` published
+all four feature variants for AMD64/ARM64 and passed build/serve smoke acceptance.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
