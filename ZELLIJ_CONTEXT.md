@@ -134,6 +134,45 @@ configuration, so it must not be trusted as current prefix acceptance (S12).
 PR #2 merged as `3408f37`; main run `39005197060` passed all checks, and base
 image run `39005197029` published all four feature variants for AMD64/ARM64.
 
+### Scaffolding and discovery update — 2026-10-16
+
+Commit `fe4240c` resolves the reproduced content-authoring findings **R6–R8**.
+Rust content scaffolds and converters share a JSON-backed YAML string scalar
+serializer, including explicit escapes for YAML's extra Unicode line breaks.
+The Node initializer uses the same representation. Names, copyright text,
+page identifiers, section references, guide titles and front matter preserve
+punctuation, implicit YAML values and multiline text. This covers generated
+content metadata; it does not validate arbitrary npm package names or workflow
+inputs as package identifiers, GitHub expressions or shell commands.
+
+Plain/minimal starters omit the guide CTA unless `--guide` creates its target.
+All CLI commands that resolve a content root now use `Project::discover`:
+`./content`, current root, `./docs`, then `./documentation`. Explicit paths
+retain their existing exact-directory behavior. Marker files, a sections
+directory, and guide-only roots are recognized; hidden/reserved guide folders
+and markers of the wrong filesystem type are excluded. Discovery never walks
+upwards. This selects a root; the engine still owns semantic validation.
+
+Local verification: **117 Rust tests**, **262 engine tests**, warnings-denied
+Clippy, formatting, workspace typechecks, engine packaging, documentation
+content validation, and both conversion fixtures pass. The new
+`scripts/check-scaffolds.mjs` checks exact metadata and rendered Hero links
+for **36 Rust starters, 9 Node content starters and 9 guide titles**. Hosted
+CI additionally exercises four guide-only discovery locations and a menu-only
+root through the real container engine. Hosted results are pending at this
+record; consult the PR before claiming acceptance. No native release is made.
+
+The separate security-review plugin failed to read its model response during
+the source commit, although the commit itself succeeded. That review did not
+complete and must not be described as passed.
+
+Prior milestone completion: PR #3 merged as `dd99c2c`. Main CI `39007109533`
+and image run `39007109576` passed, publishing all four variants for Linux
+AMD64/ARM64. Browser acceptance had 296 initial passes plus one successful
+retry, with 114 conditional skips. The retry was a mobile-WebKit navigation
+error at `/guide/quickstart`; PR CI had a different FAQ interaction retry.
+These flakes remain undiagnosed, not repaired by the conversion changes.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -409,18 +448,19 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the safety/CI milestone, subject to the user's v1 scope decision:
+Remaining order after the scaffolding milestone, subject to the user's v1 scope decision:
 
-1. Converter links/assets (R5), safe YAML quoting (R6), starter/discovery fixes
-   (R7/R8), shared routing/preparation and validation (R10–R13). Dependency
-   remediation and all 23 section template schemas are addressed in PR #2.
-2. Header placement/width-aware overflow and the reproduced search/route bugs.
+1. Header placement and width-aware overflow: company logo on the left,
+   search/theme controls on the right; then the reproduced search/route bugs.
+2. Shared routing/preparation and validation (R10–R13), remaining advanced
+   migration cases (R5), and basePath configuration/acceptance (S12).
+   R4 and R6–R8 now have implementation records above.
 3. Finish the agreed CLI subset, configuration, and truthful help/docs.
 4. Exercise releases and installers on every supported platform, including
    native Windows if chosen. Repository visibility/default branch are settled;
    the restored CI baseline must remain green.
-5. Close browser/accessibility/basePath/SEO/performance acceptance and define
-   a finite release gate: no known blocking defects, rather than a promise that
+5. Close browser/accessibility/SEO/performance acceptance and define a finite
+   release gate: no known blocking defects, rather than a promise that
    undiscovered bugs cannot exist.
 
 Versioned docs, i18n, remote content, CMS, comments, and A/B testing are explicit
