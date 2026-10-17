@@ -166,7 +166,7 @@ impl Converter for Docusaurus {
         source: &Utf8Path,
         _options: &ConvertOptions,
     ) -> zellij_core::Result<Conversion> {
-        let root = source.join("docs");
+        let root = zellij_core::files::contained_path(source, Utf8Path::new("docs"))?;
         if !root.is_dir() {
             return Err(zellij_core::Error::UnknownFormat {
                 path: source.to_owned(),
@@ -175,6 +175,10 @@ impl Converter for Docusaurus {
 
         let (site_name, description) = match config_path(source) {
             Some(path) => {
+                let path = zellij_core::files::contained_path(
+                    source,
+                    Utf8Path::new(path.file_name().unwrap()),
+                )?;
                 let raw = std::fs::read_to_string(&path)?;
                 (config_string(&raw, "title"), config_string(&raw, "tagline"))
             }
@@ -185,6 +189,10 @@ impl Converter for Docusaurus {
         let mut nav: Vec<Entry> = Vec::new();
 
         if let Some(path) = sidebar_path(source) {
+            let path = zellij_core::files::contained_path(
+                source,
+                Utf8Path::new(path.file_name().unwrap()),
+            )?;
             let raw = std::fs::read_to_string(&path)?;
 
             if let Some(construct) = dynamic_construct(&raw) {
@@ -266,14 +274,8 @@ impl Converter for Docusaurus {
             }
         }
 
-        let mut conversion = emit(&tree, |relative| {
-            std::fs::read_to_string(root.join(relative))
-                // A page listed as `.md` may be `.mdx` on disk.
-                .or_else(|_| {
-                    std::fs::read_to_string(root.join(relative.as_str().replace(".md", ".mdx")))
-                })
-                .ok()
-        });
+        let documents = crate::read_documents(&tree, true)?;
+        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
 
         conversion.notes.extend(notes);
         Ok(conversion)

@@ -57,20 +57,17 @@ impl Scaffold {
             });
         }
 
-        let mut written = Vec::with_capacity(self.files.len());
+        self.write_with_policy(root, force)
+    }
 
-        for (rel, body) in &self.files {
-            let path = root.join(rel);
+    /// Add files to an existing content folder without replacing any file.
+    pub fn write_new(&self, root: &Utf8Path) -> Result<Vec<Utf8PathBuf>> {
+        self.write_with_policy(root, false)
+    }
 
-            if let Some(parent) = path.parent() {
-                std::fs::create_dir_all(parent)?;
-            }
-
-            std::fs::write(&path, body)?;
-            written.push(rel.clone());
-        }
-
-        Ok(written)
+    fn write_with_policy(&self, root: &Utf8Path, overwrite: bool) -> Result<Vec<Utf8PathBuf>> {
+        zellij_core::files::write_files(root, &self.files().collect::<Vec<_>>(), overwrite)?;
+        Ok(self.files.iter().map(|(path, _)| path.clone()).collect())
     }
 }
 

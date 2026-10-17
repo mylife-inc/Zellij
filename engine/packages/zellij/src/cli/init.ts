@@ -66,11 +66,21 @@ async function enginePackage(): Promise<{ version: string; peers: Record<string,
  * Turns a peer range into something a fresh app can install.
  *
  * The engine pins its peers to a minor line — `16.2.x` — which npm accepts, but
- * a generated app reads better with a caret so it picks up patches on its own.
+ * a generated app reads better with a range so it picks up patches on its own.
+ *
+ * A tilde, not a caret. `^19.2.0` admits every later *minor*, so the day React
+ * 19.3.0 shipped npm resolved the app's own `react` to it while the engine still
+ * required `19.2.x` — and refused to install the tree it had just been asked to
+ * build. Every generated app broke at once, with no change on anyone's part,
+ * because the scaffold had widened the range past what the peer it was derived
+ * from allows.
+ *
+ * `~19.2.0` is `19.2.x`: patches, and nothing further. The scaffold must never
+ * generate a range the engine would reject.
  */
 function installable(range: string): string {
   const minor = /^(\d+)\.(\d+)\.x$/.exec(range);
-  return minor ? `^${minor[1]}.${minor[2]}.0` : range;
+  return minor ? `~${minor[1]}.${minor[2]}.0` : range;
 }
 
 /*

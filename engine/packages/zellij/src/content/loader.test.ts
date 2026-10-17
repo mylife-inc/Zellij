@@ -291,6 +291,35 @@ describe('menu', () => {
     expect(site.menu[3]?.label).toBe('More');
     expect(site.menu[3]?.children).toHaveLength(2);
   });
+
+  // The threshold used to apply only where the menu was derived from the
+  // content, and an authored `menu.yaml` ignored it — which is the case that
+  // matters, because that is where someone adds one item too many. The bar
+  // neither wrapped nor scrolled: the last entries drew over the search field.
+  it('collapses an authored menu past the threshold too', async () => {
+    const site = await load({
+      'site.yaml': 'name: Test\nmenuOverflowAfter: 3\n',
+      'menu.yaml': [0, 1, 2, 3, 4].map((i) => `- name: M${i}\n  url: /m${i}\n`).join(''),
+      'pages.yaml': '- name: home\n  sections: [hero]\n',
+      'sections/hero.yaml': HERO,
+    });
+
+    expect(site.menu).toHaveLength(4);
+    expect(site.menu.slice(0, 3).map((item) => item.label)).toEqual(['M0', 'M1', 'M2']);
+    expect(site.menu[3]?.label).toBe('More');
+    expect(site.menu[3]?.children?.map((child) => child.label)).toEqual(['M3', 'M4']);
+  });
+
+  it('leaves an authored menu alone when it fits', async () => {
+    const site = await load({
+      'site.yaml': 'name: Test\nmenuOverflowAfter: 7\n',
+      'menu.yaml': '- name: One\n  url: /one\n- name: Two\n  url: /two\n',
+      'pages.yaml': '- name: home\n  sections: [hero]\n',
+      'sections/hero.yaml': HERO,
+    });
+
+    expect(site.menu.map((item) => item.label)).toEqual(['One', 'Two']);
+  });
 });
 
 /* ------------------------------------------------------------------- home */

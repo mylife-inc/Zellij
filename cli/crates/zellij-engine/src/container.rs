@@ -277,6 +277,15 @@ fn own_output_as(_out: &Utf8Path) -> String {
 /// failure. 97 is arbitrary and outside anything Node or the checker uses.
 const EMPTY_MOUNT: i32 = 97;
 
+/// Exit code the wrapper uses to say the content itself failed validation.
+///
+/// The build script runs `check` before it runs anything else, so once that has
+/// passed, a later failure is provably not the content's fault. Without a code
+/// of its own, every failure after it — a dependency conflict, a network blip,
+/// an out-of-memory kill — was reported as "the content folder is not valid",
+/// which sent us reading YAML while npm was the thing that had failed.
+const CONTENT_INVALID: i32 = 96;
+
 /// Check the mount before trusting it.
 ///
 /// A bind mount of a path the runtime does not share does not fail — it
@@ -342,19 +351,10 @@ impl Engine for ContainerEngine {
             });
         }
 
+        let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!("{}:/app/node_modules", self.modules_volume());
-
-        // The output directory has to exist before it can be mounted, and
-        // creating it here means `--out` can name somewhere that does not exist
-        // yet, which is what anyone would expect of an output path.
-        std::fs::create_dir_all(out)?;
-        let absolute_out = out
-            .canonicalize_utf8()
-            .map_err(|_| Error::NoContentFolder {
-                path: out.to_owned(),
-            })?;
-        let out_mount = format!("{absolute_out}:/out");
+        let out_mount = format!("{}:/out", output.directory);
 
         // Give the output back to whoever asked for it.
         //
@@ -373,15 +373,15 @@ impl Engine for ContainerEngine {
         // just created by this process and therefore carries the invoking
         // user's ids — no `getuid` binding, and correct under `sudo` too, where
         // the directory belongs to whoever the command really ran as.
-        let handback = own_output_as(out);
+        let handback = own_output_as(&output.directory);
 
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
-                "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
+                "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
                  npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
-                 rm -rf /out/* && cp -a out/. /out/{handback}"
+                 cp -a out/. /out/{handback}"
             ),
         );
 
@@ -403,8 +403,9 @@ impl Engine for ContainerEngine {
             Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
                 path: content.to_owned(),
             }),
-            Some(0) => Ok(()),
-            _ => Err(Error::ContentInvalid),
+            Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
+            Some(0) => output.publish(),
+            _ => Err(Error::BuildFailed),
         }
     }
 }

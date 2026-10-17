@@ -28,6 +28,16 @@ Everything else is a detail of those two.
 
 Every route is rendered to a file at build time.
 
+Choose an output directory outside the content folder. It must be new, empty,
+or a previous export produced by this version of `zel`. A successful export
+contains a `.zellij-output` marker identifying it as replaceable build output.
+Keep authored files elsewhere: rebuilding replaces the export as a whole.
+
+Builds run in a temporary sibling directory. A failed build leaves the previous
+export intact; a successful build replaces it, including removing obsolete
+pages. If an older export has no marker, choose a new output directory rather
+than adding the marker by hand.
+
 ```
 dist/
 ├── index.html

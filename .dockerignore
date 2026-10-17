@@ -12,3 +12,6 @@ cli/target
 docker
 specs
 *.md
+.claude/settings.local.json
+.env
+.env.local
