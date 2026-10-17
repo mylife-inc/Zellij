@@ -31,7 +31,7 @@ RUN npm ci --ignore-scripts \
 # sources, tests and tooling stay behind.
 RUN mkdir -p /out \
  && cd engine/packages/zellij \
- && cp -r package.json next-config.mjs bin dist src /out/
+ && cp -r package.json next-config.mjs deployment-config.cjs deployment-config.d.cts bin dist src /out/
 
 
 # ------------------------------------------------------------------ base image

@@ -187,7 +187,7 @@ const NEXT_CONFIG = `import { withZellij } from '@shebka/zellij/next-config';
 
 /**
  * Everything Zellij needs is in \`withZellij\`. Add your own Next options here
- * and they win — the helper only fills in what it must.
+ * (a basePath set both here and in content must agree).
  *
  * @type {import('next').NextConfig}
  */

@@ -3,7 +3,7 @@ import { assetHref } from '../content/asset-href';
 
 /**
  * Screenshots go through `next/image` so guide pages keep the same image
- * budget as marketing pages (spec §11.6). `next/image` applies basePath itself.
+ * budget as marketing pages (spec §11.6). Its source needs an explicit basePath.
  */
 export function Screenshot({
   src,

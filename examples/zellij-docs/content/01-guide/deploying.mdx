@@ -45,29 +45,46 @@ payos/
 
 ## Under a path prefix
 
-To serve at `example.com/products/acme/docs`, set the prefix in **both** places:
+To serve at `example.com/products/acme/docs`, set the prefix once in content:
+
+```yaml title="site.yaml"
+basePath: /products/acme/docs
+```
+
+The generated wrapper uses `withZellij()`, which reads that value for Next's
+build and passes the same prefix to Zellij's runtime. Rebuild after changing it;
+Next embeds the prefix in browser bundles.
+
+If the wrapper owns deployment settings, omit `basePath` from content and set it
+in Next instead:
 
 ```js title="next.config.js"
-export default {
-  basePath: '/products/acme/docs',
-  transpilePackages: ['@shebka/zellij'],
-};
+import { withZellij } from '@shebka/zellij/next-config';
+
+export default withZellij({ basePath: '/products/acme/docs' });
 ```
 
-```tsx title="src/app/[[...slug]]/page.tsx"
-const zellij = createZellijPages({ basePath: '/products/acme/docs' });
+For a custom content root, give `withZellij` the same path as preparation and
+all runtime factories:
+
+```js
+export default withZellij({}, { contentDir: '../../docs/external' });
 ```
 
-Next applies the prefix to `<Link>` and to optimized `next/image` URLs. Zellij's
-own value covers everything Next does not: the search index fetch, unoptimized
-images, plain `<img>` and `<video>` sources, and the sitemap.
+The second argument also accepts `appRoot` and `configFile` for a legacy config.
+Matching repeated prefix settings are allowed. Conflicting explicit settings,
+including an explicit empty string, fail with a diagnostic. Remove the content
+setting when the wrapper owns it. The internal `ZELLIJ_BASE_PATH` build value is
+reserved; configure the prefix through `site.yaml` or `withZellij`.
 
-<Callout type="warning" title="This is the trap worth testing">
-`next/image` emits `src` verbatim for unoptimized assets, so a logo that works
-at the root 404s under a prefix. Zellij has an automated check for exactly
-this — eleven assertions against a real build served behind the prefix — because
-it is the kind of breakage nobody notices until production.
-</Callout>
+Next prefixes its links and resources. Zellij prefixes image sources, search
+requests, social-card images and sitemap URLs. CI checks a production build with
+home/guide redirects, nested links, optimized and ordinary images, fonts/scripts,
+search navigation and metadata under a nonempty prefix.
+
+This is HTTP deployment support. Directly opening an exported `index.html` with
+`file://` is a separate planned portable-output capability; today's export does
+not promise that behavior.
 
 ## SEO
 

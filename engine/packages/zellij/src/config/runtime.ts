@@ -3,9 +3,12 @@ import { stat } from 'node:fs/promises';
 import { ZellijContentError } from '../errors';
 import { FolderContentSource } from '../content/folder-source';
 import { LegacyContentSource } from '../content/legacy-source';
-import { exists } from '../content/fs-utils';
 import { loadSite, type Site } from '../content/site';
 import type { ContentSource } from '../content/types';
+import {
+  resolveContentPaths, resolveContentLocation, normalizeDeploymentBasePath, resolveDeploymentBasePath,
+} from '../../deployment-config.cjs';
+export { resolveContentPaths } from '../../deployment-config.cjs';
 
 export interface ZellijRuntimeOptions {
   /**
@@ -19,7 +22,7 @@ export interface ZellijRuntimeOptions {
    * checked out; everything about the site itself is inside the folder.
    */
   contentDir?: string;
-  /** Mirrors next.config basePath. Overrides `basePath` in site.yaml. */
+  /** Must agree with the prefix compiled by withZellij during a Next build. */
   basePath?: string;
   /** Legacy layout only: path to zellij.config.yaml. */
   configFile?: string;
@@ -33,15 +36,6 @@ export interface ZellijRuntime {
   layout: 'folder' | 'legacy';
 }
 
-export function resolveContentPaths(options: ZellijRuntimeOptions = {}): {
-  appRoot: string;
-  configFile: string;
-} {
-  const appRoot = path.resolve(options.appRoot ?? process.cwd());
-  const configFile = path.resolve(appRoot, options.configFile ?? 'zellij.config.yaml');
-  return { appRoot, configFile };
-}
-
 /**
  * Picks a content source by what the folder contains — design §12.
  *
@@ -52,21 +46,19 @@ export function resolveContentPaths(options: ZellijRuntimeOptions = {}): {
 export async function createContentSource(
   options: ZellijRuntimeOptions = {},
   warn: (message: string) => void = options.onWarning ?? ((message) => console.warn(`[zellij] ${message}`)),
-): Promise<{ source: ContentSource; contentDir: string; layout: 'folder' | 'legacy' }> {
-  const { appRoot, configFile } = resolveContentPaths(options);
-
-  let contentDir = options.contentDir
-    ? path.resolve(appRoot, options.contentDir)
-    : path.resolve(appRoot, 'content');
-
-  // The old config named its own content directory, so it has to be read before
-  // we know where to look.
-  const hasLegacyConfig = await exists(configFile);
-  if (!options.contentDir && hasLegacyConfig) {
-    const bootstrap = new LegacyContentSource({ contentDir: appRoot, configFile, onWarning: warn });
-    const legacy = await bootstrap.loadLegacyConfig();
-    contentDir = path.resolve(appRoot, legacy.content);
+): Promise<{ source: ContentSource; contentDir: string; layout: 'folder' | 'legacy'; basePath: string }> {
+  const {
+    appRoot, configFile, contentDir, layout, basePath: authoredBasePath, legacyConfigUsed,
+  } = resolveContentLocation(options);
+  // Preserve full legacy validation even when its content path selects a new
+  // folder-layout site. The shared bootstrap only reads deployment fields.
+  if (legacyConfigUsed) {
+    await new LegacyContentSource({ contentDir: appRoot, configFile, onWarning: warn }).loadLegacyConfig();
   }
+  const builtBasePath = process.env.ZELLIJ_BASE_PATH;
+  const basePath = builtBasePath === undefined
+    ? normalizeDeploymentBasePath(options.basePath ?? authoredBasePath)
+    : resolveDeploymentBasePath(authoredBasePath, options.basePath, builtBasePath);
 
   const root = await stat(contentDir).catch((error: NodeJS.ErrnoException) => {
     if (error.code !== 'ENOENT') throw error;
@@ -74,7 +66,7 @@ export async function createContentSource(
   });
   if (!root?.isDirectory()) throw new ZellijContentError(`No content directory at ${contentDir}`, contentDir);
 
-  if (await exists(path.join(contentDir, 'marketing'))) {
+  if (layout === 'legacy') {
     warn(
       `${contentDir} uses the legacy marketing/ layout. It still builds, but the layout is ` +
         `deprecated — see specs/zellij-content-model-design.md §12 for the migration.`,
@@ -83,17 +75,19 @@ export async function createContentSource(
       source: new LegacyContentSource({ contentDir, configFile, onWarning: warn }),
       contentDir,
       layout: 'legacy',
+      basePath,
     };
   }
 
   return {
     source: new FolderContentSource({
       contentDir,
-      ...(options.basePath !== undefined ? { basePath: options.basePath } : {}),
+      basePath,
       onWarning: warn,
     }),
     contentDir,
     layout: 'folder',
+    basePath,
   };
 }
 
@@ -119,36 +113,40 @@ export async function createContentSource(
  */
 const DEV_TTL_MS = 250;
 
-let cached: Promise<ZellijRuntime> | undefined;
-let cachedAt = 0;
-
-function stillFresh(): boolean {
-  if (!cached) return false;
-  if (process.env.NODE_ENV === 'production') return true;
-  return Date.now() - cachedAt < DEV_TTL_MS;
-}
+const cache = new Map<string, { value: Promise<ZellijRuntime>; createdAt: number }>();
 
 export function loadZellijRuntime(options: ZellijRuntimeOptions = {}): Promise<ZellijRuntime> {
-  if (stillFresh()) return cached!;
-
-  cachedAt = Date.now();
-
-  cached = (async () => {
+  const { appRoot, configFile } = resolveContentPaths(options);
+  const key = JSON.stringify([
+    appRoot, configFile,
+    options.contentDir === undefined ? null : path.resolve(appRoot, options.contentDir),
+    options.basePath ?? null, process.env.ZELLIJ_BASE_PATH ?? null,
+  ]);
+  const now = Date.now();
+  const cached = cache.get(key);
+  if (cached && (process.env.NODE_ENV === 'production' || now - cached.createdAt < DEV_TTL_MS)) {
+    return cached.value;
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    for (const [oldKey, entry] of cache) if (now - entry.createdAt >= DEV_TTL_MS) cache.delete(oldKey);
+  }
+  const value = (async () => {
     const warn = options.onWarning ?? ((message: string) => console.warn(`[zellij] ${message}`));
-    const { source, contentDir, layout } = await createContentSource(options, warn);
-
+    const { source, contentDir, layout, basePath } = await createContentSource(options, warn);
     const site = await loadSite(source);
-    if (options.basePath !== undefined) site.config.basePath = options.basePath;
-
+    site.config.basePath = basePath;
     for (const warning of site.warnings) warn(warning);
-
     return { site, contentDir, layout };
   })();
-
-  return cached;
+  cache.set(key, { value, createdAt: now });
+  // A failed load must not poison the process after its input is repaired.
+  void value.catch(() => {
+    if (cache.get(key)?.value === value) cache.delete(key);
+  });
+  return value;
 }
 
 /** Test/dev hook — drops the memoized runtime. */
 export function resetZellijRuntime(): void {
-  cached = undefined;
+  cache.clear();
 }

@@ -79,14 +79,14 @@ export function createZellijPages(options: ZellijRuntimeOptions = {}) {
         type: 'website',
         url: canonical,
         ...(site.config.ogImage
-          ? { images: [{ url: assetHref(site.config.ogImage), alt: title }] }
+          ? { images: [{ url: assetHref(site.config.ogImage, site.config.basePath), alt: title }] }
           : {}),
       },
       twitter: {
         card: 'summary_large_image',
         title,
         ...(description ? { description } : {}),
-        ...(site.config.ogImage ? { images: [assetHref(site.config.ogImage)] } : {}),
+        ...(site.config.ogImage ? { images: [assetHref(site.config.ogImage, site.config.basePath)] } : {}),
       },
       robots: { index: true, follow: true },
     };

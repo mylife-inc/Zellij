@@ -283,7 +283,7 @@ motion: subtle                     # none | subtle | expressive
 home: home                         # optional; default is the first menu item
 menuOverflowAfter: 7               # optional; derived menus collapse past this
 
-basePath: ""                       # mirror of next.config basePath — keep in sync
+basePath: ""                       # withZellij reads this for Next; rebuild after changes
 siteUrl: https://acme.example.com  # required for absolute OG/canonical URLs and sitemap
 ogImage: assets/og.png             # optional social share image
 
@@ -801,26 +801,27 @@ Set `nav.search: true`. `zellij search-index` writes a static JSON index at buil
 
 ## Deploying under a path prefix
 
-To serve at `example.com/products/acme/docs`, set the prefix in **both** places:
-
-```js
-// next.config.js
-export default { basePath: '/products/acme/docs', transpilePackages: ['@shebka/zellij'] };
-```
+Set the prefix once in `content/site.yaml`:
 
 ```yaml
-# content/site.yaml
 basePath: "/products/acme/docs"
 ```
 
-or pass it from the wrapper instead, which keeps the content root free of
-anything about where it is deployed:
+The generated `withZellij()` Next config reads that value and supplies the same
+build-time prefix to rendering. For custom content, use
+`withZellij({}, { contentDir: '../content' })` and pass the same content root to
+preparation and runtime factories. `appRoot` and legacy `configFile` are also
+accepted in the second argument.
 
-```tsx
-const zellij = createZellijPages({ basePath: '/products/acme/docs' });
-```
+Alternatively omit the content setting and use
+`withZellij({ basePath: '/products/acme/docs' })`. Matching duplicates work;
+conflicting explicit values fail instead of producing inconsistent URLs.
+`ZELLIJ_BASE_PATH` is reserved for the resolved build-time value. Rebuild after
+changing the prefix. Links, Next resources, image sources, search, social images
+and sitemap URLs use the same prefix.
 
-Next applies the prefix to `<Link>` and optimized `next/image` URLs; Zellij's `basePath` value covers everything else — the search index fetch, unoptimized images, and the sitemap.
+HTTP deployment and direct-file viewing are separate capabilities. Portable
+`file://` output is planned; the current Next static export does not satisfy it.
 
 ---
 
