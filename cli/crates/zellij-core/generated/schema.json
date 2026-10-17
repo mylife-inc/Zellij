@@ -25,6 +25,31 @@
     "video-embed",
     "zigzag"
   ],
+  "sectionTemplates": {
+    "bento-grid": "type: bento-grid\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
+    "card-carousel": "type: card-carousel\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# link:\n#   label: TODO\n#   href: \"#\"\n# narrow | medium | wide\n# cardWidth: medium\n",
+    "code-cards": "type: code-cards\ncards:\n  - title: TODO\n    code:\n      body: TODO\n  - title: TODO\n    code:\n      body: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# eyebrow: TODO\n# footnote: TODO\n",
+    "cta-banner": "type: cta-banner\nheadline: TODO\n\n# Uncomment what you need.\n# body: TODO\n# command: TODO\n# cta:\n#   label: TODO\n#   href: \"#\"\n",
+    "faq": "type: faq\nitems:\n  - question: TODO\n    answer: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
+    "feature-grid": "type: feature-grid\nitems:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# columns: 3\n",
+    "gallery": "type: gallery\nitems:\n  - image: assets/replace-me.svg\n  - image: assets/replace-me.svg\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# columns: 3\n# lightbox: true\n",
+    "hero": "type: hero\nheadline: TODO\n\n# Uncomment what you need.\n# subhead: TODO\n# badge: TODO\n# cta:\n#   - label: TODO\n#     href: \"#\"\n# visual: assets/replace-me.svg\n# floating | framed | full-bleed\n# visualStyle: floating\n",
+    "hero-split": "type: hero-split\nheadline: TODO\nterminal:\n  body: $ zel --help\n\n# Keep exactly one of: visual, terminal.\n# Uncomment what you need.\n# subhead: TODO\n# badge: TODO\n# badgeIcon: TODO\n# cta:\n#   - label: TODO\n#     href: \"#\"\n# highlights:\n#   - label: TODO\n# left | right\n# media: right\n# visual: assets/replace-me.svg\n",
+    "logo-strip": "type: logo-strip\nlogos:\n  - assets/replace-me.svg\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n",
+    "markdown-prose": "type: markdown-prose\nbody: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
+    "matrix": "type: matrix\ncolumns:\n  - label: TODO\n  - label: TODO\nrows:\n  - label: TODO\n    cells:\n      - TODO\n      - TODO\n  - label: TODO\n    cells:\n      - TODO\n      - TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# eyebrow: TODO\n# rowAxis: TODO\n# columnAxis: TODO\n# footnote: TODO\n",
+    "media-panel": "type: media-panel\nimage: assets/replace-me.svg\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Keep exactly one of: image, video.\n# Uncomment what you need.\n# heading: TODO\n# eyebrow: TODO\n# title: TODO\n# body: TODO\n# video: assets/replace-me.mp4\n# poster: assets/replace-me.svg\n# alt: \"\"\n# left | center | right\n# align: left\n# light | dark | auto\n# tone: auto\n# ultrawide | wide | square | portrait\n# ratio: wide\n# scrim: 0\n# cta:\n#   - label: TODO\n#     href: \"#\"\n# href: \"#\"\n",
+    "pricing-table": "type: pricing-table\ntiers:\n  - name: TODO\n    price: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
+    "promo-grid": "type: promo-grid\nitems:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# none | tight | normal\n# gap: normal\n",
+    "showcase": "type: showcase\nheadline: TODO\n\n# Uncomment what you need.\n# eyebrow: TODO\n# body: TODO\n# visual: assets/replace-me.svg\n# cta:\n#   label: TODO\n#   href: \"#\"\n",
+    "stats-band": "type: stats-band\nstats:\n  - value: TODO\n    label: TODO\n  - value: TODO\n    label: TODO\n  - value: TODO\n    label: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
+    "steps-panel": "type: steps-panel\nsteps:\n  - title: TODO\n  - title: TODO\nterminal:\n  body: $ zel --help\n\n# Keep exactly one of: visual, terminal, diagram.\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# left | right\n# media: right\n# visual: assets/replace-me.svg\n# diagram: |-\n#   flowchart LR\n#     Start --> Finish\n# caption: TODO\n",
+    "team-grid": "type: team-grid\npeople:\n  - name: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# columns: 3\n",
+    "testimonial": "type: testimonial\nquotes:\n  - quote: TODO\n    author: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
+    "timeline": "type: timeline\nitems:\n  - date: TODO\n    title: TODO\n  - date: TODO\n    title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
+    "video-embed": "type: video-embed\nsrc: assets/replace-me.mp4\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# poster: assets/replace-me.svg\n# caption: TODO\n",
+    "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
+  },
   "sections": {
     "bento-grid": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

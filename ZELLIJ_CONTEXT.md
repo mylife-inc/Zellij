@@ -16,8 +16,8 @@ The user subsequently authorized implementation and the repository setup.
 Before the visibility change, Gitleaks 8.30.1 scanned all 134 reachable commits
 and reported no detected leaks. No historical rewrite was performed.
 
-Implementation is tracked in [PR #1](https://github.com/mylife-inc/Zellij/pull/1)
-on `codex/safe-cli-writes`. Commit `1a2e26b` adds shared output-path/collision
+The first milestone merged in [PR #1](https://github.com/mylife-inc/Zellij/pull/1)
+as `6950589`. Commit `1a2e26b` adds shared output-path/collision
 checks, conversion source containment, protected page/guide creation, staged
 static exports, and streamed image Dockerfiles. `deda7a0` restores the browser
 job's engine-build prerequisite; `bd6b6c6` bounds file-descriptor use during
@@ -41,8 +41,58 @@ new CLI; never mark an authored directory as generated output.
 A clean `npm ci` restored the missing local packages. `npm audit` also reported
 19 advisories (3 critical, 6 high, 6 moderate, 4 low). Next.js and Vitest upgrades
 need a separate compatibility-tested change; no automatic audit fix was applied.
-The first implementation milestone remains safe writes plus a reliable CI
-baseline, rather than all remaining product features in one change.
+This was the dependency baseline before the second milestone below.
+
+### Dependency and template update — 2026-10-16
+
+The user authorized continuing. Commit `17d5a23`, tracked in
+[PR #2](https://github.com/mylife-inc/Zellij/pull/2), removes the 19 reported
+npm advisories and fixes the invalid section scaffolds (audit R4). The locked
+tree and a freshly generated standalone app with all features both report
+**zero npm advisories** at this date; this is not a claim that all bugs are gone.
+
+- Next.js is `16.4.2`; Vitest resolves to `4.1.12`, Vite `7.3.7`, Mermaid
+  `11.17.2`, KaTeX `0.18.10`, esbuild `0.28.2`, and XML DOM `0.9.12`.
+- Scoped dependency overrides keep optional math/diagram chains patched.
+  The engine manifest carries the production overrides; `zellij init` and
+  feature changes copy them to the app root, where npm actually enforces them.
+  Manual wrappers must carry that map too. The repository additionally
+  overrides tsup's esbuild. Tests keep the shared constraints in agreement.
+- `src/content/frontmatter.ts` replaces gray-matter, using the existing YAML
+  package for guides, prose, and search. Metadata must be a YAML mapping with
+  a closing delimiter; executable language tags are rejected. BOM, Windows
+  newlines, nested values, and multiline scalars are tested.
+- `src/cli/section-templates.ts` generates YAML from schema shapes and bounds,
+  chooses valid media alternatives, and validates the serialized result with
+  the complete Zod schemas. `context --json` embeds `sectionTemplates`; Rust
+  copies those strings instead of guessing nested types and list lengths.
+  Templates contain TODO text and explicit replaceable media paths. The
+  command writes only YAML; authors supply their actual assets.
+- CI audits dependencies, validates and statically exports all 23 templates
+  emitted by the actual Rust binary, and tests formulas/Mermaid math labels
+  in browsers. Browser failures retain traces and the job has a time limit.
+
+Local verification: **260 engine tests**, **99 Rust tests**, formatting,
+warnings-denied Clippy, workspace typechecks, engine packaging, all four
+example content checks, and all 23 Rust-generated template checks pass.
+The showcase production build passes with webpack. Local Turbopack hits the
+execution sandbox's helper-process port restriction; the normal Turbopack
+build and container/browser acceptance are hosted CI gates. Consult PR #2's
+latest checks for their results. No new native CLI release is issued here.
+
+Hosted run `39004471983` at `d8c9f5d` passed all four jobs: engine, schema sync,
+CLI/container acceptance, and browsers. The normal Turbopack build and all 23
+template static exports passed; **297 browser tests passed**, with **114
+conditional skips and no retries**. A minimal (`--features none`) fresh wrapper
+also audited clean. Its lockfile still includes Mermaid, remark-math and
+rehype-mathjax through the engine's optional dependencies; audit follow-up S11
+tracks that feature-selection/package-size defect separately.
+
+CI reliability history: after PR #1, run `39001111736` initially stalled on
+repeated mobile-WebKit navigation timeouts. Its fresh-runner retry passed all
+294 tests (114 conditional skips). This is not a diagnosed/fixed browser bug.
+The separate automated security-review plugin failed its PR #2 commit review
+with HTTP 400; that review must not be represented as passed.
 
 ## 1. Product and user's intentions
 
@@ -135,9 +185,9 @@ and custom-content-directory discrepancies.
 
 - npm workspaces: `engine/packages/*` and `examples/*`; committed npm lockfile.
 - Engine package version `0.1.0`; Rust workspace version `0.1.3`.
-- Examples currently pin Next `16.2.12`, React/React DOM `19.2.8`; TypeScript
-  `5.9.3` range. Engine peer ranges are Next `16.2.x`, React `19.2.x`.
-- Manifests declare Node `>=20.11`; CI and Docker use Node 24. Audit used Node
+- Examples now pin Next `16.4.2`, React/React DOM `19.2.8`; TypeScript
+  `5.9.3` range. Engine peer ranges are Next `~16.4.2`, React `19.2.x`.
+- Manifests declare Node `^20.19.0 || >=22.12.0`; `.nvmrc`, CI and Docker use Node 24. Audit used Node
   `24.19.0`. Rust declares edition 2024 / minimum 1.85; audit used Rust 1.99.0.
   Minimum-version compatibility was not tested.
 - Local package exports point at source, consumed through Next's
@@ -321,8 +371,9 @@ does not prove MDX compiles or all links/images work.
 
 Remaining order after the safety/CI milestone, subject to the user's v1 scope decision:
 
-1. Compatibility-tested dependency remediation; converter links/assets;
-   generated-content correctness and meaningful end-to-end validation.
+1. Converter links/assets (R5), safe YAML quoting (R6), starter/discovery fixes
+   (R7/R8), shared routing/preparation and validation (R10–R13). Dependency
+   remediation and all 23 section template schemas are addressed in PR #2.
 2. Header placement/width-aware overflow and the reproduced search/route bugs.
 3. Finish the agreed CLI subset, configuration, and truthful help/docs.
 4. Exercise releases and installers on every supported platform, including

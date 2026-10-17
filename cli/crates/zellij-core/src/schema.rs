@@ -71,6 +71,11 @@ pub fn is_section_type(name: &str) -> bool {
     section_types().iter().any(|known| known == name)
 }
 
+/// Ready-to-edit YAML, validated against the full Zod schema when generated.
+pub fn section_template(section_type: &str) -> Option<&'static str> {
+    SCHEMA.get("sectionTemplates")?.get(section_type)?.as_str()
+}
+
 /// The fields of a section type, shared ones excluded.
 pub fn fields_of(section_type: &str) -> Option<Vec<Field>> {
     let schema = SCHEMA.get("sections")?.get(section_type)?;

@@ -65,7 +65,7 @@ export default defineConfig([
      * Bundled means bundled.
      *
      * tsup treats everything in `dependencies` as external, so these entries
-     * came out importing `zod`, `yaml` and `gray-matter` from node_modules —
+     * came out importing `zod` and `yaml` from node_modules —
      * fine wherever the package is installed, and fatal in the base image,
      * which carries the engine at `/opt/zellij` and installs nothing. `zel
      * check` runs there with no `npm install`, which is the whole reason it

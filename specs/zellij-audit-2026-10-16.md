@@ -54,6 +54,54 @@ compatibility tests in a separate change. R4–R13 and S2–S6/S8–S10 remain o
 as do the requested header work and native Windows support. See
 [project context](../ZELLIJ_CONTEXT.md) for the current next-work order.
 
+## Implementation record — dependency and section-template milestone
+
+The paragraph above records the first milestone's handoff. Its dependency
+and R4 follow-ups are implemented in `17d5a23`, tracked in
+[PR #2](https://github.com/mylife-inc/Zellij/pull/2).
+
+- **Dependency advisories:** the locked repository tree and a fresh standalone
+  wrapper with all features now audit with zero reported advisories. Next.js
+  16.4.2, Vitest 4.1.12, Mermaid 11.17.2 and patched transitive dependencies
+  replace the affected versions. Production math/diagram overrides propagate
+  into generated app roots, because npm ignores dependency-owned overrides.
+- **Front matter parsing:** remove gray-matter and its obsolete YAML chain.
+  The shared YAML parser rejects executable language tags and malformed
+  metadata; tests cover prose preservation, nested/multiline data, BOM/CRLF,
+  missing delimiters, and unsupported languages.
+- **R4:** the engine generates each section's ready-to-edit YAML and validates
+  it with the full Zod schema before embedding it in Rust. Arrays respect
+  minima, objects preserve their shape, matrix dimensions agree, and media
+  alternatives satisfy refinements. The CLI no longer guesses from flattened
+  field descriptions. Authored media are still explicit placeholders to replace;
+  CI supplies real image/video fixtures when exporting the generated content.
+
+Verification at this implementation: 260 engine tests, 99 Rust tests,
+warnings-denied Clippy, formatting, workspace typechecks, engine packaging,
+all four example content checks, all 23 actual Rust-emitted template checks,
+and a showcase webpack production build pass locally. CI adds complete
+23-template static export and math/diagram browser regression checks. The
+normal Turbopack build cannot run inside this local sandbox's helper-process
+port restriction; see PR #2's latest hosted checks for that build, export and
+browser results before treating the change as release-ready.
+
+Hosted run `39004471983` at `d8c9f5d` subsequently passed every job, including
+the normal Turbopack production build, initial/failing/replacement exports,
+and static export of all 23 generated templates. The browser suite passed
+**297 tests**, with **114 conditional skips and no retries**.
+
+PR #1 merged as `6950589`. All four base-image feature variants were published
+for AMD64 and ARM64 by run `39001111783`; no new native binaries were released.
+Post-merge browser run `39001111736` had mobile-WebKit navigation timeouts on
+its first attempt and passed 294 tests with 114 conditional skips on its retry.
+The cause remains unproven. PR #2 retains failure artifacts to aid diagnosis.
+The automated security-review plugin's commit review failed with API HTTP 400,
+so there is no successful result from that separate review service.
+
+R5–R13 and S2–S6/S8–S10, the requested header changes, and native Windows
+support remain work for later milestones. Historical findings below retain
+their original wording and reproductions.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -364,6 +412,24 @@ The old single-platform comment in `scripts/publish.sh` is **not** evidence of
 today's image-platform coverage; the live manifest contains both architectures.
 Likewise, a missing local dependency is not evidence of a source-level build
 failure in a clean environment.
+
+### S11 — P3: feature selection does not produce the promised small dependency tree
+
+Observed during the dependency milestone, after the initial audit: generate a
+fresh wrapper with `zellij init ... --features none`, then resolve its lockfile
+with `npm install --package-lock-only --ignore-scripts`. Despite no direct
+math/diagram dependencies in the wrapper, the resolved tree still includes
+Mermaid 11.17.2, remark-math 6.0.0, and rehype-mathjax 7.1.0. The engine's own
+`optionalDependencies` request them, and ordinary npm installation includes
+optional dependencies. Both minimal and all-feature wrappers audit clean;
+this is a package-size/feature-selection defect, not a remaining advisory.
+
+**Sources:** `engine/packages/zellij/package.json`, `src/cli/init.ts` feature
+selection, `docker/base.Dockerfile`, and the container's ordinary npm install.
+**Acceptance:** optional packages are absent from an installed minimal wrapper,
+selected features actually install and render, and transitions between feature
+sets do not retain unrequested packages. Verify installed trees and image sizes,
+not only the wrapper's direct dependency list. This follow-up remains open.
 
 ## User-requested UI and platform work
 

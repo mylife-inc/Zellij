@@ -21,8 +21,9 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: npm audit --audit-level=low
       - run: npm run typecheck
-      - run: npx vitest run --root engine/packages/zellij
+      - run: npm test
       - run: npm run build --workspace @shebka/zellij
 
   # The guarantee that the CLI and the engine cannot disagree.
@@ -156,9 +157,25 @@ jobs:
           grep -q 'Updated site' "$work/site/index.html"
           test ! -e "$work/site/obsolete.html"
 
+      - name: Every Rust section template validates and renders
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: |
+          set -euo pipefail
+          work=$(mktemp -d)
+          node scripts/check-section-templates.mjs cli/target/debug/zel "$work/content"
+          cli/target/debug/zel build "$work/content" --out "$work/site"
+          test -s "$work/site/index.html"
+          for type in $(node -p "require('./cli/crates/zellij-core/generated/schema.json').sectionTypes.filter(t => t !== 'hero').join(' ')"); do
+            test -s "$work/site/$type.html"
+          done
+          test -s "$work/site/_zellij/assets/replace-me.svg"
+          test -s "$work/site/_zellij/assets/replace-me.mp4"
+
   e2e:
     name: Showcase end to end
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -175,3 +192,9 @@ jobs:
         working-directory: examples/showcase
       - run: npx playwright test
         working-directory: examples/showcase
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-failure-details
+          path: examples/showcase/test-results/
+          retention-days: 7

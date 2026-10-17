@@ -1,90 +1,13 @@
-//! A section file, generated from the schema the engine validates against.
-//!
-//! Required fields are written with a placeholder; optional ones are written
-//! **commented out, with their defaults**. Commented rather than omitted,
-//! because a field you can see and uncomment is discoverable and a field you
-//! have to look up is not.
+//! Section YAML is generated and validated by the engine, then embedded in zel.
+//! This preserves nested shapes, array bounds, and cross-field refinements.
 
-use zellij_core::schema::{self, Field};
+use zellij_core::schema;
 
 /// One section file for `section_type`, ready to edit.
-///
-/// An unknown type still produces a file — with only the shared fields — since
-/// the caller has already been told the type is unknown and writing nothing
-/// after saying so is a second failure.
 pub fn section_file(section_type: &str) -> String {
-    let mut out = format!("type: {section_type}\n");
-
-    let Some(fields) = schema::fields_of(section_type) else {
-        return out;
-    };
-
-    let (required, optional): (Vec<Field>, Vec<Field>) =
-        fields.into_iter().partition(|field| field.required);
-
-    for field in &required {
-        out.push_str(&render(field, section_type, false));
-    }
-
-    if !optional.is_empty() {
-        out.push_str("\n# Uncomment what you need.\n");
-        for field in &optional {
-            out.push_str(&render(field, section_type, true));
-        }
-    }
-
-    out
-}
-
-fn render(field: &Field, section_type: &str, commented: bool) -> String {
-    let prefix = if commented { "# " } else { "" };
-    let name = &field.name;
-
-    // A nested field is a list of objects far more often than a bare one, and
-    // showing its shape is the whole reason `zel explain` exists — a scaffold
-    // that wrote `cta:` and stopped would send the reader back to the docs.
-    if field.nested {
-        let mut out = format!("{prefix}{name}:\n");
-
-        if let Some(inner) = schema::nested_fields(section_type, name) {
-            let mut entry = String::new();
-            for sub in inner.iter().filter(|sub| sub.required) {
-                entry.push_str(&format!("{}: {}, ", sub.name, placeholder(sub)));
-            }
-            let entry = entry.trim_end_matches(", ").to_string();
-
-            if !entry.is_empty() {
-                out.push_str(&format!("{prefix}  - {{ {entry} }}\n"));
-                return out;
-            }
-        }
-
-        out.push_str(&format!("{prefix}  - {{}}\n"));
-        return out;
-    }
-
-    let value = field.default.clone().unwrap_or_else(|| placeholder(field));
-
-    let annotation = if !field.choices.is_empty() {
-        format!("   # {}", field.choices.join(" | "))
-    } else {
-        String::new()
-    };
-
-    format!("{prefix}{name}: {value}{annotation}\n")
-}
-
-fn placeholder(field: &Field) -> String {
-    if let Some(first) = field.choices.first() {
-        return first.clone();
-    }
-
-    match field.type_name.as_str() {
-        "boolean" => "false".into(),
-        "integer" | "number" => "0".into(),
-        t if t.starts_with("list") => "[]".into(),
-        _ => "TODO".into(),
-    }
+    schema::section_template(section_type)
+        .map(str::to_owned)
+        .unwrap_or_else(|| format!("type: {section_type}\n"))
 }
 
 #[cfg(test)]

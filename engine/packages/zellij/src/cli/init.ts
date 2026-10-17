@@ -53,19 +53,28 @@ function engineRoot(): string {
   return path.resolve(fileURLToPath(import.meta.url), '..', '..', '..');
 }
 
-async function enginePackage(): Promise<{ version: string; peers: Record<string, string> }> {
+async function enginePackage(): Promise<{
+  version: string;
+  peers: Record<string, string>;
+  overrides: Record<string, unknown>;
+}> {
   const raw = await readFile(path.join(engineRoot(), 'package.json'), 'utf8');
   const parsed = JSON.parse(raw) as {
     version: string;
     peerDependencies?: Record<string, string>;
+    overrides?: Record<string, unknown>;
   };
-  return { version: parsed.version, peers: parsed.peerDependencies ?? {} };
+  return {
+    version: parsed.version,
+    peers: parsed.peerDependencies ?? {},
+    overrides: parsed.overrides ?? {},
+  };
 }
 
 /**
  * Turns a peer range into something a fresh app can install.
  *
- * The engine pins its peers to a minor line — `16.2.x` — which npm accepts, but
+ * The engine pins its peers to a minor line — `16.4.x` — which npm accepts, but
  * a generated app reads better with a range so it picks up patches on its own.
  *
  * A tilde, not a caret. `^19.2.0` admits every later *minor*, so the day React
@@ -265,7 +274,7 @@ any problem it finds.
  */
 const FEATURE_PACKAGES: Record<string, Record<string, string>> = {
   maths: { 'remark-math': '^6.0.0', 'rehype-mathjax': '^7.1.0' },
-  diagrams: { mermaid: '^11.16.0' },
+  diagrams: { mermaid: '^11.17.2' },
 };
 
 export const FEATURE_NAMES = Object.keys(FEATURE_PACKAGES);
@@ -300,6 +309,7 @@ export async function setFeatures(target: string, features: readonly string[]): 
   const manifest = path.join(path.resolve(target), 'package.json');
   const parsed = JSON.parse(await readFile(manifest, 'utf8')) as {
     dependencies?: Record<string, string>;
+    overrides?: Record<string, unknown>;
   };
 
   const wanted = featureDependencies(features);
@@ -311,6 +321,7 @@ export async function setFeatures(target: string, features: readonly string[]): 
   for (const name of Object.keys(all)) delete dependencies[name];
 
   parsed.dependencies = { ...dependencies, ...wanted };
+  parsed.overrides = { ...parsed.overrides, ...(await enginePackage()).overrides };
   await writeFile(manifest, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8');
 
   return Object.keys(wanted);
@@ -350,7 +361,7 @@ export async function init(options: InitOptions): Promise<string> {
     return root;
   }
 
-  const { version, peers } = await enginePackage();
+  const { version, peers, overrides } = await enginePackage();
 
   const dependencies: Record<string, string> = {
     /*
@@ -377,7 +388,9 @@ export async function init(options: InitOptions): Promise<string> {
     version: '0.1.0',
     private: true,
     type: 'module',
-    engines: { node: '>=20.11' },
+    engines: { node: '^20.19.0 || >=22.12.0' },
+    // npm applies overrides only at the app root, never inside a dependency.
+    overrides,
     scripts: {
       // `prepare` syncs content assets into public/ and writes the search
       // index. Both are derived from the content folder, so they run before
