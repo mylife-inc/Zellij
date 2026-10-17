@@ -107,6 +107,8 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Native output works directly from disk without networking
         run: node scripts/check-portable.mjs
+      - name: Native HTTP preview, browser launch and console shutdown
+        run: node scripts/check-preview.mjs
 
   cli:
     name: CLI

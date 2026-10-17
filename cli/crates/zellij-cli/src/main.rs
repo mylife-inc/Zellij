@@ -12,6 +12,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use clap::{Parser, Subcommand};
 use serde_json::json;
 use std::io::Write;
+mod preview;
 
 #[derive(Parser)]
 #[command(
@@ -179,6 +180,31 @@ enum Command {
 
         #[arg(long, default_value_t = 3000)]
         port: u16,
+
+        /// URL prefix for an export configured with a deployment basePath.
+        #[arg(long, default_value = "/")]
+        base_path: String,
+    },
+
+    /// Build a portable Markdown site, serve it locally, and open a browser.
+    View {
+        #[arg(default_value = ".")]
+        dir: String,
+        #[arg(long)]
+        out: Option<String>,
+        #[arg(long)]
+        name: Option<String>,
+        #[arg(long)]
+        theme: Option<String>,
+        /// Local port; use 0 to choose an available port.
+        #[arg(long, default_value_t = 3000)]
+        port: u16,
+        /// Print the URL without launching a browser.
+        #[arg(long, conflicts_with = "browser")]
+        no_open: bool,
+        /// Browser executable to launch with the URL as its sole argument.
+        #[arg(long)]
+        browser: Option<String>,
     },
 
     /// Canonical formatting for the YAML.
@@ -401,6 +427,30 @@ fn main() {
             strict,
         } => check(dir, zellij_engine::CheckOptions { deep, strict }),
         Command::Dev { ref dir, port } => dev(dir, port),
+        Command::Serve {
+            ref dir,
+            port,
+            ref base_path,
+        } => preview::serve(dir, port, base_path),
+        Command::View {
+            ref dir,
+            ref out,
+            ref name,
+            ref theme,
+            port,
+            no_open,
+            ref browser,
+        } => preview::view(
+            dir,
+            preview::ViewOptions {
+                out: out.as_deref(),
+                name: name.as_deref(),
+                theme: theme.as_deref(),
+                port,
+                no_open,
+                browser: browser.as_deref(),
+            },
+        ),
         Command::Build {
             ref dir,
             ref target,
@@ -610,23 +660,7 @@ fn build_dispatch(
     }
     match target {
         "portable" => {
-            let source = Utf8Path::new(dir);
-            let output = out
-                .map(Utf8PathBuf::from)
-                .map(Ok)
-                .unwrap_or_else(|| zellij_docs::default_output(source))?;
-            let report = zellij_docs::build(
-                source,
-                &output,
-                zellij_docs::BuildOptions {
-                    name,
-                    theme: theme.unwrap_or("cupertino"),
-                },
-            )?;
-            for warning in report.warnings {
-                eprintln!("warning: {warning}");
-            }
-            println!("✓ {output}  ({} HTML pages)", report.pages);
+            let output = build_portable(dir, out, name, theme)?;
             println!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
                 output.join("index.html")
@@ -646,6 +680,32 @@ fn build_dispatch(
             "unknown build target {target:?}; run zel list targets"
         ))),
     }
+}
+
+fn build_portable(
+    dir: &str,
+    out: Option<&str>,
+    name: Option<&str>,
+    theme: Option<&str>,
+) -> zellij_core::Result<Utf8PathBuf> {
+    let source = Utf8Path::new(dir);
+    let output = out
+        .map(Utf8PathBuf::from)
+        .map(Ok)
+        .unwrap_or_else(|| zellij_docs::default_output(source))?;
+    let report = zellij_docs::build(
+        source,
+        &output,
+        zellij_docs::BuildOptions {
+            name,
+            theme: theme.unwrap_or("cupertino"),
+        },
+    )?;
+    for warning in report.warnings {
+        eprintln!("warning: {warning}");
+    }
+    println!("✓ {output}  ({} HTML pages)", report.pages);
+    Ok(output)
 }
 
 fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> {

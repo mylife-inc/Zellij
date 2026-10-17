@@ -9,6 +9,7 @@ use zellij_core::{Error, Result, files, output::StaticOutput};
 mod links;
 mod markdown;
 mod page;
+pub mod server;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
 
 pub struct BuildOptions<'a> {

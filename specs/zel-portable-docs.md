@@ -1,9 +1,8 @@
 # zel documentation workflow and portable HTML requirements
 
-Status: requirement recorded 2026-10-17; native portable build implemented in
-this milestone, with hosted cross-platform acceptance pending. `serve` and
-`view` remain planned. This extends the Next-based static export with a separate
-Rust renderer; the target does not depend on the Next router.
+Status: portable build merged in PR #12; native `serve` and composed `view`
+implemented in the next milestone (hosted acceptance pending). The native
+renderer and server are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
 same command syntax, including these three operations:
@@ -14,10 +13,10 @@ same command syntax, including these three operations:
 | Serve a generated site | Start a local HTTP server for an existing static output directory. This remains useful even though direct-file viewing also works. |
 | View a Markdown folder | Build the site, start the local server, and open its actual URL in the default browser. Compose the same build/serve implementations. |
 
-The build interface is implemented; the remaining proposed commands are `zel build <docs> --out <site>`, `zel serve <site>`, and
-`zel view <docs>`. Default target selection preserves hosted builds when structured content is
-discovered and otherwise uses portable Markdown. `--target portable` selects it
-explicitly; `--target static` retains the existing HTTP-only export.
+The implemented interfaces are `zel build <docs> --out <site>`,
+`zel serve <site>`, and `zel view <docs>`. Default build target selection keeps
+structured Zellij sites on the hosted static path; `view` always builds portable
+Markdown. `--target portable` selects that build target explicitly.
 
 ## Markdown input
 
@@ -133,8 +132,46 @@ installation, release packaging or container integration.
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Broken references/anchors/metadata fail build | Separate check command, warnings gate and structured reports |
 | Project scaffolding | Existing structured Zellij scaffolds | Decide portable starter/config workflow |
-| Serve an existing export | Planned | Loopback HTTP, MIME/routing, request containment and lifecycle |
-| View a source folder | Planned | Compose build/server, ready URL, browser launch and no-open |
+| Serve an existing export | Implemented | Preserve cross-platform routing/containment/lifecycle acceptance |
+| View a source folder | Implemented | Portable watch/rebuild and richer configuration |
 | Development rebuild/reload | Existing hosted dev workflow only | Portable watch/rebuild and reload acceptance |
 | Deploy/publish | Existing images and generated provider workflows | Finish chosen CLI providers and release scope |
 | Native distribution | Portable OS CI added | Release/install smoke tests, Windows packaging/installer |
+
+## Native serve/view contract — 2026-10-17
+
+`zellij-docs::server` serves existing exports using tiny_http and MIME detection.
+It binds only to 127.0.0.1, supports selected/ephemeral ports, prints the actual
+URL, serves GET/HEAD, and returns 405 for other methods. File bytes remain
+unchanged. Exact files, extensionless HTML routes, directory indexes and custom
+404 pages are supported. Directory redirects retain queries. `--base-path`
+mounts an export under an explicit prefix; it does not rewrite the artifact.
+
+Decoded request paths must stay beneath the resolved root. Traversal, malformed
+encodings, metadata paths, symlinks and Windows junctions are refused. No directory
+listing or home-page fallback occurs. The root must contain a regular index.html;
+unmarked exports are allowed. This is a local preview server, not a production
+hosting, TLS or authentication implementation. Responses use no-store and nosniff.
+
+`view` reserves its port before invoking the same portable build helper as
+`build --target portable`, starts the server, and invokes a launcher against
+its actual URL. `--no-open` skips launching; `--browser` accepts one executable
+path and passes the URL as a single argument. It conflicts with `--no-open`.
+Browser failure warns without taking down HTTP. The default uses the OS opener;
+automated launch acceptance uses a real substitute executable that requests the
+ready URL before recording success, avoiding GUI launches on test runners.
+
+Ctrl-C stops with exit 0 and releases the listener. POSIX termination signals
+are also handled. Response writers are bounded and do not block the control
+loop; shutdown can interrupt in-flight responses. Source and generated files
+are not deleted. Neither command watches, rebuilds or reloads on source edits.
+
+Real HTTP integration tests cover routes/MIME/HEAD/methods/prefixes/containment/
+port conflicts and listener release. `scripts/check-preview.mjs` exercises the
+actual binary without external tools on PATH, Chromium/WebKit under a prefix,
+port reservation before writes, launch ordering and failures, no-open, failed
+build preservation, junctions, and Ctrl-C with stalled clients. On Windows,
+`scripts/fixtures/preview-console.rs` puts only the tested child in a private
+console and sends a real Ctrl-C event; Node's forced process termination would
+not test the handler. The default desktop browser selection itself remains an
+OS-opener integration, not an automated GUI acceptance claim.

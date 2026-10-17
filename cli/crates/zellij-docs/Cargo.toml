@@ -17,6 +17,8 @@ serde_yaml_ng.workspace = true
 walkdir.workspace = true
 pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }
 syntect = { version = "5.3", default-features = false, features = ["default-syntaxes", "default-themes", "html", "regex-fancy"] }
+tiny_http = "0.12"
+mime_guess = "2"
 
 [dev-dependencies]
 tempfile = "3"
