@@ -115,8 +115,7 @@ generated.
 ```json
 {
   "scripts": {
-    "predev": "zellij prepare",
-    "dev": "next dev",
+    "dev": "zellij dev",
     "prebuild": "zellij prepare",
     "build": "next build"
   }
@@ -126,6 +125,8 @@ generated.
 | Command | Does |
 | --- | --- |
 | `zellij prepare` | `sync-assets` and `search-index` together — the usual choice |
+| `zellij dev -- --port 3000` | Prepares content, watches edits, and runs the installed Next dev server |
+| `zellij prepare --watch` | Watches preparation in a separate process when you own the server command |
 | `zellij sync-assets` | Copies `<content>/assets/**` → `public/_zellij/assets/**` |
 | `zellij search-index` | Writes `public/_zellij/search-index.json` |
 | `zellij check [dir] [--deep] [--strict]` | Fast content validation; optionally parse MDX and check static references, or fail on warnings |
@@ -136,8 +137,15 @@ folder passed as `contentDir` to the rendering factories; for example,
 `zellij prepare --content ../../docs/external`. Without it, they use `./content`
 or the legacy configuration's content path. Preparation reads fresh content,
 uses canonical guide routes and heading IDs, and removes stale generated
-assets even when the source assets folder has been removed. It does not watch
-for further edits; rerun preparation after changing content or assets.
+assets even when the source assets folder has been removed. `prepare` alone is
+one-shot. `dev` and `prepare --watch` poll for edits, additions and deletions,
+including on container mounts, and update assets and search after a short debounce.
+Invalid edits are reported; watching resumes when the content is corrected.
+Reload the browser to see page/image changes; reopening search fetches its new
+index in development. There is no automatic browser reload for content edits.
+Restart dev after changing the deployment prefix or wrapper configuration.
+Pass Next options after `--`, for example
+`zellij dev --content ../../docs/external -- --port 4000 --hostname 127.0.0.1`.
 
 `check --deep` checks static prose/section links, heading anchors, MDX syntax,
 section previews and schema-declared local media. `--strict` fails on warnings,

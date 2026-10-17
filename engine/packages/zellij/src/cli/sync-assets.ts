@@ -1,4 +1,4 @@
-import { cp, mkdir, readdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
+import { cp, mkdir, mkdtemp, readdir, realpath, rename, rm, stat } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
@@ -6,13 +6,14 @@ import { readFile } from 'node:fs/promises';
 import { createContentSource, resolveContentPaths, type ZellijRuntimeOptions } from '../config/runtime';
 import { ZellijContentError } from '../errors';
 import { ASSET_MANIFEST_FILE } from '../content/paths';
+import { writePreparedFile } from './write-prepared-file';
 
 /**
  * Copies the content directory's assets into the app's `public/_zellij/assets`
  * so `next/image` can optimize them and every URL picks up `basePath`
  * automatically (spec §13.4).
  *
- * Runs as a prebuild/predev step. Content lives outside the Next app, so this
+ * Runs before builds and when the development watcher detects edits. This
  * is the bridge between the authored path (`assets/hero.png`) and the served
  * path (`/_zellij/assets/hero.png`).
  */
@@ -36,16 +37,33 @@ export async function syncAssets(input: string | ZellijRuntimeOptions = {}): Pro
   }
   const hasAssets = assets !== undefined;
 
-  // Replace rather than merge, including when the entire assets folder was
-  // removed. Re-running preparation must not retain stale assets or hashes.
-  await rm(destination, { recursive: true, force: true });
+  // Copy and hash before replacing served files. A failed copy must not erase
+  // the last usable assets. The short rename swap also avoids serving a tree
+  // while it is still being populated. This is not a whole-site transaction.
   await mkdir(path.dirname(destination), { recursive: true });
-  if (hasAssets) await cp(source, destination, { recursive: true });
-  const fingerprints = hasAssets ? await fingerprint(destination) : {};
-  await writeFile(
-    path.join(appRoot, 'public', '_zellij', ASSET_MANIFEST_FILE),
-    `${JSON.stringify(fingerprints, null, 2)}\n`,
-  );
+  const staging = await mkdtemp(path.join(path.dirname(destination), '.assets-'));
+  let fingerprints: Record<string, string>;
+  try {
+    const prepared = path.join(staging, 'new');
+    const previous = path.join(staging, 'previous');
+    if (hasAssets) await cp(source, prepared, { recursive: true });
+    fingerprints = hasAssets ? await fingerprint(prepared) : {};
+    let moved = false;
+    try { await rename(destination, previous); moved = true; }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
+    try {
+      if (hasAssets) await rename(prepared, destination);
+    } catch (error) {
+      if (moved) await rename(previous, destination);
+      throw error;
+    }
+    await writePreparedFile(
+      path.join(appRoot, 'public', '_zellij', ASSET_MANIFEST_FILE),
+      `${JSON.stringify(fingerprints, null, 2)}\n`,
+    );
+  } finally {
+    await rm(staging, { recursive: true, force: true });
+  }
 
   /*
    * Drop Next's optimized-image cache.

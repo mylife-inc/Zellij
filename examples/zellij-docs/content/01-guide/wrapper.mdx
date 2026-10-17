@@ -50,7 +50,7 @@ payos/
 ```json title="package.json"
 {
   "scripts": {
-    "predev": "zellij prepare --content ../content",
+    "dev": "zellij dev --content ../content -- --port 3000",
     "prebuild": "zellij prepare --content ../content"
   }
 }
@@ -63,13 +63,14 @@ legacy config's `content` setting. The three preparation commands also accept
 need shell quoting. Missing content directories fail instead of producing an
 empty index.
 
-Four commands, all build-time. Nothing here runs in production, and nothing here
-is something you type — they exist because two things have to happen before
-Next.js starts.
+These helpers prepare files for Next.js. `dev` also watches content throughout
+the development session; the watcher is not part of the production server.
 
 | | |
 | --- | --- |
 | `zellij prepare` | `sync-assets` and `search-index` together — the usual choice |
+| `zellij dev -- --port 3000` | Prepares, watches content and runs Next dev; forwards arguments after `--` |
+| `zellij prepare --watch` | Watches preparation independently of your server command |
 | `zellij sync-assets` | Copies `<content>/assets/**` into `public/_zellij/assets/**` |
 | `zellij search-index` | Writes `public/_zellij/search-index.json` |
 | `zellij check [dir]` | Validates the content folder |
@@ -86,6 +87,15 @@ Search and the table of contents agree on formatted headings, repeated headings
 and code fences. This parses MDX syntax without evaluating authored JavaScript
 and writes a static JSON index. The ⌘K modal fetches that file
 and loads FlexSearch on first open. Section pages are excluded by design.
+
+During development, edited/added/deleted files update the assets, fingerprints
+and search index after a short polling debounce. Polling also covers container
+mounts and external content folders. Invalid edits are reported and the watcher
+recovers when corrected. Reload the page for content/image changes; close and
+reopen search to fetch the updated index. Automatic browser reload for content
+edits is not implemented. Restart the server after changing `basePath` or wrapper
+configuration. Existing wrappers using `next dev` need the `dev` script above,
+or a separate `zellij prepare --watch` process.
 
 <Callout type="tip" title="If you change the build command">
 This is the one thing worth knowing. If your CI calls `next build` directly

@@ -26,6 +26,9 @@ jobs:
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
 
+      - name: Installed development watcher owns its child process
+        run: node scripts/check-dev-preparation.mjs
+
       - name: Authored examples pass deep and strict validation
         run: |
           for example in showcase zellij-docs codeseal-docs; do
@@ -117,6 +120,11 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-validation.mjs cli/target/debug/zel
 
+      - name: Rust dev refreshes mounted assets and search without restart
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
+
       - name: Scaffold names, rendered links, and content discovery
         env:
           ZELLIJ_IMAGE: zellij-ci
@@ -198,6 +206,8 @@ jobs:
         working-directory: examples/showcase
       - name: Content-owned deployment prefix works in a production browser
         run: node scripts/check-basepath.mjs
+      - name: Development updates reach search and images in browsers
+        run: node scripts/check-dev-site.mjs
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

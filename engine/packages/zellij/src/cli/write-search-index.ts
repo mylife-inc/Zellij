@@ -1,9 +1,10 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { createContentSource, resolveContentPaths, type ZellijRuntimeOptions } from '../config/runtime';
 import { loadSite } from '../content/site';
 import { loadMaths } from '../mdx/maths';
 import { buildSearchIndex } from '../search/build-index';
+import { writePreparedFile } from './write-prepared-file';
 
 /** Build search from the same resolved routes and guide bodies as rendering. */
 export async function writeSearchIndex(input: string | ZellijRuntimeOptions = {}): Promise<void> {
@@ -20,7 +21,7 @@ export async function writeSearchIndex(input: string | ZellijRuntimeOptions = {}
 
   const destination = path.join(appRoot, 'public', '_zellij', 'search-index.json');
   await mkdir(path.dirname(destination), { recursive: true });
-  await writeFile(destination, JSON.stringify(entries), 'utf8');
+  await writePreparedFile(destination, JSON.stringify(entries));
   console.log(
     `[zellij] Search index → public/_zellij/search-index.json ` +
     `(${entries.length} entries from ${site.guidePages.length} guide pages)`,

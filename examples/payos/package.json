@@ -9,8 +9,8 @@
   },
   "scripts": {
     "convert": "node scripts/convert-docs.mjs",
-    "predev": "npm run convert && npm run assets && zellij prepare",
-    "dev": "next dev --port 4310",
+    "predev": "npm run convert && npm run assets",
+    "dev": "zellij dev -- --port 4310",
     "prebuild": "npm run convert && npm run assets && zellij prepare",
     "build": "next build",
     "start": "next start --port 4310",

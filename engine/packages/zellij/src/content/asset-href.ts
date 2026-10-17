@@ -29,7 +29,7 @@ export function assetHref(relPath: string, basePath = ''): string {
 /*
  * Read once in production, and re-read while writing.
  *
- * The manifest is rewritten by `zellij prepare` on every predev, so a dev
+ * The manifest is rewritten by preparation and the development watcher, so a dev
  * server that memoised it for its lifetime would serve fingerprints for assets
  * that had since been replaced — the precise failure this file exists to
  * prevent, reintroduced one layer up. The TTL matches the content runtime's.
