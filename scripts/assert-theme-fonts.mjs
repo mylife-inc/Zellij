@@ -35,9 +35,17 @@ export function observeThemeFonts(page, origin, prefix) {
     });
     assert(allFaces.length >= manifest.families.reduce((count, family) => count + family.files.length, 0) && allFaces.every((status) => status === 'loaded'), 'All font weights and Unicode subsets must decode');
     assert(requests.length > 0 && requests.every((url) => url.startsWith(`${origin}${prefix}/_next/static/media/`)), `Fonts must be local and prefixed: ${JSON.stringify(requests)}`);
-    const css = await page.locator('link[rel="stylesheet"]').evaluateAll(async (links) => (await Promise.all(links.map((link) => fetch(link.href).then((response) => response.text())))).join('\n'));
-    assert(css.includes('SIL OPEN FONT LICENSE'), 'Deployed CSS must retain font license notices');
-    for (const family of manifest.families) assert(css.includes(`/*! ${family.name}`), `Missing deployed notice for ${family.name}`);
+    const license = await page.evaluate(async () => {
+      const value = getComputedStyle(document.documentElement).getPropertyValue('--zellij-font-license-url').trim();
+      const match = /^url\(["']?([^"')]+)["']?\)$/.exec(value);
+      if (!match) throw new Error(`Missing bundled license URL: ${value}`);
+      const response = await fetch(match[1]);
+      if (!response.ok) throw new Error(`License request failed: ${response.status}`);
+      return { url: response.url, text: await response.text() };
+    });
+    assert(license.url.startsWith(`${origin}${prefix}/_next/static/media/`), 'Font license must be a local, prefixed asset');
+    const expectedNotice = await readFile(new URL('../engine/packages/zellij/src/themes/fonts/licenses.txt', import.meta.url), 'utf8');
+    assert.equal(license.text, expectedNotice, 'Deployed font license notices must be complete');
     console.log(`Verified all ${manifest.families.length} local theme fonts, lazy loading, Unicode subsets and deployed licenses.`);
   };
 }

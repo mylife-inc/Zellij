@@ -4,3 +4,4 @@ licenses/*.txt -text -whitespace
 files/*.woff2 binary
 # The generated stylesheet is compared with deterministic LF output.
 fonts.css text eol=lf
+licenses.txt text eol=lf

@@ -15,8 +15,10 @@ basePath. Neither a site build nor development needs Google Fonts access.
 Installing npm dependencies can still require network access.
 
 Every family is distributed under its included SIL Open Font License. Keep the
-notices in `licenses/` and the generated `/*! ... */` comments: the latter carry
-the notices into compiled sites. The font binaries themselves are unchanged.
+original notices in `licenses/` and the generated combined `licenses.txt`.
+The stylesheet's `--zellij-font-license-url` references the combined notice as a
+bundled asset, so it accompanies compiled sites even when CSS comments are
+stripped. The font binaries themselves are unchanged.
 
 To intentionally update a family:
 
@@ -30,9 +32,10 @@ To intentionally update a family:
    revision. Update its manifest hash and provenance. Review fallback metrics
    if the font's metrics changed; the initial snapshot uses Next.js 16.4.2's
    `calculateSizeAdjustValues`, without requiring that helper at build time.
-4. Run `node engine/packages/zellij/scripts/prepare-fonts.mjs --write`, then
-   build the engine. The normal build verifies hashes and generated CSS and
-   copies the font directory beside the compiled ESM/CJS modules.
+4. Run `node engine/packages/zellij/scripts/prepare-fonts.mjs --write` to
+   regenerate the CSS and combined notice, then build the engine. The normal
+   build verifies hashes and generated files and copies the font directory
+   beside the compiled ESM/CJS modules.
 5. Run the production and development browser gates, including the production
    build with network disabled. Check typography, language coverage, lazy font
    loading, URL prefixes and preserved license notices before committing.
