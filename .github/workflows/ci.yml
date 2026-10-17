@@ -95,7 +95,7 @@ jobs:
           workspaces: cli
       - run: cargo test --locked -p zellij-docs
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --test portable_build
+      - run: cargo test --locked -p zellij-cli --test portable_build --test portable_check
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli

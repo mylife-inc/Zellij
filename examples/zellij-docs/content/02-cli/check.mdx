@@ -1,18 +1,110 @@
 ---
 title: zel check
-description: Validate a content folder against the schemas the build uses.
+description: Check portable Markdown without writing files, or validate hosted content with the engine.
 ---
 
 <Callout type="tip" title="Available">
-Works today. Runs the engine in a container with your folder mounted read-only,
-so it needs a container runtime and about a second.
+Portable Markdown checks run natively without Node, Docker, or network access.
+Hosted YAML/MDX checks use the engine in a container with the content mounted read-only.
 </Callout>
 
 ```bash title="terminal"
 zel check
-zel check ./docs
-zel check ./docs --deep
-zel check ./docs --deep --strict
+zel check ./docs --strict --json
+zel check ./content --target static --deep --strict
+```
+
+## Choosing the checker
+
+`check` uses the same automatic target selection as `build`: a `zel.yaml` entry
+in the requested directory selects portable Markdown; otherwise recognized
+structured content selects the hosted checker; otherwise the requested directory
+is checked as portable Markdown. A malformed `zel.yaml` reports an error.
+
+Use `--target portable` or `--target static` to choose explicitly. Here, `static`
+means the hosted YAML/MDX checker; `image` is not a check target. With no directory
+argument, the requested directory is `.`. Portable checks use that exact root.
+Hosted discovery follows the rules described below.
+
+## Native Markdown checks
+
+```bash title="terminal"
+zel check ./docs --target portable
+zel check ./docs --strict
+zel check ./docs --json > check-report.json
+```
+
+The native checker runs the portable build's compiler entirely in memory. It
+reads optional [zel.yaml](/cli/config), discovers documents, parses Markdown and
+front matter, resolves navigation and local references, and renders the site.
+It checks image/download paths, heading and footnote fragments, and portable
+output filename collisions. Hidden paths and `node_modules` cannot supply
+published assets. Configured branding and navigation use the same checks as build.
+
+No output directory or temporary files are created, and existing exports are
+untouched. Shell redirection in the JSON example writes the report separately.
+The checker does not test output ownership, permissions, available disk space,
+browser behavior, or external URLs. A build can still fail to publish after a
+successful content check.
+
+Raw HTML produces a warning because it is displayed literally. `--strict`
+makes warnings fail the command while retaining their warning severity.
+Portable checks always validate local references: `--deep` is accepted for
+shared CI commands but adds no extra coverage. MDX is unsupported in this target.
+
+Errors are collected across documents during parsing, and across local
+references when parsing succeeds. Configuration and discovery failures stop
+dependent checks. Rendering and output-path failures also stop at their first
+fatal error. Fix reported problems and run again; the report does not promise
+to enumerate errors in phases that could not run.
+
+### JSON reports
+
+Portable `--json` writes exactly one report to stdout on validation success or
+failure. Validation diagnostics go in the report, with no additional stderr
+messages. Invalid CLI options and unsupported hosted JSON requests still use
+normal CLI errors on stderr and exit 2 before running the checker.
+
+```json
+{
+  "schema_version": 1,
+  "target": "portable",
+  "root": "/work/docs",
+  "strict": false,
+  "ok": false,
+  "pages": null,
+  "diagnostics": [
+    {
+      "severity": "error",
+      "code": "reference",
+      "file": "README.md",
+      "message": "reference \"missing.md\": no matching document or local asset"
+    }
+  ]
+}
+```
+
+`root` is canonical when it can be resolved, otherwise it retains the requested
+path. `pages` is the generated HTML page count when compilation succeeds,
+including a synthesized home; it is `null` when compilation fails. A strict
+warning-only failure still has a page count. `file` is source-relative with
+forward slashes when known, otherwise `null`. There are no structured line or
+column fields. Consumers should tolerate additive fields.
+
+Diagnostic codes are `source`, `configuration`, `markdown`, `reference`,
+`output-path`, `rendering`, and `raw-html`. The last is a warning; the others
+report errors. Human output sends a summary to stdout and diagnostics to stderr.
+
+Exit status is 0 on success, 3 for invalid content or strict warnings, and 1
+when the compiler returns an I/O failure. If multiple errors are collected,
+the first fatal error determines the exit status.
+
+## Hosted content checks
+
+```bash title="terminal"
+zel check ./content --target static
+zel check ./content --deep
+zel check ./content --deep --strict
 ```
 
 Without a directory argument, `zel` looks in `./content`, then the current
@@ -21,58 +113,19 @@ directory, then `./docs` and `./documentation`. It recognizes `site.yaml`,
 `_sidebar.yaml`. A guide-only site does not need a `site.yaml` file. Hidden
 directories and asset/example folders are not treated as guides.
 
-A directory argument other than `.` selects that exact folder, including an
-empty folder; the engine reports its content errors or warnings. `.` uses the
-discovery order above. Discovery never searches
-parent directories. `dev`, `build` and the image commands use the same resolver.
+A directory argument other than `.` selects that exact hosted folder, including
+an empty folder when `--target static` is explicit; the engine reports its content
+errors or warnings. `.` uses the discovery order above. Discovery never searches
+parent directories. `dev`, hosted `build` and the image commands use this resolver.
 
-```
-✓ ./content
-  site        Acme · theme cupertino
-  pages       6
-  guides      1 (5 pages) · /guide
-  menu        Features · Pricing · Solutions · Resources
-  home        /
-  routes      11
-```
+### Shared engine schemas
 
-And when something is wrong:
+Hosted checks run the engine's own schemas. The CLI mounts your folder read-only
+and asks the engine to validate it, keeping the schemas shared with rendering.
+A successful check is still followed by preparation and compilation, which can
+detect additional errors.
 
-```
-✗ ./content
-
-  pages.yaml:14
-    section "sections/home/pricing.yaml" does not exist
-
-  01-guide/_sidebar.yaml:9
-    "installation" is not a page in this guide
-    did you mean "install"?
-
-  site.yaml
-    nav.cta: "Guide" → /missing-guide — no such route
-
-3 problems
-```
-
-## The one thing worth understanding
-
-**`check` runs the engine's own schemas, not a reimplementation of them.**
-
-That is why it needs a container, and it is the reason to trust it. The
-alternative — parsing YAML in Rust and checking it against rules written a
-second time — would produce a validator that agrees with the build on the day it
-is written and disagrees with it a month later. Every field added to a section
-type would need adding twice, and the failure mode is the worst kind: `check`
-passes, the build fails, and the two disagree about the same file.
-
-So the CLI does not know what a `hero` is. It mounts your folder read-only,
-starts the engine, and asks.
-
-The cost is a container runtime. The benefit is that schema and content-model
-checks use the same implementation as rendering. A successful check is still
-followed by preparation and compilation, which can detect additional errors.
-
-## What it validates
+### Hosted validation coverage
 
 | | |
 | --- | --- |
@@ -83,7 +136,7 @@ followed by preparation and compilation, which can detect additional errors.
 | Route ownership | Physical pages, guide roots and home redirects cannot claim conflicting routes |
 | The home page | `home:` names a page that exists |
 
-### Errors against warnings
+#### Errors and warnings
 
 An **unknown top-level key warns**. A content folder written for a newer Zellij
 still builds on an older one, which is what lets a team upgrade the engine and
@@ -100,7 +153,7 @@ file is not reported — which is one more reason to read what `check` says abou
 files no page references.
 </Callout>
 
-## Deep checks
+### Hosted deep checks
 
 `--deep` adds static analysis to the fast content-model check:
 
@@ -121,7 +174,7 @@ Errors name the content file and field or body location. MDX coordinates are
 relative to the loaded body, after front matter and the leading title have been
 removed. Section examples rendered inside a page use that page's link context.
 
-## What still needs a build
+### What still needs a hosted build
 
 Deep checking parses MDX; it does not compile or execute it. Computed JSX props,
 JavaScript expressions/imports, custom components and `srcSet` candidates produce
@@ -146,7 +199,7 @@ zel check ./content --deep --strict
 zel build ./content
 ```
 
-## Where it belongs
+### Hosted workflows
 
 **As a pre-commit hook.** It exits non-zero, takes a second, and catches the
 class of mistake that is invisible in a diff — a renamed page that three
@@ -156,11 +209,11 @@ sidebars still point at.
 a check on every pull request, needing no credentials and no registry. A link to
 a page somebody deleted gets caught before review rather than after deploy.
 
-**Before a build.** `zel build` and `zel dev` run the fast check. Add an explicit
-`zel check --deep --strict` step when you want the stronger gate; they do not
+**Before a hosted build.** Hosted `zel build` and `zel dev` run the fast check.
+Add an explicit `zel check --deep --strict` step for the stronger gate; they do not
 automatically enable it. `zel deploy` remains planned.
 
-## When the folder is somewhere the runtime cannot see
+### Container file sharing
 
 ```
 error: my-docs is not shared with the container runtime
@@ -178,46 +231,27 @@ colima stop && colima start --mount '/tmp:w'
 
 ## Options
 
-| | | |
+| Option | Portable Markdown | Hosted YAML/MDX |
 | --- | --- | --- |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--deep` | Parse MDX and validate static local references | Off by default |
-| `--strict` | Exit nonzero if any warning is reported | Off by default |
+| `[dir]` | Exact Markdown root, default `.` | [Content discovery](/cli/#how-a-command-finds-your-content) |
+| `--target` | `portable` | `static` |
+| `--deep` | Accepted; local references are always checked | Adds MDX syntax and static-reference checks |
+| `--strict` | Warnings fail the command | Warnings fail the command |
+| `--json` | Structured report on success and validation failure | Rejected before execution |
 
-`--strict` applies to either check mode: unknown top-level keys, unused sections
-and other existing warnings fail too. Use `--deep --strict` to include warnings
-about unverified dynamic MDX. The Node command accepts the same two flags:
-`npx zellij check ./content --deep --strict`.
+`--strict` is off by default. Hosted strict mode includes unknown top-level
+keys, unused sections and other existing warnings. Use `--deep --strict` to
+include warnings about unverified dynamic MDX. The hosted Node command accepts
+these two flags: `npx zellij check ./content --deep --strict`.
 
-<Callout type="warning" title="Planned">
-`check --json` and `--quiet` are not implemented. Rust rejects them with exit
-code 2 before running the check; neither silently changes the report format.
-</Callout>
-
-### The intended `--json`
-
-```json
-{
-  "ok": false,
-  "root": "./content",
-  "problems": [
-    {
-      "file": "pages.yaml",
-      "line": 14,
-      "severity": "error",
-      "message": "section \"sections/home/pricing.yaml\" does not exist"
-    }
-  ]
-}
-```
-
-The report above is a proposed format, not current output. JSON is currently
-available for `context`, `list`, `explain` and `detect`; structured validation
-reports remain planned.
+`--quiet` remains planned and is rejected with exit code 2. Hosted JSON reports
+also remain planned. JSON is additionally available for `context`, `list`,
+`explain` and `detect`.
 
 ## See also
 
-- [`zel dev`](/cli/dev) — the same validation, plus a browser
-- [`zel fmt`](/cli/fmt) — formatting, which is a different question
-- [`zel ci`](/cli/ci) — running this on every pull request
-- [The wrapper app](/guide/wrapper) — `npx zellij check`, if you keep one
+- [`zel build`](/cli/build) — publish a portable or hosted site
+- [`zel view`](/cli/view) — build and preview Markdown, with optional watch/reload
+- [`zel dev`](/cli/dev) — run the hosted development server
+- [`zel ci`](/cli/ci) — run hosted checks in a pipeline
+- [The wrapper app](/guide/wrapper) — hosted `npx zellij check`

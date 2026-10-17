@@ -764,6 +764,57 @@ real excluded files and check image/download references, logo configuration,
 source preservation and preservation of the previous export. Hosted acceptance
 is pending at this dated entry; consult the PR containing `90befda` for results.
 
+Publication-path completion: [PR #16](https://github.com/mylife-inc/Zellij/pull/16)
+merged as `a6a9a7d` from head `e188a13`. PR CI `39076533168` and main CI
+`39077026320` each passed all seven jobs; image run `39077026408` passed all
+13 jobs and published all four AMD64/ARM64 variants. Linux ran 156 Rust tests.
+Native Linux/macOS/Windows Chromium/WebKit file, HTTP and watch checks passed.
+The website suites each had 310 initial passes, 124 conditional skips and one
+successful mobile-Safari retry: the PR's testimonial-carousel slide did not
+become active within 5 seconds; main's FAQ answer remained hidden after its
+first click. These are recorded flakes, not diagnosed or fixed by this work.
+No native package release was issued.
+
+## Implementation record — native portable validation
+
+Source commit `7457daf` adds `zel check [dir] --target portable|static`, native
+strict warnings and portable JSON reports. Automatic selection shares build's
+helper: a root `zel.yaml` entry wins, then hosted discovery, otherwise portable.
+The existing hosted engine checker remains available; explicit static is useful
+for unmarked hosted folders. Hosted JSON is rejected before container execution.
+
+`zellij-docs::check` and build now share a complete in-memory compiler. Check
+performs configuration/discovery/Markdown/navigation/reference/render/output-path
+validation without staging or writing files. Build then stages/publishes as
+before. Virtual file/directory output collisions are caught before filesystem
+writes, so checks can detect them too. Existing output ownership is irrelevant
+to a check; it does not promise output permissions, disk capacity or publication.
+
+Errors are collected per document during read/parse, then across references
+when parsing succeeds. Fatal config/discovery/render/output errors stop their
+phase. Raw HTML stays a warning; strict makes it fail without changing severity.
+`--deep` is accepted but redundant for portable content, whose local references
+are always checked. MDX and external URL availability remain outside this target.
+
+Portable JSON emits one stdout report on validation success/failure with no
+stderr diagnostics. Schema version 1 includes target/root/strict/ok, nullable
+HTML page count and diagnostics with severity/code/nullable source-relative file/
+message. No guessed line/column fields. Codes: source, configuration, markdown,
+reference, output-path, rendering, raw-html. Exit 0 success, 3 content/strict,
+1 returned I/O failure; first fatal error controls status. Usage errors use
+stderr and exit 2. See the portable contract and `zel check` documentation.
+
+Local verification: **164 Rust tests**, warnings-denied Clippy, formatting,
+updated deep/strict docs checks, and fresh binary build passed. Chromium/WebKit
+passed moved file:// navigation/search/branding/no-JS, HTTP preview and full
+watch/configuration/recovery/Ctrl-C acceptance with the refactored compiler.
+Nine new library/CLI tests verify check/build parity, multi-file errors,
+structured output/exit behavior, target selection, strict warnings, collision
+failures, and byte-preservation of source and existing output. The CLI tests
+remove external tools from PATH. All-platform CI includes native checker tests.
+Hosted acceptance is pending at this dated entry; consult the PR containing
+`7457daf` for its final head/results. No native package release is issued.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

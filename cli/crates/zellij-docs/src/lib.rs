@@ -7,6 +7,9 @@ use std::{collections::BTreeMap, fs};
 use zellij_core::{Error, Result, files, output::StaticOutput};
 
 mod config;
+mod diagnostics;
+use diagnostics::Diagnostics;
+pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
 mod links;
 mod markdown;
 mod page;
@@ -173,17 +176,83 @@ pub fn build(
     prepare(source, output, options)?.publish()
 }
 
+/// Validate and render in memory. No output directory or temporary files are created.
+/// This checks content, not destination permissions, ownership, or available disk space.
+pub fn check(source: &Utf8Path, strict: bool) -> CheckReport {
+    let mut diagnostics = Diagnostics::new(source);
+    let compiled = compile(source, BuildOptions::default(), &mut diagnostics);
+    let pages = compiled.as_ref().ok().map(|site| site.pages);
+    let exit_code = match compiled {
+        Ok(_) if strict && !diagnostics.items.is_empty() => 3,
+        Ok(_) => 0,
+        Err(Error::Io(_)) => 1,
+        Err(_) => 3,
+    };
+    CheckReport {
+        schema_version: 1,
+        target: "portable",
+        root: diagnostics.root.to_string(),
+        strict,
+        ok: exit_code == 0,
+        pages,
+        diagnostics: diagnostics.items,
+        exit_code,
+    }
+}
+
+struct CompiledSite {
+    root: Utf8PathBuf,
+    files: BTreeMap<Utf8PathBuf, Vec<u8>>,
+    pages: usize,
+}
+
 pub fn prepare(
     source: &Utf8Path,
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<PreparedBuild> {
-    let root = source.canonicalize_utf8()?;
+    files::disjoint(source, output)?;
+    let mut diagnostics = Diagnostics::new(source);
+    let compiled = compile(source, options, &mut diagnostics)?;
+    let stage = StaticOutput::prepare(&compiled.root, output)?;
+    let writes: Vec<_> = compiled
+        .files
+        .iter()
+        .map(|(path, body)| (path.as_path(), body.as_slice()))
+        .collect();
+    files::write_files(&stage.directory, &writes, false)?;
+    Ok(PreparedBuild {
+        stage,
+        report: BuildReport {
+            pages: compiled.pages,
+            warnings: diagnostics.warnings(),
+        },
+    })
+}
+
+fn compile(
+    source: &Utf8Path,
+    options: BuildOptions<'_>,
+    diagnostics: &mut Diagnostics,
+) -> Result<CompiledSite> {
+    let root = diagnostics.capture(
+        source.canonicalize_utf8().map_err(Error::from),
+        Code::Source,
+        None,
+    )?;
+    diagnostics.root = root.clone();
     if !root.is_dir() {
-        return Err(files::unsafe_path(&root, "expected a Markdown directory"));
+        return diagnostics.capture(
+            Err(files::unsafe_path(&root, "expected a Markdown directory")),
+            Code::Source,
+            None,
+        );
     }
-    files::disjoint(&root, output)?;
-    let config = config::Config::load(&root)?;
+    let config = diagnostics.capture(
+        config::Config::load(&root),
+        Code::Configuration,
+        Some(Utf8Path::new(config::FILE)),
+    )?;
     let name = options
         .name
         .or(config.name.as_deref())
@@ -192,13 +261,21 @@ pub fn prepare(
         .theme
         .or(config.theme.as_deref())
         .unwrap_or("cupertino");
-    validate_theme(theme)?;
+    diagnostics.capture(
+        validate_theme(theme),
+        Code::Configuration,
+        Some(Utf8Path::new(config::FILE)),
+    )?;
     if name.trim().is_empty() {
-        return Err(Error::InvalidArgument("site name must not be empty".into()));
+        return diagnostics.capture(
+            Err(Error::InvalidArgument("site name must not be empty".into())),
+            Code::Configuration,
+            Some(Utf8Path::new(config::FILE)),
+        );
     }
-    let sources = discover(&root)?;
+    let sources = diagnostics.capture(discover(&root), Code::Source, None)?;
     let mut pages = Vec::new();
-    let mut warnings = Vec::new();
+    let mut first_error = None;
     for source in &sources {
         let stem = source.file_stem().unwrap();
         let directory = source.parent().unwrap();
@@ -220,10 +297,29 @@ pub fn prepare(
         } else {
             stem
         };
-        let markdown = markdown::parse(&fs::read_to_string(root.join(source))?, fallback)
-            .map_err(|e| files::unsafe_path(source, e.to_string()))?;
+        let parsed = diagnostics
+            .capture(
+                fs::read_to_string(root.join(source)).map_err(Error::from),
+                Code::Source,
+                Some(source),
+            )
+            .and_then(|text| {
+                diagnostics.capture(
+                    markdown::parse(&text, fallback)
+                        .map_err(|e| files::unsafe_path(source, e.to_string())),
+                    Code::Markdown,
+                    Some(source),
+                )
+            });
+        let markdown = match parsed {
+            Ok(markdown) => markdown,
+            Err(error) => {
+                first_error.get_or_insert(error);
+                continue;
+            }
+        };
         if markdown.literal_html {
-            warnings.push(format!("{source}: raw HTML is displayed as text; portable Markdown does not execute HTML or MDX"));
+            diagnostics.raw_html(source);
         }
         pages.push(Page {
             source: source.clone(),
@@ -231,11 +327,14 @@ pub fn prepare(
             markdown,
         });
     }
+    if let Some(error) = first_error.take() {
+        return Err(error);
+    }
     if !pages.iter().any(|p| p.output == "index.html") {
         pages.push(Page {
             source: "".into(),
             output: "index.html".into(),
-            markdown: markdown::parse("", name)?,
+            markdown: diagnostics.capture(markdown::parse("", name), Code::Rendering, None)?,
         });
     }
     pages.sort_by(|a, b| {
@@ -245,7 +344,11 @@ pub fn prepare(
             &b.output,
         ))
     });
-    let navigation = config::Navigation::resolve(&config, &pages)?;
+    let navigation = diagnostics.capture(
+        config::Navigation::resolve(&config, &pages),
+        Code::Configuration,
+        Some(Utf8Path::new(config::FILE)),
+    )?;
     let presentation = page::Presentation {
         name,
         theme,
@@ -256,25 +359,47 @@ pub fn prepare(
         pages: &pages,
         assets: BTreeMap::new(),
     };
-    if let Some((path, bytes)) = config.logo(&root)? {
+    if let Some((path, bytes)) = diagnostics.capture(
+        config.logo(&root),
+        Code::Configuration,
+        Some(Utf8Path::new(config::FILE)),
+    )? {
         resolver.assets.insert(path, bytes);
     }
-    let mut files = BTreeMap::<Utf8PathBuf, Vec<u8>>::new();
-    for (index, page) in pages.iter().enumerate() {
+    let mut rewritten = Vec::new();
+    for page in &pages {
         let mut events = page.markdown.events.clone();
         for event in &mut events {
-            match event {
-                Event::Start(Tag::Link { dest_url, .. }) => {
-                    *dest_url = resolver.rewrite(page, dest_url, false)?.into()
+            let (url, image) = match event {
+                Event::Start(Tag::Link { dest_url, .. }) => (dest_url, false),
+                Event::Start(Tag::Image { dest_url, .. }) => (dest_url, true),
+                _ => continue,
+            };
+            match diagnostics.capture(
+                resolver.rewrite(page, url, image),
+                Code::Reference,
+                Some(&page.source),
+            ) {
+                Ok(value) => *url = value.into(),
+                Err(error) => {
+                    first_error.get_or_insert(error);
                 }
-                Event::Start(Tag::Image { dest_url, .. }) => {
-                    *dest_url = resolver.rewrite(page, dest_url, true)?.into()
-                }
-                _ => {}
             }
         }
+        rewritten.push(events);
+    }
+    if let Some(error) = first_error {
+        return Err(error);
+    }
+    let mut files = BTreeMap::<Utf8PathBuf, Vec<u8>>::new();
+    for ((index, page), events) in pages.iter().enumerate().zip(rewritten) {
         let mut body = String::new();
-        pulldown_cmark::html::push_html(&mut body, markdown::highlight(events)?.into_iter());
+        let highlighted = diagnostics.capture(
+            markdown::highlight(events),
+            Code::Rendering,
+            Some(&page.source),
+        )?;
+        pulldown_cmark::html::push_html(&mut body, highlighted.into_iter());
         if page.source.as_str().is_empty() {
             body = page::contents(page, &pages, &navigation);
         }
@@ -283,18 +408,26 @@ pub fn prepare(
             .insert(page.output.clone(), html.into_bytes())
             .is_some()
         {
-            return Err(files::unsafe_path(
-                &page.output,
-                "documents have the same HTML output path",
-            ));
+            return diagnostics.capture(
+                Err(files::unsafe_path(
+                    &page.output,
+                    "documents have the same HTML output path",
+                )),
+                Code::OutputPath,
+                Some(&page.source),
+            );
         }
     }
     for (path, bytes) in resolver.assets {
         if files.insert(path.clone(), bytes).is_some() {
-            return Err(files::unsafe_path(
-                &path,
-                "asset collides with a generated page",
-            ));
+            return diagnostics.capture(
+                Err(files::unsafe_path(
+                    &path,
+                    "asset collides with a generated page",
+                )),
+                Code::OutputPath,
+                Some(&path),
+            );
         }
     }
     for (path, bytes) in FONTS {
@@ -319,8 +452,12 @@ pub fn prepare(
         "path": p.output.as_str(), "title": p.markdown.title, "text": p.markdown.text,
         "headings": p.markdown.headings.iter().map(|h| json!({"id": h.id, "title": h.title})).collect::<Vec<_>>()
     })).collect();
-    let data = serde_json::to_string(&search)
-        .map_err(std::io::Error::other)?
+    let data = diagnostics
+        .capture(
+            serde_json::to_string(&search).map_err(|e| Error::Io(std::io::Error::other(e))),
+            Code::Rendering,
+            None,
+        )?
         .replace('<', "\\u003c")
         .replace('\u{2028}', "\\u2028")
         .replace('\u{2029}', "\\u2029");
@@ -332,26 +469,34 @@ pub fn prepare(
     // even though their complete paths differ. Every failure precedes publish.
     let mut names = BTreeMap::new();
     for path in files.keys() {
-        portable_path(path)?;
+        diagnostics.capture(portable_path(path), Code::OutputPath, None)?;
+        for ancestor in path.ancestors().skip(1) {
+            if files.contains_key(ancestor) {
+                return diagnostics.capture(
+                    Err(files::unsafe_path(
+                        path,
+                        "file/directory output path collision",
+                    )),
+                    Code::OutputPath,
+                    None,
+                );
+            }
+        }
         for component in path.ancestors().filter(|p| !p.as_str().is_empty()) {
             if let Some(previous) = names.insert(component.as_str().to_lowercase(), component) {
                 if previous != component {
-                    return Err(files::unsafe_path(path, "case-only output path collision"));
+                    return diagnostics.capture(
+                        Err(files::unsafe_path(path, "case-only output path collision")),
+                        Code::OutputPath,
+                        None,
+                    );
                 }
             }
         }
     }
-    let stage = StaticOutput::prepare(&root, output)?;
-    let writes: Vec<_> = files
-        .iter()
-        .map(|(path, body)| (path.as_path(), body.as_slice()))
-        .collect();
-    files::write_files(&stage.directory, &writes, false)?;
-    Ok(PreparedBuild {
-        stage,
-        report: BuildReport {
-            pages: pages.len(),
-            warnings,
-        },
+    Ok(CompiledSite {
+        root,
+        files,
+        pages: pages.len(),
     })
 }

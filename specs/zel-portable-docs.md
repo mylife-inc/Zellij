@@ -2,7 +2,9 @@
 
 Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
 `view --watch` merged in PR #14 with all-platform acceptance. Portable `zel.yaml`
-configuration and navigation are the current implementation milestone. The native renderer and server are separate from the hosted Next router.
+configuration/navigation and excluded-asset checks merged in PRs #15–16.
+Native validation and structured diagnostics are the current implementation
+milestone. The native renderer and server are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
 same command syntax, including these three operations:
@@ -133,7 +135,7 @@ installation, release packaging or container integration.
 | Plain-folder static build and alternate output | Implemented | Expand real-document fixtures and rendering compatibility |
 | Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` implemented | Raw HTML policy, math/diagrams, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
-| Strict diagnostics | Broken references/anchors/metadata fail build | Separate check command, warnings gate and structured reports |
+| Strict diagnostics | Native `check`, strict warning gate and JSON reports implemented | Hosted JSON reports, richer source locations |
 | Project scaffolding | Existing structured Zellij scaffolds | Decide portable starter/config workflow |
 | Serve an existing export | Implemented | Preserve cross-platform routing/containment/lifecycle acceptance |
 | View a source folder | Implemented, including optional watch/reload | Richer configuration |
@@ -250,3 +252,43 @@ config theme changes become visible; old automatically persisted defaults are
 not treated as explicit choices. The revised preference format may reset an
 older saved choice once. The portable config is distinct from hosted content
 settings and the still-planned general `zel.toml` command defaults.
+
+## Native validation contract — 2026-10-17
+
+`zel check [dir]` shares build's target selection: a `zel.yaml` entry at the
+requested root, then hosted discovery, otherwise portable Markdown. Explicit
+`--target portable|static` overrides it; static means the hosted checker.
+Portable checks run the same compiler as build entirely in memory, including
+configuration, source discovery, Markdown parsing, navigation, reference/fragment
+resolution, asset collection, rendering and output-path validation. Build alone
+stages and publishes files. Checks never create output or temporary directories,
+require no external tools or network, and ignore existing output ownership.
+
+Raw HTML remains literal with a warning. `--strict` fails on warnings without
+changing their severity. Local references are always checked; `--deep` is accepted
+for shared commands but adds no native coverage. Document parse/read failures are
+collected before dependent phases; once parsing succeeds, reference errors are
+collected across pages. Configuration, discovery, rendering and output-path phases
+stop at their first fatal error. No claim is made about checks that could not run.
+
+Portable `--json` emits one report on stdout on both validation success/failure,
+with no diagnostic stderr output. Schema version 1 has `target: "portable"`,
+`root`, `strict`, `ok`, nullable `pages`, and `diagnostics`. Each diagnostic has
+`severity`, `code`, nullable source-relative `file` (forward slashes), and `message`.
+Codes are `source`, `configuration`, `markdown`, `reference`, `output-path`,
+`rendering`, and `raw-html`. Root is canonical if resolved; otherwise requested.
+Page count exists only on compilation success and includes a synthetic home.
+No structured line/column fields are fabricated. Tolerate additive fields.
+
+Exit codes are 0 on success, 3 for content/strict failure, and 1 for a returned
+I/O failure; the first fatal error controls the code when errors are collected.
+CLI usage failures and hosted JSON requests exit 2 before checking, using normal
+stderr errors. Human native output sends summaries to stdout, diagnostics to
+stderr. Hosted checks retain existing engine behavior; hosted JSON and quiet
+output are not implemented. No `build --strict` is added by this milestone.
+
+Checks do not test publication permissions, ownership, disk capacity, remote
+URLs or browser behavior. Rust integration tests compare check/build failures,
+snapshot input/existing exports, exercise strict/JSON/exit behavior without tools
+on PATH, and run in the Linux/macOS/Windows portable CI matrix. Browser acceptance
+continues to cover the shared compiler's actual file://, HTTP and watch artifacts.

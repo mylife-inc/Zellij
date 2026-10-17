@@ -13,6 +13,7 @@ use clap::{Parser, Subcommand};
 use serde_json::json;
 use std::io::Write;
 mod preview;
+mod validation;
 
 #[derive(Parser)]
 #[command(
@@ -25,7 +26,7 @@ struct Cli {
     #[command(subcommand)]
     command: Command,
 
-    /// JSON output for context, list, explain and detect. Other commands reject it.
+    /// JSON output for context, list, explain and detect, plus portable check.
     #[arg(long, global = true)]
     json: bool,
 }
@@ -76,14 +77,17 @@ enum Command {
         dry_run: bool,
     },
 
-    /// Validate a content folder.
+    /// Validate portable Markdown natively, or hosted content using its engine.
     Check {
         #[arg(default_value = ".")]
         dir: String,
-        /// Parse MDX and check statically known local links, anchors and assets.
+        /// Override automatic selection: portable Markdown or hosted static content.
+        #[arg(long, value_parser = ["portable", "static"])]
+        target: Option<String>,
+        /// Hosted: parse MDX and check local references. Portable always checks references.
         #[arg(long)]
         deep: bool,
-        /// Fail when the engine reports warnings.
+        /// Fail when validation reports warnings.
         #[arg(long)]
         strict: bool,
     },
@@ -408,10 +412,11 @@ fn main() {
                 | Command::List(_)
                 | Command::Explain { .. }
                 | Command::Detect { .. }
+                | Command::Check { .. }
         )
     {
         eprintln!(
-            "error: --json is supported only by context, list, explain and detect; no command was run"
+            "error: --json is supported only by context, list, explain, detect and portable check; no command was run"
         );
         std::process::exit(2);
     }
@@ -426,9 +431,15 @@ fn main() {
         Command::Detect { ref dir } => detect(dir, cli.json),
         Command::Check {
             ref dir,
+            ref target,
             deep,
             strict,
-        } => check(dir, zellij_engine::CheckOptions { deep, strict }),
+        } => validation::check(
+            dir,
+            target.as_deref(),
+            zellij_engine::CheckOptions { deep, strict },
+            cli.json,
+        ),
         Command::Dev { ref dir, port } => dev(dir, port),
         Command::Serve {
             ref dir,
@@ -637,6 +648,18 @@ fn report_empty_mount(err: &zellij_core::Error) {
     eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
+/// Match build and check dispatch: an explicit portable config wins, followed
+/// by hosted discovery, then a plain Markdown root. Never walk parent folders.
+fn default_target(dir: &str) -> &'static str {
+    if zellij_docs::has_config(Utf8Path::new(dir)) {
+        "portable"
+    } else if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
+        "static"
+    } else {
+        "portable"
+    }
+}
+
 fn build_dispatch(
     dir: &str,
     target: Option<&str>,
@@ -645,15 +668,7 @@ fn build_dispatch(
     name: Option<&str>,
     theme: Option<&str>,
 ) -> zellij_core::Result<()> {
-    let target = target.unwrap_or_else(|| {
-        if zellij_docs::has_config(Utf8Path::new(dir)) {
-            "portable"
-        } else if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
-            "static"
-        } else {
-            "portable"
-        }
-    });
+    let target = target.unwrap_or_else(|| default_target(dir));
     if target != "portable" && (name.is_some() || theme.is_some()) {
         return Err(zellij_core::Error::InvalidArgument(
             "--name and --theme apply only to portable builds; configure hosted sites in site.yaml"

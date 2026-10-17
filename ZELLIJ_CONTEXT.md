@@ -829,6 +829,57 @@ real excluded files and check image/download references, logo configuration,
 source preservation and preservation of the previous export. Hosted acceptance
 is pending at this dated entry; consult the PR containing `90befda` for results.
 
+Publication-path completion: [PR #16](https://github.com/mylife-inc/Zellij/pull/16)
+merged as `a6a9a7d` from head `e188a13`. PR CI `39076533168` and main CI
+`39077026320` each passed all seven jobs; image run `39077026408` passed all
+13 jobs and published all four AMD64/ARM64 variants. Linux ran 156 Rust tests.
+Native Linux/macOS/Windows Chromium/WebKit file, HTTP and watch checks passed.
+The website suites each had 310 initial passes, 124 conditional skips and one
+successful mobile-Safari retry: the PR's testimonial-carousel slide did not
+become active within 5 seconds; main's FAQ answer remained hidden after its
+first click. These are recorded flakes, not diagnosed or fixed by this work.
+No native package release was issued.
+
+### Native portable validation — 2026-10-17
+
+Source commit `7457daf` adds `zel check [dir] --target portable|static`, native
+strict warnings and portable JSON reports. Automatic selection shares build's
+helper: a root `zel.yaml` entry wins, then hosted discovery, otherwise portable.
+The existing hosted engine checker remains available; explicit static is useful
+for unmarked hosted folders. Hosted JSON is rejected before container execution.
+
+`zellij-docs::check` and build now share a complete in-memory compiler. Check
+performs configuration/discovery/Markdown/navigation/reference/render/output-path
+validation without staging or writing files. Build then stages/publishes as
+before. Virtual file/directory output collisions are caught before filesystem
+writes, so checks can detect them too. Existing output ownership is irrelevant
+to a check; it does not promise output permissions, disk capacity or publication.
+
+Errors are collected per document during read/parse, then across references
+when parsing succeeds. Fatal config/discovery/render/output errors stop their
+phase. Raw HTML stays a warning; strict makes it fail without changing severity.
+`--deep` is accepted but redundant for portable content, whose local references
+are always checked. MDX and external URL availability remain outside this target.
+
+Portable JSON emits one stdout report on validation success/failure with no
+stderr diagnostics. Schema version 1 includes target/root/strict/ok, nullable
+HTML page count and diagnostics with severity/code/nullable source-relative file/
+message. No guessed line/column fields. Codes: source, configuration, markdown,
+reference, output-path, rendering, raw-html. Exit 0 success, 3 content/strict,
+1 returned I/O failure; first fatal error controls status. Usage errors use
+stderr and exit 2. See the portable contract and `zel check` documentation.
+
+Local verification: **164 Rust tests**, warnings-denied Clippy, formatting,
+updated deep/strict docs checks, and fresh binary build passed. Chromium/WebKit
+passed moved file:// navigation/search/branding/no-JS, HTTP preview and full
+watch/configuration/recovery/Ctrl-C acceptance with the refactored compiler.
+Nine new library/CLI tests verify check/build parity, multi-file errors,
+structured output/exit behavior, target selection, strict warnings, collision
+failures, and byte-preservation of source and existing output. The CLI tests
+remove external tools from PATH. All-platform CI includes native checker tests.
+Hosted acceptance is pending at this dated entry; consult the PR containing
+`7457daf` for its final head/results. No native package release is issued.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -897,7 +948,7 @@ it does not replace this architectural and development-status context.
 | `cli/crates/zellij-core` | Errors, project discovery, embedded schemas and reference |
 | `cli/crates/zellij-scaffold` | Content/section/page/guide/project and GitHub workflow generators |
 | `cli/crates/zellij-convert` | Converter registry, MkDocs and Docusaurus readers, MDX/Material normalization |
-| `cli/crates/zellij-docs` | Native portable Markdown rendering, relative links, offline assets/search and loopback HTTP preview |
+| `cli/crates/zellij-docs` | Native portable Markdown compilation/checks, structured diagnostics, offline assets/search and loopback HTTP preview |
 | `cli/crates/zellij-engine` | Container runtime detection, check/dev/build, Dockerfile and image operations |
 | `docker/base.Dockerfile` | Distributable wrapper/engine builder image |
 | `scripts/install.sh`, `scripts/publish.sh` | POSIX binary installation and release/image publishing |
@@ -1052,12 +1103,12 @@ complete; see the audit before using writers on valuable content.
 
 | Status | Commands |
 | --- | --- |
-| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/themes/formats/targets`, `context` (Markdown/JSON), `detect`, `convert`, `doctor`, portable `build`, `serve`, `view` (optional `--watch`) |
-| Implemented container orchestration | `check` (optional `--deep`/`--strict`), `dev`, `build` static/image; `image build/run/push/dockerfile` |
+| Implemented native operations | `new docs`, `new section`, `new page`, `new guide`, `new project`, `explain`, `list sections/themes/formats/targets`, `context` (Markdown/JSON), `detect`, `convert`, `doctor`, portable `check` (`--strict`/`--json`), `build`, `serve`, `view` (optional `--watch`) |
+| Implemented container orchestration | Hosted `check` (optional `--deep`/`--strict`), `dev`, `build` static/image; `image build/run/push/dockerfile` |
 | Implemented workflows | `migrate` = detect/convert/check; `ci init github`; `ci publish` dispatches an existing workflow |
 | Declared but returns “not implemented yet” | `new app`, `deploy`, `fmt`, `publish`, `ship` |
 | Specified but not registered | `watch`, `eject`, `pull`, `upgrade`, `completions`, `version` subcommand (`--version` works) |
-| Output options | `--json` works for `context`, every `list`, `explain`, `detect`; other commands reject it before execution. `--verbose` / `-v` is rejected, not a successful no-op. |
+| Output options | `--json` works for `context`, every `list`, `explain`, `detect`, portable `check`; other commands (including hosted check) reject it before execution. `--verbose` / `-v` is rejected, not a successful no-op. |
 
 Converters: MkDocs and a limited Docusaurus implementation. Computed JS/TS
 sidebar configurations are not executed. Other formats in the spec are plans.
@@ -1065,8 +1116,8 @@ sidebar configurations are not executed. Other formats in the spec are plans.
 comments by avoiding a rewrite is deliberate.
 
 Portable builds load `zel.yaml`; general command defaults in TOML are still
-planned. No deployment-provider crate, complete machine-readable diagnostics, or
-broad feature/build-option plumbing exists. Historical docs differ on general
+planned. Native portable diagnostics are structured; hosted JSON diagnostics,
+a deployment-provider crate and broad feature/build-option plumbing remain planned. Historical docs differ on general
 `zel.toml` versus `zellij.toml`; that future filename still needs reconciliation.
 Generated GitHub workflows support validation, GHCR images, and Netlify through
 its own CLI, despite the separate `zel deploy` command being a stub.
@@ -1133,12 +1184,11 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after portable configuration, subject to the user's v1 scope decision:
+Remaining order after native validation, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of the excluded-asset-path follow-up. Portable
-   build/serve/view/watch/configuration acceptance has passed on merged main.
-2. Add native validation/structured diagnostics, then richer Markdown rendering
-   and a portable starter; finish the agreed CLI subset in
+1. Complete hosted acceptance of native validation/structured diagnostics. Portable
+   build/serve/view/watch/configuration and asset exclusions have passed on merged main.
+2. Add richer Markdown rendering and a portable starter; finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md).
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
