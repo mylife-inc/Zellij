@@ -2021,3 +2021,13 @@ export inspection confirmed actual links/assets were correctly prefixed. The
 scanner now inspects real resource/navigation tags and excludes preconnect/DNS
 hints; browser navigation/error checks remain. Use the latest PR checks for
 acceptance after this fixture correction.
+
+Real NGINX acceptance **passed** in run `39143717743` at source
+`29e569509a0c8c73a9a90fb6eebd98af32dd0093`: portable, hosted-root and
+hosted-prefix images, health checks, readonly/non-root runtime, HTTP resources,
+and Chromium redirects/navigation/reload. All six package/install jobs passed.
+A separate unchanged Windows portable suite hit its first file:// navigation's
+10-second timeout (it passed on the earlier heads). Windows navigation now has
+30 seconds for cold runner/browser startup; interaction and assertion timeouts
+and all offline/content checks are unchanged. The latest PR run must validate
+that final test adjustment and the rest of the regressions before merging.
