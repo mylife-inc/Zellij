@@ -2346,3 +2346,9 @@ The workflow milestone is tracked in [PR #34](https://github.com/mylife-inc/Zell
 A follow-up documentation sweep updates the new-project/existing-repository labs
 and container/check guides that still showed zel.toml, unpinned installs,
 check-only PRs, implicit provisioning and unimplemented deployment claims.
+
+
+Release-readiness review also corrected the project starter's version fallback:
+compatible future/candidate binaries pin their own version, while the current
+incompatible development version prepares planned v0.2.0. It no longer keeps
+an unconditional 0.2.0 pin after a later release changes generator commands.

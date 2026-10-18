@@ -813,7 +813,7 @@ fn new_project(
     );
     println!("  {} files", written.len());
     println!(
-        "  Workflow requires compatible release zellij-v0.2.0 and its engine image; review before enabling."
+        "  Workflow requires its pinned compatible zel release and engine image; review before enabling."
     );
 
     println!();

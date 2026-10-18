@@ -91,12 +91,16 @@ pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
         ),
     );
 
+    // Development still reports the incompatible 0.1.3. A published compatible
+    // binary (including a candidate) must pin itself, not a stale future default.
+    let version =
+        zellij_core::ci::version_pin(env!("CARGO_PKG_VERSION")).unwrap_or_else(|_| "v0.2.0".into());
     scaffold.add(
         ".github/workflows/docs.yml",
         pipeline::github(&pipeline::CiOptions {
             site_root: docs_dir.clone(),
             settings: zellij_core::ci::Settings::default(),
-            version: "0.2.0".into(),
+            version: version.clone(),
             publish: pipeline::Publish::LegacyImage,
         })?,
     );
@@ -124,7 +128,7 @@ pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
              \n\
              `.github/workflows/docs.yml` validates it on every pull request and\n\
              builds a container image on `main`. It requires the compatible native\n\
-             release `zellij-v0.2.0` and its engine image to be published first. A push that only touches\n\
+             release `zellij-{version}` and its engine image to be published first. A push that only touches\n\
              `{product_dir}/` does neither.\n"
         ),
     );
