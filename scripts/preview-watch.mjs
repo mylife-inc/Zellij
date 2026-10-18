@@ -92,7 +92,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await page.locator('article').getByRole('link', { name: 'Home', exact: true }).click();
 
       await writeFile(asset, svg(144));
-      await expect.poll(() => page.locator('article img').evaluate(img => img.naturalWidth), { timeout: 20000 }).toBe(144);
+      await expect(page.locator('article img')).toHaveJSProperty('naturalWidth', 144, { timeout: 20000 });
       await page.waitForLoadState('load');
       const good = await status();
       const oldExport = await snapshot(output);
@@ -117,7 +117,9 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await rm(asset);
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
       await writeFile(asset, svg(177));
-      await expect.poll(() => page.locator('article img').evaluate(img => img.naturalWidth), { timeout: 20000 }).toBe(177);
+      // Locator assertions reacquire the document across the expected reload.
+      // A raw evaluate can lose its execution context between image reads.
+      await expect(page.locator('article img')).toHaveJSProperty('naturalWidth', 177, { timeout: 20000 });
       await rename(source, `${source}-temporarily-moved`);
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
       await rename(`${source}-temporarily-moved`, source);
@@ -148,7 +150,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
       await expect(page.locator('.brand-logo')).toHaveAttribute('href', 'https://example.com/');
       await expect(page.getByRole('navigation', { name: 'Documentation', exact: true }).getByRole('link')).toHaveText(['Overview', 'Extra reference']);
-      await expect.poll(() => page.locator('.brand-logo img').evaluate(img => img.naturalWidth)).toBe(177);
+      await expect(page.locator('.brand-logo img')).toHaveJSProperty('naturalWidth', 177);
       const configuredOutput = await snapshot(output);
       const configuredVersion = (await status()).version;
       await writeFile(configPath, 'nav: [{page: absent.md}]');
@@ -204,7 +206,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       page = filePage;
       await filePage.goto(pathToFileURL(path.join(moved, 'index.html')).href);
       await expect(filePage.getByRole('heading', { name: `Recovered ${engine}`, exact: true })).toBeVisible();
-      await expect.poll(() => filePage.locator('article img').evaluate(img => img.naturalWidth)).toBe(177);
+      await expect(filePage.locator('article img')).toHaveJSProperty('naturalWidth', 177);
       assert(requests.every(url => ['file:', 'data:'].includes(new URL(url).protocol)));
       assert.equal(await filePage.locator('script[src*="preview.js"]').count(), 0);
       await offline.tracing.stop();

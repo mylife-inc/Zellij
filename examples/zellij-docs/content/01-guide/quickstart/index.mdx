@@ -6,7 +6,9 @@ description: Install what you need, then pick the situation you are actually in 
 Four hands-on labs. Each starts where you are, ends with a site somebody else
 can read, and says what every command does before you run it.
 
-First, the two things they all need.
+These labs use the hosted engine. Portable Markdown needs no container: use
+`zel new portable`, `zel build` and `zel view` with a current-source binary.
+See the [CLI overview](/cli) for source-versus-release availability.
 
 ## Before you start
 
@@ -15,15 +17,17 @@ the prerequisites" is where most tools lose people.
 
 | | Needed for | |
 | --- | --- | --- |
-| **A container runtime** | `check`, `dev`, `build`, `image` | Docker Desktop, Colima, Podman or Rancher Desktop |
-| `curl` and `tar` | The installer | Already on macOS, Linux and Windows 10+ |
+| **A container runtime** | Hosted `check`, `dev`, `build`, `image` | Docker Desktop, Colima, Podman or Rancher Desktop |
+| `curl` or `wget`, plus `tar` | Unix installer | macOS, GNU/Linux or WSL |
+| PowerShell 5.1 or 7 | Native Windows installer | Windows x64 or ARM64 |
 
 And what you do **not** need:
 
 - **Node.js, npm, a lockfile.** The engine is a Next.js application and it runs
   inside the container. Nothing is installed on your machine.
 - **`docker-compose`.** One container at a time; nothing to compose.
-- **`gh`, the GitHub CLI.** `zel` never calls it.
+- **`gh`, the GitHub CLI**, for local documentation. GitHub workflow commands
+  may use it when you explicitly invoke them.
 - **A container runtime at all**, if you only want to write and convert. `new`,
   `explain`, `list`, `context`, `detect` and `convert` are native code with the
   content model compiled in.
@@ -131,14 +135,16 @@ curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/ins
 ```
 
 Works on **Apple Silicon and Intel Macs**, and on Linux **x86-64 and arm64** —
-the script reads `uname` and fetches the matching build. Five binaries are
-published; it picks yours.
+the script reads `uname` and fetches the matching build. The latest public
+`v0.1.3` release has four Unix binaries; current-source packages add two native
+Windows targets and require a new release before using the public installers.
 
 Pin a version, or install somewhere else:
 
 ```bash title="terminal"
-ZEL_VERSION=v0.1.0 ZEL_INSTALL_DIR=/usr/local/bin \
-  curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh \
+  -o install.sh
+ZEL_VERSION=v0.1.3 ZEL_INSTALL_DIR="$HOME/.local/bin" sh install.sh
 ```
 
 It installs to `~/.local/bin` by default, and says so if that is not on your
@@ -147,18 +153,17 @@ PATH.
 </Tab>
 <Tab title="Windows">
 
-Run `zel` **inside WSL**, where it is an ordinary Linux binary and the one-liner
-above works unchanged:
+Current source supports native Windows x64 and ARM64. For a release that
+contains Windows packages, download its `install.ps1`, then run it in PowerShell
+with `-Version` set to that release's version. `-InstallDir` selects a directory;
+the default is `%LOCALAPPDATA%\Programs\Zellij\bin`. Add that directory to your
+user PATH and open a new terminal. The installer checks the archive checksum and
+binary version before replacing a prior installation.
 
-```bash title="WSL"
-curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
-```
-
-There is no native `zel.exe`. Every path `zel` touches is a container bind
-mount, so a native build would spend its life reaching across the Windows
-filesystem boundary — the slow, edge-case-ridden arrangement the tip below
-exists to talk you out of. Under WSL with the Docker Desktop WSL 2 backend,
-`zel`, your content and the container runtime are all on the same side of it.
+The existing public `v0.1.3` release has no Windows archive. Until a new release
+is published, its Unix installer can still be used **inside WSL**, where it
+selects a Linux binary. Native portable workflows need no WSL or Docker;
+hosted container workflows have separate runtime requirements.
 
 </Tab>
 </Tabs>
@@ -168,7 +173,7 @@ Detects your platform, finds the latest release, downloads the archive built for
 it, **verifies it against its published SHA-256**, and puts one binary in
 `~/.local/bin`. It writes nothing else and needs no privileges.
 
-Read it first if you would rather — about a hundred lines of POSIX shell, living
+Read it first if you would rather — the POSIX script lives
 beside the binaries it installs:
 [install.sh](https://github.com/mylife-inc/releases/blob/main/zellij/install.sh).
 </Callout>

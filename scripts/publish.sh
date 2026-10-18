@@ -58,63 +58,8 @@ require_version() {
 # The checksum travels with the binary because `install.sh` refuses to install
 # without one — a download it cannot verify is a download it will not run.
 cmd_binary() {
-  local version="${1:-}" target="${2:-}" out="${3:-$DIST_DEFAULT}"
-  require_version "$version"
-  [ -n "$target" ] || die "A target is required, e.g. x86_64-unknown-linux-gnu"
-
-  command -v cargo >/dev/null 2>&1 || die "cargo is required and was not found."
-
-  # In a sealed repository `cli/crates` exists only after CodeSeal has run. A
-  # missing workspace here means the decrypt step did not happen, and saying so
-  # is worth more than cargo's error about a manifest it cannot find.
-  [ -d "$ROOT/cli/crates" ] || die "cli/crates is missing.
-    In a sealed checkout this means the repository was not decrypted: run the
-    codeseal-decrypt action before this script."
-
-  # The version being published has to be the version being built.
-  #
-  # It was not checked, and it was not the same. The workflow takes its version
-  # from a dispatch input and names every archive with it; nothing ever read
-  # `cli/Cargo.toml`. So `zel-v0.1.2-*.tar.gz` shipped a binary answering
-  # `zel 0.1.0`, and the release, the tag, the filenames and the checksums were
-  # all internally consistent and all wrong together.
-  #
-  # Nothing failed. It was found by installing the published release and
-  # running `--version`, which is the one check nobody automates.
-  #
-  # Checked against the manifest rather than the built binary, because it is
-  # exact and needs no ability to execute the artefact — this cross-compiles to
-  # four targets and can run at most one of them. It also fails in a second,
-  # before the build rather than after.
-  local declared
-  declared=$(awk '/^\[workspace\.package\]/{p=1} p&&/^version *=/{gsub(/[" ]/,"",$3); print $3; exit}' "$ROOT/cli/Cargo.toml")
-  [ -n "$declared" ] || die "Could not read the workspace version from cli/Cargo.toml."
-
-  if [ "$declared" != "${version#v}" ]; then
-    die "cli/Cargo.toml declares $declared, but this would publish ${version}.
-    The archive name would say ${version#v} and the binary inside would answer
-    $declared — a release that is wrong in a way nothing downstream can detect.
-
-    Bump the workspace version in cli/Cargo.toml to ${version#v} and commit it,
-    then publish again. The version belongs in git, so this script will not
-    edit it: a CI runner rewriting a tracked file is a change nobody reviews."
-  fi
-
-  say "Building zel $version for $target"
-  ( cd "$ROOT/cli" && cargo build --release --bin zel --target "$target" )
-
-  local built="$ROOT/cli/target/$target/release/zel"
-  [ -f "$built" ] || die "cargo reported success but $built does not exist."
-
-  mkdir -p "$out"
-  local name="zel-${version}-${target}"
-
-  # `-C` so the archive holds `zel` at its root and not the build path. The
-  # installer extracts exactly the member named `zel` and nothing else.
-  tar -czf "$out/${name}.tar.gz" -C "$ROOT/cli/target/$target/release" zel
-  ( cd "$out" && sha256_of "${name}.tar.gz" > "${name}.tar.gz.sha256" )
-
-  say "Wrote $out/${name}.tar.gz"
+  command -v node >/dev/null 2>&1 || die "Node 24 is required for release packaging (not for running zel)."
+  node "$ROOT/scripts/package-native.mjs" "${1:-}" "${2:-}" "${3:-$DIST_DEFAULT}"
 }
 
 # ------------------------------------------------------------------ checksums
@@ -129,11 +74,15 @@ cmd_checksums() {
   local dir="${1:-$DIST_DEFAULT}"
   [ -d "$dir" ] || die "$dir does not exist."
 
-  # `ls` in a subshell rather than a glob guard: an empty directory should say
-  # so, not produce a SHA256SUMS naming a file called `*.tar.gz`.
-  ( cd "$dir" && ls ./*.tar.gz >/dev/null 2>&1 ) || die "No archives in $dir."
-
-  ( cd "$dir" && sha256_of ./*.tar.gz > SHA256SUMS && sha256_of -c SHA256SUMS )
+  # An empty directory must fail instead of hashing a literal wildcard.
+  (
+    cd "$dir"
+    shopt -s nullglob
+    local archives=( ./*.tar.gz ./*.zip )
+    [ "${#archives[@]}" -gt 0 ] || die "No archives in $dir."
+    sha256_of "${archives[@]}" > SHA256SUMS
+    sha256_of -c SHA256SUMS
+  )
   say "Wrote $dir/SHA256SUMS"
 }
 
@@ -209,6 +158,7 @@ cmd_release() {
 
   [ -f "$dir/SHA256SUMS" ] || cmd_checksums "$dir"
   cp "$ROOT/scripts/install.sh" "$dir/install.sh"
+  cp "$ROOT/scripts/install.ps1" "$dir/install.ps1"
 
   # A version with a dash in it is a pre-release: `install.sh` skips those when
   # resolving "latest", so a release candidate cannot be installed by accident.
@@ -216,7 +166,10 @@ cmd_release() {
   case "$version" in *-*) prerelease=(--prerelease) ;; esac
 
   say "Publishing $tag to $RELEASES_REPO"
-  ( cd "$dir" && gh release create "$tag" \
+  ( cd "$dir"
+    shopt -s nullglob
+    local assets=( ./*.tar.gz ./*.zip ./*.sha256 SHA256SUMS install.sh install.ps1 )
+    gh release create "$tag" \
       --repo "$RELEASES_REPO" \
       --title "Zellij $version" \
       "${prerelease[@]}" \
@@ -226,7 +179,7 @@ cmd_release() {
 curl -fsSL https://raw.githubusercontent.com/$RELEASES_REPO/main/$SCOPE/install.sh | sh
 \`\`\`
 " \
-      ./*.tar.gz ./*.sha256 SHA256SUMS install.sh )
+      "${assets[@]}" )
 
   say "Published https://github.com/$RELEASES_REPO/releases/tag/$tag"
 }

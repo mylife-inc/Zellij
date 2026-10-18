@@ -51,6 +51,13 @@ jobs:
         with:
           workspaces: cli
 
+      - name: Require a tag matching the committed native version
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          test "$REF_TYPE" = tag || { echo "::error::Dispatch this workflow against a version tag."; exit 1; }
+          node scripts/package-native.mjs "$VERSION" --check-version
       - run: npm ci
       - run: npm run typecheck
       - run: npx vitest run --root engine/packages/zellij
@@ -185,17 +192,23 @@ jobs:
         run: |
           echo "digests downloaded:"
           ls -la
-          echo "count: $(ls -1 | wc -l)  (expected 2)"
+          digests=(*)
+          echo "count: ${#digests[@]}  (expected 2)"
           echo "tags:"
           jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON"
 
       - name: Stitch the architectures into one manifest
         working-directory: /tmp/digests
         run: |
-          set -x
-          docker buildx imagetools create \
-            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf "${REGISTRY}/${IMAGE}@sha256:%s " *)
+          args=()
+          while IFS= read -r tag; do args+=(-t "$tag"); done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          digests=(*)
+          test "${#digests[@]}" = 2 || { echo "Expected two architecture digests"; exit 1; }
+          for digest in "${digests[@]}"; do
+            [[ "$digest" =~ ^[a-f0-9]{64}$ ]] || { echo "Invalid digest filename"; exit 1; }
+            args+=("${REGISTRY}/${IMAGE}@sha256:$digest")
+          done
+          docker buildx imagetools create "${args[@]}"
 
       # Only the default variant. The others differ by three lines of JSON, and
       # building four sites to learn the same thing is time every release pays.
@@ -217,67 +230,12 @@ jobs:
           exit 1
 
   binaries:
-    name: zel (${{ matrix.target }})
     needs: verify
-    runs-on: ${{ matrix.os }}
-
-    # Both Darwin targets are built on the Apple Silicon runner.
-    #
-    # `macos-13` is the last Intel image GitHub offers, and it is being retired:
-    # rc.4 had every other job green — eight images, four manifests, the docs,
-    # four of five binaries — and sat *queued* for over an hour waiting for an
-    # Intel machine that never came. Nothing had failed. The release simply
-    # could not finish, and `publish` never started, which is why the installer
-    # was still missing from the public repository.
-    #
-    # Cross-compiling costs nothing here. Rust publishes `rust-std` for both
-    # Apple targets and the runner's SDK carries both architectures, so
-    # `--target x86_64-apple-darwin` on an arm64 host needs no extra linker and
-    # no emulation — unlike the arm64 *Linux* build, which is why that one is
-    # still on a native runner rather than under QEMU.
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu }
-          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu }
-          - { os: macos-latest, target: aarch64-apple-darwin }
-          - { os: macos-latest, target: x86_64-apple-darwin }
-
-    steps:
-      - uses: actions/checkout@v7
-      - uses: dtolnay/rust-toolchain@stable
-        with:
-          targets: ${{ matrix.target }}
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: cli
-          key: ${{ matrix.target }}
-
-      # Build, package and hash, all in `scripts/publish.sh`.
-      #
-      # This job used to inline it, `zrelease-local` in scripts/app.sh had a
-      # second copy, and the sealed engine repository needed a third. The
-      # archive name is the contract `install.sh` reads, so three copies of it
-      # is three chances for that contract to drift silently.
-      #
-      # Through the environment rather than interpolated: a ref name reaching a
-      # shell directly is one surprising character away from a problem.
-      - name: Build and package
-        shell: bash
-        env:
-          VERSION: ${{ github.ref_name }}
-          TARGET: ${{ matrix.target }}
-        run: scripts/publish.sh binary "$VERSION" "$TARGET" dist
-
-      # `binary-` so the publish job can ask for these and nothing else. The
-      # run also carries eight `digest-*` artefacts that exist only to get a
-      # digest from an image build to the manifest merge, and a release has no
-      # use for them.
-      - uses: actions/upload-artifact@v7
-        with:
-          name: binary-${{ matrix.target }}
-          path: dist/*
+    uses: ./.github/workflows/native-packages.yml
+    permissions:
+      contents: read
+    with:
+      version: ${{ github.ref_name }}
 
   # --------------------------------------------------------------------- docs
   docs:
@@ -368,11 +326,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # This repository is private, and a private repository's release assets
-    # need a token to download — which makes a `curl … | sh` installer
-    # impossible. So the binaries are published twice: here, where the team can
-    # find them beside the code, and in a public repository that exists to hold
-    # artefacts for several private projects.
+    # Retain the shared releases repository as the stable installer destination,
+    # independently of this development repository's current public visibility.
     env:
       RELEASES_REPO: mylife-inc/releases
       HAS_RELEASES_TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN != '' }}
@@ -393,8 +348,7 @@ jobs:
       # this downloads, so every one of those digest files would have been
       # published as a release asset beside the binaries.
       #
-      # Five artefacts instead of twenty-one is a smaller thing to go wrong, and
-      # a release that carries only what belongs in one.
+      # Only the six native packages belong in this release asset download.
       - uses: actions/download-artifact@v8
         with:
           path: artifacts
@@ -404,7 +358,10 @@ jobs:
       # The installer is an artefact too. Publishing it beside the binaries
       # means a pinned version can always be installed the same way the release
       # it belongs to was.
-      - run: cp scripts/install.sh artifacts/install.sh
+      - name: Include both installers and a combined checksum manifest
+        run: |
+          cp scripts/install.sh scripts/install.ps1 artifacts/
+          scripts/publish.sh checksums artifacts
 
       - uses: softprops/action-gh-release@v2
         with:
@@ -422,6 +379,10 @@ jobs:
             Or download the archive for your platform below, verify it against
             its `.sha256`, and put `zel` on your PATH.
 
+            Windows: download `install.ps1` below, then run it in PowerShell
+            with `-Version ${{ github.ref_name }}`. Add its installation directory
+            to your user PATH. x64 and ARM64 packages are included.
+
             ## Container images
 
             ```
@@ -431,9 +392,9 @@ jobs:
             ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-all
             ```
 
-      # The public half. Tagged `zellij-<version>` because the repository holds
-      # The installer lives beside the binaries, on a branch rather than as a
-      # release asset.
+      # Shared releases use `zellij-<version>` because the repository holds
+      # artifacts for several projects. Installers also live on its main branch
+      # to provide stable download URLs independent of a specific release.
       #
       # An asset would need a release to point at, and `latest` in a repository
       # shared by several projects is not necessarily ours — the same scoping
@@ -466,7 +427,8 @@ jobs:
 
           mkdir -p zellij
           cp "${GITHUB_WORKSPACE}/scripts/install.sh" zellij/install.sh
-          git add zellij/install.sh
+          cp "${GITHUB_WORKSPACE}/scripts/install.ps1" zellij/install.ps1
+          git add zellij/install.sh zellij/install.ps1
 
           # `--cached`, because plain `git diff` does not see a file that is not
           # tracked yet — which is every file the first time, and reported the
@@ -498,8 +460,10 @@ jobs:
             curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
             ```
 
-            Source lives in a private repository. These binaries, their
-            checksums and the installer are the public artefacts.
+            Windows: download `install.ps1` from this release and run it in
+            PowerShell with `-Version ${{ github.ref_name }}`. Packages cover
+            x64 and ARM64 on Linux, macOS and Windows. Each archive is tested
+            through its installer before publication. Neither installer changes PATH.
 
       - name: Say why the public release was skipped
         if: env.HAS_RELEASES_TOKEN != 'true'

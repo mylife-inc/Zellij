@@ -11,6 +11,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  native-packages:
+    uses: ./.github/workflows/native-packages.yml
+    permissions:
+      contents: read
+
   engine:
     name: Engine
     runs-on: ubuntu-latest
