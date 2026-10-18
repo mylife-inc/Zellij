@@ -2517,3 +2517,8 @@ performed. Public native release remains zellij-v0.1.3. Remaining work: portable
 dev, hosted view, additional providers and maintenance, plus compatible release
 and documentation publication. Historical audit findings above remain evidence,
 not a claim that the product is complete or bug-free.
+
+
+Formatting/watch implementation source: `47fbcfbb17d435d584a758093415160d42513bc7`
+in [PR #37](https://github.com/mylife-inc/Zellij/pull/37). That PR tracks final-head
+Linux/macOS/Windows formatting/watch and real-container validation acceptance.
