@@ -3,11 +3,11 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: configured import and ship on `codex/cli-import-delivery`;
-see the implementation record at the end for evidence. Configured CI merged
-in PR #34 as `4bc5ef6` with all checks passing.
-Native Netlify delivery merged in PR #33, image publication in PR #32,
-Next images/Markdown adaptation in PR #31, and static packaging in PR #30.
+Latest CLI work: YAML formatting and validation watch on
+`codex/cli-format-watch`; implementation and verification records are at the end.
+Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
+CI generation in PR #34 and Netlify delivery in PR #33. Current source is ahead
+of public native release `zellij-v0.1.3`.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -2471,3 +2471,49 @@ work includes fmt/watch, portable dev, hosted view, other providers and maintena
 Editable-wrapper implementation source: `3877db8fc6e68bc4ceee94534cd95f0305df0c54`,
 in [PR #36](https://github.com/mylife-inc/Zellij/pull/36). That PR tracks final-head
 Linux/macOS/Windows installed-app acceptance and existing container checks.
+
+
+### Implementation update — 2026-10-18, YAML formatting and validation watch
+
+PR #36 merged as d773c1832918a0c426513e10949367105d9e00b6. Final head
+3b523091dd37af96bb6cc167681adf166d0df835 passed all 13 jobs in CI 39170572087.
+Merge CI 39171833213 and base image 39171833271 also succeeded, closing the
+previous editable-wrapper milestone's pending platform/container evidence.
+
+Current source implements fmt and watch with configured-site discovery. Fmt
+selects hosted YAML plus zel.yaml, or only zel.yaml for portable sites, excluding
+attachments/generated output and refusing links/junctions. It uses pretty_yaml
+0.6.0 / yaml_parser 0.3.0 syntax trees, schema ordering and compact collections,
+with comments/anchors protected from reordering. An upstream normalization of
+|+ trailing blank lines was caught by regression tests: authored block scalars
+are now restored with adjusted structural indentation, and parsed-value equality
+is required before writes. Staging closes file handles before publication, keeps
+permissions, and checks concurrent edits. Invalid late input writes nothing;
+replacement is atomic per file, not filesystem-wide on storage failure.
+
+Watch reuses portable checking and the hosted engine. Byte snapshots detect
+same-size/timestamp-preserving edits; debounce and checks are serial. A configured
+session pins layout and renderer and recovers after invalid content/config edits
+without scanning unrelated repository/output paths. Ctrl-C waits for current
+validation, then exits0. Hosted runtime failure is startup exit4; portable checks
+and formatting never probe external tools. No source/output/build/publication
+side effects are part of validation watch.
+
+Local tests cover formatting scope, check-only writes, late errors, permissions,
+low descriptor limits, multiline values, comments, scalar types and idempotence.
+Disposable copies of showcase, zellij-docs and codeseal-docs remain strictly/deeply
+valid after formatting; Markdown/media stay byte-identical. The actual portable
+watch process recovers from initial bad content, restored-size/timestamp edits,
+malformed/deleted config and changed renderer, then exits cleanly on Ctrl-C.
+All 265 workspace Rust tests, warnings-denied Clippy, formatting, changed-workflow
+actionlint and strict/deep local documentation validation passed. CI adds formatter
+corpus and portable-watch acceptance on Linux/macOS/Windows, including Windows
+junction and console-signal coverage, plus hosted watch with the CI-built engine.
+The portable matrix timeout is 30 minutes to allow cold installed-wrapper builds
+and these added checks. Final source/PR/platform evidence will be appended.
+
+No local daemon was started or live provider/release/public docs publication
+performed. Public native release remains zellij-v0.1.3. Remaining work: portable
+dev, hosted view, additional providers and maintenance, plus compatible release
+and documentation publication. Historical audit findings above remain evidence,
+not a claim that the product is complete or bug-free.

@@ -1,11 +1,11 @@
 # zel CLI command contract
 
-Status: **runtime policy, configured-site layout, working-command shortcuts, completions, images and registry publication implemented in source; additional capabilities remain proposed**.
-The runtime prerequisite policy in §2.9 is implemented in source. The configured site layout and repository-root default below are implemented,
-including `build.out` and `preview.port`. Shortcuts for existing handlers and
-shell completions are implemented. `image.name` and registry-only `publish`
-settings are implemented; shared selectors, provider delivery, CI fields and
-other command refinements remain proposed.
+Status: **configured sites, shortcuts, completions, static/Next images, registry
+and Netlify delivery, CI generation, import/ship, editable wrappers, YAML formatting
+and validation watching are implemented in source**. Portable dev, hosted view,
+other providers and advanced maintenance remain proposed. Stage records below
+and the local CLI reference describe actual support; public 0.1.3 predates these
+additions and compatible release publication is still separate work.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
 the [original specification](zellij-cli-spec.md) remains design history.
 
@@ -630,3 +630,38 @@ content is used for the starter, absolute for external sources. Moving engine or
 external content requires updating the corresponding path. No npm publication,
 portable wrapper adapter, package-manager choice, auto-install, or cloud upload
 is implied. The public 0.1.3 release predates this command.
+
+
+### Stage 6b — YAML formatting and validation watching (2026-10-18)
+
+`fmt [site]` and `watch [site]` use normal current-config / docs/zellij selection,
+with explicit custom/legacy roots. Both are already short; no additional alias.
+The historical S/N baseline rows above are superseded by this implementation.
+Neither command supports --json.
+
+Fmt is native and tool-independent. Configured hosted sites select zel.yaml and
+content/**/*.yaml or .yml; portable sites select only zel.yaml, leaving YAML
+attachments alone. Markdown, hidden paths, node_modules, hosted assets and
+configured/marked build output are excluded. Links/junctions are rejected.
+Syntax-tree formatting retains comments, anchors and multiline scalars; known
+section fields are ordered type/required/optional only where their context is
+safe to move. Short scalar collections are compacted, quotes simplified where
+the scalar type stays unchanged, and long flow collections can retain their
+braces/brackets. Significant multiline whitespace and parsed values are checked
+and preserved. Unsupported or value-changing transformations fail before writes.
+
+All files are prepared before any replacement, staged on the same volume, with
+closed staging handles, original permissions and a concurrent-change preflight.
+Replacement is atomic per file, not a transaction across files on storage failure.
+--check writes nothing: clean=0, changes=1, invalid input/path/transformation=2;
+I/O=1. Formatting does not replace content validation.
+
+Watch runs validation initially, polls byte snapshots, debounces saves and checks
+serially. --deep and --strict share check semantics. Portable needs no tools;
+hosted detects a runtime at startup and uses the real read-only engine check.
+Unavailable runtime is exit4. Initial invalid configuration fails; invalid content
+remains watched. Config deletion, malformed edits, changed renderer and linked
+paths are reported without widening the root or changing renderer. Restoring
+valid inputs recovers. Ctrl-C waits for the active synchronous check then exits0;
+one-shot check remains the CI pass/fail operation. No output, server, browser or
+publication is created. Compatible release and public docs publication remain open.

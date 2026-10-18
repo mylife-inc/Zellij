@@ -74,6 +74,16 @@ impl Snapshot {
     /// Watch only authored inputs. Pin the layout so deleting/replacing a
     /// configured root cannot fall back to scanning its generated site/.
     pub fn site(root: &Utf8Path, configured: bool) -> Result<Self> {
+        Self::site_for(root, configured, zellij_core::site::Renderer::Portable)
+    }
+
+    /// Validation watching also supports hosted content, pinned to its initial
+    /// renderer and configured layout. A broken config is never a fallback.
+    pub fn site_for(
+        root: &Utf8Path,
+        configured: bool,
+        renderer: zellij_core::site::Renderer,
+    ) -> Result<Self> {
         if !configured {
             return Self::read(root);
         }
@@ -87,7 +97,7 @@ impl Snapshot {
                 "watched site requires its version: 1 zel.yaml; restore the configuration",
             ));
         }
-        site.require(zellij_core::site::Renderer::Portable)?;
+        site.require(renderer)?;
         let mut snapshot = Self::read(&site.content)?;
         let config = root.join(zellij_core::site::CONFIG);
         let bytes = fs::read(&config)?;

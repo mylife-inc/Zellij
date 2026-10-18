@@ -15,11 +15,13 @@ use serde_json::json;
 use std::io::Write;
 mod ci;
 mod delivery;
+mod formatting;
 mod images;
 mod imports;
 mod netlify;
 mod preview;
 mod validation;
+mod watch;
 
 fn main() {
     let cli = Cli::parse_args();
@@ -60,6 +62,12 @@ fn main() {
             cli.json,
         ),
         Command::Dev { ref dir, port } => dev(dir.as_deref(), port),
+        Command::Fmt { ref dir, check } => formatting::run(dir.as_deref(), check),
+        Command::Watch {
+            ref dir,
+            deep,
+            strict,
+        } => watch::run(dir.as_deref(), zellij_engine::CheckOptions { deep, strict }),
         Command::Serve {
             ref dir,
             port,

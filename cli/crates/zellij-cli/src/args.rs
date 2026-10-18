@@ -288,12 +288,22 @@ pub(crate) enum Command {
 
     /// Canonical formatting for the YAML.
     Fmt {
-        #[arg(default_value = ".")]
-        dir: String,
+        dir: Option<String>,
 
         /// Exit 1 if anything would change, and write nothing.
         #[arg(long)]
         check: bool,
+    },
+
+    /// Validate initially and after edits, without building or serving.
+    Watch {
+        dir: Option<String>,
+        /// Perform hosted MDX/reference checks; portable checking is already deep.
+        #[arg(long)]
+        deep: bool,
+        /// Report warnings as validation failures.
+        #[arg(long)]
+        strict: bool,
     },
 
     /// Check the environment: container runtime, image, versions.

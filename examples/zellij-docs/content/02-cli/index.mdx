@@ -80,7 +80,8 @@ need no container runtime.
 | [`zel convert`](/cli/convert) | That folder, as Zellij content | **Available** |
 | [`zel migrate`](/cli/migrate) | detect, convert and check in one step | **Available** |
 | [`zel check`](/cli/check) | Check portable Markdown natively or hosted content with the engine | **Available** |
-| [`zel fmt`](/cli/fmt) | Canonical formatting for the YAML | Planned |
+| [`zel fmt`](/cli/fmt) | Format site YAML or check its formatting | **Available in source** |
+| [`zel watch`](/cli/watch) | Validate initially and after edits | **Available in source** |
 | [`zel dev`](/cli/dev) | Development server | **Available** |
 | [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
 | [`zel view`](/cli/view) | Build Markdown, serve it, and open a browser | **Available** |
@@ -93,14 +94,10 @@ need no container runtime.
 | [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available in source** |
 
-<Callout type="warning" title="Planned means planned">
-Zellij is pre-1.0, and the commands marked **Planned** exist in the binary but
-exit with `not implemented yet`. Their pages here describe the agreed behaviour
-— they are the specification the implementation is being written against, not a
-description of something you can run today.
-
-The commands marked **Available** work now, and their pages describe what they
-actually do.
+<Callout type="info" title="Source and release versions">
+This table describes the current source. A command's page records its supported
+renderers, providers and options. Source additions still need a compatible native
+release; the public `zellij-v0.1.3` binaries do not include the full table.
 </Callout>
 
 ## How a command finds your content
@@ -109,7 +106,7 @@ Common workflows also have short forms: `zel init`, `zel c`, `zel b`, and
 `zel v --watch`. See [the full shortcut table](/cli/shortcuts). Both forms accept
 the same arguments; help and shell completion show the available names.
 
-Publish, build/check/view/serve/dev and image static/next/build/dockerfile accept a site directory.
+Publish, build/check/fmt/watch/view/serve/dev and image static/next/build/dockerfile accept a site directory.
 Without one, they select `./zel.yaml`, then `./docs/zellij/zel.yaml`.
 
 ```bash
@@ -132,10 +129,10 @@ keep their distinct meanings; they are not interchangeable site selectors.
 ## Where Docker comes in
 
 Commands that only read the content model — `explain`, `list`, `context`,
-`detect`, `convert`, `new` — are pure Rust and need nothing installed.
+`detect`, `convert`, `new`, `fmt` — are pure Rust and need nothing installed.
 
-Structured-content `check`, `dev`, and hosted `build` commands run the Next.js
-engine in a container from a public image. Portable `build` and `check` run
+Structured-content `check`, `watch`, `dev`, and hosted `build` commands run the Next.js
+engine in a container from a public image. Portable `build`, `check` and `watch` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image
 publication uses the container runtime. Netlify deployment is native for portable

@@ -1,0 +1,61 @@
+---
+title: zel watch
+description: Validate a site initially and after edits without building or serving it.
+---
+
+<Callout type="tip" title="Available in source">
+Portable validation runs natively with no external tools. Hosted validation uses
+the engine in a container. The public `zellij-v0.1.3` binary predates this command.
+</Callout>
+
+```bash title="terminal"
+zel watch
+zel watch --deep --strict
+zel watch docs/manual --strict
+```
+
+`watch` runs the same validation as [`zel check`](/cli/check), then repeats it
+after edits settle. It does not write an export, start an HTTP server, launch a
+browser or publish anything. For a portable preview that rebuilds and reloads
+the browser, use [`zel view --watch`](/cli/view).
+
+## Site selection and changes
+
+The default is `./zel.yaml`, then `./docs/zellij/zel.yaml`. Pass a custom site
+root or legacy content folder explicitly. A configured site watches its
+`zel.yaml` and `content/`; sibling `site/` output and unrelated repository files
+are outside that scope. Hidden paths and `node_modules` are ignored.
+
+Watch mode polls file contents, so it also catches edits with unchanged file
+sizes or timestamps. Saves are debounced; checks run one at a time. Several
+quick edits can produce a single validation of the latest content.
+
+A valid site configuration is required at startup. Invalid content is reported
+and remains watched. During a session, malformed or deleted configuration is
+reported without switching to an unconfigured layout. Changing the renderer
+is also rejected for that session. Restore the configuration to recover, or
+stop and restart to intentionally select another layout or renderer. Replaced
+symlinks/junctions are rejected rather than followed.
+
+## Options and shutdown
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `[dir]` | Site root or explicit legacy content folder | Configured-site discovery |
+| `--deep` | Hosted MDX and local-reference checks; portable checking already includes these checks | Off |
+| `--strict` | Treat warnings as validation failures | Off |
+
+Validation failures keep the watcher running until a corrected edit arrives.
+Ctrl-C finishes any active validation and stops with exit **0**; it does not
+encode the last validation result in that exit code. Use `zel check --strict`
+for a single CI check. JSON output and a renderer override are unsupported.
+
+For hosted sites, an unavailable container runtime is a startup error with exit
+**4** and setup guidance. No runtime is installed or started automatically, and
+portable validation never probes Docker. See [`zel doctor`](/cli/doctor).
+
+## See also
+
+- [`zel fmt`](/cli/fmt) — format YAML without changing its values
+- [`zel dev`](/cli/dev) — run the hosted development server
+- [`zel view`](/cli/view) — build and preview portable output
