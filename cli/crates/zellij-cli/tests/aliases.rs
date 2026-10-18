@@ -233,20 +233,28 @@ if ((Get-Item -LiteralPath $resolved).FullName -ne $expected) {
 }
 . $CompletionPath
 foreach ($pair in @(
-    @('zel build --', 'zel b --', '--out'),
-    @('zel new portable --', 'zel init --', '--minimal'),
-    @('zel view --', 'zel v --', '--no-open'),
-    @('zel image run --', 'zel ir --', '--port'),
-    @('zel ci run --', 'zel ci publish --', '--workflow')
+    @('zel build', 'zel b', '--out'),
+    @('zel new portable', 'zel init', '--minimal'),
+    @('zel view', 'zel v', '--no-open'),
+    @('zel image run', 'zel ir', '--port'),
+    @('zel ci run', 'zel ci publish', '--workflow')
 )) {
-    $Error.Clear()
-    $full = @((TabExpansion2 -inputScript $pair[0] -cursorColumn $pair[0].Length).CompletionMatches.CompletionText | Sort-Object)
-    $short = @((TabExpansion2 -inputScript $pair[1] -cursorColumn $pair[1].Length).CompletionMatches.CompletionText | Sort-Object)
-    if ($full -notcontains $pair[2]) {
-        $details = $Error | Format-List * -Force | Out-String
-        throw "PowerShell $($PSVersionTable.PSVersion): missing $($pair[2]) for $($pair[0]); got: $full; errors: $details"
+    # PowerShell 5.1 does not invoke native completers for bare '-' or '--'.
+    # https://github.com/PowerShell/PowerShell/issues/2912
+    $suffixes = @('', $pair[2].Substring(0, 3))
+    if ($PSVersionTable.PSVersion.Major -ge 6) { $suffixes += '--' }
+    foreach ($suffix in $suffixes) {
+        $fullLine = "$($pair[0]) $suffix"
+        $shortLine = "$($pair[1]) $suffix"
+        $Error.Clear()
+        $full = @((TabExpansion2 -inputScript $fullLine -cursorColumn $fullLine.Length).CompletionMatches.CompletionText | Sort-Object)
+        $short = @((TabExpansion2 -inputScript $shortLine -cursorColumn $shortLine.Length).CompletionMatches.CompletionText | Sort-Object)
+        if ($full -notcontains $pair[2]) {
+            $details = $Error | Format-List * -Force | Out-String
+            throw "PowerShell $($PSVersionTable.PSVersion): missing $($pair[2]) for $fullLine; got: $full; errors: $details"
+        }
+        if (($full -join "`n") -cne ($short -join "`n")) { throw "Different options for $shortLine" }
     }
-    if (($full -join "`n") -cne ($short -join "`n")) { throw "Different options for $($pair[1])" }
 }
 "#).unwrap();
     // PowerShell only invokes native argument completers for discoverable

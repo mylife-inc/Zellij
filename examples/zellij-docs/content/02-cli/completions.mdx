@@ -53,6 +53,12 @@ For PowerShell:
 zel completions powershell | Out-String | Invoke-Expression
 ```
 
+In Windows PowerShell 5.1, start the option name before pressing Tab, for
+example `zel b --o`, or complete immediately after the command's trailing space.
+That shell has an [upstream bug](https://github.com/PowerShell/PowerShell/issues/2912)
+that prevents native completion from being called for a bare `-` or `--`.
+PowerShell 7 also supports completion after `zel b --`.
+
 For Elvish, save the generated script as a module and load it using your Elvish
 module configuration:
 

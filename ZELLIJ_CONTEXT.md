@@ -1930,3 +1930,14 @@ PowerShell PATH. The fixture now prepends its exact binary directory and checks
 The parser and other alias execution tests had passed on Windows; the fix does
 not change production CLI behavior. Consult the PR's latest checks for the
 corrected Windows result.
+
+The subsequent diagnostic run (`39116110828`) isolated the remaining Windows
+failure to PowerShell 5.1's upstream native-completion limitation: a bare `-`
+or `--` does not invoke registered completers at all
+([PowerShell #2912](https://github.com/PowerShell/PowerShell/issues/2912)).
+The fixture now exercises empty words and partial long options (for example
+`--o`) with the same canonical/alias assertions; PowerShell 6+ also checks bare
+`--`. A checksum-verified temporary Microsoft PowerShell 7.6.7 runtime passes
+the same harness locally. The CLI reference documents the 5.1 workaround.
+No production generator modification was needed. Earlier path-fixture fixes
+remain, but were not the root cause of the empty completion result.
