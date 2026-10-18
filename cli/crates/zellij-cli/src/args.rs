@@ -1,0 +1,553 @@
+//! Command definitions, shortcuts and completion share one argument schema.
+use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
+
+// Each flattened shortcut declares its spelling, descriptive route, and mapping
+// once. Its argument type is also used by the descriptive command. Normalizing
+// before dispatch keeps global-option policy and all side effects identical.
+macro_rules! shortcuts {
+    (args { $( $variant:ident($args:ty) => ($short:literal, $full:literal, $map:expr); )* }
+     unit { $( $unit:ident => ($unit_short:literal, $unit_full:literal, $command:expr); )* }) => {
+        #[derive(Subcommand, Debug, PartialEq, Eq)]
+        pub(crate) enum Shortcut {
+            $( #[command(name = $short, about = concat!("Shortcut for `zel ", $full, "`."))]
+            $variant($args), )*
+            $( #[command(name = $unit_short, about = concat!("Shortcut for `zel ", $unit_full, "`."))]
+            $unit, )*
+        }
+        impl Shortcut {
+            fn into_command(self) -> Command {
+                match self {
+                    $( Self::$variant(args) => ($map)(args), )*
+                    $( Self::$unit => $command, )*
+                }
+            }
+        }
+        const SHORTCUTS: &[(&str, &str)] = &[
+            $( ($short, $full), )*
+            $( ($unit_short, $unit_full), )*
+        ];
+    };
+}
+
+shortcuts! {
+    args {
+        Init(NewPortableArgs) => ("init", "new portable", |a| Command::New(NewTarget::Portable(a)));
+        Docs(NewDocsArgs) => ("nd", "new docs", |a| Command::New(NewTarget::Docs(a)));
+        Section(NewSectionArgs) => ("ns", "new section", |a| Command::New(NewTarget::Section(a)));
+        Page(NewPageArgs) => ("np", "new page", |a| Command::New(NewTarget::Page(a)));
+        Guide(NewGuideArgs) => ("ng", "new guide", |a| Command::New(NewTarget::Guide(a)));
+        Project(NewProjectArgs) => ("npr", "new project", |a| Command::New(NewTarget::Project(a)));
+        ImageRun(ImageRunArgs) => ("ir", "image run", |a| Command::Image { action: ImageAction::Run(a) });
+        ImagePush(ImagePushArgs) => ("ip", "image push", |a| Command::Image { action: ImageAction::Push(a) });
+        Dockerfile(ImageDockerfileArgs) => ("idf", "image dockerfile", |a| Command::Image { action: ImageAction::Dockerfile(a) });
+    }
+    unit {
+        Sections => ("sections", "list sections", Command::List(ListTarget::Sections));
+        Themes => ("themes", "list themes", Command::List(ListTarget::Themes));
+        Formats => ("formats", "list formats", Command::List(ListTarget::Formats));
+        Targets => ("targets", "list targets", Command::List(ListTarget::Targets));
+    }
+}
+
+impl Cli {
+    /// The same tree is used for parsing, help, and generated completions.
+    fn command_tree() -> clap::Command {
+        let mut command = Self::command();
+        fn describe_aliases(command: &mut clap::Command, prefix: &str) {
+            for child in command.get_subcommands_mut() {
+                let aliases: Vec<_> = child
+                    .get_visible_aliases()
+                    .map(|alias| format!("zel {prefix}{alias}"))
+                    .collect();
+                if !aliases.is_empty() {
+                    *child = child
+                        .clone()
+                        .after_help(format!("Also accepted: {}", aliases.join(", ")));
+                }
+                describe_aliases(child, &format!("{prefix}{} ", child.get_name()));
+            }
+        }
+        describe_aliases(&mut command, "");
+        for (short, full) in SHORTCUTS {
+            let mut leaf = &mut command;
+            for part in full.split_whitespace() {
+                leaf = leaf
+                    .find_subcommand_mut(part)
+                    .expect("shortcut target exists");
+            }
+            *leaf = leaf.clone().after_help(format!("Shortcut: zel {short}"));
+        }
+        command
+    }
+
+    fn from_matches(matches: &clap::ArgMatches) -> Result<Self, clap::Error> {
+        let mut cli = Self::from_arg_matches(matches)?;
+        if let Command::Shortcut(shortcut) = cli.command {
+            cli.command = shortcut.into_command();
+        }
+        Ok(cli)
+    }
+
+    pub(crate) fn parse_args() -> Self {
+        Self::from_matches(&Self::command_tree().get_matches()).unwrap_or_else(|err| err.exit())
+    }
+}
+
+pub(crate) fn completions(shell: clap_complete::Shell) -> zellij_core::Result<()> {
+    use std::io::Write as _;
+    // Generators expect an infallible writer; buffer first so a closed stdout
+    // is an ordinary IO error rather than a panic inside the generator.
+    let mut script = Vec::new();
+    clap_complete::generate(shell, &mut Cli::command_tree(), "zel", &mut script);
+    std::io::stdout().lock().write_all(&script)?;
+    Ok(())
+}
+
+#[derive(Parser, Debug, PartialEq, Eq)]
+#[command(
+    name = "zel",
+    version,
+    about = "Turn a folder of content into a documentation site.",
+    long_about = None,
+)]
+pub(crate) struct Cli {
+    #[command(subcommand)]
+    pub(crate) command: Command,
+
+    /// JSON output for context, list, explain and detect, plus portable check.
+    #[arg(long, global = true)]
+    pub(crate) json: bool,
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum Command {
+    /// Create portable Markdown, hosted content, an app, a section, a page or a guide.
+    #[command(subcommand)]
+    New(NewTarget),
+
+    /// Show a section type's fields, defaults and allowed values.
+    #[command(visible_alias = "ex")]
+    Explain {
+        /// A section type — `zel list sections` for all of them.
+        section_type: String,
+    },
+
+    /// List what this build knows about.
+    #[command(subcommand)]
+    List(ListTarget),
+
+    /// Write the reference an AI agent authors a content folder from.
+    ///
+    /// Needs neither Docker nor Node: generated from the engine's schemas at
+    /// release time and compiled into this binary.
+    #[command(visible_alias = "ctx")]
+    Context {
+        /// Where to write it. Defaults to standard output.
+        file: Option<String>,
+    },
+
+    /// Say what tool a documentation folder was written for.
+    Detect { dir: String },
+
+    /// Convert documentation written for another tool into a new folder.
+    #[command(visible_alias = "cv")]
+    Convert {
+        source: String,
+
+        /// Where to write it. Never the source — a conversion that overwrote
+        /// the original would be unrecoverable.
+        #[arg(long)]
+        out: String,
+
+        /// Force a format instead of detecting one.
+        #[arg(long)]
+        from: Option<String>,
+
+        /// Report the plan, write nothing.
+        #[arg(long)]
+        dry_run: bool,
+    },
+
+    /// Validate portable Markdown natively, or hosted content using its engine.
+    #[command(visible_alias = "c")]
+    Check {
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
+        /// Override automatic selection: portable Markdown or hosted static content.
+        #[arg(long, value_parser = ["portable", "static"])]
+        target: Option<String>,
+        /// Hosted: parse MDX and check local references. Portable always checks references.
+        #[arg(long)]
+        deep: bool,
+        /// Fail when validation reports warnings.
+        #[arg(long)]
+        strict: bool,
+    },
+
+    /// Development server. Edit content, reload the page.
+    Dev {
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
+
+        #[arg(long)]
+        port: Option<u16>,
+    },
+
+    /// Build the site.
+    #[command(visible_alias = "b")]
+    Build {
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
+
+        /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
+        #[arg(long)]
+        target: Option<String>,
+
+        #[arg(long)]
+        out: Option<String>,
+
+        /// Image tag. `--target image` only.
+        #[arg(long)]
+        tag: Option<String>,
+
+        /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
+        #[arg(long)]
+        name: Option<String>,
+
+        /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
+        #[arg(long)]
+        theme: Option<String>,
+    },
+
+    /// Build the site and put it online.
+    Deploy {
+        /// netlify | cloudflare | vercel | ghpages | s3 | fly | railway.
+        /// The provider decides the target: a CDN cannot run a container.
+        provider: String,
+
+        #[arg(default_value = ".")]
+        dir: String,
+
+        /// The site or project on the provider.
+        #[arg(long)]
+        site: Option<String>,
+    },
+
+    /// Build, run and push container images.
+    Image {
+        #[command(subcommand)]
+        action: ImageAction,
+    },
+
+    /// Write a pipeline that checks, builds and deploys on push.
+    Ci {
+        #[command(subcommand)]
+        action: CiAction,
+    },
+
+    /// Detect, convert and validate in one step.
+    #[command(visible_alias = "mig")]
+    Migrate {
+        source: String,
+
+        #[arg(long)]
+        out: String,
+    },
+
+    /// Check, build and deploy in one step.
+    Publish {
+        #[arg(default_value = ".")]
+        dir: String,
+
+        #[arg(long)]
+        to: Option<String>,
+    },
+
+    /// Convert, check, build and deploy in one step.
+    Ship {
+        source: String,
+
+        #[arg(long)]
+        provider: Option<String>,
+    },
+
+    /// Serve what `build` produced.
+    #[command(visible_alias = "s")]
+    Serve {
+        /// Configured site or explicit generated output folder.
+        dir: Option<String>,
+
+        #[arg(long)]
+        port: Option<u16>,
+
+        /// URL prefix for an export configured with a deployment basePath.
+        #[arg(long, default_value = "/")]
+        base_path: String,
+    },
+
+    /// Build a portable Markdown site, serve it locally, and open a browser.
+    #[command(visible_alias = "v")]
+    View {
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
+        #[arg(long)]
+        out: Option<String>,
+        #[arg(long)]
+        name: Option<String>,
+        #[arg(long)]
+        theme: Option<String>,
+        /// Local port; use 0 to choose an available port.
+        #[arg(long)]
+        port: Option<u16>,
+        /// Print the URL without launching a browser.
+        #[arg(long, conflicts_with = "browser")]
+        no_open: bool,
+        /// Browser executable to launch with the URL as its sole argument.
+        #[arg(long)]
+        browser: Option<String>,
+        /// Rebuild on source edits and reload the HTTP preview after success.
+        #[arg(long)]
+        watch: bool,
+    },
+
+    /// Canonical formatting for the YAML.
+    Fmt {
+        #[arg(default_value = ".")]
+        dir: String,
+
+        /// Exit 1 if anything would change, and write nothing.
+        #[arg(long)]
+        check: bool,
+    },
+
+    /// Check the environment: container runtime, image, versions.
+    Doctor,
+
+    /// Print a shell completion script to standard output.
+    #[command(visible_alias = "comp")]
+    Completions {
+        #[arg(value_enum)]
+        shell: clap_complete::Shell,
+    },
+
+    #[command(flatten)]
+    Shortcut(Shortcut),
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum ImageAction {
+    /// The same as `build --target image`.
+    Build {
+        dir: Option<String>,
+
+        #[arg(long)]
+        tag: Option<String>,
+    },
+    /// Run it locally — the last check before it goes anywhere.
+    Run(ImageRunArgs),
+    /// Push it to a registry.
+    Push(ImagePushArgs),
+    /// Print the Dockerfile `image build` would have used.
+    Dockerfile(ImageDockerfileArgs),
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum CiAction {
+    /// Write a pipeline into the repository.
+    Init {
+        /// github | gitlab | circle.
+        system: String,
+
+        #[arg(long)]
+        deploy: Option<String>,
+
+        #[arg(long, default_value = "static")]
+        target: String,
+
+        /// The content folder, as the pipeline will refer to it.
+        #[arg(long)]
+        content: Option<String>,
+
+        /// The Netlify project id. Defaults to $NETLIFY_SITE_ID.
+        #[arg(long)]
+        site: Option<String>,
+
+        /// Overwrite an existing workflow.
+        #[arg(long)]
+        force: bool,
+
+        /// Write the workflow without uploading the Netlify token.
+        #[arg(long)]
+        no_provision: bool,
+    },
+
+    /// Run the deploy pipeline now, on GitHub.
+    ///
+    /// The pipeline deploys on a push that touches the content folder, which
+    /// covers the ordinary case. This is for the times there is nothing to
+    /// commit: a rotated Netlify token, a site restored after a bad deploy, a
+    /// first run after adding the secrets.
+    ///
+    /// The build still happens on GitHub. Nothing is uploaded from here.
+    #[command(name = "run", visible_alias = "publish")]
+    Run {
+        /// The workflow file to run.
+        #[arg(long, default_value = "docs.yml")]
+        workflow: String,
+
+        /// The branch to run it on.
+        #[arg(long, default_value = "main")]
+        r#ref: String,
+    },
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum NewTarget {
+    /// A native Markdown starter with zel.yaml; no Docker or Node required.
+    Portable(NewPortableArgs),
+    /// A Next.js wrapper app with the engine installed.
+    App {
+        #[arg(default_value = ".")]
+        dir: String,
+
+        /// Also write a starter content folder, so there is something to open.
+        #[arg(long)]
+        with_docs: bool,
+    },
+    /// A hosted YAML/MDX content folder on its own.
+    Docs(NewDocsArgs),
+    /// A section file, with its required fields filled in.
+    Section(NewSectionArgs),
+    /// A page, and the section files it references.
+    Page(NewPageArgs),
+    /// A guide folder with a sidebar and an index page.
+    Guide(NewGuideArgs),
+    /// A repository with documentation and a product as siblings, and a
+    /// pipeline that publishes the first on every push.
+    Project(NewProjectArgs),
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum ListTarget {
+    /// Every section type.
+    Sections,
+    /// Every theme.
+    Themes,
+    /// Every documentation format `convert` recognises.
+    Formats,
+    /// Everything `build` can produce.
+    Targets,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewPortableArgs {
+    #[arg(default_value = "docs/zellij")]
+    pub(crate) dir: String,
+    /// Site name. Defaults to the directory's name.
+    #[arg(long)]
+    pub(crate) name: Option<String>,
+    /// One of the themes reported by `zel list themes`.
+    #[arg(long, default_value = "cupertino")]
+    pub(crate) theme: String,
+    /// Only zel.yaml and content/index.md, without the example guide or image.
+    #[arg(long)]
+    pub(crate) minimal: bool,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewDocsArgs {
+    #[arg(default_value = "docs/zellij")]
+    pub(crate) dir: String,
+
+    /// The site name. Defaults to the directory's.
+    #[arg(long)]
+    pub(crate) name: Option<String>,
+
+    /// One of the fourteen — `zel list themes`.
+    #[arg(long, default_value = "paper")]
+    pub(crate) theme: String,
+
+    /// Also create a guide folder.
+    #[arg(long)]
+    pub(crate) guide: bool,
+
+    /// site.yaml and one page, and nothing else.
+    #[arg(long)]
+    pub(crate) minimal: bool,
+
+    /// Write into a directory that is not empty.
+    #[arg(long)]
+    pub(crate) force: bool,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewSectionArgs {
+    pub(crate) section_type: String,
+
+    #[arg(long)]
+    pub(crate) out: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewPageArgs {
+    pub(crate) name: String,
+
+    /// Comma-separated section types. Defaults to a single hero.
+    #[arg(long, value_delimiter = ',')]
+    pub(crate) sections: Vec<String>,
+
+    #[arg(long)]
+    pub(crate) dir: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewGuideArgs {
+    pub(crate) name: String,
+
+    #[arg(long)]
+    pub(crate) title: Option<String>,
+
+    #[arg(long)]
+    pub(crate) dir: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewProjectArgs {
+    pub(crate) name: String,
+
+    /// What to put in the product folder: rust | go | java | kotlin |
+    /// python | node | none.
+    #[arg(long, default_value = "none")]
+    pub(crate) product_lang: String,
+
+    #[arg(long, default_value = "docs/zellij")]
+    pub(crate) docs_dir: String,
+
+    #[arg(long, default_value = "product")]
+    pub(crate) product_dir: String,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ImageRunArgs {
+    pub(crate) tag: Option<String>,
+
+    #[arg(long, default_value_t = 3000)]
+    pub(crate) port: u16,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ImagePushArgs {
+    pub(crate) tag: String,
+
+    #[arg(long)]
+    pub(crate) registry: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ImageDockerfileArgs {
+    pub(crate) dir: Option<String>,
+}
+
+#[cfg(test)]
+#[path = "args_tests.rs"]
+mod tests;

@@ -1,9 +1,10 @@
-# zel CLI command contract and alias proposal
+# zel CLI command contract
 
-Status: **runtime policy and configured-site layout implemented in source; remaining commands/aliases proposed**.
+Status: **runtime policy, configured-site layout, working-command shortcuts and completions implemented in source; additional capabilities remain proposed**.
 The runtime prerequisite policy in §2.9 is implemented in source. The configured site layout and repository-root default below are implemented,
-including `build.out` and `preview.port`. Alias spellings, shared selectors,
-image/delivery/CI fields, and other command refinements remain proposed.
+including `build.out` and `preview.port`. Shortcuts for existing handlers and
+shell completions are implemented; shared selectors, image/delivery/CI fields,
+and other command refinements remain proposed.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
 the [original specification](zellij-cli-spec.md) remains design history.
 
@@ -45,8 +46,8 @@ Implemented resolution includes one convenience: when the current directory itse
 contains `zel.yaml`, use that site. Otherwise use `./docs/zellij/zel.yaml`.
 Explicit directory arguments win. The proposed `--site-root` / `--config` selectors
 are not registered yet; their eventual conflicting selections must fail; configuration does not redirect an explicit site path. There
-is no upward or recursive discovery. Inside `content/`, use `--site-root ..`
-or change to the site root. A missing default gives the expected config path
+is no upward or recursive discovery. Inside `content/`, use an explicit `..`
+site argument or change to the site root. A missing default gives the expected config path
 and an example with an explicit custom site, not an unrelated fallback.
 
 CLI paths are relative to the effective working directory (`--cwd` if given).
@@ -67,7 +68,17 @@ binary rather than dependent on a shell. Short existing names need no alias.
 
 Tables describe the proposed contract. **I** means a current implementation
 exists, possibly with different arguments/defaults; **S** means a registered
-stub; **N** means no current command. None of the new aliases is implemented.
+stub; **N** means no command at the reconciliation baseline. The working-command
+shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
+`sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`, `c`, `s`, `v`,
+`b`, `ir`, `ip`, `idf`, and `comp`. `ci run` is implemented with `ci publish`
+as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
+and Elvish. Help and completion derive from the same argument schema.
+
+The proposed **capabilities** in the tables are not all implemented: conversion
+still writes raw hosted content, `view` remains portable-only, and `idf` has
+only the current Next recipe without `--kind`. `na`, `si`, `ni`, `pub`, `netlify`,
+and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
 
@@ -247,8 +258,8 @@ defined behavior when Docker is absent. The first increment establishes:
   not required before a portable build and does not validate site content.
 
 The current command reference is [doctor.mdx](../examples/zellij-docs/content/02-cli/doctor.mdx).
-The site layout is implemented in the next increment below; aliases and additional
-image/delivery commands still need their own implementation increments. This policy does not imply a new release
+Site layout, working-command shortcuts and completions are also implemented;
+additional image/delivery commands still need their own implementation increments. This policy does not imply a new release
 or publication of the local documentation.
 
 ## 3. Configuration: implemented subset and remaining proposal

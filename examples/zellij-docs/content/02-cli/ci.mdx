@@ -4,7 +4,7 @@ description: Generate a GitHub documentation workflow, or dispatch an existing o
 ---
 
 <Callout type="tip" title="Available in source">
-`zel ci init github` generates a workflow. `zel ci publish` dispatches an
+`zel ci init github` generates a workflow. `zel ci run` dispatches an
 existing workflow. GitLab and CircleCI generators remain planned. This page
 describes the current command syntax; installed releases can lag current source.
 </Callout>
@@ -51,7 +51,7 @@ The generated triggers are:
 
 - Pushes to `main` that affect the selected content folder or the workflow file.
 - Pull requests that affect those paths.
-- Manual dispatch through GitHub Actions or `zel ci publish`.
+- Manual dispatch through GitHub Actions or `zel ci run`.
 
 Image and Netlify publication jobs depend on validation and use
 `github.event_name != 'pull_request'`. Thus they run on matching pushes and
@@ -97,12 +97,14 @@ Use the documented values. `--registry`, `--on`, and `--out` are not supported.
 
 ## Run an existing workflow
 
+`zel ci publish` remains an exact compatible spelling of `zel ci run`.
+
 Commit and push the generated workflow before dispatching it. The workflow
 must be available on the repository's default branch for manual dispatch.
 
 ```bash title="terminal"
-zel ci publish
-zel ci publish --workflow docs.yml --ref main
+zel ci run
+zel ci run --workflow docs.yml --ref main
 ```
 
 | Option | Default |

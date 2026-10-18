@@ -193,3 +193,14 @@ starters. Current site-oriented handlers share that resolver; explicit legacy
 inputs remain supported. Bare `serve` now selects a configured site's output
 instead of assuming `dist`. See the updated CLI contract and local references.
 Aliases, additional image modes, deployment and configured CI remain pending.
+
+## Implementation delta — 2026-10-18 shortcuts and completion
+
+Source `271493f46d3b97ceed12623524505374e3e12190` implements the
+working-command shortcuts listed in the [current reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
+`ci run` now dispatches the same workflow as retained `ci publish`.
+`completions <shell>` / `comp <shell>` is registered and implemented for Bash,
+Zsh, Fish, PowerShell and Elvish; the earlier unrecognized-command inventory
+above is the historical baseline. Help and generated completion share the
+parser schema, including both spellings. This does not add `si`, `ni`, `na`,
+`pub`, `netlify`, or bare `ci [site]`, nor change converter output format.

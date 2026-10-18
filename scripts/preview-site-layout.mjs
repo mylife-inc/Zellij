@@ -16,7 +16,7 @@ export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
     await writeFile(config, settings('Before config edit'));
     await writeFile(path.join(content, 'index.md'), '# Configured home\n');
     await writeFile(path.join(root, 'private.md'), '# Unpublished\n[Broken](absent.md)\n');
-    const server = await start(['view', root, '--watch', '--no-open']);
+    const server = await start(['v', root, '--watch', '--no-open']);
     const status = () => fetch(`${server.url}_zellij/preview.json`).then(r => r.json());
     const browser = await ({ chromium, webkit })[engine].launch();
     try {
@@ -49,7 +49,7 @@ export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
       // Bare configured-root serving resolves site/ and preview.port without building.
       const previous = await readFile(path.join(output, 'index.html'));
       await writeFile(path.join(content, 'index.md'), '[Broken](missing.md)');
-      const served = await start(['serve', root]);
+      const served = await start(['s', root]);
       assert((await fetch(served.url).then(r => r.text())).includes('Edited content'));
       await stop(served);
       assert.deepEqual(await readFile(path.join(output, 'index.html')), previous);

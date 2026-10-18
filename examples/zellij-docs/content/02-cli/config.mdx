@@ -201,8 +201,12 @@ report. Use [`zel new portable`](/cli/new) for a working starter.
 
 The site layout, `version`, `renderer`, `build.out`, and `preview.port` above are
 implemented in source. Image, delivery and CI settings, shared `--site-root` /
-`--config` / `--cwd` selectors, aliases, and additional image/delivery commands
+`--config` / `--cwd` selectors, and additional image/delivery commands
 remain planned and are not accepted by the current parser.
+
+[Shortcuts](/cli/shortcuts) for working commands and
+[shell completions](/cli/completions) are implemented in source. They use the
+same configuration and defaults as the full command names.
 
 The [full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)
 records the remaining proposals. Current CI generation is documented in

@@ -4,416 +4,19 @@
 //! terminal multiplexer, and two binaries of the same name on one PATH is a
 //! problem nobody should have to debug.
 //!
-//! Commands are declared here and implemented elsewhere — this file is about
-//! what the tool offers and how it reports, never about how any of it works.
-//! See `specs/zellij-cli-spec.md` for the surface in full.
+//! The argument schema lives in `args`; dispatch and CLI reporting live here.
+//! See `specs/zel-cli-contract-2026-10-18.md` for the agreed command surface.
 
+use args::*;
 use camino::{Utf8Path, Utf8PathBuf};
-use clap::{Parser, Subcommand};
+mod args;
 use serde_json::json;
 use std::io::Write;
 mod preview;
 mod validation;
 
-#[derive(Parser)]
-#[command(
-    name = "zel",
-    version,
-    about = "Turn a folder of content into a documentation site.",
-    long_about = None,
-)]
-struct Cli {
-    #[command(subcommand)]
-    command: Command,
-
-    /// JSON output for context, list, explain and detect, plus portable check.
-    #[arg(long, global = true)]
-    json: bool,
-}
-
-#[derive(Subcommand)]
-enum Command {
-    /// Create portable Markdown, hosted content, an app, a section, a page or a guide.
-    #[command(subcommand)]
-    New(NewTarget),
-
-    /// Show a section type's fields, defaults and allowed values.
-    Explain {
-        /// A section type — `zel list sections` for all of them.
-        section_type: String,
-    },
-
-    /// List what this build knows about.
-    #[command(subcommand)]
-    List(ListTarget),
-
-    /// Write the reference an AI agent authors a content folder from.
-    ///
-    /// Needs neither Docker nor Node: generated from the engine's schemas at
-    /// release time and compiled into this binary.
-    Context {
-        /// Where to write it. Defaults to standard output.
-        file: Option<String>,
-    },
-
-    /// Say what tool a documentation folder was written for.
-    Detect { dir: String },
-
-    /// Convert documentation written for another tool into a new folder.
-    Convert {
-        source: String,
-
-        /// Where to write it. Never the source — a conversion that overwrote
-        /// the original would be unrecoverable.
-        #[arg(long)]
-        out: String,
-
-        /// Force a format instead of detecting one.
-        #[arg(long)]
-        from: Option<String>,
-
-        /// Report the plan, write nothing.
-        #[arg(long)]
-        dry_run: bool,
-    },
-
-    /// Validate portable Markdown natively, or hosted content using its engine.
-    Check {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
-        /// Override automatic selection: portable Markdown or hosted static content.
-        #[arg(long, value_parser = ["portable", "static"])]
-        target: Option<String>,
-        /// Hosted: parse MDX and check local references. Portable always checks references.
-        #[arg(long)]
-        deep: bool,
-        /// Fail when validation reports warnings.
-        #[arg(long)]
-        strict: bool,
-    },
-
-    /// Development server. Edit content, reload the page.
-    Dev {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
-
-        #[arg(long)]
-        port: Option<u16>,
-    },
-
-    /// Build the site.
-    Build {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
-
-        /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
-        #[arg(long)]
-        target: Option<String>,
-
-        #[arg(long)]
-        out: Option<String>,
-
-        /// Image tag. `--target image` only.
-        #[arg(long)]
-        tag: Option<String>,
-
-        /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
-        #[arg(long)]
-        name: Option<String>,
-
-        /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
-        #[arg(long)]
-        theme: Option<String>,
-    },
-
-    /// Build the site and put it online.
-    Deploy {
-        /// netlify | cloudflare | vercel | ghpages | s3 | fly | railway.
-        /// The provider decides the target: a CDN cannot run a container.
-        provider: String,
-
-        #[arg(default_value = ".")]
-        dir: String,
-
-        /// The site or project on the provider.
-        #[arg(long)]
-        site: Option<String>,
-    },
-
-    /// Build, run and push container images.
-    Image {
-        #[command(subcommand)]
-        action: ImageAction,
-    },
-
-    /// Write a pipeline that checks, builds and deploys on push.
-    Ci {
-        #[command(subcommand)]
-        action: CiAction,
-    },
-
-    /// Detect, convert and validate in one step.
-    Migrate {
-        source: String,
-
-        #[arg(long)]
-        out: String,
-    },
-
-    /// Check, build and deploy in one step.
-    Publish {
-        #[arg(default_value = ".")]
-        dir: String,
-
-        #[arg(long)]
-        to: Option<String>,
-    },
-
-    /// Convert, check, build and deploy in one step.
-    Ship {
-        source: String,
-
-        #[arg(long)]
-        provider: Option<String>,
-    },
-
-    /// Serve what `build` produced.
-    Serve {
-        /// Configured site or explicit generated output folder.
-        dir: Option<String>,
-
-        #[arg(long)]
-        port: Option<u16>,
-
-        /// URL prefix for an export configured with a deployment basePath.
-        #[arg(long, default_value = "/")]
-        base_path: String,
-    },
-
-    /// Build a portable Markdown site, serve it locally, and open a browser.
-    View {
-        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
-        #[arg(long)]
-        out: Option<String>,
-        #[arg(long)]
-        name: Option<String>,
-        #[arg(long)]
-        theme: Option<String>,
-        /// Local port; use 0 to choose an available port.
-        #[arg(long)]
-        port: Option<u16>,
-        /// Print the URL without launching a browser.
-        #[arg(long, conflicts_with = "browser")]
-        no_open: bool,
-        /// Browser executable to launch with the URL as its sole argument.
-        #[arg(long)]
-        browser: Option<String>,
-        /// Rebuild on source edits and reload the HTTP preview after success.
-        #[arg(long)]
-        watch: bool,
-    },
-
-    /// Canonical formatting for the YAML.
-    Fmt {
-        #[arg(default_value = ".")]
-        dir: String,
-
-        /// Exit 1 if anything would change, and write nothing.
-        #[arg(long)]
-        check: bool,
-    },
-
-    /// Check the environment: container runtime, image, versions.
-    Doctor,
-}
-
-#[derive(Subcommand)]
-enum ImageAction {
-    /// The same as `build --target image`.
-    Build {
-        dir: Option<String>,
-
-        #[arg(long)]
-        tag: Option<String>,
-    },
-    /// Run it locally — the last check before it goes anywhere.
-    Run {
-        tag: Option<String>,
-
-        #[arg(long, default_value_t = 3000)]
-        port: u16,
-    },
-    /// Push it to a registry.
-    Push {
-        tag: String,
-
-        #[arg(long)]
-        registry: Option<String>,
-    },
-    /// Print the Dockerfile `image build` would have used.
-    Dockerfile { dir: Option<String> },
-}
-
-#[derive(Subcommand)]
-enum CiAction {
-    /// Write a pipeline into the repository.
-    Init {
-        /// github | gitlab | circle.
-        system: String,
-
-        #[arg(long)]
-        deploy: Option<String>,
-
-        #[arg(long, default_value = "static")]
-        target: String,
-
-        /// The content folder, as the pipeline will refer to it.
-        #[arg(long)]
-        content: Option<String>,
-
-        /// The Netlify project id. Defaults to $NETLIFY_SITE_ID.
-        #[arg(long)]
-        site: Option<String>,
-
-        /// Overwrite an existing workflow.
-        #[arg(long)]
-        force: bool,
-
-        /// Write the workflow without uploading the Netlify token.
-        #[arg(long)]
-        no_provision: bool,
-    },
-
-    /// Run the deploy pipeline now, on GitHub.
-    ///
-    /// The pipeline deploys on a push that touches the content folder, which
-    /// covers the ordinary case. This is for the times there is nothing to
-    /// commit: a rotated Netlify token, a site restored after a bad deploy, a
-    /// first run after adding the secrets.
-    ///
-    /// The build still happens on GitHub. Nothing is uploaded from here.
-    Publish {
-        /// The workflow file to run.
-        #[arg(long, default_value = "docs.yml")]
-        workflow: String,
-
-        /// The branch to run it on.
-        #[arg(long, default_value = "main")]
-        r#ref: String,
-    },
-}
-
-#[derive(Subcommand)]
-enum NewTarget {
-    /// A native Markdown starter with zel.yaml; no Docker or Node required.
-    Portable {
-        #[arg(default_value = "docs/zellij")]
-        dir: String,
-        /// Site name. Defaults to the directory's name.
-        #[arg(long)]
-        name: Option<String>,
-        /// One of the themes reported by `zel list themes`.
-        #[arg(long, default_value = "cupertino")]
-        theme: String,
-        /// Only zel.yaml and content/index.md, without the example guide or image.
-        #[arg(long)]
-        minimal: bool,
-    },
-    /// A Next.js wrapper app with the engine installed.
-    App {
-        #[arg(default_value = ".")]
-        dir: String,
-
-        /// Also write a starter content folder, so there is something to open.
-        #[arg(long)]
-        with_docs: bool,
-    },
-    /// A hosted YAML/MDX content folder on its own.
-    Docs {
-        #[arg(default_value = "docs/zellij")]
-        dir: String,
-
-        /// The site name. Defaults to the directory's.
-        #[arg(long)]
-        name: Option<String>,
-
-        /// One of the fourteen — `zel list themes`.
-        #[arg(long, default_value = "paper")]
-        theme: String,
-
-        /// Also create a guide folder.
-        #[arg(long)]
-        guide: bool,
-
-        /// site.yaml and one page, and nothing else.
-        #[arg(long)]
-        minimal: bool,
-
-        /// Write into a directory that is not empty.
-        #[arg(long)]
-        force: bool,
-    },
-    /// A section file, with its required fields filled in.
-    Section {
-        section_type: String,
-
-        #[arg(long)]
-        out: Option<String>,
-    },
-    /// A page, and the section files it references.
-    Page {
-        name: String,
-
-        /// Comma-separated section types. Defaults to a single hero.
-        #[arg(long, value_delimiter = ',')]
-        sections: Vec<String>,
-
-        #[arg(long)]
-        dir: Option<String>,
-    },
-    /// A guide folder with a sidebar and an index page.
-    Guide {
-        name: String,
-
-        #[arg(long)]
-        title: Option<String>,
-
-        #[arg(long)]
-        dir: Option<String>,
-    },
-    /// A repository with documentation and a product as siblings, and a
-    /// pipeline that publishes the first on every push.
-    Project {
-        name: String,
-
-        /// What to put in the product folder: rust | go | java | kotlin |
-        /// python | node | none.
-        #[arg(long, default_value = "none")]
-        product_lang: String,
-
-        #[arg(long, default_value = "docs/zellij")]
-        docs_dir: String,
-
-        #[arg(long, default_value = "product")]
-        product_dir: String,
-    },
-}
-
-#[derive(Subcommand)]
-enum ListTarget {
-    /// Every section type.
-    Sections,
-    /// Every theme.
-    Themes,
-    /// Every documentation format `convert` recognises.
-    Formats,
-    /// Everything `build` can produce.
-    Targets,
-}
-
 fn main() {
-    let cli = Cli::parse();
+    let cli = Cli::parse_args();
 
     if cli.json
         && !matches!(
@@ -494,11 +97,16 @@ fn main() {
         ),
         Command::Image { ref action } => match action {
             ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
-            ImageAction::Run { tag, port } => image_run(tag.as_deref(), *port),
-            ImageAction::Push { tag, registry } => image_push(tag, registry.as_deref()),
-            ImageAction::Dockerfile { dir } => image_dockerfile_selected(dir.as_deref()),
+            ImageAction::Run(ImageRunArgs { tag, port }) => image_run(tag.as_deref(), *port),
+            ImageAction::Push(ImagePushArgs { tag, registry }) => {
+                image_push(tag, registry.as_deref())
+            }
+            ImageAction::Dockerfile(ImageDockerfileArgs { dir }) => {
+                image_dockerfile_selected(dir.as_deref())
+            }
         },
         Command::Doctor => doctor(),
+        Command::Completions { shell } => args::completions(shell),
         Command::Ci { ref action } => match action {
             CiAction::Init {
                 system,
@@ -517,46 +125,46 @@ fn main() {
                 *force,
                 *no_provision,
             ),
-            CiAction::Publish { workflow, r#ref } => ci_publish(workflow, r#ref),
+            CiAction::Run { workflow, r#ref } => ci_publish(workflow, r#ref),
         },
         Command::Migrate {
             ref source,
             ref out,
         } => migrate(source, out),
-        Command::New(NewTarget::Portable {
+        Command::New(NewTarget::Portable(NewPortableArgs {
             ref dir,
             ref name,
             ref theme,
             minimal,
-        }) => new_portable(dir, name.as_deref(), theme, minimal),
-        Command::New(NewTarget::Docs {
+        })) => new_portable(dir, name.as_deref(), theme, minimal),
+        Command::New(NewTarget::Docs(NewDocsArgs {
             ref dir,
             ref name,
             ref theme,
             guide,
             minimal,
             force,
-        }) => new_docs(dir, name.as_deref(), theme, guide, minimal, force),
-        Command::New(NewTarget::Section {
+        })) => new_docs(dir, name.as_deref(), theme, guide, minimal, force),
+        Command::New(NewTarget::Section(NewSectionArgs {
             ref section_type,
             ref out,
-        }) => new_section(section_type, out.as_deref()),
-        Command::New(NewTarget::Page {
+        })) => new_section(section_type, out.as_deref()),
+        Command::New(NewTarget::Page(NewPageArgs {
             ref name,
             ref sections,
             ref dir,
-        }) => new_page(name, sections, dir.as_deref()),
-        Command::New(NewTarget::Guide {
+        })) => new_page(name, sections, dir.as_deref()),
+        Command::New(NewTarget::Guide(NewGuideArgs {
             ref name,
             ref title,
             ref dir,
-        }) => new_guide(name, title.as_deref(), dir.as_deref()),
-        Command::New(NewTarget::Project {
+        })) => new_guide(name, title.as_deref(), dir.as_deref()),
+        Command::New(NewTarget::Project(NewProjectArgs {
             ref name,
             ref product_lang,
             ref docs_dir,
             ref product_dir,
-        }) => new_project(name, product_lang, docs_dir, product_dir),
+        })) => new_project(name, product_lang, docs_dir, product_dir),
         Command::Convert {
             ref source,
             ref out,

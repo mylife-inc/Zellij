@@ -1701,3 +1701,14 @@ verification; this record does not close the remaining CLI feature backlog.
 The previous main CI container failure (`39109606782`) selected Podman against a
 Docker-local test image. Container acceptance now pins its creating Docker
 context. This is a CI fixture correction; runtime fallback policy is unchanged.
+
+## Implementation record — CLI shortcuts and completions (2026-10-18)
+
+Source `271493f46d3b97ceed12623524505374e3e12190` adds 22 top-level
+shortcuts, `ci run` with compatible `ci publish`, and five-shell completion.
+Canonical and short commands share argument definitions and handler dispatch.
+This advances stage 4's usability/help work; it does not implement the remaining
+image, deployment, workflow-generation, or registered stub capabilities.
+Local verification: 222 Rust tests, formatting, warnings-denied Clippy, strict
+49-route/23-example docs validation, Bash completion execution and Zsh syntax.
+See durable context and the PR for browser and hosted CI completion evidence.
