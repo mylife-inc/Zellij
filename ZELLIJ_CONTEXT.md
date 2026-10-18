@@ -1461,6 +1461,12 @@ instead. A local doctor run also exposed duplicated diagnostics; detailed errors
 now print once on stderr. The local environment currently explicitly selects a
 Docker endpoint whose `info` call fails; no endpoint values were logged and no
 environment/service changes were made. Real-container acceptance runs in CI.
+The next Windows run (`39108320579`) passed the engine tests and exposed a test
+isolation assumption: Windows can resolve a system Docker executable despite
+an empty PATH. Its real info call timed out correctly. Windows CLI fixtures now
+run a private copied binary beside invalid runtime placeholders, testing the
+unexecutable-client path without contacting the runner's service; missing-client
+classification remains covered by engine tests and Unix CLI fixtures.
 
 **Next implementation:** versioned `zel.yaml` and the common site resolver for
 `docs/zellij/{zel.yaml,content/,site/}`, custom named roots and legacy explicit

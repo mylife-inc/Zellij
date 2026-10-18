@@ -3,7 +3,26 @@
 use std::{fs, path::Path, process::Command};
 
 fn command(root: &Path) -> Command {
-    let mut command = Command::new(env!("CARGO_BIN_EXE_zel"));
+    #[cfg(not(windows))]
+    let executable = Path::new(env!("CARGO_BIN_EXE_zel")).to_path_buf();
+    #[cfg(windows)]
+    let executable = {
+        // Windows also searches the executable and system directories before
+        // the inherited PATH. Put non-executable placeholders beside a private
+        // copy of zel so a runner's real Docker can never enter this fixture.
+        // https://doc.rust-lang.org/std/process/struct.Command.html#platform-specific-behavior
+        let bin = root.join("bin");
+        fs::create_dir_all(&bin).unwrap();
+        let executable = bin.join("zel.exe");
+        if !executable.exists() {
+            fs::copy(env!("CARGO_BIN_EXE_zel"), &executable).unwrap();
+            for program in ["docker.exe", "podman.exe", "nerdctl.exe"] {
+                fs::write(bin.join(program), b"not an executable").unwrap();
+            }
+        }
+        executable
+    };
+    let mut command = Command::new(executable);
     command.current_dir(root).env("PATH", root.join("bin"));
     for variable in [
         "DOCKER_CONTEXT",
@@ -45,15 +64,17 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         let output = command(root).args(&args).output().unwrap();
         let stderr = String::from_utf8_lossy(&output.stderr);
         assert_eq!(output.status.code(), Some(4), "{args:?}: {stderr}");
-        assert!(
-            stderr.contains("docker: executable not found"),
-            "{args:?}: {stderr}"
-        );
+        let expected = if cfg!(windows) {
+            "docker: could not execute the client"
+        } else {
+            "docker: executable not found"
+        };
+        assert!(stderr.contains(expected), "{args:?}: {stderr}");
         assert!(
             stderr.contains("Portable build/check/serve/view"),
             "{stderr}"
         );
-        assert!(!String::from_utf8_lossy(&output.stdout).contains("executable not found"));
+        assert!(!String::from_utf8_lossy(&output.stdout).contains(expected));
         assert_eq!(
             fs::read_to_string(root.join("site/index.html")).unwrap(),
             "previous export"
@@ -88,7 +109,13 @@ fn dockerfile_generation_requires_content_but_no_runtime_and_honors_image_overri
         String::from_utf8_lossy(&output.stdout)
             .contains("FROM registry.example/zellij-base:test AS build")
     );
-    assert_eq!(fs::read_dir(root).unwrap().count(), 1);
+    assert_eq!(
+        fs::read_dir(root)
+            .unwrap()
+            .filter(|entry| entry.as_ref().unwrap().file_name() != "bin")
+            .count(),
+        1
+    );
     let missing = command(root)
         .args(["image", "dockerfile", "absent"])
         .output()
