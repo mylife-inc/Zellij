@@ -856,6 +856,33 @@ Hosted acceptance is pending at this dated entry; consult the PR containing
 remaining portable capabilities are still open; the original sporadic CI
 first-click failures must not be marked conclusively diagnosed by this evidence.
 
+## Implementation record — native portable starter
+
+Source `6af6a48` closes the portable contract's missing project-scaffolding
+capability through `zel new portable [dir]`. It writes native Markdown and
+`zel.yaml`, with a working guide/local-image example or a two-file `--minimal`
+variant. Name/theme validation precedes writing; unusual display names are
+quoted metadata, never executable Markdown/HTML/shell syntax. Shared write
+preflight protects existing content, with no overwrite flag; dotfiles remain.
+Hosted scaffold behavior is unchanged. Rendering extensions and release/install
+packages remain separate work, not completed by this starter.
+
+Local acceptance: **169 Rust tests**, formatting, warnings-denied Clippy and
+deep/strict product-documentation checks passed. The real command's output passes
+Chromium/WebKit after relocation with HTTP blocked, including full/minimal names,
+navigation, fragments, local assets, search and JavaScript-disabled reading.
+CLI tests cover all 14 themes, names, current-directory/default paths, invalid
+options and preservation with external tools absent from PATH. The Linux/macOS/
+Windows portable CI gate now runs these tests and generated-output browser checks.
+Consult the PR containing `6af6a48` for its final hosted acceptance; it was pending
+when this entry was committed. No native release is issued here.
+
+Prior milestone: PR #18 merged as `ec0394a`; PR/main CI `39080731998` /
+`39081222627` passed all seven jobs and 317 browser cases (124 conditional skips,
+no retries). Image run `39081222598` passed all 13 jobs and published four variants
+for both Linux architectures. The historical first-click flake's full cause
+remains unproven; S4 and the controlled scrolling reproduction are fixed.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
