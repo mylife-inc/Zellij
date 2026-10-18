@@ -883,6 +883,36 @@ no retries). Image run `39081222598` passed all 13 jobs and published four varia
 for both Linux architectures. The historical first-click flake's full cause
 remains unproven; S4 and the controlled scrolling reproduction are fixed.
 
+## Implementation record — native packages and installers
+
+Source `94b2d8d` implements six native packages (x64/ARM64 GNU/Linux, macOS and
+Windows), a shared CI/release packaging workflow, tag/workspace-version preflight,
+ZIP/checksum publication and a Windows PowerShell 5.1/7 installer. The archived
+binary itself is installed and tested, including CPU architecture, version,
+portable starter/check/build, relocated output, HTTP serve/view and real Ctrl-C.
+Ordinary CI retains tested artifacts without publishing a version.
+
+Source review found the Unix installer replaced the installed executable before
+checking its version/execution and used a fixed `zel.new` staging file. It now
+checks the candidate first and uses a unique destination-side stage. Regression
+fixtures verify combined/per-file checksums, corrupt/missing checksums, unsafe
+archives, mismatched versions, upgrades and preservation of installed/authored
+files. Neither installer modifies PATH. Windows refuses arbitrary ZIP paths and
+uses native machine architecture even from an emulated shell.
+
+Local real macOS x86_64 archive installation and installed-command acceptance
+passed, as did checksum generation, shellcheck, actionlint, script syntax and
+deep/strict product-documentation validation. Other platform acceptance was
+pending when this entry was committed; consult the PR containing `94b2d8d` for
+final revisions/results. [Distribution contract](zel-native-distribution.md)
+records tested OS baselines and remaining signing, broader OS, container and
+release-publication limits. No existing v0.1.3 asset is replaced or new tag issued.
+
+Prior milestone completion: PR #19 merged as `4735144`; PR/main CI `39082442519` /
+`39082937391` passed all seven jobs, 317 browser cases, 124 conditional skips and
+no retries. Image run `39082937383` passed all 13 jobs and published four variants
+for both Linux architectures. Portable scaffolding acceptance is complete.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

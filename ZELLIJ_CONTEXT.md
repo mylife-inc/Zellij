@@ -960,6 +960,44 @@ published-image smoke test. This does not conclusively attribute every historica
 first-click flake to the reproduced scrolling race. Live repository/release facts
 were refreshed: public/default-main; latest native release remains `zellij-v0.1.3`.
 
+### Native packages and installers — 2026-10-17
+
+Source `94b2d8d` adds one release packaging path and a reusable CI matrix for
+x64/ARM64 on GNU/Linux, macOS and native Windows. Each runner builds the locked
+release profile, packages the executable and checksum, installs that actual
+archive through a loopback HTTP mirror, and exercises the installed binary.
+Windows ZIPs use a static MSVC runtime; `install.ps1` supports Windows PowerShell
+5.1 and PowerShell 7. Ordinary CI uploads artifacts without publishing a release.
+Tagged releases call the same workflow after requiring a tag matching the
+committed Rust workspace version. Both installers accompany release assets.
+
+The Unix installer now validates the candidate's executable version before
+replacement and stages in a unique destination file. Previously it replaced the
+installation before checking execution and used an unsafe fixed `zel.new` name.
+Both installers test checksums, malformed archives, version mismatches, upgrades,
+existing destination conflicts and preservation of prior/unrelated files.
+Neither edits PATH. Installed portable starter/check/build/serve/view acceptance
+runs without external tools on PATH and verifies real Ctrl-C, including Windows.
+See [the distribution contract](specs/zel-native-distribution.md) for exact OS
+baselines, artifact conventions, installer options and limitations.
+
+Local verification: the actual x86_64 macOS release archive passed all installer
+and installed-command tests. Combined checksum generation, shellcheck, actionlint,
+JavaScript/shell syntax and deep/strict product-documentation checks passed.
+Windows and other architectures require hosted acceptance, pending at this dated
+entry; consult the PR containing `94b2d8d` for final revisions/results. The separate
+portable browser matrix remains the evidence for real offline browser behavior.
+This milestone does not tag or publish binaries, sign/notarize packages, establish
+all historical OS versions, or validate every Windows container integration.
+The existing public `zellij-v0.1.3` assets must not be overwritten.
+
+Prior milestone completion: [PR #19](https://github.com/mylife-inc/Zellij/pull/19)
+merged as `4735144`. PR/main CI `39082442519` / `39082937391` passed all seven jobs,
+with **317 browser passes, 124 conditional skips and no retries**. Image run
+`39082937383` passed all 13 jobs, publishing four variants for both Linux
+architectures and passing the published-image smoke test. The repository remains
+public/default-main; the latest native release remains `zellij-v0.1.3`.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1264,16 +1302,17 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after portable starter work, subject to the user's v1 scope decision:
+Remaining order after native distribution work, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of the portable starter milestone. Native validation,
-   build/serve/view/watch/configuration and the reveal/FAQ milestone have passed on merged main.
+1. Complete hosted acceptance of six-platform package/install tests and merge the
+   native distribution milestone. Portable scaffolding and the prior native workflow
+   have passed on merged main; consult the implementing PR for current acceptance.
 2. Add richer Markdown rendering and finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
-3. Exercise releases and installers on every supported platform, including
-   native Windows. Repository visibility/default branch are settled; the
-   restored CI baseline must remain green. No new native CLI binary has yet
-   been released for the completed source fixes.
+3. Choose and publish a new native version through the tested release path,
+   preserving the existing v0.1.3 assets. Confirm release destination/version
+   compatibility and documentation deployment; broader OS/signing decisions remain.
+   No new native CLI binary has yet been released for the completed source fixes.
 4. Close the other browser findings (S5/S14/S15), accessibility, SEO and
    performance acceptance. Investigate automatic
    browser reload, and the recorded browser flakes. R5 retains advanced migration
