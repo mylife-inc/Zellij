@@ -1,5 +1,4 @@
 //! Native static preview orchestration; build and serve share their normal paths.
-use camino::Utf8Path;
 use std::{
     io::{self, Write},
     process::{Command, Stdio},
@@ -17,30 +16,42 @@ pub struct ViewOptions<'a> {
     pub out: Option<&'a str>,
     pub name: Option<&'a str>,
     pub theme: Option<&'a str>,
-    pub port: u16,
+    pub port: Option<u16>,
     pub no_open: bool,
     pub browser: Option<&'a str>,
     pub watch: bool,
 }
 
-pub fn serve(dir: &str, port: u16, base_path: &str) -> Result<()> {
+pub fn serve(dir: Option<&str>, port: Option<u16>, base_path: &str) -> Result<()> {
+    let selected = crate::select_site(dir)?;
+    let (output, default_port) = if zellij_core::site::present(&selected) {
+        let site = zellij_core::site::Site::load(&selected)?;
+        (site.output, site.port)
+    } else {
+        (selected, 3000)
+    };
     run(
-        StaticServer::bind(Utf8Path::new(dir), port, base_path)?,
+        StaticServer::bind(&output, port.unwrap_or(default_port), base_path)?,
         None,
         signals()?,
         None,
     )
 }
 
-pub fn view(dir: &str, options: ViewOptions<'_>) -> Result<()> {
-    // Reserve the exact port before writing output. No later bind race can
-    // switch the browser to a different process or leave a rebuilt site unserved.
-    let socket = listener(options.port)?;
-    let source = Utf8Path::new(dir).canonicalize_utf8()?;
-    // Capture before the initial build so edits made during that build are
-    // picked up by the first watch scan instead of becoming the baseline.
-    let initial = options.watch.then(|| Snapshot::read(&source)).transpose()?;
-    let output = super::build_portable(dir, options.out, options.name, options.theme)?;
+pub fn view(dir: Option<&str>, options: ViewOptions<'_>) -> Result<()> {
+    let selected = crate::select_site(dir)?;
+    let site = zellij_core::site::Site::load(&selected)?;
+    if site.renderer != zellij_core::site::Renderer::Portable {
+        return Err(zellij_core::Error::InvalidArgument("view currently supports portable Markdown; use build followed by serve for hosted sites".into()));
+    }
+    // Reserve before writing output, so a bind failure cannot replace a site.
+    let socket = listener(options.port.unwrap_or(site.port))?;
+    let source = site.root;
+    let initial = options
+        .watch
+        .then(|| Snapshot::site(&source, site.configured))
+        .transpose()?;
+    let output = super::build_portable(source.as_str(), options.out, options.name, options.theme)?;
     let mut server = StaticServer::from_listener(&output, socket, "/")?;
     let stop = signals()?;
     let watcher = if let Some(initial) = initial {

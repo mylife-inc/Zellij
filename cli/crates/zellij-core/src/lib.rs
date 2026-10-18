@@ -10,6 +10,7 @@ pub mod files;
 pub mod output;
 pub mod project;
 pub mod schema;
+pub mod site;
 pub mod yaml;
 
 pub use error::{Error, Result};

@@ -67,7 +67,7 @@ for (const [index, name] of names.entries()) {
   for (const [variant, flags] of variants.entries()) {
     const content = path.join(root, `rust-${index}-${variant}`);
     execFileSync(zel, ['new', 'docs', content, '--name', name, ...flags]);
-    await verify(content, name, flags.includes('--guide'));
+    await verify(path.join(content, 'content'), name, flags.includes('--guide'));
   }
   const content = path.join(root, `node-${index}`);
   execFileSync(process.execPath, [nodeCli, 'init', content, '--name', name, '--content-only']);
@@ -86,7 +86,7 @@ if (mode === '--container-check') {
     const cwd = path.join(root, `discover-${location || 'root'}`);
     const content = path.join(cwd, location);
     execFileSync(zel, ['new', 'guide', 'manual', '--dir', content, '--title', 'Guide: "Start"']);
-    const output = execFileSync(zel, ['check'], { cwd, encoding: 'utf8' });
+    const output = execFileSync(zel, ['check', '.'], { cwd, encoding: 'utf8' });
     assert.match(output, /guides\s+1/);
     console.log(`CLI discovery + container check: ${location || 'root'} guide-only site passed.`);
   }
@@ -94,7 +94,7 @@ if (mode === '--container-check') {
   await mkdir(menuOnly);
   await writeFile(path.join(menuOnly, 'menu.yaml'), '[]\n');
   await load(menuOnly, true);
-  const output = spawnSync(zel, ['check'], { cwd: menuOnly, encoding: 'utf8' });
+  const output = spawnSync(zel, ['check', '.'], { cwd: menuOnly, encoding: 'utf8' });
   assert.equal(output.status, 0, output.stderr);
   assert.match(output.stdout + output.stderr, /no front page/); // Valid, but deliberately has nothing to render.
   console.log('CLI discovery + container check: menu-only root accepted with the expected empty-site warning.');

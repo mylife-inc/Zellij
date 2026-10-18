@@ -10,6 +10,7 @@ import net from 'node:net';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, webkit, expect } from '@playwright/test';
 import { checkWatch } from './preview-watch.mjs';
+import { checkSiteLayout } from './preview-site-layout.mjs';
 
 const windows = process.platform === 'win32';
 const binary = path.resolve(process.argv[2] || `cli/target/debug/zel${windows ? '.exe' : ''}`);
@@ -172,6 +173,7 @@ try {
   assert.deepEqual(await snapshot(source), sourceBefore);
   console.log('Native serve/view: HTTP bytes/MIME/routes, prefix, port conflicts, containment, ready browser launch, no-open/failure recovery and real Ctrl-C passed.');
   await checkWatch({ temp, source, output, start, stop, snapshot, until });
+  await checkSiteLayout({ temp, start, stop, snapshot, until });
 } finally {
   for (const state of active) {
     try { await stop(state); } catch { state.child.kill(); }

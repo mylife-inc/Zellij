@@ -16,15 +16,15 @@ zel check ./content --target static --deep --strict
 
 ## Choosing the checker
 
-`check` uses the same automatic target selection as `build`: a `zel.yaml` entry
-in the requested directory selects portable Markdown; otherwise recognized
-structured content selects the hosted checker; otherwise the requested directory
-is checked as portable Markdown. A malformed `zel.yaml` reports an error.
+`check` shares build's [site resolution](/cli/config#site-layout-and-discovery).
+A versioned config selects portable or hosted validation for `content/`. With no
+directory, it selects `./zel.yaml` or `./docs/zellij/zel.yaml`; no default means
+an actionable error. Explicit legacy folders and flat portable configs work too.
 
-Use `--target portable` or `--target static` to choose explicitly. Here, `static`
-means the hosted YAML/MDX checker; `image` is not a check target. With no directory
-argument, the requested directory is `.`. Portable checks use that exact root.
-Hosted discovery follows the rules described below.
+Use `--target portable` or `--target static` to choose the checker for raw content.
+A versioned site's renderer must match. `image` is not a check target. Malformed
+configuration produces an error, including a structured diagnostic in portable
+`--json` mode. Hosted JSON remains unsupported.
 
 ## Native Markdown checks
 
@@ -90,12 +90,15 @@ normal CLI errors on stderr and exit 2 before running the checker.
 }
 ```
 
-`root` is canonical when it can be resolved, otherwise it retains the requested
+`root` is the canonical content source when it can be resolved, otherwise it retains the requested
 path. `pages` is the generated HTML page count when compilation succeeds,
 including a synthesized home; it is `null` when compilation fails. A strict
 warning-only failure still has a page count. `file` is source-relative with
 forward slashes when known, otherwise `null`. There are no structured line or
 column fields. Consumers should tolerate additive fields.
+
+Configured-site presentation errors name `../zel.yaml` relative to the content
+root; configuration-resolution errors can retain the selected site root.
 
 Diagnostic codes are `source`, `configuration`, `markdown`, `reference`,
 `output-path`, `rendering`, and `raw-html`. The last is a warning; the others
@@ -113,16 +116,12 @@ zel check ./content --deep
 zel check ./content --deep --strict
 ```
 
-Without a directory argument, `zel` looks in `./content`, then the current
-directory, then `./docs` and `./documentation`. It recognizes `site.yaml`,
-`pages.yaml`, `menu.yaml`, a `sections/` directory, or a guide directory with
-`_sidebar.yaml`. A guide-only site does not need a `site.yaml` file. Hidden
-directories and asset/example folders are not treated as guides.
-
-A directory argument other than `.` selects that exact hosted folder, including
-an empty folder when `--target static` is explicit; the engine reports its content
-errors or warnings. `.` uses the discovery order above. Discovery never searches
-parent directories. `dev`, hosted `build` and the image commands use this resolver.
+A configured hosted site reads its `content/` directory. For legacy hosted
+content, an explicit path other than `.` selects that exact folder, including
+an empty folder with `--target static`. Explicit `.` retains the legacy search
+order: `content/`, current root, `docs/`, then `documentation/`. Hosted markers
+are `site.yaml`, `pages.yaml`, `menu.yaml`, `sections/`, or a guide's `_sidebar.yaml`.
+No parent directory is searched. A guide-only site needs no `site.yaml`.
 
 ### Shared engine schemas
 
@@ -239,7 +238,7 @@ colima stop && colima start --mount '/tmp:w'
 
 | Option | Portable Markdown | Hosted YAML/MDX |
 | --- | --- | --- |
-| `[dir]` | Exact Markdown root, default `.` | [Content discovery](/cli/#how-a-command-finds-your-content) |
+| `[dir]` | Configured site or explicit Markdown root | [Content discovery](/cli/#how-a-command-finds-your-content) |
 | `--target` | `portable` | `static` |
 | `--deep` | Accepted; local references are always checked | Adds MDX syntax and static-reference checks |
 | `--strict` | Warnings fail the command | Warnings fail the command |

@@ -318,7 +318,7 @@ cat <<'EOF'
 
   Next:
 
-    zel new portable my-docs   a Markdown folder that already validates
+    zel new portable my-docs   a documentation site that already validates
     zel build my-docs          generate HTML that opens directly from disk
     zel view my-docs --watch   build, preview and reload edits
     zel --help               everything else

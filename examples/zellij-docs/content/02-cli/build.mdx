@@ -10,7 +10,9 @@ engine. Native release packages may lag the current source; check `zel list targ
 </Callout>
 
 ```bash title="terminal"
-zel build ./docs                        # plain Markdown → ./docs-site
+zel build                               # configured site → docs/zellij/site
+zel build docs/manual                   # custom configured site → docs/manual/site
+zel build ./docs                        # legacy plain Markdown → ./docs-site
 zel build ./docs --out ./published-docs  # choose an output outside the input
 zel build ./docs --target portable --name "Acme docs" --theme forest
 zel build ./content --target static --out ./dist
@@ -25,16 +27,21 @@ zel build ./content --target image --tag acme-docs:v2
 | `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
 | `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
-Without `--target`, a `zel.yaml` in the supplied directory selects `portable`.
-Otherwise, `zel` uses `static` when it discovers a structured Zellij content root,
-and `portable` for plain Markdown. An explicit target overrides this selection. The portable target reads the supplied directory itself; it does not
-look for a child `docs` directory.
+With no directory, the [site resolver](/cli/config#site-layout-and-discovery)
+selects `./zel.yaml` or `./docs/zellij/zel.yaml`. A versioned config selects its
+renderer and reads `content/`; output defaults to its `site/` or `build.out`.
+An explicit target must match a versioned site's renderer (`image` uses hosted).
+
+For explicit legacy inputs, a flat `zel.yaml` selects portable Markdown;
+otherwise recognized hosted markers select `static`, and plain Markdown selects
+`portable`. An explicit target can override raw-folder inference. Portable
+legacy input is read directly and outputs to a sibling `<folder>-site` by default.
 
 ## Portable Markdown
 
-Start a new project with [`zel new portable docs`](/cli/new), or build an
-existing Markdown folder directly. `zel new portable docs --minimal` creates
-just the home page and `zel.yaml`.
+Start a new site with [`zel new portable`](/cli/new), or build an
+existing Markdown folder directly. `zel new portable --minimal` creates
+`zel.yaml` and `content/index.md` in `docs/zellij`.
 
 A folder of `.md` or `.markdown` documents is enough. No `_sidebar.yaml`,
 `site.yaml`, JavaScript project, or MkDocs configuration is required. Hidden
@@ -272,7 +279,7 @@ optimization. `zel image build` is also available; see [image commands](/cli/ima
 
 ## Output ownership
 
-Both file targets require output outside the input tree. It must be new, empty,
+Both file targets require output outside the content source (`content/` for a configured site). It must be new, empty,
 or a previous Zellij export containing its `.zellij-output` ownership marker.
 Keep authored files outside generated output: rebuilding replaces the export
 as a whole and removes obsolete generated pages.
@@ -285,9 +292,9 @@ output directory; do not add the marker by hand.
 
 | Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | Input directory | `.` |
-| `--target <portable\|static\|image>` | Explicit output target | `zel.yaml`, then structured-content discovery, otherwise portable |
-| `--out <path>` | Output folder for `portable` or `static` | Portable: sibling `<input-name>-site`; static: `./dist` |
+| `[dir]` | Configured site or explicit legacy input | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
+| `--target <portable\|static\|image>` | Explicit output target | Configured renderer; legacy inference otherwise |
+| `--out <path>` | Output folder for `portable` or `static` | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy static: `./dist` |
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |

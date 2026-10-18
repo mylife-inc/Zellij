@@ -1687,3 +1687,17 @@ review, a successful clean production build, cross-platform runtime correctness,
 all deployed-site behavior, or absence of undiscovered bugs. “Finished” should
 mean an agreed feature scope, passing release acceptance, and no known blocking
 defects—not a technically unprovable guarantee of zero future bugs.
+
+
+## Implementation record — configured CLI sites (2026-10-18)
+
+Source commit `efe8946` implements the agreed `zel.yaml` / `content/` / `site/`
+layout, cwd/repository default selection, renderer-aware dispatch, output/port
+configuration and site scaffolds. Legacy explicit sources remain usable. Watch
+tracks sibling configuration without scanning output and preserves the last
+successful build on invalid changes. See the durable context for scope and
+verification; this record does not close the remaining CLI feature backlog.
+
+The previous main CI container failure (`39109606782`) selected Podman against a
+Docker-local test image. Container acceptance now pins its creating Docker
+context. This is a CI fixture correction; runtime fallback policy is unchanged.

@@ -56,7 +56,7 @@ fn plain_folder_checks_without_output_or_external_tools_in_both_formats() {
         assert_eq!(value["pages"], 1);
         assert_eq!(value["diagnostics"], serde_json::json!([]));
     }
-    let human = run(&source, &["check"]);
+    let human = run(&source, &["check", "."]);
     assert!(
         human.status.success(),
         "{}",
@@ -79,7 +79,7 @@ fn mermaid_bounds_have_native_diagnostics_but_grammar_is_a_browser_concern() {
     let root = temp.path();
     fs::write(root.join("zel.yaml"), "markdown: {mermaid: true}").unwrap();
     fs::write(root.join("README.md"), "```mermaid\n\n```\n").unwrap();
-    let invalid = report(root, &["check", "--json"], 3);
+    let invalid = report(root, &["check", ".", "--json"], 3);
     assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
     assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
     assert!(
@@ -90,7 +90,7 @@ fn mermaid_bounds_have_native_diagnostics_but_grammar_is_a_browser_concern() {
     );
     fs::write(root.join("README.md"), "```mermaid\ninvalid grammar\n```\n").unwrap();
     assert_eq!(
-        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        report(root, &["check", ".", "--strict", "--json"], 0)["ok"],
         true
     );
     assert_eq!(fs::read_dir(root).unwrap().count(), 2);
@@ -105,7 +105,7 @@ fn invalid_mindmaps_have_structured_diagnostics_and_recover_without_tools() {
         "# Maps\n\n```mindmap\nA: 1\nB: 2\n```\n",
     )
     .unwrap();
-    let invalid = report(root, &["check", "--json"], 3);
+    let invalid = report(root, &["check", ".", "--json"], 3);
     assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
     assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
     assert!(
@@ -120,7 +120,7 @@ fn invalid_mindmaps_have_structured_diagnostics_and_recover_without_tools() {
     )
     .unwrap();
     assert_eq!(
-        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        report(root, &["check", ".", "--strict", "--json"], 0)["ok"],
         true
     );
     assert_eq!(fs::read_dir(root).unwrap().count(), 1);
@@ -132,7 +132,7 @@ fn invalid_math_has_a_structured_source_diagnostic_and_recovers_without_tools() 
     let root = temp.path();
     fs::write(root.join("zel.yaml"), "markdown: {math: true}").unwrap();
     fs::write(root.join("README.md"), "# Equations\n\n$\\unknown$\n").unwrap();
-    let invalid = report(root, &["check", "--json"], 3);
+    let invalid = report(root, &["check", ".", "--json"], 3);
     assert_eq!(invalid["ok"], false);
     assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
     assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
@@ -144,7 +144,7 @@ fn invalid_math_has_a_structured_source_diagnostic_and_recovers_without_tools() 
     );
     fs::write(root.join("README.md"), "# Equations\n\n$\\frac{1}{2}$\n").unwrap();
     assert_eq!(
-        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        report(root, &["check", ".", "--strict", "--json"], 0)["ok"],
         true
     );
     assert_eq!(fs::read_dir(root).unwrap().count(), 2);
@@ -156,14 +156,14 @@ fn strict_and_invalid_checks_have_nonzero_exits_and_valid_json() {
     let root = temp.path();
     fs::write(root.join("README.md"), "# Home\n\n<span>Literal</span>\n").unwrap();
     assert_eq!(
-        report(root, &["check", "--json"], 0)["diagnostics"][0]["severity"],
+        report(root, &["check", ".", "--json"], 0)["diagnostics"][0]["severity"],
         "warning"
     );
-    let strict = report(root, &["check", "--strict", "--json"], 3);
+    let strict = report(root, &["check", ".", "--strict", "--json"], 3);
     assert_eq!(strict["strict"], true);
     assert_eq!(strict["ok"], false);
     assert_eq!(strict["pages"], 1);
-    let human = run(root, &["check", "--strict"]);
+    let human = run(root, &["check", ".", "--strict"]);
     assert_eq!(human.status.code(), Some(3));
     assert!(String::from_utf8_lossy(&human.stderr).contains("warnings are rejected by --strict"));
     fs::write(
@@ -171,7 +171,7 @@ fn strict_and_invalid_checks_have_nonzero_exits_and_valid_json() {
         "# Home\n\n[Missing](absent.md)\n\n![Gone](gone.png)\n",
     )
     .unwrap();
-    let invalid = report(root, &["check", "--json"], 3);
+    let invalid = report(root, &["check", ".", "--json"], 3);
     assert_eq!(invalid["diagnostics"].as_array().unwrap().len(), 2);
     assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
     assert_eq!(invalid["diagnostics"][0]["code"], "reference");
@@ -187,29 +187,29 @@ fn check_target_selection_matches_build_and_hosted_json_fails_before_execution()
     let root = temp.path();
     fs::write(root.join("README.md"), "# Home\n").unwrap();
     fs::write(root.join("site.yaml"), "name: Hosted\n").unwrap();
-    let hosted = run(root, &["check", "--json"]);
+    let hosted = run(root, &["check", ".", "--json"]);
     assert_eq!(hosted.status.code(), Some(2));
     assert!(hosted.stdout.is_empty());
     assert!(String::from_utf8_lossy(&hosted.stderr).contains("hosted validation"));
     assert!(
-        report(root, &["check", "--target", "portable", "--json"], 0)["ok"]
+        report(root, &["check", ".", "--target", "portable", "--json"], 0)["ok"]
             .as_bool()
             .unwrap()
     );
     fs::write(root.join("zel.yaml"), "name: Portable\n").unwrap();
-    assert_eq!(report(root, &["check", "--json"], 0)["ok"], true);
+    assert_eq!(report(root, &["check", ".", "--json"], 0)["ok"], true);
     assert_eq!(
-        run(root, &["check", "--target", "static", "--json"])
+        run(root, &["check", ".", "--target", "static", "--json"])
             .status
             .code(),
         Some(2)
     );
     fs::write(root.join("zel.yaml"), "typo: value\n").unwrap();
-    let invalid = report(root, &["check", "--json"], 3);
+    let invalid = report(root, &["check", ".", "--json"], 3);
     assert_eq!(invalid["diagnostics"][0]["code"], "configuration");
     assert_eq!(invalid["diagnostics"][0]["file"], "zel.yaml");
     assert_eq!(
-        run(root, &["check", "--target", "image", "--json"])
+        run(root, &["check", ".", "--target", "image", "--json"])
             .status
             .code(),
         Some(2)

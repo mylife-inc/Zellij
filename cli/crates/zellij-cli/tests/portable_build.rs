@@ -66,7 +66,7 @@ fn structured_content_keeps_the_hosted_default_and_can_be_overridden() {
     fs::write(root.join("README.md"), "# Portable too\n").unwrap();
     // Rejecting portable-only options establishes selection before starting
     // Docker, and does not depend on any runtime installed on the test runner.
-    let hosted = run(root, &["build", "--name", "Portable name"]);
+    let hosted = run(root, &["build", ".", "--name", "Portable name"]);
     assert_eq!(hosted.status.code(), Some(2));
     assert!(String::from_utf8_lossy(&hosted.stderr).contains("only to portable builds"));
     let output = root.parent().unwrap().join(format!(
@@ -77,6 +77,7 @@ fn structured_content_keeps_the_hosted_default_and_can_be_overridden() {
         root,
         &[
             "build",
+            ".",
             "--target",
             "portable",
             "--out",

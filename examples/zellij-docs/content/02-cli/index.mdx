@@ -102,26 +102,25 @@ actually do.
 
 ## How a command finds your content
 
-Every command that reads or writes content takes an optional directory:
+Build/check/view/serve/dev and image build/dockerfile accept a site directory.
+Without one, they select `./zel.yaml`, then `./docs/zellij/zel.yaml`.
 
 ```bash
-zel check              # figure it out
-zel check ./docs       # this one
+zel new portable                     # creates docs/zellij/zel.yaml and content/
+zel check --strict                   # uses that site
+zel build                            # writes docs/zellij/site/
+zel build docs/manual                # a custom site name
+zel build ./existing-markdown        # explicit legacy Markdown folder
 ```
 
-For commands that discover structured content, the search order is `./content`,
-the current directory, `./docs`, then `./documentation`. Marker files such as
-`site.yaml`, `pages.yaml`, and `menu.yaml`, a `sections` directory, or guide
-folders with `_sidebar.yaml` identify a candidate. Discovery does not walk up
-the directory tree. An explicit content path is used as supplied.
+A versioned `zel.yaml` declares `renderer: portable` or `renderer: hosted`;
+both use `content/` and default to `site/` output. There is no parent or recursive
+search. A missing default is an error with an explicit-path suggestion. Existing
+flat portable configs and explicit raw content folders still work. See
+[configuration](/cli/config) for settings, precedence and compatibility rules.
 
-The old TOML defaults proposal is superseded by a planned versioned `zel.yaml`
-and `content/`/`site/` layout; see [planned defaults](/cli/config#planned-cli-defaults).
-That new discovery is not implemented yet. Current portable folders can use
-[zel.yaml](/cli/config). Both `zel build ./docs` and `zel check ./docs` choose
-portable Markdown when that config is present or no structured content is
-discovered. Portable commands use the exact requested root. See [build](/cli/build)
-and [check](/cli/check) for explicit target selection and output rules.
+Creation destinations, conversion sources, image tags and CI workflow options
+keep their distinct meanings; they are not interchangeable site selectors.
 
 ## Where Docker comes in
 

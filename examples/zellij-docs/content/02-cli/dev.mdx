@@ -4,7 +4,7 @@ description: A development server for a content folder, without installing Node.
 ---
 
 <Callout type="tip" title="Available">
-Works today.
+Hosted sites work today. Portable authoring currently uses `zel view --watch --no-open`.
 </Callout>
 
 ```bash title="terminal"
@@ -153,3 +153,7 @@ most cases, and the one Zellij is built around.
 - [`zel serve`](/cli/serve) — the built site, which can differ from this one
 - [`zel build`](/cli/build) — what you ship
 - [Lab 1](/guide/quickstart/from-scratch) — this command in the writing loop
+
+With no directory, select `./zel.yaml` or `./docs/zellij/zel.yaml`. A hosted
+configured site mounts `content/`; `--port` overrides `preview.port` (default 3000).
+Explicit legacy hosted folders remain supported.

@@ -164,11 +164,17 @@ fn discover(root: &Utf8Path) -> Result<Vec<Utf8PathBuf>> {
 }
 
 pub fn default_output(source: &Utf8Path) -> Result<Utf8PathBuf> {
-    let source = source.canonicalize_utf8()?;
-    let name = source
-        .file_name()
-        .ok_or_else(|| files::unsafe_path(&source, "specify --out for a filesystem root"))?;
-    Ok(source.with_file_name(format!("{name}-site")))
+    let site = zellij_core::site::Site::load(source)?;
+    site.require(zellij_core::site::Renderer::Portable)?;
+    if site.configured {
+        Ok(site.output)
+    } else {
+        let name = site
+            .root
+            .file_name()
+            .ok_or_else(|| files::unsafe_path(&site.root, "specify --out for a filesystem root"))?;
+        Ok(site.root.with_file_name(format!("{name}-site")))
+    }
 }
 
 pub fn build(
@@ -183,7 +189,7 @@ pub fn build(
 /// This checks content, not destination permissions, ownership, or available disk space.
 pub fn check(source: &Utf8Path, strict: bool) -> CheckReport {
     let mut diagnostics = Diagnostics::new(source);
-    let compiled = compile(source, BuildOptions::default(), &mut diagnostics);
+    let compiled = compile(source, BuildOptions::default(), &mut diagnostics, None);
     let pages = compiled.as_ref().ok().map(|site| site.pages);
     let exit_code = match compiled {
         Ok(_) if strict && !diagnostics.items.is_empty() => 3,
@@ -214,9 +220,17 @@ pub fn prepare(
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<PreparedBuild> {
-    files::disjoint(source, output)?;
+    prepare_layout(source, output, options, None)
+}
+
+pub(crate) fn prepare_layout(
+    source: &Utf8Path,
+    output: &Utf8Path,
+    options: BuildOptions<'_>,
+    configured: Option<bool>,
+) -> Result<PreparedBuild> {
     let mut diagnostics = Diagnostics::new(source);
-    let compiled = compile(source, options, &mut diagnostics)?;
+    let compiled = compile(source, options, &mut diagnostics, configured)?;
     let stage = StaticOutput::prepare(&compiled.root, output)?;
     let writes: Vec<_> = compiled
         .files
@@ -237,29 +251,55 @@ fn compile(
     source: &Utf8Path,
     options: BuildOptions<'_>,
     diagnostics: &mut Diagnostics,
+    configured: Option<bool>,
 ) -> Result<CompiledSite> {
-    let root = diagnostics.capture(
+    let selected = diagnostics.capture(
         source.canonicalize_utf8().map_err(Error::from),
         Code::Source,
         None,
     )?;
-    diagnostics.root = root.clone();
-    if !root.is_dir() {
-        return diagnostics.capture(
-            Err(files::unsafe_path(&root, "expected a Markdown directory")),
-            Code::Source,
-            None,
-        );
-    }
-    let config = diagnostics.capture(
-        config::Config::load(&root),
+    diagnostics.root = selected.clone();
+    let site = diagnostics.capture(
+        zellij_core::site::Site::load(&selected),
         Code::Configuration,
         Some(Utf8Path::new(config::FILE)),
+    )?;
+    if configured.is_some_and(|expected| expected != site.configured) {
+        return diagnostics.capture(
+            Err(Error::InvalidArgument(
+                "site layout changed; restore zel.yaml or restart preview".into(),
+            )),
+            Code::Configuration,
+            Some(Utf8Path::new(config::FILE)),
+        );
+    }
+    diagnostics.capture(
+        site.require(zellij_core::site::Renderer::Portable),
+        Code::Configuration,
+        Some(Utf8Path::new(config::FILE)),
+    )?;
+    // Flat sources retain their original meaning even if hosted markers exist;
+    // configured sources always compile content/, never their generated output.
+    let root = if site.configured {
+        site.content
+    } else {
+        selected.clone()
+    };
+    diagnostics.root = root.clone();
+    let config_file = Utf8Path::new(if site.configured {
+        "../zel.yaml"
+    } else {
+        config::FILE
+    });
+    let config = diagnostics.capture(
+        config::Config::load(site.portable),
+        Code::Configuration,
+        Some(config_file),
     )?;
     let name = options
         .name
         .or(config.name.as_deref())
-        .unwrap_or_else(|| root.file_name().unwrap_or("Documentation"));
+        .unwrap_or_else(|| selected.file_name().unwrap_or("Documentation"));
     let theme = options
         .theme
         .or(config.theme.as_deref())
@@ -267,13 +307,13 @@ fn compile(
     diagnostics.capture(
         validate_theme(theme),
         Code::Configuration,
-        Some(Utf8Path::new(config::FILE)),
+        Some(config_file),
     )?;
     if name.trim().is_empty() {
         return diagnostics.capture(
             Err(Error::InvalidArgument("site name must not be empty".into())),
             Code::Configuration,
-            Some(Utf8Path::new(config::FILE)),
+            Some(config_file),
         );
     }
     let sources = diagnostics.capture(discover(&root), Code::Source, None)?;
@@ -359,7 +399,7 @@ fn compile(
     let navigation = diagnostics.capture(
         config::Navigation::resolve(&config, &pages),
         Code::Configuration,
-        Some(Utf8Path::new(config::FILE)),
+        Some(config_file),
     )?;
     let presentation = page::Presentation {
         name,
@@ -371,11 +411,9 @@ fn compile(
         pages: &pages,
         assets: BTreeMap::new(),
     };
-    if let Some((path, bytes)) = diagnostics.capture(
-        config.logo(&root),
-        Code::Configuration,
-        Some(Utf8Path::new(config::FILE)),
-    )? {
+    if let Some((path, bytes)) =
+        diagnostics.capture(config.logo(&root), Code::Configuration, Some(config_file))?
+    {
         resolver.assets.insert(path, bytes);
     }
     let mut rewritten = Vec::new();

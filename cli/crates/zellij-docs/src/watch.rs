@@ -67,15 +67,38 @@ impl LiveReload {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Snapshot(BTreeMap<Utf8PathBuf, (u64, u64)>);
 pub(crate) fn is_link(metadata: &fs::Metadata) -> bool {
-    #[cfg(windows)]
-    {
-        use std::os::windows::fs::MetadataExt;
-        metadata.file_type().is_symlink() || metadata.file_attributes() & 0x400 != 0
-    }
-    #[cfg(not(windows))]
-    metadata.file_type().is_symlink()
+    zellij_core::site::is_link(metadata)
 }
+
 impl Snapshot {
+    /// Watch only authored inputs. Pin the layout so deleting/replacing a
+    /// configured root cannot fall back to scanning its generated site/.
+    pub fn site(root: &Utf8Path, configured: bool) -> Result<Self> {
+        if !configured {
+            return Self::read(root);
+        }
+        if is_link(&fs::symlink_metadata(root)?) {
+            return Err(files::unsafe_path(root, "site root was replaced by a link"));
+        }
+        let site = zellij_core::site::Site::load(root)?;
+        if !site.configured {
+            return Err(files::unsafe_path(
+                root,
+                "watched site requires its version: 1 zel.yaml; restore the configuration",
+            ));
+        }
+        site.require(zellij_core::site::Renderer::Portable)?;
+        let mut snapshot = Self::read(&site.content)?;
+        let config = root.join(zellij_core::site::CONFIG);
+        let bytes = fs::read(&config)?;
+        let mut hash = DefaultHasher::new();
+        hash.write(&bytes);
+        snapshot
+            .0
+            .insert(config, (bytes.len() as u64, hash.finish()));
+        Ok(snapshot)
+    }
+
     pub fn read(root: &Utf8Path) -> Result<Self> {
         let mut files = BTreeMap::new();
         let mut directories = vec![root.to_owned()];
@@ -150,6 +173,9 @@ impl Watcher {
         live: Arc<LiveReload>,
         stop: Arc<AtomicBool>,
     ) -> io::Result<Self> {
+        let configured = zellij_core::site::Site::load(&options.source)
+            .map_err(io::Error::other)?
+            .configured;
         let signal = stop.clone();
         let task = thread::Builder::new()
             .name("zel-watch".into())
@@ -161,7 +187,8 @@ impl Watcher {
                     if signal.load(Ordering::Acquire) {
                         break;
                     }
-                    let current = Snapshot::read(&options.source).map_err(|e| e.to_string());
+                    let current =
+                        Snapshot::site(&options.source, configured).map_err(|e| e.to_string());
                     if current != observed {
                         observed = current;
                         continue;
@@ -171,13 +198,14 @@ impl Watcher {
                     }
                     attempted = current.clone();
                     let result = current.and_then(|_| {
-                        let prepared = crate::prepare(
+                        let prepared = crate::prepare_layout(
                             &options.source,
                             &options.output,
                             BuildOptions {
                                 name: options.name.as_deref(),
                                 theme: options.theme.as_deref(),
                             },
+                            Some(configured),
                         )
                         .map_err(|e| e.to_string())?;
                         if signal.load(Ordering::Acquire) {

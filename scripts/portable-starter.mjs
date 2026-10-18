@@ -9,7 +9,7 @@ import { expect } from '@playwright/test';
 export async function checkStarter({ binary, root, env, engine, browser }) {
   for (const minimal of [false, true]) {
     const source = path.join(root, `Starter 日本 ${engine} ${minimal}`);
-    const output = `${source}-site`;
+    const output = path.join(source, 'site');
     const moved = path.join(root, `Moved starter café ${engine} ${minimal}`);
     const name = 'Acme: [Docs] <reference> & café 日本';
     execFileSync(binary, ['new', 'portable', source, '--name', name, '--theme', 'forest', ...(minimal ? ['--minimal'] : [])], { env });

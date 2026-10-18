@@ -1,9 +1,9 @@
 # zel CLI command contract and alias proposal
 
-Status: **implementation authorized; command/layout changes remain proposed**.
-The runtime prerequisite policy in §2.9 is implemented in source. The user has agreed the configured
-site layout and repository-root default below. Alias spellings, shared options,
-configuration fields, and command refinements in this document are proposed.
+Status: **runtime policy and configured-site layout implemented in source; remaining commands/aliases proposed**.
+The runtime prerequisite policy in §2.9 is implemented in source. The configured site layout and repository-root default below are implemented,
+including `build.out` and `preview.port`. Alias spellings, shared selectors,
+image/delivery/CI fields, and other command refinements remain proposed.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
 the [original specification](zellij-cli-spec.md) remains design history.
 
@@ -41,10 +41,10 @@ Command signatures below use distinct argument roles:
 | `[file]` | An explicit output file; omission may mean stdout. |
 | `<name>` / `<type>` | A content object or schema type, not a site location. |
 
-Proposed resolution adds one convenience: when the current directory itself
+Implemented resolution includes one convenience: when the current directory itself
 contains `zel.yaml`, use that site. Otherwise use `./docs/zellij/zel.yaml`.
-Explicit arguments or `--site-root` / `--config` win. Conflicting explicit
-selectors fail; configuration does not redirect an explicit site path. There
+Explicit directory arguments win. The proposed `--site-root` / `--config` selectors
+are not registered yet; their eventual conflicting selections must fail; configuration does not redirect an explicit site path. There
 is no upward or recursive discovery. Inside `content/`, use `--site-root ..`
 or change to the site root. A missing default gives the expected config path
 and an example with an explicit custom site, not an unrelated fallback.
@@ -247,15 +247,15 @@ defined behavior when Docker is absent. The first increment establishes:
   not required before a portable build and does not validate site content.
 
 The current command reference is [doctor.mdx](../examples/zellij-docs/content/02-cli/doctor.mdx).
-The site layout, aliases and additional image/delivery commands above still need
-their own implementation increments. This policy does not imply a new release
+The site layout is implemented in the next increment below; aliases and additional
+image/delivery commands still need their own implementation increments. This policy does not imply a new release
 or publication of the local documentation.
 
-## 3. Configuration proposal
+## 3. Configuration: implemented subset and remaining proposal
 
 Use `zel.yaml` as the site-root configuration, with a version marker separating
 the new contract from existing flat portable configs. No second TOML defaults
-file is needed for new sites. Minimal portable example (proposed schema):
+file is needed for new sites. Minimal portable example (implemented in source):
 
 ```yaml
 version: 1
@@ -271,7 +271,8 @@ portable identity, navigation, branding, and Markdown options remain available
 in the versioned portable configuration, with paths relative to `content/`.
 
 Omitted settings mean source `content/`, output `site/`, preview port 3000, and
-no configured remote delivery. Example optional settings:
+no configured remote delivery. The `build` and `preview` settings below are implemented. The `image`, `publish`,
+and `ci` blocks remain proposals and are currently rejected. Example settings:
 
 ```yaml
 build:
@@ -359,7 +360,9 @@ These examples are design examples, not commands to copy into current CI.
 ## 6. Implementation sequence and acceptance
 
 Runtime prerequisite handling (§2.9) is the first implemented increment following
-the user's additional Docker requirement. Continue with the layout sequence:
+the user's additional Docker requirement. The configured-site increment implements
+steps 1–2 for current handlers; portable `dev`, hosted `view`, global selectors
+and unimplemented handlers remain future extensions. Continue with the sequence:
 
 1. Introduce the versioned config/site resolver, retain explicit legacy paths,
    and update portable/hosted scaffolds. Prove the user's default and custom
@@ -420,3 +423,25 @@ no dispatch, credential upload, image build, or deployment. The image run-tag
 description and maintenance-command status were also corrected. Deep/strict
 validation of the documentation passed for 47 routes and 23 embedded examples.
 This evidence checks current documentation; it does not validate proposed syntax.
+
+
+### Configured-site implementation — 2026-10-18
+
+The shared resolver accepts `version: 1` with `renderer: portable|hosted`, fixed
+`content/`, default `site/`, optional `build.out` and `preview.port`. Build/check,
+serve/view, hosted dev, image build/dockerfile and hosted page/guide creation
+use configured roots. New portable/docs/project starters use the agreed layout.
+Portable presentation remains in root `zel.yaml`; hosted presentation stays in
+`content/site.yaml`. Hosted configs reject duplicate presentation fields.
+
+Bare site commands select cwd's config, then `docs/zellij/zel.yaml`; they fail
+when neither exists. Explicit legacy folders and flat configs remain supported;
+legacy `.` hosted discovery remains available explicitly. Serve accepts either
+a configured site or an explicit output folder. View remains portable-only,
+dev remains hosted-only. The running preview pins its output/port, watches only
+content/config, and preserves output when the config disappears or changes
+renderer/layout. Restoring the config recovers without restarting.
+
+CI generation still targets raw hosted content, including `<site>/content` for
+configured sites; it does not consume proposed image/delivery/CI defaults.
+Conversion output is unchanged. Aliases and shared selectors are not registered.
