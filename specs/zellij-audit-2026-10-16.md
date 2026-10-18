@@ -1725,3 +1725,15 @@ source and site output are preserved. Legacy Next paths and tag defaults remain.
 Local checks: 226 Rust tests, fmt, Clippy, strict/deep 49-route/23-example docs.
 Real-container acceptance is tracked by the subsequent PR; consult the durable
 context for results. The Markdown-to-Next adapter and broader CLI backlog remain.
+
+
+### Implementation record — 2026-10-18, Next image adapter
+
+The requested `image next` / `ni` path now packages either renderer. The native
+adapter preserves pages omitted from custom navigation, external sidebar links,
+separate nav labels, validated links/anchors/assets, metadata and Markdown
+semantics without treating plain Markdown as executable MDX. Sources and previous
+output stay intact; temporary contexts are cleaned on failure. Adjacent fixes
+make Next health checks prefix-aware and prevent `//page` URLs in root-mounted
+guides. Source/PR and final validation evidence are tracked in ZELLIJ_CONTEXT.md.
+Remaining delivery, CI and command-family work is unchanged by this milestone.

@@ -3871,6 +3871,42 @@
                     "type": "string",
                     "minLength": 1
                   },
+                  "page": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "label",
+                  "page"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "href": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": [
+                  "label",
+                  "href"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
                   "items": {
                     "$ref": "#/$defs/__schema0"
                   }
@@ -3878,7 +3914,8 @@
                 "required": [
                   "label",
                   "items"
-                ]
+                ],
+                "additionalProperties": false
               }
             ]
           }

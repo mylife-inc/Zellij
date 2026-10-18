@@ -215,3 +215,15 @@ Next build paths are unchanged. `image next` / `ni` remains unregistered until
 its Markdown adapter preserves navigation, all pages, links, assets and settings.
 See the CLI image reference and durable context for context-folder semantics,
 runtime requirements, tag defaults and verification evidence.
+
+
+### Implementation delta — 2026-10-18, Next images
+
+`image next` / `ni` is implemented for hosted content and portable Markdown.
+Portable content is adapted to validated inert document trees in a temporary
+folder, preserving all pages, navigation, links/assets, metadata, branding and
+Markdown features. New default tags end in `-next:latest`; legacy image commands
+remain hosted-only with their original defaults. Next health checks now honor
+basePath. There are 24 top-level shortcuts. See the durable context for the
+source/CI record and the updated image guide for exact behavior and limitations.
+This does not implement shared delivery configuration or other remaining stubs.

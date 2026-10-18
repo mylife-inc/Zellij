@@ -13,6 +13,7 @@ import { ASSET_PUBLIC_PREFIX, assetUrl, normalizeRoute } from '../content/paths'
 import { getSection } from '../sections/registry';
 import { flattenSidebar } from '../guide/navigation';
 import { readAnchorIds } from '../mdx/headings';
+import { walkPortable } from '../content/portable-document';
 import { loadMaths } from '../mdx/maths';
 
 interface Ast {
@@ -151,7 +152,16 @@ export async function deepCheck(site: Site, contentDir: string): Promise<DeepChe
   }
   for (const page of site.guidePages) {
     anchors.set(page.route, new Set());
-    scanMdx(page.body, page.sourceFile, page.route);
+    if (page.portable) {
+      walkPortable(page.portable.body, (node) => {
+        if (node.type !== 'element') return;
+        const props = node.properties;
+        if (typeof props.id === 'string') addId(props.id, page.route, page.sourceFile);
+        for (const attr of ['href', 'src'] as const) if (typeof props[attr] === 'string') {
+          references.push({ kind: attr === 'href' ? 'href' : 'url', value: props[attr], where: page.sourceFile, route: page.route });
+        }
+      });
+    } else scanMdx(page.body, page.sourceFile, page.route);
   }
   // Unused examples still need valid assets/absolute links. Contextual anchors
   // are checked again where SectionPreview actually renders an example.

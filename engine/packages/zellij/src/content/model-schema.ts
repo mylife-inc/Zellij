@@ -112,16 +112,19 @@ export function normalizeSectionRef(ref: SectionRef): { section: string } & Reco
 /* -------------------------------------------------------------- _sidebar.yaml */
 
 /** The navigation tree inside a guide folder — spec §7.1. */
-export type SidebarEntry = string | { label: string; items: SidebarEntry[] };
+export type SidebarEntry = string | { label: string; items: SidebarEntry[] }
+  | { label: string; page: string } | { label: string; href: string };
 
 export const sidebarNavSchema: z.ZodType<SidebarEntry[]> = z.lazy(() =>
   z.array(
     z.union([
       z.string().min(1),
+      z.object({ label: z.string().min(1), page: z.string().min(1) }).strict(),
+      z.object({ label: z.string().min(1), href: z.url({ protocol: /^https?$/ }) }).strict(),
       z.object({
         label: z.string().min(1),
         items: sidebarNavSchema,
-      }),
+      }).strict(),
     ]),
   ),
 );

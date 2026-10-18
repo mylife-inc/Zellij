@@ -3,9 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI increment: static-site container images, source
-`5ed8fb49126ce3919abedbe532f6ec7ba63506e4`; see the implementation record at the
-end of this file. The Markdown-to-Next adapter and `image next` / `ni` remain next.
+Latest CLI work: Next.js images and the native Markdown adapter on
+`codex/cli-next-images`; see the implementation record at the end of this file
+for source and verification status. Static packaging merged in PR #30.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -2031,3 +2031,66 @@ A separate unchanged Windows portable suite hit its first file:// navigation's
 30 seconds for cold runner/browser startup; interaction and assertion timeouts
 and all offline/content checks are unchanged. The latest PR run must validate
 that final test adjustment and the rest of the regressions before merging.
+
+
+## Next.js images and native Markdown adapter — 2026-10-18
+
+Baseline refreshed: PR #30 merged as `7dc79bab90dd6bb852f3f4eb9187840bd3225463`.
+Main CI `39145286725` and base-image publication `39145286638` both passed.
+The latest public native release remains `zellij-v0.1.3` (2026-08-13); no release
+or documentation deployment is part of this increment.
+
+Implementation on `codex/cli-next-images` (source commit and PR recorded after
+local validation):
+
+- `image next [site]` / `ni [site]` uses the common site resolver and a separate
+  normalized `<site-name>-next:latest` tag. There are now 24 top-level shortcuts.
+  Hosted content uses the existing Next wrapper. Runtime preflight is first;
+  missing/unusable runtime remains exit 4, without installation/start/fallback.
+- Portable content uses `zellij_docs::adapt_hosted` into a private TempDir;
+  success and failure remove it without replacing `site/` or modifying sources.
+  The adapter reuses native discovery, config/navigation validation, Markdown
+  parsing, heading IDs, reference resolution, asset containment, math/mindmap
+  validation and output-collision checks. All discovered pages survive nav
+  omissions. Only referenced assets and branding bytes enter the context.
+- The bridge is internal `manual/pN.zeldoc.json` version 1 data. It contains a
+  constrained HAST tree plus title, description, route, plain text and headings.
+  The engine validates allowed nodes/properties/URLs before rendering; no MDX
+  evaluation or raw HTML injection is used. Raw HTML/JS-looking prose stays text.
+  Root index maps to `/`; other native output paths keep `.html` (including
+  nested index) to avoid collapsing distinct `foo.md` and `foo/index.md` pages.
+  Next's reserved `/_next` folder is rejected with an actionable error.
+- Hosted rendering shares Shiki, Maths/Mermaid/mindmap transforms, link/image
+  components, theme and guide layout. Unknown code languages stay plain text.
+  Actual native maths/Mermaid usage selects the required builder features;
+  missing optional support fails explicitly instead of silently dropping it.
+  Generated HAST uses `hast-util-to-jsx-runtime` 2.3.6, already in the lockfile
+  transitively and now a direct engine dependency.
+- Hosted guide loading, TOC, search and deep reference checks understand the
+  generated data. Original H1/explicit IDs remain; the guide does not insert a
+  duplicate title. Search indexes every page and heading. Separate navigation
+  labels and nested external HTTP(S) links are supported in `_sidebar.yaml`;
+  external entries stay out of the previous/next sequence. Root-mounted ordinary
+  guide pages now avoid accidentally generating `//page` URLs.
+- Native branding is copied to a safe generated filename so `#` or `%` in its
+  original filename cannot become URL syntax. Other assets retain their paths
+  with encoded URLs. Heading and TOC links encode explicit IDs correctly.
+- Next recipes explicitly select standalone output and carry a generated health
+  path including the site's basePath. Legacy `image build` / `build --target image`
+  retain their hosted-only behavior and unsuffixed default tags. `idf --kind next`
+  still needs hosted content; its portable error directs users to `ni`.
+
+Validation established so far: 340 engine tests, workspace typechecking, engine
+packaging, strict/deep documentation checks (49 routes, 23 examples), adapter
+and fake-runtime integration tests, and a production Next wrapper in Chromium
+using the actual CLI's generated content. Browser checks cover titles, theme,
+company link, nested/external nav, custom anchors, navigation/reload, unlisted
+search entries, assets/downloads, tables/tasks, maths, mindmaps, Mermaid, and
+inert HTML/JavaScript-looking prose. Final Rust/format/Clippy and all-platform
+CI results are recorded below when completed. A stopped local Docker daemon
+means real image/server verification belongs to CI; local wrapper acceptance
+must not be represented as actual Docker image acceptance.
+
+Next work after this milestone: shared image/delivery/CI settings, Netlify
+integration, expanded workflow generation, then the remaining CLI inventory.
+The CLI is still not complete. No user action is currently needed.

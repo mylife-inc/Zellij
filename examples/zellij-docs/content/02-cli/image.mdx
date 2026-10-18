@@ -4,11 +4,11 @@ description: Build a static-site image or a Next.js image, then run or push it.
 ---
 
 `zel image static` (shortcut `zel si`) builds HTML from portable Markdown or
-hosted content and packages it with NGINX. `zel image build` retains the existing
-Next.js application image for hosted content. The separate `image next` / `ni`
-command and its plain-Markdown adapter are still planned.
+hosted content and packages it with NGINX. `zel image next` (shortcut `zel ni`)
+packages either renderer in a Next.js application image. `zel image build`
+retains its existing hosted-content behavior and default tag.
 
-These static-image commands are available in current source and require a new
+These image commands are available in current source and require a new
 binary release. Run `zel image --help` to check your installed version.
 
 ## `zel image static`
@@ -64,6 +64,44 @@ not install or start a runtime or switch renderers. See [`zel doctor`](/cli/doct
 Container image downloads and hosted dependency installation may require network
 access. On macOS and Windows, the runtime must support Linux containers.
 
+## `zel image next`
+
+```bash
+zel ni
+zel ir zellij-next:latest --port 8080
+zel image next docs/manual --tag acme-docs:next
+```
+
+Site selection and `--tag` work like `image static`, with a distinct
+`<normalized-site-name>-next:latest` default. The result is a Next.js standalone
+server running as `nextjs` on container port 3000. It needs an HTTP server;
+use `zel build` for a portable export you can open directly from disk.
+
+For portable Markdown, the command validates and adapts the content in a
+private temporary folder. It preserves all discovered pages, including pages
+omitted from custom navigation; nested groups, separate navigation labels,
+external navigation links, page titles and descriptions, theme, company logo
+and destination, heading IDs, footnotes, tables, task lists, code, and referenced
+images/downloads. Root `index.html` becomes `/`; other document paths keep their
+`.html` suffix, including nested `index.html`, so distinct source files stay
+distinct. Document links, queries and fragments are rewritten accordingly.
+
+Raw HTML and JavaScript-looking prose remain literal text. The Next renderer
+uses its own guide layout, syntax highlighting, maths and diagram presentation;
+this is not a pixel-identical copy of the portable page. `markdown.math` and
+`markdown.mermaid` still control those features, and required optional packages
+are enabled during the image build. Unknown code languages remain readable
+plain text. All pages enter search; headings retain their anchors and TOC links.
+
+Adapted content is removed after success or failure. Original Markdown,
+`zel.yaml`, existing `site/`, and configured `build.out` remain untouched. For
+hosted YAML/MDX, the existing content goes directly into the Next builder.
+Its `basePath` is preserved, including in the container health check.
+
+Both image kinds require a working Linux container runtime before any temporary
+build output is created; unavailable runtimes return exit code **4**. No runtime
+is installed or started automatically, and no image is pushed implicitly.
+
 ## `zel image build`
 
 ```bash
@@ -75,8 +113,8 @@ zel build docs/hosted --target image --tag acme-docs:next
 These existing commands continue to accept hosted content and produce the
 Next.js standalone application, with Node and its traced dependencies. They
 retain the original `<site-name>:latest` default; they never select the new
-static image implicitly. Portable sites need the planned Markdown-to-Next
-adapter and are rejected by this path today.
+static image implicitly. These compatibility commands remain hosted-only;
+use `zel ni` for portable Markdown.
 
 The generated multi-stage recipe copies the selected content into the wrapper,
 installs dependencies, checks content, builds Next, then copies the standalone
@@ -97,8 +135,8 @@ Both image kinds work with this command. It publishes container port 3000 to
 
 For compatibility, omitting the tag still derives the **legacy Next** default
 from the selected hosted site. It does not remember the last image built or a
-custom `--tag`, and it does not select the `-static` image. Pass the static tag
-explicitly, as shown in the successful build's output.
+custom `--tag`, and it does not select the `-static` or `-next` suffix. Pass the
+new image tag explicitly, as shown in the successful build's output.
 
 ## `zel image push`
 
@@ -143,13 +181,17 @@ docker build -f Dockerfile.next -t acme-docs:next docs/hosted/content
 
 For an explicit legacy hosted folder, use that folder directly as the context.
 A saved Dockerfile no longer tracks future recipe changes; regenerate it when
-upgrading the CLI.
+upgrading the CLI. Next Dockerfile output requires hosted content. For portable
+Markdown, use `zel ni`, which owns the temporary adaptation and image build.
 
 ## The base image
 
 `ZELLIJ_IMAGE` overrides the hosted builder image (default
 `ghcr.io/mylife-inc/zellij-base:latest`) for both Next and hosted-static builds.
-It has no effect on portable compilation or the static NGINX runtime.
+It also supplies the Next wrapper for adapted portable Markdown. It has no
+effect on native static compilation or the static NGINX runtime. Portable Next
+images require a builder that supports the current CLI's generated documents;
+use the current Zellij base image when upgrading the CLI.
 
 The hosted builder carries the Zellij engine at `/opt/zellij` and a generated
 Next wrapper at `/app`. Dependencies install during the site build. The

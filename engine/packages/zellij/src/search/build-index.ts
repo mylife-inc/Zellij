@@ -49,6 +49,14 @@ export function mdxToText(source: string): string {
  * relevant heading rather than the top of a long page.
  */
 export function indexGuidePage(page: GuidePage, options: HeadingOptions = {}): SearchEntry[] {
+  if (page.portable) return [
+    { id: page.route, route: page.route, page: page.title, title: page.title,
+      text: [page.description, page.portable.text].filter(Boolean).join(' ') },
+    ...page.portable.headings.filter(h => h.depth === 2 || h.depth === 3).map(h => ({
+      id: `${page.route}#${encodeURIComponent(h.id)}`, route: `${page.route}#${encodeURIComponent(h.id)}`,
+      page: page.title, title: h.text, text: h.text,
+    })),
+  ];
   const headings = readHeadings(page.body, options).filter((heading) => heading.depth === 2 || heading.depth === 3);
   const entries: SearchEntry[] = [];
   const intro = mdxToText(page.body.slice(0, headings[0]?.start));

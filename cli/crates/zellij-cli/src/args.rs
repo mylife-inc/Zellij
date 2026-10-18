@@ -37,7 +37,8 @@ shortcuts! {
         Page(NewPageArgs) => ("np", "new page", |a| Command::New(NewTarget::Page(a)));
         Guide(NewGuideArgs) => ("ng", "new guide", |a| Command::New(NewTarget::Guide(a)));
         Project(NewProjectArgs) => ("npr", "new project", |a| Command::New(NewTarget::Project(a)));
-        StaticImage(StaticImageArgs) => ("si", "image static", |a| Command::Image { action: ImageAction::Static(a) });
+        StaticImage(SiteImageArgs) => ("si", "image static", |a| Command::Image { action: ImageAction::Static(a) });
+        NextImage(SiteImageArgs) => ("ni", "image next", |a| Command::Image { action: ImageAction::Next(a) });
         ImageRun(ImageRunArgs) => ("ir", "image run", |a| Command::Image { action: ImageAction::Run(a) });
         ImagePush(ImagePushArgs) => ("ip", "image push", |a| Command::Image { action: ImageAction::Push(a) });
         Dockerfile(ImageDockerfileArgs) => ("idf", "image dockerfile", |a| Command::Image { action: ImageAction::Dockerfile(a) });
@@ -338,7 +339,9 @@ pub(crate) enum Command {
 #[derive(Subcommand, Debug, PartialEq, Eq)]
 pub(crate) enum ImageAction {
     /// Build HTML and package it with an HTTP server (portable or hosted).
-    Static(StaticImageArgs),
+    Static(SiteImageArgs),
+    /// Build the Next.js server image, adapting portable Markdown when needed.
+    Next(SiteImageArgs),
     /// The same as `build --target image`.
     Build {
         dir: Option<String>,
@@ -561,7 +564,7 @@ pub(crate) enum ImageKind {
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
-pub(crate) struct StaticImageArgs {
+pub(crate) struct SiteImageArgs {
     /// Site root or explicit Markdown/hosted content folder.
     pub(crate) dir: Option<String>,
 

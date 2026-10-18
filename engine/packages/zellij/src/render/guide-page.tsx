@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { PortableBody } from './portable-body';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 
 import type { Site } from '../content/site';
@@ -16,7 +17,9 @@ import { mdxOptions } from '../mdx/pipeline';
  */
 export async function GuidePageView({ site, page }: { site: Site; page: GuidePage }) {
   const options = await mdxOptions();
-  const toc = extractToc(page.body, { remarkPlugins: options.mdxOptions.remarkPlugins });
+  const toc = page.portable
+    ? page.portable.headings.flatMap(h => h.depth === 2 || h.depth === 3 ? [{ ...h, depth: h.depth as 2 | 3 }] : [])
+    : extractToc(page.body, { remarkPlugins: options.mdxOptions.remarkPlugins });
   // A site can have any number of guide trees, so a page navigates within its
   // own — `page.guide` is the route of the folder it came from.
   const tree = site.guides.find((guide) => guide.route === page.guide);
@@ -57,9 +60,11 @@ export async function GuidePageView({ site, page }: { site: Site; page: GuidePag
         <article className="zellij-prose">
           {/* The title is rendered here, not in the body, so it stays a single
               source of truth across <title>, sidebar, breadcrumbs and search. */}
-          <h1>{page.title}</h1>
-          {page.description ? <p className="zellij-lead">{page.description}</p> : null}
-          <MDXRemote source={page.body} components={mdxComponents(site)} options={options} />
+          {page.portable ? <PortableBody document={page.portable} site={site} /> : <>
+            <h1>{page.title}</h1>
+            {page.description ? <p className="zellij-lead">{page.description}</p> : null}
+            <MDXRemote source={page.body} components={mdxComponents(site)} options={options} />
+          </>}
         </article>
 
         {previous || next ? (

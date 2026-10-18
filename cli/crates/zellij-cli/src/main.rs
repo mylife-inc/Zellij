@@ -97,8 +97,11 @@ fn main() {
             theme.as_deref(),
         ),
         Command::Image { ref action } => match action {
-            ImageAction::Static(StaticImageArgs { dir, tag }) => {
+            ImageAction::Static(SiteImageArgs { dir, tag }) => {
                 images::static_image(dir.as_deref(), tag.as_deref())
+            }
+            ImageAction::Next(SiteImageArgs { dir, tag }) => {
+                images::next_image(dir.as_deref(), tag.as_deref())
             }
             ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
             ImageAction::Run(ImageRunArgs { tag, port }) => image_run(tag.as_deref(), *port),
