@@ -1468,6 +1468,13 @@ run a private copied binary beside invalid runtime placeholders, testing the
 unexecutable-client path without contacting the runner's service; missing-client
 classification remains covered by engine tests and Unix CLI fixtures.
 
+Final reference reconciliation also replaces the obsolete TOML/upward-discovery
+proposal in the local config, overview and delivery pages with the agreed
+versioned YAML/site layout (still labeled unimplemented), documents build-once
+delivery composition, and removes a stale claim that portable scaffolding was
+unimplemented. Historical specifications remain preserved. The public site is
+still older; no documentation deployment was triggered.
+
 **Next implementation:** versioned `zel.yaml` and the common site resolver for
 `docs/zellij/{zel.yaml,content/,site/}`, custom named roots and legacy explicit
 paths, including watch/config changes. Alias registration, separate static/Next

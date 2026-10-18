@@ -4,8 +4,9 @@ description: Build and put it online, on a CDN or a container host.
 ---
 
 <Callout type="warning" title="Planned">
-`zel deploy` exits with `not implemented yet`. This page is the specification it
-is being written against.
+`zel deploy` exits with `not implemented yet`. This page describes the planned
+workflow. Netlify is the first implementation target; the broader provider list
+remains a proposal. The agreed site layout is also pending implementation.
 </Callout>
 
 ```bash title="terminal"
@@ -36,26 +37,28 @@ override.
 
 ## Where the content comes from
 
-The same resolution every command uses, and the optional `[dir]` argument:
+The planned common site resolver accepts the parent of `zel.yaml`:
 
 ```bash title="terminal"
-zel deploy netlify              # resolved: zel.toml, then ./content, then here
-zel deploy netlify ./docs       # this folder
+zel deploy netlify              # docs/zellij/zel.yaml from the repository root
+zel deploy netlify docs/manual  # explicitly named site root
 ```
 
-See [how a command finds your content](/cli/#how-a-command-finds-your-content).
-For a repository where the answer is always the same, put it in
-[`zel.toml`](/cli/config#planned-cli-defaults) once:
+See the [planned defaults](/cli/config#planned-cli-defaults); this differs from
+current raw-content discovery. The proposed saved delivery configuration is:
 
-```toml title="zel.toml"
-content = "docs/external"
-
-[deploy]
-provider = "netlify"
-site = "acme-docs"
+```yaml title="docs/zellij/zel.yaml — proposed"
+version: 1
+renderer: portable
+publish:
+  action: deploy
+  provider: netlify
+  site: acme-docs
 ```
 
-Then the command is `zel deploy`.
+Then `zel publish` uses that saved intent. Bare `zel deploy` is proposed as its
+equivalent; neither operation is implemented yet. The shared delivery plan will
+validate and build once before uploading.
 
 ## What it does
 
@@ -153,9 +156,9 @@ And then `zel deploy netlify` for the rest of the project's life.
 
 | | | |
 | --- | --- | --- |
-| `<provider>` | Required. One of the table above | — |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--site <name>` | The site or project on the provider | from `zel.toml` |
+| `<provider>` | Provider for explicit delivery; bare `deploy` is proposed to use saved publish settings | — |
+| `[site]` | Parent of `zel.yaml` | [Planned site discovery](/cli/config#planned-cli-defaults) |
+| `--site <name>` | The site or project on the provider | from planned `zel.yaml` delivery settings |
 | `--tag <name:version>` | Image tag — container providers only | `<site-name>:latest` |
 | `--message <text>` | Deploy message, where the provider has one | the git subject |
 | `--preview` | A preview deploy rather than production | off |

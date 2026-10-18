@@ -26,6 +26,10 @@ zel ship ./docs --provider netlify
 [`detect`](/cli/detect) → [`convert`](/cli/convert) → [`check`](/cli/check) →
 [`build`](/cli/build) → [`deploy`](/cli/deploy), stopping at the first failure.
 
+These are stages in the shared delivery plan. The converted site is built once;
+the upload step receives that output instead of calling a public `deploy`
+command that builds it again.
+
 The whole of a migration, from a folder written for another tool to a site
 someone can read.
 
@@ -48,7 +52,7 @@ netlify sites:create --name acme-docs-preview
 zel ship ./docs --provider netlify
 ```
 
-A preview site costs nothing and can be deleted. Circulating it for a week finds
+A separate preview site can be removed after review. Circulating it finds
 what no validator can — a page that lost its ordering, a diagram that was an
 image, a link that pointed somewhere clever.
 </Callout>
@@ -65,7 +69,7 @@ Every warning the individual commands produce, `ship` produces:
 ```
 
 **And the landing page is still yours.** Every tool it converts from describes a
-documentation tree; Zellij has that and marketing pages built from nineteen
+documentation tree; Zellij has that and marketing pages built from 23
 section types with no equivalent in the source. What ships is a faithful guide
 folder and one hero to build on. That is not a gap in the converter — it is the
 part Zellij has that the source did not.
@@ -76,15 +80,16 @@ part Zellij has that the source did not.
 and still fail a later build, because MDX treats `{` and `<` as syntax and prose
 written for MkDocs never had to care.
 
-`ship` builds, so it *does* compile — which means it catches this where
-`migrate` would not. If `ship` succeeds, the conversion is sound.
+The planned `ship` workflow builds, so it will compile the converted MDX. A
+successful build establishes that the output compiles; conversion warnings,
+navigation and source-specific features still need review.
 
 ## Options
 
 | | | |
 | --- | --- | --- |
 | `<source>` | Required. The folder to convert | — |
-| `--provider <name>` | Where to publish | from [`zel.toml`](/cli/config#planned-cli-defaults) |
+| `--provider <name>` | Where to publish | from proposed [`zel.yaml` delivery settings](/cli/config#planned-cli-defaults) |
 | `--out <path>` | Where the converted folder goes | `./content` |
 
 ## Until it lands
