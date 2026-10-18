@@ -37,6 +37,7 @@ shortcuts! {
         Page(NewPageArgs) => ("np", "new page", |a| Command::New(NewTarget::Page(a)));
         Guide(NewGuideArgs) => ("ng", "new guide", |a| Command::New(NewTarget::Guide(a)));
         Project(NewProjectArgs) => ("npr", "new project", |a| Command::New(NewTarget::Project(a)));
+        StaticImage(StaticImageArgs) => ("si", "image static", |a| Command::Image { action: ImageAction::Static(a) });
         ImageRun(ImageRunArgs) => ("ir", "image run", |a| Command::Image { action: ImageAction::Run(a) });
         ImagePush(ImagePushArgs) => ("ip", "image push", |a| Command::Image { action: ImageAction::Push(a) });
         Dockerfile(ImageDockerfileArgs) => ("idf", "image dockerfile", |a| Command::Image { action: ImageAction::Dockerfile(a) });
@@ -336,6 +337,8 @@ pub(crate) enum Command {
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
 pub(crate) enum ImageAction {
+    /// Build HTML and package it with an HTTP server (portable or hosted).
+    Static(StaticImageArgs),
     /// The same as `build --target image`.
     Build {
         dir: Option<String>,
@@ -347,7 +350,7 @@ pub(crate) enum ImageAction {
     Run(ImageRunArgs),
     /// Push it to a registry.
     Push(ImagePushArgs),
-    /// Print the Dockerfile `image build` would have used.
+    /// Print a static or Next.js Dockerfile; omitted kind retains the Next recipe.
     Dockerfile(ImageDockerfileArgs),
 }
 
@@ -546,6 +549,25 @@ pub(crate) struct ImagePushArgs {
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ImageDockerfileArgs {
     pub(crate) dir: Option<String>,
+
+    #[arg(long, value_enum, default_value = "next")]
+    pub(crate) kind: ImageKind,
+}
+
+#[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum ImageKind {
+    Static,
+    Next,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct StaticImageArgs {
+    /// Site root or explicit Markdown/hosted content folder.
+    pub(crate) dir: Option<String>,
+
+    /// Image name; defaults to <site-name>-static:latest.
+    #[arg(long)]
+    pub(crate) tag: Option<String>,
 }
 
 #[cfg(test)]

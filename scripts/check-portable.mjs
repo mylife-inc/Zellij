@@ -52,6 +52,9 @@ try {
       // before loading. Block HTTP directly for it; never relax file security.
       const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, offline: engine !== 'webkit', serviceWorkers: 'block' });
       context.setDefaultTimeout(10000);
+      // Fresh Windows runners can take longer on the first file:// load.
+      // Keep interaction/assertion limits unchanged and navigation bounded.
+      if (process.platform === 'win32') context.setDefaultNavigationTimeout(30000);
       const requests = [];
       const errors = [];
       context.on('request', request => requests.push(request.url()));

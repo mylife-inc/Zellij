@@ -3,9 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI increment: command shortcuts and shell completions, source
-`271493f46d3b97ceed12623524505374e3e12190`; see the implementation record at the
-end of this file. Static/Next image commands are the next milestone.
+Latest CLI increment: static-site container images, source
+`5ed8fb49126ce3919abedbe532f6ec7ba63506e4`; see the implementation record at the
+end of this file. The Markdown-to-Next adapter and `image next` / `ni` remain next.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -1941,3 +1941,93 @@ The fixture now exercises empty words and partial long options (for example
 the same harness locally. The CLI reference documents the 5.1 workaround.
 No production generator modification was needed. Earlier path-fixture fixes
 remain, but were not the root cause of the empty completion result.
+
+
+## Static-site container images — 2026-10-18
+
+Source `5ed8fb49126ce3919abedbe532f6ec7ba63506e4` follows merged PR #29,
+main `707c183072667b89f1044a508f2651ac50a59a22`. That main commit's CI
+`39117232383` and base-image publication `39117232331` both passed. PR #29's
+final source CI `39116486868` also passed all 13 jobs, including PowerShell.
+
+- `image static [site]` / `si [site]` accepts either renderer and shares the
+  existing configured-site/default-path resolver. There are now 23 top-level
+  shortcuts. `--tag` overrides a normalized `<site-name>-static:latest` default.
+- Portable sites compile with `zellij-docs` into a private temporary export;
+  only that output is the image context. The export is removed after success
+  or failure. Existing `site/` and configured `build.out` are untouched.
+- Hosted sites use a multistage recipe to validate and export inside the builder.
+  The installed engine's deployment helper resolves basePath; output is copied
+  under that prefix in the final HTTP root. There are no host bind mounts in
+  either new packaging path. The final image contains the export, not source
+  YAML/MDX or Next build dependencies.
+- The final `nginxinc/nginx-unprivileged:stable-alpine` image runs as `nginx`
+  on port 3000, with directory indexes, extensionless HTML, ordinary assets,
+  missing-route 404s, output-marker denial and an index health check. Existing
+  `image run` / `ir` works when given its tag explicitly. No implicit push.
+- `image dockerfile` / `idf --kind static|next` prints without a runtime. For
+  portable static recipes the context is an already built HTML folder; hosted
+  static and Next recipes take hosted content. Omitted kind preserves Next.
+- Legacy `image build` / `build --target image` keep the Next recipe and original
+  tag default. `image run` without a tag retains its legacy hosted-site default;
+  it does not infer the new static tag. Shared image-build failures now use
+  `BuildFailed` (exit 3), avoiding a claim that every Docker failure is content.
+- Runtime detection precedes temporary compilation. Missing/unavailable runtime
+  behavior remains exit 4; there is no automatic installation/start/fallback.
+
+Local verification: **226 Rust tests**, formatting, warnings-denied Clippy,
+strict/deep documentation validation (**49 routes, 23 examples**), and syntax
+validation of `scripts/check-static-images.mjs`. New fake-runtime tests cover
+export-only contexts, source/output preservation, cleanup on failure, explicit
+and default tags, shortcut parity, JSON rejection, and Next compatibility.
+The local Docker daemon was stopped; real image validation is delegated to the
+CI acceptance script, which builds a portable image plus root/prefixed hosted
+images and checks their HTTP routes, assets, health checks, non-root user and
+read-only runtime filesystem. [PR #30](https://github.com/mylife-inc/Zellij/pull/30) tracks the hosted results;
+verify its latest checks before treating container acceptance as established.
+
+Scope decision: complete static packaging before introducing the plain-Markdown
+Next adapter. The existing conversion emitter intentionally drops unlisted
+pages and reports external navigation links as unmapped; it cannot be reused
+unchanged for a faithful `ni`. The adapter needs explicit navigation/asset/link,
+branding/theme and Markdown-feature mapping before registering `image next` /
+`ni`. Then continue shared image/delivery/CI configuration, Netlify deployment,
+CI generation and the remaining inventory. This milestone does not complete the
+CLI, create a binary release, or redeploy the public documentation.
+
+
+PR #30's initial full container run (`39141095556`) built all three images;
+portable and unprefixed hosted HTTP acceptance passed. Its prefixed case caught
+an incorrect test assumption: Next's exported redirect digest holds `/manual`,
+and the browser router adds basePath. A local isolated export confirmed this
+behavior in Chromium. Container acceptance now tests actual home redirect,
+client navigation and reload in Chromium, without patching the engine. Review
+also narrowed the NGINX denial rule to `.zellij-output`; valid dot-prefixed URL
+segments must remain routable. The prefixed fixture now uses `/products/.docs`.
+Consult the PR's latest run for final evidence, not that superseded assertion.
+
+The first browser-enhanced run (`39141869721`) then caught an invalid fixture
+URL: hosted Markdown needs `/_zellij/assets/logo.svg`, whereas `assets/logo.svg`
+is the YAML/Screenshot convention. The rendering code correctly preserved the
+unsupported relative URL. The fixture now uses the public URL and runs the
+engine's deep/strict validation before image builds; no engine change was needed.
+The dot-prefix server correction is source `eea044623ee402c0dba36ab127ec008a6ba6760e`.
+
+The final-head run (`39142340217`) first hit a transient Docker info timeout
+before any image build. On retry it built all three images and passed portable
+and root-hosted browser checks. The prefixed HTTP resource scan incorrectly
+fetched React's `<link rel="preconnect" href="/">` hint as a document. Local
+export inspection confirmed actual links/assets were correctly prefixed. The
+scanner now inspects real resource/navigation tags and excludes preconnect/DNS
+hints; browser navigation/error checks remain. Use the latest PR checks for
+acceptance after this fixture correction.
+
+Real NGINX acceptance **passed** in run `39143717743` at source
+`29e569509a0c8c73a9a90fb6eebd98af32dd0093`: portable, hosted-root and
+hosted-prefix images, health checks, readonly/non-root runtime, HTTP resources,
+and Chromium redirects/navigation/reload. All six package/install jobs passed.
+A separate unchanged Windows portable suite hit its first file:// navigation's
+10-second timeout (it passed on the earlier heads). Windows navigation now has
+30 seconds for cold runner/browser startup; interaction and assertion timeouts
+and all offline/content checks are unchanged. The latest PR run must validate
+that final test adjustment and the rest of the regressions before merging.

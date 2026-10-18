@@ -275,7 +275,9 @@ docker run -p 3000:3000 acme-docs:v2
 
 The image includes the Next application and runtime and serves on port 3000.
 Use this target when your deployment uses containers or needs server-side image
-optimization. `zel image build` is also available; see [image commands](/cli/image).
+optimization. `zel image build` is also available. For HTML with an HTTP server
+instead, use `zel image static` / `zel si`; it supports both portable and hosted
+sites. See [image commands](/cli/image).
 
 ## Output ownership
 

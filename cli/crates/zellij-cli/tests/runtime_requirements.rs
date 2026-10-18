@@ -57,6 +57,8 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["check", "content"],
         vec!["dev", "content"],
         vec!["image", "build", "content"],
+        vec!["image", "static", "content"],
+        vec!["si", "content"],
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
         vec!["b", "content", "--target", "static", "--out", "site"],
@@ -153,6 +155,47 @@ fn portable_build_and_check_ignore_even_conflicting_runtime_settings() {
         assert!(output.stderr.is_empty());
     }
     assert!(root.join("site/index.html").is_file());
+    let previous = fs::read(root.join("site/index.html")).unwrap();
+    let output = command(root).args(["si", "pages"]).output().unwrap();
+    assert_eq!(output.status.code(), Some(4));
+    assert_eq!(fs::read(root.join("site/index.html")).unwrap(), previous);
+    assert_eq!(fs::read_dir(root.join("pages")).unwrap().count(), 1);
+}
+
+#[test]
+fn static_recipes_select_renderer_without_probing_or_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    fs::create_dir(root.join("pages")).unwrap();
+    fs::write(root.join("pages/index.md"), "# Native\n").unwrap();
+    for (dir, hosted) in [("content", true), ("pages", false)] {
+        let output = command(root)
+            .args(["idf", dir, "--kind", "static"])
+            .env("DOCKER_HOST", "tcp://unreachable.invalid:2376")
+            .env("ZELLIJ_IMAGE", "example.test/base:test")
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "{}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        let body = String::from_utf8(output.stdout).unwrap();
+        assert!(body.contains("nginxinc/nginx-unprivileged:stable-alpine"));
+        assert_eq!(
+            body.contains("FROM example.test/base:test AS build"),
+            hosted
+        );
+        assert_eq!(body.contains("npm run build"), hosted);
+        assert!(!root.join("pages-site").exists());
+    }
+    let legacy = command(root).args(["idf", "content"]).output().unwrap();
+    let explicit = command(root)
+        .args(["idf", "content", "--kind", "next"])
+        .output()
+        .unwrap();
+    assert_eq!(legacy.stdout, explicit.stdout);
 }
 
 #[cfg(unix)]

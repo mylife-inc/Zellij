@@ -12,6 +12,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 mod args;
 use serde_json::json;
 use std::io::Write;
+mod images;
 mod preview;
 mod validation;
 
@@ -96,13 +97,16 @@ fn main() {
             theme.as_deref(),
         ),
         Command::Image { ref action } => match action {
+            ImageAction::Static(StaticImageArgs { dir, tag }) => {
+                images::static_image(dir.as_deref(), tag.as_deref())
+            }
             ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
             ImageAction::Run(ImageRunArgs { tag, port }) => image_run(tag.as_deref(), *port),
             ImageAction::Push(ImagePushArgs { tag, registry }) => {
                 image_push(tag, registry.as_deref())
             }
-            ImageAction::Dockerfile(ImageDockerfileArgs { dir }) => {
-                image_dockerfile_selected(dir.as_deref())
+            ImageAction::Dockerfile(ImageDockerfileArgs { dir, kind }) => {
+                images::dockerfile(dir.as_deref(), *kind)
             }
         },
         Command::Doctor => doctor(),
@@ -480,9 +484,6 @@ fn default_tag(content: &Utf8Path) -> String {
 
 fn image_build_selected(dir: Option<&str>, tag: Option<&str>) -> zellij_core::Result<()> {
     image_build(select_site(dir)?.as_str(), tag, None)
-}
-fn image_dockerfile_selected(dir: Option<&str>) -> zellij_core::Result<()> {
-    image_dockerfile(select_site(dir)?.as_str())
 }
 
 fn site_tag(dir: &str, content: &Utf8Path) -> zellij_core::Result<String> {
