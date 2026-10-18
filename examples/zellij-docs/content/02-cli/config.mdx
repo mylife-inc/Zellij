@@ -254,7 +254,9 @@ The site layout, build/preview settings, image publication, Netlify delivery,
 and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
 `system`, `branch`, `workflow`, `zel-version`, `triggers`, `tags`, `schedules` and
 `production`. CI settings require `version: 1`; they are shared by both renderers.
-CI accepts `--site-root`; global `--config` / `--cwd` selectors and remaining
+`convert`/`migrate --layout site` create this layout; `ship` also saves the selected
+Netlify site or image publication settings, without credentials or production
+intent. CI accepts `--site-root`; global `--config` / `--cwd` selectors and remaining
 delivery commands are still planned.
 
 [Shortcuts](/cli/shortcuts) for working commands and

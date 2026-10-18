@@ -1802,3 +1802,20 @@ Final local follow-up checks passed the CI integration, core/scaffold suites,
 warnings-denied Clippy, formatting and strict/deep documentation validation.
 Cross-platform and real-container acceptance remains the PR merge gate; inspect
 the GitHub checks associated with this source for final-head results.
+
+
+### Implementation record — 2026-10-18, configured import and ship
+
+The configured CI milestone merged in PR #34 at `4bc5ef6`; final source run
+39159674967, merge CI 39160901027 and base-image run 39160901001 passed.
+
+Configured imports now use explicit --layout site, preserving the default raw
+content layout for existing convert/migrate scripts. Ship prepares an import,
+saves explicit nonsecret Netlify/image intent, and executes shared delivery once.
+Failures after import retain the converted site and report the completed stage;
+conversion warnings remain visible. Source/output containment and complete
+preflight apply to both layouts. Equal-confidence converter selection no longer
+depends on registration order, and imported Windows junctions cannot bypass the
+existing symlink boundary. Missing runtime/credentials do not trigger installation,
+startup or account creation. Local and forthcoming CI evidence is recorded in
+ZELLIJ_CONTEXT.md; release publication and the remaining CLI backlog stay open.

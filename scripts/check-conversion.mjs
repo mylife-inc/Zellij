@@ -40,7 +40,9 @@ const asset = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circ
 const pdf = Buffer.from([0x25, 0x50, 0x44, 0x46, 0, 255, 254]);
 for (const format of ['mkdocs', 'docusaurus']) {
   const source = path.join(root, `${format}-source`);
-  const content = path.join(root, `${format}-content`);
+  const destination = path.join(root, `${format}-content`);
+  const configured = format === 'docusaurus';
+  const content = configured ? path.join(destination, 'content') : destination;
   async function write(file, body) {
     await mkdir(path.dirname(path.join(source, file)), { recursive: true });
     await writeFile(path.join(source, file), body);
@@ -57,7 +59,7 @@ for (const format of ['mkdocs', 'docusaurus']) {
   await write('docs/media/logo.svg', asset);
   await write('docs/media/Q3 Report.pdf', pdf);
   await write('docs/index.md', `# Welcome\n\n[Install **now**][install]\n\n[Café](03-Caf%C3%A9/index.md)\n\n![Diagram][logo]\n\n[Download](<media/Q3 Report.pdf>)\n\n[install]: 02-Setup/APIReference.md?view=all#install "Install guide"\n[logo]: media/logo.svg\n\n${format === 'docusaurus' ? '![Static](/img/static.svg)\n' : ''}`);
-  execFileSync(zel, ['convert', source, '--out', content, '--from', format], { stdio: 'inherit' });
+  execFileSync(zel, [configured && mode === '--export' ? 'migrate' : 'convert', source, '--out', destination, '--from', format, '--layout', configured ? 'site' : 'content'], { stdio: 'inherit' });
   // A non-empty deployment prefix exercises the ordinary Markdown image path.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', { flag: 'a' });
   execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
@@ -77,7 +79,7 @@ for (const format of ['mkdocs', 'docusaurus']) {
   assert.deepEqual(await readFile(path.join(content, 'assets/imported/docs/media/Q3 Report.pdf')), pdf);
   if (mode === '--export') {
     const output = path.join(root, `${format}-site`);
-    execFileSync(zel, ['build', content, '--out', output], { stdio: 'inherit' });
+    execFileSync(zel, ['build', destination, '--out', output], { stdio: 'inherit' });
     const html = await readFile(path.join(output, 'guide.html'), 'utf8');
     for (const reference of [
       'href="/products/docs/guide/setup/api-reference?view=all#install"',

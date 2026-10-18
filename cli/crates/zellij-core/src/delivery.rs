@@ -121,6 +121,11 @@ impl DeliveryPlan {
             ));
         }
         let destination = site_id.or(environment_site).or(saved_site).ok_or_else(|| Error::InvalidArgument("Netlify requires an existing site: pass --site-id (or --site), set NETLIFY_SITE_ID, or save publish.site in zel.yaml".into()))?;
+        Self::netlify(destination, production)
+    }
+
+    /// Shared constructor for saved delivery and a newly imported site.
+    pub fn netlify(destination: &str, production: bool) -> Result<Self> {
         validate_site_identifier(destination)?;
         Ok(Self::Netlify {
             site: destination.to_owned(),
@@ -144,9 +149,13 @@ impl ImagePublication {
         let tag = tag.or(site.image.as_ref().map(|s| s.name.as_str())).ok_or_else(|| {
             Error::InvalidArgument("publish requires an explicit destination: set image.name in zel.yaml or pass --tag; generated local image names are never publication defaults".into())
         })?;
+        Self::new(image, tag)
+    }
+
+    pub fn new(kind: ImageKind, tag: &str) -> Result<Self> {
         validate_image_reference(tag)?;
         Ok(Self {
-            kind: image,
+            kind,
             tag: tag.to_owned(),
         })
     }

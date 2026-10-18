@@ -244,7 +244,16 @@ fn unsupported_json_is_rejected_before_any_command_action() {
         &["ci", "publish"],
         &["deploy", "netlify"],
         &["publish"],
-        &["ship", "."],
+        &[
+            "ship",
+            ".",
+            "--out",
+            "imported",
+            "--provider",
+            "netlify",
+            "--site-id",
+            "fixture",
+        ],
     ];
     for command in commands {
         for leading in [true, false] {

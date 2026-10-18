@@ -159,22 +159,7 @@ pub(crate) enum Command {
 
     /// Convert documentation written for another tool into a new folder.
     #[command(visible_alias = "cv")]
-    Convert {
-        source: String,
-
-        /// Where to write it. Never the source — a conversion that overwrote
-        /// the original would be unrecoverable.
-        #[arg(long)]
-        out: String,
-
-        /// Force a format instead of detecting one.
-        #[arg(long)]
-        from: Option<String>,
-
-        /// Report the plan, write nothing.
-        #[arg(long)]
-        dry_run: bool,
-    },
+    Convert(ImportArgs),
 
     /// Validate portable Markdown natively, or hosted content using its engine.
     #[command(visible_alias = "c")]
@@ -252,24 +237,14 @@ pub(crate) enum Command {
 
     /// Detect, convert and validate in one step.
     #[command(visible_alias = "mig")]
-    Migrate {
-        source: String,
-
-        #[arg(long)]
-        out: String,
-    },
+    Migrate(ImportArgs),
 
     /// Build once and deliver using saved publication settings.
     #[command(visible_alias = "pub")]
     Publish(DeliveryArgs),
 
     /// Convert, check, build and deploy in one step.
-    Ship {
-        source: String,
-
-        #[arg(long)]
-        provider: Option<String>,
-    },
+    Ship(ShipArgs),
 
     /// Serve what `build` produced.
     #[command(visible_alias = "s")]
@@ -604,6 +579,58 @@ pub(crate) struct DeliveryArgs {
     #[arg(long)]
     pub(crate) prod: bool,
     /// Print the plan without tools, credentials, builds or remote requests.
+    #[arg(long)]
+    pub(crate) dry_run: bool,
+}
+
+/// Explicit layout keeps existing scripts compatible until a versioned default change.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
+pub(crate) enum ImportLayout {
+    Content,
+    Site,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ImportArgs {
+    pub(crate) source: String,
+    /// New or empty destination outside the source tree.
+    #[arg(long)]
+    pub(crate) out: String,
+    /// Force a converter; required when detection is ambiguous.
+    #[arg(long)]
+    pub(crate) from: Option<String>,
+    /// Site writes zel.yaml and content/; content preserves the legacy layout.
+    #[arg(long, value_enum, default_value = "content")]
+    pub(crate) layout: ImportLayout,
+    /// Convert in memory and report files/warnings without writing or validating.
+    #[arg(long)]
+    pub(crate) dry_run: bool,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct ShipArgs {
+    pub(crate) source: String,
+    /// New configured site root, outside the source tree; contains zel.yaml and content/.
+    #[arg(long)]
+    pub(crate) out: String,
+    #[arg(long)]
+    pub(crate) from: Option<String>,
+    /// Deploy static HTML to an existing Netlify site.
+    #[arg(long, required_unless_present = "image", conflicts_with = "image")]
+    pub(crate) provider: Option<String>,
+    /// Build and push this image kind instead of deploying static HTML.
+    #[arg(long, value_enum, requires = "tag", conflicts_with_all = ["site_id", "prod"])]
+    pub(crate) image: Option<ImageKind>,
+    /// Exact registry destination for --image.
+    #[arg(long, requires = "image")]
+    pub(crate) tag: Option<String>,
+    /// Existing Netlify site ID or domain; defaults to NETLIFY_SITE_ID.
+    #[arg(long = "site-id", visible_alias = "site")]
+    pub(crate) site_id: Option<String>,
+    /// Request production publication; the default is a draft preview.
+    #[arg(long)]
+    pub(crate) prod: bool,
+    /// Convert in memory and show delivery intent; no writes, tools or network.
     #[arg(long)]
     pub(crate) dry_run: bool,
 }

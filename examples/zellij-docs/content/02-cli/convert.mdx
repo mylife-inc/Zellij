@@ -41,6 +41,28 @@ Conflicting output filenames are reported before any files are created.
 Run [`zel detect`](/cli/detect) first if you are not sure what the folder is, or
 [`zel migrate`](/cli/migrate) to detect, convert and validate in one step.
 
+## Choose the output layout
+
+```bash title="terminal"
+zel convert ./old-docs --out ./manual --layout site
+# Identical shortcut and defaults:
+zel cv ./old-docs --out ./manual --layout site
+```
+
+`--layout site` writes `manual/zel.yaml` with `version: 1` and `renderer: hosted`,
+and puts the converted files and assets in `manual/content/`. Later commands
+accept `manual` as the site root. Local builds default to `manual/site/`.
+Conversion itself needs no container runtime; hosted checks/builds do.
+
+**The default remains `--layout content`**, which writes the existing raw hosted
+layout directly under the destination. Neither spelling silently inserts a
+`content/` directory. This compatibility choice will change only at a documented
+version boundary. The new layout option is implemented in source and is newer
+than the public `zellij-v0.1.3` binary.
+
+Current converters emit hosted sites whose HTML requires HTTP serving. They do
+not produce the portable renderer's direct-file output.
+
 ## Take the plan first
 
 ```bash title="terminal"
@@ -59,15 +81,16 @@ to be attached to makes it easier to act on.
 | `<source>` | Required. The folder to read | — |
 | `--out <path>` | Required. Where to write | — |
 | `--from <format>` | Force a format instead of detecting | detected |
+| `--layout content\|site` | Raw hosted content or a configured site | content |
 | `--dry-run` | Report the plan, write nothing | off |
 
 **`--out` can never be the source, and there is no flag to permit it.** A
 conversion that overwrote the original would be unrecoverable — and the whole
 reason a migration is safe to try is that failing costs you a folder you delete.
 
-`--from` is for when [detection](/cli/detect) is unsure or wrong. Forcing a
-format that does not match produces a bad conversion rather than an error, so it
-is worth being right.
+`--from` selects the parser explicitly. If multiple formats tie for the highest
+detection confidence, conversion refuses to guess and asks for this option.
+Forcing a format does not guarantee a faithful conversion; inspect warnings.
 
 ## What is recognised
 

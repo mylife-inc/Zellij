@@ -18,11 +18,26 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
         environment_site.as_deref(),
         options.prod,
     )?;
+    describe(&plan, &site, &content);
+    if options.dry_run {
+        println!(
+            "\nPlan only: validate/build once, then deliver.\nNo content validation, tool/credential checks, build or remote request was performed."
+        );
+        return Ok(());
+    }
+    execute_plan(&site, &content, &plan)
+}
+
+pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
     println!(
         "  Site     {}\n  Content  {content}\n  Renderer {:?}",
         site.root, site.renderer
     );
-    match &plan {
+    describe_destination(plan);
+}
+
+pub(crate) fn describe_destination(plan: &DeliveryPlan) {
+    match plan {
         DeliveryPlan::Push(plan) => {
             println!("  Kind     {}\n  Push to  {}", plan.kind.as_str(), plan.tag)
         }
@@ -35,20 +50,17 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
             }
         ),
     }
-    if options.dry_run {
-        println!(
-            "\nPlan only: validate/build once, then deliver.\nNo content validation, tool/credential checks, build or remote request was performed."
-        );
-        return Ok(());
-    }
+}
+
+pub(crate) fn execute_plan(site: &Site, content: &Utf8Path, plan: &DeliveryPlan) -> Result<()> {
     match plan {
-        DeliveryPlan::Push(plan) => push_image(&site, &content, &plan),
+        DeliveryPlan::Push(plan) => push_image(site, content, plan),
         DeliveryPlan::Netlify {
             site: id,
             production,
         } => {
             let client = crate::netlify::Client::from_environment()?;
-            deploy(&site, &content, &client, &id, production)
+            deploy(site, content, &client, id, *production)
         }
     }
 }

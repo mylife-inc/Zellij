@@ -265,3 +265,15 @@ unless --provision is explicit; old --content/--target/--deploy/--no-provision
 options and ci publish dispatch remain accepted. A pinned compatible 0.2.0+
 release is required; current public 0.1.3 is not compatible. See the current
 contract and durable context for options, validation and release limitations.
+
+
+## 2026-10-18 configured import and delivery update
+
+Configured import (`convert`/`migrate --layout site`) and `ship` are implemented
+in source; historical stub rows above describe the initial inventory. Legacy
+content layout remains the default for convert/migrate. Ship requires a new
+configured destination and either explicit Netlify delivery or static/Next image
+publication, preserves the source, retains conversion reports and calls shared
+delivery once. See the contract's stage 5d and CLI reference for flags and limits.
+New app, fmt/watch, portable dev, hosted view, other providers and advanced
+maintenance remain pending. The public 0.1.3 release predates these commands.
