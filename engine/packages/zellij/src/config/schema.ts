@@ -150,10 +150,16 @@ export const footerSchema = z.object({
 });
 export type FooterConfig = z.infer<typeof footerSchema>;
 
-export const analyticsSchema = z.object({
-  provider: z.enum(['plausible', 'none']).default('none'),
-  domain: z.string().optional(),
-});
+export const analyticsSchema = z.union([
+  z.object({
+    provider: z.literal('none').default('none'),
+    domain: z.string().optional(),
+  }),
+  z.object({
+    provider: z.literal('plausible'),
+    domain: z.string().trim().min(1, 'Plausible requires the domain registered in its dashboard'),
+  }),
+]);
 
 /** Token overrides let a site tweak a theme without forking it (spec §6). */
 export const overridesSchema = z

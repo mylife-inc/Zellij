@@ -1046,6 +1046,57 @@ jobs, publishing four variants for both Linux architectures and verifying the
 published-image build/serve smoke test. No native binary release was published;
 the latest public release remains `zellij-v0.1.3`.
 
+### Page themes and Plausible analytics — 2026-10-17
+
+Source `2823164` implements the two accepted-but-inactive settings in audit S3.
+A sections page's `theme` now emits server-rendered tokens scoped to its main
+content. Shared chrome and guides keep the site theme. The page follows global
+light/dark/system mode and site token overrides; an explicit page theme wins
+over the visitor's site-theme choice within that page and never changes storage.
+Its anchor offsets retain the real header height. Theme-specific presentation
+uses CSS `@scope` boundaries so a parent theme's rules cannot leak into an override.
+
+Production hosted sites with `analytics.provider: plausible` lazily initialize
+the official `@plausible-analytics/tracker` package, pinned to 0.4.6, once per
+document. Its native history integration counts initial/path/history pageviews;
+fragment navigation is not a new pageview. Default `none` and dev builds do not
+initialize it. The provider's localhost/file and localStorage opt-out exclusions
+remain intact. All requests use the default Plausible event endpoint. No user
+site was switched to analytics, and tests intercept all events rather than send
+them to Plausible. Custom endpoints/providers and native portable analytics are
+not part of this contract.
+
+Plausible now requires a nonempty domain. The schema represents its conditional
+requirement as a union; the generated Rust JSON reference and Markdown context
+include both choices. The context renderer now expands object-union branches
+instead of documenting only the first. Documentation clarifies page-theme
+precedence and analytics behavior, removes the unsupported Umami claim and fixes
+the invalid footer-social example.
+
+Local evidence: **338 engine tests**, all workspace typechecks, final engine
+packaging, deep/strict product-documentation validation and **10 Rust core tests**
+passed. Four regressions failed against the old source (three missing/empty-domain
+cases and absent server-rendered page themes). Production Chromium/WebKit checks
+passed real page styles/fonts, independent picker settings, token overrides,
+mode changes, client navigation/reload, unthemed/guide destinations and disabled
+JavaScript. The real Plausible library passed intercepted request-count/domain
+checks, client navigation/history, disabled/ignored/local visits and blocked
+requests. Both dev browser engines confirmed analytics remains uninitialized.
+Initial new-fixture failures were an invalid four-CTA hero and reloading before
+navigation completed; they were corrected without weakening product assertions.
+No live Plausible dashboard receipt, exhaustive legacy-browser support, or broad
+accessibility/SEO/performance acceptance is established. Consult the PR containing
+`2823164` for its final revision and hosted results.
+
+Prior milestone completion: [PR #21](https://github.com/mylife-inc/Zellij/pull/21)
+merged head `1cb9d9a` as `8f10224`. PR/main CI `39088215253` / `39088773090` passed
+all 13 jobs; both showcase runs had **317 passes, 124 conditional skips and no
+retries**, plus production-prefix and development-watcher acceptance in Chromium
+and WebKit. Image run `39088773074` passed all 13 jobs, published all four variants
+for both Linux architectures and passed the published-image build/serve smoke test.
+Repository facts were refreshed: public/default-main; latest native release is
+still `zellij-v0.1.3`. No new native binary version is published by this milestone.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1350,12 +1401,11 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after the hosted theme/media/accessibility fixes, subject to the user's v1 scope decision:
+Remaining order after page-theme and analytics implementation, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of S5/S14/S15; consult the PR containing `f35cc92`
-   for its final status. Native distribution acceptance is complete on merged main.
-2. Reconcile the remaining advertised-but-inactive configuration (S3, including
-   per-page themes and analytics), add richer Markdown rendering and finish the agreed CLI subset in
+1. Complete hosted acceptance of S3; consult the PR containing `2823164` for its
+   final status. S5/S14/S15 and native distribution are accepted on merged main.
+2. Add richer Markdown rendering and finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
 3. Choose and publish a new native version through the tested release path,
    preserving the existing v0.1.3 assets. Confirm release destination/version

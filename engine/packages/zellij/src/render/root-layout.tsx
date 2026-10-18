@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
 import { NavBar } from '../chrome/nav-bar';
 import { Footer } from '../chrome/footer';
+import { Analytics } from '../chrome/analytics';
 import { themeInitScript } from '../chrome/theme-preferences';
 import { THEME_NAMES } from '../config/schema';
 import { emitThemeCss } from '../themes/emit';
@@ -48,6 +49,9 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
           <NavBar site={site} />
           {children}
           <Footer site={site} />
+          {process.env['NODE_ENV'] === 'production' && config.analytics.provider === 'plausible'
+            ? <Analytics domain={config.analytics.domain} />
+            : null}
         </body>
       </html>
     );

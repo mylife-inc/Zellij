@@ -42,6 +42,7 @@
     "react-dom": "19.2.x"
   },
   "dependencies": {
+    "@plausible-analytics/tracker": "0.4.6",
     "@shikijs/rehype": "^4.3.1",
     "@shikijs/transformers": "^4.3.1",
     "d3-hierarchy": "^3.1.2",

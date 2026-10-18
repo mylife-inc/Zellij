@@ -242,11 +242,18 @@ title: "Features — PayOS"       # required; used for <title> and OG
 description: "..."               # required; meta description
 route: /features                 # optional; defaults to filename
 layout: stack                    # optional; defaults to stack (see below)
-theme: midnight                  # optional per-page theme override
+theme: midnight                  # optional theme for this page's main content
 motion: expressive               # optional per-page motion override
 navHighlight: features           # optional; which nav item shows as active
 sections: [...]                  # ordered list of tiles
 ```
+
+A page theme styles its main content, including theme-specific presentation.
+Shared navigation/footer and guides keep the site theme. The page follows the
+site's light/dark mode and token overrides, but an explicit page theme takes
+precedence over the visitor's theme-picker choice inside that page. It is
+rendered on the server, works without JavaScript, and never overwrites the saved
+site preference. Sticky-header offsets retain the shared header's height.
 
 **Page layouts** (the frame around the section stack — not the sections themselves):
 
@@ -457,6 +464,14 @@ analytics:                            # optional; v1 supports plausible | none
   provider: plausible
   domain: payos.shebka.net
 ```
+
+Plausible requires a nonempty registered domain. In production, the hosted
+engine initializes the pinned official NPM tracker once per document; it handles
+initial pageviews and client-side path/history changes. Default `none` and dev
+runs do not initialize it. Localhost/file visits and the provider's localStorage
+opt-out are excluded. Requests use Plausible's default event endpoint; custom
+endpoints and other providers are outside this integration. Blocked analytics
+must not interfere with reading or navigation.
 
 Validated with zod. Unknown top-level keys warn rather than fail, so a newer
 content folder still builds on an older engine (§10).

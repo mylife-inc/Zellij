@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { THEMES } from './tokens';
-import { emitThemeCss } from './emit';
+import { emitThemeCss, emitPageThemeCss } from './emit';
 import { THEME_NAMES, siteConfigSchema, type ThemeName } from '../config/schema';
 
 function configFor(theme: ThemeName, overrides: Record<string, string> = {}) {
@@ -225,5 +225,27 @@ describe('runtime theme switching', () => {
     const occurrences = css.match(/--zellij-accent: #E86A33/g) ?? [];
     // One per theme per mode block (light, dark, system).
     expect(occurrences.length).toBeGreaterThanOrEqual(THEME_NAMES.length * 2);
+  });
+});
+
+describe('page themes', () => {
+  it('emits both palettes and structural tokens only inside the chosen page', () => {
+    const css = emitPageThemeCss('mono', configFor('cupertino'));
+    expect(css).toContain('.zellij-layout[data-zellij-theme="mono"]');
+    expect(css).toContain(`--zellij-fg: ${THEMES.mono.light.fg}`);
+    expect(css).toContain(`--zellij-fg: ${THEMES.mono.dark.fg}`);
+    expect(css).toContain(`--zellij-font-heading: ${THEMES.mono.fonts.heading}`);
+    expect(css).toContain('prefers-color-scheme: dark');
+    expect(css).not.toContain(':root:root');
+    expect(css).toContain('--zellij-nav-height: inherit;');
+    expect(css).not.toContain(`--zellij-nav-height: ${THEMES.mono.geometry.navHeight}`);
+  });
+
+  it('keeps site token overrides effective and excludes unsafe CSS', () => {
+    const css = emitPageThemeCss('mono', switcherConfig('cupertino', { accent: '#123456', radius: 'lg', fontBody: 'Georgia, serif', fontHeading: '</style><script>bad()</script>' }));
+    expect(css.match(/--zellij-accent: #123456/g)).toHaveLength(3);
+    expect(css).toContain('--zellij-radius: 1rem');
+    expect(css).toContain('--zellij-font-body: Georgia, serif');
+    expect(css).not.toContain('</style>');
   });
 });

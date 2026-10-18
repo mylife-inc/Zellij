@@ -3524,20 +3524,38 @@
         },
         "analytics": {
           "default": {},
-          "type": "object",
-          "properties": {
-            "provider": {
-              "default": "none",
-              "type": "string",
-              "enum": [
-                "plausible",
-                "none"
-              ]
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "default": "none",
+                  "type": "string",
+                  "const": "none"
+                },
+                "domain": {
+                  "type": "string"
+                }
+              }
             },
-            "domain": {
-              "type": "string"
+            {
+              "type": "object",
+              "properties": {
+                "provider": {
+                  "type": "string",
+                  "const": "plausible"
+                },
+                "domain": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "provider",
+                "domain"
+              ]
             }
-          }
+          ]
         }
       },
       "required": [

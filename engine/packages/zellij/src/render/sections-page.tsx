@@ -2,6 +2,7 @@ import type { Site } from '../content/site';
 import type { SectionsPage } from '../content/types';
 import { pageHeadingSectionTypes } from '../sections/registry';
 import { SectionRenderer } from './section-renderer';
+import { emitPageThemeCss } from '../themes/emit';
 
 /**
  * Page layouts are a closed set for the same reason themes are: arbitrary
@@ -31,7 +32,9 @@ export function SectionsPageView({ site, page }: { site: Site; page: SectionsPag
       className={`zellij-layout zellij-layout-${page.layout}`}
       data-zellij-layout={page.layout}
       data-zellij-motion={motion}
+      data-zellij-theme={page.theme}
     >
+      {page.theme ? <style dangerouslySetInnerHTML={{ __html: emitPageThemeCss(page.theme, site.config) }} /> : null}
       {needsHeading ? <h1 className="zellij-visually-hidden">{page.title}</h1> : null}
       {page.layout === 'stack-sidebar' ? (
         <div className="zellij-sidebar-grid">

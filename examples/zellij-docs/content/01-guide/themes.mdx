@@ -121,16 +121,14 @@ nav:
 ```
 
 <Callout type="info" title="Opt-in, because it changes what ships">
-Normally Zellij emits only the active theme's tokens. A runtime switcher needs
-every theme present in the page. That costs about 2.4KB brotli for all
-fourteen, against 569 bytes for one — small enough that on-demand loading would
-be the wrong trade, and it is what lets each swatch in the picker paint itself
-in the theme it names.
+Normally Zellij emits the site's theme tokens, plus a page's own tokens when it
+declares an override. A runtime switcher needs every theme present in the page,
+so each swatch can paint itself and switching does not require a download.
 </Callout>
 
 ## Per-page themes
 
-A page may override the site theme:
+A sections page may override the theme of its content:
 
 ```yaml title="pages.yaml"
 - name: launch
@@ -138,8 +136,18 @@ A page may override the site theme:
   sections: [launch/hero]
 ```
 
-Use it sparingly. A site where every page looks different is the problem Zellij
-exists to prevent.
+The override applies below the navigation bar, inside that page's main content.
+The header, footer, and guide pages retain the site theme. It includes the page's
+palette, fonts, geometry and theme-specific presentation, works without
+JavaScript, and follows the site's light/dark mode, including system changes.
+Site token `overrides` still apply. Anchor offsets continue to use the actual
+shared header's height.
+
+The runtime picker changes the site theme; it does not replace an explicitly
+authored page theme or save that page theme as a visitor preference. Navigating
+to a page without an override uses the selected site theme again.
+
+Use page overrides sparingly to keep the site's visual identity consistent.
 
 ## Adding a theme
 

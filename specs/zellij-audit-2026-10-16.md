@@ -966,6 +966,49 @@ Image run `39085863219` passed all 13 jobs, publishing four variants for both Li
 architectures and passing the published-image smoke test. The public native
 release remains `zellij-v0.1.3`; no new binaries were tagged or published.
 
+## Implementation record — page themes and Plausible analytics
+
+Source `2823164` resolves S3's silent page-theme and analytics no-ops.
+
+- A sections page's authored theme supplies scoped palette/structural tokens and
+  presentation inside its main content. The shared header/footer and guides keep
+  the site theme. Global light/dark/system mode and site overrides still apply;
+  the explicit page theme wins over the site picker within its content. CSS scope
+  boundaries prevent ancestor-theme presentation from bleeding into that content.
+  It works without JavaScript, does not write storage, and preserves actual
+  shared-header anchor offsets even with the full theme picker enabled.
+- Opt-in production analytics uses the official Plausible NPM tracker 0.4.6,
+  initialized once per document with automatic history handling. The domain is
+  required and nonempty. Default none/dev builds do not initialize it; provider
+  localhost/file and localStorage opt-out behavior is preserved. Failed analytics
+  requests do not interrupt reading or navigation. No authored site was opted in
+  by this change; native portable output has no analytics integration.
+- The generated Rust JSON schema represents both analytics variants, and Markdown
+  context generation expands both object alternatives. Product docs now state the
+  actual contract, remove the unsupported Umami option and correct footer-social
+  YAML. Official API checked: [Plausible tracker types](https://github.com/plausible/analytics/blob/master/tracker/npm_package/plausible.d.ts).
+
+Local verification: 338 engine tests, all workspace types, final package build,
+deep/strict docs and 10 Rust core tests passed. Four initial tests failed on the
+old source: missing/empty Plausible domains and absent page-theme server output.
+Production Chromium/WebKit passed computed-style/font/presentation checks, picker
+on/off, overrides, system/mode changes, client navigation/reload, ordinary/guide
+destinations and JavaScript-disabled rendering. The real tracker passed intercepted
+pageview-count/domain/history, disabled/ignored/localhost and blocked-request checks.
+Both dev browser engines verified analytics does not initialize. No real analytics
+events were transmitted; live account/dashboard acceptance is not claimed. New
+fixture failures (too many hero CTAs and reloading before navigation completed)
+were corrected. Broad legacy-browser, accessibility/SEO/performance and native
+release acceptance remain separate work. Consult the PR containing `2823164` for
+the final checked revision and hosted results.
+
+Prior completion: [PR #21](https://github.com/mylife-inc/Zellij/pull/21) merged
+`1cb9d9a` as `8f10224`. PR/main CI `39088215253` / `39088773090` passed all 13 jobs,
+with 317 showcase passes, 124 conditional skips and no retries in each. Image run
+`39088773074` passed all 13 jobs, publishing four variants for both Linux
+architectures and verifying the published-image build/serve smoke test. Latest
+native release is still `zellij-v0.1.3`; repository is public/default-main.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

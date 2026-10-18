@@ -8,6 +8,9 @@
  * theme attribute the root layout sets.
  */
 
+/* A nested page theme must not inherit another theme's presentation rules. */
+@scope ([data-zellij-theme]) to ([data-zellij-theme]) {
+
 /* ------------------------------------------------------------ cupertino -- */
 
 /*
@@ -253,4 +256,6 @@
 
 [data-zellij-theme='carbon'] .zellij-feature-card {
   background: var(--zellij-surface);
+}
+
 }

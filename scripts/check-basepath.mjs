@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
 import { observeThemeFonts } from './assert-theme-fonts.mjs';
 import { themePreferenceFiles, checkThemePreferences } from './check-theme-preferences.mjs';
+import { pageConfigFiles, checkPageThemes, checkAnalytics } from './check-page-config.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url);
@@ -28,6 +29,7 @@ try {
   await rm(path.join(app, 'src/app'), { recursive: true, force: true });
   const files = {
     ...themePreferenceFiles(prefix),
+    ...pageConfigFiles(prefix),
     'next.config.js': "import { withZellij } from '@shebka/zellij/next-config';\nexport default withZellij({ typedRoutes: false }, { contentDir: './docs' });\n",
     'src/app/(content)/layout.tsx': "import '@shebka/zellij/styles.css';\nimport { createZellijRootLayout } from '@shebka/zellij';\nexport default createZellijRootLayout({ contentDir: './docs' });\n",
     'src/app/(content)/[[...slug]]/page.tsx': "import { createZellijPages } from '@shebka/zellij';\nconst zellij = createZellijPages({ contentDir: './docs' });\nexport const generateStaticParams = zellij.generateStaticParams;\nexport const generateMetadata = zellij.generateMetadata;\nexport default zellij.Page;\n",
@@ -83,6 +85,10 @@ try {
     try {
       await checkThemePreferences(browser, origin, prefix);
       console.log(`${name}: independent theme/mode restoration before hydration, navigation, stale preferences and unavailable storage passed.`);
+      await checkPageThemes(browser, origin, prefix);
+      console.log(`${name}: page theme tokens/presentation, modes, shared chrome, overrides, navigation and JavaScript-disabled rendering passed.`);
+      await checkAnalytics(browser, origin, prefix);
+      console.log(`${name}: real Plausible pageviews, client navigation/history, disabled/ignored/local visits and blocked requests passed without transmitting analytics.`);
       context = await browser.newContext();
       await context.tracing.start({ screenshots: true, snapshots: true });
       const page = await context.newPage();
