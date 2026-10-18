@@ -3,10 +3,10 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: saved image publication on `codex/cli-delivery`; see the
+Latest CLI work: native Netlify delivery on `codex/cli-netlify`; see the
 implementation record at the end of this file for source and verification.
-Next images and the native Markdown adapter merged in PR #31; static packaging
-merged in PR #30.
+Saved image publication merged in PR #32; Next images and the native Markdown
+adapter merged in PR #31; static packaging merged in PR #30.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -2174,3 +2174,89 @@ final shell-guidance refinement. Printed run/push/retry commands now quote
 references, so bracketed IPv6 registry names do not become shell glob patterns.
 Focused image/delivery tests pass after that refinement. Consult the PR's
 latest run for final acceptance; the earlier run is not final-head evidence.
+
+
+## Native Netlify delivery — 2026-10-18
+
+Baseline refreshed: PR #32 merged as `89c590debecf26b17bfa8175133db4c4a6df4a68`.
+Its final PR run `39150951658` passed all 13 jobs at `66d557c`; main CI
+`39152137856` also passed all 13 jobs, and base publication `39152137704`
+succeeded. The latest native release remains `zellij-v0.1.3` (2026-08-13).
+
+- `DeliveryPlan` in core resolves registry push or Netlify static deployment.
+  `deploy netlify` / `netlify`, saved `publish` / `pub`, and bare `deploy` share
+  argument types/operations and build once. There are 26 top-level shortcuts.
+- Versioned `publish` accepts `action: deploy`, `provider: netlify`, optional
+  string `site`. --site-id/--site > NETLIFY_SITE_ID > publish.site. Explicit
+  deploy supplies intent; `pub --to netlify` cannot silently replace a saved
+  image push. Image tags/kinds and unsupported providers are rejected for
+  Netlify. Both renderers retain their existing build behavior.
+- Native HTTPS digest upload uses reqwest with rustls and SHA1; no Netlify CLI
+  or Node dependency. NETLIFY_AUTH_TOKEN is the only credential source. No
+  stored-login discovery, remote build/functions, site creation or login flow.
+  Preflight checks access before building. Dry-run remains resolution only.
+- Draft previews are default; --prod explicitly requests production. Output
+  names the ready deployment and its HTTPS URL with the hosted prefix. It does
+  not claim a locked site has changed its current live deployment.
+- Private temporary exports preserve original source and previous site/output.
+  Hosted `build_for_deployment` reuses the existing export operation and the
+  engine's deployment-config.cjs resolver to physically mount files at basePath;
+  ordinary `build` exports retain their old layout. Metadata/ownership markers
+  are excluded from uploads. Hidden prefix segments and Unicode/space paths are
+  retained, links/junctions and Netlify-invalid path characters rejected.
+- Uploads use a manifest and one upload per requested digest. Redirects are
+  refused and errors avoid response bodies/token values. HTTP requests have
+  timeouts; create/upload/poll has a five-minute deadline. No automatic retry
+  after an uncertain create. Failed builds cannot create deployments; failures
+  report the completed stage and possible remote completion before retrying.
+- Unit/integration tests use a private loopback API endpoint, never production
+  endpoint overrides or real credentials. CI additionally runs an explicitly
+  ignored hosted-container test using its checkout-built engine image and a
+  loopback API, verifying actual uploaded HTML/links/assets/prefix and source
+  preservation. It does not create a real Netlify deployment.
+
+Validation/source/PR evidence is recorded below as checks finish. Next: saved
+CI configuration/generation and remaining delivery/import composition, then
+other incomplete CLI families. The full CLI remains unfinished. No action is
+needed from the user for implementation or isolated acceptance.
+
+Local verification: **245 Rust tests passed**, with one real-container acceptance
+test intentionally ignored locally and explicitly run by CI. Warnings-denied
+Clippy, formatting and strict/deep docs validation (49 routes, 23 examples) pass.
+The mock HTTP fixture explicitly makes accepted sockets blocking, which is
+required on macOS when its listener is nonblocking. Actual container and all-six
+native package results remain pending in the PR; do not confuse local protocol
+tests with successful live provider publication.
+
+Implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`, tracked in
+[PR #33](https://github.com/mylife-inc/Zellij/pull/33). Consult its latest checks
+for final-head platform and hosted-container results. The public documentation
+and released binary have not been updated by this PR.
+
+
+CI selection was corrected after review: the hosted acceptance uses its full
+Rust module/test name and first verifies that the named test exists, preventing
+a zero-test pass. Hosted delivery stages beside the selected content rather
+than in the OS temp directory, so a runtime sharing the project (such as Colima)
+can access its export mount. Portable output still uses OS temp. The hosted
+fixture checks that project-local staging is removed afterwards.
+
+
+Run `39153907349` at `4a82895` exercised the real hosted export and completed all
+mock API uploads/polling, then exposed a fixture assertion error: the landing
+page redirects to `/manual`, so guide links/assets must be checked in
+`manual.html`. The fixture now checks the landing redirect and actual guide
+HTML separately. Use subsequent final-head checks for complete acceptance.
+
+
+Run `39154796368` passed all six package jobs, all three portable suites,
+engine/schema/showcase, and completed hosted staging/build/upload. Its remaining
+fixture assertion still assumed that the root redirect serialized a prefixed
+URL. An isolated local production export established the actual representation:
+Next serializes `NEXT_REDIRECT;replace;/manual;307;` and its client router applies
+basePath. The fixture checks that instruction, the prefix, and rendered links
+in manual.html. Local browser acceptance confirms the prefixed landing redirect,
+guide navigation, logo, reload and resource requests. The hosted CI test now runs
+immediately after engine-image setup, before the longer image suites, to make
+any further export/upload failures visible earlier. Final-head CI remains the
+merge gate; prior failed runs are not represented as complete acceptance.

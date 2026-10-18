@@ -48,6 +48,9 @@ pub enum Error {
     )]
     ImageOperationFailed { operation: &'static str },
 
+    #[error("Netlify deployment failed: {0}")]
+    DeploymentFailed(String),
+
     #[error(transparent)]
     Io(#[from] std::io::Error),
 }
@@ -61,7 +64,10 @@ impl Error {
             | Error::UnknownFormat { .. }
             | Error::UnsafePath { .. }
             | Error::FileExists { .. } => 2,
-            Error::ContentInvalid | Error::BuildFailed | Error::ImageOperationFailed { .. } => 3,
+            Error::ContentInvalid
+            | Error::BuildFailed
+            | Error::ImageOperationFailed { .. }
+            | Error::DeploymentFailed(_) => 3,
             Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,
         }

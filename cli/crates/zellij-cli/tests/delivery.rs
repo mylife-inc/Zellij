@@ -155,7 +155,7 @@ fn delivery_configuration_is_typed_strict_and_versioned_for_both_renderers() {
             "publish: {action: push, image: static, provider: netlify}",
             "publish: {action: push, image: static, site: other}",
             "publish: {action: push, image: static, token: secret}",
-            "publish: {action: deploy, provider: netlify, site: other}",
+            "publish: {action: deploy, provider: cloudflare, site: other}",
             "ci: {system: github}",
         ] {
             config(root, "manual", renderer, settings);

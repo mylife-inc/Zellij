@@ -346,7 +346,23 @@ impl Engine for ContainerEngine {
                 reason: "only --target static is implemented so far".into(),
             });
         }
+        self.export(content, out, false)
+    }
+}
 
+impl ContainerEngine {
+    /// Export once into an HTTP-root layout, mounting files at the same basePath
+    /// resolved by Next. Ordinary `build` exports retain their existing layout.
+    pub fn build_for_deployment(&self, content: &Utf8Path, out: &Utf8Path) -> Result<String> {
+        self.export(content, out, true)?;
+        let metadata = out.join(".zellij-deployment.json");
+        let prefix: String =
+            serde_json::from_slice(&std::fs::read(&metadata)?).map_err(|_| Error::BuildFailed)?;
+        std::fs::remove_file(metadata)?;
+        Ok(prefix)
+    }
+
+    fn export(&self, content: &Utf8Path, out: &Utf8Path, mounted: bool) -> Result<()> {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!("{}:/app/node_modules", self.modules_volume());
@@ -371,13 +387,18 @@ impl Engine for ContainerEngine {
         // the directory belongs to whoever the command really ran as.
         let handback = own_output_as(&output.directory);
 
+        let copy = if mounted {
+            r#"node -e 'const fs = require("node:fs"); const p = require("./node_modules/@shebka/zellij/deployment-config.cjs").resolveContentLocation().basePath || ""; fs.mkdirSync("/out" + p, {recursive:true}); fs.cpSync("/app/out", "/out" + p, {recursive:true}); fs.writeFileSync("/out/.zellij-deployment.json", JSON.stringify(p));'"#
+        } else {
+            "cp -a out/. /out/"
+        };
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
                 "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
                  npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
-                 cp -a out/. /out/{handback}"
+                 {copy}{handback}"
             ),
         );
 

@@ -83,10 +83,10 @@ need no container runtime.
 | [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
 | [`zel view`](/cli/view) | Build Markdown, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
-| [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
+| [`zel deploy`](/cli/deploy) | Build and deploy static HTML to Netlify; shortcut `netlify` | **Available in source** |
 | [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available in source** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
-| [`zel publish`](/cli/publish) | Build and push a configured static or Next image; shortcut `pub` | **Available in source** |
+| [`zel publish`](/cli/publish) | Execute saved image push or Netlify deployment; shortcut `pub` | **Available in source** |
 | [`zel ship`](/cli/ship) | Somebody else's docs to a published site, in one line | Planned |
 | [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available in source** |
@@ -136,7 +136,8 @@ Structured-content `check`, `dev`, and hosted `build` commands run the Next.js
 engine in a container from a public image. Portable `build` and `check` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image
-publication uses the container runtime. Direct provider deployment remains planned.
+publication uses the container runtime. Netlify deployment is native for portable
+content and uses a container export for hosted content.
 
 Container-dependent operations stop with exit code 4 and setup guidance if no
 usable runtime is available. Docker, Podman and nerdctl are supported discovery

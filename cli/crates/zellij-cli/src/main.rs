@@ -14,6 +14,7 @@ use serde_json::json;
 use std::io::Write;
 mod delivery;
 mod images;
+mod netlify;
 mod preview;
 mod validation;
 
@@ -113,12 +114,11 @@ fn main() {
                 images::dockerfile(dir.as_deref(), *kind)
             }
         },
-        Command::Publish {
-            ref dir,
-            ref to,
-            ref tag,
-            dry_run,
-        } => delivery::publish(dir.as_deref(), to.as_deref(), tag.as_deref(), dry_run),
+        Command::Publish(ref options) => delivery::execute(None, options),
+        Command::Deploy {
+            ref provider,
+            ref options,
+        } => delivery::execute(provider.as_deref(), options),
         Command::Doctor => doctor(),
         Command::Completions { shell } => args::completions(shell),
         Command::Ci { ref action } => match action {

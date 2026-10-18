@@ -87,6 +87,12 @@ impl Cli {
         if let Command::Shortcut(shortcut) = cli.command {
             cli.command = shortcut.into_command();
         }
+        if let Command::Netlify(options) = cli.command {
+            cli.command = Command::Deploy {
+                provider: Some("netlify".into()),
+                options,
+            };
+        }
         Ok(cli)
     }
 
@@ -221,19 +227,19 @@ pub(crate) enum Command {
         theme: Option<String>,
     },
 
-    /// Build the site and put it online.
+    /// Build static HTML and deploy it; omitted provider uses saved publication.
+    #[command(
+        after_help = "Shortcut: zel netlify [site]. Bare zel deploy is equivalent to zel publish."
+    )]
     Deploy {
-        /// netlify | cloudflare | vercel | ghpages | s3 | fly | railway.
-        /// The provider decides the target: a CDN cannot run a container.
-        provider: String,
-
-        #[arg(default_value = ".")]
-        dir: String,
-
-        /// The site or project on the provider.
-        #[arg(long)]
-        site: Option<String>,
+        /// Currently netlify. With no provider, use zel.yaml's publish settings.
+        provider: Option<String>,
+        #[command(flatten)]
+        options: DeliveryArgs,
     },
+
+    /// Shortcut for `zel deploy netlify`.
+    Netlify(DeliveryArgs),
 
     /// Build, run and push container images.
     Image {
@@ -256,24 +262,9 @@ pub(crate) enum Command {
         out: String,
     },
 
-    /// Build and push the image selected by zel.yaml's publish settings.
+    /// Build once and deliver using saved publication settings.
     #[command(visible_alias = "pub")]
-    Publish {
-        /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
-
-        /// Provider override (reserved; direct deployment is not implemented yet).
-        #[arg(long)]
-        to: Option<String>,
-
-        /// Override image.name with the exact registry reference to build and push.
-        #[arg(long)]
-        tag: Option<String>,
-
-        /// Resolve and print the plan without probing tools, building or pushing.
-        #[arg(long)]
-        dry_run: bool,
-    },
+    Publish(DeliveryArgs),
 
     /// Convert, check, build and deploy in one step.
     Ship {
@@ -586,3 +577,24 @@ pub(crate) struct SiteImageArgs {
 #[cfg(test)]
 #[path = "args_tests.rs"]
 mod tests;
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct DeliveryArgs {
+    /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+    pub(crate) dir: Option<String>,
+    /// Explicit provider override for saved static-site deployment.
+    #[arg(long)]
+    pub(crate) to: Option<String>,
+    /// Exact image reference for saved registry publication only.
+    #[arg(long)]
+    pub(crate) tag: Option<String>,
+    /// Existing Netlify site ID or domain; overrides NETLIFY_SITE_ID and publish.site.
+    #[arg(long = "site-id", visible_alias = "site")]
+    pub(crate) site_id: Option<String>,
+    /// Update the live Netlify site. Omit to create a draft preview.
+    #[arg(long)]
+    pub(crate) prod: bool,
+    /// Print the plan without tools, credentials, builds or remote requests.
+    #[arg(long)]
+    pub(crate) dry_run: bool,
+}

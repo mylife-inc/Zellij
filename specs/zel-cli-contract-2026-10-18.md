@@ -72,14 +72,15 @@ exists, possibly with different arguments/defaults; **S** means a registered
 stub; **N** means no command at the reconciliation baseline. The working-command
 shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
 `sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`, `c`, `s`, `v`,
-`b`, `si`, `ni`, `ir`, `ip`, `idf`, `pub`, and `comp`. `ci run` is implemented with `ci publish`
+`b`, `si`, `ni`, `ir`, `ip`, `idf`, `pub`, `netlify`, and `comp`. `ci run` is implemented with `ci publish`
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
 The proposed **capabilities** in the tables are not all implemented: conversion
 still writes raw hosted content and `view` remains portable-only. Static-image
 packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
-and registry publication via `publish` / `pub` are implemented. `na`, `netlify`,
+and registry/Netlify publication via `publish` / `pub` are implemented. `deploy netlify`
+and `netlify` are implemented, with bare `deploy` using saved publication. `na`
 and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
@@ -186,15 +187,15 @@ configuration can already be passed to Next unchanged.
 
 | Command | Shortcut | Role | Baseline |
 | --- | --- | --- | --- |
-| `zel deploy <provider> [site]` | `zel netlify [site]` for Netlify | Validate, build, and deploy to an explicitly chosen provider. | S |
-| `zel publish [site]` | `zel pub [site]` | Execute saved image build/push now; provider deployment remains proposed. | I: registry push |
+| `zel deploy <provider> [site]` | `zel netlify [site]` for Netlify | Validate, build, and deploy to an explicitly chosen provider. | I: Netlify |
+| `zel publish [site]` | `zel pub [site]` | Execute saved image build/push or Netlify deployment. | I |
 | `zel ship <source> --out <destination>` | Same | Import into a new configured site, then execute delivery; preserve source. | S |
 | `zel ci init github [--site-root <site>]` | `zel ci [site]` | Generate a GitHub workflow using saved settings. | I: different options |
 | `zel ci run` | Existing `zel ci publish` | Dispatch an existing workflow; retain `--workflow` and `--ref`. | I: `ci publish` |
 
 `deploy` specifies the destination provider at the command line. `publish` uses
 saved delivery settings; `--to` can explicitly override the configured provider.
-Bare `zel deploy` is proposed as an exact synonym for configured `publish`, preserving
+Bare `zel deploy` is an exact synonym for configured `publish`, preserving
 the previously proposed convenience. A single argument to `deploy` is a provider;
 use `publish docs/manual` to select a site without spelling out the provider.
 `ship` adds import first, retaining `--provider` for an explicit deployment
@@ -296,7 +297,7 @@ in the versioned portable configuration, with paths relative to `content/`.
 
 Omitted settings mean source `content/`, output `site/`, preview port 3000, and
 no configured remote delivery. `build`, `preview`, `image.name`, and the
-registry-only form of `publish` are implemented. For example:
+registry and Netlify forms of `publish` are implemented. For example:
 
 ```yaml
 image:
@@ -315,8 +316,8 @@ a generated folder-derived name. Provider/site/credential fields are rejected
 for registry publication. `pub --dry-run` resolves the plan without tools,
 content validation, builds or remote requests; `--json` remains unsupported.
 
-The following provider and CI blocks remain proposals and are rejected.
-The build/preview/image fields in this combined example are implemented:
+The provider block below is implemented. The `ci` block remains a proposal
+and is rejected; omit it in a working configuration:
 
 ```yaml
 build:
@@ -328,7 +329,7 @@ image:
 publish:
   action: deploy
   provider: netlify
-  site: "<provider-site-id>"
+  site: acme-docs.netlify.app
 ci:
   system: github
   branch: main
@@ -507,3 +508,35 @@ unsuccessful image runtime operations, now with operation-specific diagnostics.
 Original sources and previous output remain intact, and temporary contexts are
 removed even on failure. `--to` remains explicitly rejected until provider
 delivery exists. CI configuration and generation changes are the next stages.
+
+
+## Stage 5b: native Netlify delivery (2026-10-18)
+
+`deploy netlify` / `netlify`, saved `publish` / `pub`, and bare `deploy` share
+one resolved delivery plan. Netlify accepts static HTML from either renderer.
+Portable deployment uses native rendering and HTTPS; hosted deployment uses
+one container export. No Node or provider CLI is required on the host. The
+hosted export mounts files at its engine-resolved basePath; ordinary `build`
+retains its existing output layout. Private exports preserve source and prior
+local output and are cleaned up after success/failure.
+
+Use `publish: {action: deploy, provider: netlify, site: acme-docs.netlify.app}`.
+Destination precedence is `--site-id` (alias `--site`), `NETLIFY_SITE_ID`, then
+`publish.site`. The site field is optional when supplied elsewhere. Credentials
+come only from `NETLIFY_AUTH_TOKEN`; stored provider login is not read in this
+implementation. Tokens/image kinds/production flags are invalid in this block.
+Draft preview is the default; `--prod` explicitly requests live publication.
+An explicit provider supplies intent, while `pub --to netlify` refuses to
+replace saved image-push intent. `--tag` is rejected for Netlify. Other providers
+are rejected. `--json` remains unsupported for delivery.
+
+Dry runs resolve only: no credentials, tool probes, content validation, output
+or remote requests. Execution preflights access to an existing site, validates
+and builds once, sends a SHA1 file manifest, uploads requested content once per
+digest, then polls to ready. API errors are redacted, redirects refused, request
+and processing time bounded. An uncertain response never automatically retries
+creation. A remote deployment may finish after a client timeout; report completed
+stages and direct the user to its dashboard before retrying. No site creation,
+remote build, functions, login, live provider acceptance, release or documentation
+deployment is part of this implementation. Ship/import composition and saved CI
+settings/workflow generation remain open.

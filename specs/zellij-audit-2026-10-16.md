@@ -1758,3 +1758,22 @@ Fixing source for the saved-publication milestone:
 `5b8bf91d731af36321f725f4dc4590519e1ba480`. Local checks passed 237 Rust tests,
 formatting, warnings-denied Clippy and strict/deep docs validation. Use the
 associated PR's latest checks for real registry and all-platform results.
+
+
+### Implementation record — 2026-10-18, native Netlify delivery
+
+The first direct provider adapter now shares typed intent and build-once delivery
+with saved publication. It supports native portable exports and hosted exports
+mounted at their configured prefix, preserves previous output, uses environment
+credentials, and distinguishes preview from explicit production. Local mock API
+tests cover manifests/bytes, deduplication, errors, timeouts, redirects and no
+publication after failed builds. CI adds a real hosted export through the same
+upload path to a loopback API. This is protocol/renderer acceptance, not proof of
+a live Netlify account deployment. Source/PR/check evidence is kept in the durable
+context. Other providers, saved CI generation, ship and the remaining CLI backlog
+are still open; no binary release or public documentation deployment is included.
+
+Netlify implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`,
+[PR #33](https://github.com/mylife-inc/Zellij/pull/33). Local checks pass 245 Rust
+tests, formatting, warnings-denied Clippy and strict/deep docs validation.
+Use the PR's latest checks for final hosted-container and all-platform results.

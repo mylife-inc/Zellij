@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -169,6 +169,15 @@ jobs:
         # Automatic fallback can select Podman when Docker's probe fails under
         # load, but Podman cannot see the image in Docker's local image store.
         run: printf 'DOCKER_CONTEXT=%s\n' "$(docker context show)" >> "$GITHUB_ENV"
+
+      - name: Hosted Netlify export and digest upload acceptance
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        working-directory: cli
+        run: |
+          acceptance_test=netlify::tests::hosted_container_export_upload_preserves_prefix_assets_and_previous_output
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .

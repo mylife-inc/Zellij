@@ -30,7 +30,103 @@ pub struct ImageSettings {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "action", rename_all = "lowercase", deny_unknown_fields)]
 pub enum PublishSettings {
-    Push { image: ImageKind },
+    Push {
+        image: ImageKind,
+    },
+    Deploy {
+        provider: Provider,
+        #[serde(default, deserialize_with = "site_identifier")]
+        site: Option<String>,
+    },
+}
+
+#[derive(Clone, Copy, Debug, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Provider {
+    Netlify,
+}
+
+fn site_identifier<'de, D: serde::Deserializer<'de>>(
+    d: D,
+) -> std::result::Result<Option<String>, D::Error> {
+    let serde_yaml_ng::Value::String(value) = serde_yaml_ng::Value::deserialize(d)? else {
+        return Err(serde::de::Error::custom(
+            "publish.site must be a site ID or domain string",
+        ));
+    };
+    validate_site_identifier(&value).map_err(serde::de::Error::custom)?;
+    Ok(Some(value))
+}
+
+pub fn validate_site_identifier(value: &str) -> Result<()> {
+    if value.is_empty()
+        || value.len() > 253
+        || !value.split('.').all(|part| {
+            !part.is_empty()
+                && part.as_bytes()[0].is_ascii_alphanumeric()
+                && part.as_bytes()[part.len() - 1].is_ascii_alphanumeric()
+                && part.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'-')
+        })
+    {
+        return Err(Error::InvalidArgument("Netlify requires an existing site ID or domain, without a URL scheme, path, whitespace or credentials".into()));
+    }
+    Ok(())
+}
+
+#[derive(Debug, PartialEq, Eq)]
+pub enum DeliveryPlan {
+    Push(ImagePublication),
+    Netlify { site: String, production: bool },
+}
+
+impl DeliveryPlan {
+    /// Explicit `deploy` supplies intent; `publish --to` can override only a
+    /// deployment provider, never silently replace a selected container image.
+    pub fn resolve(
+        site: &Site,
+        provider: Option<&str>,
+        to: Option<&str>,
+        tag: Option<&str>,
+        site_id: Option<&str>,
+        environment_site: Option<&str>,
+        production: bool,
+    ) -> Result<Self> {
+        if provider.is_some() && to.is_some() && provider != to {
+            return Err(Error::InvalidArgument(
+                "the explicit provider conflicts with --to".into(),
+            ));
+        }
+        let explicit = provider.or(to);
+        if explicit.is_some_and(|p| p != "netlify") {
+            return Err(Error::InvalidArgument(
+                "unsupported deployment provider; currently only netlify is implemented".into(),
+            ));
+        }
+        if provider.is_none() && matches!(site.publish, Some(PublishSettings::Push { .. })) {
+            if to.is_some() || site_id.is_some() || production {
+                return Err(Error::InvalidArgument("image publication does not accept --to, --site-id or --prod; use `zel deploy netlify` for an explicit static-site deployment".into()));
+            }
+            return ImagePublication::resolve(site, tag).map(Self::Push);
+        }
+        let saved_site = match &site.publish {
+            Some(PublishSettings::Deploy { site, .. }) => site.as_deref(),
+            _ => None,
+        };
+        if explicit.is_none() && !matches!(site.publish, Some(PublishSettings::Deploy { .. })) {
+            return Err(Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify --site-id <id>`".into()));
+        }
+        if tag.is_some() {
+            return Err(Error::InvalidArgument(
+                "Netlify accepts generated static HTML, not an image tag; remove --tag".into(),
+            ));
+        }
+        let destination = site_id.or(environment_site).or(saved_site).ok_or_else(|| Error::InvalidArgument("Netlify requires an existing site: pass --site-id (or --site), set NETLIFY_SITE_ID, or save publish.site in zel.yaml".into()))?;
+        validate_site_identifier(destination)?;
+        Ok(Self::Netlify {
+            site: destination.to_owned(),
+            production,
+        })
+    }
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -42,7 +138,7 @@ impl ImagePublication {
     pub fn resolve(site: &Site, tag: Option<&str>) -> Result<Self> {
         let Some(PublishSettings::Push { image }) = site.publish else {
             return Err(Error::InvalidArgument(
-                "publish requires version: 1 with `publish: {action: push, image: static}` (or image: next) in zel.yaml; direct provider deployment is not implemented yet".into(),
+                "image publication requires version: 1 with `publish: {action: push, image: static}` (or image: next) in zel.yaml".into(),
             ));
         };
         let tag = tag.or(site.image.as_ref().map(|s| s.name.as_str())).ok_or_else(|| {
