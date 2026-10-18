@@ -16,14 +16,14 @@ export default defineConfig({
    * The hover-intent and scroll-snap tests drive real pointer input against
    * real timers — a 260ms menu dwell, a 30-step mouse traverse. Those are
    * sensitive to how much else the machine is doing, and with 240 tests in
-   * parallel that shows. One retry covers the scheduling noise; anything that
-   * fails twice is a defect worth reading.
+   * parallel that shows. Retries keep that noise visible without discarding the
+   * first failure; retained traces must still be investigated when a retry passes.
    */
   retries: process.env['CI'] ? 2 : 1,
 
   use: {
     baseURL,
-    trace: 'on-first-retry',
+    trace: 'retain-on-failure',
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },

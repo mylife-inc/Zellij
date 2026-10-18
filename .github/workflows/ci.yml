@@ -252,8 +252,12 @@ jobs:
       - name: Development updates reach search and images in browsers
         run: node scripts/check-dev-site.mjs
       - uses: actions/upload-artifact@v7
-        if: failure()
+        # Keep the initial failure even when Playwright's retry makes the job green.
+        if: always()
         with:
           name: playwright-failure-details
-          path: examples/showcase/test-results/
+          path: |
+            examples/showcase/test-results/**/trace.zip
+            examples/showcase/test-results/**/error-context.md
+          if-no-files-found: ignore
           retention-days: 7

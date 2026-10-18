@@ -8,9 +8,8 @@ import { test, expect } from '@playwright/test';
 /**
  * Scrolls the page so every reveal observer has fired.
  *
- * Must use `behavior: 'instant'`: the theme sets `scroll-behavior: smooth`, and
- * successive smooth scrolls interrupt one another, so a plain scrollTo loop
- * crawls a few hundred pixels and never reaches the lower sections.
+ * Use `behavior: 'instant'` explicitly so a wrapper's scroll styling cannot
+ * turn successive observer checks into overlapping animated scrolls.
  */
 async function revealAll(page: import('@playwright/test').Page): Promise<void> {
   // Wait for hydration first. The reveal observers are attached on mount, and
@@ -188,16 +187,18 @@ test.describe('pricing table', () => {
 });
 
 test.describe('faq', () => {
-  test('expands and collapses answers, and works without JavaScript', async ({ page }) => {
+  test('expands and collapses answers on a single pointer press', async ({ page }) => {
     await page.goto('/lumen-3-pro');
     const item = page.locator('.zellij-faq-item').first();
     const answer = item.locator('.zellij-faq-answer');
 
     // <details> keeps answers in the DOM for crawlers even when closed.
     await expect(answer).toBeHidden();
-    await item.locator('summary').click();
+    // A real press has a down/up interval. This exposed WebKit document scrolling
+    // that moved the summary away and retargeted the click to a surrounding div.
+    await item.locator('summary').click({ delay: 200 });
     await expect(answer).toBeVisible();
-    await item.locator('summary').click();
+    await item.locator('summary').click({ delay: 200 });
     await expect(answer).toBeHidden();
   });
 
