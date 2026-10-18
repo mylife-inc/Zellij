@@ -1,0 +1,66 @@
+{
+  "engineVersion": "0.1.0",
+  "wrapperConfigVersion": 1,
+  "manifest": {
+    "name": "__ZELLIJ_NAME__",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "engines": {
+      "node": "^20.19.0 || >=22.12.0"
+    },
+    "overrides": {
+      "mermaid": {
+        "katex": "^0.18.2"
+      },
+      "micromark-extension-math": {
+        "katex": "^0.18.2"
+      },
+      "speech-rule-engine": {
+        "@xmldom/xmldom": "^0.9.12"
+      }
+    },
+    "scripts": {
+      "dev": "zellij dev -- --port __ZELLIJ_PORT__",
+      "prebuild": "zellij prepare",
+      "build": "next build",
+      "start": "next start --port __ZELLIJ_PORT__",
+      "check": "zellij check",
+      "typecheck": "tsc --noEmit"
+    },
+    "dependencies": {
+      "@shebka/zellij": "__ZELLIJ_ENGINE__",
+      "next": "~16.4.2",
+      "react": "~19.2.0",
+      "react-dom": "~19.2.0"
+    },
+    "devDependencies": {
+      "@tailwindcss/postcss": "^4.3.3",
+      "tailwindcss": "^4.3.3",
+      "@types/node": "^22.10.2",
+      "@types/react": "^19.2.0",
+      "@types/react-dom": "^19.2.0",
+      "typescript": "^5.9.3"
+    }
+  },
+  "files": {
+    "tsconfig.json": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"lib\": [\n      \"DOM\",\n      \"DOM.Iterable\",\n      \"ES2022\"\n    ],\n    \"jsx\": \"preserve\",\n    \"module\": \"ESNext\",\n    \"moduleResolution\": \"bundler\",\n    \"strict\": true,\n    \"noEmit\": true,\n    \"allowJs\": true,\n    \"esModuleInterop\": true,\n    \"resolveJsonModule\": true,\n    \"isolatedModules\": true,\n    \"incremental\": true,\n    \"skipLibCheck\": true,\n    \"plugins\": [\n      {\n        \"name\": \"next\"\n      }\n    ],\n    \"paths\": {\n      \"@/*\": [\n        \"./src/*\"\n      ]\n    }\n  },\n  \"include\": [\n    \"next-env.d.ts\",\n    \"**/*.ts\",\n    \"**/*.tsx\",\n    \".next/types/**/*.ts\"\n  ],\n  \"exclude\": [\n    \"node_modules\"\n  ]\n}\n",
+    "next.config.js": "import { withZellij } from '@shebka/zellij/next-config';\n\n/**\n * Everything Zellij needs is in `withZellij`. Add your own Next options here\n * (a basePath set both here and in content must agree).\n *\n * @type {import('next').NextConfig}\n */\nexport default withZellij({\n  typedRoutes: false,\n});\n",
+    ".gitignore": "node_modules/\n.next/\nout/\n*.tsbuildinfo\n.DS_Store\n\n# Written by `zellij prepare` from the content folder.\npublic/_zellij/\n",
+    ".npmrc": "install-links=true\n",
+    "postcss.config.mjs": "const config = { plugins: { '@tailwindcss/postcss': {} } };\n\nexport default config;\n",
+    "src/app/layout.tsx": "import '@shebka/zellij/styles.css';\nimport { createZellijRootLayout } from '@shebka/zellij';\n\nexport default createZellijRootLayout();\n",
+    "src/app/[[...slug]]/page.tsx": "import { createZellijPages } from '@shebka/zellij';\n\nconst zellij = createZellijPages();\n\nexport const generateStaticParams = zellij.generateStaticParams;\nexport const generateMetadata = zellij.generateMetadata;\nexport default zellij.Page;\n",
+    "src/app/sitemap.ts": "import { createZellijSitemap } from '@shebka/zellij';\n\n// A metadata route is dynamic by default, and `output: export` has nowhere to\n// run it — without this, asking for a static export fails on this file.\nexport const dynamic = 'force-static';\n\nexport default createZellijSitemap();\n",
+    "src/app/robots.ts": "import { createZellijRobots } from '@shebka/zellij';\n\nexport const dynamic = 'force-static';\n\nexport default createZellijRobots();\n"
+  },
+  "features": {
+    "maths": {
+      "remark-math": "^6.0.0",
+      "rehype-mathjax": "^7.1.0"
+    },
+    "diagrams": {
+      "mermaid": "^11.17.2"
+    }
+  }
+}

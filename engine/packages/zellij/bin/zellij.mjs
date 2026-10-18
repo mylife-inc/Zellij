@@ -82,7 +82,7 @@ switch (command) {
     const { flags, positional } = parseFlags(ownArgs.filter((arg) => arg !== '--watch'));
     for (const key of Object.keys(flags)) {
       if (!['content', 'config'].includes(key) || typeof flags[key] !== 'string' || !flags[key]) {
-        throw new Error(`Expected --content <directory> or --config <legacy-config>; invalid --${key}`);
+        throw new Error(`Expected --content <directory> or --config <wrapper-config>; invalid --${key}`);
       }
     }
     if (positional.length) throw new Error('Use --content <directory> to select the preparation content root.');

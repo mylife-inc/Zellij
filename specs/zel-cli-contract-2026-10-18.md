@@ -70,14 +70,14 @@ binary rather than dependent on a shell. Short existing names need no alias.
 Tables describe the proposed contract. **I** means a current implementation
 exists, possibly with different arguments/defaults; **S** means a registered
 stub; **N** means no command at the reconciliation baseline. The working-command
-shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
+shortcuts are now implemented: `init`, `nd`, `na`, `ns`, `np`, `ng`, `npr`, `ex`,
 `sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`, `c`, `s`, `v`,
 `b`, `si`, `ni`, `ir`, `ip`, `idf`, `pub`, `netlify`, and `comp`. `ci run` is implemented with `ci publish`
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
 The proposed **capabilities** in the tables are not all implemented: `view`
-remains portable-only and `na` remains unregistered. Conversion supports explicit
+remains portable-only. `na` now scaffolds editable hosted wrappers. Conversion supports explicit
 configured-site output while keeping raw hosted content as its default. Static-image
 packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
 and registry/Netlify publication via `publish` / `pub` are implemented. `deploy netlify`
@@ -90,7 +90,7 @@ Configured `ship` and bare `ci [site]` are implemented. See the [current shortcu
 | --- | --- | --- | --- |
 | `zel new portable [destination]` | `zel init [destination]` | Create `zel.yaml` and `content/` for portable Markdown; default `docs/zellij`. | I |
 | `zel new docs [destination]` | `zel nd [destination]` | Create a hosted YAML/MDX site with the same outer layout; default `docs/zellij`. | I |
-| `zel new app <destination>` | `zel na <destination>` | Create editable Next.js wrapper files; select existing content with `--site-root`. `--with-docs` creates a hosted site at `<destination>/docs/zellij`. | S |
+| `zel new app [destination]` | `zel na [destination]` | Create editable Next.js wrapper files; select existing content with `--site-root`. `--with-docs` creates a hosted site at `<destination>/docs/zellij`. | S |
 | `zel new section <type>` | `zel ns <type>` | Print a section template, or write an explicit `--out`; stdout needs no site. | I |
 | `zel new page <name>` | `zel np <name>` | Add hosted section files under selected `content/`; retain printed `pages.yaml` entry. | I |
 | `zel new guide <name>` | `zel ng <name>` | Add a hosted guide under selected `content/`. | I |
@@ -595,3 +595,38 @@ Both existing converters emit hosted content; runtime/HTTP requirements apply.
 This does not add portable import or imply lossless source-tool migration.
 Cross-platform tests and actual container/registry/browser acceptance accompany
 the source change; compatible release publication remains separate work.
+
+
+### Stage 6a — editable Next.js wrappers (2026-10-18)
+
+`new app [destination]` / `na` is implemented in source. Destination defaults to
+`.` and must be empty apart from noncolliding dotfiles. There is no force option.
+Existing hosted content is selected with --site-root or normal current-config /
+docs/zellij discovery, resolved to an absolute path and referenced without copying.
+--with-docs conflicts with --site-root and creates hosted documentation at
+<destination>/docs/zellij with a landing page and guide. Portable and legacy
+marketing content are rejected with guidance; image next retains its portable
+adapter. Wrapper creation does not run external tools, install packages, or
+create/launch a server.
+
+The engine is not published to npm. --engine selects a built local package;
+the sole implicit location is ./engine/packages/zellij in the working directory.
+Preflight checks the package identity/version, wrapper-config capability and
+required CLI bundles. npm's file dependency uses the actual path, with Windows
+canonical prefixes normalized, not percent-encoded URL syntax. The generated
+.npmrc copies that package during npm install. Node/npm are prerequisites for
+running the app, and dependency installation creates the lockfile.
+
+--name supplies starter display text and a normalized npm name. --port selects
+1–65535, otherwise the selected preview.port or 3000; a saved port 0 requires an
+explicit override. --features accepts comma-separated maths, diagrams or all.
+The committed native template is generated from the engine initializer, shared
+with image next, and checked for drift in CI.
+
+Generated zellij.config.yaml has version: 1 and content only. All runtime,
+preparation, Next configuration and check paths honor that selector. Presentation
+remains in content/site.yaml; native site settings remain in zel.yaml. Relative
+content is used for the starter, absolute for external sources. Moving engine or
+external content requires updating the corresponding path. No npm publication,
+portable wrapper adapter, package-manager choice, auto-install, or cloud upload
+is implied. The public 0.1.3 release predates this command.

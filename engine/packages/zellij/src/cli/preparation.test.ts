@@ -4,6 +4,8 @@ import path from 'node:path';
 import { afterEach, expect, it } from 'vitest';
 import { writeSearchIndex } from './write-search-index';
 import { syncAssets } from './sync-assets';
+import { check } from './check';
+import { loadZellijRuntime } from '../config/runtime';
 import type { SearchEntry } from '../search/build-index';
 
 const roots: string[] = [];
@@ -56,6 +58,38 @@ it('uses the legacy configuration path consistently for preparation', async () =
   await syncAssets(appRoot);
   expect((await entries(appRoot))[0]?.route).toBe('/manual');
   expect(await readFile(path.join(appRoot, 'public/_zellij/assets/logo.svg'), 'utf8')).toBe('<svg>fixture</svg>');
+});
+
+it('uses versioned wrapper content for validation, preparation and rendering', async () => {
+  const { appRoot, content } = await fixture('external café');
+  await writeFile(path.join(content, '01-guide/_sidebar.yaml'), 'route: /manual\nnav: [index, setup, unlisted]\n');
+  await writeFile(path.join(appRoot, 'zellij.config.yaml'), 'version: 1\ncontent: external café\n');
+  const result = await check({ cwd: appRoot, deep: true, strict: true });
+  expect(result.ok).toBe(true);
+  expect(result.warnings).toEqual([]);
+  await writeSearchIndex(appRoot);
+  await syncAssets(appRoot);
+  expect((await entries(appRoot))[0]?.route).toBe('/manual');
+  expect(await readFile(path.join(appRoot, 'public/_zellij/assets/logo.svg'), 'utf8')).toBe('<svg>fixture</svg>');
+  const runtime = await loadZellijRuntime({ appRoot });
+  expect(runtime.contentDir).toBe(content);
+  expect(runtime.site.config.basePath).toBe('/products/docs');
+  expect(runtime.site.routes.has('/manual')).toBe(true);
+});
+
+it.each([
+  'version: 2\ncontent: external\n',
+  'version: 1\n',
+  'version: 1\ncontent: external\nproduct: { name: Ignored }\n',
+  'version: 1\ncontent: []\n',
+  'version: 1\ncontent: null\n',
+  'version: 1\ncontent: ""\n',
+])('rejects invalid wrapper selectors consistently: %s', async (config) => {
+  const { appRoot } = await fixture('external');
+  await writeFile(path.join(appRoot, 'zellij.config.yaml'), config);
+  expect((await check({ cwd: appRoot })).ok).toBe(false);
+  await expect(writeSearchIndex(appRoot)).rejects.toThrow();
+  await expect(loadZellijRuntime({ appRoot })).rejects.toThrow();
 });
 
 it('refreshes changed content instead of reusing the rendering cache', async () => {

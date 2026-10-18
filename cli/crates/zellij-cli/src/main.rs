@@ -9,6 +9,7 @@
 
 use args::*;
 use camino::{Utf8Path, Utf8PathBuf};
+mod app;
 mod args;
 use serde_json::json;
 use std::io::Write;
@@ -130,6 +131,7 @@ fn main() {
         },
         Command::Migrate(ref options) => imports::convert(options, true),
         Command::Ship(ref options) => imports::ship(options),
+        Command::New(NewTarget::App(ref options)) => app::create(options),
         Command::New(NewTarget::Portable(NewPortableArgs {
             ref dir,
             ref name,

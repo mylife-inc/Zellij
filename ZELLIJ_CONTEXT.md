@@ -2415,3 +2415,54 @@ content/ with a generated relative path inserted a backslash rejected by the
 portable write-plan validator. Prefixing the already-validated relative path
 with a literal slash fixes the implementation; the Windows junction fixture also
 uses OS-native path components for cmd.exe. All-platform rerun is required.
+
+
+### Implementation update — 2026-10-18, editable Next.js wrappers
+
+PR #35 merged at e7ff7e01bd291dd58f387f0c865c1111d8dfeb70. Its final source
+cf8296b23f816c805575a77d0468e29c05b89b1e passed all 13 jobs in CI 39163178585;
+merge CI 39164568012 and base image 39164567998 also passed. This closes the
+pending Windows configured-import and final-head evidence above.
+
+Current source implements `new app` / `na`. Scaffolding uses no Node, npm or
+container runtime. Existing hosted content is selected by --site-root or normal
+site discovery and referenced at its canonical absolute location, without copying.
+--with-docs instead creates a configured hosted starter under docs/zellij in the
+new app. Destination defaults to ., has no force override, and must be empty
+apart from noncolliding dotfiles. Engine/content overlap and link protections
+apply before writes. Portable and legacy marketing content are rejected with
+explicit guidance; image next still supports portable adaptation.
+
+A built local engine package is required because npm distribution does not exist.
+--engine selects it; the sole implicit location is ./engine/packages/zellij in
+the working directory. Identity, version, wrapper-config capability and required
+CLI bundles are checked. npm file dependencies retain literal path punctuation;
+percent encoding failed actual installation and was corrected. Windows extended
+canonical prefixes are normalized for npm. Node/npm are required only to run the
+created app. --name, --port and comma-separated --features are documented.
+
+The engine initializer exposes wrapperTemplate(); scripts/prepare-app-scaffold.mjs
+embeds its core files, dependency/override versions and feature metadata in Rust.
+CI checks drift. Node initializer and Next images continue using that definition.
+Versioned zellij.config.yaml contains version: 1 and content only; it is separate
+from a documentation site's zel.yaml and content/site.yaml. Check, preparation,
+Next bootstrap and rendering now agree on that selector. The previously defaulted
+check content path was corrected. Unversioned legacy config keeps its validation.
+
+Local validation: 259 workspace Rust tests passed; focused new-app tests and
+warnings-denied Clippy passed after the npm-path/compatibility refinements.
+Engine tests, workspace typechecking, engine build verification, template drift,
+formatting, changed-workflow actionlint and strict/deep docs validation passed.
+The isolated acceptance script installed the real copied engine through npm from
+a path containing spaces/#/%, validated starter/external content, built Next with
+Turbopack, typechecked, and exercised Chromium navigation, reload, assets, search,
+prefixes and 404s. No workspace node_modules shortcut was used for that app.
+Full-workflow actionlint also reports pre-existing shellcheck SC2046 warnings in
+base-image.yml; the changed ci.yml passes its check.
+
+CI adds native scaffold integration and isolated installed-wrapper acceptance
+on Linux, macOS and Windows. Final PR/source/platform/container evidence will be appended.
+No local daemon was started, live provider/registry publication performed, or
+native release/public docs deployment made. Latest public native release remains
+zellij-v0.1.3; all current CLI additions still need a compatible release. Remaining
+work includes fmt/watch, portable dev, hosted view, other providers and maintenance.

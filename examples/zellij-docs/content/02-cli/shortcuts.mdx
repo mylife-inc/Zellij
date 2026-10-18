@@ -27,6 +27,7 @@ the same. Command names in help and usage messages reflect the form requested.
 | --- | --- |
 | `zel new portable` | `zel init` |
 | `zel new docs` | `zel nd` |
+| `zel new app` | `zel na` |
 | `zel new section` | `zel ns` |
 | `zel new page` | `zel np` |
 | `zel new guide` | `zel ng` |
@@ -92,7 +93,8 @@ by default and `--prod` for live publication.
 <site>`, using saved settings. It writes local files by default; `--provision`
 explicitly uploads a Netlify token. See [CI](/cli/ci) for the compatible release
 pin required while the current public binary is older than this contract.
-`na` remains unregistered until its command is implemented.
+`na` creates editable hosted wrappers with a built local engine package; see
+[`zel new app`](/cli/new#zel-new-app-dir) for content selection and prerequisites.
 
 Conversion shortcuts preserve the legacy raw-content default. Add `--layout site`
 to `zel cv` or `zel mig` for `zel.yaml` plus `content/`. `zel ship` always uses

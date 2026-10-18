@@ -56,6 +56,23 @@ sibling `<folder>-site`. Use an explicit `.` for an unconfigured current folder.
 Existing files are never moved into the new layout automatically. For hosted
 legacy roots, explicit `.` retains the old content-discovery order.
 
+## Editable wrapper configuration
+
+[`zel new app`](/cli/new#zel-new-app-dir) writes a separate `zellij.config.yaml`
+inside the generated Next.js app:
+
+```yaml
+version: 1
+content: docs/zellij/content
+```
+
+This versioned wrapper selector accepts only `version: 1` and a nonempty
+`content` path, relative to the wrapper or absolute. It selects current hosted
+content for validation, preparation and rendering. Presentation remains in that
+content's `site.yaml`. It does not replace the documentation site's `zel.yaml`
+or support the legacy `marketing/` layout. Existing unversioned legacy wrapper
+configuration retains its validation rules.
+
 ## Portable Markdown
 
 Add the following presentation settings to a portable site’s `zel.yaml`.

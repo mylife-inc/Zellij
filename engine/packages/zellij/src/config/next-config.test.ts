@@ -82,6 +82,22 @@ async function wrapper(files: Record<string, string>) {
 }
 
 describe('deployment prefix', () => {
+  it('uses a versioned wrapper selector without treating it as legacy presentation', async () => {
+    const appRoot = await wrapper({
+      'zellij.config.yaml': 'version: 1\ncontent: external\n',
+      'external/site.yaml': 'basePath: /external\n',
+    });
+    expect(withZellij({}, { appRoot }).basePath).toBe('/external');
+  });
+
+  it('refuses a versioned selector for the legacy marketing layout', async () => {
+    const appRoot = await wrapper({
+      'zellij.config.yaml': 'version: 1\ncontent: external\n',
+      'external/marketing/index.yaml': 'title: Old\n',
+    });
+    expect(() => withZellij({}, { appRoot })).toThrow(/current hosted folder layout/);
+  });
+
   it('derives Next and rendering prefixes from content without editing Next config', async () => {
     const appRoot = await wrapper({ 'content/site.yaml': 'basePath: /products/docs/\n' });
     const config = withZellij({}, { appRoot });
