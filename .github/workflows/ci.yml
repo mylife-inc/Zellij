@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -173,14 +173,14 @@ jobs:
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
-      - name: Portable and hosted static images serve routes and assets
+      - name: Static image publication and portable/hosted HTTP acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: |
           npx playwright install --with-deps chromium
           node scripts/check-static-images.mjs cli/target/debug/zel
 
-      - name: Portable and hosted Next images preserve content and serve prefixes
+      - name: Next image publication and portable/hosted browser acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel

@@ -24,6 +24,8 @@ pub struct Site {
     pub renderer: Renderer,
     pub output: Utf8PathBuf,
     pub port: u16,
+    pub image: Option<crate::delivery::ImageSettings>,
+    pub publish: Option<crate::delivery::PublishSettings>,
     /// Remaining portable presentation settings, validated by the renderer.
     pub portable: Value,
 }
@@ -106,6 +108,8 @@ impl Site {
         };
         let configured = settings.as_ref().is_some_and(|s| s.contains_key("version"));
         let mut port = 3000;
+        let mut image = None;
+        let mut publish = None;
         let (content, renderer, output) = if configured {
             let settings = settings.as_mut().unwrap();
             if settings.remove("version").and_then(|v| v.as_u64()) != Some(1) {
@@ -147,22 +151,30 @@ impl Site {
             if let Some(value) = settings.remove("preview") {
                 port = parse::<Preview>(&root, value)?.port;
             }
+            image = settings
+                .remove("image")
+                .map(|value| parse(&root, value))
+                .transpose()?;
+            publish = settings
+                .remove("publish")
+                .map(|value| parse(&root, value))
+                .transpose()?;
             if renderer == Renderer::Hosted && !settings.is_empty() {
                 return Err(invalid(
                     &root,
-                    "hosted zel.yaml supports version, renderer, build and preview only; put presentation settings in content/site.yaml",
+                    "hosted zel.yaml supports version, renderer, build, preview, image and publish only; put presentation settings in content/site.yaml",
                 ));
             }
             (content, renderer, output)
         } else {
             if settings.as_ref().is_some_and(|s| {
-                ["renderer", "build", "preview"]
+                ["renderer", "build", "preview", "image", "publish"]
                     .iter()
                     .any(|k| s.contains_key(*k))
             }) {
                 return Err(invalid(
                     &root,
-                    "renderer/build/preview require version: 1 and the content/ layout",
+                    "renderer/build/preview/image/publish require version: 1 and the content/ layout",
                 ));
             }
             let renderer = if settings.is_some() {
@@ -193,6 +205,8 @@ impl Site {
             renderer,
             output,
             port,
+            image,
+            publish,
             portable: Value::Mapping(settings.unwrap_or_default()),
         })
     }

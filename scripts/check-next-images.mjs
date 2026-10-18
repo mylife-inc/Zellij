@@ -1,5 +1,6 @@
 // The actual CLI adapts portable Markdown; real container mode also exercises
-// hosted-prefix Next servers. --local uses an isolated wrapper and no daemon.
+// hosted-prefix Next servers and publication to a loopback registry.
+// --local uses an isolated wrapper and no daemon.
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
 import { chmod, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
@@ -8,6 +9,7 @@ import net from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
+import { localRegistry, pullPublishedImage } from './fixtures/local-registry.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const zel = path.resolve(process.argv[2] ?? 'cli/target/debug/zel');
@@ -122,8 +124,12 @@ try {
     servers.push(child);
     await browserChecks(`http://127.0.0.1:${port}`,'',true);
   } else {
-    const portable = `zellij-next-portable:${suffix}`; images.push(portable);
-    run(['ni','--tag',portable]);
+    const registry = await localRegistry(docker, containers, suffix);
+    const portable = `${registry}/acceptance/next:${suffix}`; images.push(portable);
+    const config = await readFile(path.join(root,'docs/zellij/zel.yaml'),'utf8');
+    await write('docs/zellij/zel.yaml',`${config}image: {name: '${portable}'}\npublish: {action: push, image: next}\n`);
+    run(['pub']);
+    pullPublishedImage(docker, portable);
     await container(portable,'',true);
     await write('hosted/zel.yaml','version: 1\nrenderer: hosted\n');
     await write('hosted/content/site.yaml','name: Hosted Next\nhome: manual\nbasePath: /products/.docs\n');
@@ -141,7 +147,7 @@ try {
   for (const child of servers) {
     if(child.exitCode===null) { child.kill('SIGTERM'); await new Promise(resolve=>child.once('exit',resolve)); }
   }
-  for (const name of containers) { try { docker(['logs',name]); docker(['rm','-f',name]); } catch {} }
+  for (const name of containers) { try { docker(['rm','-f',name]); } catch {} }
   for (const tag of images) { try { docker(['image','rm',tag]); } catch {} }
   await rm(root,{recursive:true,force:true});
 }

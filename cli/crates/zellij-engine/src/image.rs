@@ -171,7 +171,7 @@ impl ContainerEngine {
                     .status()?;
 
                 if !status.success() {
-                    return Err(Error::ContentInvalid);
+                    return Err(Error::ImageOperationFailed { operation: "retag" });
                 }
                 full
             }
@@ -182,7 +182,7 @@ impl ContainerEngine {
 
         match status.code() {
             Some(0) => Ok(()),
-            _ => Err(Error::ContentInvalid),
+            _ => Err(Error::ImageOperationFailed { operation: "push" }),
         }
     }
 }

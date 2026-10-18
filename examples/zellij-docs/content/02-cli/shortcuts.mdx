@@ -48,6 +48,7 @@ the same. Command names in help and usage messages reflect the form requested.
 | `zel image run` | `zel ir` |
 | `zel image push` | `zel ip` |
 | `zel image dockerfile` | `zel idf` |
+| `zel publish` | `zel pub` |
 | `zel completions` | `zel comp` |
 
 `zel ci run` dispatches an existing workflow. Its original spelling,
@@ -82,6 +83,9 @@ image from either renderer;
 `idf --kind static` prints its recipe, and the default `idf` retains the Next.js
 recipe. `si`, `ni`, `ir`, and `ip` require a usable container runtime.
 
-`na`, `pub`, and `netlify` are also unregistered until their commands are
+`pub` builds and pushes a saved image delivery plan; `pub --dry-run` only resolves
+the plan. Direct provider deployment remains planned.
+
+`na` and `netlify` are unregistered until their commands are
 implemented. Bare `zel ci` still requires an action; it is not yet shorthand
 for workflow generation.

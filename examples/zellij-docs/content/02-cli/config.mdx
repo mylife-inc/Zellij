@@ -20,7 +20,7 @@ my-product/
       site/             # Generated output
 ```
 
-With no directory argument, build/check/view/serve/dev and image static/next/build/dockerfile
+With no directory argument, publish, build/check/view/serve/dev and image static/next/build/dockerfile
 first look for `./zel.yaml`, then `./docs/zellij/zel.yaml`. They do not search
 parents or recursively scan the repository. A custom folder is explicit:
 `zel build docs/manual`. A missing default reports the expected config path.
@@ -44,7 +44,7 @@ relative to `zel.yaml` (an absolute path is also accepted). Existing overlap and
 output-ownership protections still apply.
 
 Hosted sites use `renderer: hosted`. Their `zel.yaml` accepts only `version`,
-`renderer`, `build`, and `preview`; put name, theme, navigation and branding in
+`renderer`, `build`, `preview`, `image`, and `publish`; put name, theme, navigation and branding in
 `content/site.yaml` and the hosted content files. Renderer mismatches fail with
 an explanation. `dev` is currently hosted-only; `view` is currently portable-only.
 For a hosted static preview, use `build` followed by `serve`.
@@ -197,12 +197,46 @@ or a TOML defaults file. Use [`zel check --strict`](/cli/check) to validate a
 configured portable site without writing an export; add `--json` for a structured
 report. Use [`zel new portable`](/cli/new) for a working starter.
 
+## Image and publication settings
+
+Both renderers accept these additional fields in a versioned `zel.yaml`:
+
+```yaml
+image:
+  name: ghcr.io/acme/manual:v1
+publish:
+  action: push
+  image: static
+```
+
+`image.name` is a taggable image reference: an optional registry and port,
+lowercase repository path, and optional tag. URL schemes, credentials, digests,
+whitespace and malformed names are rejected. `image.name` must be a YAML string.
+It supplies the default for `image static` / `si` and `image next` / `ni`;
+`--tag` takes precedence. Both kinds use the same configured name, so choose
+separate tags explicitly when retaining both. Without this field, local builds
+retain their separate `-static` and `-next` generated defaults.
+
+`publish.action` currently accepts only `push`. `publish.image` must be `static`
+or `next`. [`zel publish` / `zel pub`](/cli/publish) builds and pushes that image;
+it requires `image.name` or an explicit `--tag` and never chooses a generated
+local name as a remote destination. There are no new environment overrides for
+these settings. `ZELLIJ_IMAGE` still selects the **builder engine image**, not the
+image being produced or published.
+
+Saved delivery has no effect on ordinary `build`, `si` or `ni`: those commands
+never push. Legacy `image build`, `build --target image`, and omitted-tag
+`image run` retain their original tag rules and do not read `image.name`.
+Provider, site-ID and credential fields are rejected in this registry-only
+configuration. Unknown keys and malformed blocks fail before runtime detection.
+The complete config must remain valid even when `--tag` overrides its name.
+
 ## Planned CLI defaults
 
-The site layout, `version`, `renderer`, `build.out`, and `preview.port` above are
-implemented in source. Image, delivery and CI settings, shared `--site-root` /
-`--config` / `--cwd` selectors, and additional image/delivery commands
-remain planned and are not accepted by the current parser.
+The site layout, build/preview settings, `image.name`, and registry-only
+publication above are implemented in source. Direct provider delivery and CI
+settings, shared `--site-root` / `--config` / `--cwd` selectors, and remaining
+delivery commands are planned and are not accepted as working capabilities.
 
 [Shortcuts](/cli/shortcuts) for working commands and
 [shell completions](/cli/completions) are implemented in source. They use the

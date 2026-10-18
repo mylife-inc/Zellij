@@ -1737,3 +1737,19 @@ output stay intact; temporary contexts are cleaned on failure. Adjacent fixes
 make Next health checks prefix-aware and prevent `//page` URLs in root-mounted
 guides. Source/PR and final validation evidence are tracked in ZELLIJ_CONTEXT.md.
 Remaining delivery, CI and command-family work is unchanged by this milestone.
+
+
+### Implementation record — 2026-10-18, saved image publication
+
+Shared versioned image/publication settings and `publish` / `pub` now cover
+static and Next images for both renderers. Intent resolution is separate from
+execution, and existing image builders are reused without repeated builds.
+Publication requires an explicit destination; ordinary image builds never push.
+Failures stop at the failed stage, preserve source/output, remove temporary
+contexts, and distinguish unsuccessful registry operations from invalid content.
+Tests cover malformed settings, override precedence, no-tool dry runs, missing
+runtime, no push after failure, exact destination and cleanup. CI also publishes
+to a disposable loopback registry, removes the local image, pulls it back, and
+runs the existing HTTP/browser acceptance against the retrieved static and Next
+artifacts. Source and completed acceptance are tracked in the durable context.
+The provider/Netlify and remaining CLI backlog are still open.

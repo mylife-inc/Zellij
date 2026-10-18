@@ -6,7 +6,9 @@ description: Build and put it online, on a CDN or a container host.
 <Callout type="warning" title="Planned">
 `zel deploy` exits with `not implemented yet`. This page describes the planned
 workflow. Netlify is the first implementation target; the broader provider list
-remains a proposal. The agreed site layout is also pending implementation.
+remains a proposal. The agreed site layout is implemented.
+[`zel publish`](/cli/publish) currently supports saved image build/push plans;
+it does not yet upload static files to a provider.
 </Callout>
 
 ```bash title="terminal"
@@ -37,15 +39,14 @@ override.
 
 ## Where the content comes from
 
-The planned common site resolver accepts the parent of `zel.yaml`:
+The common site resolver accepts the parent of `zel.yaml`:
 
 ```bash title="terminal"
 zel deploy netlify              # docs/zellij/zel.yaml from the repository root
 zel deploy netlify docs/manual  # explicitly named site root
 ```
 
-See the [planned defaults](/cli/config#planned-cli-defaults); this differs from
-current raw-content discovery. The proposed saved delivery configuration is:
+See [site discovery](/cli/config#site-layout-and-discovery). The proposed saved delivery configuration is:
 
 ```yaml title="docs/zellij/zel.yaml — proposed"
 version: 1
@@ -56,8 +57,9 @@ publish:
   site: acme-docs
 ```
 
-Then `zel publish` uses that saved intent. Bare `zel deploy` is proposed as its
-equivalent; neither operation is implemented yet. The shared delivery plan will
+The proposed provider settings will let `zel publish` use that saved intent.
+Bare `zel deploy` is proposed as its equivalent. Both provider paths remain
+unimplemented; current `publish` accepts only registry image pushes. The shared delivery plan will
 validate and build once before uploading.
 
 ## What it does

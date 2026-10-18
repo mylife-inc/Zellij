@@ -1,10 +1,11 @@
 # zel CLI command contract
 
-Status: **runtime policy, configured-site layout, working-command shortcuts and completions implemented in source; additional capabilities remain proposed**.
+Status: **runtime policy, configured-site layout, working-command shortcuts, completions, images and registry publication implemented in source; additional capabilities remain proposed**.
 The runtime prerequisite policy in §2.9 is implemented in source. The configured site layout and repository-root default below are implemented,
 including `build.out` and `preview.port`. Shortcuts for existing handlers and
-shell completions are implemented; shared selectors, image/delivery/CI fields,
-and other command refinements remain proposed.
+shell completions are implemented. `image.name` and registry-only `publish`
+settings are implemented; shared selectors, provider delivery, CI fields and
+other command refinements remain proposed.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
 the [original specification](zellij-cli-spec.md) remains design history.
 
@@ -71,13 +72,14 @@ exists, possibly with different arguments/defaults; **S** means a registered
 stub; **N** means no command at the reconciliation baseline. The working-command
 shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
 `sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`, `c`, `s`, `v`,
-`b`, `si`, `ni`, `ir`, `ip`, `idf`, and `comp`. `ci run` is implemented with `ci publish`
+`b`, `si`, `ni`, `ir`, `ip`, `idf`, `pub`, and `comp`. `ci run` is implemented with `ci publish`
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
 The proposed **capabilities** in the tables are not all implemented: conversion
 still writes raw hosted content and `view` remains portable-only. Static-image
-packaging, Next packaging with a portable Markdown adapter, and `idf --kind static|next` are implemented. `na`, `pub`, `netlify`,
+packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
+and registry publication via `publish` / `pub` are implemented. `na`, `netlify`,
 and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
@@ -185,7 +187,7 @@ configuration can already be passed to Next unchanged.
 | Command | Shortcut | Role | Baseline |
 | --- | --- | --- | --- |
 | `zel deploy <provider> [site]` | `zel netlify [site]` for Netlify | Validate, build, and deploy to an explicitly chosen provider. | S |
-| `zel publish [site]` | `zel pub [site]` | Execute the site's configured delivery: deploy, or build and push an image. | S |
+| `zel publish [site]` | `zel pub [site]` | Execute saved image build/push now; provider deployment remains proposed. | I: registry push |
 | `zel ship <source> --out <destination>` | Same | Import into a new configured site, then execute delivery; preserve source. | S |
 | `zel ci init github [--site-root <site>]` | `zel ci [site]` | Generate a GitHub workflow using saved settings. | I: different options |
 | `zel ci run` | Existing `zel ci publish` | Dispatch an existing workflow; retain `--workflow` and `--ref`. | I: `ci publish` |
@@ -293,8 +295,28 @@ portable identity, navigation, branding, and Markdown options remain available
 in the versioned portable configuration, with paths relative to `content/`.
 
 Omitted settings mean source `content/`, output `site/`, preview port 3000, and
-no configured remote delivery. The `build` and `preview` settings below are implemented. The `image`, `publish`,
-and `ci` blocks remain proposals and are currently rejected. Example settings:
+no configured remote delivery. `build`, `preview`, `image.name`, and the
+registry-only form of `publish` are implemented. For example:
+
+```yaml
+image:
+  name: ghcr.io/acme/manual:v1
+publish:
+  action: push
+  image: static
+```
+
+`publish.image` accepts `static` or `next`. `image.name` also supplies the saved
+default for new `si` / `ni`; explicit `--tag` wins. An explicit configured name
+is shared by both image kinds; generated defaults stay distinct when absent.
+Legacy image commands retain their old defaults. `publish` requires saved
+intent and an explicit destination from config or `--tag`; it never publishes
+a generated folder-derived name. Provider/site/credential fields are rejected
+for registry publication. `pub --dry-run` resolves the plan without tools,
+content validation, builds or remote requests; `--json` remains unsupported.
+
+The following provider and CI blocks remain proposals and are rejected.
+The build/preview/image fields in this combined example are implemented:
 
 ```yaml
 build:
@@ -467,3 +489,21 @@ renderer/layout. Restoring the config recovers without restarting.
 CI generation still targets raw hosted content, including `<site>/content` for
 configured sites; it does not consume proposed image/delivery/CI defaults.
 Conversion output is unchanged. Aliases and shared selectors are not registered.
+
+
+### Registry-publication implementation — 2026-10-18
+
+`image.name`, `publish: {action: push, image: static|next}` and `publish` / `pub`
+are implemented. Shared core types validate configuration and resolve the
+selected image/destination before execution. Local image commands and publication
+use one build operation; publication preflights the runtime once, builds once,
+then pushes the exact tag. A failed build cannot trigger a push. A failed push
+reports the completed local build and a push-only retry command.
+
+No implicit login, registry creation, cloud deployment, installation or daemon
+startup occurs. Credentials remain with the runtime. Registry access is checked
+by the actual push, not by runtime detection or dry-run. Exit 3 is retained for
+unsuccessful image runtime operations, now with operation-specific diagnostics.
+Original sources and previous output remain intact, and temporary contexts are
+removed even on failure. `--to` remains explicitly rejected until provider
+delivery exists. CI configuration and generation changes are the next stages.

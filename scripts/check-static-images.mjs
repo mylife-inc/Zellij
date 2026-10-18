@@ -1,5 +1,5 @@
 // Real image acceptance: both renderers, including hosted basePath, run on an
-// unprivileged HTTP server. No registry pushes or external deployment.
+// unprivileged HTTP server. Publication uses a disposable loopback registry.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
+import { localRegistry, pullPublishedImage } from './fixtures/local-registry.mjs';
 
 const zel = path.resolve(process.argv[2] ?? 'cli/target/debug/zel');
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-static-images-'));
@@ -123,9 +124,13 @@ try {
   await write('docs/zellij/content/assets/Manual copy.pdf', '%PDF-1.4\nfixture\n');
   await write('docs/zellij/content/unreferenced.txt', 'not public');
   await write('docs/zellij/site/index.html', 'previous output');
-  const portable = `zellij-static-portable:${suffix}`;
+  const registry = await localRegistry(docker, containers, suffix);
+  const portable = `${registry}/acceptance/static:${suffix}`;
+  const config = await readFile(path.join(root, 'docs/zellij/zel.yaml'), 'utf8');
+  await write('docs/zellij/zel.yaml', `${config}image: {name: '${portable}'}\npublish: {action: push, image: static}\n`);
   images.push(portable);
-  run(['si', '--tag', portable]);
+  run(['publish']);
+  pullPublishedImage(docker, portable);
   assert.equal(await readFile(path.join(root, 'docs/zellij/site/index.html'), 'utf8'), 'previous output');
   await serve(portable, 'portable', '');
 

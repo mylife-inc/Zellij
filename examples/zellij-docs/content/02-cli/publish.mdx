@@ -1,88 +1,119 @@
 ---
 title: zel publish
-description: Execute a site's saved delivery plan.
+description: Build and push the static or Next image selected by a site's saved settings.
 ---
 
-<Callout type="warning" title="Planned">
-`zel publish` and `zel deploy` both exit with `not implemented yet`. The common
-site configuration and aliases below are also pending. Use the working build
-and provider-CLI example near the end of this page until they land.
+<Callout type="tip" title="Available in source">
+`zel publish`, also `zel pub`, builds and pushes a configured image. It supports
+portable Markdown and hosted content, with an explicit choice of static-server
+or Next.js image. This requires a new binary release; `zellij-v0.1.3` predates it.
+Direct Netlify and other provider deployments remain planned.
 </Callout>
 
-```bash title="terminal — proposed"
-zel publish
-zel publish docs/manual
-zel pub docs/manual
-```
+## Save the destination
 
-## What it is
+Add image and publication settings to a versioned site configuration:
 
-`publish` will execute delivery settings saved in the site's `zel.yaml`.
-[`deploy`](/cli/deploy) will select a provider explicitly at the command line;
-[`ship`](/cli/ship) will import external documentation before delivery. These
-operations will share one plan that validates and builds once, then uploads,
-pushes an image, or deploys it as requested.
-
-The plan will not invoke a public `build` followed by a public `deploy` that
-builds the same site again. Build output is passed to the delivery step.
-
-A proposed configuration for a portable site is:
-
-```yaml title="docs/zellij/zel.yaml — proposed"
+```yaml title="docs/zellij/zel.yaml"
 version: 1
 renderer: portable
 name: Acme documentation
+image:
+  name: ghcr.io/acme/manual:v1
 publish:
-  action: deploy
-  provider: netlify
-  site: acme-docs
+  action: push
+  image: static
 ```
 
-Markdown will live under `docs/zellij/content/`, with generated HTML in its
-sibling `site/`. Another site-directory name is allowed and is selected with an
-explicit path. See [planned configuration](/cli/config#planned-cli-defaults).
-These fields are not accepted by the current flat portable config reader.
+Use `image: next` under `publish` for a Next.js application image. This setting
+chooses the artifact for publication; it does not change `renderer` or turn an
+ordinary `zel build`, `zel si` or `zel ni` into a publication command.
 
-## What each step contributes
-
-<Steps>
-<Step title="Resolve and validate">
-Resolve the site, renderer and saved delivery intent. Validate content and
-required tools/settings before performing external delivery.
-</Step>
-<Step title="Build once">
-Create the requested static export or container image. Static-server images and
-Next.js wrapper images remain distinct packaging choices.
-</Step>
-<Step title="Deliver">
-Upload static files, push an image to a registry, or deploy that image to a
-configured provider. Registry-only publication does not require a cloud provider.
-Credentials come from the environment or the provider's supported login mechanism.
-</Step>
-</Steps>
-
-Netlify is the first requested direct deployment integration. Other providers
-remain part of the broader proposed catalog. The
-[full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)
-records the delivery and CI design.
-
-## Until it lands
-
-For an existing Markdown folder, the native CLI can validate and build; use the
-Netlify CLI for the upload. This example requires that separate CLI, a configured
-Netlify site and its credentials:
+`image.name` is the exact reference to build and push. It also supplies the
+saved default for `si` and `ni`; both use that same name if explicitly configured.
+Use distinct `--tag` values when retaining both kinds. Without a configured name,
+local image builds still have separate generated defaults. Publication requires
+an explicit destination in configuration or `--tag`; it never guesses one from
+the site's folder name. An omitted tag suffix uses the container client's usual
+`latest` tag. Include a registry hostname to avoid the client's default registry.
 
 ```bash title="terminal"
-zel check docs && \
-zel build docs --out dist && \
-netlify deploy --prod --dir dist
+zel pub --dry-run
+zel publish
+zel pub docs/manual --tag ghcr.io/acme/manual:v2
 ```
 
-Each step runs only if the preceding step succeeds. [`zel ci`](/cli/ci) can also
-generate an existing Netlify workflow, using its currently documented options.
+No path means the current directory's `zel.yaml`, then `docs/zellij/zel.yaml`.
+A custom site folder is explicit. Saved delivery settings require `version: 1`
+and `content/`; explicit raw-content folders do not acquire a publication default.
+The configuration is not modified by overrides or a successful push.
 
-## See also
+## What runs
 
-- [`zel deploy`](/cli/deploy)
-- [`zel ship`](/cli/ship)
-- [Configuration](/cli/config#planned-cli-defaults)
+The command resolves the site, image kind and destination, then checks for a
+usable container runtime. It validates and builds using the same operation as
+[`image static` or `image next`](/cli/image). A successful build is pushed once
+to the exact selected reference, without a second build or implicit retagging.
+
+For portable sources, generated HTML or adapted Next content lives in a private
+temporary directory, removed on success or failure. Existing `site/`, configured
+`build.out`, Markdown, configuration and assets are preserved. Hosted image builds
+use their existing validated recipes. The pushed image has the same server,
+health check, navigation and deployment-prefix behavior as its local image kind.
+
+A successful push publishes an image to a registry. It does not launch a cloud
+service, create provider infrastructure, or open a browser. Use [`zel image run`](/cli/image#zel-image-run)
+to run a built or pulled image.
+
+### Credentials and prerequisites
+
+Authenticate using the selected container client's normal registry login, such
+as `docker login ghcr.io`. Credentials are managed by that client; put neither
+passwords nor tokens in `zel.yaml` or the image reference. Registry authentication
+and write permissions are checked by the push itself. Runtime preflight does
+not prove registry access.
+
+Docker, Podman and nerdctl follow the same [runtime selection](/cli/doctor) as
+other image commands. No runtime is installed or started automatically. Network
+access may be needed for image downloads, dependencies and the push.
+
+### Failure and retry
+
+Invalid shared settings or an invalid image reference stop with exit **2**.
+Missing/unavailable runtime stops with **4**. Content/build failures and an
+unsuccessful runtime push stop with **3**; process/IO failures use **1**.
+A failed validation/build never attempts a push.
+
+If building succeeds and pushing fails, the command names the completed build
+and leaves the local image available. After correcting registry access, retry
+only the push:
+
+```bash
+zel image push ghcr.io/acme/manual:v1
+```
+
+Do not add `--registry` to that command when the reference already contains the
+registry: that option prefixes a new destination for the existing manual push
+command. A failed push may have uploaded some layers; Zellij does not attempt
+to delete registry state or roll back a previously published tag.
+
+## Options
+
+| Option | Meaning |
+| --- | --- |
+| `[site]` | Configured site root; otherwise use the standard discovery order |
+| `--tag <reference>` | Override `image.name` for both build and push |
+| `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
+| `--to <provider>` | Reserved compatibility option; rejected until provider deployment is implemented |
+
+`--json` is not supported and fails before work. A dry run checks shared settings
+and site selection; it does not prove that the content builds, credentials work,
+or the destination exists.
+
+## Remaining delivery work
+
+`publish.action: deploy`, provider/site fields, [`zel deploy`](/cli/deploy),
+`zel netlify`, and the [`ship`](/cli/ship) composition remain planned and are not
+accepted as working delivery paths. CI settings and the new short `zel ci [site]`
+form are also pending. Existing [workflow generation](/cli/ci) retains its current
+options and does not consume these saved settings yet.
