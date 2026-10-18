@@ -11,6 +11,7 @@ export async function checkMindmaps({ binary, root, env, engine, browser }) {
   const moved = `${source}-moved café`;
   await mkdir(path.join(source, 'guide'), { recursive: true });
   await writeFile(path.join(source, 'index.md'), '# Diagrams\n\n[Read maps](guide/maps.md#hierarchy)\n');
+  await writeFile(path.join(source, 'guide/deep.md'), '# Deep hierarchy\n\n```mindmap\n' + Array.from({ length: 32 }, (_, i) => `${'  '.repeat(i)}${i === 31 ? 'W'.repeat(256) : `Level ${i + 1}`}:\n`).join('') + '```\n');
   await writeFile(path.join(source, 'guide/maps.md'), `# Maps
 
 ## Hierarchy
@@ -124,6 +125,20 @@ flowchart LR
       await page.locator('article').getByRole('link', { name: 'Read maps' }).click();
       await expect(page).toHaveURL(url => url.hash === '#hierarchy');
       await expect(diagram).toBeVisible();
+      // The maximum supported depth and label length must remain usable when
+      // the text alternative is expanded on a narrow screen, including no-JS.
+      await page.goto(pathToFileURL(path.join(moved, 'guide/deep.html')).href);
+      await page.locator('.mindmap-outline summary').focus();
+      await page.keyboard.press('Enter');
+      await expect(page.locator('.mindmap-outline')).toHaveAttribute('open', '');
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), { message: 'Deep outlines stay inside the mobile page' }).toBe(true);
+      const textScroll = page.getByRole('group', { name: 'Mindmap text outline: Level 1', exact: true });
+      await textScroll.focus();
+      await expect(textScroll).toBeFocused();
+      if (javaScriptEnabled) {
+        await page.keyboard.press('End');
+        await expect.poll(() => textScroll.evaluate(n => n.scrollLeft > 0 && n.scrollLeft + n.clientWidth >= n.scrollWidth - 1)).toBe(true);
+      }
       assert(requests.every(url => /^(file|data):/.test(url)), 'Diagrams load without an HTTP server or network');
       assert.deepEqual(errors, []);
     } finally { await context.close(); }

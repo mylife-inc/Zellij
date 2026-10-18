@@ -9,6 +9,7 @@
 .mindmap-node[data-depth="0"] text { fill: var(--zellij-bg); }
 .mindmap-outline { margin-top: .7rem; font-size: .85rem; }
 .mindmap-outline summary { color: var(--zellij-muted); }
+.mindmap-outline ul { width: max-content; }
 @media print {
   .mindmap-scroll { overflow: visible; }
   .mindmap-svg { max-width: 100%; height: auto; }
@@ -17,4 +18,5 @@
   .mindmap-edges { stroke: black; }
   .mindmap-node[data-depth="0"] rect { fill: black; stroke: black; }
   .mindmap-node[data-depth="0"] text { fill: white; }
+  .mindmap-outline ul { width: auto; }
 }

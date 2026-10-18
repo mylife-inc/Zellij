@@ -1170,6 +1170,9 @@ overlap, escaping, semantic outlines, theme/search/navigation, mobile overflow,
 keyboard controls and JavaScript-disabled rendering. Both pass HTTP/watch
 addition, invalid-diagram preservation and recovery plus real Ctrl-C. Four of
 the five new native feature tests failed on the previous implementation.
+Review also reproduced mobile page overflow when expanding a 32-level outline
+with a 256-character label. The follow-up contains outlines in their own focused
+scroll region, covered in both browsers with JavaScript enabled and disabled.
 Consult the PR containing `a140800` for hosted six-target packaging, three-OS
 browser acceptance and merge status. No native version is published here.
 

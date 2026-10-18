@@ -180,7 +180,8 @@ ordinal before publication. Watch mode retains the previous export/revision
 and recovers after edits. Tests cover grammar/limits/escaping, real CLI JSON
 without external tools, relocated nested `file://` output in Chromium/WebKit,
 actual SVG/text bounds, outline hierarchy, theme/search/navigation, mobile
-overflow, keyboard controls, JavaScript-disabled content and HTTP/watch error
+overflow (including expanded maximum-depth/label outlines in their own scroll
+region), keyboard controls, JavaScript-disabled content and HTTP/watch error
 preservation/recovery. Mermaid fences remain literal code; this milestone does
 not add Mermaid execution or claim exhaustive screen-reader/browser acceptance.
 

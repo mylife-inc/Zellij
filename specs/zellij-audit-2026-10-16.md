@@ -1074,7 +1074,10 @@ offline browser acceptance and HTTP/watch failure-preservation/recovery tests.
 Browser assertions check actual SVG/text bounds, hierarchy, escaping, theme
 colors, search/navigation, mobile containment, keyboard scrolling and disabled
 JavaScript. Four initial native feature tests failed on the old implementation.
-Consult the PR containing `a140800` for final hosted acceptance and merge state.
+Review reproduced mobile page overflow from a maximum-depth/label text outline.
+The follow-up contains outlines in a focused scroll region and adds both-browser,
+JavaScript-enabled/disabled boundary acceptance. Consult the PR containing
+`a140800` for final hosted acceptance and merge state.
 
 Prior milestone: PR #23 merged as `9fa1866`; PR/main CI `39093178918` /
 `39093718016` and image workflow `39093718039` each passed all 13 jobs. Minimum
