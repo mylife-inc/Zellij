@@ -59,32 +59,22 @@ impl Server {
                 socket
                     .set_read_timeout(Some(Duration::from_secs(5)))
                     .unwrap();
-                let mut reader = BufReader::new(socket.try_clone().unwrap());
-                let mut line = String::new();
-                reader.read_line(&mut line).unwrap();
-                let parts: Vec<_> = line.split_whitespace().collect();
-                let (method, path) = (parts[0].to_owned(), parts[1].to_owned());
-                let mut headers = BTreeMap::new();
-                loop {
-                    let mut line = String::new();
-                    reader.read_line(&mut line).unwrap();
-                    if line == "\r\n" {
-                        break;
+                let request = match read_request(&socket) {
+                    Ok(Some(request)) => request,
+                    Ok(None) => continue, // Client cancelled before completing a request.
+                    Err(error)
+                        if matches!(
+                            error.kind(),
+                            std::io::ErrorKind::UnexpectedEof
+                                | std::io::ErrorKind::ConnectionReset
+                                | std::io::ErrorKind::ConnectionAborted
+                                | std::io::ErrorKind::TimedOut
+                                | std::io::ErrorKind::WouldBlock
+                        ) =>
+                    {
+                        continue;
                     }
-                    let (key, value) = line.split_once(':').unwrap();
-                    headers.insert(key.to_ascii_lowercase(), value.trim().to_owned());
-                }
-                let size = headers
-                    .get("content-length")
-                    .map(|v| v.parse::<usize>().unwrap())
-                    .unwrap_or(0);
-                let mut body = vec![0; size];
-                reader.read_exact(&mut body).unwrap();
-                let request = Request {
-                    method,
-                    path,
-                    headers,
-                    body,
+                    Err(error) => panic!("invalid fixture request: {error}"),
                 };
                 let index = record.lock().unwrap().len();
                 let reply = handler(&request, index);
@@ -122,6 +112,80 @@ impl Server {
         .unwrap()
     }
 }
+// A deadline can expire after TCP connect but before any HTTP bytes arrive,
+// or partway through a request. Such sockets are not complete API operations.
+fn read_request(socket: &std::net::TcpStream) -> std::io::Result<Option<Request>> {
+    let mut reader = BufReader::new(socket.try_clone()?);
+    let mut line = String::new();
+    if reader.read_line(&mut line)? == 0 || !line.ends_with("\r\n") {
+        return Ok(None);
+    }
+    let parts: Vec<_> = line.split_whitespace().collect();
+    if parts.len() != 3 {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::InvalidData,
+            "invalid request line",
+        ));
+    }
+    let (method, path) = (parts[0].to_owned(), parts[1].to_owned());
+    let mut headers = BTreeMap::new();
+    loop {
+        let mut line = String::new();
+        if reader.read_line(&mut line)? == 0 || !line.ends_with("\r\n") {
+            return Ok(None);
+        }
+        if line == "\r\n" {
+            break;
+        }
+        let (key, value) = line.split_once(':').ok_or_else(|| {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, "invalid header")
+        })?;
+        headers.insert(key.to_ascii_lowercase(), value.trim().to_owned());
+    }
+    let size = headers
+        .get("content-length")
+        .map(|v| v.parse::<usize>())
+        .transpose()
+        .map_err(|_| {
+            std::io::Error::new(std::io::ErrorKind::InvalidData, "invalid content length")
+        })?
+        .unwrap_or(0);
+    let mut body = vec![0; size];
+    reader.read_exact(&mut body)?;
+    Ok(Some(Request {
+        method,
+        path,
+        headers,
+        body,
+    }))
+}
+
+#[test]
+fn mock_api_survives_connections_cancelled_before_complete_requests() {
+    let server = Server::new(|_, _| json!({"id":"manual"}).into());
+    let address = server
+        .address
+        .strip_prefix("http://")
+        .unwrap()
+        .strip_suffix("/api/v1/")
+        .unwrap();
+    for partial in [
+        "",
+        "GE",
+        "GET /api/v1/sites/manual HTTP/1.1\r\nAuthoriz",
+        "GET /api/v1/sites/manual HTTP/1.1\r\n",
+        "POST /api/v1/sites/manual/deploys HTTP/1.1\r\nContent-Length: 20\r\n\r\n{}",
+    ] {
+        let mut socket = std::net::TcpStream::connect(address).unwrap();
+        socket.write_all(partial.as_bytes()).unwrap();
+        socket.shutdown(std::net::Shutdown::Both).unwrap();
+    }
+    server.client().check_site("manual").unwrap();
+    let requests = server.requests.lock().unwrap();
+    assert_eq!(requests.len(), 1);
+    assert_eq!(requests[0].method, "GET");
+}
+
 impl Drop for Server {
     fn drop(&mut self) {
         self.stop.store(true, Ordering::SeqCst);

@@ -2352,3 +2352,11 @@ Release-readiness review also corrected the project starter's version fallback:
 compatible future/candidate binaries pin their own version, while the current
 incompatible development version prepares planned v0.2.0. It no longer keeps
 an unconditional 0.2.0 pin after a later release changes generator commands.
+
+
+Run `39159315383` at `23657c6` exposed a pre-existing Windows timeout-fixture
+race: the native Netlify mock server indexed an empty request line when a client
+closed TCP before sending headers. The fixture now ignores incomplete/cancelled
+connections and records only complete requests, with a deterministic regression
+covering empty connections, truncated headers and bodies followed by a valid
+request. Native delivery behavior is unchanged. Final-head CI remains required.
