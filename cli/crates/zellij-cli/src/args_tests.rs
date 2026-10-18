@@ -320,7 +320,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             ErrorKind::InvalidSubcommand
         );
     }
-    assert!(parse(&["ci"]).is_err());
+    assert!(parse(&["ci"]).is_ok());
     assert_eq!(
         parse(&["v", "--browser", "b"]).unwrap(),
         parse(&["view", "--browser", "b"]).unwrap()

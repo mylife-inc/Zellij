@@ -57,7 +57,7 @@ impl Default for ProjectOptions {
     }
 }
 
-pub fn project(options: &ProjectOptions) -> Scaffold {
+pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
     let ProjectOptions {
         name,
         docs_dir,
@@ -94,13 +94,11 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
     scaffold.add(
         ".github/workflows/docs.yml",
         pipeline::github(&pipeline::CiOptions {
-            content: format!("{docs_dir}/content"),
-            publish: pipeline::Publish::Image,
-            registry: "ghcr.io".into(),
-            // `zel new project` scaffolds an image pipeline; a Netlify site
-            // is a later decision, made by `zel ci init --deploy netlify`.
-            site_id: None,
-        }),
+            site_root: docs_dir.clone(),
+            settings: zellij_core::ci::Settings::default(),
+            version: "0.2.0".into(),
+            publish: pipeline::Publish::LegacyImage,
+        })?,
     );
 
     scaffold.add(
@@ -125,7 +123,8 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
              ```\n\
              \n\
              `.github/workflows/docs.yml` validates it on every pull request and\n\
-             builds a container image on `main`. A push that only touches\n\
+             builds a container image on `main`. It requires the compatible native\n\
+             release `zellij-v0.2.0` and its engine image to be published first. A push that only touches\n\
              `{product_dir}/` does neither.\n"
         ),
     );
@@ -141,7 +140,7 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
         ),
     );
 
-    scaffold
+    Ok(scaffold)
 }
 
 #[cfg(test)]
@@ -157,7 +156,8 @@ mod tests {
         let out = project(&ProjectOptions {
             name: "acme".into(),
             ..Default::default()
-        });
+        })
+        .unwrap();
         let paths = paths(&out);
 
         assert!(
@@ -178,7 +178,8 @@ mod tests {
             docs_dir: "documentation".into(),
             product_dir: "app".into(),
             ..Default::default()
-        });
+        })
+        .unwrap();
 
         let paths = paths(&out);
         assert!(
@@ -193,12 +194,9 @@ mod tests {
             .find(|(p, _)| p == ".github/workflows/docs.yml")
             .map(|(_, b)| b.to_string())
             .unwrap();
+        assert!(workflow.contains("documentation/**"), "{workflow}");
         assert!(
-            workflow.contains("'documentation/content/**'"),
-            "{workflow}"
-        );
-        assert!(
-            workflow.contains("CONTENT: documentation/content"),
+            workflow.contains("SITE_ROOT: ./documentation"),
             "{workflow}"
         );
     }
@@ -215,7 +213,8 @@ mod tests {
         let inside = project(&ProjectOptions {
             name: "acme".into(),
             ..Default::default()
-        });
+        })
+        .unwrap();
 
         for (path, body) in standalone.files() {
             let found = inside

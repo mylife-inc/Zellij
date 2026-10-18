@@ -88,5 +88,8 @@ recipe. `si`, `ni`, `ir`, and `ip` require a usable container runtime.
 resolves the plan. `netlify` builds and uploads static HTML, with a draft preview
 by default and `--prod` for live publication.
 
-`na` remains unregistered until its command is implemented. Bare `zel ci` still requires an action; it is not yet shorthand
-for workflow generation.
+`zel ci [site]` generates the same workflow as `zel ci init github --site-root
+<site>`, using saved settings. It writes local files by default; `--provision`
+explicitly uploads a Netlify token. See [CI](/cli/ci) for the compatible release
+pin required while the current public binary is older than this contract.
+`na` remains unregistered until its command is implemented.

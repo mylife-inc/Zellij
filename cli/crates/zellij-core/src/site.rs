@@ -26,6 +26,7 @@ pub struct Site {
     pub port: u16,
     pub image: Option<crate::delivery::ImageSettings>,
     pub publish: Option<crate::delivery::PublishSettings>,
+    pub ci: crate::ci::Settings,
     /// Remaining portable presentation settings, validated by the renderer.
     pub portable: Value,
 }
@@ -110,6 +111,7 @@ impl Site {
         let mut port = 3000;
         let mut image = None;
         let mut publish = None;
+        let mut ci = crate::ci::Settings::default();
         let (content, renderer, output) = if configured {
             let settings = settings.as_mut().unwrap();
             if settings.remove("version").and_then(|v| v.as_u64()) != Some(1) {
@@ -159,22 +161,26 @@ impl Site {
                 .remove("publish")
                 .map(|value| parse(&root, value))
                 .transpose()?;
+            if let Some(value) = settings.remove("ci") {
+                ci = parse(&root, value)?;
+                ci.validate()?;
+            }
             if renderer == Renderer::Hosted && !settings.is_empty() {
                 return Err(invalid(
                     &root,
-                    "hosted zel.yaml supports version, renderer, build, preview, image and publish only; put presentation settings in content/site.yaml",
+                    "hosted zel.yaml supports version, renderer, build, preview, image, publish and ci only; put presentation settings in content/site.yaml",
                 ));
             }
             (content, renderer, output)
         } else {
             if settings.as_ref().is_some_and(|s| {
-                ["renderer", "build", "preview", "image", "publish"]
+                ["renderer", "build", "preview", "image", "publish", "ci"]
                     .iter()
                     .any(|k| s.contains_key(*k))
             }) {
                 return Err(invalid(
                     &root,
-                    "renderer/build/preview/image/publish require version: 1 and the content/ layout",
+                    "renderer/build/preview/image/publish/ci require version: 1 and the content/ layout",
                 ));
             }
             let renderer = if settings.is_some() {
@@ -207,6 +213,7 @@ impl Site {
             port,
             image,
             publish,
+            ci,
             portable: Value::Mapping(settings.unwrap_or_default()),
         })
     }

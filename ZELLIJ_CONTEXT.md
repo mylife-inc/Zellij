@@ -3,10 +3,10 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: native Netlify delivery on `codex/cli-netlify`; see the
-implementation record at the end of this file for source and verification.
-Saved image publication merged in PR #32; Next images and the native Markdown
-adapter merged in PR #31; static packaging merged in PR #30.
+Latest CLI work: saved CI settings and workflow generation on
+`codex/cli-workflows`; see the implementation record at the end for evidence.
+Native Netlify delivery merged in PR #33, image publication in PR #32,
+Next images/Markdown adaptation in PR #31, and static packaging in PR #30.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -2260,3 +2260,76 @@ guide navigation, logo, reload and resource requests. The hosted CI test now run
 immediately after engine-image setup, before the longer image suites, to make
 any further export/upload failures visible earlier. Final-head CI remains the
 merge gate; prior failed runs are not represented as complete acceptance.
+
+
+### Netlify final acceptance and merged baseline — 2026-10-18
+
+PR #33 merged as `e9534f9705898f2041c08eb83693994c44189ac3`.
+Final source/test head `372c42cb791ceca28e8bf88ae757608535eb4441` passed all
+13 jobs in [run 39156106290](https://github.com/mylife-inc/Zellij/actions/runs/39156106290),
+including six native platforms and actual hosted export/upload through the mock
+API. The merged main also passed all 13 jobs in run `39157419834`, and base
+publication `39157419858` succeeded. This completes the pending evidence above;
+it does not constitute live Netlify account or released-binary acceptance.
+
+### Saved CI settings and workflow generator — 2026-10-18
+
+Baseline: main `e9534f9705898f2041c08eb83693994c44189ac3`; implementation on
+`codex/cli-workflows`. Latest public native release remains `zellij-v0.1.3`
+(2026-08-13), refreshed from GitHub on 2026-10-18. No new release, live deployment,
+secret provisioning or public documentation deployment is part of this work.
+
+- Versioned sites share typed `ci` settings: system (github), branch (literal),
+  workflow (filename), zel-version (exact), triggers (pull_request/push/manual),
+  tags (positive patterns), schedules (five numeric UTC cron fields), production.
+  Unknown fields/unsupported events/credentials are rejected. Settings are
+  removed before portable presentation validation and accepted by hosted roots.
+- `zel ci [site]` and `ci init github --site-root <site>` share resolution/writing.
+  Site discovery follows the existing convention; Git locates the selected
+  site's repository. Workflows live at its workflow root, using relative paths
+  and filters covering configuration/content/workflow changes. `./run` and
+  --site-root disambiguate reserved action names. --content remains an alias.
+- Generation serializes YAML, passes paths/values through step environment, and
+  escapes path-filter metacharacters. Control characters and GitHub expressions
+  in input paths are rejected. Atomic writes retain --force policy and reject
+  linked destination ancestors, including junctions. No local runtime needed.
+- PRs check/build without publishing. Allowed branch push/manual/schedule or
+  configured tag triggers check and execute a single native build/delivery.
+  Manual runs on other branches only verify. Saved static/Next image delivery
+  uses publish; Netlify uses native deploy. No npx/Netlify CLI and no double build.
+  Legacy --target image retains one Next image build followed by exact-tag push.
+- GHCR uses scoped packages permission/token; other explicit registries use
+  REGISTRY_USERNAME/PASSWORD secrets. Netlify ID precedence is flag > local env >
+  saved site, falling back to repository variable/secret when absent. Credentials
+  are scoped to publication steps. Draft default; ci.production/--prod is explicit.
+- Local generation is the default even with credentials in the environment.
+  Only --provision uploads NETLIFY_AUTH_TOKEN through gh stdin, after writing the
+  workflow. Partial failure reports the remaining file and uncertain remote
+  outcome. --no-provision remains accepted. No dispatch occurs while generating.
+- Release boundary: minimum compatible tool contract is planned 0.2.0 (including
+  candidates). Development 0.1.3 cannot supply a valid default pin, so users must
+  explicitly select a future compatible release to prepare the file. Generation
+  never claims that release exists. Compatible released builds will default to
+  their own version. Installer and binary come from the exact release; engine
+  builds pin its matching image. new project prepares the planned 0.2.0 workflow
+  and explicitly reports the release prerequisite. Actual release acceptance is
+  pending; 0.1.3 is not misrepresented as compatible.
+
+Local validation: 248 workspace Rust tests passed (the existing real-container
+acceptance remains intentionally ignored locally), strict/deep docs validation
+passes 49 routes and 23 examples, and five generated variants pass actionlint
+1.7.12. Integration executes generated portable check/build steps with spaces,
+quotes, Unicode and shell metacharacters, and mocks gh to establish stdin-only,
+explicit provisioning and failure reporting. Existing Netlify protocol tests use
+loopback only. Final follow-up checks/PR/platform evidence are recorded below.
+
+During verification the disk filled; cargo-generated target files and the prior
+isolated Netlify export were removed, recovering about 6 GB. Subsequent local
+Rust checks use CARGO_PROFILE_DEV_DEBUG=0 and CARGO_INCREMENTAL=0 to reduce disk
+use. No authored files or unrelated projects were removed.
+
+Next: compatible native release preparation/acceptance and remaining CLI
+composition (ship/configured imports), new app, fmt/watch, portable dev, hosted
+view and advanced maintenance. Full CLI completion remains open. Generated CI
+files require release publication before real use; implementation/tests require
+no user credential or account changes.

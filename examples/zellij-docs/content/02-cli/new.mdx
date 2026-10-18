@@ -438,5 +438,9 @@ exactly what [`zel ci init github --target image`](/cli/ci) writes.
 - [`zel check`](/cli/check) — validate what you wrote
 - [The content model](/guide/content-model) — what these files are, conceptually
 
-The generated project workflow consumes `<docs-dir>/content` so it remains
-compatible with released CLIs. Config-aware CI settings are a later milestone.
+The generated project workflow selects the configured `<docs-dir>` root and
+watches both its configuration and content. It pins the planned compatible
+`zellij-v0.2.0` release and engine image; publish that release before enabling
+the workflow. The currently published 0.1.3 binary is incompatible. The starter
+retains its Next-image GHCR publication intent; use saved settings and `zel ci`
+when choosing a static image or Netlify instead.

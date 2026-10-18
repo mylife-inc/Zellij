@@ -1777,3 +1777,21 @@ Netlify implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`,
 [PR #33](https://github.com/mylife-inc/Zellij/pull/33). Local checks pass 245 Rust
 tests, formatting, warnings-denied Clippy and strict/deep docs validation.
 Use the PR's latest checks for final hosted-container and all-platform results.
+
+
+### Implementation record — 2026-10-18, configured CI workflows
+
+Saved CI settings and both generation forms now produce a Git-root workflow
+using renderer-aware build and native delivery operations. Pull requests build
+without publication; non-PR gates respect branch/tag/schedule intent. Generation
+writes local files by default, with explicit stdin-only Netlify provisioning,
+serialized values, path-filter escaping, destination-link rejection and atomic
+writes. Legacy options and dispatch aliases remain accepted. The old unpinned
+installer/check-only PR/Node uploader paths are replaced. Local regression,
+actionlint and generated-command execution evidence is in ZELLIJ_CONTEXT.md.
+
+Release compatibility is deliberately unresolved operational work: current
+0.1.3 is incompatible; generated files must pin a published compatible 0.2.0+
+release before enabling them. No release or live provider deployment was made.
+Other providers and the remaining CLI backlog remain open. Source/PR evidence
+will be appended without removing the historical generator findings.

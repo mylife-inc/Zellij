@@ -190,7 +190,7 @@ configuration can already be passed to Next unchanged.
 | `zel deploy <provider> [site]` | `zel netlify [site]` for Netlify | Validate, build, and deploy to an explicitly chosen provider. | I: Netlify |
 | `zel publish [site]` | `zel pub [site]` | Execute saved image build/push or Netlify deployment. | I |
 | `zel ship <source> --out <destination>` | Same | Import into a new configured site, then execute delivery; preserve source. | S |
-| `zel ci init github [--site-root <site>]` | `zel ci [site]` | Generate a GitHub workflow using saved settings. | I: different options |
+| `zel ci init github [--site-root <site>]` | `zel ci [site]` | Generate a GitHub workflow using saved settings. | I: saved settings and shorthand |
 | `zel ci run` | Existing `zel ci publish` | Dispatch an existing workflow; retain `--workflow` and `--ref`. | I: `ci publish` |
 
 `deploy` specifies the destination provider at the command line. `publish` uses
@@ -316,8 +316,10 @@ a generated folder-derived name. Provider/site/credential fields are rejected
 for registry publication. `pub --dry-run` resolves the plan without tools,
 content validation, builds or remote requests; `--json` remains unsupported.
 
-The provider block below is implemented. The `ci` block remains a proposal
-and is rejected; omit it in a working configuration:
+The provider and `ci` blocks below are implemented. While the development
+package still reports 0.1.3, CI generation requires an explicit compatible
+release pin (minimum 0.2.0, including candidates); generation does not establish
+that the selected release has been published:
 
 ```yaml
 build:
@@ -333,6 +335,7 @@ publish:
 ci:
   system: github
   branch: main
+  zel-version: 0.2.0
   triggers: [pull_request, push, manual]
 ```
 
@@ -540,3 +543,27 @@ stages and direct the user to its dashboard before retrying. No site creation,
 remote build, functions, login, live provider acceptance, release or documentation
 deployment is part of this implementation. Ship/import composition and saved CI
 settings/workflow generation remain open.
+
+
+### Implementation stage 5c — saved CI and workflow generation (2026-10-18)
+
+Short `ci [site]` and full `ci init github` share settings, resolution and writing.
+Generation locates the site's Git root, serializes workflow data, covers config,
+content and workflow changes, and rejects unsafe destination links/paths. PRs
+validate/build; saved publication uses native delivery with one build per run.
+Publication gates restrict manual/scheduled runs to the configured branch;
+explicit tag patterns enable tag publication. Netlify defaults to previews;
+`ci.production` / `--prod` selects production. Registry secrets are step-scoped.
+Local generation no longer provisions credentials; only `--provision` uploads a
+Netlify token via gh stdin after the workflow exists. `--no-provision` remains
+accepted. Legacy content/target/deploy options retain explicit override roles.
+
+Implemented CI fields: system, branch, workflow, zel-version, triggers (push,
+pull_request, manual), positive tags, numeric UTC schedules, production. The
+version pin must support the 0.2.0 contract. Current public release 0.1.3 cannot
+run these workflows; generation prepares a file without checking availability
+or releasing anything. A compatible installed version will supply the default
+pin; development builds still at 0.1.3 require an explicit pin. The project
+starter prepares a workflow pinned to planned 0.2.0 and reports that prerequisite.
+Real released-asset/provider acceptance remains separate from local generator,
+protocol, renderer and CI tests. See ZELLIJ_CONTEXT.md for current evidence.
