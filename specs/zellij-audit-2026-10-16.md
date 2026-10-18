@@ -908,7 +908,12 @@ pending when this entry was committed; consult PR #20 for final revisions/result
 The initial Windows jobs built both architectures, then exposed unavailable
 PowerShell 5.1 `Get-FileHash` discovery. `489ad35` uses .NET hashing, explicit
 .NET null for the backup path, and adds malformed-mirror/token-isolation checks.
-Both Linux targets and Apple Silicon passed package acceptance in that first run. [Distribution contract](zel-native-distribution.md)
+Both Linux targets and Apple Silicon passed package acceptance in that first run.
+Run `39084948928` subsequently passed all six package/install jobs. A separate
+macOS watch test failed when raw image evaluation lost its execution context
+during reload; the assertion now uses Playwright's retrying locator property
+check. Required image widths and timeouts remain intact. Final complete-suite
+acceptance is recorded on PR #20. [Distribution contract](zel-native-distribution.md)
 records tested OS baselines and remaining signing, broader OS, container and
 release-publication limits. No existing v0.1.3 asset is replaced or new tag issued.
 

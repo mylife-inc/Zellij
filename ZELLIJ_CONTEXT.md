@@ -989,8 +989,12 @@ The first hosted run built both Windows binaries but found that PowerShell 5.1
 could not resolve `Get-FileHash`. `489ad35` uses built-in .NET SHA-256 instead,
 passes an explicit .NET null for replacement backup paths, and strengthens mirror
 URL/token-isolation regression checks. Linux x64/ARM64 and Apple Silicon package
-acceptance passed that initial run. Consult PR #20 for the final exact revision
-and complete hosted results; Windows acceptance was pending at this dated entry. The separate
+acceptance passed that initial run. Subsequent run `39084948928` passed all six
+package/install targets, including both Windows shells on both architectures.
+Its separate macOS watch test exposed an image-property evaluation losing its
+execution context during an expected reload. The test now uses reload-aware
+locator property assertions without weakening the required image widths.
+Consult PR #20 for the final exact revision and complete hosted results. The separate
 portable browser matrix remains the evidence for real offline browser behavior.
 This milestone does not tag or publish binaries, sign/notarize packages, establish
 all historical OS versions, or validate every Windows container integration.
