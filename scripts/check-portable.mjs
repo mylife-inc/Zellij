@@ -7,6 +7,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
 import { checkConfiguration } from './portable-config.mjs';
+import { checkStarter } from './portable-starter.mjs';
 
 const binary = path.resolve(process.argv[2] || `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const temp = await mkdtemp(path.join(tmpdir(), 'zellij-portable-'));
@@ -129,6 +130,7 @@ try {
       assert(requests.every(url => url.startsWith('file:') || url.startsWith('data:')), 'No-JS content also needs no network');
       await noJS.close();
       await checkConfiguration({ binary, root: temp, env, engine, browser });
+      await checkStarter({ binary, root: temp, env, engine, browser });
       console.log(`${engine}: moved file:// site, nested links, search, keyboard, themes, local fonts/media, mobile and no-JS content passed.`);
     } finally { await browser.close(); }
   }

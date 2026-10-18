@@ -921,6 +921,45 @@ Hosted acceptance is pending at this dated entry; consult the PR containing
 remaining portable capabilities are still open; the original sporadic CI
 first-click failures must not be marked conclusively diagnosed by this evidence.
 
+### Native portable starter — 2026-10-17
+
+Source commit `6af6a48` adds `zel new portable [dir]`, defaulting to `docs`.
+The full starter supplies `zel.yaml`, a home page, a nested getting-started
+page and its local SVG. `--minimal` emits just config and home. `--name`
+defaults to the resolved destination's name, including `.`, and `--theme`
+defaults to cupertino. The 14-theme catalog and nonempty/control-free names
+are validated before writing. Display names use quoted metadata, never raw
+Markdown or shell interpolation. Instructions use commands from inside the folder.
+
+This is a native Markdown scaffold, distinct from hosted `new docs/page/guide/section`.
+It needs no Node, Docker or network. Shared scaffold preflight refuses nonempty
+folders and generated-file collisions; existing dotfiles and fresh Git metadata
+are preserved. No overwrite option is offered. Both starters pass native strict
+checking and build without warnings. Their configuration carries working ordered
+navigation; authors may remove `nav` for automatic discovery. MDX, raw HTML
+execution, math rendering and Mermaid remain unsupported by the native target.
+
+Local verification: **169 Rust tests**, formatting and warnings-denied Clippy
+passed. The full native offline browser fixture passed Chromium and WebKit,
+including actual full/minimal starter output moved to paths with spaces/Unicode,
+literal unusual display names, fragments, local images, search and JavaScript-disabled
+navigation. CLI tests run without external programs on PATH, cover every theme,
+invalid arguments, collision/source preservation, current-directory naming and
+dotfiles. Deep/strict validation of the updated product documentation passed.
+The cross-platform CI matrix now runs these starter tests and browser acceptance.
+Hosted acceptance is pending at this dated entry; consult the PR containing
+`6af6a48` for the exact checked revision and final results. No native binary
+release or installer is published by this milestone.
+
+Prior milestone completion: [PR #18](https://github.com/mylife-inc/Zellij/pull/18)
+merged as `ec0394a`. PR CI `39080731998` and main CI `39081222627` passed all seven
+jobs, each with **317 browser passes, 124 conditional skips and no retries**.
+Main native acceptance passed Linux/macOS/Windows. Image run `39081222598` passed
+all 13 jobs, publishing four variants for linux/amd64 and linux/arm64 plus the
+published-image smoke test. This does not conclusively attribute every historical
+first-click flake to the reproduced scrolling race. Live repository/release facts
+were refreshed: public/default-main; latest native release remains `zellij-v0.1.3`.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1225,12 +1264,12 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after hosted reveal/FAQ work, subject to the user's v1 scope decision:
+Remaining order after portable starter work, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of the reveal/FAQ milestone. Native validation,
-   build/serve/view/watch/configuration and asset exclusions have passed on merged main.
-2. Add richer Markdown rendering and a portable starter; finish the agreed CLI subset in
-   [the portable contract](specs/zel-portable-docs.md).
+1. Complete hosted acceptance of the portable starter milestone. Native validation,
+   build/serve/view/watch/configuration and the reveal/FAQ milestone have passed on merged main.
+2. Add richer Markdown rendering and finish the agreed CLI subset in
+   [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
 3. Exercise releases and installers on every supported platform, including
    native Windows. Repository visibility/default branch are settled; the
    restored CI baseline must remain green. No new native CLI binary has yet

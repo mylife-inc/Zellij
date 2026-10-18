@@ -33,7 +33,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Create an app, a content folder, a section, a page or a guide.
+    /// Create portable Markdown, hosted content, an app, a section, a page or a guide.
     #[command(subcommand)]
     New(NewTarget),
 
@@ -310,6 +310,20 @@ enum CiAction {
 
 #[derive(Subcommand)]
 enum NewTarget {
+    /// A native Markdown starter with zel.yaml; no Docker or Node required.
+    Portable {
+        #[arg(default_value = "docs")]
+        dir: String,
+        /// Site name. Defaults to the directory's name.
+        #[arg(long)]
+        name: Option<String>,
+        /// One of the themes reported by `zel list themes`.
+        #[arg(long, default_value = "cupertino")]
+        theme: String,
+        /// Only zel.yaml and index.md, without the example guide or image.
+        #[arg(long)]
+        minimal: bool,
+    },
     /// A Next.js wrapper app with the engine installed.
     App {
         #[arg(default_value = ".")]
@@ -319,7 +333,7 @@ enum NewTarget {
         #[arg(long)]
         with_docs: bool,
     },
-    /// A content folder on its own.
+    /// A hosted YAML/MDX content folder on its own.
     Docs {
         #[arg(default_value = "content")]
         dir: String,
@@ -513,6 +527,12 @@ fn main() {
             ref source,
             ref out,
         } => migrate(source, out),
+        Command::New(NewTarget::Portable {
+            ref dir,
+            ref name,
+            ref theme,
+            minimal,
+        }) => new_portable(dir, name.as_deref(), theme, minimal),
         Command::New(NewTarget::Docs {
             ref dir,
             ref name,
@@ -1241,6 +1261,41 @@ fn doctor() -> zellij_core::Result<()> {
 const TARGET: &str = env!("ZEL_TARGET");
 
 // ----------------------------------------------------------------- creating
+
+fn new_portable(
+    dir: &str,
+    name: Option<&str>,
+    theme: &str,
+    minimal: bool,
+) -> zellij_core::Result<()> {
+    let target = zellij_core::files::absolute_path(Utf8Path::new(dir))?;
+    let options = zellij_scaffold::PortableOptions {
+        name: name
+            .unwrap_or_else(|| target.file_name().unwrap_or("Documentation"))
+            .into(),
+        theme: theme.into(),
+        minimal,
+    };
+    let written = zellij_scaffold::portable(&options)?
+        .write(&target, false)
+        .map_err(|error| match error {
+            // This command has no overwrite flag. Keep the shared writer's
+            // protection, without suggesting new docs' --force option.
+            zellij_core::Error::NotEmpty { path } => zellij_core::Error::FileExists { path },
+            other => other,
+        })?;
+    println!("✓ {target}");
+    for path in written {
+        println!("  {path}");
+    }
+    // Commands use a fixed relative path so unusual directory names cannot
+    // turn a copied suggestion into invalid shell syntax or a different command.
+    println!("\n  From inside the created folder:");
+    println!("    zel check . --strict");
+    println!("    zel build .");
+    println!("    zel view . --watch");
+    Ok(())
+}
 
 fn new_docs(
     dir: &str,
