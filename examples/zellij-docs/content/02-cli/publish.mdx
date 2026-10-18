@@ -1,80 +1,76 @@
 ---
 title: zel publish
-description: Check, build and deploy — the three you run in that order anyway.
+description: Execute a site's saved delivery plan.
 ---
 
 <Callout type="warning" title="Planned">
-`zel publish` exits with `not implemented yet`, and depends on
-[`zel deploy`](/cli/deploy), which also does. Run the three commands until both
-land.
+`zel publish` and `zel deploy` both exit with `not implemented yet`. The common
+site configuration and aliases below are also pending. Use the working build
+and provider-CLI example near the end of this page until they land.
 </Callout>
 
-```bash title="terminal"
+```bash title="terminal — proposed"
 zel publish
+zel publish docs/manual
+zel pub docs/manual
 ```
 
 ## What it is
 
-[`zel check`](/cli/check) → [`zel build`](/cli/build) →
-[`zel deploy`](/cli/deploy), stopping at the first failure.
+`publish` will execute delivery settings saved in the site's `zel.yaml`.
+[`deploy`](/cli/deploy) will select a provider explicitly at the command line;
+[`ship`](/cli/ship) will import external documentation before delivery. These
+operations will share one plan that validates and builds once, then uploads,
+pushes an image, or deploys it as requested.
 
-It does nothing the three cannot, and it takes no arguments they do not.
-Everything about *what* gets published lives in [`zel.toml`](/cli/config#planned-cli-defaults):
+The plan will not invoke a public `build` followed by a public `deploy` that
+builds the same site again. Build output is passed to the delivery step.
 
-```toml title="zel.toml"
-content = "docs"
+A proposed configuration for a portable site is:
 
-[build]
-target = "static"
-
-[deploy]
-provider = "netlify"
-site = "acme-docs"
+```yaml title="docs/zellij/zel.yaml — proposed"
+version: 1
+renderer: portable
+name: Acme documentation
+publish:
+  action: deploy
+  provider: netlify
+  site: acme-docs
 ```
 
-With that file, publishing your documentation is one word. Without it,
-`zel publish` needs the same flags the three commands would, and you may as
-well run them.
-
-## Why it exists
-
-`zel deploy` already checks and builds before uploading, so the two overlap.
-The distinction is where the intent lives.
-
-`zel deploy netlify docs` says *put this folder on Netlify now* — a decision
-made at the terminal. `zel publish` says *do the thing this repository is
-configured to do*, and the configuration is reviewed, committed and the same for
-everyone. The second is what belongs in a pipeline, in a Makefile, and in the
-sentence "how do I ship the docs?" that a new colleague asks.
-
-<Callout type="info" title="A workflow cannot do more than its parts">
-`publish` runs the three commands and nothing else. It has no behaviour of its
-own — no extra validation, no cleverness about what changed, no partial upload.
-
-That is deliberate. A workflow command that could do something its primitives
-could not would be a place for behaviour to hide, and the first time it
-surprised you it would be in front of a deploy.
-</Callout>
+Markdown will live under `docs/zellij/content/`, with generated HTML in its
+sibling `site/`. Another site-directory name is allowed and is selected with an
+explicit path. See [planned configuration](/cli/config#planned-cli-defaults).
+These fields are not accepted by the current flat portable config reader.
 
 ## What each step contributes
 
 <Steps>
-<Step title="Check">
-Under a second. A broken internal link stops the publish here rather than
-shipping a 404 — and rather than wasting the four minutes the build would take
-before failing on the same thing.
+<Step title="Resolve and validate">
+Resolve the site, renderer and saved delivery intent. Validate content and
+required tools/settings before performing external delivery.
 </Step>
-<Step title="Build">
-Produces whatever the target says. `static` for a CDN, `image` for a registry.
+<Step title="Build once">
+Create the requested static export or container image. Static-server images and
+Next.js wrapper images remain distinct packaging choices.
 </Step>
-<Step title="Deploy">
-The provider decides the target, so there is nothing to keep in step by hand.
+<Step title="Deliver">
+Upload static files, push an image to a registry, or deploy that image to a
+configured provider. Registry-only publication does not require a cloud provider.
+Credentials come from the environment or the provider's supported login mechanism.
 </Step>
 </Steps>
 
+Netlify is the first requested direct deployment integration. Other providers
+remain part of the broader proposed catalog. The
+[full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)
+records the delivery and CI design.
+
 ## Until it lands
 
-The three commands, in order:
+For an existing Markdown folder, the native CLI can validate and build; use the
+Netlify CLI for the upload. This example requires that separate CLI, a configured
+Netlify site and its credentials:
 
 ```bash title="terminal"
 zel check docs && \
@@ -82,10 +78,11 @@ zel build docs --out dist && \
 netlify deploy --prod --dir dist
 ```
 
-`&&` rather than `;` matters: it is the whole of what `publish` adds.
+Each step runs only if the preceding step succeeds. [`zel ci`](/cli/ci) can also
+generate an existing Netlify workflow, using its currently documented options.
 
 ## See also
 
-- [`zel deploy`](/cli/deploy) — where the provider logic lives
-- [`zel ship`](/cli/ship) — the same idea, starting from another tool's docs
-- [`zel.toml`](/cli/config#planned-cli-defaults) — what makes this one word
+- [`zel deploy`](/cli/deploy)
+- [`zel ship`](/cli/ship)
+- [Configuration](/cli/config#planned-cli-defaults)

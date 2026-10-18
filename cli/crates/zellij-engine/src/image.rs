@@ -69,9 +69,8 @@ RUN addgroup -g 1001 -S nodejs && adduser -S -u 1001 -G nodejs nextjs
 
 WORKDIR /app
 
-# `standalone` carries its own traced dependencies, so there is no install here
-# and no node_modules to ship. Neither is the engine: what you deploy contains
-# the compiled site and a Node runtime, and nothing that built it.
+# `standalone` carries its own traced dependencies, including required
+# node_modules. Copy that subset rather than the whole build dependency tree.
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
@@ -215,7 +214,7 @@ mod tests {
     }
 
     #[test]
-    fn the_runtime_stage_carries_neither_the_engine_nor_node_modules() {
+    fn the_runtime_stage_copies_standalone_not_the_whole_build_dependency_tree() {
         let out = dockerfile("ghcr.io/example/zellij-base:latest", None);
 
         assert!(out.contains("FROM node:24-alpine AS runtime"), "{out}");

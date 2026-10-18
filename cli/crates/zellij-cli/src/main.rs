@@ -633,7 +633,7 @@ fn dev(dir: &str, port: u16) -> zellij_core::Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     println!("  Engine   {}", engine.image());
-    if !engine.image_is_local() {
+    if engine.image_is_local() == Some(false) {
         println!("           not pulled yet — this first run fetches ~237 MB");
     }
     println!("  Content  {content}");
@@ -900,9 +900,11 @@ fn image_push(tag: &str, registry: Option<&str>) -> zellij_core::Result<()> {
 }
 
 fn image_dockerfile(dir: &str) -> zellij_core::Result<()> {
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
     let _ = resolve_content(dir)?;
-    print!("{}", zellij_engine::image::dockerfile(engine.image(), None));
+    print!(
+        "{}",
+        zellij_engine::image::dockerfile(&zellij_engine::configured_image(None), None)
+    );
     Ok(())
 }
 
@@ -1228,21 +1230,22 @@ fn doctor() -> zellij_core::Result<()> {
                 runtime.endpoint()
             );
 
-            let state = if engine.image_is_local() {
-                "local"
-            } else {
-                "not pulled — the first build will fetch it"
+            let state = match engine.image_is_local() {
+                Some(true) => "local",
+                Some(false) => "not pulled — the first build will fetch it",
+                None => "unknown — image inspection unavailable or timed out",
             };
             println!("  {:<12} {}  ({state})", "· engine", engine.image());
         }
         Err(err) => {
-            println!("  ✗ none");
-            for line in err.to_string().lines() {
-                println!("    {line}");
-            }
+            // main prints the detailed error once on stderr.
+            println!("  ✗ unavailable");
             println!();
-            println!("  Commands that only read the content model still work:");
-            println!("  new, explain, list, context, detect, convert.");
+            println!("  Native commands still work without a container runtime:");
+            println!(
+                "  portable build/check/serve/view, new portable/docs/section/page/guide/project,"
+            );
+            println!("  explain, list, context, detect, convert, image dockerfile.");
             return Err(err);
         }
     }

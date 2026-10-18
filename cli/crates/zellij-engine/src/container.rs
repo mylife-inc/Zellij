@@ -9,10 +9,9 @@
 
 use camino::Utf8Path;
 use std::net::UdpSocket;
-use std::process::Stdio;
 use zellij_core::{Error, Result};
 
-use crate::runtime::Runtime;
+use crate::runtime::{METADATA_TIMEOUT, Probe, Runtime, probe_output, probe_status};
 use crate::{BuildMode, CheckOptions, CheckReport, Engine};
 
 /// Where the engine's own CLI lives inside the image.
@@ -48,10 +47,7 @@ impl ContainerEngine {
     /// an organisation mirroring it internally needs.
     pub fn detect(image: Option<&str>) -> Result<Self> {
         let runtime = crate::runtime::detect()?;
-        let image = image
-            .map(str::to_owned)
-            .or_else(|| std::env::var("ZELLIJ_IMAGE").ok())
-            .unwrap_or_else(|| crate::DEFAULT_IMAGE.to_owned());
+        let image = crate::configured_image(image);
 
         Ok(Self::new(runtime, image))
     }
@@ -64,16 +60,19 @@ impl ContainerEngine {
         &self.image
     }
 
-    /// Is the image already on this machine?
-    pub fn image_is_local(&self) -> bool {
-        self.runtime
-            .command()
-            .args(["image", "inspect", &self.image])
-            .stdout(Stdio::null())
-            .stderr(Stdio::null())
-            .status()
-            .map(|status| status.success())
-            .unwrap_or(false)
+    /// Is the image already on this machine? None means inspection was
+    /// unavailable or timed out; it must not be reported as a missing image.
+    pub fn image_is_local(&self) -> Option<bool> {
+        match probe_status(
+            self.runtime
+                .command()
+                .args(["image", "inspect", &self.image]),
+            METADATA_TIMEOUT,
+        ) {
+            Probe::Ready => Some(true),
+            Probe::Failed => Some(false),
+            _ => None,
+        }
     }
 
     /// The mount argument for a content folder, read-only.
@@ -136,19 +135,12 @@ impl ContainerEngine {
 
     /// The image's content id, if it is on this machine.
     fn image_id(&self) -> Option<String> {
-        let output = self
-            .runtime
-            .command()
-            .args(["image", "inspect", "--format", "{{.Id}}", &self.image])
-            .stderr(Stdio::null())
-            .output()
-            .ok()?;
-
-        if !output.status.success() {
-            return None;
-        }
-
-        let id = String::from_utf8(output.stdout).ok()?;
+        let id = probe_output(
+            self.runtime
+                .command()
+                .args(["image", "inspect", "--format", "{{.Id}}", &self.image]),
+            METADATA_TIMEOUT,
+        )?;
         let id = id.trim().rsplit(':').next()?.to_string();
         (!id.is_empty()).then_some(id)
     }
@@ -443,11 +435,12 @@ mod tests {
 
         let mount = ContainerEngine::content_mount(&path).unwrap();
 
-        assert!(mount.ends_with(":/content:ro"), "{mount}");
+        let source = mount.strip_suffix(":/content:ro").expect("read-only mount");
         assert!(
-            mount.starts_with('/'),
+            Utf8Path::new(source).is_absolute(),
             "the mount source must be absolute: {mount}"
         );
+        assert_eq!(Utf8Path::new(source), path.canonicalize_utf8().unwrap());
     }
 
     #[test]

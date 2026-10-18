@@ -10,6 +10,13 @@ Status: **original design draft**. Consult [the project context](../ZELLIJ_CONTE
 for current implementation status; this command inventory is not proof that a
 command is implemented.
 
+The [2026-10-18 full CLI contract](zel-cli-contract-2026-10-18.md) is the current
+command-and-alias proposal following the user's layout decisions and the
+[published/local inventory](zel-cli-inventory-2026-10-17.md). It covers the full
+command set and explicitly separates agreed requirements from proposed syntax.
+Older configuration, workflow, and platform assumptions below are historical
+where they conflict with that proposal or the implementation record.
+
 The user's 2026-10-17 requirements add plain-Markdown-folder builds with direct
 `file://` viewing, serving an existing output, and a combined build/serve/browser
 `view` workflow. See [the portable documentation contract](zel-portable-docs.md)
@@ -19,6 +26,14 @@ Portable builds now read optional `zel.yaml` in the input Markdown root for
 identity, theme, company branding and nested navigation. CLI name/theme flags
 override those fields. This implemented project format is separate from the
 general TOML command defaults described in the original design below.
+
+**Agreed next layout, pending implementation:** a configured site is identified
+by `zel.yaml` in an arbitrarily named folder, with sibling `content/` source and
+`site/` output directories. From a software repository root, `zel build` defaults
+to `docs/zellij/`; `zel build <site-root>` selects another parent of `zel.yaml`.
+See the [configured-site contract](zel-portable-docs.md#agreed-configured-site-layout--pending-implementation).
+The implemented flat config/source layout and output defaults described below
+remain current behavior until that change is implemented.
 
 Native portable `check` now shares that compiler without writing any files, with
 strict warnings and structured JSON diagnostics. Hosted checks still delegate to

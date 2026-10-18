@@ -1298,6 +1298,189 @@ acceptance and cross-platform serve/view requirements. Keep a core MkDocs
 capability comparison when implementing the Rust CLI. Today's Next static export
 assumes HTTP and must not be advertised as satisfying direct-file viewing.
 
+### CLI simplicity and delivery requirements — 2026-10-17
+
+The user has paused implementation to discuss the command design. They want
+short, memorable aliases for important long commands and conventions that let
+users omit repeated source/output paths and options. MkDocs's `docs`/`site`
+layout was an example, not a selected Zellij convention.
+
+Requested workflows include:
+
+- `zel ci <docs-folder>` as a short entry point for generating a GitHub pipeline.
+  Depending on configuration, the pipeline should build the website, package an
+  HTTP-serving image, push to a selected registry, and optionally deploy to a
+  cloud provider. It should support multiple ways to trigger execution.
+- A Markdown folder to a Docker image containing static HTML and an HTTP server.
+- A Markdown folder to a Docker image containing the wrapper Next.js app.
+- A Markdown folder to a generated static website deployed to Netlify.
+- Documented canonical syntax, aliases, defaults, and examples for these flows.
+
+These are requested capabilities, not claims of implementation. Existing image
+building uses the hosted Next.js wrapper; direct plain-Markdown image workflows
+and a separate static-server image path still need work. GitHub workflow
+generation exists, but its default is validation only; `zel deploy` is a stub.
+Specific image alias spellings remain proposals. The configured-site layout and
+repository-root default are now agreed below. Preserve the distinction between portable HTML
+(direct-file viewing) and the existing hosted static export (HTTP required).
+
+The user's follow-up refines these requirements:
+
+- Prefer the `image` command family over `docker`. Static-server and Next.js
+  wrapper images should have distinct, memorable short commands that identify
+  their contents without requiring a type-selection option.
+- "Project" means the software product's GitHub repository. Its `docs/` can
+  include specifications and other material alongside a dedicated Zellij site.
+  Do not equate the repository with the documentation site or assume all of
+  `docs/` is website input.
+- Avoid a required nested `docs/zellij/docs/` layout. The subsequent decision
+  below replaces both the earlier flat-source proposal and the optional
+  `content`/`dist` layout.
+
+Agreed configured-site convention (design decision, not yet implemented):
+
+- The site root is the folder containing `zel.yaml`; its name is unrestricted.
+- Markdown and its local assets belong under `<site-root>/content/`.
+- Generated HTML belongs under `<site-root>/site/`, alongside `content/` and
+  `zel.yaml`. It is outside the content source tree, although inside the site root.
+- From a software repository root, `zel build` defaults to `docs/zellij/`,
+  reading `docs/zellij/zel.yaml` and building `content/` into `site/` there.
+- A custom location is supplied as `zel build <site-root>`: the argument names
+  the parent of `zel.yaml`, not its `content/` child. A folder named `zellij`
+  is only the conventional default location; the config identifies the site.
+- Do not recursively guess a differently named site under the repository's
+  broader documentation tree. The user explicitly supplies its location.
+
+See the [configured-site contract](specs/zel-portable-docs.md#agreed-configured-site-layout--pending-implementation)
+for examples and the distinction from existing command behavior. This discussion
+has updated requirements only; command implementation remains unchanged.
+
+### Full CLI scope and published reference comparison — 2026-10-17
+
+The user emphasizes that build, preview, images, CI, and deployment are only
+part of the intended CLI. They requested comparison with
+[the deployed CLI reference](https://zellij.shebka.net/cli). The
+[full command inventory and documentation audit](specs/zel-cli-inventory-2026-10-17.md)
+records 19 registered top-level families / 32 leaf forms, five of which remain
+stubs, plus seven additional command names in older design documentation.
+Keep creation, schema inspection, conversion, validation/formatting, workflows,
+and maintenance in scope when refining syntax and aliases.
+
+The deployed and local references are not synchronized: all 20 published CLI
+reference pages were retrieved, while `/cli/view` returned 404. The deployed
+site predates native portable builds/previews and corrected JSON output. Local
+docs are newer but still contain unsupported CI flags, an obsolete CI example
+calling stubbed `deploy`, missing `ci publish` documentation, and incorrect
+maintenance-command and image-tag descriptions. The inventory identifies
+specific evidence and preserves current-source versus planned distinctions.
+No CLI code or documentation deployment changed during this comparison.
+
+### Full CLI contract and reference corrections — 2026-10-18
+
+The user authorized continuing the full command-and-alias design. The
+[contract draft](specs/zel-cli-contract-2026-10-18.md) accounts for all 39
+inventoried forms, adds the requested static/Next image paths, and covers
+aliases, argument roles, configured-site resolution, renderer selection,
+shared settings, import compatibility, and publication/CI composition.
+The site layout/default location is agreed; the draft's exact aliases, config
+keys, workflow refinements, and implementation order remain proposals.
+
+The draft distinguishes explicit-provider `deploy`, saved-settings `publish`,
+and import-first `ship`, with a shared plan that builds once. It keeps portable
+Markdown and hosted YAML/MDX as separate rendering paths under the common site
+layout. It preserves legacy explicit content/export/tag arguments rather than
+interpreting every path as a new configured site root.
+
+Local reference corrections: `ci.mdx` now lists real generation options,
+validation-only/default behavior, Netlify provisioning, actual triggers and
+upload implementation, and `ci publish` (including the no-gh print-only case).
+`doctor.mdx` distinguishes unregistered maintenance commands from stubs;
+`image.mdx` correctly describes derived default tags instead of last-build memory.
+The earlier audit remains a dated snapshot. At the end of the design discussion
+these edits were local and uncommitted; the implementation milestone below
+includes them. They have not been deployed or released.
+
+Verification: generated validation-only/image/Netlify workflow fixtures with
+the current CLI; Netlify used `--no-provision`, with no remote actions. Deep and
+strict documentation validation passed (47 routes, 23 embedded examples).
+All inventory forms appear in the draft; its 29 shortcut entries have distinct
+spellings. These checks do not establish runtime support for proposed commands.
+
+### Container prerequisite implementation — 2026-10-18
+
+The user authorized implementation after local reference reconciliation and
+asked for deliberate handling of commands requiring Docker when it is absent.
+The first increment is source commit `cd70f26` in
+[PR #27](https://github.com/mylife-inc/Zellij/pull/27), on
+`codex/cli-runtime-preflight`, based on `e8ec681` (PR #26).
+Repository inspection reconfirmed `mylife-inc/Zellij` is public with
+default branch `main`; no other open PR was present at implementation start.
+
+- Runtime probes now distinguish missing clients, execution errors, failed
+  `info` and timeouts. The OS resolves executables, fixing the old Windows
+  `.exe` detection bug and Unix non-executable-file classification.
+- Docker/Podman/nerdctl discovery is bounded: three seconds per info probe in
+  a twelve-second overall budget, plus two seconds for version metadata.
+  Image presence/identity inspection also has a two-second limit. Timed-out
+  probe processes are killed and reaped; metadata timeout is not reported as
+  an absent image. Build/server lifetimes are not capped by these probe limits.
+- Nonempty endpoint environment variables select the associated runtime;
+  conflicting runtime selections fail. Explicit endpoints are never replaced
+  by a different runtime or local socket. Diagnostics print variable names,
+  not their potentially credential-bearing values or raw probe errors.
+- Automatic socket discovery uses Docker only: the previous Podman probes
+  incorrectly used `DOCKER_HOST`, which does not select a Podman connection.
+  Windows relies on configured client connections, without Unix socket probes.
+- Missing/unavailable runtimes return exit 4 with platform-specific guidance.
+  No automatic installation, service start, renderer switch or remote fallback.
+  Portable commands remain independent; `image dockerfile` now works without
+  a runtime and still respects `ZELLIJ_IMAGE`.
+- Doctor retains its container-preflight exit contract: exit 4 on discovery
+  failure, exit 0 when a runtime responds (even with unavailable metadata).
+  It is not a prerequisite for portable builds or full site validation.
+
+The local doctor/image references describe this policy and correct misleading
+image-dependency claims. The original public-doc comparison and full proposed
+command/alias contract are included with these changes. The published website
+and downloadable release have not been updated by this milestone.
+
+Regression coverage exercises missing-runtime command dispatch, preserved
+source/output, native operations with broken endpoint settings, Dockerfile
+generation, fallback, explicit-endpoint isolation, secret-free errors, bounded
+metadata probes, and actual executable resolution. CI now runs the engine and
+runtime-requirement tests on Linux, macOS and Windows. **201 local Rust tests**,
+warnings-denied Clippy, formatting, diff checks and strict/deep documentation
+validation (47 routes, 23 embedded examples) pass. The first sandboxed suite
+could not bind loopback ports; the rerun with loopback access passed. Hosted CI
+is a merge gate; consult PR #27 for its current checks and merge status.
+
+The first hosted run of this increment (`39107995790`) exposed an older engine
+test that assumed absolute paths begin with `/`. The Windows runtime probe tests
+passed; the mount assertion now checks the native path API and canonical source
+instead. A local doctor run also exposed duplicated diagnostics; detailed errors
+now print once on stderr. The local environment currently explicitly selects a
+Docker endpoint whose `info` call fails; no endpoint values were logged and no
+environment/service changes were made. Real-container acceptance runs in CI.
+The next Windows run (`39108320579`) passed the engine tests and exposed a test
+isolation assumption: Windows can resolve a system Docker executable despite
+an empty PATH. Its real info call timed out correctly. Windows CLI fixtures now
+run a private copied binary beside invalid runtime placeholders, testing the
+unexecutable-client path without contacting the runner's service; missing-client
+classification remains covered by engine tests and Unix CLI fixtures.
+
+Final reference reconciliation also replaces the obsolete TOML/upward-discovery
+proposal in the local config, overview and delivery pages with the agreed
+versioned YAML/site layout (still labeled unimplemented), documents build-once
+delivery composition, and removes a stale claim that portable scaffolding was
+unimplemented. Historical specifications remain preserved. The public site is
+still older; no documentation deployment was triggered.
+
+**Next implementation:** versioned `zel.yaml` and the common site resolver for
+`docs/zellij/{zel.yaml,content/,site/}`, custom named roots and legacy explicit
+paths, including watch/config changes. Alias registration, separate static/Next
+image packaging and delivery/CI composition follow. None of that new syntax is
+implemented by the runtime prerequisite change.
+
 ## 2. Read these sources in this order
 
 1. This file and the [dated audit](specs/zellij-audit-2026-10-16.md).
@@ -1306,7 +1489,11 @@ assumes HTTP and must not be advertised as satisfying direct-file viewing.
 3. [Engine specification](specs/zellij-engine-spec.md): architecture and quality
    bar. Some inventory counts and milestone text are historical.
 4. [CLI specification](specs/zellij-cli-spec.md): desired surface, not a reliable
-   statement that each command exists.
+   statement that each command exists. Consult the later
+   [full CLI inventory](specs/zel-cli-inventory-2026-10-17.md) for the
+   published/local/source comparison and remaining command scope, and the
+   [full contract draft](specs/zel-cli-contract-2026-10-18.md) for the latest
+   command-and-alias design following the user's agreed folder layout.
 5. [Product documentation](examples/zellij-docs/content): authoring guide,
    quickstart labs, CLI reference, and section examples. Read status callouts,
    but check implementation: some pages contradict the current code.

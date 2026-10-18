@@ -115,7 +115,9 @@ the current directory, `./docs`, then `./documentation`. Marker files such as
 folders with `_sidebar.yaml` identify a candidate. Discovery does not walk up
 the directory tree. An explicit content path is used as supplied.
 
-CLI defaults from `zel.toml` are still planned. Portable projects can use
+The old TOML defaults proposal is superseded by a planned versioned `zel.yaml`
+and `content/`/`site/` layout; see [planned defaults](/cli/config#planned-cli-defaults).
+That new discovery is not implemented yet. Current portable folders can use
 [zel.yaml](/cli/config). Both `zel build ./docs` and `zel check ./docs` choose
 portable Markdown when that config is present or no structured content is
 discovered. Portable commands use the exact requested root. See [build](/cli/build)
@@ -131,6 +133,12 @@ engine in a container from a public image. Portable `build` and `check` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Deployment commands
 remain planned.
+
+Container-dependent operations stop with exit code 4 and setup guidance if no
+usable runtime is available. Docker, Podman and nerdctl are supported discovery
+candidates. No software is installed and no renderer is changed automatically.
+[`zel doctor`](/cli/doctor) documents timeouts and explicit endpoint selection.
+`image dockerfile` only prints a recipe and does not require a runtime.
 
 ```bash title="terminal"
 zel doctor
