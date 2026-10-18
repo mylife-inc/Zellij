@@ -54,6 +54,11 @@ pub fn render(
         (String::new(), String::new())
     };
     let nav = navigation.render(current, pages);
+    let mindmap_css = if current.markdown.has_mindmap {
+        format!("<link rel=\"stylesheet\" href=\"{prefix}_zellij/mindmap.css\">")
+    } else {
+        String::new()
+    };
     let logo = presentation
         .logo
         .map(|logo| {
@@ -155,7 +160,7 @@ pub fn render(
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} · {name}</title><meta name="description" content="{description}">
 <link rel="stylesheet" href="{prefix}_zellij/fonts/fonts.css">
-<link rel="stylesheet" href="{prefix}_zellij/themes.css"><link rel="stylesheet" href="{prefix}_zellij/style.css">
+<link rel="stylesheet" href="{prefix}_zellij/themes.css"><link rel="stylesheet" href="{prefix}_zellij/style.css">{mindmap_css}
 {math_css}
 <script defer src="{prefix}_zellij/search.js"></script><script defer src="{prefix}_zellij/site.js"></script></head>
 <body data-root="{prefix}"><a class="skip" href="#_zel-content">Skip to content</a>

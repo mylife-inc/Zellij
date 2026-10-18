@@ -1,0 +1,22 @@
+/* Fixed-size labels stay readable; a wide tree scrolls without widening a page. */
+.mindmap { margin: 1.75rem 0; }
+.mindmap-scroll { overflow: auto; max-width: 100%; padding: 3px; }
+.mindmap-svg { display: block; max-width: none; font: 13px var(--zellij-font-mono); }
+.mindmap-edges { fill: none; stroke: var(--zellij-accent); stroke-width: 1.75; }
+.mindmap-node rect { fill: var(--zellij-surface); stroke: var(--zellij-accent); stroke-width: 1.5; }
+.mindmap-node text { fill: var(--zellij-fg); }
+.mindmap-node[data-depth="0"] rect { fill: var(--zellij-fg); stroke: var(--zellij-fg); }
+.mindmap-node[data-depth="0"] text { fill: var(--zellij-bg); }
+.mindmap-outline { margin-top: .7rem; font-size: .85rem; }
+.mindmap-outline summary { color: var(--zellij-muted); }
+.mindmap-outline ul { width: max-content; }
+@media print {
+  .mindmap-scroll { overflow: visible; }
+  .mindmap-svg { max-width: 100%; height: auto; }
+  .mindmap-node rect { fill: white; stroke: black; }
+  .mindmap-node text { fill: black; }
+  .mindmap-edges { stroke: black; }
+  .mindmap-node[data-depth="0"] rect { fill: black; stroke: black; }
+  .mindmap-node[data-depth="0"] text { fill: white; }
+  .mindmap-outline ul { width: auto; }
+}

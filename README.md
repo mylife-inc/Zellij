@@ -57,6 +57,10 @@ Portable math is opt-in with `markdown: {math: true}` in `zel.yaml`. Inline
 including when opened directly with JavaScript disabled. Source builds require
 Rust 1.96 or newer; downloaded binaries do not require a Rust installation.
 
+YAML `mindmap` fences render to SVG during the native build, with a text outline
+and no browser library. They work offline with JavaScript disabled. Mermaid
+fences still display their source in portable output.
+
 Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
 with installation tests against actual release archives. Windows uses the
 PowerShell installer; Unix uses the shell installer. See the

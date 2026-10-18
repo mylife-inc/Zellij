@@ -71,6 +71,17 @@
   dialog.addEventListener('close', () => { if (returnFocus?.isConnected) returnFocus.focus(); });
   searchButton.addEventListener('click', open);
   document.addEventListener('keydown', event => {
+    // WebKit does not consistently scroll a focused overflow region with arrow
+    // keys. Keep diagram navigation predictable; its text outline needs no JS.
+    if (event.target.matches('.mindmap-scroll') && !event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey) {
+      const region = event.target;
+      if (region.scrollWidth > region.clientWidth && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+        event.preventDefault();
+        if (event.key === 'Home') region.scrollLeft = 0;
+        else if (event.key === 'End') region.scrollLeft = region.scrollWidth;
+        else region.scrollLeft += event.key === 'ArrowRight' ? 64 : -64;
+      }
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); open(); }
     if (event.key === 'Escape') {
       if (dialog.open) { event.preventDefault(); dialog.close(); }

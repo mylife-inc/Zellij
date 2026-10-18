@@ -1048,6 +1048,43 @@ and production-theme/analytics/prefix, development-watcher and published-image
 acceptance passed. Repository remains public/default-main and native release
 remains `zellij-v0.1.3`.
 
+## Implementation record — native portable mindmaps
+
+Source `a140800` extends the native Markdown compiler with built-in YAML
+`mindmap` fences. They generate finished SVG plus a semantic nested-list outline
+without new dependencies or an external renderer. Single-root mappings, sibling
+lists and scalar leaves follow the documented hosted syntax. Portable validation
+adds strict string keys, no custom tags/duplicate keys, bounded YAML expansion,
+and per-diagram limits of 64 KiB source, 512 nodes, 32 levels and 256-character
+labels. HTML-like text stays literal in SVG, accessible names and outlines.
+
+Source-file/diagram-number errors occur before output publication; failed
+watch rebuilds retain the prior artifact and revision and recover after edits.
+Only diagram pages load CSS; obsolete CSS is removed when diagrams disappear.
+The active theme supplies SVG colors without redraw. Layout uses conservative
+fixed-font width estimates and preserves readable sizes through scrolling.
+An explicit keyboard-scroll enhancement resolves a reproduced WebKit native
+overflow-scroll limitation. Without JavaScript, SVG still renders and readers
+can open the complete text outline by keyboard. This is not a Mermaid runtime,
+hosted-layout/palette parity or exhaustive complex-script/screen-reader support.
+
+Local verification passes 182 Rust tests, formatting, warnings-denied Clippy,
+47-route/23-example deep-strict documentation checks, Chromium/WebKit relocated
+offline browser acceptance and HTTP/watch failure-preservation/recovery tests.
+Browser assertions check actual SVG/text bounds, hierarchy, escaping, theme
+colors, search/navigation, mobile containment, keyboard scrolling and disabled
+JavaScript. Four initial native feature tests failed on the old implementation.
+Review reproduced mobile page overflow from a maximum-depth/label text outline.
+The follow-up contains outlines in a focused scroll region and adds both-browser,
+JavaScript-enabled/disabled boundary acceptance. Consult the PR containing
+`a140800` for final hosted acceptance and merge state.
+
+Prior milestone: PR #23 merged as `9fa1866`; PR/main CI `39093178918` /
+`39093718016` and image workflow `39093718039` each passed all 13 jobs. Minimum
+Rust, six package/install targets, three-OS portable tests, showcase (317 passes,
+124 conditional skips) and published-image acceptance passed. The repository
+remains public/default-main and latest native release remains `zellij-v0.1.3`.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
