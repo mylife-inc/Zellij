@@ -8,6 +8,11 @@ description: Build, run and push container images without writing a Dockerfile.
 `--features` and `--build-arg` are specified and not yet built.
 </Callout>
 
+Building, running and pushing images require a usable Docker, Podman or nerdctl
+runtime. Missing or unavailable runtimes stop the operation with exit code 4
+and setup guidance; see [`zel doctor`](/cli/doctor). Printing a Dockerfile needs
+no runtime in the current source implementation.
+
 ```bash title="terminal"
 zel image build --tag acme-docs:v2
 zel image run acme-docs:v2
@@ -44,10 +49,9 @@ is correct on the day it is written and silently stale afterwards — the day th
 engine moves from `/opt/zellij` you find out by way of a build failure in a file
 you never touched.
 
-**The install step depends on your content.** Whether maths and diagram support
-get fetched is decided by what your pages use, and the step that decides it has
-to run before `npm install` or it changes nothing. That ordering is not
-something anyone should have to know.
+**Dependencies come from the selected base image.** The generated build installs
+the app's declared dependencies before compiling the site. The CLI's planned
+feature-selection options are not available yet.
 
 **The runtime stage is easy to get subtly wrong.** It copies exactly three paths.
 Copy a fourth — `node_modules`, say — and you get an image four times the size
@@ -67,9 +71,9 @@ that everything about images is in one place.
 | `--build-arg <k=v>` | Passed through | — |
 
 The result is a Node runtime serving the site on **port 3000** — Alpine, Node,
-and the traced subset of dependencies the site actually reached for. Neither the
-engine nor `node_modules` is in it: what you deploy contains the compiled site
-and nothing that built it.
+and the traced subset of dependencies the site actually reached for. Next.js's
+standalone output includes its required `node_modules`; the recipe does not copy
+the entire build-time dependency tree or `/opt/zellij` wholesale.
 
 <Callout type="info" title="On image sizes">
 `docker images` reports around 320 MB for a small documentation site, and
@@ -91,8 +95,9 @@ zel image run acme-docs:v2 --port 8080
 ```
 
 Publishes the container's port 3000 to `--port` on your machine and streams the
-log until you stop it. With no tag it runs whatever the last `zel image build`
-produced in this folder.
+log until you stop it. With no tag, it derives the default image tag from the
+currently resolved content folder. It does not remember a custom `--tag` from
+an earlier build; pass that tag explicitly when running the image.
 
 **Do this once before pushing anything.** An image that builds is not an image
 that serves: a missing asset, a runtime that cannot find `server.js`, a page that
@@ -121,6 +126,8 @@ zel image dockerfile > Dockerfile
 Prints the Dockerfile `zel image build` would have used, with the arguments
 resolved for your content. It is a normal file after that, and yours to modify —
 with the usual consequence that it stops tracking changes to the base image.
+The current source implementation does not probe a runtime or pull an image for
+this command. `ZELLIJ_IMAGE` still controls the generated base-image reference.
 
 <Callout type="tip" title="Prefer not to">
 This exists because some organisations require a Dockerfile in the repository
@@ -130,7 +137,7 @@ the base image changes and a vendored Dockerfile does not.
 
 ## The base image
 
-`ghcr.io/mylife-inc/zellij-base` is public, even though Zellij's source is not.
+`ghcr.io/mylife-inc/zellij-base` is the default public base image.
 It is a Next.js wrapper with the engine at `/opt/zellij` and **nothing
 installed** — around 237 MB.
 

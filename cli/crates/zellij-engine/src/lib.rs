@@ -21,6 +21,14 @@ pub use runtime::Runtime;
 /// The public image a site is built from.
 pub const DEFAULT_IMAGE: &str = "ghcr.io/mylife-inc/zellij-base:latest";
 
+/// Resolve the image name without requiring or contacting a container runtime.
+pub fn configured_image(image: Option<&str>) -> String {
+    image
+        .map(str::to_owned)
+        .or_else(|| std::env::var("ZELLIJ_IMAGE").ok())
+        .unwrap_or_else(|| DEFAULT_IMAGE.to_owned())
+}
+
 /// What `zel build` produces. Two, not four — see the CLI spec §3.5.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BuildMode {

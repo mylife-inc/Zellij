@@ -1,144 +1,135 @@
 ---
 title: zel doctor
-description: What is installed, what is missing, and which socket the runtime is on.
+description: Diagnose the container runtime, connection and engine image.
 ---
 
-<Callout type="tip" title="Available">
-Works today. It does not yet report credentials or a resolved `zel.toml` —
-neither of those exists yet.
+<Callout type="tip" title="Implemented in source">
+Runtime diagnostics work today. They do not yet resolve the proposed site-root
+configuration or check deployment credentials. The downloaded CLI release may
+predate the runtime handling described here.
 </Callout>
 
 ```bash title="terminal"
 zel doctor
 ```
 
-```
-zel            0.1.0  (aarch64-apple-darwin)
+The report includes the binary version and platform, selected container client,
+connection, engine image status, and any discovered hosted content folder.
 
-Container runtime
-  ✓ docker     Docker version 28.0.4 via unix:///Users/you/.colima/default/docker.sock
-  · engine     ghcr.io/mylife-inc/zellij-base:latest  (local)
+## Which commands need a runtime?
 
-Content
-  ✓ ./content
-```
+| Operation | Container runtime required? |
+| --- | --- |
+| Portable `build`, `check`, `view` and static-file `serve` | No |
+| Implemented scaffolding, `explain`, `list`, `context`, `detect`, `convert` | No |
+| `image dockerfile` | No; prints the recipe without building it |
+| Hosted `check`, `dev`, static/image builds; `image build`, `run`, `push` | Yes |
+| `migrate` | Its conversion is native; its final hosted check needs a runtime |
+| `ci init github` | No local runtime; a generated job may need one on its runner |
 
-## What it is for
+A container command that cannot find a usable runtime stops with **exit code
+4**, before starting its container operation. Portable commands remain usable.
+`zel` does not install software, start a daemon, change renderer, or send the
+work to a remote service as a fallback.
 
-Two situations, and they are not the same.
+## Runtime selection
 
-**Something is wrong and the error is not obviously about the environment.** A
-build that fails, a `check` that reports a site with no pages, a command that
-hangs. `doctor` answers "is the machine set up the way this tool expects" in one
-second, and that answer is either the problem or eliminated.
+Without explicit endpoint environment variables, `zel` tries **Docker, Podman,
+then nerdctl**, using each client's configured connection. If none succeeds,
+it tries existing local Docker-compatible sockets for Colima, Docker Desktop,
+Rancher Desktop, rootless Podman, and `/var/run/docker.sock`. These socket
+overrides are used only with the Docker client; Podman has its own connection
+settings. Windows uses the clients' configured connections, including Docker's
+named-pipe connection, rather than probing Unix sockets.
 
-**A bug report.** The first thing anyone will ask is what runtime you have, on
-what socket, with which image. This prints exactly that, and prints no
-credential values, so the output is safe to paste into an issue.
+An endpoint variable selects its associated runtime:
 
-## The socket line
+| Runtime | Variables |
+| --- | --- |
+| Docker | `DOCKER_CONTEXT`, `DOCKER_HOST` |
+| Podman | `CONTAINER_CONNECTION`, `CONTAINER_HOST` |
+| nerdctl | `CONTAINERD_ADDRESS`, `CONTAINERD_NAMESPACE` |
 
-The most valuable line, and the reason `doctor` reports the endpoint rather than
-just a tick.
+When one of these is nonempty, `zel` uses that runtime and does not substitute
+another runtime or socket if the connection fails. Variables selecting multiple
+runtimes are rejected; unset the ones you do not intend to use. Within one
+runtime, the client applies its own precedence. For example, Docker's
+`DOCKER_CONTEXT` overrides `DOCKER_HOST`.
 
-`docker info` failing does not mean Docker is not running. It usually means a
-runtime **is** running on a socket the default context does not look at. Colima
-puts its socket under `~/.colima/`; Rancher Desktop under `~/.rd/`; rootless
-Podman under `$XDG_RUNTIME_DIR`. In every case the daemon is fine and the client
-is looking in the wrong place.
+Explicit endpoint values and failed probe output are hidden from diagnostics
+because they can contain credentials. A discovered local socket is shown by
+path. These conventions follow the clients' own settings:
+[Docker](https://docs.docker.com/reference/cli/docker/),
+[Podman](https://docs.podman.io/en/latest/markdown/podman.1.html), and
+[nerdctl](https://github.com/containerd/nerdctl/blob/main/docs/config.md).
 
-So `zel` probes those paths, uses whichever answers, and tells you which one it
-found. Being told
+Each `info` probe has a three-second timeout and discovery shares a twelve-second
+budget. Version and image inspection each have a two-second timeout. These
+limits cover preflight probes; builds, downloads and foreground servers can take
+longer. A working runtime with unavailable version or image metadata is still
+usable; doctor reports that metadata as unavailable or unknown.
 
-```
-✓ docker     28.0.4 via unix:///Users/you/.colima/default/docker.sock
-```
+## When a runtime is missing or unavailable
 
-is a different experience from being told to start something that is already
-started.
+The error distinguishes an executable that cannot be found, a client that cannot
+be executed, an unsuccessful `info` command, and a timeout. Run `docker info`,
+`podman info`, or `nerdctl info` directly for that client's detailed error.
 
-<Callout type="info" title="If no runtime is found">
-The failure names what is installed and what to do about it, and then says which
-commands still work:
+| Platform | Next step |
+| --- | --- |
+| macOS | Start Docker Desktop or an existing Colima/Podman machine. Install a runtime first if needed; Colima also needs the Docker CLI. |
+| Windows | Start Docker Desktop in Linux-container mode or an existing Podman machine. Install Docker Desktop or Podman first if needed. |
+| Linux | Check the Docker/containerd service or rootless Podman, socket permissions and connection settings. Install a runtime first if needed. |
 
-```
-Container runtime
-  ✗ none
-    docker is installed but not answering, and none of the usual sockets exist.
-    Try `colima start`, or start Docker Desktop.
+These are setup instructions for the user; `zel` does not run them automatically.
+A responding client is a prerequisite, not proof that every image, network,
+registry credential or mounted directory will work.
 
-  Commands that only read the content model still work:
-  new, explain, list, context, detect, convert.
-```
+## The engine image
 
-That last part matters. Writing, converting and inspecting content need no
-container at all — only the commands that run the engine do.
-</Callout>
+The report shows the configured image and whether inspection found it locally.
+A failed inspection is reported as not pulled; a timeout or an unavailable
+inspection is reported as unknown. This check never pulls an image.
 
-## The engine line
-
-```
-· engine     ghcr.io/mylife-inc/zellij-base:latest  (local)
-```
-
-Which image the build commands will use, and whether it is already pulled.
-
-`not pulled — the first build will fetch it` is not a problem; it is a warning
-that your next `zel dev` includes a 237 MB download before it does anything
-visible. Worth knowing before a demo, or before a flight.
-
-Override it with `ZELLIJ_IMAGE` when your organisation mirrors the image
-internally:
+The default is `ghcr.io/mylife-inc/zellij-base:latest`. Override it when your
+organisation mirrors the image internally:
 
 ```bash title="terminal"
 ZELLIJ_IMAGE=registry.internal/zellij-base:0.1.0 zel doctor
 ```
 
+The first container operation may download an absent image. Hosted builds also
+install app dependencies, so a local base image alone does not guarantee an
+offline build.
+
 ## Exit code
 
-`0` when everything a command would need is present, non-zero otherwise. It
-works as a preflight:
-
-```yaml
-      - run: zel doctor
-      - run: zel build docs
-```
-
-Which turns "the build failed after four minutes" into "the runner has no
-container runtime", stated first.
-
-## What it will report later
-
-| | |
-| --- | --- |
-| Configuration | Where [`zel.toml`](/cli/config#planned-cli-defaults) was found and everything it resolved to |
-| Credentials | Which environment variables the configured provider needs, and whether they are set — **names only, never values** |
-
-Both wait on the features they describe.
+`0` means a container runtime answered successfully. `4` means runtime discovery
+failed or endpoint settings were ambiguous. A missing local engine image does
+not fail doctor, and unavailable version/image metadata is reported without
+failing it. This is a container preflight, not a complete site validation or a
+prerequisite for portable commands.
 
 ## Housekeeping
 
 <Callout type="warning" title="Planned">
-All four exit with `not implemented yet`.
+These four subcommands are not registered yet and return an unrecognized-command
+error (exit code 2). `zel --version` does report the binary version today.
 </Callout>
 
-| | |
+| Command | Intended purpose |
 | --- | --- |
 | `zel version` | Binary, engine image and content-model versions |
 | `zel pull` | Pull or update the engine image ahead of time |
 | `zel upgrade` | Replace this binary with the latest release |
 | `zel completions <shell>` | `bash`, `zsh`, `fish`, `powershell` |
 
-`zel pull` is the one worth having: the first `zel dev` on a cold machine spends
-a minute fetching an image with no indication that this is a one-off, and doing
-it deliberately — in a CI image build, or before getting on a plane — moves that
-minute somewhere it does not matter.
-
-Until then, `docker pull ghcr.io/mylife-inc/zellij-base:latest` does the same
-thing.
+Until `zel pull` is implemented, use your runtime's pull command, such as
+`docker pull ghcr.io/mylife-inc/zellij-base:latest`.
 
 ## See also
 
-- [Containers](/guide/containers) — what the engine image is, and why
-- [`zel.toml`](/cli/config#planned-cli-defaults) — what doctor will resolve
-- [`zel check`](/cli/check) — the command most likely to send you here
+- [Containers](/guide/containers)
+- [Configuration](/cli/config)
+- [`zel check`](/cli/check)
+- [`zel image`](/cli/image)

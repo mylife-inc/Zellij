@@ -22,6 +22,50 @@ The implemented interfaces are `zel build <docs> --out <site>`,
 structured Zellij sites on the hosted static path; `view` always builds portable
 Markdown. `--target portable` selects that build target explicitly.
 
+## Agreed configured-site layout — pending implementation
+
+The user's CLI design decision on 2026-10-17 distinguishes the software
+repository from a Zellij site within it. A configured site has this layout:
+
+```text
+my-product/
+  src/
+  docs/
+    specs/
+    zellij/                 # Conventional location; any folder name is valid
+      zel.yaml              # Identifies the site root
+      content/              # Markdown and local source assets
+        index.md
+        guides/
+        assets/
+      site/                 # Generated HTML and assets
+        index.html
+```
+
+From the software repository root, the agreed default is:
+
+```sh
+zel build                   # Uses docs/zellij/zel.yaml
+zel build docs/zellij       # Explicit equivalent
+zel build docs/manual       # Uses docs/manual/zel.yaml instead
+```
+
+The positional path identifies the **parent of `zel.yaml`**. Source and output
+defaults are `content/` and `site/`, resolved relative to that selected site root.
+For example, `zel build docs/manual` reads `docs/manual/content/` and writes
+`docs/manual/site/`. Recognition depends on `zel.yaml`, not the folder's name.
+A nonstandard location is supplied explicitly rather than discovered by a
+recursive scan of the repository's documentation. Other documentation, such as
+the adjacent `docs/specs/`, is outside the selected website source.
+
+Source/output separation applies to `content/` versus `site/`: the output can
+be inside the configured site root without being inside the content source.
+This replaces the proposed flat Markdown/config layout and `dist/` convention
+for newly configured sites. It does not claim that discovery or these defaults
+already work in the binary. Existing direct Markdown-folder builds and serving
+an explicit output folder remain requirements; implementation must reconcile
+their existing contracts with the new configured-site entry point.
+
 ## Markdown input
 
 A plain folder of `.md` files, including nested documents and relative assets,
