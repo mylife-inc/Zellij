@@ -14,8 +14,16 @@ pub struct Config {
     pub name: Option<String>,
     #[serde(default, deserialize_with = "optional_text")]
     pub theme: Option<String>,
+    #[serde(default)]
+    pub markdown: Markdown,
     pub brand: Option<Brand>,
     pub nav: Option<Vec<Entry>>,
+}
+#[derive(Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Markdown {
+    #[serde(default)]
+    pub math: bool,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]

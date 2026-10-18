@@ -1009,6 +1009,45 @@ with 317 showcase passes, 124 conditional skips and no retries in each. Image ru
 architectures and verifying the published-image build/serve smoke test. Latest
 native release is still `zellij-v0.1.3`; repository is public/default-main.
 
+## Implementation record — native portable math
+
+Source `80174ac` extends the user's native documentation workflow with optional
+build-time MathML. `markdown.math` in `zel.yaml` defaults to false; enabled `$...$`
+and `$$...$$` expressions render using pinned `math-core` 0.9.0 and the bundled
+official STIX Two Math font. No server, Node, TeX or browser math library is
+required. Only math pages load the CSS; sites without equations omit its assets.
+Provenance, checksums and licenses are stored alongside the embedded assets.
+
+Source text remains available to titles, anchors/TOC, search, image alt text and
+MathML annotations. Invalid/unsupported formulas and unresolved references fail
+with source-file/expression diagnostics before publication. Each expression has
+its own label namespace and local definitions/numbering/references. Existing
+exports survive errors; watch mode handles config changes and recovery. The
+CLI/docs source-build minimum becomes Rust 1.96, covered by a new CI check;
+three nested-if cleanups keep the newer Clippy minimum clean. Helper-crate
+minimums and binary runtime requirements are unchanged.
+
+Local validation passes 176 Rust tests, formatting, warnings-denied Clippy,
+47-route/23-example deep-strict docs checks, and real Chromium/WebKit offline and
+HTTP/watch acceptance. Tests verify bundled font bytes/decoding, fractions and
+matrices, escaped HTML-like text, heading/search navigation, mobile scrolling,
+JavaScript-disabled rendering, structured CLI diagnostics, invalid-formula
+preservation and recovery. The new browser fixture corrected theme-parameter
+and viewport-settling assumptions. Consult the PR containing `80174ac` for
+hosted platform/minimum-version and final merge results.
+
+Limits remain explicit: no full TeX/MathJax parity, cross-expression equation
+references, Mermaid execution, exhaustive legacy-browser or manual screen-reader
+acceptance. No new native release is published. See the updated
+[portable contract](zel-portable-docs.md).
+
+Prior milestone completion: PR #22 merged as `0a52fdd`; PR/main CI
+`39090482991` / `39091005544` and image workflow `39091005435` each passed all
+13 jobs. Showcase passed 317 tests with 124 conditional skips on both revisions,
+and production-theme/analytics/prefix, development-watcher and published-image
+acceptance passed. Repository remains public/default-main and native release
+remains `zellij-v0.1.3`.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14

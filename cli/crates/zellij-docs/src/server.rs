@@ -269,13 +269,12 @@ impl Site {
             }
             return Err(404);
         }
-        if !local.ends_with('/') {
-            if let Some(file) = self
+        if !local.ends_with('/')
+            && let Some(file) = self
                 .file(&format!("{relative}.html"))?
                 .filter(|p| p.is_file())
-            {
-                return Self::open(file);
-            }
+        {
+            return Self::open(file);
         }
         Err(404)
     }

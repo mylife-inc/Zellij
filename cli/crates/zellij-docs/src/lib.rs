@@ -12,6 +12,7 @@ use diagnostics::Diagnostics;
 pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
 mod links;
 mod markdown;
+mod math;
 mod page;
 pub mod server;
 pub mod watch;
@@ -305,7 +306,7 @@ fn compile(
             )
             .and_then(|text| {
                 diagnostics.capture(
-                    markdown::parse(&text, fallback)
+                    markdown::parse(&text, fallback, config.markdown.math)
                         .map_err(|e| files::unsafe_path(source, e.to_string())),
                     Code::Markdown,
                     Some(source),
@@ -334,7 +335,11 @@ fn compile(
         pages.push(Page {
             source: "".into(),
             output: "index.html".into(),
-            markdown: diagnostics.capture(markdown::parse("", name), Code::Rendering, None)?,
+            markdown: diagnostics.capture(
+                markdown::parse("", name, false),
+                Code::Rendering,
+                None,
+            )?,
         });
     }
     pages.sort_by(|a, b| {
@@ -436,6 +441,11 @@ fn compile(
             bytes.to_vec(),
         );
     }
+    if pages.iter().any(|p| p.markdown.has_math) {
+        for (name, bytes) in math::ASSETS {
+            files.insert(format!("_zellij/math/{name}").into(), bytes.to_vec());
+        }
+    }
     files.insert(
         "_zellij/themes.css".into(),
         include_bytes!("../assets/themes.css").to_vec(),
@@ -483,14 +493,14 @@ fn compile(
             }
         }
         for component in path.ancestors().filter(|p| !p.as_str().is_empty()) {
-            if let Some(previous) = names.insert(component.as_str().to_lowercase(), component) {
-                if previous != component {
-                    return diagnostics.capture(
-                        Err(files::unsafe_path(path, "case-only output path collision")),
-                        Code::OutputPath,
-                        None,
-                    );
-                }
+            if let Some(previous) = names.insert(component.as_str().to_lowercase(), component)
+                && previous != component
+            {
+                return diagnostics.capture(
+                    Err(files::unsafe_path(path, "case-only output path collision")),
+                    Code::OutputPath,
+                    None,
+                );
             }
         }
     }

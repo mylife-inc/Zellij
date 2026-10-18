@@ -52,6 +52,11 @@ Native release packages may lag source. Check `zel new --help` for availability.
 See the [portable contract](specs/zel-portable-docs.md) for supported Markdown,
 configuration, platform acceptance and remaining rendering limits.
 
+Portable math is opt-in with `markdown: {math: true}` in `zel.yaml`. Inline
+`$...$` and display `$$...$$` equations render at build time with a bundled font,
+including when opened directly with JavaScript disabled. Source builds require
+Rust 1.96 or newer; downloaded binaries do not require a Rust installation.
+
 Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
 with installation tests against actual release archives. Windows uses the
 PowerShell installer; Unix uses the shell installer. See the

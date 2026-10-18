@@ -139,6 +139,12 @@ jobs:
       - run: cargo test --workspace
         working-directory: cli
 
+      - name: Native CLI supports its minimum Rust version
+        working-directory: cli
+        run: |
+          rustup toolchain install 1.96.0 --profile minimal --no-self-update
+          cargo +1.96.0 check --locked --workspace --all-targets
+
       # `zel new docs` promises a folder that validates. Rust can check the
       # YAML parses; only the engine can say whether the content model accepts
       # it. This caught `legal` written at the top level instead of under
