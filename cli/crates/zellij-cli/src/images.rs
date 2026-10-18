@@ -65,7 +65,9 @@ fn image(dir: Option<&str>, tag: Option<&str>, kind: BuildKind) -> Result<()> {
         site.renderer
     );
     build_image(&site, &content, &engine, kind, &tag)?;
-    println!("\n✓ {tag}\n  Run it:   zel image run {tag}\n  Push it:  zel image push {tag}");
+    println!(
+        "\n✓ {tag}\n  Run it:   zel image run \"{tag}\"\n  Push it:  zel image push \"{tag}\""
+    );
     Ok(())
 }
 

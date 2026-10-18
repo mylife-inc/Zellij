@@ -2166,3 +2166,11 @@ settings) and warnings-denied Clippy passed again after that test addition.
 Consult the `codex/cli-delivery` PR's latest checks for actual registry
 publication and all-platform acceptance; local fake-runtime checks do not
 establish a successful registry push.
+
+Tracked in [PR #32](https://github.com/mylife-inc/Zellij/pull/32). The first CI
+run (`39150307894`, head `6a0aeabb419016f51072e1201218765eaad91a19`)
+passed actual static publication/pull/HTTP acceptance and 11 jobs before the
+final shell-guidance refinement. Printed run/push/retry commands now quote
+references, so bracketed IPv6 registry names do not become shell glob patterns.
+Focused image/delivery tests pass after that refinement. Consult the PR's
+latest run for final acceptance; the earlier run is not final-head evidence.

@@ -38,7 +38,7 @@ pub(crate) fn publish(
     println!("✓ Built {}\nPushing image…", plan.tag);
     if let Err(error) = engine.image_push(&plan.tag, None) {
         eprintln!(
-            "Image build completed, but the push did not complete. The local image remains available as {}. Fix registry access and retry only the push with `zel image push {}`.",
+            "Image build completed, but the push did not complete. The local image remains available as {}. Fix registry access and retry only the push with `zel image push \"{}\"`.",
             plan.tag, plan.tag
         );
         return Err(error);

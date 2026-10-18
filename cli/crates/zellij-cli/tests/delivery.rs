@@ -381,7 +381,7 @@ esac
             } else {
                 assert!(
                     stderr.contains("local image remains")
-                        && stderr.contains("zel image push ghcr.io/acme/docs:v1"),
+                        && stderr.contains("zel image push \"ghcr.io/acme/docs:v1\""),
                     "{stderr}"
                 );
                 assert!(
