@@ -45,8 +45,9 @@ function heading(Tag: 'h2' | 'h3' | 'h4') {
     if (!id) return <Tag>{children}</Tag>;
     return (
       <Tag id={id} className="zellij-heading">
-        <a className="zellij-heading-anchor" href={`#${id}`} aria-label="Link to this section">
+        <a className="zellij-heading-anchor" href={`#${id}`}>
           {children}
+          <span className="zellij-heading-mark" aria-hidden="true">#</span>
         </a>
       </Tag>
     );

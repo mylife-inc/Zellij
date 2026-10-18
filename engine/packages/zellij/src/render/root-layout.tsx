@@ -2,7 +2,8 @@ import type { ReactNode } from 'react';
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
 import { NavBar } from '../chrome/nav-bar';
 import { Footer } from '../chrome/footer';
-import { themeInitScript } from '../chrome/theme-toggle';
+import { themeInitScript } from '../chrome/theme-preferences';
+import { THEME_NAMES } from '../config/schema';
 import { emitThemeCss } from '../themes/emit';
 import { fontVariables } from '../themes/fonts';
 
@@ -26,15 +27,18 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
         suppressHydrationWarning
       >
         <head>
-          {/* Only the active theme's tokens are emitted, so adding themes to
-              the engine costs a consuming site nothing (spec §6). */}
+          {/* The active theme's tokens, or every theme when the picker is enabled. */}
           <style
             id="zellij-theme"
             dangerouslySetInnerHTML={{ __html: emitThemeCss(config) }}
           />
-          {config.nav.themeToggle ? (
-            // Applies a stored mode before first paint to avoid a theme flash.
-            <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+          {config.nav.themeToggle || config.nav.themeSwitcher ? (
+            // Restore only enabled preferences, before hydration/first paint.
+            <script
+              data-mode-toggle={config.nav.themeToggle ? 'true' : undefined}
+              data-themes={config.nav.themeSwitcher ? THEME_NAMES.join(' ') : undefined}
+              dangerouslySetInnerHTML={{ __html: themeInitScript }}
+            />
           ) : null}
         </head>
         <body>

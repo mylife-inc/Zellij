@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFocusTrap } from './hooks';
-import { THEME_NAME_STORAGE_KEY } from './theme-toggle';
+import { THEME_NAME_STORAGE_KEY } from './theme-preferences';
 import type { ThemeOption } from './nav-model';
 
 /**

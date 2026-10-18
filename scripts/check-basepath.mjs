@@ -10,6 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
 import { observeThemeFonts } from './assert-theme-fonts.mjs';
+import { themePreferenceFiles, checkThemePreferences } from './check-theme-preferences.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const require = createRequire(import.meta.url);
@@ -24,16 +25,20 @@ let server;
 try {
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'prefix-fixture'], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true, force: true });
+  await rm(path.join(app, 'src/app'), { recursive: true, force: true });
   const files = {
+    ...themePreferenceFiles(prefix),
     'next.config.js': "import { withZellij } from '@shebka/zellij/next-config';\nexport default withZellij({ typedRoutes: false }, { contentDir: './docs' });\n",
-    'src/app/layout.tsx': "import '@shebka/zellij/styles.css';\nimport { createZellijRootLayout } from '@shebka/zellij';\nexport default createZellijRootLayout({ contentDir: './docs' });\n",
-    'src/app/[[...slug]]/page.tsx': "import { createZellijPages } from '@shebka/zellij';\nconst zellij = createZellijPages({ contentDir: './docs' });\nexport const generateStaticParams = zellij.generateStaticParams;\nexport const generateMetadata = zellij.generateMetadata;\nexport default zellij.Page;\n",
+    'src/app/(content)/layout.tsx': "import '@shebka/zellij/styles.css';\nimport { createZellijRootLayout } from '@shebka/zellij';\nexport default createZellijRootLayout({ contentDir: './docs' });\n",
+    'src/app/(content)/[[...slug]]/page.tsx': "import { createZellijPages } from '@shebka/zellij';\nconst zellij = createZellijPages({ contentDir: './docs' });\nexport const generateStaticParams = zellij.generateStaticParams;\nexport const generateMetadata = zellij.generateMetadata;\nexport default zellij.Page;\n",
     'src/app/sitemap.ts': "import { createZellijSitemap } from '@shebka/zellij';\nexport const dynamic = 'force-static';\nexport default createZellijSitemap({ contentDir: './docs' });\n",
     'src/app/robots.ts': "import { createZellijRobots } from '@shebka/zellij';\nexport const dynamic = 'force-static';\nexport default createZellijRobots({ contentDir: './docs' });\n",
     'src/app/icon.svg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/></svg>',
     'docs/site.yaml': `name: Prefix fixture\nbasePath: ${prefix}/\nhome: 01-guide\nsiteUrl: https://docs.example.com\nogImage: assets/og.png\nnav: { search: true, themeToggle: true }\n`,
+    'docs/pages.yaml': '- name: media\n  title: Local video\n  sections: [local-video]\n',
+    'docs/sections/local-video.yaml': 'type: video-embed\nheading: Local demo\nsrc: assets/demo.mp4\nposter: assets/og.png\n',
     'docs/01-guide/_sidebar.yaml': 'route: /manual\nnav: [intro, nested/detail]\n',
-    'docs/01-guide/intro.mdx': '# Introduction\n\nWelcome.\n\n## Find this section\n\nThe nebula fixture proves search navigation.\n\n![Local asset](/_zellij/assets/og.png)\n\n<Screenshot src="assets/og.png" alt="Optimized asset" width={1200} height={630} />\n\n[Read the details](/manual/nested/detail)\n',
+    'docs/01-guide/intro.mdx': '# Introduction\n\nWelcome.\n\n## Find this section\n\nThe nebula fixture proves search navigation.\n\n### **API** `options`\n\nFormatted heading content.\n\n#### Nested *details*\n\nMore detail.\n\n![Local asset](/_zellij/assets/og.png)\n\n<Screenshot src="assets/og.png" alt="Optimized asset" width={1200} height={630} />\n\n[Read the details](/manual/nested/detail)\n',
     'docs/01-guide/nested/detail.mdx': '# Details\n\nThe nested route works.\n\n[Back to introduction](/manual/intro)\n',
   };
   for (const [name, text] of Object.entries(files)) {
@@ -42,6 +47,7 @@ try {
   }
   await mkdir(path.join(app, 'docs/assets'));
   await copyFile(path.join(repo, 'examples/showcase/content/assets/og.png'), path.join(app, 'docs/assets/og.png'));
+  await copyFile(path.join(repo, 'scripts/fixtures/template.mp4'), path.join(app, 'docs/assets/demo.mp4'));
   execFileSync(process.execPath, [cli, 'prepare', '--content', './docs'], { cwd: app, env, stdio: 'inherit' });
   execFileSync(process.execPath, [next, 'build', ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: 'inherit' });
 
@@ -75,6 +81,8 @@ try {
     const browser = await engine.launch();
     let context;
     try {
+      await checkThemePreferences(browser, origin, prefix);
+      console.log(`${name}: independent theme/mode restoration before hydration, navigation, stale preferences and unavailable storage passed.`);
       context = await browser.newContext();
       await context.tracing.start({ screenshots: true, snapshots: true });
       const page = await context.newPage();
@@ -89,6 +97,17 @@ try {
       await expect(page).toHaveURL(`${origin}${prefix}/manual/intro`);
       await expect(page.locator('h1')).toHaveText('Introduction');
       await checkFonts();
+      for (const [level, title, id] of [[2, 'Find this section', 'find-this-section'], [3, 'API options', 'api-options'], [4, 'Nested details', 'nested-details']]) {
+        const heading = page.getByRole('heading', { level, name: title, exact: true });
+        await expect(heading).toBeVisible();
+        const permalink = heading.getByRole('link', { name: title, exact: true });
+        await expect(permalink).toHaveAttribute('href', `#${id}`);
+        await permalink.focus();
+        await expect(permalink).toBeFocused();
+        await permalink.press('Enter');
+        await expect(page).toHaveURL(`${origin}${prefix}/manual/intro#${id}`);
+      }
+
       const internal = await page.locator('a[href^="/"]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
       assert(internal.length > 0 && internal.every((href) => href === prefix || href.startsWith(`${prefix}/`)), `Every internal link must retain the prefix: ${JSON.stringify(internal)}`);
       const resources = await page.locator('link[rel="stylesheet"], link[as="font"], script[src]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('href') ?? node.getAttribute('src')));
@@ -113,8 +132,20 @@ try {
       await page.locator('.zellij-search-input').fill('nebula');
       await page.locator('.zellij-search-result').filter({ hasText: 'Find this section' }).click();
       await expect(page).toHaveURL(`${origin}${prefix}/manual/intro#find-this-section`);
+      await page.goto(`${origin}${prefix}/media`);
+      const play = page.getByRole('button', { name: 'Play video: Local demo', exact: true });
+      await expect(play.locator('img')).toHaveJSProperty('complete', true);
+      await expect.poll(() => play.locator('img').evaluate(img => img.naturalWidth)).toBeGreaterThan(0);
+      await play.click();
+      const video = page.locator('video');
+      await expect(video).toHaveAttribute('src', new RegExp(`^${prefix}/_zellij/assets/demo\\.mp4(?:\\?|$)`));
+      await expect(video).toHaveAttribute('poster', new RegExp(`^${prefix}/_zellij/assets/og\\.png(?:\\?|$)`));
+      await expect(video).toHaveJSProperty('videoWidth', 32, { timeout: 15000 });
+      const videoUrl = await video.getAttribute('src');
+      assert(videoUrl);
+      assert.equal((await fetch(new URL(videoUrl, origin))).status, 200);
       assert.deepEqual(failures, [], `${name}: browser resources and hydration must succeed`);
-      console.log(`${name}: prefixed redirects, links, images, Next resources, metadata, sitemap and search passed.`);
+      console.log(`${name}: prefixed redirects, accessible heading permalinks, decoded local video/poster, links, images, Next resources, metadata, sitemap and search passed.`);
       await context.tracing.stop();
     } catch (error) {
       if (context) {

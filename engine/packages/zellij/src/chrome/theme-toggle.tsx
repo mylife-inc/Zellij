@@ -1,33 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { THEME_STORAGE_KEY } from './theme-preferences';
 
 type Mode = 'light' | 'dark' | 'system';
-
-export const THEME_STORAGE_KEY = 'zellij:mode';
-export const THEME_NAME_STORAGE_KEY = 'zellij:theme';
-
-/**
- * Runs before first paint to apply a stored mode preference, so the page never
- * flashes the config default before switching (spec §6 dark mode).
- *
- * Injected via dangerouslySetInnerHTML, which is safe here and only here: this
- * is a fixed literal built from our own constant, with no content, config, or
- * user input interpolated into it. Keep it that way — if this string ever needs
- * a dynamic value, encode it as a data attribute and read it from the DOM
- * instead of interpolating into script source.
- */
-export const themeInitScript = `
-(function(){try{
-  var d = document.documentElement;
-  var m = localStorage.getItem('${THEME_STORAGE_KEY}');
-  if (m === 'light' || m === 'dark' || m === 'system') {
-    d.setAttribute('data-zellij-mode', m);
-  }
-  var t = localStorage.getItem('${THEME_NAME_STORAGE_KEY}');
-  if (t && /^[a-z-]+$/.test(t)) d.setAttribute('data-zellij-theme', t);
-}catch(e){}})();
-`.trim();
 
 function resolveNext(current: Mode): Mode {
   if (current === 'system') {
@@ -39,12 +15,18 @@ function resolveNext(current: Mode): Mode {
 
 export function ThemeToggle() {
   const [mode, setMode] = useState<Mode>('system');
+  const [systemDark, setSystemDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const current = document.documentElement.getAttribute('data-zellij-mode');
     if (current === 'light' || current === 'dark' || current === 'system') setMode(current);
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const update = () => setSystemDark(media.matches);
+    update();
+    media.addEventListener('change', update);
     setMounted(true);
+    return () => media.removeEventListener('change', update);
   }, []);
 
   const toggle = (): void => {
@@ -61,7 +43,7 @@ export function ThemeToggle() {
   // Until mounted we cannot know the effective mode, so keep the label neutral
   // rather than rendering a claim that may be wrong.
   const label = mounted
-    ? mode === 'dark'
+    ? mode === 'dark' || (mode === 'system' && systemDark)
       ? 'Switch to light theme'
       : 'Switch to dark theme'
     : 'Toggle theme';
