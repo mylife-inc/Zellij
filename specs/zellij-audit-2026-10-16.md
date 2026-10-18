@@ -1795,3 +1795,10 @@ Release compatibility is deliberately unresolved operational work: current
 release before enabling them. No release or live provider deployment was made.
 Other providers and the remaining CLI backlog remain open. Source/PR evidence
 will be appended without removing the historical generator findings.
+
+
+Workflow implementation source: `8904cdd11e17e17d2cb59bb481e9220741996a12`.
+Final local follow-up checks passed the CI integration, core/scaffold suites,
+warnings-denied Clippy, formatting and strict/deep documentation validation.
+Cross-platform and real-container acceptance remains the PR merge gate; inspect
+the GitHub checks associated with this source for final-head results.
