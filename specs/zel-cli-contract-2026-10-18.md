@@ -76,12 +76,13 @@ shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
-The proposed **capabilities** in the tables are not all implemented: conversion
-still writes raw hosted content and `view` remains portable-only. Static-image
+The proposed **capabilities** in the tables are not all implemented: `view`
+remains portable-only and `na` remains unregistered. Conversion supports explicit
+configured-site output while keeping raw hosted content as its default. Static-image
 packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
 and registry/Netlify publication via `publish` / `pub` are implemented. `deploy netlify`
-and `netlify` are implemented, with bare `deploy` using saved publication. `na`
-and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
+and `netlify` are implemented, with bare `deploy` using saved publication.
+Configured `ship` and bare `ci [site]` are implemented. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
 
