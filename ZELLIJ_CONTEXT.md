@@ -1185,6 +1185,61 @@ all 13 jobs, publishing four variants for Linux amd64/arm64 and passing the
 published-image build/serve smoke test. Repository facts were refreshed:
 public/default-main; native release remains `zellij-v0.1.3`.
 
+### Portable Mermaid diagrams — 2026-10-17
+
+Source `a9767fa` implements `markdown: {mermaid: true}` for portable Markdown.
+The default remains literal code. Rust emits escaped source disclosures and
+local assets, enforcing nonempty source, 64 KiB per fence and 32 diagrams per
+page. Mermaid grammar/layout errors are browser errors, including after native
+`check --strict`; the source remains visible and other graphs continue drawing.
+Native input-limit failures remain source-file/ordinal `rendering` diagnostics
+before publication. The browser enforces 500 edges and strict security settings
+that author directives cannot weaken.
+
+A single committed classic IIFE bundles Mermaid 11.17.2, KaTeX and diagram chunks
+for moved `file://` exports. No Node, network, HTTP server or build-time browser
+is needed by `zel`. Drawing requires browser JavaScript; disabled/unavailable
+JavaScript retains readable source. Pages without diagrams do not load the
+approximately 3.5 MB runtime; sites without diagrams omit it. MathML labels use
+the shared local font. Remote author resources remain remote, and images inside
+diagram source are not discovered/copied by the Markdown asset resolver.
+
+`mermaid-client.js` serializes rendering and discards stale revisions across
+site theme/mode and OS color-scheme changes. Duplicate IDs emitted by upstream
+mindmaps are cleaned while preserving the first reference target. Native
+mindmap CSS is scoped to its SVG. Bounded, focusable source disclosures avoid
+very tall error pages. Source is indexed for offline search.
+
+`scripts/prepare-portable-mermaid.mjs` generates/verifies the IIFE, notices and
+provenance manifest; CI runs its byte comparison. The generator replaces the
+hash-verified upstream embedded js-yaml 4.3.0 module with patched 4.3.2, checks
+embedded source-map dependencies, and retains their exact-version notices.
+The embedded Lodash 4.17.23 subset excludes the functions affected by its known
+advisories; the generator asserts this. Ordinary npm audit misses such embedded
+code. See `cli/crates/zellij-docs/assets/mermaid/README.md` for review evidence and
+upgrade policy. This does not claim a zero-advisory dependency tree or exhaustive
+security review, and the YAML shim changes only the portable bundle.
+
+Local evidence: **186 Rust tests**, formatting, warnings-denied Clippy, bundle
+reproduction, 47-route/23-example deep-strict documentation validation and the
+production documentation build pass. Chromium/WebKit pass offline moved/nested
+file navigation, flowchart/sequence/state/pie/mindmap/math labels, invalid syntax
+and edge-limit isolation, protected directives, unique IDs, theme/system-mode
+changes, search, mobile, disabled-JavaScript and missing-runtime fallbacks.
+HTTP/watch acceptance passes opt-in changes, edits, invalid-source fallback,
+native failure preservation and recovery in both browsers. Consult the PR
+containing `a9767fa` for hosted six-target/three-OS acceptance and merge status.
+No new native version is published here.
+
+Prior milestone completion: [PR #24](https://github.com/mylife-inc/Zellij/pull/24)
+merged head `46a25a8` as `1bddf89`. PR/main CI `39095187808` / `39095732531` each
+passed all 13 jobs, including Rust 1.96, six package/install targets and three-OS
+portable acceptance. Showcase passed 317 tests with 124 conditional skips and
+no retry markers on both revisions. Image run `39095732463` passed all 13 jobs,
+publishing four variants for Linux amd64/arm64 and passing published-image
+build/serve smoke acceptance. Repository facts were refreshed: public/default-main;
+latest native release remains `zellij-v0.1.3`.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1490,12 +1545,13 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after portable mindmap implementation, subject to the user's v1 scope decision:
+Remaining order after portable Mermaid implementation, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of portable mindmaps, including minimum Rust and all
-   native targets; consult the PR containing `a140800`. Portable math is accepted on main.
-2. Address remaining portable rendering (especially Mermaid) and finish the agreed CLI subset in
-   [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
+1. Complete hosted acceptance of portable Mermaid, including minimum Rust and all
+   native targets; consult the PR containing `a9767fa`. Portable math/mindmaps are accepted on main.
+2. Finish the agreed CLI subset and remaining portable compatibility work in
+   [the portable contract](specs/zel-portable-docs.md); native scaffolding, math,
+   YAML mindmaps and opt-in Mermaid are implemented.
 3. Choose and publish a new native version through the tested release path,
    preserving the existing v0.1.3 assets. Confirm release destination/version
    compatibility and documentation deployment; broader OS/signing decisions remain.
