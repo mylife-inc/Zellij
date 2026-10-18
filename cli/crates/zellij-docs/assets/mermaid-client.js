@@ -44,12 +44,17 @@ async function redraw() {
   if (running) return;
   running = true;
   try {
-    await document.fonts.ready;
-    await document.fonts.load('16px "Zellij STIX Two Math"');
+    await document.fonts.load('16px "Zellij STIX Two Math"').catch(() => {});
     let completed = 0;
     while (completed !== requested) {
       const revision = requested;
       const config = settings();
+      // A new theme can arrive while the previous graph is still drawing.
+      // Wait for this revision's actual font before Mermaid measures labels;
+      // initial-page readiness does not cover fonts introduced by later themes.
+      await document.fonts.load(`16px ${config.fontFamily}`).catch(() => {});
+      await document.fonts.ready;
+      if (revision !== requested) continue;
       for (const [index, figure] of diagrams.entries()) {
         if (revision !== requested) break;
         const canvas = figure.querySelector('.mermaid-canvas');

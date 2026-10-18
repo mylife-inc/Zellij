@@ -225,6 +225,42 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await expect(page.locator('[data-language=mermaid]')).toBeVisible({ timeout: 20000 });
       await expect(page.locator('script[src*=mermaid]')).toHaveCount(0);
 
+      // Change to a different font while a render pass is active, with the
+      // real font response delayed. Every new-theme SVG must use loaded fonts.
+      await writeFile(readme, home(`Recovered ${engine}`) + '\n' +
+        '```mermaid\nflowchart LR\nA[MMMMMMMMMMMMMMMM] --> B[Wide label]\n```\n'.repeat(8));
+      await expect(page.locator('[data-language=mermaid]')).toHaveCount(8, { timeout: 20000 });
+      let delayedFonts = 0;
+      await page.route('**/plex-sans-*.woff2', async route => {
+        delayedFonts += 1;
+        await delay(1500);
+        await route.continue();
+      });
+      await page.addInitScript(() => document.addEventListener('DOMContentLoaded', () => {
+        let switched = false;
+        const seen = new Set();
+        window.__zelDiagramFontStates = [];
+        const observer = new MutationObserver(() => {
+          if (!switched && document.querySelector('.mermaid-canvas svg')) {
+            switched = true;
+            document.documentElement.dataset.zellijTheme = 'slate';
+          }
+          for (const figure of document.querySelectorAll('.mermaid-diagram[data-theme=slate]')) {
+            if (!seen.has(figure)) {
+              seen.add(figure);
+              window.__zelDiagramFontStates.push(document.fonts.status);
+            }
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true, attributes: true });
+      }));
+      await writeFile(configPath, 'markdown: {mermaid: true}\n');
+      await expect(page.locator('.mermaid-diagram').last()).toHaveAttribute('data-theme', 'slate', { timeout: 30000 });
+      assert(delayedFonts > 0, 'The changed theme must fetch its previously unused font');
+      assert.deepEqual(await page.evaluate(() => window.__zelDiagramFontStates), Array(8).fill('loaded'),
+        'All diagrams wait for the new theme font, including changes during an active render pass');
+      await page.unroute('**/plex-sans-*.woff2');
+
       const stable = await status();
       await writeFile(path.join(source, '.draft.md'), 'ignored');
       await mkdir(path.join(source, 'node_modules'));

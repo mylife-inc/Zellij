@@ -1126,6 +1126,24 @@ six package/install targets, three-OS portable acceptance, showcase (317 passes,
 124 conditional skips, no retries) and published-image acceptance passed. The
 repository is public/default-main; latest native release remains `zellij-v0.1.3`.
 
+## Implementation follow-up — Mermaid theme font readiness
+
+Source `ea39bfb` fixes a race reproduced after PR #25 merged: switching to Slate
+while diagrams were rendering produced SVG while its body-font request was still
+pending (`document.fonts.status === "loading"`). Font readiness was only awaited
+before the render loop, so a later theme revision could use fallback metrics.
+The runtime now loads the active revision's body font, awaits readiness and
+rechecks staleness before layout. Optional font-load failures fall back rather
+than aborting all diagrams. Regenerated bundle provenance stays reproducible.
+
+The reproduction now reports no pending requests and `loaded`. Chromium/WebKit
+HTTP/watch regression tests delay real font responses, switch themes during an
+active render pass and verify eight diagrams draw after readiness. Both browsers
+also pass focused offline Mermaid acceptance. PR #25 merged as `113283a` after
+13/13 PR checks (`39097514862`); its image workflow `39098016565` passed 13/13.
+Consult PR #25 for final main CI `39098016595` evidence and the PR containing
+`ea39bfb` for acceptance/merge status of this correction.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
