@@ -1819,3 +1819,8 @@ depends on registration order, and imported Windows junctions cannot bypass the
 existing symlink boundary. Missing runtime/credentials do not trigger installation,
 startup or account creation. Local and forthcoming CI evidence is recorded in
 ZELLIJ_CONTEXT.md; release publication and the remaining CLI backlog stay open.
+
+
+Import/ship implementation source: `0b59859` in
+[PR #35](https://github.com/mylife-inc/Zellij/pull/35). The pull request records
+final-head platform and container acceptance; consult its checks for merge status.

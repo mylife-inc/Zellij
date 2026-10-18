@@ -2403,3 +2403,8 @@ No local daemon was started, external registry/account was used, or live deploym
 or native release performed. Remaining CLI work includes new app, fmt/watch,
 portable dev, hosted view, other providers and advanced maintenance. Compatible
 release preparation/publication remains a separate milestone.
+
+
+Import/ship implementation source: `0b59859` in
+[PR #35](https://github.com/mylife-inc/Zellij/pull/35). The pull request records
+final-head platform and container acceptance; consult its checks for merge status.
