@@ -136,8 +136,19 @@ archive="zel-${version}-${target}.tar.gz"
 base="${ZEL_RELEASE_BASE_URL:-https://github.com/$REPO/releases/download/$tag}"
 base="${base%/}"
 case "$base" in
+  *'?'*|*'#'*|*'@'*) die "Release asset URLs must not contain credentials, a query or a fragment." ;;
+esac
+case "$base" in
   https://*|http://127.0.0.1:*|http://localhost:*|http://\[::1\]:*) ;;
   *) die "Release asset URLs must be HTTPS (or loopback HTTP)." ;;
+esac
+case "$base" in
+  http://*)
+    authority="${base#http://}"
+    authority="${authority%%/*}"
+    port="${authority##*:}"
+    case "$port" in ''|*[!0-9]*) die "Release asset URLs must use a numeric loopback port." ;; esac
+    ;;
 esac
 
 # ------------------------------------------------------------------ download

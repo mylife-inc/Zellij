@@ -59,8 +59,8 @@ async function run(command, args, env = process.env, succeeds = true) {
     return state;
   } finally { clearTimeout(timeout); }
 }
-async function install(scenario, shell, succeeds = true, dir = installation, requested = version) {
-  const env = { ...process.env, ZEL_VERSION: requested, ZEL_INSTALL_DIR: dir, ZEL_RELEASE_BASE_URL: `${origin}/${scenario}` };
+async function install(scenario, shell, succeeds = true, dir = installation, requested = version, mirror = `${origin}/${scenario}`) {
+  const env = { ...process.env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential', ZEL_VERSION: requested, ZEL_INSTALL_DIR: dir, ZEL_RELEASE_BASE_URL: mirror };
   delete env.ZEL_INSECURE_SKIP_CHECKSUM;
   return run(shell, windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts/install.ps1')] : [path.resolve('scripts/install.sh')], env, succeeds);
 }
@@ -105,6 +105,12 @@ try {
       assert.deepEqual(await readFile(executable), installed, `${scenario} must preserve the installed binary`);
     }
     await install('combined', shell, false, installation, 'v../invalid');
+    for (const mirror of [`${origin}/combined?query=1`, origin.replace('http://', 'http://localhost:80@') + '/combined']) {
+      const before = requests.length;
+      const failure = await install('combined', shell, false, installation, version, mirror);
+      assert.match(failure.stderr, /Release asset URLs|ReleaseBaseUrl/);
+      assert.equal(requests.length, before, 'Malformed mirror URLs must fail before downloading');
+    }
     assert.deepEqual(await readFile(executable), installed);
     assert.equal(await readFile(path.join(installation, 'zel.new'), 'utf8'), 'authored file');
     assert.deepEqual((await readdir(installation)).sort(), [path.basename(executable), 'zel.new'].sort());

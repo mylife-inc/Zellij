@@ -74,7 +74,13 @@ try {
         if ($checksum) { break }
     }
     if (-not $checksum) { throw "No valid checksum found for $archive. Nothing was installed." }
-    if ((Get-FileHash -LiteralPath $download -Algorithm SHA256).Hash -ne $checksum) { throw 'Checksum mismatch. Nothing was installed.' }
+    # Use .NET directly: a PS5.1 child of PS7 can inherit module paths that hide
+    # the Get-FileHash script function. Hashing needs no PowerShell module.
+    $hasher = [Security.Cryptography.SHA256]::Create()
+    $stream = [IO.File]::OpenRead($download)
+    try { $actual = [BitConverter]::ToString($hasher.ComputeHash($stream)).Replace('-', '') }
+    finally { $stream.Dispose(); $hasher.Dispose() }
+    if ($actual -ne $checksum) { throw 'Checksum mismatch. Nothing was installed.' }
     Add-Type -AssemblyName System.IO.Compression.FileSystem
     $zip = [IO.Compression.ZipFile]::OpenRead($download)
     $candidate = Join-Path $temporary 'zel.exe'
@@ -91,7 +97,7 @@ try {
     $staged = Join-Path $InstallDir ('.zel-install-' + [Guid]::NewGuid().ToString('N') + '.exe')
     [IO.File]::Copy($candidate, $staged, $false)
     if ([IO.File]::Exists($destination)) {
-        [IO.File]::Replace($staged, $destination, $null)
+        [IO.File]::Replace($staged, $destination, [System.Management.Automation.Language.NullString]::Value)
     } else {
         [IO.File]::Move($staged, $destination)
     }
