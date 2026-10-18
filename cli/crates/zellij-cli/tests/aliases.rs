@@ -239,9 +239,13 @@ foreach ($pair in @(
     @('zel image run --', 'zel ir --', '--port'),
     @('zel ci run --', 'zel ci publish --', '--workflow')
 )) {
+    $Error.Clear()
     $full = @((TabExpansion2 -inputScript $pair[0] -cursorColumn $pair[0].Length).CompletionMatches.CompletionText | Sort-Object)
     $short = @((TabExpansion2 -inputScript $pair[1] -cursorColumn $pair[1].Length).CompletionMatches.CompletionText | Sort-Object)
-    if ($full -notcontains $pair[2]) { throw "Missing $($pair[2]) for $($pair[0]); got: $full" }
+    if ($full -notcontains $pair[2]) {
+        $details = $Error | Format-List * -Force | Out-String
+        throw "PowerShell $($PSVersionTable.PSVersion): missing $($pair[2]) for $($pair[0]); got: $full; errors: $details"
+    }
     if (($full -join "`n") -cne ($short -join "`n")) { throw "Different options for $($pair[1])" }
 }
 "#).unwrap();
