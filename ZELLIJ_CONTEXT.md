@@ -2040,8 +2040,9 @@ Main CI `39145286725` and base-image publication `39145286638` both passed.
 The latest public native release remains `zellij-v0.1.3` (2026-08-13); no release
 or documentation deployment is part of this increment.
 
-Implementation source `54e24d0` on `codex/cli-next-images` (PR linked below once
-created; use its latest checks for final hosted acceptance):
+Implementation source `54e24d09a9a25941bc1b3642e42c0c9aee08f819`, tracked in
+[PR #31](https://github.com/mylife-inc/Zellij/pull/31). Use its latest checks for
+final hosted acceptance:
 
 - `image next [site]` / `ni [site]` uses the common site resolver and a separate
   normalized `<site-name>-next:latest` tag. There are now 24 top-level shortcuts.
@@ -2086,8 +2087,9 @@ and fake-runtime integration tests, and a production Next wrapper in Chromium
 using the actual CLI's generated content. Browser checks cover titles, theme,
 company link, nested/external nav, custom anchors, navigation/reload, unlisted
 search entries, assets/downloads, tables/tasks, maths, mindmaps, Mermaid, and
-inert HTML/JavaScript-looking prose. Final Rust/format/Clippy and all-platform
-CI results are recorded below when completed. A stopped local Docker daemon
+inert HTML/JavaScript-looking prose. Final local validation passed **229 Rust tests**, formatting and warnings-denied
+Clippy. All-platform and real-container CI acceptance remains pending; consult
+PR #31's latest checks. A stopped local Docker daemon
 means real image/server verification belongs to CI; local wrapper acceptance
 must not be represented as actual Docker image acceptance.
 
