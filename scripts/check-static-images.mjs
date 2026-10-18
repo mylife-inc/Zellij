@@ -27,7 +27,11 @@ async function response(origin, url, status = 200) {
   return res;
 }
 async function resources(origin, html) {
-  const urls = new Set([...html.matchAll(/(?:src|href)="([^"]+)"/g)]
+  // Connection hints name an origin, not a document to fetch. React can emit
+  // <link rel="preconnect" href="/"> even when the site lives below basePath.
+  const tags = [...html.matchAll(/<(?:a|img|script|link|source)\b[^>]*>/g)]
+    .map((m) => m[0]).filter((tag) => !/\brel="(?:preconnect|dns-prefetch)"/.test(tag));
+  const urls = new Set(tags.flatMap((tag) => [...tag.matchAll(/\s(?:src|href)="([^"]+)"/g)])
     .map((m) => m[1].replaceAll('&amp;', '&')).filter((url) => url.startsWith('/') && !url.startsWith('//')));
   assert(urls.size > 0);
   for (const url of urls) {

@@ -2012,3 +2012,12 @@ is the YAML/Screenshot convention. The rendering code correctly preserved the
 unsupported relative URL. The fixture now uses the public URL and runs the
 engine's deep/strict validation before image builds; no engine change was needed.
 The dot-prefix server correction is source `eea044623ee402c0dba36ab127ec008a6ba6760e`.
+
+The final-head run (`39142340217`) first hit a transient Docker info timeout
+before any image build. On retry it built all three images and passed portable
+and root-hosted browser checks. The prefixed HTTP resource scan incorrectly
+fetched React's `<link rel="preconnect" href="/">` hint as a document. Local
+export inspection confirmed actual links/assets were correctly prefixed. The
+scanner now inspects real resource/navigation tags and excludes preconnect/DNS
+hints; browser navigation/error checks remain. Use the latest PR checks for
+acceptance after this fixture correction.
