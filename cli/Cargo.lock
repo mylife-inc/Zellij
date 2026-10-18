@@ -2059,6 +2059,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "serde_yaml_ng",
  "sha1",
  "tempfile",
  "walkdir",
@@ -2138,6 +2139,7 @@ name = "zellij-scaffold"
 version = "0.1.3"
 dependencies = [
  "camino",
+ "serde_json",
  "serde_yaml_ng",
  "tempfile",
  "zellij-core",

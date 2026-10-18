@@ -93,7 +93,7 @@ fail to build.
 </Callout>
 
 ```bash title="terminal"
-zel dev docs --open      # read a few pages
+zel dev docs      # read a few pages
 zel build docs           # and prove it compiles
 ```
 
@@ -102,7 +102,7 @@ zel build docs           # and prove it compiles
 <Step title="Add the pipeline">
 
 ```bash title="terminal"
-zel ci init github --content docs --target image
+zel ci init github --content docs --target image --zel-version 0.2.0
 ```
 
 <Callout type="tip" title="A separate workflow, not a step in yours">
@@ -119,12 +119,11 @@ secrets.
 
 <Step title="Add the check to pull requests">
 
-Already done — the workflow above runs `zel check` on every pull request and
-publishes only on `main`.
-
-This is the part with the best return, and it costs nothing — no credentials, no
-registry, about fifteen seconds per run. From now on, a pull request that breaks
-a documentation link fails before review.
+The workflow checks and builds the Next image on pull requests without
+publishing. Eligible `main` pushes and manual runs build once and push to GHCR.
+The selected compatible CLI release and engine image must be published before
+enabling it; the current public 0.1.3 binary is incompatible. See [CI](/cli/ci).
+A broken documentation link or build now fails before publication.
 
 </Step>
 
@@ -136,18 +135,17 @@ git push -u origin docs/zellij
 gh pr create --fill
 ```
 
-Your own new pipeline runs against the pull request. If `zel check` passes on
-the branch that introduced it, the migration is sound.
+The pipeline checks and builds the pull request. Review the rendered pages as
+well: passing validation does not prove that every source-tool feature survived
+migration.
 
 </Step>
 
 <Step title="Turn on package writing">
 
-Only for the image pipeline. **Settings → Actions → General → Workflow
-permissions → Read and write permissions.**
-
-Without it the push fails with a 403 that reads like an authentication problem
-and is a permissions problem.
+The image publication job requests `packages: write`. Ensure organization,
+repository and GHCR package policy permit that repository to push. A 403 can
+indicate package access or policy restrictions even when authentication succeeds.
 
 </Step>
 
@@ -162,12 +160,12 @@ to try something is not a real option.
 <Step title="Publish the new one somewhere temporary">
 
 ```bash title="terminal"
-netlify sites:create --name acme-docs-preview
-zel build docs --out dist
-netlify deploy --prod --dir dist
+zel deploy netlify docs --site-id your-existing-preview-site
 ```
 
-`zel deploy netlify docs` will collapse those last two once it lands.
+Create the destination site first and export `NETLIFY_AUTH_TOKEN`. The native
+command builds and uploads once, creating a draft preview by default. It does
+not create a Netlify account or site.
 
 </Step>
 <Step title="Circulate it">

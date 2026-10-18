@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli

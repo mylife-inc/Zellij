@@ -12,6 +12,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 mod args;
 use serde_json::json;
 use std::io::Write;
+mod ci;
 mod delivery;
 mod images;
 mod netlify;
@@ -121,25 +122,10 @@ fn main() {
         } => delivery::execute(provider.as_deref(), options),
         Command::Doctor => doctor(),
         Command::Completions { shell } => args::completions(shell),
-        Command::Ci { ref action } => match action {
-            CiAction::Init {
-                system,
-                deploy,
-                target,
-                content,
-                site,
-                force,
-                no_provision,
-            } => ci_init(
-                system,
-                deploy.as_deref(),
-                target,
-                content.as_deref(),
-                site.as_deref(),
-                *force,
-                *no_provision,
-            ),
-            CiAction::Run { workflow, r#ref } => ci_publish(workflow, r#ref),
+        Command::Ci(ref args) => match &args.action {
+            Some(CiAction::Init { system, options }) => ci::generate(system, None, options),
+            Some(CiAction::Run { workflow, r#ref }) => ci_publish(workflow, r#ref),
+            None => ci::generate("github", args.dir.as_deref(), &args.options),
         },
         Command::Migrate {
             ref source,
@@ -648,209 +634,6 @@ fn on_path(program: &str) -> bool {
         .unwrap_or(false)
 }
 
-/// Refuse to write a Netlify pipeline that cannot deploy.
-///
-/// The workflow needs two things at run time: the project id, which the file
-/// itself can carry, and an account token, which it cannot. Writing the file
-/// without arranging the token produces a repository that looks configured and
-/// silently publishes nothing — the failure mode worth spending a hard error to
-/// avoid, because it is discovered days later by someone wondering why the site
-/// is stale.
-///
-/// `--no-provision` opts out deliberately, for generating a file to review
-/// before the credentials exist.
-fn preflight_netlify(site_id: Option<&str>) {
-    let token = std::env::var("NETLIFY_AUTH_TOKEN")
-        .ok()
-        .map(|v| v.trim().to_owned())
-        .filter(|v| !v.is_empty());
-
-    if site_id.is_none() {
-        eprintln!("error: no Netlify project id");
-        eprintln!("       pass --site, or export NETLIFY_SITE_ID.");
-        eprintln!("       `netlify sites:list` prints it, and it is the \"Project ID\"");
-        eprintln!("       on the project's Configuration page.");
-        eprintln!();
-        eprintln!("       It is written into the workflow, not stored as a secret —");
-        eprintln!("       it identifies a project and grants nothing on its own.");
-        std::process::exit(2);
-    }
-
-    let Some(token) = token else {
-        eprintln!("error: no Netlify token to upload");
-        eprintln!("       export NETLIFY_AUTH_TOKEN, then re-run.");
-        eprintln!("       Create one at app.netlify.com → User settings → Applications.");
-        eprintln!("       `netlify login` stores a token for this machine but will not");
-        eprintln!("       print one you can give to CI.");
-        eprintln!();
-        eprintln!("       Or --no-provision to write the workflow anyway; it will not");
-        eprintln!("       deploy until the secret exists.");
-        std::process::exit(2);
-    };
-
-    if !on_path("gh") {
-        eprintln!("error: gh is needed to upload the token, and is not installed");
-        eprintln!("       Install it, or add the secret yourself:");
-        eprintln!("         NETLIFY_AUTH_TOKEN, in Settings → Secrets and variables → Actions");
-        eprintln!("       then re-run with --no-provision.");
-        std::process::exit(2);
-    }
-
-    // Piped rather than passed as an argument: an argument is visible in the
-    // process list to every other user on the machine.
-    let outcome = (|| -> std::io::Result<std::process::ExitStatus> {
-        use std::io::Write as _;
-        let mut child = std::process::Command::new("gh")
-            .args(["secret", "set", "NETLIFY_AUTH_TOKEN"])
-            .stdin(std::process::Stdio::piped())
-            .spawn()?;
-        child
-            .stdin
-            .as_mut()
-            .expect("stdin was piped")
-            .write_all(token.as_bytes())?;
-        child.wait()
-    })();
-
-    match outcome {
-        Ok(status) if status.success() => {
-            println!("✓ NETLIFY_AUTH_TOKEN uploaded to the repository's secrets");
-        }
-        Ok(_) => {
-            eprintln!("error: gh could not set the secret");
-            eprintln!("       The usual cause is a token without permission to write");
-            eprintln!("       secrets. A fine-grained token needs Secrets: read and write");
-            eprintln!("       on this repository; `gh auth refresh -s repo` covers the");
-            eprintln!("       classic case.");
-            eprintln!();
-            eprintln!("       Nothing was written. Fix the permission and re-run.");
-            std::process::exit(1);
-        }
-        Err(err) => {
-            eprintln!("error: could not run gh: {err}");
-            std::process::exit(1);
-        }
-    }
-}
-
-#[allow(clippy::fn_params_excessive_bools)]
-fn ci_init(
-    system: &str,
-    deploy: Option<&str>,
-    target: &str,
-    content: Option<&str>,
-    site: Option<&str>,
-    force: bool,
-    no_provision: bool,
-) -> zellij_core::Result<()> {
-    use zellij_scaffold::pipeline::{self, CiOptions, Publish};
-
-    if system != "github" {
-        eprintln!("error: no generator for \"{system}\" yet");
-        eprintln!("       github is the only one implemented; gitlab and circle are planned");
-        std::process::exit(2);
-    }
-
-    // Before anything else. If the file is already there, "that exists" is
-    // what somebody needs to hear — not a question about which folder to use
-    // for a file this is not going to write.
-    let path = Utf8PathBuf::from(".github/workflows/docs.yml");
-    if path.exists() && !force {
-        eprintln!("error: {path} already exists");
-        eprintln!("       --force overwrites it. The file says to regenerate rather");
-        eprintln!("       than edit, so regenerating has to be possible.");
-        eprintln!("       Or write elsewhere: zel ci init github > my-pipeline.yml");
-        std::process::exit(2);
-    }
-
-    // What it publishes is one decision, expressed two ways. `--deploy netlify`
-    // says where; `--target image` says what. Asking for both is a contradiction
-    // rather than a combination.
-    let publish = match (deploy, target) {
-        (Some("netlify"), _) => Publish::Netlify,
-        (Some(other), _) => {
-            eprintln!("error: no pipeline for \"{other}\" yet");
-            eprintln!("       netlify is the only deploy target implemented");
-            std::process::exit(2);
-        }
-        (None, "image") => Publish::Image,
-        (None, _) => Publish::Nothing,
-    };
-
-    // The path as the *pipeline* will use it, which is relative to the
-    // repository root. Until config-aware CI is implemented, generated workflows
-    // consume raw hosted content so they also work with the released binary.
-    let content = match content {
-        Some(given) => given.to_owned(),
-        None => match match select_site(None) {
-            Ok(site) => resolve_content(site.as_str()),
-            Err(_) => zellij_core::Project::discover(Utf8Path::new(".")).map(|p| p.content),
-        } {
-            Ok(path) => {
-                let cwd = Utf8Path::new(".").canonicalize_utf8()?;
-                path.strip_prefix(&cwd).unwrap_or(&path).to_string()
-            }
-            Err(_) => {
-                eprintln!("error: no content folder found, and none given");
-                eprintln!("       the pipeline needs the path as your repository sees it:");
-                eprintln!("         zel ci init {system} --content docs");
-                std::process::exit(2);
-            }
-        },
-    };
-
-    // The site id, in order of how deliberate it is: the flag, then the
-    // environment. Only consulted for a Netlify deploy.
-    let site_id = if matches!(publish, Publish::Netlify) {
-        site.map(str::to_owned).or_else(|| {
-            std::env::var("NETLIFY_SITE_ID")
-                .ok()
-                .map(|v| v.trim().to_owned())
-                .filter(|v| !v.is_empty())
-        })
-    } else {
-        None
-    };
-
-    // Fail before writing anything, rather than leaving a workflow that looks
-    // finished and deploys nothing.
-    //
-    // Only when a deploy was asked for. `zel ci init github` with no `--deploy`
-    // writes a check job that needs no credentials at all, and demanding a
-    // token for that would be theatre.
-    if matches!(publish, Publish::Netlify) && !no_provision {
-        preflight_netlify(site_id.as_deref());
-    }
-
-    let options = CiOptions {
-        content,
-        publish,
-        registry: "ghcr.io".to_owned(),
-        site_id: site_id.clone(),
-    };
-
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)?;
-    }
-    std::fs::write(&path, pipeline::github(&options))?;
-
-    println!("✓ {path}");
-    println!("  Validates {} on every pull request.", options.content);
-
-    // What was resolved, not merely what is exported — `--site` counts.
-    let netlify = pipeline::NetlifyEnv::resolved(site_id.clone());
-    let after = pipeline::afterwards(publish, &netlify);
-    if !after.is_empty() {
-        println!();
-        println!("  Before it can publish:");
-        for line in after {
-            println!("    {line}");
-        }
-    }
-
-    Ok(())
-}
-
 // ------------------------------------------------------------------ workflows
 
 /// detect → convert → check, and stop at the first thing that fails.
@@ -1016,7 +799,7 @@ fn new_project(
         product_lang: product_lang.to_owned(),
     };
 
-    let written = project::project(&options).write(&target, false)?;
+    let written = project::project(&options)?.write(&target, false)?;
 
     println!("✓ {target}");
     println!(
@@ -1029,6 +812,9 @@ fn new_project(
         ".github/workflows/docs.yml"
     );
     println!("  {} files", written.len());
+    println!(
+        "  Workflow requires its pinned compatible zel release and engine image; review before enabling."
+    );
 
     println!();
     println!("  Write:  zel dev {target}/{docs_dir}");

@@ -247,11 +247,8 @@ pub(crate) enum Command {
         action: ImageAction,
     },
 
-    /// Write a pipeline that checks, builds and deploys on push.
-    Ci {
-        #[command(subcommand)]
-        action: CiAction,
-    },
+    /// Generate a GitHub workflow; `ci run` dispatches an existing workflow.
+    Ci(CiArgs),
 
     /// Detect, convert and validate in one step.
     #[command(visible_alias = "mig")]
@@ -358,51 +355,63 @@ pub(crate) enum ImageAction {
     Dockerfile(ImageDockerfileArgs),
 }
 
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+#[command(args_conflicts_with_subcommands = true, subcommand_negates_reqs = true)]
+pub(crate) struct CiArgs {
+    /// Site root; defaults to . or docs/zellij when zel.yaml is present.
+    #[arg(conflicts_with = "site_root")]
+    pub(crate) dir: Option<String>,
+    #[command(flatten)]
+    pub(crate) options: CiInitArgs,
+    #[command(subcommand)]
+    pub(crate) action: Option<CiAction>,
+}
+
+#[derive(clap::Args, Debug, Default, PartialEq, Eq)]
+pub(crate) struct CiInitArgs {
+    /// Configured site or explicit legacy content folder (--content is retained).
+    #[arg(long, visible_alias = "content")]
+    pub(crate) site_root: Option<String>,
+    /// Exact compatible release version. Overrides ci.zel-version.
+    #[arg(long)]
+    pub(crate) zel_version: Option<String>,
+    /// Override saved delivery with Netlify deployment.
+    #[arg(long, conflicts_with = "target")]
+    pub(crate) deploy: Option<String>,
+    /// Legacy override: static validates/builds; image builds/pushes a Next image.
+    #[arg(long, value_parser = ["static", "image"], conflicts_with = "deploy")]
+    pub(crate) target: Option<String>,
+    /// Netlify site ID; --site remains accepted.
+    #[arg(long, visible_alias = "site")]
+    pub(crate) site_id: Option<String>,
+    /// Request production Netlify deployments; previews are the default.
+    #[arg(long)]
+    pub(crate) prod: bool,
+    /// Overwrite the selected workflow, retaining all other files.
+    #[arg(long)]
+    pub(crate) force: bool,
+    /// Explicitly upload NETLIFY_AUTH_TOKEN through gh after writing the workflow.
+    #[arg(long, conflicts_with = "no_provision")]
+    pub(crate) provision: bool,
+    /// Retained spelling for the default: write local files only.
+    #[arg(long, conflicts_with = "provision")]
+    pub(crate) no_provision: bool,
+}
+
 #[derive(Subcommand, Debug, PartialEq, Eq)]
 pub(crate) enum CiAction {
-    /// Write a pipeline into the repository.
+    /// Write a workflow into the Git repository containing the selected site.
     Init {
-        /// github | gitlab | circle.
+        /// Currently github.
         system: String,
-
-        #[arg(long)]
-        deploy: Option<String>,
-
-        #[arg(long, default_value = "static")]
-        target: String,
-
-        /// The content folder, as the pipeline will refer to it.
-        #[arg(long)]
-        content: Option<String>,
-
-        /// The Netlify project id. Defaults to $NETLIFY_SITE_ID.
-        #[arg(long)]
-        site: Option<String>,
-
-        /// Overwrite an existing workflow.
-        #[arg(long)]
-        force: bool,
-
-        /// Write the workflow without uploading the Netlify token.
-        #[arg(long)]
-        no_provision: bool,
+        #[command(flatten)]
+        options: CiInitArgs,
     },
-
-    /// Run the deploy pipeline now, on GitHub.
-    ///
-    /// The pipeline deploys on a push that touches the content folder, which
-    /// covers the ordinary case. This is for the times there is nothing to
-    /// commit: a rotated Netlify token, a site restored after a bad deploy, a
-    /// first run after adding the secrets.
-    ///
-    /// The build still happens on GitHub. Nothing is uploaded from here.
+    /// Dispatch an existing workflow on GitHub; does not generate or deploy locally.
     #[command(name = "run", visible_alias = "publish")]
     Run {
-        /// The workflow file to run.
         #[arg(long, default_value = "docs.yml")]
         workflow: String,
-
-        /// The branch to run it on.
         #[arg(long, default_value = "main")]
         r#ref: String,
     },

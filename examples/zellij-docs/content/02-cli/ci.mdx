@@ -1,134 +1,175 @@
 ---
 title: zel ci
-description: Generate a GitHub documentation workflow, or dispatch an existing one.
+description: Generate a GitHub workflow from saved site settings, or dispatch an existing one.
 ---
 
-<Callout type="tip" title="Available in source">
-`zel ci init github` generates a workflow. `zel ci run` dispatches an
-existing workflow. GitLab and CircleCI generators remain planned. This page
-describes the current command syntax; installed releases can lag current source.
+<Callout type="warning" title="Source implementation and release prerequisite">
+The new generator requires the CLI contract planned for **0.2.0 or later**.
+The published `zellij-v0.1.3` cannot run these workflows. While the development
+binary still reports 0.1.3, set an explicit `ci.zel-version` or `--zel-version`
+to prepare a workflow for the next release. Generation does not check whether
+that release exists. Publish the compatible binary release, and its engine
+image for hosted/image builds, before enabling the workflow. No release is
+created by `zel ci`.
 </Callout>
 
-## Generate a workflow
+## Generate locally
 
-Run from the software repository root. `--content` is the source folder as the
-workflow will see it, relative to that repository. Choose one of these modes:
-
-```bash title="Validate only"
-zel ci init github --content content
+```bash
+zel ci --zel-version 0.2.0
+zel ci docs/manual --zel-version 0.2.0
+zel ci init github --site-root docs/manual --zel-version 0.2.0
 ```
 
-```bash title="Validate and publish a Next.js image to GHCR"
-zel ci init github --content content --target image
+The first form selects `./zel.yaml`, then `docs/zellij/zel.yaml`, using the usual
+site convention. Any custom site-folder name is allowed. The full and short
+forms use the same generator. `init`, `run`, and `publish` are reserved actions;
+select a folder with one of those names using `./run` or `--site-root run`.
+
+Git locates the repository containing the selected site. The workflow is written
+to that repository's `.github/workflows/docs.yml`, including when you run from
+inside the site. Paths in the workflow are relative to the Git root. Existing
+files require `--force`; symlinks and junctions in the destination are rejected.
+Generation requires Git, but no Docker, Node, cloud login or credentials.
+
+## Saved settings
+
+Add CI settings to a versioned `zel.yaml`:
+
+```yaml
+version: 1
+renderer: portable
+name: Product documentation
+publish:
+  action: deploy
+  provider: netlify
+  site: your-existing-site-id
+ci:
+  system: github
+  branch: main
+  workflow: docs.yml
+  zel-version: 0.2.0
+  triggers: [pull_request, push, manual]
+  production: false
 ```
 
-```bash title="Validate, build HTML, and deploy to Netlify"
-zel ci init github --content content --deploy netlify --no-provision
+Then `zel ci` is enough to generate the workflow; use `--force` to replace it.
+Regenerate after changing CI or publication settings so the workflow reflects
+the selected artifacts, triggers and destinations. `--zel-version` overrides
+the saved pin; once a compatible CLI is released, its own version supplies the
+fallback pin. Versions are exact, optionally prefixed with `v`, and may include
+release-candidate suffixes. `latest` and versions before 0.2.0 are rejected.
+The installer is downloaded from that exact release; it verifies the binary's
+checksum and reported version. Engine-backed builds use the matching versioned
+`ghcr.io/mylife-inc/zellij-base` image.
+
+`system` currently accepts only `github`. `branch` is one literal branch name;
+`workflow` is a `.yml` or `.yaml` filename, without directories. Unknown settings,
+unsupported events and credentials in the CI block are errors.
+
+Optional tag patterns and UTC schedules are independent additional triggers:
+
+```yaml
+ci:
+  zel-version: 0.2.0
+  branch: main
+  triggers: [pull_request, push, manual]
+  tags: ['docs-v*']
+  schedules: ['17 3 * * 1']
 ```
 
-Each writes `.github/workflows/docs.yml`. An existing workflow is refused
-unless `--force` is supplied; that option replaces the file. The current
-command does not offer a custom workflow output path or print YAML to stdout.
+Tags use positive patterns with letters, digits, `/`, `_`, `-`, `.`, `*` or `?`.
+Schedules use five numeric cron fields with wildcards, lists, ranges and steps.
+GitHub runs schedules from its default branch, so `ci.branch` must match that
+branch for scheduled publication. GitHub can delay scheduled runs and does not
+evaluate path filters for tag pushes. See the
+[GitHub workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
+for platform trigger behavior.
 
-For the image mode, use hosted Zellij content supported by `image build`.
-Netlify mode runs `zel build` and uploads its HTML output using Netlify's CLI;
-**it does not call the still-planned `zel deploy` command**. A plain Markdown
-input therefore needs a released `zel` containing the native portable builder.
-The current generated installer selects the available release rather than
-pinning the source checkout used to generate the workflow.
+## What each run does
 
-## What the generated workflow does
+The default events are pull requests, pushes to `ci.branch`, and manual dispatch.
+Path filters cover the entire selected site, including `zel.yaml` and `content/`,
+and the generated workflow itself. A site at the Git root watches all files.
 
-All modes include validation. The publication mode determines the later work:
+Each run validates with `zel check --strict --deep`, then performs one build:
 
-| Mode | After validation |
-| --- | --- |
-| No deployment/image option | Nothing else; no build or publication job |
-| `--target image` | Build the Next.js image, authenticate to GHCR, and push it |
-| `--deploy netlify` | Build HTML, then upload with Netlify's CLI |
+- Without `publish`, every event builds static HTML without delivering it.
+- With saved image publication, pull requests build the selected static or Next
+  image. Allowed publication events run `zel publish`, building and pushing once.
+- With Netlify delivery, pull requests build static HTML. Allowed publication
+  events use the native `zel deploy netlify`, building and uploading once.
 
-The generated triggers are:
+Publication is allowed on configured branch pushes, manual runs on that branch,
+configured tag pushes, and configured schedules on that branch. Pull requests
+never publish; a manual run on another branch validates/builds only. Deployment
+credentials are bound only to the publication steps. Runs do not cancel an
+in-progress publication when a newer commit arrives.
 
-- Pushes to `main` that affect the selected content folder or the workflow file.
-- Pull requests that affect those paths.
-- Manual dispatch through GitHub Actions or `zel ci run`.
+For image publication, set `publish.action: push`, `publish.image: static` or
+`next`, and an explicit remote registry reference in `image.name`. GHCR uses the
+job's `GITHUB_TOKEN` with `packages: write`; the account/repository must be allowed
+to write that package. Other registries require repository secrets
+`REGISTRY_USERNAME` and `REGISTRY_PASSWORD`. The configured tag is used exactly.
 
-Image and Netlify publication jobs depend on validation and use
-`github.event_name != 'pull_request'`. Thus they run on matching pushes and
-manual dispatches, while pull requests validate without publication. The
-validation-only variant has no publication job.
+For Netlify, set repository secret `NETLIFY_AUTH_TOKEN`. Site ID precedence at
+generation is `--site-id` / `--site`, then local `NETLIFY_SITE_ID`, then
+`publish.site`. The resolved non-secret ID is written to the workflow. When no
+ID is available, execution reads repository variable `NETLIFY_SITE_ID`, falling
+back to the same-named secret. Default delivery is a draft preview; set
+`ci.production: true` or pass `--prod` to generate production deployments.
 
-The image variant targets `ghcr.io/<owner>/<repository>/docs:<commit-sha>` and
-requests package-write permission for its job. The current CLI cannot select a
-different registry or image architecture during workflow generation.
+## Provisioning is explicit
 
-## Netlify configuration
+Generation writes a local workflow only, even if credentials exist in your shell.
+To also upload your environment's token to the site's GitHub repository:
 
-A Netlify workflow needs a site ID and an authentication token at execution.
-`--site` selects the site ID, falling back to `NETLIFY_SITE_ID` in the local
-environment. A supplied ID is written into the workflow as a value. If no ID is
-supplied with `--no-provision`, the workflow reads the `NETLIFY_SITE_ID` GitHub
-secret instead.
+```bash
+zel ci --force --provision
+```
 
-Without `--no-provision`, generation requires the site ID, a local
-`NETLIFY_AUTH_TOKEN`, and an authenticated `gh` executable. It uploads that token
-to the repository's `NETLIFY_AUTH_TOKEN` secret before writing the workflow.
+This requires a Netlify delivery plan, `NETLIFY_AUTH_TOKEN`, and an authenticated
+GitHub CLI with permission to set repository secrets. The token is sent to `gh`
+over stdin; it is never written into the workflow or passed as an argument.
+The workflow is written before the remote operation. If provisioning fails,
+the command reports that the file remains and asks you to inspect repository
+secrets before retrying an uncertain result. No workflow is dispatched.
 
-With `--no-provision`, generation writes the workflow without uploading a token.
-Arrange the required GitHub secrets separately before running it. This is useful
-when generating a workflow for review or when the secrets already exist.
+`--no-provision` remains accepted and now expresses the default. This changes the
+old generator's automatic-provisioning behavior at the new CLI version boundary.
 
-## Generation options
+## Compatibility options
 
-| Option | Current behavior |
-| --- | --- |
-| `<system>` | Required; only `github` is implemented |
-| `--content <path>` | Repository-relative raw hosted content folder; otherwise configured site’s `content/`, then legacy hosted discovery |
-| `--target <static\|image>` | Defaults to `static`; `image` adds image publication when no deployment provider is selected |
-| `--deploy netlify` | Select Netlify publication; other providers are not implemented |
-| `--site <id>` | Netlify site ID; otherwise local `NETLIFY_SITE_ID` |
-| `--no-provision` | Generate without uploading the Netlify token |
-| `--force` | Replace an existing `.github/workflows/docs.yml` |
+`--content` remains an alias for `--site-root`; it accepts a configured site or
+an explicit legacy raw-content folder. These overrides remain available:
 
-Choose either the image publication option or Netlify deployment. The current
-parser accepts a target string, but only `image` selects the image workflow;
-other strings fall through to validation-only when no deployment is selected.
-Use the documented values. `--registry`, `--on`, and `--out` are not supported.
+```bash
+zel ci init github --content content --target static --zel-version 0.2.0
+zel ci init github --content content --target image --zel-version 0.2.0
+zel ci init github --content content --deploy netlify --zel-version 0.2.0
+```
 
-## Run an existing workflow
+`--target static` generates validation and HTML builds with no publication.
+Legacy `--target image` builds a Next image and pushes
+`ghcr.io/<lowercase-owner>/<lowercase-repo>/docs:<commit-sha>`. It uses one image
+build followed by pushing that exact tag. Saved settings provide the explicit
+static/Next choice for new workflows. `--deploy netlify` chooses native static
+site delivery. `--target` and `--deploy` conflict. Netlify site/provision/production
+options are rejected for image or build-only workflows.
 
-`zel ci publish` remains an exact compatible spelling of `zel ci run`.
+## Dispatch an existing workflow
 
-Commit and push the generated workflow before dispatching it. The workflow
-must be available on the repository's default branch for manual dispatch.
-
-```bash title="terminal"
+```bash
 zel ci run
-zel ci run --workflow docs.yml --ref main
+zel ci run --workflow manual.yml --ref main
+zel ci publish --workflow manual.yml --ref main
 ```
 
-| Option | Default |
-| --- | --- |
-| `--workflow <file>` | `docs.yml` |
-| `--ref <branch-or-tag>` | `main` |
+Dispatch retains explicit `--workflow` and `--ref` defaults (`docs.yml`, `main`);
+it does not read site configuration or regenerate files. If `gh` is unavailable,
+the current command prints a manual request example and exits successfully
+without dispatching anything. That exit is not evidence of a GitHub run.
 
-This invokes `gh workflow run`; it does not upload the local working directory
-or run a local build. The selected remote ref supplies the documentation.
-A successful dispatch reports that the workflow was queued, not that its build
-or deployment has finished. The workflow's selected mode determines whether it
-only validates or also publishes.
-
-If `gh` is unavailable, the current CLI prints an equivalent API request and
-returns without dispatching anything. Its successful exit in that case is not
-evidence that GitHub started a run.
-
-## See also
-
-- [`zel check`](/cli/check) — validation behavior
-- [`zel build`](/cli/build) — portable and hosted HTML outputs
-- [`zel image`](/cli/image) — image building and publication
-- [`zel deploy`](/cli/deploy) — planned direct deployment
-
-Configured site defaults for deployment and CI are not consumed yet. An explicit
-`--content` still names raw hosted content, for example `docs/zellij/content`,
-not the site root. Generated workflows remain compatible with released CLIs.
+`--json` is unsupported for generation and dispatch and fails before work.
+GitLab, CircleCI, other deployment providers, and automatic release publication
+remain outside this implementation.

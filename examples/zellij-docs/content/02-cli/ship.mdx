@@ -4,8 +4,9 @@ description: Somebody else's documentation to a published site, in one line.
 ---
 
 <Callout type="warning" title="Planned">
-`zel ship` exits with `not implemented yet`. Everything it composes except the
-final upload works today — see [below](#until-it-lands).
+`zel ship` exits with `not implemented yet`. Native Netlify delivery is available,
+but configured import and its composition with delivery remain unfinished. Use
+the separate commands [below](#until-it-lands) in the meantime.
 </Callout>
 
 ```bash title="terminal"
@@ -94,13 +95,17 @@ navigation and source-specific features still need review.
 
 ## Until it lands
 
-Everything except the upload works:
+Convert into a separate new folder, review conversion warnings, then use native
+delivery against an existing Netlify site. Export `NETLIFY_AUTH_TOKEN` first:
 
 ```bash title="terminal"
-zel migrate ./docs --out ./content
-zel build ./content --out dist
-netlify deploy --prod --dir dist
+zel migrate ./docs --out ./converted-content
+zel deploy netlify ./converted-content --site-id your-existing-site-id
 ```
+
+The second command builds once and uploads a draft preview. Add `--prod` only
+when ready to request production publication. This manual sequence does not yet
+create the configured site root promised by the planned `ship` composition.
 
 ## See also
 

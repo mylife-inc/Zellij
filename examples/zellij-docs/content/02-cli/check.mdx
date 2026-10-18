@@ -210,13 +210,14 @@ zel build ./content
 class of mistake that is invisible in a diff — a renamed page that three
 sidebars still point at.
 
-**As the first job in a pipeline.** [`zel ci init`](/cli/ci) writes exactly that:
-a check on every pull request, needing no credentials and no registry. A link to
-a page somebody deleted gets caught before review rather than after deploy.
+**Before the CI build.** [`zel ci`](/cli/ci) generates strict/deep validation
+followed by a build. Pull requests do not publish; allowed delivery events
+validate and build/deliver once. Release and runner prerequisites still apply.
 
 **Before a hosted build.** Hosted `zel build` and `zel dev` run the fast check.
 Add an explicit `zel check --deep --strict` step for the stronger gate; they do not
-automatically enable it. `zel deploy` remains planned.
+automatically enable it. Native `zel deploy netlify` is implemented; see
+[deployment](/cli/deploy).
 
 ### Container file sharing
 

@@ -250,10 +250,12 @@ saved plan as `zel pub`. `--to netlify` cannot replace a saved image-push intent
 
 ## Planned CLI defaults
 
-The site layout, build/preview settings, `image.name`, and registry-only
-publication above are implemented in source. Direct provider delivery and CI
-settings, shared `--site-root` / `--config` / `--cwd` selectors, and remaining
-delivery commands are planned and are not accepted as working capabilities.
+The site layout, build/preview settings, image publication, Netlify delivery,
+and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
+`system`, `branch`, `workflow`, `zel-version`, `triggers`, `tags`, `schedules` and
+`production`. CI settings require `version: 1`; they are shared by both renderers.
+CI accepts `--site-root`; global `--config` / `--cwd` selectors and remaining
+delivery commands are still planned.
 
 [Shortcuts](/cli/shortcuts) for working commands and
 [shell completions](/cli/completions) are implemented in source. They use the

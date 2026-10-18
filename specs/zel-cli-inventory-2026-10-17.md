@@ -253,3 +253,15 @@ read from NETLIFY_AUTH_TOKEN only. No provider CLI, stored login discovery,
 site creation or remote build is used. The local reference and current contract
 record actual options, failure stages and validation limits. Other providers,
 ship, saved CI generation and the remaining CLI families are still incomplete.
+
+
+### Later implementation: saved CI and short generation — 2026-10-18
+
+The historical inventory above is retained. `ci [site]` now shares GitHub
+workflow generation with `ci init github --site-root`, consuming typed saved
+CI and delivery settings. PRs check/build, eligible non-PR events build/deliver
+once, and native Netlify replaces the Node uploader. Generation is local-only
+unless --provision is explicit; old --content/--target/--deploy/--no-provision
+options and ci publish dispatch remain accepted. A pinned compatible 0.2.0+
+release is required; current public 0.1.3 is not compatible. See the current
+contract and durable context for options, validation and release limitations.
