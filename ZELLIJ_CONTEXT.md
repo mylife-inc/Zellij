@@ -1963,7 +1963,7 @@ final source CI `39116486868` also passed all 13 jobs, including PowerShell.
   YAML/MDX or Next build dependencies.
 - The final `nginxinc/nginx-unprivileged:stable-alpine` image runs as `nginx`
   on port 3000, with directory indexes, extensionless HTML, ordinary assets,
-  missing-route 404s, hidden-file denial and an index health check. Existing
+  missing-route 404s, output-marker denial and an index health check. Existing
   `image run` / `ir` works when given its tag explicitly. No implicit push.
 - `image dockerfile` / `idf --kind static|next` prints without a runtime. For
   portable static recipes the context is an already built HTML folder; hosted
@@ -1994,3 +1994,14 @@ branding/theme and Markdown-feature mapping before registering `image next` /
 `ni`. Then continue shared image/delivery/CI configuration, Netlify deployment,
 CI generation and the remaining inventory. This milestone does not complete the
 CLI, create a binary release, or redeploy the public documentation.
+
+
+PR #30's initial full container run (`39141095556`) built all three images;
+portable and unprefixed hosted HTTP acceptance passed. Its prefixed case caught
+an incorrect test assumption: Next's exported redirect digest holds `/manual`,
+and the browser router adds basePath. A local isolated export confirmed this
+behavior in Chromium. Container acceptance now tests actual home redirect,
+client navigation and reload in Chromium, without patching the engine. Review
+also narrowed the NGINX denial rule to `.zellij-output`; valid dot-prefixed URL
+segments must remain routable. The prefixed fixture now uses `/products/.docs`.
+Consult the PR's latest run for final evidence, not that superseded assertion.

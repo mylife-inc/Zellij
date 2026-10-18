@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { chromium } from '@playwright/test';
 
 const zel = path.resolve(process.argv[2] ?? 'cli/target/debug/zel');
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-static-images-'));
@@ -78,7 +79,6 @@ async function serve(tag, kind, prefix) {
       assert.equal((await fetch(new URL(m[1], `${origin}/index.html`))).status, 200, m[1]);
     }
   } else {
-    assert(html.includes(`${prefix}/manual`));
     const manual = await (await response(origin, `${prefix}/manual`)).text();
     assert(manual.includes('Hosted images'));
     assert((await (await response(origin, `${prefix}/manual/next`)).text()).includes('More documentation'));
@@ -87,6 +87,24 @@ async function serve(tag, kind, prefix) {
     assert(search.some((entry) => entry.route === '/manual/next'));
     if (prefix) await response(origin, '/manual', 404);
     await resources(origin, manual);
+    // Next serializes an unprefixed redirect digest in exported HTML; its
+    // browser router applies basePath. Verify navigation, not that wire format.
+    const browser = await chromium.launch();
+    try {
+      const page = await browser.newPage();
+      const failures = [];
+      page.on('pageerror', (error) => failures.push(error.message));
+      page.on('response', (res) => { if (res.status() >= 400) failures.push(`${res.status()} ${res.url()}`); });
+      await page.goto(`${origin}${prefix}/`);
+      await page.waitForURL(`${origin}${prefix}/manual`);
+      await page.getByRole('link', { name: 'Next', exact: true }).click();
+      await page.waitForURL(`${origin}${prefix}/manual/next`);
+      await page.reload();
+      assert((await page.textContent('body')).includes('More documentation'));
+      assert.deepEqual(failures, [], 'Browser errors or missing resources');
+    } finally {
+      await browser.close();
+    }
   }
   console.log(`${kind}: routes, assets, health check and source isolation passed (${prefix || '/'}).`);
 }
@@ -112,7 +130,7 @@ try {
   await write('hosted/content/01-guide/index.mdx', '# Hosted images\n\n[Next](/manual/next)\n\n![Logo](assets/logo.svg)\n');
   await write('hosted/content/01-guide/next.mdx', '# Next page\n\nMore documentation.\n');
   await write('hosted/content/assets/logo.svg', asset);
-  for (const [label, prefix] of [['root', ''], ['prefix', '/products/docs']]) {
+  for (const [label, prefix] of [['root', ''], ['prefix', '/products/.docs']]) {
     await write('hosted/content/site.yaml', `name: Hosted images\nhome: 01-guide\nbasePath: '${prefix}'\nnav: { search: true, themeToggle: true }\n`);
     const tag = `zellij-static-hosted-${label}:${suffix}`;
     images.push(tag);

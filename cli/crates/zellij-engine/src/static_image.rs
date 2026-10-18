@@ -16,7 +16,7 @@ RUN rm -rf /usr/share/nginx/html/* && printf '%s\n' \
     '  root /usr/share/nginx/html;' \
     '  index index.html;' \
     '  absolute_redirect off;' \
-    '  location ~ (^|/)\. {{ return 404; }}' \
+    '  location ~ (^|/)\.zellij-output$ {{ return 404; }}' \
     '  location / {{ try_files $uri $uri.html $uri/ =404; }}' \
     '}}' > /etc/nginx/conf.d/default.conf
 {copy}
