@@ -18,13 +18,14 @@ export interface ZellijRuntimeOptions {
   appRoot?: string;
   /**
    * The content root, absolute or relative to `appRoot`. Defaults to
-   * `./content`. The wrapper owns this because it owns where the site is
+   * the wrapper's zellij.config.yaml content selector, then `./content`.
+   * The wrapper owns this because it owns where the site is
    * checked out; everything about the site itself is inside the folder.
    */
   contentDir?: string;
   /** Must agree with the prefix compiled by withZellij during a Next build. */
   basePath?: string;
-  /** Legacy layout only: path to zellij.config.yaml. */
+  /** Path to the wrapper selector or legacy zellij.config.yaml. */
   configFile?: string;
   onWarning?: (message: string) => void;
 }

@@ -277,3 +277,16 @@ publication, preserves the source, retains conversion reports and calls shared
 delivery once. See the contract's stage 5d and CLI reference for flags and limits.
 New app, fmt/watch, portable dev, hosted view, other providers and advanced
 maintenance remain pending. The public 0.1.3 release predates these commands.
+
+
+## 2026-10-18 editable-wrapper update
+
+The historical new-app stub is replaced in current source by `new app` / `na`.
+It writes an editable Next.js wrapper using the engine initializer's shared
+snapshot, references existing hosted content or creates docs/zellij with
+--with-docs, and performs no dependency installation or server startup. A built
+local engine is required until npm distribution exists. Matching engine and
+wrapper-config versions, destination containment and no-overwrite protections
+are enforced. The local guide/contract record exact options and limits.
+The remaining backlog includes fmt/watch, portable dev, hosted view, other
+providers, maintenance commands and compatible release publication.

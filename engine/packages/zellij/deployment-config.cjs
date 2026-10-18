@@ -46,11 +46,16 @@ function resolveDeploymentBasePath(...values) {
 function resolveContentLocation(options = {}) {
   const { appRoot, configFile } = resolveContentPaths(options);
   let legacy = options.contentDir ? undefined : readConfig(configFile);
-  const legacyConfigUsed = legacy !== undefined;
+  const wrapperConfig = legacy && Object.hasOwn(legacy, 'version');
+  if (wrapperConfig && (legacy.version !== 1 || Object.keys(legacy).some(key => !['version', 'content'].includes(key)) || typeof legacy.content !== 'string' || !legacy.content.trim())) {
+    throw new Error(`${configFile}: versioned wrapper config requires version: 1 and a nonempty content path only; put presentation settings in content/site.yaml`);
+  }
+  const legacyConfigUsed = legacy !== undefined && !wrapperConfig;
   const configured = options.contentDir ?? legacy?.content ?? 'content';
   if (typeof configured !== 'string' || !configured.trim()) throw new Error('content directory must be a nonempty string');
   const contentDir = path.resolve(appRoot, configured);
   const layout = fs.existsSync(path.join(contentDir, 'marketing')) ? 'legacy' : 'folder';
+  if (layout === 'legacy' && wrapperConfig) throw new Error('versioned wrapper config requires the current hosted folder layout, not marketing/');
   if (layout === 'legacy' && legacy === undefined) legacy = readConfig(configFile);
   const settings = layout === 'legacy' ? legacy : readConfig(path.join(contentDir, 'site.yaml'));
   const basePath = settings?.basePath === undefined ? undefined : normalizeDeploymentBasePath(settings.basePath);

@@ -11,7 +11,9 @@ It is a native executable with **no Node dependency**. The commands that
 describe the content model read a schema compiled into the binary. The commands
 that scaffold, check, build and preview portable Markdown run natively too.
 Hosted YAML/MDX builds run the engine in a container, so nothing on your machine
-needs npm, a Node version, or a lockfile. Use `zel new portable` for a Markdown
+needs npm, a Node version, or a lockfile for those container commands.
+`zel new app` can also create an editable local wrapper; running that wrapper
+requires Node and npm. Use `zel new portable` for a Markdown
 starter that opens directly from disk after building.
 
 <Callout type="info" title="Not the terminal multiplexer">
@@ -70,7 +72,7 @@ need no container runtime.
 
 | Command | | Status |
 | --- | --- | --- |
-| [`zel new`](/cli/new) | Portable Markdown, hosted content, a section, a page, a guide, a project | **Available in source** |
+| [`zel new`](/cli/new) | Portable Markdown, hosted content, a section, a page, a guide, a project or editable app | **Available in source** |
 | [`zel explain`](/cli/explain) | What a section type takes | **Available** |
 | [`zel list`](/cli/list) | Section types, themes, formats, targets | **Available** |
 | [`zel context`](/cli/context) | The whole content model as one file, for an AI agent | **Available** |

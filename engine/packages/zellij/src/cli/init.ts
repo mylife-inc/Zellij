@@ -55,17 +55,20 @@ function engineRoot(): string {
 
 async function enginePackage(): Promise<{
   version: string;
+  wrapperConfigVersion: number;
   peers: Record<string, string>;
   overrides: Record<string, unknown>;
 }> {
   const raw = await readFile(path.join(engineRoot(), 'package.json'), 'utf8');
   const parsed = JSON.parse(raw) as {
     version: string;
+    zellij: { wrapperConfigVersion: number };
     peerDependencies?: Record<string, string>;
     overrides?: Record<string, unknown>;
   };
   return {
     version: parsed.version,
+    wrapperConfigVersion: parsed.zellij.wrapperConfigVersion,
     peers: parsed.peerDependencies ?? {},
     overrides: parsed.overrides ?? {},
   };
@@ -338,6 +341,58 @@ export async function setFeatures(target: string, features: readonly string[]): 
   return Object.keys(wanted);
 }
 
+/** Shared wrapper definition; also embedded in the native CLI at build time. */
+export async function wrapperTemplate() {
+  const { version, wrapperConfigVersion, peers, overrides } = await enginePackage();
+
+  const dependencies: Record<string, string> = { '@shebka/zellij': '__ZELLIJ_ENGINE__' };
+  for (const [pkg, range] of Object.entries(peers)) {
+    dependencies[pkg] = installable(range);
+  }
+
+  const packageJson = {
+    name: '__ZELLIJ_NAME__',
+    version: '0.1.0',
+    private: true,
+    type: 'module',
+    engines: { node: '^20.19.0 || >=22.12.0' },
+    // npm applies overrides only at the app root, never inside a dependency.
+    overrides,
+    scripts: {
+      // Development owns both initial preparation and ongoing updates.
+      dev: `zellij dev -- --port __ZELLIJ_PORT__`,
+      prebuild: 'zellij prepare',
+      build: 'next build',
+      start: `next start --port __ZELLIJ_PORT__`,
+      check: 'zellij check',
+      typecheck: 'tsc --noEmit',
+    },
+    dependencies,
+    devDependencies: {
+      '@tailwindcss/postcss': '^4.3.3',
+      tailwindcss: '^4.3.3',
+      '@types/node': '^22.10.2',
+      '@types/react': '^19.2.0',
+      '@types/react-dom': '^19.2.0',
+      typescript: '^5.9.3',
+    },
+  };
+
+  const files: Record<string, string> = {
+    'tsconfig.json': `${JSON.stringify(TSCONFIG, null, 2)}\n`,
+    'next.config.js': NEXT_CONFIG,
+    '.gitignore': GITIGNORE,
+    '.npmrc': NPMRC,
+    'postcss.config.mjs': POSTCSS_CONFIG,
+    'src/app/layout.tsx': LAYOUT,
+    'src/app/[[...slug]]/page.tsx': PAGE,
+    'src/app/sitemap.ts': SITEMAP,
+    'src/app/robots.ts': ROBOTS,
+  };
+
+  return { engineVersion: version, wrapperConfigVersion, manifest: packageJson, files, features: FEATURE_PACKAGES };
+}
+
 /**
  * Generates a Next.js app around a content folder.
  *
@@ -372,68 +427,22 @@ export async function init(options: InitOptions): Promise<string> {
     return root;
   }
 
-  const { version, peers, overrides } = await enginePackage();
-
-  const dependencies: Record<string, string> = {
-    /*
-     * A path dependency, because the engine is not published to a public
-     * registry: whoever runs this has the source on disk, and that clone is
-     * what the app installs from.
-     *
-     * Absolute rather than relative. A generated app rarely sits beside the
-     * clone, and `file:../../Users/you/...` — which is what a relative path
-     * turns into once it has climbed to the filesystem root — is both unreadable
-     * and silently wrong the moment the app is moved. If the clone itself moves,
-     * this line is the one thing to update.
-     */
-    '@shebka/zellij': `file:${engineRoot()}`,
-  };
-  for (const [pkg, range] of Object.entries(peers)) {
-    dependencies[pkg] = installable(range);
-  }
-
-  const optional = featureDependencies(options.features ?? []);
-
+  const template = await wrapperTemplate();
   const packageJson = {
+    ...template.manifest,
     name,
-    version: '0.1.0',
-    private: true,
-    type: 'module',
-    engines: { node: '^20.19.0 || >=22.12.0' },
-    // npm applies overrides only at the app root, never inside a dependency.
-    overrides,
-    scripts: {
-      // Development owns both initial preparation and ongoing updates.
-      dev: `zellij dev -- --port ${port}`,
-      prebuild: 'zellij prepare',
-      build: 'next build',
-      start: `next start --port ${port}`,
-      check: 'zellij check',
-      typecheck: 'tsc --noEmit',
-    },
-    dependencies: { ...dependencies, ...optional },
-    devDependencies: {
-      '@tailwindcss/postcss': '^4.3.3',
-      tailwindcss: '^4.3.3',
-      '@types/node': '^22.10.2',
-      '@types/react': '^19.2.0',
-      '@types/react-dom': '^19.2.0',
-      typescript: '^5.9.3',
+    scripts: Object.fromEntries(Object.entries(template.manifest.scripts)
+      .map(([key, value]) => [key, value.replaceAll('__ZELLIJ_PORT__', String(port))])),
+    dependencies: {
+      ...template.manifest.dependencies,
+      '@shebka/zellij': `file:${engineRoot()}`,
+      ...featureDependencies(options.features ?? []),
     },
   };
-
-  const files: Record<string, string> = {
+  const files = {
+    ...template.files,
     'package.json': `${JSON.stringify(packageJson, null, 2)}\n`,
-    'tsconfig.json': `${JSON.stringify(TSCONFIG, null, 2)}\n`,
-    'next.config.js': NEXT_CONFIG,
-    '.gitignore': GITIGNORE,
-    '.npmrc': NPMRC,
-    'postcss.config.mjs': POSTCSS_CONFIG,
-    'src/app/layout.tsx': LAYOUT,
-    'src/app/[[...slug]]/page.tsx': PAGE,
-    'src/app/sitemap.ts': SITEMAP,
-    'src/app/robots.ts': ROBOTS,
-    'README.md': readme(name, port, version),
+    'README.md': readme(name, port, template.engineVersion),
   };
 
   for (const [rel, body] of Object.entries(files)) {

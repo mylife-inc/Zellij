@@ -32,6 +32,7 @@ macro_rules! shortcuts {
 shortcuts! {
     args {
         Init(NewPortableArgs) => ("init", "new portable", |a| Command::New(NewTarget::Portable(a)));
+        App(NewAppArgs) => ("na", "new app", |a| Command::New(NewTarget::App(a)));
         Docs(NewDocsArgs) => ("nd", "new docs", |a| Command::New(NewTarget::Docs(a)));
         Section(NewSectionArgs) => ("ns", "new section", |a| Command::New(NewTarget::Section(a)));
         Page(NewPageArgs) => ("np", "new page", |a| Command::New(NewTarget::Page(a)));
@@ -396,15 +397,8 @@ pub(crate) enum CiAction {
 pub(crate) enum NewTarget {
     /// A native Markdown starter with zel.yaml; no Docker or Node required.
     Portable(NewPortableArgs),
-    /// A Next.js wrapper app with the engine installed.
-    App {
-        #[arg(default_value = ".")]
-        dir: String,
-
-        /// Also write a starter content folder, so there is something to open.
-        #[arg(long)]
-        with_docs: bool,
-    },
+    /// Generate an editable Next.js wrapper without installing dependencies.
+    App(NewAppArgs),
     /// A hosted YAML/MDX content folder on its own.
     Docs(NewDocsArgs),
     /// A section file, with its required fields filled in.
@@ -633,4 +627,29 @@ pub(crate) struct ShipArgs {
     /// Convert in memory and show delivery intent; no writes, tools or network.
     #[arg(long)]
     pub(crate) dry_run: bool,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewAppArgs {
+    /// New or empty wrapper destination. Existing generated files are never replaced.
+    #[arg(default_value = ".")]
+    pub(crate) dir: String,
+    /// Create hosted starter content at <destination>/docs/zellij.
+    #[arg(long, conflicts_with = "site_root")]
+    pub(crate) with_docs: bool,
+    /// Existing hosted site/content root; otherwise use normal site discovery.
+    #[arg(long)]
+    pub(crate) site_root: Option<String>,
+    /// Built local @shebka/zellij package; defaults to ./engine/packages/zellij.
+    #[arg(long)]
+    pub(crate) engine: Option<String>,
+    /// Display name for the app/starter; the npm name is normalized separately.
+    #[arg(long)]
+    pub(crate) name: Option<String>,
+    /// Dev/start port; defaults to the selected site's preview.port or 3000.
+    #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
+    pub(crate) port: Option<u16>,
+    /// Optional engine packages: maths, diagrams, or all (comma-separated).
+    #[arg(long, value_delimiter = ',', value_parser = ["maths", "diagrams", "all"])]
+    pub(crate) features: Vec<String>,
 }

@@ -1,14 +1,10 @@
-import path from 'node:path';
-import { stat } from 'node:fs/promises';
-
-import { FolderContentSource } from '../content/folder-source';
-import { LegacyContentSource } from '../content/legacy-source';
+import { createContentSource } from '../config/runtime';
 import { loadSite, type Site } from '../content/site';
 import { ZellijContentError } from '../errors';
 import { deepCheck } from './deep-check';
 
 export interface CheckOptions {
-  /** Content root, absolute or relative to cwd. Defaults to ./content. */
+  /** Content root; otherwise honor wrapper configuration, then ./content. */
   contentDir?: string;
   cwd?: string;
   /** Parse MDX and validate statically known local links, anchors and media. */
@@ -33,27 +29,14 @@ export interface CheckResult {
  */
 export async function check(options: CheckOptions = {}): Promise<CheckResult> {
   const cwd = options.cwd ?? process.cwd();
-  const contentDir = path.resolve(cwd, options.contentDir ?? 'content');
   const warnings: string[] = [];
   const collect = (message: string): void => {
     warnings.push(message);
   };
 
-  if (!(await exists(contentDir))) {
-    console.error(`✗ No content root at ${contentDir}`);
-    return { ok: false, warnings, errors: [`No content root at ${contentDir}`] };
-  }
-
-  const legacy = await exists(path.join(contentDir, 'marketing'));
-  const source = legacy
-    ? new LegacyContentSource({
-        contentDir,
-        configFile: path.resolve(cwd, 'zellij.config.yaml'),
-        onWarning: collect,
-      })
-    : new FolderContentSource({ contentDir, onWarning: collect });
-
   try {
+    const { source, contentDir, layout } = await createContentSource({ appRoot: cwd, contentDir: options.contentDir }, collect);
+    const legacy = layout === 'legacy';
     const site = await loadSite(source);
     warnings.push(...site.warnings);
 
@@ -95,14 +78,5 @@ function report(site: Site, contentDir: string, warnings: string[], legacy: bool
   if (warnings.length > 0) {
     console.log('');
     for (const warning of warnings) console.warn(`  ! ${warning}`);
-  }
-}
-
-async function exists(target: string): Promise<boolean> {
-  try {
-    await stat(target);
-    return true;
-  } catch {
-    return false;
   }
 }

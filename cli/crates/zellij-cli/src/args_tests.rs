@@ -18,6 +18,23 @@ type Case = (
 );
 const CASES: &[Case] = &[
     (
+        "na",
+        "new app",
+        &[],
+        &[
+            "web app",
+            "--with-docs",
+            "--engine",
+            "engine/package",
+            "--name",
+            "My docs",
+            "--port",
+            "4100",
+            "--features",
+            "maths,diagrams",
+        ],
+    ),
+    (
         "init",
         "new portable",
         &[],
@@ -314,7 +331,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             assert!(!actual.json);
         }
     }
-    for name in ["bu", "bui", "ini", "n", "se", "na"] {
+    for name in ["bu", "bui", "ini", "n", "se"] {
         assert_eq!(
             parse(&[name]).unwrap_err().kind(),
             ErrorKind::InvalidSubcommand

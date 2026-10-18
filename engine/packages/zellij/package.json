@@ -1,6 +1,7 @@
 {
   "name": "@shebka/zellij",
   "version": "0.1.0",
+  "zellij": { "wrapperConfigVersion": 1 },
   "description": "A shared Next.js engine that turns a folder of structured content into a complete product website.",
   "license": "UNLICENSED",
   "author": "Shebka LLC",
