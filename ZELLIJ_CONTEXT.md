@@ -3,6 +3,10 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Latest CLI increment: command shortcuts and shell completions, source
+`271493f46d3b97ceed12623524505374e3e12190`; see the implementation record at the
+end of this file. Static/Next image commands are the next milestone.
+
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
 defects, remaining work, evidence, and verification limits. Recheck dated facts
@@ -1859,3 +1863,60 @@ user's system Node as part of an unrelated project task.
 When returning to this project, refresh the dated repository/release facts,
 read the relevant audit finding, inspect its source, and then implement only
 the work the user has authorized.
+
+### CLI shortcuts and completions — 2026-10-18
+
+Source `271493f46d3b97ceed12623524505374e3e12190` on
+`codex/cli-aliases` follows PR #28 / main `c6e1c51`. Before this work,
+main CI `39112482978` and base-image publication `39112482938` both passed.
+
+- `cli/crates/zellij-cli/src/args.rs` owns the argument schema. Thirteen
+  flattened shortcuts share Args structs with their descriptive commands;
+  a small catalog generates their parser variants, canonical mapping and help
+  links. Same-level shortcuts use Clap visible aliases. Normalization happens
+  before the global JSON policy and existing handler dispatch. No argv text
+  substitution or arbitrary prefix abbreviation is used.
+- Twenty-two top-level shortcuts are available: `init`, `nd`, `ns`, `np`, `ng`,
+  `npr`, `ex`, `sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`,
+  `c`, `b`, `s`, `v`, `ir`, `ip`, `idf`, `comp`. Each retains its full form's
+  options, defaults, validation, runtime requirements, JSON policy and status.
+- `ci run` is the descriptive workflow-dispatch name; `ci publish` remains an
+  exact compatible spelling. No workflow is generated or dispatched merely
+  by adding the spelling. Actual dispatch semantics remain unchanged, including
+  the existing successful guidance-only response when `gh` is missing.
+- `completions <shell>` / `comp <shell>` emits Bash, Zsh, Fish, PowerShell or
+  Elvish scripts to stdout from the same command tree. No profile writes,
+  runtime discovery or network calls. Generator output is buffered so stdout
+  IO errors use the normal CLI error path. The new locked clap_complete
+  dependency is 4.6.11; its Clap requirement advances Clap to 4.6.7.
+- Parser tests cover every alias, defaults and explicit arguments, global
+  flags on both sides, help, errors, collisions, `--`, and names used as data.
+  Real-binary tests compare scaffold/output bytes, JSON, failure statuses and
+  side-effect-free unsupported JSON. Fake-gh tests compare both dispatch
+  spellings for success and failure without contacting GitHub.
+- Linux/macOS exercise actual Bash completion; Windows CI exercises Windows
+  PowerShell completion for canonical and short forms. The three-OS portable
+  matrix runs the parser and alias integration tests. Browser configured-site
+  watch/serve acceptance now uses `v` and `s`; other cases retain full forms.
+
+Local checks passed: **222 Rust tests**, formatting, warnings-denied Clippy,
+strict/deep documentation validation (**49 routes, 23 examples**), and Zsh
+completion syntax validation. The HTTP/watch Chromium/WebKit suite is still
+running at this record's commit; consult PR evidence for its completion and
+hosted native package / cross-platform results. No new native release or
+public documentation deployment is implied.
+
+The local CLI guide now has shortcut and completion pages, plus updated CI,
+configuration and maintenance status. The contract distinguishes the implemented
+names from future capabilities: conversion remains raw hosted content, `view`
+is portable-only, and `idf` has only the Next recipe without `--kind`. Stub and
+future shortcuts (`na`, `si`, `ni`, `pub`, `netlify`, bare `ci [site]`) remain
+unregistered. Next: separate static/Next image commands, then shared delivery/CI
+configuration and direct Netlify deployment; retain the broader backlog.
+
+Minor existing diagnostic debt observed during test development: invalid
+`new section`/`new page --sections` messages still say there are “nineteen”
+section types, although `list sections` reports the compiled 23 types. This
+milestone preserves their current errors; remove that stale count in a later
+help/diagnostics cleanup. Missing explicit serve/view folders also retain their
+current IO exit 1 rather than an argument exit 2.
