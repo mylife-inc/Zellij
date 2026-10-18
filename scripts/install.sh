@@ -4,12 +4,11 @@
 #
 #     curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
 #
-# Binaries live in a public releases repository, because Zellij's own
-# repository is private and a private repository's release assets are not
-# downloadable without a token. Nothing here needs one.
+# Binaries live in the shared public releases repository. No token is required.
 #
 #   ZEL_VERSION      pin a version, e.g. v0.1.0. Default: the latest.
 #   ZEL_INSTALL_DIR  where to put the binary. Default: ~/.local/bin.
+#   ZEL_RELEASE_BASE_URL  mirror directory of assets; requires ZEL_VERSION.
 #
 # POSIX sh on purpose: this runs on whatever the machine has.
 
@@ -72,9 +71,8 @@ case "$os" in
   Linux)  os_part="unknown-linux-gnu" ;;
   Darwin) os_part="apple-darwin" ;;
   MINGW*|MSYS*|CYGWIN*)
-    die "Windows is not a published target. Releases carry Linux and macOS
-    builds only. Under WSL this script works as it does on any Linux, which is
-    the supported way to run zel on a Windows machine." ;;
+    die "For native Windows use install.ps1 from PowerShell.
+    Under WSL, install.sh selects a Linux binary." ;;
   *) die "Unsupported operating system: $os" ;;
 esac
 
@@ -87,6 +85,10 @@ esac
 target="${arch_part}-${os_part}"
 
 # ------------------------------------------------------------------- version
+
+if [ -n "${ZEL_RELEASE_BASE_URL:-}" ] && [ -z "${ZEL_VERSION:-}" ]; then
+  die "ZEL_RELEASE_BASE_URL requires an explicit ZEL_VERSION."
+fi
 
 if [ -n "${ZEL_VERSION:-}" ]; then
   version="$ZEL_VERSION"
@@ -127,14 +129,27 @@ else
     and install it with ZEL_VERSION=v0.0.0-rc.1"
 fi
 
+printf '%s\n' "$version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$' ||
+  die "Invalid version; expected v0.2.0 or v0.2.0-rc.1."
 tag="${SCOPE}-${version}"
 archive="zel-${version}-${target}.tar.gz"
-base="https://github.com/$REPO/releases/download/$tag"
+base="${ZEL_RELEASE_BASE_URL:-https://github.com/$REPO/releases/download/$tag}"
+base="${base%/}"
+case "$base" in
+  https://*|http://127.0.0.1:*|http://localhost:*|http://\[::1\]:*) ;;
+  *) die "Release asset URLs must be HTTPS (or loopback HTTP)." ;;
+esac
 
 # ------------------------------------------------------------------ download
 
 tmp="$(mktemp -d)"
-trap 'rm -rf "$tmp"' EXIT INT TERM
+install_stage=""
+cleanup() {
+  [ -z "$install_stage" ] || rm -f "$install_stage"
+  rm -rf "$tmp"
+}
+trap cleanup EXIT
+trap 'exit 1' INT TERM
 
 say "Downloading zel $version for $target"
 fetch_to "$base/$archive" "$tmp/$archive" ||
@@ -257,13 +272,20 @@ if [ ! -f "$tmp/zel" ] || [ -L "$tmp/zel" ]; then
   die "The archive's zel is not a regular file. Nothing was installed."
 fi
 
+# Validate the executable before replacing a working installation.
+chmod +x "$tmp/zel"
+reported="$("$tmp/zel" --version)" || die "The downloaded binary cannot run. Nothing was installed."
+[ "$reported" = "zel ${version#v}" ] || die "Binary version does not match $version. Nothing was installed."
+if [ -L "$INSTALL_DIR/zel" ] || { [ -e "$INSTALL_DIR/zel" ] && [ ! -f "$INSTALL_DIR/zel" ]; }; then
+  die "The existing zel must be a regular file. Nothing was installed."
+fi
 mkdir -p "$INSTALL_DIR"
-# Move into place rather than copy over a running binary: replacing an
-# executable that is currently executing fails on some systems, and `zel
-# upgrade` calls this script.
-mv "$tmp/zel" "$INSTALL_DIR/zel.new"
-chmod +x "$INSTALL_DIR/zel.new"
-mv "$INSTALL_DIR/zel.new" "$INSTALL_DIR/zel"
+install_stage="$(mktemp "$INSTALL_DIR/.zel-install.XXXXXX")"
+# Rename into place on the destination filesystem; never truncate the old inode.
+cp "$tmp/zel" "$install_stage"
+chmod +x "$install_stage"
+mv -f "$install_stage" "$INSTALL_DIR/zel"
+install_stage=""
 
 say "Installed $INSTALL_DIR/zel"
 
@@ -274,18 +296,20 @@ case ":$PATH:" in
   *)
     warn "$INSTALL_DIR is not on your PATH."
     printf '\n    Add this to your shell profile:\n\n'
+    # shellcheck disable=SC2016 # Print the user's future PATH expansion literally.
     printf '      export PATH="%s:$PATH"\n\n' "$INSTALL_DIR"
     ;;
 esac
 
-"$INSTALL_DIR/zel" --version || true
+"$INSTALL_DIR/zel" --version
 
 cat <<'EOF'
 
   Next:
 
-    zel new docs my-docs     a content folder that already validates
-    zel dev my-docs          serve it, and watch it
+    zel new portable my-docs   a Markdown folder that already validates
+    zel build my-docs          generate HTML that opens directly from disk
+    zel view my-docs --watch   build, preview and reload edits
     zel --help               everything else
 
   https://zellij.shebka.net/guide/quickstart

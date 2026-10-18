@@ -52,6 +52,13 @@ Native release packages may lag source. Check `zel new --help` for availability.
 See the [portable contract](specs/zel-portable-docs.md) for supported Markdown,
 configuration, platform acceptance and remaining rendering limits.
 
+Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
+with installation tests against actual release archives. Windows uses the
+PowerShell installer; Unix uses the shell installer. See the
+[native distribution contract](specs/zel-native-distribution.md) for tested OS
+versions, commands and limits. These changes do not replace the older published
+`v0.1.3` binaries or create a new release automatically.
+
 ## The examples
 
 Zellij is developed against real content rather than fixtures. Each of these is

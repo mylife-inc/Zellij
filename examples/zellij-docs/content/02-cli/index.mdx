@@ -21,8 +21,10 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-Binaries are published on the repository's releases page — Linux and macOS,
-x86-64 and arm64, each with a `.sha256` beside it. On Windows, install into WSL.
+The latest public `zellij-v0.1.3` binaries cover Linux and macOS, x86-64 and
+ARM64. They predate the native portable workflow. Current source adds native
+Windows x64/ARM64 packaging and installers; those require a new binary release.
+Check the assets on the release you intend to install.
 
 ```bash title="terminal"
 curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
@@ -30,6 +32,20 @@ curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/ins
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
+
+For a release containing Windows packages, download its `install.ps1` and run
+it from PowerShell with `-Version` set to that release's version. It supports
+Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
+checksum and executable version, and installs into
+`%LOCALAPPDATA%\Programs\Zellij\bin`. `-InstallDir` selects another directory.
+Add that directory to your user PATH and open a new terminal; the installer
+does not change your environment settings. No administrator rights are needed
+for the default user location.
+
+Both current-source installers preserve an existing executable if validation
+fails. The Windows installer requires a native Windows archive; a Linux archive
+is used only inside WSL. Native portable `build`, `check`, `serve` and `view`
+need no container runtime.
 
 ## What it does
 

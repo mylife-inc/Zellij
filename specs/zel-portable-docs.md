@@ -142,7 +142,7 @@ installation, release packaging or container integration.
 | View a source folder | Implemented, including optional watch/reload | Richer configuration |
 | Development rebuild/reload | Portable `view --watch` implemented; hosted preparation watching implemented | Hosted automatic page reload, incremental compilation |
 | Deploy/publish | Existing images and generated provider workflows | Finish chosen CLI providers and release scope |
-| Native distribution | Portable OS CI added | Release/install smoke tests, Windows packaging/installer |
+| Native distribution | Six-target packaging/install acceptance and Windows installer implemented in source | Publish a new reviewed version; signing and broader OS coverage remain outside this matrix |
 
 ## Native serve/view contract — 2026-10-17
 
