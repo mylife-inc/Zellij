@@ -40,8 +40,8 @@ const server = createServer((request, response) => {
 });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
-function start(command, args, env = process.env) {
-  const child = spawn(command, args, { env, stdio: ['pipe', 'pipe', 'pipe'] });
+function start(command, args, env = process.env, cwd) {
+  const child = spawn(command, args, { env, cwd, stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   active.add(state);
   child.stdout.on('data', bytes => state.stdout += bytes);
@@ -50,8 +50,8 @@ function start(command, args, env = process.env) {
   state.closed = new Promise(resolve => child.once('close', code => { state.exit = code; active.delete(state); resolve(code); }));
   return state;
 }
-async function run(command, args, env = process.env, succeeds = true) {
-  const state = start(command, args, env);
+async function run(command, args, env = process.env, succeeds = true, cwd) {
+  const state = start(command, args, env, cwd);
   const timeout = setTimeout(() => state.child.kill(), 90000);
   try {
     const code = await state.closed;
@@ -129,10 +129,10 @@ try {
   const source = path.join(temp, 'Docs 日本');
   const output = path.join(temp, 'Moved site café');
   await run(executable, ['new', 'portable', source, '--name', 'Installed documentation'], env);
-  const report = JSON.parse((await run(executable, ['check', source, '--strict', '--json'], env)).stdout);
+  const report = JSON.parse((await run(executable, ['check', '--strict', '--json'], env, true, source)).stdout);
   assert.equal(report.ok, true); assert.deepEqual(report.diagnostics, []);
-  await run(executable, ['build', source], env);
-  await rename(`${source}-site`, output);
+  await run(executable, ['build'], env, true, source);
+  await rename(path.join(source, 'site'), output);
   assert((await readFile(path.join(output, 'index.html'), 'utf8')).includes('guide/getting-started.html#write-your-first-page'));
   assert((await readFile(path.join(output, 'guide/getting-started.html'), 'utf8')).includes('../index.html#build-and-share'));
   assert((await readFile(path.join(output, '_zellij/search.js'), 'utf8')).includes('Installed documentation'));

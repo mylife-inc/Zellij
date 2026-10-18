@@ -1456,6 +1456,14 @@ container acceptance job now explicitly selects the Docker context that built
 its image. Base-image publication run `39109606795` passed at main `1aa8376`.
 The earlier PR #27 CI passed; that did not establish the later main run passed.
 
+[PR #28](https://github.com/mylife-inc/Zellij/pull/28) carries the configured-site
+work. Its first CI run (`39111452316`) caught the native installer acceptance
+script still looking for the old `<folder>-site` output. The harness now checks
+the configured `site/` output and runs bare check/build from the installed site's
+root. Local x86_64 macOS release-archive installation, checksum/corruption tests,
+installed native commands, relocated output and HTTP/Ctrl-C checks pass. The
+installer's help text now calls the starter a documentation site.
+
 Next: command aliases/help catalog, separate static/Next image commands, then
 shared deployment/CI configuration. Global site/config/cwd selectors, portable
 dev, hosted view, import-layout changes and advanced command stubs are pending.
