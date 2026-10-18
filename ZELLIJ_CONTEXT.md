@@ -1900,11 +1900,13 @@ main CI `39112482978` and base-image publication `39112482938` both passed.
   watch/serve acceptance now uses `v` and `s`; other cases retain full forms.
 
 Local checks passed: **222 Rust tests**, formatting, warnings-denied Clippy,
-strict/deep documentation validation (**49 routes, 23 examples**), and Zsh
-completion syntax validation. The HTTP/watch Chromium/WebKit suite is still
-running at this record's commit; consult PR evidence for its completion and
-hosted native package / cross-platform results. No new native release or
-public documentation deployment is implied.
+strict/deep documentation validation (**49 routes, 23 examples**), Zsh
+completion syntax validation, and the complete Chromium/WebKit HTTP/watch
+suite including configured `v`/`s` acceptance.
+[PR #29](https://github.com/mylife-inc/Zellij/pull/29) tracks the hosted native
+package and cross-platform gates; verify its checks and merge status before
+relying on that evidence. No new native release or public documentation
+deployment is implied.
 
 The local CLI guide now has shortcut and completion pages, plus updated CI,
 configuration and maintenance status. The contract distinguishes the implemented
