@@ -74,6 +74,36 @@ fn plain_folder_checks_without_output_or_external_tools_in_both_formats() {
 }
 
 #[test]
+fn invalid_mindmaps_have_structured_diagnostics_and_recover_without_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::write(
+        root.join("README.md"),
+        "# Maps\n\n```mindmap\nA: 1\nB: 2\n```\n",
+    )
+    .unwrap();
+    let invalid = report(root, &["check", "--json"], 3);
+    assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
+    assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
+    assert!(
+        invalid["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("mindmap 1")
+    );
+    fs::write(
+        root.join("README.md"),
+        "# Maps\n\n```mindmap\nRoot: [Child]\n```\n",
+    )
+    .unwrap();
+    assert_eq!(
+        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        true
+    );
+    assert_eq!(fs::read_dir(root).unwrap().count(), 1);
+}
+
+#[test]
 fn invalid_math_has_a_structured_source_diagnostic_and_recovers_without_tools() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

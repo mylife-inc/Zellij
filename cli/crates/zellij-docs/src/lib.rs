@@ -13,6 +13,7 @@ pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
 mod links;
 mod markdown;
 mod math;
+mod mindmap;
 mod page;
 pub mod server;
 pub mod watch;
@@ -445,6 +446,12 @@ fn compile(
         for (name, bytes) in math::ASSETS {
             files.insert(format!("_zellij/math/{name}").into(), bytes.to_vec());
         }
+    }
+    if pages.iter().any(|p| p.markdown.has_mindmap) {
+        files.insert(
+            "_zellij/mindmap.css".into(),
+            include_bytes!("../assets/mindmap.css").to_vec(),
+        );
     }
     files.insert(
         "_zellij/themes.css".into(),

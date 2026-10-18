@@ -188,6 +188,19 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await expect(page.locator('article math')).toHaveCount(0, { timeout: 20000 });
       await expect(page.locator('article')).toContainText('$\\frac{1}{2}$');
 
+      const mapBody = `${home(`Recovered ${engine}`)}\n\`\`\`mindmap\nPreview: [First, Second]\n\`\`\`\n`;
+      await writeFile(readme, mapBody);
+      await expect(page.getByRole('img', { name: 'Mindmap: Preview', exact: true })).toBeVisible({ timeout: 20000 });
+      const mapOutput = await snapshot(output);
+      const mapVersion = (await status()).version;
+      await writeFile(readme, `${home(`Recovered ${engine}`)}\n\`\`\`mindmap\nA: 1\nB: 2\n\`\`\`\n`);
+      await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
+      assert.equal((await status()).version, mapVersion);
+      assert.deepEqual(await snapshot(output), mapOutput);
+      await writeFile(readme, mapBody.replace('First', 'Updated'));
+      await expect(page.getByRole('alert')).toHaveCount(0, { timeout: 20000 });
+      await expect(page.locator('.mindmap-node text')).toContainText(['Updated', 'Second', 'Preview']);
+
       const stable = await status();
       await writeFile(path.join(source, '.draft.md'), 'ignored');
       await mkdir(path.join(source, 'node_modules'));

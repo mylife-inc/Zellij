@@ -4,7 +4,8 @@ Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
 `view --watch` merged in PR #14 with all-platform acceptance. Portable `zel.yaml`
 configuration/navigation and excluded-asset checks merged in PRs #15–16.
 Native validation and structured diagnostics merged in PR #17. The portable
-starter is merged in PR #18; opt-in native math is the current implementation milestone. The native renderer and server
+starter is merged in PR #18; opt-in native math is merged in PR #23. Native YAML
+mindmaps are the current implementation milestone. The native renderer and server
 are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
@@ -115,7 +116,8 @@ the existing export when validation or rendering fails.
   disjoint. `--name` controls the header name; `--theme` selects from the shared
   14-theme catalog, defaulting to cupertino.
 - Raw HTML is literal text with a warning; `.mdx` is rejected. MathML rendering
-  is opt-in through `markdown.math`; Mermaid fences remain code. Remote media remains remote. MkDocs plugins,
+  is opt-in through `markdown.math`; YAML `mindmap` fences render to SVG and a
+  semantic outline. Mermaid fences remain code. Remote media remains remote. MkDocs plugins,
   full-text search language processing and incremental compilation are not
   implemented. Optional `zel.yaml` supplies identity, branding and navigation. `view --watch` performs full rebuilds and
   reloads the HTTP preview after successful publication.
@@ -134,7 +136,7 @@ installation, release packaging or container integration.
 | Capability | Native portable status | Next work |
 | --- | --- | --- |
 | Plain-folder static build and alternate output | Implemented | Expand real-document fixtures and rendering compatibility |
-| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` and opt-in math implemented | Raw HTML policy, diagrams, broader config |
+| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml`, opt-in math and native YAML mindmaps implemented | Mermaid, raw HTML policy, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Native `check`, strict warning gate and JSON reports implemented | Hosted JSON reports, richer source locations |
 | Project scaffolding | Native `new portable` full/minimal starters; existing hosted scaffolds | Extend starter content with future rendering capabilities |
@@ -143,6 +145,44 @@ installation, release packaging or container integration.
 | Development rebuild/reload | Portable `view --watch` implemented; hosted preparation watching implemented | Hosted automatic page reload, incremental compilation |
 | Deploy/publish | Existing images and generated provider workflows | Finish chosen CLI providers and release scope |
 | Native distribution | Six-target packaging/install acceptance and Windows installer implemented in source | Publish a new reviewed version; signing and broader OS coverage remain outside this matrix |
+
+## Native YAML mindmaps — 2026-10-17
+
+`mindmap` fences use the hosted engine's documented YAML hierarchy syntax and
+render in Rust without new dependencies, Node, a browser, or network access.
+They are built in and need no configuration flag. The shared check/build pass
+emits finished inline SVG plus a native `details` disclosure containing the
+equivalent nested-list outline. Source labels stay in the offline search index.
+Each diagram has reserved, distinct title/description IDs. Only pages with
+mindmaps link the stylesheet; sites without any omit it from the export.
+
+The root must be one mapping entry. Keys are strings; mapping values define
+children; sequences contain scalar labels or mappings. Strings, finite numbers
+and booleans become leaves; a null mapping value means a leaf. Null sequence
+items, directly nested sequences, duplicate keys, custom tags, empty labels and
+multiple YAML documents are errors. Labels collapse whitespace and are escaped
+in SVG, accessible names and outlines. YAML alias expansion is bounded during
+deserialization. Limits per diagram: 64 KiB source, 512 nodes, 32 levels including
+the root, 256 Unicode scalar values per label. No authored file is rewritten.
+
+Layout uses conservative fixed-font width estimates, columns sized by their
+widest label, disjoint leaf rows and parents centered over their children. This
+is not a promise of the hosted renderer's exact geometry, branch palette or
+arbitrary complex-script shaping. Wide maps scroll instead of shrinking labels.
+Colors follow the active theme through CSS. Print styles fit SVG to page width.
+The existing local enhancement handles Left/Right and Home/End on focused
+diagram viewports. WebKit's native arrow scrolling fails even on a minimal
+overflow div; with JavaScript disabled, the keyboard-operable outline exposes
+the entire hierarchy. SVG and outline rendering itself requires no JavaScript.
+
+Invalid diagrams fail with source-file `rendering` diagnostics and diagram
+ordinal before publication. Watch mode retains the previous export/revision
+and recovers after edits. Tests cover grammar/limits/escaping, real CLI JSON
+without external tools, relocated nested `file://` output in Chromium/WebKit,
+actual SVG/text bounds, outline hierarchy, theme/search/navigation, mobile
+overflow, keyboard controls, JavaScript-disabled content and HTTP/watch error
+preservation/recovery. Mermaid fences remain literal code; this milestone does
+not add Mermaid execution or claim exhaustive screen-reader/browser acceptance.
 
 ## Native serve/view contract — 2026-10-17
 

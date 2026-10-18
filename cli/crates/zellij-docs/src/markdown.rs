@@ -21,6 +21,7 @@ pub struct Markdown {
     pub has_h1: bool,
     pub literal_html: bool,
     pub has_math: bool,
+    pub has_mindmap: bool,
 }
 
 pub fn escape(text: &str) -> String {
@@ -135,9 +136,13 @@ pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
     let mut first_h1 = None;
     let mut literal_html = false;
     let mut has_math = false;
+    let mut has_mindmap = false;
     let mut image_depth = 0;
     for i in 0..events.len() {
         match &events[i] {
+            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info))) => {
+                has_mindmap |= info.split_whitespace().next() == Some("mindmap");
+            }
             Event::Start(Tag::Image { .. }) => image_depth += 1,
             Event::End(TagEnd::Image) => image_depth -= 1,
             Event::InlineMath(text) | Event::DisplayMath(text) => {
@@ -208,6 +213,7 @@ pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
         has_h1,
         literal_html,
         has_math,
+        has_mindmap,
     })
 }
 
@@ -217,6 +223,7 @@ pub fn highlight(events: Vec<Event<'static>>) -> Result<Vec<Event<'static>>> {
     let mut output = Vec::new();
     let mut iter = events.into_iter();
     let mut equation = 0;
+    let mut mindmap = 0;
     while let Some(event) = iter.next() {
         if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
             equation += 1;
@@ -235,6 +242,11 @@ pub fn highlight(events: Vec<Event<'static>>) -> Result<Vec<Event<'static>>> {
                     Event::Text(s) => code.push_str(&s),
                     _ => {}
                 }
+            }
+            if language == "mindmap" {
+                mindmap += 1;
+                output.push(Event::Html(crate::mindmap::render(&code, mindmap)?.into()));
+                continue;
             }
             let syntax = SYNTAXES
                 .find_syntax_by_token(&language)

@@ -120,8 +120,8 @@ Code highlighting is generated during the build and needs no browser library.
 
 Raw HTML is displayed as literal text and produces a warning. MDX components,
 MkDocs plugins/extensions, custom HTML widgets, and Mermaid execution are not
-supported by this target yet. Mermaid fences remain code. Optional native math
-is described below. Hosted Zellij sites retain their existing MDX, math, and
+supported by this target yet. Mermaid fences remain code. Built-in YAML mindmaps
+and optional native math are described below. Hosted Zellij sites retain their existing MDX, math, and
 diagram features. Portable build is the first part of the documentation
 workflow; [`serve`](/cli/serve) previews the result and [`view`](/cli/view)
 combines the build, server, and browser launch. Add `view --watch` to rebuild
@@ -162,6 +162,47 @@ include that source in a MathML annotation. The original Markdown is unchanged.
 
 Current Chromium and WebKit are covered by automated offline tests. This does
 not establish exhaustive LaTeX layout, older-browser or screen-reader support.
+
+### Mindmaps
+
+A `mindmap` fence renders a YAML hierarchy to SVG during the native build.
+No configuration, extra tool, download, or browser library is needed:
+
+````markdown
+```mindmap
+Documentation:
+  Author: [Markdown, Assets]
+  Build:
+    Output: Static HTML
+  Read: [Double-click index.html, HTTP preview]
+```
+````
+
+Use exactly one root key. Mappings define nodes and children; lists define
+siblings; string, finite number, and boolean values become leaf labels. A key
+with no value is a leaf. Mapping keys must be strings; quote keys such as
+`"true"` or `"2026"`. Quote punctuation as needed for valid YAML. Whitespace
+inside labels is collapsed to spaces, and HTML-like labels remain literal text.
+Duplicate keys, custom tags, multiple roots, null list items, and directly nested
+lists are rejected. Put nested children under a named mapping key instead.
+
+The SVG uses the site's colors and a scrollable viewport for wide trees. Focus
+the diagram and use Left/Right or Home/End to scroll with JavaScript enabled.
+Native keyboard scrolling varies by browser when JavaScript is disabled; open
+**Text outline** below it to read the same hierarchy as nested lists. The SVG
+and outline both work with JavaScript disabled, directly from disk or over HTTP.
+Label layout uses conservative width estimates; complex text shaping and the
+hosted renderer's exact geometry or branch palette are not promised.
+
+Each diagram supports up to 512 nodes, 32 levels including the root, 256 Unicode
+characters per label, and 64 KiB of YAML source. YAML expansion is bounded before
+layout. Invalid diagrams fail `check` and `build` with the source filename and
+diagram number. Failed watch rebuilds retain the last good site and recover
+after an edit. Only pages with mindmaps load their small stylesheet, and it is
+removed from the export when the last mindmap is removed.
+
+This is Zellij's YAML `mindmap` syntax. Mermaid's `mindmap` grammar belongs inside
+a `mermaid` fence, which remains source code in the portable target.
 
 ## Hosted static website
 
