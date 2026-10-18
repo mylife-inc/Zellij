@@ -47,6 +47,18 @@ describe('agent context file', () => {
     expect(context).toMatch(/default `"floating"`/);
   });
 
+  it('documents both analytics choices and requires a domain only for Plausible', () => {
+    const variants = JSON.parse(buildSchemaJson()).files['site.yaml'].properties.analytics.anyOf;
+    const plausible = variants.find((option: { properties: { provider: { const: string } } }) => option.properties.provider.const === 'plausible');
+    const disabled = variants.find((option: { properties: { provider: { const: string } } }) => option.properties.provider.const === 'none');
+    expect(plausible.required).toContain('domain');
+    expect(plausible.properties.domain.minLength).toBe(1);
+    expect(disabled.required ?? []).not.toContain('domain');
+    expect(context).toContain('**`analytics (option 1)`**');
+    expect(context).toContain('**`analytics (option 2)`**');
+    expect(context).toMatch(/\| `domain` \| string \| \*\*required\*\* \|/);
+  });
+
   it('lists the themes from the schema, not from memory', () => {
     expect(context).toContain('`cupertino`');
     expect(context).toContain('`meridian`');

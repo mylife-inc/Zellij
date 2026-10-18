@@ -121,7 +121,7 @@ footer:
       links:
         - { label: Careers, href: "https://acme.example.com/careers" }
   legal: "© 2026 Acme"
-  social: true
+  social: { github: "https://github.com/acme/acme" }
 ```
 
 A link takes `page:` — a page name, resolved to its route — or `href:` for
@@ -132,11 +132,28 @@ to a page that no longer exists fails the build rather than shipping a 404.
 
 ```yaml
 analytics:
-  provider: plausible      # none | plausible | umami
+  provider: plausible      # none | plausible
   domain: acme.example.com
 ```
 
-`none` is the default, and nothing is loaded.
+`none` is the default: the tracker is not initialized and no analytics requests
+are sent. `plausible` requires a nonempty `domain` matching the site registered
+in your Plausible dashboard. Missing or empty domains fail validation.
+
+Production builds load the official Plausible tracker from the site's own
+JavaScript bundle. It records the initial pageview and client-side path changes,
+including Back/Forward navigation, without counting section-anchor changes as
+new pages. Requests go to `https://plausible.io/api/event`. Sites with a Content
+Security Policy must allow that address in `connect-src`.
+
+Development runs do not initialize analytics. Plausible also excludes localhost,
+direct-file visits and visitors who set `localStorage.plausible_ignore` to
+`"true"`. Blocked requests do not stop the site from working. This setting covers
+the hosted engine; native portable documentation has no analytics integration.
+Custom endpoints and additional analytics providers are not supported.
+
+See the [official Plausible tracker API](https://github.com/plausible/analytics/blob/master/tracker/npm_package/plausible.d.ts)
+and [visitor exclusion instructions](https://plausible.io/docs/excluding-localstorage).
 
 ## What is checked
 

@@ -157,12 +157,19 @@ a complete site.
 | `youtube` | string |  |
 | `discord` | string |  |
 
-**`analytics`**
+**`analytics (option 1)`**
 
 | field | type | |
 | --- | --- | --- |
-| `provider` | `plausible` \| `none` | default `"none"` |
+| `provider` | `"none"` | default `"none"` |
 | `domain` | string |  |
+
+**`analytics (option 2)`**
+
+| field | type | |
+| --- | --- | --- |
+| `provider` | `"plausible"` | **required** |
+| `domain` | string | **required** |
 
 
 ## `menu.yaml`

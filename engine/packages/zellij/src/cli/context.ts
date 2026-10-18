@@ -121,8 +121,13 @@ function fieldTable(
         field.default !== undefined ? `default \`${JSON.stringify(field.default)}\`` : '';
       const notes = [flag, fallback].filter(Boolean).join(', ');
 
-      const inner = objectBehind(field);
-      if (inner && depth < 2) nested.push([name, inner]);
+      const variants = field.anyOf ?? field.oneOf ?? [];
+      if (variants.length > 1 && variants.every(option => option.type === 'object') && depth < 2) {
+        variants.forEach((option, index) => nested.push([`${name} (option ${index + 1})`, option]));
+      } else {
+        const inner = objectBehind(field);
+        if (inner && depth < 2) nested.push([name, inner]);
+      }
 
       return `| \`${name}\` | ${describe(field)} | ${notes} |`;
     });

@@ -1,4 +1,4 @@
-import type { SiteConfig } from '../config/schema';
+import type { SiteConfig, ThemeName } from '../config/schema';
 import { THEMES, type Palette, type ThemeTokens } from './tokens';
 
 const RADIUS_SCALE: Record<string, string> = {
@@ -105,6 +105,25 @@ export function emitThemeCss(config: SiteConfig): string {
     `:root:root{${root.join('')}}`,
     `:root[data-zellij-mode="dark"]{${dark.join('')}}`,
     `@media (prefers-color-scheme: dark){:root[data-zellij-mode="system"]{${dark.join('')}}}`,
+  ].join('');
+}
+
+/** A page owns its content's tokens; shared chrome and stored preferences stay site-wide. */
+export function emitPageThemeCss(name: ThemeName, config: SiteConfig): string {
+  const theme = THEMES[name];
+  const self = `.zellij-layout[data-zellij-theme="${name}"]`;
+  const overrides = overrideVars(config.overrides);
+  // Anchors must still clear the actual shared header, not this theme's header.
+  const structure = structuralVars(theme).filter(value => !value.startsWith('--zellij-nav-height:'));
+  const light = [...structure, ...paletteVars(theme.light), ...overrides,
+    '--zellij-nav-height: inherit;',
+    '--zellij-glow-core: var(--zellij-accent);', '--zellij-glow-strength: 26%;'];
+  const dark = [...paletteVars(theme.dark), ...overrides,
+    '--zellij-glow-core: color-mix(in srgb, var(--zellij-accent) 62%, white);', '--zellij-glow-strength: 30%;'];
+  return [
+    `${self}{${light.join('')}background:var(--zellij-bg);color:var(--zellij-fg);font-family:var(--zellij-font-body)}`,
+    `:root[data-zellij-mode="dark"] ${self}{${dark.join('')}}`,
+    `@media (prefers-color-scheme: dark){:root[data-zellij-mode="system"] ${self}{${dark.join('')}}}`,
   ].join('');
 }
 

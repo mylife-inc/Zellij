@@ -45,7 +45,7 @@ try {
     'src/app/[[...slug]]/page.tsx': "import { createZellijPages } from '@shebka/zellij';\nconst zellij = createZellijPages({ contentDir: './authored docs' });\nexport const generateStaticParams = zellij.generateStaticParams;\nexport const generateMetadata = zellij.generateMetadata;\nexport default zellij.Page;\n",
   };
   for (const [name, text] of Object.entries(files)) await writeFile(path.join(app, name), text);
-  await put('site.yaml', `name: Watch fixture\nbasePath: ${prefix}\nhome: 01-guide\nnav: { search: true }\n`);
+  await put('site.yaml', `name: Watch fixture\nbasePath: ${prefix}\nhome: 01-guide\nnav: { search: true }\nanalytics: { provider: plausible, domain: docs.example.com }\n`);
   await put('01-guide/_sidebar.yaml', 'route: /manual\nnav: [index]\n');
   const markdown = (token) => `# Watching\n\n## ${token}\n\n${token} passage.\n\n![Watched image](/_zellij/assets/diagram.svg)\n`;
   const svg = (width) => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="40"><rect width="${width}" height="40" fill="red"/></svg>`;
@@ -85,6 +85,7 @@ try {
       }).toPass({ timeout: 15000 });
       await expect(page.locator('.zellij-search-empty')).toHaveText('Start typing to search the guide.');
       await page.keyboard.press('Escape');
+      assert.equal(await page.evaluate(() => typeof window.plausible), 'undefined', 'Development must not initialize analytics');
     }
     await put('01-guide/index.mdx', markdown(token));
     await put('01-guide/extra.mdx', `# Added${name}\n\nAdded document.\n`);
