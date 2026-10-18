@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: saved CI settings and workflow generation on
-`codex/cli-workflows`; see the implementation record at the end for evidence.
+Latest CLI work: configured import and ship on `codex/cli-import-delivery`;
+see the implementation record at the end for evidence. Configured CI merged
+in PR #34 as `4bc5ef6` with all checks passing.
 Native Netlify delivery merged in PR #33, image publication in PR #32,
 Next images/Markdown adaptation in PR #31, and static packaging in PR #30.
 
@@ -2360,3 +2361,57 @@ closed TCP before sending headers. The fixture now ignores incomplete/cancelled
 connections and records only complete requests, with a deterministic regression
 covering empty connections, truncated headers and bodies followed by a valid
 request. Native delivery behavior is unchanged. Final-head CI remains required.
+
+
+### Implementation update — 2026-10-18, configured import and ship
+
+PR #34 merged at `4bc5ef6cb5618ea98b208b45e9338b33d2ae5c65`. Final source
+`d80875aff5179f28abcab745e569b8e2f7212912` passed all 13 CI jobs in run
+39159674967. Merge CI 39160901027 and base image run 39160901001 also passed.
+This closes the earlier pending final-head evidence for the workflow milestone.
+The latest public native release is still zellij-v0.1.3 (2026-08-13); these new
+CLI commands have not been released or deployed to the public docs site.
+
+Current branch implements shared import preparation/reporting, configured output
+and ship composition. Convert/cv and migrate/mig keep raw content as default;
+--layout site writes version: 1, renderer: hosted plus content/. --from and
+--dry-run are shared. Migrate validates after import; dry run skips writes/checks.
+Equal-confidence format matches now refuse to guess; --from resolves them.
+Windows junctions beneath imported content are rejected like Unix symlinks.
+
+Ship requires source, --out and an explicit destination: --provider netlify
+with --site-id/--site or NETLIFY_SITE_ID; or --image static|next with --tag.
+Both converters emit hosted content and retain its runtime/HTTP requirements.
+All input/conversion/output-path checks finish before writing. Conversion warnings
+remain visible. A complete imported site is retained after any later failure.
+Nonsecret destination settings are saved for later publish; credentials and
+--prod are never saved. Netlify remains draft by default. Plan resolution and
+publication share the existing delivery types/executor, building once and never
+pushing/uploading after a failed build. No local persistent HTML export is implied.
+
+Local evidence: 255 workspace Rust tests passed, followed by focused tests after
+reducing import memory copying; formatting, warnings-denied Clippy, actionlint
+1.7.12, strict/deep docs validation (49 routes, 23 examples), and MkDocs/Docusaurus
+conversion checks against actual MDX rendering passed. New tests cover aliases,
+layouts, ambiguous detection, source/asset preservation, invalid/inert plans,
+missing runtimes/credentials, retained imports, exact tags and build/push failures.
+CI adds all-platform import tests and real static/Next ship publication to a
+loopback registry followed by browser navigation/assets checks. Container/publication
+acceptance remains the merge gate; source/PR/check evidence will be appended.
+
+No local daemon was started, external registry/account was used, or live deployment
+or native release performed. Remaining CLI work includes new app, fmt/watch,
+portable dev, hosted view, other providers and advanced maintenance. Compatible
+release preparation/publication remains a separate milestone.
+
+
+Import/ship implementation source: `0b59859` in
+[PR #35](https://github.com/mylife-inc/Zellij/pull/35). The pull request records
+final-head platform and container acceptance; consult its checks for merge status.
+
+
+PR #35 run 39162890191 exposed a Windows configured-import path bug: joining
+content/ with a generated relative path inserted a backslash rejected by the
+portable write-plan validator. Prefixing the already-validated relative path
+with a literal slash fixes the implementation; the Windows junction fixture also
+uses OS-native path components for cmd.exe. All-platform rerun is required.

@@ -93,3 +93,7 @@ by default and `--prod` for live publication.
 explicitly uploads a Netlify token. See [CI](/cli/ci) for the compatible release
 pin required while the current public binary is older than this contract.
 `na` remains unregistered until its command is implemented.
+
+Conversion shortcuts preserve the legacy raw-content default. Add `--layout site`
+to `zel cv` or `zel mig` for `zel.yaml` plus `content/`. `zel ship` always uses
+that configured layout and requires `--out` plus an explicit delivery destination.

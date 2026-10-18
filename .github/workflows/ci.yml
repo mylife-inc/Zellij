@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows --test import_delivery
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -193,6 +193,11 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
+
+      - name: Ship imports to static and Next images with registry and browser acceptance
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-ship.mjs cli/target/debug/zel
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:

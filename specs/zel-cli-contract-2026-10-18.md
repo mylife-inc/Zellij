@@ -76,12 +76,13 @@ shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
-The proposed **capabilities** in the tables are not all implemented: conversion
-still writes raw hosted content and `view` remains portable-only. Static-image
+The proposed **capabilities** in the tables are not all implemented: `view`
+remains portable-only and `na` remains unregistered. Conversion supports explicit
+configured-site output while keeping raw hosted content as its default. Static-image
 packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
 and registry/Netlify publication via `publish` / `pub` are implemented. `deploy netlify`
-and `netlify` are implemented, with bare `deploy` using saved publication. `na`
-and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
+and `netlify` are implemented, with bare `deploy` using saved publication.
+Configured `ship` and bare `ci [site]` are implemented. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
 
@@ -122,8 +123,8 @@ relative to the new repository, defaulting to `docs/zellij` in the new contract.
 
 An import source is always explicit. For the new configured-site output,
 conversion writes `<destination>/zel.yaml` and `<destination>/content/` and
-chooses the hosted renderer for existing converters. Keep the old raw-content
-output behavior available explicitly during transition (section 7); never
+chooses the hosted renderer for existing converters. Select this with `--layout
+site`; the default remains `--layout content` during transition (section 7). Never
 silently add an extra `content/` layer to a legacy invocation.
 
 ### Checking and local work
@@ -189,7 +190,7 @@ configuration can already be passed to Next unchanged.
 | --- | --- | --- | --- |
 | `zel deploy <provider> [site]` | `zel netlify [site]` for Netlify | Validate, build, and deploy to an explicitly chosen provider. | I: Netlify |
 | `zel publish [site]` | `zel pub [site]` | Execute saved image build/push or Netlify deployment. | I |
-| `zel ship <source> --out <destination>` | Same | Import into a new configured site, then execute delivery; preserve source. | S |
+| `zel ship <source> --out <destination>` | Same | Import into a new configured site, then execute delivery; preserve source. | I |
 | `zel ci init github [--site-root <site>]` | `zel ci [site]` | Generate a GitHub workflow using saved settings. | I: saved settings and shorthand |
 | `zel ci run` | Existing `zel ci publish` | Dispatch an existing workflow; retain `--workflow` and `--ref`. | I: `ci publish` |
 
@@ -444,7 +445,7 @@ text. No additional full test suite is needed merely to edit this proposal.
 - Preserve explicit hosted raw-content entry points during transition. Give
   users one migration guide; do not silently move or rewrite their files.
 - Conversion needs an explicit output-layout choice for legacy invocations;
-  propose `--layout site` for configured output and `--layout content` for
+  use `--layout site` for configured output and `--layout content` for
   existing raw-content output. The new `cv` alias has identical defaults to
   `convert`; it cannot secretly select a different layout. Keep the old default
   until a documented version boundary, then make site layout the new default.
@@ -567,3 +568,30 @@ pin; development builds still at 0.1.3 require an explicit pin. The project
 starter prepares a workflow pinned to planned 0.2.0 and reports that prerequisite.
 Real released-asset/provider acceptance remains separate from local generator,
 protocol, renderer and CI tests. See ZELLIJ_CONTEXT.md for current evidence.
+
+
+### Stage 5d — configured import and ship (2026-10-18)
+
+`convert`/`cv` and `migrate`/`mig` share `--layout content|site`, `--from`,
+`--dry-run`, and required source/`--out`. Content remains the compatibility
+default. Site writes version: 1, renderer: hosted, with emitted files/assets
+under content/. Migrate validates after writing; dry run skips writes/validation.
+Equal-confidence format matches now require --from instead of registry-order
+selection. Converter path containment includes Windows junction rejection.
+
+Ship always writes a configured site. Select `--provider netlify` with an
+existing `--site-id`/`--site` or NETLIFY_SITE_ID, or `--image static|next` with an
+explicit `--tag`. Provider/image intents cannot be combined. Netlify defaults to
+a draft; --prod applies only to that invocation. The nonsecret destination is
+saved in zel.yaml for later publish; credentials and production intent are not.
+Delivery selection and the complete import are prepared before writes. Dry run
+reports conversion warnings/files/destination without tools or network.
+
+After import, ship calls the shared resolved-plan executor; it does not invoke
+public build/deploy commands. A failed build stops publication. Later failures
+leave converted files for review and retry via check/publish (or image push to
+retry only a failed push). It does not promise a persistent local site/ export.
+Both existing converters emit hosted content; runtime/HTTP requirements apply.
+This does not add portable import or imply lossless source-tool migration.
+Cross-platform tests and actual container/registry/browser acceptance accompany
+the source change; compatible release publication remains separate work.

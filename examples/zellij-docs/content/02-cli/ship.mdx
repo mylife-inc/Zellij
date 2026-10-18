@@ -1,114 +1,111 @@
 ---
 title: zel ship
-description: Somebody else's documentation to a published site, in one line.
+description: Import into a configured site, build once, then deploy or publish an image.
 ---
 
-<Callout type="warning" title="Planned">
-`zel ship` exits with `not implemented yet`. Native Netlify delivery is available,
-but configured import and its composition with delivery remain unfinished. Use
-the separate commands [below](#until-it-lands) in the meantime.
+<Callout type="tip" title="Implemented in source">
+`ship` imports MkDocs or Docusaurus into a new configured hosted site, then uses
+shared delivery to build once and publish. These commands are newer than the
+public `zellij-v0.1.3` binary; use a compatible build from source until released.
 </Callout>
 
 ```bash title="terminal"
-zel ship ./docs --provider netlify
+zel ship ./old-docs --out ./manual --provider netlify --site-id existing-site-id
 ```
 
+Set `NETLIFY_AUTH_TOKEN` in your environment first. The site must already exist.
+Netlify creates a **draft preview** unless you pass `--prod`. `--site-id` (also
+`--site`) overrides `NETLIFY_SITE_ID`. No login or account/site creation runs.
+
+`--out` is required and names the converted site root:
+
+```text
+manual/
+  zel.yaml
+  content/
+    site.yaml
+    01-guide/
+    assets/
 ```
-✓ Detected MkDocs (certain)
-✓ Converted 47 pages, 3 unmapped — see the report
-✓ Content valid
-✓ Built static — 47 routes
-✓ Uploaded to acme-docs
-  https://acme-docs.netlify.app
-```
 
-## What it is
+The original source remains untouched. The destination must be new or empty,
+outside the source tree, with neither directory containing the other.
 
-[`detect`](/cli/detect) → [`convert`](/cli/convert) → [`check`](/cli/check) →
-[`build`](/cli/build) → [`deploy`](/cli/deploy), stopping at the first failure.
+## Publish an image
 
-These are stages in the shared delivery plan. The converted site is built once;
-the upload step receives that output instead of calling a public `deploy`
-command that builds it again.
+Choose the contents explicitly and provide the exact registry reference:
 
-The whole of a migration, from a folder written for another tool to a site
-someone can read.
-
-## Why one command for five
-
-Because it is one intention. "I have MkDocs documentation and I want to see what
-it looks like in Zellij, live, before I decide anything" is a single question,
-and answering it in five steps means five opportunities to stop halfway and
-lose the thread.
-
-It is also the honest way to evaluate a migration. Reading a converted folder
-tells you the files exist; seeing the site tells you whether the navigation
-survived, whether the prose still reads, and whether the pages you cared about
-are where you expect. That judgement needs a URL, and this is the shortest path
-to one.
-
-<Callout type="tip" title="Deploy it somewhere disposable first">
 ```bash title="terminal"
-netlify sites:create --name acme-docs-preview
-zel ship ./docs --provider netlify
+zel ship ./old-docs --out ./manual --image static --tag ghcr.io/acme/manual:v1
+zel ship ./other-docs --out ./other-manual --image next --tag ghcr.io/acme/other:v1
 ```
 
-A separate preview site can be removed after review. Circulating it finds
-what no validator can — a page that lost its ordering, a diagram that was an
-image, a link that pointed somewhere clever.
-</Callout>
+`static` packages generated HTML with an HTTP server; `next` packages the
+standalone Next.js wrapper. Authenticate your container client with the registry
+first. Image publication does not also deploy to a cloud provider.
 
-## What it will not hide
+All current import converters emit hosted content. Validation/build therefore
+requires a running Docker, Podman or nerdctl runtime and a compatible Zellij
+engine image, including for Netlify. Missing or stopped runtimes produce an
+error with setup guidance; Zellij does not install or start them. The generated
+hosted HTML needs HTTP serving. For Markdown sites that support double-clicking
+`index.html`, use the [portable renderer](/cli/build).
 
-Every warning the individual commands produce, `ship` produces:
+## Inspect the conversion first
 
+```bash title="terminal"
+zel ship ./old-docs --out ./manual --provider netlify --site-id existing-site-id --dry-run
 ```
-! 3 thing(s) could not be carried over:
-    https://blog.acme.dev: "Blog" is an external link; sidebars hold pages.
-    draft.md: on disk but absent from the navigation; not converted
-    internal/notes.md: on disk but absent from the navigation; not converted
+
+This reads and converts the source in memory, lists proposed files and conversion
+warnings, and prints the delivery destination. It writes nothing and performs no
+validation, runtime/credential checks, builds or network requests. Ambiguous
+format detection requires `--from mkdocs` or `--from docusaurus`.
+
+Warnings about skipped documents, external navigation and unsupported source
+features stay visible. Building successfully establishes that the generated
+content compiles; review navigation and content to assess migration fidelity.
+
+## After success or failure
+
+The new `zel.yaml` saves the image kind/tag or Netlify site ID, never credentials.
+Production intent is not saved: a later Netlify publication defaults to a draft.
+
+```bash title="terminal"
+zel check ./manual
+zel publish ./manual
+# Request live Netlify publication explicitly:
+zel publish ./manual --prod
 ```
 
-**And the landing page is still yours.** Every tool it converts from describes a
-documentation tree; Zellij has that and marketing pages built from 23
-section types with no equivalent in the source. What ships is a faithful guide
-folder and one hero to build on. That is not a gap in the converter — it is the
-part Zellij has that the source did not.
+Conversion/plan errors stop before writing. Once import completes, any later
+runtime, credential, validation, build or delivery failure leaves the converted
+site available for review. Fix the failing stage and use the saved site; rerunning
+`ship` against the now-populated destination is refused. A failed image push can
+be retried with `zel image push <exact-tag>` without rebuilding. If Netlify reports
+an uncertain upload result, inspect its dashboard before retrying.
 
-## The one risk worth naming
-
-`zel check` does not compile MDX. A converted folder can pass every step here
-and still fail a later build, because MDX treats `{` and `<` as syntax and prose
-written for MkDocs never had to care.
-
-The planned `ship` workflow builds, so it will compile the converted MDX. A
-successful build establishes that the output compiles; conversion warnings,
-navigation and source-specific features still need review.
+The composed command validates and builds once, then hands that result to the
+publication step. No push/upload follows a failed build. It does not create a
+persistent local `site/` export; use `zel build ./manual` when you want one.
 
 ## Options
 
-| | | |
-| --- | --- | --- |
-| `<source>` | Required. The folder to convert | — |
-| `--provider <name>` | Where to publish | from proposed [`zel.yaml` delivery settings](/cli/config#planned-cli-defaults) |
-| `--out <path>` | Where the converted folder goes | `./content` |
-
-## Until it lands
-
-Convert into a separate new folder, review conversion warnings, then use native
-delivery against an existing Netlify site. Export `NETLIFY_AUTH_TOKEN` first:
-
-```bash title="terminal"
-zel migrate ./docs --out ./converted-content
-zel deploy netlify ./converted-content --site-id your-existing-site-id
-```
-
-The second command builds once and uploads a draft preview. Add `--prod` only
-when ready to request production publication. This manual sequence does not yet
-create the configured site root promised by the planned `ship` composition.
+| Option | Behavior |
+| --- | --- |
+| `<source>` | Required external documentation root |
+| `--out <path>` | Required new or empty configured site root |
+| `--from <format>` | Force the converter instead of detecting |
+| `--provider netlify` | Deploy static HTML to an existing site |
+| `--image static\|next` | Publish this image kind; conflicts with `--provider` |
+| `--tag <reference>` | Required with `--image`; exact registry destination |
+| `--site-id <id>` / `--site <id>` | Netlify site ID/domain; overrides environment |
+| `--prod` | Netlify production request; conflicts with `--image` |
+| `--dry-run` | In-memory conversion and plan only |
 
 ## See also
 
-- [`zel migrate`](/cli/migrate) — the first three, which work today
-- [Lab 2](/guide/quickstart/existing-docs) — the same journey, one step at a time
-- [Converting existing docs](/guide/converting) — what to expect from a conversion
+- [`zel convert`](/cli/convert) — import without validation or delivery
+- [`zel migrate`](/cli/migrate) — import and validate without publication
+- [`zel publish`](/cli/publish) — reuse saved delivery settings
+- [Converting existing docs](/guide/converting) — supported mappings and limits

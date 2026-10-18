@@ -1,107 +1,64 @@
 ---
 title: zel migrate
-description: Detect, convert and check in one step, stopping at the first thing that fails.
+description: Detect, convert and check in one step, stopping at the first failure.
 ---
 
-<Callout type="tip" title="Available">
-Works today.
-</Callout>
+```bash title="terminal"
+zel migrate ./old-docs --out ./manual --layout site
+# Same command, shorter:
+zel mig ./old-docs --out ./manual --layout site
+```
+
+This imports into `manual/zel.yaml` and `manual/content/`, then validates the new
+hosted site. The original source is unchanged. Both existing converters emit
+hosted content, so validation requires a running Docker, Podman or nerdctl
+runtime. Zellij reports missing tools without installing or starting them.
+
+For compatibility, **omitting `--layout` still writes raw hosted content directly
+under `--out`**. `--layout content` explicitly selects that same legacy behavior.
+The shortcut has identical defaults. The layout option is implemented in source
+and is newer than the public `zellij-v0.1.3` binary.
+
+## Inspect before writing
 
 ```bash title="terminal"
-zel migrate ./docs --out ./content
+zel mig ./old-docs --out ./manual --layout site --dry-run
 ```
 
-```
-mkdocs       MkDocs — mkdocs.yml with a nav tree  (certain)
+Dry run converts in memory and prints proposed files, warnings and unmapped
+features. It writes nothing and skips validation and runtime checks. Use `--from
+mkdocs` or `--from docusaurus` to select a converter when detection is ambiguous.
 
-Converting ./docs as MkDocs — mkdocs.yml with a nav tree
+Conversion errors stop before writing. If a later validation or runtime check
+fails, the converted destination remains available for inspection; fix the issue
+and run `zel check ./manual`. Rerunning migration into the populated folder is
+refused. Destination and source must be disjoint, and the destination must be new
+or empty.
 
-Wrote 9 files into ./content
+## Validation and migration fidelity
 
-2 thing(s) could not be carried over:
-  https://blog.acme.dev: "Blog" is an external link; sidebars hold pages. Add it to menu.yaml.
-  draft.md: on disk but absent from the navigation; not converted
+The default hosted check validates the content model without compiling the full
+Next.js site. Run `zel check ./manual --deep` to parse MDX and check local
+references, then `zel build ./manual` to compile the site. A passing check or
+build does not establish that every source-tool feature survived; review the
+conversion report and navigation.
 
-✓ ./content
-  site        Acme · theme cupertino
-  pages       1
-  guides      1 (5 pages) · /guide
-  routes      6
-```
-
-## What it is
-
-[`zel detect`](/cli/detect) → [`zel convert`](/cli/convert) →
-[`zel check`](/cli/check), in that order, stopping at the first failure.
-
-It does nothing the three commands cannot. Running them yourself produces the
-same folder and the same report.
-
-## Then why does it exist
-
-Because of the order, and because of the third step.
-
-A conversion is the one moment when a folder full of prose changes shape, and
-the moment when it is easiest to assume it worked. The output looks right — it
-is your own writing, after all — and the failures are structural: a sidebar
-entry pointing at a file the converter skipped, a link to a page that used to
-exist under a different name.
-
-**Forgetting to validate after a conversion is the mistake everybody makes
-once.** This command is that once, spent in advance.
-
-The order matters too. Detecting first means an unrecognised folder costs you
-nothing; converting before checking means the check has something to look at.
-Reversing any of it produces either a wasted conversion or a check against the
-source folder, which is not what anyone wants to know.
-
-<Callout type="warning" title="It stops at the first failure">
-If detection finds nothing, no conversion is attempted. If the conversion
-fails, no check runs. This is deliberate: a command that carried on past a
-failure would leave you reading three reports to find which one mattered.
-</Callout>
-
-## What it does not do
-
-**It does not compile your Markdown.** `zel check` validates the content model —
-links, section types, sidebar entries — and MDX is a separate step. Prose
-written for MkDocs has never had to care that `{` opens an expression and `<`
-opens a tag.
-
-So a migration can succeed here and fail at build time. Build it once before
-you delete the original:
-
-```bash title="terminal"
-zel build ./content
-```
-
-The converter escapes what it can — see [what it rewrites](/cli/convert#markdown-that-is-not-mdx)
-— but it is careful rather than infallible.
-
-**It does not write a landing page.** Every tool it converts from describes a
-documentation tree. Zellij has that *and* marketing pages built from nineteen
-section types with no equivalent in the source, so you get a faithful guide
-folder and one hero to build on. The report says so every time.
+The converter creates a guide and a minimal landing page. Custom landing pages,
+source plugins, and unsupported navigation features still require author review.
+See [conversion limits](/cli/convert).
 
 ## Options
 
-| | | |
-| --- | --- | --- |
-| `<source>` | Required. The folder to read | — |
-| `--out <path>` | Required. Where to write. Never the source | — |
-
-The source is never modified and can never be the destination. There is no flag
-to permit it, because a conversion that overwrote the original would be
-unrecoverable.
-
-## When to run the three commands instead
-
-- You want to see the plan before writing anything — `zel convert --dry-run`
-- Detection is wrong and you want to force a format — `zel convert --from mkdocs`
-- The source is unrecognised, and you are taking [the AI route](/cli/context)
+| Option | Behavior |
+| --- | --- |
+| `<source>` | Required source documentation root |
+| `--out <path>` | Required new or empty destination outside the source |
+| `--layout content\|site` | Legacy raw content (default) or configured site |
+| `--from <format>` | Force a converter instead of detecting |
+| `--dry-run` | In-memory conversion only; no writes or validation |
 
 ## See also
 
-- [Converting existing docs](/guide/converting) — the concepts, and what to expect
-- [Lab 4](/guide/quickstart/existing-repo) — this command inside a real repository
-- [`zel ship`](/cli/ship) — migrate, then build and publish, in one line
+- [`zel convert`](/cli/convert) — conversion without runtime requirements
+- [`zel ship`](/cli/ship) — configured import, build and delivery
+- [Converting existing docs](/guide/converting) — supported mappings and review

@@ -15,6 +15,7 @@ use std::io::Write;
 mod ci;
 mod delivery;
 mod images;
+mod imports;
 mod netlify;
 mod preview;
 mod validation;
@@ -127,10 +128,8 @@ fn main() {
             Some(CiAction::Run { workflow, r#ref }) => ci_publish(workflow, r#ref),
             None => ci::generate("github", args.dir.as_deref(), &args.options),
         },
-        Command::Migrate {
-            ref source,
-            ref out,
-        } => migrate(source, out),
+        Command::Migrate(ref options) => imports::convert(options, true),
+        Command::Ship(ref options) => imports::ship(options),
         Command::New(NewTarget::Portable(NewPortableArgs {
             ref dir,
             ref name,
@@ -165,12 +164,7 @@ fn main() {
             ref docs_dir,
             ref product_dir,
         })) => new_project(name, product_lang, docs_dir, product_dir),
-        Command::Convert {
-            ref source,
-            ref out,
-            ref from,
-            dry_run,
-        } => convert(source, out, from.as_deref(), dry_run),
+        Command::Convert(ref options) => imports::convert(options, false),
         _ => {
             eprintln!("not implemented yet — see specs/zellij-cli-spec.md");
             std::process::exit(1);
@@ -220,12 +214,11 @@ fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result
     use zellij_engine::Engine as _;
     let report = match engine.check(&content, options) {
         Ok(report) => report,
-        // Printed and exited here rather than returned: `main` prints the
-        // error itself, and this one needs several paragraphs after it rather
-        // than the same sentence twice.
+        // Return after the actionable mount report so compositions can report
+        // their completed stages and retained imported files.
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
             report_empty_mount(&err);
-            std::process::exit(err.exit_code());
+            return Err(err);
         }
         Err(err) => return Err(err),
     };
@@ -635,20 +628,6 @@ fn on_path(program: &str) -> bool {
 }
 
 // ------------------------------------------------------------------ workflows
-
-/// detect → convert → check, and stop at the first thing that fails.
-///
-/// It does nothing the three commands cannot. It exists because forgetting to
-/// validate after a conversion is the mistake everybody makes once.
-fn migrate(source: &str, out: &str) -> zellij_core::Result<()> {
-    detect(source, false)?;
-    println!();
-
-    convert(source, out, None, false)?;
-    println!();
-
-    check(out, zellij_engine::CheckOptions::default())
-}
 
 fn doctor() -> zellij_core::Result<()> {
     println!("zel            {}  ({})", env!("CARGO_PKG_VERSION"), TARGET);
@@ -1193,91 +1172,6 @@ fn detect(dir: &str, as_json: bool) -> zellij_core::Result<()> {
             "likely"
         };
         println!("{:<12} {}  ({strength})", converter.id(), converter.label());
-    }
-
-    Ok(())
-}
-
-fn convert(source: &str, out: &str, from: Option<&str>, dry_run: bool) -> zellij_core::Result<()> {
-    use zellij_core::Error;
-
-    let source = camino::Utf8Path::new(source);
-    let out = camino::Utf8Path::new(out);
-    zellij_core::files::disjoint(source, out)?;
-    zellij_core::files::empty_directory(out)?;
-
-    let converter = match from {
-        Some(id) => zellij_convert::all()
-            .find(|converter| converter.id() == id)
-            .ok_or_else(|| Error::UnknownFormat {
-                path: source.to_owned(),
-            })?,
-        None => {
-            let found = zellij_convert::detect(source);
-            // Guessing between two plausible formats produces a conversion
-            // that is wrong in ways nobody notices until much later, so an
-            // ambiguous tree is a question rather than a coin toss.
-            match found.first() {
-                Some((converter, _)) => *converter,
-                None => {
-                    return Err(Error::UnknownFormat {
-                        path: source.to_owned(),
-                    });
-                }
-            }
-        }
-    };
-
-    println!("Converting {source} as {}", converter.label());
-
-    let conversion = converter.convert(source, &zellij_convert::ConvertOptions::default())?;
-    let files: Vec<_> = conversion
-        .files
-        .iter()
-        .map(|file| (file.path.as_path(), file.body.as_bytes()))
-        .chain(
-            conversion
-                .assets
-                .iter()
-                .map(|asset| (asset.path.as_path(), asset.body.as_slice())),
-        )
-        .collect();
-    zellij_core::files::preflight(
-        out,
-        &files.iter().map(|(path, _)| *path).collect::<Vec<_>>(),
-        false,
-    )?;
-
-    if dry_run {
-        println!("\nWould write {} files into {out}:", files.len());
-        for (path, _) in &files {
-            println!("  {path}");
-        }
-    } else {
-        zellij_core::files::write_files(out, &files, false)?;
-        println!(
-            "\nWrote {} files into {out} ({} assets)",
-            files.len(),
-            conversion.assets.len()
-        );
-    }
-
-    if !conversion.unmapped.is_empty() {
-        println!(
-            "\n{} thing(s) could not be carried over:",
-            conversion.unmapped.len()
-        );
-        for entry in &conversion.unmapped {
-            println!("  {}: {}", entry.source, entry.reason);
-        }
-    }
-
-    for note in &conversion.notes {
-        println!("\nNote: {note}");
-    }
-
-    if !dry_run {
-        println!("\nValidate it with `zel check {out}`.");
     }
 
     Ok(())

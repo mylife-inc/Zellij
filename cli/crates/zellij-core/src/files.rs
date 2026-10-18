@@ -82,10 +82,10 @@ pub fn contained_path(root: &Utf8Path, relative: &Utf8Path) -> Result<Utf8PathBu
     for (index, part) in parts.iter().enumerate() {
         path.push(part);
         match fs::symlink_metadata(&path) {
-            Ok(meta) if meta.file_type().is_symlink() => {
+            Ok(meta) if crate::site::is_link(&meta) => {
                 return Err(unsafe_path(
                     &path,
-                    "symbolic links are not allowed beneath the content root",
+                    "symbolic links and junctions are not allowed beneath the content root",
                 ));
             }
             Ok(meta) if index + 1 < parts.len() && !meta.is_dir() => {
