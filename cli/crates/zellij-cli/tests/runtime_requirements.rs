@@ -59,6 +59,8 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["image", "build", "content"],
         vec!["image", "static", "content"],
         vec!["si", "content"],
+        vec!["ni", "content"],
+        vec!["image", "next", "content"],
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
         vec!["b", "content", "--target", "static", "--out", "site"],
@@ -156,8 +158,10 @@ fn portable_build_and_check_ignore_even_conflicting_runtime_settings() {
     }
     assert!(root.join("site/index.html").is_file());
     let previous = fs::read(root.join("site/index.html")).unwrap();
-    let output = command(root).args(["si", "pages"]).output().unwrap();
-    assert_eq!(output.status.code(), Some(4));
+    for kind in ["si", "ni"] {
+        let output = command(root).args([kind, "pages"]).output().unwrap();
+        assert_eq!(output.status.code(), Some(4));
+    }
     assert_eq!(fs::read(root.join("site/index.html")).unwrap(), previous);
     assert_eq!(fs::read_dir(root.join("pages")).unwrap().count(), 1);
 }

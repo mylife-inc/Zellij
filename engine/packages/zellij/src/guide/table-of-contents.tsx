@@ -51,7 +51,7 @@ export function TableOfContents({ entries }: { entries: TocEntry[] }) {
           <li key={entry.id} data-depth={entry.depth}>
             <a
               className="zellij-guide-toc-link"
-              href={`#${entry.id}`}
+              href={`#${encodeURIComponent(entry.id)}`}
               data-active={activeId === entry.id}
             >
               {entry.text}

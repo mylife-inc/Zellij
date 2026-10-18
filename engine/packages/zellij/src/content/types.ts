@@ -1,3 +1,4 @@
+import type { PortableDocument } from './portable-document';
 import type { MotionPreset, PageLayout, SiteConfig, ThemeName } from '../config/schema';
 import type { AnySection } from '../sections/schemas';
 import type { AuthoredMenuItem } from './model-schema';
@@ -35,6 +36,8 @@ export interface GuidePage {
   description?: string;
   /** Raw MDX source; compiled in the render layer, not the loader. */
   body: string;
+  /** Validated native Markdown tree; never compiled as MDX. */
+  portable?: PortableDocument;
   /** Route of the guide tree this page belongs to — how it finds its sidebar. */
   guide: string;
 }
@@ -72,6 +75,7 @@ export type Destination = SectionsPage | GuideTree;
 export type SidebarNode = SidebarLink | SidebarGroup;
 
 export interface SidebarLink {
+  external?: boolean;
   kind: 'link';
   label: string;
   route: string;

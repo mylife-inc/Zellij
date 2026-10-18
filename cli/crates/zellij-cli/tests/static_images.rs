@@ -148,6 +148,7 @@ fn hosted_static_selects_content_context_and_legacy_next_keeps_its_recipe_and_ta
     for args in [
         vec!["si"],
         vec!["image", "build"],
+        vec!["ni"],
         vec!["build", "--target", "image"],
     ] {
         let output = command(root).args(&args).output().unwrap();
@@ -168,6 +169,8 @@ fn hosted_static_selects_content_context_and_legacy_next_keeps_its_recipe_and_ta
         );
         let tag = if is_static {
             "zellij-static:latest"
+        } else if args[0] == "ni" {
+            "zellij-next:latest"
         } else {
             "zellij:latest"
         };
@@ -189,7 +192,12 @@ fn invalid_markdown_and_unsupported_json_never_run_an_image_build() {
         "# Bad\n\n[Missing](absent.md)\n",
     )
     .unwrap();
-    for args in [vec!["si"], vec!["si", "--json"]] {
+    for args in [
+        vec!["si"],
+        vec!["si", "--json"],
+        vec!["ni"],
+        vec!["ni", "--json"],
+    ] {
         let output = command(root).args(args).output().unwrap();
         assert!(!output.status.success());
         assert!(!root.join("arguments").exists());
@@ -197,5 +205,65 @@ fn invalid_markdown_and_unsupported_json_never_run_an_image_build() {
             fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
             "previous"
         );
+    }
+}
+
+#[test]
+fn next_alias_adapts_markdown_and_cleans_context_on_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    for (args, code, tag) in [
+        (vec!["ni"], 0, "zellij-next:latest"),
+        (
+            vec!["image", "next", "docs/zellij", "--tag", "acme/docs:v2"],
+            1,
+            "acme/docs:v2",
+        ),
+    ] {
+        let out = command(root)
+            .args(args)
+            .env("FAKE_BUILD_EXIT", code.to_string())
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(if code == 0 { 0 } else { 3 }),
+            "{}",
+            String::from_utf8_lossy(&out.stderr)
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&out.stdout).contains('✓'),
+            code == 0
+        );
+        let args = fs::read_to_string(root.join("arguments")).unwrap();
+        assert!(args.contains(&format!("-t\n{tag}\n")));
+        let files = fs::read_to_string(root.join("context-files")).unwrap();
+        for expected in [
+            "manual/p0.zeldoc.json",
+            "manual/p1.zeldoc.json",
+            "manual/_sidebar.yaml",
+            "site.yaml",
+            "assets/portable/manual.pdf",
+        ] {
+            assert!(files.contains(expected), "{files}");
+        }
+        for private in [
+            "index.md",
+            "page.md",
+            "unused.txt",
+            "zel.yaml",
+            "site/index.html",
+        ] {
+            assert!(!files.contains(private), "{files}");
+        }
+        assert!(!Path::new(&fs::read_to_string(root.join("context-path")).unwrap()).exists());
+        assert_eq!(
+            fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
+            "previous"
+        );
+        let recipe = fs::read_to_string(root.join("recipe")).unwrap();
+        assert!(recipe.contains(".next/standalone"));
+        assert!(!recipe.contains("nginx"));
     }
 }

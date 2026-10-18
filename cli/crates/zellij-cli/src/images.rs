@@ -19,7 +19,7 @@ fn selection(dir: Option<&str>) -> Result<(Site, Utf8PathBuf)> {
     Ok((site, content))
 }
 
-fn default_tag(site: &Site) -> String {
+fn default_tag(site: &Site, kind: &str) -> String {
     // New image kinds have separate, valid repository names. Preserve the
     // existing unsuffixed default only on the legacy Next build commands.
     let name = site.root.file_name().unwrap_or("zellij-site");
@@ -33,14 +33,16 @@ fn default_tag(site: &Site) -> String {
     }
     let slug = slug.trim_matches('-');
     format!(
-        "{}-static:latest",
+        "{}-{kind}:latest",
         if slug.is_empty() { "zellij-site" } else { slug }
     )
 }
 
 pub(crate) fn static_image(dir: Option<&str>, tag: Option<&str>) -> Result<()> {
     let (site, content) = selection(dir)?;
-    let tag = tag.map(str::to_owned).unwrap_or_else(|| default_tag(&site));
+    let tag = tag
+        .map(str::to_owned)
+        .unwrap_or_else(|| default_tag(&site, "static"));
     // Detect before compiling or creating any temporary output. No automatic
     // runtime installation, service start, or renderer fallback.
     let engine = ContainerEngine::detect(None)?;
@@ -78,9 +80,48 @@ pub(crate) fn static_image(dir: Option<&str>, tag: Option<&str>) -> Result<()> {
     Ok(())
 }
 
+pub(crate) fn next_image(dir: Option<&str>, tag: Option<&str>) -> Result<()> {
+    let (site, content) = selection(dir)?;
+    let tag = tag
+        .map(str::to_owned)
+        .unwrap_or_else(|| default_tag(&site, "next"));
+    let engine = ContainerEngine::detect(None)?;
+    println!(
+        "  Content  {content}\n  Kind     Next.js ({:?})\n  Tag      {tag}\n",
+        site.renderer
+    );
+    match site.renderer {
+        Renderer::Portable => {
+            let temporary = tempfile::Builder::new().prefix("zel-next-").tempdir()?;
+            let adapted = Utf8Path::from_path(temporary.path())
+                .ok_or_else(|| {
+                    zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
+                })?
+                .join("content");
+            let report = zellij_docs::adapt_hosted(&site.root, &adapted)?;
+            for warning in report.warnings {
+                eprintln!("warning: {warning}");
+            }
+            let features = report.features.join(",");
+            engine.image_build(&adapted, &tag, Some(&features), None)?;
+        }
+        Renderer::Hosted => engine.image_build(&content, &tag, None, None)?,
+    }
+    println!(
+        "\n✓ {tag}\n  Run it:   zel image run {tag}\n  Push it:  zel image push {tag} --registry ghcr.io/you"
+    );
+    Ok(())
+}
+
 pub(crate) fn dockerfile(dir: Option<&str>, kind: ImageKind) -> Result<()> {
     if kind == ImageKind::Next {
-        return crate::image_dockerfile(crate::select_site(dir)?.as_str());
+        let selected = crate::select_site(dir)?;
+        if selected.is_dir() && Site::load(&selected)?.renderer == Renderer::Portable {
+            return Err(zellij_core::Error::InvalidArgument(
+                "a Next Dockerfile takes hosted content as its context; use `zel image next` / `zel ni` to adapt and package portable Markdown automatically".into(),
+            ));
+        }
+        return crate::image_dockerfile(selected.as_str());
     }
     let (site, _) = selection(dir)?;
     let body = match site.renderer {

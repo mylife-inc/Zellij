@@ -20,8 +20,9 @@ export function flattenSidebar(sidebar: readonly SidebarNode[]): GuideNeighbour[
 
   const walk = (nodes: readonly SidebarNode[]): void => {
     for (const node of nodes) {
-      if (node.kind === 'link') flat.push({ label: node.label, route: node.route });
-      else walk(node.children);
+      if (node.kind === 'link') {
+        if (!node.external) flat.push({ label: node.label, route: node.route });
+      } else walk(node.children);
     }
   };
 
@@ -56,7 +57,7 @@ export function findAncestors(
   const walk = (nodes: readonly SidebarNode[]): boolean => {
     for (const node of nodes) {
       if (node.kind === 'link') {
-        if (node.route === route) return true;
+        if (!node.external && node.route === route) return true;
         continue;
       }
 

@@ -13,6 +13,7 @@ import {
 import { deriveLabel, slugifyPath, splitOrderPrefix, stripExtension } from './naming';
 import { normalizeRoute } from './paths';
 import type { GuidePage, GuideTree, SidebarNode } from './types';
+import { portableDocumentSchema } from './portable-document';
 import { exists, walk } from './fs-utils';
 
 export const SIDEBAR_FILE = '_sidebar.yaml';
@@ -67,7 +68,7 @@ export async function loadGuideFolder(options: LoadGuideFolderOptions): Promise<
     (authored.route ? normalizeRoute(authored.route) : `/${slugifyPath(relDir)}`);
   const title = authored.title ?? deriveLabel(rest);
 
-  const files = await walk(dir, (name) => /\.mdx?$/i.test(name) && !name.startsWith('_'));
+  const files = await walk(dir, (name) => (/\.mdx?$/i.test(name) || name.endsWith('.zeldoc.json')) && !name.startsWith('_'));
 
   const pages: GuidePage[] = [];
   /** Authored slug (on-disk path minus extension) → page, for sidebar lookup. */
@@ -78,6 +79,16 @@ export async function loadGuideFolder(options: LoadGuideFolderOptions): Promise<
     const label = `${relDir}/${relFile}`;
     try {
       const raw = await readFile(path.join(dir, relFile), 'utf8');
+      if (relFile.endsWith('.zeldoc.json')) {
+        const result = portableDocumentSchema.safeParse(JSON.parse(raw));
+        if (!result.success) throw formatZodError(label, result.error);
+        const portable = result.data;
+        const page: GuidePage = { route: normalizeRoute(portable.route), sourceFile: label,
+          title: portable.title, description: portable.description, body: '', portable, guide: route };
+        pages.push(page);
+        bySlug.set(relFile.slice(0, -'.zeldoc.json'.length), page);
+        continue;
+      }
       const { data, content } = parseFrontmatter(raw);
 
       const fm = guideFrontmatterSchema.safeParse(data ?? {});
@@ -140,7 +151,7 @@ export async function loadGuideFolder(options: LoadGuideFolderOptions): Promise<
 function pageRoute(treeRoute: string, slug: string): string {
   const trimmed = slug.replace(/(^|\/)index$/, '');
   if (trimmed === '') return treeRoute;
-  return normalizeRoute(`${treeRoute}/${slugifyPath(trimmed)}`);
+  return normalizeRoute(`${treeRoute === "/" ? "" : treeRoute}/${slugifyPath(trimmed)}`);
 }
 
 interface ResolveSidebarOptions {
@@ -187,6 +198,15 @@ function resolveSidebar(options: ResolveSidebarOptions): SidebarNode[] {
         continue;
       }
 
+      if ('href' in node) {
+        out.push({ kind: 'link', label: node.label, route: node.href, external: true });
+        continue;
+      }
+      if ('page' in node) {
+        const leaf = resolveLeaf(node.page);
+        if (leaf) out.push({ ...leaf, label: node.label });
+        continue;
+      }
       const children = resolveNodes(node.items);
       // An empty group would render as an unopenable heading.
       if (children.length > 0) out.push({ kind: 'group', label: node.label, children });

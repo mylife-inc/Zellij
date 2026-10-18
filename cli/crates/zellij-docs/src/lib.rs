@@ -10,6 +10,7 @@ mod config;
 mod diagnostics;
 use diagnostics::Diagnostics;
 pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
+mod hosted;
 mod links;
 mod markdown;
 mod math;
@@ -189,7 +190,13 @@ pub fn build(
 /// This checks content, not destination permissions, ownership, or available disk space.
 pub fn check(source: &Utf8Path, strict: bool) -> CheckReport {
     let mut diagnostics = Diagnostics::new(source);
-    let compiled = compile(source, BuildOptions::default(), &mut diagnostics, None);
+    let compiled = compile(
+        source,
+        BuildOptions::default(),
+        &mut diagnostics,
+        None,
+        false,
+    );
     let pages = compiled.as_ref().ok().map(|site| site.pages);
     let exit_code = match compiled {
         Ok(_) if strict && !diagnostics.items.is_empty() => 3,
@@ -213,6 +220,7 @@ struct CompiledSite {
     root: Utf8PathBuf,
     files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     pages: usize,
+    features: Vec<&'static str>,
 }
 
 pub fn prepare(
@@ -230,7 +238,7 @@ pub(crate) fn prepare_layout(
     configured: Option<bool>,
 ) -> Result<PreparedBuild> {
     let mut diagnostics = Diagnostics::new(source);
-    let compiled = compile(source, options, &mut diagnostics, configured)?;
+    let compiled = compile(source, options, &mut diagnostics, configured, false)?;
     let stage = StaticOutput::prepare(&compiled.root, output)?;
     let writes: Vec<_> = compiled
         .files
@@ -252,6 +260,7 @@ fn compile(
     options: BuildOptions<'_>,
     diagnostics: &mut Diagnostics,
     configured: Option<bool>,
+    hosted: bool,
 ) -> Result<CompiledSite> {
     let selected = diagnostics.capture(
         source.canonicalize_utf8().map_err(Error::from),
@@ -441,6 +450,19 @@ fn compile(
     if let Some(error) = first_error {
         return Err(error);
     }
+    let hosted_files = if hosted {
+        Some(hosted::emit(
+            &config,
+            name,
+            theme,
+            &pages,
+            &navigation,
+            &rewritten,
+            &resolver.assets,
+        )?)
+    } else {
+        None
+    };
     let mut files = BTreeMap::<Utf8PathBuf, Vec<u8>>::new();
     for ((index, page), events) in pages.iter().enumerate().zip(rewritten) {
         let mut body = String::new();
@@ -565,7 +587,47 @@ fn compile(
     }
     Ok(CompiledSite {
         root,
-        files,
+        files: hosted_files.unwrap_or(files),
         pages: pages.len(),
+        features: [
+            ("maths", pages.iter().any(|p| p.markdown.has_math)),
+            ("diagrams", pages.iter().any(|p| p.markdown.has_mermaid)),
+        ]
+        .into_iter()
+        .filter_map(|(name, used)| used.then_some(name))
+        .collect(),
+    })
+}
+
+pub struct HostedReport {
+    pub pages: usize,
+    pub warnings: Vec<String>,
+    /// Optional hosted features actually required by the parsed documents.
+    pub features: Vec<&'static str>,
+}
+
+/// Adapt validated portable Markdown to the hosted engine's inert document
+/// format. Callers own the new/empty destination; authored content is never edited.
+pub fn adapt_hosted(source: &Utf8Path, output: &Utf8Path) -> Result<HostedReport> {
+    let mut diagnostics = Diagnostics::new(source);
+    let compiled = compile(
+        source,
+        BuildOptions::default(),
+        &mut diagnostics,
+        None,
+        true,
+    )?;
+    files::disjoint(&compiled.root, output)?;
+    files::empty_directory(output)?;
+    let writes: Vec<_> = compiled
+        .files
+        .iter()
+        .map(|(p, b)| (p.as_path(), b.as_slice()))
+        .collect();
+    files::write_files(output, &writes, false)?;
+    Ok(HostedReport {
+        pages: compiled.pages,
+        warnings: diagnostics.warnings(),
+        features: compiled.features,
     })
 }

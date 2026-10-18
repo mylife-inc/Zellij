@@ -96,7 +96,19 @@ usually a sign that a group wants to be its own guide folder — which costs one
 Entries name files relative to the folder, without an extension: an entry
 `config/database` is `config/database.mdx` and serves at
 `/guide/config/database`. A page that exists on disk but appears in no `nav`
-entry is not part of the site, and `zel check` says so.
+entry is still generated and searchable; `zel check` warns that it is unlisted.
+
+Page labels can differ from their titles, and external HTTP(S) links can appear
+at any nesting level:
+
+```yaml
+nav:
+  - { page: quickstart, label: Start here }
+  - { href: 'https://example.com/help', label: Company support }
+```
+
+External links open in the same tab and do not enter the previous/next reading
+sequence. These extended entries are available in current source.
 
 ## Routes
 

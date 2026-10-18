@@ -162,6 +162,12 @@ const CASES: &[Case] = &[
         &["manual", "--tag", "registry.test/docs:static"],
     ),
     (
+        "ni",
+        "image next",
+        &[],
+        &["manual", "--tag", "registry.test/docs:next"],
+    ),
+    (
         "idf",
         "image dockerfile",
         &[],
@@ -289,7 +295,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             assert!(!actual.json);
         }
     }
-    for name in ["bu", "bui", "ini", "n", "se", "na", "ni", "pub", "netlify"] {
+    for name in ["bu", "bui", "ini", "n", "se", "na", "pub", "netlify"] {
         assert_eq!(
             parse(&[name]).unwrap_err().kind(),
             ErrorKind::InvalidSubcommand

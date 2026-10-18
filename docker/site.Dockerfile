@@ -15,8 +15,8 @@
 #   docker build -f site.Dockerfile \
 #     --build-arg ZELLIJ_IMAGE=zellij-base --build-arg ZELLIJ_VERSION=test ...
 #
-# The engine never reaches the image you deploy: the build stage is discarded
-# and only the compiled site survives into the runtime stage.
+# The runtime carries the compiled server, its traced dependencies, public
+# assets and content required by server-side route resolution.
 
 # The base image, overridable so it can be pulled from a mirror, or pointed at
 # a locally built one while working on the image itself.
@@ -37,6 +37,7 @@ FROM ${ZELLIJ_IMAGE}:${ZELLIJ_VERSION} AS build
 
 ARG CONTENT
 WORKDIR /app
+ENV ZELLIJ_OUTPUT=standalone
 
 # Replace the placeholder content wholesale. `rm` first so a file the previous
 # content had and yours does not cannot survive into your site.
@@ -61,6 +62,7 @@ RUN npm install --install-links
 RUN npx zellij check content
 
 RUN npm run build
+RUN node -e "const fs=require('fs'); const {basePath}=require('./node_modules/@shebka/zellij/deployment-config.cjs').resolveContentLocation(); fs.writeFileSync('/app/zellij-health-path',encodeURI((basePath||'')+'/'))"
 
 
 # ----------------------------------------------------------------- runtime
@@ -76,16 +78,18 @@ RUN addgroup -g 1001 -S nodejs && adduser -S -u 1001 -G nodejs nextjs
 
 WORKDIR /app
 
-# `standalone` carries its own traced dependencies, so there is no npm install
-# here and no node_modules to ship.
+# `standalone` carries its traced dependencies; no runtime npm install is needed.
+# Content reads through dynamic paths are not fully included by that tracing.
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
+COPY --from=build --chown=nextjs:nodejs /app/content ./content
+COPY --from=build --chown=nextjs:nodejs /app/zellij-health-path ./zellij-health-path
 
 USER nextjs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
-  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+require('fs').readFileSync('/app/zellij-health-path','utf8')).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
 CMD ["node", "server.js"]

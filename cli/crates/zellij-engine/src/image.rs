@@ -3,7 +3,7 @@
 //! The Dockerfile is generated rather than kept in the user's repository. The
 //! correct one is not obvious — a base image they did not choose, an install
 //! step whose shape depends on which features the content uses, and a runtime
-//! stage that must copy exactly three paths. Getting it slightly wrong yields
+//! stage that must carry the traced application, public assets and runtime content. Getting it slightly wrong yields
 //! an image four times the size that still works, so nothing tells you.
 //!
 //! The Dockerfile is streamed on stdin and the **content folder is the build
@@ -39,6 +39,7 @@ pub fn dockerfile(base: &str, features: Option<&str>) -> String {
 FROM {base} AS build
 
 WORKDIR /app
+ENV ZELLIJ_OUTPUT=standalone
 
 # Replace the placeholder content wholesale, so a file the image had and yours
 # does not cannot survive into your site.
@@ -55,6 +56,7 @@ RUN npm install --install-links --no-audit --no-fund
 RUN npx zellij check content
 
 RUN npm run build
+RUN node -e "const fs=require('fs'); const {{basePath}}=require('./node_modules/@shebka/zellij/deployment-config.cjs').resolveContentLocation(); fs.writeFileSync('/app/zellij-health-path',encodeURI((basePath||'')+'/'))"
 
 # ------------------------------------------------------------------- runtime
 FROM node:24-alpine AS runtime
@@ -74,12 +76,16 @@ WORKDIR /app
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
+# The catch-all route also loads content for unknown URLs before returning 404.
+# Dynamic filesystem reads are not fully captured by Next's dependency tracing.
+COPY --from=build --chown=nextjs:nodejs /app/content ./content
+COPY --from=build --chown=nextjs:nodejs /app/zellij-health-path ./zellij-health-path
 
 USER nextjs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
-  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+require('fs').readFileSync('/app/zellij-health-path','utf8')).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
 CMD ["node", "server.js"]
 "#

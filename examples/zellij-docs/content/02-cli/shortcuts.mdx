@@ -44,6 +44,7 @@ the same. Command names in help and usage messages reflect the form requested.
 | `zel serve` | `zel s` |
 | `zel view` | `zel v` |
 | `zel image static` | `zel si` |
+| `zel image next` | `zel ni` |
 | `zel image run` | `zel ir` |
 | `zel image push` | `zel ip` |
 | `zel image dockerfile` | `zel idf` |
@@ -76,11 +77,11 @@ paths that begin with a hyphen, such as `zel b -- -manual`.
 
 Shortcuts do not add capabilities to their underlying commands. `cv` still
 writes the current raw hosted-content conversion format; `v` still previews
-portable Markdown. `si` builds a static-site image from either renderer;
+portable Markdown. `si` builds a static-site image and `ni` builds a Next.js
+image from either renderer;
 `idf --kind static` prints its recipe, and the default `idf` retains the Next.js
-recipe. `si`, `ir`, and `ip` require a usable container runtime.
+recipe. `si`, `ni`, `ir`, and `ip` require a usable container runtime.
 
-`image next` and its `ni` shortcut remain planned, including the Markdown adapter.
 `na`, `pub`, and `netlify` are also unregistered until their commands are
 implemented. Bare `zel ci` still requires an action; it is not yet shorthand
 for workflow generation.

@@ -71,13 +71,13 @@ exists, possibly with different arguments/defaults; **S** means a registered
 stub; **N** means no command at the reconciliation baseline. The working-command
 shortcuts are now implemented: `init`, `nd`, `ns`, `np`, `ng`, `npr`, `ex`,
 `sections`, `themes`, `formats`, `targets`, `ctx`, `cv`, `mig`, `c`, `s`, `v`,
-`b`, `si`, `ir`, `ip`, `idf`, and `comp`. `ci run` is implemented with `ci publish`
+`b`, `si`, `ni`, `ir`, `ip`, `idf`, and `comp`. `ci run` is implemented with `ci publish`
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
 The proposed **capabilities** in the tables are not all implemented: conversion
 still writes raw hosted content and `view` remains portable-only. Static-image
-packaging and `idf --kind static|next` are implemented. `na`, `ni`, `pub`, `netlify`,
+packaging, Next packaging with a portable Markdown adapter, and `idf --kind static|next` are implemented. `na`, `pub`, `netlify`,
 and bare `ci [site]` remain unregistered. See the [current shortcut reference](../examples/zellij-docs/content/02-cli/shortcuts.mdx).
 
 ### Creating
@@ -145,7 +145,7 @@ already on disk. A failed watch rebuild retains the last good preview.
 | Command | Shortcut | Role | Baseline |
 | --- | --- | --- | --- |
 | `zel image static [site]` | `zel si [site]` | Build HTML and package it with an HTTP server. | I |
-| `zel image next [site]` | `zel ni [site]` | Build the Next.js wrapper and package its server. | I foundation: `image build` |
+| `zel image next [site]` | `zel ni [site]` | Build the Next.js wrapper and package its server. | I |
 | `zel image run <tag>` | `zel ir <tag>` | Run that image locally; `--port` selects the host port. | I |
 | `zel image push <tag>` | `zel ip <tag>` | Push that image; retain registry selection. | I |
 | `zel image dockerfile [site] --kind <kind>` | `zel idf [site] --kind <kind>` | Print the recipe for explicitly selected `static` or `next`; retain the legacy no-kind Next form. | I |
@@ -168,7 +168,11 @@ existing local output untouched. The final unprivileged NGINX image serves on
 port 3000. Hosted deployment prefixes are preserved. New static tags use
 `<normalized-site-name>-static:latest`; legacy Next defaults are unchanged.
 Printed portable-static recipes take generated HTML as their context; hosted
-static/Next recipes take hosted content. The Next command/adapter remains pending.
+static/Next recipes take hosted content. `image next` / `ni` adapts portable
+Markdown into a private generated content tree, preserving document and navigation
+semantics while using the hosted guide presentation. It defaults to a separate
+`<normalized-site-name>-next:latest` tag. `idf --kind next` remains hosted-only;
+`ni` owns portable adaptation. Next health checks honor the configured basePath.
 
 Native portable HTML must retain direct-file viewing outside the image. Hosted Next static
 exports keep their HTTP requirements. For plain Markdown to a Next image,

@@ -85,6 +85,7 @@ export function GuideSidebar({
     <ul className="zellij-guide-sidebar-list" data-depth={depth}>
       {nodes.map((node) => {
         if (node.kind === 'link') {
+          if (node.external) return <li key={node.route}><a className="zellij-guide-sidebar-link" href={node.route}>{node.label}</a></li>;
           const active = pathname === node.route;
           return (
             <li key={node.route}>
