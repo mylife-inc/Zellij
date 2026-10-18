@@ -78,35 +78,34 @@ Railway, Fly.io, Cloud Run, ECS or anywhere else that runs containers. See
 [`zel image`](/cli/image) for the detail, and [`zel build`](/cli/build) for
 choosing between that and a static site.
 
-Whichever `zel` writes, the runtime stage copies only the compiled output — so
-neither the engine nor `node_modules` reaches what you deploy. The engine is
-genuinely absent from the image you ship, not merely unused in it.
+Static images contain the generated HTML and their HTTP server. Next images
+contain the standalone Next runtime and the dependencies it needs. Authored
+documentation and temporary build contexts are excluded from the runtime image.
 
 ## In a pipeline
 
-A repository with its source and a `docs/` folder beside it needs no access to
-Zellij, and no Docker commands:
+Generate locally from a configured site:
 
-```bash title="terminal"
-zel ci init github --target image --registry ghcr.io
+```bash
+zel ci --zel-version 0.2.0
 ```
 
-```yaml title=".github/workflows/docs.yml"
-      - name: Install zel
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - run: zel check docs
-      - run: zel image build docs --tag ghcr.io/acme/docs:${{ github.sha }}
-      - run: zel image push ghcr.io/acme/docs:${{ github.sha }}
-```
+Save `publish.action: push`, choose `publish.image: static` or `next`, and set
+`image.name` to the registry destination. PRs validate and build that artifact;
+eligible publication events call the native build-once publication operation.
+GHCR uses the job's scoped token; other registries use configured repository
+secrets. Generation requires Git but no local container runtime.
 
-The only credential is the token GitHub already gives the job. See
-[`zel ci`](/cli/ci).
+The generated workflow pins a compatible binary release and engine image.
+The public 0.1.3 CLI is incompatible; publish the selected 0.2.0+ release before
+enabling the workflow. [`zel ci`](/cli/ci) describes all settings and explicit
+credential provisioning. The legacy GHCR Next-image preset remains available as
+`zel ci --target image --zel-version 0.2.0`.
 
 ## Requirements
 
-Any OCI runtime. `zel` looks for Docker, Podman and Colima, in that order.
+`zel` tries Docker, Podman, then nerdctl. Colima is supported through its
+Docker endpoint; it is not a separate runtime executable selected by `zel`.
 
 ```bash title="terminal"
 zel doctor
@@ -132,8 +131,9 @@ tracking changes to the base image, and updating it is yours.
 ## Getting the wrapper app out
 
 If you want the Next.js app itself rather than a site built from it,
-[`zel new app`](/cli/new#zel-new-app-dir) writes one. Extracting it from the
-image is possible and is not the supported path:
+[`zel new app`](/cli/new#zel-new-app-dir) remains planned. Extracting files from
+an existing image is a manual alternative, requiring that image and its expected
+layout:
 
 ```bash title="terminal"
 docker create --name tmp ghcr.io/mylife-inc/zellij-base:latest

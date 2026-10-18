@@ -2340,3 +2340,9 @@ Final local follow-up checks passed the CI integration, core/scaffold suites,
 warnings-denied Clippy, formatting and strict/deep documentation validation.
 Cross-platform and real-container acceptance remains the PR merge gate; inspect
 the GitHub checks associated with this source for final-head results.
+
+
+The workflow milestone is tracked in [PR #34](https://github.com/mylife-inc/Zellij/pull/34).
+A follow-up documentation sweep updates the new-project/existing-repository labs
+and container/check guides that still showed zel.toml, unpinned installs,
+check-only PRs, implicit provisioning and unimplemented deployment claims.
