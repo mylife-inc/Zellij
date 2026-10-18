@@ -1144,6 +1144,44 @@ variants for Linux amd64/arm64 and passing published-image build/serve acceptanc
 Repository facts were refreshed: public/default-main, latest native release
 still `zellij-v0.1.3`. No user action is needed for this milestone.
 
+### Portable YAML mindmaps — 2026-10-17
+
+Source `a140800` adds built-in `mindmap` fences to native portable Markdown.
+The compiler emits finished SVG and a keyboard-operable nested-list outline;
+no new dependency, Node, browser renderer or network is needed. It uses the
+hosted engine's documented single-root YAML hierarchy syntax, with strict
+string keys and bounded source, labels, nodes, depth and alias expansion.
+Invalid diagrams produce source-file/diagram-number `rendering` diagnostics
+before publication. Raw labels are escaped; authored Markdown is unchanged.
+
+Only diagram pages link the small stylesheet, and removing the last diagram
+removes its asset. Theme colors update through CSS; wide diagrams scroll at
+fixed readable label sizes. Layout uses conservative UTF-8 width estimates,
+not hosted geometry or complex-script shaping. The existing local script adds
+Left/Right and Home/End handling because a minimal WebKit overflow region also
+failed native arrow scrolling. With JavaScript disabled, SVG still renders and
+the native text-outline disclosure exposes the full hierarchy by keyboard.
+Mermaid fences remain literal code; Mermaid execution is still separate work.
+
+Local evidence: **182 Rust tests**, formatting, warnings-denied Clippy and
+47-route/23-example deep-strict docs validation pass. Chromium and WebKit pass
+relocated, offline nested-file acceptance with actual SVG/text bounds, no node
+overlap, escaping, semantic outlines, theme/search/navigation, mobile overflow,
+keyboard controls and JavaScript-disabled rendering. Both pass HTTP/watch
+addition, invalid-diagram preservation and recovery plus real Ctrl-C. Four of
+the five new native feature tests failed on the previous implementation.
+Consult the PR containing `a140800` for hosted six-target packaging, three-OS
+browser acceptance and merge status. No native version is published here.
+
+Prior milestone completion: [PR #23](https://github.com/mylife-inc/Zellij/pull/23)
+merged head `18233d5` as `9fa1866`. PR/main CI `39093178918` / `39093718016` each
+passed all 13 jobs, including Rust 1.96, all six package/install targets and
+three-OS portable acceptance. Showcase passed 317 tests with 124 conditional
+skips and no retry markers on both revisions. Image run `39093718039` passed
+all 13 jobs, publishing four variants for Linux amd64/arm64 and passing the
+published-image build/serve smoke test. Repository facts were refreshed:
+public/default-main; native release remains `zellij-v0.1.3`.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1449,11 +1487,11 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after portable math implementation, subject to the user's v1 scope decision:
+Remaining order after portable mindmap implementation, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of portable math, including minimum Rust and all
-   native targets; consult the PR containing `80174ac`. S3 is accepted on main.
-2. Address remaining portable rendering (especially diagrams) and finish the agreed CLI subset in
+1. Complete hosted acceptance of portable mindmaps, including minimum Rust and all
+   native targets; consult the PR containing `a140800`. Portable math is accepted on main.
+2. Address remaining portable rendering (especially Mermaid) and finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
 3. Choose and publish a new native version through the tested release path,
    preserving the existing v0.1.3 assets. Confirm release destination/version
