@@ -1,173 +1,141 @@
 ---
 title: zel deploy
-description: Build and put it online, on a CDN or a container host.
+description: Build static HTML once and upload it directly to Netlify.
 ---
 
-<Callout type="warning" title="Planned">
-`zel deploy` exits with `not implemented yet`. This page describes the planned
-workflow. Netlify is the first implementation target; the broader provider list
-remains a proposal. The agreed site layout is implemented.
-[`zel publish`](/cli/publish) currently supports saved image build/push plans;
-it does not yet upload static files to a provider.
+<Callout type="tip" title="Available in source">
+`zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
+portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
+predates these commands. Other providers remain planned and are rejected.
 </Callout>
 
 ```bash title="terminal"
-zel deploy netlify
-zel deploy fly --tag v2.1.0
-zel deploy netlify ./docs --site acme-docs
+zel netlify --site-id YOUR_PROJECT_ID --dry-run
+zel netlify --site-id YOUR_PROJECT_ID          # draft preview
+zel netlify docs/manual --site-id YOUR_PROJECT_ID --prod
 ```
 
-## The provider decides the artefact
+No path selects the current directory's `zel.yaml`, then
+`docs/zellij/zel.yaml`. Pass an explicitly named site root or legacy content
+folder when needed. See [site discovery](/cli/config#site-layout-and-discovery).
 
-This was the missing piece in an earlier draft, which listed providers with no
-explanation of what got built or where the content came from.
+## Set up the destination
 
-| Provider | Builds | Because |
-| --- | --- | --- |
-| `netlify` | `static` | Hosts files |
-| `cloudflare` | `static` | Hosts files |
-| `ghpages` | `static` | Hosts files |
-| `s3` | `static` | Hosts files |
-| `vercel` | `static` | Vercel can run Next.js, but a Zellij site has nothing to run |
-| `fly` | `image` | Runs containers |
-| `railway` | `image` | Runs containers |
+Create a Netlify project using Netlify's dashboard. Copy its **Project ID** and
+generate a personal access token with access to that project. Supply the token
+as `NETLIFY_AUTH_TOKEN` through your shell environment or CI secret store. Supply
+the project ID with `--site-id`, the compatible `--site` spelling,
+`NETLIFY_SITE_ID`, or saved settings. A full site domain such as
+`acme-docs.netlify.app` also works; a bare display name is not a domain.
 
-You do not pass `--target`. A CDN cannot run a container and a container host
-has nothing to do with a folder of HTML, so the provider settles it. Passing
-`--target` anyway is an error naming the conflict, rather than a silent
-override.
+`zel` uses Netlify's HTTPS API directly. It requires no Netlify CLI or Node.js,
+and portable rendering requires no container runtime. Hosted content still
+requires a usable [Docker, Podman or nerdctl runtime](/cli/doctor) for its build.
+Nothing is installed or started automatically. `zel` does not create a provider
+project, run login, read another CLI's stored login, or load `netlify.toml`.
 
-## Where the content comes from
+Token values belong in the environment, not `zel.yaml`, command arguments or
+committed files. Missing credentials fail before building; a read-only API
+request checks access to the selected project before the build starts. Both
+preview and production deployment need network access and valid credentials.
 
-The common site resolver accepts the parent of `zel.yaml`:
+## Save the choice
 
-```bash title="terminal"
-zel deploy netlify              # docs/zellij/zel.yaml from the repository root
-zel deploy netlify docs/manual  # explicitly named site root
-```
-
-See [site discovery](/cli/config#site-layout-and-discovery). The proposed saved delivery configuration is:
-
-```yaml title="docs/zellij/zel.yaml — proposed"
+```yaml title="docs/zellij/zel.yaml"
 version: 1
 renderer: portable
 publish:
   action: deploy
   provider: netlify
-  site: acme-docs
+  site: acme-docs.netlify.app
 ```
-
-The proposed provider settings will let `zel publish` use that saved intent.
-Bare `zel deploy` is proposed as its equivalent. Both provider paths remain
-unimplemented; current `publish` accepts only registry image pushes. The shared delivery plan will
-validate and build once before uploading.
-
-## What it does
-
-<Steps>
-<Step title="Checks">
-[`zel check`](/cli/check) against the resolved content folder. A broken internal
-link stops the deploy here rather than shipping a 404.
-</Step>
-<Step title="Builds">
-[`zel build`](/cli/build) with the target the provider requires.
-</Step>
-<Step title="Authenticates">
-Reads the provider's own credential, from the environment or its CLI's stored
-login. `zel` never asks you for a token and never stores one.
-</Step>
-<Step title="Uploads">
-The folder, or the image followed by a release on the platform.
-</Step>
-<Step title="Prints the URL">
-And the deploy id, so it can be rolled back with the provider's own tooling.
-</Step>
-</Steps>
-
-```
-$ zel deploy netlify
-✓ Content valid — 34 pages, 2 guides
-✓ Built static — 34 routes, 4.1 MB
-✓ Uploaded to acme-docs
-  https://acme-docs.netlify.app
-  deploy 66f2c1a8e5b40a0009c2d1e4
-```
-
-## Credentials
-
-Read from the environment. Nothing is written to disk by `zel`.
-
-| Provider | Reads |
-| --- | --- |
-| `netlify` | `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID` |
-| `cloudflare` | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` |
-| `vercel` | `VERCEL_TOKEN` |
-| `ghpages` | `GITHUB_TOKEN`, or the local git remote |
-| `s3` | The AWS SDK's usual chain |
-| `fly` | `FLY_API_TOKEN` |
-| `railway` | `RAILWAY_TOKEN` |
-
-If a credential is missing, the command says which variable and stops **before**
-building. Discovering a missing token after a four-minute build is a waste of
-four minutes.
-
-<Callout type="info" title="On your own machine you may need none of them">
-Every one of these providers has a CLI that stores a login. If `netlify login`
-or `gh auth login` has already happened, `zel deploy` uses what they stored and
-asks for nothing.
-
-The environment variables are for CI, where nobody can open a browser.
-</Callout>
-
-## What it deliberately will not do for you
-
-A reasonable question: since `zel deploy netlify` knows it needs a Netlify
-project, why not log you in and create one?
-
-**Logging in — no.** `netlify login` is an OAuth flow that opens a browser and
-waits. Reimplementing it means either a worse version of somebody else's
-authentication, or asking you to paste a token into a prompt — and a tool that
-asks for credentials is a tool you have to trust with them. Reading what the
-provider's own CLI already stored costs nothing and requires no such trust.
-
-**Creating a project — not silently.** `netlify sites:create` claims a name on
-somebody's account and is not obviously reversible. A deploy command that
-quietly creates infrastructure is one typo away from a second project nobody
-meant to make, on the wrong account, with a name now taken.
-
-**Exporting a token into your shell — never.** `zel` reads credentials and does
-not write them, anywhere. A tool that edits your environment or your shell
-profile is doing something you cannot see and did not ask for.
-
-<Callout type="tip" title="What would be reasonable">
-An explicit `--create` — *make the project if it does not exist, and say so* —
-is a fair thing to want, and is on the list. The distinction is that you asked
-for it.
-</Callout>
-
-Which leaves one command to run once, by hand, per site:
 
 ```bash title="terminal"
-netlify login
-netlify sites:create --name acme-docs
+zel pub --dry-run
+zel pub              # build once, then create a draft preview
+zel pub --prod       # request production publication
+zel deploy           # same saved plan and options as publish
 ```
 
-And then `zel deploy netlify` for the rest of the project's life.
+`publish.site` is optional if you supply the destination elsewhere. Destination
+precedence is `--site-id` / `--site`, then `NETLIFY_SITE_ID`, then `publish.site`.
+The value must be a string containing an existing project ID or domain. Saved
+settings never contain a token or automatically enable production publication.
+
+Explicit `deploy netlify` supplies deployment intent even when there is no
+saved publication, or when the saved plan describes an image push. `pub --to
+netlify` also supplies explicit provider intent, but rejects a saved image-push
+plan: it cannot silently replace a selected container artifact. `--tag` is
+invalid for Netlify. Ordinary build/image commands never deploy.
+
+## Preview and production
+
+The default is a **draft preview** with its own deployment URL. Use `--prod` to
+request an update to the live site. The command prints the deployment ID and
+its HTTPS preview URL once Netlify reports `ready`; hosted basePath is appended
+to that URL. Site locks or a newer concurrent deployment can affect which deploy
+is current in production; the dashboard is authoritative for that status.
+
+A dry run prints the site, renderer, destination and publication mode. It does
+not read a token, contact a runtime or provider, validate content, build, or
+write output. It is a plan, not a successful deployment check.
+
+## Build and upload
+
+The command validates and builds with the selected renderer exactly once into
+a private temporary export. It leaves existing `site/`, configured `build.out`,
+source and configuration intact. Portable output retains its direct-file
+navigation. Hosted output is placed at the engine-resolved basePath, including
+prefixes with hidden segments such as `/products/.docs`.
+
+The upload manifest contains generated HTML and public assets, excluding the
+local export ownership marker. It uses file digests, uploads only the bytes
+Netlify requests, and waits for processing to finish. Files with identical
+bytes need only one upload. This path publishes static files, without a remote
+build, Next server, serverless functions, image push or browser launch.
+
+Paths with `#`, `?`, backslashes or control characters are rejected before
+creating a deployment, following Netlify's file-upload constraints. Spaces and
+Unicode are URL-escaped. Symlinks and junctions in the export are rejected.
+
+## Failures and retry
+
+| Failure | Exit code |
+| --- | --- |
+| Invalid settings, incompatible options, missing token/site | `2` |
+| Content/build failure or unsuccessful API deployment | `3` |
+| Hosted runtime unavailable or unshared mount | `4` |
+| Local filesystem/process error | `1` |
+
+A failed build creates no deployment. Once a build succeeds, an upload or
+processing failure reports that stage and keeps previous local output intact.
+Temporary exports are removed on success or failure. Requests are bounded to
+60 seconds (15 seconds to connect), and the create/upload/poll phase has a
+five-minute budget. Failed requests are not automatically retried.
+
+An interrupted request or timeout may already have created a deployment, and
+Netlify may still finish it. Check the printed deployment ID or the Netlify
+dashboard before rerunning. Rerunning builds a fresh export and creates a new
+deployment; automatic resume, rollback and deletion are not implemented.
+Provider errors report status and remediation without echoing response bodies
+or credentials. Authentication redirects are refused.
 
 ## Options
 
-| | | |
-| --- | --- | --- |
-| `<provider>` | Provider for explicit delivery; bare `deploy` is proposed to use saved publish settings | — |
-| `[site]` | Parent of `zel.yaml` | [Planned site discovery](/cli/config#planned-cli-defaults) |
-| `--site <name>` | The site or project on the provider | from planned `zel.yaml` delivery settings |
-| `--tag <name:version>` | Image tag — container providers only | `<site-name>:latest` |
-| `--message <text>` | Deploy message, where the provider has one | the git subject |
-| `--preview` | A preview deploy rather than production | off |
-| `--dry-run` | Build and report, upload nothing | off |
+| Option | Meaning |
+| --- | --- |
+| `[provider]` | `netlify`; omit to execute saved publication settings |
+| `[site]` | Site root, using normal discovery when omitted |
+| `--site-id <id-or-domain>` | Destination; `--site` is equivalent |
+| `--prod` | Request live publication instead of a draft preview |
+| `--dry-run` | Resolve and print the plan only |
+| `--to netlify` | Explicit provider for saved static deployment |
+| `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
 
-## See also
+`--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
+the default. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway remain future
+adapters; they are not aliases for Netlify.
 
-- [`zel build`](/cli/build) — the two things a site can be
-- [`zel image`](/cli/image) — when you want the image but not the deploy
-- [`zel ci`](/cli/ci) — doing this on every push instead of by hand
+See [`zel publish`](/cli/publish) for image registry publication and
+[`zel ci`](/cli/ci) for the current workflow generator. The generator does not
+yet consume these new saved delivery settings.

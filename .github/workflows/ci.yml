@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -184,6 +184,12 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
+
+      - name: Hosted Netlify export and digest upload acceptance
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        working-directory: cli
+        run: cargo test --locked -p zellij-cli --bin zel netlify_tests::hosted_container_export_upload -- --ignored --nocapture
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:

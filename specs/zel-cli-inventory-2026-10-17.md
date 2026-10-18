@@ -240,3 +240,16 @@ plan without tools or side effects. The common build operation runs once, and
 push runs only after success. Direct provider deployment/Netlify, ship, saved CI
 settings and expanded workflow generation remain incomplete. See the current
 command reference and durable context for source and verification evidence.
+
+
+## Implementation update — 2026-10-18, Netlify
+
+The historical inventory above is retained. `deploy netlify` / `netlify`,
+`publish` / `pub` with saved Netlify settings, and bare `deploy` now execute the
+same native static delivery operation. Portable delivery requires no external
+runtime; hosted content exports once in its container, preserving basePath.
+Draft previews are default; `--prod` requests live publication. Credentials are
+read from NETLIFY_AUTH_TOKEN only. No provider CLI, stored login discovery,
+site creation or remote build is used. The local reference and current contract
+record actual options, failure stages and validation limits. Other providers,
+ship, saved CI generation and the remaining CLI families are still incomplete.

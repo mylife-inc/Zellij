@@ -185,6 +185,18 @@ const CASES: &[Case] = &[
         &[],
         &["manual", "--tag", "ghcr.io/acme/docs:v2", "--dry-run"],
     ),
+    (
+        "netlify",
+        "deploy netlify",
+        &[],
+        &[
+            "manual",
+            "--site-id",
+            "manual.netlify.app",
+            "--prod",
+            "--dry-run",
+        ],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -239,6 +251,7 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
         }
     }
     aliases(&Cli::command_tree(), "", &mut actual);
+    actual.insert("netlify".into());
     assert_eq!(
         actual,
         CASES.iter().map(|(short, ..)| (*short).into()).collect()
@@ -301,7 +314,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             assert!(!actual.json);
         }
     }
-    for name in ["bu", "bui", "ini", "n", "se", "na", "netlify"] {
+    for name in ["bu", "bui", "ini", "n", "se", "na"] {
         assert_eq!(
             parse(&[name]).unwrap_err().kind(),
             ErrorKind::InvalidSubcommand

@@ -20,7 +20,7 @@ my-product/
       site/             # Generated output
 ```
 
-With no directory argument, publish, build/check/view/serve/dev and image static/next/build/dockerfile
+With no directory argument, deploy/netlify/publish, build/check/view/serve/dev and image static/next/build/dockerfile
 first look for `./zel.yaml`, then `./docs/zellij/zel.yaml`. They do not search
 parents or recursively scan the repository. A custom folder is explicit:
 `zel build docs/manual`. A missing default reports the expected config path.
@@ -217,7 +217,7 @@ It supplies the default for `image static` / `si` and `image next` / `ni`;
 separate tags explicitly when retaining both. Without this field, local builds
 retain their separate `-static` and `-next` generated defaults.
 
-`publish.action` currently accepts only `push`. `publish.image` must be `static`
+For `publish.action: push`, `publish.image` must be `static`
 or `next`. [`zel publish` / `zel pub`](/cli/publish) builds and pushes that image;
 it requires `image.name` or an explicit `--tag` and never chooses a generated
 local name as a remote destination. There are no new environment overrides for
@@ -230,6 +230,23 @@ never push. Legacy `image build`, `build --target image`, and omitted-tag
 Provider, site-ID and credential fields are rejected in this registry-only
 configuration. Unknown keys and malformed blocks fail before runtime detection.
 The complete config must remain valid even when `--tag` overrides its name.
+
+For static deployment, use the alternative publication block:
+
+```yaml
+publish:
+  action: deploy
+  provider: netlify
+  site: acme-docs.netlify.app
+```
+
+`netlify` is the only implemented provider. `site` is an optional string containing
+an existing project ID or full domain. Explicit `--site-id` / `--site` wins over
+`NETLIFY_SITE_ID`, then `publish.site`. `NETLIFY_AUTH_TOKEN` supplies credentials;
+tokens, image kinds and production flags are rejected in this block. A draft
+preview is the default; pass `--prod` explicitly for live publication. See
+[deployment](/cli/deploy) for behavior and limits. Bare `zel deploy` uses the same
+saved plan as `zel pub`. `--to netlify` cannot replace a saved image-push intent.
 
 ## Planned CLI defaults
 

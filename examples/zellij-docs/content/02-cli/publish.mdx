@@ -1,13 +1,13 @@
 ---
 title: zel publish
-description: Build and push the static or Next image selected by a site's saved settings.
+description: Build once and deliver using saved registry or Netlify settings.
 ---
 
 <Callout type="tip" title="Available in source">
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
 or Next.js image. This requires a new binary release; `zellij-v0.1.3` predates it.
-Direct Netlify and other provider deployments remain planned.
+Saved Netlify deployment is also available; see below. Other providers remain planned.
 </Callout>
 
 ## Save the destination
@@ -48,7 +48,31 @@ A custom site folder is explicit. Saved delivery settings require `version: 1`
 and `content/`; explicit raw-content folders do not acquire a publication default.
 The configuration is not modified by overrides or a successful push.
 
-## What runs
+## Netlify publication
+
+Use this alternative block to publish static HTML from either renderer:
+
+```yaml
+publish:
+  action: deploy
+  provider: netlify
+  site: acme-docs.netlify.app
+```
+
+Set `NETLIFY_AUTH_TOKEN`, then run `zel pub` for a draft preview or `zel pub
+--prod` to request live publication. `--site-id` (also `--site`) overrides
+`NETLIFY_SITE_ID`, which overrides `publish.site`. The same shared flow is used
+by `zel netlify`, `zel deploy netlify`, and bare `zel deploy` with saved settings.
+See [deployment](/cli/deploy) for setup, prerequisites, failure behavior and limits.
+Portable Netlify delivery uses native Rust; hosted delivery uses one container
+export. Both build into temporary output and preserve the previous local site.
+
+`pub --to netlify` can supply deployment intent without saved settings, but it
+rejects a saved image-push plan. Use explicit `deploy netlify` to choose static
+HTML in that case. `--tag` cannot accompany a Netlify deployment. Ordinary
+build/image commands never deploy, regardless of saved settings.
+
+## What runs for image publication
 
 The command resolves the site, image kind and destination, then checks for a
 usable container runtime. It validates and builds using the same operation as
@@ -104,7 +128,9 @@ to delete registry state or roll back a previously published tag.
 | `[site]` | Configured site root; otherwise use the standard discovery order |
 | `--tag <reference>` | Override `image.name` for both build and push |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
-| `--to <provider>` | Reserved compatibility option; rejected until provider deployment is implemented |
+| `--to netlify` | Select static-site deployment; rejected for a saved image-push plan |
+| `--site-id <id-or-domain>` | Netlify destination override; `--site` is equivalent |
+| `--prod` | Request live Netlify publication; default is draft preview |
 
 `--json` is not supported and fails before work. A dry run checks shared settings
 and site selection; it does not prove that the content builds, credentials work,
@@ -112,8 +138,6 @@ or the destination exists.
 
 ## Remaining delivery work
 
-`publish.action: deploy`, provider/site fields, [`zel deploy`](/cli/deploy),
-`zel netlify`, and the [`ship`](/cli/ship) composition remain planned and are not
-accepted as working delivery paths. CI settings and the new short `zel ci [site]`
-form are also pending. Existing [workflow generation](/cli/ci) retains its current
-options and does not consume these saved settings yet.
+Other providers, the [`ship`](/cli/ship) composition, saved CI settings and the
+new short `zel ci [site]` form remain pending. Existing [workflow generation](/cli/ci)
+retains its current options and does not consume saved publication settings yet.
