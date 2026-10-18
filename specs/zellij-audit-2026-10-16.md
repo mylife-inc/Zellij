@@ -885,7 +885,8 @@ remains unproven; S4 and the controlled scrolling reproduction are fixed.
 
 ## Implementation record — native packages and installers
 
-Source `94b2d8d` implements six native packages (x64/ARM64 GNU/Linux, macOS and
+[PR #20](https://github.com/mylife-inc/Zellij/pull/20), source `94b2d8d` and
+follow-up `489ad35`, implements six native packages (x64/ARM64 GNU/Linux, macOS and
 Windows), a shared CI/release packaging workflow, tag/workspace-version preflight,
 ZIP/checksum publication and a Windows PowerShell 5.1/7 installer. The archived
 binary itself is installed and tested, including CPU architecture, version,
@@ -903,8 +904,11 @@ uses native machine architecture even from an emulated shell.
 Local real macOS x86_64 archive installation and installed-command acceptance
 passed, as did checksum generation, shellcheck, actionlint, script syntax and
 deep/strict product-documentation validation. Other platform acceptance was
-pending when this entry was committed; consult the PR containing `94b2d8d` for
-final revisions/results. [Distribution contract](zel-native-distribution.md)
+pending when this entry was committed; consult PR #20 for final revisions/results.
+The initial Windows jobs built both architectures, then exposed unavailable
+PowerShell 5.1 `Get-FileHash` discovery. `489ad35` uses .NET hashing, explicit
+.NET null for the backup path, and adds malformed-mirror/token-isolation checks.
+Both Linux targets and Apple Silicon passed package acceptance in that first run. [Distribution contract](zel-native-distribution.md)
 records tested OS baselines and remaining signing, broader OS, container and
 release-publication limits. No existing v0.1.3 asset is replaced or new tag issued.
 

@@ -962,7 +962,8 @@ were refreshed: public/default-main; latest native release remains `zellij-v0.1.
 
 ### Native packages and installers — 2026-10-17
 
-Source `94b2d8d` adds one release packaging path and a reusable CI matrix for
+[PR #20](https://github.com/mylife-inc/Zellij/pull/20), source `94b2d8d` and
+compatibility correction `489ad35`, adds one release packaging path and a reusable CI matrix for
 x64/ARM64 on GNU/Linux, macOS and native Windows. Each runner builds the locked
 release profile, packages the executable and checksum, installs that actual
 archive through a loopback HTTP mirror, and exercises the installed binary.
@@ -984,8 +985,12 @@ baselines, artifact conventions, installer options and limitations.
 Local verification: the actual x86_64 macOS release archive passed all installer
 and installed-command tests. Combined checksum generation, shellcheck, actionlint,
 JavaScript/shell syntax and deep/strict product-documentation checks passed.
-Windows and other architectures require hosted acceptance, pending at this dated
-entry; consult the PR containing `94b2d8d` for final revisions/results. The separate
+The first hosted run built both Windows binaries but found that PowerShell 5.1
+could not resolve `Get-FileHash`. `489ad35` uses built-in .NET SHA-256 instead,
+passes an explicit .NET null for replacement backup paths, and strengthens mirror
+URL/token-isolation regression checks. Linux x64/ARM64 and Apple Silicon package
+acceptance passed that initial run. Consult PR #20 for the final exact revision
+and complete hosted results; Windows acceptance was pending at this dated entry. The separate
 portable browser matrix remains the evidence for real offline browser behavior.
 This milestone does not tag or publish binaries, sign/notarize packages, establish
 all historical OS versions, or validate every Windows container integration.
