@@ -2466,3 +2466,8 @@ No local daemon was started, live provider/registry publication performed, or
 native release/public docs deployment made. Latest public native release remains
 zellij-v0.1.3; all current CLI additions still need a compatible release. Remaining
 work includes fmt/watch, portable dev, hosted view, other providers and maintenance.
+
+
+Editable-wrapper implementation source: `3877db8fc6e68bc4ceee94534cd95f0305df0c54`,
+in [PR #36](https://github.com/mylife-inc/Zellij/pull/36). That PR tracks final-head
+Linux/macOS/Windows installed-app acceptance and existing container checks.
