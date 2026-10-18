@@ -3,8 +3,9 @@
 Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
 `view --watch` merged in PR #14 with all-platform acceptance. Portable `zel.yaml`
 configuration/navigation and excluded-asset checks merged in PRs #15–16.
-Native validation and structured diagnostics are the current implementation
-milestone. The native renderer and server are separate from the hosted Next router.
+Native validation and structured diagnostics merged in PR #17. The portable
+starter is the current implementation milestone. The native renderer and server
+are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
 same command syntax, including these three operations:
@@ -136,7 +137,7 @@ installation, release packaging or container integration.
 | Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` implemented | Raw HTML policy, math/diagrams, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Native `check`, strict warning gate and JSON reports implemented | Hosted JSON reports, richer source locations |
-| Project scaffolding | Existing structured Zellij scaffolds | Decide portable starter/config workflow |
+| Project scaffolding | Native `new portable` full/minimal starters; existing hosted scaffolds | Extend starter content with future rendering capabilities |
 | Serve an existing export | Implemented | Preserve cross-platform routing/containment/lifecycle acceptance |
 | View a source folder | Implemented, including optional watch/reload | Richer configuration |
 | Development rebuild/reload | Portable `view --watch` implemented; hosted preparation watching implemented | Hosted automatic page reload, incremental compilation |
@@ -292,3 +293,31 @@ URLs or browser behavior. Rust integration tests compare check/build failures,
 snapshot input/existing exports, exercise strict/JSON/exit behavior without tools
 on PATH, and run in the Linux/macOS/Windows portable CI matrix. Browser acceptance
 continues to cover the shared compiler's actual file://, HTTP and watch artifacts.
+
+## Portable starter contract — 2026-10-17
+
+`zel new portable [dir]` creates a native Markdown project, defaulting to `docs`.
+`--name` defaults to the resolved destination's leaf name, including `.`;
+`--theme` defaults to `cupertino`. Both are validated before writing. Names must
+be nonempty text without control characters. Metadata uses the shared YAML
+string serializer; display names never become Markdown or shell syntax.
+
+The full starter contains `zel.yaml`, `index.md`, `guide/getting-started.md` and
+the guide's local SVG asset. `--minimal` contains just configuration and home.
+Configuration supplies ordered navigation; removing `nav` restores automatic
+discovery. There are no missing example links or enabled placeholder assets.
+Creation requires no external tools, network, dependency installation or server.
+
+The shared scaffold writer preflights all paths and refuses nonempty folders
+and generated-file collisions. Existing dotfiles (including a fresh `.git`)
+are retained. There is no overwrite flag for this command; create elsewhere
+when the destination contains authored content. Hosted `new docs/page/guide/section`
+retain their existing behavior and produce a different content format.
+
+CLI integration tests create/check/build real starters with external tools
+absent from PATH, cover every theme and unusual names, verify source preservation,
+and exercise invalid options and destination conflicts. The portable OS matrix
+runs those tests. `scripts/portable-starter.mjs`, called by the existing browser
+gate, opens the actual full/minimal generated output after moving it to a path
+with spaces and Unicode. Chromium/WebKit verify names, navigation, fragments,
+local images and search with networking blocked, plus JavaScript-disabled content.

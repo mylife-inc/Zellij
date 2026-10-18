@@ -1,19 +1,20 @@
 ---
 title: zel new
-description: Create a content folder, a wrapper app, a page, a guide, or one section.
+description: Create portable Markdown documentation, hosted content, a page, a guide, or one section.
 ---
 
-Six things can be created, and they are different in kind. `docs`, `app` and
-`project` start something; `page`, `guide` and `section` add to one that exists.
+`portable`, `docs` and `project` start a project; `page`, `guide` and `section`
+add to hosted content. The Rust `app` command remains planned.
 
 | | Creates | Default location | |
 | --- | --- | --- | --- |
-| `zel new docs [dir]` | A content folder | `./content` | **Available** |
+| `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs` | **Available in source** |
+| `zel new docs [dir]` | Hosted YAML/MDX content | `./content` | **Available** |
 | `zel new section <type>` | One section file | `--out`, or stdout | **Available** |
 | `zel new page <name>` | One page, and the section files it references | inside the content folder | **Available** |
 | `zel new guide <name>` | A guide folder with a sidebar and an index | inside the content folder | **Available** |
 | `zel new app [dir]` | A Next.js wrapper around a content folder | `.` | Planned |
-| `zel new project <name>` | A repository with docs and product as siblings | `./<name>` | Planned |
+| `zel new project <name>` | A repository with docs and product as siblings | `./<name>` | **Available** |
 
 The available ones are pure Rust with the schema compiled in — **no container
 runtime, no Node**. Writing content should not need Docker. `zel new app`
@@ -22,8 +23,11 @@ produces a Node application, and will.
 ## Which one you want
 
 <CardGrid>
-  <Card title="Nothing yet" icon="sparkles">
-    `zel new docs` — a content folder, and the only thing most people ever need.
+  <Card title="Portable documentation" icon="sparkles">
+    `zel new portable` — Markdown that builds and previews without Docker or Node.
+  </Card>
+  <Card title="A product website" icon="layout">
+    `zel new docs` — hosted YAML/MDX with landing-page sections.
   </Card>
   <Card title="A whole repository" icon="folder-tree">
     `zel new project` — docs and product as siblings, with a pipeline.
@@ -36,15 +40,16 @@ produces a Node application, and will.
   </Card>
 </CardGrid>
 
-If you are unsure, it is `zel new docs`. `zel dev`, `zel build` and `zel deploy`
-run the application in a container, so a content folder is a complete project —
-the app is for the cases where you specifically need it on disk.
+Choose `portable` for ordinary Markdown documentation that also opens directly
+from disk. Choose `docs` for the hosted engine's MDX and page sections. Its build
+and development preview use a container. [Build targets](/cli/build) explain
+the output differences; several deployment commands remain planned.
 
 ## What every one of them refuses to do
 
 **Overwrite authored files without an explicit overwrite option.** `new docs`
-requires an empty directory unless `--force` is supplied. `new project` requires
-an empty directory. `new page` and `new guide` add files inside an existing
+requires an empty directory unless `--force` is supplied. `new portable` and
+`new project` require an empty directory. `new page` and `new guide` add files inside an existing
 content folder, but refuse collisions with existing files. Every generated
 destination is checked before writing, so a later collision does not leave
 earlier sections behind.
@@ -53,6 +58,56 @@ The empty-directory check ignores dotfiles, so `git init` followed by `zel new d
 a directory containing only `.git` is empty as far as anyone is concerned.
 Individual output paths are still checked, including hidden files and symbolic
 links. A generated path cannot escape its content root or write Git metadata.
+
+---
+
+## `zel new portable [dir]`
+
+Creates Markdown and native configuration, ready for strict checking, building
+and previewing. This command is available in source; older released binaries
+may not have it. Check `zel new --help` before using an installed release.
+
+```bash title="terminal"
+zel new portable docs --name "Acme documentation" --theme forest
+zel check docs --strict
+zel build docs                 # writes docs-site beside docs
+zel view docs --watch          # builds, serves, opens a browser and reloads edits
+```
+
+Double-click `docs-site/index.html` to view the build without a server. Move or
+share the whole output folder so its pages and support files stay together.
+To serve an existing export, run `zel serve docs-site`.
+
+```text
+docs/
+├── zel.yaml                   # name, theme and ordered navigation
+├── index.md                   # home and workflow instructions
+├── guide/getting-started.md    # links, assets and configuration examples
+└── assets/workflow.svg        # a local image used by the guide
+```
+
+`--minimal` writes only `zel.yaml` and `index.md`. Both starters pass
+`zel check --strict` as created. They need no Docker, Node or network connection.
+An existing Markdown folder can be built directly; scaffolding is optional.
+
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `[dir]` | Destination folder | `docs` |
+| `--name <text>` | Site name and home title | Destination folder's name |
+| `--theme <name>` | A theme from `zel list themes` | `cupertino` |
+| `--minimal` | Omit the example guide and image | off |
+
+Names must be nonempty text without control characters. Names and theme values
+are validated before writing. Display names are quoted in metadata rather than
+inserted into Markdown syntax. Existing dotfiles, including `.git`, are retained.
+A nonempty folder or existing generated filename is refused; there is no
+`--force` option for this starter. No command installs dependencies or launches
+a server during creation.
+
+Add ordinary Markdown pages and update `nav`, or remove `nav` to discover pages
+automatically. See [portable configuration](/cli/config) and
+[rendering limits](/cli/build). Hosted `new page`, `new guide` and `new section`
+generate YAML/MDX and should not be used inside this Markdown starter.
 
 ---
 
@@ -214,8 +269,9 @@ reflex is the most common way to end up maintaining JavaScript you never wanted.
 | Hosting on Vercel, or a platform that builds Next.js itself | You need the app in your repository. |
 | Adding Zellij pages to an application you already have | You need the app, and probably want to write it by hand rather than generate it. |
 
-If you are writing documentation and shipping it as a site, you do not need
-`zel new app`. Start with `zel new docs`.
+For portable Markdown, start with `zel new portable`. For hosted content,
+start with `zel new docs`. The Rust `zel new app` remains planned; the options
+in this section describe that proposed workflow.
 
 ### Options
 

@@ -13,9 +13,11 @@ use zellij_core::{Error, Result};
 
 mod content;
 pub mod pipeline;
+mod portable;
 pub mod project;
 mod section;
 
+pub use portable::{PortableOptions, portable};
 pub use section::section_file;
 
 /// A set of files to create, relative to some root.

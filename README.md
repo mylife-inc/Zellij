@@ -31,6 +31,27 @@ three files and under thirty lines, and none of it changes as the site grows.
 Read [the package README](engine/packages/zellij/README.md) for the full API,
 the section reference and the config schema.
 
+## Portable Markdown documentation
+
+The Rust `zel` binary also has a native Markdown workflow that needs no Docker,
+Node or network connection. With a current source build:
+
+```bash
+zel new portable docs --name "My documentation"
+zel check docs --strict
+zel build docs
+zel view docs --watch
+```
+
+Open `docs-site/index.html` directly in a browser, or use `zel serve docs-site`
+for HTTP preview. The generated folder can be moved or shared intact, including
+its offline search and local fonts/assets. `--minimal` creates only a home page
+and `zel.yaml`; an existing Markdown folder needs no scaffolding.
+
+Native release packages may lag source. Check `zel new --help` for availability.
+See the [portable contract](specs/zel-portable-docs.md) for supported Markdown,
+configuration, platform acceptance and remaining rendering limits.
+
 ## The examples
 
 Zellij is developed against real content rather than fixtures. Each of these is
