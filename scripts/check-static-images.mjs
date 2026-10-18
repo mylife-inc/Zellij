@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const zel = path.resolve(process.argv[2] ?? 'cli/target/debug/zel');
@@ -127,11 +128,13 @@ try {
   // Two hosted builds cover both deployment roots using the same source.
   await write('hosted/zel.yaml', 'version: 1\nrenderer: hosted\n');
   await write('hosted/content/01-guide/_sidebar.yaml', 'title: Manual\nroute: /manual\nnav: [index, next]\n');
-  await write('hosted/content/01-guide/index.mdx', '# Hosted images\n\n[Next](/manual/next)\n\n![Logo](assets/logo.svg)\n');
+  await write('hosted/content/01-guide/index.mdx', '# Hosted images\n\n[Next](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n');
   await write('hosted/content/01-guide/next.mdx', '# Next page\n\nMore documentation.\n');
   await write('hosted/content/assets/logo.svg', asset);
   for (const [label, prefix] of [['root', ''], ['prefix', '/products/.docs']]) {
     await write('hosted/content/site.yaml', `name: Hosted images\nhome: 01-guide\nbasePath: '${prefix}'\nnav: { search: true, themeToggle: true }\n`);
+    execFileSync(process.execPath, [fileURLToPath(new URL('../engine/packages/zellij/bin/zellij.mjs', import.meta.url)),
+      'check', path.join(root, 'hosted/content'), '--deep', '--strict'], { stdio: 'inherit' });
     const tag = `zellij-static-hosted-${label}:${suffix}`;
     images.push(tag);
     run(['image', 'static', 'hosted', '--tag', tag]);

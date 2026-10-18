@@ -2005,3 +2005,10 @@ client navigation and reload in Chromium, without patching the engine. Review
 also narrowed the NGINX denial rule to `.zellij-output`; valid dot-prefixed URL
 segments must remain routable. The prefixed fixture now uses `/products/.docs`.
 Consult the PR's latest run for final evidence, not that superseded assertion.
+
+The first browser-enhanced run (`39141869721`) then caught an invalid fixture
+URL: hosted Markdown needs `/_zellij/assets/logo.svg`, whereas `assets/logo.svg`
+is the YAML/Screenshot convention. The rendering code correctly preserved the
+unsupported relative URL. The fixture now uses the public URL and runs the
+engine's deep/strict validation before image builds; no engine change was needed.
+The dot-prefix server correction is source `eea044623ee402c0dba36ab127ec008a6ba6760e`.
