@@ -2247,3 +2247,16 @@ mock API uploads/polling, then exposed a fixture assertion error: the landing
 page redirects to `/manual`, so guide links/assets must be checked in
 `manual.html`. The fixture now checks the landing redirect and actual guide
 HTML separately. Use subsequent final-head checks for complete acceptance.
+
+
+Run `39154796368` passed all six package jobs, all three portable suites,
+engine/schema/showcase, and completed hosted staging/build/upload. Its remaining
+fixture assertion still assumed that the root redirect serialized a prefixed
+URL. An isolated local production export established the actual representation:
+Next serializes `NEXT_REDIRECT;replace;/manual;307;` and its client router applies
+basePath. The fixture checks that instruction, the prefix, and rendered links
+in manual.html. Local browser acceptance confirms the prefixed landing redirect,
+guide navigation, logo, reload and resource requests. The hosted CI test now runs
+immediately after engine-image setup, before the longer image suites, to make
+any further export/upload failures visible earlier. Final-head CI remains the
+merge gate; prior failed runs are not represented as complete acceptance.
