@@ -1454,6 +1454,14 @@ validation (47 routes, 23 embedded examples) pass. The first sandboxed suite
 could not bind loopback ports; the rerun with loopback access passed. Hosted CI
 is a merge gate; consult PR #27 for its current checks and merge status.
 
+The first hosted run of this increment (`39107995790`) exposed an older engine
+test that assumed absolute paths begin with `/`. The Windows runtime probe tests
+passed; the mount assertion now checks the native path API and canonical source
+instead. A local doctor run also exposed duplicated diagnostics; detailed errors
+now print once on stderr. The local environment currently explicitly selects a
+Docker endpoint whose `info` call fails; no endpoint values were logged and no
+environment/service changes were made. Real-container acceptance runs in CI.
+
 **Next implementation:** versioned `zel.yaml` and the common site resolver for
 `docs/zellij/{zel.yaml,content/,site/}`, custom named roots and legacy explicit
 paths, including watch/config changes. Alias registration, separate static/Next

@@ -1238,10 +1238,8 @@ fn doctor() -> zellij_core::Result<()> {
             println!("  {:<12} {}  ({state})", "· engine", engine.image());
         }
         Err(err) => {
-            println!("  ✗ none");
-            for line in err.to_string().lines() {
-                println!("    {line}");
-            }
+            // main prints the detailed error once on stderr.
+            println!("  ✗ unavailable");
             println!();
             println!("  Native commands still work without a container runtime:");
             println!(

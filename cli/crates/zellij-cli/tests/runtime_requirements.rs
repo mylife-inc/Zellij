@@ -53,6 +53,7 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
             stderr.contains("Portable build/check/serve/view"),
             "{stderr}"
         );
+        assert!(!String::from_utf8_lossy(&output.stdout).contains("executable not found"));
         assert_eq!(
             fs::read_to_string(root.join("site/index.html")).unwrap(),
             "previous export"

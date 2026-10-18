@@ -435,11 +435,12 @@ mod tests {
 
         let mount = ContainerEngine::content_mount(&path).unwrap();
 
-        assert!(mount.ends_with(":/content:ro"), "{mount}");
+        let source = mount.strip_suffix(":/content:ro").expect("read-only mount");
         assert!(
-            mount.starts_with('/'),
+            Utf8Path::new(source).is_absolute(),
             "the mount source must be absolute: {mount}"
         );
+        assert_eq!(Utf8Path::new(source), path.canonicalize_utf8().unwrap());
     }
 
     #[test]
