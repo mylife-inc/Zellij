@@ -922,6 +922,50 @@ Prior milestone completion: PR #19 merged as `4735144`; PR/main CI `39082442519`
 no retries. Image run `39082937383` passed all 13 jobs and published four variants
 for both Linux architectures. Portable scaffolding acceptance is complete.
 
+## Implementation record — theme preferences, prefixed video and guide accessibility
+
+Source `f35cc92` resolves S5/S14/S15 in the hosted engine:
+
+- **S5:** restore mode and theme independently when their controls are enabled;
+  allow only known values and tolerate blocked storage. Disabled controls retain
+  their configured defaults without deleting shared saved preferences. The fixed
+  initialization script lives outside client-component modules and reads escaped
+  data attributes. System-mode changes also update the toggle's accessible label.
+- **S14:** pass the site's deployment prefix to local video and poster URLs,
+  including posters for external embeds. Preserve external media URLs. Two local
+  media unit cases fail against the old renderer; all four pass after the fix.
+- **S15:** remove the generic label that replaced heading text; keep formatted
+  h2/h3/h4 titles as their accessible names. Render the decorative hash in an
+  aria-hidden span, visible on hover and keyboard focus, and keep Enter-operated
+  fragment navigation.
+
+Local evidence: 329 engine tests, all workspace typechecks, engine package build
+and deep/strict product-documentation checks passed. The production basePath gate
+passed Chromium and WebKit with independent mode/theme settings before hydration,
+navigation/reload persistence, invalid/blocked storage, system color changes,
+formatted heading role/name assertions and keyboard links, plus real prefixed
+poster/video decoding. Initial new-fixture failures concerned metadata routing,
+route cleanup and about:blank storage access; they were corrected and are not
+evidence of fresh browser reproductions of S5. S5 was source-confirmed; S15 retains
+the prior browser-tree reproduction below. Manual screen-reader checks and the
+broader accessibility/SEO/performance gate remain outstanding. Consult the PR
+containing `f35cc92` for the final checked revision and hosted acceptance.
+[PR #21](https://github.com/mylife-inc/Zellij/pull/21)'s initial run `39087718901`
+passed the new production checks but exposed an old watcher assertion expecting
+raw heading text without the new decorative hash. Its accessibility snapshot
+already had the correct title. The watcher assertion now requires the heading
+to be visible and have that exact accessible name. The corrected development
+watcher acceptance passed locally in Chromium and WebKit; the other 12 jobs
+passed on the initial hosted run.
+
+Prior milestone completion: [PR #20](https://github.com/mylife-inc/Zellij/pull/20)
+merged head `434f5eb` as `937331c`. PR/main CI `39085300006` / `39085863182` passed
+all 13 jobs, including six native package/install targets and Windows PowerShell
+5.1/7. Each showcase run had 317 passes, 124 conditional skips and no retries.
+Image run `39085863219` passed all 13 jobs, publishing four variants for both Linux
+architectures and passing the published-image smoke test. The public native
+release remains `zellij-v0.1.3`; no new binaries were tagged or published.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
@@ -1330,7 +1374,8 @@ and other image sections already supply the prefix.
 **Acceptance:** apply the site's prefix to local video/poster URLs; leave external
 embeds intact. Verify a real local video and poster under a nonempty prefix in
 production browser acceptance. Static content validation cannot establish that
-the renderer passes the right prefix to an existing asset. This remains open.
+the renderer passes the right prefix to an existing asset. **Resolved in `f35cc92`;**
+see the implementation record above for unit and production browser evidence.
 
 ### S15 — P2: guide headings lose their visible title in the accessibility tree
 
@@ -1345,7 +1390,8 @@ manual screen-reader test.
 
 **Acceptance:** preserve each heading's visible title in its accessible name
 while keeping its permalink discoverable and keyboard operable. Verify formatted
-headings and h2/h3/h4 in Chromium/WebKit accessibility trees. Remains open.
+headings and h2/h3/h4 in Chromium/WebKit accessibility trees. **Resolved in `f35cc92`;**
+see the implementation record above for role/name and keyboard verification.
 
 ## User-requested UI and platform work
 

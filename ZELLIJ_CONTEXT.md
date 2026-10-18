@@ -1007,6 +1007,45 @@ with **317 browser passes, 124 conditional skips and no retries**. Image run
 architectures and passing the published-image smoke test. The repository remains
 public/default-main; the latest native release remains `zellij-v0.1.3`.
 
+### Theme preferences, prefixed video and guide accessibility — 2026-10-17
+
+Source `f35cc92` fixes audit S5/S14/S15 in the hosted engine. The root layout
+restores mode and theme independently, according to the enabled controls. It
+accepts only known modes/themes, preserves configured defaults for disabled
+controls, and tolerates unavailable storage. A shared ordinary module owns the
+fixed initialization script; configuration reaches it through escaped data
+attributes. The mode button also follows changes to the system color preference
+when computing its accessible action label.
+
+Local video sources and posters now receive `site.config.basePath`; external
+video/embed URLs remain intact. Guide h2/h3/h4 permalinks derive their accessible
+names from the visible, potentially formatted title. The decorative hash is
+hidden from assistive technology and appears on hover or keyboard focus.
+
+Local verification: **329 engine tests**, workspace typechecks, engine packaging
+and deep/strict documentation validation passed. The production prefix gate
+passed Chromium and WebKit, including four independent theme-control settings
+before hydration and after navigation/reload, invalid/blocked storage, system
+preference changes, formatted heading names and keyboard permalinks, and actual
+decoding of a prefixed local video/poster. The new video unit regression failed
+on the old local-media renderer and passes with the fix. This does not establish
+manual screen-reader acceptance or exhaustive accessibility/SEO/performance.
+The first hosted run passed the new production checks but found an old watcher
+assertion comparing raw heading text, which now includes the decorative hash.
+That check now verifies visibility and the exact accessible name; the corrected
+development watcher acceptance passed locally in Chromium and WebKit. Consult
+[PR #21](https://github.com/mylife-inc/Zellij/pull/21) for its final checked head
+and hosted results.
+
+Prior milestone completion: [PR #20](https://github.com/mylife-inc/Zellij/pull/20)
+merged final head `434f5eb` as `937331c`. PR CI `39085300006` and main CI
+`39085863182` passed all 13 jobs, including all six native package/install targets
+and both PowerShell versions on Windows. Each showcase run passed **317 tests,
+124 conditional skips and no retries**. Image run `39085863219` passed all 13
+jobs, publishing four variants for both Linux architectures and verifying the
+published-image build/serve smoke test. No native binary release was published;
+the latest public release remains `zellij-v0.1.3`.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1311,19 +1350,18 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after native distribution work, subject to the user's v1 scope decision:
+Remaining order after the hosted theme/media/accessibility fixes, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of six-platform package/install tests and merge the
-   native distribution milestone. Portable scaffolding and the prior native workflow
-   have passed on merged main; consult the implementing PR for current acceptance.
-2. Add richer Markdown rendering and finish the agreed CLI subset in
+1. Complete hosted acceptance of S5/S14/S15; consult the PR containing `f35cc92`
+   for its final status. Native distribution acceptance is complete on merged main.
+2. Reconcile the remaining advertised-but-inactive configuration (S3, including
+   per-page themes and analytics), add richer Markdown rendering and finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
 3. Choose and publish a new native version through the tested release path,
    preserving the existing v0.1.3 assets. Confirm release destination/version
    compatibility and documentation deployment; broader OS/signing decisions remain.
    No new native CLI binary has yet been released for the completed source fixes.
-4. Close the other browser findings (S5/S14/S15), accessibility, SEO and
-   performance acceptance. Investigate automatic
+4. Complete broader accessibility, SEO and performance acceptance. Investigate automatic
    browser reload, and the recorded browser flakes. R5 retains advanced migration
    limits; R13's static gate does not execute arbitrary MDX components. Define a
    finite release gate: no known blocking defects, rather than a promise that

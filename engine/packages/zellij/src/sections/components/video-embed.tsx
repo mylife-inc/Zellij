@@ -17,7 +17,7 @@ function toEmbedUrl(src: string): string | undefined {
   return undefined;
 }
 
-export function VideoEmbed({ section, defaultMotion }: SectionProps<VideoEmbedSection>) {
+export function VideoEmbed({ section, site, defaultMotion }: SectionProps<VideoEmbedSection>) {
   const motion = section.motion ?? defaultMotion;
   const embedUrl = isExternal(section.src) ? toEmbedUrl(section.src) : undefined;
 
@@ -37,8 +37,8 @@ export function VideoEmbed({ section, defaultMotion }: SectionProps<VideoEmbedSe
       <Reveal motion={motion}>
         <figure className="zellij-video-figure">
           <VideoPlayer
-            {...(embedUrl ? { embedUrl } : { fileUrl: assetHref(section.src) })}
-            {...(section.poster ? { poster: assetHref(section.poster) } : {})}
+            {...(embedUrl ? { embedUrl } : { fileUrl: assetHref(section.src, site.config.basePath) })}
+            {...(section.poster ? { poster: assetHref(section.poster, site.config.basePath) } : {})}
             label={section.heading ?? section.caption ?? 'Video'}
           />
           {section.caption ? (

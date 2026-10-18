@@ -84,6 +84,14 @@ Every theme defines both palettes. `system` follows the operating system and
 can still be overridden by the visitor with `nav.themeToggle: true`; the choice
 is remembered.
 
+The mode toggle and theme picker work independently. Saved modes are restored
+only when `nav.themeToggle` is enabled; saved theme names are restored only when
+`nav.themeSwitcher` is enabled and the theme is available on the site. Enabled
+preferences are applied as the page loads. Disabled controls keep the configured
+`mode` or `theme`, even if another site on the same origin saved a different
+choice. Unavailable storage leaves the configured defaults usable, and controls
+still work for the current page.
+
 Code blocks follow the mode too — Shiki emits both palettes at build time and a
 CSS variable picks between them, so switching is instant and no highlighter
 runs in the browser.
