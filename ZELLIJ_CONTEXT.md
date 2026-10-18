@@ -1030,7 +1030,12 @@ preference changes, formatted heading names and keyboard permalinks, and actual
 decoding of a prefixed local video/poster. The new video unit regression failed
 on the old local-media renderer and passes with the fix. This does not establish
 manual screen-reader acceptance or exhaustive accessibility/SEO/performance.
-Consult the PR containing `f35cc92` for the final checked head and hosted results.
+The first hosted run passed the new production checks but found an old watcher
+assertion comparing raw heading text, which now includes the decorative hash.
+That check now verifies visibility and the exact accessible name; the corrected
+development watcher acceptance passed locally in Chromium and WebKit. Consult
+[PR #21](https://github.com/mylife-inc/Zellij/pull/21) for its final checked head
+and hosted results.
 
 Prior milestone completion: [PR #20](https://github.com/mylife-inc/Zellij/pull/20)
 merged final head `434f5eb` as `937331c`. PR CI `39085300006` and main CI

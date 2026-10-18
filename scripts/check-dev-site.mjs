@@ -99,7 +99,9 @@ try {
       await expect(page.locator('.zellij-search-result').first()).toContainText(token);
       await page.keyboard.press('Escape');
       await page.reload();
-      await expect(page.locator(`h2#${token.toLowerCase()}`)).toHaveText(token);
+      const heading = page.locator(`h2#${token.toLowerCase()}`);
+      await expect(heading).toBeVisible();
+      await expect(heading).toHaveAccessibleName(token);
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();

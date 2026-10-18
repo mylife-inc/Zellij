@@ -950,6 +950,13 @@ evidence of fresh browser reproductions of S5. S5 was source-confirmed; S15 reta
 the prior browser-tree reproduction below. Manual screen-reader checks and the
 broader accessibility/SEO/performance gate remain outstanding. Consult the PR
 containing `f35cc92` for the final checked revision and hosted acceptance.
+[PR #21](https://github.com/mylife-inc/Zellij/pull/21)'s initial run `39087718901`
+passed the new production checks but exposed an old watcher assertion expecting
+raw heading text without the new decorative hash. Its accessibility snapshot
+already had the correct title. The watcher assertion now requires the heading
+to be visible and have that exact accessible name. The corrected development
+watcher acceptance passed locally in Chromium and WebKit; the other 12 jobs
+passed on the initial hosted run.
 
 Prior milestone completion: [PR #20](https://github.com/mylife-inc/Zellij/pull/20)
 merged head `434f5eb` as `937331c`. PR/main CI `39085300006` / `39085863182` passed
