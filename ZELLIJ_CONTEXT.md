@@ -1410,8 +1410,10 @@ spellings. These checks do not establish runtime support for proposed commands.
 
 The user authorized implementation after local reference reconciliation and
 asked for deliberate handling of commands requiring Docker when it is absent.
-The first increment is on `codex/cli-runtime-preflight`, based on `e8ec681`
-(PR #26). Repository inspection reconfirmed `mylife-inc/Zellij` is public with
+The first increment is source commit `cd70f26` in
+[PR #27](https://github.com/mylife-inc/Zellij/pull/27), on
+`codex/cli-runtime-preflight`, based on `e8ec681` (PR #26).
+Repository inspection reconfirmed `mylife-inc/Zellij` is public with
 default branch `main`; no other open PR was present at implementation start.
 
 - Runtime probes now distinguish missing clients, execution errors, failed
@@ -1446,11 +1448,11 @@ Regression coverage exercises missing-runtime command dispatch, preserved
 source/output, native operations with broken endpoint settings, Dockerfile
 generation, fallback, explicit-endpoint isolation, secret-free errors, bounded
 metadata probes, and actual executable resolution. CI now runs the engine and
-runtime-requirement tests on Linux, macOS and Windows. Local workspace tests,
+runtime-requirement tests on Linux, macOS and Windows. **201 local Rust tests**,
 warnings-denied Clippy, formatting, diff checks and strict/deep documentation
 validation (47 routes, 23 embedded examples) pass. The first sandboxed suite
-could not bind loopback ports; the rerun with loopback access passed. Add hosted
-acceptance and commit/PR evidence after they finish.
+could not bind loopback ports; the rerun with loopback access passed. Hosted CI
+is a merge gate; consult PR #27 for its current checks and merge status.
 
 **Next implementation:** versioned `zel.yaml` and the common site resolver for
 `docs/zellij/{zel.yaml,content/,site/}`, custom named roots and legacy explicit
