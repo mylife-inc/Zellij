@@ -473,8 +473,12 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         || path.ends_with("site.yaml")));
     let home = String::from_utf8_lossy(&bytes[&files["/products/.docs/index.html"]]);
     assert!(home.contains("Netlify acceptance"));
-    assert!(home.contains("/products/.docs/manual/next"));
-    assert!(home.contains("/products/.docs/_zellij/assets/logo.svg"));
+    assert!(home.contains("/products/.docs/manual"));
+    // The selected home guide has its own /manual route; / is its redirect.
+    let manual = String::from_utf8_lossy(&bytes[&files["/products/.docs/manual.html"]]);
+    assert!(manual.contains("Netlify acceptance"));
+    assert!(manual.contains("/products/.docs/manual/next"));
+    assert!(manual.contains("/products/.docs/_zellij/assets/logo.svg"));
     assert!(files.contains_key("/products/.docs/manual/next.html"));
     assert!(files.contains_key("/products/.docs/_zellij/assets/logo.svg"));
     assert!(

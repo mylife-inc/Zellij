@@ -2240,3 +2240,10 @@ a zero-test pass. Hosted delivery stages beside the selected content rather
 than in the OS temp directory, so a runtime sharing the project (such as Colima)
 can access its export mount. Portable output still uses OS temp. The hosted
 fixture checks that project-local staging is removed afterwards.
+
+
+Run `39153907349` at `4a82895` exercised the real hosted export and completed all
+mock API uploads/polling, then exposed a fixture assertion error: the landing
+page redirects to `/manual`, so guide links/assets must be checked in
+`manual.html`. The fixture now checks the landing redirect and actual guide
+HTML separately. Use subsequent final-head checks for complete acceptance.
