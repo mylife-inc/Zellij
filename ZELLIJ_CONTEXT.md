@@ -2232,3 +2232,11 @@ Implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`, tracked in
 [PR #33](https://github.com/mylife-inc/Zellij/pull/33). Consult its latest checks
 for final-head platform and hosted-container results. The public documentation
 and released binary have not been updated by this PR.
+
+
+CI selection was corrected after review: the hosted acceptance uses its full
+Rust module/test name and first verifies that the named test exists, preventing
+a zero-test pass. Hosted delivery stages beside the selected content rather
+than in the OS temp directory, so a runtime sharing the project (such as Colima)
+can access its export mount. Portable output still uses OS temp. The hosted
+fixture checks that project-local staging is removed afterwards.

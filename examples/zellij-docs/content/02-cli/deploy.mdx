@@ -86,7 +86,9 @@ The command validates and builds with the selected renderer exactly once into
 a private temporary export. It leaves existing `site/`, configured `build.out`,
 source and configuration intact. Portable output retains its direct-file
 navigation. Hosted output is placed at the engine-resolved basePath, including
-prefixes with hidden segments such as `/products/.docs`.
+prefixes with hidden segments such as `/products/.docs`. Its temporary directory
+is created beside the selected content, on the same project filesystem shared
+with the runtime; that parent directory must be writable.
 
 The upload manifest contains generated HTML and public assets, excluding the
 local export ownership marker. It uses file digests, uploads only the bytes

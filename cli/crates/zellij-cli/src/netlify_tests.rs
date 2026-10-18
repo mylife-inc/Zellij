@@ -390,8 +390,23 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     let manifest = Arc::new(Mutex::new(BTreeMap::<String, String>::new()));
     let uploaded = Arc::new(Mutex::new(BTreeMap::<String, Vec<u8>>::new()));
     let (files, bytes) = (manifest.clone(), uploaded.clone());
+    let observed_root = root.to_owned();
     let server = Server::new(move |request, _| match request.method.as_str() {
         "POST" => {
+            let stages = std::fs::read_dir(&observed_root)
+                .unwrap()
+                .flatten()
+                .filter(|entry| {
+                    entry
+                        .file_name()
+                        .to_string_lossy()
+                        .starts_with(".zel-deploy-")
+                })
+                .count();
+            assert_eq!(
+                stages, 1,
+                "hosted export must use the project's shared filesystem"
+            );
             let body: Value = serde_json::from_slice(&request.body).unwrap();
             assert_eq!(body["draft"], true);
             let hashes: BTreeMap<String, String> =
@@ -471,6 +486,11 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         files
             .keys()
             .any(|path| path.contains("search") && path.ends_with(".json"))
+    );
+    assert_eq!(
+        std::fs::read_dir(root).unwrap().count(),
+        3,
+        "temporary hosted export was not cleaned up"
     );
     assert_eq!(
         std::fs::read_to_string(root.join("site/previous.txt")).unwrap(),

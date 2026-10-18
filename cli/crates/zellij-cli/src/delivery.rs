@@ -66,7 +66,20 @@ pub(crate) fn deploy(
         Renderer::Hosted => Some(zellij_engine::ContainerEngine::detect(None)?),
         Renderer::Portable => None,
     };
-    let temporary = tempfile::Builder::new().prefix("zel-deploy-").tempdir()?;
+    let mut temporary_builder = tempfile::Builder::new();
+    temporary_builder.prefix(".zel-deploy-");
+    let temporary = if engine.is_some() {
+        // Keep the bind-mounted export beside the selected content: runtimes
+        // such as Colima may share the user's project but not the OS temp dir.
+        // A sibling also stays outside legacy raw-content roots.
+        temporary_builder.tempdir_in(content.parent().ok_or_else(|| {
+            zellij_core::Error::InvalidArgument(
+                "hosted deployment requires a content folder below the filesystem root".into(),
+            )
+        })?)?
+    } else {
+        temporary_builder.tempdir()?
+    };
     let export = Utf8Path::from_path(temporary.path())
         .ok_or_else(|| {
             zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
