@@ -1231,6 +1231,25 @@ native failure preservation and recovery in both browsers. Consult the PR
 containing `a9767fa` for hosted six-target/three-OS acceptance and merge status.
 No new native version is published here.
 
+Follow-up source `ea39bfb` fixes a reproduced theme/font race: changing to Slate
+while another render pass was active drew labels while its IBM Plex Sans request
+was still pending. Initial font readiness did not cover later render revisions.
+Each revision now explicitly loads its body font, awaits font readiness and
+rechecks whether the theme became stale before measuring labels. Failed optional
+font loads use the normal browser fallback instead of aborting all diagrams.
+HTTP/watch regression tests change themes during drawing, delay real font
+responses and assert all eight diagrams render after font readiness in both
+Chromium and WebKit. Focused offline acceptance also passes in both browsers.
+The original reproduction reported one pending font request and `loading`;
+the fixed runtime reports zero pending requests and `loaded`.
+
+[PR #25](https://github.com/mylife-inc/Zellij/pull/25) merged `bd791d1` as
+`113283a` after all 13 PR jobs passed (`39097514862`). Its image run
+`39098016565` passed all 13 jobs. Consult that PR for final main run
+`39098016595` evidence, and the PR containing `ea39bfb` for final acceptance
+of the font follow-up. No native release was published; `zellij-v0.1.3` was
+reconfirmed as latest on 2026-10-17.
+
 Prior milestone completion: [PR #24](https://github.com/mylife-inc/Zellij/pull/24)
 merged head `46a25a8` as `1bddf89`. PR/main CI `39095187808` / `39095732531` each
 passed all 13 jobs, including Rust 1.96, six package/install targets and three-OS
@@ -1548,7 +1567,7 @@ does not prove MDX compiles or all links/images work.
 Remaining order after portable Mermaid implementation, subject to the user's v1 scope decision:
 
 1. Complete hosted acceptance of portable Mermaid, including minimum Rust and all
-   native targets; consult the PR containing `a9767fa`. Portable math/mindmaps are accepted on main.
+   native targets; consult the PR containing `ea39bfb` for the font follow-up. The original Mermaid feature is merged in PR #25.
 2. Finish the agreed CLI subset and remaining portable compatibility work in
    [the portable contract](specs/zel-portable-docs.md); native scaffolding, math,
    YAML mindmaps and opt-in Mermaid are implemented.
