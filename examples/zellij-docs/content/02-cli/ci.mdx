@@ -83,7 +83,7 @@ when generating a workflow for review or when the secrets already exist.
 | Option | Current behavior |
 | --- | --- |
 | `<system>` | Required; only `github` is implemented |
-| `--content <path>` | Repository-relative source folder; otherwise current structured-content discovery |
+| `--content <path>` | Repository-relative raw hosted content folder; otherwise configured site’s `content/`, then legacy hosted discovery |
 | `--target <static\|image>` | Defaults to `static`; `image` adds image publication when no deployment provider is selected |
 | `--deploy netlify` | Select Netlify publication; other providers are not implemented |
 | `--site <id>` | Netlify site ID; otherwise local `NETLIFY_SITE_ID` |
@@ -126,3 +126,7 @@ evidence that GitHub started a run.
 - [`zel build`](/cli/build) — portable and hosted HTML outputs
 - [`zel image`](/cli/image) — image building and publication
 - [`zel deploy`](/cli/deploy) — planned direct deployment
+
+Configured site defaults for deployment and CI are not consumed yet. An explicit
+`--content` still names raw hosted content, for example `docs/zellij/content`,
+not the site root. Generated workflows remain compatible with released CLIs.

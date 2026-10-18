@@ -12,7 +12,7 @@
 //! somebody would run anyway — so this prints the one for their language
 //! rather than producing a worse version of it.
 
-use crate::{DocsOptions, Scaffold, docs, pipeline};
+use crate::{DocsOptions, Scaffold, configured_docs, pipeline};
 
 /// The command that starts a project in a given language.
 ///
@@ -50,7 +50,7 @@ impl Default for ProjectOptions {
     fn default() -> Self {
         Self {
             name: "project".into(),
-            docs_dir: "docs".into(),
+            docs_dir: "docs/zellij".into(),
             product_dir: "product".into(),
             product_lang: "none".into(),
         }
@@ -65,10 +65,9 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
         ..
     } = options;
 
-    // The documentation half is the content folder, unchanged — one scaffold,
-    // not two that can disagree.
+    // Share the configured hosted starter with `new docs`.
     let mut scaffold = Scaffold::new();
-    for (path, body) in docs(&DocsOptions {
+    for (path, body) in configured_docs(&DocsOptions {
         name: name.clone(),
         guide: true,
         ..Default::default()
@@ -95,7 +94,7 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
     scaffold.add(
         ".github/workflows/docs.yml",
         pipeline::github(&pipeline::CiOptions {
-            content: docs_dir.clone(),
+            content: format!("{docs_dir}/content"),
             publish: pipeline::Publish::Image,
             registry: "ghcr.io".into(),
             // `zel new project` scaffolds an image pipeline; a Netlify site
@@ -133,11 +132,13 @@ pub fn project(options: &ProjectOptions) -> Scaffold {
 
     scaffold.add(
         ".gitignore",
-        "node_modules/\n\
+        format!(
+            "{docs_dir}/site/\nnode_modules/\n\
          dist/\n\
          .next/\n\
          out/\n\
-         .DS_Store\n",
+         .DS_Store\n"
+        ),
     );
 
     scaffold
@@ -159,7 +160,10 @@ mod tests {
         });
         let paths = paths(&out);
 
-        assert!(paths.iter().any(|p| p == "docs/site.yaml"), "{paths:?}");
+        assert!(
+            paths.iter().any(|p| p == "docs/zellij/content/site.yaml"),
+            "{paths:?}"
+        );
         assert!(paths.iter().any(|p| p == "product/README.md"), "{paths:?}");
         assert!(
             paths.iter().any(|p| p == ".github/workflows/docs.yml"),
@@ -178,7 +182,7 @@ mod tests {
 
         let paths = paths(&out);
         assert!(
-            paths.iter().any(|p| p == "documentation/site.yaml"),
+            paths.iter().any(|p| p == "documentation/content/site.yaml"),
             "{paths:?}"
         );
         assert!(paths.iter().any(|p| p == "app/README.md"), "{paths:?}");
@@ -189,15 +193,21 @@ mod tests {
             .find(|(p, _)| p == ".github/workflows/docs.yml")
             .map(|(_, b)| b.to_string())
             .unwrap();
-        assert!(workflow.contains("'documentation/**'"), "{workflow}");
-        assert!(workflow.contains("CONTENT: documentation"), "{workflow}");
+        assert!(
+            workflow.contains("'documentation/content/**'"),
+            "{workflow}"
+        );
+        assert!(
+            workflow.contains("CONTENT: documentation/content"),
+            "{workflow}"
+        );
     }
 
     // The content half must be the same scaffold `zel new docs` produces, or
     // the two drift and only one of them stays valid.
     #[test]
     fn the_documentation_half_is_the_docs_scaffold() {
-        let standalone = docs(&DocsOptions {
+        let standalone = configured_docs(&DocsOptions {
             name: "acme".into(),
             guide: true,
             ..Default::default()
@@ -210,7 +220,7 @@ mod tests {
         for (path, body) in standalone.files() {
             let found = inside
                 .files()
-                .find(|(p, _)| p.as_str() == format!("docs/{path}"))
+                .find(|(p, _)| p.as_str() == format!("docs/zellij/{path}"))
                 .map(|(_, b)| b);
             assert_eq!(found, Some(body), "docs/{path} differs from `zel new docs`");
         }

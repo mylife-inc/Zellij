@@ -2,7 +2,7 @@
 use crate::{Page, links::href, markdown::escape};
 use camino::{Utf8Path, Utf8PathBuf};
 use serde::Deserialize;
-use std::{collections::BTreeSet, fs, io};
+use std::{collections::BTreeSet, fs};
 use zellij_core::{Result, files};
 
 pub const FILE: &str = "zel.yaml";
@@ -109,7 +109,7 @@ fn external(url: &str, field: &str) -> Result<()> {
 pub fn present(root: &Utf8Path) -> bool {
     // A malformed entry (including a dangling link) must select the portable
     // path and report its error, rather than silently choosing another target.
-    fs::symlink_metadata(root.join(FILE)).is_ok()
+    zellij_core::site::present(root)
 }
 fn regular(root: &Utf8Path, relative: &Utf8Path) -> Result<Utf8PathBuf> {
     crate::portable_path(relative)?;
@@ -131,14 +131,8 @@ fn regular(root: &Utf8Path, relative: &Utf8Path) -> Result<Utf8PathBuf> {
     Ok(path)
 }
 impl Config {
-    pub fn load(root: &Utf8Path) -> Result<Self> {
-        match fs::symlink_metadata(root.join(FILE)) {
-            Err(error) if error.kind() == io::ErrorKind::NotFound => return Ok(Self::default()),
-            Err(error) => return Err(error.into()),
-            Ok(_) => {}
-        }
-        let path = regular(root, Utf8Path::new(FILE))?;
-        let config: Self = serde_yaml_ng::from_str(&fs::read_to_string(path)?)
+    pub fn load(value: serde_yaml_ng::Value) -> Result<Self> {
+        let config: Self = serde_yaml_ng::from_value(value)
             .map_err(|e| invalid(format!("invalid configuration: {e}")))?;
         if let Some(name) = &config.name {
             nonempty(name, "name")?;

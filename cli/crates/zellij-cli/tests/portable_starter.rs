@@ -47,7 +47,8 @@ fn check(root: &Path, dir: &str, pages: usize) {
 fn default_and_minimal_starters_build_without_changing_sources() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
-    for (dir, minimal, pages, files) in [("docs", false, 2, 4), ("Minimal 日本", true, 1, 2)] {
+    for (dir, minimal, pages, files) in [("docs/zellij", false, 2, 4), ("Minimal 日本", true, 1, 2)]
+    {
         let args = if minimal {
             vec!["new", "portable", dir, "--minimal"]
         } else {
@@ -59,15 +60,19 @@ fn default_and_minimal_starters_build_without_changing_sources() {
         assert_eq!(before.len(), files);
         check(root, dir, pages);
         run(root, &["build", dir], 0);
-        let site = root.join(format!("{dir}-site"));
+        let site = source.join("site");
         let html = fs::read_to_string(site.join("index.html")).unwrap();
-        assert!(html.contains(&format!("<h1 id=\"_zel-title\">{dir}</h1>")));
+        assert!(html.contains(&format!(
+            "<h1 id=\"_zel-title\">{}</h1>",
+            source.file_name().unwrap().to_str().unwrap()
+        )));
         assert!(html.contains("data-zellij-theme=\"cupertino\""));
         if !minimal {
             let guide = fs::read_to_string(site.join("guide/getting-started.html")).unwrap();
             assert!(guide.contains("../index.html#build-and-share"));
             assert!(site.join("assets/workflow.svg").is_file());
         }
+        fs::remove_dir_all(&site).unwrap();
         assert_eq!(snapshot(&source), before);
     }
 }
@@ -176,15 +181,19 @@ fn invalid_options_and_existing_content_fail_before_writes() {
 fn dangling_generated_path_is_not_followed_or_replaced() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
-    fs::create_dir(root.join("docs")).unwrap();
-    std::os::unix::fs::symlink(root.join("outside"), root.join("docs/index.md")).unwrap();
+    fs::create_dir_all(root.join("docs/zellij/content")).unwrap();
+    std::os::unix::fs::symlink(
+        root.join("outside"),
+        root.join("docs/zellij/content/index.md"),
+    )
+    .unwrap();
     run(root, &["new", "portable"], 2);
     assert!(
-        fs::symlink_metadata(root.join("docs/index.md"))
+        fs::symlink_metadata(root.join("docs/zellij/content/index.md"))
             .unwrap()
             .file_type()
             .is_symlink()
     );
     assert!(!root.join("outside").exists());
-    assert!(!root.join("docs/zel.yaml").exists());
+    assert!(!root.join("docs/zellij/zel.yaml").exists());
 }

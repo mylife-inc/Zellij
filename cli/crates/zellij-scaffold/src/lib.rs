@@ -124,6 +124,17 @@ pub fn docs(options: &DocsOptions) -> Scaffold {
     scaffold
 }
 
+/// A hosted site root, keeping engine-authored presentation inside content/.
+/// The raw `docs` scaffold remains available for imports and legacy consumers.
+pub fn configured_docs(options: &DocsOptions) -> Scaffold {
+    let mut scaffold = Scaffold::new();
+    scaffold.add("zel.yaml", "version: 1\nrenderer: hosted\n");
+    for (path, body) in docs(options).files() {
+        scaffold.add(format!("content/{path}"), body);
+    }
+    scaffold
+}
+
 /// A guide folder: a sidebar and an index page.
 ///
 /// `order` decides the numeric prefix, and so where the guide sits among its

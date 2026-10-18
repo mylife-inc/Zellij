@@ -4,20 +4,68 @@ description: Configure portable Markdown with zel.yaml; distinguish hosted setti
 ---
 
 <Callout type="tip" title="Available in source">
-Portable Markdown uses `zel.yaml`. Hosted YAML/MDX sites use `site.yaml` and the
-existing content model. The agreed site-root layout and common defaults described
-below are not implemented yet; they will extend `zel.yaml`.
-Native release packages may lag the source version.
+Versioned `zel.yaml` selects a portable or hosted site with separate `content/`
+and `site/` folders. Native release packages may lag this source version.
 </Callout>
+
+## Site layout and discovery
+
+```text
+my-product/
+  docs/
+    specs/
+    zellij/             # Any folder name is allowed
+      zel.yaml
+      content/          # Markdown/assets, or hosted YAML/MDX
+      site/             # Generated output
+```
+
+With no directory argument, build/check/view/serve/dev and image build/dockerfile
+first look for `./zel.yaml`, then `./docs/zellij/zel.yaml`. They do not search
+parents or recursively scan the repository. A custom folder is explicit:
+`zel build docs/manual`. A missing default reports the expected config path.
+From inside `content/`, change to its parent or pass that parent explicitly.
+
+```yaml title="docs/zellij/zel.yaml"
+version: 1
+renderer: portable
+name: Acme documentation
+build:
+  out: site
+preview:
+  port: 3000
+```
+
+Only `version` and `renderer` are required. The integer version is `1`, source is
+always `content/`, output defaults to `site/`, and preview port defaults to 3000.
+Set the port to `0` to choose an available port. `--out` and `--port` override
+configuration. CLI paths are relative to the working directory; `build.out` is
+relative to `zel.yaml` (an absolute path is also accepted). Existing overlap and
+output-ownership protections still apply.
+
+Hosted sites use `renderer: hosted`. Their `zel.yaml` accepts only `version`,
+`renderer`, `build`, and `preview`; put name, theme, navigation and branding in
+`content/site.yaml` and the hosted content files. Renderer mismatches fail with
+an explanation. `dev` is currently hosted-only; `view` is currently portable-only.
+For a hosted static preview, use `build` followed by `serve`.
+
+An explicit raw Markdown or hosted content folder remains supported. Existing
+flat portable configurations without `version` keep their original meaning:
+Markdown and `zel.yaml` share one folder, and the default native output is its
+sibling `<folder>-site`. Use an explicit `.` for an unconfigured current folder.
+Existing files are never moved into the new layout automatically. For hosted
+legacy roots, explicit `.` retains the old content-discovery order.
 
 ## Portable Markdown
 
-Place an optional `zel.yaml` directly inside the Markdown folder supplied to
-`zel build` or `zel view`. A plain folder still works without it. The file sets
+Add the following presentation settings to a portable site’s `zel.yaml`.
+Navigation and logo paths are relative to `content/`. The file sets
 site identity, initial theme, a company logo/link, and documentation navigation.
 It does not require Node, Docker, or an internet connection.
 
-```yaml title="docs/zel.yaml"
+```yaml title="docs/zellij/zel.yaml"
+version: 1
+renderer: portable
 name: Acme documentation
 theme: forest
 brand:
@@ -38,9 +86,9 @@ nav:
 ```
 
 ```bash title="terminal"
-zel build ./docs
-zel view ./docs --watch
-zel build ./docs --name "Release documentation" --theme cupertino
+zel build
+zel view --watch
+zel build --name "Release documentation" --theme cupertino
 ```
 
 ### Selecting settings
@@ -51,11 +99,10 @@ name and the theme to `cupertino`.
 Run `zel list themes` for accepted theme names. The complete configuration must
 be valid, even when flags override some settings.
 
-The builder reads only `<input>/zel.yaml`; it does not search parent folders or
-look for child `docs` directories. Its presence selects the portable target for
-an otherwise automatic `zel build`, including a folder with hosted markers.
-An explicit `--target static` or `--target image` still selects that target.
-`view` always uses the portable target.
+The selected site's configuration controls rendering. A versioned hosted config
+cannot be forced through the portable renderer by `--target portable`. For an
+explicit legacy raw folder without a configuration, `--target` can still select
+the renderer. The complete config must be valid even when flags override settings.
 
 ### Mathematics
 
@@ -86,7 +133,7 @@ readable source, and reports diagram syntax errors in the browser. Native
 
 | Field | Meaning | Label |
 | --- | --- | --- |
-| `page` | Exact Markdown source path relative to this folder | Optional; defaults to the document title |
+| `page` | Exact Markdown source path relative to the content source | Optional; defaults to the document title |
 | `children` | Another list of entries forming a group | Required |
 | `href` | An absolute `http://` or `https://` link | Required |
 
@@ -133,8 +180,11 @@ Source and output ownership rules are the same as for an unconfigured build.
 
 `view --watch` notices config creation, edits, deletion, and logo changes. Invalid
 edits keep the last working site and show the preview error notice. Fixing the
-file rebuilds and reloads; deleting it restores defaults. CLI overrides stay in
-effect until restarting the command. Output paths and ports remain CLI options.
+file rebuilds and reloads. Deleting a versioned config or changing its layout or
+renderer reports an error and retains the last good preview; restore the config
+or restart the command. Deleting a legacy flat config restores its defaults.
+CLI overrides stay in effect. Output and port are fixed when preview starts;
+restart to apply changes to `build.out` or `preview.port`.
 
 An explicit visitor theme/appearance choice takes precedence over the site's
 initial theme and survives navigation. Merely loading a default no longer saves
@@ -142,59 +192,18 @@ it as a visitor choice, so config theme changes can appear on reload. Preference
 saved by older exports may reset once when switching to this explicit-choice
 format.
 
-`zel.yaml` is a portable-renderer format. It does not load MkDocs plugins,
-`mkdocs.yml`, hosted `site.yaml`/`_sidebar.yaml`, or a TOML defaults file.
-Use [`zel check ./docs --strict`](/cli/check) to validate configuration and
-Markdown natively without writing an export; add `--json` for structured reports.
-Use [`zel new portable`](/cli/new) for a working native starter.
-The common configuration and layout below remain future work.
+Portable settings do not load MkDocs plugins, `mkdocs.yml`, hosted navigation,
+or a TOML defaults file. Use [`zel check --strict`](/cli/check) to validate a
+configured portable site without writing an export; add `--json` for a structured
+report. Use [`zel new portable`](/cli/new) for a working starter.
 
 ## Planned CLI defaults
 
-<Callout type="warning" title="Agreed layout; implementation pending">
-The earlier `zel.toml` proposal has been superseded. The common site configuration
-will extend `zel.yaml` with a version marker and an explicit renderer. Current
-binaries do not yet accept the new schema or perform this discovery.
-</Callout>
-
-The agreed layout keeps authored content separate from configuration and output:
-
-```text
-my-product/
-  docs/
-    specs/
-    zellij/             # Any folder name is allowed
-      zel.yaml
-      content/          # Markdown, assets, or hosted YAML/MDX content
-      site/             # Generated output
-```
-
-Once implemented, `zel build` from the software repository root will select
-`docs/zellij/zel.yaml`. A differently named folder is explicit:
-`zel build docs/manual`. From a site root containing `zel.yaml`, the proposed
-resolver uses that site. It will not search ancestors or recursively guess which
-site in a repository to use. The output default is that site's `site/` directory.
-
-The proposed minimal configuration is:
-
-```yaml title="docs/zellij/zel.yaml — proposed, not accepted yet"
-version: 1
-renderer: portable
-name: Acme documentation
-```
-
-A hosted site will use `renderer: hosted`, with its existing presentation model
-under `content/site.yaml`. Portable navigation and logo paths will be relative
-to `content/`. Existing flat portable configs and explicitly supplied raw
-content folders will keep compatibility paths; no files will be moved silently.
-
-The common schema will also hold build output, preview, image, delivery and CI
-defaults. Command-line values will override configured defaults. Paths from the
-command line are relative to the working directory; configured paths are
-relative to the configuration file. Credentials remain outside this file.
+The site layout, `version`, `renderer`, `build.out`, and `preview.port` above are
+implemented in source. Image, delivery and CI settings, shared `--site-root` /
+`--config` / `--cwd` selectors, aliases, and additional image/delivery commands
+remain planned and are not accepted by the current parser.
 
 The [full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)
-records the proposed fields and aliases. Its unimplemented examples must not be
-copied into current pipelines. Current CI generation is documented in
-[`zel ci`](/cli/ci); current runtime diagnostics are in
-[`zel doctor`](/cli/doctor).
+records the remaining proposals. Current CI generation is documented in
+[`zel ci`](/cli/ci); runtime diagnostics are in [`zel doctor`](/cli/doctor).

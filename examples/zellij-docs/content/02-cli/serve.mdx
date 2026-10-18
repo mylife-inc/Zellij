@@ -10,6 +10,8 @@ server. Native release packages may lag current source; check your binary's help
 
 ```bash title="terminal"
 zel serve ./docs-site
+zel serve                             # configured site output
+zel serve docs/manual                 # custom configured site output
 zel serve ./dist --port 8080
 zel serve ./dist --port 0               # choose a free port
 zel serve ./dist --base-path /products/docs
@@ -77,7 +79,7 @@ TLS, authentication, or image optimization. Use a static host or
 
 | Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | Existing static output directory | `dist` |
+| `[dir]` | Configured site or existing static output directory | Site selected by `./zel.yaml` or `./docs/zellij/zel.yaml` |
 | `--port <n>` | Local port; `0` chooses an available one | `3000` |
 | `--base-path <path>` | Absolute URL mount prefix | `/` |
 
@@ -85,3 +87,6 @@ An occupied port produces an error; the server does not silently switch ports.
 Use `--port 0` when the particular port does not matter. Serving does not modify
 the export or require an ownership marker. Build's separate output-ownership
 rules still apply when producing or replacing an export.
+
+A configured root resolves to `build.out` or `site/`; it does not build or watch.
+Explicit export folders remain supported. `--port` overrides `preview.port`.

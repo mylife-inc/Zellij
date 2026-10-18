@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --test portable_build --test portable_check --test portable_starter --test runtime_requirements
+      - run: cargo test --locked -p zellij-cli --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -165,6 +165,11 @@ jobs:
       - name: Build the engine image from this checkout
         run: docker build -f docker/base.Dockerfile -t zellij-ci .
 
+      - name: Keep container acceptance on the runtime that built its image
+        # Automatic fallback can select Podman when Docker's probe fails under
+        # load, but Podman cannot see the image in Docker's local image store.
+        run: printf 'DOCKER_CONTEXT=%s\n' "$(docker context show)" >> "$GITHUB_ENV"
+
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
@@ -204,8 +209,8 @@ jobs:
 
           # Fail during MDX preparation, after the fast content check passes.
           # The previous export must survive this late build failure too.
-          cp "$work/content/01-guide/index.mdx" "$work/guide.mdx"
-          printf '\n<Callout>\n' >> "$work/content/01-guide/index.mdx"
+          cp "$work/content/content/01-guide/index.mdx" "$work/guide.mdx"
+          printf '\n<Callout>\n' >> "$work/content/content/01-guide/index.mdx"
           if "$zel" build "$work/content" --out "$work/site"; then
             echo '::error::Unclosed MDX component unexpectedly built'
             exit 1
@@ -213,8 +218,8 @@ jobs:
           cmp "$work/previous.html" "$work/site/index.html"
 
           # Ordinary rebuilding replaces old output and removes stale pages.
-          cp "$work/guide.mdx" "$work/content/01-guide/index.mdx"
-          printf 'type: hero\nheadline: Updated site\n' > "$work/content/sections/home/hero.yaml"
+          cp "$work/guide.mdx" "$work/content/content/01-guide/index.mdx"
+          printf 'type: hero\nheadline: Updated site\n' > "$work/content/content/sections/home/hero.yaml"
           printf 'obsolete\n' > "$work/site/obsolete.html"
           "$zel" build "$work/content" --out "$work/site"
           grep -q 'Updated site' "$work/site/index.html"

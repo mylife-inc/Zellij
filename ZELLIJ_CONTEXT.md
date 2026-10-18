@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-10-17**. Initial review baseline: local `main` at
+Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 This is the starting point for future Zellij conversations in this checkout.
@@ -1405,6 +1405,61 @@ the current CLI; Netlify used `--no-provision`, with no remote actions. Deep and
 strict documentation validation passed (47 routes, 23 embedded examples).
 All inventory forms appear in the draft; its 29 shortcut entries have distinct
 spellings. These checks do not establish runtime support for proposed commands.
+
+### Configured-site layout implementation — 2026-10-18
+
+The user authorized continuing the CLI implementation. Branch
+`codex/cli-site-layout` is based on main `1aa8376`, the merge of PR #27.
+Repository inspection reconfirmed public visibility and main as default.
+
+- `zellij-core::site` resolves an explicit site, cwd's `zel.yaml`, or
+  `docs/zellij/zel.yaml`, in that order. No parent/recursive search. Bare site
+  commands now fail with guidance when no configuration is present; existing
+  unconfigured folders remain available explicitly, including `.`.
+- `version: 1` requires `renderer: portable|hosted` and a real `content/`
+  directory. Output defaults to sibling `site/`; optional `build.out` is relative
+  to the config, and `preview.port` defaults to 3000. CLI overrides are cwd-relative.
+  Config/content symlinks and Windows reparse points are rejected.
+- Portable presentation retains strict validation and content-relative paths.
+  Hosted settings stay in `content/site.yaml`; common hosted configs reject
+  presentation fields instead of silently merging competing values. A common
+  config no longer forces hosted sites into the native renderer.
+- Build/check/serve/view, hosted dev, image build/dockerfile, and page/guide
+  creation use site resolution. View remains portable-only; dev hosted-only.
+  Explicit generated output serving, flat portable configs and raw content
+  remain supported. Legacy explicit `.` retains hosted discovery.
+- New portable/docs/project starters create `zel.yaml` with nested `content/`;
+  default destination is `docs/zellij`. Generated project CI still uses raw
+  `<site>/content`, compatible with released binaries. Imports remain unchanged.
+- Watch pins its layout, port and output; it hashes content and sibling config,
+  ignoring generated output and unrelated root files. Config removal, malformed
+  YAML or renderer/layout changes retain the last good site and display errors;
+  restoring configuration recovers. The compiler enforces the pinned layout too.
+- Source/output disjointness uses the actual content root. Existing ownership,
+  staging and failed-build preservation still apply. Configured default image
+  tags use the site folder name, avoiding a shared `content:latest` default;
+  explicit tags and legacy-folder tags retain their meanings.
+
+Local validation: 209 Rust tests; formatting and warnings-denied Clippy;
+Chromium/WebKit direct-file, offline, starter, HTTP preview and watch acceptance;
+40 Rust/10 Node starters plus 10 guide-title checks; strict/deep docs validation
+(47 routes, 23 examples). Browser tests include config/content edits, deletion
+and recovery, ignored output changes, and configured serving without rebuilding.
+The PR CI gates all supported native packages and the three OS acceptance suites;
+consult its current status before treating those hosted checks as passed.
+
+Previous main CI run `39109606782` failed container preparation because automatic
+runtime discovery selected Podman after Docker did not pass its probe. Podman
+could not see the locally built Docker image and tried registry pulls. The
+container acceptance job now explicitly selects the Docker context that built
+its image. Base-image publication run `39109606795` passed at main `1aa8376`.
+The earlier PR #27 CI passed; that did not establish the later main run passed.
+
+Next: command aliases/help catalog, separate static/Next image commands, then
+shared deployment/CI configuration. Global site/config/cwd selectors, portable
+dev, hosted view, import-layout changes and advanced command stubs are pending.
+The local reference and contract mark implemented settings separately from
+proposals. No new CLI release or public documentation deployment in this increment.
 
 ### Container prerequisite implementation — 2026-10-18
 

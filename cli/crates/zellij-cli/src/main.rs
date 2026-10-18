@@ -79,8 +79,8 @@ enum Command {
 
     /// Validate portable Markdown natively, or hosted content using its engine.
     Check {
-        #[arg(default_value = ".")]
-        dir: String,
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
         /// Override automatic selection: portable Markdown or hosted static content.
         #[arg(long, value_parser = ["portable", "static"])]
         target: Option<String>,
@@ -94,19 +94,19 @@ enum Command {
 
     /// Development server. Edit content, reload the page.
     Dev {
-        #[arg(default_value = ".")]
-        dir: String,
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
 
-        #[arg(long, default_value_t = 3000)]
-        port: u16,
+        #[arg(long)]
+        port: Option<u16>,
     },
 
     /// Build the site.
     Build {
-        #[arg(default_value = ".")]
-        dir: String,
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
 
-        /// Output: portable for zel.yaml/plain Markdown, static for discovered hosted content; see `zel list targets`.
+        /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
         #[arg(long)]
         target: Option<String>,
 
@@ -179,11 +179,11 @@ enum Command {
 
     /// Serve what `build` produced.
     Serve {
-        #[arg(default_value = "dist")]
-        dir: String,
+        /// Configured site or explicit generated output folder.
+        dir: Option<String>,
 
-        #[arg(long, default_value_t = 3000)]
-        port: u16,
+        #[arg(long)]
+        port: Option<u16>,
 
         /// URL prefix for an export configured with a deployment basePath.
         #[arg(long, default_value = "/")]
@@ -192,8 +192,8 @@ enum Command {
 
     /// Build a portable Markdown site, serve it locally, and open a browser.
     View {
-        #[arg(default_value = ".")]
-        dir: String,
+        /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
         #[arg(long)]
         out: Option<String>,
         #[arg(long)]
@@ -201,8 +201,8 @@ enum Command {
         #[arg(long)]
         theme: Option<String>,
         /// Local port; use 0 to choose an available port.
-        #[arg(long, default_value_t = 3000)]
-        port: u16,
+        #[arg(long)]
+        port: Option<u16>,
         /// Print the URL without launching a browser.
         #[arg(long, conflicts_with = "browser")]
         no_open: bool,
@@ -232,8 +232,7 @@ enum Command {
 enum ImageAction {
     /// The same as `build --target image`.
     Build {
-        #[arg(default_value = ".")]
-        dir: String,
+        dir: Option<String>,
 
         #[arg(long)]
         tag: Option<String>,
@@ -253,10 +252,7 @@ enum ImageAction {
         registry: Option<String>,
     },
     /// Print the Dockerfile `image build` would have used.
-    Dockerfile {
-        #[arg(default_value = ".")]
-        dir: String,
-    },
+    Dockerfile { dir: Option<String> },
 }
 
 #[derive(Subcommand)]
@@ -312,7 +308,7 @@ enum CiAction {
 enum NewTarget {
     /// A native Markdown starter with zel.yaml; no Docker or Node required.
     Portable {
-        #[arg(default_value = "docs")]
+        #[arg(default_value = "docs/zellij")]
         dir: String,
         /// Site name. Defaults to the directory's name.
         #[arg(long)]
@@ -320,7 +316,7 @@ enum NewTarget {
         /// One of the themes reported by `zel list themes`.
         #[arg(long, default_value = "cupertino")]
         theme: String,
-        /// Only zel.yaml and index.md, without the example guide or image.
+        /// Only zel.yaml and content/index.md, without the example guide or image.
         #[arg(long)]
         minimal: bool,
     },
@@ -335,7 +331,7 @@ enum NewTarget {
     },
     /// A hosted YAML/MDX content folder on its own.
     Docs {
-        #[arg(default_value = "content")]
+        #[arg(default_value = "docs/zellij")]
         dir: String,
 
         /// The site name. Defaults to the directory's.
@@ -373,8 +369,8 @@ enum NewTarget {
         #[arg(long, value_delimiter = ',')]
         sections: Vec<String>,
 
-        #[arg(long, default_value = ".")]
-        dir: String,
+        #[arg(long)]
+        dir: Option<String>,
     },
     /// A guide folder with a sidebar and an index page.
     Guide {
@@ -383,8 +379,8 @@ enum NewTarget {
         #[arg(long)]
         title: Option<String>,
 
-        #[arg(long, default_value = ".")]
-        dir: String,
+        #[arg(long)]
+        dir: Option<String>,
     },
     /// A repository with documentation and a product as siblings, and a
     /// pipeline that publishes the first on every push.
@@ -396,7 +392,7 @@ enum NewTarget {
         #[arg(long, default_value = "none")]
         product_lang: String,
 
-        #[arg(long, default_value = "docs")]
+        #[arg(long, default_value = "docs/zellij")]
         docs_dir: String,
 
         #[arg(long, default_value = "product")]
@@ -449,17 +445,17 @@ fn main() {
             deep,
             strict,
         } => validation::check(
-            dir,
+            dir.as_deref(),
             target.as_deref(),
             zellij_engine::CheckOptions { deep, strict },
             cli.json,
         ),
-        Command::Dev { ref dir, port } => dev(dir, port),
+        Command::Dev { ref dir, port } => dev(dir.as_deref(), port),
         Command::Serve {
             ref dir,
             port,
             ref base_path,
-        } => preview::serve(dir, port, base_path),
+        } => preview::serve(dir.as_deref(), port, base_path),
         Command::View {
             ref dir,
             ref out,
@@ -470,7 +466,7 @@ fn main() {
             ref browser,
             watch,
         } => preview::view(
-            dir,
+            dir.as_deref(),
             preview::ViewOptions {
                 out: out.as_deref(),
                 name: name.as_deref(),
@@ -489,7 +485,7 @@ fn main() {
             ref name,
             ref theme,
         } => build_dispatch(
-            dir,
+            dir.as_deref(),
             target.as_deref(),
             out.as_deref(),
             tag.as_deref(),
@@ -497,10 +493,10 @@ fn main() {
             theme.as_deref(),
         ),
         Command::Image { ref action } => match action {
-            ImageAction::Build { dir, tag } => image_build(dir, tag.as_deref(), None),
+            ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
             ImageAction::Run { tag, port } => image_run(tag.as_deref(), *port),
             ImageAction::Push { tag, registry } => image_push(tag, registry.as_deref()),
-            ImageAction::Dockerfile { dir } => image_dockerfile(dir),
+            ImageAction::Dockerfile { dir } => image_dockerfile_selected(dir.as_deref()),
         },
         Command::Doctor => doctor(),
         Command::Ci { ref action } => match action {
@@ -549,12 +545,12 @@ fn main() {
             ref name,
             ref sections,
             ref dir,
-        }) => new_page(name, sections, dir),
+        }) => new_page(name, sections, dir.as_deref()),
         Command::New(NewTarget::Guide {
             ref name,
             ref title,
             ref dir,
-        }) => new_guide(name, title.as_deref(), dir),
+        }) => new_guide(name, title.as_deref(), dir.as_deref()),
         Command::New(NewTarget::Project {
             ref name,
             ref product_lang,
@@ -581,24 +577,31 @@ fn main() {
 
 // ----------------------------------------------------------------- checking
 
-/// Where the content is, when nobody said.
-///
-/// `./content` first because that is what `zel new docs` writes, then the
-/// current root, then `./docs` and `./documentation`. A folder that merely
-/// holds Markdown is never assumed: guessing produces a build that looks
-/// finished and is about something else.
+/// Resolve a deliberate site selection before touching an engine or output.
+fn select_site(dir: Option<&str>) -> zellij_core::Result<Utf8PathBuf> {
+    zellij_core::site::select(Utf8Path::new("."), dir)
+}
 fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
-    let given = Utf8PathBuf::from(dir);
-
-    if dir != "." {
-        return if given.is_dir() {
-            Ok(given)
-        } else {
-            Err(zellij_core::Error::NoContentFolder { path: given })
-        };
+    if !Utf8Path::new(dir).is_dir() {
+        return Err(zellij_core::Error::NoContentFolder { path: dir.into() });
     }
-
-    Ok(zellij_core::Project::discover(&given)?.content)
+    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+    site.require(zellij_core::site::Renderer::Hosted)?;
+    if site.renderer == zellij_core::site::Renderer::Portable
+        && zellij_core::site::present(&site.root)
+    {
+        return Err(zellij_core::Error::InvalidArgument(
+            "hosted operations require hosted content; this zel.yaml configures portable Markdown"
+                .into(),
+        ));
+    }
+    if !site.configured
+        && !zellij_core::site::present(&site.root)
+        && Utf8Path::new(dir) == Utf8Path::new(".")
+    {
+        return Ok(zellij_core::Project::discover(&site.root)?.content);
+    }
+    Ok(site.content)
 }
 
 fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
@@ -628,8 +631,11 @@ fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result
     Ok(())
 }
 
-fn dev(dir: &str, port: u16) -> zellij_core::Result<()> {
-    let content = resolve_content(dir)?;
+fn dev(dir: Option<&str>, port: Option<u16>) -> zellij_core::Result<()> {
+    let dir = select_site(dir)?;
+    let site = zellij_core::site::Site::load(&dir)?;
+    let port = port.unwrap_or(site.port);
+    let content = resolve_content(dir.as_str())?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     println!("  Engine   {}", engine.image());
@@ -668,27 +674,29 @@ fn report_empty_mount(err: &zellij_core::Error) {
     eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
-/// Match build and check dispatch: an explicit portable config wins, followed
-/// by hosted discovery, then a plain Markdown root. Never walk parent folders.
-fn default_target(dir: &str) -> &'static str {
-    if zellij_docs::has_config(Utf8Path::new(dir)) {
-        "portable"
-    } else if zellij_core::Project::discover(Utf8Path::new(dir)).is_ok() {
-        "static"
-    } else {
-        "portable"
-    }
+fn default_target(dir: &str) -> zellij_core::Result<&'static str> {
+    Ok(
+        match zellij_core::site::Site::load(Utf8Path::new(dir))?.renderer {
+            zellij_core::site::Renderer::Portable => "portable",
+            zellij_core::site::Renderer::Hosted => "static",
+        },
+    )
 }
 
 fn build_dispatch(
-    dir: &str,
+    dir: Option<&str>,
     target: Option<&str>,
     out: Option<&str>,
     tag: Option<&str>,
     name: Option<&str>,
     theme: Option<&str>,
 ) -> zellij_core::Result<()> {
-    let target = target.unwrap_or_else(|| default_target(dir));
+    let selected = select_site(dir)?;
+    let dir = selected.as_str();
+    let target = match target {
+        Some(target) => target,
+        None => default_target(dir)?,
+    };
     if target != "portable" && (name.is_some() || theme.is_some()) {
         return Err(zellij_core::Error::InvalidArgument(
             "--name and --theme apply only to portable builds; configure hosted sites in site.yaml"
@@ -757,7 +765,8 @@ fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> 
     };
 
     let content = resolve_content(dir)?;
-    let out = Utf8PathBuf::from(out.unwrap_or("dist"));
+    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+    let out = out.map(Utf8PathBuf::from).unwrap_or(site.output);
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     println!("  Engine   {}", engine.image());
@@ -861,12 +870,29 @@ fn default_tag(content: &Utf8Path) -> String {
     format!("{}:latest", safe.trim_matches('-'))
 }
 
+fn image_build_selected(dir: Option<&str>, tag: Option<&str>) -> zellij_core::Result<()> {
+    image_build(select_site(dir)?.as_str(), tag, None)
+}
+fn image_dockerfile_selected(dir: Option<&str>) -> zellij_core::Result<()> {
+    image_dockerfile(select_site(dir)?.as_str())
+}
+
+fn site_tag(dir: &str, content: &Utf8Path) -> zellij_core::Result<String> {
+    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+    Ok(default_tag(if site.configured {
+        &site.root
+    } else {
+        content
+    }))
+}
+
 fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
+    let tag = match tag {
+        Some(tag) => tag.to_owned(),
+        None => site_tag(dir, &content)?,
+    };
     let engine = zellij_engine::ContainerEngine::detect(None)?;
-    let tag = tag
-        .map(str::to_owned)
-        .unwrap_or_else(|| default_tag(&content));
 
     println!("  Engine   {}", engine.image());
     println!("  Content  {content}");
@@ -883,11 +909,14 @@ fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_c
 }
 
 fn image_run(tag: Option<&str>, port: u16) -> zellij_core::Result<()> {
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
     let tag = match tag {
         Some(tag) => tag.to_owned(),
-        None => default_tag(&resolve_content(".")?),
+        None => {
+            let dir = select_site(None)?;
+            site_tag(dir.as_str(), &resolve_content(dir.as_str())?)?
+        }
     };
+    let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     println!("  Serving http://localhost:{port}  — Ctrl-C to stop");
     println!();
@@ -1130,14 +1159,18 @@ fn ci_init(
     };
 
     // The path as the *pipeline* will use it, which is relative to the
-    // repository root rather than to wherever this was run. Discovery only
-    // finds ./content, so anything else has to be said — and guessing "docs"
-    // because that is the common name would write a pipeline that points at
-    // nothing for everyone who chose a different one.
+    // repository root. Until config-aware CI is implemented, generated workflows
+    // consume raw hosted content so they also work with the released binary.
     let content = match content {
         Some(given) => given.to_owned(),
-        None => match resolve_content(".") {
-            Ok(path) => path.to_string(),
+        None => match match select_site(None) {
+            Ok(site) => resolve_content(site.as_str()),
+            Err(_) => zellij_core::Project::discover(Utf8Path::new(".")).map(|p| p.content),
+        } {
+            Ok(path) => {
+                let cwd = Utf8Path::new(".").canonicalize_utf8()?;
+                path.strip_prefix(&cwd).unwrap_or(&path).to_string()
+            }
             Err(_) => {
                 eprintln!("error: no content folder found, and none given");
                 eprintln!("       the pipeline needs the path as your repository sees it:");
@@ -1330,7 +1363,7 @@ fn new_docs(
         minimal,
     };
 
-    let written = zellij_scaffold::docs(&options).write(&target, force)?;
+    let written = zellij_scaffold::configured_docs(&options).write(&target, force)?;
 
     println!("✓ {target}");
     for path in &written {
@@ -1429,7 +1462,16 @@ fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()>
     Ok(())
 }
 
-fn new_page(name: &str, sections: &[String], dir: &str) -> zellij_core::Result<()> {
+fn authoring_content(dir: Option<&str>) -> zellij_core::Result<Utf8PathBuf> {
+    if let Some(dir) = dir
+        && !zellij_core::site::present(Utf8Path::new(dir))
+    {
+        return Ok(Utf8PathBuf::from(dir));
+    }
+    resolve_content(select_site(dir)?.as_str())
+}
+
+fn new_page(name: &str, sections: &[String], dir: Option<&str>) -> zellij_core::Result<()> {
     for section_type in sections {
         if !zellij_core::schema::is_section_type(section_type) {
             eprintln!("error: no section type called \"{section_type}\"");
@@ -1438,7 +1480,7 @@ fn new_page(name: &str, sections: &[String], dir: &str) -> zellij_core::Result<(
         }
     }
 
-    let root = Utf8PathBuf::from(dir);
+    let root = authoring_content(dir)?;
     let (scaffold, entry) = zellij_scaffold::page(name, sections);
     let written = scaffold.write_new(&root)?;
 
@@ -1457,8 +1499,8 @@ fn new_page(name: &str, sections: &[String], dir: &str) -> zellij_core::Result<(
     Ok(())
 }
 
-fn new_guide(name: &str, title: Option<&str>, dir: &str) -> zellij_core::Result<()> {
-    let root = Utf8PathBuf::from(dir);
+fn new_guide(name: &str, title: Option<&str>, dir: Option<&str>) -> zellij_core::Result<()> {
+    let root = authoring_content(dir)?;
     let order = next_guide_order(&root);
     let title = title.map(str::to_owned).unwrap_or_else(|| {
         let mut chars = name.chars();

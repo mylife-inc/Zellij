@@ -196,6 +196,35 @@ fn doctor_uses_a_working_alternative_without_starting_services_or_pulling_images
 
 #[cfg(unix)]
 #[test]
+fn configured_image_run_uses_site_identity_and_explicit_tag_needs_no_site() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let site = root.join("docs/zellij");
+    fs::create_dir_all(site.join("content")).unwrap();
+    fs::write(site.join("zel.yaml"), "version: 1\nrenderer: hosted\n").unwrap();
+    runtime(root, "docker", "exit 0");
+    let output = command(root).args(["image", "run"]).output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(
+        fs::read_to_string(root.join("docker-calls"))
+            .unwrap()
+            .contains("zellij:latest")
+    );
+    fs::remove_dir_all(root.join("docs")).unwrap();
+    let output = command(root)
+        .args(["image", "run", "custom:v2"])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(
+        fs::read_to_string(root.join("docker-calls"))
+            .unwrap()
+            .contains("custom:v2")
+    );
+}
+
+#[cfg(unix)]
+#[test]
 fn explicit_broken_endpoint_is_not_replaced_and_client_errors_do_not_leak_secrets() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

@@ -182,3 +182,14 @@ and discrepancy table above remain the comparison at `e8ec681`, not a claim that
 the website was redeployed. The configured-site layout and aliases remain next
 implementation work. See [context](../ZELLIJ_CONTEXT.md) for verification/commit
 evidence as this increment completes.
+
+
+### Later implementation — configured sites (2026-10-18)
+
+The inventory tables above remain the dated audit baseline. The subsequent
+configured-site increment implements versioned `zel.yaml`, content/site layout,
+repository/cwd defaults, build.out/preview.port and portable/hosted/project
+starters. Current site-oriented handlers share that resolver; explicit legacy
+inputs remain supported. Bare `serve` now selects a configured site's output
+instead of assuming `dist`. See the updated CLI contract and local references.
+Aliases, additional image modes, deployment and configured CI remain pending.

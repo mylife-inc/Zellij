@@ -2,12 +2,20 @@ use camino::Utf8Path;
 use zellij_core::{Error, Result};
 
 pub fn check(
-    dir: &str,
+    dir: Option<&str>,
     target: Option<&str>,
     options: zellij_engine::CheckOptions,
     as_json: bool,
 ) -> Result<()> {
-    match target.unwrap_or_else(|| crate::default_target(dir)) {
+    if as_json && target == Some("static") {
+        return Err(Error::InvalidArgument("--json is supported only for portable checks; hosted validation does not yet provide structured reports; no command was run".into()));
+    }
+    let selected = crate::select_site(dir)?;
+    let dir = selected.as_str();
+    // Invalid configuration is reported through the native check's structured
+    // diagnostics, preserving --json's one-report/no-stderr contract.
+    let automatic = crate::default_target(dir).unwrap_or("portable");
+    match target.unwrap_or(automatic) {
         "static" if as_json => return Err(Error::InvalidArgument(
             "--json is supported only for portable checks; hosted validation does not yet provide structured reports; no command was run".into(),
         )),

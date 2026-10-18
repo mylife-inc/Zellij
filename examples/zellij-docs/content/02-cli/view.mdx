@@ -32,7 +32,8 @@ are identical. `view` always uses the portable target; structured YAML/MDX sites
 use `zel build --target static` followed by [`zel serve`](/cli/serve), or
 [`zel dev`](/cli/dev) for their development workflow.
 
-Output defaults to the sibling `<input-folder>-site`. For example,
+For configured sites, output defaults to `build.out` or `site/` beside `zel.yaml`.
+Legacy raw Markdown output defaults to the sibling `<input-folder>-site`. For example,
 `zel view ./docs` produces `./docs-site`. `--out` can choose another directory
 outside the input. It must be new, empty, or a previous Zellij export. A failed
 build preserves the previous output and does not launch a browser.
@@ -96,14 +97,20 @@ CLI name/theme overrides remain in effect.
 
 | Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | Markdown source directory | `.` |
-| `--out <path>` | Portable output directory | Sibling `<input-folder>-site` |
+| `[dir]` | Configured portable site or explicit Markdown directory | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
+| `--out <path>` | Portable output directory | Configured `build.out`/`site/`, or legacy sibling `<input-folder>-site` |
 | `--name <text>` | Site header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | One of `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
-| `--port <n>` | Loopback port; `0` chooses an available one | `3000` |
+| `--port <n>` | Loopback port; `0` chooses an available one | `preview.port`, otherwise `3000` |
 | `--watch` | Rebuild on source edits and reload the HTTP preview after success | Off |
 | `--no-open` | Print the URL without opening a browser | Off |
 | `--browser <executable>` | Explicit browser executable | System default browser launcher |
 
 `--json` is currently limited to inspection commands and is rejected before a
 view build or server starts.
+
+A versioned preview watches only `content/` and the sibling `zel.yaml`, ignoring
+`site/` and other files in the site root. Missing/invalid config and renderer or
+layout changes retain the last successful preview and show an error. Restore the
+config or restart preview. Port/output settings are fixed until restart.
+Hosted sites currently use `build` followed by `serve`; `view` remains portable-only.

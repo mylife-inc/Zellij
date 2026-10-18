@@ -8,8 +8,8 @@ add to hosted content. The Rust `app` command remains planned.
 
 | | Creates | Default location | |
 | --- | --- | --- | --- |
-| `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs` | **Available in source** |
-| `zel new docs [dir]` | Hosted YAML/MDX content | `./content` | **Available** |
+| `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs/zellij` | **Available in source** |
+| `zel new docs [dir]` | Hosted YAML/MDX content | `./docs/zellij` | **Available** |
 | `zel new section <type>` | One section file | `--out`, or stdout | **Available** |
 | `zel new page <name>` | One page, and the section files it references | inside the content folder | **Available** |
 | `zel new guide <name>` | A guide folder with a sidebar and an index | inside the content folder | **Available** |
@@ -68,31 +68,32 @@ and previewing. This command is available in source; older released binaries
 may not have it. Check `zel new --help` before using an installed release.
 
 ```bash title="terminal"
-zel new portable docs --name "Acme documentation" --theme forest
-zel check docs --strict
-zel build docs                 # writes docs-site beside docs
-zel view docs --watch          # builds, serves, opens a browser and reloads edits
+zel new portable --name "Acme documentation" --theme forest
+zel check --strict
+zel build                      # writes docs/zellij/site
+zel view --watch          # builds, serves, opens a browser and reloads edits
 ```
 
-Double-click `docs-site/index.html` to view the build without a server. Move or
+Double-click `docs/zellij/site/index.html` to view the build without a server. Move or
 share the whole output folder so its pages and support files stay together.
-To serve an existing export, run `zel serve docs-site`.
+To serve an existing export, run `zel serve`.
 
 ```text
-docs/
-├── zel.yaml                   # name, theme and ordered navigation
-├── index.md                   # home and workflow instructions
-├── guide/getting-started.md    # links, assets and configuration examples
-└── assets/workflow.svg        # a local image used by the guide
+docs/zellij/
+├── zel.yaml                        # version, renderer and portable settings
+└── content/
+    ├── index.md
+    ├── guide/getting-started.md
+    └── assets/workflow.svg
 ```
 
-`--minimal` writes only `zel.yaml` and `index.md`. Both starters pass
+`--minimal` writes only `zel.yaml` and `content/index.md`. Both starters pass
 `zel check --strict` as created. They need no Docker, Node or network connection.
 An existing Markdown folder can be built directly; scaffolding is optional.
 
 | Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | Destination folder | `docs` |
+| `[dir]` | Site destination folder | `docs/zellij` |
 | `--name <text>` | Site name and home title | Destination folder's name |
 | `--theme <name>` | A theme from `zel list themes` | `cupertino` |
 | `--minimal` | Omit the example guide and image | off |
@@ -113,8 +114,9 @@ generate YAML/MDX and should not be used inside this Markdown starter.
 
 ## `zel new docs [dir]`
 
-Creates **the folder you write in** — the content root. No JavaScript, no
-`package.json`, nothing to install. Just the YAML and MDX that describe a site.
+Creates a versioned hosted site: `zel.yaml` selects the hosted renderer and
+`content/` holds the YAML/MDX files. No JavaScript project or installation is
+created. The default destination is `docs/zellij`; any explicit name is allowed.
 
 ```bash title="terminal"
 zel new docs
@@ -128,6 +130,9 @@ such as `Acme: Docs` retain their punctuation. The starter includes a
 plain and minimal starters without a guide have no guide button.
 
 ### What it writes
+
+The following files are inside `<destination>/content/`. Its sibling `zel.yaml`
+contains `version: 1` and `renderer: hosted`.
 
 ```
 content/
@@ -324,7 +329,9 @@ discoverable and a field you have to look up is not.
 
 ## `zel new page <name>`
 
-Adds an entry to `pages.yaml` and creates the section files it references.
+Prints an entry to add to `pages.yaml` and creates the section files it references.
+The default configured hosted site is selected as for `build`; `--dir` accepts a
+custom site root or an explicit legacy content folder. Portable sites are rejected.
 
 ```bash title="terminal"
 zel new page pricing --sections hero,pricing-table,faq
@@ -359,7 +366,7 @@ reformats a file you maintain.
 ## `zel new guide <name>`
 
 Adds a guide folder — a numbered directory with a `_sidebar.yaml` and an
-`index.mdx`.
+`index.mdx`. Site selection and `--dir` follow `new page`.
 
 ```bash title="terminal"
 zel new guide api --title "API reference"
@@ -385,21 +392,19 @@ zel new project acme --product-lang rust
 
 ```
 ✓ acme
-  docs/                    the documentation, as Zellij content
+  docs/zellij/             the configured hosted documentation
   product/                 yours
   .github/workflows/docs.yml validates on every pull request, image on main
-  12 files
 
-  Write:  zel dev acme/docs
+  Write:  zel dev acme/docs/zellij
   Code:   cd acme/product && cargo init
 ```
 
 | | | |
 | --- | --- | --- |
 | `--product-lang <lang>` | Which starting command to suggest | `none` |
-| `--docs-dir <name>` | | `docs` |
+| `--docs-dir <path>` | Configured site location within the repository | `docs/zellij` |
 | `--product-dir <name>` | | `product` |
-| `--force` | Write into a directory that is not empty | off |
 
 <Callout type="info" title="The product folder is empty on purpose">
 An earlier draft of this page said `--product-lang` would write "a minimal,
@@ -432,3 +437,6 @@ exactly what [`zel ci init github --target image`](/cli/ci) writes.
 - [`zel explain`](/cli/explain) — what fields a section type takes, before you create one
 - [`zel check`](/cli/check) — validate what you wrote
 - [The content model](/guide/content-model) — what these files are, conceptually
+
+The generated project workflow consumes `<docs-dir>/content` so it remains
+compatible with released CLIs. Config-aware CI settings are a later milestone.

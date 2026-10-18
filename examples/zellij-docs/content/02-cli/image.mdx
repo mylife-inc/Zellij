@@ -96,7 +96,7 @@ zel image run acme-docs:v2 --port 8080
 
 Publishes the container's port 3000 to `--port` on your machine and streams the
 log until you stop it. With no tag, it derives the default image tag from the
-currently resolved content folder. It does not remember a custom `--tag` from
+selected configured site folder (or the content folder for explicit legacy builds). It does not remember a custom `--tag` from
 an earlier build; pass that tag explicitly when running the image.
 
 **Do this once before pushing anything.** An image that builds is not an image
@@ -184,3 +184,9 @@ docker rm tmp
 - [`zel build`](/cli/build) — the two things a site can be
 - [`zel deploy`](/cli/deploy) — build and push in one step
 - [Containers](/guide/containers) — what the base image is, conceptually
+
+`image build` and `image dockerfile` select `./zel.yaml` or
+`./docs/zellij/zel.yaml` when no directory is given. A configured hosted site
+mounts its `content/`; portable sites require the future Markdown-to-Next adapter.
+The default tag uses the configured site folder name, avoiding a shared
+`content:latest` tag for all configured sites. Explicit `--tag` always wins.
