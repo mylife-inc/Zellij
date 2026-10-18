@@ -189,7 +189,10 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         working-directory: cli
-        run: cargo test --locked -p zellij-cli --bin zel netlify_tests::hosted_container_export_upload -- --ignored --nocapture
+        run: |
+          acceptance_test=netlify::tests::hosted_container_export_upload_preserves_prefix_assets_and_previous_output
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:
