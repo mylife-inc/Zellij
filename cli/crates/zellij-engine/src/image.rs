@@ -3,7 +3,7 @@
 //! The Dockerfile is generated rather than kept in the user's repository. The
 //! correct one is not obvious — a base image they did not choose, an install
 //! step whose shape depends on which features the content uses, and a runtime
-//! stage that must copy exactly three paths. Getting it slightly wrong yields
+//! stage that must carry the traced application, public assets and runtime content. Getting it slightly wrong yields
 //! an image four times the size that still works, so nothing tells you.
 //!
 //! The Dockerfile is streamed on stdin and the **content folder is the build
@@ -76,6 +76,9 @@ WORKDIR /app
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=build --chown=nextjs:nodejs /app/public ./public
+# The catch-all route also loads content for unknown URLs before returning 404.
+# Dynamic filesystem reads are not fully captured by Next's dependency tracing.
+COPY --from=build --chown=nextjs:nodejs /app/content ./content
 COPY --from=build --chown=nextjs:nodejs /app/zellij-health-path ./zellij-health-path
 
 USER nextjs

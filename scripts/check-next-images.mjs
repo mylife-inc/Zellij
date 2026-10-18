@@ -33,6 +33,7 @@ async function ready(origin, prefix) {
 }
 async function browserChecks(origin, prefix, portable) {
   await ready(origin,prefix);
+  assert.equal((await fetch(`${origin}${prefix}/unknown-route`)).status,404);
   const browser = await chromium.launch();
   try {
     const page = await browser.newPage();

@@ -118,7 +118,8 @@ use `zel ni` for portable Markdown.
 
 The generated multi-stage recipe copies the selected content into the wrapper,
 installs dependencies, checks content, builds Next, then copies the standalone
-server, static chunks, and public assets into a Node 24 Alpine runtime. The
+server, static chunks, public assets, and the selected content needed for
+server-side route resolution into a Node 24 Alpine runtime. The
 server runs without root on port 3000.
 
 `--platform`, `--features`, and `--build-arg` are not implemented CLI options yet.

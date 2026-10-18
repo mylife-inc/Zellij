@@ -2096,3 +2096,15 @@ must not be represented as actual Docker image acceptance.
 Next work after this milestone: shared image/delivery/CI settings, Netlify
 integration, expanded workflow generation, then the remaining CLI inventory.
 The CLI is still not complete. No user action is currently needed.
+
+
+PR #31 run `39147053587` built the portable Next image and passed valid-page
+browser checks, then found an existing standalone packaging defect: unknown
+URLs triggered runtime content loading, but `/app/content` was absent, producing
+500 instead of 404. Next's automatic dependency trace does not include those
+dynamic filesystem reads. The shared CLI recipe and `docker/site.Dockerfile`
+now carry the selected content into the non-root runtime; portable images carry
+only the generated adapter content, not original Markdown or unrelated files.
+The checked-in Dockerfile also mirrors standalone output and prefix-aware health
+checks. Acceptance explicitly checks unknown paths as well as source-file URLs.
+Use the latest PR checks for the corrected actual-container result.
