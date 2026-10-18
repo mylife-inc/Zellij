@@ -25,7 +25,16 @@ pub fn check(
     }
     // Portable compilation always validates local references, so --deep is
     // accepted for shared CI commands without changing the validation coverage.
-    let report = zellij_docs::check(Utf8Path::new(dir), options.strict);
+    let exit_code = portable(Utf8Path::new(dir), options.strict, as_json)?;
+    // One-shot CLI behavior; watch consumes the same report without exiting.
+    if exit_code != 0 {
+        std::process::exit(exit_code);
+    }
+    Ok(())
+}
+
+pub fn portable(dir: &Utf8Path, strict: bool, as_json: bool) -> Result<i32> {
+    let report = zellij_docs::check(dir, strict);
     if as_json {
         let value = serde_json::to_value(&report).map_err(std::io::Error::other)?;
         crate::print_json(&value)?;
@@ -37,7 +46,7 @@ pub fn check(
         if let Some(pages) = report.pages {
             println!("  {pages} HTML pages checked; no files written");
         }
-        if options.strict
+        if strict
             && !report.ok
             && report
                 .diagnostics
@@ -49,8 +58,5 @@ pub fn check(
     }
     // The full report already contains the failure. In JSON mode stderr stays
     // empty; don't append an unrelated human-only error through main's handler.
-    if report.exit_code != 0 {
-        std::process::exit(report.exit_code);
-    }
-    Ok(())
+    Ok(report.exit_code)
 }

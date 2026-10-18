@@ -29,6 +29,7 @@ ctrlc = { version = "3.5", features = ["termination"] }
 open = "5"
 clap_complete = "4.6.11"
 tempfile = "3"
-
-[dev-dependencies]
+pretty_yaml = "=0.6.0"
+yaml_parser = "=0.3.0"
+rowan = "0.16"
 serde_yaml_ng.workspace = true

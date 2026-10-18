@@ -7,6 +7,8 @@ use camino::Utf8PathBuf;
 /// not running" is the difference between a useful failure and a retry loop.
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
+    #[error("YAML formatting changes required; run zel fmt without --check")]
+    FormattingRequired,
     #[error("{0}")]
     InvalidArgument(String),
 

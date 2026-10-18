@@ -290,3 +290,15 @@ wrapper-config versions, destination containment and no-overwrite protections
 are enforced. The local guide/contract record exact options and limits.
 The remaining backlog includes fmt/watch, portable dev, hosted view, other
 providers, maintenance commands and compatible release publication.
+
+
+## 2026-10-18 formatting and validation-watch update
+
+The historical fmt stub is implemented in source and watch is now registered.
+Fmt natively formats selected site YAML with comment/value preservation and a
+nonwriting --check mode. Watch performs initial and debounced repeated validation,
+recovering after invalid edits with a pinned renderer/layout; portable is native
+and hosted uses the container engine. Both honor configured-site discovery and
+explicit legacy roots. See contract stage 6b and the local fmt/watch references.
+Remaining work includes portable dev, hosted view, other providers, advanced
+maintenance and compatible release/public documentation publication.
