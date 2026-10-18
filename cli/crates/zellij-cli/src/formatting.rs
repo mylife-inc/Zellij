@@ -45,7 +45,11 @@ pub fn run(dir: Option<&str>, check: bool) -> Result<()> {
             let relative = path
                 .strip_prefix(&site.root)
                 .map_err(|e| Error::InvalidArgument(e.to_string()))?;
-            files::contained_path(&site.root, relative)?;
+            // The write-plan validator uses portable separators. Split actual
+            // OS components so Windows paths work without treating a Unix
+            // filename containing a backslash as a different destination.
+            let relative = relative.iter().collect::<Vec<_>>().join("/");
+            files::contained_path(&site.root, Utf8Path::new(&relative))?;
             if fs::read_to_string(path)? != *original {
                 return Err(files::unsafe_path(
                     path,

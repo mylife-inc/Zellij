@@ -1938,3 +1938,11 @@ not a claim that the product is complete or bug-free.
 Formatting/watch implementation source: `47fbcfbb17d435d584a758093415160d42513bc7`
 in [PR #37](https://github.com/mylife-inc/Zellij/pull/37). That PR tracks final-head
 Linux/macOS/Windows formatting/watch and real-container validation acceptance.
+
+
+PR #37 run 39175688739 caught a Windows formatting publication failure: the
+contained-path validator expects portable relative separators, while WalkDir
+returns OS-native paths. Splitting actual path components and joining with /
+fixes that preflight without reinterpreting Unix backslashes. Windows junction
+refusal and no-write tests already passed; all-platform acceptance must rerun
+on the fix before merge.
