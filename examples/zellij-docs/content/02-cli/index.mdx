@@ -89,6 +89,7 @@ need no container runtime.
 | [`zel publish`](/cli/publish) | check, build and deploy in one step | Planned |
 | [`zel ship`](/cli/ship) | Somebody else's docs to a published site, in one line | Planned |
 | [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
+| [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available in source** |
 
 <Callout type="warning" title="Planned means planned">
 Zellij is pre-1.0, and the commands marked **Planned** exist in the binary but
@@ -101,6 +102,10 @@ actually do.
 </Callout>
 
 ## How a command finds your content
+
+Common workflows also have short forms: `zel init`, `zel c`, `zel b`, and
+`zel v --watch`. See [the full shortcut table](/cli/shortcuts). Both forms accept
+the same arguments; help and shell completion show the available names.
 
 Build/check/view/serve/dev and image build/dockerfile accept a site directory.
 Without one, they select `./zel.yaml`, then `./docs/zellij/zel.yaml`.

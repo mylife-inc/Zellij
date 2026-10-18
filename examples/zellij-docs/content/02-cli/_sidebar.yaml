@@ -39,5 +39,7 @@ nav:
       - ci
   - label: Reference
     items:
+      - shortcuts
+      - completions
       - config
       - doctor

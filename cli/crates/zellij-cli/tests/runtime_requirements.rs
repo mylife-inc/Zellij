@@ -59,6 +59,10 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["image", "build", "content"],
         vec!["image", "run", "test:latest"],
         vec!["image", "push", "test:latest"],
+        vec!["b", "content", "--target", "static", "--out", "site"],
+        vec!["c", "content"],
+        vec!["ir", "test:latest"],
+        vec!["ip", "test:latest"],
         vec!["doctor"],
     ] {
         let output = command(root).args(&args).output().unwrap();

@@ -1,0 +1,65 @@
+---
+title: zel completions
+description: Generate completion scripts for Bash, Zsh, Fish, PowerShell, and Elvish.
+---
+
+Available in current source, with shortcut `zel comp`. This requires a binary
+release newer than the public `zellij-v0.1.3` release.
+
+```bash
+zel completions bash
+zel comp zsh
+```
+
+The required shell is one of `bash`, `zsh`, `fish`, `powershell`, or `elvish`.
+The command prints only the completion script to standard output. It does not
+edit shell profiles, create a site, or require Docker, Node, or network access.
+Redirect it to a file to save it. An unknown shell returns exit code 2;
+`--json` is not supported for this command.
+
+The script is generated from the same command definitions as help and parsing.
+It includes full names, [shortcuts](/cli/shortcuts), options, and enumerated
+values such as shell names and check targets. It does not inspect a site or
+query a registry, cloud provider, or GitHub account. Registered planned command
+stubs may appear in completion, just as they appear in help; completion does
+not make those operations implemented.
+
+## Load for the current shell session
+
+For Bash:
+
+```bash
+source <(zel completions bash)
+```
+
+For Zsh, initialize its completion system if your shell setup has not already
+done so, then load the script:
+
+```zsh
+autoload -Uz compinit
+compinit
+source <(zel completions zsh)
+```
+
+For Fish:
+
+```fish
+zel completions fish | source
+```
+
+For PowerShell:
+
+```powershell
+zel completions powershell | Out-String | Invoke-Expression
+```
+
+For Elvish, save the generated script as a module and load it using your Elvish
+module configuration:
+
+```bash
+zel completions elvish > zel.elv
+```
+
+For persistent completion, save the script in your shell's completion directory
+or add the corresponding load command to your own profile. Regenerate saved
+scripts after updating `zel` so names and options match the installed binary.

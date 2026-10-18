@@ -1,0 +1,84 @@
+---
+title: Shortcuts
+description: Short command names with the same arguments and behavior as their full forms.
+---
+
+These shortcuts are available in current source. They need a new binary release;
+the public `zellij-v0.1.3` binaries predate them. Run `zel --help` to see what
+your installed binary supports.
+
+```bash title="From your software repository"
+zel init                  # new portable: docs/zellij/zel.yaml and content/
+zel c --strict            # check
+zel b                     # build into docs/zellij/site/
+zel v --watch             # build, serve, open, and rebuild after edits
+```
+
+To serve an existing export without building, use `zel s`. To select a custom
+site, use `zel b docs/manual` or the same path with `c`, `s`, or `v`.
+
+## Available names
+
+Every row accepts exactly the same arguments and options through either name.
+Defaults, validation, JSON support, runtime requirements, and exit status are
+the same. Command names in help and usage messages reflect the form requested.
+
+| Full command | Shortcut |
+| --- | --- |
+| `zel new portable` | `zel init` |
+| `zel new docs` | `zel nd` |
+| `zel new section` | `zel ns` |
+| `zel new page` | `zel np` |
+| `zel new guide` | `zel ng` |
+| `zel new project` | `zel npr` |
+| `zel explain` | `zel ex` |
+| `zel list sections` | `zel sections` |
+| `zel list themes` | `zel themes` |
+| `zel list formats` | `zel formats` |
+| `zel list targets` | `zel targets` |
+| `zel context` | `zel ctx` |
+| `zel convert` | `zel cv` |
+| `zel migrate` | `zel mig` |
+| `zel check` | `zel c` |
+| `zel build` | `zel b` |
+| `zel serve` | `zel s` |
+| `zel view` | `zel v` |
+| `zel image run` | `zel ir` |
+| `zel image push` | `zel ip` |
+| `zel image dockerfile` | `zel idf` |
+| `zel completions` | `zel comp` |
+
+`zel ci run` dispatches an existing workflow. Its original spelling,
+`zel ci publish`, remains accepted with the same `--workflow` and `--ref` options.
+See [CI](/cli/ci) for generation and dispatch behavior.
+
+## Finding options
+
+```bash
+zel init --help
+zel new portable --help
+zel b --help
+zel --json themes
+zel c --json --strict
+```
+
+Help connects the full form and shortcut. [Shell completions](/cli/completions)
+include both. Shortcuts are built into the binary and work on Linux, macOS,
+and Windows without shell aliases. Arbitrary prefixes such as `zel bu` are not
+commands; use `zel build` or `zel b`.
+
+Names used as arguments keep their meaning. For example, `zel b init` builds a
+folder named `init`; it does not create a new site. Use `--` before positional
+paths that begin with a hyphen, such as `zel b -- -manual`.
+
+## Scope
+
+Shortcuts do not add capabilities to their underlying commands. `cv` still
+writes the current raw hosted-content conversion format; `v` still previews
+portable Markdown. `idf` still prints the Next.js image recipe and does not
+accept `--kind` yet. `ir` and `ip` require a usable container runtime.
+
+Static/Next image creation commands and their `si`/`ni` shortcuts are planned.
+`na`, `pub`, and `netlify` are also unregistered until their commands are
+implemented. Bare `zel ci` still requires an action; it is not yet shorthand
+for workflow generation.

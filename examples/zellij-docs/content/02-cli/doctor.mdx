@@ -113,7 +113,7 @@ prerequisite for portable commands.
 ## Housekeeping
 
 <Callout type="warning" title="Planned">
-These four subcommands are not registered yet and return an unrecognized-command
+These three subcommands are not registered yet and return an unrecognized-command
 error (exit code 2). `zel --version` does report the binary version today.
 </Callout>
 
@@ -122,7 +122,9 @@ error (exit code 2). `zel --version` does report the binary version today.
 | `zel version` | Binary, engine image and content-model versions |
 | `zel pull` | Pull or update the engine image ahead of time |
 | `zel upgrade` | Replace this binary with the latest release |
-| `zel completions <shell>` | `bash`, `zsh`, `fish`, `powershell` |
+
+[`zel completions <shell>`](/cli/completions), also `zel comp`, is available in
+current source for Bash, Zsh, Fish, PowerShell, and Elvish.
 
 Until `zel pull` is implemented, use your runtime's pull command, such as
 `docker pull ghcr.io/mylife-inc/zellij-base:latest`.
