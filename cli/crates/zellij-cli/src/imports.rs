@@ -78,7 +78,9 @@ impl Prepared {
         }
         if layout == ImportLayout::Site {
             for (path, _) in &mut files {
-                *path = Utf8Path::new("content").join(&*path);
+                // Generated relative paths use '/' on every OS; Path::join
+                // inserts '\\' on Windows, which the portable plan rejects.
+                *path = format!("content/{path}").into();
             }
             files.push(("zel.yaml".into(), config.as_bytes().to_vec()));
         }

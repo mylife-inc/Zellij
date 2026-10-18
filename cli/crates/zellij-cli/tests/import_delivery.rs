@@ -522,7 +522,7 @@ fn imports_reject_linked_document_directories_before_writing() {
     {
         let status = Command::new("cmd")
             .args(["/C", "mklink", "/J"])
-            .arg(root.join("source/docs"))
+            .arg(root.join("source").join("docs"))
             .arg(root.join("outside"))
             .status()
             .unwrap();

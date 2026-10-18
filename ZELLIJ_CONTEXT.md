@@ -2408,3 +2408,10 @@ release preparation/publication remains a separate milestone.
 Import/ship implementation source: `0b59859` in
 [PR #35](https://github.com/mylife-inc/Zellij/pull/35). The pull request records
 final-head platform and container acceptance; consult its checks for merge status.
+
+
+PR #35 run 39162890191 exposed a Windows configured-import path bug: joining
+content/ with a generated relative path inserted a backslash rejected by the
+portable write-plan validator. Prefixing the already-validated relative path
+with a literal slash fixes the implementation; the Windows junction fixture also
+uses OS-native path components for cmd.exe. All-platform rerun is required.
