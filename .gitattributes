@@ -1,0 +1,5 @@
+# Keep embedded runtime bytes and their SHA-256 manifest identical on every OS.
+cli/crates/zellij-docs/assets/mermaid/* text eol=lf
+cli/crates/zellij-docs/assets/mermaid-client.js text eol=lf
+# Whitespace inside upstream template strings is runtime data, not formatting.
+cli/crates/zellij-docs/assets/mermaid/mermaid.js -whitespace linguist-generated=true

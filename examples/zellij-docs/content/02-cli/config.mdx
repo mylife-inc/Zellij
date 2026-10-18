@@ -71,6 +71,14 @@ Use `$...$` for inline equations and `$$...$$` for display equations. The
 rendering, validation, and supported limits. This is independent of hosted
 Zellij's `features.maths` setting. `view --watch` rereads it after config edits.
 
+### Mermaid
+
+Enable Mermaid independently with `markdown: {mermaid: true}`, or put both
+`math: true` and `mermaid: true` under `markdown`. Mermaid is disabled by default.
+Its [local browser renderer](/cli/build#mermaid-diagrams) works offline, retains
+readable source, and reports diagram syntax errors in the browser. Native
+`zel check` validates source limits rather than Mermaid grammar.
+
 ### Navigation
 
 `nav` is an ordered list. Each entry contains exactly one of:

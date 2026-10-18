@@ -201,6 +201,30 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await expect(page.getByRole('alert')).toHaveCount(0, { timeout: 20000 });
       await expect(page.locator('.mindmap-node text')).toContainText(['Updated', 'Second', 'Preview']);
 
+      const diagramBody = `${home(`Recovered ${engine}`)}\n\`\`\`mermaid\nflowchart LR\nA[First] --> B[Second]\n\`\`\`\n`;
+      await writeFile(configPath, 'markdown: {mermaid: true}\n');
+      await writeFile(readme, diagramBody);
+      await expect(page.locator('.mermaid-diagram')).toHaveAttribute('data-status', 'drawn', { timeout: 30000 });
+      await writeFile(readme, diagramBody.replace('First', 'Updated'));
+      await expect(page.locator('.mermaid-canvas')).toContainText('Updated', { timeout: 30000 });
+      // Syntax errors are browser diagnostics; resource limits are native errors.
+      await writeFile(readme, diagramBody.replace('flowchart LR', 'invalid syntax'));
+      await expect(page.locator('.mermaid-diagram')).toHaveAttribute('data-status', 'failed', { timeout: 30000 });
+      await expect(page.locator('.mermaid-diagram code')).toBeVisible();
+      await writeFile(readme, diagramBody);
+      await expect(page.locator('.mermaid-diagram')).toHaveAttribute('data-status', 'drawn', { timeout: 30000 });
+      const diagramOutput = await snapshot(output);
+      const diagramVersion = (await status()).version;
+      await writeFile(readme, diagramBody.replace('flowchart LR', 'x'.repeat(65536)));
+      await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
+      assert.equal((await status()).version, diagramVersion);
+      assert.deepEqual(await snapshot(output), diagramOutput);
+      await writeFile(readme, diagramBody);
+      await expect(page.getByRole('alert')).toHaveCount(0, { timeout: 20000 });
+      await rm(configPath);
+      await expect(page.locator('[data-language=mermaid]')).toBeVisible({ timeout: 20000 });
+      await expect(page.locator('script[src*=mermaid]')).toHaveCount(0);
+
       const stable = await status();
       await writeFile(path.join(source, '.draft.md'), 'ignored');
       await mkdir(path.join(source, 'node_modules'));

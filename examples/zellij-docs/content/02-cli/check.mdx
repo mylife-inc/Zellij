@@ -47,6 +47,12 @@ The checker does not test output ownership, permissions, available disk space,
 browser behavior, or external URLs. A build can still fail to publish after a
 successful content check.
 
+With `markdown.mermaid` enabled, native checks validate nonempty diagram source,
+64 KiB per fence, and at most 32 diagrams per page. They do not execute Mermaid
+or validate its grammar. Open the result in a browser to see diagram syntax or
+layout errors; the source stays visible if drawing fails. This also applies to
+`--strict`. Native math and YAML mindmaps are rendered and validated during check.
+
 Raw HTML produces a warning because it is displayed literally. `--strict`
 makes warnings fail the command while retaining their warning severity.
 Portable checks always validate local references: `--deep` is accepted for

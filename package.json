@@ -27,6 +27,8 @@
     "check": "npm run build -w @shebka/zellij && (cd examples/showcase && npx zellij check) && (cd examples/zellij-docs && npx zellij check) && (cd examples/payos && npx zellij check)"
   },
   "devDependencies": {
+    "esbuild": "0.28.2",
+    "js-yaml": "4.3.2",
     "typescript": "^5.9.3"
   },
   "overrides": {

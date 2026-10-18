@@ -1,0 +1,11 @@
+.mermaid-diagram{margin:1.5rem 0;max-width:100%;min-width:0}
+.mermaid-canvas{max-width:100%;overflow:auto;padding:.75rem;border:1px solid var(--zellij-border);border-radius:.4rem;background:var(--zellij-bg)}
+.mermaid-canvas[hidden]{display:none}
+.mermaid-canvas>svg{display:block;margin:auto;max-width:100%;height:auto}
+.mermaid-diagram details{max-width:100%;overflow:auto;margin-top:.5rem}
+.mermaid-diagram summary{cursor:pointer}
+.mermaid-diagram pre{overflow:auto;white-space:pre;max-height:24rem}
+.mermaid-diagram [role=status]:empty{display:none}
+.mermaid-diagram [role=status]{overflow-wrap:anywhere}
+.mermaid-stage{position:absolute;left:-100000px;top:0;width:1200px;visibility:hidden;pointer-events:none}
+@media print{.mermaid-canvas{overflow:visible;border:0}.mermaid-diagram{break-inside:avoid}}

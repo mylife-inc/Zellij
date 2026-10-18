@@ -5,7 +5,7 @@ Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
 configuration/navigation and excluded-asset checks merged in PRs #15–16.
 Native validation and structured diagnostics merged in PR #17. The portable
 starter is merged in PR #18; opt-in native math is merged in PR #23. Native YAML
-mindmaps are the current implementation milestone. The native renderer and server
+mindmaps are merged in PR #24. Opt-in Mermaid is the current implementation milestone. The native renderer and server
 are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
@@ -117,7 +117,7 @@ the existing export when validation or rendering fails.
   14-theme catalog, defaulting to cupertino.
 - Raw HTML is literal text with a warning; `.mdx` is rejected. MathML rendering
   is opt-in through `markdown.math`; YAML `mindmap` fences render to SVG and a
-  semantic outline. Mermaid fences remain code. Remote media remains remote. MkDocs plugins,
+  semantic outline. Opt-in Mermaid uses a bundled browser runtime with source fallback. Remote media remains remote. MkDocs plugins,
   full-text search language processing and incremental compilation are not
   implemented. Optional `zel.yaml` supplies identity, branding and navigation. `view --watch` performs full rebuilds and
   reloads the HTTP preview after successful publication.
@@ -136,7 +136,7 @@ installation, release packaging or container integration.
 | Capability | Native portable status | Next work |
 | --- | --- | --- |
 | Plain-folder static build and alternate output | Implemented | Expand real-document fixtures and rendering compatibility |
-| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml`, opt-in math and native YAML mindmaps implemented | Mermaid, raw HTML policy, broader config |
+| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml`, opt-in math/Mermaid and native YAML mindmaps implemented | Raw HTML policy, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Native `check`, strict warning gate and JSON reports implemented | Hosted JSON reports, richer source locations |
 | Project scaffolding | Native `new portable` full/minimal starters; existing hosted scaffolds | Extend starter content with future rendering capabilities |
@@ -184,6 +184,50 @@ overflow (including expanded maximum-depth/label outlines in their own scroll
 region), keyboard controls, JavaScript-disabled content and HTTP/watch error
 preservation/recovery. Mermaid fences remain literal code; this milestone does
 not add Mermaid execution or claim exhaustive screen-reader/browser acceptance.
+
+## Portable Mermaid — 2026-10-17
+
+`markdown: {mermaid: true}` enables Mermaid fences; the default remains literal
+code. The Rust compiler emits escaped source disclosures, page-local runtime/CSS
+links and local MathML font assets. It validates nonempty source, 64 KiB per fence
+and 32 diagrams per page. Grammar/layout validation happens in the browser,
+including with native `check --strict`; invalid syntax keeps source visible and
+shows an inline error without stopping the other diagrams. A browser-enforced
+500-edge limit cannot be increased by an author directive. Native limit failures
+remain prepublication errors and preserve the old export.
+
+A committed classic IIFE embeds Mermaid 11.17.2, KaTeX and all diagram chunks;
+no ESM, fetch, CDN, Node or HTTP server is required by the generated artifact.
+Diagrams require JavaScript, while their source remains readable with JavaScript
+disabled or the script unavailable. Only pages with enabled Mermaid load its
+approximately 3.5 MB runtime. Removing the last diagram removes the runtime;
+shared math assets remain if native math needs them. Remote author resources
+remain remote; diagram image references are not discovered/copied. Plugins,
+remote icon packs and server-side Mermaid rendering are outside this contract.
+
+Rendering is serialized and stale theme revisions discarded. Theme/mode changes
+and system color-scheme changes redraw graphs after font readiness. Strict
+security, text/edge bounds and modern MathML mode are protected from author
+configuration. Repeated IDs emitted inside upstream mindmap SVG are removed
+while preserving the first reference target. Native mindmap styles are scoped to
+the native SVG so both formats can coexist. Source remains in offline search.
+
+`scripts/prepare-portable-mermaid.mjs` regenerates/verifies the bundle, notices and
+provenance manifest. CI verifies exact reproduction from locked dependencies.
+The generator substitutes patched js-yaml 4.3.2 for the older upstream embedded
+module and verifies its hash. Embedded parser dependencies have separate exact
+version notices and source-map checks, including an assertion that the Lodash
+4.17.23 subset excludes the functions affected by its known advisories. See
+`cli/crates/zellij-docs/assets/mermaid/README.md` for evidence and upgrade policy;
+a successful ordinary npm audit does not inspect upstream embedded dependencies.
+
+Acceptance covers native config/limits/diagnostics and failed-build preservation;
+real CLI checks without external tools; moved nested `file://` output in Chromium
+and WebKit with network blocked; flowchart, sequence, state, pie, mindmap and
+MathML labels; invalid grammar/edge-limit isolation; strict labels and protected
+configuration; unique SVG IDs, rapid theme/mode changes, system appearance,
+search/navigation, mobile layout, no-JavaScript and missing-runtime fallbacks;
+and HTTP/watch opt-in changes, edits, failure preservation and recovery.
 
 ## Native serve/view contract — 2026-10-17
 

@@ -22,6 +22,7 @@ pub struct Markdown {
     pub literal_html: bool,
     pub has_math: bool,
     pub has_mindmap: bool,
+    pub has_mermaid: bool,
 }
 
 pub fn escape(text: &str) -> String {
@@ -98,7 +99,7 @@ fn plain(events: &[Event<'_>]) -> String {
     text.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
-pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
+pub fn parse(source: &str, fallback: &str, math: bool, mermaid: bool) -> Result<Markdown> {
     let (meta, body) = frontmatter(source)?;
     let mut options = Options::ENABLE_TABLES
         | Options::ENABLE_FOOTNOTES
@@ -137,11 +138,13 @@ pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
     let mut literal_html = false;
     let mut has_math = false;
     let mut has_mindmap = false;
+    let mut has_mermaid = false;
     let mut image_depth = 0;
     for i in 0..events.len() {
         match &events[i] {
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info))) => {
                 has_mindmap |= info.split_whitespace().next() == Some("mindmap");
+                has_mermaid |= mermaid && info.split_whitespace().next() == Some("mermaid");
             }
             Event::Start(Tag::Image { .. }) => image_depth += 1,
             Event::End(TagEnd::Image) => image_depth -= 1,
@@ -214,16 +217,18 @@ pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
         literal_html,
         has_math,
         has_mindmap,
+        has_mermaid,
     })
 }
 
-pub fn highlight(events: Vec<Event<'static>>) -> Result<Vec<Event<'static>>> {
+pub fn highlight(events: Vec<Event<'static>>, mermaid: bool) -> Result<Vec<Event<'static>>> {
     static SYNTAXES: LazyLock<SyntaxSet> = LazyLock::new(SyntaxSet::load_defaults_newlines);
     static THEMES: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
     let mut output = Vec::new();
     let mut iter = events.into_iter();
     let mut equation = 0;
     let mut mindmap = 0;
+    let mut diagram = 0;
     while let Some(event) = iter.next() {
         if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
             equation += 1;
@@ -246,6 +251,11 @@ pub fn highlight(events: Vec<Event<'static>>) -> Result<Vec<Event<'static>>> {
             if language == "mindmap" {
                 mindmap += 1;
                 output.push(Event::Html(crate::mindmap::render(&code, mindmap)?.into()));
+                continue;
+            }
+            if mermaid && language == "mermaid" {
+                diagram += 1;
+                output.push(Event::Html(crate::mermaid::render(&code, diagram)?.into()));
                 continue;
             }
             let syntax = SYNTAXES
