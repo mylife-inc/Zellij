@@ -224,8 +224,11 @@ fn powershell_completes_options_for_both_forms() {
     .unwrap();
     let check = tmp.path().join("check.ps1");
     fs::write(&check, r#"
-param([string]$CompletionPath)
+param([string]$CompletionPath, [string]$ZelPath)
 $ErrorActionPreference = 'Stop'
+if ((Get-Command zel -CommandType Application).Source -ne $ZelPath) {
+    throw 'Completion must resolve the binary under test'
+}
 . $CompletionPath
 foreach ($pair in @(
     @('zel build --', 'zel b --', '--out'),
@@ -236,11 +239,19 @@ foreach ($pair in @(
 )) {
     $full = @((TabExpansion2 -inputScript $pair[0] -cursorColumn $pair[0].Length).CompletionMatches.CompletionText | Sort-Object)
     $short = @((TabExpansion2 -inputScript $pair[1] -cursorColumn $pair[1].Length).CompletionMatches.CompletionText | Sort-Object)
-    if ($full -notcontains $pair[2]) { throw "Missing $($pair[2]) for $($pair[0])" }
+    if ($full -notcontains $pair[2]) { throw "Missing $($pair[2]) for $($pair[0]); got: $full" }
     if (($full -join "`n") -cne ($short -join "`n")) { throw "Different options for $($pair[1])" }
 }
 "#).unwrap();
+    // PowerShell only invokes native argument completers for discoverable
+    // executables. Cargo's target directory is not on a runner's PATH.
+    let binary = Path::new(env!("CARGO_BIN_EXE_zel"));
+    let mut search = vec![binary.parent().unwrap().to_path_buf()];
+    search.extend(std::env::split_paths(
+        &std::env::var_os("PATH").unwrap_or_default(),
+    ));
     let result = Command::new("powershell.exe")
+        .env("PATH", std::env::join_paths(search).unwrap())
         .args([
             "-NoProfile",
             "-NonInteractive",
@@ -251,6 +262,8 @@ foreach ($pair in @(
         .arg(check)
         .arg("-CompletionPath")
         .arg(completion)
+        .arg("-ZelPath")
+        .arg(binary)
         .output()
         .unwrap();
     assert!(result.status.success(), "{result:?}");

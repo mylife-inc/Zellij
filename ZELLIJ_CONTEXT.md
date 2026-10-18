@@ -1922,3 +1922,11 @@ section types, although `list sections` reports the compiled 23 types. This
 milestone preserves their current errors; remove that stale count in a later
 help/diagnostics cleanup. Missing explicit serve/view folders also retain their
 current IO exit 1 rather than an argument exit 2.
+
+PR #29's first full CI attempt (`39115475197`) caught a Windows completion
+fixture omission: Cargo's built `zel.exe` was not discoverable on the child
+PowerShell PATH. The fixture now prepends its exact binary directory and checks
+`Get-Command` resolves that executable before exercising native tab completion.
+The parser and other alias execution tests had passed on Windows; the fix does
+not change production CLI behavior. Consult the PR's latest checks for the
+corrected Windows result.
