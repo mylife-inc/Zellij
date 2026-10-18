@@ -1409,7 +1409,8 @@ spellings. These checks do not establish runtime support for proposed commands.
 ### Configured-site layout implementation — 2026-10-18
 
 The user authorized continuing the CLI implementation. Branch
-`codex/cli-site-layout` is based on main `1aa8376`, the merge of PR #27.
+`codex/cli-site-layout`, source commit `efe8946`, is based on main `1aa8376`,
+the merge of PR #27.
 Repository inspection reconfirmed public visibility and main as default.
 
 - `zellij-core::site` resolves an explicit site, cwd's `zel.yaml`, or

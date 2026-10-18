@@ -1691,7 +1691,7 @@ defects—not a technically unprovable guarantee of zero future bugs.
 
 ## Implementation record — configured CLI sites (2026-10-18)
 
-The CLI continuation implements the agreed `zel.yaml` / `content/` / `site/`
+Source commit `efe8946` implements the agreed `zel.yaml` / `content/` / `site/`
 layout, cwd/repository default selection, renderer-aware dispatch, output/port
 configuration and site scaffolds. Legacy explicit sources remain usable. Watch
 tracks sibling configuration without scanning output and preserves the last
