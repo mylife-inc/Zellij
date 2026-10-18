@@ -226,8 +226,10 @@ fn powershell_completes_options_for_both_forms() {
     fs::write(&check, r#"
 param([string]$CompletionPath, [string]$ZelPath)
 $ErrorActionPreference = 'Stop'
-if ((Get-Command zel -CommandType Application).Source -ne $ZelPath) {
-    throw 'Completion must resolve the binary under test'
+$resolved = (Get-Command zel -CommandType Application | Select-Object -First 1).Source
+$expected = (Get-Item -LiteralPath $ZelPath).FullName
+if ((Get-Item -LiteralPath $resolved).FullName -ne $expected) {
+    throw "Completion must resolve $expected; resolved $resolved"
 }
 . $CompletionPath
 foreach ($pair in @(
