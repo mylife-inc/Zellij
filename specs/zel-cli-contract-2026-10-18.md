@@ -169,8 +169,8 @@ port 3000. Hosted deployment prefixes are preserved. New static tags use
 `<normalized-site-name>-static:latest`; legacy Next defaults are unchanged.
 Printed portable-static recipes take generated HTML as their context; hosted
 static/Next recipes take hosted content. The Next command/adapter remains pending.
- Native portable
-HTML must retain direct-file viewing outside the image. Hosted Next static
+
+Native portable HTML must retain direct-file viewing outside the image. Hosted Next static
 exports keep their HTTP requirements. For plain Markdown to a Next image,
 create a temporary hosted-content adapter and wrapper; preserve the originals
 and verify navigation/assets/config mapping. Do not assume the current native

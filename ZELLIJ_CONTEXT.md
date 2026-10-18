@@ -1983,7 +1983,8 @@ and default tags, shortcut parity, JSON rejection, and Next compatibility.
 The local Docker daemon was stopped; real image validation is delegated to the
 CI acceptance script, which builds a portable image plus root/prefixed hosted
 images and checks their HTTP routes, assets, health checks, non-root user and
-read-only runtime filesystem. Record the PR/CI result when it finishes.
+read-only runtime filesystem. [PR #30](https://github.com/mylife-inc/Zellij/pull/30) tracks the hosted results;
+verify its latest checks before treating container acceptance as established.
 
 Scope decision: complete static packaging before introducing the plain-Markdown
 Next adapter. The existing conversion emitter intentionally drops unlisted
