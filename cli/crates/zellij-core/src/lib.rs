@@ -5,6 +5,7 @@
 //! about the command line. Everything here should still make sense if the tool
 //! grew a second front end.
 
+pub mod delivery;
 pub mod error;
 pub mod files;
 pub mod output;

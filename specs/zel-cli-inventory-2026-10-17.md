@@ -227,3 +227,16 @@ remain hosted-only with their original defaults. Next health checks now honor
 basePath. There are 24 top-level shortcuts. See the durable context for the
 source/CI record and the updated image guide for exact behavior and limitations.
 This does not implement shared delivery configuration or other remaining stubs.
+
+
+### Registry-publication delta — 2026-10-18
+
+The historical table above remains the audit baseline. `publish` now has an
+implementation for registry-only delivery, with the `pub` alias (25 top-level
+shortcuts). Versioned configs accept `image.name` and
+`publish: {action: push, image: static|next}`. New image commands honor the saved
+name; legacy commands retain their tag rules. `publish --dry-run` resolves a
+plan without tools or side effects. The common build operation runs once, and
+push runs only after success. Direct provider deployment/Netlify, ship, saved CI
+settings and expanded workflow generation remain incomplete. See the current
+command reference and durable context for source and verification evidence.

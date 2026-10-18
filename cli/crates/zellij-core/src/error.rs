@@ -43,6 +43,11 @@ pub enum Error {
     #[error("the site build failed — see the output above")]
     BuildFailed,
 
+    #[error(
+        "container image {operation} failed — check the runtime output above, registry address and credentials"
+    )]
+    ImageOperationFailed { operation: &'static str },
+
     #[error(transparent)]
     Io(#[from] std::io::Error),
 }
@@ -56,7 +61,7 @@ impl Error {
             | Error::UnknownFormat { .. }
             | Error::UnsafePath { .. }
             | Error::FileExists { .. } => 2,
-            Error::ContentInvalid | Error::BuildFailed => 3,
+            Error::ContentInvalid | Error::BuildFailed | Error::ImageOperationFailed { .. } => 3,
             Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,
         }

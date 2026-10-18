@@ -86,7 +86,7 @@ need no container runtime.
 | [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
 | [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available in source** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
-| [`zel publish`](/cli/publish) | check, build and deploy in one step | Planned |
+| [`zel publish`](/cli/publish) | Build and push a configured static or Next image; shortcut `pub` | **Available in source** |
 | [`zel ship`](/cli/ship) | Somebody else's docs to a published site, in one line | Planned |
 | [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available in source** |
@@ -107,7 +107,7 @@ Common workflows also have short forms: `zel init`, `zel c`, `zel b`, and
 `zel v --watch`. See [the full shortcut table](/cli/shortcuts). Both forms accept
 the same arguments; help and shell completion show the available names.
 
-Build/check/view/serve/dev and image static/next/build/dockerfile accept a site directory.
+Publish, build/check/view/serve/dev and image static/next/build/dockerfile accept a site directory.
 Without one, they select `./zel.yaml`, then `./docs/zellij/zel.yaml`.
 
 ```bash
@@ -135,8 +135,8 @@ Commands that only read the content model — `explain`, `list`, `context`,
 Structured-content `check`, `dev`, and hosted `build` commands run the Next.js
 engine in a container from a public image. Portable `build` and `check` run
 natively and need no external tools. `serve` and `view` use a native local
-HTTP server; `view` can invoke the system browser launcher. Deployment commands
-remain planned.
+HTTP server; `view` can invoke the system browser launcher. Configured image
+publication uses the container runtime. Direct provider deployment remains planned.
 
 Container-dependent operations stop with exit code 4 and setup guidance if no
 usable runtime is available. Docker, Podman and nerdctl are supported discovery

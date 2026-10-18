@@ -31,13 +31,15 @@ zel ir acme-docs:static --port 8080
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[site]` | Configured site root, or an explicit legacy content folder | Current site or `docs/zellij` |
-| `--tag <reference>` | Image name and tag | `<site-name>-static:latest` |
+| `--tag <reference>` | Image name and tag | `image.name`, then `<site-name>-static:latest` |
 
 The generated name uses the selected folder's name, lowercases ASCII letters,
 and replaces runs of other characters with hyphens. A name with no ASCII
 letters or digits uses `zellij-site`. Long names are shortened. The `-static`
 suffix keeps this image separate from the existing Next image default. An
-explicit `--tag` takes precedence.
+explicit `--tag` takes precedence over `image.name` in a versioned `zel.yaml`,
+then the generated default. The configured name is shared by both image kinds;
+use separate tags explicitly when keeping both. See [image settings](/cli/config#image-and-publication-settings).
 
 For **portable Markdown**, Rust generates the same HTML, navigation, search,
 theme, branding, and referenced assets as `zel build`. The temporary export is
@@ -73,7 +75,7 @@ zel image next docs/manual --tag acme-docs:next
 ```
 
 Site selection and `--tag` work like `image static`, with a distinct
-`<normalized-site-name>-next:latest` default. The result is a Next.js standalone
+`<normalized-site-name>-next:latest` default when `image.name` is absent. The result is a Next.js standalone
 server running as `nextjs` on container port 3000. It needs an HTTP server;
 use `zel build` for a portable export you can open directly from disk.
 
@@ -114,7 +116,8 @@ These existing commands continue to accept hosted content and produce the
 Next.js standalone application, with Node and its traced dependencies. They
 retain the original `<site-name>:latest` default; they never select the new
 static image implicitly. These compatibility commands remain hosted-only;
-use `zel ni` for portable Markdown.
+use `zel ni` for portable Markdown. These compatibility paths do not read the
+new `image.name` setting.
 
 The generated multi-stage recipe copies the selected content into the wrapper,
 installs dependencies, checks content, builds Next, then copies the standalone
@@ -138,6 +141,7 @@ For compatibility, omitting the tag still derives the **legacy Next** default
 from the selected hosted site. It does not remember the last image built or a
 custom `--tag`, and it does not select the `-static` or `-next` suffix. Pass the
 new image tag explicitly, as shown in the successful build's output.
+Omitted-tag `image run` also retains its legacy behavior when `image.name` is set.
 
 ## `zel image push`
 
@@ -149,6 +153,9 @@ zel ip acme-docs:next --registry ghcr.io/acme
 This explicitly tags and pushes the image. Authentication belongs to your
 container runtime and registry, such as `docker login`; `zel` does not store
 registry credentials. No repository or cloud deployment is created.
+For a fully qualified reference, use `zel ip ghcr.io/acme/manual:v1` without
+`--registry`. [`zel pub`](/cli/publish) combines one image build and a push using
+saved settings; ordinary image builds never publish implicitly.
 
 ## `zel image dockerfile`
 

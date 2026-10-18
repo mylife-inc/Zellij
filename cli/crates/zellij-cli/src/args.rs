@@ -256,13 +256,23 @@ pub(crate) enum Command {
         out: String,
     },
 
-    /// Check, build and deploy in one step.
+    /// Build and push the image selected by zel.yaml's publish settings.
+    #[command(visible_alias = "pub")]
     Publish {
-        #[arg(default_value = ".")]
-        dir: String,
+        /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+        dir: Option<String>,
 
+        /// Provider override (reserved; direct deployment is not implemented yet).
         #[arg(long)]
         to: Option<String>,
+
+        /// Override image.name with the exact registry reference to build and push.
+        #[arg(long)]
+        tag: Option<String>,
+
+        /// Resolve and print the plan without probing tools, building or pushing.
+        #[arg(long)]
+        dry_run: bool,
     },
 
     /// Convert, check, build and deploy in one step.

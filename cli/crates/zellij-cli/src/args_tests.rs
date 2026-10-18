@@ -179,6 +179,12 @@ const CASES: &[Case] = &[
         &[],
         &["--workflow", "other.yml", "--ref", "feature/docs"],
     ),
+    (
+        "pub",
+        "publish",
+        &[],
+        &["manual", "--tag", "ghcr.io/acme/docs:v2", "--dry-run"],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -295,7 +301,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             assert!(!actual.json);
         }
     }
-    for name in ["bu", "bui", "ini", "n", "se", "na", "pub", "netlify"] {
+    for name in ["bu", "bui", "ini", "n", "se", "na", "netlify"] {
         assert_eq!(
             parse(&[name]).unwrap_err().kind(),
             ErrorKind::InvalidSubcommand
