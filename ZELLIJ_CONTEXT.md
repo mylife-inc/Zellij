@@ -2040,8 +2040,8 @@ Main CI `39145286725` and base-image publication `39145286638` both passed.
 The latest public native release remains `zellij-v0.1.3` (2026-08-13); no release
 or documentation deployment is part of this increment.
 
-Implementation on `codex/cli-next-images` (source commit and PR recorded after
-local validation):
+Implementation source `54e24d0` on `codex/cli-next-images` (PR linked below once
+created; use its latest checks for final hosted acceptance):
 
 - `image next [site]` / `ni [site]` uses the common site resolver and a separate
   normalized `<site-name>-next:latest` tag. There are now 24 top-level shortcuts.
