@@ -155,7 +155,18 @@ const CASES: &[Case] = &[
         &["docs:tag"],
         &["docs:tag", "--registry", "registry.test"],
     ),
-    ("idf", "image dockerfile", &[], &["manual"]),
+    (
+        "si",
+        "image static",
+        &[],
+        &["manual", "--tag", "registry.test/docs:static"],
+    ),
+    (
+        "idf",
+        "image dockerfile",
+        &[],
+        &["manual", "--kind", "static"],
+    ),
     (
         "ci publish",
         "ci run",
@@ -259,6 +270,7 @@ fn invalid_arguments_keep_the_same_error_kind_and_status() {
         ("s", "serve", vec!["--port", "65536"]),
         ("c", "check", vec!["--target", "other"]),
         ("comp", "completions", vec!["not-a-shell"]),
+        ("idf", "image dockerfile", vec!["--kind", "other"]),
     ] {
         assert_eq!(
             parse(&invocation(short, &args)).unwrap_err().kind(),
@@ -277,9 +289,7 @@ fn arguments_are_not_rewritten_and_unregistered_prefixes_are_rejected() {
             assert!(!actual.json);
         }
     }
-    for name in [
-        "bu", "bui", "ini", "n", "se", "na", "si", "ni", "pub", "netlify",
-    ] {
+    for name in ["bu", "bui", "ini", "n", "se", "na", "ni", "pub", "netlify"] {
         assert_eq!(
             parse(&[name]).unwrap_err().kind(),
             ErrorKind::InvalidSubcommand

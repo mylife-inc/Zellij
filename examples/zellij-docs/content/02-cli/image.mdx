@@ -1,192 +1,158 @@
 ---
 title: zel image
-description: Build, run and push container images without writing a Dockerfile.
+description: Build a static-site image or a Next.js image, then run or push it.
 ---
 
-<Callout type="tip" title="Available">
-`build`, `run`, `push` and `dockerfile` all work today. `--platform`,
-`--features` and `--build-arg` are specified and not yet built.
-</Callout>
+`zel image static` (shortcut `zel si`) builds HTML from portable Markdown or
+hosted content and packages it with NGINX. `zel image build` retains the existing
+Next.js application image for hosted content. The separate `image next` / `ni`
+command and its plain-Markdown adapter are still planned.
 
-Building, running and pushing images require a usable Docker, Podman or nerdctl
-runtime. Missing or unavailable runtimes stop the operation with exit code 4
-and setup guidance; see [`zel doctor`](/cli/doctor). Printing a Dockerfile needs
-no runtime in the current source implementation.
+These static-image commands are available in current source and require a new
+binary release. Run `zel image --help` to check your installed version.
 
-```bash title="terminal"
-zel image build --tag acme-docs:v2
-zel image run acme-docs:v2
-zel image push acme-docs:v2 --registry ghcr.io/acme
+## `zel image static`
+
+```bash title="From your software repository"
+zel si
+zel image run zellij-static:latest --port 8080
 ```
 
-```
-  Engine   ghcr.io/mylife-inc/zellij-base:latest
-  Content  site
-  Tag      acme-docs:v2
+With no path, the command selects `./zel.yaml`, then
+`./docs/zellij/zel.yaml`. An arbitrary site folder or an existing Markdown
+folder can be supplied explicitly:
 
-  …
-
-✓ acme-docs:v2
-  Run it:   zel image run acme-docs:v2
-  Push it:  zel image push acme-docs:v2 --registry ghcr.io/you
+```bash
+zel image static docs/manual --tag acme-docs:static
+zel si ./markdown-files --tag acme-docs:static
+zel ir acme-docs:static --port 8080
 ```
 
-**You do not write a Dockerfile.** `zel` writes the multi-stage build itself,
-because the correct one is not obvious — it involves a base image you did not
-choose, an install step that depends on which features your content uses, and a
-runtime stage that must copy exactly three paths and no others. Getting it
-slightly wrong produces an image four times the size that still works, so
-nothing tells you.
+| Option | Meaning | Default |
+| --- | --- | --- |
+| `[site]` | Configured site root, or an explicit legacy content folder | Current site or `docs/zellij` |
+| `--tag <reference>` | Image name and tag | `<site-name>-static:latest` |
 
-## What "you do not write a Dockerfile" buys you
+The generated name uses the selected folder's name, lowercases ASCII letters,
+and replaces runs of other characters with hyphens. A name with no ASCII
+letters or digits uses `zellij-site`. Long names are shortened. The `-static`
+suffix keeps this image separate from the existing Next image default. An
+explicit `--tag` takes precedence.
 
-Three things, and they are worth naming because a generated file is normally a
-smell.
+For **portable Markdown**, Rust generates the same HTML, navigation, search,
+theme, branding, and referenced assets as `zel build`. The temporary export is
+removed after packaging, including on failure. Existing `site/` output and
+`build.out` are untouched; run `zel build` separately if you also want an export
+on disk. That export continues to work through `file://` without a server.
 
-**The base image is not yours to track.** The `FROM` line names an image whose
-tag, layout and contents are Zellij's business. A Dockerfile in your repository
-is correct on the day it is written and silently stale afterwards — the day the
-engine moves from `/opt/zellij` you find out by way of a build failure in a file
-you never touched.
+For **hosted YAML/MDX**, the Next.js builder validates content and produces a
+static export inside the image build. Only the export reaches the final image.
+The content's `basePath` is preserved: with `basePath: /products/docs`, open
+`http://localhost:8080/products/docs/`. Hosted exports retain their HTTP
+requirements and static-export limitations.
 
-**Dependencies come from the selected base image.** The generated build installs
-the app's declared dependencies before compiling the site. The CLI's planned
-feature-selection options are not available yet.
+Both images use [NGINX's unprivileged Alpine image](https://github.com/nginx/docker-nginx-unprivileged),
+listen on container port **3000**, and run as the `nginx` user. The HTTP server
+serves direct HTML files, extensionless hosted routes, directory indexes, and
+assets. Unknown routes return 404. A health check requests the exported index.
+No push or deployment happens during a build.
 
-**The runtime stage is easy to get subtly wrong.** It copies exactly three paths.
-Copy a fourth — `node_modules`, say — and you get an image four times the size
-that works perfectly, so nothing tells you.
+Building requires a usable Docker, Podman, or nerdctl runtime, even when the
+HTML itself is generated natively. A missing or unavailable runtime stops the
+command with exit code **4**, before generating the export. The command does
+not install or start a runtime or switch renderers. See [`zel doctor`](/cli/doctor).
+Container image downloads and hosted dependency installation may require network
+access. On macOS and Windows, the runtime must support Linux containers.
 
 ## `zel image build`
 
-Identical to [`zel build --target image`](/cli/build). The subcommand exists so
-that everything about images is in one place.
+```bash
+zel image build docs/hosted --tag acme-docs:next
+# Equivalent compatibility spelling:
+zel build docs/hosted --target image --tag acme-docs:next
+```
 
-| | | |
-| --- | --- | --- |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--tag <name:version>` | | `<site-name>:latest` |
-| `--platform <list>` | e.g. `linux/amd64,linux/arm64` | the host's |
-| `--features <list>` | `maths`, `diagrams`, `all` | from the content |
-| `--build-arg <k=v>` | Passed through | — |
+These existing commands continue to accept hosted content and produce the
+Next.js standalone application, with Node and its traced dependencies. They
+retain the original `<site-name>:latest` default; they never select the new
+static image implicitly. Portable sites need the planned Markdown-to-Next
+adapter and are rejected by this path today.
 
-The result is a Node runtime serving the site on **port 3000** — Alpine, Node,
-and the traced subset of dependencies the site actually reached for. Next.js's
-standalone output includes its required `node_modules`; the recipe does not copy
-the entire build-time dependency tree or `/opt/zellij` wholesale.
+The generated multi-stage recipe copies the selected content into the wrapper,
+installs dependencies, checks content, builds Next, then copies the standalone
+server, static chunks, and public assets into a Node 24 Alpine runtime. The
+server runs without root on port 3000.
 
-<Callout type="info" title="On image sizes">
-`docker images` reports around 320 MB for a small documentation site, and
-`docker save` of the same image produces 73 MB. Both are real: the first counts
-unpacked layers on disk, the second is the content itself. What a `docker pull`
-transfers is smaller again, because layers move compressed.
-
-Quoted figures here use `docker images`, so they can be compared with the base
-image on the same terms.
-</Callout>
+`--platform`, `--features`, and `--build-arg` are not implemented CLI options yet.
 
 ## `zel image run`
 
-Runs it locally — the last check before it goes anywhere.
-
-```bash title="terminal"
-zel image run acme-docs:v2
-zel image run acme-docs:v2 --port 8080
+```bash
+zel image run acme-docs:static --port 8080
+zel ir acme-docs:next
 ```
 
-Publishes the container's port 3000 to `--port` on your machine and streams the
-log until you stop it. With no tag, it derives the default image tag from the
-selected configured site folder (or the content folder for explicit legacy builds). It does not remember a custom `--tag` from
-an earlier build; pass that tag explicitly when running the image.
+Both image kinds work with this command. It publishes container port 3000 to
+`--port` on your machine (default 3000), streams logs, and stops on Ctrl-C.
 
-**Do this once before pushing anything.** An image that builds is not an image
-that serves: a missing asset, a runtime that cannot find `server.js`, a page that
-needed something the runtime stage did not copy — all of them build cleanly and
-fail on the first request. Thirty seconds here is the difference between finding
-that out yourself and finding it out from a deployment.
+For compatibility, omitting the tag still derives the **legacy Next** default
+from the selected hosted site. It does not remember the last image built or a
+custom `--tag`, and it does not select the `-static` image. Pass the static tag
+explicitly, as shown in the successful build's output.
 
 ## `zel image push`
 
-```bash title="terminal"
-zel image push acme-docs:v2 --registry ghcr.io/acme
+```bash
+zel image push acme-docs:static --registry ghcr.io/acme
+zel ip acme-docs:next --registry ghcr.io/acme
 ```
 
-Tags and pushes. Authentication is your registry's own — `docker login`, or
-whatever your CI already did. `zel` does not handle registry credentials.
+This explicitly tags and pushes the image. Authentication belongs to your
+container runtime and registry, such as `docker login`; `zel` does not store
+registry credentials. No repository or cloud deployment is created.
 
 ## `zel image dockerfile`
 
-For when you have an existing pipeline that must own the build, and a tool
-running the build for you is not acceptable.
+`zel image dockerfile` / `zel idf` prints a recipe without runtime detection,
+image downloads, or builds. `--kind static` selects the static recipe for the
+site's renderer. `--kind next` and the omitted kind retain the Next recipe.
+The static recipe's comment names its required build context.
 
-```bash title="terminal"
-zel image dockerfile > Dockerfile
+For a portable site, **build the HTML first** and pass that export as the Docker
+build context:
+
+```bash
+zel build docs/zellij
+zel idf docs/zellij --kind static > Dockerfile.static
+docker build -f Dockerfile.static -t acme-docs:static docs/zellij/site
 ```
 
-Prints the Dockerfile `zel image build` would have used, with the arguments
-resolved for your content. It is a normal file after that, and yours to modify —
-with the usual consequence that it stops tracking changes to the base image.
-The current source implementation does not probe a runtime or pull an image for
-this command. `ZELLIJ_IMAGE` still controls the generated base-image reference.
+If `build.out` changes the export location, use that location in the last
+command. Do not pass the Markdown folder or site root to this recipe.
 
-<Callout type="tip" title="Prefer not to">
-This exists because some organisations require a Dockerfile in the repository
-for review. If that is not your situation, `zel image build` stays correct when
-the base image changes and a vendored Dockerfile does not.
-</Callout>
+For hosted content, the recipe includes the HTML build. Pass **content/** as
+its context:
+
+```bash
+zel idf docs/hosted --kind static > Dockerfile.static
+docker build -f Dockerfile.static -t acme-docs:static docs/hosted/content
+
+zel idf docs/hosted --kind next > Dockerfile.next
+docker build -f Dockerfile.next -t acme-docs:next docs/hosted/content
+```
+
+For an explicit legacy hosted folder, use that folder directly as the context.
+A saved Dockerfile no longer tracks future recipe changes; regenerate it when
+upgrading the CLI.
 
 ## The base image
 
-`ghcr.io/mylife-inc/zellij-base` is the default public base image.
-It is a Next.js wrapper with the engine at `/opt/zellij` and **nothing
-installed** — around 237 MB.
+`ZELLIJ_IMAGE` overrides the hosted builder image (default
+`ghcr.io/mylife-inc/zellij-base:latest`) for both Next and hosted-static builds.
+It has no effect on portable compilation or the static NGINX runtime.
 
-Nothing installed is deliberate. The image people pull is a quarter of a
-gigabyte rather than a whole one, and a site build resolves its own dependencies
-regardless; the cost moved rather than appeared. It also means the same image
-serves a site that wants maths, a site that wants diagrams, and a site that
-wants neither.
-
-Four variants exist for pipelines that would rather name an image than pass a
-flag:
-
-| | |
-| --- | --- |
-| `zellij-base:latest` | Nothing |
-| `zellij-base:latest-maths` | LaTeX |
-| `zellij-base:latest-diagrams` | Mermaid and mindmaps |
-| `zellij-base:latest-all` | Both |
-
-Every published version carries the same four, so `0.1.0`, `0.1.0-maths` and so
-on exist alongside them. Pin a version for anything that has to build the same
-way in a year.
-
-`zel` uses the plain image and passes the feature list, so all four cost the
-same.
-
-### Getting the wrapper app out of it
-
-The wrapper inside the image is generated by the same scaffold
-[`zel new app`](/cli/new#zel-new-app-dir) uses, so it cannot drift from what you
-would get locally. If you want the app itself rather than a site built from it,
-`zel new app` is the answer.
-
-Extracting it from the image is possible and is not the supported path:
-
-```bash title="terminal"
-docker create --name tmp ghcr.io/mylife-inc/zellij-base
-docker cp tmp:/app ./wrapper
-docker rm tmp
-```
-
-## See also
-
-- [`zel build`](/cli/build) — the two things a site can be
-- [`zel deploy`](/cli/deploy) — build and push in one step
-- [Containers](/guide/containers) — what the base image is, conceptually
-
-`image build` and `image dockerfile` select `./zel.yaml` or
-`./docs/zellij/zel.yaml` when no directory is given. A configured hosted site
-mounts its `content/`; portable sites require the future Markdown-to-Next adapter.
-The default tag uses the configured site folder name, avoiding a shared
-`content:latest` tag for all configured sites. Explicit `--tag` always wins.
+The hosted builder carries the Zellij engine at `/opt/zellij` and a generated
+Next wrapper at `/app`. Dependencies install during the site build. The
+static runtime currently uses `nginxinc/nginx-unprivileged:stable-alpine`;
+custom runtime-base selection is not yet a CLI option. For a separately managed
+Dockerfile, pin image digests when you need fixed base versions.

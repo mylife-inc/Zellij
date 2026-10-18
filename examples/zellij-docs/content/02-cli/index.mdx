@@ -84,7 +84,7 @@ need no container runtime.
 | [`zel view`](/cli/view) | Build Markdown, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
 | [`zel deploy`](/cli/deploy) | Build and put it online | Planned |
-| [`zel image`](/cli/image) | Build, run and push container images | **Available** |
+| [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available in source** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
 | [`zel publish`](/cli/publish) | check, build and deploy in one step | Planned |
 | [`zel ship`](/cli/ship) | Somebody else's docs to a published site, in one line | Planned |
@@ -107,7 +107,7 @@ Common workflows also have short forms: `zel init`, `zel c`, `zel b`, and
 `zel v --watch`. See [the full shortcut table](/cli/shortcuts). Both forms accept
 the same arguments; help and shell completion show the available names.
 
-Build/check/view/serve/dev and image build/dockerfile accept a site directory.
+Build/check/view/serve/dev and image static/build/dockerfile accept a site directory.
 Without one, they select `./zel.yaml`, then `./docs/zellij/zel.yaml`.
 
 ```bash

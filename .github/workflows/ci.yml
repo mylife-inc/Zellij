@@ -104,7 +104,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -172,6 +172,11 @@ jobs:
 
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
+
+      - name: Portable and hosted static images serve routes and assets
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-static-images.mjs cli/target/debug/zel
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:

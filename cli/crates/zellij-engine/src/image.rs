@@ -96,7 +96,18 @@ impl ContainerEngine {
         platforms: Option<&str>,
     ) -> Result<()> {
         let body = dockerfile(self.image(), features);
+        self.image_build_recipe(content, tag, &body, platforms)
+    }
 
+    /// Run one image build with an explicit recipe and context. The caller
+    /// owns temporary exports until this returns; no source Dockerfile is written.
+    pub fn image_build_recipe(
+        &self,
+        content: &Utf8Path,
+        tag: &str,
+        body: &str,
+        platforms: Option<&str>,
+    ) -> Result<()> {
         // Stream the Dockerfile: no temporary file can overwrite authored
         // content or accidentally become part of COPY's build context.
         let mut command = self.runtime().command();
@@ -122,7 +133,7 @@ impl ContainerEngine {
         }
         match child.wait()?.code() {
             Some(0) => Ok(()),
-            _ => Err(Error::ContentInvalid),
+            _ => Err(Error::BuildFailed),
         }
     }
 
