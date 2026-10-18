@@ -1097,6 +1097,53 @@ for both Linux architectures and passed the published-image build/serve smoke te
 Repository facts were refreshed: public/default-main; latest native release is
 still `zellij-v0.1.3`. No new native binary version is published by this milestone.
 
+### Portable mathematics — 2026-10-17
+
+Source `80174ac` adds opt-in native math through `markdown: {math: true}` in
+portable `zel.yaml`. The default remains false. Pulldown-cmark recognizes inline
+and display equations; pinned `math-core` 0.9.0 renders MathML during the shared
+check/build compiler. No browser typesetter, Node, TeX installation or download
+is required. Titles, TOC/slugs, search and image alt text retain equation source.
+The font and styling load only on math pages, and sites without equations omit
+the math assets entirely. The embedded official STIX Two Math 2.13b171 font and
+licenses have pinned provenance/checksums in `cli/crates/zellij-docs/assets/math/`.
+
+Invalid syntax, unsupported commands and unresolved equation references fail
+with a source-file `rendering` diagnostic and expression ordinal; failed builds
+preserve the last export. Each expression has local definitions, numbering and
+references, with separate reserved ID namespaces. Cross-expression references,
+full TeX/hosted MathJax parity and Mermaid execution remain unsupported. Raw HTML
+policy is unchanged; generated math escapes text/annotations. Display math can
+scroll horizontally by keyboard on small screens. `view --watch` rereads the
+setting and recovers from invalid formulas using the existing publication path.
+
+The CLI and `zellij-docs` now declare Rust 1.96 for source builds because of the
+renderer dependency; helper crates retain 1.85. Three existing nested conditionals
+were simplified to satisfy the Clippy checks enabled by the newer minimum.
+CI now checks the whole workspace with Rust 1.96 as well as stable quality gates.
+Downloaded binaries do not need a Rust installation. No binary version is released.
+
+Local evidence: **176 Rust tests**, formatting and warnings-denied Clippy pass.
+Deep/strict product docs validate 47 routes and 23 section examples. Offline
+Chromium/WebKit acceptance passes relocated nested files, actual font decoding
+and checksum, fraction geometry/matrices, search/navigation, inherited theme color,
+HTML-like equation text, mobile scrolling and JavaScript-disabled rendering.
+Real HTTP/watch acceptance passes enabling/disabling math, invalid-formula
+preservation/recovery and clean shutdown. Four initial feature tests failed on
+the old source. The new browser fixture needed to allow existing theme URL
+parameters and wait for WebKit's resized layout; assertions were retained.
+Consult the PR containing `80174ac` for final hosted/platform/minimum-Rust results.
+This is not exhaustive math layout, older-browser or manual screen-reader acceptance.
+
+Prior milestone completion: [PR #22](https://github.com/mylife-inc/Zellij/pull/22)
+merged head `ac2bd54` as `0a52fdd`. PR/main CI `39090482991` / `39091005544` passed
+all 13 jobs. Both showcase runs had 317 passes and 124 conditional skips, with
+separate production page-theme/analytics/prefix and dev-watcher acceptance in
+Chromium/WebKit. Image run `39091005435` passed all 13 jobs, publishing four
+variants for Linux amd64/arm64 and passing published-image build/serve acceptance.
+Repository facts were refreshed: public/default-main, latest native release
+still `zellij-v0.1.3`. No user action is needed for this milestone.
+
 ## 1. Product and user's intentions
 
 Zellij turns an authored folder of YAML, Markdown, MDX, and assets into a
@@ -1214,8 +1261,9 @@ prepared-file change still requires further acceptance.
 - Examples now pin Next `16.4.2`, React/React DOM `19.2.8`; TypeScript
   `5.9.3` range. Engine peer ranges are Next `~16.4.2`, React `19.2.x`.
 - Manifests declare Node `^20.19.0 || >=22.12.0`; `.nvmrc`, CI and Docker use Node 24. Audit used Node
-  `24.19.0`. Rust declares edition 2024 / minimum 1.85; audit used Rust 1.99.0.
-  Minimum-version compatibility was not tested.
+  `24.19.0`. Rust uses edition 2024; CLI/docs require 1.96 and helper crates
+  declare 1.85. The math milestone adds a whole-workspace 1.96 CI check; consult
+  its final results. Local validation uses Rust 1.99.0.
 - Local package exports point at source, consumed through Next's
   `transpilePackages`. tsup also emits ESM/CJS/types and bundles the Node CLI.
   Build verification checks that client directives survive packaging.
@@ -1401,11 +1449,11 @@ Showcase production build was blocked by the local missing
 production visual acceptance were not completed. Passing content validation
 does not prove MDX compiles or all links/images work.
 
-Remaining order after page-theme and analytics implementation, subject to the user's v1 scope decision:
+Remaining order after portable math implementation, subject to the user's v1 scope decision:
 
-1. Complete hosted acceptance of S3; consult the PR containing `2823164` for its
-   final status. S5/S14/S15 and native distribution are accepted on merged main.
-2. Add richer Markdown rendering and finish the agreed CLI subset in
+1. Complete hosted acceptance of portable math, including minimum Rust and all
+   native targets; consult the PR containing `80174ac`. S3 is accepted on main.
+2. Address remaining portable rendering (especially diagrams) and finish the agreed CLI subset in
    [the portable contract](specs/zel-portable-docs.md); portable scaffolding is now implemented.
 3. Choose and publish a new native version through the tested release path,
    preserving the existing v0.1.3 assets. Confirm release destination/version
