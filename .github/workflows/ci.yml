@@ -83,6 +83,8 @@ jobs:
 
       - name: Portable theme tokens match the hosted engine
         run: node scripts/prepare-portable.mjs
+      - name: Verify portable Mermaid runtime and notices
+        run: node scripts/prepare-portable-mermaid.mjs
 
   portable:
     name: Portable docs (${{ matrix.os }})

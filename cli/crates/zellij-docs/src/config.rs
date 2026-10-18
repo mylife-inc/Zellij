@@ -24,6 +24,8 @@ pub struct Config {
 pub struct Markdown {
     #[serde(default)]
     pub math: bool,
+    #[serde(default)]
+    pub mermaid: bool,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]

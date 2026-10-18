@@ -1,0 +1,569 @@
+{
+  "generator": "scripts/prepare-portable-mermaid.mjs",
+  "esbuild": "0.28.2",
+  "sha256": "d944a8bf396ab9e345e530b6eeed71efb26df2be7471b24dfae2804b7e548c21",
+  "sourceGraphSha256": "6d3ab4baf9f26ad3a8f838e449f9b73f12feade45534e9b5371eef78544a2da0",
+  "packages": [
+    {
+      "name": "@braintree/sanitize-url",
+      "version": "7.1.2"
+    },
+    {
+      "name": "@iconify/utils",
+      "version": "3.1.4"
+    },
+    {
+      "name": "@mermaid-js/parser",
+      "version": "1.2.1"
+    },
+    {
+      "name": "@upsetjs/venn.js",
+      "version": "2.0.0"
+    },
+    {
+      "name": "cose-base",
+      "version": "1.0.3"
+    },
+    {
+      "name": "cytoscape",
+      "version": "3.34.0"
+    },
+    {
+      "name": "cytoscape-cose-bilkent",
+      "version": "4.1.0"
+    },
+    {
+      "name": "cytoscape-fcose",
+      "version": "2.2.0"
+    },
+    {
+      "name": "cose-base",
+      "version": "2.2.0"
+    },
+    {
+      "name": "layout-base",
+      "version": "2.0.1"
+    },
+    {
+      "name": "d3",
+      "version": "7.9.0"
+    },
+    {
+      "name": "d3-array",
+      "version": "3.2.4"
+    },
+    {
+      "name": "d3-axis",
+      "version": "3.0.0"
+    },
+    {
+      "name": "d3-brush",
+      "version": "3.0.0"
+    },
+    {
+      "name": "d3-chord",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-color",
+      "version": "3.1.0"
+    },
+    {
+      "name": "d3-contour",
+      "version": "4.0.2"
+    },
+    {
+      "name": "d3-delaunay",
+      "version": "6.0.4"
+    },
+    {
+      "name": "d3-dispatch",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-drag",
+      "version": "3.0.0"
+    },
+    {
+      "name": "d3-dsv",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-ease",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-fetch",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-force",
+      "version": "3.0.0"
+    },
+    {
+      "name": "d3-format",
+      "version": "3.1.2"
+    },
+    {
+      "name": "d3-geo",
+      "version": "3.1.1"
+    },
+    {
+      "name": "d3-hierarchy",
+      "version": "3.1.2"
+    },
+    {
+      "name": "d3-interpolate",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-path",
+      "version": "3.1.0"
+    },
+    {
+      "name": "d3-polygon",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-quadtree",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-random",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-sankey",
+      "version": "0.12.3"
+    },
+    {
+      "name": "d3-array",
+      "version": "2.12.1"
+    },
+    {
+      "name": "d3-path",
+      "version": "1.0.9"
+    },
+    {
+      "name": "d3-shape",
+      "version": "1.3.7"
+    },
+    {
+      "name": "internmap",
+      "version": "1.0.1"
+    },
+    {
+      "name": "d3-scale",
+      "version": "4.0.2"
+    },
+    {
+      "name": "d3-scale-chromatic",
+      "version": "3.1.0"
+    },
+    {
+      "name": "d3-selection",
+      "version": "3.0.0"
+    },
+    {
+      "name": "d3-shape",
+      "version": "3.2.0"
+    },
+    {
+      "name": "d3-time",
+      "version": "3.1.0"
+    },
+    {
+      "name": "d3-time-format",
+      "version": "4.1.0"
+    },
+    {
+      "name": "d3-timer",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-transition",
+      "version": "3.0.1"
+    },
+    {
+      "name": "d3-zoom",
+      "version": "3.0.0"
+    },
+    {
+      "name": "dagre-d3-es",
+      "version": "7.0.14"
+    },
+    {
+      "name": "dayjs",
+      "version": "1.11.21"
+    },
+    {
+      "name": "delaunator",
+      "version": "5.1.0"
+    },
+    {
+      "name": "dompurify",
+      "version": "3.4.17"
+    },
+    {
+      "name": "es-toolkit",
+      "version": "1.50.0"
+    },
+    {
+      "name": "fastdom",
+      "version": "1.0.12"
+    },
+    {
+      "name": "internmap",
+      "version": "2.0.3"
+    },
+    {
+      "name": "js-yaml",
+      "version": "4.3.2"
+    },
+    {
+      "name": "katex",
+      "version": "0.18.10"
+    },
+    {
+      "name": "khroma",
+      "version": "2.1.0"
+    },
+    {
+      "name": "layout-base",
+      "version": "1.0.2"
+    },
+    {
+      "name": "lodash-es",
+      "version": "4.18.1"
+    },
+    {
+      "name": "marked",
+      "version": "16.4.2"
+    },
+    {
+      "name": "mermaid",
+      "version": "11.17.2"
+    },
+    {
+      "name": "robust-predicates",
+      "version": "3.0.3"
+    },
+    {
+      "name": "roughjs",
+      "version": "4.6.6"
+    },
+    {
+      "name": "stylis",
+      "version": "4.4.0"
+    },
+    {
+      "name": "ts-dedent",
+      "version": "2.3.0"
+    },
+    {
+      "name": "uuid",
+      "version": "14.0.1"
+    }
+  ],
+  "embedded": [
+    {
+      "name": "@chevrotain/gast",
+      "version": "11.1.2",
+      "integrity": "sha512-Z9zfXR5jNZb1Hlsd/p+4XWeUFugrHirq36bKzPWDSIacV+GPSVXdk+ahVWZTwjhNwofAWg/sZg58fyucKSQx5g=="
+    },
+    {
+      "name": "@chevrotain/regexp-to-ast",
+      "version": "11.1.2",
+      "integrity": "sha512-nMU3Uj8naWer7xpZTYJdxbAs6RIv/dxYzkYU8GSwgUtcAAlzjcPfX1w+RKRcYG8POlzMeayOQ/znfwxEGo5ulw=="
+    },
+    {
+      "name": "@chevrotain/utils",
+      "version": "11.1.2",
+      "integrity": "sha512-4mudFAQ6H+MqBTfqLmU7G1ZwRzCLfJEooL/fsF6rCX5eePMbGhoy5n4g+G4vlh2muDcsCTJtL+uKbOzWxs5LHA=="
+    },
+    {
+      "name": "chevrotain",
+      "version": "11.1.2",
+      "integrity": "sha512-opLQzEVriiH1uUQ4Kctsd49bRoFDXGGSC4GUqj7pGyxM3RehRhvTlZJc1FL/Flew2p5uwxa1tUDWKzI4wNM8pg=="
+    },
+    {
+      "name": "chevrotain-allstar",
+      "version": "0.3.1",
+      "integrity": "sha512-b7g+y9A0v4mxCW1qUhf3BSVPg+/NvGErk/dOkrDaHA0nQIQGAtrOjlX//9OQtRlSCy+x9rfB5N8yC71lH1nvMw=="
+    },
+    {
+      "name": "langium",
+      "version": "4.2.1",
+      "integrity": "sha512-zu9QWmjpzJcomzdJQAHgDVhLGq5bLosVak1KVa40NzQHXfqr4eAHupvnPOVXEoLkg6Ocefvf/93d//SB7du4YQ=="
+    },
+    {
+      "name": "lodash-es",
+      "version": "4.17.23",
+      "integrity": "sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg=="
+    },
+    {
+      "name": "lodash-es",
+      "version": "4.18.1",
+      "integrity": "sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A=="
+    },
+    {
+      "name": "path-browserify",
+      "version": "1.0.1",
+      "integrity": "sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g=="
+    },
+    {
+      "name": "vscode-jsonrpc",
+      "version": "8.2.0",
+      "integrity": "sha512-C+r0eKJUIfiDIfwJhria30+TYWPtuHJXHtI7J0YlOmKAo7ogxP20T0zxB7HZQIFhIyvoBPwWskjxrvAtfjyZfA=="
+    },
+    {
+      "name": "vscode-languageserver-protocol",
+      "version": "3.17.5",
+      "integrity": "sha512-mb1bvRJN8SVznADSGWM9u/b07H7Ecg0I3OgXDuLdn307rl/J3A9YD6/eYOssqhecL27hK1IPZAsaqh00i/Jljg=="
+    },
+    {
+      "name": "vscode-languageserver-textdocument",
+      "version": "1.0.12",
+      "integrity": "sha512-cxWNPesCnQCcMPeenjKKsOCKQZ/L6Tv19DTRIGuLWe32lyzWhihGVJ/rcckZXJxfdKCFvRLS3fpBIsV/ZGX4zA=="
+    },
+    {
+      "name": "vscode-languageserver-types",
+      "version": "3.17.5",
+      "integrity": "sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg=="
+    }
+  ],
+  "replaced": {
+    "file": "node_modules/mermaid/dist/chunks/mermaid.core/chunk-LNGE3PJU.mjs",
+    "sha256": "2cb4e5f8d5fd99daccb0135fda6a5583c91f39efb0bb845af9d968ed427efcb2",
+    "with": "js-yaml@4.3.2"
+  },
+  "reviewedLodashSubset": [
+    "_DataView.js",
+    "_Hash.js",
+    "_ListCache.js",
+    "_Map.js",
+    "_MapCache.js",
+    "_Promise.js",
+    "_Set.js",
+    "_SetCache.js",
+    "_Stack.js",
+    "_Symbol.js",
+    "_Uint8Array.js",
+    "_WeakMap.js",
+    "_apply.js",
+    "_arrayAggregator.js",
+    "_arrayEach.js",
+    "_arrayEvery.js",
+    "_arrayFilter.js",
+    "_arrayIncludes.js",
+    "_arrayIncludesWith.js",
+    "_arrayLikeKeys.js",
+    "_arrayMap.js",
+    "_arrayPush.js",
+    "_arrayReduce.js",
+    "_arraySome.js",
+    "_assignValue.js",
+    "_assocIndexOf.js",
+    "_baseAggregator.js",
+    "_baseAssign.js",
+    "_baseAssignIn.js",
+    "_baseAssignValue.js",
+    "_baseClone.js",
+    "_baseCreate.js",
+    "_baseDifference.js",
+    "_baseEach.js",
+    "_baseEvery.js",
+    "_baseFilter.js",
+    "_baseFindIndex.js",
+    "_baseFlatten.js",
+    "_baseFor.js",
+    "_baseForOwn.js",
+    "_baseGet.js",
+    "_baseGetAllKeys.js",
+    "_baseGetTag.js",
+    "_baseHas.js",
+    "_baseHasIn.js",
+    "_baseIndexOf.js",
+    "_baseIsArguments.js",
+    "_baseIsEqual.js",
+    "_baseIsEqualDeep.js",
+    "_baseIsMap.js",
+    "_baseIsMatch.js",
+    "_baseIsNaN.js",
+    "_baseIsNative.js",
+    "_baseIsRegExp.js",
+    "_baseIsSet.js",
+    "_baseIsTypedArray.js",
+    "_baseIteratee.js",
+    "_baseKeys.js",
+    "_baseKeysIn.js",
+    "_baseMap.js",
+    "_baseMatches.js",
+    "_baseMatchesProperty.js",
+    "_basePickBy.js",
+    "_baseProperty.js",
+    "_basePropertyDeep.js",
+    "_baseReduce.js",
+    "_baseRest.js",
+    "_baseSet.js",
+    "_baseSetToString.js",
+    "_baseSlice.js",
+    "_baseSome.js",
+    "_baseTimes.js",
+    "_baseToString.js",
+    "_baseTrim.js",
+    "_baseUnary.js",
+    "_baseUniq.js",
+    "_baseValues.js",
+    "_cacheHas.js",
+    "_castFunction.js",
+    "_castPath.js",
+    "_cloneArrayBuffer.js",
+    "_cloneBuffer.js",
+    "_cloneDataView.js",
+    "_cloneRegExp.js",
+    "_cloneSymbol.js",
+    "_cloneTypedArray.js",
+    "_copyArray.js",
+    "_copyObject.js",
+    "_copySymbols.js",
+    "_copySymbolsIn.js",
+    "_coreJsData.js",
+    "_createAggregator.js",
+    "_createAssigner.js",
+    "_createBaseEach.js",
+    "_createBaseFor.js",
+    "_createFind.js",
+    "_createSet.js",
+    "_defineProperty.js",
+    "_equalArrays.js",
+    "_equalByTag.js",
+    "_equalObjects.js",
+    "_freeGlobal.js",
+    "_getAllKeys.js",
+    "_getAllKeysIn.js",
+    "_getMapData.js",
+    "_getMatchData.js",
+    "_getNative.js",
+    "_getPrototype.js",
+    "_getRawTag.js",
+    "_getSymbols.js",
+    "_getSymbolsIn.js",
+    "_getTag.js",
+    "_getValue.js",
+    "_hasPath.js",
+    "_hashClear.js",
+    "_hashDelete.js",
+    "_hashGet.js",
+    "_hashHas.js",
+    "_hashSet.js",
+    "_initCloneArray.js",
+    "_initCloneByTag.js",
+    "_initCloneObject.js",
+    "_isFlattenable.js",
+    "_isIndex.js",
+    "_isIterateeCall.js",
+    "_isKey.js",
+    "_isKeyable.js",
+    "_isMasked.js",
+    "_isPrototype.js",
+    "_isStrictComparable.js",
+    "_listCacheClear.js",
+    "_listCacheDelete.js",
+    "_listCacheGet.js",
+    "_listCacheHas.js",
+    "_listCacheSet.js",
+    "_mapCacheClear.js",
+    "_mapCacheDelete.js",
+    "_mapCacheGet.js",
+    "_mapCacheHas.js",
+    "_mapCacheSet.js",
+    "_mapToArray.js",
+    "_matchesStrictComparable.js",
+    "_memoizeCapped.js",
+    "_nativeCreate.js",
+    "_nativeKeys.js",
+    "_nativeKeysIn.js",
+    "_nodeUtil.js",
+    "_objectToString.js",
+    "_overArg.js",
+    "_overRest.js",
+    "_root.js",
+    "_setCacheAdd.js",
+    "_setCacheHas.js",
+    "_setToArray.js",
+    "_setToString.js",
+    "_shortOut.js",
+    "_stackClear.js",
+    "_stackDelete.js",
+    "_stackGet.js",
+    "_stackHas.js",
+    "_stackSet.js",
+    "_strictIndexOf.js",
+    "_stringToPath.js",
+    "_toKey.js",
+    "_toSource.js",
+    "_trimmedEndIndex.js",
+    "assign.js",
+    "clone.js",
+    "compact.js",
+    "constant.js",
+    "defaults.js",
+    "difference.js",
+    "drop.js",
+    "dropRight.js",
+    "eq.js",
+    "every.js",
+    "filter.js",
+    "find.js",
+    "findIndex.js",
+    "flatMap.js",
+    "flatten.js",
+    "forEach.js",
+    "get.js",
+    "groupBy.js",
+    "has.js",
+    "hasIn.js",
+    "head.js",
+    "identity.js",
+    "includes.js",
+    "indexOf.js",
+    "isArguments.js",
+    "isArray.js",
+    "isArrayLike.js",
+    "isArrayLikeObject.js",
+    "isBuffer.js",
+    "isEmpty.js",
+    "isFunction.js",
+    "isLength.js",
+    "isMap.js",
+    "isObject.js",
+    "isObjectLike.js",
+    "isRegExp.js",
+    "isSet.js",
+    "isString.js",
+    "isSymbol.js",
+    "isTypedArray.js",
+    "isUndefined.js",
+    "keys.js",
+    "keysIn.js",
+    "last.js",
+    "map.js",
+    "memoize.js",
+    "negate.js",
+    "noop.js",
+    "pickBy.js",
+    "property.js",
+    "reduce.js",
+    "reject.js",
+    "some.js",
+    "stubArray.js",
+    "stubFalse.js",
+    "toFinite.js",
+    "toInteger.js",
+    "toNumber.js",
+    "toString.js",
+    "uniq.js",
+    "values.js"
+  ]
+}

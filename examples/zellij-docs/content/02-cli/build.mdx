@@ -119,9 +119,9 @@ quotes, tables, task lists, strikethrough, footnotes, and fenced/indented code.
 Code highlighting is generated during the build and needs no browser library.
 
 Raw HTML is displayed as literal text and produces a warning. MDX components,
-MkDocs plugins/extensions, custom HTML widgets, and Mermaid execution are not
-supported by this target yet. Mermaid fences remain code. Built-in YAML mindmaps
-and optional native math are described below. Hosted Zellij sites retain their existing MDX, math, and
+MkDocs plugins/extensions and custom HTML widgets are not supported by this target.
+Built-in YAML mindmaps, optional native math, and opt-in Mermaid diagrams are
+described below. Hosted Zellij sites retain their existing MDX, math, and
 diagram features. Portable build is the first part of the documentation
 workflow; [`serve`](/cli/serve) previews the result and [`view`](/cli/view)
 combines the build, server, and browser launch. Add `view --watch` to rebuild
@@ -143,7 +143,9 @@ $$
 Math and the bundled STIX Two Math font work through `file://`, HTTP, and with
 JavaScript disabled. Only pages with equations load the math stylesheet; sites
 without equations omit the math assets. The export contains the font license.
-There is no CDN, Node, TeX installation, or browser math library to run.
+There is no CDN, Node, TeX installation, or browser math library to run for these
+native equations. Enabled Mermaid pages also include this local font and stylesheet
+for formulas inside diagrams.
 
 Use common LaTeX formulas such as fractions, roots, sums, and matrices. This
 uses `math-core` 0.9.0 rather than the hosted MathJax renderer; arbitrary LaTeX
@@ -203,6 +205,46 @@ removed from the export when the last mindmap is removed.
 
 This is Zellij's YAML `mindmap` syntax. Mermaid's `mindmap` grammar belongs inside
 a `mermaid` fence, which remains source code in the portable target.
+
+### Mermaid diagrams
+
+Enable `markdown: {mermaid: true}` in `zel.yaml` to draw fenced Mermaid source:
+
+````markdown
+```mermaid
+flowchart LR
+  Markdown --> Build --> Browser
+```
+````
+
+The export includes a local Mermaid runtime, its dependencies, and their license
+notices. Flowcharts, sequences, state diagrams, pie charts and Mermaid mindmaps
+work when opening a nested HTML file directly or moving the entire output folder.
+No HTTP server, Node, Docker, CDN or build-time browser is required. Diagrams redraw
+for the selected theme and light/dark mode, including system appearance changes.
+Formulas inside supported diagram labels use bundled KaTeX MathML and local fonts.
+
+Drawing requires browser JavaScript. Each diagram keeps a source disclosure;
+without JavaScript, or if the runtime cannot load, that source stays visible.
+Invalid Mermaid syntax shows a browser error and the source, without preventing
+other diagrams on the page from rendering. `zel check`, including `--strict`,
+validates nonempty source, at most 64 KiB per fence, and at most 32 diagrams per
+page. It does **not** run the Mermaid parser or guarantee a successful drawing.
+The browser additionally limits graphs to 500 edges.
+
+Mermaid uses strict security; author directives cannot weaken that setting or
+enable the legacy external math stylesheet. Explicit remote images or other
+remote resources in authored diagrams still need network access. Referenced
+diagram images are not discovered/copied by the native Markdown asset resolver;
+use ordinary Markdown images for portable local assets. Mermaid plugins, remote
+icon packs, and server-side rendering are not part of this target.
+
+Only pages containing enabled diagrams load the approximately 3.5 MB runtime.
+Sites without diagrams omit it; removing the last diagram removes it on the next
+build. Its shared math font is retained if native equations still need it.
+`view --watch` reloads changes to the source and the opt-in setting. Native input
+limit failures preserve the previous export; syntax errors appear after the
+successful rebuild, in the browser.
 
 ## Hosted static website
 

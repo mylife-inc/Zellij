@@ -45,7 +45,7 @@ pub fn render(
     let title = escape(&current.markdown.title);
     let name = escape(presentation.name);
     let theme = presentation.theme;
-    let (math_css, math_license) = if current.markdown.has_math {
+    let (math_css, math_license) = if current.markdown.has_math || current.markdown.has_mermaid {
         (
             format!("<link rel=\"stylesheet\" href=\"{prefix}_zellij/math/math.css\">"),
             format!(" · <a href=\"{prefix}_zellij/math/OFL.txt\">Math font license</a>"),
@@ -58,6 +58,15 @@ pub fn render(
         format!("<link rel=\"stylesheet\" href=\"{prefix}_zellij/mindmap.css\">")
     } else {
         String::new()
+    };
+    let (mermaid_css, mermaid_script, mermaid_license) = if current.markdown.has_mermaid {
+        (
+            format!("<link rel=\"stylesheet\" href=\"{prefix}_zellij/mermaid/mermaid.css\">"),
+            format!("<script defer src=\"{prefix}_zellij/mermaid/mermaid.js\"></script>"),
+            format!(" · <a href=\"{prefix}_zellij/mermaid/licenses.txt\">Diagram licenses</a>"),
+        )
+    } else {
+        (String::new(), String::new(), String::new())
     };
     let logo = presentation
         .logo
@@ -161,8 +170,8 @@ pub fn render(
 <title>{title} · {name}</title><meta name="description" content="{description}">
 <link rel="stylesheet" href="{prefix}_zellij/fonts/fonts.css">
 <link rel="stylesheet" href="{prefix}_zellij/themes.css"><link rel="stylesheet" href="{prefix}_zellij/style.css">{mindmap_css}
-{math_css}
-<script defer src="{prefix}_zellij/search.js"></script><script defer src="{prefix}_zellij/site.js"></script></head>
+{math_css}{mermaid_css}
+<script defer src="{prefix}_zellij/search.js"></script><script defer src="{prefix}_zellij/site.js"></script>{mermaid_script}</head>
 <body data-root="{prefix}"><a class="skip" href="#_zel-content">Skip to content</a>
 <header class="header"><div class="brand-group">{logo}<a class="brand" href="{prefix}index.html">{name}</a></div>
 <div class="controls" hidden><button id="_zel-menu" aria-expanded="false" aria-controls="_zel-sidebar">Contents</button>
@@ -170,7 +179,7 @@ pub fn render(
 <label class="sr-only" for="_zel-mode">Appearance</label><select id="_zel-mode"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div></header>
 <div class="layout"><aside class="sidebar" id="_zel-sidebar"><nav aria-label="Documentation"><p class="eyebrow">Contents</p><ul>{nav}</ul></nav></aside>
 <main id="_zel-content" tabindex="-1"><nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs}</nav>{toc}<article>{heading}{body}</article><nav class="paging" aria-label="Previous and next">{paging}</nav>
-<footer>Built with Zellij · <a href="{prefix}_zellij/fonts/licenses.txt">Font licenses</a>{math_license}</footer></main></div>
+<footer>Built with Zellij · <a href="{prefix}_zellij/fonts/licenses.txt">Font licenses</a>{math_license}{mermaid_license}</footer></main></div>
 <dialog id="_zel-search" aria-labelledby="_zel-search-title"><form method="dialog"><button class="close" aria-label="Close search">Close</button></form><label id="_zel-search-title" for="_zel-query">Search documentation</label><input id="_zel-query" type="search" autocomplete="off" placeholder="Search pages and headings…"><p id="_zel-status" role="status" aria-live="polite">Type to search.</p><ul id="_zel-results"></ul></dialog>
 </body></html>
 "##,

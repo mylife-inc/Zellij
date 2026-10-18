@@ -74,6 +74,29 @@ fn plain_folder_checks_without_output_or_external_tools_in_both_formats() {
 }
 
 #[test]
+fn mermaid_bounds_have_native_diagnostics_but_grammar_is_a_browser_concern() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::write(root.join("zel.yaml"), "markdown: {mermaid: true}").unwrap();
+    fs::write(root.join("README.md"), "```mermaid\n\n```\n").unwrap();
+    let invalid = report(root, &["check", "--json"], 3);
+    assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
+    assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
+    assert!(
+        invalid["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("mermaid 1")
+    );
+    fs::write(root.join("README.md"), "```mermaid\ninvalid grammar\n```\n").unwrap();
+    assert_eq!(
+        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        true
+    );
+    assert_eq!(fs::read_dir(root).unwrap().count(), 2);
+}
+
+#[test]
 fn invalid_mindmaps_have_structured_diagnostics_and_recover_without_tools() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

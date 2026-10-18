@@ -13,6 +13,7 @@ pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
 mod links;
 mod markdown;
 mod math;
+mod mermaid;
 mod mindmap;
 mod page;
 pub mod server;
@@ -307,8 +308,13 @@ fn compile(
             )
             .and_then(|text| {
                 diagnostics.capture(
-                    markdown::parse(&text, fallback, config.markdown.math)
-                        .map_err(|e| files::unsafe_path(source, e.to_string())),
+                    markdown::parse(
+                        &text,
+                        fallback,
+                        config.markdown.math,
+                        config.markdown.mermaid,
+                    )
+                    .map_err(|e| files::unsafe_path(source, e.to_string())),
                     Code::Markdown,
                     Some(source),
                 )
@@ -337,7 +343,7 @@ fn compile(
             source: "".into(),
             output: "index.html".into(),
             markdown: diagnostics.capture(
-                markdown::parse("", name, false),
+                markdown::parse("", name, false, false),
                 Code::Rendering,
                 None,
             )?,
@@ -401,7 +407,7 @@ fn compile(
     for ((index, page), events) in pages.iter().enumerate().zip(rewritten) {
         let mut body = String::new();
         let highlighted = diagnostics.capture(
-            markdown::highlight(events),
+            markdown::highlight(events, config.markdown.mermaid),
             Code::Rendering,
             Some(&page.source),
         )?;
@@ -442,9 +448,17 @@ fn compile(
             bytes.to_vec(),
         );
     }
-    if pages.iter().any(|p| p.markdown.has_math) {
+    if pages
+        .iter()
+        .any(|p| p.markdown.has_math || p.markdown.has_mermaid)
+    {
         for (name, bytes) in math::ASSETS {
             files.insert(format!("_zellij/math/{name}").into(), bytes.to_vec());
+        }
+    }
+    if pages.iter().any(|p| p.markdown.has_mermaid) {
+        for (name, bytes) in mermaid::ASSETS {
+            files.insert(format!("_zellij/mermaid/{name}").into(), bytes.to_vec());
         }
     }
     if pages.iter().any(|p| p.markdown.has_mindmap) {

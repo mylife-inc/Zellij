@@ -1085,6 +1085,47 @@ Rust, six package/install targets, three-OS portable tests, showcase (317 passes
 124 conditional skips) and published-image acceptance passed. The repository
 remains public/default-main and latest native release remains `zellij-v0.1.3`.
 
+## Implementation record — portable Mermaid
+
+Source `a9767fa` adds opt-in `markdown.mermaid` with a locally bundled browser
+renderer. Native build/check preserve escaped source and enforce nonempty input,
+64 KiB per fence and 32 diagrams per page. Mermaid syntax/layout validation takes
+place in the browser, not native `check --strict`. Failed diagrams retain source
+and an inline error while other diagrams continue. Strict settings, modern
+MathML and a 500-edge limit are protected against author overrides.
+
+The classic IIFE bundles diagram chunks and KaTeX, so relocated/nested `file://`
+exports need no server or network. Only enabled diagram pages load the runtime;
+unused assets disappear after rebuilds. JavaScript-disabled/missing-runtime
+fallbacks remain readable. Theme/mode/system changes serialize redraws and discard
+stale results. Review found duplicate IDs in upstream mindmap output and native
+CSS selectors that would affect Mermaid; both are contained in this implementation.
+Long source disclosures now scroll within a bounded, focusable region.
+
+The reproducible generator and CI verification preserve package and upstream
+embedded notices. Inspection found bundled js-yaml 4.3.0 that npm audit does not
+see; an exact-module shim substitutes patched 4.3.2. The old embedded Lodash
+subset excludes known affected functions, enforced by source-map assertions.
+This is not a zero-advisory claim. The bundle README records provenance, hashes,
+review limits and upgrade instructions. The hosted runtime is unchanged.
+
+Local validation: 186 Rust tests, formatting, warnings-denied Clippy, bundle
+reproduction, deep-strict documentation validation (47 routes/23 examples) and
+production documentation build pass. Chromium/WebKit pass relocated offline
+rendering, math labels, source/edge failures, security directives, unique IDs,
+rapid theme/system-mode changes, search/navigation, mobile and no-JavaScript/
+missing-runtime fallbacks. Real HTTP/watch tests pass opt-in/config/source edits,
+failed native rebuild preservation and recovery. Consult the PR containing
+`a9767fa` for final hosted acceptance and merge status. Remote diagram resources,
+image discovery inside diagram source, plugins, server rendering and exhaustive
+browser/screen-reader/security coverage remain outside this bounded milestone.
+
+Prior milestone: PR #24 merged as `1bddf89`; PR/main CI `39095187808` /
+`39095732531` and image workflow `39095732463` each passed all 13 jobs. Rust 1.96,
+six package/install targets, three-OS portable acceptance, showcase (317 passes,
+124 conditional skips, no retries) and published-image acceptance passed. The
+repository is public/default-main; latest native release remains `zellij-v0.1.3`.
+
 ## Assessment
 
 The shared rendering engine is substantially implemented: 23 sections, 14
