@@ -2159,3 +2159,10 @@ syntax checks for acceptance fixtures. Actual registry/container and all-platfor
 CI remain pending; record fixing source and the PR below for final evidence. Next: direct
 Netlify delivery, shared provider composition, expanded CI generation, then the
 remaining CLI inventory. The CLI remains incomplete; no user action is needed.
+
+Implementation source: [`5b8bf91d731af36321f725f4dc4590519e1ba480`](https://github.com/mylife-inc/Zellij/commit/5b8bf91d731af36321f725f4dc4590519e1ba480).
+The final local delivery regression (including legacy tags with saved new
+settings) and warnings-denied Clippy passed again after that test addition.
+Consult the `codex/cli-delivery` PR's latest checks for actual registry
+publication and all-platform acceptance; local fake-runtime checks do not
+establish a successful registry push.

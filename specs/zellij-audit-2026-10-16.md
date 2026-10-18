@@ -1753,3 +1753,8 @@ to a disposable loopback registry, removes the local image, pulls it back, and
 runs the existing HTTP/browser acceptance against the retrieved static and Next
 artifacts. Source and completed acceptance are tracked in the durable context.
 The provider/Netlify and remaining CLI backlog are still open.
+
+Fixing source for the saved-publication milestone:
+`5b8bf91d731af36321f725f4dc4590519e1ba480`. Local checks passed 237 Rust tests,
+formatting, warnings-denied Clippy and strict/deep docs validation. Use the
+associated PR's latest checks for real registry and all-platform results.
