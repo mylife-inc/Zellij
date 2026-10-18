@@ -2227,3 +2227,8 @@ The mock HTTP fixture explicitly makes accepted sockets blocking, which is
 required on macOS when its listener is nonblocking. Actual container and all-six
 native package results remain pending in the PR; do not confuse local protocol
 tests with successful live provider publication.
+
+Implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`, tracked in
+[PR #33](https://github.com/mylife-inc/Zellij/pull/33). Consult its latest checks
+for final-head platform and hosted-container results. The public documentation
+and released binary have not been updated by this PR.

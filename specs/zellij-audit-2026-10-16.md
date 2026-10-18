@@ -1772,3 +1772,8 @@ upload path to a loopback API. This is protocol/renderer acceptance, not proof o
 a live Netlify account deployment. Source/PR/check evidence is kept in the durable
 context. Other providers, saved CI generation, ship and the remaining CLI backlog
 are still open; no binary release or public documentation deployment is included.
+
+Netlify implementation source: `37631df8dbb2455f3e52a4756bf1a50fb57708be`,
+[PR #33](https://github.com/mylife-inc/Zellij/pull/33). Local checks pass 245 Rust
+tests, formatting, warnings-denied Clippy and strict/deep docs validation.
+Use the PR's latest checks for final hosted-container and all-platform results.
