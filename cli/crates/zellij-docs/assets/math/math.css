@@ -1,0 +1,5 @@
+@import url("mathmlfixes.css");
+@font-face{font-family:"Zellij STIX Two Math";src:url("STIXTwoMath-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+math{font-family:"Zellij STIX Two Math",math;font-weight:400;line-height:normal;overflow-wrap:normal}
+math mtext{font-family:var(--zellij-font-body)}math mtext code{font-family:var(--zellij-font-mono);font-size:1em;padding:0;background:none}math mtext .math-core-serif-font{font-family:serif}math mtext .math-core-sans-serif-font{font-family:sans-serif}
+.math-display{display:block;max-width:100%;overflow-x:auto;margin:1.5rem 0;padding:.5rem 0}.math-display>math{min-width:fit-content;margin:auto}

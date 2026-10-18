@@ -119,13 +119,49 @@ quotes, tables, task lists, strikethrough, footnotes, and fenced/indented code.
 Code highlighting is generated during the build and needs no browser library.
 
 Raw HTML is displayed as literal text and produces a warning. MDX components,
-MkDocs plugins/extensions, custom HTML widgets, math rendering, and Mermaid
-execution are not supported by this target yet. Math remains text and Mermaid
-fences remain code. Hosted Zellij sites retain their existing MDX, math, and
+MkDocs plugins/extensions, custom HTML widgets, and Mermaid execution are not
+supported by this target yet. Mermaid fences remain code. Optional native math
+is described below. Hosted Zellij sites retain their existing MDX, math, and
 diagram features. Portable build is the first part of the documentation
 workflow; [`serve`](/cli/serve) previews the result and [`view`](/cli/view)
 combines the build, server, and browser launch. Add `view --watch` to rebuild
 and reload the HTTP preview after source edits.
+
+### Mathematics
+
+Enable `markdown: {math: true}` in `zel.yaml` to render LaTeX math into MathML
+during the build. For example:
+
+```markdown
+Inline energy: $E=mc^2$.
+
+$$
+\frac{1}{2} + \sqrt{x}
+$$
+```
+
+Math and the bundled STIX Two Math font work through `file://`, HTTP, and with
+JavaScript disabled. Only pages with equations load the math stylesheet; sites
+without equations omit the math assets. The export contains the font license.
+There is no CDN, Node, TeX installation, or browser math library to run.
+
+Use common LaTeX formulas such as fractions, roots, sums, and matrices. This
+uses `math-core` 0.9.0 rather than the hosted MathJax renderer; arbitrary LaTeX
+documents and full command parity are not supported. Unsupported commands,
+malformed expressions and unresolved equation references fail `check` and
+`build`, retaining the previous export. The diagnostic names the source file
+and expression number. Definitions, equation numbering and references are local
+to each expression; cross-expression equation references are not supported.
+
+With math enabled, escape literal dollar signs as `\$`, or put examples in
+inline/fenced code. Delimiters follow pulldown-cmark's Markdown math syntax;
+`\(...\)` and `\[...\]` are not equation delimiters. Unmatched delimiters remain
+ordinary Markdown. Math in image descriptions remains plain LaTeX text.
+Headings and search keep the LaTeX source as their text; rendered equations
+include that source in a MathML annotation. The original Markdown is unchanged.
+
+Current Chromium and WebKit are covered by automated offline tests. This does
+not establish exhaustive LaTeX layout, older-browser or screen-reader support.
 
 ## Hosted static website
 

@@ -56,6 +56,21 @@ an otherwise automatic `zel build`, including a folder with hosted markers.
 An explicit `--target static` or `--target image` still selects that target.
 `view` always uses the portable target.
 
+### Mathematics
+
+Math is disabled by default so dollar-sign prose keeps its existing meaning.
+Enable it with a YAML boolean:
+
+```yaml title="docs/zel.yaml"
+markdown:
+  math: true
+```
+
+Use `$...$` for inline equations and `$$...$$` for display equations. The
+[portable math contract](/cli/build#mathematics) describes syntax, offline
+rendering, validation, and supported limits. This is independent of hosted
+Zellij's `features.maths` setting. `view --watch` rereads it after config edits.
+
 ### Navigation
 
 `nav` is an ordered list. Each entry contains exactly one of:

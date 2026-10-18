@@ -4,7 +4,7 @@ Status: portable build merged in PR #12 and native `serve`/`view` in PR #13.
 `view --watch` merged in PR #14 with all-platform acceptance. Portable `zel.yaml`
 configuration/navigation and excluded-asset checks merged in PRs #15–16.
 Native validation and structured diagnostics merged in PR #17. The portable
-starter is the current implementation milestone. The native renderer and server
+starter is merged in PR #18; opt-in native math is the current implementation milestone. The native renderer and server
 are separate from the hosted Next router.
 
 The user wants MkDocs-equivalent documentation workflows, without requiring the
@@ -114,8 +114,8 @@ the existing export when validation or rendering fails.
 - Default output is the sibling `<input-name>-site`. Input and output must be
   disjoint. `--name` controls the header name; `--theme` selects from the shared
   14-theme catalog, defaulting to cupertino.
-- Raw HTML is literal text with a warning; `.mdx` is rejected. No math rendering
-  or Mermaid execution is enabled. Remote media remains remote. MkDocs plugins,
+- Raw HTML is literal text with a warning; `.mdx` is rejected. MathML rendering
+  is opt-in through `markdown.math`; Mermaid fences remain code. Remote media remains remote. MkDocs plugins,
   full-text search language processing and incremental compilation are not
   implemented. Optional `zel.yaml` supplies identity, branding and navigation. `view --watch` performs full rebuilds and
   reloads the HTTP preview after successful publication.
@@ -134,7 +134,7 @@ installation, release packaging or container integration.
 | Capability | Native portable status | Next work |
 | --- | --- | --- |
 | Plain-folder static build and alternate output | Implemented | Expand real-document fixtures and rendering compatibility |
-| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` implemented | Raw HTML policy, math/diagrams, broader config |
+| Markdown, titles, automatic/custom navigation, themes | Core plus `zel.yaml` and opt-in math implemented | Raw HTML policy, diagrams, broader config |
 | Assets, TOC, offline search | Implemented for local Markdown references | Richer search/navigation where needed |
 | Strict diagnostics | Native `check`, strict warning gate and JSON reports implemented | Hosted JSON reports, richer source locations |
 | Project scaffolding | Native `new portable` full/minimal starters; existing hosted scaffolds | Extend starter content with future rendering capabilities |
@@ -226,7 +226,7 @@ shutdown, and moved direct-file acceptance in `scripts/preview-watch.mjs`.
 ## Portable configuration and navigation — 2026-10-17
 
 Read only `zel.yaml` in the input Markdown root. Supported keys: optional `name`,
-`theme`, `brand.logo` (`src`, `alt`, optional absolute HTTP(S) `href`), and `nav`.
+`theme`, `markdown.math`, `brand.logo` (`src`, `alt`, optional absolute HTTP(S) `href`), and `nav`.
 All text is strictly typed; unknown/duplicate keys and invalid values fail before
 staging/publication. A present config selects portable automatic build dispatch;
 explicit target flags retain their meaning. CLI name/theme overrides win, then
@@ -321,3 +321,44 @@ runs those tests. `scripts/portable-starter.mjs`, called by the existing browser
 gate, opens the actual full/minimal generated output after moving it to a path
 with spaces and Unicode. Chromium/WebKit verify names, navigation, fragments,
 local images and search with networking blocked, plus JavaScript-disabled content.
+
+## Native math contract — 2026-10-17
+
+`markdown: {math: true}` in `zel.yaml` enables pulldown-cmark's inline `$...$`
+and display `$$...$$` syntax. It defaults to false, preserving dollar-sign prose.
+Escaped dollars and code remain literal; unmatched delimiters remain ordinary
+Markdown. Backslash-parenthesis/bracket delimiters are not enabled. Image alt
+text retains plain LaTeX instead of embedded markup. Titles, TOC labels, slugs
+and search derive from the equation source alongside ordinary heading text.
+
+`math-core` is pinned to 0.9.0 and converts expressions to MathML during the
+shared check/build compiler. No Node, TeX, subprocess, CDN or browser typesetter
+is used. Malformed expressions, unsupported commands and unresolved equation
+references fail with the existing `rendering` diagnostic, source file and an
+expression ordinal. Previous exports survive failures. Each expression has
+local definitions/numbering/references and a distinct reserved `_zel-math-N-`
+ID namespace. Cross-expression references are not supported. Original LaTeX is
+retained in an escaped MathML annotation; raw HTML policy is unchanged.
+
+Only pages containing rendered math link its CSS; a site without equations
+omits `_zellij/math`. The binary embeds the unmodified official STIX Two Math
+2.13b171 WOFF2 and OFL license, plus the matching renderer CSS fixes/MIT license.
+Pinned revisions and checksums live in `cli/crates/zellij-docs/assets/math/README.md`.
+Display equations have keyboard-focusable horizontal scrolling on small screens.
+Math follows inherited text color and uses its own font regardless of site theme.
+
+The CLI and `zellij-docs` now require Rust 1.96 for source builds because of
+the math dependency; the other crates retain their earlier minimum. CI checks
+the complete workspace with 1.96 in addition to stable Rust quality gates.
+Downloaded binaries need no Rust installation. No new binary release is implied.
+
+Acceptance: library and actual-CLI JSON tests cover configuration, formulas,
+heading links/search/alt text, source escaping, invalid/recursive commands,
+local label IDs, failure preservation and removing unused assets. The portable
+browser gate exercises relocated nested `file://` pages with networking blocked,
+both with and without JavaScript: actual font decoding/checksum, fraction geometry,
+matrices, search/navigation, theme color, mobile scrolling and HTML-like text.
+Preview acceptance covers config edits, invalid-equation preservation and recovery
+through the real HTTP watcher. CI runs these on Linux, macOS and Windows.
+This is common LaTeX math support, not full TeX/MathJax parity, exhaustive font
+layout or manual screen-reader acceptance. Mermaid remains a separate follow-up.

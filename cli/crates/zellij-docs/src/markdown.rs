@@ -20,6 +20,7 @@ pub struct Markdown {
     pub order: i64,
     pub has_h1: bool,
     pub literal_html: bool,
+    pub has_math: bool,
 }
 
 pub fn escape(text: &str) -> String {
@@ -86,7 +87,9 @@ fn plain(events: &[Event<'_>]) -> String {
     let mut text = String::new();
     for event in events {
         match event {
-            Event::Text(s) | Event::Code(s) => text.push_str(s),
+            Event::Text(s) | Event::Code(s) | Event::InlineMath(s) | Event::DisplayMath(s) => {
+                text.push_str(s)
+            }
             Event::SoftBreak | Event::HardBreak | Event::End(_) => text.push(' '),
             _ => {}
         }
@@ -94,23 +97,24 @@ fn plain(events: &[Event<'_>]) -> String {
     text.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
-pub fn parse(source: &str, fallback: &str) -> Result<Markdown> {
+pub fn parse(source: &str, fallback: &str, math: bool) -> Result<Markdown> {
     let (meta, body) = frontmatter(source)?;
-    let options = Options::ENABLE_TABLES
+    let mut options = Options::ENABLE_TABLES
         | Options::ENABLE_FOOTNOTES
         | Options::ENABLE_STRIKETHROUGH
         | Options::ENABLE_TASKLISTS
         | Options::ENABLE_HEADING_ATTRIBUTES
         | Options::ENABLE_GFM;
+    options.set(Options::ENABLE_MATH, math);
     let mut events: Vec<_> = Parser::new_ext(&body, options)
         .map(Event::into_static)
         .collect();
     let mut used = BTreeSet::new();
     for event in &events {
-        if let Event::Start(Tag::FootnoteDefinition(id)) = event {
-            if id.starts_with("_zel-") || !used.insert(id.to_string()) {
-                return Err(invalid(format!("duplicate or reserved footnote ID {id:?}")));
-            }
+        if let Event::Start(Tag::FootnoteDefinition(id)) = event
+            && (id.starts_with("_zel-") || !used.insert(id.to_string()))
+        {
+            return Err(invalid(format!("duplicate or reserved footnote ID {id:?}")));
         }
     }
     // Reserve explicit IDs before deriving any slugs, including IDs appearing later.
@@ -130,7 +134,21 @@ pub fn parse(source: &str, fallback: &str) -> Result<Markdown> {
     let mut headings = Vec::new();
     let mut first_h1 = None;
     let mut literal_html = false;
+    let mut has_math = false;
+    let mut image_depth = 0;
     for i in 0..events.len() {
+        match &events[i] {
+            Event::Start(Tag::Image { .. }) => image_depth += 1,
+            Event::End(TagEnd::Image) => image_depth -= 1,
+            Event::InlineMath(text) | Event::DisplayMath(text) => {
+                if image_depth > 0 {
+                    events[i] = Event::Text(text.clone());
+                } else {
+                    has_math = true;
+                }
+            }
+            _ => {}
+        }
         if let Event::Start(Tag::Heading { level, id, .. }) = &events[i] {
             let level = *level;
             let end = (i + 1..events.len())
@@ -189,6 +207,7 @@ pub fn parse(source: &str, fallback: &str) -> Result<Markdown> {
         order,
         has_h1,
         literal_html,
+        has_math,
     })
 }
 
@@ -197,8 +216,14 @@ pub fn highlight(events: Vec<Event<'static>>) -> Result<Vec<Event<'static>>> {
     static THEMES: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
     let mut output = Vec::new();
     let mut iter = events.into_iter();
+    let mut equation = 0;
     while let Some(event) = iter.next() {
-        if let Event::Start(Tag::CodeBlock(kind)) = event {
+        if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
+            equation += 1;
+            output.push(Event::Html(
+                crate::math::render(text, matches!(event, Event::DisplayMath(_)), equation)?.into(),
+            ));
+        } else if let Event::Start(Tag::CodeBlock(kind)) = event {
             let language = match kind {
                 CodeBlockKind::Fenced(s) => s.split_whitespace().next().unwrap_or("").to_owned(),
                 _ => String::new(),

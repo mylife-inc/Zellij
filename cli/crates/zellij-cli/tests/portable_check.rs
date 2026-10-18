@@ -74,6 +74,30 @@ fn plain_folder_checks_without_output_or_external_tools_in_both_formats() {
 }
 
 #[test]
+fn invalid_math_has_a_structured_source_diagnostic_and_recovers_without_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::write(root.join("zel.yaml"), "markdown: {math: true}").unwrap();
+    fs::write(root.join("README.md"), "# Equations\n\n$\\unknown$\n").unwrap();
+    let invalid = report(root, &["check", "--json"], 3);
+    assert_eq!(invalid["ok"], false);
+    assert_eq!(invalid["diagnostics"][0]["code"], "rendering");
+    assert_eq!(invalid["diagnostics"][0]["file"], "README.md");
+    assert!(
+        invalid["diagnostics"][0]["message"]
+            .as_str()
+            .unwrap()
+            .contains("math expression 1")
+    );
+    fs::write(root.join("README.md"), "# Equations\n\n$\\frac{1}{2}$\n").unwrap();
+    assert_eq!(
+        report(root, &["check", "--strict", "--json"], 0)["ok"],
+        true
+    );
+    assert_eq!(fs::read_dir(root).unwrap().count(), 2);
+}
+
+#[test]
 fn strict_and_invalid_checks_have_nonzero_exits_and_valid_json() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

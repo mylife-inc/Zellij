@@ -8,6 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { chromium, webkit, expect } from '@playwright/test';
 import { checkConfiguration } from './portable-config.mjs';
 import { checkStarter } from './portable-starter.mjs';
+import { checkMath } from './portable-math.mjs';
 
 const binary = path.resolve(process.argv[2] || `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const temp = await mkdtemp(path.join(tmpdir(), 'zellij-portable-'));
@@ -131,6 +132,7 @@ try {
       await noJS.close();
       await checkConfiguration({ binary, root: temp, env, engine, browser });
       await checkStarter({ binary, root: temp, env, engine, browser });
+      await checkMath({ binary, root: temp, env, engine, browser });
       console.log(`${engine}: moved file:// site, nested links, search, keyboard, themes, local fonts/media, mobile and no-JS content passed.`);
     } finally { await browser.close(); }
   }

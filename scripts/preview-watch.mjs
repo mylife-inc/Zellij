@@ -170,6 +170,24 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       await expect(page.locator('.brand-logo')).toHaveCount(0);
       await expect(page.getByRole('navigation', { name: 'Documentation', exact: true }).getByRole('link')).toHaveCount(3);
 
+      // Math configuration is reread and the real HTTP preview reloads it.
+      const mathBody = `${home(`Recovered ${engine}`)}\nInline $\\frac{1}{2}$.\n`;
+      await writeFile(readme, mathBody);
+      await writeFile(configPath, 'markdown: {math: true}\n');
+      await expect(page.locator('article mfrac')).toBeVisible({ timeout: 20000 });
+      const mathOutput = await snapshot(output);
+      const mathVersion = (await status()).version;
+      await writeFile(readme, `${home(`Recovered ${engine}`)}\n$\\unknown$\n`);
+      await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
+      assert.equal((await status()).version, mathVersion);
+      assert.deepEqual(await snapshot(output), mathOutput);
+      await writeFile(readme, mathBody);
+      await expect(page.getByRole('alert')).toHaveCount(0, { timeout: 20000 });
+      await expect(page.locator('article mfrac')).toBeVisible();
+      await rm(configPath);
+      await expect(page.locator('article math')).toHaveCount(0, { timeout: 20000 });
+      await expect(page.locator('article')).toContainText('$\\frac{1}{2}$');
+
       const stable = await status();
       await writeFile(path.join(source, '.draft.md'), 'ignored');
       await mkdir(path.join(source, 'node_modules'));
