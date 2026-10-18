@@ -204,3 +204,14 @@ Zsh, Fish, PowerShell and Elvish; the earlier unrecognized-command inventory
 above is the historical baseline. Help and generated completion share the
 parser schema, including both spellings. This does not add `si`, `ni`, `na`,
 `pub`, `netlify`, or bare `ci [site]`, nor change converter output format.
+
+
+## Implementation delta — 2026-10-18 static images
+
+Source `5ed8fb49126ce3919abedbe532f6ec7ba63506e4` adds the implemented
+`image static` leaf and `si` shortcut, for both renderers. Dockerfile generation
+now accepts `--kind static|next`, defaulting to the previous Next recipe. Existing
+Next build paths are unchanged. `image next` / `ni` remains unregistered until
+its Markdown adapter preserves navigation, all pages, links, assets and settings.
+See the CLI image reference and durable context for context-folder semantics,
+runtime requirements, tag defaults and verification evidence.

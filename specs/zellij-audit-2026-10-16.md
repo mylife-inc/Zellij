@@ -1712,3 +1712,16 @@ image, deployment, workflow-generation, or registered stub capabilities.
 Local verification: 222 Rust tests, formatting, warnings-denied Clippy, strict
 49-route/23-example docs validation, Bash completion execution and Zsh syntax.
 See durable context and the PR for browser and hosted CI completion evidence.
+
+
+## Implementation record — static-site images (2026-10-18)
+
+Source `5ed8fb49126ce3919abedbe532f6ec7ba63506e4` implements
+`image static` / `si` for portable and hosted sources, plus renderer-aware
+`idf --kind static|next`. Portable packaging preserves the native file-viewable
+export; hosted packaging preserves basePath. The final image runs NGINX without
+root on port 3000. Native temporary output is cleaned up on failure; existing
+source and site output are preserved. Legacy Next paths and tag defaults remain.
+Local checks: 226 Rust tests, fmt, Clippy, strict/deep 49-route/23-example docs.
+Real-container acceptance is tracked by the subsequent PR; consult the durable
+context for results. The Markdown-to-Next adapter and broader CLI backlog remain.
