@@ -2692,3 +2692,8 @@ path: after acquiring the lock, the on-disk executable must report the running
 process's version before downloading. Native acceptance now also launches a
 second updater during a held download and requires lock refusal. This follow-up
 must pass the final full CI before merge.
+
+Explicit-version `upgrade --check` is a local version comparison, not evidence
+that a release or platform asset exists. Its output/documentation now say this
+explicitly; only unpinned check mode queries the stable release channel. Actual
+installation always verifies the downloaded archive before replacement.

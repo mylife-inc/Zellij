@@ -366,7 +366,9 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
     if options.check {
         println!(
             "{}",
-            if selected > current {
+            if options.version.is_some() {
+                "Version comparison complete; an explicitly selected release's assets were not checked."
+            } else if selected > current {
                 "Upgrade available; no files changed."
             } else {
                 "Already current; no files changed."

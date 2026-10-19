@@ -26,7 +26,9 @@ API rate limit. Tokens go only to the fixed GitHub API endpoint; asset downloads
 and mirrors receive no authorization header.
 
 `--check` reports the selected version without downloading an archive or changing
-files. An already installed version is a no-op unless `--force` is given.
+files. With an explicit version argument it only compares versions; it does not
+verify that the requested release or its platform assets exist. An already
+installed version is a no-op unless `--force` is given.
 Downgrades are refused, including with `--force`. This command updates the
 executable being run, resolving a launcher symlink to its actual executable;
 it does not update another `zel` elsewhere on PATH, an engine image, site
