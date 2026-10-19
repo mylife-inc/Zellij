@@ -240,8 +240,8 @@ the version boundary; both short and full generation forms use the same policy.
 | `zel upgrade [version]` | Same | Verify and update the native CLI; `--check` inspects, `--force` reinstalls. | I |
 | `zel version` | Same | Report binary, embedded schema/engine and selected image; retain `--version`; JSON supported. | I |
 | `zel completions <shell>` | `zel comp <shell>` | Completion for canonical names and aliases. | I |
-| `zel eject [site] --out <destination>` | Same | Extract an editable wrapper from the selected engine distribution. | N |
-| `zel features <selection> [--site-root <site>]` | Same | Configure optional renderer capabilities with explicit renderer-aware mapping. | N |
+| `zel eject [site] --out <destination>` | Same | Extract an editable wrapper from the selected engine distribution. | I |
+| `zel features <selection> [--site-root <site>]` | Same | Configure optional renderer capabilities with explicit renderer-aware mapping. | I |
 
 `new app` scaffolds a wrapper; `eject` extracts the one from a selected engine
 distribution. `pull` updates an engine image; `upgrade` updates the executable.
@@ -721,3 +721,40 @@ is required. JSON is rejected for pull/upgrade before side effects.
 The current source version remains 0.1.3 and is ahead of the public 0.1.3 archive;
 a compatible native release is still required before these additions can be
 installed or upgraded from the public channel.
+
+
+### Stage 7b — editable distribution extraction and features (2026-10-18)
+
+`eject [site] --out <new-or-empty-directory>` references existing hosted content;
+normal site discovery applies. `--with-docs` instead keeps the distribution's
+starter at docs/zellij/content with a versioned hosted zel.yaml. `--image`, then
+ZELLIJ_IMAGE, then the default selects the distribution. The command creates a
+stopped container, copies /app and /opt/zellij, removes the container and validates
+the staged layout before publication. It never starts that container or runs its
+application. The engine becomes vendor/zellij with a relative file: dependency.
+The selected image's wrapper sources, scripts and feature dependencies survive.
+Version/configuration compatibility follows new app's embedded template contract.
+External content is referenced, not copied. Source/output overlap, nonempty
+output, links/special files, caches and incompatible distributions are refused.
+No npm installation occurs; the user installs dependencies afterward. This
+supersedes the historical 'engine installed, no npm' wording. Creation may pull
+a missing image according to the runtime's usual policy. Copy/create timeouts and
+Ctrl-C trigger snapshot cleanup; cleanup failures report the stopped container
+name and leave the destination unpublished.
+
+`features <maths|diagrams|maths,diagrams|all|none> [--site-root <path>]` is native.
+All/none are standalone complete selections. Current-directory wrapper discovery
+precedes normal site discovery; explicit --site-root selects a site or wrapper.
+Portable sites update markdown.math and markdown.mermaid with comments and other
+settings retained; anchored target settings are refused before writing. A wrapper
+updates direct package.json dependencies and required engine overrides using the
+same embedded feature map as new app. Its engine must be a compatible built local
+file dependency. Other manifest fields and lockfiles are retained; npm install is
+a separate user action. Hosted content without a wrapper fails with guidance.
+Hosted `none` removes direct requirements, not installed/transitive packages.
+The engine currently declares optionalDependencies that npm can still install;
+this command does not claim strict package exclusion or a hosted rendering switch.
+That pre-existing dependency-model limitation remains product follow-up work.
+Both commands reject --json before effects. Eject requires a responding existing
+Docker/Podman/nerdctl endpoint (exit 4 otherwise); features needs neither Docker
+nor Node. Invalid arguments/layouts exit 2 and container-operation failures exit 3.

@@ -1,0 +1,63 @@
+---
+title: eject
+description: Extract an editable Next.js wrapper and engine from a distribution image.
+---
+
+```bash
+zel eject --out my-wrapper
+zel eject docs/manual --out my-wrapper
+zel eject --with-docs --out my-wrapper
+zel eject --with-docs --out my-wrapper --image ghcr.io/mylife-inc/zellij-base:latest
+```
+
+`eject` obtains the wrapper sources from the selected engine image. It includes
+the engine at `vendor/zellij`, so no Zellij checkout or npm publication is needed.
+[`new app`](/cli/new) instead generates a wrapper from the CLI's embedded template
+and references a built engine package already on disk.
+
+The destination must be new or empty. Without `--with-docs`, the command selects
+an existing hosted site through the usual `zel.yaml` discovery or the explicit
+site argument. It references that content in `zellij.config.yaml` and leaves the
+source untouched. A portable site is refused; [`image next`](/cli/image) can
+package portable Markdown using its adapter.
+
+`--with-docs` keeps the image's hosted starter at `docs/zellij/content`, beside
+`docs/zellij/zel.yaml`. That starter and the vendored engine move with the wrapper.
+External content references need updating if that content is moved. The selected
+image's wrapper scripts and their ports are retained.
+
+## Run the extracted app
+
+In the extracted folder, install Node matching `package.json`'s engines field:
+
+```bash
+npm install
+npm run check
+npm run dev
+```
+
+`npm run build` builds the Next.js app; `npm start` serves it. This hosted app
+requires HTTP serving. Native portable [`build`](/cli/build) still produces output
+that works by opening `index.html` directly. Extraction installs no dependencies.
+
+## Runtime and compatibility
+
+Selection is `--image`, then `ZELLIJ_IMAGE`, then the default engine image. Digest
+references are supported. Docker, Podman and nerdctl use the shared runtime
+discovery rules; the selected runtime must support `create`, `cp` and `rm`.
+A missing image may be downloaded by `create`. The command uses a stopped
+container and never starts its application. It does not install or start a
+runtime or change its endpoint settings.
+
+Extraction validates the complete staged source tree and the engine's matching
+version/configuration format before publishing. Incompatible images, links,
+special files, installed dependency trees, caches and overlapping/nonempty
+output are refused. Ctrl-C, copy errors and timeouts discard staging and attempt
+to remove the stopped container. If the runtime cannot clean up, the error gives
+the container name for later removal. No wrapper is published on that failure.
+
+Missing runtime exits `4`, invalid arguments/layouts exit `2`, and failed runtime
+operations exit `3`. `--json` is not supported. See [`features`](/cli/features) to
+change dependency selection afterward.
+
+Available in current source; public `zellij-v0.1.3` predates it.

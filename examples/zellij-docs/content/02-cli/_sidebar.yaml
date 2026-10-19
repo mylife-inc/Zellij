@@ -47,3 +47,5 @@ nav:
       - version
       - pull
       - upgrade
+      - eject
+      - features

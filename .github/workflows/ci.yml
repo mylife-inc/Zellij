@@ -107,7 +107,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows --test import_delivery --test app_scaffolding --test formatting
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows --test import_delivery --test app_scaffolding --test formatting --test features
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -120,6 +120,8 @@ jobs:
       - run: npm run build --workspace @shebka/zellij
       - name: Hosted preview orchestration and cancellation on the native platform
         run: node scripts/check-hosted-preview.mjs
+      - name: Native distribution extraction, failures and cancellation
+        run: node scripts/check-eject.mjs
       - name: Native YAML formatting preserves authored sites
         run: node scripts/check-formatting.mjs
       - name: Native validation watch recovers from edits and stops on Ctrl-C
@@ -181,6 +183,13 @@ jobs:
         # Automatic fallback can select Podman when Docker's probe fails under
         # load, but Podman cannot see the image in Docker's local image store.
         run: printf 'DOCKER_CONTEXT=%s\n' "$(docker context show)" >> "$GITHUB_ENV"
+
+      - name: Ejected distribution installs, validates and builds outside the checkout
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: |
+          npx playwright install --with-deps chromium
+          node scripts/check-app-scaffold.mjs --eject
 
       - name: Hosted Netlify export and digest upload acceptance
         env:

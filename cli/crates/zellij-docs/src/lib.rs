@@ -27,6 +27,11 @@ pub struct BuildOptions<'a> {
     pub theme: Option<&'a str>,
 }
 
+/// Validate portable presentation settings without scanning or building content.
+pub fn validate_settings(value: serde_yaml_ng::Value) -> Result<()> {
+    config::Config::load(value).map(|_| ())
+}
+
 pub fn has_config(root: &Utf8Path) -> bool {
     config::present(root)
 }

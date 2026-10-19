@@ -19,34 +19,7 @@ pub(crate) fn create(options: &crate::args::NewAppArgs) -> Result<()> {
     }
     let engine = files::absolute_path(&engine_path)?;
     files::disjoint(&engine, &out)?;
-    let manifest = files::contained_path(&engine, Utf8Path::new("package.json"))?;
-    let manifest: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(manifest)?)
-        .map_err(|_| Error::InvalidArgument("engine package.json is not valid JSON".into()))?;
-    let template = zellij_scaffold::app::template();
-    if manifest["name"] != "@shebka/zellij"
-        || manifest["version"] != template["engineVersion"]
-        || manifest["zellij"]["wrapperConfigVersion"] != template["wrapperConfigVersion"]
-    {
-        return Err(Error::InvalidArgument(format!(
-            "--engine must select @shebka/zellij version {} from the matching built checkout",
-            template["engineVersion"]
-        )));
-    }
-    for file in [
-        "bin/zellij.mjs",
-        "next-config.mjs",
-        "deployment-config.cjs",
-        "src/index.ts",
-        "dist/cli/check-bundle.js",
-        "dist/cli/dev-bundle.js",
-        "dist/cli/init-bundle.js",
-        "dist/cli/sync-assets-bundle.js",
-        "dist/cli/write-search-index-bundle.js",
-    ] {
-        if !files::contained_path(&engine, Utf8Path::new(file))?.is_file() {
-            return Err(Error::InvalidArgument("engine build is incomplete; run `npm ci` and `npm run build --workspace @shebka/zellij` in its checkout before scaffolding".into()));
-        }
-    }
+    validate_engine(&engine)?;
     // npm's file: specifier is a path, not a percent-encoded URL. Encoding it
     // makes npm look for literal %20/%23 directory names. On Windows strip
     // canonicalization's extended-length prefix and use portable separators.
@@ -98,5 +71,37 @@ pub(crate) fn create(options: &crate::args::NewAppArgs) -> Result<()> {
         "✓ Created Next.js wrapper at {out} ({} files)\n  Content: {content}\n  Engine:  {engine}\n\nIn the app folder, run `npm install`, then `npm run check` and `npm run dev`.\nScaffolding did not install dependencies or start a server.",
         files.len()
     );
+    Ok(())
+}
+
+pub(crate) fn validate_engine(engine: &Utf8Path) -> Result<()> {
+    let manifest = files::contained_path(engine, Utf8Path::new("package.json"))?;
+    let manifest: serde_json::Value = serde_json::from_str(&std::fs::read_to_string(manifest)?)
+        .map_err(|_| Error::InvalidArgument("engine package.json is not valid JSON".into()))?;
+    let template = zellij_scaffold::app::template();
+    if manifest["name"] != "@shebka/zellij"
+        || manifest["version"] != template["engineVersion"]
+        || manifest["zellij"]["wrapperConfigVersion"] != template["wrapperConfigVersion"]
+    {
+        return Err(Error::InvalidArgument(format!(
+            "selected engine must be @shebka/zellij version {} from the matching built checkout",
+            template["engineVersion"]
+        )));
+    }
+    for file in [
+        "bin/zellij.mjs",
+        "next-config.mjs",
+        "deployment-config.cjs",
+        "src/index.ts",
+        "dist/cli/check-bundle.js",
+        "dist/cli/dev-bundle.js",
+        "dist/cli/init-bundle.js",
+        "dist/cli/sync-assets-bundle.js",
+        "dist/cli/write-search-index-bundle.js",
+    ] {
+        if !files::contained_path(engine, Utf8Path::new(file))?.is_file() {
+            return Err(Error::InvalidArgument("engine build is incomplete; run `npm ci` and `npm run build --workspace @shebka/zellij` in its checkout before scaffolding".into()));
+        }
+    }
     Ok(())
 }

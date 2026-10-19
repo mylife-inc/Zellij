@@ -324,6 +324,12 @@ pub(crate) enum Command {
     /// Upgrade this executable from the stable Zellij GitHub release channel.
     Upgrade(UpgradeArgs),
 
+    /// Extract an editable wrapper and bundled engine from a container image.
+    Eject(EjectArgs),
+
+    /// Select portable renderer capabilities or wrapper npm dependencies.
+    Features(FeaturesArgs),
+
     /// Print a shell completion script to standard output.
     #[command(visible_alias = "comp")]
     Completions {
@@ -693,4 +699,30 @@ pub(crate) struct NewAppArgs {
     /// Optional engine packages: maths, diagrams, or all (comma-separated).
     #[arg(long, value_delimiter = ',', value_parser = ["maths", "diagrams", "all"])]
     pub(crate) features: Vec<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct EjectArgs {
+    /// Existing hosted site; otherwise discover ./zel.yaml or ./docs/zellij/zel.yaml.
+    #[arg(conflicts_with = "with_docs")]
+    pub(crate) dir: Option<String>,
+    /// New or empty destination for the editable wrapper and vendor/zellij engine.
+    #[arg(long)]
+    pub(crate) out: String,
+    /// Keep the image's starter content at docs/zellij/content.
+    #[arg(long)]
+    pub(crate) with_docs: bool,
+    /// Selected distribution; overrides ZELLIJ_IMAGE.
+    #[arg(long)]
+    pub(crate) image: Option<String>,
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct FeaturesArgs {
+    /// Complete selection: maths, diagrams, maths,diagrams, all, or none.
+    #[arg(value_delimiter = ',', value_parser = ["maths", "diagrams", "all", "none"], num_args = 1)]
+    pub(crate) selection: Vec<String>,
+    /// Portable site or editable wrapper; defaults to the current wrapper or site discovery.
+    #[arg(long)]
+    pub(crate) site_root: Option<String>,
 }

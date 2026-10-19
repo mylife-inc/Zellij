@@ -131,7 +131,7 @@ knows how to assemble.
 | `zel new section <type> [name]` | A section file with its required fields filled in and its optional ones listed as commented defaults. |
 | `zel new page <name>` | A page in `pages.yaml`, and the section files it references. |
 | `zel new guide <name>` | A guide folder with `_sidebar.yaml` and an index page. |
-| `zel eject [dir]` | Pulls the wrapper app out of the base image onto disk, engine already installed. No clone, no npm. |
+| `zel eject [site] --out <directory>` | Extracts the selected image's wrapper and engine sources. `--with-docs` keeps its starter content. Run npm install afterward; see the current CLI contract. |
 
 `zel new section` is the one people will use daily. Nineteen types with their
 own fields is more than anyone holds in their head, and the failure it prevents
@@ -277,8 +277,11 @@ nothing, the two cost the same: the feature only decides what a *site build*
 fetches, never what an image weighs. The variants exist because naming an image
 is sometimes clearer than remembering a flag.
 
-`zel features <list>` applies the same change to an app on disk, which is what
-the build argument runs inside the container.
+`zel features <list>` now selects portable math/Mermaid settings or an editable
+wrapper's direct feature dependencies. See the current CLI contract. The image
+build argument is `ZELLIJ_FEATURES`. The historical size/exclusion claims above
+are not guarantees: npm also installs optional/transitive engine dependencies,
+and removing direct requirements does not force their absence.
 
 ### 3.7 Shipping
 
