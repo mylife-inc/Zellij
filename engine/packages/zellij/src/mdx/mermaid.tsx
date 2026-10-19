@@ -1,5 +1,6 @@
 'use client';
 
+import { loadMermaid } from '@shebka/zellij/optional-mermaid';
 import { useEffect, useId, useRef, useState } from 'react';
 
 type Status = 'pending' | 'drawn' | 'failed';
@@ -213,12 +214,12 @@ export function Mermaid({ code }: { code?: string }) {
   }, []);
 
   useEffect(() => {
-    if (!code || dark === null) return;
+    if (!code || dark === null || process.env.NEXT_PUBLIC_ZELLIJ_DIAGRAMS === 'false') return;
     let live = true;
 
     void (async () => {
       try {
-        const { default: mermaid } = await import('mermaid');
+        const mermaid = await loadMermaid();
 
         mermaid.initialize({
           startOnLoad: false,
@@ -280,7 +281,7 @@ export function Mermaid({ code }: { code?: string }) {
   if (!code) return null;
 
   return (
-    <figure className="zellij-mermaid" data-status={status}>
+    <figure className="zellij-mermaid" data-status={process.env.NEXT_PUBLIC_ZELLIJ_DIAGRAMS === 'false' ? 'disabled' : status}>
       {status === 'drawn' ? null : (
         <pre className="zellij-mermaid-source">
           <code>{code}</code>

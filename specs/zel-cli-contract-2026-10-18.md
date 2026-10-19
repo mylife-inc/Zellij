@@ -134,7 +134,7 @@ silently add an extra `content/` layer to a legacy invocation.
 | --- | --- | --- | --- |
 | `zel check [site]` | `zel c [site]` | Validate using the selected renderer; `--strict`, hosted `--deep`. | I |
 | `zel fmt [site]` | Same | Format supported YAML; `--check` reports differences without changing files. | S |
-| `zel watch [site]` | Same | Repeat validation after edits, without serving or publishing. | N |
+| `zel watch [site]` | Same | Repeat validation after edits, without serving or publishing. | I |
 | `zel dev [site]` | Same | Authoring server with change handling; select portable or hosted backend. | I: hosted only |
 | `zel serve [site-or-output]` | `zel s [site-or-output]` | Serve existing output. A configured root resolves to its `site/`; an explicit export folder remains supported. No build. | I |
 | `zel view [site]` | `zel v [site]` | Build, serve, open a browser; optional `--watch` and `--no-open`. Extend the current portable implementation to hosted static output. | I: portable only |
@@ -758,3 +758,25 @@ That pre-existing dependency-model limitation remains product follow-up work.
 Both commands reject --json before effects. Eject requires a responding existing
 Docker/Podman/nerdctl endpoint (exit 4 otherwise); features needs neither Docker
 nor Node. Invalid arguments/layouts exit 2 and container-operation failures exit 3.
+
+
+### Stage 7c — hosted rendering selection and optional peers (2026-10-18)
+
+This supersedes stage 7b's hosted feature limitation. Editable wrappers now store
+an explicit package.json `zellij.features` array ([] / maths / diagrams / both).
+Native and Node initializers/setters share the engine's feature map. New wrappers
+choose none unless requested; legacy wrappers without metadata retain automatic
+installed-package detection. The native engine compatibility check includes
+featureSelectionVersion: 1, preventing a successful write to an older engine that
+would ignore the selection.
+
+The engine's feature libraries are optional peers, with development dependencies
+for its own build/tests. They are direct dependencies only in wrappers selecting
+them. A fresh none wrapper does not install them. Next configuration rejects
+explicitly selected but missing packages; it injects rendering flags and disabled
+module aliases for Turbopack and Webpack. None disables math/Mermaid rendering even
+with packages still on disk; built-in mindmaps remain enabled. Rebuild/restart is
+required after selection changes. npm install is explicit and is needed when
+enabling absent packages. No lockfile/node_modules deletion is performed, and
+other consumers may retain the packages. Engine/CLI release publication remains
+separate work.

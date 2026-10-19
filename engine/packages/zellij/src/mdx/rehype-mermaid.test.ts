@@ -113,3 +113,10 @@ describe('mindmap fences', () => {
     expect(() => run(root(fence('mindmap', 'A: 1\nB: 2\n')))).toThrow(/one root/);
   });
 });
+
+it('leaves Mermaid fences as source when disabled while retaining native mindmaps', () => {
+  const tree = root(fence('mermaid', 'graph TD; A-->B'), fence('mindmap', 'Root:\n  Child: []\n'));
+  (rehypeDiagrams as unknown as (options: { mermaid: boolean }) => (tree: Root) => void)({ mermaid: false })(tree);
+  expect((tree.children[0] as Element).tagName).toBe('pre');
+  expect((tree.children[1] as Element).tagName).toBe('figure');
+});

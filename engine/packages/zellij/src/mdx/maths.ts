@@ -1,19 +1,9 @@
 import type { Pluggable } from 'unified';
+import { featureEnabled } from '../../feature-config.cjs';
+import { loadMathLibraries } from '@shebka/zellij/optional-maths';
 
-/**
- * Mathematics is optional, and costs about fifty megabytes to install.
- *
- * A documentation site with no formulas in it should not carry MathJax and its
- * speech-rule engine around, so the packages are optional dependencies and this
- * is where their absence is handled. Installed, `$…$` is typeset. Not installed,
- * it stays as written — which is what a site that never wanted maths expects
- * anyway, and is a great deal better than failing to build over a package
- * nobody asked for.
- *
- * Resolved once at module load rather than per page: the answer cannot change
- * while the process is running, and a `try` around every compile would pay for
- * asking a question that has one answer.
- */
+/** Optional math peers are loaded only when selected. Legacy wrappers without
+ * selection metadata retain automatic availability-based rendering. */
 let maths: Pluggable[][] | undefined;
 
 /**
@@ -22,6 +12,7 @@ let maths: Pluggable[][] | undefined;
  * await cannot be expressed in CommonJS at all.
  */
 export async function loadMaths(): Promise<Pluggable[][]> {
+  if (!featureEnabled('maths')) return [[], []];
   if (maths) return maths;
   maths = await resolveMaths();
   return maths;
@@ -29,10 +20,7 @@ export async function loadMaths(): Promise<Pluggable[][]> {
 
 async function resolveMaths(): Promise<Pluggable[][]> {
   try {
-    const [{ default: remarkMath }, { default: rehypeMathjax }] = await Promise.all([
-      import('remark-math'),
-      import('rehype-mathjax'),
-    ]);
+    const [{ default: remarkMath }, { default: rehypeMathjax }] = await loadMathLibraries();
 
     return [
       [remarkMath as Pluggable],

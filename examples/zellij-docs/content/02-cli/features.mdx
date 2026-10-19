@@ -1,6 +1,6 @@
 ---
 title: features
-description: Select optional portable capabilities or editable-wrapper dependencies.
+description: Select optional portable capabilities or editable-wrapper rendering and dependencies.
 ---
 
 ```bash
@@ -19,10 +19,10 @@ without Docker, Node, package installation or network access.
 
 | Selection | Portable site | Editable Next.js wrapper |
 | --- | --- | --- |
-| `maths` | `markdown.math: true`, Mermaid off | Require remark-math and rehype-mathjax |
-| `diagrams` | `markdown.mermaid: true`, math off | Require mermaid |
-| `maths,diagrams` or `all` | Both enabled | Require all three packages |
-| `none` | Both disabled | Remove direct requirements for those packages |
+| `maths` | `markdown.math: true`, Mermaid off | Enable math; require remark-math and rehype-mathjax |
+| `diagrams` | `markdown.mermaid: true`, math off | Enable Mermaid; require mermaid |
+| `maths,diagrams` or `all` | Both enabled | Enable both; require all three packages |
+| `none` | Both disabled | Disable both; remove their direct requirements |
 
 ## Portable sites
 
@@ -36,16 +36,27 @@ before this command can safely edit them.
 
 Select a wrapper created by [`new app`](/cli/new) or [`eject`](/cli/eject), with
 `zellij.config.yaml` and a compatible built local engine dependency. The command
-updates the feature packages in `package.json` and the engine's required security
-overrides. Other manifest fields, unrelated dependencies and lockfiles remain.
+updates `package.json` with explicit `zellij.features` rendering selection,
+feature package requirements and the engine's required security overrides. Other manifest fields, unrelated dependencies and lockfiles remain.
 If a feature package is also declared in another dependency category, the command
 asks you to reconcile those declarations first.
 
-Run `npm install` in the wrapper afterward to reconcile dependencies and its
-lockfile. `none` removes direct requirements; it does not uninstall packages or
-guarantee their absence. The engine's optional/transitive dependencies may still
-be installed, so this is dependency selection, not a strict hosted rendering or
-package-exclusion switch. Portable settings are explicit rendering switches.
+Run `npm install` when enabling features, then rebuild the app or restart its
+development server. A selected feature with missing packages fails the Next
+configuration step with installation guidance.
+
+`none` disables hosted math and Mermaid rendering even if their packages are
+still installed. Formulas stay as source text and Mermaid fences stay as code;
+native `mindmap` fences continue rendering. The engine declares these libraries
+as optional peers, so a fresh wrapper with neither selected does not install them.
+Npm may retain packages needed by other dependencies or an existing installation;
+the CLI does not delete node_modules or rewrite lockfiles.
+
+New wrappers save an explicit selection, defaulting to none. Older wrappers
+without `zellij.features` retain automatic detection of installed packages until
+`zel features` is run. Use a current engine with feature-selection support;
+older engines are refused before the manifest is changed. Both Turbopack and
+Webpack builds honor the selection.
 
 A hosted content folder by itself has no npm manifest. Select its editable
 wrapper, or use a suitable engine image variant for container builds. The command

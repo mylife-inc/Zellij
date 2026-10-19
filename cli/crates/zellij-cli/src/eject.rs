@@ -215,8 +215,9 @@ npm run dev
 
 `npm run build` builds the Next.js app and `npm start` serves it. This hosted
 wrapper requires HTTP serving. `zel build` remains the native portable option.
-`zel features all` (or maths, diagrams, none) changes direct feature dependencies;
-run npm install afterward. Optional/transitive packages may still be installed.
+`zel features all` (or maths, diagrams, none) changes rendering and direct feature dependencies.
+Run npm install when enabling features, then rebuild/restart. Disabling a feature
+also stops rendering when its packages remain installed for another dependency.
 
 Extraction did not install dependencies or execute the image's application.
 "#

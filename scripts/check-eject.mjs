@@ -34,8 +34,8 @@ try {
   for (const [name,text] of Object.entries(template.files)) await put(path.join(fixture,'app',name),text);
   await put(path.join(fixture,'app/src/app/layout.tsx'),'// selected image wrapper\n');
   await put(path.join(fixture,'app/content/site.yaml'),'name: Starter\n');
-  await put(path.join(fixture,'engine/package.json'),JSON.stringify({name:'@shebka/zellij',version:template.engineVersion,zellij:{wrapperConfigVersion:1}}));
-  for(const name of ['bin/zellij.mjs','next-config.mjs','deployment-config.cjs','src/index.ts','dist/cli/check-bundle.js','dist/cli/dev-bundle.js','dist/cli/init-bundle.js','dist/cli/sync-assets-bundle.js','dist/cli/write-search-index-bundle.js']) await put(path.join(fixture,'engine',name),'engine fixture');
+  await put(path.join(fixture,'engine/package.json'),JSON.stringify({name:'@shebka/zellij',version:template.engineVersion,zellij:{wrapperConfigVersion:1,featureSelectionVersion:1}}));
+  for(const name of ['bin/zellij.mjs','next-config.mjs','deployment-config.cjs','feature-config.cjs','feature-config.d.cts','optional-maths.mjs','optional-maths.d.mts','optional-mermaid.mjs','optional-mermaid.d.mts','disabled-feature.mjs','src/index.ts','dist/cli/check-bundle.js','dist/cli/dev-bundle.js','dist/cli/init-bundle.js','dist/cli/sync-assets-bundle.js','dist/cli/write-search-index-bundle.js']) await put(path.join(fixture,'engine',name),'engine fixture');
   await put(path.join(fixture,'keep'),'authored');
   await put(path.join(root,'docs/zellij/zel.yaml'),'version: 1\nrenderer: hosted\n');
   await put(path.join(root,'docs/zellij/content/site.yaml'),'name: External\n');

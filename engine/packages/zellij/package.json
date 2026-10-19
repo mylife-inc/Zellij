@@ -1,7 +1,10 @@
 {
   "name": "@shebka/zellij",
   "version": "0.1.0",
-  "zellij": { "wrapperConfigVersion": 1 },
+  "zellij": {
+    "wrapperConfigVersion": 1,
+    "featureSelectionVersion": 1
+  },
   "description": "A shared Next.js engine that turns a folder of structured content into a complete product website.",
   "license": "UNLICENSED",
   "author": "Shebka LLC",
@@ -14,7 +17,10 @@
     "./content": "./src/content/index.ts",
     "./config": "./src/config/index.ts",
     "./styles.css": "./src/styles/zellij.css",
-    "./next-config": "./next-config.mjs"
+    "./next-config": "./next-config.mjs",
+    "./disabled-feature": "./disabled-feature.mjs",
+    "./optional-maths": "./optional-maths.mjs",
+    "./optional-mermaid": "./optional-mermaid.mjs"
   },
   "bin": {
     "zellij": "./bin/zellij.mjs"
@@ -26,7 +32,14 @@
     "README.md",
     "next-config.mjs",
     "deployment-config.cjs",
-    "deployment-config.d.cts"
+    "deployment-config.d.cts",
+    "feature-config.cjs",
+    "feature-config.d.cts",
+    "optional-maths.mjs",
+    "optional-maths.d.mts",
+    "disabled-feature.mjs",
+    "optional-mermaid.mjs",
+    "optional-mermaid.d.mts"
   ],
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
@@ -40,7 +53,10 @@
   "peerDependencies": {
     "next": "~16.4.2",
     "react": "19.2.x",
-    "react-dom": "19.2.x"
+    "react-dom": "19.2.x",
+    "mermaid": "^11.17.2",
+    "rehype-mathjax": "^7.1.0",
+    "remark-math": "^6.0.0"
   },
   "dependencies": {
     "@plausible-analytics/tracker": "0.4.6",
@@ -62,7 +78,9 @@
     "shiki": "^4.3.1",
     "unified": "^11.0.5",
     "yaml": "^2.9.0",
-    "zod": "^4.4.3"
+    "zod": "^4.4.3",
+    "@types/d3-hierarchy": "^3.1.7",
+    "@types/d3-shape": "^3.1.8"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
@@ -71,7 +89,10 @@
     "tsup": "^8.5.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.11",
-    "vite": "^7.3.7"
+    "vite": "^7.3.7",
+    "mermaid": "^11.17.2",
+    "rehype-mathjax": "^7.1.0",
+    "remark-math": "^6.0.0"
   },
   "publishConfig": {
     "exports": {
@@ -90,13 +111,11 @@
         "import": "./dist/config/index.js",
         "require": "./dist/config/index.cjs"
       },
-      "./styles.css": "./src/styles/zellij.css"
+      "./styles.css": "./src/styles/zellij.css",
+      "./disabled-feature": "./disabled-feature.mjs",
+      "./optional-maths": "./optional-maths.mjs",
+      "./optional-mermaid": "./optional-mermaid.mjs"
     }
-  },
-  "optionalDependencies": {
-    "mermaid": "^11.17.2",
-    "rehype-mathjax": "^7.1.0",
-    "remark-math": "^6.0.0"
   },
   "overrides": {
     "mermaid": {
@@ -107,6 +126,17 @@
     },
     "speech-rule-engine": {
       "@xmldom/xmldom": "^0.9.12"
+    }
+  },
+  "peerDependenciesMeta": {
+    "mermaid": {
+      "optional": true
+    },
+    "rehype-mathjax": {
+      "optional": true
+    },
+    "remark-math": {
+      "optional": true
     }
   }
 }

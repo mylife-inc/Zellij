@@ -1,11 +1,19 @@
 {
   "engineVersion": "0.1.0",
   "wrapperConfigVersion": 1,
+  "featureSelectionVersion": 1,
+  "featureNames": [
+    "maths",
+    "diagrams"
+  ],
   "manifest": {
     "name": "__ZELLIJ_NAME__",
     "version": "0.1.0",
     "private": true,
     "type": "module",
+    "zellij": {
+      "features": []
+    },
     "engines": {
       "node": "^20.19.0 || >=22.12.0"
     },

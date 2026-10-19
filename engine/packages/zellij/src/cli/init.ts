@@ -1,6 +1,7 @@
 import { access, cp, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { FEATURE_PACKAGES } from '../../feature-config.cjs';
 
 /*
  * Self-contained on purpose, like the other CLI entry points: `bin/zellij.mjs`
@@ -31,11 +32,9 @@ export interface InitOptions {
   /**
    * Optional engine features to install: `maths`, `diagrams`, or `all`.
    *
-   * These are the expensive ones — roughly fifty megabytes for MathJax and a
-   * hundred for Mermaid — and most documentation wants neither. They are
-   * optional dependencies of the engine, so leaving them out of the manifest
-   * means they are never fetched, and the engine renders without them rather
-   * than failing over a package nobody asked for.
+   * The wrapper records rendering selection and direct package requirements.
+   * The engine declares optional peers, so a fresh app does not install
+   * disabled libraries. Changing selection requires a rebuild/dev restart.
    */
   features?: string[];
   /**
@@ -56,20 +55,23 @@ function engineRoot(): string {
 async function enginePackage(): Promise<{
   version: string;
   wrapperConfigVersion: number;
+  featureSelectionVersion: number;
   peers: Record<string, string>;
   overrides: Record<string, unknown>;
 }> {
   const raw = await readFile(path.join(engineRoot(), 'package.json'), 'utf8');
   const parsed = JSON.parse(raw) as {
     version: string;
-    zellij: { wrapperConfigVersion: number };
+    zellij: { wrapperConfigVersion: number; featureSelectionVersion: number };
     peerDependencies?: Record<string, string>;
+    peerDependenciesMeta?: Record<string, { optional?: boolean }>;
     overrides?: Record<string, unknown>;
   };
   return {
     version: parsed.version,
     wrapperConfigVersion: parsed.zellij.wrapperConfigVersion,
-    peers: parsed.peerDependencies ?? {},
+    featureSelectionVersion: parsed.zellij.featureSelectionVersion,
+    peers: Object.fromEntries(Object.entries(parsed.peerDependencies ?? {}).filter(([name]) => !parsed.peerDependenciesMeta?.[name]?.optional)),
     overrides: parsed.overrides ?? {},
   };
 }
@@ -286,11 +288,6 @@ any problem it finds.
  * is retuned. A second copy — in a Dockerfile, say, where it would be three
  * lines of shell — is a copy that disagrees the first time a version moves.
  */
-const FEATURE_PACKAGES: Record<string, Record<string, string>> = {
-  maths: { 'remark-math': '^6.0.0', 'rehype-mathjax': '^7.1.0' },
-  diagrams: { mermaid: '^11.17.2' },
-};
-
 export const FEATURE_NAMES = Object.keys(FEATURE_PACKAGES);
 
 function featureDependencies(features: readonly string[]): Record<string, string> {
@@ -317,15 +314,19 @@ function featureDependencies(features: readonly string[]): Record<string, string
  * variants have their features baked in, and anyone using the plain one can
  * ask for maths or diagrams at the moment they build, before anything is
  * installed. Editing the manifest is all it takes, because the features are
- * only ever a question of which packages get fetched.
+ * both explicit rendering choices and direct dependency requirements.
  */
 export async function setFeatures(target: string, features: readonly string[]): Promise<string[]> {
   const manifest = path.join(path.resolve(target), 'package.json');
   const parsed = JSON.parse(await readFile(manifest, 'utf8')) as {
     dependencies?: Record<string, string>;
     overrides?: Record<string, unknown>;
+    zellij?: { features?: string[]; [key: string]: unknown };
   };
 
+  if (parsed.zellij !== undefined && (parsed.zellij === null || typeof parsed.zellij !== 'object' || Array.isArray(parsed.zellij))) {
+    throw new Error('package.json zellij must be an object');
+  }
   const wanted = featureDependencies(features);
 
   // Every optional package is cleared first, so turning a feature off works as
@@ -335,6 +336,7 @@ export async function setFeatures(target: string, features: readonly string[]): 
   for (const name of Object.keys(all)) delete dependencies[name];
 
   parsed.dependencies = { ...dependencies, ...wanted };
+  parsed.zellij = { ...parsed.zellij, features: FEATURE_NAMES.filter(name => Object.keys(FEATURE_PACKAGES[name]!).some(pkg => pkg in wanted)) };
   parsed.overrides = { ...parsed.overrides, ...(await enginePackage()).overrides };
   await writeFile(manifest, `${JSON.stringify(parsed, null, 2)}\n`, 'utf8');
 
@@ -343,7 +345,7 @@ export async function setFeatures(target: string, features: readonly string[]): 
 
 /** Shared wrapper definition; also embedded in the native CLI at build time. */
 export async function wrapperTemplate() {
-  const { version, wrapperConfigVersion, peers, overrides } = await enginePackage();
+  const { version, wrapperConfigVersion, featureSelectionVersion, peers, overrides } = await enginePackage();
 
   const dependencies: Record<string, string> = { '@shebka/zellij': '__ZELLIJ_ENGINE__' };
   for (const [pkg, range] of Object.entries(peers)) {
@@ -355,6 +357,7 @@ export async function wrapperTemplate() {
     version: '0.1.0',
     private: true,
     type: 'module',
+    zellij: { features: [] as string[] },
     engines: { node: '^20.19.0 || >=22.12.0' },
     // npm applies overrides only at the app root, never inside a dependency.
     overrides,
@@ -390,7 +393,7 @@ export async function wrapperTemplate() {
     'src/app/robots.ts': ROBOTS,
   };
 
-  return { engineVersion: version, wrapperConfigVersion, manifest: packageJson, files, features: FEATURE_PACKAGES };
+  return { engineVersion: version, wrapperConfigVersion, featureSelectionVersion, featureNames: FEATURE_NAMES, manifest: packageJson, files, features: FEATURE_PACKAGES };
 }
 
 /**
@@ -431,6 +434,7 @@ export async function init(options: InitOptions): Promise<string> {
   const packageJson = {
     ...template.manifest,
     name,
+    zellij: { features: FEATURE_NAMES.filter(name => Object.keys(FEATURE_PACKAGES[name]!).some(pkg => pkg in featureDependencies(options.features ?? []))) },
     scripts: Object.fromEntries(Object.entries(template.manifest.scripts)
       .map(([key, value]) => [key, value.replaceAll('__ZELLIJ_PORT__', String(port))])),
     dependencies: {

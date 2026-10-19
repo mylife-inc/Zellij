@@ -37,7 +37,7 @@ pub(crate) fn run(options: &crate::args::FeaturesArgs) -> Result<()> {
     if fs::symlink_metadata(root.join("zellij.config.yaml")).is_ok() {
         wrapper(&root, maths, diagrams)?;
         println!(
-            "Wrapper dependency selection saved at {root}/package.json.\nRun `npm install` in the wrapper to reconcile its lockfile and installed packages.\n`none` removes direct feature requirements; optional/transitive packages may still be installed."
+            "Wrapper feature selection saved at {root}/package.json.\nRun `npm install` in the wrapper to reconcile its lockfile and installed packages.\nRebuild or restart the app to apply rendering changes. Disabled packages may remain if another dependency needs them."
         );
     } else {
         let site = Site::load(&root)?;
@@ -119,6 +119,27 @@ fn wrapper(root: &Utf8Path, maths: bool, diagrams: bool) -> Result<()> {
             }
         }
     }
+    if manifest.get("zellij").is_none() {
+        manifest["zellij"] = serde_json::json!({});
+    }
+    let settings = manifest["zellij"]
+        .as_object_mut()
+        .ok_or_else(|| Error::InvalidArgument("package.json zellij must be an object".into()))?;
+    settings.insert(
+        "features".into(),
+        Value::Array(
+            template["featureNames"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .filter(|name| {
+                    (name.as_str() == Some("maths") && maths)
+                        || (name.as_str() == Some("diagrams") && diagrams)
+                })
+                .cloned()
+                .collect(),
+        ),
+    );
     if manifest.get("overrides").is_none() {
         manifest["overrides"] = serde_json::json!({});
     }

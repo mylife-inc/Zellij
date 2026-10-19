@@ -13,6 +13,7 @@
  */
 
 import { networkInterfaces } from 'node:os';
+import { resolveFeatures } from './feature-config.cjs';
 import { resolveContentLocation, resolveDeploymentBasePath } from './deployment-config.cjs';
 
 /** @typedef {Record<string, unknown> & { transpilePackages?: string[], serverExternalPackages?: string[], images?: Record<string, unknown>, allowedDevOrigins?: string[] }} ZellijNextConfig */
@@ -76,6 +77,12 @@ function devOrigins() {
  */
 export function withZellij(config = {}, contentOptions = {}) {
   const content = resolveContentLocation(contentOptions);
+  const features = resolveFeatures(content.appRoot);
+  // Alias only Zellij's loaders; unrelated app components may still use the
+  // same installed libraries when our rendering feature is disabled.
+  const disabled = Object.fromEntries(Object.entries({ maths: 'maths', diagrams: 'mermaid' })
+    .filter(([name]) => !features[name])
+    .map(([, loader]) => [`@shebka/zellij/optional-${loader}`, '@shebka/zellij/disabled-feature']));
   const basePath = resolveDeploymentBasePath(content.basePath, config.basePath);
   if (config.env?.ZELLIJ_BASE_PATH !== undefined) {
     resolveDeploymentBasePath(basePath, config.env.ZELLIJ_BASE_PATH);
@@ -85,7 +92,18 @@ export function withZellij(config = {}, contentOptions = {}) {
     basePath,
     // Next inlines this build-time value in the server runtime too. A wrapper
     // prefix must reach ordinary assets/metadata, not only Next's own links.
-    env: { ...config.env, ZELLIJ_BASE_PATH: basePath },
+    env: { ...config.env, ZELLIJ_BASE_PATH: basePath,
+      ZELLIJ_MATHS: String(features.maths), NEXT_PUBLIC_ZELLIJ_DIAGRAMS: String(features.diagrams) },
+    turbopack: { ...config.turbopack, resolveAlias: { ...config.turbopack?.resolveAlias, ...disabled } },
+    webpack(webpackConfig, context) {
+      const result = config.webpack ? config.webpack(webpackConfig, context) : webpackConfig;
+      result.resolve ??= {};
+      result.resolve.alias = Array.isArray(result.resolve.alias)
+        ? [...Object.entries(disabled).map(([name, alias]) => ({ name, alias, onlyModule: true })),
+          ...result.resolve.alias.filter(entry => !(entry.name in disabled))]
+        : { ...result.resolve.alias, ...disabled };
+      return result;
+    },
 
     // Zellij ships TypeScript source alongside its build output. In a monorepo
     // the source is what resolves, and Next has to compile it.

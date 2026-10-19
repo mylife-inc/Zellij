@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: editable distribution extraction and renderer-aware feature
-selection on `codex/cli-eject-features`. Maintenance commands merged in PR #39.
+Latest CLI work: explicit hosted rendering selection and optional-peer installs
+on `codex/hosted-feature-selection`. Eject/features merged in PR #40; maintenance
+commands merged in PR #39.
 Portable development and hosted static preview merged in PR #38.
 Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
@@ -2747,3 +2748,32 @@ eject + npm install + validation + production build + typecheck/browser check.
 Final CI evidence and merge status must be refreshed before relying on this work.
 Remaining work includes other providers/advanced options, the hosted dependency
 limitation, compatible native releases and documentation publication.
+
+
+### Eject/features merge and hosted selection follow-up — 2026-10-18
+
+PR #40 merged as b318f74dbbe617aeb8b6aa65947172f7b01c4f5c after all 13 jobs
+passed on source 72a18ad6d00bab3751fd2f8d9f0839f01971ec24 (CI run
+39198443284). Post-merge Base image 39200372897 passed; CI 39200372898 was
+still running at this follow-up's start. No native release was published.
+
+The next change closes the hosted limitation recorded above: explicit wrapper
+package.json zellij.features controls rendering, including when dependencies
+remain installed. Optional packages become optional peers; their devDependency
+entries serve the engine's own build/tests and are not installed for consumers.
+Reference: https://docs.npmjs.com/cli/configuring-npm/package-json/#peerdependenciesmeta
+Next's supported package aliases handle absent disabled peers in both bundlers:
+https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#resolving-aliases
+The local fresh-install test caught absolute-path Turbopack alias resolution;
+using an exported engine subpath resolves the portability issue. Full acceptance
+and merge evidence must be refreshed before treating this change as completed.
+
+
+Final local hosted-feature acceptance passed: a standalone wrapper installed
+without Mermaid/remark-math/rehype-mathjax and built/typechecked/rendered with
+Turbopack; enabling all installed them and rendered real MathJax/Mermaid output;
+switching to none with packages deliberately retained disabled both under Webpack.
+Native mindmap SVG and browser-error checks passed in every state. Each npm state
+is checked in a fresh Node process, avoiding stale negative package lookups.
+No locked dependency versions changed. Source commit and hosted CI evidence will
+be recorded after PR validation; no new native release or manual deployment occurred.

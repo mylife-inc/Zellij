@@ -721,11 +721,13 @@ kind: Deployment
 | ```` ```mermaid ```` | Mermaid, in the browser | ~100 MB to install, ~10 MB shipped |
 | ```` ```mindmap ```` | SVG, at build time | nothing — built in |
 
-Maths and Mermaid are **optional dependencies**. A site that does not ask for
-them never installs them, and the engine renders without them rather than
-failing over a package nobody wanted — `$…$` stays as written, and a mermaid
-fence renders as its source. Turn them on with `zel build --features
-maths,diagrams`, or by choosing the container image that has them.
+Maths and Mermaid are optional peers. Editable wrappers record rendering
+selection in package.json's `zellij.features` array; fresh wrappers default to
+neither. Run `zel features maths,diagrams` in the wrapper, then `npm install`
+and rebuild/restart. `zel features none` leaves formulas and Mermaid fences as
+source even if packages remain installed. Mindmaps are always built in. Legacy
+wrappers without selection metadata retain installed-package detection. Container
+builds use the selected engine image's features (for example `latest-all`).
 
 A mindmap is YAML, and is laid out during the build rather than in the browser:
 
