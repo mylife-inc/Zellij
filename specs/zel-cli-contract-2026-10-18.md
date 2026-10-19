@@ -377,7 +377,7 @@ command supplies intent; ordinary repeatable runs need no extra prompt.
   overwrite authority or substitute for required settings. Existing overwrite
   policies remain command-specific and documented.
 
-## 5. Representative proposed workflows
+## 5. Representative workflows
 
 ```sh
 # New site in an existing software repository
@@ -408,14 +408,18 @@ zel ci run
 zel mig ../old-manual --out docs/manual
 ```
 
-These examples are design examples, not commands to copy into current CI.
+These examples use current source syntax. Generated CI still requires an explicit
+compatible release pin; public native release 0.1.3 predates these capabilities.
 
 ## 6. Implementation sequence and acceptance
 
-Runtime prerequisite handling (§2.9) is the first implemented increment following
-the user's additional Docker requirement. The configured-site increment implements
-steps 1–2 for current handlers; portable `dev`, hosted `view`, global selectors
-and unimplemented handlers remain future extensions. Continue with the sequence:
+The sequence below records the implementation plan. Runtime prerequisites,
+configured sites, shortcuts, image packaging, Netlify delivery, CI generation,
+formatting and maintenance commands are now implemented in source. Portable
+`dev`, hosted `view`, `--cwd` and shared `--site-root` are also implemented.
+Remaining work includes `--config`, output controls, additional deployment
+providers and matched release/documentation publication. Dated stage records
+below give each milestone's actual scope and limitations.
 
 1. Introduce the versioned config/site resolver, retain explicit legacy paths,
    and update portable/hosted scaffolds. Prove the user's default and custom
