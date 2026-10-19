@@ -94,11 +94,59 @@ impl Cli {
                 options,
             };
         }
+        if let Some(root) = cli.site_root.take() {
+            cli.command.select_root(root)?;
+        }
         Ok(cli)
     }
 
+    /// Change only this process's directory, before handlers start threads or
+    /// subprocesses. All existing relative-path rules then share one base.
+    pub(crate) fn apply_working_directory(&self) -> zellij_core::Result<()> {
+        if let Some(cwd) = &self.cwd {
+            std::env::set_current_dir(cwd).map_err(|error| {
+                zellij_core::Error::InvalidArgument(format!("cannot use --cwd {cwd:?}: {error}"))
+            })?;
+        }
+        Ok(())
+    }
+
+    fn parse_tokens(
+        args: impl IntoIterator<Item = impl Into<std::ffi::OsString>>,
+    ) -> Result<Self, clap::Error> {
+        let args: Vec<std::ffi::OsString> = args.into_iter().map(Into::into).collect();
+        let matches = Self::command_tree().try_get_matches_from(&args)?;
+        // Clap propagates the deepest global value over its parents, discarding
+        // evidence of repetition across command levels. Validate accepted tokens
+        // before normalization. No argument permits bare hyphen-prefixed values;
+        // equals-form values and everything after -- remain literal and untouched.
+        let flags = ["--cwd", "--site-root"];
+        let mut seen = [false; 2];
+        for arg in args.iter().skip(1).take_while(|arg| *arg != "--") {
+            let Some(arg) = arg.to_str() else { continue };
+            for (index, flag) in flags.iter().enumerate() {
+                if arg == *flag
+                    || arg
+                        .strip_prefix(flag)
+                        .is_some_and(|rest| rest.starts_with('='))
+                {
+                    if seen[index] {
+                        return Err(Self::command_tree().error(
+                            clap::error::ErrorKind::ArgumentConflict,
+                            format!(
+                                "{flag} may be specified only once, including across subcommands"
+                            ),
+                        ));
+                    }
+                    seen[index] = true;
+                }
+            }
+        }
+        Self::from_matches(&matches)
+    }
+
     pub(crate) fn parse_args() -> Self {
-        Self::from_matches(&Self::command_tree().get_matches()).unwrap_or_else(|err| err.exit())
+        Self::parse_tokens(std::env::args_os()).unwrap_or_else(|err| err.exit())
     }
 }
 
@@ -126,6 +174,17 @@ pub(crate) struct Cli {
     /// JSON output for context, list, explain, detect, version and portable check.
     #[arg(long, global = true)]
     pub(crate) json: bool,
+
+    /// Resolve all relative paths from this existing directory.
+    #[arg(long, global = true, value_name = "DIRECTORY", value_hint = clap::ValueHint::DirPath,
+        value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub(crate) cwd: Option<String>,
+
+    /// Select an existing site/content root (or editable wrapper for features).
+    /// Conflicts with another site argument; creation/import destinations are separate.
+    #[arg(long, global = true, value_name = "DIRECTORY", value_hint = clap::ValueHint::DirPath,
+        value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub(crate) site_root: Option<String>,
 }
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
@@ -327,7 +386,7 @@ pub(crate) enum Command {
     /// Extract an editable wrapper and bundled engine from a container image.
     Eject(EjectArgs),
 
-    /// Select portable renderer capabilities or wrapper npm dependencies.
+    /// Select portable or hosted rendering features.
     Features(FeaturesArgs),
 
     /// Print a shell completion script to standard output.
@@ -382,7 +441,7 @@ pub(crate) enum ImageAction {
 #[command(args_conflicts_with_subcommands = true, subcommand_negates_reqs = true)]
 pub(crate) struct CiArgs {
     /// Site root; defaults to . or docs/zellij when zel.yaml is present.
-    #[arg(conflicts_with = "site_root")]
+    #[arg(conflicts_with_all = ["site_root", "ci_content"])]
     pub(crate) dir: Option<String>,
     #[command(flatten)]
     pub(crate) options: CiInitArgs,
@@ -392,8 +451,8 @@ pub(crate) struct CiArgs {
 
 #[derive(clap::Args, Debug, Default, PartialEq, Eq)]
 pub(crate) struct CiInitArgs {
-    /// Configured site or explicit legacy content folder (--content is retained).
-    #[arg(long, visible_alias = "content")]
+    /// Legacy spelling of --site-root for workflow generation.
+    #[arg(id = "ci_content", long = "content")]
     pub(crate) site_root: Option<String>,
     /// Exact compatible release version. Overrides ci.zel-version.
     #[arg(long)]
@@ -563,6 +622,10 @@ pub(crate) struct NewProjectArgs {
 pub(crate) struct ImageRunArgs {
     pub(crate) tag: Option<String>,
 
+    /// Only used to derive the legacy default tag when no tag was supplied.
+    #[arg(skip)]
+    pub(crate) site_root: Option<String>,
+
     #[arg(long, default_value_t = 3000)]
     pub(crate) port: u16,
 }
@@ -684,8 +747,8 @@ pub(crate) struct NewAppArgs {
     /// Create hosted starter content at <destination>/docs/zellij.
     #[arg(long, conflicts_with = "site_root")]
     pub(crate) with_docs: bool,
-    /// Existing hosted site/content root; otherwise use normal site discovery.
-    #[arg(long)]
+    /// Filled from the global selector after command/shortcut normalization.
+    #[arg(skip)]
     pub(crate) site_root: Option<String>,
     /// Built local @shebka/zellij package; defaults to ./engine/packages/zellij.
     #[arg(long)]
@@ -722,7 +785,86 @@ pub(crate) struct FeaturesArgs {
     /// Complete selection: maths, diagrams, maths,diagrams, all, or none.
     #[arg(value_delimiter = ',', value_parser = ["maths", "diagrams", "all", "none"], num_args = 1)]
     pub(crate) selection: Vec<String>,
-    /// Portable site or editable wrapper; defaults to the current wrapper or site discovery.
-    #[arg(long)]
+    /// Filled from the global selector after command/shortcut normalization.
+    #[arg(skip)]
     pub(crate) site_root: Option<String>,
+}
+
+impl Command {
+    // Normalize selection into the same arguments used by existing handlers;
+    // aliases, watch reloads, output protection and path rules remain shared.
+    fn select_root(&mut self, root: String) -> Result<(), clap::Error> {
+        let conflict = |message: &str| {
+            Cli::command_tree().error(clap::error::ErrorKind::ArgumentConflict, message)
+        };
+        let slot = match self {
+            Self::Check { dir, .. }
+            | Self::Dev { dir, .. }
+            | Self::Build { dir, .. }
+            | Self::Serve { dir, .. }
+            | Self::View { dir, .. }
+            | Self::Fmt { dir, .. }
+            | Self::Watch { dir, .. } => dir,
+            Self::Publish(options) | Self::Deploy { options, .. } => &mut options.dir,
+            Self::New(NewTarget::Page(options)) => &mut options.dir,
+            Self::New(NewTarget::Guide(options)) => &mut options.dir,
+            Self::New(NewTarget::App(options)) => {
+                if options.with_docs {
+                    return Err(conflict("--site-root cannot be combined with --with-docs"));
+                }
+                &mut options.site_root
+            }
+            Self::Features(options) => &mut options.site_root,
+            Self::Eject(options) => {
+                if options.with_docs {
+                    return Err(conflict("--site-root cannot be combined with --with-docs"));
+                }
+                &mut options.dir
+            }
+            Self::Image { action } => match action {
+                ImageAction::Static(options) | ImageAction::Next(options) => &mut options.dir,
+                ImageAction::Build { dir, .. } => dir,
+                ImageAction::Dockerfile(options) => &mut options.dir,
+                ImageAction::Run(options) if options.tag.is_none() => &mut options.site_root,
+                ImageAction::Run(_) => {
+                    return Err(conflict(
+                        "--site-root cannot be combined with an explicit image tag",
+                    ));
+                }
+                ImageAction::Push(_) => {
+                    return Err(conflict(
+                        "--site-root does not apply to image push; pass an image tag",
+                    ));
+                }
+            },
+            Self::Ci(options) => match &mut options.action {
+                None => {
+                    if options.dir.is_some() {
+                        return Err(conflict(
+                            "--site-root cannot be combined with a positional site argument",
+                        ));
+                    }
+                    &mut options.options.site_root
+                }
+                Some(CiAction::Init { options, .. }) => &mut options.site_root,
+                Some(CiAction::Run { .. }) => {
+                    return Err(conflict(
+                        "--site-root does not apply to workflow dispatch; use --cwd to select its repository",
+                    ));
+                }
+            },
+            _ => {
+                return Err(conflict(
+                    "--site-root selects an existing site and does not apply to this command; use --cwd to set the working directory",
+                ));
+            }
+        };
+        if slot.is_some() {
+            return Err(conflict(
+                "--site-root cannot be combined with another site/content argument",
+            ));
+        }
+        *slot = Some(root);
+        Ok(())
+    }
 }

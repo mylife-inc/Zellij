@@ -16,6 +16,15 @@ zel v --watch             # build, serve, open, and rebuild after edits
 
 To serve an existing export without building, use `zel s`. To select a custom
 site, use `zel b docs/manual` or the same path with `c`, `s`, or `v`.
+The global selectors work with full names and shortcuts alike:
+
+```bash
+zel --cwd ../my-product b --site-root docs/manual
+zel --site-root docs/manual c --cwd ../my-product --strict
+```
+
+See [working-directory and site selection](/cli/config#working-directory-and-site-selection)
+for precedence and conflicts.
 
 ## Available names
 
@@ -79,8 +88,8 @@ paths that begin with a hyphen, such as `zel b -- -manual`.
 ## Scope
 
 Shortcuts do not add capabilities to their underlying commands. `cv` still
-writes the current raw hosted-content conversion format; `v` still previews
-portable Markdown. `si` builds a static-site image and `ni` builds a Next.js
+uses raw hosted-content output by default, with `--layout site` available; `v`
+previews portable or hosted static output. `si` builds a static-site image and `ni` builds a Next.js
 image from either renderer;
 `idf --kind static` prints its recipe, and the default `idf` retains the Next.js
 recipe. `si`, `ni`, `ir`, and `ip` require a usable container runtime.

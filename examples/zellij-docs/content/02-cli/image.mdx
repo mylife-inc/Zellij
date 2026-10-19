@@ -142,6 +142,9 @@ from the selected hosted site. It does not remember the last image built or a
 custom `--tag`, and it does not select the `-static` or `-next` suffix. Pass the
 new image tag explicitly, as shown in the successful build's output.
 Omitted-tag `image run` also retains its legacy behavior when `image.name` is set.
+Use `--site-root docs/hosted` to select that hosted site explicitly; it conflicts
+with an explicit image tag. `--cwd` sets the working directory for all image
+commands, while image push accepts a tag and rejects `--site-root`.
 
 ## `zel image push`
 

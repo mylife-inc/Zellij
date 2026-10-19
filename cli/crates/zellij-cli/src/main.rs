@@ -46,6 +46,11 @@ fn main() {
         std::process::exit(2);
     }
 
+    if let Err(err) = cli.apply_working_directory() {
+        eprintln!("error: {err}");
+        std::process::exit(err.exit_code());
+    }
+
     let result = match cli.command {
         Command::List(ListTarget::Formats) => list_formats(cli.json),
         Command::List(ListTarget::Targets) => list_targets(cli.json),
@@ -121,7 +126,11 @@ fn main() {
                 images::next_image(dir.as_deref(), tag.as_deref())
             }
             ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
-            ImageAction::Run(ImageRunArgs { tag, port }) => image_run(tag.as_deref(), *port),
+            ImageAction::Run(ImageRunArgs {
+                tag,
+                port,
+                site_root,
+            }) => image_run(tag.as_deref(), *port, site_root.as_deref()),
             ImageAction::Push(ImagePushArgs { tag, registry }) => {
                 image_push(tag, registry.as_deref())
             }
@@ -544,11 +553,11 @@ fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_c
     Ok(())
 }
 
-fn image_run(tag: Option<&str>, port: u16) -> zellij_core::Result<()> {
+fn image_run(tag: Option<&str>, port: u16, site_root: Option<&str>) -> zellij_core::Result<()> {
     let tag = match tag {
         Some(tag) => tag.to_owned(),
         None => {
-            let dir = select_site(None)?;
+            let dir = select_site(site_root)?;
             site_tag(dir.as_str(), &resolve_content(dir.as_str())?)?
         }
     };
