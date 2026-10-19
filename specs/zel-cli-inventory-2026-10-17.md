@@ -402,3 +402,18 @@ Native mindmap SVG and browser-error checks passed in every state. Each npm stat
 is checked in a fresh Node process, avoiding stale negative package lookups.
 No locked dependency versions changed. Source commit and hosted CI evidence will
 be recorded after PR validation; no new native release or manual deployment occurred.
+
+
+### Shared CLI path options — 2026-10-18
+
+Source 58b7129ea18f4add46154fe8b123edc383626152 adds global --cwd and --site-root.
+The former applies before command dispatch; the latter selects existing site
+inputs through the same handlers as positional arguments and existing selectors.
+CI --content is retained. Conflicting, repeated or inapplicable selections fail
+with exit 2 before effects. Creation/import destinations stay separate. See the
+current contract stage 8a and local configuration reference for full support.
+
+All 284 Rust tests, Clippy with warnings denied, formatting and strict/deep docs
+validation passed locally. Cross-platform CI and merge evidence must be refreshed
+for this branch. Explicit --config, remaining advanced flags and other providers
+remain proposed. These source capabilities are not in public native release 0.1.3.
