@@ -2150,3 +2150,13 @@ Hosted-feature source c27c64d3f4d1cfc3315383a83b9d43ef17d9c28a is reviewed in
 passed. Refresh the PR's final head/checks and merge status before relying on it.
 The previous PR #40 post-merge CI 39200372898 and Base image 39200372897 both
 completed successfully. Public native release remains zellij-v0.1.3 (2026-08-13).
+
+
+PR #41 CI run 39202250897 passed the new standalone feature acceptance and all
+container/image/export checks through section-template rendering. Its final
+conversion check exposed a test-harness ESM/CommonJS interop error when bundling
+the new shared config helper (dynamic require of node:fs). The conversion helper
+now supplies Node createRequire, matching the production CLI bundle. Local MkDocs
+and Docusaurus conversion acceptance passed after this correction, including
+rendered routes, heading fragments and asset bytes. Final CI must be refreshed
+on the fixing head; the earlier run is not a successful completion record.
