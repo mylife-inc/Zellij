@@ -121,34 +121,59 @@ impl Cli {
         args: impl IntoIterator<Item = impl Into<std::ffi::OsString>>,
     ) -> Result<Self, clap::Error> {
         let args: Vec<std::ffi::OsString> = args.into_iter().map(Into::into).collect();
-        let matches = Self::command_tree().try_get_matches_from(&args)?;
-        // Clap propagates the deepest global value over its parents, discarding
-        // evidence of repetition across command levels. Validate accepted tokens
-        // before normalization. No argument permits bare hyphen-prefixed values;
-        // equals-form values and everything after -- remain literal and untouched.
-        let flags = ["--cwd", "--site-root", "--config"];
-        let mut seen = [false; 3];
-        for arg in args.iter().skip(1).take_while(|arg| *arg != "--") {
-            let Some(arg) = arg.to_str() else { continue };
-            for (index, flag) in flags.iter().enumerate() {
-                if arg == *flag
-                    || arg
-                        .strip_prefix(flag)
-                        .is_some_and(|rest| rest.starts_with('='))
-                {
-                    if seen[index] {
-                        return Err(Self::command_tree().error(
-                            clap::error::ErrorKind::ArgumentConflict,
-                            format!(
+        let no_color = args
+            .iter()
+            .skip(1)
+            .take_while(|arg| *arg != "--")
+            .any(|arg| arg == "--no-color")
+            || std::env::var_os("NO_COLOR").is_some_and(|value| !value.is_empty());
+        let parsed = (|| {
+            let mut command = Self::command_tree();
+            if no_color {
+                command = command.color(clap::ColorChoice::Never);
+            }
+            let matches = command.try_get_matches_from(&args)?;
+            // Clap propagates the deepest global value over its parents, discarding
+            // evidence of repetition across command levels. Validate accepted tokens
+            // before normalization. No argument permits bare hyphen-prefixed values;
+            // equals-form values and everything after -- remain literal and untouched.
+            let flags = ["--cwd", "--site-root", "--config"];
+            let mut seen = [false; 3];
+            for arg in args.iter().skip(1).take_while(|arg| *arg != "--") {
+                let Some(arg) = arg.to_str() else { continue };
+                for (index, flag) in flags.iter().enumerate() {
+                    if arg == *flag
+                        || arg
+                            .strip_prefix(flag)
+                            .is_some_and(|rest| rest.starts_with('='))
+                    {
+                        if seen[index] {
+                            let message = format!(
                                 "{flag} may be specified only once, including across subcommands"
-                            ),
-                        ));
+                            );
+                            return Err(Self::command_tree()
+                                .error(clap::error::ErrorKind::ArgumentConflict, message));
+                        }
+                        seen[index] = true;
                     }
-                    seen[index] = true;
                 }
             }
-        }
-        Self::from_matches(&matches)
+            let mut cli = Self::from_matches(&matches)?;
+            cli.no_color |= no_color;
+            if cli.quiet && cli.verbose {
+                return Err(Self::command_tree().error(
+                    clap::error::ErrorKind::ArgumentConflict,
+                    "--quiet and --verbose cannot be combined, including across subcommands",
+                ));
+            }
+            Ok(cli)
+        })();
+        parsed.map_err(|mut error: clap::Error| {
+            if no_color {
+                error = error.with_cmd(&Self::command_tree().color(clap::ColorChoice::Never));
+            }
+            error
+        })
     }
 
     pub(crate) fn parse_args() -> Self {
@@ -180,6 +205,18 @@ pub(crate) struct Cli {
     /// JSON output for context, list, explain, detect, version and portable check.
     #[arg(long, global = true)]
     pub(crate) json: bool,
+
+    /// Suppress routine progress; keep requested data, warnings and errors.
+    #[arg(long, short = 'q', global = true, conflicts_with = "verbose")]
+    pub(crate) quiet: bool,
+
+    /// Include execution details and timing on stderr, without raw arguments/env.
+    #[arg(long, global = true, conflicts_with = "quiet")]
+    pub(crate) verbose: bool,
+
+    /// Disable terminal colors (also enabled by a nonempty NO_COLOR variable).
+    #[arg(long, global = true)]
+    pub(crate) no_color: bool,
 
     /// Resolve all relative paths from this existing directory.
     #[arg(long, global = true, value_name = "DIRECTORY", value_hint = clap::ValueHint::DirPath,

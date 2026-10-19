@@ -6,6 +6,7 @@
 //!
 //! The argument schema lives in `args`; dispatch and CLI reporting live here.
 //! See `specs/zel-cli-contract-2026-10-18.md` for the agreed command surface.
+use zellij_core::process::CommandExt;
 use zellij_core::site::SiteInput;
 
 use args::*;
@@ -29,6 +30,12 @@ mod watch;
 
 fn main() {
     let cli = Cli::parse_args();
+    zellij_core::reporting::initialize(zellij_core::reporting::Options {
+        quiet: cli.quiet,
+        verbose: cli.verbose,
+        no_color: cli.no_color,
+    });
+    let started = std::time::Instant::now();
 
     if cli.json
         && !matches!(
@@ -41,17 +48,23 @@ fn main() {
                 | Command::Version
         )
     {
-        eprintln!(
+        zellij_core::diagnosticln!(
             "error: --json is supported only by context, list, explain, detect, version and portable check; no command was run"
         );
         std::process::exit(2);
     }
 
     if let Err(err) = cli.apply_working_directory() {
-        eprintln!("error: {err}");
+        zellij_core::diagnosticln!("error: {err}");
         std::process::exit(err.exit_code());
     }
 
+    zellij_core::verbose!(
+        "Starting zel command in {}",
+        std::env::current_dir()
+            .map(|path| path.display().to_string())
+            .unwrap_or_else(|_| "unavailable directory".into())
+    );
     let result = match cli.command {
         Command::List(ListTarget::Formats) => list_formats(cli.json),
         Command::List(ListTarget::Targets) => list_targets(cli.json),
@@ -195,13 +208,22 @@ fn main() {
         })) => new_project(name, product_lang, docs_dir, product_dir),
         Command::Convert(ref options) => imports::convert(options, false),
         _ => {
-            eprintln!("not implemented yet — see specs/zellij-cli-spec.md");
+            zellij_core::diagnosticln!("not implemented yet — see specs/zellij-cli-spec.md");
             std::process::exit(1);
         }
     };
 
+    zellij_core::verbose!(
+        "Command {} after {:.3}s",
+        if result.is_ok() {
+            "completed"
+        } else {
+            "failed"
+        },
+        started.elapsed().as_secs_f64()
+    );
     if let Err(err) = result {
-        eprintln!("error: {err}");
+        zellij_core::diagnosticln!("error: {err}");
         std::process::exit(err.exit_code());
     }
 }
@@ -210,10 +232,12 @@ fn main() {
 
 /// Resolve a deliberate site selection before touching an engine or output.
 fn select_site(dir: Option<&SiteInput>) -> zellij_core::Result<SiteInput> {
-    match dir {
-        Some(input) => Ok(input.clone()),
-        None => zellij_core::site::select(Utf8Path::new("."), None).map(Into::into),
-    }
+    let selected = match dir {
+        Some(input) => input.clone(),
+        None => zellij_core::site::select(Utf8Path::new("."), None)?.into(),
+    };
+    zellij_core::verbose!("Selected site input: {selected}");
+    Ok(selected)
 }
 fn resolve_content(dir: &SiteInput) -> zellij_core::Result<Utf8PathBuf> {
     if !dir.explicit_config() && !dir.root().is_dir() {
@@ -252,7 +276,7 @@ fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::
         Err(err) => return Err(err),
     };
 
-    print!("{}", report.output);
+    zellij_core::reporting::emit(format_args!("{}", report.output), false);
 
     if !report.ok {
         return Err(zellij_core::Error::ContentInvalid);
@@ -287,15 +311,15 @@ fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
     let content = resolve_content(&dir)?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
-    println!("  Engine   {}", engine.image());
+    zellij_core::statusln!("  Engine   {}", engine.image());
     if engine.image_is_local() == Some(false) {
-        println!("           not pulled yet — this first run fetches ~237 MB");
+        zellij_core::statusln!("           not pulled yet — this first run fetches ~237 MB");
     }
-    println!("  Content  {content}");
-    println!("  Serving  http://localhost:{port}");
-    println!();
-    println!("  Edit anything under {content} and reload. Ctrl-C to stop.");
-    println!();
+    zellij_core::statusln!("  Content  {content}");
+    zellij_core::statusln!("  Serving  http://localhost:{port}");
+    zellij_core::statusln!();
+    zellij_core::statusln!("  Edit anything under {content} and reload. Ctrl-C to stop.");
+    zellij_core::statusln!();
 
     match engine.dev(&content, port) {
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
@@ -309,18 +333,24 @@ fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
 /// Shared by every command that mounts content, because every one of them can
 /// meet a runtime that silently shares nothing.
 fn report_empty_mount(err: &zellij_core::Error) {
-    eprintln!("error: {err}");
-    eprintln!();
-    eprintln!("  The folder exists, and the container was given an empty one. A bind");
-    eprintln!("  mount of a path the runtime cannot reach succeeds and mounts nothing,");
-    eprintln!("  so this would otherwise be reported as a site with no pages.");
-    eprintln!();
-    eprintln!("  Colima shares $HOME and not /tmp. Either work somewhere under your");
-    eprintln!("  home directory, or share the path:");
-    eprintln!();
-    eprintln!("    colima stop && colima start --mount '/tmp:w'");
-    eprintln!();
-    eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+    zellij_core::diagnosticln!("error: {err}");
+    zellij_core::diagnosticln!();
+    zellij_core::diagnosticln!(
+        "  The folder exists, and the container was given an empty one. A bind"
+    );
+    zellij_core::diagnosticln!(
+        "  mount of a path the runtime cannot reach succeeds and mounts nothing,"
+    );
+    zellij_core::diagnosticln!("  so this would otherwise be reported as a site with no pages.");
+    zellij_core::diagnosticln!();
+    zellij_core::diagnosticln!(
+        "  Colima shares $HOME and not /tmp. Either work somewhere under your"
+    );
+    zellij_core::diagnosticln!("  home directory, or share the path:");
+    zellij_core::diagnosticln!();
+    zellij_core::diagnosticln!("    colima stop && colima start --mount '/tmp:w'");
+    zellij_core::diagnosticln!();
+    zellij_core::diagnosticln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
 fn default_target(dir: &SiteInput) -> zellij_core::Result<&'static str> {
@@ -358,7 +388,7 @@ fn build_dispatch(
     match target {
         "portable" => {
             let output = build_portable(dir, out, name, theme)?;
-            println!(
+            zellij_core::statusln!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
                 output.join("index.html")
             );
@@ -392,9 +422,9 @@ fn build_portable(
         .unwrap_or_else(|| zellij_docs::default_output(source))?;
     let report = zellij_docs::build(source, &output, zellij_docs::BuildOptions { name, theme })?;
     for warning in report.warnings {
-        eprintln!("warning: {warning}");
+        zellij_core::diagnosticln!("warning: {warning}");
     }
-    println!("✓ {output}  ({} HTML pages)", report.pages);
+    zellij_core::statusln!("✓ {output}  ({} HTML pages)", report.pages);
     Ok(output)
 }
 
@@ -405,8 +435,8 @@ fn build(dir: &SiteInput, target: &str, out: Option<&str>) -> zellij_core::Resul
         "static" => BuildMode::Static,
         "image" => BuildMode::Image,
         other => {
-            eprintln!("error: no target called \"{other}\"");
-            eprintln!("       zel list targets");
+            zellij_core::diagnosticln!("error: no target called \"{other}\"");
+            zellij_core::diagnosticln!("       zel list targets");
             std::process::exit(2);
         }
     };
@@ -416,10 +446,10 @@ fn build(dir: &SiteInput, target: &str, out: Option<&str>) -> zellij_core::Resul
     let out = out.map(Utf8PathBuf::from).unwrap_or(site.output);
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
-    println!("  Engine   {}", engine.image());
-    println!("  Content  {content}");
-    println!("  Target   {target} → {out}");
-    println!();
+    zellij_core::statusln!("  Engine   {}", engine.image());
+    zellij_core::statusln!("  Content  {content}");
+    zellij_core::statusln!("  Target   {target} → {out}");
+    zellij_core::statusln!();
 
     match engine.build(&content, &out, mode) {
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
@@ -447,25 +477,37 @@ fn build(dir: &SiteInput, target: &str, out: Option<&str>) -> zellij_core::Resul
             // same mistake this binary already explains for the input folder,
             // in the same message, and it deserved the same answer.
             if pages == 0 {
-                eprintln!();
-                eprintln!("error: the build wrote nothing to {out}");
-                eprintln!();
-                eprintln!("  The engine reported success and the output folder is empty, which");
-                eprintln!("  happens when the container cannot reach the path you asked for: a");
-                eprintln!("  bind mount of an unshared directory succeeds and shares nothing, so");
-                eprintln!("  the pages were written inside the container and thrown away with it.");
-                eprintln!();
-                eprintln!("  Colima shares $HOME and not /tmp. Either write somewhere under your");
-                eprintln!("  home directory, or share the path:");
-                eprintln!();
-                eprintln!("    colima stop && colima start --mount '/tmp:w'");
-                eprintln!();
-                eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!("error: the build wrote nothing to {out}");
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!(
+                    "  The engine reported success and the output folder is empty, which"
+                );
+                zellij_core::diagnosticln!(
+                    "  happens when the container cannot reach the path you asked for: a"
+                );
+                zellij_core::diagnosticln!(
+                    "  bind mount of an unshared directory succeeds and shares nothing, so"
+                );
+                zellij_core::diagnosticln!(
+                    "  the pages were written inside the container and thrown away with it."
+                );
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!(
+                    "  Colima shares $HOME and not /tmp. Either write somewhere under your"
+                );
+                zellij_core::diagnosticln!("  home directory, or share the path:");
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!("    colima stop && colima start --mount '/tmp:w'");
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!(
+                    "  Docker Desktop: Settings → Resources → File sharing."
+                );
                 std::process::exit(1);
             }
 
-            println!();
-            println!("✓ {out}  ({pages} entries)");
+            zellij_core::statusln!();
+            zellij_core::statusln!("✓ {out}  ({pages} entries)");
 
             // A sitemap needs absolute URLs, so without `siteUrl` the engine
             // has nothing to write and produces an empty one. It is valid XML
@@ -476,16 +518,18 @@ fn build(dir: &SiteInput, target: &str, out: Option<&str>) -> zellij_core::Resul
             if let Ok(body) = std::fs::read_to_string(&sitemap)
                 && !body.contains("<loc>")
             {
-                println!();
-                println!("! {sitemap} is empty.");
-                println!("  A sitemap lists absolute URLs, so it needs the site's origin.");
-                println!("  Set siteUrl in site.yaml:");
-                println!();
-                println!("    siteUrl: https://docs.example.com");
+                zellij_core::statusln!();
+                zellij_core::diagnosticln!("! {sitemap} is empty.");
+                zellij_core::diagnosticln!(
+                    "  A sitemap lists absolute URLs, so it needs the site's origin."
+                );
+                zellij_core::diagnosticln!("  Set siteUrl in site.yaml:");
+                zellij_core::diagnosticln!();
+                zellij_core::diagnosticln!("    siteUrl: https://docs.example.com");
             }
 
-            println!();
-            println!("  Serve it from any static host.");
+            zellij_core::statusln!();
+            zellij_core::statusln!("  Serve it from any static host.");
             Ok(())
         }
     }
@@ -542,17 +586,17 @@ fn image_build(
     };
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
-    println!("  Engine   {}", engine.image());
-    println!("  Content  {content}");
-    println!("  Tag      {tag}");
-    println!();
+    zellij_core::statusln!("  Engine   {}", engine.image());
+    zellij_core::statusln!("  Content  {content}");
+    zellij_core::statusln!("  Tag      {tag}");
+    zellij_core::statusln!();
 
     engine.image_build(&content, &tag, features, None)?;
 
-    println!();
-    println!("✓ {tag}");
-    println!("  Run it:   zel image run {tag}");
-    println!("  Push it:  zel image push {tag} --registry ghcr.io/you");
+    zellij_core::statusln!();
+    zellij_core::statusln!("✓ {tag}");
+    zellij_core::statusln!("  Run it:   zel image run {tag}");
+    zellij_core::statusln!("  Push it:  zel image push {tag} --registry ghcr.io/you");
     Ok(())
 }
 
@@ -570,8 +614,8 @@ fn image_run(
     };
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
-    println!("  Serving http://localhost:{port}  — Ctrl-C to stop");
-    println!();
+    zellij_core::statusln!("  Serving http://localhost:{port}  — Ctrl-C to stop");
+    zellij_core::statusln!();
     engine.image_run(&tag, port)
 }
 
@@ -605,17 +649,17 @@ fn ci_publish(workflow: &str, git_ref: &str) -> zellij_core::Result<()> {
 
     if !on_path("gh") {
         let slug = repo.unwrap_or_else(|| "<owner>/<repo>".into());
-        println!("gh is not installed. This is the request it would have made:");
-        println!();
-        println!("  curl -X POST \\");
-        println!("    -H \"Authorization: Bearer $GITHUB_TOKEN\" \\");
-        println!("    -H \"Accept: application/vnd.github+json\" \\");
-        println!(
+        zellij_core::reportln!("gh is not installed. This is the request it would have made:");
+        zellij_core::reportln!();
+        zellij_core::reportln!("  curl -X POST \\");
+        zellij_core::reportln!("    -H \"Authorization: Bearer $GITHUB_TOKEN\" \\");
+        zellij_core::reportln!("    -H \"Accept: application/vnd.github+json\" \\");
+        zellij_core::reportln!(
             "    https://api.github.com/repos/{slug}/actions/workflows/{workflow}/dispatches \\"
         );
-        println!("    -d '{{\"ref\":\"{git_ref}\"}}'");
-        println!();
-        println!("  The token needs Actions: write on that repository.");
+        zellij_core::reportln!("    -d '{{\"ref\":\"{git_ref}\"}}'");
+        zellij_core::reportln!();
+        zellij_core::reportln!("  The token needs Actions: write on that repository.");
         return Ok(());
     }
 
@@ -625,24 +669,28 @@ fn ci_publish(workflow: &str, git_ref: &str) -> zellij_core::Result<()> {
         command.args(["--repo", slug]);
     }
 
-    let status = match command.status() {
+    let status = match command.zel_status() {
         Ok(status) => status,
         Err(err) => {
-            eprintln!("error: could not run gh: {err}");
+            zellij_core::diagnosticln!("error: could not run gh: {err}");
             std::process::exit(1);
         }
     };
 
     if !status.success() {
-        eprintln!("error: gh could not start {workflow}");
-        eprintln!("       If it says the workflow was not found, it has to be on the");
-        eprintln!("       repository's default branch before GitHub will accept a run.");
+        zellij_core::diagnosticln!("error: gh could not start {workflow}");
+        zellij_core::diagnosticln!(
+            "       If it says the workflow was not found, it has to be on the"
+        );
+        zellij_core::diagnosticln!(
+            "       repository's default branch before GitHub will accept a run."
+        );
         std::process::exit(1);
     }
 
-    println!("✓ {workflow} queued on {git_ref}");
+    zellij_core::statusln!("✓ {workflow} queued on {git_ref}");
     if let Some(slug) = repo {
-        println!("  https://github.com/{slug}/actions");
+        zellij_core::statusln!("  https://github.com/{slug}/actions");
     }
     Ok(())
 }
@@ -684,14 +732,14 @@ fn on_path(program: &str) -> bool {
 // ------------------------------------------------------------------ workflows
 
 fn doctor() -> zellij_core::Result<()> {
-    println!("zel            {}  ({})", env!("CARGO_PKG_VERSION"), TARGET);
-    println!();
-    println!("Container runtime");
+    zellij_core::reportln!("zel            {}  ({})", env!("CARGO_PKG_VERSION"), TARGET);
+    zellij_core::reportln!();
+    zellij_core::reportln!("Container runtime");
 
     match zellij_engine::ContainerEngine::detect(None) {
         Ok(engine) => {
             let runtime = engine.runtime();
-            println!(
+            zellij_core::reportln!(
                 "  ✓ {:<10} {} via {}",
                 runtime.program,
                 runtime.version,
@@ -703,26 +751,26 @@ fn doctor() -> zellij_core::Result<()> {
                 Some(false) => "not pulled — the first build will fetch it",
                 None => "unknown — image inspection unavailable or timed out",
             };
-            println!("  {:<12} {}  ({state})", "· engine", engine.image());
+            zellij_core::reportln!("  {:<12} {}  ({state})", "· engine", engine.image());
         }
         Err(err) => {
             // main prints the detailed error once on stderr.
-            println!("  ✗ unavailable");
-            println!();
-            println!("  Native commands still work without a container runtime:");
-            println!(
+            zellij_core::reportln!("  ✗ unavailable");
+            zellij_core::reportln!();
+            zellij_core::reportln!("  Native commands still work without a container runtime:");
+            zellij_core::reportln!(
                 "  portable build/check/serve/view, new portable/docs/section/page/guide/project,"
             );
-            println!("  explain, list, context, detect, convert, image dockerfile.");
+            zellij_core::reportln!("  explain, list, context, detect, convert, image dockerfile.");
             return Err(err);
         }
     }
 
-    println!();
-    println!("Content");
+    zellij_core::reportln!();
+    zellij_core::reportln!("Content");
     match resolve_content(&SiteInput::from(".")) {
-        Ok(path) => println!("  ✓ {path}"),
-        Err(_) => println!("  · none here — `zel new docs` writes one"),
+        Ok(path) => zellij_core::reportln!("  ✓ {path}"),
+        Err(_) => zellij_core::reportln!("  · none here — `zel new docs` writes one"),
     }
 
     Ok(())
@@ -755,16 +803,16 @@ fn new_portable(
             zellij_core::Error::NotEmpty { path } => zellij_core::Error::FileExists { path },
             other => other,
         })?;
-    println!("✓ {target}");
+    zellij_core::statusln!("✓ {target}");
     for path in written {
-        println!("  {path}");
+        zellij_core::statusln!("  {path}");
     }
     // Commands use a fixed relative path so unusual directory names cannot
     // turn a copied suggestion into invalid shell syntax or a different command.
-    println!("\n  From inside the created folder:");
-    println!("    zel check . --strict");
-    println!("    zel build .");
-    println!("    zel view . --watch");
+    zellij_core::statusln!("\n  From inside the created folder:");
+    zellij_core::statusln!("    zel check . --strict");
+    zellij_core::statusln!("    zel build .");
+    zellij_core::statusln!("    zel view . --watch");
     Ok(())
 }
 
@@ -800,11 +848,11 @@ fn new_docs(
 
     let written = zellij_scaffold::configured_docs(&options).write(&target, force)?;
 
-    println!("✓ {target}");
+    zellij_core::statusln!("✓ {target}");
     for path in &written {
-        println!("  {path}");
+        zellij_core::statusln!("  {path}");
     }
-    println!("\n  Next: zel dev {target}");
+    zellij_core::statusln!("\n  Next: zel dev {target}");
 
     Ok(())
 }
@@ -818,9 +866,11 @@ fn new_project(
     use zellij_scaffold::project::{self, ProjectOptions};
 
     if !project::known_languages().contains(&product_lang) {
-        eprintln!("error: no hint for \"{product_lang}\"");
-        eprintln!("       known: {}", project::known_languages().join(", "));
-        eprintln!("       any of them only prints a command; nothing is generated");
+        zellij_core::diagnosticln!("error: no hint for \"{product_lang}\"");
+        zellij_core::diagnosticln!("       known: {}", project::known_languages().join(", "));
+        zellij_core::diagnosticln!(
+            "       any of them only prints a command; nothing is generated"
+        );
         std::process::exit(2);
     }
 
@@ -834,33 +884,35 @@ fn new_project(
 
     let written = project::project(&options)?.write(&target, false)?;
 
-    println!("✓ {target}");
-    println!(
+    zellij_core::statusln!("✓ {target}");
+    zellij_core::statusln!(
         "  {:<24} the documentation, as Zellij content",
         format!("{docs_dir}/")
     );
-    println!("  {:<24} yours", format!("{product_dir}/"));
-    println!(
+    zellij_core::statusln!("  {:<24} yours", format!("{product_dir}/"));
+    zellij_core::statusln!(
         "  {:<24} validates on every pull request, image on main",
         ".github/workflows/docs.yml"
     );
-    println!("  {} files", written.len());
-    println!(
+    zellij_core::statusln!("  {} files", written.len());
+    zellij_core::statusln!(
         "  Workflow requires its pinned compatible zel release and engine image; review before enabling."
     );
 
-    println!();
-    println!("  Write:  zel dev {target}/{docs_dir}");
+    zellij_core::statusln!();
+    zellij_core::statusln!("  Write:  zel dev {target}/{docs_dir}");
 
     // A hint rather than a scaffold. `cargo init` is better than anything a
     // documentation tool would write in its place, and it is the command
     // somebody would have run anyway.
     match project::product_hint(product_lang, name) {
         Some(hint) => {
-            println!("  Code:   cd {target}/{product_dir} && {hint}");
+            zellij_core::statusln!("  Code:   cd {target}/{product_dir} && {hint}");
         }
         None => {
-            println!("  Code:   {target}/{product_dir} is empty — start it with your own tooling");
+            zellij_core::statusln!(
+                "  Code:   {target}/{product_dir} is empty — start it with your own tooling"
+            );
         }
     }
 
@@ -869,8 +921,8 @@ fn new_project(
 
 fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()> {
     if !zellij_core::schema::is_section_type(section_type) {
-        eprintln!("error: no section type called \"{section_type}\"");
-        eprintln!("       zel list sections — there are nineteen");
+        zellij_core::diagnosticln!("error: no section type called \"{section_type}\"");
+        zellij_core::diagnosticln!("       zel list sections — there are nineteen");
         std::process::exit(2);
     }
 
@@ -894,8 +946,8 @@ fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()>
         .ok_or_else(|| zellij_core::files::unsafe_path(&path, "expected a filename"))?;
     zellij_core::files::write_files(parent, &[(camino::Utf8Path::new(name), &body)], false)?;
 
-    println!("✓ {path}");
-    println!("  zel explain {section_type} — every field it takes");
+    zellij_core::statusln!("✓ {path}");
+    zellij_core::statusln!("  zel explain {section_type} — every field it takes");
 
     Ok(())
 }
@@ -912,8 +964,8 @@ fn authoring_content(dir: Option<&SiteInput>) -> zellij_core::Result<Utf8PathBuf
 fn new_page(name: &str, sections: &[String], dir: Option<&SiteInput>) -> zellij_core::Result<()> {
     for section_type in sections {
         if !zellij_core::schema::is_section_type(section_type) {
-            eprintln!("error: no section type called \"{section_type}\"");
-            eprintln!("       zel list sections — there are nineteen");
+            zellij_core::diagnosticln!("error: no section type called \"{section_type}\"");
+            zellij_core::diagnosticln!("       zel list sections — there are nineteen");
             std::process::exit(2);
         }
     }
@@ -923,15 +975,15 @@ fn new_page(name: &str, sections: &[String], dir: Option<&SiteInput>) -> zellij_
     let written = scaffold.write_new(&root)?;
 
     for path in &written {
-        println!("✓ {path}");
+        zellij_core::statusln!("✓ {path}");
     }
 
     // pages.yaml is rewritten by hand rather than by us: parsing it and
     // writing it back would lose the comments and the ordering somebody chose,
     // and this is four lines to paste.
-    println!("\n  Add this to pages.yaml:\n");
+    zellij_core::reportln!("\n  Add this to pages.yaml:\n");
     for line in entry.lines() {
-        println!("    {line}");
+        zellij_core::reportln!("    {line}");
     }
 
     Ok(())
@@ -951,7 +1003,7 @@ fn new_guide(name: &str, title: Option<&str>, dir: Option<&SiteInput>) -> zellij
     let written = zellij_scaffold::guide(name, &title, order).write_new(&root)?;
 
     for path in &written {
-        println!("✓ {path}");
+        zellij_core::statusln!("✓ {path}");
     }
 
     Ok(())
@@ -1004,12 +1056,12 @@ fn list_formats(as_json: bool) -> zellij_core::Result<()> {
     }
 
     if converters.is_empty() {
-        println!("No converters are registered in this build.");
+        zellij_core::reportln!("No converters are registered in this build.");
         return Ok(());
     }
 
     for converter in converters {
-        println!("{:<14} {}", converter.id(), converter.label());
+        zellij_core::reportln!("{:<14} {}", converter.id(), converter.label());
     }
 
     Ok(())
@@ -1043,7 +1095,7 @@ fn list_targets(as_json: bool) -> zellij_core::Result<()> {
         return print_json(&json!({ "targets": targets }));
     }
     for (name, description) in targets {
-        println!("{name:<8} {description}");
+        zellij_core::reportln!("{name:<8} {description}");
     }
 
     Ok(())
@@ -1059,7 +1111,7 @@ fn list_sections(as_json: bool) -> zellij_core::Result<()> {
                 "type": section_type, "fields": fields.len(), "required": required,
             }));
         } else {
-            println!(
+            zellij_core::reportln!(
                 "{section_type:<16} {} fields, {required} required",
                 fields.len()
             );
@@ -1069,7 +1121,7 @@ fn list_sections(as_json: bool) -> zellij_core::Result<()> {
     if as_json {
         return print_json(&json!({ "sections": sections }));
     }
-    println!("\nRun `zel explain <type>` for any of them.");
+    zellij_core::reportln!("\nRun `zel explain <type>` for any of them.");
     Ok(())
 }
 
@@ -1079,7 +1131,7 @@ fn list_themes(as_json: bool) -> zellij_core::Result<()> {
         return print_json(&json!({ "themes": themes }));
     }
     for theme in themes {
-        println!("{:<14} {} — {}", theme.name, theme.label, theme.description);
+        zellij_core::reportln!("{:<14} {} — {}", theme.name, theme.label, theme.description);
     }
     Ok(())
 }
@@ -1105,27 +1157,27 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
     let (required, optional): (Vec<_>, Vec<_>) =
         fields.into_iter().partition(|field| field.required);
 
-    println!("{section_type}\n");
+    zellij_core::reportln!("{section_type}\n");
 
     if !required.is_empty() {
-        println!("Required");
+        zellij_core::reportln!("Required");
         for field in &required {
-            println!("  {:<14} {}", field.name, field.type_name);
+            zellij_core::reportln!("  {:<14} {}", field.name, field.type_name);
         }
-        println!();
+        zellij_core::reportln!();
     }
 
     if !optional.is_empty() {
-        println!("Optional");
+        zellij_core::reportln!("Optional");
         for field in &optional {
             let default = field
                 .default
                 .as_ref()
                 .map(|value| format!("  (default {value})"))
                 .unwrap_or_default();
-            println!("  {:<14} {}{}", field.name, field.type_name, default);
+            zellij_core::reportln!("  {:<14} {}{}", field.name, field.type_name, default);
         }
-        println!();
+        zellij_core::reportln!();
     }
 
     // A field like `items` *is* the section, and "list of object" names its
@@ -1133,7 +1185,7 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
     // write something plausible that the build rejects.
     for field in required.iter().chain(optional.iter()).filter(|f| f.nested) {
         if let Some(inner) = schema::nested_fields(section_type, &field.name) {
-            println!("Each entry in `{}`", field.name);
+            zellij_core::reportln!("Each entry in `{}`", field.name);
             for nested in inner {
                 let default = nested
                     .default
@@ -1141,17 +1193,21 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
                     .map(|value| format!("  (default {value})"))
                     .unwrap_or_default();
                 let mark = if nested.required { "*" } else { " " };
-                println!(
+                zellij_core::reportln!(
                     "  {mark}{:<13} {}{}",
-                    nested.name, nested.type_name, default
+                    nested.name,
+                    nested.type_name,
+                    default
                 );
             }
-            println!("  * required\n");
+            zellij_core::reportln!("  * required\n");
         }
     }
 
-    println!("Every section also takes: id, background, padding, motion, titleGradient.");
-    println!("\nWrite one with `zel new section {section_type}`.");
+    zellij_core::reportln!(
+        "Every section also takes: id, background, padding, motion, titleGradient."
+    );
+    zellij_core::reportln!("\nWrite one with `zel new section {section_type}`.");
     Ok(())
 }
 
@@ -1165,9 +1221,11 @@ fn write_context(file: Option<&str>, as_json: bool) -> zellij_core::Result<()> {
         Some(path) => {
             std::fs::write(path, body)?;
             if as_json {
-                eprintln!("Wrote the Zellij schemas to {path}");
+                if !zellij_core::reporting::options().quiet {
+                    zellij_core::diagnosticln!("Wrote the Zellij schemas to {path}");
+                }
             } else {
-                println!("Wrote the Zellij reference to {path}");
+                zellij_core::statusln!("Wrote the Zellij reference to {path}");
             }
         }
         None => std::io::stdout().lock().write_all(body.as_bytes())?,
@@ -1212,8 +1270,8 @@ fn detect(dir: &str, as_json: bool) -> zellij_core::Result<()> {
     }
 
     if found.is_empty() {
-        println!("Nothing here looks like a documentation tool this build knows.");
-        println!(
+        zellij_core::reportln!("Nothing here looks like a documentation tool this build knows.");
+        zellij_core::reportln!(
             "\nIf the folder is plain Markdown with no configuration, there is no\nstructure to convert from. Write the reference with `zel context` and\nask an AI agent to author the folder instead."
         );
         return Ok(());
@@ -1225,7 +1283,7 @@ fn detect(dir: &str, as_json: bool) -> zellij_core::Result<()> {
         } else {
             "likely"
         };
-        println!("{:<12} {}  ({strength})", converter.id(), converter.label());
+        zellij_core::reportln!("{:<12} {}  ({strength})", converter.id(), converter.label());
     }
 
     Ok(())

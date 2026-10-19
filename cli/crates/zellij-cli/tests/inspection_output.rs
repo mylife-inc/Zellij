@@ -273,9 +273,9 @@ fn unsupported_json_is_rejected_before_any_command_action() {
 }
 
 #[test]
-fn verbose_is_rejected_instead_of_silently_ignored_and_help_states_json_scope() {
+fn unavailable_short_verbose_is_rejected_and_help_states_supported_output_options() {
     let temp = tempfile::tempdir().unwrap();
-    for flag in ["--verbose", "-v"] {
+    for flag in ["-v"] {
         for args in [
             vec![flag, "new", "docs", "content"],
             vec!["new", "docs", "content", flag],
@@ -289,5 +289,7 @@ fn verbose_is_rejected_instead_of_silently_ignored_and_help_states_json_scope() 
     assert_eq!(fs::read_dir(temp.path()).unwrap().count(), 0);
     let help = String::from_utf8(success(run(temp.path(), &["--help"]))).unwrap();
     assert!(help.contains("context, list, explain, detect, version"));
-    assert!(!help.contains("--verbose"));
+    assert!(help.contains("--verbose"));
+    assert!(help.contains("--quiet"));
+    assert!(help.contains("--no-color"));
 }

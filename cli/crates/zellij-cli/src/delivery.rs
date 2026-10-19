@@ -18,9 +18,11 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
         environment_site.as_deref(),
         options.prod,
     )?;
-    describe(&plan, &site, &content);
+    if options.dry_run || !zellij_core::reporting::options().quiet {
+        describe(&plan, &site, &content);
+    }
     if options.dry_run {
-        println!(
+        zellij_core::reportln!(
             "\nPlan only: validate/build once, then deliver.\nNo content validation, tool/credential checks, build or remote request was performed."
         );
         return Ok(());
@@ -29,9 +31,10 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
-    println!(
+    zellij_core::reportln!(
         "  Site     {}\n  Content  {content}\n  Renderer {:?}",
-        site.root, site.renderer
+        site.root,
+        site.renderer
     );
     describe_destination(plan);
 }
@@ -39,9 +42,9 @@ pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
 pub(crate) fn describe_destination(plan: &DeliveryPlan) {
     match plan {
         DeliveryPlan::Push(plan) => {
-            println!("  Kind     {}\n  Push to  {}", plan.kind.as_str(), plan.tag)
+            zellij_core::reportln!("  Kind     {}\n  Push to  {}", plan.kind.as_str(), plan.tag)
         }
-        DeliveryPlan::Netlify { site, production } => println!(
+        DeliveryPlan::Netlify { site, production } => zellij_core::reportln!(
             "  Provider netlify\n  Site ID  {site}\n  Mode     {}",
             if *production {
                 "production"
@@ -97,25 +100,27 @@ pub(crate) fn deploy(
             zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
         })?
         .join("site");
-    println!("Building static site…");
+    zellij_core::statusln!("Building static site…");
     let build = || -> Result<String> {
         match engine {
             Some(engine) => engine.build_for_deployment(content, &export),
             None => {
                 let report = zellij_docs::build(&site.input, &export, Default::default())?;
                 for warning in report.warnings {
-                    eprintln!("warning: {warning}");
+                    zellij_core::diagnosticln!("warning: {warning}");
                 }
                 Ok(String::new())
             }
         }
     };
     let prefix = build().inspect_err(|_| {
-        eprintln!("Deployment stopped during validation/build; no Netlify deployment was created.")
+        zellij_core::diagnosticln!(
+            "Deployment stopped during validation/build; no Netlify deployment was created."
+        )
     })?;
-    println!("✓ Built static site\nUploading to Netlify…");
-    let deployed = client.deploy(id, &export, production).inspect_err(|_| eprintln!("Static build completed, but deployment did not complete. Check the Netlify dashboard before retrying; the remote deployment may still finish. Source and previous local output are unchanged."))?;
-    println!(
+    zellij_core::statusln!("✓ Built static site\nUploading to Netlify…");
+    let deployed = client.deploy(id, &export, production).inspect_err(|_| zellij_core::diagnosticln!("Static build completed, but deployment did not complete. Check the Netlify dashboard before retrying; the remote deployment may still finish. Source and previous local output are unchanged."))?;
+    zellij_core::statusln!(
         "✓ Netlify deployment {} is ready\n  {}",
         deployed.id,
         deployed.url(&prefix)
@@ -125,19 +130,22 @@ pub(crate) fn deploy(
 
 fn push_image(site: &Site, content: &Utf8Path, plan: &ImagePublication) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
-    println!("\nBuilding image…");
+    zellij_core::statusln!("\nBuilding image…");
     if let Err(error) = crate::images::build_image(site, content, &engine, plan.kind, &plan.tag) {
-        eprintln!("Publication stopped during validation/build; no push was attempted.");
-        return Err(error);
-    }
-    println!("✓ Built {}\nPushing image…", plan.tag);
-    if let Err(error) = engine.image_push(&plan.tag, None) {
-        eprintln!(
-            "Image build completed, but the push did not complete. The local image remains available as {}. Fix registry access and retry only the push with `zel image push \"{}\"`.",
-            plan.tag, plan.tag
+        zellij_core::diagnosticln!(
+            "Publication stopped during validation/build; no push was attempted."
         );
         return Err(error);
     }
-    println!("✓ Published {}", plan.tag);
+    zellij_core::statusln!("✓ Built {}\nPushing image…", plan.tag);
+    if let Err(error) = engine.image_push(&plan.tag, None) {
+        zellij_core::diagnosticln!(
+            "Image build completed, but the push did not complete. The local image remains available as {}. Fix registry access and retry only the push with `zel image push \"{}\"`.",
+            plan.tag,
+            plan.tag
+        );
+        return Err(error);
+    }
+    zellij_core::statusln!("✓ Published {}", plan.tag);
     Ok(())
 }

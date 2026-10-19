@@ -107,7 +107,7 @@ jobs:
         working-directory: cli
       - run: cargo test --locked -p zellij-engine
         working-directory: cli
-      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows --test import_delivery --test app_scaffolding --test formatting --test features
+      - run: cargo test --locked -p zellij-cli --bin zel --test portable_build --test portable_check --test portable_starter --test runtime_requirements --test site_layout --test aliases --test static_images --test delivery --test netlify --test ci_workflows --test import_delivery --test app_scaffolding --test formatting --test features --test output_controls
         working-directory: cli
       - run: cargo build --locked -p zellij-cli
         working-directory: cli
@@ -128,6 +128,8 @@ jobs:
         run: |
           node scripts/check-validation-watch.mjs
           node scripts/check-validation-watch.mjs --config
+      - name: Quiet preview retains rebuilds, failures and Ctrl-C cleanup
+        run: node scripts/check-output-controls.mjs
       - name: Native editable wrapper installs and builds outside the workspace
         run: node scripts/check-app-scaffold.mjs
       - name: Native output works directly from disk without networking
@@ -213,6 +215,7 @@ jobs:
       - name: Hosted static preview rebuilds and reloads with the real engine
         env:
           ZELLIJ_IMAGE: zellij-ci
+          NO_COLOR: '1'
         run: |
           npx playwright install --with-deps chromium
           node scripts/check-hosted-preview.mjs --real

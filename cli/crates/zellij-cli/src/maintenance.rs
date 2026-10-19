@@ -19,24 +19,26 @@ pub(crate) fn version(json: bool) -> Result<()> {
         "engine_image": image,
     });
     if json {
-        println!(
+        zellij_core::reportln!(
             "{}",
             serde_json::to_string_pretty(&report).expect("version JSON")
         );
     } else {
-        println!(
+        zellij_core::reportln!(
             "zel                 {} ({})",
             env!("CARGO_PKG_VERSION"),
             crate::TARGET
         );
-        println!("zel.yaml version    1");
-        println!(
+        zellij_core::reportln!("zel.yaml version    1");
+        zellij_core::reportln!(
             "Embedded engine     {}",
             package["version"].as_str().expect("engine version")
         );
-        println!("Content schema      sha256:{schema}");
-        println!("Selected image      {image}");
-        println!("Image contents are not inspected; use `zel doctor` for local availability.");
+        zellij_core::reportln!("Content schema      sha256:{schema}");
+        zellij_core::reportln!("Selected image      {image}");
+        zellij_core::reportln!(
+            "Image contents are not inspected; use `zel doctor` for local availability."
+        );
     }
     Ok(())
 }
@@ -45,9 +47,9 @@ pub(crate) fn pull(image: Option<&str>) -> Result<()> {
     let image = zellij_engine::configured_image(image);
     validate_image(&image)?;
     let engine = zellij_engine::ContainerEngine::detect(Some(&image))?;
-    println!("Pulling {image} with {}", engine.runtime().program);
+    zellij_core::statusln!("Pulling {image} with {}", engine.runtime().program);
     engine.pull()?;
-    println!("Engine image ready: {image}");
+    zellij_core::statusln!("Engine image ready: {image}");
     Ok(())
 }
 

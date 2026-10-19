@@ -372,8 +372,9 @@ command supplies intent; ordinary repeatable runs need no extra prompt.
   on stdout, human progress on stderr; unsupported combinations fail before
   work. Long-running servers need an explicit event-stream contract before JSON
   support is advertised. Preserve raw `context --json` schema output.
-- `--quiet`, `--verbose`, and `--no-color` are shared future output controls;
-  neither quiet nor verbose changes validation or publication behavior.
+- `--quiet` (`-q`), `--verbose`, and `--no-color` are shared output controls
+  implemented in stage 8c. Neither quiet nor verbose changes validation or
+  publication behavior.
 - `--yes` only answers actual interactive setup questions; it does not grant
   overwrite authority or substitute for required settings. Existing overwrite
   policies remain command-specific and documented.
@@ -837,3 +838,42 @@ validation, build and delivery. Its site-folder filter covers the file. Generate
 workflows require a compatible pinned release; generation still does not verify
 that release's availability. Other output controls/providers and matched release
 and documentation publication remain unfinished.
+
+
+### Stage 8c — shared output controls (2026-10-19)
+
+All command families and shortcuts accept --quiet/-q, --verbose, --no-color
+before/after the command. Quiet and verbose conflict across subcommands before
+side effects. No -v option is introduced; v remains the view command alias.
+A nonempty NO_COLOR also disables styling, overriding force-color environment
+settings. Parser help/errors honor this before dispatch, including selector
+normalization errors. Completions expose the same registered options.
+
+Routine progress/success messages honor quiet across scaffolding, native/hosted
+builds, previews and their worker, formatting, images, CI, extraction and delivery.
+Warnings/errors, conversion limitations and requested data remain visible. Data
+includes inspection/doctor/version/upgrade reports, context, section YAML,
+Dockerfiles, completions, dry-run plans, formatting findings, page-registration
+snippets, JSON, and the complete hosted check report (mixed diagnostics/summary).
+Quiet never skips execution, validation, browser launch, watch, cleanup or publish.
+
+Verbose diagnostics use stderr: timing, selected site input, runtime discovery
+and child starts. Raw command arguments/environment are never dumped. Ordinary
+text stream placement is retained for compatibility; JSON stdout remains clean.
+Portable check JSON stays one report without stderr unless verbose was requested.
+There is still no structured event stream for long-running commands.
+
+No-color filters human output and streamed child logs, and sends color preferences
+to clients and run containers. Generated data is not rewritten. Quiet suppresses
+successful subprocess logs, replaying the final 64 KiB per stream on stderr on
+failure (with truncation notice). Quiet/no-color child logs spool to temporary
+files with streaming reads for no-color; this avoids pipe deadlocks, does not wait
+for descendant-held pipe handles, and bounds failure replay memory. Temp logs
+consume disk until command completion and are removed afterward. External logs
+remain unstructured; successful tool warnings cannot be separated from progress.
+Hosted validation therefore preserves its full captured report in quiet mode.
+
+Shared immutable presentation settings are initialized once by the CLI before
+workers start; library callers retain the previous default without initialization.
+Output flags do not affect safety rules or environment selection. Additional
+providers, remaining advanced/converter scope and release/doc publication remain.

@@ -9,6 +9,7 @@
 
 use camino::Utf8Path;
 use std::net::UdpSocket;
+use zellij_core::process::CommandExt;
 use zellij_core::{Error, Result};
 
 use crate::runtime::{METADATA_TIMEOUT, Probe, Runtime, probe_output, probe_status};
@@ -92,6 +93,22 @@ impl ContainerEngine {
         Ok(Self::new(runtime, image))
     }
 
+    pub(crate) fn run_command(&self) -> std::process::Command {
+        let mut command = self.runtime.command();
+        command.arg("run");
+        if zellij_core::reporting::options().no_color {
+            command.args([
+                "-e",
+                "NO_COLOR=1",
+                "-e",
+                "CLICOLOR=0",
+                "-e",
+                "FORCE_COLOR=0",
+            ]);
+        }
+        command
+    }
+
     pub fn runtime(&self) -> &Runtime {
         &self.runtime
     }
@@ -106,7 +123,7 @@ impl ContainerEngine {
             .runtime
             .command()
             .args(["pull", &self.image])
-            .status()?;
+            .zel_status()?;
         if status.success() {
             Ok(())
         } else {
@@ -224,16 +241,15 @@ impl ContainerEngine {
         let origins = format!("ZELLIJ_DEV_ORIGINS={}", dev_origins());
 
         let status = self
-            .runtime
-            .command()
-            .args(["run", "--rm", "--init"])
+            .run_command()
+            .args(["--rm", "--init"])
             .args(["-v", &mount])
             .args(["-v", &volume])
             .args(["-p", &ports])
             .args(["-e", &origins])
             .arg(&self.image)
             .args(["sh", "-c", &script])
-            .status()?;
+            .zel_status()?;
 
         match status.code() {
             Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
@@ -351,9 +367,8 @@ impl Engine for ContainerEngine {
         let mount = Self::content_mount(content)?;
 
         let output = self
-            .runtime
-            .command()
-            .args(["run", "--rm", "-v", &mount, &self.image])
+            .run_command()
+            .args(["--rm", "-v", &mount, &self.image])
             .args([
                 "sh",
                 "-c",
@@ -473,9 +488,8 @@ impl ContainerEngine {
         );
 
         let status = self
-            .runtime
-            .command()
-            .args(["run", "--rm", "--init"])
+            .run_command()
+            .args(["--rm", "--init"])
             .args(["-v", &mount])
             .args(["-v", &volume])
             .args(["-v", &out_mount])
@@ -484,7 +498,7 @@ impl ContainerEngine {
             .args(["-e", "ZELLIJ_OUTPUT=export"])
             .arg(&self.image)
             .args(["sh", "-c", &script])
-            .status()?;
+            .zel_status()?;
 
         match status.code() {
             Some(EMPTY_MOUNT) => Err(Error::MountEmpty {

@@ -23,7 +23,7 @@ pub fn run(dir: Option<&SiteInput>, check: bool) -> Result<()> {
     }
     if check {
         for (path, _, _) in &changes {
-            println!("Would format {path}");
+            zellij_core::reportln!("Would format {path}");
         }
         if !changes.is_empty() {
             return Err(Error::FormattingRequired);
@@ -60,10 +60,10 @@ pub fn run(dir: Option<&SiteInput>, check: bool) -> Result<()> {
         }
         for ((path, _, _), file) in changes.iter().zip(staged) {
             file.persist(path).map_err(|e| e.error)?;
-            println!("Formatted {path}");
+            zellij_core::statusln!("Formatted {path}");
         }
     }
-    println!(
+    zellij_core::statusln!(
         "{} YAML files checked; {} {}.",
         paths.len(),
         changes.len(),

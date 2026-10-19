@@ -60,7 +60,7 @@ try {
   await put(path.join(content, 'manual/next.mdx'), '# More documentation\n\n## Searchable heading\n\nSaffron passage.\n');
   await put(path.join(content, 'assets/logo.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>');
   if (eject) {
-    run(zel, ['eject', '--config', 'docs/manual/selected.yaml', '--out', app], root);
+    run(zel, ['eject', '--quiet', '--no-color', '--config', 'docs/manual/selected.yaml', '--out', app], root);
     run(zel, ['eject', '--with-docs', '--out', starter], root);
     // Exercise selection after extraction, before installing the real engine.
     run(zel, ['features', 'all', '--site-root', app], root);
