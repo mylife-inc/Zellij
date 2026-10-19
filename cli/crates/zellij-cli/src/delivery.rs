@@ -7,7 +7,7 @@ use zellij_core::{
 };
 
 pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArgs) -> Result<()> {
-    let (site, content) = crate::images::selection(options.dir.as_deref())?;
+    let (site, content) = crate::images::selection(options.dir.as_ref())?;
     let environment_site = std::env::var("NETLIFY_SITE_ID").ok();
     let plan = DeliveryPlan::resolve(
         &site,
@@ -102,7 +102,7 @@ pub(crate) fn deploy(
         match engine {
             Some(engine) => engine.build_for_deployment(content, &export),
             None => {
-                let report = zellij_docs::build(&site.root, &export, Default::default())?;
+                let report = zellij_docs::build(&site.input, &export, Default::default())?;
                 for warning in report.warnings {
                     eprintln!("warning: {warning}");
                 }

@@ -1,4 +1,5 @@
 //! Native YAML formatting. Parse and prepare the entire set before any write.
+use zellij_core::site::SiteInput;
 mod syntax;
 
 use camino::{Utf8Path, Utf8PathBuf};
@@ -8,8 +9,8 @@ use zellij_core::{
     site::{Renderer, Site, is_link},
 };
 
-pub fn run(dir: Option<&str>, check: bool) -> Result<()> {
-    let site = Site::load(&crate::select_site(dir)?)?;
+pub fn run(dir: Option<&SiteInput>, check: bool) -> Result<()> {
+    let site = Site::load(crate::select_site(dir)?)?;
     let paths = inputs(&site)?;
     let mut changes = Vec::new();
     for path in &paths {
@@ -77,7 +78,7 @@ pub fn run(dir: Option<&str>, check: bool) -> Result<()> {
 
 fn inputs(site: &Site) -> Result<Vec<Utf8PathBuf>> {
     let mut result = Vec::new();
-    let config = site.root.join("zel.yaml");
+    let config = site.config_path.clone();
     if config.exists() {
         result.push(config);
     }
@@ -87,7 +88,7 @@ fn inputs(site: &Site) -> Result<Vec<Utf8PathBuf>> {
     let content = if site.configured {
         site.content.clone()
     } else {
-        crate::resolve_content(site.root.as_str())?
+        crate::resolve_content(&site.input)?
     };
     let output = files::absolute_path(&site.output)?;
     let walker = walkdir::WalkDir::new(&content)

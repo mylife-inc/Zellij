@@ -125,7 +125,9 @@ jobs:
       - name: Native YAML formatting preserves authored sites
         run: node scripts/check-formatting.mjs
       - name: Native validation watch recovers from edits and stops on Ctrl-C
-        run: node scripts/check-validation-watch.mjs
+        run: |
+          node scripts/check-validation-watch.mjs
+          node scripts/check-validation-watch.mjs --config
       - name: Native editable wrapper installs and builds outside the workspace
         run: node scripts/check-app-scaffold.mjs
       - name: Native output works directly from disk without networking
@@ -206,7 +208,7 @@ jobs:
       - name: Hosted validation watch uses the real engine and recovers after edits
         env:
           ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-validation-watch.mjs --hosted
+        run: node scripts/check-validation-watch.mjs --hosted --config
 
       - name: Hosted static preview rebuilds and reloads with the real engine
         env:

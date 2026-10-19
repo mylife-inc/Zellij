@@ -26,9 +26,15 @@ site convention. Any custom site-folder name is allowed. The full and short
 forms use the same generator. `init`, `run`, and `publish` are reserved actions;
 select a folder with one of those names using `./run` or `--site-root run`.
 `--cwd` sets the base directory before site and Git discovery. CI retains
-`--content` as a legacy selector; it conflicts with `--site-root` or a positional
+`--content` as a legacy selector; it conflicts with `--site-root`, `--config` or a positional
 site. For `ci run`, use `--cwd` to select the repository; `--site-root` does not
 apply to workflow dispatch.
+
+Use `zel ci --config docs/manual/preview.yaml` to select a named configuration.
+The generated workflow passes that same file to check, build and delivery using
+a quoted environment value. Its folder is covered by change filters. The file
+must be inside the selected site's Git working tree. `--config` also conflicts
+with a positional site and does not apply to `ci run`.
 
 Git locates the repository containing the selected site. The workflow is written
 to that repository's `.github/workflows/docs.yml`, including when you run from

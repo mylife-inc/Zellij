@@ -1,6 +1,7 @@
 use super::{ViewOptions, run, signals};
 use camino::{Utf8Path, Utf8PathBuf};
 use std::sync::{Arc, atomic::Ordering};
+use zellij_core::site::SiteInput;
 use zellij_core::{
     Error, Result, files,
     site::{Renderer, Site},
@@ -11,7 +12,7 @@ use zellij_docs::{
 };
 use zellij_engine::{ContainerEngine, container::PreparedPreview};
 
-fn snapshot(source: &Utf8Path, configured: bool) -> Result<Snapshot> {
+fn snapshot(source: &SiteInput, configured: bool) -> Result<Snapshot> {
     let current = Site::load(source)?;
     if current.configured != configured {
         return Err(Error::InvalidArgument(
@@ -28,13 +29,13 @@ fn snapshot(source: &Utf8Path, configured: bool) -> Result<Snapshot> {
 
 fn prepare(
     engine: &ContainerEngine,
-    source: &Utf8Path,
+    source: &SiteInput,
     output: &Utf8Path,
     configured: bool,
     expected: &Snapshot,
     prefix: Option<&str>,
 ) -> Result<PreparedPreview> {
-    let content = crate::resolve_content(source.as_str())?;
+    let content = crate::resolve_content(source)?;
     let build = engine.prepare_preview(&content, output)?;
     if snapshot(source, configured)? != *expected {
         return Err(Error::InvalidArgument("content changed during the build; retry after saving (watch mode retries automatically)".into()));
@@ -62,7 +63,7 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
     // A missing runtime fails before opening a listener or staging an export.
     let engine = ContainerEngine::detect(None)?;
     let socket = listener(options.port.unwrap_or(site.port))?;
-    let source = site.root;
+    let source = site.input;
     let configured = site.configured;
     let output = files::absolute_path(&options.out.map(Utf8PathBuf::from).unwrap_or(site.output))?;
     let initial = snapshot(&source, configured)?;

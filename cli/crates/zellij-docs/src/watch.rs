@@ -14,7 +14,7 @@ use std::{
     thread::{self, JoinHandle},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
-use zellij_core::{Result, files};
+use zellij_core::{Result, files, site::SiteInput};
 
 pub struct LiveReload {
     session: String,
@@ -78,33 +78,47 @@ pub(crate) fn is_link(metadata: &fs::Metadata) -> bool {
 impl Snapshot {
     /// Watch only authored inputs. Pin the layout so deleting/replacing a
     /// configured root cannot fall back to scanning its generated site/.
-    pub fn site(root: &Utf8Path, configured: bool) -> Result<Self> {
+    pub fn site(root: impl Into<SiteInput>, configured: bool) -> Result<Self> {
         Self::site_for(root, configured, zellij_core::site::Renderer::Portable)
     }
 
     /// Validation watching also supports hosted content, pinned to its initial
     /// renderer and configured layout. A broken config is never a fallback.
     pub fn site_for(
-        root: &Utf8Path,
+        root: impl Into<SiteInput>,
         configured: bool,
         renderer: zellij_core::site::Renderer,
     ) -> Result<Self> {
-        if !configured {
+        let input = root.into();
+        let root = input.root();
+        if !configured && !input.explicit_config() {
             return Self::read(root);
         }
         if is_link(&fs::symlink_metadata(root)?) {
             return Err(files::unsafe_path(root, "site root was replaced by a link"));
         }
-        let site = zellij_core::site::Site::load(root)?;
-        if !site.configured {
+        let site = zellij_core::site::Site::load(&input)?;
+        if configured && !site.configured {
             return Err(files::unsafe_path(
                 root,
-                "watched site requires its version: 1 zel.yaml; restore the configuration",
+                format!(
+                    "watched site requires its version: 1 {}; restore the configuration",
+                    site.config_path
+                ),
+            ));
+        }
+        if site.configured != configured {
+            return Err(files::unsafe_path(
+                root,
+                format!(
+                    "site layout changed; restore {} or restart watching",
+                    site.config_path
+                ),
             ));
         }
         site.require(renderer)?;
         let mut snapshot = Self::read(&site.content)?;
-        let config = root.join(zellij_core::site::CONFIG);
+        let config = site.config_path;
         let bytes = fs::read(&config)?;
         let mut hash = DefaultHasher::new();
         hash.write(&bytes);
@@ -172,7 +186,7 @@ impl Snapshot {
 }
 
 pub struct WatchOptions {
-    pub source: Utf8PathBuf,
+    pub source: SiteInput,
     pub output: Utf8PathBuf,
     pub name: Option<String>,
     pub theme: Option<String>,

@@ -363,6 +363,7 @@ fn completion_scripts_include_all_forms_and_options() {
         assert!(script.contains("base-path"), "{shell}");
         assert!(script.contains("cwd"), "{shell}");
         assert!(script.contains("site-root"), "{shell}");
+        assert!(script.contains("config"), "{shell}");
     }
 }
 
@@ -518,7 +519,7 @@ fn ambiguous_and_inapplicable_site_selections_are_rejected_during_parsing() {
 
 #[test]
 fn repeated_global_paths_fail_across_command_levels_without_rewriting_values() {
-    for flag in ["--cwd", "--site-root"] {
+    for flag in ["--cwd", "--site-root", "--config"] {
         for other in ["a", "b"] {
             for args in [
                 vec![flag, "a", "build", flag, other],
@@ -540,6 +541,50 @@ fn repeated_global_paths_fail_across_command_levels_without_rewriting_values() {
     let Command::Build { dir, name, .. } = value.command else {
         panic!("expected build")
     };
-    assert_eq!(dir.as_deref(), Some("--cwd"));
+    assert_eq!(dir, Some(SiteInput::from("--cwd")));
     assert_eq!(name.as_deref(), Some("--cwd"));
+}
+
+#[test]
+fn explicit_config_keeps_its_identity_through_commands_and_aliases() {
+    for (short, full, minimal, _) in CASES {
+        for route in [*short, *full] {
+            let mut args = invocation(route, minimal);
+            args.extend(["--config", "Manual 日本/preview.yaml"]);
+            let parsed = parse(&args);
+            // Every existing-site operation accepts config; other argument roles
+            // are deliberately rejected by the same normalization as site-root.
+            let mut site_args = invocation(route, minimal);
+            site_args.extend(["--site-root", "Manual 日本"]);
+            assert_eq!(parsed.is_ok(), parse(&site_args).is_ok(), "{route}");
+        }
+    }
+    let before = parse(&["--config", "preview.yaml", "b"]).unwrap();
+    let after = parse(&["build", "--config=preview.yaml"]).unwrap();
+    assert_eq!(before, after);
+    let Command::Build { dir, .. } = before.command else {
+        panic!("build")
+    };
+    assert_eq!(dir, Some(SiteInput::Config("preview.yaml".into())));
+    for args in [
+        vec!["--config=a.yaml", "build", "--config=b.yaml"],
+        vec!["--config", "a.yaml", "build", "--site-root", "."],
+        vec!["build", ".", "--config", "a.yaml"],
+        vec!["ci", "--content", ".", "--config", "a.yaml"],
+        vec![
+            "ci",
+            "init",
+            "github",
+            "--content",
+            ".",
+            "--config",
+            "a.yaml",
+        ],
+        vec!["na", "app", "--with-docs", "--config", "a.yaml"],
+        vec!["eject", "--out", "app", "--with-docs", "--config", "a.yaml"],
+        vec!["ir", "example:latest", "--config", "a.yaml"],
+        vec!["features", "none", "--config", ""],
+    ] {
+        assert_eq!(parse(&args).unwrap_err().exit_code(), 2, "{args:?}");
+    }
 }

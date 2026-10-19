@@ -150,8 +150,13 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
     if options.dry_run {
         println!("\nPlan only; no files written or content validation performed.");
     } else if validate {
-        crate::validation::check(Some(&options.out), None, Default::default(), false)
-            .inspect_err(|_| retained(&options.out))?;
+        crate::validation::check(
+            Some(&zellij_core::site::SiteInput::from(options.out.as_str())),
+            None,
+            Default::default(),
+            false,
+        )
+        .inspect_err(|_| retained(&options.out))?;
     } else {
         println!(
             "\nValidate it with `zel check <destination>` using {0} as the destination.",

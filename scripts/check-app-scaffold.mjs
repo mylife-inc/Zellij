@@ -51,7 +51,8 @@ try {
       await cp(path.join(packageRoot, file), path.join(engine, file), { recursive: true });
     }
   }
-  await put(path.join(root, 'docs/manual/zel.yaml'), 'version: 1\nrenderer: hosted\n');
+  await put(path.join(root, 'docs/manual/selected.yaml'), 'version: 1\nrenderer: hosted\n');
+  await put(path.join(root, 'docs/manual/zel.yaml'), 'invalid default: [');
   await put(path.join(content, 'site.yaml'), 'name: External documentation\nhome: manual\nbasePath: /products/docs\n');
   await put(path.join(content, 'manual/_sidebar.yaml'), 'title: Manual\nnav: [index, next]\n');
   const original = '# External documentation\n\n[Next page](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n';
@@ -59,14 +60,14 @@ try {
   await put(path.join(content, 'manual/next.mdx'), '# More documentation\n\n## Searchable heading\n\nSaffron passage.\n');
   await put(path.join(content, 'assets/logo.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>');
   if (eject) {
-    run(zel, ['eject', 'docs/manual', '--out', app], root);
+    run(zel, ['eject', '--config', 'docs/manual/selected.yaml', '--out', app], root);
     run(zel, ['eject', '--with-docs', '--out', starter], root);
     // Exercise selection after extraction, before installing the real engine.
     run(zel, ['features', 'all', '--site-root', app], root);
     run(zel, ['features', 'all', '--site-root', starter], root);
     assert.equal(JSON.parse(await readFile(path.join(app, 'package.json'), 'utf8')).dependencies['@shebka/zellij'], 'file:vendor/zellij');
   } else {
-    run(zel, ['new', 'app', app, '--site-root', 'docs/manual', '--engine', engine, '--features', 'all'], root);
+    run(zel, ['new', 'app', app, '--config', 'docs/manual/selected.yaml', '--engine', engine, '--features', 'all'], root);
     run(zel, ['na', starter, '--with-docs', '--engine', engine, '--features', 'all'], root);
   }
   npm(['install', '--no-audit', '--no-fund']);

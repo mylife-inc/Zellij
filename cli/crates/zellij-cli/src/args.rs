@@ -1,5 +1,6 @@
 //! Command definitions, shortcuts and completion share one argument schema.
 use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
+use zellij_core::site::SiteInput;
 
 // Each flattened shortcut declares its spelling, descriptive route, and mapping
 // once. Its argument type is also used by the descriptive command. Normalizing
@@ -95,7 +96,12 @@ impl Cli {
             };
         }
         if let Some(root) = cli.site_root.take() {
-            cli.command.select_root(root)?;
+            cli.command
+                .select_root(SiteInput::from(root.as_str()), "--site-root")?;
+        }
+        if let Some(config) = cli.config.take() {
+            cli.command
+                .select_root(SiteInput::Config(config.into()), "--config")?;
         }
         Ok(cli)
     }
@@ -120,8 +126,8 @@ impl Cli {
         // evidence of repetition across command levels. Validate accepted tokens
         // before normalization. No argument permits bare hyphen-prefixed values;
         // equals-form values and everything after -- remain literal and untouched.
-        let flags = ["--cwd", "--site-root"];
-        let mut seen = [false; 2];
+        let flags = ["--cwd", "--site-root", "--config"];
+        let mut seen = [false; 3];
         for arg in args.iter().skip(1).take_while(|arg| *arg != "--") {
             let Some(arg) = arg.to_str() else { continue };
             for (index, flag) in flags.iter().enumerate() {
@@ -185,6 +191,12 @@ pub(crate) struct Cli {
     #[arg(long, global = true, value_name = "DIRECTORY", value_hint = clap::ValueHint::DirPath,
         value_parser = clap::builder::NonEmptyStringValueParser::new())]
     pub(crate) site_root: Option<String>,
+
+    /// Select a YAML configuration file instead of discovering zel.yaml.
+    #[arg(long, global = true, value_name = "FILE", conflicts_with = "site_root",
+        value_hint = clap::ValueHint::FilePath,
+        value_parser = clap::builder::NonEmptyStringValueParser::new())]
+    pub(crate) config: Option<String>,
 }
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
@@ -225,7 +237,7 @@ pub(crate) enum Command {
     #[command(visible_alias = "c")]
     Check {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
+        dir: Option<SiteInput>,
         /// Override automatic selection: portable Markdown or hosted static content.
         #[arg(long, value_parser = ["portable", "static"])]
         target: Option<String>,
@@ -240,7 +252,7 @@ pub(crate) enum Command {
     /// Authoring server: native portable watch/preview or hosted Next.js development.
     Dev {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
+        dir: Option<SiteInput>,
 
         #[arg(long)]
         port: Option<u16>,
@@ -250,7 +262,7 @@ pub(crate) enum Command {
     #[command(visible_alias = "b")]
     Build {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
+        dir: Option<SiteInput>,
 
         /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
         #[arg(long)]
@@ -310,7 +322,7 @@ pub(crate) enum Command {
     #[command(visible_alias = "s")]
     Serve {
         /// Configured site or explicit generated output folder.
-        dir: Option<String>,
+        dir: Option<SiteInput>,
 
         #[arg(long)]
         port: Option<u16>,
@@ -324,7 +336,7 @@ pub(crate) enum Command {
     #[command(visible_alias = "v")]
     View {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-        dir: Option<String>,
+        dir: Option<SiteInput>,
         #[arg(long)]
         out: Option<String>,
         /// Portable site name; hosted sites use content/site.yaml.
@@ -349,7 +361,7 @@ pub(crate) enum Command {
 
     /// Canonical formatting for the YAML.
     Fmt {
-        dir: Option<String>,
+        dir: Option<SiteInput>,
 
         /// Exit 1 if anything would change, and write nothing.
         #[arg(long)]
@@ -358,7 +370,7 @@ pub(crate) enum Command {
 
     /// Validate initially and after edits, without building or serving.
     Watch {
-        dir: Option<String>,
+        dir: Option<SiteInput>,
         /// Perform hosted MDX/reference checks; portable checking is already deep.
         #[arg(long)]
         deep: bool,
@@ -424,7 +436,7 @@ pub(crate) enum ImageAction {
     Next(SiteImageArgs),
     /// The same as `build --target image`.
     Build {
-        dir: Option<String>,
+        dir: Option<SiteInput>,
 
         #[arg(long)]
         tag: Option<String>,
@@ -442,7 +454,7 @@ pub(crate) enum ImageAction {
 pub(crate) struct CiArgs {
     /// Site root; defaults to . or docs/zellij when zel.yaml is present.
     #[arg(conflicts_with_all = ["site_root", "ci_content"])]
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
     #[command(flatten)]
     pub(crate) options: CiInitArgs,
     #[command(subcommand)]
@@ -453,7 +465,7 @@ pub(crate) struct CiArgs {
 pub(crate) struct CiInitArgs {
     /// Legacy spelling of --site-root for workflow generation.
     #[arg(id = "ci_content", long = "content")]
-    pub(crate) site_root: Option<String>,
+    pub(crate) site_root: Option<SiteInput>,
     /// Exact compatible release version. Overrides ci.zel-version.
     #[arg(long)]
     pub(crate) zel_version: Option<String>,
@@ -588,7 +600,7 @@ pub(crate) struct NewPageArgs {
     pub(crate) sections: Vec<String>,
 
     #[arg(long)]
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
@@ -599,7 +611,7 @@ pub(crate) struct NewGuideArgs {
     pub(crate) title: Option<String>,
 
     #[arg(long)]
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
@@ -624,7 +636,7 @@ pub(crate) struct ImageRunArgs {
 
     /// Only used to derive the legacy default tag when no tag was supplied.
     #[arg(skip)]
-    pub(crate) site_root: Option<String>,
+    pub(crate) site_root: Option<SiteInput>,
 
     #[arg(long, default_value_t = 3000)]
     pub(crate) port: u16,
@@ -640,7 +652,7 @@ pub(crate) struct ImagePushArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ImageDockerfileArgs {
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
 
     #[arg(long, value_enum, default_value = "next")]
     pub(crate) kind: ImageKind,
@@ -655,7 +667,7 @@ pub(crate) enum ImageKind {
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct SiteImageArgs {
     /// Site root or explicit Markdown/hosted content folder.
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
 
     /// Image name; defaults to <site-name>-static:latest.
     #[arg(long)]
@@ -669,7 +681,7 @@ mod tests;
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct DeliveryArgs {
     /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
     /// Explicit provider override for saved static-site deployment.
     #[arg(long)]
     pub(crate) to: Option<String>,
@@ -749,7 +761,7 @@ pub(crate) struct NewAppArgs {
     pub(crate) with_docs: bool,
     /// Filled from the global selector after command/shortcut normalization.
     #[arg(skip)]
-    pub(crate) site_root: Option<String>,
+    pub(crate) site_root: Option<SiteInput>,
     /// Built local @shebka/zellij package; defaults to ./engine/packages/zellij.
     #[arg(long)]
     pub(crate) engine: Option<String>,
@@ -768,7 +780,7 @@ pub(crate) struct NewAppArgs {
 pub(crate) struct EjectArgs {
     /// Existing hosted site; otherwise discover ./zel.yaml or ./docs/zellij/zel.yaml.
     #[arg(conflicts_with = "with_docs")]
-    pub(crate) dir: Option<String>,
+    pub(crate) dir: Option<SiteInput>,
     /// New or empty destination for the editable wrapper and vendor/zellij engine.
     #[arg(long)]
     pub(crate) out: String,
@@ -787,15 +799,18 @@ pub(crate) struct FeaturesArgs {
     pub(crate) selection: Vec<String>,
     /// Filled from the global selector after command/shortcut normalization.
     #[arg(skip)]
-    pub(crate) site_root: Option<String>,
+    pub(crate) site_root: Option<SiteInput>,
 }
 
 impl Command {
     // Normalize selection into the same arguments used by existing handlers;
     // aliases, watch reloads, output protection and path rules remain shared.
-    fn select_root(&mut self, root: String) -> Result<(), clap::Error> {
+    fn select_root(&mut self, root: SiteInput, flag: &str) -> Result<(), clap::Error> {
         let conflict = |message: &str| {
-            Cli::command_tree().error(clap::error::ErrorKind::ArgumentConflict, message)
+            Cli::command_tree().error(
+                clap::error::ErrorKind::ArgumentConflict,
+                message.replace("--site-root", flag),
+            )
         };
         let slot = match self {
             Self::Check { dir, .. }

@@ -9,6 +9,78 @@ use crate::{Error, Project, Result, files};
 
 pub const CONFIG: &str = "zel.yaml";
 
+/// A directory selection and an explicit file selection remain distinct even
+/// when both point at zel.yaml. An explicit file may never fall back to discovery.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum SiteInput {
+    Directory(Utf8PathBuf),
+    Config(Utf8PathBuf),
+}
+impl SiteInput {
+    pub fn path(&self) -> &Utf8Path {
+        match self {
+            Self::Directory(path) | Self::Config(path) => path,
+        }
+    }
+    pub fn root(&self) -> &Utf8Path {
+        match self {
+            Self::Directory(path) => path,
+            Self::Config(path) => path
+                .parent()
+                .filter(|p| !p.as_str().is_empty())
+                .unwrap_or(Utf8Path::new(".")),
+        }
+    }
+    pub fn config_path(&self) -> Utf8PathBuf {
+        match self {
+            Self::Directory(path) => path.join(CONFIG),
+            Self::Config(path) => path.clone(),
+        }
+    }
+    pub fn explicit_config(&self) -> bool {
+        matches!(self, Self::Config(_))
+    }
+    pub fn has_config(&self) -> bool {
+        self.explicit_config() || present(self.root())
+    }
+}
+impl std::fmt::Display for SiteInput {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.path().fmt(f)
+    }
+}
+impl std::str::FromStr for SiteInput {
+    type Err = std::convert::Infallible;
+    fn from_str(value: &str) -> std::result::Result<Self, Self::Err> {
+        Ok(Self::from(value))
+    }
+}
+impl From<&str> for SiteInput {
+    fn from(value: &str) -> Self {
+        Self::Directory(value.into())
+    }
+}
+impl From<Utf8PathBuf> for SiteInput {
+    fn from(value: Utf8PathBuf) -> Self {
+        Self::Directory(value)
+    }
+}
+impl From<&Utf8PathBuf> for SiteInput {
+    fn from(value: &Utf8PathBuf) -> Self {
+        Self::Directory(value.clone())
+    }
+}
+impl From<&Utf8Path> for SiteInput {
+    fn from(value: &Utf8Path) -> Self {
+        Self::Directory(value.to_owned())
+    }
+}
+impl From<&SiteInput> for SiteInput {
+    fn from(value: &SiteInput) -> Self {
+        value.clone()
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Renderer {
@@ -18,6 +90,8 @@ pub enum Renderer {
 
 #[derive(Debug)]
 pub struct Site {
+    pub input: SiteInput,
+    pub config_path: Utf8PathBuf,
     pub root: Utf8PathBuf,
     pub content: Utf8PathBuf,
     pub configured: bool,
@@ -62,7 +136,7 @@ pub fn is_link(metadata: &fs::Metadata) -> bool {
 }
 
 fn invalid(root: &Utf8Path, message: impl std::fmt::Display) -> Error {
-    Error::InvalidArgument(format!("{}: {message}", root.join(CONFIG)))
+    Error::InvalidArgument(format!("{}: {message}", root))
 }
 
 fn parse<T: serde::de::DeserializeOwned>(root: &Utf8Path, value: Value) -> Result<T> {
@@ -83,27 +157,43 @@ struct Preview {
 impl Site {
     /// Load one selected root. A versioned config always uses content/; a
     /// missing content directory is an error, never permission to scan root.
-    pub fn load(root: &Utf8Path) -> Result<Self> {
-        let root = root.canonicalize_utf8()?;
+    pub fn load(input: impl Into<SiteInput>) -> Result<Self> {
+        let input = input.into();
+        let root = input.root().canonicalize_utf8()?;
+        let config = if input.explicit_config() {
+            let path = input.config_path();
+            let name = path
+                .file_name()
+                .ok_or_else(|| files::unsafe_path(&path, "expected a configuration filename"))?;
+            root.join(name)
+        } else {
+            root.join(CONFIG)
+        };
+        let input = if input.explicit_config() {
+            SiteInput::Config(config.clone())
+        } else {
+            SiteInput::Directory(root.clone())
+        };
         if !root.is_dir() {
             return Err(files::unsafe_path(
                 &root,
                 "expected a site/content directory",
             ));
         }
-        let mut settings = match fs::symlink_metadata(root.join(CONFIG)) {
-            Err(e) if e.kind() == io::ErrorKind::NotFound => None,
+        let mut settings = match fs::symlink_metadata(&config) {
+            Err(e) if e.kind() == io::ErrorKind::NotFound && !input.explicit_config() => None,
+            Err(e) if input.explicit_config() => return Err(invalid(&config, e)),
             Err(e) => return Err(e.into()),
             Ok(meta) => {
                 if is_link(&meta) || !meta.is_file() {
                     return Err(invalid(
-                        &root,
+                        &config,
                         "expected a regular file, not a symlink or junction",
                     ));
                 }
                 Some(
-                    serde_yaml_ng::from_str::<Mapping>(&fs::read_to_string(root.join(CONFIG))?)
-                        .map_err(|e| invalid(&root, e))?,
+                    serde_yaml_ng::from_str::<Mapping>(&fs::read_to_string(&config)?)
+                        .map_err(|e| invalid(&config, e))?,
                 )
             }
         };
@@ -115,59 +205,59 @@ impl Site {
         let (content, renderer, output) = if configured {
             let settings = settings.as_mut().unwrap();
             if settings.remove("version").and_then(|v| v.as_u64()) != Some(1) {
-                return Err(invalid(&root, "version must be the integer 1"));
+                return Err(invalid(&config, "version must be the integer 1"));
             }
             let renderer: Renderer = parse(
-                &root,
+                &config,
                 settings.remove("renderer").ok_or_else(|| {
-                    invalid(&root, "version: 1 requires renderer: portable or hosted")
+                    invalid(&config, "version: 1 requires renderer: portable or hosted")
                 })?,
             )?;
             let content = root.join("content");
             let meta = fs::symlink_metadata(&content).map_err(|e| {
                 invalid(
-                    &root,
+                    &config,
                     format!("content/ must be an existing directory: {e}"),
                 )
             })?;
             if is_link(&meta) || !meta.is_dir() {
                 return Err(invalid(
-                    &root,
+                    &config,
                     "content/ must be a directory, not a symlink or junction",
                 ));
             }
             let output = match settings.remove("build") {
                 Some(value) => {
-                    let build: Build = parse(&root, value)?;
+                    let build: Build = parse(&config, value)?;
                     let path = build
                         .out
                         .as_str()
                         .filter(|s| !s.trim().is_empty())
                         .ok_or_else(|| {
-                            invalid(&root, "build.out must be a nonempty path string")
+                            invalid(&config, "build.out must be a nonempty path string")
                         })?;
                     root.join(path)
                 }
                 None => root.join("site"),
             };
             if let Some(value) = settings.remove("preview") {
-                port = parse::<Preview>(&root, value)?.port;
+                port = parse::<Preview>(&config, value)?.port;
             }
             image = settings
                 .remove("image")
-                .map(|value| parse(&root, value))
+                .map(|value| parse(&config, value))
                 .transpose()?;
             publish = settings
                 .remove("publish")
-                .map(|value| parse(&root, value))
+                .map(|value| parse(&config, value))
                 .transpose()?;
             if let Some(value) = settings.remove("ci") {
-                ci = parse(&root, value)?;
+                ci = parse(&config, value)?;
                 ci.validate()?;
             }
             if renderer == Renderer::Hosted && !settings.is_empty() {
                 return Err(invalid(
-                    &root,
+                    &config,
                     "hosted zel.yaml supports version, renderer, build, preview, image, publish and ci only; put presentation settings in content/site.yaml",
                 ));
             }
@@ -179,7 +269,7 @@ impl Site {
                     .any(|k| s.contains_key(*k))
             }) {
                 return Err(invalid(
-                    &root,
+                    &config,
                     "renderer/build/preview/image/publish/ci require version: 1 and the content/ layout",
                 ));
             }
@@ -205,6 +295,8 @@ impl Site {
             (content, renderer, output)
         };
         Ok(Self {
+            input,
+            config_path: config,
             root,
             content,
             configured,
@@ -221,7 +313,7 @@ impl Site {
     pub fn require(&self, renderer: Renderer) -> Result<()> {
         if self.configured && self.renderer != renderer {
             return Err(invalid(
-                &self.root,
+                &self.config_path,
                 format!(
                     "renderer is {:?}; this operation requires {:?}",
                     self.renderer, renderer

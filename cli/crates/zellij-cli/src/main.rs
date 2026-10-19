@@ -6,6 +6,7 @@
 //!
 //! The argument schema lives in `args`; dispatch and CLI reporting live here.
 //! See `specs/zel-cli-contract-2026-10-18.md` for the agreed command surface.
+use zellij_core::site::SiteInput;
 
 use args::*;
 use camino::{Utf8Path, Utf8PathBuf};
@@ -65,23 +66,23 @@ fn main() {
             deep,
             strict,
         } => validation::check(
-            dir.as_deref(),
+            dir.as_ref(),
             target.as_deref(),
             zellij_engine::CheckOptions { deep, strict },
             cli.json,
         ),
-        Command::Dev { ref dir, port } => dev(dir.as_deref(), port),
-        Command::Fmt { ref dir, check } => formatting::run(dir.as_deref(), check),
+        Command::Dev { ref dir, port } => dev(dir.as_ref(), port),
+        Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
             ref dir,
             deep,
             strict,
-        } => watch::run(dir.as_deref(), zellij_engine::CheckOptions { deep, strict }),
+        } => watch::run(dir.as_ref(), zellij_engine::CheckOptions { deep, strict }),
         Command::Serve {
             ref dir,
             port,
             ref base_path,
-        } => preview::serve(dir.as_deref(), port, base_path),
+        } => preview::serve(dir.as_ref(), port, base_path),
         Command::View {
             ref dir,
             ref out,
@@ -92,7 +93,7 @@ fn main() {
             ref browser,
             watch,
         } => preview::view(
-            dir.as_deref(),
+            dir.as_ref(),
             preview::ViewOptions {
                 out: out.as_deref(),
                 name: name.as_deref(),
@@ -111,7 +112,7 @@ fn main() {
             ref name,
             ref theme,
         } => build_dispatch(
-            dir.as_deref(),
+            dir.as_ref(),
             target.as_deref(),
             out.as_deref(),
             tag.as_deref(),
@@ -120,22 +121,22 @@ fn main() {
         ),
         Command::Image { ref action } => match action {
             ImageAction::Static(SiteImageArgs { dir, tag }) => {
-                images::static_image(dir.as_deref(), tag.as_deref())
+                images::static_image(dir.as_ref(), tag.as_deref())
             }
             ImageAction::Next(SiteImageArgs { dir, tag }) => {
-                images::next_image(dir.as_deref(), tag.as_deref())
+                images::next_image(dir.as_ref(), tag.as_deref())
             }
-            ImageAction::Build { dir, tag } => image_build_selected(dir.as_deref(), tag.as_deref()),
+            ImageAction::Build { dir, tag } => image_build_selected(dir.as_ref(), tag.as_deref()),
             ImageAction::Run(ImageRunArgs {
                 tag,
                 port,
                 site_root,
-            }) => image_run(tag.as_deref(), *port, site_root.as_deref()),
+            }) => image_run(tag.as_deref(), *port, site_root.as_ref()),
             ImageAction::Push(ImagePushArgs { tag, registry }) => {
                 image_push(tag, registry.as_deref())
             }
             ImageAction::Dockerfile(ImageDockerfileArgs { dir, kind }) => {
-                images::dockerfile(dir.as_deref(), *kind)
+                images::dockerfile(dir.as_ref(), *kind)
             }
         },
         Command::Publish(ref options) => delivery::execute(None, options),
@@ -153,7 +154,7 @@ fn main() {
         Command::Ci(ref args) => match &args.action {
             Some(CiAction::Init { system, options }) => ci::generate(system, None, options),
             Some(CiAction::Run { workflow, r#ref }) => ci_publish(workflow, r#ref),
-            None => ci::generate("github", args.dir.as_deref(), &args.options),
+            None => ci::generate("github", args.dir.as_ref(), &args.options),
         },
         Command::Migrate(ref options) => imports::convert(options, true),
         Command::Ship(ref options) => imports::ship(options),
@@ -180,12 +181,12 @@ fn main() {
             ref name,
             ref sections,
             ref dir,
-        })) => new_page(name, sections, dir.as_deref()),
+        })) => new_page(name, sections, dir.as_ref()),
         Command::New(NewTarget::Guide(NewGuideArgs {
             ref name,
             ref title,
             ref dir,
-        })) => new_guide(name, title.as_deref(), dir.as_deref()),
+        })) => new_guide(name, title.as_deref(), dir.as_ref()),
         Command::New(NewTarget::Project(NewProjectArgs {
             ref name,
             ref product_lang,
@@ -208,33 +209,33 @@ fn main() {
 // ----------------------------------------------------------------- checking
 
 /// Resolve a deliberate site selection before touching an engine or output.
-fn select_site(dir: Option<&str>) -> zellij_core::Result<Utf8PathBuf> {
-    zellij_core::site::select(Utf8Path::new("."), dir)
+fn select_site(dir: Option<&SiteInput>) -> zellij_core::Result<SiteInput> {
+    match dir {
+        Some(input) => Ok(input.clone()),
+        None => zellij_core::site::select(Utf8Path::new("."), None).map(Into::into),
+    }
 }
-fn resolve_content(dir: &str) -> zellij_core::Result<Utf8PathBuf> {
-    if !Utf8Path::new(dir).is_dir() {
-        return Err(zellij_core::Error::NoContentFolder { path: dir.into() });
+fn resolve_content(dir: &SiteInput) -> zellij_core::Result<Utf8PathBuf> {
+    if !dir.explicit_config() && !dir.root().is_dir() {
+        return Err(zellij_core::Error::NoContentFolder {
+            path: dir.root().to_owned(),
+        });
     }
-    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+    let site = zellij_core::site::Site::load(dir)?;
     site.require(zellij_core::site::Renderer::Hosted)?;
-    if site.renderer == zellij_core::site::Renderer::Portable
-        && zellij_core::site::present(&site.root)
-    {
-        return Err(zellij_core::Error::InvalidArgument(
-            "hosted operations require hosted content; this zel.yaml configures portable Markdown"
-                .into(),
-        ));
+    if site.renderer == zellij_core::site::Renderer::Portable && dir.has_config() {
+        return Err(zellij_core::Error::InvalidArgument(format!(
+            "hosted operations require hosted content; {} configures portable Markdown",
+            site.config_path
+        )));
     }
-    if !site.configured
-        && !zellij_core::site::present(&site.root)
-        && Utf8Path::new(dir) == Utf8Path::new(".")
-    {
+    if !site.configured && !dir.has_config() && dir.root() == Utf8Path::new(".") {
         return Ok(zellij_core::Project::discover(&site.root)?.content);
     }
     Ok(site.content)
 }
 
-fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
+fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
@@ -260,13 +261,13 @@ fn check(dir: &str, options: zellij_engine::CheckOptions) -> zellij_core::Result
     Ok(())
 }
 
-fn dev(dir: Option<&str>, port: Option<u16>) -> zellij_core::Result<()> {
+fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
     let dir = select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
     let port = port.unwrap_or(site.port);
     if site.renderer == zellij_core::site::Renderer::Portable {
         return preview::view(
-            Some(dir.as_str()),
+            Some(&dir),
             preview::ViewOptions {
                 out: None,
                 name: None,
@@ -283,7 +284,7 @@ fn dev(dir: Option<&str>, port: Option<u16>) -> zellij_core::Result<()> {
             "hosted dev requires --port 1–65535; use view --watch --port 0 for an automatically selected static preview port".into(),
         ));
     }
-    let content = resolve_content(dir.as_str())?;
+    let content = resolve_content(&dir)?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     println!("  Engine   {}", engine.image());
@@ -322,17 +323,15 @@ fn report_empty_mount(err: &zellij_core::Error) {
     eprintln!("  Docker Desktop: Settings → Resources → File sharing.");
 }
 
-fn default_target(dir: &str) -> zellij_core::Result<&'static str> {
-    Ok(
-        match zellij_core::site::Site::load(Utf8Path::new(dir))?.renderer {
-            zellij_core::site::Renderer::Portable => "portable",
-            zellij_core::site::Renderer::Hosted => "static",
-        },
-    )
+fn default_target(dir: &SiteInput) -> zellij_core::Result<&'static str> {
+    Ok(match zellij_core::site::Site::load(dir)?.renderer {
+        zellij_core::site::Renderer::Portable => "portable",
+        zellij_core::site::Renderer::Hosted => "static",
+    })
 }
 
 fn build_dispatch(
-    dir: Option<&str>,
+    dir: Option<&SiteInput>,
     target: Option<&str>,
     out: Option<&str>,
     tag: Option<&str>,
@@ -340,7 +339,7 @@ fn build_dispatch(
     theme: Option<&str>,
 ) -> zellij_core::Result<()> {
     let selected = select_site(dir)?;
-    let dir = selected.as_str();
+    let dir = &selected;
     let target = match target {
         Some(target) => target,
         None => default_target(dir)?,
@@ -381,12 +380,12 @@ fn build_dispatch(
 }
 
 fn build_portable(
-    dir: &str,
+    dir: &SiteInput,
     out: Option<&str>,
     name: Option<&str>,
     theme: Option<&str>,
 ) -> zellij_core::Result<Utf8PathBuf> {
-    let source = Utf8Path::new(dir);
+    let source = dir;
     let output = out
         .map(Utf8PathBuf::from)
         .map(Ok)
@@ -399,7 +398,7 @@ fn build_portable(
     Ok(output)
 }
 
-fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> {
+fn build(dir: &SiteInput, target: &str, out: Option<&str>) -> zellij_core::Result<()> {
     use zellij_engine::{BuildMode, Engine as _};
 
     let mode = match target {
@@ -413,7 +412,7 @@ fn build(dir: &str, target: &str, out: Option<&str>) -> zellij_core::Result<()> 
     };
 
     let content = resolve_content(dir)?;
-    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+    let site = zellij_core::site::Site::load(dir)?;
     let out = out.map(Utf8PathBuf::from).unwrap_or(site.output);
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
@@ -518,12 +517,12 @@ fn default_tag(content: &Utf8Path) -> String {
     format!("{}:latest", safe.trim_matches('-'))
 }
 
-fn image_build_selected(dir: Option<&str>, tag: Option<&str>) -> zellij_core::Result<()> {
-    image_build(select_site(dir)?.as_str(), tag, None)
+fn image_build_selected(dir: Option<&SiteInput>, tag: Option<&str>) -> zellij_core::Result<()> {
+    image_build(&select_site(dir)?, tag, None)
 }
 
-fn site_tag(dir: &str, content: &Utf8Path) -> zellij_core::Result<String> {
-    let site = zellij_core::site::Site::load(Utf8Path::new(dir))?;
+fn site_tag(dir: &SiteInput, content: &Utf8Path) -> zellij_core::Result<String> {
+    let site = zellij_core::site::Site::load(dir)?;
     Ok(default_tag(if site.configured {
         &site.root
     } else {
@@ -531,7 +530,11 @@ fn site_tag(dir: &str, content: &Utf8Path) -> zellij_core::Result<String> {
     }))
 }
 
-fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_core::Result<()> {
+fn image_build(
+    dir: &SiteInput,
+    tag: Option<&str>,
+    features: Option<&str>,
+) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
     let tag = match tag {
         Some(tag) => tag.to_owned(),
@@ -553,12 +556,16 @@ fn image_build(dir: &str, tag: Option<&str>, features: Option<&str>) -> zellij_c
     Ok(())
 }
 
-fn image_run(tag: Option<&str>, port: u16, site_root: Option<&str>) -> zellij_core::Result<()> {
+fn image_run(
+    tag: Option<&str>,
+    port: u16,
+    site_root: Option<&SiteInput>,
+) -> zellij_core::Result<()> {
     let tag = match tag {
         Some(tag) => tag.to_owned(),
         None => {
             let dir = select_site(site_root)?;
-            site_tag(dir.as_str(), &resolve_content(dir.as_str())?)?
+            site_tag(&dir, &resolve_content(&dir)?)?
         }
     };
     let engine = zellij_engine::ContainerEngine::detect(None)?;
@@ -573,7 +580,7 @@ fn image_push(tag: &str, registry: Option<&str>) -> zellij_core::Result<()> {
     engine.image_push(tag, registry)
 }
 
-fn image_dockerfile(dir: &str) -> zellij_core::Result<()> {
+fn image_dockerfile(dir: &SiteInput) -> zellij_core::Result<()> {
     let _ = resolve_content(dir)?;
     print!(
         "{}",
@@ -713,7 +720,7 @@ fn doctor() -> zellij_core::Result<()> {
 
     println!();
     println!("Content");
-    match resolve_content(".") {
+    match resolve_content(&SiteInput::from(".")) {
         Ok(path) => println!("  ✓ {path}"),
         Err(_) => println!("  · none here — `zel new docs` writes one"),
     }
@@ -893,16 +900,16 @@ fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()>
     Ok(())
 }
 
-fn authoring_content(dir: Option<&str>) -> zellij_core::Result<Utf8PathBuf> {
+fn authoring_content(dir: Option<&SiteInput>) -> zellij_core::Result<Utf8PathBuf> {
     if let Some(dir) = dir
-        && !zellij_core::site::present(Utf8Path::new(dir))
+        && !dir.has_config()
     {
-        return Ok(Utf8PathBuf::from(dir));
+        return Ok(dir.root().to_owned());
     }
-    resolve_content(select_site(dir)?.as_str())
+    resolve_content(&select_site(dir)?)
 }
 
-fn new_page(name: &str, sections: &[String], dir: Option<&str>) -> zellij_core::Result<()> {
+fn new_page(name: &str, sections: &[String], dir: Option<&SiteInput>) -> zellij_core::Result<()> {
     for section_type in sections {
         if !zellij_core::schema::is_section_type(section_type) {
             eprintln!("error: no section type called \"{section_type}\"");
@@ -930,7 +937,7 @@ fn new_page(name: &str, sections: &[String], dir: Option<&str>) -> zellij_core::
     Ok(())
 }
 
-fn new_guide(name: &str, title: Option<&str>, dir: Option<&str>) -> zellij_core::Result<()> {
+fn new_guide(name: &str, title: Option<&str>, dir: Option<&SiteInput>) -> zellij_core::Result<()> {
     let root = authoring_content(dir)?;
     let order = next_guide_order(&root);
     let title = title.map(str::to_owned).unwrap_or_else(|| {

@@ -174,12 +174,12 @@ fn config_discovery_and_io_failures_remain_structured() {
         report.diagnostics[0].file.as_deref(),
         Some("unsupported.mdx")
     );
-    let missing = check(&source.join("absent"), true);
+    let missing = check(source.join("absent"), true);
     assert!(!missing.ok);
     assert_eq!(missing.exit_code, 1);
     assert_eq!(missing.diagnostics.len(), 1);
     assert_eq!(missing.diagnostics[0].code, Code::Source);
-    assert!(!check(&source.join("README.md"), false).ok);
+    assert!(!check(source.join("README.md"), false).ok);
 }
 
 #[test]
@@ -202,4 +202,33 @@ fn virtual_output_collisions_fail_check_and_preserve_previous_builds() {
         assert!(build(&source, &out, BuildOptions::default()).is_err());
         assert_eq!(snapshot(&out), previous);
     }
+}
+
+#[test]
+fn named_flat_config_is_required_and_watched_even_when_hidden() {
+    use zellij_core::site::{Site, SiteInput};
+    use zellij_docs::watch::Snapshot;
+    let temp = tempfile::tempdir().unwrap();
+    let root = camino::Utf8Path::from_path(temp.path()).unwrap();
+    std::fs::write(root.join("index.md"), "# Flat documentation\n").unwrap();
+    std::fs::write(root.join("zel.yaml"), "invalid: [").unwrap();
+    let path = root.join(".preview.yaml");
+    std::fs::write(&path, "name: First\n").unwrap();
+    let input = SiteInput::Config(path.clone());
+    let site = Site::load(&input).unwrap();
+    assert!(!site.configured);
+    assert!(check(&input, true).ok);
+    let before = Snapshot::site(&site.input, false).unwrap();
+    std::fs::write(&path, "name: Later\n").unwrap();
+    assert_ne!(Snapshot::site(&site.input, false).unwrap(), before);
+    std::fs::remove_file(&path).unwrap();
+    assert!(Snapshot::site(&site.input, false).is_err());
+    let report = check(&input, true);
+    assert!(!report.ok);
+    assert!(
+        report
+            .diagnostics
+            .iter()
+            .any(|d| d.file.as_deref() == Some(".preview.yaml"))
+    );
 }

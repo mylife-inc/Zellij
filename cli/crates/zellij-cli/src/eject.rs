@@ -29,13 +29,13 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
     let content = if options.with_docs {
         None
     } else {
-        let root = crate::select_site(options.dir.as_deref())?;
+        let root = crate::select_site(options.dir.as_ref())?;
         let site = Site::load(&root)?;
         if site.renderer != Renderer::Hosted {
             return Err(Error::InvalidArgument("eject references hosted content; use --with-docs for the image starter, or `zel image next` to adapt portable Markdown".into()));
         }
         files::disjoint(&site.root, &out)?;
-        let content = crate::resolve_content(root.as_str())?;
+        let content = crate::resolve_content(&root)?;
         files::disjoint(&content, &out)?;
         if content.join("marketing").exists() {
             return Err(Error::InvalidArgument(

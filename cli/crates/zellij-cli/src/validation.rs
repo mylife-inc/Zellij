@@ -1,8 +1,8 @@
-use camino::Utf8Path;
+use zellij_core::site::SiteInput;
 use zellij_core::{Error, Result};
 
 pub fn check(
-    dir: Option<&str>,
+    dir: Option<&SiteInput>,
     target: Option<&str>,
     options: zellij_engine::CheckOptions,
     as_json: bool,
@@ -11,7 +11,7 @@ pub fn check(
         return Err(Error::InvalidArgument("--json is supported only for portable checks; hosted validation does not yet provide structured reports; no command was run".into()));
     }
     let selected = crate::select_site(dir)?;
-    let dir = selected.as_str();
+    let dir = &selected;
     // Invalid configuration is reported through the native check's structured
     // diagnostics, preserving --json's one-report/no-stderr contract.
     let automatic = crate::default_target(dir).unwrap_or("portable");
@@ -25,7 +25,7 @@ pub fn check(
     }
     // Portable compilation always validates local references, so --deep is
     // accepted for shared CI commands without changing the validation coverage.
-    let exit_code = portable(Utf8Path::new(dir), options.strict, as_json)?;
+    let exit_code = portable(dir, options.strict, as_json)?;
     // One-shot CLI behavior; watch consumes the same report without exiting.
     if exit_code != 0 {
         std::process::exit(exit_code);
@@ -33,7 +33,7 @@ pub fn check(
     Ok(())
 }
 
-pub fn portable(dir: &Utf8Path, strict: bool, as_json: bool) -> Result<i32> {
+pub fn portable(dir: &SiteInput, strict: bool, as_json: bool) -> Result<i32> {
     let report = zellij_docs::check(dir, strict);
     if as_json {
         let value = serde_json::to_value(&report).map_err(std::io::Error::other)?;

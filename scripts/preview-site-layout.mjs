@@ -5,18 +5,20 @@ import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, webkit, expect } from '@playwright/test';
 
-export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
-  for (const engine of process.env.ZELLIJ_PORTABLE_BROWSER?.split(',') || ['chromium', 'webkit']) {
-    const root = path.join(temp, `Configured 日本 ${engine}`);
+export async function checkSiteLayout({ temp, start, stop, snapshot, until, explicitConfig = false }) {
+  for (const engine of (explicitConfig ? ['chromium'] : process.env.ZELLIJ_PORTABLE_BROWSER?.split(',') || ['chromium', 'webkit'])) {
+    const root = path.join(temp, `Configured 日本 ${engine} ${explicitConfig}`);
     const content = path.join(root, 'content');
     const output = path.join(root, 'site');
-    const config = path.join(root, 'zel.yaml');
+    const config = path.join(root, explicitConfig ? 'preview #1%.yaml' : 'zel.yaml');
     const settings = name => `version: 1\nrenderer: portable\nname: ${name}\npreview: {port: 0}\n`;
     await mkdir(content, { recursive: true });
     await writeFile(config, settings('Before config edit'));
+    const selected = explicitConfig ? ['--config', config] : [root];
+    if (explicitConfig) await writeFile(path.join(root, 'zel.yaml'), 'invalid default: [');
     await writeFile(path.join(content, 'index.md'), '# Configured home\n');
     await writeFile(path.join(root, 'private.md'), '# Unpublished\n[Broken](absent.md)\n');
-    const server = await start(engine === 'chromium' ? ['dev', root] : ['v', root, '--watch', '--no-open']);
+    const server = await start(engine === 'chromium' ? ['dev', ...selected] : ['v', ...selected, '--watch', '--no-open']);
     const status = () => fetch(`${server.url}_zellij/preview.json`).then(r => r.json());
     const browser = await ({ chromium, webkit })[engine].launch();
     try {
@@ -32,6 +34,7 @@ export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
       // Even an invalid Markdown file under output must not trigger rebuilding.
       await writeFile(path.join(output, 'ignored.md'), '[Broken](missing.md)');
       await writeFile(path.join(root, 'private.md'), '# Another unpublished edit');
+      if (explicitConfig) await writeFile(path.join(root, 'zel.yaml'), 'another invalid default: [');
       await delay(1600);
       assert.equal((await status()).version, version);
       await rm(path.join(output, 'ignored.md'));
@@ -49,11 +52,11 @@ export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
       // Bare configured-root serving resolves site/ and preview.port without building.
       const previous = await readFile(path.join(output, 'index.html'));
       await writeFile(path.join(content, 'index.md'), '[Broken](missing.md)');
-      const served = await start(['s', root]);
+      const served = await start(['s', ...selected]);
       assert((await fetch(served.url).then(r => r.text())).includes('Edited content'));
       await stop(served);
       assert.deepEqual(await readFile(path.join(output, 'index.html')), previous);
     } finally { await browser.close(); }
-    console.log(`${engine}: configured preview watches content/config, ignores output, preserves/reloads after errors, and serves without rebuilding.`);
+    console.log(`${engine} (explicit config: ${explicitConfig}): configured preview watches content/config, ignores output, preserves/reloads after errors, and serves without rebuilding.`);
   }
 }

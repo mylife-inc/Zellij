@@ -1,6 +1,7 @@
 //! Renderer-aware image builds. Keep exports ephemeral so failed packaging
 //! cannot replace a user's last build, and source/config files stay untouched.
 use camino::{Utf8Path, Utf8PathBuf};
+use zellij_core::site::SiteInput;
 use zellij_core::{
     Result,
     delivery::{ImageKind as BuildKind, validate_image_reference},
@@ -10,12 +11,12 @@ use zellij_engine::{ContainerEngine, static_image};
 
 use crate::args::ImageKind;
 
-pub(crate) fn selection(dir: Option<&str>) -> Result<(Site, Utf8PathBuf)> {
+pub(crate) fn selection(dir: Option<&SiteInput>) -> Result<(Site, Utf8PathBuf)> {
     let selected = crate::select_site(dir)?;
     let site = Site::load(&selected)?;
     let content = match site.renderer {
         Renderer::Portable => site.content.clone(),
-        Renderer::Hosted => crate::resolve_content(selected.as_str())?,
+        Renderer::Hosted => crate::resolve_content(&selected)?,
     };
     Ok((site, content))
 }
@@ -49,13 +50,13 @@ fn selected_tag(site: &Site, tag: Option<&str>, kind: BuildKind) -> Result<Strin
     Ok(tag)
 }
 
-pub(crate) fn static_image(dir: Option<&str>, tag: Option<&str>) -> Result<()> {
+pub(crate) fn static_image(dir: Option<&SiteInput>, tag: Option<&str>) -> Result<()> {
     image(dir, tag, BuildKind::Static)
 }
-pub(crate) fn next_image(dir: Option<&str>, tag: Option<&str>) -> Result<()> {
+pub(crate) fn next_image(dir: Option<&SiteInput>, tag: Option<&str>) -> Result<()> {
     image(dir, tag, BuildKind::Next)
 }
-fn image(dir: Option<&str>, tag: Option<&str>, kind: BuildKind) -> Result<()> {
+fn image(dir: Option<&SiteInput>, tag: Option<&str>, kind: BuildKind) -> Result<()> {
     let (site, content) = selection(dir)?;
     let tag = selected_tag(&site, tag, kind)?;
     let engine = ContainerEngine::detect(None)?;
@@ -88,7 +89,7 @@ pub(crate) fn build_image(
                     zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
                 })?
                 .join("site");
-            let report = zellij_docs::build(&site.root, &export, Default::default())?;
+            let report = zellij_docs::build(&site.input, &export, Default::default())?;
             for warning in report.warnings {
                 eprintln!("warning: {warning}");
             }
@@ -105,7 +106,7 @@ pub(crate) fn build_image(
                     zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
                 })?
                 .join("content");
-            let report = zellij_docs::adapt_hosted(&site.root, &adapted)?;
+            let report = zellij_docs::adapt_hosted(&site.input, &adapted)?;
             for warning in report.warnings {
                 eprintln!("warning: {warning}");
             }
@@ -115,15 +116,17 @@ pub(crate) fn build_image(
     }
 }
 
-pub(crate) fn dockerfile(dir: Option<&str>, kind: ImageKind) -> Result<()> {
+pub(crate) fn dockerfile(dir: Option<&SiteInput>, kind: ImageKind) -> Result<()> {
     if kind == ImageKind::Next {
         let selected = crate::select_site(dir)?;
-        if selected.is_dir() && Site::load(&selected)?.renderer == Renderer::Portable {
+        if (selected.explicit_config() || selected.root().is_dir())
+            && Site::load(&selected)?.renderer == Renderer::Portable
+        {
             return Err(zellij_core::Error::InvalidArgument(
                 "a Next Dockerfile takes hosted content as its context; use `zel image next` / `zel ni` to adapt and package portable Markdown automatically".into(),
             ));
         }
-        return crate::image_dockerfile(selected.as_str());
+        return crate::image_dockerfile(&selected);
     }
     let (site, _) = selection(dir)?;
     let body = match site.renderer {

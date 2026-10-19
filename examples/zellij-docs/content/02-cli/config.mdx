@@ -64,12 +64,13 @@ legacy roots, explicit `.` retains the old content-discovery order.
 zel --cwd ../my-product build
 zel b --cwd ../my-product --site-root docs/manual
 zel --cwd ../my-product --site-root docs/manual c --strict
+zel b --cwd ../my-product --config docs/manual/preview.yaml
 zel na web --cwd ../my-product --site-root docs/hosted --engine engine/packages/zellij
 ```
 
 `--cwd <directory>` runs the command from an existing directory. Its own relative
 path is resolved from the directory where you launched `zel`. Other CLI paths,
-including source, destination, `--out`, `--engine` and `--site-root`, are then
+including source, destination, `--out`, `--engine`, `--site-root` and `--config`, are then
 relative to that working directory. It does not change your shell's directory
 or switch Git branches. Missing or non-directory values fail with exit code 2.
 Help and `--version` can be read without accessing the requested directory.
@@ -82,22 +83,40 @@ uses it for existing hosted content; features uses it for a portable site or
 editable wrapper. Omitted-tag image run can use it to select the hosted site
 from which its legacy default tag is derived.
 
-Both flags work before or after the command and through shortcuts. Specify each
+`--config <file>` selects one existing YAML configuration instead of discovering
+`zel.yaml`. Its parent is the site root. Versioned sites still read `content/`
+and default to `site/`; legacy flat portable configs retain their flat layout
+and sibling output. `build.out` stays relative to the selected file's parent.
+No files are copied, renamed, merged with another config, or moved into place.
+
+It works with the same site-consuming commands listed above. For `features`,
+it selects a portable config; use `--site-root` to select an editable wrapper.
+It does not select the separate `zellij.config.yaml` wrapper format.
+
+All three flags work before or after the command and through shortcuts. Specify each
 flag only once, including across subcommands. Selection is explicit: even two
-identical selectors conflict. Do not combine `--site-root`
+identical selectors conflict. Do not combine `--site-root` and `--config`, or either
 with a positional site, `new page/guide --dir`, CI `--content`, `--with-docs`, or
 an explicit image-run tag. Commands that do not consume an existing site, such
 as new portable/docs/project, conversion, inspection, image push and CI dispatch,
-reject `--site-root`. Use `--cwd` to choose their working directory. Invalid or
+reject both selectors. Use `--cwd` to choose their working directory. Invalid or
 inapplicable combinations fail with exit code 2 before filesystem writes, runtime
 detection or remote operations. A selected missing/invalid site retains its
 command's existing validation and exit behavior.
 
 Changing the working directory does not change configuration-relative paths:
-`build.out` stays relative to `zel.yaml`, and content links stay relative to their
-source. With neither flag, the current-folder then `docs/zellij` convention is
-unchanged. Explicit legacy content roots remain supported. `--config <file>`
-remains a proposal; this implementation continues to read `zel.yaml`.
+`build.out` stays relative to the selected configuration, and content links stay
+relative to their source. Without selectors, the current-folder then
+`docs/zellij` convention is unchanged. Explicit legacy content roots remain supported.
+
+The selected config must be a regular file, not a directory, symlink or junction.
+A missing or invalid selected file is an error even if a valid `zel.yaml` exists
+beside it. Build and watch never fall back to another config. Watch modes track
+the selected file, including hidden filenames, and retain the previous export
+when it becomes invalid or disappears; restoring it resumes normal operation.
+`fmt` and portable `features` edit the selected config. JSON check diagnostics
+identify its actual filename. Generated CI passes the same `--config` selection
+to validation, build and delivery commands and includes its folder in change filters.
 
 ## Editable wrapper configuration
 
@@ -316,8 +335,8 @@ and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
 `production`. CI settings require `version: 1`; they are shared by both renderers.
 `convert`/`migrate --layout site` create this layout; `ship` also saves the selected
 Netlify site or image publication settings, without credentials or production
-intent. Global `--cwd` and command-aware `--site-root` selection are implemented.
-Explicit `--config` selection and additional delivery providers remain planned.
+intent. Global `--cwd` and command-aware `--site-root` / `--config` selection are
+implemented. Additional delivery providers and output controls remain planned.
 
 [Shortcuts](/cli/shortcuts) for working commands and
 [shell completions](/cli/completions) are implemented in source. They use the
