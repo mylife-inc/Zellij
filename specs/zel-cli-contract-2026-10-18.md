@@ -2,9 +2,9 @@
 
 Status: **configured sites, shortcuts, completions, static/Next images, registry
 and Netlify delivery, CI generation, import/ship, editable wrappers, YAML formatting
-and validation watching, portable dev, hosted view, version/pull/upgrade are
-implemented in source**. Other providers, eject/features and advanced flags
-remain proposed. Stage records below
+and validation watching, portable dev, hosted view, version/pull/upgrade, eject
+and explicit portable/hosted feature selection are implemented in source**.
+Other providers and advanced flags remain proposed. Stage records below
 and the local CLI reference describe actual support; public 0.1.3 predates these
 additions and compatible release publication is still separate work.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
@@ -77,8 +77,9 @@ shortcuts are now implemented: `init`, `nd`, `na`, `ns`, `np`, `ng`, `npr`, `ex`
 as a compatible spelling. `completions` now supports Bash, Zsh, Fish, PowerShell,
 and Elvish. Help and completion derive from the same argument schema.
 
-The proposed **capabilities** in the tables are not all implemented: `view`
-remains portable-only. `na` now scaffolds editable hosted wrappers. Conversion supports explicit
+The tables retain their reconciliation baseline; later stage records supersede
+their S/N and partial-support labels. `view` now supports portable and hosted
+static output, and `dev` supports both renderers. `na` scaffolds editable hosted wrappers. Conversion supports explicit
 configured-site output while keeping raw hosted content as its default. Static-image
 packaging, Next packaging with a portable Markdown adapter, `idf --kind static|next`,
 and registry/Netlify publication via `publish` / `pub` are implemented. `deploy netlify`
