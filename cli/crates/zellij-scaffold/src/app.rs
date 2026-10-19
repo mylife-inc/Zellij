@@ -74,6 +74,20 @@ pub fn app(options: &AppOptions<'_>) -> Result<Scaffold> {
                 .extend(deps.as_object().unwrap().clone());
         }
     }
+    manifest["zellij"]["features"] = Value::Array(
+        template["featureNames"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|name| {
+                options
+                    .features
+                    .iter()
+                    .any(|selected| selected == "all" || name.as_str() == Some(selected))
+            })
+            .cloned()
+            .collect(),
+    );
     let mut scaffold = Scaffold::new();
     for (path, body) in template["files"].as_object().unwrap() {
         scaffold.add(path.as_str(), body.as_str().unwrap());
@@ -108,7 +122,9 @@ npm run dev
 ```
 
 The development server uses port {}. `npm run build` creates a production build;
-`npm start` serves it. Optional maths/diagram packages are listed in package.json.
+`npm start` serves it. `zel features` records optional maths/diagram selection
+and package requirements in package.json. Run npm install when enabling features,
+then rebuild or restart to apply changes.
 
 The engine is a local file dependency because it is not published to npm.
 Use a built engine package from the matching Zellij checkout. If you move the

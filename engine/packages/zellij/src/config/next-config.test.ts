@@ -126,7 +126,7 @@ describe('deployment prefix', () => {
     const appRoot = await wrapper({ 'content/site.yaml': 'name: Test\n' });
     const config = withZellij({ basePath: '/wrapper', env: { CUSTOM: 'kept' } }, { appRoot });
     expect(config.basePath).toBe('/wrapper');
-    expect(config.env).toEqual({ CUSTOM: 'kept', ZELLIJ_BASE_PATH: '/wrapper' });
+    expect(config.env).toMatchObject({ CUSTOM: 'kept', ZELLIJ_BASE_PATH: '/wrapper' });
   });
 
   it('rejects contradictory explicit prefixes, including an explicit empty prefix', async () => {
@@ -139,5 +139,55 @@ describe('deployment prefix', () => {
   it.each(['/a/../b', '//host/path', '/a?b', '/a#b', '/a\\b', '/a//b', '/a%2fb'])('rejects an invalid prefix: %s', async (basePath) => {
     const appRoot = await wrapper({});
     expect(() => withZellij({ basePath }, { appRoot })).toThrow(/basePath/);
+  });
+});
+
+describe('explicit feature selection', () => {
+  it('disables packages without removing unrelated aliases, env or webpack hooks', async () => {
+    const appRoot = await wrapper({ 'package.json': JSON.stringify({ zellij: { features: [] } }) });
+    const config = withZellij({
+      env: { CUSTOM: 'retained' },
+      turbopack: { resolveAlias: { custom: './mine.js', mermaid: './independent-mermaid.js' } },
+      webpack: (value: { marker?: boolean }) => ({ ...value, marker: true }),
+    }, { appRoot });
+    expect(config.env).toMatchObject({ ZELLIJ_MATHS: 'false', NEXT_PUBLIC_ZELLIJ_DIAGRAMS: 'false', CUSTOM: 'retained' });
+    expect(config.turbopack.resolveAlias.custom).toBe('./mine.js');
+    expect(config.turbopack.resolveAlias.mermaid).toBe('./independent-mermaid.js');
+    expect(config.turbopack.resolveAlias['@shebka/zellij/optional-mermaid']).toBe('@shebka/zellij/disabled-feature');
+    const webpack = config.webpack({ resolve: { alias: { existing: './kept' } } }, {});
+    expect(webpack.marker).toBe(true);
+    expect(webpack.resolve.alias.existing).toBe('./kept');
+    expect(webpack.resolve.alias['@shebka/zellij/optional-maths']).toBe('@shebka/zellij/disabled-feature');
+  });
+
+  it('preserves array-form webpack aliases for independent users of optional libraries', async () => {
+    const appRoot = await wrapper({ 'package.json': JSON.stringify({ zellij: { features: [] } }) });
+    const config = withZellij({}, { appRoot });
+    const result = config.webpack({ resolve: { alias: [
+      { name: 'mermaid', alias: './independent-mermaid.js', onlyModule: true },
+      { name: '@shebka/zellij/optional-mermaid', alias: './old-loader.js' },
+    ] } }, {});
+    expect(result.resolve.alias).toEqual([
+      { name: '@shebka/zellij/optional-maths', alias: '@shebka/zellij/disabled-feature', onlyModule: true },
+      { name: '@shebka/zellij/optional-mermaid', alias: '@shebka/zellij/disabled-feature', onlyModule: true },
+      { name: 'mermaid', alias: './independent-mermaid.js', onlyModule: true },
+    ]);
+  });
+
+  it.each([['maths'], ['diagrams'], ['maths', 'diagrams']])('requires installed packages when explicitly selecting %j', async (...features) => {
+    const appRoot = await wrapper({ 'package.json': JSON.stringify({ zellij: { features } }) });
+    expect(() => withZellij({}, { appRoot })).toThrow(/packages are missing.*npm install/);
+  });
+
+  it.each([null, 'all', ['unknown'], ['maths', 'maths'], [null], [['maths']]])('rejects invalid selections before building: %j', async (features) => {
+    const appRoot = await wrapper({ 'package.json': JSON.stringify({ zellij: { features } }) });
+    expect(() => withZellij({}, { appRoot })).toThrow(/zellij.features/);
+  });
+
+  it('preserves automatic detection for legacy wrappers without feature metadata', async () => {
+    const appRoot = await wrapper({ 'package.json': '{}' });
+    const config = withZellij({}, { appRoot });
+    expect(config.env.ZELLIJ_MATHS).toBe('false');
+    expect(config.env.NEXT_PUBLIC_ZELLIJ_DIAGRAMS).toBe('false');
   });
 });

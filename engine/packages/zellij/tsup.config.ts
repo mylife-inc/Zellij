@@ -77,9 +77,9 @@ export default defineConfig([
      * enormous CLI.
      */
     // Keep optional math dynamic: bundling MathJax breaks its runtime paths.
-    noExternal: [/^(?!(?:remark-math|rehype-mathjax)(?:\/|$))/],
+    noExternal: [/^(?!(?:remark-math|rehype-mathjax|mermaid)(?:\/|$))/],
     // Optional math plugins resolve from the consuming app, as in rendering.
-    external: ['react', 'react-dom', 'next', /^next\//, 'remark-math', 'rehype-mathjax'],
+    external: ['react', 'react-dom', 'next', /^next\//, 'remark-math', 'rehype-mathjax', 'mermaid'],
 
     /**
      * Some of what gets bundled is CommonJS that calls `require` at runtime —

@@ -25,6 +25,9 @@ await build({
     export { mdxComponents } from './engine/packages/zellij/src/mdx/components';
   `, resolveDir: repo },
   bundle: true, packages: 'external', platform: 'node', format: 'esm', jsx: 'automatic', outfile: helper,
+  // Shared CJS config uses Node builtins; provide require in this ESM bundle,
+  // just as the packaged Node CLI does.
+  banner: { js: "import { createRequire as __createRequire } from 'node:module'; const require = __createRequire(import.meta.url);" },
   plugins: [{ name: 'next-node-paths', setup(builder) {
     builder.onResolve({ filter: /^next\// }, ({ path: name }) => ({ path: require.resolve(name), external: true }));
   } }],

@@ -1,4 +1,6 @@
 import type { Root } from 'hast';
+import { loadMermaid } from '@shebka/zellij/optional-mermaid';
+import { featureEnabled } from '../../feature-config.cjs';
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import { bundledLanguages } from 'shiki';
@@ -24,7 +26,10 @@ export async function PortableBody({ document, site }: { document: PortableDocum
   });
   if (maths && !await supportsMaths()) throw new Error('This portable document requires maths; use a Zellij engine image with maths enabled.');
   if (diagrams) {
-    try { await import('mermaid'); }
+    try {
+      if (!featureEnabled('diagrams')) throw new Error('diagrams disabled');
+      await loadMermaid();
+    }
     catch { throw new Error('This portable document requires Mermaid; use a Zellij engine image with diagrams enabled.'); }
   }
   const options = await mdxOptions();

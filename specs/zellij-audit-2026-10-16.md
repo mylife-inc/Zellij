@@ -2103,3 +2103,60 @@ eject + npm install + validation + production build + typecheck/browser check.
 Final CI evidence and merge status must be refreshed before relying on this work.
 Remaining work includes other providers/advanced options, the hosted dependency
 limitation, compatible native releases and documentation publication.
+
+
+### Hosted feature selection follow-up — 2026-10-18
+
+This supersedes the hosted limitation documented in the eject/features milestone.
+Editable wrappers now save package.json zellij.features explicitly; native and
+Node scaffolding/setters share the same feature map. Fresh wrappers default to
+none, while legacy wrappers without metadata retain installed-package detection.
+The engine uses optional peers rather than optionalDependencies, so fresh none
+wrappers omit math/Mermaid libraries. Selected missing packages fail the Next
+configuration step with npm install guidance. After a rebuild/dev restart, none
+disables rendering even when packages remain installed for another consumer.
+Native mindmaps remain enabled. Engine-scoped loaders and aliases support both
+Turbopack and Webpack without intercepting unrelated app imports of those libraries.
+The native compatibility check refuses engines without featureSelectionVersion: 1
+before changing a wrapper. No npm/lockfile mutation or package deletion is implicit.
+
+Fresh installation also exposed a hidden dependency: the engine's source types
+needed d3-hierarchy/d3-shape declarations previously supplied through Mermaid.
+Those declarations are now explicit engine dependencies, keeping mindmap consumers
+independent of optional diagrams. Docker distributions carry the shared selection
+helpers and typed loaders. CI adds standalone fresh-none, enabled-all and retained-
+packages-none browser/build/typecheck acceptance.
+
+Local checks: 364 engine tests, 277 Rust tests, warnings-denied Clippy, Rust
+formatting, workspace typechecks, engine packaging, generated-template consistency,
+extraction/cancellation acceptance, workflow lint and strict/deep documentation
+validation passed. Final browser acceptance and commit/CI evidence follow below.
+Other providers, advanced CLI options, compatible native releases and published
+documentation remain separate unfinished work.
+
+
+Final local hosted-feature acceptance passed: a standalone wrapper installed
+without Mermaid/remark-math/rehype-mathjax and built/typechecked/rendered with
+Turbopack; enabling all installed them and rendered real MathJax/Mermaid output;
+switching to none with packages deliberately retained disabled both under Webpack.
+Native mindmap SVG and browser-error checks passed in every state. Each npm state
+is checked in a fresh Node process, avoiding stale negative package lookups.
+No locked dependency versions changed. Source commit and hosted CI evidence will
+be recorded after PR validation; no new native release or manual deployment occurred.
+
+
+Hosted-feature source c27c64d3f4d1cfc3315383a83b9d43ef17d9c28a is reviewed in
+[PR #41](https://github.com/mylife-inc/Zellij/pull/41). All local acceptance above
+passed. Refresh the PR's final head/checks and merge status before relying on it.
+The previous PR #40 post-merge CI 39200372898 and Base image 39200372897 both
+completed successfully. Public native release remains zellij-v0.1.3 (2026-08-13).
+
+
+PR #41 CI run 39202250897 passed the new standalone feature acceptance and all
+container/image/export checks through section-template rendering. Its final
+conversion check exposed a test-harness ESM/CommonJS interop error when bundling
+the new shared config helper (dynamic require of node:fs). The conversion helper
+now supplies Node createRequire, matching the production CLI bundle. Local MkDocs
+and Docusaurus conversion acceptance passed after this correction, including
+rendered routes, heading fragments and asset bytes. Final CI must be refreshed
+on the fixing head; the earlier run is not a successful completion record.

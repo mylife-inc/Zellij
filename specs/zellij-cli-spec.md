@@ -519,3 +519,14 @@ Precedence: flags, then environment (`ZELLIJ_*`), then file, then defaults.
 6. `eject`, `new section`, `explain`, `fmt`.
 7. Deployment and `ci init`.
 8. Release packaging and the install script.
+
+
+### Hosted feature selection correction — 2026-10-18
+
+The current implementation supersedes earlier optional-package behavior: wrappers
+store explicit package.json zellij.features, and the engine declares optional peers.
+Fresh none wrappers omit those libraries; none also disables their rendering after
+a restart/rebuild when libraries remain installed. Native mindmaps are independent.
+Legacy wrappers without selection metadata retain automatic package detection.
+See contract stage 7c and the local features reference for compatibility and npm
+installation requirements. Public zellij-v0.1.3 predates these changes.

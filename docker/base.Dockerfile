@@ -31,7 +31,7 @@ RUN npm ci --ignore-scripts \
 # sources, tests and tooling stay behind.
 RUN mkdir -p /out \
  && cd engine/packages/zellij \
- && cp -r package.json next-config.mjs deployment-config.cjs deployment-config.d.cts bin dist src /out/
+ && cp -r package.json next-config.mjs deployment-config.cjs deployment-config.d.cts feature-config.cjs feature-config.d.cts optional-maths.mjs optional-maths.d.mts optional-mermaid.mjs optional-mermaid.d.mts disabled-feature.mjs bin dist src /out/
 
 
 # ------------------------------------------------------------------ base image
@@ -45,11 +45,8 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 
 # Which optional features the generated package.json asks for.
 #
-# Mathematics costs about fifty megabytes to install and diagrams about a
-# hundred, and most documentation wants neither. They are optional dependencies
-# of the engine, so leaving them out of the manifest means they are never
-# fetched — and the engine degrades rather than failing, so a site that turns
-# them off simply has no maths and no diagrams.
+# These are optional peers. The wrapper records both direct dependencies and
+# explicit rendering selection; fresh none images do not fetch maths/Mermaid.
 ARG ZELLIJ_FEATURES=none
 
 # The engine lives outside /app so that copying a content folder into /app can

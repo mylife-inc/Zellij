@@ -124,11 +124,18 @@ fn wrapper_dependencies_keep_authored_fields_and_validate_engine_before_writing(
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     let template = zellij_scaffold::app::template();
-    write(root,"engine/package.json",serde_json::to_vec(&serde_json::json!({"name":"@shebka/zellij","version":template["engineVersion"],"zellij":{"wrapperConfigVersion":1}})).unwrap());
+    write(root,"engine/package.json",serde_json::to_vec(&serde_json::json!({"name":"@shebka/zellij","version":template["engineVersion"],"zellij":{"wrapperConfigVersion":1,"featureSelectionVersion":1}})).unwrap());
     for name in [
         "bin/zellij.mjs",
         "next-config.mjs",
         "deployment-config.cjs",
+        "feature-config.cjs",
+        "feature-config.d.cts",
+        "optional-maths.mjs",
+        "optional-maths.d.mts",
+        "optional-mermaid.mjs",
+        "optional-mermaid.d.mts",
+        "disabled-feature.mjs",
         "src/index.ts",
         "dist/cli/check-bundle.js",
         "dist/cli/dev-bundle.js",
@@ -146,22 +153,44 @@ fn wrapper_dependencies_keep_authored_fields_and_validate_engine_before_writing(
     };
     let mut authored = manifest();
     authored["custom"] = serde_json::json!({"preserve":true});
+    authored["zellij"]["custom"] = serde_json::json!("kept");
     authored["dependencies"]["extra"] = "1.2.3".into();
     authored["overrides"]["mermaid"]["custom"] = "4".into();
     write(&app, "package.json", serde_json::to_vec(&authored).unwrap());
     write(&app, "package-lock.json", "authored lockfile");
     run(&app, &["features", "maths,diagrams"], 0);
     assert!(manifest()["dependencies"]["mermaid"].is_string());
+    assert_eq!(
+        manifest()["zellij"]["features"],
+        serde_json::json!(["maths", "diagrams"])
+    );
     assert_eq!(manifest()["overrides"]["mermaid"]["custom"], "4");
     run(root, &["features", "none", "--site-root", "app"], 0);
     let changed = manifest();
+    assert_eq!(changed["zellij"]["features"], serde_json::json!([]));
     assert_eq!(changed["dependencies"]["mermaid"], serde_json::Value::Null);
     assert_eq!(changed["custom"], authored["custom"]);
+    assert_eq!(changed["zellij"]["custom"], "kept");
     assert_eq!(changed["dependencies"]["extra"], "1.2.3");
     assert_eq!(
         fs::read_to_string(app.join("package-lock.json")).unwrap(),
         "authored lockfile"
     );
+    let engine_before = fs::read(root.join("engine/package.json")).unwrap();
+    let mut old_engine: serde_json::Value = serde_json::from_slice(&engine_before).unwrap();
+    old_engine["zellij"]
+        .as_object_mut()
+        .unwrap()
+        .remove("featureSelectionVersion");
+    write(
+        root,
+        "engine/package.json",
+        serde_json::to_vec(&old_engine).unwrap(),
+    );
+    let manifest_before = fs::read(app.join("package.json")).unwrap();
+    run(&app, &["features", "all"], 2);
+    assert_eq!(fs::read(app.join("package.json")).unwrap(), manifest_before);
+    write(root, "engine/package.json", engine_before);
     fs::remove_file(root.join("engine/dist/cli/init-bundle.js")).unwrap();
     let before = fs::read(app.join("package.json")).unwrap();
     run(&app, &["features", "all"], 2);

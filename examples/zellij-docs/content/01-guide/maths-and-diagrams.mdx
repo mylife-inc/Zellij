@@ -3,25 +3,38 @@ title: Maths and diagrams
 description: LaTeX formulas, theorem environments and Mermaid diagrams in guide pages.
 ---
 
-Guide pages carry mathematics and diagrams without any setup: the syntax is
-part of the MDX pipeline, and nothing needs enabling in `site.yaml`.
+Hosted guides support LaTeX formulas, Mermaid diagrams and built-in mindmaps.
+Maths and Mermaid are selected in the wrapper or engine image; they are not
+presentation settings in `site.yaml`.
 
-## What each one costs
+## Enable optional features
 
-Maths and diagrams are optional dependencies. A site that does not ask for them
-never installs them, and the engine renders without them rather than failing
-over a package nobody wanted.
+For an editable wrapper:
 
-| | Install | Sent to the browser |
+```bash
+zel features all --site-root my-wrapper
+cd my-wrapper
+npm install
+npm run dev
+```
+
+Use `maths`, `diagrams` or `none` instead of `all` to select a subset. Rebuild or
+restart after changing selection. New wrappers default to neither feature;
+older wrappers without explicit metadata retain installed-package detection.
+For container builds, select the engine image variant with the required features,
+such as `ghcr.io/mylife-inc/zellij-base:latest-all` through `ZELLIJ_IMAGE`.
+
+| Feature | Installation | Rendering |
 | --- | --- | --- |
-| Mindmaps | nothing — built in | nothing |
-| Maths | ~50 MB | nothing (MathJax typesets to SVG at build time) |
-| Mermaid diagrams | ~100 MB | ~10 MB, and only on pages that have one |
+| Mindmaps | Built in | SVG generated during the build |
+| Maths | Optional math packages | MathJax SVG generated during the build |
+| Mermaid | Optional mermaid package | Drawn in the browser on pages containing diagrams |
 
-Turn them on with `zel build --features maths,diagrams`, or by picking the
-container image that has them. Ask for neither and `$…$` stays as written and a
-`mermaid` fence renders as its source — which is what a site with no formulas
-and no diagrams expects anyway.
+The engine declares optional peers, so a fresh wrapper with both features off
+does not install their packages. `none` disables rendering even when packages
+remain installed: `$…$` stays as source text and Mermaid fences stay as code.
+Native mindmaps continue working. See [`features`](/cli/features) for portable
+Markdown settings and dependency details.
 
 ## LaTeX
 

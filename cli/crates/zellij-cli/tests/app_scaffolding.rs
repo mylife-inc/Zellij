@@ -15,13 +15,20 @@ fn engine(root: &Path, path: &str) {
     write(
         root,
         &format!("{path}/package.json"),
-        serde_json::to_vec(&serde_json::json!({"name":"@shebka/zellij", "version":version, "zellij":{"wrapperConfigVersion":1}}))
+        serde_json::to_vec(&serde_json::json!({"name":"@shebka/zellij", "version":version, "zellij":{"wrapperConfigVersion":1,"featureSelectionVersion":1}}))
             .unwrap(),
     );
     for file in [
         "bin/zellij.mjs",
         "next-config.mjs",
         "deployment-config.cjs",
+        "feature-config.cjs",
+        "feature-config.d.cts",
+        "optional-maths.mjs",
+        "optional-maths.d.mts",
+        "optional-mermaid.mjs",
+        "optional-mermaid.d.mts",
+        "disabled-feature.mjs",
         "src/index.ts",
         "dist/cli/check-bundle.js",
         "dist/cli/dev-bundle.js",

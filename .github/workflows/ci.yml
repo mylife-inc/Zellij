@@ -191,6 +191,9 @@ jobs:
           npx playwright install --with-deps chromium
           node scripts/check-app-scaffold.mjs --eject
 
+      - name: Hosted optional features install and render only when selected
+        run: node scripts/check-hosted-features.mjs
+
       - name: Hosted Netlify export and digest upload acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci

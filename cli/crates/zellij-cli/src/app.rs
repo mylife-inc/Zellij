@@ -82,9 +82,10 @@ pub(crate) fn validate_engine(engine: &Utf8Path) -> Result<()> {
     if manifest["name"] != "@shebka/zellij"
         || manifest["version"] != template["engineVersion"]
         || manifest["zellij"]["wrapperConfigVersion"] != template["wrapperConfigVersion"]
+        || manifest["zellij"]["featureSelectionVersion"] != template["featureSelectionVersion"]
     {
         return Err(Error::InvalidArgument(format!(
-            "selected engine must be @shebka/zellij version {} from the matching built checkout",
+            "selected engine must be @shebka/zellij version {} with matching wrapper/feature capabilities; update the built engine or pull the current image",
             template["engineVersion"]
         )));
     }
@@ -92,6 +93,13 @@ pub(crate) fn validate_engine(engine: &Utf8Path) -> Result<()> {
         "bin/zellij.mjs",
         "next-config.mjs",
         "deployment-config.cjs",
+        "feature-config.cjs",
+        "feature-config.d.cts",
+        "optional-maths.mjs",
+        "optional-maths.d.mts",
+        "optional-mermaid.mjs",
+        "optional-mermaid.d.mts",
+        "disabled-feature.mjs",
         "src/index.ts",
         "dist/cli/check-bundle.js",
         "dist/cli/dev-bundle.js",

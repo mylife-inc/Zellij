@@ -8,6 +8,7 @@ import type { Pluggable } from 'unified';
 import { rehypeDiagrams } from './rehype-mermaid';
 
 import { loadMaths } from './maths';
+import { featureEnabled } from '../../feature-config.cjs';
 
 /** True when this build can typeset mathematics. `zel doctor` reports it. */
 export async function supportsMaths(): Promise<boolean> {
@@ -70,7 +71,7 @@ export async function mdxOptions() {
       remarkPlugins: [remarkGfm, ...remarkMaths!] as Pluggable[],
       rehypePlugins: [
         rehypeSlug,
-        rehypeDiagrams,
+        [rehypeDiagrams, { mermaid: featureEnabled('diagrams') }],
         ...rehypeMaths!,
         [
           rehypeShiki,

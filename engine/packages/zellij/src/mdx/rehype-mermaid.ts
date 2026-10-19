@@ -36,7 +36,7 @@ function fenceLanguage(node: Element): string | undefined {
  * The element is a custom tag rather than a `<div>` so the MDX component map
  * can claim it: only that gives the diagram a client component to hydrate with.
  */
-export const rehypeDiagrams: Plugin<[], Root> = () => (tree) => {
+export const rehypeDiagrams: Plugin<[{ mermaid?: boolean }?], Root> = (options = {}) => (tree) => {
   const visit = (node: Root | Element): void => {
     const children = node.children;
     if (!children) return;
@@ -53,7 +53,7 @@ export const rehypeDiagrams: Plugin<[], Root> = () => (tree) => {
         );
         const language = code ? fenceLanguage(code) : undefined;
 
-        if (code && language === 'mermaid') {
+        if (code && language === 'mermaid' && options.mermaid !== false) {
           children[i] = {
             type: 'element',
             tagName: 'mermaid-diagram',

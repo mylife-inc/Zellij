@@ -34,7 +34,7 @@ it('carries security constraints into standalone apps and feature changes', asyn
     expect(generated.dependencies.next).toBe(engine.peerDependencies.next);
     expect(generated.overrides).toEqual(engine.overrides);
     expect(root.overrides).toMatchObject(engine.overrides);
-    expect(generated.dependencies.mermaid).toBe(engine.optionalDependencies.mermaid);
+    expect(generated.dependencies.mermaid).toBe(engine.peerDependencies.mermaid);
     // Updating an older wrapper must add the same constraints.
     delete generated.overrides;
     await writeFile(path.join(target, 'package.json'), JSON.stringify(generated));
@@ -42,8 +42,26 @@ it('carries security constraints into standalone apps and feature changes', asyn
     const changed = JSON.parse(await readFile(path.join(target, 'package.json'), 'utf8'));
     expect(changed.overrides).toEqual(engine.overrides);
     expect(changed.dependencies.mermaid).toBeUndefined();
-    expect(changed.dependencies['remark-math']).toBe(engine.optionalDependencies['remark-math']);
+    expect(changed.dependencies['remark-math']).toBe(engine.peerDependencies['remark-math']);
   } finally {
     await rm(target, { recursive: true, force: true });
   }
+});
+
+it('records complete feature selections for initializers and later changes', async () => {
+  const target = await mkdtemp(path.join(os.tmpdir(), 'zellij-features-'));
+  try {
+    await init({ target, name: 'optional-fixture' });
+    const manifest = async () => JSON.parse(await readFile(path.join(target, 'package.json'), 'utf8'));
+    expect((await manifest()).zellij.features).toEqual([]);
+    expect((await manifest()).dependencies.mermaid).toBeUndefined();
+    await setFeatures(target, ['all']);
+    expect((await manifest()).zellij.features).toEqual(['maths', 'diagrams']);
+    await setFeatures(target, ['diagrams']);
+    expect((await manifest()).zellij.features).toEqual(['diagrams']);
+    expect((await manifest()).dependencies['remark-math']).toBeUndefined();
+    await setFeatures(target, []);
+    expect((await manifest()).zellij.features).toEqual([]);
+    expect((await manifest()).dependencies.mermaid).toBeUndefined();
+  } finally { await rm(target, { recursive: true, force: true }); }
 });
