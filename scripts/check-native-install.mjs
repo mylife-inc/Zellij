@@ -33,7 +33,7 @@ const server = createServer((request, response) => {
   const data = scenario === 'next' ? nextArchive : scenario === 'unsafe-archive' ? badArchive : bytes;
   if (file === name) {
     response.writeHead(200, { 'Content-Type': 'application/octet-stream' });
-    if (scenario === 'slow') { response.write(data.subarray(0, 1024)); setTimeout(() => response.end(data.subarray(1024)), 2000); }
+    if (scenario === 'slow') { response.write(data.subarray(0, 1024)); setTimeout(() => response.end(data.subarray(1024)), 5000); }
     else response.end(data);
     return;
   }
@@ -160,6 +160,8 @@ try {
   const slow = start(windows ? consoleExe : executable, windows ? [executable, ...slowArgs] : slowArgs, upgradeEnv);
   await until(() => requests.slice(beforeSlow).some(r => r.url === `/slow/${archive}`) || slow.exit !== undefined, 'Upgrade download never started');
   assert.equal(slow.exit, undefined, slow.stderr);
+  const concurrent = await run(executable, upgradeArgs('combined'), upgradeEnv, false);
+  assert.match(concurrent.stderr, /another upgrade holds the installation lock/);
   if (windows) slow.child.stdin.end('stop\n'); else slow.child.kill('SIGINT');
   await until(() => slow.exit !== undefined, 'Upgrade cancellation timed out');
   assert.notEqual(slow.exit, 0, slow.stdout);

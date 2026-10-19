@@ -2684,3 +2684,11 @@ Our reader rejects links and does not call those helpers, but the dependency
 has still been advanced to patched zip 9.0.5 with only deflate enabled. Its
 fallible filename decoding is checked explicitly. Final CI must use this update.
 Reference: https://rustsec.org/advisories/RUSTSEC-2026-0369.html
+
+Patched ZIP source d6b6bdd1e3d8aa3b3e45b40b9d72241cb24f3fa5 passed all six
+native package jobs in CI run 39189577614. Review then added a guard against
+an old running process overwriting a newer executable already installed at its
+path: after acquiring the lock, the on-disk executable must report the running
+process's version before downloading. Native acceptance now also launches a
+second updater during a held download and requires lock refusal. This follow-up
+must pass the final full CI before merge.

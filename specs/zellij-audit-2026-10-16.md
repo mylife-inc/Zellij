@@ -2057,3 +2057,9 @@ archive reader after RustSec's October 17 extraction advisories (0367–0369).
 No unsafe extraction helper is used; exact-entry checks and explicitly created
 output files remain the extraction policy. Final-head platform validation is
 required after this dependency update.
+
+Review also identified a stale-process downgrade race: a process started before
+another replacement could compare the requested release against its old compiled
+version, then snapshot a newer executable. Upgrade now verifies the on-disk
+version under the installation lock before downloading. Native acceptance also
+checks actual concurrent updater refusal during a stalled download.

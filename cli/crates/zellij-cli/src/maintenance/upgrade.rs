@@ -382,6 +382,15 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
 
     let executable = std::env::current_exe()?.canonicalize()?;
     let _lock = installation_lock(&executable)?;
+    // This process may have started before another updater replaced its path.
+    // Comparing only against the compiled version could then install a release
+    // older than the executable now on disk, despite holding the update lock.
+    if verify_binary(&executable, &current, &stop).is_err() {
+        cancelled(&stop)?;
+        return Err(failed(
+            "the executable on disk no longer matches this running version; run the currently installed zel and retry",
+        ));
+    }
     let metadata = fs::symlink_metadata(&executable)?;
     if !metadata.is_file() || zellij_core::site::is_link(&metadata) {
         return Err(failed("the current executable must be a regular file"));
