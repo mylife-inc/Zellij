@@ -45,9 +45,9 @@ function failure(args, overrides = {}) {
   assert(!String(error.stdout).includes('Serving at '));
   return String(error.stderr);
 }
-async function start(args, overrides = {}) {
+async function start(args, overrides = {}, cwd) {
   const child = spawn(windows ? consoleExe : binary, windows ? [binary, ...args] : args, {
-    env: { ...env, ...overrides }, stdio: ['pipe', 'pipe', 'pipe'],
+    env: { ...env, ...overrides }, cwd, stdio: ['pipe', 'pipe', 'pipe'],
   });
   const state = { child, stdout: '', stderr: '', exit: undefined, stopping: false };
   active.add(state);
@@ -174,6 +174,19 @@ try {
   console.log('Native serve/view: HTTP bytes/MIME/routes, prefix, port conflicts, containment, ready browser launch, no-open/failure recovery and real Ctrl-C passed.');
   await checkWatch({ temp, source, output, start, stop, snapshot, until });
   await checkSiteLayout({ temp, start, stop, snapshot, until });
+  const project = path.join(temp, 'Software project');
+  const docs = path.join(project, 'docs/zellij');
+  await mkdir(path.join(docs, 'content'), { recursive: true });
+  await writeFile(path.join(docs, 'zel.yaml'), 'version: 1\nrenderer: portable\nbuild: {out: preview}\npreview: {port: 0}\n');
+  await writeFile(path.join(docs, 'content/index.md'), '# Development start\n');
+  const dev = await start(['dev'], { DOCKER_HOST: 'not-a-runtime', DOCKER_CONTEXT: 'also-invalid' }, project);
+  assert((await body(dev.url)).includes('Development start'));
+  assert.equal(await exists(record), false, 'dev never launches the default browser');
+  await writeFile(path.join(docs, 'content/index.md'), '# Development edit\n');
+  await until(async () => (await body(dev.url)).includes('Development edit'), 'dev rebuild');
+  await stop(dev);
+  assert((await readFile(path.join(docs, 'preview/index.html'), 'utf8')).includes('Development edit'));
+  console.log('Portable dev: repository default, configured output/ephemeral port, no external tools/browser, rebuild and Ctrl-C passed.');
 } finally {
   for (const state of active) {
     try { await stop(state); } catch { state.child.kill(); }

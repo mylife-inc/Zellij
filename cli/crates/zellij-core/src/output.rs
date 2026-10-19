@@ -63,13 +63,18 @@ impl StaticOutput {
         })
     }
 
-    pub fn publish(self) -> Result<()> {
+    pub fn ensure_nonempty(&self) -> Result<()> {
         // Detect unshared output mounts before touching the previous build.
         if fs::read_dir(&self.directory)?.next().is_none() {
             return Err(Error::MountEmpty {
                 path: self.target.clone(),
             });
         }
+        Ok(())
+    }
+
+    pub fn publish(self) -> Result<()> {
+        self.ensure_nonempty()?;
         files::write_files(
             &self.directory,
             &[(Utf8Path::new(MARKER), SIGNATURE)],

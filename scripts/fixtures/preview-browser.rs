@@ -27,6 +27,7 @@ fn main() {
     let mut response = String::new();
     stream.read_to_string(&mut response).unwrap();
     assert!(response.starts_with("HTTP/1.1 200"), "{response}");
-    assert!(response.contains("Preview handbook"));
+    let expected = env::var("ZELLIJ_PREVIEW_EXPECT").unwrap_or_else(|_| "Preview handbook".into());
+    assert!(response.contains(&expected));
     fs::write(env::var_os("ZELLIJ_PREVIEW_RECORD").unwrap(), url).unwrap();
 }

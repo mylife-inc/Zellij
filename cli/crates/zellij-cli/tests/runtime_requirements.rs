@@ -57,6 +57,8 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["check", "content"],
         vec!["watch", "content"],
         vec!["dev", "content"],
+        vec!["view", "content", "--no-open"],
+        vec!["v", "content", "--watch", "--no-open"],
         vec!["image", "build", "content"],
         vec!["image", "static", "content"],
         vec!["si", "content"],

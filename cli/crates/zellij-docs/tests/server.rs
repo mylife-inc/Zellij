@@ -172,6 +172,34 @@ fn fixture() -> tempfile::TempDir {
 }
 
 #[test]
+fn next_export_directories_do_not_hide_flat_parent_pages() {
+    let root = fixture();
+    for (path, body) in [
+        ("manual.html", "Manual home"),
+        ("manual/next.html", "Next page"),
+        ("manual/next/__next._tree.txt", "RSC payload"),
+    ] {
+        let file = root.path().join(path);
+        fs::create_dir_all(file.parent().unwrap()).unwrap();
+        fs::write(file, body).unwrap();
+    }
+    let server = Running::start(root.path(), "/products/docs");
+    for (route, body) in [
+        ("manual", "Manual home"),
+        ("manual/next", "Next page"),
+        ("manual/next/__next._tree.txt", "RSC payload"),
+    ] {
+        let (status, _, content) =
+            server.request("GET", &format!("/products/docs/{route}?q=1"), None);
+        assert_eq!(status, 200, "{route}");
+        assert_eq!(content, body.as_bytes());
+    }
+    assert_eq!(server.request("GET", "/products/docs/manual/", None).0, 404);
+    // Existing directory-index routing and its canonical slash are unchanged.
+    assert_eq!(server.request("GET", "/products/docs/guide", None).0, 308);
+}
+
+#[test]
 fn queued_keep_alive_connections_all_progress_without_closing_other_clients() {
     use std::io::{BufRead, BufReader};
     // Queue a browser-like burst before the server accepts any connections.

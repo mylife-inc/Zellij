@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: YAML formatting and validation watch on
-`codex/cli-format-watch`; implementation and verification records are at the end.
+Latest CLI work: portable development and hosted static preview on
+`codex/cli-dev-hosted-view`; implementation and verification records are at the end.
+Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
 CI generation in PR #34 and Netlify delivery in PR #33. Current source is ahead
 of public native release `zellij-v0.1.3`.
@@ -2530,3 +2531,89 @@ returns OS-native paths. Splitting actual path components and joining with /
 fixes that preflight without reinterpreting Unix backslashes. Windows junction
 refusal and no-write tests already passed; all-platform acceptance must rerun
 on the fix before merge.
+
+
+### Implementation update — 2026-10-18, portable development and hosted preview
+
+PR #37 merged as b2771c81a2e69871abb69557c16b999dcaddd93c. Final head
+aaad79fa7b9aee3ab9073bcca8d93fcf54ab11cf passed all 13 jobs in CI 39176083582,
+including the Windows formatter correction. Merge CI 39177511838 and base-image
+run 39177511802 also succeeded. This closes the previous pending evidence.
+
+Current source makes portable dev equivalent to view --watch --no-open, with
+native validation/building, configured discovery/output/port, browser reload and
+no external-tool probe. Hosted dev retains Next.js development; port 0 now fails
+with guidance to use view --watch --port 0 instead of advertising an unusable URL.
+
+View/v now supports hosted static exports, with a native loopback HTTP server
+and an optional browser. The container engine returns a staged flat export and
+its actual resolved basePath. Index/prefix validation and a before/after source
+snapshot precede publication. Missing runtime, occupied port, export failure,
+changed source during build or cancellation preserves existing output. Metadata
+is removed before publication; ordinary build and deployment layouts are retained.
+
+The shared watch worker serializes/debounces builds and serves the last good
+site after errors. Hosted watches pin renderer/layout and basePath. Config or
+prefix changes show diagnostics; restoration recovers. Changed inputs during a
+hosted build discard its stage and trigger a new build. Ctrl-C stops HTTP and
+waits for the active build to finish cleanup, discarding its result; it does not
+immediately kill a long container build. Output/port remain fixed until restart.
+The reload client is injected only into HTTP responses. Portable exports retain
+file:// support; hosted exports continue to require HTTP serving.
+
+Local validation: all 265 Rust tests and warnings-denied Clippy passed on the
+final implementation, including the hosted-dev port-zero guard.
+Chromium/WebKit portable preview and dev acceptance passed. A standalone Rust
+runtime-protocol fixture exercises real native CLI orchestration and Chromium:
+prefix serving, browser readiness, reload/error recovery, configuration recovery,
+stale-build refusal, initial/rebuild cancellation and previous-output preservation.
+That fixture does not replace the real container renderer. CI now runs it on
+Linux/macOS/Windows and adds a separate actual hosted-engine browser test.
+Strict/deep local documentation validation and changed-workflow actionlint passed.
+
+No local daemon was started; no live provider, native release or public docs
+publication occurred. Public native release remains zellij-v0.1.3. Remaining work
+includes other deployment providers, maintenance commands, additional dev flags,
+compatible release distribution and documentation publication. Final source/PR
+and platform/container results will be appended.
+
+
+Portable-dev/hosted-preview implementation source:
+`e9e47deb23f68ee9dafcada6b4fe657377e4db05`, in
+[PR #38](https://github.com/mylife-inc/Zellij/pull/38). That PR tracks the final-head
+platform tests and real-container browser validation before authorized merge.
+
+
+PR #38 run 39180630629 caught a real Next export routing defect in the native
+server: a guide/ directory for child routes or RSC payloads hid guide.html when
+that directory lacked index.html. Resolution now falls through to the flat HTML
+page in that case, preserving existing directory-index redirects and containment.
+Nine HTTP server regression tests and warnings-denied Clippy pass. The real-engine
+browser test now runs earlier in CI, verifies the initial home redirect, and
+selects the preview error notice separately from Next's accessibility announcer.
+Final platform/container checks must rerun on this fix before merge.
+
+Local confirmation also served an existing real Next export through hosted view
+with the reload client injected. Chromium passed parent-route loading, navigation,
+reload, hydration and search without a local container daemon. The hosted CI
+search check waits for the client handler to attach instead of sending a shortcut
+immediately after receiving server-rendered HTML.
+
+
+PR #38 run 39181963487 passed the real exported home redirect, parent/child
+navigation and images with the routing fix. Its search step caught a fixture
+omission: hosted nav.search is opt-in, and this fixture had not enabled it.
+The fixture now explicitly sets nav.search: true. No renderer behavior changed
+for that test correction; final-head acceptance must still complete.
+
+
+PR #38 run 39182453254 passed real hosted preview end to end. The Windows
+orchestration fixture instead selected the runner's installed Docker client,
+exposing an existing engine bind-path defect: Rust canonical Windows paths use
+\\?\ prefixes that Docker rejects. Content and output mounts now use standard
+drive/UNC syntax; Unicode, spaces and Unix backslashes remain intact. All 22
+engine tests, Clippy and local hosted browser/lifecycle acceptance pass.
+The native fixture now removes case variants of PATH/endpoint keys, explicitly
+selects an isolated Podman executable, verifies that fixture performed the build,
+and rejects verbatim mount paths. CI runs it before the slower wrapper tests.
+Final-revision Windows and full-container validation are still required.

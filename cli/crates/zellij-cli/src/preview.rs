@@ -1,4 +1,5 @@
 //! Native static preview orchestration; build and serve share their normal paths.
+mod hosted;
 use std::{
     io::{self, Write},
     process::{Command, Stdio},
@@ -42,7 +43,7 @@ pub fn view(dir: Option<&str>, options: ViewOptions<'_>) -> Result<()> {
     let selected = crate::select_site(dir)?;
     let site = zellij_core::site::Site::load(&selected)?;
     if site.renderer != zellij_core::site::Renderer::Portable {
-        return Err(zellij_core::Error::InvalidArgument("view currently supports portable Markdown; use build followed by serve for hosted sites".into()));
+        return hosted::view(site, options);
     }
     // Reserve before writing output, so a bind failure cannot replace a site.
     let socket = listener(options.port.unwrap_or(site.port))?;
@@ -51,9 +52,29 @@ pub fn view(dir: Option<&str>, options: ViewOptions<'_>) -> Result<()> {
         .watch
         .then(|| Snapshot::site(&source, site.configured))
         .transpose()?;
-    let output = super::build_portable(source.as_str(), options.out, options.name, options.theme)?;
-    let mut server = StaticServer::from_listener(&output, socket, "/")?;
     let stop = signals()?;
+    let output = options
+        .out
+        .map(camino::Utf8PathBuf::from)
+        .unwrap_or(site.output);
+    let prepared = zellij_docs::prepare(
+        &source,
+        &output,
+        zellij_docs::BuildOptions {
+            name: options.name,
+            theme: options.theme,
+        },
+    );
+    if stop.load(Ordering::Acquire) {
+        println!("Stopped.");
+        return Ok(());
+    }
+    let report = prepared?.publish()?;
+    for warning in report.warnings {
+        eprintln!("warning: {warning}");
+    }
+    println!("✓ {output}  ({} HTML pages)", report.pages);
+    let mut server = StaticServer::from_listener(&output, socket, "/")?;
     let watcher = if let Some(initial) = initial {
         let live = Arc::new(LiveReload::default());
         server = server.with_reload(live.clone());
@@ -95,7 +116,7 @@ fn run(
     println!("Serving at {}", server.url());
     if watcher.is_some() {
         println!(
-            "Watching Markdown and assets. Successful rebuilds reload the browser. Press Ctrl-C to stop."
+            "Watching content and configuration. Successful rebuilds reload the browser. Press Ctrl-C to stop."
         );
     } else {
         println!("Press Ctrl-C to stop. Files are served as built; no watching or rebuilding.");

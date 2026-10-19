@@ -302,3 +302,14 @@ and hosted uses the container engine. Both honor configured-site discovery and
 explicit legacy roots. See contract stage 6b and the local fmt/watch references.
 Remaining work includes portable dev, hosted view, other providers, advanced
 maintenance and compatible release/public documentation publication.
+
+
+## 2026-10-18 development and preview update
+
+Portable dev is implemented through native watched preview, with no browser
+launch by default. View/v now supports hosted static content as well as portable
+Markdown, including watching, engine-resolved basePath and last-good export
+preservation. Hosted dev remains Next.js development; its port must be nonzero.
+See contract stage 6c and the local dev/view references for options and limits.
+Remaining work includes other providers, advanced maintenance, additional dev
+flags, compatible release packages and public documentation publication.

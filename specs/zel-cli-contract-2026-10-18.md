@@ -665,3 +665,27 @@ paths are reported without widening the root or changing renderer. Restoring
 valid inputs recovers. Ctrl-C waits for the active synchronous check then exits0;
 one-shot check remains the CI pass/fail operation. No output, server, browser or
 publication is created. Compatible release and public docs publication remain open.
+
+
+### Stage 6c — portable development and hosted preview (2026-10-18)
+
+Portable `dev [site]` now uses the native `view --watch --no-open` workflow,
+including configured-site discovery, output, port 0, browser reload and persistent
+file://-capable export. No runtime probe or browser launch occurs. Hosted `dev`
+retains Next.js development and requires a nonzero port. `--open`, `--host` and
+`--features` are still planned; use view for explicit browser/export options.
+
+`view` / `v` builds and serves both renderers. Hosted content needs a usable
+container runtime, while the HTTP server and launcher remain native. Its staged
+flat export carries the engine's resolved basePath for server routing; files stay
+in ordinary build layout. The reserved loopback port, stage/index/prefix checks,
+input snapshot comparison and cancellation check all precede publication.
+`--name` and `--theme` remain portable-only. Hosted output requires HTTP.
+
+`--watch` uses one serial worker with debounce, error notices and recovery.
+Hosted source changes during a build discard that export and trigger a fresh
+build. Configured layout, renderer, output, port and hosted basePath stay pinned;
+restore invalid inputs or restart for a new layout/prefix. Initial failures exit
+without browser launch. Ctrl-C stops serving, waits for any active build to finish
+cleanup and discards its stage. It does not immediately terminate a container
+build. Reload code is response-only, and retained portable files remain offline.

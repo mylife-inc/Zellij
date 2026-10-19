@@ -1,16 +1,19 @@
 ---
 title: zel view
-description: Build a Markdown folder, serve the portable site locally, and open a browser.
+description: Build portable or hosted content, serve the static site locally, and open a browser.
 ---
 
 <Callout type="tip" title="Available in source">
-`view` composes the native portable builder and static server. It needs no
-Docker or Node. A default browser is used unless you choose one or pass `--no-open`.
+`view` / `v` builds portable Markdown natively or hosted YAML/MDX through the
+container engine, then serves the export with the native HTTP server. Portable
+previews need no Docker or Node. A default browser opens unless you pass `--no-open`.
 Native release packages may lag the source version.
 </Callout>
 
 ```bash title="terminal"
-zel view ./docs
+zel view                         # configured-site discovery
+zel v docs/manual                # any configured site folder
+zel view ./docs                  # explicit raw Markdown or hosted content
 zel view ./docs --port 0
 zel view ./docs --watch
 zel view ./docs --out ./published-docs --name "Acme documentation" --theme forest
@@ -18,23 +21,29 @@ zel view ./docs --no-open --port 8080
 zel view ./docs --browser /path/to/browser
 ```
 
-`view` builds the supplied Markdown directory, prints the actual local URL,
+`view` builds the selected content, prints the actual local URL,
 and launches the system's default browser. The server remains in the terminal
-until **Ctrl-C**. The output stays on disk and still works by opening its
-`index.html` directly afterward.
+until **Ctrl-C**. The output stays on disk. Portable output also works by opening
+`index.html` directly; hosted output requires HTTP serving.
 
 ## Input and output
 
-Input is the same plain `.md`/`.markdown` folder accepted by
-[`zel build --target portable`](/cli/build#portable-markdown). Titles, automatic
-navigation, links, local assets, search, themes, validation, and rendering limits
-are identical. `view` always uses the portable target; structured YAML/MDX sites
-use `zel build --target static` followed by [`zel serve`](/cli/serve), or
-[`zel dev`](/cli/dev) for their development workflow.
+A configured site's `renderer` selects portable Markdown or hosted YAML/MDX.
+Explicit raw folders are detected the same way as `build`. Portable titles,
+navigation, assets, search, themes and rendering limits match
+[`zel build --target portable`](/cli/build#portable-markdown).
+
+Hosted previews run the same container engine export as `build --target static`.
+The server uses the engine-resolved `basePath` automatically, including nested
+prefixes. Files retain the normal flat build layout on disk. A usable Docker,
+Podman or nerdctl runtime is required for the build; missing prerequisites fail
+with exit code 4 before staging output or opening a server. Run `zel doctor` for
+setup guidance. The CLI never installs or starts a runtime for you.
 
 For configured sites, output defaults to `build.out` or `site/` beside `zel.yaml`.
 Legacy raw Markdown output defaults to the sibling `<input-folder>-site`. For example,
-`zel view ./docs` produces `./docs-site`. `--out` can choose another directory
+`zel view ./docs` produces `./docs-site`. Raw hosted content defaults to `./dist`
+in the working directory. `--out` can choose another directory
 outside the input. It must be new, empty, or a previous Zellij export. A failed
 build preserves the previous output and does not launch a browser.
 
@@ -58,8 +67,10 @@ does not block HTTP responses or Ctrl-C shutdown.
 
 ## Editing documents
 
-By default, `view` builds once. Add `--watch` to rebuild after Markdown or local
-asset edits, additions, and deletions, and automatically reload open HTTP previews:
+By default, `view` builds once. Add `--watch` to rebuild after content, configuration
+or local asset edits, additions and deletions, and reload open HTTP previews.
+Hosted watching performs a full container export each time, which takes longer
+than the native portable build:
 
 ```bash title="terminal"
 zel view ./docs --watch --port 0
@@ -82,10 +93,18 @@ scanned, so large asset trees cost more to watch; this is not an incremental
 compiler. Output must remain outside the source folder.
 
 Reloading requires JavaScript and the running HTTP preview. The reload client
-is added only to HTTP responses, never to exported files. The output can still
+is added only to HTTP responses, never to exported files. Portable output can still
 be moved and opened through `file://` with no server or network. Plain `view`
 and `serve` do not inject a reload client. Ctrl-C stops the server and watcher,
 retains the export, and waits for an in-progress staged build to finish cleanup.
+For hosted content this can take as long as the active container build. A cancelled
+build is discarded; it never replaces the previous export. If content changes
+during a hosted build, its stage is discarded and watch rebuilds the newer input.
+An initial build interrupted by edits exits with retry guidance.
+
+A hosted preview pins its initial `basePath`. Changing it while watching reports
+an error and preserves the old site. Restore the prefix or restart the command
+to use the new URL. Port and output settings also require a restart.
 
 Raw HTML rendering, MDX components, math, and Mermaid retain the portable
 builder's documented limits. Changing the name, theme, output, or port options
@@ -97,10 +116,10 @@ CLI name/theme overrides remain in effect.
 
 | Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | Configured portable site or explicit Markdown directory | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
-| `--out <path>` | Portable output directory | Configured `build.out`/`site/`, or legacy sibling `<input-folder>-site` |
-| `--name <text>` | Site header name | `zel.yaml` name, otherwise input folder name |
-| `--theme <name>` | One of `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
+| `[dir]` | Configured site or explicit raw content directory | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
+| `--out <path>` | Static output directory | Configured `build.out`/`site/`; raw portable sibling `<input-folder>-site`; raw hosted `./dist` |
+| `--name <text>` | Portable site header name | `zel.yaml` name, otherwise input folder name |
+| `--theme <name>` | Portable theme from `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--port <n>` | Loopback port; `0` chooses an available one | `preview.port`, otherwise `3000` |
 | `--watch` | Rebuild on source edits and reload the HTTP preview after success | Off |
 | `--no-open` | Print the URL without opening a browser | Off |
@@ -113,4 +132,6 @@ A versioned preview watches only `content/` and the sibling `zel.yaml`, ignoring
 `site/` and other files in the site root. Missing/invalid config and renderer or
 layout changes retain the last successful preview and show an error. Restore the
 config or restart preview. Port/output settings are fixed until restart.
-Hosted sites currently use `build` followed by `serve`; `view` remains portable-only.
+`--name` and `--theme` are refused for hosted previews. Set hosted presentation
+fields in `content/site.yaml`. To serve a retained hosted export later, use
+`zel serve --base-path /your/prefix` when its `basePath` is nonempty.

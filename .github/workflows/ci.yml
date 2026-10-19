@@ -118,6 +118,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Hosted preview orchestration and cancellation on the native platform
+        run: node scripts/check-hosted-preview.mjs
       - name: Native YAML formatting preserves authored sites
         run: node scripts/check-formatting.mjs
       - name: Native validation watch recovers from edits and stops on Ctrl-C
@@ -194,6 +196,13 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-validation-watch.mjs --hosted
 
+      - name: Hosted static preview rebuilds and reloads with the real engine
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: |
+          npx playwright install --with-deps chromium
+          node scripts/check-hosted-preview.mjs --real
+
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
@@ -201,7 +210,6 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: |
-          npx playwright install --with-deps chromium
           node scripts/check-static-images.mjs cli/target/debug/zel
 
       - name: Next image publication and portable/hosted browser acceptance

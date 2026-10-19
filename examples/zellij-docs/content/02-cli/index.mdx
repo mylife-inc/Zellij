@@ -46,7 +46,7 @@ for the default user location.
 
 Both current-source installers preserve an existing executable if validation
 fails. The Windows installer requires a native Windows archive; a Linux archive
-is used only inside WSL. Native portable `build`, `check`, `serve` and `view`
+is used only inside WSL. Native portable `build`, `check`, `dev`, `serve` and `view`
 need no container runtime.
 
 ## What it does
@@ -82,9 +82,9 @@ need no container runtime.
 | [`zel check`](/cli/check) | Check portable Markdown natively or hosted content with the engine | **Available** |
 | [`zel fmt`](/cli/fmt) | Format site YAML or check its formatting | **Available in source** |
 | [`zel watch`](/cli/watch) | Validate initially and after edits | **Available in source** |
-| [`zel dev`](/cli/dev) | Development server | **Available** |
+| [`zel dev`](/cli/dev) | Native portable editing loop or hosted Next.js development | **Available** |
 | [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
-| [`zel view`](/cli/view) | Build Markdown, serve it, and open a browser | **Available** |
+| [`zel view`](/cli/view) | Build portable or hosted content, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
 | [`zel deploy`](/cli/deploy) | Build and deploy static HTML to Netlify; shortcut `netlify` | **Available in source** |
 | [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available in source** |
@@ -131,8 +131,8 @@ keep their distinct meanings; they are not interchangeable site selectors.
 Commands that only read the content model — `explain`, `list`, `context`,
 `detect`, `convert`, `new`, `fmt` — are pure Rust and need nothing installed.
 
-Structured-content `check`, `watch`, `dev`, and hosted `build` commands run the Next.js
-engine in a container from a public image. Portable `build`, `check` and `watch` run
+Hosted `check`, `watch`, `dev`, `view` and `build` commands run the Next.js
+engine in a container from a public image. Portable `build`, `check`, `watch`, `dev` and `view` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image
 publication uses the container runtime. Netlify deployment is native for portable

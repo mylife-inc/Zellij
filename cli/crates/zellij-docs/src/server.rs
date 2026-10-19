@@ -95,12 +95,27 @@ fn url_path(raw: &str) -> std::result::Result<String, u16> {
 }
 
 impl StaticServer {
+    /// Validate a staged preview before it can replace a working export.
+    pub fn validate(root: &Utf8Path, base_path: &str) -> Result<()> {
+        Self::site(root, base_path, 0).map(|_| ())
+    }
     pub fn bind(root: &Utf8Path, port: u16, base_path: &str) -> Result<Self> {
         Self::from_listener(root, listener(port)?, base_path)
     }
 
     /// `view` reserves the port before building, then supplies that same socket.
     pub fn from_listener(root: &Utf8Path, listener: TcpListener, base_path: &str) -> Result<Self> {
+        let port = listener.local_addr()?.port();
+        let site = Self::site(root, base_path, port)?;
+        let url = format!("http://127.0.0.1:{port}{}/", encode(&site.prefix));
+        Ok(Self {
+            listener,
+            site: Arc::new(site),
+            url,
+        })
+    }
+
+    fn site(root: &Utf8Path, base_path: &str, port: u16) -> Result<Site> {
         let root = root.canonicalize_utf8()?;
         if !root.is_dir() {
             return Err(invalid("serve expects a generated site directory"));
@@ -109,7 +124,6 @@ impl StaticServer {
             invalid("--base-path must be an absolute URL path without traversal, query or fragment")
         })?;
         let prefix = prefix.trim_end_matches('/').to_owned();
-        let port = listener.local_addr()?.port();
         let site = Site {
             root,
             prefix,
@@ -124,12 +138,7 @@ impl StaticServer {
                 ));
             }
         }
-        let url = format!("http://127.0.0.1:{port}{}/", encode(&site.prefix));
-        Ok(Self {
-            listener,
-            site: Arc::new(site),
-            url,
-        })
+        Ok(site)
     }
 
     pub fn url(&self) -> &str {
@@ -253,21 +262,24 @@ impl Site {
                 } else {
                     format!("{relative}/index.html")
                 };
-                let index = self.file(&index)?.filter(|p| p.is_file()).ok_or(404u16)?;
-                if !path.ends_with('/') {
-                    let query = if query.is_empty() {
-                        String::new()
-                    } else {
-                        format!("?{query}")
-                    };
-                    return Ok(Resource::Redirect(format!("{}/{query}", encode(&path))));
+                if let Some(index) = self.file(&index)?.filter(|p| p.is_file()) {
+                    if !path.ends_with('/') {
+                        let query = if query.is_empty() {
+                            String::new()
+                        } else {
+                            format!("?{query}")
+                        };
+                        return Ok(Resource::Redirect(format!("{}/{query}", encode(&path))));
+                    }
+                    return Self::open(index);
                 }
-                return Self::open(index);
-            }
-            if file.is_file() && !local.ends_with('/') {
+                // Next exports guide.html alongside guide/ for child routes
+                // and RSC payloads. An index-less directory cannot hide it.
+            } else if file.is_file() && !local.ends_with('/') {
                 return Self::open(file);
+            } else {
+                return Err(404);
             }
-            return Err(404);
         }
         if !local.ends_with('/')
             && let Some(file) = self
