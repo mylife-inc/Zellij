@@ -895,7 +895,8 @@ Podman omits the unsupported Docker progress option. nerdctl push uses
 --all-platforms so a foreign single-platform image is not host-filtered.
 Build errors retain diagnostics and explain base-image/emulation prerequisites.
 No emulator/daemon starts locally. CI freezes the selection in both jobs and
-adds setup-qemu-action@v4 with arm64 only when ARM64 is selected. Generated
+selects native ubuntu-24.04-arm runners for ARM64 to avoid known emulated Node
+failures; AMD64/default workflows use ubuntu-latest. Generated
 workflows remain reviewable local artifacts with existing event/credential gates.
 
 Combined multi-architecture manifests are deliberately not implemented: Docker

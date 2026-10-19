@@ -474,7 +474,8 @@ si/ni, build --target image, saved publication/deploy, ship --image and CI.
 Optional image.platform supplies the default; CLI overrides it. image.name is
 now optional for local image builds, while publication still requires an
 explicit destination. Plans show the platform, ship retains it in zel.yaml,
-and generated CI freezes it in both jobs with ARM64 QEMU setup when selected.
+and generated CI freezes it in both jobs. A follow-up uses native ARM64 runners
+for generated workflows, avoiding known QEMU/Node failures in release builds.
 HTML/Netlify flags and unsupported/combined platform values fail before work.
 
 Podman builds omit Docker's unsupported --progress option. nerdctl pushes use

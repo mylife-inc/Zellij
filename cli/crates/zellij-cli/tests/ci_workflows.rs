@@ -448,7 +448,7 @@ fn workflows_keep_explicit_config_in_validation_build_and_delivery() {
 }
 
 #[test]
-fn image_platform_is_frozen_in_both_jobs_and_emulation_is_conditional() {
+fn image_platform_is_frozen_in_both_jobs_and_runner_matches_architecture() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     repo(root);
@@ -469,11 +469,18 @@ fn image_platform_is_frozen_in_both_jobs_and_emulation_is_conditional() {
         for job in ["verify", "publish"] {
             let steps = doc["jobs"][job]["steps"].as_array().unwrap();
             assert_eq!(
-                steps
-                    .iter()
-                    .any(|s| s["uses"] == "docker/setup-qemu-action@v4"),
-                expected == "linux/arm64"
+                doc["jobs"][job]["runs-on"],
+                if expected == "linux/arm64" {
+                    "ubuntu-24.04-arm"
+                } else {
+                    "ubuntu-latest"
+                }
             );
+            assert!(!steps.iter().any(|s| {
+                s["uses"]
+                    .as_str()
+                    .is_some_and(|action| action.contains("qemu"))
+            }));
             let build = steps
                 .iter()
                 .find(|s| s["name"].as_str().is_some_and(|n| n.starts_with("Build")))

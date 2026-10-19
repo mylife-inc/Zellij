@@ -103,6 +103,13 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
         return Err(invalid("platform requires image delivery"));
     }
+    // Use native runners: Node/Next RUN steps have previously crashed under
+    // QEMU in our release builds. Local cross-builds still use the caller's builder.
+    let runner = if *platform == Some(ImagePlatform::Arm64) {
+        "ubuntu-24.04-arm"
+    } else {
+        "ubuntu-latest"
+    };
     let platform_flag = platform
         .map(|p| format!(" --platform {p}"))
         .unwrap_or_default();
@@ -168,9 +175,6 @@ pub fn github(options: &CiOptions) -> Result<String> {
     let condition = publication_condition(settings);
     let delivering = !matches!(publish, Publish::Nothing);
     let mut steps = initial_steps(&version, selector);
-    if *platform == Some(ImagePlatform::Arm64) {
-        steps.push(json!({"name":"Enable ARM64 image builds", "uses":"docker/setup-qemu-action@v4", "with":{"platforms":"arm64"}}));
-    }
     let build = match publish {
         Publish::Image { kind, .. } => format!(
             "zel image {} {selector} --tag zel-ci-check:local",
@@ -180,14 +184,10 @@ pub fn github(options: &CiOptions) -> Result<String> {
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
     steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}")}));
-    let mut jobs =
-        json!({"verify": {"runs-on":"ubuntu-latest", "timeout-minutes":30, "steps": steps}});
+    let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
         let mut steps = initial_steps(&version, selector);
-        if *platform == Some(ImagePlatform::Arm64) {
-            steps.push(json!({"name":"Enable ARM64 image builds", "uses":"docker/setup-qemu-action@v4", "with":{"platforms":"arm64"}}));
-        }
         let mut permissions = json!({"contents":"read"});
         match publish {
             Publish::Image { .. } | Publish::LegacyImage => {
@@ -238,7 +238,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
             }
             Publish::Nothing => unreachable!(),
         }
-        jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":"ubuntu-latest", "timeout-minutes":30, "permissions":permissions, "steps":steps});
+        jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":runner, "timeout-minutes":30, "permissions":permissions, "steps":steps});
     }
     let mut doc = json!({
         "name":"Documentation", "on": events, "permissions":{"contents":"read"},
