@@ -2013,3 +2013,10 @@ with the reload client injected. Chromium passed parent-route loading, navigatio
 reload, hydration and search without a local container daemon. The hosted CI
 search check waits for the client handler to attach instead of sending a shortcut
 immediately after receiving server-rendered HTML.
+
+
+PR #38 run 39181963487 passed the real exported home redirect, parent/child
+navigation and images with the routing fix. Its search step caught a fixture
+omission: hosted nav.search is opt-in, and this fixture had not enabled it.
+The fixture now explicitly sets nav.search: true. No renderer behavior changed
+for that test correction; final-head acceptance must still complete.

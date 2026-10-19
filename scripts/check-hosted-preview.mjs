@@ -41,7 +41,7 @@ const tree = async folder => {
 };
 async function edit(title, prefix = '/products/manual', mode = 'ok') {
   if (real) {
-    await writeFile(path.join(content, 'site.yaml'), `name: Preview\nhome: guide\nbasePath: ${prefix}\n`);
+    await writeFile(path.join(content, 'site.yaml'), `name: Preview\nhome: guide\nbasePath: ${prefix}\nnav: {search: true}\n`);
     await writeFile(path.join(content, 'guide/index.mdx'), mode === 'fail' ? '---\ntitle: [\n---\n' : `# ${title}\n\n[Next](/guide/next)\n\n![Logo](/_zellij/assets/logo.svg)\n`);
   } else await writeFile(path.join(content, 'preview.txt'), `${title}\n${prefix}\n${mode}\n`);
 }
@@ -105,6 +105,7 @@ try {
     await page.reload();
     // Static HTML is visible before client effects attach their search handler.
     const dialog = page.getByRole('dialog');
+    await expect(page.locator('[data-zellij-search-trigger]')).toBeVisible();
     await expect.poll(async () => {
       if (await dialog.isVisible()) return true;
       await page.locator('[data-zellij-search-trigger]').click();
