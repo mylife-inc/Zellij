@@ -104,6 +104,8 @@ try {
     await page.reload();
     await page.keyboard.press('Control+k'); await page.getByRole('searchbox').fill('nebula');
     await page.getByRole('option', { name: /Nebula/ }).first().click();
+    await expect(page).toHaveURL(`${server.url}guide/next#nebula`);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Nebula', exact: true })).toBeVisible();
     await page.goto(`${server.url}guide?keep=1#top`);
   }
@@ -179,6 +181,9 @@ try {
     assert(!(await readdir(site)).some(name => name.startsWith('.zel-build-')));
   }
   console.log(`Hosted preview (${real ? 'real engine' : process.platform}): prefix, browser, rebuild/recovery, publication safety and shutdown passed.`);
+} catch (error) {
+  for (const state of active) console.error(`Preview stdout:\n${state.stdout.slice(-12000)}\nPreview stderr:\n${state.stderr.slice(-12000)}`);
+  throw error;
 } finally {
   await browser?.close();
   for (const state of active) {
