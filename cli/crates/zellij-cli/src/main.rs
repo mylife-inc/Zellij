@@ -15,6 +15,8 @@ use serde_json::json;
 use std::io::Write;
 mod ci;
 mod delivery;
+mod eject;
+mod features;
 mod formatting;
 mod images;
 mod imports;
@@ -136,6 +138,8 @@ fn main() {
         Command::Version => maintenance::version(cli.json),
         Command::Pull { ref image } => maintenance::pull(image.as_deref()),
         Command::Upgrade(ref options) => maintenance::upgrade::run(options),
+        Command::Eject(ref options) => eject::run(options),
+        Command::Features(ref options) => features::run(options),
         Command::Completions { shell } => args::completions(shell),
         Command::Ci(ref args) => match &args.action {
             Some(CiAction::Init { system, options }) => ci::generate(system, None, options),

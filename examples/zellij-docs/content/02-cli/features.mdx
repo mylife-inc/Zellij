@@ -1,0 +1,56 @@
+---
+title: features
+description: Select optional portable capabilities or editable-wrapper dependencies.
+---
+
+```bash
+zel features all
+zel features maths
+zel features diagrams --site-root docs/manual
+zel features maths,diagrams --site-root my-wrapper
+zel features none
+```
+
+The selection replaces the previous selection. Use `all` or `none` alone.
+The current directory's editable wrapper is selected first; otherwise normal
+site discovery uses `./zel.yaml`, then `./docs/zellij/zel.yaml`. `--site-root`
+selects a custom portable site or wrapper explicitly. The command runs natively
+without Docker, Node, package installation or network access.
+
+| Selection | Portable site | Editable Next.js wrapper |
+| --- | --- | --- |
+| `maths` | `markdown.math: true`, Mermaid off | Require remark-math and rehype-mathjax |
+| `diagrams` | `markdown.mermaid: true`, math off | Require mermaid |
+| `maths,diagrams` or `all` | Both enabled | Require all three packages |
+| `none` | Both disabled | Remove direct requirements for those packages |
+
+## Portable sites
+
+The command edits `zel.yaml`, preserving comments and unrelated settings.
+Run [`zel build`](/cli/build) afterward to apply the selection. The portable
+renderer uses its existing offline math and Mermaid implementations; no packages
+are downloaded. Anchors/aliases inside the `markdown` settings must be expanded
+before this command can safely edit them.
+
+## Editable wrappers
+
+Select a wrapper created by [`new app`](/cli/new) or [`eject`](/cli/eject), with
+`zellij.config.yaml` and a compatible built local engine dependency. The command
+updates the feature packages in `package.json` and the engine's required security
+overrides. Other manifest fields, unrelated dependencies and lockfiles remain.
+If a feature package is also declared in another dependency category, the command
+asks you to reconcile those declarations first.
+
+Run `npm install` in the wrapper afterward to reconcile dependencies and its
+lockfile. `none` removes direct requirements; it does not uninstall packages or
+guarantee their absence. The engine's optional/transitive dependencies may still
+be installed, so this is dependency selection, not a strict hosted rendering or
+package-exclusion switch. Portable settings are explicit rendering switches.
+
+A hosted content folder by itself has no npm manifest. Select its editable
+wrapper, or use a suitable engine image variant for container builds. The command
+does not write an ignored feature setting into hosted `zel.yaml`.
+
+Invalid selections, unsupported layouts and `--json` exit `2` before modification.
+Writes are staged and refuse detected concurrent edits. Available in current
+source; public `zellij-v0.1.3` predates it.

@@ -43,6 +43,15 @@ pub(crate) fn version(json: bool) -> Result<()> {
 
 pub(crate) fn pull(image: Option<&str>) -> Result<()> {
     let image = zellij_engine::configured_image(image);
+    validate_image(&image)?;
+    let engine = zellij_engine::ContainerEngine::detect(Some(&image))?;
+    println!("Pulling {image} with {}", engine.runtime().program);
+    engine.pull()?;
+    println!("Engine image ready: {image}");
+    Ok(())
+}
+
+pub(crate) fn validate_image(image: &str) -> Result<()> {
     // A digest is useful for reproducible engine selection, unlike image tags
     // being built/pushed, which cannot accept digest destinations.
     if let Some((name, digest)) = image.split_once('@') {
@@ -56,11 +65,7 @@ pub(crate) fn pull(image: Option<&str>) -> Result<()> {
             ));
         }
     } else {
-        zellij_core::delivery::validate_image_reference(&image)?;
+        zellij_core::delivery::validate_image_reference(image)?;
     }
-    let engine = zellij_engine::ContainerEngine::detect(Some(&image))?;
-    println!("Pulling {image} with {}", engine.runtime().program);
-    engine.pull()?;
-    println!("Engine image ready: {image}");
     Ok(())
 }

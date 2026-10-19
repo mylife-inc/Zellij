@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
-const zel = path.resolve(process.argv[2] ?? 'cli/target/debug/zel');
+const eject = process.argv.includes('--eject');
+const zel = path.resolve(process.argv.slice(2).find(arg => !arg.startsWith('--')) ?? 'cli/target/debug/zel');
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-app-scaffold-'));
 const engine = path.join(root, 'local engine #1%');
 const app = path.join(root, 'editable app');
@@ -42,11 +43,13 @@ async function ready(origin) {
   throw new Error('Generated wrapper did not become ready');
 }
 try {
-  const packageRoot = path.join(repo, 'engine/packages/zellij');
-  const manifest = JSON.parse(await readFile(path.join(packageRoot, 'package.json'), 'utf8'));
-  for (const file of ['package.json', ...manifest.files]) {
-    await mkdir(path.dirname(path.join(engine, file)), { recursive: true });
-    await cp(path.join(packageRoot, file), path.join(engine, file), { recursive: true });
+  if (!eject) {
+    const packageRoot = path.join(repo, 'engine/packages/zellij');
+    const manifest = JSON.parse(await readFile(path.join(packageRoot, 'package.json'), 'utf8'));
+    for (const file of ['package.json', ...manifest.files]) {
+      await mkdir(path.dirname(path.join(engine, file)), { recursive: true });
+      await cp(path.join(packageRoot, file), path.join(engine, file), { recursive: true });
+    }
   }
   await put(path.join(root, 'docs/manual/zel.yaml'), 'version: 1\nrenderer: hosted\n');
   await put(path.join(content, 'site.yaml'), 'name: External documentation\nhome: manual\nbasePath: /products/docs\n');
@@ -55,8 +58,17 @@ try {
   await put(path.join(content, 'manual/index.mdx'), original);
   await put(path.join(content, 'manual/next.mdx'), '# More documentation\n\n## Searchable heading\n\nSaffron passage.\n');
   await put(path.join(content, 'assets/logo.svg'), '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>');
-  run(zel, ['new', 'app', app, '--site-root', 'docs/manual', '--engine', engine, '--features', 'all'], root);
-  run(zel, ['na', starter, '--with-docs', '--engine', engine, '--features', 'all'], root);
+  if (eject) {
+    run(zel, ['eject', 'docs/manual', '--out', app], root);
+    run(zel, ['eject', '--with-docs', '--out', starter], root);
+    // Exercise selection after extraction, before installing the real engine.
+    run(zel, ['features', 'all', '--site-root', app], root);
+    run(zel, ['features', 'all', '--site-root', starter], root);
+    assert.equal(JSON.parse(await readFile(path.join(app, 'package.json'), 'utf8')).dependencies['@shebka/zellij'], 'file:vendor/zellij');
+  } else {
+    run(zel, ['new', 'app', app, '--site-root', 'docs/manual', '--engine', engine, '--features', 'all'], root);
+    run(zel, ['na', starter, '--with-docs', '--engine', engine, '--features', 'all'], root);
+  }
   npm(['install', '--no-audit', '--no-fund']);
   assert(!(await lstat(path.join(app, 'node_modules/@shebka/zellij'))).isSymbolicLink(), 'install-links must copy the engine');
   npm(['run', 'check', '--', '--deep', '--strict']);
@@ -94,7 +106,7 @@ try {
   assert.equal((await fetch(`${origin}/manual`)).status, 404);
   assert.equal((await fetch(`${origin}/products/docs/missing`)).status, 404);
   assert.equal(await readFile(path.join(content, 'manual/index.mdx'), 'utf8'), original);
-  console.log('Native app: installed local engine, starter/external checks, production build, navigation, reload, assets and search passed.');
+  console.log(`${eject ? 'Ejected' : 'Native'} app: installed local engine, starter/external checks, production build, navigation, reload, assets and search passed.`);
 } finally {
   if (server && server.exitCode === null && server.signalCode === null) {
     server.kill('SIGTERM');

@@ -3,8 +3,8 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: version reporting, engine pull and verified native upgrades on
-`codex/cli-maintenance`; implementation and verification records are at the end.
+Latest CLI work: editable distribution extraction and renderer-aware feature
+selection on `codex/cli-eject-features`. Maintenance commands merged in PR #39.
 Portable development and hosted static preview merged in PR #38.
 Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
@@ -2697,3 +2697,53 @@ Explicit-version `upgrade --check` is a local version comparison, not evidence
 that a release or platform asset exists. Its output/documentation now say this
 explicitly; only unpinned check mode queries the stable release channel. Actual
 installation always verifies the downloaded archive before replacement.
+
+
+### Maintenance merge / next milestone — 2026-10-18
+
+PR #39 merged as 3f8392c8628ed8148171a729b38b6d7bcf9151fe after all 13 jobs
+passed on final source 3173b717e2303f4c0d53bc1cfae6a3b07bc4ea5a (run
+39192023066). Post-merge CI 39193324796 and Base image 39193324795 both
+completed successfully on that merge. Local main was clean and synchronized.
+The next milestone implements eject and features; it does not publish a native
+release or deploy documentation.
+
+
+### Eject and features implementation — 2026-10-18
+
+The native CLI now registers `eject [site] --out <destination>` (or --with-docs)
+and `features <selection> [--site-root <path>]`. Eject copies the selected engine
+distribution's /app and /opt/zellij using a stopped runtime container. It stages,
+validates, cleans up and publishes only into new/empty output. Vendored engine
+sources use file:vendor/zellij; tsconfig excludes those source/test copies from
+the wrapper's own typecheck. External hosted content is referenced; image starter
+content moves to docs/zellij/content with zel.yaml. The historical 'no npm'
+promise was wrong: the distribution includes sources, not installed dependencies.
+Users run npm install afterward. Runtime discovery/prerequisites remain shared.
+Cancellation/copy failures attempt cleanup; cleanup failure reports the container
+name and does not publish. No local Docker daemon was started.
+
+Features maps maths/diagrams to portable markdown.math/markdown.mermaid switches
+or to a compatible editable wrapper's direct feature packages. Portable edits
+preserve YAML comments and unrelated spelling; alias/anchor targets are refused.
+Wrapper changes retain unrelated manifest data and lockfiles, with npm install
+left explicit. Hosted content without a wrapper is refused with useful guidance.
+The feature dependency mapping is shared with the generated engine template.
+
+A pre-existing engine limitation was confirmed: npm optionalDependencies may be
+installed even when a wrapper has no direct feature requirements. Hosted `none`
+therefore removes direct requirements, not rendering capability or all installed
+packages. Strict exclusion/explicit hosted capability switches remain follow-up
+work. The current documentation and historical spec corrections state this;
+portable toggles do control rendering. No zero-bug/completion claim is made.
+
+Local checks: 277 Rust tests, warnings-denied Clippy, Rust formatting,
+actionlint for the changed workflow, and deep/strict documentation validation
+(55 routes / 53 guide pages) passed. Native runtime-protocol acceptance exercises
+selected sources, digest overrides, movable engine references, feature changes,
+nonempty output, failed copy, incompatible engine, links and real Ctrl-C cleanup.
+CI adds the same extraction acceptance on Windows/macOS/Linux and a real-container
+eject + npm install + validation + production build + typecheck/browser check.
+Final CI evidence and merge status must be refreshed before relying on this work.
+Remaining work includes other providers/advanced options, the hosted dependency
+limitation, compatible native releases and documentation publication.
