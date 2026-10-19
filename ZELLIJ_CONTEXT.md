@@ -3,8 +3,8 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: shared --cwd and --site-root selection on
-`codex/cli-working-directory-selection`, source commit `58b7129`.
+Latest CLI work: explicit --config selection on `codex/cli-explicit-config`,
+source commit `1653d84`. Shared --cwd and --site-root merged in PR #42.
 Hosted rendering selection and optional-peer installs merged in PR #41.
 Eject/features merged in PR #40; maintenance
 commands merged in PR #39.
@@ -2832,3 +2832,50 @@ Remaining work includes explicit --config file selection, other advanced flags
 and deployment providers, matched native releases and documentation publication.
 The public native release is still zellij-v0.1.3 (2026-08-13), predating these
 features. No local Docker daemon, native release or manual deployment was started.
+
+
+### Explicit configuration selection — 2026-10-18
+
+PR #42 merged as 4cae19f628f8c8665a747452a8d56da8e20c1f2d after all 13 jobs
+passed on 1bb7e04eed7917bbb8cdc4a2166dc671156d21e5 (CI 39207701478).
+Post-merge Base image 39209473109 passed; CI 39209473176 was still completing
+its final conversion check when this milestone was prepared.
+
+Source 1653d84afb2b7ad065e0eb00c60ddd8d700c49db implements global --config.
+For example: zel b --cwd ../product --config docs/manual/preview.yaml.
+SiteInput distinguishes a directory from an explicitly selected file throughout
+core loading, portable compilation/adaptation, hosted commands, image/delivery
+composition, authoring, wrapper creation/extraction and CI. Site retains the
+normalized input and actual config path, so downstream operations and watcher
+reloads cannot rediscover a different file. No process-global configuration
+variable or temporary config copying is used.
+
+The selected YAML's parent determines root/content/output bases. Both versioned
+and legacy flat portable formats work; a missing explicit file cannot fall back
+to zel.yaml or raw Markdown. Regular-file and symlink/junction checks apply.
+Parser normalization retains aliases and rejects repeated, conflicting or
+inapplicable selectors before effects. --config and --site-root conflict, as do
+positional sites, authoring --dir, CI --content, --with-docs and image-run tags.
+The separate wrapper zellij.config.yaml format keeps its existing purpose.
+
+Watch tracks the chosen file, including hidden legacy config names, recovers after
+restoration and preserves previous exports on errors. Formatting and portable
+feature changes edit that file; check JSON reports its actual name. CI serializes
+the repository-relative file as SITE_CONFIG and consistently passes --config to
+check/build/delivery; site-folder change filters cover it. User paths remain data,
+not interpolated shell source. Default discovery and existing missing-content
+errors remain compatible.
+
+Local checks passed: 290 Rust tests, warnings-denied Clippy, formatting, targeted
+CI workflow lint, and strict/deep docs validation (55 routes, 53 guide pages,
+23 examples). Actual portable browser preview (Chromium/WebKit plus named-config
+Chromium), named-config validation watch/Ctrl-C, hosted preview with an isolated
+runtime fixture, and standalone wrapper npm install/build/typecheck/browser
+acceptance all passed. CI additionally exercises named hosted configs with its
+real engine and extraction path. Refresh final PR/head/checks before claiming
+cross-platform completion or merge. No local Docker daemon was started.
+
+Remaining work: shared output controls, additional deployment providers, other
+advanced/converter gaps from the contract, matched native releases and published
+documentation. Public zellij-v0.1.3 still predates these source capabilities;
+this milestone does not publish releases or manually deploy a site.

@@ -2183,3 +2183,27 @@ Clippy, formatting and strict/deep documentation validation passed (55 routes,
 three OS families; refresh the PR's final head/checks before claiming hosted
 validation. No new native release was published. Explicit --config, remaining
 advanced options, other deployment providers and documentation publication remain.
+
+
+### Explicit config-file selection — 2026-10-18
+
+PR #42's final source 1bb7e04eed7917bbb8cdc4a2166dc671156d21e5 passed all
+13 CI jobs in 39207701478 and merged as 4cae19f628f8c8665a747452a8d56da8e20c1f2d.
+Its Base image 39209473109 passed; post-merge CI 39209473176 was still finishing
+when this record was prepared.
+
+Fixing commit 1653d84afb2b7ad065e0eb00c60ddd8d700c49db closes the explicit
+--config contract gap. Shared SiteInput preserves the selected file across
+renderers, commands, previews, authoring and generated workflows. Invalid/deleted
+files fail instead of falling back to zel.yaml. Regression coverage includes
+invalid neighboring defaults, Unicode/spaced filenames, JSON diagnostics, config
+edits, hidden legacy config watch tracking, output preservation, unsupported or
+ambiguous selections, symlinks and CI quoting/delivery variants.
+
+All 290 Rust tests, warnings-denied Clippy, formatting, changed-workflow lint and
+strict/deep docs validation passed locally. Portable preview/browser/watch,
+named validation watch, hosted preview fixture and standalone named-config
+wrapper installation/build/typecheck/browser checks passed. Cross-platform and
+real-container evidence must be refreshed on the final PR head. No new native
+release, local Docker startup or manual live deployment occurred. Output controls,
+other providers, remaining advanced/converter coverage and publication remain.

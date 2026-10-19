@@ -417,3 +417,19 @@ All 284 Rust tests, Clippy with warnings denied, formatting and strict/deep docs
 validation passed locally. Cross-platform CI and merge evidence must be refreshed
 for this branch. Explicit --config, remaining advanced flags and other providers
 remain proposed. These source capabilities are not in public native release 0.1.3.
+
+
+### Explicit configuration files — 2026-10-18
+
+Source 1653d84afb2b7ad065e0eb00c60ddd8d700c49db implements global --config for
+existing-site workflows. The selected YAML and its parent replace normal config
+discovery; versioned and legacy portable layouts retain their path semantics.
+Conflicting/repeated selectors fail before effects, and missing files never
+fall back. Watch, formatter/features, diagnostics, images/delivery and generated
+CI retain the same selection. Wrapper zellij.config.yaml remains separate.
+
+Local verification passed: 290 Rust tests, Clippy, formatting, workflow lint,
+strict/deep docs and native preview/watch/hosted-fixture/wrapper acceptance.
+Refresh final CI and merge status for this source. Remaining shared output
+controls, additional providers and matched release/publication work are still
+unfinished; the public 0.1.3 executable predates these capabilities.
