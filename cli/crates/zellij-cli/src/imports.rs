@@ -184,7 +184,8 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
                 .as_deref()
                 .ok_or_else(|| Error::InvalidArgument("--image requires --tag".into()))?,
         )
-        .map(DeliveryPlan::Push);
+        .map(DeliveryPlan::Push)
+        .and_then(|plan| plan.with_platform(options.platform));
     }
     if options.provider.as_deref() != Some("netlify") || options.tag.is_some() {
         return Err(Error::InvalidArgument(
@@ -207,8 +208,12 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
 fn configuration(plan: &DeliveryPlan) -> String {
     match plan {
         DeliveryPlan::Push(image) => format!(
-            "{SITE_CONFIG}image:\n  name: {}\npublish:\n  action: push\n  image: {}\n",
+            "{SITE_CONFIG}image:\n  name: {}\n{}publish:\n  action: push\n  image: {}\n",
             yaml::string(&image.tag),
+            image
+                .platform
+                .map(|platform| format!("  platform: {platform}\n"))
+                .unwrap_or_default(),
             image.kind.as_str()
         ),
         DeliveryPlan::Netlify { site, .. } => format!(

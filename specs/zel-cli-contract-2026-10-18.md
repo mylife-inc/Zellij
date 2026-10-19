@@ -877,3 +877,35 @@ Shared immutable presentation settings are initialized once by the CLI before
 workers start; library callers retain the previous default without initialization.
 Output flags do not affect safety rules or environment selection. Additional
 providers, remaining advanced/converter scope and release/doc publication remain.
+
+
+## Stage 9a: single-platform container images (2026-10-19)
+
+Implemented `--platform linux/amd64|linux/arm64` on image static/next/build,
+si/ni, build/b --target image, saved publish/pub/deploy, ship --image, and CI
+image generation. Optional version-1 `image.platform` supplies the default;
+explicit CLI wins, omission retains runtime defaults. `image.name` is optional
+for local builds, but publication still requires an explicit destination.
+Legacy image build/tag behavior remains unchanged. No platform flag applies
+to run/push: those operate on an already built image. Invalid values/lists and
+irrelevant HTML/Netlify flags fail before build/write/publication.
+
+Image builds target all stages. Docker and nerdctl retain plain progress;
+Podman omits the unsupported Docker progress option. nerdctl push uses
+--all-platforms so a foreign single-platform image is not host-filtered.
+Build errors retain diagnostics and explain base-image/emulation prerequisites.
+No emulator/daemon starts locally. CI freezes the selection in both jobs and
+adds setup-qemu-action@v4 with arm64 only when ARM64 is selected. Generated
+workflows remain reviewable local artifacts with existing event/credential gates.
+
+Combined multi-architecture manifests are deliberately not implemented: Docker
+image-store capability, Podman manifest build/push behavior, and nerdctl index
+publication need a separate tested contract. Other architectures/Windows
+container images are outside the supported Linux distribution targets. This
+is independent of native zel releases for Linux/macOS/Windows x64/ARM64.
+
+Verification covers aliases, every renderer/image kind, saved defaults/overrides,
+delivery ordering and no-push-on-failure, all runtime argv, dry plans, retained
+ship configuration, and CI generation. CI adds a real ARM64 portable-image
+build/push/pull/HTTP round trip plus an AMD64 override. Full cross-architecture
+hosted/Next emulated builds are not claimed by that small acceptance fixture.

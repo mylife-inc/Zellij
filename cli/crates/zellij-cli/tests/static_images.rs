@@ -267,3 +267,88 @@ fn next_alias_adapts_markdown_and_cleans_context_on_failure() {
         assert!(!recipe.contains("nginx"));
     }
 }
+
+#[test]
+fn platforms_reach_every_image_build_and_cli_overrides_saved_defaults() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    for renderer in ["portable", "hosted"] {
+        fs::write(
+            root.join("docs/zellij/zel.yaml"),
+            format!("version: 1\nrenderer: {renderer}\nimage: {{platform: linux/arm64}}\n"),
+        )
+        .unwrap();
+        fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
+        let mut forms = vec![
+            vec!["si"],
+            vec!["ni"],
+            vec!["image", "static"],
+            vec!["image", "next"],
+        ];
+        if renderer == "hosted" {
+            forms.extend([vec!["image", "build"], vec!["b", "--target", "image"]]);
+        }
+        for form in forms {
+            for (extra, expected) in [
+                (vec![], "linux/arm64"),
+                (vec!["--platform", "linux/amd64"], "linux/amd64"),
+            ] {
+                let result = command(root).args(&form).args(extra).output().unwrap();
+                assert!(result.status.success(), "{form:?}: {result:?}");
+                let arguments = fs::read_to_string(root.join("arguments")).unwrap();
+                assert!(
+                    arguments.contains(&format!("--platform\n{expected}\n")),
+                    "{arguments}"
+                );
+                assert_eq!(arguments.matches("--platform").count(), 1);
+            }
+        }
+    }
+}
+
+#[test]
+fn runtime_build_and_push_arguments_preserve_foreign_platforms() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    let script = fs::read_to_string(root.join("bin/docker"))
+        .unwrap()
+        .replace(
+            "  *) exit 99;;",
+            "  push) printf '%s\\n' \"$@\" > pushed; exit 0;;\n  *) exit 99;;",
+        );
+    for (program, endpoint) in [
+        ("docker", "DOCKER_HOST"),
+        ("podman", "CONTAINER_HOST"),
+        ("nerdctl", "CONTAINERD_ADDRESS"),
+    ] {
+        fs::write(root.join(format!("bin/{program}")), &script).unwrap();
+        fs::set_permissions(
+            root.join(format!("bin/{program}")),
+            fs::Permissions::from_mode(0o755),
+        )
+        .unwrap();
+        for args in [
+            vec!["si", "--platform", "linux/arm64"],
+            vec!["ip", "fixture:latest"],
+        ] {
+            let out = command(root)
+                .env_remove("DOCKER_HOST")
+                .env(endpoint, "fixture")
+                .args(&args)
+                .output()
+                .unwrap();
+            assert!(out.status.success(), "{program} {args:?}: {out:?}");
+        }
+        let args = fs::read_to_string(root.join("arguments")).unwrap();
+        assert_eq!(args.contains("--progress"), program != "podman", "{args}");
+        assert!(args.contains("--platform\nlinux/arm64\n"));
+        let push = fs::read_to_string(root.join("pushed")).unwrap();
+        assert_eq!(
+            push.contains("--all-platforms"),
+            program == "nerdctl",
+            "{push}"
+        );
+    }
+}

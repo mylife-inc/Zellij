@@ -345,3 +345,18 @@ same configuration and defaults as the full command names.
 The [full CLI contract](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-contract-2026-10-18.md)
 records the remaining proposals. Current CI generation is documented in
 [`zel ci`](/cli/ci); runtime diagnostics are in [`zel doctor`](/cli/doctor).
+
+
+### Container platform default
+
+The version-1 `image` block also accepts optional `platform: linux/amd64` or
+`platform: linux/arm64`. For example, `image: {platform: linux/arm64}` is valid
+without a saved name for local image builds. Publication still requires
+`image.name` or `--tag`.
+
+All image build forms and image publication use this setting unless overridden
+by `--platform`. `ship --image --platform ...` saves it in the imported site;
+`ci` records the resolved choice in generated image workflows. It does not
+affect HTML builds or Netlify deployment. Omitting it uses the runtime default.
+Only one of these two Linux architectures is supported; combined manifests and
+other platform values are rejected. See [image platforms](/cli/image#select-the-image-platform).

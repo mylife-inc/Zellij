@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 use zellij_core::{
     Error, Result,
     ci::{Settings, Trigger},
-    delivery::ImageKind,
+    delivery::{ImageKind, ImagePlatform},
 };
 
 #[derive(Debug, Clone)]
@@ -27,6 +27,7 @@ pub struct CiOptions {
     pub settings: Settings,
     pub version: String,
     pub publish: Publish,
+    pub platform: Option<ImagePlatform>,
 }
 
 fn invalid(message: &str) -> Error {
@@ -97,7 +98,14 @@ pub fn github(options: &CiOptions) -> Result<String> {
         settings,
         version,
         publish,
+        platform,
     } = options;
+    if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
+        return Err(invalid("platform requires image delivery"));
+    }
+    let platform_flag = platform
+        .map(|p| format!(" --platform {p}"))
+        .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
     literal(site_root)?;
@@ -160,6 +168,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
     let condition = publication_condition(settings);
     let delivering = !matches!(publish, Publish::Nothing);
     let mut steps = initial_steps(&version, selector);
+    if *platform == Some(ImagePlatform::Arm64) {
+        steps.push(json!({"name":"Enable ARM64 image builds", "uses":"docker/setup-qemu-action@v4", "with":{"platforms":"arm64"}}));
+    }
     let build = match publish {
         Publish::Image { kind, .. } => format!(
             "zel image {} {selector} --tag zel-ci-check:local",
@@ -168,12 +179,15 @@ pub fn github(options: &CiOptions) -> Result<String> {
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
-    steps.push(json!({"name":"Build without publishing", "run":build}));
+    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}")}));
     let mut jobs =
         json!({"verify": {"runs-on":"ubuntu-latest", "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
         let mut steps = initial_steps(&version, selector);
+        if *platform == Some(ImagePlatform::Arm64) {
+            steps.push(json!({"name":"Enable ARM64 image builds", "uses":"docker/setup-qemu-action@v4", "with":{"platforms":"arm64"}}));
+        }
         let mut permissions = json!({"contents":"read"});
         match publish {
             Publish::Image { .. } | Publish::LegacyImage => {
@@ -207,9 +221,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
                 }}));
                 if let Some(tag) = tag {
-                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"")}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}")}));
                 } else {
-                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector)}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}"))}));
                 }
             }
             Publish::Netlify { site_id } => {
@@ -253,6 +267,7 @@ mod tests {
             settings: Settings::default(),
             version: "0.2.0-rc.1".into(),
             publish,
+            platform: None,
         }
     }
     fn parse(options: &CiOptions) -> Value {

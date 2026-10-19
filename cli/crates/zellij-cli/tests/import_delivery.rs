@@ -541,3 +541,40 @@ fn imports_reject_linked_document_directories_before_writing() {
     #[cfg(windows)]
     fs::remove_dir(root.join("source/docs")).unwrap();
 }
+
+#[test]
+fn ship_saves_the_platform_before_a_missing_runtime_and_dry_run_writes_nothing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "out",
+        "--image",
+        "static",
+        "--tag",
+        "acme/docs:v1",
+        "--platform",
+        "linux/arm64",
+    ];
+    let plan = command(root).args(args).arg("--dry-run").output().unwrap();
+    assert!(plan.status.success(), "{plan:?}");
+    assert!(String::from_utf8_lossy(&plan.stdout).contains("linux/arm64"));
+    assert!(!root.join("out").exists());
+    let result = command(root).args(args).output().unwrap();
+    assert!(!result.status.success());
+    assert!(
+        String::from_utf8_lossy(&result.stderr).contains("Import completed"),
+        "{result:?}"
+    );
+    let config = fs::read_to_string(root.join("out/zel.yaml")).unwrap();
+    assert!(config.contains("platform: linux/arm64"), "{config}");
+    let result = command(root)
+        .args(["pub", "out", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(result.status.success(), "{result:?}");
+    assert!(String::from_utf8_lossy(&result.stdout).contains("linux/arm64"));
+}

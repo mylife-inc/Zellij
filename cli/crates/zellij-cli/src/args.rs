@@ -1,5 +1,6 @@
 //! Command definitions, shortcuts and completion share one argument schema.
 use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
+use zellij_core::delivery::ImagePlatform;
 use zellij_core::site::SiteInput;
 
 // Each flattened shortcut declares its spelling, descriptive route, and mapping
@@ -311,6 +312,9 @@ pub(crate) enum Command {
         /// Image tag. `--target image` only.
         #[arg(long)]
         tag: Option<String>,
+        /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+        #[arg(long)]
+        platform: Option<ImagePlatform>,
 
         /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
         #[arg(long)]
@@ -477,6 +481,9 @@ pub(crate) enum ImageAction {
 
         #[arg(long)]
         tag: Option<String>,
+        /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+        #[arg(long)]
+        platform: Option<ImagePlatform>,
     },
     /// Run it locally — the last check before it goes anywhere.
     Run(ImageRunArgs),
@@ -506,6 +513,9 @@ pub(crate) struct CiInitArgs {
     /// Exact compatible release version. Overrides ci.zel-version.
     #[arg(long)]
     pub(crate) zel_version: Option<String>,
+    /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+    #[arg(long)]
+    pub(crate) platform: Option<ImagePlatform>,
     /// Override saved delivery with Netlify deployment.
     #[arg(long, conflicts_with = "target")]
     pub(crate) deploy: Option<String>,
@@ -709,6 +719,9 @@ pub(crate) struct SiteImageArgs {
     /// Image name; defaults to <site-name>-static:latest.
     #[arg(long)]
     pub(crate) tag: Option<String>,
+    /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+    #[arg(long)]
+    pub(crate) platform: Option<ImagePlatform>,
 }
 
 #[cfg(test)]
@@ -725,6 +738,9 @@ pub(crate) struct DeliveryArgs {
     /// Exact image reference for saved registry publication only.
     #[arg(long)]
     pub(crate) tag: Option<String>,
+    /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+    #[arg(long)]
+    pub(crate) platform: Option<ImagePlatform>,
     /// Existing Netlify site ID or domain; overrides NETLIFY_SITE_ID and publish.site.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
@@ -777,6 +793,9 @@ pub(crate) struct ShipArgs {
     /// Exact registry destination for --image.
     #[arg(long, requires = "image")]
     pub(crate) tag: Option<String>,
+    /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
+    #[arg(long, requires = "image")]
+    pub(crate) platform: Option<ImagePlatform>,
     /// Existing Netlify site ID or domain; defaults to NETLIFY_SITE_ID.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,

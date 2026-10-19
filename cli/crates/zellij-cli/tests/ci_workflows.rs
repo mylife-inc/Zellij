@@ -446,3 +446,73 @@ fn workflows_keep_explicit_config_in_validation_build_and_delivery() {
         previous
     );
 }
+
+#[test]
+fn image_platform_is_frozen_in_both_jobs_and_emulation_is_conditional() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0}\nimage: {name: 'ghcr.io/acme/docs:v1', platform: linux/arm64}\npublish: {action: push, image: static}\n",
+    );
+    for (extra, expected) in [
+        (vec![], "linux/arm64"),
+        (vec!["--platform", "linux/amd64"], "linux/amd64"),
+        (vec!["--target", "image"], "linux/arm64"),
+    ] {
+        let mut args = vec!["ci", "--force"];
+        args.extend(extra);
+        run(root, &args, 0);
+        let doc = workflow(root);
+        for job in ["verify", "publish"] {
+            let steps = doc["jobs"][job]["steps"].as_array().unwrap();
+            assert_eq!(
+                steps
+                    .iter()
+                    .any(|s| s["uses"] == "docker/setup-qemu-action@v4"),
+                expected == "linux/arm64"
+            );
+            let build = steps
+                .iter()
+                .find(|s| s["name"].as_str().is_some_and(|n| n.starts_with("Build")))
+                .unwrap();
+            assert!(
+                build["run"]
+                    .as_str()
+                    .unwrap()
+                    .contains(&format!("--platform {expected}")),
+                "{build}"
+            );
+        }
+    }
+    let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    for args in [
+        vec![
+            "ci",
+            "--force",
+            "--target",
+            "static",
+            "--platform",
+            "linux/amd64",
+        ],
+        vec![
+            "ci",
+            "--force",
+            "--deploy",
+            "netlify",
+            "--platform",
+            "linux/arm64",
+        ],
+    ] {
+        run(root, &args, 2);
+        assert_eq!(
+            fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+            previous
+        );
+    }
+    run(root, &["ci", "--force", "--target", "static"], 0);
+    let yaml = fs::read_to_string(root.join(".github/workflows/docs.yml")).unwrap();
+    assert!(!yaml.contains("--platform") && !yaml.contains("qemu"));
+}

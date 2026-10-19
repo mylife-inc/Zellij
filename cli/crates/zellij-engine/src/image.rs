@@ -13,7 +13,7 @@ use camino::Utf8Path;
 use std::io::Write;
 use std::process::Stdio;
 use zellij_core::process::CommandExt;
-use zellij_core::{Error, Result};
+use zellij_core::{Error, Result, delivery::ImagePlatform};
 
 use crate::ContainerEngine;
 
@@ -100,10 +100,10 @@ impl ContainerEngine {
         content: &Utf8Path,
         tag: &str,
         features: Option<&str>,
-        platforms: Option<&str>,
+        platform: Option<ImagePlatform>,
     ) -> Result<()> {
         let body = dockerfile(self.image(), features);
-        self.image_build_recipe(content, tag, &body, platforms)
+        self.image_build_recipe(content, tag, &body, platform)
     }
 
     /// Run one image build with an explicit recipe and context. The caller
@@ -113,18 +113,20 @@ impl ContainerEngine {
         content: &Utf8Path,
         tag: &str,
         body: &str,
-        platforms: Option<&str>,
+        platform: Option<ImagePlatform>,
     ) -> Result<()> {
         // Stream the Dockerfile: no temporary file can overwrite authored
         // content or accidentally become part of COPY's build context.
         let mut command = self.runtime().command();
         command
             .args(["build", "-f", "-", "-t", tag])
-            .args(["--progress", "plain"])
             .stdin(Stdio::piped());
 
-        if let Some(platforms) = platforms {
-            command.args(["--platform", platforms]);
+        if self.runtime().program != "podman" {
+            command.args(["--progress", "plain"]);
+        }
+        if let Some(platform) = platform {
+            command.args(["--platform", platform.as_str()]);
         }
 
         let mut child = command.arg(content.as_str()).zel_spawn()?;
@@ -141,7 +143,14 @@ impl ContainerEngine {
         }
         match child.wait()?.code() {
             Some(0) => Ok(()),
-            _ => Err(Error::BuildFailed),
+            _ => {
+                if let Some(platform) = platform {
+                    zellij_core::diagnosticln!(
+                        "Image build for {platform} failed. Check the runtime output: base images must provide this platform, and foreign-architecture RUN steps need a compatible builder or emulation. zel does not install emulators or start services."
+                    );
+                }
+                Err(Error::BuildFailed)
+            }
         }
     }
 
@@ -179,11 +188,14 @@ impl ContainerEngine {
             None => tag.to_owned(),
         };
 
-        let status = self
-            .runtime()
-            .command()
-            .args(["push", &target])
-            .zel_status()?;
+        let mut command = self.runtime().command();
+        command.arg("push");
+        // nerdctl otherwise selects the host platform, which may differ from
+        // the single-platform image just built. Push the complete local image.
+        if self.runtime().program == "nerdctl" {
+            command.arg("--all-platforms");
+        }
+        let status = command.arg(&target).zel_status()?;
 
         match status.code() {
             Some(0) => Ok(()),

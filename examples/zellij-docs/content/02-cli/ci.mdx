@@ -183,3 +183,20 @@ without dispatching anything. That exit is not evidence of a GitHub run.
 `--json` is unsupported for generation and dispatch and fails before work.
 GitLab, CircleCI, other deployment providers, and automatic release publication
 remain outside this implementation.
+
+
+## Image architecture
+
+For image delivery, `zel ci --platform linux/arm64` overrides `image.platform`.
+The generated workflow records the resolved selection explicitly in both
+verification and publication commands, including the legacy `--target image`
+form. `linux/amd64` is also supported; omitting both settings preserves the
+runtime default. Static HTML and Netlify CI reject an explicit `--platform` and
+ignore saved image architecture settings.
+
+ARM64 image workflows add
+[Docker's QEMU setup action](https://github.com/docker/setup-qemu-action) to both
+jobs before building, because the generated Ubuntu runner uses AMD64. This
+setup runs only when the committed workflow executes; generation does not
+change the local machine. Hosted/Next builds also require an ARM64 variant of
+the pinned engine image. Multi-platform image lists remain unsupported.

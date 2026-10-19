@@ -4,7 +4,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use zellij_core::site::SiteInput;
 use zellij_core::{
     Result,
-    delivery::{ImageKind as BuildKind, validate_image_reference},
+    delivery::{ImageKind as BuildKind, ImagePlatform, validate_image_reference},
     site::{Renderer, Site},
 };
 use zellij_engine::{ContainerEngine, static_image};
@@ -43,29 +43,43 @@ fn default_tag(site: &Site, kind: &str) -> String {
 /// Explicit CLI tags win over saved names; local-only defaults remain distinct.
 fn selected_tag(site: &Site, tag: Option<&str>, kind: BuildKind) -> Result<String> {
     let tag = tag
-        .or(site.image.as_ref().map(|image| image.name.as_str()))
+        .or(site.image.as_ref().and_then(|image| image.name.as_deref()))
         .map(str::to_owned)
         .unwrap_or_else(|| default_tag(site, kind.as_str()));
     validate_image_reference(&tag)?;
     Ok(tag)
 }
 
-pub(crate) fn static_image(dir: Option<&SiteInput>, tag: Option<&str>) -> Result<()> {
-    image(dir, tag, BuildKind::Static)
+pub(crate) fn static_image(
+    dir: Option<&SiteInput>,
+    tag: Option<&str>,
+    platform: Option<ImagePlatform>,
+) -> Result<()> {
+    image(dir, tag, BuildKind::Static, platform)
 }
-pub(crate) fn next_image(dir: Option<&SiteInput>, tag: Option<&str>) -> Result<()> {
-    image(dir, tag, BuildKind::Next)
+pub(crate) fn next_image(
+    dir: Option<&SiteInput>,
+    tag: Option<&str>,
+    platform: Option<ImagePlatform>,
+) -> Result<()> {
+    image(dir, tag, BuildKind::Next, platform)
 }
-fn image(dir: Option<&SiteInput>, tag: Option<&str>, kind: BuildKind) -> Result<()> {
+fn image(
+    dir: Option<&SiteInput>,
+    tag: Option<&str>,
+    kind: BuildKind,
+    platform: Option<ImagePlatform>,
+) -> Result<()> {
     let (site, content) = selection(dir)?;
     let tag = selected_tag(&site, tag, kind)?;
+    let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
     let engine = ContainerEngine::detect(None)?;
     zellij_core::statusln!(
         "  Content  {content}\n  Kind     {} ({:?})\n  Tag      {tag}\n",
         kind.as_str(),
         site.renderer
     );
-    build_image(&site, &content, &engine, kind, &tag)?;
+    build_image(&site, &content, &engine, kind, &tag, platform)?;
     zellij_core::statusln!(
         "\n✓ {tag}\n  Run it:   zel image run \"{tag}\"\n  Push it:  zel image push \"{tag}\""
     );
@@ -80,7 +94,11 @@ pub(crate) fn build_image(
     engine: &ContainerEngine,
     kind: BuildKind,
     tag: &str,
+    platform: Option<ImagePlatform>,
 ) -> Result<()> {
+    if let Some(platform) = platform {
+        zellij_core::statusln!("  Platform {platform}");
+    }
     match (kind, site.renderer) {
         (BuildKind::Static, Renderer::Portable) => {
             let temporary = tempfile::Builder::new().prefix("zel-image-").tempdir()?;
@@ -94,11 +112,14 @@ pub(crate) fn build_image(
                 zellij_core::diagnosticln!("warning: {warning}");
             }
             std::fs::remove_file(export.join(".zellij-output"))?;
-            engine.image_build_recipe(&export, tag, &static_image::portable(), None)
+            engine.image_build_recipe(&export, tag, &static_image::portable(), platform)
         }
-        (BuildKind::Static, Renderer::Hosted) => {
-            engine.image_build_recipe(content, tag, &static_image::hosted(engine.image()), None)
-        }
+        (BuildKind::Static, Renderer::Hosted) => engine.image_build_recipe(
+            content,
+            tag,
+            &static_image::hosted(engine.image()),
+            platform,
+        ),
         (BuildKind::Next, Renderer::Portable) => {
             let temporary = tempfile::Builder::new().prefix("zel-next-").tempdir()?;
             let adapted = Utf8Path::from_path(temporary.path())
@@ -110,9 +131,9 @@ pub(crate) fn build_image(
             for warning in report.warnings {
                 zellij_core::diagnosticln!("warning: {warning}");
             }
-            engine.image_build(&adapted, tag, Some(&report.features.join(",")), None)
+            engine.image_build(&adapted, tag, Some(&report.features.join(",")), platform)
         }
-        (BuildKind::Next, Renderer::Hosted) => engine.image_build(content, tag, None, None),
+        (BuildKind::Next, Renderer::Hosted) => engine.image_build(content, tag, None, platform),
     }
 }
 
