@@ -44,10 +44,12 @@ relative to `zel.yaml` (an absolute path is also accepted). Existing overlap and
 output-ownership protections still apply.
 
 Hosted sites use `renderer: hosted`. Their `zel.yaml` accepts only `version`,
-`renderer`, `build`, `preview`, `image`, and `publish`; put name, theme, navigation and branding in
+`renderer`, `build`, `preview`, `image`, `publish`, and `ci`; put name, theme, navigation and branding in
 `content/site.yaml` and the hosted content files. Renderer mismatches fail with
-an explanation. `dev` is currently hosted-only; `view` is currently portable-only.
-For a hosted static preview, use `build` followed by `serve`.
+an explanation. `dev` provides native watching for portable sites and Next.js development for
+hosted sites. `view` builds and serves either renderer, with optional browser
+launch and watching. Hosted `dev` requires a nonzero port; `view` supports port 0
+for either renderer.
 
 An explicit raw Markdown or hosted content folder remains supported. Existing
 flat portable configurations without `version` keep their original meaning:

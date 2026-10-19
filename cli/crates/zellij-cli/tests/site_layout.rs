@@ -186,7 +186,9 @@ fn hosted_roots_route_to_the_engine_and_native_commands_explain_mismatches() {
     assert!(String::from_utf8_lossy(&error.stderr).contains("hosted validation"));
     run(root, &["image", "dockerfile", "docs/manual"], 0);
     run(root, &["build", "docs/manual", "--target", "portable"], 2);
-    run(root, &["view", "docs/manual", "--no-open"], 2);
+    run(root, &["view", "docs/manual", "--name", "Portable only"], 2);
+    let error = run(root, &["dev", "docs/manual", "--port", "0"], 2);
+    assert!(String::from_utf8_lossy(&error.stderr).contains("view --watch --port 0"));
     run(root, &["new", "guide", "api", "--dir", "docs/manual"], 0);
     assert!(root.join("docs/manual/content/02-api/index.mdx").is_file());
     site(root, "docs/zellij");

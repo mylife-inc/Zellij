@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: YAML formatting and validation watch on
-`codex/cli-format-watch`; implementation and verification records are at the end.
+Latest CLI work: portable development and hosted static preview on
+`codex/cli-dev-hosted-view`; implementation and verification records are at the end.
+Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
 CI generation in PR #34 and Netlify delivery in PR #33. Current source is ahead
 of public native release `zellij-v0.1.3`.
@@ -2530,3 +2531,48 @@ returns OS-native paths. Splitting actual path components and joining with /
 fixes that preflight without reinterpreting Unix backslashes. Windows junction
 refusal and no-write tests already passed; all-platform acceptance must rerun
 on the fix before merge.
+
+
+### Implementation update — 2026-10-18, portable development and hosted preview
+
+PR #37 merged as b2771c81a2e69871abb69557c16b999dcaddd93c. Final head
+aaad79fa7b9aee3ab9073bcca8d93fcf54ab11cf passed all 13 jobs in CI 39176083582,
+including the Windows formatter correction. Merge CI 39177511838 and base-image
+run 39177511802 also succeeded. This closes the previous pending evidence.
+
+Current source makes portable dev equivalent to view --watch --no-open, with
+native validation/building, configured discovery/output/port, browser reload and
+no external-tool probe. Hosted dev retains Next.js development; port 0 now fails
+with guidance to use view --watch --port 0 instead of advertising an unusable URL.
+
+View/v now supports hosted static exports, with a native loopback HTTP server
+and an optional browser. The container engine returns a staged flat export and
+its actual resolved basePath. Index/prefix validation and a before/after source
+snapshot precede publication. Missing runtime, occupied port, export failure,
+changed source during build or cancellation preserves existing output. Metadata
+is removed before publication; ordinary build and deployment layouts are retained.
+
+The shared watch worker serializes/debounces builds and serves the last good
+site after errors. Hosted watches pin renderer/layout and basePath. Config or
+prefix changes show diagnostics; restoration recovers. Changed inputs during a
+hosted build discard its stage and trigger a new build. Ctrl-C stops HTTP and
+waits for the active build to finish cleanup, discarding its result; it does not
+immediately kill a long container build. Output/port remain fixed until restart.
+The reload client is injected only into HTTP responses. Portable exports retain
+file:// support; hosted exports continue to require HTTP serving.
+
+Local validation: all 265 Rust tests and warnings-denied Clippy passed before the
+final port-zero guard; final focused checks are recorded with the PR below.
+Chromium/WebKit portable preview and dev acceptance passed. A standalone Rust
+runtime-protocol fixture exercises real native CLI orchestration and Chromium:
+prefix serving, browser readiness, reload/error recovery, configuration recovery,
+stale-build refusal, initial/rebuild cancellation and previous-output preservation.
+That fixture does not replace the real container renderer. CI now runs it on
+Linux/macOS/Windows and adds a separate actual hosted-engine browser test.
+Strict/deep local documentation validation and changed-workflow actionlint passed.
+
+No local daemon was started; no live provider, native release or public docs
+publication occurred. Public native release remains zellij-v0.1.3. Remaining work
+includes other deployment providers, maintenance commands, additional dev flags,
+compatible release distribution and documentation publication. Final source/PR
+and platform/container results will be appended.

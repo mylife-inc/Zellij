@@ -53,11 +53,16 @@ impl LiveReload {
         self.state.write().unwrap_or_else(|e| e.into_inner()).error = Some(error);
     }
     pub fn publish(&self, build: PreparedBuild) -> Result<BuildReport> {
+        self.publish_with(|| build.publish())
+    }
+    /// Keep file opens and revision changes on the same side of publication,
+    /// regardless of whether a native or container renderer prepared the site.
+    pub fn publish_with<T>(&self, publish: impl FnOnce() -> Result<T>) -> Result<T> {
         // HTTP holds the read side only while opening files/creating responses,
         // never while writing to a possibly stalled client. It cannot observe
         // the directory swap gap or an HTML/revision mismatch.
         let mut revision = self.state.write().unwrap_or_else(|e| e.into_inner());
-        let report = build.publish()?;
+        let report = publish()?;
         revision.generation += 1;
         revision.error = None;
         Ok(report)
@@ -186,6 +191,48 @@ impl Watcher {
         let configured = zellij_core::site::Site::load(&options.source)
             .map_err(io::Error::other)?
             .configured;
+        let source = options.source.clone();
+        let publish = live.clone();
+        let signal = stop.clone();
+        Self::spawn_with(
+            initial,
+            live,
+            stop,
+            move || Snapshot::site(&source, configured),
+            move |_| {
+                let prepared = crate::prepare_layout(
+                    &options.source,
+                    &options.output,
+                    BuildOptions {
+                        name: options.name.as_deref(),
+                        theme: options.theme.as_deref(),
+                    },
+                    Some(configured),
+                )?;
+                if signal.load(Ordering::Acquire) {
+                    return Ok(None);
+                }
+                let report = publish.publish(prepared)?;
+                for warning in report.warnings {
+                    eprintln!("warning: {warning}");
+                }
+                Ok(Some(format!(
+                    "Rebuilt {} HTML pages; reloading preview.",
+                    report.pages
+                )))
+            },
+        )
+    }
+
+    /// Share debounce, error recovery and worker ownership across renderers.
+    /// A rebuild returns None after cancellation, leaving its stage unpublished.
+    pub fn spawn_with(
+        initial: Snapshot,
+        live: Arc<LiveReload>,
+        stop: Arc<AtomicBool>,
+        snapshot: impl Fn() -> Result<Snapshot> + Send + 'static,
+        rebuild: impl Fn(&Snapshot) -> Result<Option<String>> + Send + 'static,
+    ) -> io::Result<Self> {
         let signal = stop.clone();
         let task = thread::Builder::new()
             .name("zel-watch".into())
@@ -197,8 +244,7 @@ impl Watcher {
                     if signal.load(Ordering::Acquire) {
                         break;
                     }
-                    let current =
-                        Snapshot::site(&options.source, configured).map_err(|e| e.to_string());
+                    let current = snapshot().map_err(|e| e.to_string());
                     if current != observed {
                         observed = current;
                         continue;
@@ -207,29 +253,10 @@ impl Watcher {
                         continue;
                     }
                     attempted = current.clone();
-                    let result = current.and_then(|_| {
-                        let prepared = crate::prepare_layout(
-                            &options.source,
-                            &options.output,
-                            BuildOptions {
-                                name: options.name.as_deref(),
-                                theme: options.theme.as_deref(),
-                            },
-                            Some(configured),
-                        )
-                        .map_err(|e| e.to_string())?;
-                        if signal.load(Ordering::Acquire) {
-                            return Ok(None);
-                        }
-                        live.publish(prepared).map(Some).map_err(|e| e.to_string())
-                    });
+                    let result =
+                        current.and_then(|input| rebuild(&input).map_err(|e| e.to_string()));
                     match result {
-                        Ok(Some(report)) => {
-                            for warning in report.warnings {
-                                eprintln!("warning: {warning}");
-                            }
-                            println!("Rebuilt {} HTML pages; reloading preview.", report.pages);
-                        }
+                        Ok(Some(message)) => println!("{message}"),
                         Ok(None) => break,
                         Err(error) => {
                             eprintln!("Rebuild failed; keeping the last successful site.\n{error}");

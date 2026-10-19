@@ -20,7 +20,7 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
     await rm(extra, { force: true });
     await rm(path.join(source, 'zel.yaml'), { force: true });
     const server = await start(['view', source, '--out', output, '--port', '0', '--no-open', '--watch']);
-    assert(server.stdout.includes('Watching Markdown and assets'));
+    assert(server.stdout.includes('Watching content and configuration'));
     const status = async () => {
       const response = await fetch(`${server.url}_zellij/preview.json`);
       assert.equal(response.status, 200); return response.json();

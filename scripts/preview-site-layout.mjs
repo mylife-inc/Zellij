@@ -16,7 +16,7 @@ export async function checkSiteLayout({ temp, start, stop, snapshot, until }) {
     await writeFile(config, settings('Before config edit'));
     await writeFile(path.join(content, 'index.md'), '# Configured home\n');
     await writeFile(path.join(root, 'private.md'), '# Unpublished\n[Broken](absent.md)\n');
-    const server = await start(['v', root, '--watch', '--no-open']);
+    const server = await start(engine === 'chromium' ? ['dev', root] : ['v', root, '--watch', '--no-open']);
     const status = () => fetch(`${server.url}_zellij/preview.json`).then(r => r.json());
     const browser = await ({ chromium, webkit })[engine].launch();
     try {

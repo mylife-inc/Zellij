@@ -246,6 +246,25 @@ fn dev(dir: Option<&str>, port: Option<u16>) -> zellij_core::Result<()> {
     let dir = select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
     let port = port.unwrap_or(site.port);
+    if site.renderer == zellij_core::site::Renderer::Portable {
+        return preview::view(
+            Some(dir.as_str()),
+            preview::ViewOptions {
+                out: None,
+                name: None,
+                theme: None,
+                port: Some(port),
+                no_open: true,
+                browser: None,
+                watch: true,
+            },
+        );
+    }
+    if port == 0 {
+        return Err(zellij_core::Error::InvalidArgument(
+            "hosted dev requires --port 1–65535; use view --watch --port 0 for an automatically selected static preview port".into(),
+        ));
+    }
     let content = resolve_content(dir.as_str())?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 

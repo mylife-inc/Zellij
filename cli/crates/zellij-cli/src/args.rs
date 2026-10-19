@@ -178,7 +178,7 @@ pub(crate) enum Command {
         strict: bool,
     },
 
-    /// Development server. Edit content, reload the page.
+    /// Authoring server: native portable watch/preview or hosted Next.js development.
     Dev {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<String>,
@@ -261,15 +261,17 @@ pub(crate) enum Command {
         base_path: String,
     },
 
-    /// Build a portable Markdown site, serve it locally, and open a browser.
+    /// Build a portable or hosted static site, serve locally, and open a browser.
     #[command(visible_alias = "v")]
     View {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<String>,
         #[arg(long)]
         out: Option<String>,
+        /// Portable site name; hosted sites use content/site.yaml.
         #[arg(long)]
         name: Option<String>,
+        /// Portable theme; hosted sites use content/site.yaml.
         #[arg(long)]
         theme: Option<String>,
         /// Local port; use 0 to choose an available port.

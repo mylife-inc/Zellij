@@ -35,6 +35,35 @@ pub struct ContainerEngine {
     image: String,
 }
 
+enum ExportLayout {
+    Flat,
+    Deployment,
+    Preview,
+}
+
+/// A hosted preview is validated and may be discarded before replacing output.
+pub struct PreparedPreview {
+    output: crate::output::StaticOutput,
+    pub base_path: String,
+}
+impl PreparedPreview {
+    pub fn directory(&self) -> &Utf8Path {
+        &self.output.directory
+    }
+    pub fn publish(self) -> Result<()> {
+        self.output.publish()
+    }
+}
+
+fn take_prefix(output: &crate::output::StaticOutput) -> Result<String> {
+    output.ensure_nonempty()?;
+    let metadata = output.directory.join(".zellij-deployment.json");
+    let prefix =
+        serde_json::from_slice(&std::fs::read(&metadata)?).map_err(|_| Error::BuildFailed)?;
+    std::fs::remove_file(metadata)?;
+    Ok(prefix)
+}
+
 impl ContainerEngine {
     pub fn new(runtime: Runtime, image: impl Into<String>) -> Self {
         Self {
@@ -346,7 +375,8 @@ impl Engine for ContainerEngine {
                 reason: "only --target static is implemented so far".into(),
             });
         }
-        self.export(content, out, false)
+        self.prepare_export(content, out, ExportLayout::Flat)?
+            .publish()
     }
 }
 
@@ -354,15 +384,26 @@ impl ContainerEngine {
     /// Export once into an HTTP-root layout, mounting files at the same basePath
     /// resolved by Next. Ordinary `build` exports retain their existing layout.
     pub fn build_for_deployment(&self, content: &Utf8Path, out: &Utf8Path) -> Result<String> {
-        self.export(content, out, true)?;
-        let metadata = out.join(".zellij-deployment.json");
-        let prefix: String =
-            serde_json::from_slice(&std::fs::read(&metadata)?).map_err(|_| Error::BuildFailed)?;
-        std::fs::remove_file(metadata)?;
+        let output = self.prepare_export(content, out, ExportLayout::Deployment)?;
+        let prefix = take_prefix(&output)?;
+        output.publish()?;
         Ok(prefix)
     }
 
-    fn export(&self, content: &Utf8Path, out: &Utf8Path, mounted: bool) -> Result<()> {
+    /// Flat export files, with the actual prefix resolved by the engine. The
+    /// caller validates that prefix and controls publication/cancellation.
+    pub fn prepare_preview(&self, content: &Utf8Path, out: &Utf8Path) -> Result<PreparedPreview> {
+        let output = self.prepare_export(content, out, ExportLayout::Preview)?;
+        let base_path = take_prefix(&output)?;
+        Ok(PreparedPreview { output, base_path })
+    }
+
+    fn prepare_export(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        layout: ExportLayout,
+    ) -> Result<crate::output::StaticOutput> {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!("{}:/app/node_modules", self.modules_volume());
@@ -387,10 +428,14 @@ impl ContainerEngine {
         // the directory belongs to whoever the command really ran as.
         let handback = own_output_as(&output.directory);
 
-        let copy = if mounted {
-            r#"node -e 'const fs = require("node:fs"); const p = require("./node_modules/@shebka/zellij/deployment-config.cjs").resolveContentLocation().basePath || ""; fs.mkdirSync("/out" + p, {recursive:true}); fs.cpSync("/app/out", "/out" + p, {recursive:true}); fs.writeFileSync("/out/.zellij-deployment.json", JSON.stringify(p));'"#
-        } else {
-            "cp -a out/. /out/"
+        let copy = match layout {
+            ExportLayout::Deployment => {
+                r#"node -e 'const fs = require("node:fs"); const p = require("./node_modules/@shebka/zellij/deployment-config.cjs").resolveContentLocation().basePath || ""; fs.mkdirSync("/out" + p, {recursive:true}); fs.cpSync("/app/out", "/out" + p, {recursive:true}); fs.writeFileSync("/out/.zellij-deployment.json", JSON.stringify(p));'"#
+            }
+            ExportLayout::Preview => {
+                r#"node -e 'const fs = require("node:fs"); const p = require("./node_modules/@shebka/zellij/deployment-config.cjs").resolveContentLocation().basePath || ""; fs.cpSync("/app/out", "/out", {recursive:true}); fs.writeFileSync("/out/.zellij-deployment.json", JSON.stringify(p));'"#
+            }
+            ExportLayout::Flat => "cp -a out/. /out/",
         };
         let script = guarded(
             WRAPPER_CONTENT,
@@ -421,7 +466,7 @@ impl ContainerEngine {
                 path: content.to_owned(),
             }),
             Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
-            Some(0) => output.publish(),
+            Some(0) => Ok(output),
             _ => Err(Error::BuildFailed),
         }
     }

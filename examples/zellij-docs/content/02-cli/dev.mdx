@@ -1,159 +1,95 @@
 ---
 title: zel dev
-description: A development server for a content folder, without installing Node.
+description: Edit portable Markdown with native preview or hosted content with Next.js development.
 ---
 
-<Callout type="tip" title="Available">
-Hosted sites work today. Portable authoring currently uses `zel view --watch --no-open`.
+<Callout type="tip" title="Available in source">
+Portable `dev` builds, serves and watches natively. Hosted `dev` runs the Next.js
+development engine in a container. Neither opens a browser automatically.
+Native release packages may lag the source version.
 </Callout>
 
 ```bash title="terminal"
-zel dev
-zel dev ./docs --port 4000
+zel dev                         # ./zel.yaml, then ./docs/zellij/zel.yaml
+zel dev docs/manual             # a custom configured site or raw content folder
+zel dev --port 4000
 ```
 
-```
-  Engine   ghcr.io/mylife-inc/zellij-base:latest
-  Content  ./content
-  Serving  http://localhost:3000
+The selected site's renderer determines the editing workflow. A configured site
+reads `content/`; the folder containing `zel.yaml` can have any name.
+`--port` overrides `preview.port`, which defaults to 3000.
 
-  Edit anything under ./content and reload. Ctrl-C to stop.
+## Portable Markdown
 
-✓ /app/content
-  site        Acme · theme cupertino
-  pages       6
-  guides      1 (5 pages) · /guide
-```
+Portable `dev` is the same editing loop as [`zel view --watch --no-open`](/cli/view):
+it validates and builds the documents, prints a loopback HTTP URL, and watches
+for content and configuration edits. Open the URL yourself, or use `view --watch`
+when you want the browser opened automatically.
 
-Edit a YAML file, save it, reload the page. Add a page to `pages.yaml` and the
-route appears.
+No Docker, Node or other runtime is needed. Use `--port 0` to choose an available
+port automatically. The initial build must succeed before serving; later failures
+show a preview notice and keep the last successful site available. Correct the
+source to rebuild and reload open browser pages.
 
-## What it is for
+Output defaults to `build.out` or `site/` beside `zel.yaml`. A raw Markdown folder
+uses the sibling `<folder>-site`. Ctrl-C stops the preview and watcher, retaining
+the generated site. You can still open its `index.html` directly without a server.
+The port and output location stay fixed for the session; restart to change them.
+See [editing documents](/cli/view#editing-documents) for watching and recovery limits.
 
-You are writing, not running a project.
+## Hosted YAML and MDX
 
-There is no `package.json` in your folder, no Node version to match, no
-lockfile, and nothing left behind when you stop. The engine is a Next.js
-application, and `zel dev` runs it **in a container** with your folder mounted —
-so the machinery that renders your site is never something you installed,
-upgraded, or have to think about.
+For a hosted site, `dev` mounts the content into the container engine, validates
+it, installs the wrapper's dependencies into a reusable named volume, and runs
+Next.js development mode. It leaves no static export behind. The first run may
+need to download the engine image and dependencies; later runs reuse them.
+A usable Docker, Podman or nerdctl runtime is required. Missing prerequisites
+produce setup guidance and exit code 4; `zel` does not install or start them.
 
-That is the whole design. Someone writing documentation should need a text
-editor and this command.
+Hosted `dev` needs a port between 1 and 65535. For a hosted static preview with
+an automatically selected port, use `zel view --watch --port 0` instead.
 
-## What happens when you run it
+The engine watches content edits, additions and deletions, including images and
+guide routes. After a short debounce it refreshes public assets, fingerprints and
+the search index. Save and reload the page to see changes; reopening the search
+dialog fetches the updated index. Automatic browser reload for hosted **dev**
+content edits is not implemented. Hosted **view --watch** provides that behavior
+by rebuilding the static export.
 
-<Steps>
-<Step title="Finds your content">
-[The usual resolution](/cli/#how-a-command-finds-your-content), or the folder you
-named. It stops rather than guessing at something that merely contains Markdown.
-</Step>
-<Step title="Validates it">
-The same pass as [`zel check`](/cli/check), in the same container. A broken
-folder is reported in about a second — before the install, not after it.
-</Step>
-<Step title="Installs what this site needs">
-The base image carries the engine and installs nothing, so the first run fetches
-Next.js and whatever your content asks for. It goes into a named volume keyed to
-the image, so the **second run starts in seconds**.
-</Step>
-<Step title="Serves">
-Next.js in development mode, bound inside the container and published to your
-machine on `--port`.
-</Step>
-</Steps>
+Invalid edits are reported in the terminal. The engine retries after corrections;
+initial preparation must succeed before startup. Restart after changing
+`basePath`, wrapper configuration or installed features. Ctrl-C stops development.
+Use a current engine image if an older image only prepares assets at startup.
 
-**The first run takes a couple of minutes** — a 237 MB image and an install.
-Everything after is fast. Worth knowing before you assume it has hung.
+Hosted `dev` publishes the container's port on your machine and can be reached
+from another device using your machine's LAN address. Portable `dev` and both
+`view` renderers bind only to `127.0.0.1`.
 
-For a plain Markdown folder, [`zel view --watch`](/cli/view#editing-documents)
-provides native rebuild and browser reload without a container.
-
-## Content watching and browser refresh
-
-The current engine watches your mounted content folder. It polls for edits,
-additions and deletions, including changes to images and guide routes. After a
-short debounce it refreshes the public assets, fingerprints and search index.
-Removing the entire assets directory also removes its prepared copies.
-
-Save, switch to the browser, and reload to see page and image changes. Reopening
-the search dialog fetches the updated index in development. The engine's content
-cache expires between requests; automatic browser reload for content edits is
-not implemented yet.
-
-An invalid edit is reported in the terminal. The watcher keeps running and
-retries when you correct the content. Initial preparation must succeed before
-the server starts. Restart after changing the deployment prefix (`basePath`),
-wrapper configuration or installed features.
-
-This requires an engine image containing the watcher. Pull the current image
-with `docker pull ghcr.io/mylife-inc/zellij-base:latest` if an older image only
-updates assets/search at startup.
-
-## Looking at it on a phone
-
-The server binds to every interface inside the container and the port is
-published to your machine, so anything on your network can reach it:
-
-```bash title="terminal"
-ipconfig getifaddr en0        # macOS
-hostname -I | cut -d' ' -f1   # Linux
-```
-
-Then `http://<that address>:3000` from the phone.
-
-Worth doing once per site. The mobile menu, the order sections stack in, and the
-type scale are the three things a desktop browser will not show you — and all
-three are cheap to fix while you are still writing.
-
-## When your folder is somewhere the runtime cannot see
-
-```
-error: my-docs is not shared with the container runtime
-```
-
-A bind mount of a path the runtime cannot reach does not fail — it mounts an
-empty directory, and the site comes out with no pages. `zel` detects that and
-says so, rather than reporting an empty site as though it were yours.
-
-Colima shares `$HOME` and not `/tmp`. Either work under your home directory, or
-share the path:
-
-```bash title="terminal"
-colima stop && colima start --mount '/tmp:w'
-```
-
-Docker Desktop: Settings → Resources → File sharing.
+If the runtime cannot see the content mount, `zel` reports that the folder is
+not shared. Configure file sharing in your runtime, or move the content into an
+already shared directory. `zel doctor` helps diagnose runtime availability.
 
 ## Options
 
-| | | |
+| Option | Meaning | Default |
 | --- | --- | --- |
-| `[dir]` | The content folder | [Resolved](/cli/#how-a-command-finds-your-content) |
-| `--port <n>` | | `3000` |
+| `[dir]` | Configured site or explicit raw content folder | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
+| `--port <n>` | Preview port; 0 is supported for portable sites | `preview.port`, otherwise 3000 |
 
-`--open`, `--host` and `--features` are specified and not yet built.
+`--open`, `--host` and `--features` remain planned. Use `view --watch` for browser
+launch options and `view --out` for an explicit static export destination.
 
-## When you have a wrapper app instead
+## Editable wrapper apps
 
-If you generated an app with the Node command `zellij init` and checked it into your repository,
-you already have Node and a `package.json`, and `npm run dev` is a shorter path
-than starting a container.
-
-New wrappers use `zellij dev -- --port <port>`. Existing wrappers using
-`next dev` should switch to that script or run `zellij prepare --watch` alongside
-their server. Pass `--content <path>` when using a custom content directory.
-
-`zel dev` is for the case where the content folder is all there is — which is
-most cases, and the one Zellij is built around.
+An app created by [`zel new app`](/cli/new) already has a `package.json` and can
+use `npm run dev` after installing dependencies. Current wrappers use
+`zellij dev -- --port <port>` to own the Next.js process and content watcher.
+Older wrappers using `next dev` should switch to that script or run
+`zellij prepare --watch` alongside their server.
 
 ## See also
 
-- [`zel check`](/cli/check) — the same validation, without a browser
-- [`zel serve`](/cli/serve) — the built site, which can differ from this one
-- [`zel build`](/cli/build) — what you ship
-- [Lab 1](/guide/quickstart/from-scratch) — this command in the writing loop
-
-With no directory, select `./zel.yaml` or `./docs/zellij/zel.yaml`. A hosted
-configured site mounts `content/`; `--port` overrides `preview.port` (default 3000).
-Explicit legacy hosted folders remain supported.
+- [`zel view`](/cli/view) — build, serve, open a browser and optionally watch
+- [`zel watch`](/cli/watch) — repeated validation without a build or server
+- [`zel serve`](/cli/serve) — serve an existing export
+- [`zel build`](/cli/build) — create a static export

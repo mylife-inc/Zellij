@@ -128,6 +128,8 @@ jobs:
         run: node scripts/check-portable.mjs
       - name: Native HTTP preview, watch/reload, browser launch and console shutdown
         run: node scripts/check-preview.mjs
+      - name: Hosted preview orchestration and cancellation on the native platform
+        run: node scripts/check-hosted-preview.mjs
       - uses: actions/upload-artifact@v7
         if: failure()
         with:
@@ -208,6 +210,11 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
+
+      - name: Hosted static preview rebuilds and reloads with the real engine
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-hosted-preview.mjs --real
 
       - name: Ship imports to static and Next images with registry and browser acceptance
         env:
