@@ -115,22 +115,20 @@ prerequisite for portable commands.
 
 ## Housekeeping
 
-<Callout type="warning" title="Planned">
-These three subcommands are not registered yet and return an unrecognized-command
-error (exit code 2). `zel --version` does report the binary version today.
-</Callout>
+These commands are available in current source. Public `zellij-v0.1.3` predates
+them; a compatible native release is still required.
 
-| Command | Intended purpose |
+| Command | Purpose |
 | --- | --- |
-| `zel version` | Binary, engine image and content-model versions |
-| `zel pull` | Pull or update the engine image ahead of time |
-| `zel upgrade` | Replace this binary with the latest release |
+| [`zel version`](/cli/version) | Binary, selected image and embedded engine/schema details, without Docker |
+| [`zel pull`](/cli/pull) | Pull or update the selected engine image ahead of time |
+| [`zel upgrade`](/cli/upgrade) | Verify and replace this binary with a newer release |
 
 [`zel completions <shell>`](/cli/completions), also `zel comp`, is available in
 current source for Bash, Zsh, Fish, PowerShell, and Elvish.
 
-Until `zel pull` is implemented, use your runtime's pull command, such as
-`docker pull ghcr.io/mylife-inc/zellij-base:latest`.
+Use `zel upgrade --check` to inspect the available stable native version without
+replacing the executable. `zel --version` retains its compact binary version.
 
 ## See also
 

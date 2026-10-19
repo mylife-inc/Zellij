@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: portable development and hosted static preview on
-`codex/cli-dev-hosted-view`; implementation and verification records are at the end.
+Latest CLI work: version reporting, engine pull and verified native upgrades on
+`codex/cli-maintenance`; implementation and verification records are at the end.
+Portable development and hosted static preview merged in PR #38.
 Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
 CI generation in PR #34 and Netlify delivery in PR #33. Current source is ahead
@@ -2617,3 +2618,60 @@ The native fixture now removes case variants of PATH/endpoint keys, explicitly
 selects an isolated Podman executable, verifies that fixture performed the build,
 and rejects verbatim mount paths. CI runs it before the slower wrapper tests.
 Final-revision Windows and full-container validation are still required.
+
+
+## PR #38 completion and maintenance follow-up — 2026-10-18
+
+PR #38 merged as `b83de924231bce67d6478fa57124aee5c5faf21c` after all 13
+checks passed on head `0437fede8e7127dc0cda703bd7a2908e03f0be57` in run
+39183818152. This included 267 Rust tests, native Linux/macOS/Windows preview
+acceptance, six native archives/installers and real-container hosted preview.
+The post-merge base-image run 39185352421 succeeded. CI run 39185352441 first
+failed in Windows ARM PowerShell 7 with `Internal CLR error (0x80131506)`;
+PowerShell 5.1 had passed the same installer checks. Rerunning the failed job
+without source changes succeeded. Both post-merge workflows are now green.
+
+The maintenance branch implements `zel version [--json]`, `zel pull [--image]`
+and `zel upgrade [version] [--check|--force] [--release-base-url]`. These commands
+are already short, so no redundant aliases were added. Help/completion comes
+from the same Clap schema. Version reporting is entirely local: CLI/target,
+zel.yaml version 1, embedded engine package version, schema SHA-256 and selected
+image; it does not claim a mutable container tag matches that embedded engine.
+Pull uses the existing bounded runtime detection and endpoint rules, accepts
+pinned SHA-256 digests, and leaves runtime installation/start/login to the user.
+
+Upgrade keeps the established public `mylife-inc/releases` / `zellij-v<version>`
+channel. Latest lookup considers only stable Zellij releases (up to 1,000
+records); explicit versions permit prereleases but never downgrades. `--check`
+changes no files; equal versions are a no-op unless explicitly forced. Archive
+checksums are required, names/types/count/size and CPU/OS headers are checked,
+and the candidate must report the requested version within five seconds.
+Downloads use Rustls; credentials go only to the fixed API, never asset mirrors.
+Staging is beside the executable, a persistent owned lock serializes upgrades,
+and cancellation/verification failure preserves the current executable. Unix
+commits with rename; Windows retains a working backup and attempts restoration
+if the final rename fails. Retained Windows backups can be deleted after exit.
+No self-deleting scripts or child helpers are needed for replacement.
+
+Local native acceptance discovered macOS tar automatically including ._zel
+AppleDouble provenance metadata. Packaging now sets COPYFILE_DISABLE=1 so the
+archive contract is one executable. Acceptance uses the actual native binary
+and loopback mirrors for combined/per-file checksums, corrupt/missing/unsafe
+archives, version mismatches, forced replacement, cancellation, a higher-version
+native fixture, and isolated Podman pull success/failure. The same script runs
+on all six package targets. It never upgrades a user's installation or contacts
+a real deployment provider/registry. Final platform results follow below.
+
+Public native release is still zellij-v0.1.3, and source still reports 0.1.3;
+`upgrade` therefore cannot deliver unreleased source features. Compatible release
+publication/version selection remains separate work. Other provider integrations,
+eject/features, remaining advanced options and final release/documentation
+publication remain in the backlog. No local daemon, public release, live provider
+deployment, sealing operation or branch deletion was performed.
+
+Maintenance local verification: 273 Rust tests, warnings-denied Clippy and fmt,
+strict/deep docs validation and the complete native package/install/upgrade
+acceptance script passed on macOS x86-64. Native acceptance used a locally
+packaged current debug executable and isolated fixture destinations, including
+an upgrade to a higher-version Rust binary. Release-profile acceptance on all
+six platforms and full-container CI remain the PR gates.

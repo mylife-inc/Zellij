@@ -2032,3 +2032,21 @@ The native fixture now removes case variants of PATH/endpoint keys, explicitly
 selects an isolated Podman executable, verifies that fixture performed the build,
 and rejects verbatim mount paths. CI runs it before the slower wrapper tests.
 Final-revision Windows and full-container validation are still required.
+
+## Maintenance implementation — 2026-10-18
+
+PR #38 completed at b83de924 after all 13 PR checks in run 39183818152 passed.
+Post-merge base-image 39185352421 succeeded; CI 39185352441 succeeded after a
+failed-job rerun cleared an unchanged Windows ARM PowerShell CLR runtime crash.
+
+The next maintenance increment adds native version/schema/engine reporting,
+explicit engine pulls through the shared runtime resolver, and verified native
+self-upgrades. Missing/corrupt checksums, unexpected archive entries, wrong
+CPU/OS, wrong executable version and cancellation preserve the installed binary.
+Concurrent upgrades are serialized with an OS lock. Windows keeps the previous
+executable as a recovery copy; Unix replaces by rename. Package creation now
+suppresses macOS AppleDouble metadata after local acceptance caught an extra
+._zel entry that violates the one-executable archive contract. All six native
+package jobs execute real upgrades against isolated loopback release fixtures.
+Final source commit and CI results will be appended; this is not a release or a
+claim that advanced CLI/provider work is complete.

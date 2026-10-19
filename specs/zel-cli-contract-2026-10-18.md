@@ -2,8 +2,9 @@
 
 Status: **configured sites, shortcuts, completions, static/Next images, registry
 and Netlify delivery, CI generation, import/ship, editable wrappers, YAML formatting
-and validation watching are implemented in source**. Portable dev, hosted view,
-other providers and advanced maintenance remain proposed. Stage records below
+and validation watching, portable dev, hosted view, version/pull/upgrade are
+implemented in source**. Other providers, eject/features and advanced flags
+remain proposed. Stage records below
 and the local CLI reference describe actual support; public 0.1.3 predates these
 additions and compatible release publication is still separate work.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
@@ -235,10 +236,10 @@ the version boundary; both short and full generation forms use the same policy.
 | Command | Shortcut | Role | Baseline |
 | --- | --- | --- | --- |
 | `zel doctor` | Same | Diagnose required tools and selected site settings without exposing credentials. | I: container diagnostics |
-| `zel pull` | Same | Download the compatible configured engine image. | N |
-| `zel upgrade` | Same | Update the native CLI, preserving a working binary on failure. | N |
-| `zel version` | Same | Report binary, schema, and engine versions; retain simple `--version`. | N |
-| `zel completions <shell>` | `zel comp <shell>` | Completion for canonical names and aliases. | N |
+| `zel pull` | Same | Download the selected engine image; `--image` overrides `ZELLIJ_IMAGE`. | I |
+| `zel upgrade [version]` | Same | Verify and update the native CLI; `--check` inspects, `--force` reinstalls. | I |
+| `zel version` | Same | Report binary, embedded schema/engine and selected image; retain `--version`; JSON supported. | I |
+| `zel completions <shell>` | `zel comp <shell>` | Completion for canonical names and aliases. | I |
 | `zel eject [site] --out <destination>` | Same | Extract an editable wrapper from the selected engine distribution. | N |
 | `zel features <selection> [--site-root <site>]` | Same | Configure optional renderer capabilities with explicit renderer-aware mapping. | N |
 
@@ -689,3 +690,34 @@ restore invalid inputs or restart for a new layout/prefix. Initial failures exit
 without browser launch. Ctrl-C stops serving, waits for any active build to finish
 cleanup and discards its stage. It does not immediately terminate a container
 build. Reload code is response-only, and retained portable files remain offline.
+
+### Stage 7a — maintenance commands
+
+`version` is local and supports JSON: CLI version/target, configuration version,
+embedded engine version, schema fingerprint and configured image. `--version`
+remains compact. Container contents are not inferred from tag names.
+
+`pull [--image reference]` uses the explicit override, ZELLIJ_IMAGE, then the
+existing default image. It accepts tags or SHA-256 digests, uses the common
+runtime preflight, preserves explicit endpoint selection, and propagates pull
+failure as exit 3 (no runtime: 4). It does not start/install Docker or log in.
+
+`upgrade [version]` uses the stable shared Zellij release channel; `--check`
+reports without changing files, `--force` permits same-version reinstalls but
+never downgrades. Exact versions permit prereleases and skip API discovery.
+HTTPS mirrors via --release-base-url/ZEL_RELEASE_BASE_URL require a version;
+loopback HTTP is allowed for tests. Checksums, exact archive contents, binary
+CPU/OS and executable-reported version must pass before replacement. Native
+platform archives and replacement are tested on Linux/macOS/Windows x64/ARM64.
+
+An OS file lock serializes upgrades and survives process crashes without staying
+locked. Failed verification/download/cancellation preserves the installed binary.
+Unix replacement uses a same-filesystem rename. Windows retains the previous
+binary and attempts rollback if the final rename fails. Sudden power/storage
+failure is not an atomic transaction guarantee on Windows. The documented
+request deadlines bound stalled downloads. No external installer/tool/runtime
+is required. JSON is rejected for pull/upgrade before side effects.
+
+The current source version remains 0.1.3 and is ahead of the public 0.1.3 archive;
+a compatible native release is still required before these additions can be
+installed or upgraded from the public channel.

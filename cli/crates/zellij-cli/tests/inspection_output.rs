@@ -288,6 +288,6 @@ fn verbose_is_rejected_instead_of_silently_ignored_and_help_states_json_scope() 
     }
     assert_eq!(fs::read_dir(temp.path()).unwrap().count(), 0);
     let help = String::from_utf8(success(run(temp.path(), &["--help"]))).unwrap();
-    assert!(help.contains("context, list, explain and detect"));
+    assert!(help.contains("context, list, explain, detect, version"));
     assert!(!help.contains("--verbose"));
 }

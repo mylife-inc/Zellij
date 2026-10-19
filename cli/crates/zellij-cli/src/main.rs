@@ -18,6 +18,7 @@ mod delivery;
 mod formatting;
 mod images;
 mod imports;
+mod maintenance;
 mod netlify;
 mod preview;
 mod validation;
@@ -34,10 +35,11 @@ fn main() {
                 | Command::Explain { .. }
                 | Command::Detect { .. }
                 | Command::Check { .. }
+                | Command::Version
         )
     {
         eprintln!(
-            "error: --json is supported only by context, list, explain, detect and portable check; no command was run"
+            "error: --json is supported only by context, list, explain, detect, version and portable check; no command was run"
         );
         std::process::exit(2);
     }
@@ -131,6 +133,9 @@ fn main() {
             ref options,
         } => delivery::execute(provider.as_deref(), options),
         Command::Doctor => doctor(),
+        Command::Version => maintenance::version(cli.json),
+        Command::Pull { ref image } => maintenance::pull(image.as_deref()),
+        Command::Upgrade(ref options) => maintenance::upgrade::run(options),
         Command::Completions { shell } => args::completions(shell),
         Command::Ci(ref args) => match &args.action {
             Some(CiAction::Init { system, options }) => ci::generate(system, None, options),

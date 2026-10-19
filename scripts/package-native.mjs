@@ -42,7 +42,9 @@ try {
   if (windows) {
     execFileSync('pwsh', ['-NoProfile', '-File', path.join(root, 'scripts/package-windows.ps1'), '-Binary', built, '-Archive', archive], { stdio: 'inherit' });
   } else {
-    execFileSync('tar', ['-czf', archive, '-C', path.dirname(built), binary], { stdio: 'inherit' });
+    // macOS otherwise adds a ._zel AppleDouble entry for provenance attributes.
+    // Native archives contain one executable on every platform.
+    execFileSync('tar', ['-czf', archive, '-C', path.dirname(built), binary], { stdio: 'inherit', env: { ...process.env, COPYFILE_DISABLE: '1' } });
   }
   const digest = createHash('sha256').update(await readFile(archive)).digest('hex');
   await writeFile(path.join(stage, `${name}.sha256`), `${digest}  ${name}\n`);

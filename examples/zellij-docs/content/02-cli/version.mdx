@@ -1,0 +1,29 @@
+---
+title: version
+description: Report the native binary, embedded content schema and selected engine image.
+---
+
+```bash
+zel version
+zel version --json
+zel --version
+```
+
+`zel version` reports the CLI version and build target, supported `zel.yaml`
+configuration version, embedded engine package version, SHA-256 fingerprint of
+the embedded content schema, and selected engine image reference. It works
+without Docker, Node, a documentation folder or network access.
+
+The schema has no independent release number; its fingerprint identifies the
+exact definitions embedded in this binary. The embedded engine version describes
+the source package those definitions accompany. It does **not** claim that a
+local or remote container image has the same contents. The selected image is
+`ZELLIJ_IMAGE`, or `ghcr.io/mylife-inc/zellij-base:latest` by default.
+Use [`zel doctor`](/cli/doctor) to inspect runtime availability and whether that
+image is local.
+
+`zel --version` retains its compact `zel <version>` output. `zel version --json`
+reports `cli.version`, `cli.target`, `configuration_version`,
+`embedded_engine_version`, `content_schema_sha256` and `engine_image`.
+
+This command is available in current source; public `zellij-v0.1.3` predates it.

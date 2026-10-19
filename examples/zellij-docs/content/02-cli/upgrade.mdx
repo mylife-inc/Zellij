@@ -1,0 +1,83 @@
+---
+title: upgrade
+description: Update the native executable from a verified release archive.
+---
+
+```bash
+zel upgrade --check             # report latest stable; change no files
+zel upgrade                     # install latest stable if newer
+zel upgrade 0.2.0                # select an exact published release
+zel upgrade v0.2.0-rc.1          # explicitly select a prerelease
+zel upgrade 0.2.0 --force        # reinstall the same version
+```
+
+These are syntax examples, not a claim that `0.2.0` has been published. Current
+source implements this command; the public `zellij-v0.1.3` binaries predate it.
+Source currently still reports `0.1.3`, so a source build can be ahead of the
+public binary with the same version. Avoid `--force` against that older published
+archive unless replacing your source build is intentional.
+
+With no version argument, `upgrade` reads the shared
+[`mylife-inc/releases` release channel](https://github.com/mylife-inc/releases/releases),
+selects the highest stable `zellij-v<version>` and excludes other products,
+drafts and prereleases. It checks up to 1,000 release records; if that limit is
+reached, select an exact version. `GITHUB_TOKEN` or `GH_TOKEN` can raise GitHub's
+API rate limit. Tokens go only to the fixed GitHub API endpoint; asset downloads
+and mirrors receive no authorization header.
+
+`--check` reports the selected version without downloading an archive or changing
+files. An already installed version is a no-op unless `--force` is given.
+Downgrades are refused, including with `--force`. This command updates the
+executable being run, resolving a launcher symlink to its actual executable;
+it does not update another `zel` elsewhere on PATH, an engine image, site
+configuration or authored content. No Docker, Node, shell installer or browser
+is needed.
+
+## Verification and replacement
+
+The archive matches the binary's build target: Linux GNU, macOS or Windows MSVC,
+on x86-64 or ARM64. Rosetta/emulated builds keep their existing architecture.
+Unsupported targets must use their original installation method.
+
+An upgrade requires a SHA-256 entry in `SHA256SUMS` or the archive's `.sha256`
+file, checks the downloaded bytes, extracts exactly one regular `zel`/`zel.exe`,
+checks the operating system and CPU header, and runs its `--version` with a
+five-second timeout. Missing checksums, invalid archives, mismatched versions,
+failed downloads and cancellation leave the working executable in place.
+There is no checksum-bypass option. SHA-256 checks consistency with the published
+checksum; it is not a separate publisher signature.
+
+Downloads and extraction are bounded. HTTPS connections time out after ten
+seconds; requests have a sixty-second deadline. Ctrl-C is checked between
+download reads, so a stalled read can take until that deadline to stop.
+Replacement starts only after validation. The installation directory must be
+writable; no elevation or automatic package-manager operation is attempted.
+For managed installations, use the package manager that installed the binary.
+
+The upgrade uses a small persistent `.<executable>.upgrade.lock` file to prevent
+concurrent replacements. The operating system releases its lock when the process
+exits, including after a crash. Leave the lock file in place.
+
+On Unix, a same-filesystem rename replaces the executable. On Windows, the old
+executable is moved aside, the new one takes its name, and a failed rename
+attempts to restore the old name. Windows keeps the previous executable in the
+printed `.zel-upgrade-<random>/zel.previous.exe` directory; it can be removed
+after the command exits. Abrupt machine/storage failure during replacement is
+not a recoverable transaction guarantee.
+
+## Asset mirrors
+
+```bash
+zel upgrade 0.2.0 --release-base-url https://downloads.example.com/zellij/v0.2.0
+```
+
+`ZEL_RELEASE_BASE_URL` supplies the same setting. An exact version argument is
+required. The directory must contain the normal platform archive and checksum
+files. HTTPS is required, with loopback HTTP allowed for local testing. Initial
+URLs cannot contain credentials, query strings or fragments. HTTPS asset redirects
+are supported; HTTP redirects must remain on the same loopback origin.
+
+Argument errors exit `2`; lookup, verification, cancellation or replacement
+failures exit `1`. Successful checks, no-ops and replacements exit `0`.
+`--json` is unsupported; use [`zel version --json`](/cli/version) for installed
+build details.
