@@ -120,6 +120,8 @@ zel check --strict                   # uses that site
 zel build                            # writes docs/zellij/site/
 zel build docs/manual                # a custom site name
 zel build ./existing-markdown        # explicit legacy Markdown folder
+zel --cwd ../my-product b            # use another repository as the working directory
+zel b --site-root docs/manual        # explicit selector, also accepted before the command
 ```
 
 A versioned `zel.yaml` declares `renderer: portable` or `renderer: hosted`;
@@ -127,6 +129,10 @@ both use `content/` and default to `site/` output. There is no parent or recursi
 search. A missing default is an error with an explicit-path suggestion. Existing
 flat portable configs and explicit raw content folders still work. See
 [configuration](/cli/config) for settings, precedence and compatibility rules.
+
+`--cwd` sets the base for CLI paths. `--site-root` selects an existing site and
+conflicts with another site argument. See [selection rules](/cli/config#working-directory-and-site-selection)
+for the supported commands and error behavior.
 
 Creation destinations, conversion sources, image tags and CI workflow options
 keep their distinct meanings; they are not interchangeable site selectors.

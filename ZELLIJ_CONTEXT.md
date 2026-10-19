@@ -3,8 +3,10 @@
 Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: explicit hosted rendering selection and optional-peer installs
-on `codex/hosted-feature-selection`. Eject/features merged in PR #40; maintenance
+Latest CLI work: shared --cwd and --site-root selection on
+`codex/cli-working-directory-selection`, source commit `58b7129`.
+Hosted rendering selection and optional-peer installs merged in PR #41.
+Eject/features merged in PR #40; maintenance
 commands merged in PR #39.
 Portable development and hosted static preview merged in PR #38.
 Formatting and validation watch merged in PR #37.
@@ -2794,3 +2796,39 @@ now supplies Node createRequire, matching the production CLI bundle. Local MkDoc
 and Docusaurus conversion acceptance passed after this correction, including
 rendered routes, heading fragments and asset bytes. Final CI must be refreshed
 on the fixing head; the earlier run is not a successful completion record.
+
+
+### Hosted selection merge and shared CLI paths — 2026-10-18
+
+PR #41 merged as 02eaae86132c68c21a450bfc90637c4e5b7e05bd after all 13 jobs
+passed on final source 7a2e35322c9b058041e5d367665a769c6b5d004f (CI
+39204069716). Post-merge CI 39205838063 and Base image 39205837958 both
+completed successfully. This closes the preceding conversion-harness follow-up.
+
+Source 58b7129ea18f4add46154fe8b123edc383626152 implements global --cwd and
+--site-root. The parser normalizes site selection into existing handlers after
+shortcut expansion, preserving discovery, output protection and watch reloads.
+Main changes the process working directory once before handlers/subprocesses.
+CLI paths use that directory; paths stored in configuration retain their existing
+bases. Invalid cwd exits 2; --help/--version do not access it.
+
+Site selection covers existing-site commands, including new page/guide/app,
+features, CI generation and omitted-tag legacy image run. CI --content remains
+supported. Positional sites, --dir, --content, --with-docs, explicit image-run
+tags and unsupported command uses conflict before side effects. Global flags
+may appear before or after commands, but only once. Clap otherwise discards
+parent global values when a child repeats them; a post-parse token guard rejects
+that ambiguity while preserving equals-form values and the -- delimiter.
+
+Local verification: all 284 Rust tests, warnings-denied Clippy, Rust formatting,
+diff checks and strict/deep documentation validation (55 routes, 53 guide pages,
+23 examples) passed. Regressions exercise Unicode/spaced paths, nested Git
+repositories, config-relative versus CLI-relative output, aliases, completions,
+conflicts, missing paths and preservation of authored files. Existing CI runs
+these parser/site-layout/workflow tests on Linux, macOS and Windows. Refresh
+this branch's final CI/PR status before treating the milestone as merged.
+
+Remaining work includes explicit --config file selection, other advanced flags
+and deployment providers, matched native releases and documentation publication.
+The public native release is still zellij-v0.1.3 (2026-08-13), predating these
+features. No local Docker daemon, native release or manual deployment was started.

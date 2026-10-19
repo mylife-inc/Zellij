@@ -58,6 +58,47 @@ sibling `<folder>-site`. Use an explicit `.` for an unconfigured current folder.
 Existing files are never moved into the new layout automatically. For hosted
 legacy roots, explicit `.` retains the old content-discovery order.
 
+## Working directory and site selection
+
+```bash
+zel --cwd ../my-product build
+zel b --cwd ../my-product --site-root docs/manual
+zel --cwd ../my-product --site-root docs/manual c --strict
+zel na web --cwd ../my-product --site-root docs/hosted --engine engine/packages/zellij
+```
+
+`--cwd <directory>` runs the command from an existing directory. Its own relative
+path is resolved from the directory where you launched `zel`. Other CLI paths,
+including source, destination, `--out`, `--engine` and `--site-root`, are then
+relative to that working directory. It does not change your shell's directory
+or switch Git branches. Missing or non-directory values fail with exit code 2.
+Help and `--version` can be read without accessing the requested directory.
+
+`--site-root <directory>` selects the same input as a positional site argument.
+It works with build, check, fmt, watch, dev, view, serve, image static/next/build/
+dockerfile, publish/deploy, CI generation, and eject. Serve also accepts an
+existing export folder. New page/guide accept it in place of `--dir`; new app
+uses it for existing hosted content; features uses it for a portable site or
+editable wrapper. Omitted-tag image run can use it to select the hosted site
+from which its legacy default tag is derived.
+
+Both flags work before or after the command and through shortcuts. Specify each
+flag only once, including across subcommands. Selection is explicit: even two
+identical selectors conflict. Do not combine `--site-root`
+with a positional site, `new page/guide --dir`, CI `--content`, `--with-docs`, or
+an explicit image-run tag. Commands that do not consume an existing site, such
+as new portable/docs/project, conversion, inspection, image push and CI dispatch,
+reject `--site-root`. Use `--cwd` to choose their working directory. Invalid or
+inapplicable combinations fail with exit code 2 before filesystem writes, runtime
+detection or remote operations. A selected missing/invalid site retains its
+command's existing validation and exit behavior.
+
+Changing the working directory does not change configuration-relative paths:
+`build.out` stays relative to `zel.yaml`, and content links stay relative to their
+source. With neither flag, the current-folder then `docs/zellij` convention is
+unchanged. Explicit legacy content roots remain supported. `--config <file>`
+remains a proposal; this implementation continues to read `zel.yaml`.
+
 ## Editable wrapper configuration
 
 [`zel new app`](/cli/new#zel-new-app-dir) writes a separate `zellij.config.yaml`
@@ -275,8 +316,8 @@ and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
 `production`. CI settings require `version: 1`; they are shared by both renderers.
 `convert`/`migrate --layout site` create this layout; `ship` also saves the selected
 Netlify site or image publication settings, without credentials or production
-intent. CI accepts `--site-root`; global `--config` / `--cwd` selectors and remaining
-delivery commands are still planned.
+intent. Global `--cwd` and command-aware `--site-root` selection are implemented.
+Explicit `--config` selection and additional delivery providers remain planned.
 
 [Shortcuts](/cli/shortcuts) for working commands and
 [shell completions](/cli/completions) are implemented in source. They use the

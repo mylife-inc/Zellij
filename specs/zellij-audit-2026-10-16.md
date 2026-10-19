@@ -2160,3 +2160,26 @@ now supplies Node createRequire, matching the production CLI bundle. Local MkDoc
 and Docusaurus conversion acceptance passed after this correction, including
 rendered routes, heading fragments and asset bytes. Final CI must be refreshed
 on the fixing head; the earlier run is not a successful completion record.
+
+
+### Shared working directory and site selection — 2026-10-18
+
+Previous PR #41 completed on source 7a2e35322c9b058041e5d367665a769c6b5d004f:
+all 13 jobs passed in run 39204069716. Merge 02eaae86132c68c21a450bfc90637c4e5b7e05bd
+also passed CI 39205838063 and Base image 39205837958. This supersedes the
+pending conversion-harness evidence above.
+
+Fixing commit 58b7129ea18f4add46154fe8b123edc383626152 adds shared --cwd and
+--site-root, closing their outstanding contract gap. Selection is normalized into
+existing command arguments; legacy CI --content and positional paths still work.
+Conflicting or unsupported selections fail before effects. Repeated global path
+flags across subcommands now fail instead of silently keeping the deepest value.
+CLI paths resolve from --cwd, while configuration paths keep their own bases.
+
+Verification: 284 Rust tests passed, including subprocess regressions for nested
+Git roots, Unicode paths, output locations and rejected writes. Warnings-denied
+Clippy, formatting and strict/deep documentation validation passed (55 routes,
+53 guide pages, 23 examples). CI already runs the affected native suites on all
+three OS families; refresh the PR's final head/checks before claiming hosted
+validation. No new native release was published. Explicit --config, remaining
+advanced options, other deployment providers and documentation publication remain.

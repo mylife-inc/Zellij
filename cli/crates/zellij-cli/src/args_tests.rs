@@ -3,9 +3,7 @@ use clap::error::ErrorKind;
 use std::collections::BTreeSet;
 
 fn parse(args: &[&str]) -> Result<Cli, clap::Error> {
-    let matches = Cli::command_tree()
-        .try_get_matches_from(std::iter::once("zel").chain(args.iter().copied()))?;
-    Cli::from_matches(&matches)
+    Cli::parse_tokens(std::iter::once("zel").chain(args.iter().copied()))
 }
 
 // Cover every registered shortcut with required-only and fully specified args.
@@ -363,5 +361,185 @@ fn completion_scripts_include_all_forms_and_options() {
         }
         assert!(script.contains("no-open"), "{shell}");
         assert!(script.contains("base-path"), "{shell}");
+        assert!(script.contains("cwd"), "{shell}");
+        assert!(script.contains("site-root"), "{shell}");
     }
+}
+
+#[test]
+fn global_selectors_normalize_all_site_commands_and_preserve_legacy_spelling() {
+    for route in [
+        "build",
+        "b",
+        "check",
+        "c",
+        "dev",
+        "fmt",
+        "watch",
+        "serve",
+        "s",
+        "view",
+        "v",
+        "image static",
+        "si",
+        "image next",
+        "ni",
+        "image build",
+        "image dockerfile",
+        "idf",
+        "publish",
+        "pub",
+        "deploy",
+        "deploy netlify",
+        "netlify",
+        "eject",
+    ] {
+        let extra = if route == "eject" {
+            vec!["--out", "wrapper"]
+        } else {
+            vec![]
+        };
+        let mut positional = invocation(route, &extra);
+        // Bare deploy's first positional is the provider, not the site.
+        if route == "deploy" {
+            positional.push("netlify");
+        }
+        positional.push("Manual 日本");
+        let expected = parse(&positional).unwrap();
+        let actual_route = if route == "deploy" {
+            "deploy netlify"
+        } else {
+            route
+        };
+        for prefix in [true, false] {
+            let mut selected = invocation(actual_route, &extra);
+            if prefix {
+                selected.splice(0..0, ["--site-root", "Manual 日本"]);
+            } else {
+                selected.extend(["--site-root", "Manual 日本"]);
+            }
+            assert_eq!(
+                parse(&selected).unwrap(),
+                expected,
+                "{route} prefix={prefix}"
+            );
+        }
+    }
+    for route in ["new page", "np", "new guide", "ng"] {
+        assert_eq!(
+            parse(&invocation(route, &["intro", "--site-root", "manual"])).unwrap(),
+            parse(&invocation(route, &["intro", "--dir", "manual"])).unwrap()
+        );
+    }
+    for route in ["ci", "ci init github"] {
+        assert_eq!(
+            parse(&invocation(route, &["--site-root", "manual"])).unwrap(),
+            parse(&invocation(route, &["--content", "manual"])).unwrap()
+        );
+        let mut args = vec!["--site-root", "manual"];
+        args.extend(route.split_whitespace());
+        assert_eq!(
+            parse(&args).unwrap(),
+            parse(&invocation(route, &["--content", "manual"])).unwrap()
+        );
+    }
+    for route in ["new app", "na", "features all", "image run", "ir"] {
+        let mut args = vec!["--site-root", "manual"];
+        args.extend(route.split_whitespace());
+        assert_eq!(
+            parse(&args).unwrap(),
+            parse(&invocation(route, &["--site-root", "manual"])).unwrap()
+        );
+    }
+}
+
+#[test]
+fn working_directory_is_global_without_reinterpreting_path_arguments() {
+    for (short, full, minimal, _) in CASES {
+        for route in [*short, *full] {
+            let mut before = vec!["--cwd", "Repo 日本"];
+            before.extend(invocation(route, minimal));
+            let mut after = invocation(route, minimal);
+            after.extend(["--cwd", "Repo 日本"]);
+            let expected = parse(&before).unwrap();
+            assert_eq!(expected.cwd.as_deref(), Some("Repo 日本"));
+            assert_eq!(parse(&after).unwrap(), expected);
+        }
+    }
+    assert_eq!(parse(&["build", "--", "--cwd"]).unwrap().cwd, None);
+    for args in [["--cwd", "", "version"], ["build", "--site-root", ""]] {
+        assert_eq!(parse(&args).unwrap_err().exit_code(), 2);
+    }
+}
+
+#[test]
+fn ambiguous_and_inapplicable_site_selections_are_rejected_during_parsing() {
+    for args in [
+        vec!["build", "manual"],
+        vec!["c", "manual"],
+        vec!["fmt", "manual"],
+        vec!["ci", "manual"],
+        vec!["ci", "--content", "manual"],
+        vec!["ci", "init", "github", "--content", "manual"],
+        vec!["new", "page", "page", "--dir", "manual"],
+        vec!["ng", "guide", "--dir", "manual"],
+        vec!["new", "app", "wrapper", "--with-docs"],
+        vec!["eject", "--out", "wrapper", "--with-docs"],
+        vec!["eject", "manual", "--out", "wrapper"],
+        vec!["image", "run", "image:tag"],
+        vec!["ip", "image:tag"],
+        vec!["init"],
+        vec!["nd"],
+        vec!["npr", "product"],
+        vec!["ns", "hero"],
+        vec!["ci", "run"],
+        vec!["context"],
+        vec!["sections"],
+        vec!["doctor"],
+        vec!["version"],
+        vec!["pull"],
+        vec!["upgrade", "--check"],
+        vec!["detect", "source"],
+        vec!["convert", "source", "--out", "result"],
+        vec!["mig", "source", "--out", "result"],
+        vec!["ship", "source", "--out", "result", "--provider", "netlify"],
+    ] {
+        for prefix in [true, false] {
+            let mut selected = args.clone();
+            if prefix {
+                selected.splice(0..0, ["--site-root", "manual"]);
+            } else {
+                selected.extend(["--site-root", "manual"]);
+            }
+            assert_eq!(parse(&selected).unwrap_err().exit_code(), 2, "{selected:?}");
+        }
+    }
+}
+
+#[test]
+fn repeated_global_paths_fail_across_command_levels_without_rewriting_values() {
+    for flag in ["--cwd", "--site-root"] {
+        for other in ["a", "b"] {
+            for args in [
+                vec![flag, "a", "build", flag, other],
+                vec![flag, "a", "image", flag, other, "static"],
+                vec![flag, "a", "new", "app", flag, other],
+            ] {
+                assert_eq!(parse(&args).unwrap_err().exit_code(), 2, "{args:?}");
+            }
+        }
+    }
+    assert_eq!(
+        parse(&["--site-root=a", "build", "--site-root=b"])
+            .unwrap_err()
+            .exit_code(),
+        2
+    );
+    let value = parse(&["--cwd=--site-root", "build", "--name=--cwd", "--", "--cwd"]).unwrap();
+    assert_eq!(value.cwd.as_deref(), Some("--site-root"));
+    let Command::Build { dir, name, .. } = value.command else {
+        panic!("expected build")
+    };
+    assert_eq!(dir.as_deref(), Some("--cwd"));
+    assert_eq!(name.as_deref(), Some("--cwd"));
 }

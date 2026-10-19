@@ -25,6 +25,10 @@ The first form selects `./zel.yaml`, then `docs/zellij/zel.yaml`, using the usua
 site convention. Any custom site-folder name is allowed. The full and short
 forms use the same generator. `init`, `run`, and `publish` are reserved actions;
 select a folder with one of those names using `./run` or `--site-root run`.
+`--cwd` sets the base directory before site and Git discovery. CI retains
+`--content` as a legacy selector; it conflicts with `--site-root` or a positional
+site. For `ci run`, use `--cwd` to select the repository; `--site-root` does not
+apply to workflow dispatch.
 
 Git locates the repository containing the selected site. The workflow is written
 to that repository's `.github/workflows/docs.yml`, including when you run from

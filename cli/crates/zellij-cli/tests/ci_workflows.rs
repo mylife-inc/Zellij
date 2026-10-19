@@ -325,3 +325,62 @@ fn workflow_paths_cannot_follow_links_even_with_force() {
     run(root, &["ci", "--force"], 2);
     assert!(fs::read_dir(outside.path()).unwrap().next().is_none());
 }
+
+#[test]
+fn cwd_selects_the_repository_and_global_site_root_keeps_legacy_content_semantics() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let project = root.join("Project 日本");
+    fs::create_dir(&project).unwrap();
+    repo(root);
+    repo(&project);
+    site(&project, "docs/manual", "ci: {zel-version: 0.2.0}\n");
+    run(
+        root,
+        &[
+            "--cwd",
+            "Project 日本",
+            "--site-root",
+            "docs/manual",
+            "ci",
+            "init",
+            "github",
+        ],
+        0,
+    );
+    let expected = fs::read(project.join(".github/workflows/docs.yml")).unwrap();
+    assert!(!root.join(".github").exists());
+    run(
+        root,
+        &[
+            "ci",
+            "--cwd",
+            "Project 日本",
+            "--content",
+            "docs/manual",
+            "--force",
+        ],
+        0,
+    );
+    assert_eq!(
+        fs::read(project.join(".github/workflows/docs.yml")).unwrap(),
+        expected
+    );
+    run(
+        root,
+        &[
+            "--cwd",
+            "Project 日本",
+            "ci",
+            "docs/manual",
+            "--site-root",
+            "docs/manual",
+            "--force",
+        ],
+        2,
+    );
+    assert_eq!(
+        fs::read(project.join(".github/workflows/docs.yml")).unwrap(),
+        expected
+    );
+}

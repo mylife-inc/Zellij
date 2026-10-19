@@ -4,7 +4,8 @@ Status: **configured sites, shortcuts, completions, static/Next images, registry
 and Netlify delivery, CI generation, import/ship, editable wrappers, YAML formatting
 and validation watching, portable dev, hosted view, version/pull/upgrade, eject
 and explicit portable/hosted feature selection are implemented in source**.
-Other providers and advanced flags remain proposed. Stage records below
+Working-directory and shared site selectors are also implemented. Other
+providers and remaining advanced flags remain proposed. Stage records below
 and the local CLI reference describe actual support; public 0.1.3 predates these
 additions and compatible release publication is still separate work.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
@@ -46,8 +47,9 @@ Command signatures below use distinct argument roles:
 
 Implemented resolution includes one convenience: when the current directory itself
 contains `zel.yaml`, use that site. Otherwise use `./docs/zellij/zel.yaml`.
-Explicit directory arguments win. The proposed `--site-root` / `--config` selectors
-are not registered yet; their eventual conflicting selections must fail; configuration does not redirect an explicit site path. There
+Explicit directory arguments or `--site-root` select a site; combining them is
+an error, including identical paths. `--cwd` changes the base for CLI paths.
+`--config` remains proposed; configuration does not redirect an explicit site path. There
 is no upward or recursive discovery. Inside `content/`, use an explicit `..`
 site argument or change to the site root. A missing default gives the expected config path
 and an example with an explicit custom site, not an unrelated fallback.
@@ -357,12 +359,12 @@ command supplies intent; ordinary repeatable runs need no extra prompt.
 
 ## 4. Shared options and output
 
-- `--site-root` selects a configured site for commands whose positional argument
-  has another role. It does not replace `--site`, the existing provider site-ID
-  option. Add a clearer `--site-id` synonym when implementing deployment.
-- `--config <file>` explicitly selects a configuration file and its containing
-  root; `--cwd <directory>` changes the base for CLI paths without changing Git
-  state. These are proposed options, not current capabilities.
+- `--site-root` selects the existing site/content input for supported commands;
+  it conflicts with another selector. It does not replace `--site`/`--site-id`,
+  the implemented provider site-ID option. See stage 8a for supported commands.
+- `--cwd <directory>` changes the base for CLI paths without changing shell
+  directory or Git state. `--config <file>` remains a proposal for explicit
+  configuration-file selection and its containing root.
 - `--out` is generated-output destination; `--port` is preview port. Do not
   overload single-letter options differently across command families.
 - `--json` is a documented capability per command. Structured summaries belong
@@ -375,7 +377,7 @@ command supplies intent; ordinary repeatable runs need no extra prompt.
   overwrite authority or substitute for required settings. Existing overwrite
   policies remain command-specific and documented.
 
-## 5. Representative proposed workflows
+## 5. Representative workflows
 
 ```sh
 # New site in an existing software repository
@@ -406,14 +408,18 @@ zel ci run
 zel mig ../old-manual --out docs/manual
 ```
 
-These examples are design examples, not commands to copy into current CI.
+These examples use current source syntax. Generated CI still requires an explicit
+compatible release pin; public native release 0.1.3 predates these capabilities.
 
 ## 6. Implementation sequence and acceptance
 
-Runtime prerequisite handling (§2.9) is the first implemented increment following
-the user's additional Docker requirement. The configured-site increment implements
-steps 1–2 for current handlers; portable `dev`, hosted `view`, global selectors
-and unimplemented handlers remain future extensions. Continue with the sequence:
+The sequence below records the implementation plan. Runtime prerequisites,
+configured sites, shortcuts, image packaging, Netlify delivery, CI generation,
+formatting and maintenance commands are now implemented in source. Portable
+`dev`, hosted `view`, `--cwd` and shared `--site-root` are also implemented.
+Remaining work includes `--config`, output controls, additional deployment
+providers and matched release/documentation publication. Dated stage records
+below give each milestone's actual scope and limitations.
 
 1. Introduce the versioned config/site resolver, retain explicit legacy paths,
    and update portable/hosted scaffolds. Prove the user's default and custom
@@ -781,3 +787,24 @@ required after selection changes. npm install is explicit and is needed when
 enabling absent packages. No lockfile/node_modules deletion is performed, and
 other consumers may retain the packages. Engine/CLI release publication remains
 separate work.
+
+
+### Stage 8a — working directory and shared site selection (2026-10-18)
+
+Global --cwd selects an existing working directory before handlers or subprocesses
+start. Its relative path is resolved from the launch directory; all other CLI
+paths then resolve from it. Config-relative output and content-relative links keep
+their semantics. Invalid cwd fails with exit 2; --help/--version do not access it.
+
+Global --site-root is normalized after shortcuts into the existing handler's site
+argument. Supported commands: build/check/fmt/watch/dev/view/serve, static/Next/
+legacy image builds and Dockerfile generation, publish/deploy, CI generation,
+eject, new page/guide/app and features. Omitted-tag image run supports it for the
+legacy hosted-site tag; explicit tags conflict. Unsupported inspection, creation,
+import, maintenance, image push and workflow-dispatch uses fail before side effects.
+Positional sites, page/guide --dir, CI --content and --with-docs conflict, even
+when paths are identical. New app/eject destinations keep their distinct meaning.
+CI --content remains supported. Repeated global path flags are rejected even
+across subcommand boundaries. Both selectors work before/after commands and
+through aliases, with help and five-shell completion generated from the same schema.
+Explicit --config selection, output controls and other providers remain work.

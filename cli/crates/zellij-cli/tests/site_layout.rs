@@ -214,3 +214,178 @@ fn configured_content_and_config_links_are_rejected_before_writes() {
     run(root, &["build", "manual"], 2);
     assert!(!root.join("manual/site").exists());
 }
+
+#[test]
+fn cwd_and_site_root_control_scaffolding_builds_outputs_and_native_writes() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    fs::create_dir(root.join("Product 日本")).unwrap();
+    run(root, &["--cwd", "Product 日本", "init", "--minimal"], 0);
+    assert!(!root.join("docs").exists());
+    run(
+        root,
+        &["b", "--cwd", "Product 日本", "--out", "exported"],
+        0,
+    );
+    assert!(root.join("Product 日本/exported/index.html").is_file());
+    assert!(!root.join("exported").exists());
+    let default = fs::read(root.join("Product 日本/docs/zellij/zel.yaml")).unwrap();
+    site(root, "Product 日本/docs/Manual #1%");
+    let args = [
+        "--cwd",
+        "Product 日本",
+        "--site-root",
+        "docs/Manual #1%",
+        "c",
+        "--json",
+    ];
+    let checked = run(root, &args, 0);
+    assert_eq!(
+        serde_json::from_slice::<Value>(&checked.stdout).unwrap()["pages"],
+        1
+    );
+    run(
+        root,
+        &[
+            "--cwd",
+            "Product 日本",
+            "features",
+            "all",
+            "--site-root",
+            "docs/Manual #1%",
+        ],
+        0,
+    );
+    let config = fs::read_to_string(root.join("Product 日本/docs/Manual #1%/zel.yaml")).unwrap();
+    assert_eq!(
+        serde_yaml_ng::from_str::<serde_yaml_ng::Value>(&config).unwrap()["markdown"]["math"],
+        true
+    );
+    assert_eq!(
+        fs::read(root.join("Product 日本/docs/zellij/zel.yaml")).unwrap(),
+        default
+    );
+    // Saved output is relative to the selected site; a flag is relative to --cwd.
+    write(
+        root,
+        "Product 日本/docs/Manual #1%/zel.yaml",
+        "version: 1\nrenderer: portable\nbuild: {out: exports/html}\n",
+    );
+    run(
+        root,
+        &[
+            "b",
+            "--site-root",
+            "docs/Manual #1%",
+            "--cwd",
+            "Product 日本",
+        ],
+        0,
+    );
+    assert!(
+        root.join("Product 日本/docs/Manual #1%/exports/html/index.html")
+            .is_file()
+    );
+    run(
+        root,
+        &["--cwd", "Product 日本", "ctx", "context.json", "--json"],
+        0,
+    );
+    assert!(root.join("Product 日本/context.json").is_file());
+    assert!(!root.join("context.json").exists());
+    run(
+        root,
+        &["--cwd", "Product 日本", "nd", "docs/hosted", "--minimal"],
+        0,
+    );
+    run(
+        root,
+        &[
+            "--cwd",
+            "Product 日本",
+            "--site-root",
+            "docs/hosted",
+            "ng",
+            "api",
+        ],
+        0,
+    );
+    assert!(
+        root.join("Product 日本/docs/hosted/content/01-api/index.mdx")
+            .is_file()
+    );
+    run(
+        root,
+        &["ir", "--cwd", "Product 日本", "--site-root", "docs/hosted"],
+        4,
+    );
+    run(
+        root,
+        &["idf", "--cwd", "Product 日本", "--site-root", "docs/hosted"],
+        0,
+    );
+    // An absolute --cwd also uses the same selection and safety paths.
+    run(
+        root,
+        &[
+            "--cwd",
+            root.join("Product 日本").to_str().unwrap(),
+            "b",
+            "--site-root",
+            "docs/Manual #1%",
+            "--out",
+            "docs/Manual #1%/content",
+        ],
+        2,
+    );
+    assert!(
+        root.join("Product 日本/docs/Manual #1%/content/index.md")
+            .is_file()
+    );
+}
+
+#[test]
+fn invalid_working_directory_and_selection_fail_before_writes_or_tool_discovery() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    site(root, "docs/zellij");
+    let before = fs::read(root.join("docs/zellij/zel.yaml")).unwrap();
+    write(root, "ordinary-file", "keep");
+    for path in ["missing", "ordinary-file"] {
+        let result = run(root, &["--cwd", path, "build"], 2);
+        assert!(String::from_utf8_lossy(&result.stderr).contains("cannot use --cwd"));
+    }
+    for args in [
+        vec!["build", "docs/zellij", "--site-root", "docs/zellij"],
+        vec!["new", "portable", "new-site", "--site-root", "docs/zellij"],
+        vec!["ci", "run", "--site-root", "docs/zellij"],
+        vec![
+            "eject",
+            "--with-docs",
+            "--out",
+            "wrapper",
+            "--site-root",
+            "docs/zellij",
+        ],
+        vec![
+            "image",
+            "push",
+            "example:latest",
+            "--site-root",
+            "docs/zellij",
+        ],
+    ] {
+        run(root, &args, 2);
+    }
+    assert_eq!(fs::read(root.join("docs/zellij/zel.yaml")).unwrap(), before);
+    for path in ["new-site", "wrapper", "site", "docs/zellij/site"] {
+        assert!(!root.join(path).exists());
+    }
+    // Site selectors retain the command's existing missing-path status.
+    let selected = run(root, &["b", "--site-root", "missing"], 1);
+    let positional = run(root, &["b", "missing"], 1);
+    assert_eq!(selected.stderr, positional.stderr);
+    run(root, &["features", "none", "--site-root", "missing"], 1);
+    run(root, &["--cwd", "missing", "--help"], 0);
+    run(root, &["--cwd", "missing", "--version"], 0);
+}
