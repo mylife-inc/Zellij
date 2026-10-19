@@ -100,6 +100,20 @@ impl ContainerEngine {
         &self.image
     }
 
+    /// Explicitly download/update the selected engine; never start a daemon.
+    pub fn pull(&self) -> Result<()> {
+        let status = self
+            .runtime
+            .command()
+            .args(["pull", &self.image])
+            .status()?;
+        if status.success() {
+            Ok(())
+        } else {
+            Err(Error::ImageOperationFailed { operation: "pull" })
+        }
+    }
+
     /// Is the image already on this machine? None means inspection was
     /// unavailable or timed out; it must not be reported as a missing image.
     pub fn image_is_local(&self) -> Option<bool> {

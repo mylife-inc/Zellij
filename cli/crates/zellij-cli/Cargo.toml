@@ -24,6 +24,11 @@ serde_json.workspace = true
 serde.workspace = true
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 sha1 = "0.10"
+sha2 = "0.10"
+semver = "1"
+flate2 = "1"
+tar = "0.4"
+zip = { version = "9.0.5", default-features = false, features = ["deflate-flate2"] }
 walkdir.workspace = true
 ctrlc = { version = "3.5", features = ["termination"] }
 open = "5"

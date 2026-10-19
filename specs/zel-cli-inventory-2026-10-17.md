@@ -313,3 +313,12 @@ preservation. Hosted dev remains Next.js development; its port must be nonzero.
 See contract stage 6c and the local dev/view references for options and limits.
 Remaining work includes other providers, advanced maintenance, additional dev
 flags, compatible release packages and public documentation publication.
+
+### Maintenance implementation follow-up — 2026-10-18
+
+The historic inventory above remains the audit baseline. Current source now
+registers version (including JSON), pull and upgrade. Their complete argument,
+verification, platform and failure contracts are documented in the corresponding
+local CLI pages and contract stage 7a. Completions include all three commands.
+Public zellij-v0.1.3 still predates these additions. Eject/features, further
+providers and advanced options remain pending.

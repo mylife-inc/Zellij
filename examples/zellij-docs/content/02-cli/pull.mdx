@@ -1,0 +1,29 @@
+---
+title: pull
+description: Download or refresh the engine image before a hosted operation.
+---
+
+```bash
+zel pull
+zel pull --image ghcr.io/mylife-inc/zellij-base:latest
+```
+
+The selected image is `--image`, then `ZELLIJ_IMAGE`, then the default
+`ghcr.io/mylife-inc/zellij-base:latest`. An override applies only to this pull;
+set `ZELLIJ_IMAGE` for subsequent builds to use the same image. Tags and
+`repository@sha256:<64 hexadecimal digits>` references are accepted. The existing
+default `latest` is mutable; use a compatible published tag or digest when
+reproducibility matters.
+
+`pull` uses the same Docker, Podman or nerdctl discovery as hosted builds.
+Explicit runtime endpoint variables are respected. It does not install/start a
+runtime, change endpoint settings or log in to a registry. If no runtime answers,
+it exits with code `4` and setup guidance. A failed pull exits `3`; invalid
+arguments or unsupported `--json` exit `2` before pulling.
+
+This command downloads the engine image, not your content or the native CLI.
+Hosted app dependencies can still require network access at build time. Portable
+Markdown commands do not need this image. See [`zel upgrade`](/cli/upgrade) to
+update the executable and [`zel doctor`](/cli/doctor) for container diagnostics.
+
+Available in current source; public `zellij-v0.1.3` predates it.

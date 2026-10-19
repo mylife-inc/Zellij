@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
-import { mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, mkdtemp, readFile, readdir, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -24,13 +24,19 @@ const executable = path.join(installation, windows ? 'zel.exe' : 'zel');
 const consoleExe = path.join(temp, 'console.exe');
 const active = new Set();
 let badArchive;
+let nextArchive;
 const requests = [];
 const server = createServer((request, response) => {
   requests.push({ url: request.url, auth: !!request.headers.authorization });
   const [scenario, file] = new URL(request.url, 'http://localhost').pathname.slice(1).split('/');
-  const name = scenario === 'version-mismatch' ? archive.replace(version, 'v999.0.0') : archive;
-  const data = scenario === 'unsafe-archive' ? badArchive : bytes;
-  if (file === name) { response.writeHead(200, { 'Content-Type': 'application/octet-stream' }); response.end(data); return; }
+  const name = ['version-mismatch', 'next'].includes(scenario) ? archive.replace(version, 'v999.0.0') : archive;
+  const data = scenario === 'next' ? nextArchive : scenario === 'unsafe-archive' ? badArchive : bytes;
+  if (file === name) {
+    response.writeHead(200, { 'Content-Type': 'application/octet-stream' });
+    if (scenario === 'slow') { response.write(data.subarray(0, 1024)); setTimeout(() => response.end(data.subarray(1024)), 5000); }
+    else response.end(data);
+    return;
+  }
   if ((file === 'SHA256SUMS' && scenario !== 'single') || file === `${name}.sha256`) {
     if (scenario === 'missing') { response.writeHead(404); response.end(); return; }
     response.writeHead(200, { 'Content-Type': 'application/octet-stream' });
@@ -126,6 +132,80 @@ try {
   assert.match(packageFailure.stderr, /committed workspace version/);
   const env = { ...process.env, PATH: path.join(temp, 'no-external-tools') };
   assert.equal((await run(executable, ['--version'], env)).stdout.trim(), `zel ${version.slice(1)}`);
+  const details = JSON.parse((await run(executable, ['version', '--json'], env)).stdout);
+  assert.equal(details.cli.version, version.slice(1)); assert.equal(details.cli.target, target);
+  assert.equal(details.configuration_version, 1); assert.match(details.content_schema_sha256, /^[a-f0-9]{64}$/);
+  const beforeUpgrade = await readFile(executable);
+  const upgradeEnv = { ...env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential' };
+  delete upgradeEnv.ZEL_RELEASE_BASE_URL;
+  const upgradeArgs = (scenario, requested = version) => ['upgrade', requested, '--force', '--release-base-url', `${origin}/${scenario}`];
+  const noDownload = requests.length;
+  await run(executable, ['upgrade', version, '--check'], upgradeEnv);
+  await run(executable, ['upgrade', version], upgradeEnv);
+  await run(executable, ['upgrade', 'v0.0.0', '--force'], upgradeEnv, false);
+  await run(executable, ['upgrade', version, '--force', '--json'], upgradeEnv, false);
+  assert.equal(requests.length, noDownload, 'check, current-version and rejected commands must not download');
+  for (const scenario of ['corrupt', 'missing', 'unsafe-archive', 'version-mismatch']) {
+    const failure = await run(executable, upgradeArgs(scenario, scenario === 'version-mismatch' ? 'v999.0.0' : version), upgradeEnv, false);
+    assert.match(failure.stderr, new RegExp({corrupt:'checksum mismatch', missing:'no valid checksum', 'unsafe-archive':'archive must contain', 'version-mismatch':'binary version does not match'}[scenario]));
+    assert.deepEqual(await readFile(executable), beforeUpgrade, `${scenario} upgrade must preserve installed binary`);
+  }
+  for (const scenario of ['combined', 'single']) {
+    assert.match((await run(executable, upgradeArgs(scenario), upgradeEnv)).stdout, /Upgraded /);
+    assert.deepEqual(await readFile(executable), beforeUpgrade, 'verified archive replaced the executable');
+    assert.equal((await run(executable, ['--version'], env)).stdout.trim(), `zel ${version.slice(1)}`);
+  }
+  const beforeSlow = requests.length;
+  const slowArgs = upgradeArgs('slow');
+  const slow = start(windows ? consoleExe : executable, windows ? [executable, ...slowArgs] : slowArgs, upgradeEnv);
+  await until(() => requests.slice(beforeSlow).some(r => r.url === `/slow/${archive}`) || slow.exit !== undefined, 'Upgrade download never started');
+  assert.equal(slow.exit, undefined, slow.stderr);
+  const concurrent = await run(executable, upgradeArgs('combined'), upgradeEnv, false);
+  assert.match(concurrent.stderr, /another upgrade holds the installation lock/);
+  if (windows) slow.child.stdin.end('stop\n'); else slow.child.kill('SIGINT');
+  await until(() => slow.exit !== undefined, 'Upgrade cancellation timed out');
+  assert.notEqual(slow.exit, 0, slow.stdout);
+  assert.match(slow.stderr, /cancelled/);
+  assert.deepEqual(await readFile(executable), beforeUpgrade, 'cancelled upgrade preserves installed executable');
+  assert(requests.every(request => !request.auth), 'Upgrades must not forward credentials to mirrors');
+  for (const entry of await readdir(installation)) {
+    if (entry.startsWith('.zel-upgrade-')) {
+      assert(windows, 'Unix staging directories are removed after success/failure');
+      assert.deepEqual(await readdir(path.join(installation, entry)), ['zel.previous.exe']);
+      assert.deepEqual(await readFile(path.join(installation, entry, 'zel.previous.exe')), beforeUpgrade);
+    }
+  }
+  console.log(`${target}: version reporting and native self-upgrade, checksum/archive/version refusal, cancellation and preservation passed.`);
+  const fixtureDir = path.join(temp, 'fixture'); await mkdir(fixtureDir);
+  const fixture = path.join(fixtureDir, windows ? 'zel.exe' : 'zel');
+  execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/maintenance-tool.rs', '-o', fixture]);
+  const runtime = path.join(fixtureDir, windows ? 'podman.exe' : 'podman'); await copyFile(fixture, runtime);
+  const runtimeEnv = { ...env };
+  const selectors = ['PATH', 'DOCKER_HOST', 'DOCKER_CONTEXT', 'CONTAINER_HOST', 'CONTAINER_CONNECTION', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE'];
+  for (const key of Object.keys(runtimeEnv)) if (selectors.includes(key.toUpperCase())) delete runtimeEnv[key];
+  Object.assign(runtimeEnv, { PATH: fixtureDir, CONTAINER_CONNECTION: 'isolated-fixture', ZEL_FIXTURE_LOG: path.join(temp, 'pull.log'), ZELLIJ_IMAGE: 'registry.example.test/engine:configured' });
+  await run(executable, ['pull'], runtimeEnv);
+  assert.equal(await readFile(runtimeEnv.ZEL_FIXTURE_LOG, 'utf8'), runtimeEnv.ZELLIJ_IMAGE);
+  const digestRef = 'registry.example.test/engine@sha256:' + 'a'.repeat(64);
+  await run(executable, ['pull', '--image', digestRef], runtimeEnv);
+  assert.equal(await readFile(runtimeEnv.ZEL_FIXTURE_LOG, 'utf8'), digestRef);
+  const pullFailure = await run(executable, ['pull'], { ...runtimeEnv, ZEL_FIXTURE_EXIT: '42' }, false);
+  assert.equal(pullFailure.exit, 3);
+  assert.equal((await run(executable, ['pull'], { ...runtimeEnv, ZEL_FIXTURE_UNAVAILABLE: '1' }, false)).exit, 4);
+  for (const args of [['pull', '--image', '--help=true'], ['pull', '--image', 'invalid image'], ['pull', '--json']]) {
+    assert.equal((await run(executable, args, runtimeEnv, false)).exit, 2);
+  }
+  assert.equal(await readFile(runtimeEnv.ZEL_FIXTURE_LOG, 'utf8'), runtimeEnv.ZELLIJ_IMAGE);
+  const future = path.join(temp, windows ? 'next.zip' : 'next.tar.gz');
+  if (windows) execFileSync('pwsh', ['-NoProfile', '-File', 'scripts/package-windows.ps1', '-Binary', fixture, '-Archive', future]);
+  else execFileSync('tar', ['-czf', future, '-C', fixtureDir, 'zel'], { env: { ...process.env, COPYFILE_DISABLE: '1' } });
+  nextArchive = await readFile(future);
+  const copyDir = path.join(temp, 'Separate installation'); await mkdir(copyDir);
+  const copyExe = path.join(copyDir, path.basename(executable)); await copyFile(executable, copyExe);
+  assert.match((await run(copyExe, ['upgrade', 'v999.0.0', '--release-base-url', `${origin}/next`], upgradeEnv)).stdout, /Upgraded /);
+  assert.equal((await run(copyExe, ['--version'], env)).stdout.trim(), 'zel 999.0.0');
+  assert.deepEqual(await readFile(executable), beforeUpgrade, 'upgrades affect only their own executable');
+  console.log(`${target}: selected-runtime pull, failure propagation and upgrade to a higher native version passed.`);
   const source = path.join(temp, 'Docs 日本');
   const output = path.join(temp, 'Moved site café');
   await run(executable, ['new', 'portable', source, '--name', 'Installed documentation'], env);

@@ -53,6 +53,9 @@ pub enum Error {
     #[error("Netlify deployment failed: {0}")]
     DeploymentFailed(String),
 
+    #[error("CLI upgrade failed: {0}")]
+    UpgradeFailed(String),
+
     #[error(transparent)]
     Io(#[from] std::io::Error),
 }
@@ -70,6 +73,7 @@ impl Error {
             | Error::BuildFailed
             | Error::ImageOperationFailed { .. }
             | Error::DeploymentFailed(_) => 3,
+            Error::UpgradeFailed(_) => 1,
             Error::NoEngine { .. } | Error::MountEmpty { .. } => 4,
             _ => 1,
         }

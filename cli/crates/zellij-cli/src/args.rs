@@ -123,7 +123,7 @@ pub(crate) struct Cli {
     #[command(subcommand)]
     pub(crate) command: Command,
 
-    /// JSON output for context, list, explain and detect, plus portable check.
+    /// JSON output for context, list, explain, detect, version and portable check.
     #[arg(long, global = true)]
     pub(crate) json: bool,
 }
@@ -311,6 +311,19 @@ pub(crate) enum Command {
     /// Check the environment: container runtime, image, versions.
     Doctor,
 
+    /// Report binary, embedded engine/schema and selected image without a runtime.
+    Version,
+
+    /// Download the selected engine image using Docker, Podman or nerdctl.
+    Pull {
+        /// Override ZELLIJ_IMAGE for this pull only.
+        #[arg(long)]
+        image: Option<String>,
+    },
+
+    /// Upgrade this executable from the stable Zellij GitHub release channel.
+    Upgrade(UpgradeArgs),
+
     /// Print a shell completion script to standard output.
     #[command(visible_alias = "comp")]
     Completions {
@@ -320,6 +333,22 @@ pub(crate) enum Command {
 
     #[command(flatten)]
     Shortcut(Shortcut),
+}
+
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct UpgradeArgs {
+    /// Exact release, e.g. 0.2.0 or v0.2.0-rc.1. Otherwise use latest stable.
+    #[arg(value_name = "VERSION")]
+    pub(crate) version: Option<String>,
+    /// Report the available version without downloading or replacing the binary.
+    #[arg(long)]
+    pub(crate) check: bool,
+    /// Reinstall the same version (older versions are always refused).
+    #[arg(long, conflicts_with = "check")]
+    pub(crate) force: bool,
+    /// HTTPS asset mirror (loopback HTTP allowed); requires an exact VERSION.
+    #[arg(long, env = "ZEL_RELEASE_BASE_URL", requires = "version")]
+    pub(crate) release_base_url: Option<String>,
 }
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
