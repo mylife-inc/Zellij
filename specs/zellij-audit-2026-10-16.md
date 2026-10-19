@@ -1976,8 +1976,8 @@ immediately kill a long container build. Output/port remain fixed until restart.
 The reload client is injected only into HTTP responses. Portable exports retain
 file:// support; hosted exports continue to require HTTP serving.
 
-Local validation: all 265 Rust tests and warnings-denied Clippy passed before the
-final port-zero guard; final focused checks are recorded with the PR below.
+Local validation: all 265 Rust tests and warnings-denied Clippy passed on the
+final implementation, including the hosted-dev port-zero guard.
 Chromium/WebKit portable preview and dev acceptance passed. A standalone Rust
 runtime-protocol fixture exercises real native CLI orchestration and Chromium:
 prefix serving, browser readiness, reload/error recovery, configuration recovery,
@@ -1991,3 +1991,9 @@ publication occurred. Public native release remains zellij-v0.1.3. Remaining wor
 includes other deployment providers, maintenance commands, additional dev flags,
 compatible release distribution and documentation publication. Final source/PR
 and platform/container results will be appended.
+
+
+Portable-dev/hosted-preview implementation source:
+`e9e47deb23f68ee9dafcada6b4fe657377e4db05`, in
+[PR #38](https://github.com/mylife-inc/Zellij/pull/38). That PR tracks the final-head
+platform tests and real-container browser validation before authorized merge.
