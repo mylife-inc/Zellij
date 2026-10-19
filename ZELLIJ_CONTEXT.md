@@ -2964,3 +2964,7 @@ conversion fidelity, matched native release and documentation publication.
 Foreign-architecture hosted/Next execution is not covered by the small ARM64
 portable acceptance fixture; dispatch for all renderer/kind pairs is covered.
 No manual live provider/registry deployment or native release was performed.
+
+Follow-up be57372ec7e32c4edad9bce538ac78ec9c914d5f selects native ARM64 generated-workflow runners.
+All nine workflow tests, scaffold tests, generated workflow lint, Clippy,
+formatting and strict/deep docs validation passed after this refinement.
