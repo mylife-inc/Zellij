@@ -303,5 +303,11 @@ output directory; do not add the marker by hand.
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
 
 Options that do not apply to the selected target are rejected. `--base-path`,
-`--site-url`, `--features`, `--platform`, and `--no-check` are not implemented
+`--site-url`, `--features`, and `--no-check` are not implemented
 Rust build flags. `--json` is currently limited to inspection commands.
+
+
+For `--target image`, `--platform linux/amd64` or `--platform linux/arm64`
+overrides `image.platform` in the selected configuration. Other build targets
+reject this flag; HTML output has no container architecture. See
+[image platform selection](/cli/image#select-the-image-platform).

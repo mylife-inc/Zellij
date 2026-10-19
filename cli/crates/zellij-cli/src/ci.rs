@@ -114,6 +114,16 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "--site-id, production and --provision require Netlify CI delivery",
         ));
     }
+    let image_delivery = matches!(publish, Publish::Image { .. } | Publish::LegacyImage);
+    if args.platform.is_some() && !image_delivery {
+        return Err(invalid("--platform requires image CI delivery"));
+    }
+    let platform = if image_delivery {
+        args.platform
+            .or(site.image.as_ref().and_then(|image| image.platform))
+    } else {
+        None
+    };
     let path = Utf8PathBuf::from(format!(".github/workflows/{}", settings.workflow));
     let options = CiOptions {
         config: if site.input.explicit_config() {
@@ -129,6 +139,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             None
         },
         site_root: relative,
+        platform,
         settings,
         version,
         publish,

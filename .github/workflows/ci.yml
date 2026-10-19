@@ -223,6 +223,13 @@ jobs:
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
+      - name: Enable ARM64 image acceptance
+        uses: docker/setup-qemu-action@v4
+        with:
+          platforms: arm64
+      - name: Cross-architecture image build, registry and HTTP acceptance
+        run: node scripts/check-image-platform.mjs cli/target/debug/zel
+
       - name: Static image publication and portable/hosted HTTP acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci

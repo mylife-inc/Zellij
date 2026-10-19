@@ -122,6 +122,7 @@ fn main() {
             ref target,
             ref out,
             ref tag,
+            platform,
             ref name,
             ref theme,
         } => build_dispatch(
@@ -131,15 +132,18 @@ fn main() {
             tag.as_deref(),
             name.as_deref(),
             theme.as_deref(),
+            platform,
         ),
         Command::Image { ref action } => match action {
-            ImageAction::Static(SiteImageArgs { dir, tag }) => {
-                images::static_image(dir.as_ref(), tag.as_deref())
+            ImageAction::Static(SiteImageArgs { dir, tag, platform }) => {
+                images::static_image(dir.as_ref(), tag.as_deref(), *platform)
             }
-            ImageAction::Next(SiteImageArgs { dir, tag }) => {
-                images::next_image(dir.as_ref(), tag.as_deref())
+            ImageAction::Next(SiteImageArgs { dir, tag, platform }) => {
+                images::next_image(dir.as_ref(), tag.as_deref(), *platform)
             }
-            ImageAction::Build { dir, tag } => image_build_selected(dir.as_ref(), tag.as_deref()),
+            ImageAction::Build { dir, tag, platform } => {
+                image_build_selected(dir.as_ref(), tag.as_deref(), *platform)
+            }
             ImageAction::Run(ImageRunArgs {
                 tag,
                 port,
@@ -367,6 +371,7 @@ fn build_dispatch(
     tag: Option<&str>,
     name: Option<&str>,
     theme: Option<&str>,
+    platform: Option<zellij_core::delivery::ImagePlatform>,
 ) -> zellij_core::Result<()> {
     let selected = select_site(dir)?;
     let dir = &selected;
@@ -380,9 +385,9 @@ fn build_dispatch(
                 .into(),
         ));
     }
-    if target != "image" && tag.is_some() {
+    if target != "image" && (tag.is_some() || platform.is_some()) {
         return Err(zellij_core::Error::InvalidArgument(
-            "--tag requires --target image".into(),
+            "--tag and --platform require --target image".into(),
         ));
     }
     match target {
@@ -401,7 +406,7 @@ fn build_dispatch(
                     "--out does not apply to image builds; use --tag".into(),
                 ));
             }
-            image_build(dir, tag, None)
+            image_build(dir, tag, None, platform)
         }
         _ => Err(zellij_core::Error::InvalidArgument(format!(
             "unknown build target {target:?}; run zel list targets"
@@ -561,8 +566,12 @@ fn default_tag(content: &Utf8Path) -> String {
     format!("{}:latest", safe.trim_matches('-'))
 }
 
-fn image_build_selected(dir: Option<&SiteInput>, tag: Option<&str>) -> zellij_core::Result<()> {
-    image_build(&select_site(dir)?, tag, None)
+fn image_build_selected(
+    dir: Option<&SiteInput>,
+    tag: Option<&str>,
+    platform: Option<zellij_core::delivery::ImagePlatform>,
+) -> zellij_core::Result<()> {
+    image_build(&select_site(dir)?, tag, None, platform)
 }
 
 fn site_tag(dir: &SiteInput, content: &Utf8Path) -> zellij_core::Result<String> {
@@ -578,6 +587,7 @@ fn image_build(
     dir: &SiteInput,
     tag: Option<&str>,
     features: Option<&str>,
+    platform: Option<zellij_core::delivery::ImagePlatform>,
 ) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
     let tag = match tag {
@@ -591,7 +601,12 @@ fn image_build(
     zellij_core::statusln!("  Tag      {tag}");
     zellij_core::statusln!();
 
-    engine.image_build(&content, &tag, features, None)?;
+    let site = zellij_core::site::Site::load(dir)?;
+    let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
+    if let Some(platform) = platform {
+        zellij_core::statusln!("  Platform {platform}");
+    }
+    engine.image_build(&content, &tag, features, platform)?;
 
     zellij_core::statusln!();
     zellij_core::statusln!("✓ {tag}");

@@ -21,8 +21,43 @@ impl ImageKind {
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ImageSettings {
-    #[serde(deserialize_with = "image_reference")]
-    pub name: String,
+    #[serde(default, deserialize_with = "image_reference")]
+    pub name: Option<String>,
+    #[serde(default)]
+    pub platform: Option<ImagePlatform>,
+}
+
+/// Target architectures shipped by the Linux container distributions. Keep
+/// this separate from the OS/architecture of the native zel executable.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
+pub enum ImagePlatform {
+    #[serde(rename = "linux/amd64")]
+    Amd64,
+    #[serde(rename = "linux/arm64")]
+    Arm64,
+}
+impl ImagePlatform {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Amd64 => "linux/amd64",
+            Self::Arm64 => "linux/arm64",
+        }
+    }
+}
+impl std::fmt::Display for ImagePlatform {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(self.as_str())
+    }
+}
+impl std::str::FromStr for ImagePlatform {
+    type Err = String;
+    fn from_str(value: &str) -> std::result::Result<Self, Self::Err> {
+        match value {
+            "linux/amd64" => Ok(Self::Amd64),
+            "linux/arm64" => Ok(Self::Arm64),
+            _ => Err("choose one platform: linux/amd64 or linux/arm64; combined multi-platform images are not implemented".into()),
+        }
+    }
 }
 
 /// Only implemented actions are accepted. In particular a provider or token
@@ -80,6 +115,22 @@ pub enum DeliveryPlan {
 }
 
 impl DeliveryPlan {
+    /// Apply a per-invocation override only to image delivery. Saved image
+    /// defaults remain irrelevant to explicit static-site deployments.
+    pub fn with_platform(mut self, platform: Option<ImagePlatform>) -> Result<Self> {
+        if let Some(platform) = platform {
+            match &mut self {
+                Self::Push(image) => image.platform = Some(platform),
+                Self::Netlify { .. } => {
+                    return Err(Error::InvalidArgument(
+                        "--platform requires image publication; Netlify accepts static HTML".into(),
+                    ));
+                }
+            }
+        }
+        Ok(self)
+    }
+
     /// Explicit `deploy` supplies intent; `publish --to` can override only a
     /// deployment provider, never silently replace a selected container image.
     pub fn resolve(
@@ -138,6 +189,7 @@ impl DeliveryPlan {
 pub struct ImagePublication {
     pub kind: ImageKind,
     pub tag: String,
+    pub platform: Option<ImagePlatform>,
 }
 impl ImagePublication {
     pub fn resolve(site: &Site, tag: Option<&str>) -> Result<Self> {
@@ -146,10 +198,12 @@ impl ImagePublication {
                 "image publication requires version: 1 with `publish: {action: push, image: static}` (or image: next) in zel.yaml".into(),
             ));
         };
-        let tag = tag.or(site.image.as_ref().map(|s| s.name.as_str())).ok_or_else(|| {
+        let tag = tag.or(site.image.as_ref().and_then(|s| s.name.as_deref())).ok_or_else(|| {
             Error::InvalidArgument("publish requires an explicit destination: set image.name in zel.yaml or pass --tag; generated local image names are never publication defaults".into())
         })?;
-        Self::new(image, tag)
+        let mut publication = Self::new(image, tag)?;
+        publication.platform = site.image.as_ref().and_then(|image| image.platform);
+        Ok(publication)
     }
 
     pub fn new(kind: ImageKind, tag: &str) -> Result<Self> {
@@ -157,13 +211,14 @@ impl ImagePublication {
         Ok(Self {
             kind,
             tag: tag.to_owned(),
+            platform: None,
         })
     }
 }
 
 fn image_reference<'de, D: serde::Deserializer<'de>>(
     d: D,
-) -> std::result::Result<String, D::Error> {
+) -> std::result::Result<Option<String>, D::Error> {
     // YAML otherwise coerces bools/numbers into String.
     let serde_yaml_ng::Value::String(value) = serde_yaml_ng::Value::deserialize(d)? else {
         return Err(serde::de::Error::custom(
@@ -171,7 +226,7 @@ fn image_reference<'de, D: serde::Deserializer<'de>>(
         ));
     };
     validate_image_reference(&value).map_err(serde::de::Error::custom)?;
-    Ok(value)
+    Ok(Some(value))
 }
 
 /// A taggable distribution reference: [registry[:port]/]path[:tag]. Digests

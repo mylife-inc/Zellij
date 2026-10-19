@@ -32,6 +32,7 @@ zel ir acme-docs:static --port 8080
 | --- | --- | --- |
 | `[site]` | Configured site root, or an explicit legacy content folder | Current site or `docs/zellij` |
 | `--tag <reference>` | Image name and tag | `image.name`, then `<site-name>-static:latest` |
+| `--platform <platform>` | `linux/amd64` or `linux/arm64` | `image.platform`, then runtime default |
 
 The generated name uses the selected folder's name, lowercases ASCII letters,
 and replaces runs of other characters with hyphens. A name with no ASCII
@@ -125,7 +126,49 @@ server, static chunks, public assets, and the selected content needed for
 server-side route resolution into a Node 24 Alpine runtime. The
 server runs without root on port 3000.
 
-`--platform`, `--features`, and `--build-arg` are not implemented CLI options yet.
+## Select the image platform
+
+All image build forms, including `si`, `ni`, `image build`, and
+`build --target image`, accept one Linux target architecture:
+
+```bash
+zel si --platform linux/arm64
+zel ni --platform linux/amd64
+```
+
+Save a default in the selected version-1 `zel.yaml` to keep commands short:
+
+```yaml
+image:
+  platform: linux/arm64
+  name: ghcr.io/acme/docs:latest
+```
+
+`image.name` is optional for local builds. Publication still requires an explicit
+name or `--tag`. `--platform` overrides `image.platform`; omitting both uses the
+container runtime's default. The legacy Next build forms read `image.platform`
+while retaining their existing tag rules. Platform selection applies to every
+Dockerfile stage, including its base images.
+
+Supported values are `linux/amd64` and `linux/arm64`. These describe the container,
+not the OS running `zel`: native Windows and macOS CLIs also build Linux images.
+Combined lists, other operating systems and architecture abbreviations are
+rejected before a build. Combined multi-platform image publication remains
+future work.
+
+Foreign-architecture `RUN` steps require a builder with emulation or native
+support, and every base image must provide the requested platform. A failed
+build preserves the runtime's diagnostic and explains these prerequisites;
+Zellij does not install emulators or start daemons. See the
+[Docker platform guide](https://docs.docker.com/build/building/multi-platform/)
+and [Podman platform option](https://docs.podman.io/en/latest/markdown/podman-build.1.html#platform-os-arch-variant).
+
+Docker, Podman and nerdctl receive the same single-platform selection. Podman
+uses its native progress output. A nerdctl push uploads all content in the local
+image, preserving a selected architecture even when it differs from the host;
+see the [nerdctl command reference](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md).
+
+`--features` and `--build-arg` remain unimplemented image CLI options.
 
 ## `zel image run`
 

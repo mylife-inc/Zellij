@@ -2234,3 +2234,42 @@ acceptance, real no-color preview and quiet/no-color ejection. Refresh final PR
 checks before treating the source as merged/cross-platform accepted. Additional
 providers, remaining advanced/converter scope and native release/docs publication
 remain; no local Docker startup or manual live deployment occurred.
+
+
+### Image platform selection — 2026-10-19
+
+PR #44 merged as 2ada5fe0ad1e1227c70eb963746cca929fc72af5 after all 13 CI
+jobs passed on 52cc3620cdfbdff5f8db4d443abe9a925619cbb4 (39216062489).
+Its main CI 39218117100 and Base image 39218117079 both passed.
+
+Fixing commit c9db8dfc1edbe7e702f7585e2680fbceb002435a implements single-platform Linux
+image selection (linux/amd64 or linux/arm64) across image static/next/build,
+si/ni, build --target image, saved publication/deploy, ship --image and CI.
+Optional image.platform supplies the default; CLI overrides it. image.name is
+now optional for local image builds, while publication still requires an
+explicit destination. Plans show the platform, ship retains it in zel.yaml,
+and generated CI freezes it in both jobs. A follow-up uses native ARM64 runners
+for generated workflows, avoiding known QEMU/Node failures in release builds.
+HTML/Netlify flags and unsupported/combined platform values fail before work.
+
+Podman builds omit Docker's unsupported --progress option. nerdctl pushes use
+--all-platforms to preserve a foreign single-platform local image. Build failure
+keeps diagnostics, explains base/emulation requirements and never proceeds to
+push. No local emulator/service is installed or started. See contract stage 9a.
+
+Local: 304 Rust tests in 38 suites, final focused delivery tests, warnings-denied
+Clippy, formatting, workflow and generated-workflow lint, and strict/deep docs
+validation (55 routes, 53 guide pages, 23 examples) passed. A first focused run
+had one 3-second fake-runtime probe timeout; the complete run with four test
+threads passed. CI adds real ARM64 portable build/push/pull/HTTP acceptance and
+an AMD64 override. Refresh final PR checks before claiming hosted acceptance.
+
+Remaining: combined multi-platform manifests, further advanced options/providers,
+conversion fidelity, matched native release and documentation publication.
+Foreign-architecture hosted/Next execution is not covered by the small ARM64
+portable acceptance fixture; dispatch for all renderer/kind pairs is covered.
+No manual live provider/registry deployment or native release was performed.
+
+Follow-up be57372ec7e32c4edad9bce538ac78ec9c914d5f selects native ARM64 generated-workflow runners.
+All nine workflow tests, scaffold tests, generated workflow lint, Clippy,
+formatting and strict/deep docs validation passed after this refinement.

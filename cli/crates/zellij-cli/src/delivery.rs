@@ -17,7 +17,8 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
         options.site_id.as_deref(),
         environment_site.as_deref(),
         options.prod,
-    )?;
+    )?
+    .with_platform(options.platform)?;
     if options.dry_run || !zellij_core::reporting::options().quiet {
         describe(&plan, &site, &content);
     }
@@ -42,7 +43,10 @@ pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
 pub(crate) fn describe_destination(plan: &DeliveryPlan) {
     match plan {
         DeliveryPlan::Push(plan) => {
-            zellij_core::reportln!("  Kind     {}\n  Push to  {}", plan.kind.as_str(), plan.tag)
+            zellij_core::reportln!("  Kind     {}\n  Push to  {}", plan.kind.as_str(), plan.tag);
+            if let Some(platform) = plan.platform {
+                zellij_core::reportln!("  Platform {platform}");
+            }
         }
         DeliveryPlan::Netlify { site, production } => zellij_core::reportln!(
             "  Provider netlify\n  Site ID  {site}\n  Mode     {}",
@@ -131,7 +135,9 @@ pub(crate) fn deploy(
 fn push_image(site: &Site, content: &Utf8Path, plan: &ImagePublication) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
     zellij_core::statusln!("\nBuilding image…");
-    if let Err(error) = crate::images::build_image(site, content, &engine, plan.kind, &plan.tag) {
+    if let Err(error) =
+        crate::images::build_image(site, content, &engine, plan.kind, &plan.tag, plan.platform)
+    {
         zellij_core::diagnosticln!(
             "Publication stopped during validation/build; no push was attempted."
         );

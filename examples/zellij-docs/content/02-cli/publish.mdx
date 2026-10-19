@@ -127,6 +127,7 @@ to delete registry state or roll back a previously published tag.
 | --- | --- |
 | `[site]` | Configured site root; otherwise use the standard discovery order |
 | `--tag <reference>` | Override `image.name` for both build and push |
+| `--platform <platform>` | Override `image.platform` for image publication; choose `linux/amd64` or `linux/arm64` |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
 | `--to netlify` | Select static-site deployment; rejected for a saved image-push plan |
 | `--site-id <id-or-domain>` | Netlify destination override; `--site` is equivalent |
@@ -138,6 +139,14 @@ or the destination exists.
 
 ## Remaining delivery work
 
-Other providers and the [`ship`](/cli/ship) composition remain pending.
+Other providers and combined multi-platform image publication remain pending.
+The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
 `zel ci [site]`, with local-only generation and explicit credential provisioning.
+
+
+Image plans include the effective platform in `--dry-run` output. Publication
+builds once for that architecture, then pushes the result. A failed build never
+starts a push. Saved image settings do not affect an explicit Netlify deployment;
+passing `--platform` to Netlify is rejected. See
+[platform prerequisites](/cli/image#select-the-image-platform).

@@ -109,3 +109,9 @@ persistent local `site/` export; use `zel build ./manual` when you want one.
 - [`zel migrate`](/cli/migrate) — import and validate without publication
 - [`zel publish`](/cli/publish) — reuse saved delivery settings
 - [Converting existing docs](/guide/converting) — supported mappings and limits
+
+
+Image delivery also accepts `--platform linux/amd64` or `--platform linux/arm64`.
+The choice is shown in the plan, saved as `image.platform` in the imported site's
+`zel.yaml`, and used by the build and later `zel pub` commands. This flag
+requires `--image`; it cannot select a platform for a Netlify deployment.

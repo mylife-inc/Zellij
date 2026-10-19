@@ -261,8 +261,16 @@ esac
                     renderer,
                     &SETTINGS.replace("image: static", &format!("image: {kind}")),
                 );
-                let result = runtime(root).args(["pub"]).output().unwrap();
+                let result = runtime(root)
+                    .args(["pub", "--platform", "linux/arm64"])
+                    .output()
+                    .unwrap();
                 assert!(result.status.success(), "{result:?}");
+                assert!(
+                    fs::read_to_string(root.join("build-args"))
+                        .unwrap()
+                        .contains("--platform\nlinux/arm64\n")
+                );
                 let calls = calls(root);
                 for expected in ["info", "build", "push"] {
                     assert_eq!(
@@ -368,7 +376,7 @@ esac
         for stage in ["BUILD", "PUSH"] {
             clear(root);
             let result = runtime(root)
-                .args(["pub"])
+                .args(["pub", "--platform", "linux/arm64"])
                 .env(format!("FAKE_{stage}_EXIT"), "1")
                 .output()
                 .unwrap();
@@ -378,6 +386,11 @@ esac
             if stage == "BUILD" {
                 assert!(!root.join("push-args").exists());
                 assert!(stderr.contains("no push was attempted"), "{stderr}");
+                assert!(
+                    stderr.contains("Image build for linux/arm64 failed")
+                        && stderr.contains("emulation"),
+                    "{stderr}"
+                );
             } else {
                 assert!(
                     stderr.contains("local image remains")
@@ -400,7 +413,10 @@ esac
             "docs/zellij/content/index.md",
             "[Missing](missing.md)",
         );
-        let result = runtime(root).args(["pub"]).output().unwrap();
+        let result = runtime(root)
+            .args(["pub", "--platform", "linux/arm64"])
+            .output()
+            .unwrap();
         assert!(!result.status.success());
         assert!(!root.join("build-args").exists() && !root.join("push-args").exists());
     }
@@ -424,4 +440,67 @@ esac
             preserved(root);
         }
     }
+}
+
+#[test]
+fn platform_plans_validate_override_and_reject_irrelevant_targets_without_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        &SETTINGS.replace("name:", "platform: linux/arm64, name:"),
+    );
+    let saved = run(root, &["pub", "--dry-run"], 0);
+    assert!(String::from_utf8_lossy(&saved.stdout).contains("linux/arm64"));
+    let changed = run(
+        root,
+        &["deploy", "--platform", "linux/amd64", "--dry-run"],
+        0,
+    );
+    assert!(String::from_utf8_lossy(&changed.stdout).contains("linux/amd64"));
+    // Saved image architecture does not affect an explicit HTML deployment.
+    run(root, &["netlify", "--site-id", "fixture", "--dry-run"], 0);
+    for args in [
+        vec![
+            "netlify",
+            "--site-id",
+            "fixture",
+            "--platform",
+            "linux/arm64",
+            "--dry-run",
+        ],
+        vec!["build", "--platform", "linux/amd64"],
+        vec!["si", "--platform", "linux/amd64,linux/arm64"],
+        vec!["ni", "--platform", "windows/amd64"],
+        vec!["pub", "--platform", "arm64", "--dry-run"],
+    ] {
+        run(root, &args, 2);
+        assert!(!root.join("docs/zellij/site").exists());
+    }
+    for invalid in [
+        "linux/amd64,linux/arm64",
+        "windows/amd64",
+        "true",
+        "42",
+        "[]",
+    ] {
+        config(
+            root,
+            "docs/zellij",
+            "portable",
+            &format!("image: {{platform: {invalid}}}\n"),
+        );
+        run(root, &["si"], 2);
+    }
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "image: {platform: linux/arm64}\npublish: {action: push, image: static}\n",
+    );
+    let missing_tag = run(root, &["pub", "--dry-run"], 2);
+    assert!(String::from_utf8_lossy(&missing_tag.stderr).contains("explicit destination"));
+    run(root, &["pub", "--tag", "acme/docs:v1", "--dry-run"], 0);
 }

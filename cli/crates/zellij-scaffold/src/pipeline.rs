@@ -4,7 +4,7 @@ use serde_json::{Value, json};
 use zellij_core::{
     Error, Result,
     ci::{Settings, Trigger},
-    delivery::ImageKind,
+    delivery::{ImageKind, ImagePlatform},
 };
 
 #[derive(Debug, Clone)]
@@ -27,6 +27,7 @@ pub struct CiOptions {
     pub settings: Settings,
     pub version: String,
     pub publish: Publish,
+    pub platform: Option<ImagePlatform>,
 }
 
 fn invalid(message: &str) -> Error {
@@ -97,7 +98,21 @@ pub fn github(options: &CiOptions) -> Result<String> {
         settings,
         version,
         publish,
+        platform,
     } = options;
+    if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
+        return Err(invalid("platform requires image delivery"));
+    }
+    // Use native runners: Node/Next RUN steps have previously crashed under
+    // QEMU in our release builds. Local cross-builds still use the caller's builder.
+    let runner = if *platform == Some(ImagePlatform::Arm64) {
+        "ubuntu-24.04-arm"
+    } else {
+        "ubuntu-latest"
+    };
+    let platform_flag = platform
+        .map(|p| format!(" --platform {p}"))
+        .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
     literal(site_root)?;
@@ -168,9 +183,8 @@ pub fn github(options: &CiOptions) -> Result<String> {
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
-    steps.push(json!({"name":"Build without publishing", "run":build}));
-    let mut jobs =
-        json!({"verify": {"runs-on":"ubuntu-latest", "timeout-minutes":30, "steps": steps}});
+    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}")}));
+    let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
         let mut steps = initial_steps(&version, selector);
@@ -207,9 +221,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
                 }}));
                 if let Some(tag) = tag {
-                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"")}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}")}));
                 } else {
-                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector)}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}"))}));
                 }
             }
             Publish::Netlify { site_id } => {
@@ -224,7 +238,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
             }
             Publish::Nothing => unreachable!(),
         }
-        jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":"ubuntu-latest", "timeout-minutes":30, "permissions":permissions, "steps":steps});
+        jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":runner, "timeout-minutes":30, "permissions":permissions, "steps":steps});
     }
     let mut doc = json!({
         "name":"Documentation", "on": events, "permissions":{"contents":"read"},
@@ -253,6 +267,7 @@ mod tests {
             settings: Settings::default(),
             version: "0.2.0-rc.1".into(),
             publish,
+            platform: None,
         }
     }
     fn parse(options: &CiOptions) -> Value {
