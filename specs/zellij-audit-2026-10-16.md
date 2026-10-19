@@ -2207,3 +2207,30 @@ wrapper installation/build/typecheck/browser checks passed. Cross-platform and
 real-container evidence must be refreshed on the final PR head. No new native
 release, local Docker startup or manual live deployment occurred. Output controls,
 other providers, remaining advanced/converter coverage and publication remain.
+
+
+### Shared output-control implementation — 2026-10-19
+
+PR #43 merged as 8912aee8f7ed037fe8b491a5fdf5d916fe997637 after all 13 CI
+jobs passed on ea6ada4e2b77b86ecf014cfa1f7291d50a2f06ed (39211231453).
+Its main CI 39213225423 and Base image 39213225268 both passed; PR #42's
+previously pending main CI 39209473176 passed as well.
+
+Fixing commit f7d141441652cc951a0f75ae98d83a672b1181f9 implements shared --quiet/-q,
+--verbose and --no-color with alias/help/completion support. Quiet retains data,
+errors/warnings and requested reports; verbose adds stderr diagnostics without
+raw arguments/env; color filtering covers parser errors and child output.
+NO_COLOR is honored, quiet/verbose conflict before work, and validation/output/
+publish behavior is unchanged. Hosted check keeps its complete mixed report.
+Child output uses independent file handles and anonymous temporary spooling,
+with 64 KiB per-stream failure tails and normal cancellation/cleanup ownership.
+Spooling consumes temporary disk while the command runs. See contract stage 8c.
+
+Local: 299 Rust tests plus final focused output regressions, warnings-denied
+Clippy, formatting, workflow lint and strict/deep docs validation passed. Actual
+quiet preview/HTTP/watch/recovery/Ctrl-C, validation watch and no-color hosted
+preview with an isolated runtime/browser passed. CI adds cross-platform output
+acceptance, real no-color preview and quiet/no-color ejection. Refresh final PR
+checks before treating the source as merged/cross-platform accepted. Additional
+providers, remaining advanced/converter scope and native release/docs publication
+remain; no local Docker startup or manual live deployment occurred.

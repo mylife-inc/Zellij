@@ -1,10 +1,11 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-10-18**. Initial review baseline: local `main` at
+Last refreshed: **2026-10-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: explicit --config selection on `codex/cli-explicit-config`,
-source commit `1653d84`. Shared --cwd and --site-root merged in PR #42.
+Latest CLI work: shared output controls on `codex/cli-output-controls`,
+source commit `f7d1414`. Explicit --config merged in PR #43; shared --cwd and
+--site-root merged in PR #42.
 Hosted rendering selection and optional-peer installs merged in PR #41.
 Eject/features merged in PR #40; maintenance
 commands merged in PR #39.
@@ -2879,3 +2880,51 @@ Remaining work: shared output controls, additional deployment providers, other
 advanced/converter gaps from the contract, matched native releases and published
 documentation. Public zellij-v0.1.3 still predates these source capabilities;
 this milestone does not publish releases or manually deploy a site.
+
+
+### Shared CLI output controls — 2026-10-19
+
+PR #43 merged as 8912aee8f7ed037fe8b491a5fdf5d916fe997637 after all 13 jobs
+passed on ea6ada4e2b77b86ecf014cfa1f7291d50a2f06ed (CI 39211231453).
+Both post-merge runs passed: CI 39213225423 and Base image 39213225268.
+PR #42's previously pending main CI 39209473176 also completed successfully.
+
+Source f7d141441652cc951a0f75ae98d83a672b1181f9 implements --quiet/-q, --verbose and
+--no-color across the registered command tree and aliases. They are presentation
+settings, initialized once before workers; there is no change to validation,
+strictness, overwrite authority, browser launch or publication intent. Quiet and
+verbose conflict before effects, including nested command placements. No -v flag
+is introduced; v remains the view shortcut. Nonempty NO_COLOR also disables
+styling, including forced-color parser help/errors and normalization errors.
+
+core/reporting.rs distinguishes routine progress, requested human reports,
+diagnostics and verbose stderr traces. Generated stdout data and JSON remain
+unchanged. Native warnings/errors, conversion limitations, dry-run plans,
+formatting findings, registration snippets and inspection/doctor/upgrade reports
+survive quiet. Hosted validation retains its mixed full engine report. Quiet
+preview workers still rebuild and recover, but suppress success/readiness output.
+Verbose reports timing, selected site and runtime discovery without raw argument
+or environment dumps; credential-bearing runtime endpoints remain redacted.
+
+core/process.rs owns child lifecycle and optional output capture. Quiet suppresses
+successful external logs, replaying the final 64 KiB per stream on failure. Color
+filtering streams through anstream (already locked via Clap). Anonymous temporary
+files use independent read/write handles, including on Windows; no undrained pipe
+or descendant-held pipe delays cleanup. Files are unlinked before child start;
+long-running commands may consume temporary disk until handles close. Explicitly
+silent cleanup stays silent. Clients and run containers receive color preferences.
+The existing human-text stream placement is retained for compatibility.
+
+Local verification: 299 Rust tests passed, with the final focused 9-test output
+suite rerun after log-reader refinements; warnings-denied Clippy, formatting,
+workflow lint, and strict/deep docs validation passed (55 routes, 53 guide pages,
+23 examples). Actual quiet preview tested build/HTTP/rebuild/failure preservation/
+recovery/Ctrl-C. Named-config validation watch and no-color hosted preview with
+an isolated runtime plus browser also passed. CI adds these tests on Linux,
+macOS and Windows, real no-color hosted preview and quiet/no-color extraction.
+Refresh the final PR head/checks before claiming hosted CI or merge completion.
+
+Remaining: other deployment providers, advanced/converter gaps in the contract,
+matched native release and published documentation. Public zellij-v0.1.3 predates
+these source features. No local Docker daemon was started, no native release was
+published, and no manual live deployment was performed in this milestone.
