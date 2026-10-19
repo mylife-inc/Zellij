@@ -36,7 +36,7 @@ pub(super) fn extract(
         }
         let mut entry = zip.by_index(0).map_err(|_| failed("invalid ZIP entry"))?;
         let kind = entry.unix_mode().unwrap_or(0) & 0o170000;
-        if entry.name() != "zel.exe"
+        if entry.name().map_err(|_| failed("invalid ZIP filename"))? != "zel.exe"
             || !entry.is_file()
             || !matches!(kind, 0 | 0o100000)
             || entry.size() > BINARY_LIMIT

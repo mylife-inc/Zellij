@@ -2050,3 +2050,10 @@ suppresses macOS AppleDouble metadata after local acceptance caught an extra
 package jobs execute real upgrades against isolated loopback release fixtures.
 Final source commit and CI results will be appended; this is not a release or a
 claim that advanced CLI/provider work is complete.
+
+Maintenance source d4d8c01867f68bd3a439f93a47e9989b295bcdcf is in PR #39.
+Subsequent dependency review selected patched zip 9.0.5 for the newly added
+archive reader after RustSec's October 17 extraction advisories (0367–0369).
+No unsafe extraction helper is used; exact-entry checks and explicitly created
+output files remain the extraction policy. Final-head platform validation is
+required after this dependency update.

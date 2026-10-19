@@ -2675,3 +2675,12 @@ acceptance script passed on macOS x86-64. Native acceptance used a locally
 packaged current debug executable and isolated fixture destinations, including
 an upgrade to a higher-version Rust binary. Release-profile acceptance on all
 six platforms and full-container CI remain the PR gates.
+
+Maintenance implementation source d4d8c01867f68bd3a439f93a47e9989b295bcdcf
+is tracked in PR #39. Live `upgrade --check` also confirmed the stable channel
+returns 0.1.3 without changing files. Dependency review then found RustSec
+RUSTSEC-2026-0367/0368/0369, issued October 17, affecting ZIP extraction helpers.
+Our reader rejects links and does not call those helpers, but the dependency
+has still been advanced to patched zip 9.0.5 with only deflate enabled. Its
+fallible filename decoding is checked explicitly. Final CI must use this update.
+Reference: https://rustsec.org/advisories/RUSTSEC-2026-0369.html
