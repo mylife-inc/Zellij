@@ -2605,3 +2605,15 @@ navigation and images with the routing fix. Its search step caught a fixture
 omission: hosted nav.search is opt-in, and this fixture had not enabled it.
 The fixture now explicitly sets nav.search: true. No renderer behavior changed
 for that test correction; final-head acceptance must still complete.
+
+
+PR #38 run 39182453254 passed real hosted preview end to end. The Windows
+orchestration fixture instead selected the runner's installed Docker client,
+exposing an existing engine bind-path defect: Rust canonical Windows paths use
+\\?\ prefixes that Docker rejects. Content and output mounts now use standard
+drive/UNC syntax; Unicode, spaces and Unix backslashes remain intact. All 22
+engine tests, Clippy and local hosted browser/lifecycle acceptance pass.
+The native fixture now removes case variants of PATH/endpoint keys, explicitly
+selects an isolated Podman executable, verifies that fixture performed the build,
+and rejects verbatim mount paths. CI runs it before the slower wrapper tests.
+Final-revision Windows and full-container validation are still required.

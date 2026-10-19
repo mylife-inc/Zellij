@@ -21,8 +21,12 @@ const record = path.join(root, 'browser.txt');
 const log = path.join(root, 'runtime.log');
 const env = { ...process.env, ZELLIJ_PREVIEW_RECORD: record, ZELLIJ_PREVIEW_ENGINE_LOG: log, ZELLIJ_PREVIEW_EXPECT: '</html>' };
 if (!real) {
+  // Windows environment keys are case-insensitive; a cloned `Path` must not
+  // survive beside PATH and accidentally select the runner's real runtime.
+  const replaced = new Set(['PATH', 'DOCKER_CONTEXT', 'DOCKER_HOST', 'CONTAINER_CONNECTION', 'CONTAINER_HOST', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE']);
+  for (const key of Object.keys(env)) if (replaced.has(key.toUpperCase())) delete env[key];
   env.PATH = bin;
-  for (const key of ['DOCKER_CONTEXT', 'DOCKER_HOST', 'CONTAINER_CONNECTION', 'CONTAINER_HOST', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE']) delete env[key];
+  env.CONTAINER_CONNECTION = 'zellij-preview-fixture';
 }
 const active = new Set();
 let browser;
@@ -75,7 +79,7 @@ try {
   await writeFile(path.join(content, 'site.yaml'), 'name: Fixture\n');
   if (windows) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe], { stdio: 'pipe' });
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-browser.rs', '-o', browserExe], { stdio: 'pipe' });
-  if (!real) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-engine.rs', '-o', path.join(bin, windows ? 'docker.exe' : 'docker')], { stdio: 'pipe' });
+  if (!real) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-engine.rs', '-o', path.join(bin, windows ? 'podman.exe' : 'podman')], { stdio: 'pipe' });
   if (real) {
     await writeFile(path.join(content, 'guide/_sidebar.yaml'), 'title: Guide\nnav: [index, next]\n');
     await writeFile(path.join(content, 'guide/next.mdx'), '# Next page\n\n## Nebula\n\n[Home](/guide)\n');
@@ -84,6 +88,7 @@ try {
   }
   await edit('First preview');
   const server = await ready(launch());
+  if (!real) assert((await readFile(log, 'utf8')).includes('First preview'), 'the isolated runtime fixture performed the build');
   assert(server.url.endsWith('/products/manual/'));
   await until(() => exists(record), 'browser launch');
   assert.equal(await readFile(record, 'utf8'), server.url);

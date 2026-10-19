@@ -118,6 +118,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Hosted preview orchestration and cancellation on the native platform
+        run: node scripts/check-hosted-preview.mjs
       - name: Native YAML formatting preserves authored sites
         run: node scripts/check-formatting.mjs
       - name: Native validation watch recovers from edits and stops on Ctrl-C
@@ -128,8 +130,6 @@ jobs:
         run: node scripts/check-portable.mjs
       - name: Native HTTP preview, watch/reload, browser launch and console shutdown
         run: node scripts/check-preview.mjs
-      - name: Hosted preview orchestration and cancellation on the native platform
-        run: node scripts/check-hosted-preview.mjs
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

@@ -20,6 +20,10 @@ fn main() {
         .filter(|p| p[0] == "-v")
         .map(|p| p[1].as_str())
         .collect();
+    assert!(
+        mounts.iter().all(|mount| !mount.starts_with(r"\\?\")),
+        "runtime bind mounts must use standard Windows paths: {mounts:?}"
+    );
     let content = PathBuf::from(
         mounts
             .iter()

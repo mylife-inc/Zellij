@@ -64,6 +64,17 @@ fn take_prefix(output: &crate::output::StaticOutput) -> Result<String> {
     Ok(prefix)
 }
 
+/// Rust canonicalizes Windows paths with a verbatim prefix that Docker's bind
+/// parser rejects. Preserve the drive/UNC path, spaces and Unicode for clients.
+fn bind_path(path: &Utf8Path) -> String {
+    let path = path.as_str();
+    if let Some(unc) = path.strip_prefix(r"\\?\UNC\") {
+        format!(r"\\{unc}")
+    } else {
+        path.strip_prefix(r"\\?\").unwrap_or(path).into()
+    }
+}
+
 impl ContainerEngine {
     pub fn new(runtime: Runtime, image: impl Into<String>) -> Self {
         Self {
@@ -119,7 +130,7 @@ impl ContainerEngine {
                 path: content.to_owned(),
             })?;
 
-        Ok(format!("{absolute}:{target}:ro"))
+        Ok(format!("{}:{target}:ro", bind_path(&absolute)))
     }
 
     /// A named volume for the wrapper's `node_modules`, keyed by image.
@@ -407,7 +418,7 @@ impl ContainerEngine {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!("{}:/app/node_modules", self.modules_volume());
-        let out_mount = format!("{}:/out", output.directory);
+        let out_mount = format!("{}:/out", bind_path(&output.directory));
 
         // Give the output back to whoever asked for it.
         //
@@ -506,7 +517,23 @@ mod tests {
             Utf8Path::new(source).is_absolute(),
             "the mount source must be absolute: {mount}"
         );
-        assert_eq!(Utf8Path::new(source), path.canonicalize_utf8().unwrap());
+        assert_eq!(
+            Utf8Path::new(source).canonicalize_utf8().unwrap(),
+            path.canonicalize_utf8().unwrap()
+        );
+        assert!(!source.starts_with(r"\\?\"));
+    }
+
+    #[test]
+    fn bind_sources_use_client_compatible_windows_paths_without_rewriting_unix_names() {
+        for (input, expected) in [
+            (r"\\?\C:\Docs 日本\content", r"C:\Docs 日本\content"),
+            (r"\\?\UNC\server\share\site", r"\\server\share\site"),
+            (r"C:\Docs\site", r"C:\Docs\site"),
+            (r"/tmp/Docs 日本/\\?\name", r"/tmp/Docs 日本/\\?\name"),
+        ] {
+            assert_eq!(bind_path(Utf8Path::new(input)), expected);
+        }
     }
 
     #[test]
