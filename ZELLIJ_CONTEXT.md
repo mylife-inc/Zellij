@@ -2582,3 +2582,19 @@ Portable-dev/hosted-preview implementation source:
 `e9e47deb23f68ee9dafcada6b4fe657377e4db05`, in
 [PR #38](https://github.com/mylife-inc/Zellij/pull/38). That PR tracks the final-head
 platform tests and real-container browser validation before authorized merge.
+
+
+PR #38 run 39180630629 caught a real Next export routing defect in the native
+server: a guide/ directory for child routes or RSC payloads hid guide.html when
+that directory lacked index.html. Resolution now falls through to the flat HTML
+page in that case, preserving existing directory-index redirects and containment.
+Nine HTTP server regression tests and warnings-denied Clippy pass. The real-engine
+browser test now runs earlier in CI, verifies the initial home redirect, and
+selects the preview error notice separately from Next's accessibility announcer.
+Final platform/container checks must rerun on this fix before merge.
+
+Local confirmation also served an existing real Next export through hosted view
+with the reload client injected. Chromium passed parent-route loading, navigation,
+reload, hydration and search without a local container daemon. The hosted CI
+search check waits for the client handler to attach instead of sending a shortcut
+immediately after receiving server-rendered HTML.

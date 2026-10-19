@@ -95,14 +95,22 @@ try {
   browser = await chromium.launch();
   const page = await browser.newPage(); const errors = [];
   page.on('pageerror', error => errors.push(error.message));
-  await page.goto(real ? `${server.url}guide` : server.url);
+  await page.goto(server.url);
+  if (real) await expect(page).toHaveURL(`${server.url}guide`);
   await expect(page.getByRole('heading', { name: 'First preview', exact: true })).toBeVisible();
   if (real) {
     assert.equal(await page.locator('article img').evaluate(img => img.complete && img.naturalWidth > 0), true);
     await page.locator('article').getByRole('link', { name: 'Next', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Next page', exact: true })).toBeVisible();
     await page.reload();
-    await page.keyboard.press('Control+k'); await page.getByRole('searchbox').fill('nebula');
+    // Static HTML is visible before client effects attach their search handler.
+    const dialog = page.getByRole('dialog');
+    await expect.poll(async () => {
+      if (await dialog.isVisible()) return true;
+      await page.locator('[data-zellij-search-trigger]').click();
+      return dialog.isVisible();
+    }, { timeout: 15000 }).toBe(true);
+    await page.getByRole('searchbox').fill('nebula');
     await page.getByRole('option', { name: /Nebula/ }).first().click();
     await expect(page).toHaveURL(`${server.url}guide/next#nebula`);
     await expect(page.getByRole('dialog')).toHaveCount(0);
@@ -117,14 +125,14 @@ try {
   await edit('Broken', '/products/manual', 'fail');
   await until(async () => (await status()).error, 'invalid content diagnostic');
   assert.deepEqual(await tree(output), good); assert.equal((await status()).version, version);
-  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.locator('#_zel-preview-error')).toBeVisible();
   await edit('New prefix', '/changed');
   await until(async () => (await status()).error?.includes('basePath changed'), 'prefix stays pinned');
   assert.deepEqual(await tree(output), good);
   await edit('Recovered');
   await until(async () => (await status()).version !== version, 'recovery');
   await expect(page.getByRole('heading', { name: 'Recovered', exact: true })).toBeVisible({ timeout: 30000 });
-  await expect(page.getByRole('alert')).toHaveCount(0);
+  await expect(page.locator('#_zel-preview-error')).toHaveCount(0);
   if (!real) {
     // Invalid/missing config cannot change an active session's renderer/layout.
     const config = path.join(site, 'zel.yaml');

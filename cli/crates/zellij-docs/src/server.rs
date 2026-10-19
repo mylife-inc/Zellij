@@ -262,21 +262,24 @@ impl Site {
                 } else {
                     format!("{relative}/index.html")
                 };
-                let index = self.file(&index)?.filter(|p| p.is_file()).ok_or(404u16)?;
-                if !path.ends_with('/') {
-                    let query = if query.is_empty() {
-                        String::new()
-                    } else {
-                        format!("?{query}")
-                    };
-                    return Ok(Resource::Redirect(format!("{}/{query}", encode(&path))));
+                if let Some(index) = self.file(&index)?.filter(|p| p.is_file()) {
+                    if !path.ends_with('/') {
+                        let query = if query.is_empty() {
+                            String::new()
+                        } else {
+                            format!("?{query}")
+                        };
+                        return Ok(Resource::Redirect(format!("{}/{query}", encode(&path))));
+                    }
+                    return Self::open(index);
                 }
-                return Self::open(index);
-            }
-            if file.is_file() && !local.ends_with('/') {
+                // Next exports guide.html alongside guide/ for child routes
+                // and RSC payloads. An index-less directory cannot hide it.
+            } else if file.is_file() && !local.ends_with('/') {
                 return Self::open(file);
+            } else {
+                return Err(404);
             }
-            return Err(404);
         }
         if !local.ends_with('/')
             && let Some(file) = self
