@@ -2143,3 +2143,10 @@ Native mindmap SVG and browser-error checks passed in every state. Each npm stat
 is checked in a fresh Node process, avoiding stale negative package lookups.
 No locked dependency versions changed. Source commit and hosted CI evidence will
 be recorded after PR validation; no new native release or manual deployment occurred.
+
+
+Hosted-feature source c27c64d3f4d1cfc3315383a83b9d43ef17d9c28a is reviewed in
+[PR #41](https://github.com/mylife-inc/Zellij/pull/41). All local acceptance above
+passed. Refresh the PR's final head/checks and merge status before relying on it.
+The previous PR #40 post-merge CI 39200372898 and Base image 39200372897 both
+completed successfully. Public native release remains zellij-v0.1.3 (2026-08-13).
