@@ -3,8 +3,9 @@
 Last refreshed: **2026-10-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: shared output controls on `codex/cli-output-controls`,
-source commit `f7d1414`. Explicit --config merged in PR #43; shared --cwd and
+Latest CLI work: image platform selection on `codex/cli-image-platform`,
+source commit `c9db8df`. Shared output controls merged in PR #44.
+Explicit --config merged in PR #43; shared --cwd and
 --site-root merged in PR #42.
 Hosted rendering selection and optional-peer installs merged in PR #41.
 Eject/features merged in PR #40; maintenance
@@ -2928,3 +2929,37 @@ Remaining: other deployment providers, advanced/converter gaps in the contract,
 matched native release and published documentation. Public zellij-v0.1.3 predates
 these source features. No local Docker daemon was started, no native release was
 published, and no manual live deployment was performed in this milestone.
+
+
+### Image platform selection — 2026-10-19
+
+PR #44 merged as 2ada5fe0ad1e1227c70eb963746cca929fc72af5 after all 13 CI
+jobs passed on 52cc3620cdfbdff5f8db4d443abe9a925619cbb4 (39216062489).
+Its main CI 39218117100 and Base image 39218117079 both passed.
+
+Fixing commit c9db8dfc1edbe7e702f7585e2680fbceb002435a implements single-platform Linux
+image selection (linux/amd64 or linux/arm64) across image static/next/build,
+si/ni, build --target image, saved publication/deploy, ship --image and CI.
+Optional image.platform supplies the default; CLI overrides it. image.name is
+now optional for local image builds, while publication still requires an
+explicit destination. Plans show the platform, ship retains it in zel.yaml,
+and generated CI freezes it in both jobs with ARM64 QEMU setup when selected.
+HTML/Netlify flags and unsupported/combined platform values fail before work.
+
+Podman builds omit Docker's unsupported --progress option. nerdctl pushes use
+--all-platforms to preserve a foreign single-platform local image. Build failure
+keeps diagnostics, explains base/emulation requirements and never proceeds to
+push. No local emulator/service is installed or started. See contract stage 9a.
+
+Local: 304 Rust tests in 38 suites, final focused delivery tests, warnings-denied
+Clippy, formatting, workflow and generated-workflow lint, and strict/deep docs
+validation (55 routes, 53 guide pages, 23 examples) passed. A first focused run
+had one 3-second fake-runtime probe timeout; the complete run with four test
+threads passed. CI adds real ARM64 portable build/push/pull/HTTP acceptance and
+an AMD64 override. Refresh final PR checks before claiming hosted acceptance.
+
+Remaining: combined multi-platform manifests, further advanced options/providers,
+conversion fidelity, matched native release and documentation publication.
+Foreign-architecture hosted/Next execution is not covered by the small ARM64
+portable acceptance fixture; dispatch for all renderer/kind pairs is covered.
+No manual live provider/registry deployment or native release was performed.
