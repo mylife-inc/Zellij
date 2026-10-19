@@ -39,7 +39,7 @@ pub(crate) fn run(options: &crate::args::FeaturesArgs) -> Result<()> {
         && fs::symlink_metadata(root.root().join("zellij.config.yaml")).is_ok()
     {
         wrapper(root.root(), maths, diagrams)?;
-        println!(
+        zellij_core::statusln!(
             "Wrapper feature selection saved at {root}/package.json.\nRun `npm install` in the wrapper to reconcile its lockfile and installed packages.\nRebuild or restart the app to apply rendering changes. Disabled packages may remain if another dependency needs them."
         );
     } else {
@@ -56,7 +56,7 @@ pub(crate) fn run(options: &crate::args::FeaturesArgs) -> Result<()> {
         let original = fs::read_to_string(&path)?;
         let changed = yaml::select(&original, maths, diagrams)?;
         replace(&site.root, filename, &original, &changed)?;
-        println!(
+        zellij_core::statusln!(
             "Portable settings saved: markdown.math={maths}, markdown.mermaid={diagrams}.\nRebuild with the same site/config selection to apply them. No tools or dependencies were installed."
         );
     }

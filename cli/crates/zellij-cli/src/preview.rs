@@ -67,14 +67,14 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         },
     );
     if stop.load(Ordering::Acquire) {
-        println!("Stopped.");
+        zellij_core::statusln!("Stopped.");
         return Ok(());
     }
     let report = prepared?.publish()?;
     for warning in report.warnings {
-        eprintln!("warning: {warning}");
+        zellij_core::diagnosticln!("warning: {warning}");
     }
-    println!("✓ {output}  ({} HTML pages)", report.pages);
+    zellij_core::statusln!("✓ {output}  ({} HTML pages)", report.pages);
     let mut server = StaticServer::from_listener(&output, socket, "/")?;
     let watcher = if let Some(initial) = initial {
         let live = Arc::new(LiveReload::default());
@@ -114,13 +114,15 @@ fn run(
     stop: Arc<AtomicBool>,
     watcher: Option<Watcher>,
 ) -> Result<()> {
-    println!("Serving at {}", server.url());
+    zellij_core::statusln!("Serving at {}", server.url());
     if watcher.is_some() {
-        println!(
+        zellij_core::statusln!(
             "Watching content and configuration. Successful rebuilds reload the browser. Press Ctrl-C to stop."
         );
     } else {
-        println!("Press Ctrl-C to stop. Files are served as built; no watching or rebuilding.");
+        zellij_core::statusln!(
+            "Press Ctrl-C to stop. Files are served as built; no watching or rebuilding."
+        );
     }
     io::stdout().flush()?;
     if let Some(executable) = open_browser {
@@ -130,7 +132,7 @@ fn run(
         // while they run, and retain the usable URL if no desktop is available.
         thread::Builder::new().name("zel-browser".into()).spawn(move || {
             if let Err(error) = launch(&url, executable.as_deref()) {
-                eprintln!("warning: could not open the browser: {error}\n  Open {url} manually; the server is still running.");
+                zellij_core::diagnosticln!("warning: could not open the browser: {error}\n  Open {url} manually; the server is still running.");
             }
         })?;
     }
@@ -139,7 +141,7 @@ fn run(
     // is discarded after cancellation instead of publishing after shutdown.
     drop(watcher);
     result?;
-    println!("Stopped.");
+    zellij_core::statusln!("Stopped.");
     Ok(())
 }
 

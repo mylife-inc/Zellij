@@ -67,7 +67,7 @@ pub(crate) fn create(options: &crate::args::NewAppArgs) -> Result<()> {
         with_docs: options.with_docs,
     })?;
     let files = scaffold.write(&out, false)?;
-    println!(
+    zellij_core::statusln!(
         "✓ Created Next.js wrapper at {out} ({} files)\n  Content: {content}\n  Engine:  {engine}\n\nIn the app folder, run `npm install`, then `npm run check` and `npm run dev`.\nScaffolding did not install dependencies or start a server.",
         files.len()
     );

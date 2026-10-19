@@ -30,6 +30,7 @@ impl Runtime {
     /// A command against this runtime, with the socket already wired up.
     pub fn command(&self) -> Command {
         let mut command = Command::new(&self.program);
+        zellij_core::reporting::configure_command(&mut command);
         if let Some(host) = &self.host {
             command.env("DOCKER_HOST", host);
         }
@@ -260,6 +261,7 @@ fn select_runtime(
 /// Detect a runtime without an unbounded wait. The info probes share a 12-second
 /// budget, with at most 3 seconds per process; version reporting gets 2 seconds.
 pub fn detect() -> Result<Runtime> {
+    zellij_core::verbose!("Discovering a usable container runtime (no services are started).");
     let selected = selected_program(env_is_set)?;
     let hosts = if cfg!(unix) && selected.is_none() {
         candidate_hosts(
@@ -283,6 +285,11 @@ pub fn detect() -> Result<Runtime> {
             INFO_TIMEOUT.min(DISCOVERY_BUDGET.saturating_sub(started.elapsed())),
         )
     })?;
+    zellij_core::verbose!(
+        "Selected container runtime: {} ({})",
+        runtime.program,
+        runtime.endpoint()
+    );
     runtime.version = probe_output(runtime.command().arg("--version"), METADATA_TIMEOUT)
         .filter(|version| !version.is_empty())
         .unwrap_or_else(|| "version unavailable".into());

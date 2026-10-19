@@ -356,7 +356,7 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
         None => latest(&stop)?,
     };
     let current = parse_version(env!("CARGO_PKG_VERSION"))?;
-    println!(
+    zellij_core::reportln!(
         "Installed zel {current}; selected release {selected} ({})",
         crate::TARGET
     );
@@ -364,7 +364,7 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
         return Err(failed("refusing to downgrade this executable"));
     }
     if options.check {
-        println!(
+        zellij_core::reportln!(
             "{}",
             if options.version.is_some() {
                 "Version comparison complete; an explicitly selected release's assets were not checked."
@@ -377,7 +377,7 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
         return Ok(());
     }
     if selected == current && !options.force {
-        println!("Already current; use --force to reinstall this version.");
+        zellij_core::reportln!("Already current; use --force to reinstall this version.");
         return Ok(());
     }
     cancelled(&stop)?;
@@ -442,7 +442,7 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
     })?;
     let archive = stage.path().join("download");
     let mut file = File::create(&archive)?;
-    println!("Downloading verified release archive {name}");
+    zellij_core::statusln!("Downloading verified release archive {name}");
     if !download(&http, asset(&name), &mut file, ARCHIVE_LIMIT, &stop)? {
         return Err(failed(
             "release has no archive for this platform; nothing was installed",
@@ -483,13 +483,13 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
             let _ = fs::remove_dir_all(&retained);
             return Err(error.into());
         }
-        println!(
+        zellij_core::statusln!(
             "Previous executable retained at {} (removable after this command exits).",
             backup.display()
         );
     }
     #[cfg(not(windows))]
     fs::rename(&candidate, &executable)?;
-    println!("Upgraded {} to zel {selected}.", executable.display());
+    zellij_core::statusln!("Upgraded {} to zel {selected}.", executable.display());
     Ok(())
 }

@@ -209,7 +209,7 @@ impl Client {
                 "create deployment returned an invalid deployment ID",
             ));
         }
-        println!("  Deploy ID {id}");
+        zellij_core::statusln!("  Deploy ID {id}");
         while matches!(deployment.state.as_str(), "preparing" | "new") {
             deployment = self.poll(site, &id, deadline)?;
         }

@@ -68,16 +68,18 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
     let output = files::absolute_path(&options.out.map(Utf8PathBuf::from).unwrap_or(site.output))?;
     let initial = snapshot(&source, configured)?;
     let stop = signals()?;
-    println!("Building hosted preview. Ctrl-C waits for any active build to finish cleanup.");
+    zellij_core::statusln!(
+        "Building hosted preview. Ctrl-C waits for any active build to finish cleanup."
+    );
     let prepared = prepare(&engine, &source, &output, configured, &initial, None);
     if stop.load(Ordering::Acquire) {
-        println!("Stopped.");
+        zellij_core::statusln!("Stopped.");
         return Ok(());
     }
     let prepared = prepared?;
     let prefix = prepared.base_path.clone();
     prepared.publish()?;
-    println!("✓ {output}");
+    zellij_core::statusln!("✓ {output}");
     let mut server = StaticServer::from_listener(
         &output,
         socket,

@@ -252,9 +252,12 @@ keys, unused sections and other existing warnings. Use `--deep --strict` to
 include warnings about unverified dynamic MDX. The hosted Node command accepts
 these two flags: `npx zellij check ./content --deep --strict`.
 
-`--quiet` remains planned and is rejected with exit code 2. Hosted JSON reports
-also remain planned. JSON is additionally available for `context`, `list`,
-`explain` and `detect`.
+`--quiet` suppresses the native success summary while retaining warnings/errors
+and the complete JSON report. Hosted checks retain their full engine report.
+`--verbose` adds execution details on stderr; `--no-color` removes terminal styling.
+See [shared output controls](/cli/#output-controls). Hosted JSON reports remain
+planned. JSON is additionally available for `context`, `list`, `explain`, `detect`
+and `version`.
 
 ## See also
 

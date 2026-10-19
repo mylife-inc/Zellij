@@ -157,24 +157,26 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         None
     };
     files::write_files(&repo, &[(&path, yaml)], args.force)?;
-    println!("✓ {}", repo.join(&path));
-    println!(
+    zellij_core::statusln!("✓ {}", repo.join(&path));
+    zellij_core::statusln!(
         "  Uses {}; release availability was not checked.",
         options.version
     );
-    println!("  Review and commit the workflow after that compatible release is published.");
+    zellij_core::statusln!(
+        "  Review and commit the workflow after that compatible release is published."
+    );
     if let Some(token) = token {
         provision(&repo, &token)?;
     } else if matches!(options.publish, Publish::Netlify { .. }) {
-        println!(
+        zellij_core::statusln!(
             "  Set the repository secret NETLIFY_AUTH_TOKEN, or re-run with --force --provision to upload it from the environment."
         );
     }
     match options.publish {
-        Publish::Netlify { site_id: None } => println!(
+        Publish::Netlify { site_id: None } => zellij_core::statusln!(
             "  Set repository variable NETLIFY_SITE_ID (the same-named secret is also accepted)."
         ),
-        Publish::Image { tag, .. } if !tag.starts_with("ghcr.io/") => println!(
+        Publish::Image { tag, .. } if !tag.starts_with("ghcr.io/") => zellij_core::statusln!(
             "  Set repository secrets REGISTRY_USERNAME and REGISTRY_PASSWORD for the selected registry."
         ),
         _ => {}
@@ -204,6 +206,8 @@ fn provision(repo: &Utf8Path, token: &str) -> Result<()> {
             "workflow written, but gh could not confirm NETLIFY_AUTH_TOKEN provisioning; check GitHub CLI installation, login and repository secret permissions. The remote result may be uncertain; inspect repository secrets before retrying. No deployment was started.",
         ).into());
     }
-    println!("  NETLIFY_AUTH_TOKEN uploaded to repository secrets; no deployment started.");
+    zellij_core::statusln!(
+        "  NETLIFY_AUTH_TOKEN uploaded to repository secrets; no deployment started."
+    );
     Ok(())
 }

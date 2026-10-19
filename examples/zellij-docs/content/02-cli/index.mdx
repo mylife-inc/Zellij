@@ -105,6 +105,50 @@ renderers, providers and options. Source additions still need a compatible nativ
 release; the public `zellij-v0.1.3` binaries do not include the full table.
 </Callout>
 
+## Output controls
+
+All commands accept these options before or after the command, including shortcuts:
+
+```bash
+zel b --quiet
+zel --verbose --config docs/manual/preview.yaml build
+zel check --json --quiet > report.json
+zel image static --no-color
+```
+
+- `--quiet` (`-q`) suppresses routine progress, success messages and subprocess
+  progress. It still performs the complete command. Errors, native warnings,
+  conversion limitations and requested reports remain visible.
+- `--verbose` adds execution timing, site selection and container discovery
+  details on stderr. It does not dump raw arguments, credentials or environment
+  values. It conflicts with `--quiet`; there is no `-v` flag (`zel v` means view).
+- `--no-color` removes terminal styling from help, errors, human reports and
+  streamed tool output. A nonempty `NO_COLOR` environment variable does the same,
+  including when a force-color variable is set. Child tools and containers also
+  receive the color preference. Generated content is not rewritten.
+
+Quiet mode preserves stdout data: JSON, context, section YAML, Dockerfiles,
+completion scripts, inspection and doctor reports, dry-run plans, formatting
+findings and page-registration snippets. Hosted validation retains its complete
+report because the engine combines diagnostics and its summary. Portable checks
+suppress the success summary but retain diagnostics; their JSON remains complete.
+`context --json <file>` writes the file and suppresses its notice under `--quiet`.
+
+Verbose JSON commands still write only the requested JSON on stdout; verbose
+messages use stderr. Without `--verbose`, portable check JSON retains its existing
+one-report/no-stderr behavior, including validation failures. Unsupported JSON
+commands remain errors. Quiet/verbose never change strictness, overwrite rules,
+publication intent, browser launching or watch behavior. Quiet previews suppress
+their readiness URL; choose a known `--port` when using them interactively.
+
+Ordinary text output keeps its existing stream placement for compatibility.
+Successful external-tool logs are suppressed in quiet mode; if a tool fails,
+its last 64 KiB per stream is replayed on stderr with a truncation notice when
+needed. Quiet and color-filtered subprocesses spool logs to temporary files
+until they exit, then remove them. This avoids pipe deadlocks and keeps failure
+reporting bounded in memory; long-running verbose tools can use temporary disk
+space. This does not turn third-party logs into structured diagnostics.
+
 ## How a command finds your content
 
 Common workflows also have short forms: `zel init`, `zel c`, `zel b`, and

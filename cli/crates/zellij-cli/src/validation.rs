@@ -39,12 +39,12 @@ pub fn portable(dir: &SiteInput, strict: bool, as_json: bool) -> Result<i32> {
         let value = serde_json::to_value(&report).map_err(std::io::Error::other)?;
         crate::print_json(&value)?;
     } else {
-        println!("{} {}", if report.ok { "✓" } else { "✗" }, report.root);
+        zellij_core::statusln!("{} {}", if report.ok { "✓" } else { "✗" }, report.root);
         for diagnostic in &report.diagnostics {
-            eprintln!("{diagnostic}");
+            zellij_core::diagnosticln!("{diagnostic}");
         }
         if let Some(pages) = report.pages {
-            println!("  {pages} HTML pages checked; no files written");
+            zellij_core::statusln!("  {pages} HTML pages checked; no files written");
         }
         if strict
             && !report.ok
@@ -53,7 +53,7 @@ pub fn portable(dir: &SiteInput, strict: bool, as_json: bool) -> Result<i32> {
                 .iter()
                 .all(|d| d.severity == zellij_docs::Severity::Warning)
         {
-            eprintln!("error: warnings are rejected by --strict");
+            zellij_core::diagnosticln!("error: warnings are rejected by --strict");
         }
     }
     // The full report already contains the failure. In JSON mode stderr stays

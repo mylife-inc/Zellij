@@ -12,6 +12,7 @@
 use camino::Utf8Path;
 use std::io::Write;
 use std::process::Stdio;
+use zellij_core::process::CommandExt;
 use zellij_core::{Error, Result};
 
 use crate::ContainerEngine;
@@ -126,8 +127,9 @@ impl ContainerEngine {
             command.args(["--platform", platforms]);
         }
 
-        let mut child = command.arg(content.as_str()).spawn()?;
+        let mut child = command.arg(content.as_str()).zel_spawn()?;
         let written = child
+            .child
             .stdin
             .take()
             .expect("piped stdin")
@@ -148,10 +150,9 @@ impl ContainerEngine {
         let ports = format!("{port}:3000");
 
         let status = self
-            .runtime()
-            .command()
-            .args(["run", "--rm", "--init", "-p", &ports, tag])
-            .status()?;
+            .run_command()
+            .args(["--rm", "--init", "-p", &ports, tag])
+            .zel_status()?;
 
         match status.code() {
             Some(0) | Some(130) | None => Ok(()),
@@ -168,7 +169,7 @@ impl ContainerEngine {
                     .runtime()
                     .command()
                     .args(["tag", tag, &full])
-                    .status()?;
+                    .zel_status()?;
 
                 if !status.success() {
                     return Err(Error::ImageOperationFailed { operation: "retag" });
@@ -178,7 +179,11 @@ impl ContainerEngine {
             None => tag.to_owned(),
         };
 
-        let status = self.runtime().command().args(["push", &target]).status()?;
+        let status = self
+            .runtime()
+            .command()
+            .args(["push", &target])
+            .zel_status()?;
 
         match status.code() {
             Some(0) => Ok(()),

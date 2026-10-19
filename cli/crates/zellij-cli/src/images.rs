@@ -60,13 +60,13 @@ fn image(dir: Option<&SiteInput>, tag: Option<&str>, kind: BuildKind) -> Result<
     let (site, content) = selection(dir)?;
     let tag = selected_tag(&site, tag, kind)?;
     let engine = ContainerEngine::detect(None)?;
-    println!(
+    zellij_core::statusln!(
         "  Content  {content}\n  Kind     {} ({:?})\n  Tag      {tag}\n",
         kind.as_str(),
         site.renderer
     );
     build_image(&site, &content, &engine, kind, &tag)?;
-    println!(
+    zellij_core::statusln!(
         "\n✓ {tag}\n  Run it:   zel image run \"{tag}\"\n  Push it:  zel image push \"{tag}\""
     );
     Ok(())
@@ -91,7 +91,7 @@ pub(crate) fn build_image(
                 .join("site");
             let report = zellij_docs::build(&site.input, &export, Default::default())?;
             for warning in report.warnings {
-                eprintln!("warning: {warning}");
+                zellij_core::diagnosticln!("warning: {warning}");
             }
             std::fs::remove_file(export.join(".zellij-output"))?;
             engine.image_build_recipe(&export, tag, &static_image::portable(), None)
@@ -108,7 +108,7 @@ pub(crate) fn build_image(
                 .join("content");
             let report = zellij_docs::adapt_hosted(&site.input, &adapted)?;
             for warning in report.warnings {
-                eprintln!("warning: {warning}");
+                zellij_core::diagnosticln!("warning: {warning}");
             }
             engine.image_build(&adapted, tag, Some(&report.features.join(",")), None)
         }

@@ -10,6 +10,7 @@ use std::{
     thread,
     time::{Duration, Instant},
 };
+use zellij_core::process::CommandExt;
 use zellij_core::{
     Error, Result, files,
     site::{Renderer, Site, is_link},
@@ -69,7 +70,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
         name: stage.file_name().unwrap().to_owned(),
         active: true,
     };
-    println!(
+    zellij_core::statusln!(
         "Extracting wrapper and engine from {image} with {}",
         engine.runtime().program
     );
@@ -86,6 +87,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
             ]),
             &stop,
             300,
+            false,
         )?;
         for (source, dest) in [("/app/.", &app), ("/opt/zellij/.", &vendor)] {
             execute(
@@ -96,6 +98,7 @@ pub(crate) fn run(options: &crate::args::EjectArgs) -> Result<()> {
                 ]),
                 &stop,
                 120,
+                false,
             )?;
         }
         Ok(())
@@ -236,7 +239,7 @@ Extraction did not install dependencies or execute the image's application.
         fs::remove_dir(&out)?;
     }
     fs::rename(&app, &out)?;
-    println!(
+    zellij_core::statusln!(
         "✓ Editable wrapper: {out}\n  Content: {content}\n  Engine: vendor/zellij\n\nRun `npm install`, `npm run check` and `npm run dev` in the wrapper.\nNo dependencies were installed. The temporary stopped container was removed."
     );
     Ok(())
@@ -253,16 +256,21 @@ fn incompatible(reason: &str) -> Error {
     Error::InvalidArgument(format!("incompatible engine distribution: {reason}"))
 }
 fn failed(reason: &str) -> Error {
-    eprintln!("eject: {reason}");
+    zellij_core::diagnosticln!("eject: {reason}");
     Error::ImageOperationFailed {
         operation: "extraction",
     }
 }
-fn execute(command: &mut Command, stop: &AtomicBool, timeout: u64) -> Result<()> {
+fn execute(command: &mut Command, stop: &AtomicBool, timeout: u64, silent: bool) -> Result<()> {
     if stop.load(Ordering::Acquire) {
         return Err(failed("extraction cancelled"));
     }
-    let mut child = command.stdin(Stdio::null()).spawn()?;
+    command.stdin(Stdio::null());
+    let mut child = if silent {
+        command.zel_spawn_silent()?
+    } else {
+        command.zel_spawn()?
+    };
     let deadline = Instant::now() + Duration::from_secs(timeout);
     loop {
         if let Some(status) = child.try_wait()? {
@@ -296,9 +304,10 @@ impl Snapshot<'_> {
                 .stderr(Stdio::null()),
             &AtomicBool::new(false),
             15,
+            true,
         );
         if result.is_err() {
-            eprintln!(
+            zellij_core::diagnosticln!(
                 "Could not remove stopped container {}; remove it with your container runtime after it responds.",
                 self.name
             );

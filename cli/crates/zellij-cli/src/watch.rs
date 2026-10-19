@@ -30,29 +30,36 @@ pub fn run(dir: Option<&SiteInput>, options: CheckOptions) -> Result<()> {
         Snapshot::site_for(&site.input, site.configured, site.renderer).map_err(|e| e.to_string())
     };
     let validate = || {
-        println!("Checking {}", site.root);
+        zellij_core::statusln!("Checking {}", site.root);
         let result = if let Some(engine) = &engine {
             crate::resolve_content(&site.input).and_then(|content| {
                 let report = engine.check(&content, options)?;
-                print!("{}", report.output);
+                zellij_core::reporting::emit(format_args!("{}", report.output), false);
                 if report.ok { Ok(0) } else { Ok(3) }
             })
         } else {
             crate::validation::portable(&site.input, options.strict, false)
         };
         match result {
-            Ok(0) => println!("Validation passed."),
-            Ok(_) => println!("Validation failed; watching for a corrected edit."),
-            Err(error) => eprintln!("Validation failed; watching for a corrected edit.\n{error}"),
+            Ok(0) => zellij_core::statusln!("Validation passed."),
+            Ok(_) if zellij_core::reporting::options().quiet => {
+                zellij_core::diagnosticln!("Validation failed; watching for a corrected edit.")
+            }
+            Ok(_) => zellij_core::reportln!("Validation failed; watching for a corrected edit."),
+            Err(error) => zellij_core::diagnosticln!(
+                "Validation failed; watching for a corrected edit.\n{error}"
+            ),
         }
         let _ = io::stdout().flush();
     };
     let mut attempted = snapshot();
     match &attempted {
         Ok(_) => validate(),
-        Err(error) => eprintln!("Validation failed; watching for a corrected edit.\n{error}"),
+        Err(error) => {
+            zellij_core::diagnosticln!("Validation failed; watching for a corrected edit.\n{error}")
+        }
     }
-    println!(
+    zellij_core::statusln!(
         "Watching {} for validation. Press Ctrl-C to stop.",
         site.root
     );
@@ -74,11 +81,13 @@ pub fn run(dir: Option<&SiteInput>, options: CheckOptions) -> Result<()> {
         attempted = current.clone();
         match current {
             Ok(_) => validate(),
-            Err(error) => eprintln!("Validation failed; watching for a corrected edit.\n{error}"),
+            Err(error) => zellij_core::diagnosticln!(
+                "Validation failed; watching for a corrected edit.\n{error}"
+            ),
         }
     }
     // Synchronous checks finish before shutdown: no detached worker or runtime
     // child survives the watcher. No further check starts after cancellation.
-    println!("Stopped.");
+    zellij_core::statusln!("Stopped.");
     Ok(())
 }

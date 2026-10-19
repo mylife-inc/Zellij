@@ -2226,6 +2226,7 @@ dependencies = [
 name = "zellij-core"
 version = "0.1.3"
 dependencies = [
+ "anstream",
  "camino",
  "serde",
  "serde_json",

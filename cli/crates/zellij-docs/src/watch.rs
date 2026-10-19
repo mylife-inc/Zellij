@@ -228,7 +228,7 @@ impl Watcher {
                 }
                 let report = publish.publish(prepared)?;
                 for warning in report.warnings {
-                    eprintln!("warning: {warning}");
+                    zellij_core::diagnosticln!("warning: {warning}");
                 }
                 Ok(Some(format!(
                     "Rebuilt {} HTML pages; reloading preview.",
@@ -270,10 +270,12 @@ impl Watcher {
                     let result =
                         current.and_then(|input| rebuild(&input).map_err(|e| e.to_string()));
                     match result {
-                        Ok(Some(message)) => println!("{message}"),
+                        Ok(Some(message)) => zellij_core::statusln!("{message}"),
                         Ok(None) => break,
                         Err(error) => {
-                            eprintln!("Rebuild failed; keeping the last successful site.\n{error}");
+                            zellij_core::diagnosticln!(
+                                "Rebuild failed; keeping the last successful site.\n{error}"
+                            );
                             live.failed(error);
                         }
                     }

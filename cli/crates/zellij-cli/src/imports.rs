@@ -57,7 +57,7 @@ impl Prepared {
                 *converter
             }
         };
-        println!("Converting {source} as {}", converter.label());
+        zellij_core::statusln!("Converting {source} as {}", converter.label());
         let conversion = converter.convert(source, &ConvertOptions::default())?;
         let asset_count = conversion.assets.len();
         let mut files: Vec<_> = conversion
@@ -99,24 +99,24 @@ impl Prepared {
 
     fn report(&self) {
         if !self.unmapped.is_empty() {
-            println!(
+            zellij_core::reportln!(
                 "\n{} thing(s) could not be carried over:",
                 self.unmapped.len()
             );
             for entry in &self.unmapped {
-                println!("  {}: {}", entry.source, entry.reason);
+                zellij_core::reportln!("  {}: {}", entry.source, entry.reason);
             }
         }
         for note in &self.notes {
-            println!("\nNote: {note}");
+            zellij_core::reportln!("\nNote: {note}");
         }
     }
 
     fn write(&self, out: &str, dry_run: bool) -> Result<()> {
         if dry_run {
-            println!("\nWould write {} files into {out}:", self.files.len());
+            zellij_core::reportln!("\nWould write {} files into {out}:", self.files.len());
             for (path, _) in &self.files {
-                println!("  {path}");
+                zellij_core::reportln!("  {path}");
             }
         } else {
             // Recheck emptiness immediately before committing the prepared files.
@@ -127,7 +127,7 @@ impl Prepared {
                 .map(|(p, b)| (p.as_path(), b.as_slice()))
                 .collect();
             files::write_files(Utf8Path::new(out), &files, false)?;
-            println!(
+            zellij_core::statusln!(
                 "\nWrote {} files into {out} ({} assets)",
                 files.len(),
                 self.asset_count
@@ -148,7 +148,7 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
     import.report();
     import.write(&options.out, options.dry_run)?;
     if options.dry_run {
-        println!("\nPlan only; no files written or content validation performed.");
+        zellij_core::reportln!("\nPlan only; no files written or content validation performed.");
     } else if validate {
         crate::validation::check(
             Some(&zellij_core::site::SiteInput::from(options.out.as_str())),
@@ -158,7 +158,7 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
         )
         .inspect_err(|_| retained(&options.out))?;
     } else {
-        println!(
+        zellij_core::statusln!(
             "\nValidate it with `zel check <destination>` using {0} as the destination.",
             options.out
         );
@@ -219,7 +219,7 @@ fn configuration(plan: &DeliveryPlan) -> String {
 }
 
 fn retained(out: &str) {
-    eprintln!(
+    zellij_core::diagnosticln!(
         "Import completed. Converted files remain at {out}; the source is unchanged. Review the conversion report and correct the failing stage before retrying from this site."
     );
 }
@@ -234,10 +234,12 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
         &configuration(&plan),
     )?;
     import.report();
-    crate::delivery::describe_destination(&plan);
+    if options.dry_run || !zellij_core::reporting::options().quiet {
+        crate::delivery::describe_destination(&plan);
+    }
     import.write(&options.out, options.dry_run)?;
     if options.dry_run {
-        println!(
+        zellij_core::reportln!(
             "\nPlan only; no files written, content validation, tools, credentials, build or remote requests performed."
         );
         return Ok(());
@@ -247,7 +249,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
         crate::delivery::execute_plan(&site, &site.content, &plan)
     };
     execute().inspect_err(|_| retained(&options.out))?;
-    println!(
+    zellij_core::statusln!(
         "\nSaved delivery settings in {}/zel.yaml; future changes can use `zel publish <destination>` (Netlify defaults to a draft; --prod is never saved).",
         options.out
     );
