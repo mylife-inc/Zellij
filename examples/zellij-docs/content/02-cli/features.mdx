@@ -7,6 +7,7 @@ description: Select optional portable capabilities or editable-wrapper rendering
 zel features all
 zel features maths
 zel features diagrams --site-root docs/manual
+zel features all --config docs/manual/preview.yaml
 zel features maths,diagrams --site-root my-wrapper
 zel features none
 ```
@@ -26,8 +27,9 @@ without Docker, Node, package installation or network access.
 
 ## Portable sites
 
-The command edits `zel.yaml`, preserving comments and unrelated settings.
-Run [`zel build`](/cli/build) afterward to apply the selection. The portable
+The command edits `zel.yaml`, or the file selected by `--config`, preserving
+comments and unrelated settings. Rebuild with the same site/config selection
+using [`zel build`](/cli/build) afterward to apply it. The portable
 renderer uses its existing offline math and Mermaid implementations; no packages
 are downloaded. Anchors/aliases inside the `markdown` settings must be expanded
 before this command can safely edit them.

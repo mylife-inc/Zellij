@@ -4,7 +4,7 @@ Status: **configured sites, shortcuts, completions, static/Next images, registry
 and Netlify delivery, CI generation, import/ship, editable wrappers, YAML formatting
 and validation watching, portable dev, hosted view, version/pull/upgrade, eject
 and explicit portable/hosted feature selection are implemented in source**.
-Working-directory and shared site selectors are also implemented. Other
+Working-directory, shared site selectors and explicit config-file selection are also implemented. Other
 providers and remaining advanced flags remain proposed. Stage records below
 and the local CLI reference describe actual support; public 0.1.3 predates these
 additions and compatible release publication is still separate work.
@@ -49,7 +49,8 @@ Implemented resolution includes one convenience: when the current directory itse
 contains `zel.yaml`, use that site. Otherwise use `./docs/zellij/zel.yaml`.
 Explicit directory arguments or `--site-root` select a site; combining them is
 an error, including identical paths. `--cwd` changes the base for CLI paths.
-`--config` remains proposed; configuration does not redirect an explicit site path. There
+`--config` selects a named YAML configuration and its parent root, and conflicts
+with other site selectors; configuration does not redirect an explicit site path. There
 is no upward or recursive discovery. Inside `content/`, use an explicit `..`
 site argument or change to the site root. A missing default gives the expected config path
 and an example with an explicit custom site, not an unrelated fallback.
@@ -363,8 +364,8 @@ command supplies intent; ordinary repeatable runs need no extra prompt.
   it conflicts with another selector. It does not replace `--site`/`--site-id`,
   the implemented provider site-ID option. See stage 8a for supported commands.
 - `--cwd <directory>` changes the base for CLI paths without changing shell
-  directory or Git state. `--config <file>` remains a proposal for explicit
-  configuration-file selection and its containing root.
+  directory or Git state. `--config <file>` selects an existing YAML
+  configuration file and its containing root. See stage 8b for behavior.
 - `--out` is generated-output destination; `--port` is preview port. Do not
   overload single-letter options differently across command families.
 - `--json` is a documented capability per command. Structured summaries belong
@@ -417,7 +418,7 @@ The sequence below records the implementation plan. Runtime prerequisites,
 configured sites, shortcuts, image packaging, Netlify delivery, CI generation,
 formatting and maintenance commands are now implemented in source. Portable
 `dev`, hosted `view`, `--cwd` and shared `--site-root` are also implemented.
-Remaining work includes `--config`, output controls, additional deployment
+Remaining work includes output controls, additional deployment
 providers and matched release/documentation publication. Dated stage records
 below give each milestone's actual scope and limitations.
 
@@ -808,3 +809,31 @@ CI --content remains supported. Repeated global path flags are rejected even
 across subcommand boundaries. Both selectors work before/after commands and
 through aliases, with help and five-shell completion generated from the same schema.
 Explicit --config selection, output controls and other providers remain work.
+
+### Stage 8b — explicit configuration files (2026-10-18)
+
+Global --config selects an existing YAML file and its parent site root. It works
+before/after commands and through shortcuts. Repeated flags or combinations with
+--site-root, positional site arguments, authoring --dir, CI --content, --with-docs
+or explicit image-run tags fail before effects. Unsupported command families
+reject it using the shared site-selector rules. --cwd resolves its relative path.
+
+Versioned configuration retains content/ and default site/ layout; legacy flat
+portable YAML retains its flat content and sibling output. Saved build.out is
+relative to the selected config's parent. The file must be regular, and missing,
+invalid, linked or replaced configs never fall back to zel.yaml. The shared
+SiteInput retains directory-versus-explicit-file identity across renderers,
+preview reloads, validation, images, delivery and authoring. No config copying,
+renaming, environment override or merging with a default file is involved.
+
+Formatting/features update the selected file; named configs do not replace the
+editable wrapper's zellij.config.yaml format. Portable check JSON identifies the
+selected filename. Watch tracks that file even when hidden, preserves previous
+output on errors and resumes after restoration. Configured sites ignore other
+root configs; legacy flat watching retains its existing whole-content scope.
+
+CI serializes the repository-relative config path as data and passes --config to
+validation, build and delivery. Its site-folder filter covers the file. Generated
+workflows require a compatible pinned release; generation still does not verify
+that release's availability. Other output controls/providers and matched release
+and documentation publication remain unfinished.

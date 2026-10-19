@@ -4,7 +4,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use pulldown_cmark::{Event, Tag};
 use serde_json::json;
 use std::{collections::BTreeMap, fs};
-use zellij_core::{Error, Result, files, output::StaticOutput};
+use zellij_core::{Error, Result, files, output::StaticOutput, site::SiteInput};
 
 mod config;
 mod diagnostics;
@@ -169,7 +169,7 @@ fn discover(root: &Utf8Path) -> Result<Vec<Utf8PathBuf>> {
     Ok(found)
 }
 
-pub fn default_output(source: &Utf8Path) -> Result<Utf8PathBuf> {
+pub fn default_output(source: impl Into<SiteInput>) -> Result<Utf8PathBuf> {
     let site = zellij_core::site::Site::load(source)?;
     site.require(zellij_core::site::Renderer::Portable)?;
     if site.configured {
@@ -184,7 +184,7 @@ pub fn default_output(source: &Utf8Path) -> Result<Utf8PathBuf> {
 }
 
 pub fn build(
-    source: &Utf8Path,
+    source: impl Into<SiteInput>,
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<BuildReport> {
@@ -193,10 +193,11 @@ pub fn build(
 
 /// Validate and render in memory. No output directory or temporary files are created.
 /// This checks content, not destination permissions, ownership, or available disk space.
-pub fn check(source: &Utf8Path, strict: bool) -> CheckReport {
-    let mut diagnostics = Diagnostics::new(source);
+pub fn check(source: impl Into<SiteInput>, strict: bool) -> CheckReport {
+    let source = source.into();
+    let mut diagnostics = Diagnostics::new(source.root());
     let compiled = compile(
-        source,
+        &source,
         BuildOptions::default(),
         &mut diagnostics,
         None,
@@ -229,7 +230,7 @@ struct CompiledSite {
 }
 
 pub fn prepare(
-    source: &Utf8Path,
+    source: impl Into<SiteInput>,
     output: &Utf8Path,
     options: BuildOptions<'_>,
 ) -> Result<PreparedBuild> {
@@ -237,13 +238,14 @@ pub fn prepare(
 }
 
 pub(crate) fn prepare_layout(
-    source: &Utf8Path,
+    source: impl Into<SiteInput>,
     output: &Utf8Path,
     options: BuildOptions<'_>,
     configured: Option<bool>,
 ) -> Result<PreparedBuild> {
-    let mut diagnostics = Diagnostics::new(source);
-    let compiled = compile(source, options, &mut diagnostics, configured, false)?;
+    let source = source.into();
+    let mut diagnostics = Diagnostics::new(source.root());
+    let compiled = compile(&source, options, &mut diagnostics, configured, false)?;
     let stage = StaticOutput::prepare(&compiled.root, output)?;
     let writes: Vec<_> = compiled
         .files
@@ -261,36 +263,39 @@ pub(crate) fn prepare_layout(
 }
 
 fn compile(
-    source: &Utf8Path,
+    source: &SiteInput,
     options: BuildOptions<'_>,
     diagnostics: &mut Diagnostics,
     configured: Option<bool>,
     hosted: bool,
 ) -> Result<CompiledSite> {
     let selected = diagnostics.capture(
-        source.canonicalize_utf8().map_err(Error::from),
+        source.root().canonicalize_utf8().map_err(Error::from),
         Code::Source,
         None,
     )?;
     diagnostics.root = selected.clone();
+    let selected_config = source.config_path();
+    let config_name = Utf8Path::new(selected_config.file_name().unwrap_or(config::FILE));
     let site = diagnostics.capture(
-        zellij_core::site::Site::load(&selected),
+        zellij_core::site::Site::load(source),
         Code::Configuration,
-        Some(Utf8Path::new(config::FILE)),
+        Some(config_name),
     )?;
     if configured.is_some_and(|expected| expected != site.configured) {
         return diagnostics.capture(
-            Err(Error::InvalidArgument(
-                "site layout changed; restore zel.yaml or restart preview".into(),
-            )),
+            Err(Error::InvalidArgument(format!(
+                "site layout changed; restore {} or restart preview",
+                site.config_path
+            ))),
             Code::Configuration,
-            Some(Utf8Path::new(config::FILE)),
+            Some(config_name),
         );
     }
     diagnostics.capture(
         site.require(zellij_core::site::Renderer::Portable),
         Code::Configuration,
-        Some(Utf8Path::new(config::FILE)),
+        Some(config_name),
     )?;
     // Flat sources retain their original meaning even if hosted markers exist;
     // configured sources always compile content/, never their generated output.
@@ -300,11 +305,12 @@ fn compile(
         selected.clone()
     };
     diagnostics.root = root.clone();
-    let config_file = Utf8Path::new(if site.configured {
-        "../zel.yaml"
+    let relative_config = if site.configured {
+        Utf8Path::new("..").join(config_name)
     } else {
-        config::FILE
-    });
+        config_name.to_owned()
+    };
+    let config_file = relative_config.as_path();
     let config = diagnostics.capture(
         config::Config::load(site.portable),
         Code::Configuration,
@@ -613,10 +619,11 @@ pub struct HostedReport {
 
 /// Adapt validated portable Markdown to the hosted engine's inert document
 /// format. Callers own the new/empty destination; authored content is never edited.
-pub fn adapt_hosted(source: &Utf8Path, output: &Utf8Path) -> Result<HostedReport> {
-    let mut diagnostics = Diagnostics::new(source);
+pub fn adapt_hosted(source: impl Into<SiteInput>, output: &Utf8Path) -> Result<HostedReport> {
+    let source = source.into();
+    let mut diagnostics = Diagnostics::new(source.root());
     let compiled = compile(
-        source,
+        &source,
         BuildOptions::default(),
         &mut diagnostics,
         None,

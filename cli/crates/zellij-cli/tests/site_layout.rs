@@ -389,3 +389,133 @@ fn invalid_working_directory_and_selection_fail_before_writes_or_tool_discovery(
     run(root, &["--cwd", "missing", "--help"], 0);
     run(root, &["--cwd", "missing", "--version"], 0);
 }
+
+#[test]
+fn explicit_config_drives_build_check_and_edits_without_touching_default_config() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    let custom = "Product 日本/docs/manual/preview #1%.yaml";
+    site(root, "Product 日本/docs/manual");
+    let default = "not valid YAML: [";
+    write(root, "Product 日本/docs/manual/zel.yaml", default);
+    write(
+        root,
+        custom,
+        "# keep this comment\nversion: 1\nrenderer: portable\nname: Custom configuration\nbuild: {out: preview}\nmarkdown: {math: false}\n",
+    );
+    run(
+        root,
+        &[
+            "b",
+            "--cwd",
+            "Product 日本",
+            "--config",
+            "docs/manual/preview #1%.yaml",
+        ],
+        0,
+    );
+    let output = root.join("Product 日本/docs/manual/preview/index.html");
+    assert!(
+        fs::read_to_string(&output)
+            .unwrap()
+            .contains("Custom configuration")
+    );
+    let checked = run(root, &["--config", custom, "c", "--json", "--strict"], 0);
+    assert_eq!(
+        serde_json::from_slice::<Value>(&checked.stdout).unwrap()["pages"],
+        1
+    );
+    run(root, &["features", "all", "--config", custom], 0);
+    let settings = fs::read_to_string(root.join(custom)).unwrap();
+    assert!(settings.contains("# keep this comment"));
+    assert_eq!(
+        serde_yaml_ng::from_str::<serde_yaml_ng::Value>(&settings).unwrap()["markdown"]["math"],
+        true
+    );
+    run(root, &["fmt", "--config", custom], 0);
+    run(root, &["fmt", "--check", "--config", custom], 0);
+    assert_eq!(
+        fs::read_to_string(root.join("Product 日本/docs/manual/zel.yaml")).unwrap(),
+        default
+    );
+    let previous = fs::read(&output).unwrap();
+    write(root, custom, "version: [");
+    let error = run(root, &["c", "--config", custom, "--json"], 3);
+    let report: Value = serde_json::from_slice(&error.stdout).unwrap();
+    assert!(
+        report["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|d| d["file"] == "preview #1%.yaml")
+    );
+    assert!(error.stderr.is_empty());
+    run(root, &["b", "--config", custom], 2);
+    fs::remove_file(root.join(custom)).unwrap();
+    run(root, &["b", "--config", custom], 2);
+    assert_eq!(fs::read(output).unwrap(), previous);
+    assert!(!root.join("Product 日本/docs/manual/site").exists());
+}
+
+#[test]
+fn explicit_hosted_and_legacy_configs_keep_their_content_and_output_bases() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    run(root, &["nd", "hosted", "--minimal"], 0);
+    fs::rename(
+        root.join("hosted/zel.yaml"),
+        root.join("hosted/alternate.yaml"),
+    )
+    .unwrap();
+    write(root, "hosted/zel.yaml", "invalid: [");
+    run(root, &["ng", "api", "--config", "hosted/alternate.yaml"], 0);
+    assert!(root.join("hosted/content/01-api/index.mdx").is_file());
+    run(root, &["idf", "--config", "hosted/alternate.yaml"], 0);
+    run(root, &["ir", "--config", "hosted/alternate.yaml"], 4);
+    write(root, "raw/settings.yaml", "name: Legacy selected\n");
+    write(root, "raw/zel.yaml", "invalid: [");
+    write(root, "raw/index.md", "# Legacy page\n");
+    run(root, &["b", "--config", "raw/settings.yaml"], 0);
+    assert!(
+        fs::read_to_string(root.join("raw-site/index.html"))
+            .unwrap()
+            .contains("Legacy selected")
+    );
+    run(
+        root,
+        &["b", "--config", "raw/settings.yaml", "--out", "raw"],
+        2,
+    );
+    assert!(root.join("raw/index.md").is_file());
+}
+
+#[test]
+fn explicit_config_rejects_directories_links_and_conflicts_before_writes() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    site(root, "docs/zellij");
+    for args in [
+        vec!["b", "--config", "docs/zellij"],
+        vec!["b", "docs/zellij", "--config", "docs/zellij/zel.yaml"],
+        vec![
+            "--config",
+            "missing.yaml",
+            "b",
+            "--site-root",
+            "docs/zellij",
+        ],
+        vec!["init", "new-site", "--config", "docs/zellij/zel.yaml"],
+        vec!["pub", "--config", "missing.yaml"],
+    ] {
+        run(root, &args, 2);
+    }
+    assert!(!root.join("docs/zellij/site").exists());
+    assert!(!root.join("new-site").exists());
+    #[cfg(unix)]
+    {
+        std::os::unix::fs::symlink(root.join("docs/zellij/zel.yaml"), root.join("linked.yaml"))
+            .unwrap();
+        run(root, &["features", "none", "--config", "linked.yaml"], 2);
+        run(root, &["b", "--config", "linked.yaml"], 2);
+    }
+}

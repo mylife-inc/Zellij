@@ -5,6 +5,7 @@ use std::{
     io::Write,
     process::{Command, Stdio},
 };
+use zellij_core::site::SiteInput;
 use zellij_core::{
     Error, Result,
     delivery::{DeliveryPlan, PublishSettings},
@@ -30,11 +31,11 @@ fn repository(root: &Utf8Path) -> Result<Utf8PathBuf> {
     Ok(Utf8Path::new(path.trim_end_matches(['\r', '\n'])).canonicalize_utf8()?)
 }
 
-pub(crate) fn generate(system: &str, dir: Option<&str>, args: &CiInitArgs) -> Result<()> {
+pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs) -> Result<()> {
     if system != "github" {
         return Err(invalid("only the github workflow generator is implemented"));
     }
-    let (site, _) = crate::images::selection(dir.or(args.site_root.as_deref()))?;
+    let (site, _) = crate::images::selection(dir.or(args.site_root.as_ref()))?;
     let repo = repository(&site.root)?;
     let relative = site
         .root
@@ -115,6 +116,18 @@ pub(crate) fn generate(system: &str, dir: Option<&str>, args: &CiInitArgs) -> Re
     }
     let path = Utf8PathBuf::from(format!(".github/workflows/{}", settings.workflow));
     let options = CiOptions {
+        config: if site.input.explicit_config() {
+            Some(
+                site.config_path
+                    .strip_prefix(&repo)
+                    .map_err(|_| invalid("configuration must be inside its Git working tree"))?
+                    .iter()
+                    .collect::<Vec<_>>()
+                    .join("/"),
+            )
+        } else {
+            None
+        },
         site_root: relative,
         settings,
         version,

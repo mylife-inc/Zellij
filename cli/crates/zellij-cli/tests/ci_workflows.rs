@@ -384,3 +384,65 @@ fn cwd_selects_the_repository_and_global_site_root_keeps_legacy_content_semantic
         expected
     );
 }
+
+#[test]
+fn workflows_keep_explicit_config_in_validation_build_and_delivery() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(root, "docs/Manual 日本", "ci: {zel-version: 0.2.0}\n");
+    let config = "docs/Manual 日本/preview's [site].yaml";
+    fs::rename(root.join("docs/Manual 日本/zel.yaml"), root.join(config)).unwrap();
+    write(root, "docs/Manual 日本/zel.yaml", "invalid: [");
+    for delivery in [
+        "",
+        "publish: {action: deploy, provider: netlify, site: documentation}\n",
+        "image: {name: ghcr.io/acme/manual:preview}\npublish: {action: push, image: static}\n",
+        "image: {name: ghcr.io/acme/manual:preview}\npublish: {action: push, image: next}\n",
+    ] {
+        write(
+            root,
+            config,
+            &format!("version: 1\nrenderer: portable\nci: {{zel-version: 0.2.0}}\n{delivery}"),
+        );
+        run(root, &["ci", "--config", config, "--force"], 0);
+        let doc = workflow(root);
+        assert_eq!(doc["env"]["SITE_CONFIG"], format!("./{config}"));
+        for job in doc["jobs"].as_object().unwrap().values() {
+            for step in job["steps"].as_array().unwrap() {
+                if let Some(command) = step["run"].as_str().filter(|r| r.starts_with("zel ")) {
+                    assert!(command.contains("--config \"$SITE_CONFIG\""), "{command}");
+                    assert!(!command.contains("\"$SITE_ROOT\""));
+                    assert!(
+                        !command.contains("preview's"),
+                        "path must be passed as data"
+                    );
+                }
+            }
+        }
+        assert!(
+            doc["on"]["pull_request"]["paths"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|path| path == "docs/Manual 日本/**")
+        );
+    }
+    let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    run(
+        root,
+        &[
+            "ci",
+            "--config",
+            config,
+            "--content",
+            "docs/Manual 日本",
+            "--force",
+        ],
+        2,
+    );
+    assert_eq!(
+        fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+        previous
+    );
+}

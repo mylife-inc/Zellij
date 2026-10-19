@@ -50,6 +50,7 @@ async function edit(title, prefix = '/products/manual', mode = 'ok') {
   } else await writeFile(path.join(content, 'preview.txt'), `${title}\n${prefix}\n${mode}\n`);
 }
 function launch(args = ['view', '--watch', '--browser', browserExe]) {
+  args = [...args, '--config', path.join(site, 'hosted-preview.yaml')];
   const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...args] : args, { cwd: root, env, stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);
@@ -69,13 +70,14 @@ async function stop(state) {
   active.delete(state);
 }
 function fails(args, expected) {
-  const result = spawnSync(zel, args, { cwd: root, env, encoding: 'utf8', timeout: real ? 240000 : 15000 });
+  const result = spawnSync(zel, [...args, '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env, encoding: 'utf8', timeout: real ? 240000 : 15000 });
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, expected); assert(!result.stdout.includes('Serving at '));
 }
 try {
   await mkdir(bin); await mkdir(path.join(content, 'guide'), { recursive: true });
-  await writeFile(path.join(site, 'zel.yaml'), 'version: 1\nrenderer: hosted\npreview: {port: 0}\n');
+  await writeFile(path.join(site, 'hosted-preview.yaml'), 'version: 1\nrenderer: hosted\npreview: {port: 0}\n');
+  await writeFile(path.join(site, 'zel.yaml'), 'invalid default: [');
   await writeFile(path.join(content, 'site.yaml'), 'name: Fixture\n');
   if (windows) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe], { stdio: 'pipe' });
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-browser.rs', '-o', browserExe], { stdio: 'pipe' });
@@ -141,7 +143,7 @@ try {
   await expect(page.locator('#_zel-preview-error')).toHaveCount(0);
   if (!real) {
     // Invalid/missing config cannot change an active session's renderer/layout.
-    const config = path.join(site, 'zel.yaml');
+    const config = path.join(site, 'hosted-preview.yaml');
     const valid = await readFile(config, 'utf8');
     const previous = await tree(output); const revision = (await status()).version;
     for (const broken of ['version: [', valid.replace('hosted', 'portable'), null]) {

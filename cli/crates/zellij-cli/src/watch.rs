@@ -8,6 +8,7 @@ use std::{
     thread,
     time::Duration,
 };
+use zellij_core::site::SiteInput;
 use zellij_core::{
     Result,
     site::{Renderer, Site},
@@ -15,8 +16,8 @@ use zellij_core::{
 use zellij_docs::watch::Snapshot;
 use zellij_engine::{CheckOptions, ContainerEngine, Engine};
 
-pub fn run(dir: Option<&str>, options: CheckOptions) -> Result<()> {
-    let site = Site::load(&crate::select_site(dir)?)?;
+pub fn run(dir: Option<&SiteInput>, options: CheckOptions) -> Result<()> {
+    let site = Site::load(crate::select_site(dir)?)?;
     // Missing runtime is a startup error, not an endless watch loop. Portable
     // validation never probes external tools. Hosted checks reuse this engine.
     let engine = (site.renderer == Renderer::Hosted)
@@ -26,18 +27,18 @@ pub fn run(dir: Option<&str>, options: CheckOptions) -> Result<()> {
     let signal = stop.clone();
     ctrlc::set_handler(move || signal.store(true, Ordering::Release)).map_err(io::Error::other)?;
     let snapshot = || {
-        Snapshot::site_for(&site.root, site.configured, site.renderer).map_err(|e| e.to_string())
+        Snapshot::site_for(&site.input, site.configured, site.renderer).map_err(|e| e.to_string())
     };
     let validate = || {
         println!("Checking {}", site.root);
         let result = if let Some(engine) = &engine {
-            crate::resolve_content(site.root.as_str()).and_then(|content| {
+            crate::resolve_content(&site.input).and_then(|content| {
                 let report = engine.check(&content, options)?;
                 print!("{}", report.output);
                 if report.ok { Ok(0) } else { Ok(3) }
             })
         } else {
-            crate::validation::portable(&site.root, options.strict, false)
+            crate::validation::portable(&site.input, options.strict, false)
         };
         match result {
             Ok(0) => println!("Validation passed."),

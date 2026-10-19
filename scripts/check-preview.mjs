@@ -174,6 +174,7 @@ try {
   console.log('Native serve/view: HTTP bytes/MIME/routes, prefix, port conflicts, containment, ready browser launch, no-open/failure recovery and real Ctrl-C passed.');
   await checkWatch({ temp, source, output, start, stop, snapshot, until });
   await checkSiteLayout({ temp, start, stop, snapshot, until });
+  await checkSiteLayout({ temp, start, stop, snapshot, until, explicitConfig: true });
   const project = path.join(temp, 'Software project');
   const docs = path.join(project, 'docs/zellij');
   await mkdir(path.join(docs, 'content'), { recursive: true });

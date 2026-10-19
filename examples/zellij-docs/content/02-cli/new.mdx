@@ -219,6 +219,9 @@ npm run dev
 ```
 
 Omit `--site-root` to select `./zel.yaml`, then `./docs/zellij/zel.yaml`.
+Alternatively, use `--config docs/manual/preview.yaml` to select an existing
+hosted site by its YAML configuration. It conflicts with `--site-root` and
+`--with-docs`; the wrapper's own `zellij.config.yaml` remains a separate format.
 An explicit raw hosted content directory also works. The existing content is
 referenced in place using an absolute path; it is not copied or modified.
 Portable Markdown and the old `marketing/` layout are not supported by this

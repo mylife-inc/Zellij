@@ -42,12 +42,12 @@ pub(crate) fn create(options: &crate::args::NewAppArgs) -> Result<()> {
             options.port.unwrap_or(3000),
         )
     } else {
-        let root = zellij_core::site::select(&cwd, options.site_root.as_deref())?;
+        let root = crate::select_site(options.site_root.as_ref())?;
         let site = Site::load(&root)?;
         if site.renderer != Renderer::Hosted {
             return Err(Error::InvalidArgument("new app currently references hosted content; use --with-docs for a hosted starter, or `zel image next` to package portable Markdown with its adapter".into()));
         }
-        let content = crate::resolve_content(root.as_str())?;
+        let content = crate::resolve_content(&root)?;
         files::disjoint(&content, &out)?;
         if content.join("marketing").exists() {
             return Err(Error::InvalidArgument("new app requires the current hosted folder layout; migrate legacy marketing/ content first".into()));

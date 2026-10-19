@@ -1,4 +1,5 @@
 //! Native feature selection: portable settings or an editable wrapper manifest.
+use zellij_core::site::SiteInput;
 mod yaml;
 use camino::{Utf8Path, Utf8PathBuf};
 use serde_json::Value;
@@ -28,14 +29,16 @@ pub(crate) fn run(options: &crate::args::FeaturesArgs) -> Result<()> {
     let cwd = Utf8PathBuf::from_path_buf(std::env::current_dir()?)
         .map_err(|_| Error::InvalidArgument("working directory is not UTF-8".into()))?;
     let root = if let Some(root) = &options.site_root {
-        files::absolute_path(Utf8Path::new(root))?
+        root.clone()
     } else if fs::symlink_metadata(cwd.join("zellij.config.yaml")).is_ok() {
-        cwd
+        SiteInput::Directory(cwd)
     } else {
         crate::select_site(None)?
     };
-    if fs::symlink_metadata(root.join("zellij.config.yaml")).is_ok() {
-        wrapper(&root, maths, diagrams)?;
+    if !root.explicit_config()
+        && fs::symlink_metadata(root.root().join("zellij.config.yaml")).is_ok()
+    {
+        wrapper(root.root(), maths, diagrams)?;
         println!(
             "Wrapper feature selection saved at {root}/package.json.\nRun `npm install` in the wrapper to reconcile its lockfile and installed packages.\nRebuild or restart the app to apply rendering changes. Disabled packages may remain if another dependency needs them."
         );
@@ -45,15 +48,16 @@ pub(crate) fn run(options: &crate::args::FeaturesArgs) -> Result<()> {
             return Err(Error::InvalidArgument("hosted content has no npm manifest; pass --site-root <wrapper> after `zel new app` or `zel eject`, or select an engine image variant for container builds".into()));
         }
         zellij_docs::validate_settings(site.portable)?;
-        let path = files::contained_path(&root, Utf8Path::new("zel.yaml"))?;
+        let filename = site.config_path.file_name().unwrap();
+        let path = files::contained_path(&site.root, Utf8Path::new(filename))?;
         if !path.is_file() {
             return Err(Error::InvalidArgument("portable features require an existing zel.yaml; create a site with `zel init` first".into()));
         }
         let original = fs::read_to_string(&path)?;
         let changed = yaml::select(&original, maths, diagrams)?;
-        replace(&root, "zel.yaml", &original, &changed)?;
+        replace(&site.root, filename, &original, &changed)?;
         println!(
-            "Portable settings saved: markdown.math={maths}, markdown.mermaid={diagrams}.\nRebuild with `zel build` to apply them. No tools or dependencies were installed."
+            "Portable settings saved: markdown.math={maths}, markdown.mermaid={diagrams}.\nRebuild with the same site/config selection to apply them. No tools or dependencies were installed."
         );
     }
     Ok(())

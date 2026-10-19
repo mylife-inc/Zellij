@@ -1,4 +1,5 @@
 //! Native static preview orchestration; build and serve share their normal paths.
+use zellij_core::site::SiteInput;
 mod hosted;
 use std::{
     io::{self, Write},
@@ -23,13 +24,13 @@ pub struct ViewOptions<'a> {
     pub watch: bool,
 }
 
-pub fn serve(dir: Option<&str>, port: Option<u16>, base_path: &str) -> Result<()> {
+pub fn serve(dir: Option<&SiteInput>, port: Option<u16>, base_path: &str) -> Result<()> {
     let selected = crate::select_site(dir)?;
-    let (output, default_port) = if zellij_core::site::present(&selected) {
+    let (output, default_port) = if selected.has_config() {
         let site = zellij_core::site::Site::load(&selected)?;
         (site.output, site.port)
     } else {
-        (selected, 3000)
+        (selected.root().to_owned(), 3000)
     };
     run(
         StaticServer::bind(&output, port.unwrap_or(default_port), base_path)?,
@@ -39,7 +40,7 @@ pub fn serve(dir: Option<&str>, port: Option<u16>, base_path: &str) -> Result<()
     )
 }
 
-pub fn view(dir: Option<&str>, options: ViewOptions<'_>) -> Result<()> {
+pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
     let selected = crate::select_site(dir)?;
     let site = zellij_core::site::Site::load(&selected)?;
     if site.renderer != zellij_core::site::Renderer::Portable {
@@ -47,7 +48,7 @@ pub fn view(dir: Option<&str>, options: ViewOptions<'_>) -> Result<()> {
     }
     // Reserve before writing output, so a bind failure cannot replace a site.
     let socket = listener(options.port.unwrap_or(site.port))?;
-    let source = site.root;
+    let source = site.input;
     let initial = options
         .watch
         .then(|| Snapshot::site(&source, site.configured))

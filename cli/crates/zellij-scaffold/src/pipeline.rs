@@ -23,6 +23,7 @@ pub enum Publish {
 #[derive(Debug, Clone)]
 pub struct CiOptions {
     pub site_root: String,
+    pub config: Option<String>,
     pub settings: Settings,
     pub version: String,
     pub publish: Publish,
@@ -57,11 +58,11 @@ fn install(version: &str) -> Value {
         "run": "set -eu\nbase=\"https://github.com/mylife-inc/releases/releases/download/zellij-$ZEL_VERSION\"\ncurl --fail --silent --show-error --location \"$base/install.sh\" --output \"$RUNNER_TEMP/zel-install.sh\" || { echo 'The pinned zel release must be published before this workflow can run.' >&2; exit 1; }\nsh \"$RUNNER_TEMP/zel-install.sh\"\nprintf '%s\\n' \"$ZEL_INSTALL_DIR\" >> \"$GITHUB_PATH\"\n"
     })
 }
-fn initial_steps(version: &str) -> Vec<Value> {
+fn initial_steps(version: &str, selector: &str) -> Vec<Value> {
     vec![
         json!({"uses":"actions/checkout@v7", "with":{"persist-credentials": false}}),
         install(version),
-        json!({"name":"Validate documentation", "run":"zel check \"$SITE_ROOT\" --strict --deep"}),
+        json!({"name":"Validate documentation", "run":format!("zel check {selector} --strict --deep")}),
     ]
 }
 fn publication_condition(settings: &Settings) -> String {
@@ -92,6 +93,7 @@ fn publication_condition(settings: &Settings) -> String {
 pub fn github(options: &CiOptions) -> Result<String> {
     let CiOptions {
         site_root,
+        config,
         settings,
         version,
         publish,
@@ -99,6 +101,23 @@ pub fn github(options: &CiOptions) -> Result<String> {
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
     literal(site_root)?;
+    if let Some(config) = config {
+        literal(config)?;
+        zellij_core::files::relative_path(camino::Utf8Path::new(config))?;
+        let parent = camino::Utf8Path::new(config)
+            .parent()
+            .unwrap_or(camino::Utf8Path::new(""));
+        if parent != camino::Utf8Path::new(if site_root == "." { "" } else { site_root }) {
+            return Err(invalid(
+                "configuration must be directly inside the selected site root",
+            ));
+        }
+    }
+    let selector = if config.is_some() {
+        "--config \"$SITE_CONFIG\""
+    } else {
+        "\"$SITE_ROOT\""
+    };
     if site_root != "." {
         zellij_core::files::relative_path(camino::Utf8Path::new(site_root))?;
     }
@@ -140,21 +159,21 @@ pub fn github(options: &CiOptions) -> Result<String> {
     }
     let condition = publication_condition(settings);
     let delivering = !matches!(publish, Publish::Nothing);
-    let mut steps = initial_steps(&version);
+    let mut steps = initial_steps(&version, selector);
     let build = match publish {
         Publish::Image { kind, .. } => format!(
-            "zel image {} \"$SITE_ROOT\" --tag zel-ci-check:local",
+            "zel image {} {selector} --tag zel-ci-check:local",
             kind.as_str()
         ),
-        Publish::LegacyImage => "zel image next \"$SITE_ROOT\" --tag zel-ci-check:local".into(),
-        _ => "zel build \"$SITE_ROOT\" --out \"$RUNNER_TEMP/zellij-site\"".into(),
+        Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
+        _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
     steps.push(json!({"name":"Build without publishing", "run":build}));
     let mut jobs =
         json!({"verify": {"runs-on":"ubuntu-latest", "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
-        let mut steps = initial_steps(&version);
+        let mut steps = initial_steps(&version, selector);
         let mut permissions = json!({"contents":"read"});
         match publish {
             Publish::Image { .. } | Publish::LegacyImage => {
@@ -188,9 +207,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
                 }}));
                 if let Some(tag) = tag {
-                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":"zel publish \"$SITE_ROOT\" --tag \"$IMAGE_TAG\""}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"")}));
                 } else {
-                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n"}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector)}));
                 }
             }
             Publish::Netlify { site_id } => {
@@ -201,19 +220,22 @@ pub fn github(options: &CiOptions) -> Result<String> {
                 steps.push(json!({"name":"Build once and deploy", "env":{
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
-                }, "run":format!("zel deploy netlify \"$SITE_ROOT\"{prod}")}));
+                }, "run":format!("zel deploy netlify {selector}{prod}")}));
             }
             Publish::Nothing => unreachable!(),
         }
         jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":"ubuntu-latest", "timeout-minutes":30, "permissions":permissions, "steps":steps});
     }
-    let doc = json!({
+    let mut doc = json!({
         "name":"Documentation", "on": events, "permissions":{"contents":"read"},
         "defaults":{"run":{"shell":"bash"}},
         "concurrency":{"group":"docs-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress":false},
         "env":{"SITE_ROOT": if site_root == "." { ".".into() } else { format!("./{site_root}") }, "ZELLIJ_IMAGE":format!("ghcr.io/mylife-inc/zellij-base:{}", version.trim_start_matches('v'))},
         "jobs":jobs
     });
+    if let Some(config) = config {
+        doc["env"]["SITE_CONFIG"] = json!(format!("./{config}"));
+    }
     let yaml = serde_yaml_ng::to_string(&doc)
         .map_err(|e| invalid(&format!("cannot serialize workflow: {e}")))?;
     Ok(format!(
@@ -227,6 +249,7 @@ mod tests {
     fn options(publish: Publish) -> CiOptions {
         CiOptions {
             site_root: "docs/Team's [manual] 日本".into(),
+            config: None,
             settings: Settings::default(),
             version: "0.2.0-rc.1".into(),
             publish,
