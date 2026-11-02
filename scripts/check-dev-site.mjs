@@ -37,6 +37,7 @@ async function until(check, label, timeout = 30000) {
 }
 try {
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'watch-fixture'], { env, stdio: 'inherit' });
+  if (!binary) execFileSync(process.execPath, [cli, 'features', 'all', app], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true });
   // A custom content root must reach preparation, rendering and Next config.
   const files = {
@@ -48,7 +49,7 @@ try {
   await put('site.yaml', `name: Watch fixture\nbasePath: ${prefix}\nhome: 01-guide\nnav: { search: true }\nanalytics: { provider: plausible, domain: docs.example.com }\n`);
   await put('01-guide/_sidebar.yaml', 'route: /manual\nnav: [index]\n');
   const markdown = (token) => `# Watching\n\n## ${token}\n\n${token} passage.\n\n![Watched image](/_zellij/assets/diagram.svg)\n`
-    + (binary ? '$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n' : '');
+    + '$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n';
   const svg = (width) => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="40"><rect width="${width}" height="40" fill="red"/></svg>`;
   await put('01-guide/index.mdx', markdown('Original'));
   await put('assets/diagram.svg', svg(80));
@@ -61,7 +62,7 @@ try {
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
     ? spawn(binary, ['dev', content, '--port', String(port), '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
-    : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '127.0.0.1', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
+    : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   exited = once(server, 'exit');
   server.stdout.on('data', (data) => { log += data; });
   server.stderr.on('data', (data) => { log += data; });
@@ -76,12 +77,20 @@ try {
     if (engine) {
       browser = await engine.launch();
       page = await browser.newPage();
+      page.on('pageerror', error => { log += `\n[browser] ${error.stack ?? error}\n`; });
+      page.on('requestfailed', request => { log += `\n[browser] ${request.url()}: ${request.failure()?.errorText}\n`; });
       const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix, { development: true });
       await page.goto(`${origin}/manual`);
       await expect(page.getByRole('heading', { name: 'Watching', exact: true })).toBeVisible();
-      if (binary) {
-        await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
-        await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+      await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+      await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+      // The wildcard bind must accept loopback clients without opening dev
+      // assets to arbitrary sites (including hostnames that resemble an IP).
+      const clientScript = new URL(await page.locator('script[src*="/_next/"]').first().getAttribute('src'), origin);
+      for (const host of ['127.0.0.1', '[::1]', 'untrusted.example.com', '127.0.0.1.example.com']) {
+        const response = await fetch(clientScript, { headers: { Origin: `http://${host}:${port}` }, signal: AbortSignal.timeout(10000) });
+        assert.equal(response.status, host.endsWith('.com') ? 403 : 200, `Development origin ${host}`);
+        await response.body?.cancel();
       }
       await checkFonts();
       await expect(async () => {
@@ -108,10 +117,8 @@ try {
       const heading = page.locator(`h2#${token.toLowerCase()}`);
       await expect(heading).toBeVisible();
       await expect(heading).toHaveAccessibleName(token);
-      if (binary) {
-        await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
-        await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
-      }
+      await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+      await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();

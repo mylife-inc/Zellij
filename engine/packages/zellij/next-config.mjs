@@ -31,8 +31,11 @@ const union = (mine, theirs) => [...new Set([...mine, ...(theirs ?? [])])];
  * stays at `opacity: 0`. The page is *there*, and it is blank. Checking a docs
  * site on a real phone is a normal thing to do, so it should just work.
  *
- * Three sources, all narrow on purpose:
+ * Four sources, all narrow on purpose:
  *
+ * - The IPv4/IPv6 loopback hosts. Binding to `0.0.0.0` in a container does not
+ *   make Next trust `127.0.0.1` or `[::1]`; without these, the HMR connection is
+ *   refused and Turbopack's client hydration cannot finish.
  * - This machine's own addresses. Exactly right for `npm run dev`, and unable
  *   to over-permit — an attacker's page cannot present your LAN IP as its own
  *   origin.
@@ -61,7 +64,7 @@ function devOrigins() {
     .map((origin) => origin.trim())
     .filter(Boolean);
 
-  return [...new Set(['*.local', ...own, ...configured])];
+  return [...new Set(['127.0.0.1', '[::1]', '*.local', ...own, ...configured])];
 }
 
 /**
