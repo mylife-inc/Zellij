@@ -627,3 +627,46 @@ After the fix, real local Chromium/Turbopack acceptance and all 365 engine tests
 passed. Final CI on the updated PR head, including the actual container and
 both macOS ARM jobs, is still required before merge. No local Docker daemon
 was started. PR: https://github.com/mylife-inc/Zellij/pull/47.
+
+
+### Rendering features in delivery and CI — 2026-11-02
+
+PR #47 merged as 42641950fdcfd75d43737a1f40ecbdf64a457a48 after all 13 jobs
+passed on final head 27415a15a1b8159d3fab19fdd5e18c84051cdb26 in CI run
+41517322451. This includes the actual hosted-development regression and both
+macOS ARM jobs. Post-merge Base image run 41520378666 passed; CI 41520378824
+had 12 of 13 jobs passed with CLI still running at this checkpoint. Refresh that
+run before relying on a final post-merge result. Latest public native release
+remains zellij-v0.1.3 (August 13), refreshed on November 2.
+
+Fixing commit bf78d8346b5149668d03b7773fadc73acf2b9d26 extends the shared typed
+--features selection to publish/pub, deploy/netlify, ship and generated CI.
+Delivery forwards the invocation-only selection to one portable/hosted static
+or image build. Dry plans display it. Source, saved configuration and previous
+local exports remain unchanged. Failed builds do not publish. Ship retains its
+existing destination/platform settings but not this override, and explains how
+to repeat the selection on a later publish after success or failure.
+
+CI generation freezes the canonical selection in verification and publication
+build commands for every supported delivery form, including named configs,
+platform selections and legacy image generation. Validation and prebuilt image
+push commands do not receive rendering flags. Regenerating without the flag
+removes the override. Dispatch does not accept it. Existing compatible-release
+pins, event gates and explicit credential provisioning are unchanged.
+See contract stage 9d and updated publish/deploy/ship/ci/features references.
+The deployment reference's stale claim that CI ignores saved delivery settings
+was also corrected.
+
+Local verification: all 315 Rust tests in 38 suites, warnings-denied Clippy,
+formatting, script syntax and strict/deep docs passed (55 routes, 53 guide pages,
+23 examples). Ten generated workflows passed actionlint. Tests execute generated
+portable commands, inspect selected HTML uploaded to a loopback API, cover all
+renderer/image combinations, and retain ship/config/output failure guarantees.
+Hosted CI now checks features in Netlify export/upload, portable Next image
+publication, and imported static/Next images through browser rendering. Final
+cross-platform/container CI and merge are pending for this branch.
+
+No local container daemon was started, native release published, real provider
+site deployed or external registry image manually published. Remaining work:
+advanced build options, combined multi-platform images, additional providers,
+conversion fidelity and matched native release/documentation publication.
