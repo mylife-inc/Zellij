@@ -46,12 +46,16 @@ const tree = async folder => {
 async function edit(title, prefix = '/products/manual', mode = 'ok') {
   if (real) {
     await writeFile(path.join(content, 'site.yaml'), `name: Preview\nhome: guide\nbasePath: ${prefix}\nnav: {search: true}\n`);
-    await writeFile(path.join(content, 'guide/index.mdx'), mode === 'fail' ? '---\ntitle: [\n---\n' : `# ${title}\n\n[Next](/guide/next)\n\n![Logo](/_zellij/assets/logo.svg)\n`);
+    await writeFile(path.join(content, 'guide/index.mdx'), mode === 'fail' ? '---\ntitle: [\n---\n' : `# ${title}\n\n[Next](/guide/next)\n\n![Logo](/_zellij/assets/logo.svg)\n\n$x^2$\n\n\`\`\`mermaid\ngraph TD; A-->B;\n\`\`\`\n`);
   } else await writeFile(path.join(content, 'preview.txt'), `${title}\n${prefix}\n${mode}\n`);
 }
-function launch(args = ['view', '--watch', '--browser', browserExe]) {
+function invocationEnv(args) {
+  const index = args.indexOf('--features');
+  return { ...env, ZELLIJ_PREVIEW_FEATURES: index < 0 ? '' : args[index + 1] };
+}
+function launch(args = ['view', '--watch', '--browser', browserExe, '--features', 'all']) {
   args = [...args, '--config', path.join(site, 'hosted-preview.yaml')];
-  const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...args] : args, { cwd: root, env, stdio: ['pipe', 'pipe', 'pipe'] });
+  const child = spawn(windows ? consoleExe : zel, windows ? [zel, ...args] : args, { cwd: root, env: invocationEnv(args), stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   child.stdout.on('data', b => state.stdout += b); child.stderr.on('data', b => state.stderr += b);
   state.closed = new Promise((resolve, reject) => { child.once('error', reject); child.once('close', (code, signal) => { state.exit = { code, signal }; resolve(state.exit); }); });
@@ -70,7 +74,7 @@ async function stop(state) {
   active.delete(state);
 }
 function fails(args, expected) {
-  const result = spawnSync(zel, [...args, '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env, encoding: 'utf8', timeout: real ? 240000 : 15000 });
+  const result = spawnSync(zel, [...args, '--config', path.join(site, 'hosted-preview.yaml')], { cwd: root, env: invocationEnv(args), encoding: 'utf8', timeout: real ? 240000 : 15000 });
   assert.notEqual(result.status, 0, result.stdout);
   assert.match(result.stderr, expected); assert(!result.stdout.includes('Serving at '));
 }
@@ -106,6 +110,8 @@ try {
   if (real) await expect(page).toHaveURL(`${server.url}guide`);
   await expect(page.getByRole('heading', { name: 'First preview', exact: true })).toBeVisible();
   if (real) {
+    await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
     assert.equal(await page.locator('article img').evaluate(img => img.complete && img.naturalWidth > 0), true);
     await page.locator('article').getByRole('link', { name: 'Next', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Next page', exact: true })).toBeVisible();
@@ -128,6 +134,10 @@ try {
   await edit('After rebuild');
   await until(async () => (await status()).version !== version, 'watched rebuild');
   await expect(page.getByRole('heading', { name: 'After rebuild', exact: true })).toBeVisible({ timeout: 30000 });
+  if (real) {
+    await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+  }
   if (real) { assert.equal(new URL(page.url()).search, '?keep=1'); assert.equal(new URL(page.url()).hash, '#top'); }
   const good = await tree(output); version = (await status()).version;
   await edit('Broken', '/products/manual', 'fail');
@@ -140,6 +150,10 @@ try {
   await edit('Recovered');
   await until(async () => (await status()).version !== version, 'recovery');
   await expect(page.getByRole('heading', { name: 'Recovered', exact: true })).toBeVisible({ timeout: 30000 });
+  if (real) {
+    await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+    await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+  }
   await expect(page.locator('#_zel-preview-error')).toHaveCount(0);
   if (!real) {
     // Invalid/missing config cannot change an active session's renderer/layout.
@@ -166,6 +180,20 @@ try {
   }
   assert.deepEqual(errors, [], `browser errors: ${errors}`);
   await stop(server); await browser.close(); browser = undefined;
+  if (real) {
+    const authored = await tree(content);
+    const config = await readFile(path.join(site, 'hosted-preview.yaml'), 'utf8');
+    const disabled = await ready(launch(['v', '--no-open', '--features', 'none']));
+    browser = await chromium.launch();
+    const page = await browser.newPage();
+    await page.goto(disabled.url);
+    await expect(page.getByRole('heading', { name: 'Recovered', exact: true })).toBeVisible();
+    await expect(page.locator('mjx-container, .zellij-mermaid')).toHaveCount(0);
+    assert((await page.locator('article').innerText()).includes('$x^2$'));
+    await stop(disabled); await browser.close(); browser = undefined;
+    assert.deepEqual(await tree(content), authored);
+    assert.equal(await readFile(path.join(site, 'hosted-preview.yaml'), 'utf8'), config);
+  }
   const saved = await tree(output);
   if (!real) {
     await rm(record);
@@ -185,7 +213,7 @@ try {
     await stop(cancelled); assert.deepEqual(await tree(output), saved);
     assert.equal(await exists(record), false); assert(!cancelled.stdout.includes('Serving at '));
     await edit('Once');
-    const once = await ready(launch(['view', '--no-open']));
+    const once = await ready(launch(['view', '--no-open', '--features', 'none']));
     assert(!(await (await fetch(once.url)).text()).includes('_zellij/preview.js'));
     await stop(once);
     // Cancel a started rebuild: wait for the owned worker, discard its stage.

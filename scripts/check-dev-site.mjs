@@ -47,7 +47,8 @@ try {
   for (const [name, text] of Object.entries(files)) await writeFile(path.join(app, name), text);
   await put('site.yaml', `name: Watch fixture\nbasePath: ${prefix}\nhome: 01-guide\nnav: { search: true }\nanalytics: { provider: plausible, domain: docs.example.com }\n`);
   await put('01-guide/_sidebar.yaml', 'route: /manual\nnav: [index]\n');
-  const markdown = (token) => `# Watching\n\n## ${token}\n\n${token} passage.\n\n![Watched image](/_zellij/assets/diagram.svg)\n`;
+  const markdown = (token) => `# Watching\n\n## ${token}\n\n${token} passage.\n\n![Watched image](/_zellij/assets/diagram.svg)\n`
+    + (binary ? '$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n' : '');
   const svg = (width) => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="40"><rect width="${width}" height="40" fill="red"/></svg>`;
   await put('01-guide/index.mdx', markdown('Original'));
   await put('assets/diagram.svg', svg(80));
@@ -59,7 +60,7 @@ try {
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
-    ? spawn(binary, ['dev', content, '--port', String(port)], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
+    ? spawn(binary, ['dev', content, '--port', String(port), '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '127.0.0.1', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   exited = once(server, 'exit');
   server.stdout.on('data', (data) => { log += data; });
@@ -68,7 +69,7 @@ try {
   const index = async () => (await fetchFile('search-index.json')).json();
   await until(async () => (await index()).some((entry) => entry.route === '/manual#original'), 'initial dev preparation', binary ? 240000 : 60000);
   await until(async () => (await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(10000) })).ok, 'first page compiles', 120000);
-  const engines = binary ? { http: undefined } : process.env.CI ? { chromium, webkit } : { chromium };
+  const engines = binary ? { chromium } : process.env.CI ? { chromium, webkit } : { chromium };
   for (const [name, engine] of Object.entries(engines)) {
     const token = `Updated${name}`;
     let page;
@@ -78,6 +79,10 @@ try {
       const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix, { development: true });
       await page.goto(`${origin}/manual`);
       await expect(page.getByRole('heading', { name: 'Watching', exact: true })).toBeVisible();
+      if (binary) {
+        await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+      }
       await checkFonts();
       await expect(async () => {
         await page.keyboard.press('ControlOrMeta+k');
@@ -103,6 +108,10 @@ try {
       const heading = page.locator(`h2#${token.toLowerCase()}`);
       await expect(heading).toBeVisible();
       await expect(heading).toHaveAccessibleName(token);
+      if (binary) {
+        await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
+        await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
+      }
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();

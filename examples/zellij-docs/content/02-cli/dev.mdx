@@ -13,6 +13,7 @@ Native release packages may lag the source version.
 zel dev                         # ./zel.yaml, then ./docs/zellij/zel.yaml
 zel dev docs/manual             # a custom configured site or raw content folder
 zel dev --port 4000
+zel dev --features maths
 ```
 
 The selected site's renderer determines the editing workflow. A configured site
@@ -75,9 +76,26 @@ already shared directory. `zel doctor` helps diagnose runtime availability.
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit raw content folder | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
 | `--port <n>` | Preview port; 0 is supported for portable sites | `preview.port`, otherwise 3000 |
+| `--features <selection>` | Complete rendering selection for this session | Portable configuration or hosted engine image |
 
-`--open`, `--host` and `--features` remain planned. Use `view --watch` for browser
+`--open` and `--host` remain planned. Use `view --watch` for browser
 launch options and `view --out` for an explicit static export destination.
+
+## Temporary feature selection
+
+`--features` accepts `maths`, `diagrams`, `maths,diagrams` (either order), `all`,
+or `none`. It selects the complete set: `maths` also disables Mermaid.
+Mindmaps remain independent. The override lasts for the entire session,
+including content edits and portable configuration reloads, without rewriting
+authored files. Restart with another selection to change it. Omitting the flag
+on a later command restores the usual saved settings.
+
+Hosted development applies the selection to its disposable wrapper before
+installing dependencies. Explicit selections use separate dependency caches,
+so another build with different features cannot uninstall a live session's
+packages. A current engine with explicit feature-selection support is required;
+an older engine fails with upgrade guidance. Dependency or startup failures are
+reported separately from invalid content.
 
 ## Editable wrapper apps
 

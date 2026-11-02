@@ -216,24 +216,46 @@ impl ContainerEngine {
         (!id.is_empty()).then_some(id)
     }
 
+    /// Explicit selections must not uninstall dependencies used by a live
+    /// development session with a different selection on the same base image.
+    fn modules_volume_for(&self, features: Option<Features>) -> String {
+        let volume = self.modules_volume();
+        match features {
+            Some(features) => format!("{volume}-{}", features.as_str().replace(',', "-")),
+            None => volume,
+        }
+    }
+
     /// A development server, with the content folder mounted live.
     ///
     /// Runs in the foreground and streams the engine's output, so Ctrl-C stops
     /// it the way Ctrl-C stops anything. `--init` gives the container a real
     /// PID 1, without which the signal reaches a shell that ignores it.
     pub fn dev(&self, content: &Utf8Path, port: u16) -> Result<()> {
+        self.dev_with_features(content, port, None)
+    }
+
+    pub fn dev_with_features(
+        &self,
+        content: &Utf8Path,
+        port: u16,
+        features: Option<Features>,
+    ) -> Result<()> {
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let ports = format!("{port}:3000");
-        let volume = format!("{}:/app/node_modules", self.modules_volume());
+        let volume = format!("{}:/app/node_modules", self.modules_volume_for(features));
 
         // Validate, install, serve — one container, in that order. Checking
         // first means a broken folder is reported in a second rather than
         // after a two-minute install.
+        let feature_step = features
+            .map(|features| format!("{} && ", crate::image::feature_command(features)))
+            .unwrap_or_default();
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
-                "node {ENGINE_CLI} check {WRAPPER_CONTENT} && \
-                 npm install --install-links --no-audit --no-fund --loglevel=error && \
+                "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
+                 {feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run dev -- --hostname 0.0.0.0"
             ),
         );
@@ -257,7 +279,8 @@ impl ContainerEngine {
             }),
             // 130 is Ctrl-C, which is how this command is meant to end.
             Some(0) | Some(130) | None => Ok(()),
-            Some(_) => Err(Error::ContentInvalid),
+            Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
+            Some(_) => Err(Error::BuildFailed),
         }
     }
 }
@@ -446,7 +469,16 @@ impl ContainerEngine {
     /// Flat export files, with the actual prefix resolved by the engine. The
     /// caller validates that prefix and controls publication/cancellation.
     pub fn prepare_preview(&self, content: &Utf8Path, out: &Utf8Path) -> Result<PreparedPreview> {
-        let output = self.prepare_export(content, out, ExportLayout::Preview, None)?;
+        self.prepare_preview_with_features(content, out, None)
+    }
+
+    pub fn prepare_preview_with_features(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        features: Option<Features>,
+    ) -> Result<PreparedPreview> {
+        let output = self.prepare_export(content, out, ExportLayout::Preview, features)?;
         let base_path = take_prefix(&output)?;
         Ok(PreparedPreview { output, base_path })
     }
@@ -460,7 +492,7 @@ impl ContainerEngine {
     ) -> Result<crate::output::StaticOutput> {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
-        let volume = format!("{}:/app/node_modules", self.modules_volume());
+        let volume = format!("{}:/app/node_modules", self.modules_volume_for(features));
         let out_mount = format!("{}:/out", bind_path(&output.directory));
 
         // Give the output back to whoever asked for it.

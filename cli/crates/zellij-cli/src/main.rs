@@ -84,7 +84,11 @@ fn main() {
             zellij_engine::CheckOptions { deep, strict },
             cli.json,
         ),
-        Command::Dev { ref dir, port } => dev(dir.as_ref(), port),
+        Command::Dev {
+            ref dir,
+            port,
+            features,
+        } => dev(dir.as_ref(), port, features),
         Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
             ref dir,
@@ -101,6 +105,7 @@ fn main() {
             ref out,
             ref name,
             ref theme,
+            features,
             port,
             no_open,
             ref browser,
@@ -111,6 +116,7 @@ fn main() {
                 out: out.as_deref(),
                 name: name.as_deref(),
                 theme: theme.as_deref(),
+                features,
                 port,
                 no_open,
                 browser: browser.as_deref(),
@@ -304,7 +310,11 @@ fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::
     Ok(())
 }
 
-fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
+fn dev(
+    dir: Option<&SiteInput>,
+    port: Option<u16>,
+    features: Option<zellij_core::features::Features>,
+) -> zellij_core::Result<()> {
     let dir = select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
     let port = port.unwrap_or(site.port);
@@ -315,6 +325,7 @@ fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
                 out: None,
                 name: None,
                 theme: None,
+                features,
                 port: Some(port),
                 no_open: true,
                 browser: None,
@@ -340,7 +351,7 @@ fn dev(dir: Option<&SiteInput>, port: Option<u16>) -> zellij_core::Result<()> {
     zellij_core::statusln!("  Edit anything under {content} and reload. Ctrl-C to stop.");
     zellij_core::statusln!();
 
-    match engine.dev(&content, port) {
+    match engine.dev_with_features(&content, port, features) {
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
             report_empty_mount(&err);
             std::process::exit(err.exit_code());

@@ -11,6 +11,7 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, webkit, expect } from '@playwright/test';
 import { checkWatch } from './preview-watch.mjs';
 import { checkSiteLayout } from './preview-site-layout.mjs';
+import { checkPreviewFeatures } from './preview-features.mjs';
 
 const windows = process.platform === 'win32';
 const binary = path.resolve(process.argv[2] || `cli/target/debug/zel${windows ? '.exe' : ''}`);
@@ -175,6 +176,7 @@ try {
   await checkWatch({ temp, source, output, start, stop, snapshot, until });
   await checkSiteLayout({ temp, start, stop, snapshot, until });
   await checkSiteLayout({ temp, start, stop, snapshot, until, explicitConfig: true });
+  await checkPreviewFeatures({ temp, start, stop, snapshot, until });
   const project = path.join(temp, 'Software project');
   const docs = path.join(project, 'docs/zellij');
   await mkdir(path.join(docs, 'content'), { recursive: true });

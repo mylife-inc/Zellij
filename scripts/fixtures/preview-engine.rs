@@ -20,6 +20,30 @@ fn main() {
         .filter(|p| p[0] == "-v")
         .map(|p| p[1].as_str())
         .collect();
+    let expected = env::var("ZELLIJ_PREVIEW_FEATURES").unwrap_or_default();
+    let script = args.last().unwrap();
+    if expected.is_empty() {
+        assert!(!script.contains("zellij.mjs features"));
+    } else {
+        let selected = if expected == "all" {
+            "maths,diagrams"
+        } else {
+            &expected
+        };
+        let guard = script.find("featureSelectionVersion").unwrap();
+        let selection = script
+            .find(&format!("features \"{selected}\" /app"))
+            .unwrap();
+        assert!(guard < selection && selection < script.find("npm install").unwrap());
+        let cache = mounts
+            .iter()
+            .find(|mount| mount.ends_with(":/app/node_modules"))
+            .unwrap();
+        assert!(cache.ends_with(&format!(
+            "-{}:/app/node_modules",
+            selected.replace(',', "-")
+        )));
+    }
     assert!(
         mounts.iter().all(|mount| !mount.starts_with(r"\\?\")),
         "runtime bind mounts must use standard Windows paths: {mounts:?}"

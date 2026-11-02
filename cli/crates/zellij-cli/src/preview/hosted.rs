@@ -34,9 +34,10 @@ fn prepare(
     configured: bool,
     expected: &Snapshot,
     prefix: Option<&str>,
+    features: Option<zellij_core::features::Features>,
 ) -> Result<PreparedPreview> {
     let content = crate::resolve_content(source)?;
-    let build = engine.prepare_preview(&content, output)?;
+    let build = engine.prepare_preview_with_features(&content, output, features)?;
     if snapshot(source, configured)? != *expected {
         return Err(Error::InvalidArgument("content changed during the build; retry after saving (watch mode retries automatically)".into()));
     }
@@ -71,7 +72,10 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
     zellij_core::statusln!(
         "Building hosted preview. Ctrl-C waits for any active build to finish cleanup."
     );
-    let prepared = prepare(&engine, &source, &output, configured, &initial, None);
+    let features = options.features;
+    let prepared = prepare(
+        &engine, &source, &output, configured, &initial, None, features,
+    );
     if stop.load(Ordering::Acquire) {
         zellij_core::statusln!("Stopped.");
         return Ok(());
@@ -104,6 +108,7 @@ pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
                     configured,
                     expected,
                     Some(&prefix),
+                    features,
                 );
                 // Also suppress a build error after cancellation: the old site
                 // stays untouched and no further worker/build survives shutdown.

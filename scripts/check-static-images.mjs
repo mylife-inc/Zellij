@@ -163,7 +163,7 @@ try {
     const tag = `zellij-static-hosted-${label}:${suffix}`;
     images.push(tag);
     const selection = prefix ? 'none' : 'all';
-    // Reuse the export and module cache across all -> none to catch stale state.
+    // Reuse the export across all -> none to catch stale rendered output.
     run(['build', 'hosted', '--features', selection, '--out', 'hosted-output'], { ZELLIJ_IMAGE: enabledBase });
     const html = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
     assert.equal(html.includes('<mjx-container'), selection === 'all');
