@@ -284,7 +284,15 @@ fn portable_delivery_builds_generated_files_once_and_preserves_previous_output()
         }
         _ => panic!("duplicate build/delivery request"),
     });
-    crate::delivery::deploy(&site, &site.content, &server.client(), "site123", false).unwrap();
+    crate::delivery::deploy(
+        &site,
+        &site.content,
+        &server.client(),
+        "site123",
+        false,
+        None,
+    )
+    .unwrap();
     assert_eq!(
         std::fs::read_to_string(root.join("site/previous.txt")).unwrap(),
         "previous output"
@@ -298,9 +306,84 @@ fn portable_delivery_builds_generated_files_once_and_preserves_previous_output()
         json!({"id":"site123"}).into()
     });
     assert!(
-        crate::delivery::deploy(&site, &site.content, &server.client(), "site123", false).is_err()
+        crate::delivery::deploy(
+            &site,
+            &site.content,
+            &server.client(),
+            "site123",
+            false,
+            None
+        )
+        .is_err()
     );
     assert_eq!(server.requests.lock().unwrap().len(), 1);
+}
+
+#[test]
+fn portable_delivery_uploads_the_selected_features_without_persisting_overrides() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(tmp.path()).unwrap();
+    let markdown = "# Manual\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n";
+    write(root, "content/index.md", markdown);
+    write(root, "site/previous.txt", "previous output");
+    write(root, "zel.yaml", "invalid neighbor: [");
+    for (selection, saved, enabled) in [
+        (Some("all"), false, true),
+        (Some("none"), true, false),
+        (None, true, true),
+    ] {
+        let config = format!(
+            "version: 1\nrenderer: portable\nmarkdown: {{math: {saved}, mermaid: {saved}}}\n"
+        );
+        write(root, "delivery.yaml", &config);
+        let site = zellij_core::site::Site::load(zellij_core::site::SiteInput::Config(
+            root.join("delivery.yaml"),
+        ))
+        .unwrap();
+        let server = Server::new(move |request, _| match request.method.as_str() {
+            "GET" if request.path.ends_with("/sites/site123") => json!({"id":"site123"}).into(),
+            "POST" => {
+                let manifest: Value = serde_json::from_slice(&request.body).unwrap();
+                json!({"id":"deploy123", "state":"prepared", "required":[manifest["files"]["/index.html"]]}).into()
+            }
+            "PUT" => {
+                assert!(request.path.ends_with("/index.html"));
+                let html = String::from_utf8_lossy(&request.body);
+                assert_eq!(html.contains("<math"), enabled);
+                assert_eq!(html.contains("class=\"mermaid-diagram\""), enabled);
+                if !enabled {
+                    assert!(html.contains("$x^2$"));
+                }
+                json!({}).into()
+            }
+            "GET" => ready().into(),
+            _ => panic!("unexpected deployment operation"),
+        });
+        crate::delivery::deploy(
+            &site,
+            &site.content,
+            &server.client(),
+            "site123",
+            false,
+            selection.map(|s| s.parse().unwrap()),
+        )
+        .unwrap();
+        let requests = server.requests.lock().unwrap();
+        assert_eq!(requests.iter().filter(|r| r.method == "POST").count(), 1);
+        assert_eq!(requests.iter().filter(|r| r.method == "PUT").count(), 1);
+        assert_eq!(
+            std::fs::read_to_string(root.join("delivery.yaml")).unwrap(),
+            config
+        );
+        assert_eq!(
+            std::fs::read_to_string(root.join("content/index.md")).unwrap(),
+            markdown
+        );
+        assert_eq!(
+            std::fs::read_to_string(root.join("site/previous.txt")).unwrap(),
+            "previous output"
+        );
+    }
 }
 
 #[test]
@@ -438,7 +521,7 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     write(
         root,
         "content/01-guide/index.mdx",
-        "# Netlify acceptance\n\n[Next](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n",
+        "# Netlify acceptance\n\n[Next](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n",
     );
     write(
         root,
@@ -523,7 +606,15 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         _ => panic!("unexpected API operation"),
     });
     let site = zellij_core::site::Site::load(root).unwrap();
-    crate::delivery::deploy(&site, &site.content, &server.client(), "site123", false).unwrap();
+    crate::delivery::deploy(
+        &site,
+        &site.content,
+        &server.client(),
+        "site123",
+        false,
+        Some("all".parse().unwrap()),
+    )
+    .unwrap();
     let files = manifest.lock().unwrap();
     let bytes = uploaded.lock().unwrap();
     assert!(
@@ -544,6 +635,7 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     // Check actual links/assets in the rendered guide, not the redirect page.
     let manual = String::from_utf8_lossy(&bytes[&files["/products/.docs/manual.html"]]);
     assert!(manual.contains("Netlify acceptance"));
+    assert!(manual.contains("mjx-container") && manual.contains("zellij-mermaid"));
     assert!(manual.contains("/products/.docs/manual/next"));
     assert!(manual.contains("/products/.docs/_zellij/assets/logo.svg"));
     assert!(files.contains_key("/products/.docs/manual/next.html"));

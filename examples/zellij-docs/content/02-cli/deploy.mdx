@@ -122,6 +122,20 @@ deployment; automatic resume, rollback and deletion are not implemented.
 Provider errors report status and remediation without echoing response bodies
 or credentials. Authentication redirects are refused.
 
+## Temporary feature selection
+
+```bash title="terminal"
+zel netlify --site-id YOUR_PROJECT_ID --features all --dry-run
+zel netlify --site-id YOUR_PROJECT_ID --features all
+```
+
+`--features` selects `maths`, `diagrams`, `maths,diagrams`, `all`, or `none` for
+this deployment's build. It works for portable and hosted sites, including
+saved `zel pub` deployment plans. The uploaded HTML uses that selection;
+source, configuration and previous local output remain unchanged. A later
+invocation without the flag uses saved/default features again. Explicit `none`
+disables both optional renderers, even when they are enabled by default.
+
 ## Options
 
 | Option | Meaning |
@@ -130,6 +144,7 @@ or credentials. Authentication redirects are refused.
 | `[site]` | Site root, using normal discovery when omitted |
 | `--site-id <id-or-domain>` | Destination; `--site` is equivalent |
 | `--prod` | Request live publication instead of a draft preview |
+| `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--dry-run` | Resolve and print the plan only |
 | `--to netlify` | Explicit provider for saved static deployment |
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
@@ -139,5 +154,4 @@ the default. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway remain future
 adapters; they are not aliases for Netlify.
 
 See [`zel publish`](/cli/publish) for image registry publication and
-[`zel ci`](/cli/ci) for the current workflow generator. The generator does not
-yet consume these new saved delivery settings.
+[`zel ci`](/cli/ci) for workflow generation from saved delivery settings.

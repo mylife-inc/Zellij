@@ -322,10 +322,13 @@ fn ship_plans_are_inert_and_failures_retain_configured_imports_for_review() {
                 "--tag",
                 "acme/docs:v1",
                 "--dry-run",
+                "--features",
+                "none",
             ],
             0,
         );
         let stdout = String::from_utf8_lossy(&result.stdout);
+        assert!(stdout.contains("Features none (this invocation only)"));
         assert!(
             stdout.contains("acme/docs:v1")
                 && stdout.contains("orphan.md")
@@ -450,6 +453,8 @@ esac
                 kind,
                 "--tag",
                 "localhost:5000/acme/docs:v1",
+                "--features",
+                if kind == "static" { "all" } else { "none" },
             ])
             .env(
                 "PATH",
@@ -503,6 +508,21 @@ esac
             kind == "next"
         );
         assert!(root.join(out).join("content/site.yaml").is_file());
+        let selection = if kind == "static" {
+            "maths,diagrams"
+        } else {
+            "none"
+        };
+        assert!(
+            fs::read_to_string(root.join("recipe"))
+                .unwrap()
+                .contains(&format!("features \"{selection}\" /app"))
+        );
+        assert!(
+            !fs::read_to_string(root.join(out).join("zel.yaml"))
+                .unwrap()
+                .contains("features")
+        );
         assert!(!root.join(out).join("site").exists());
         run(root, &["pub", out, "--dry-run"], 0);
         assert_eq!(tree(&root.join("source")), original);

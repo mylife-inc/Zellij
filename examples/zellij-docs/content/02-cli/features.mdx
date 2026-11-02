@@ -82,3 +82,10 @@ For a local editing session, use [`zel dev --features`](/cli/dev#temporary-featu
 or [`zel view --watch --features`](/cli/view#temporary-feature-selection).
 The override survives every rebuild until the command stops, including
 configuration edits. Restart to select another set of features.
+
+
+The same invocation-only selection works with [`zel pub` / `deploy`](/cli/publish#temporary-feature-selection)
+and [`zel ship`](/cli/ship#temporary-feature-selection). To retain a selection
+in a generated GitHub workflow, use [`zel ci --features`](/cli/ci#freeze-rendering-features).
+That records the flag in both build and delivery commands without changing
+`zel.yaml`.

@@ -460,7 +460,16 @@ impl ContainerEngine {
     /// Export once into an HTTP-root layout, mounting files at the same basePath
     /// resolved by Next. Ordinary `build` exports retain their existing layout.
     pub fn build_for_deployment(&self, content: &Utf8Path, out: &Utf8Path) -> Result<String> {
-        let output = self.prepare_export(content, out, ExportLayout::Deployment, None)?;
+        self.build_for_deployment_with_features(content, out, None)
+    }
+
+    pub fn build_for_deployment_with_features(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        features: Option<Features>,
+    ) -> Result<String> {
+        let output = self.prepare_export(content, out, ExportLayout::Deployment, features)?;
         let prefix = take_prefix(&output)?;
         output.publish()?;
         Ok(prefix)

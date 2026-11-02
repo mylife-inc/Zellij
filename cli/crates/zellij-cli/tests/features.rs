@@ -294,6 +294,22 @@ fn invalid_build_features_and_failed_builds_preserve_config_and_output() {
         vec!["view"],
         vec!["v"],
         vec!["dev"],
+        vec!["publish"],
+        vec!["pub"],
+        vec!["deploy", "netlify"],
+        vec!["netlify"],
+        vec!["ci"],
+        vec!["ci", "init", "github"],
+        vec![
+            "ship",
+            "source",
+            "--out",
+            "imported",
+            "--image",
+            "static",
+            "--tag",
+            "acme/docs:v1",
+        ],
     ] {
         for invalid in [
             "none,maths",

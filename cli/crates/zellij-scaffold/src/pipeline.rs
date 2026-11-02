@@ -5,6 +5,7 @@ use zellij_core::{
     Error, Result,
     ci::{Settings, Trigger},
     delivery::{ImageKind, ImagePlatform},
+    features::Features,
 };
 
 #[derive(Debug, Clone)]
@@ -28,6 +29,7 @@ pub struct CiOptions {
     pub version: String,
     pub publish: Publish,
     pub platform: Option<ImagePlatform>,
+    pub features: Option<Features>,
 }
 
 fn invalid(message: &str) -> Error {
@@ -99,6 +101,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
         version,
         publish,
         platform,
+        features,
     } = options;
     if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
         return Err(invalid("platform requires image delivery"));
@@ -112,6 +115,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
     };
     let platform_flag = platform
         .map(|p| format!(" --platform {p}"))
+        .unwrap_or_default();
+    let features_flag = features
+        .map(|features| format!(" --features {}", features.as_str()))
         .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
@@ -183,7 +189,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
-    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}")}));
+    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}{features_flag}")}));
     let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
@@ -221,9 +227,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
                 }}));
                 if let Some(tag) = tag {
-                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}")}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}{features_flag}")}));
                 } else {
-                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}"))}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}{features_flag}"))}));
                 }
             }
             Publish::Netlify { site_id } => {
@@ -234,7 +240,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
                 steps.push(json!({"name":"Build once and deploy", "env":{
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
-                }, "run":format!("zel deploy netlify {selector}{prod}")}));
+                }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}")}));
             }
             Publish::Nothing => unreachable!(),
         }
@@ -268,6 +274,7 @@ mod tests {
             version: "0.2.0-rc.1".into(),
             publish,
             platform: None,
+            features: None,
         }
     }
     fn parse(options: &CiOptions) -> Value {

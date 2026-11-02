@@ -520,6 +520,9 @@ pub(crate) struct CiArgs {
 
 #[derive(clap::Args, Debug, Default, PartialEq, Eq)]
 pub(crate) struct CiInitArgs {
+    /// Freeze rendering features in generated build/delivery commands: maths, diagrams, all, or none.
+    #[arg(long)]
+    pub(crate) features: Option<Features>,
     /// Legacy spelling of --site-root for workflow generation.
     #[arg(id = "ci_content", long = "content")]
     pub(crate) site_root: Option<SiteInput>,
@@ -749,6 +752,9 @@ mod tests;
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct DeliveryArgs {
+    /// Override rendering features for this delivery: maths, diagrams, all, or none.
+    #[arg(long)]
+    pub(crate) features: Option<Features>,
     /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
     pub(crate) dir: Option<SiteInput>,
     /// Explicit provider override for saved static-site deployment.
@@ -797,6 +803,9 @@ pub(crate) struct ImportArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ShipArgs {
+    /// Rendering features for this delivery only: maths, diagrams, all, or none.
+    #[arg(long)]
+    pub(crate) features: Option<Features>,
     pub(crate) source: String,
     /// New configured site root, outside the source tree; contains zel.yaml and content/.
     #[arg(long)]

@@ -34,14 +34,23 @@ fn canonical_short_and_saved_forms_resolve_the_same_plan_without_tools_or_creden
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     fixture(root, "docs/zellij", SETTINGS);
-    let expected = run(root, &["deploy", "netlify", "--dry-run"], 0);
-    for args in [
+    let expected = run(
+        root,
+        &["deploy", "netlify", "--dry-run", "--features", "all"],
+        0,
+    );
+    assert!(
+        String::from_utf8_lossy(&expected.stdout)
+            .contains("Features maths,diagrams (this invocation only)")
+    );
+    for mut args in [
         vec!["netlify", "--dry-run"],
         vec!["publish", "--dry-run"],
         vec!["pub", "--dry-run"],
         vec!["deploy", "--dry-run"],
         vec!["pub", "--to", "netlify", "--dry-run"],
     ] {
+        args.extend(["--features", "diagrams,maths"]);
         let actual = run(root, &args, 0);
         assert_eq!(actual.stdout, expected.stdout);
         assert_eq!(actual.stderr, expected.stderr);
