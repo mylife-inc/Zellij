@@ -3024,3 +3024,25 @@ shell sets `XDG_CONFIG_HOME=/Users/hamid/Dev/config`; use that setting with `gh`
 in noninteractive commands. The account is mylife-inc and uses the system
 keyring. Do not read or print credential files/tokens. PR creation, final CI,
 merge and local main synchronization are now the continuation steps.
+
+
+### PR #46 dependency and schema compatibility follow-up — 2026-11-02
+
+[PR #46](https://github.com/mylife-inc/Zellij/pull/46) is open. Its first run,
+41500959209 at 5dee8187c858c3fac3cfc7f509d41cd14f8a97ce, failed npm audit:
+Zod 4.4.3 is affected by [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+Fixing commit 1c9374665c64bff29bfd76054c9d28a75f5f9134 raises the engine dependency
+and lockfile to Zod 4.6.7. npm audit --audit-level=low now reports zero known
+vulnerabilities as checked on November 2; this is a dated audit result.
+
+The update exposed primitive unions emitted as JSON Schema type arrays instead
+of anyOf. Section template generation now handles those arrays, and Rust field
+descriptions retain their alternatives. The generated schema was refreshed;
+text context and generated YAML starters remain unchanged. Regressions exercise
+actual stats-band values and timeline dates, alongside every section starter.
+
+All 365 engine tests and 311 Rust tests (38 suites), workspace typechecks,
+engine packaging, warnings-denied Clippy, formatting and strict/deep docs
+validation passed locally. Final CI on the updated PR head remains required
+before merge; neither the initial failing run nor local checks establish hosted
+acceptance. Authentication works with XDG_CONFIG_HOME=/Users/hamid/Dev/config.
