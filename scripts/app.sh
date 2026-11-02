@@ -123,7 +123,7 @@ zdrift() {
 }
 
 ztest() {
-  (cd "$ZELLIJ_ROOT" && npx vitest run --root engine/packages/zellij) &&
+  (cd "$ZELLIJ_ROOT" && npm test) &&
     (cd "$ZELLIJ_ROOT/cli" && cargo test --workspace)
 }
 
@@ -163,7 +163,7 @@ zuncommitted() {
 zcheck() {
   _zsay "Smoke content" && zuncommitted &&
   _zsay "Typecheck"      && (cd "$ZELLIJ_ROOT" && npm run typecheck) &&
-  _zsay "Engine tests"   && (cd "$ZELLIJ_ROOT" && npx vitest run --root engine/packages/zellij) &&
+  _zsay "Engine tests"   && (cd "$ZELLIJ_ROOT" && npm test) &&
   _zsay "Schema drift"   && zdrift &&
   _zsay "CLI format"     && (cd "$ZELLIJ_ROOT/cli" && cargo fmt --all --check) &&
   _zsay "CLI lint"       && (cd "$ZELLIJ_ROOT/cli" && cargo clippy --workspace --all-targets -- -D warnings) &&

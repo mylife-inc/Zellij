@@ -99,15 +99,18 @@ fn shorthand_full_form_defaults_nested_selection_and_reserved_names() {
     run(root, &["ci", "init", "gitlab", "--force"], 2);
 }
 #[test]
-fn missing_incompatible_and_invalid_settings_do_not_replace_a_workflow() {
+fn compatible_binary_pins_itself_and_invalid_settings_do_not_replace_a_workflow() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     repo(root);
     site(root, "docs/zellij", "");
-    run(root, &["ci"], 2);
-    assert!(!root.join(".github").exists());
-    run(root, &["ci", "--zel-version", "0.2.0"], 0);
+    run(root, &["ci"], 0);
     let original = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    let workflow: serde_yaml_ng::Value = serde_yaml_ng::from_slice(&original).unwrap();
+    assert_eq!(
+        workflow["jobs"]["verify"]["steps"][1]["env"]["ZEL_VERSION"],
+        format!("v{}", env!("CARGO_PKG_VERSION"))
+    );
     for args in [
         vec!["ci", "--zel-version", "0.1.3", "--force"],
         vec!["ci", "--zel-version", "0.2.0"],

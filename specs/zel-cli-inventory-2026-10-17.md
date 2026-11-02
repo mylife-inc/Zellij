@@ -733,3 +733,56 @@ DEPLOY_DOCS is unset. Secret values were neither read nor printed. Presence does
 not establish token validity or destination permissions. The development repo
 has no published releases; the shared repo's newest Zellij release is still
 zellij-v0.1.3. No user setup action is currently needed for this milestone.
+
+
+### Native 0.2.0-rc.1 preparation — 2026-11-02
+
+PR #49 merged as d324f9ef51a6c36d47304ef765adb6725aa12bff after all 13 jobs
+passed on 136a206de28a24e1bdf7232f9d9332f80abd23a5 (41534811176). Its post-merge
+Base image run 41538755022 passed, confirming main-only publication. Post-merge
+CI 41538755131 failed the engine watcher test: 364 of 365 engine tests passed;
+the assertion read nested/new.svg after observing an earlier logo edit and could
+race the later asset preparation. This is an invalid test completion signal,
+not evidence of permanent asset loss. Production preparation still serializes
+updates and uses the existing short directory swap; it is not a whole-site
+transaction. The test now forces separate edit batches and polls the requested
+new asset. Refresh the complete post-merge run for other jobs' final results.
+
+Preparation commit 03ec06f2c2bf93aee88c629449dd3a5bc2ce36f0 sets the Rust workspace
+and its six package lock entries to 0.2.0-rc.1. Bare zel ci now defaults to its
+own compatible version, and its regression checks this pin plus preservation on
+invalid input. Release notes in specs/releases/v0.2.0-rc.1.md describe supported
+commands, platforms and remaining limits and are included in both release pages.
+The public stable release remains zellij-v0.1.3 until a new publication occurs.
+
+The release workflow and local ztest/zcheck helpers also used npx vitest at the
+repository root, but the lockfile installs Vitest inside the engine workspace.
+That command failed locally with vitest not found. They now use the existing
+npm test workspace command, matching ordinary CI.
+
+Published release acceptance is a new reusable/manual-tag workflow. After
+publication it downloads the exact archive, per-file checksum, SHA256SUMS and
+both attached installers from the development repository and (when published)
+mylife-inc/releases. It checks hashes and source installer bytes, compares the
+two repositories, installs through their actual public URLs, and runs the native
+archive/installer/upgrade/build/serve/view acceptance on six native targets.
+Windows public installation uses both PowerShell 5.1 and PowerShell 7. Installer
+line endings are fixed to LF so source comparisons agree on Windows. The four
+published image variants are pulled and executed on native Linux AMD64 and ARM64;
+architecture, engine contract and feature selection are checked. Acceptance jobs
+have read-only repository permissions and receive no publishing/cloud secrets.
+They can be rerun on a published tag without republishing assets.
+
+Local verification: 365 engine tests, 315 Rust tests in 38 suites, 25 release
+policy/download tests, workspace typechecks, engine packaging, warnings-denied
+Clippy, Rust formatting, workflow lint and strict/deep docs passed (55 routes,
+53 guide pages, 23 examples). Download tests use fake HTTP responses and image
+tests use a fake Docker executable; no local Docker daemon was started. Locked
+npm ci restored dependencies and reported zero advisories at this checkpoint.
+
+Next: final-head PR CI and merge, then tag the reviewed candidate and monitor
+all release and post-publication acceptance jobs. Do not call a release page
+alone complete: native publication can still succeed while image jobs fail.
+No tag, native release or production website deployment has occurred in this
+preparation commit. Repository visibility and the old sealed repository are
+unchanged; development remains in public mylife-inc/Zellij.

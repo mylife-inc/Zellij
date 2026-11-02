@@ -10,6 +10,8 @@ import { setTimeout as delay } from 'node:timers/promises';
 
 const windows = process.platform === 'win32';
 const dist = path.resolve(process.argv[2] || 'dist');
+// Published-release acceptance supplies the downloaded installers here.
+const installers = path.resolve(process.argv[3] || 'scripts');
 const target = process.env.TARGET || `${process.arch === 'arm64' ? 'aarch64' : 'x86_64'}-${windows ? 'pc-windows-msvc' : process.platform === 'darwin' ? 'apple-darwin' : 'unknown-linux-gnu'}`;
 const archives = (await readdir(dist)).filter(file => file.endsWith(`${target}.${windows ? 'zip' : 'tar.gz'}`));
 assert.equal(archives.length, 1, `Expected one ${target} archive`);
@@ -68,7 +70,7 @@ async function run(command, args, env = process.env, succeeds = true, cwd) {
 async function install(scenario, shell, succeeds = true, dir = installation, requested = version, mirror = `${origin}/${scenario}`) {
   const env = { ...process.env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential', ZEL_VERSION: requested, ZEL_INSTALL_DIR: dir, ZEL_RELEASE_BASE_URL: mirror };
   delete env.ZEL_INSECURE_SKIP_CHECKSUM;
-  return run(shell, windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.resolve('scripts/install.ps1')] : [path.resolve('scripts/install.sh')], env, succeeds);
+  return run(shell, windows ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(installers, 'install.ps1')] : [path.join(installers, 'install.sh')], env, succeeds);
 }
 const until = async (predicate, message) => {
   const end = Date.now() + 15000;

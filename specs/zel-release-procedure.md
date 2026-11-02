@@ -1,7 +1,8 @@
 # Zellij release channels and candidate procedure
 
 Implemented policy, November 2, 2026. This document does not announce a release.
-The source workspace still reports 0.1.3; the intended next candidate is 0.2.0-rc.1.
+The source workspace now reports 0.2.0-rc.1. Publication status must be checked
+in GitHub; a version change in source is not proof of an uploaded release.
 
 ## Channels
 
@@ -56,7 +57,13 @@ for candidate acceptance. Source development can explicitly select
    against explicitly selected test destinations. CI artifact acceptance before
    upload and acceptance of the final downloaded release are separate checks.
 
-The next candidate has not been tagged by this implementation. Native Windows
+Candidate notes live in specs/releases/v0.2.0-rc.1.md and are included automatically
+in both release pages. The Published release acceptance workflow runs after
+publication and can be dispatched again against the same tag. It downloads both
+repositories' public assets, checks their bytes and checksums, uses their attached
+installers, and exercises all six native targets. It also pulls and executes all
+four engine variants on native Linux AMD64 and ARM64. No registry/cloud write
+credentials are passed to these acceptance jobs. Native Windows
 and macOS/Linux acceptance remains on GitHub's native runners; there is no
 requirement to start Docker on the maintainer's laptop.
 
@@ -81,7 +88,7 @@ which apply the stable/candidate policy automatically.
 
 ## Verification
 
-Run `node --test scripts/release-policy.test.mjs` with Node 24, Bash and jq
+Run `node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs` with Node 24, Bash and jq
 after `npm ci`.
 The suite executes publishing scripts and manifest commands with fake Docker,
 GitHub and Git commands; it cannot upload assets or publish images. It covers
