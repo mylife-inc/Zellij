@@ -2393,13 +2393,9 @@
             "type": "object",
             "properties": {
               "value": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "number"
-                  }
+                "type": [
+                  "string",
+                  "number"
                 ]
               },
               "label": {
@@ -2906,13 +2902,9 @@
             "type": "object",
             "properties": {
               "date": {
-                "anyOf": [
-                  {
-                    "type": "string"
-                  },
-                  {
-                    "type": "number"
-                  }
+                "type": [
+                  "string",
+                  "number"
                 ]
               },
               "title": {

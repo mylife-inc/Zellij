@@ -35,4 +35,9 @@ describe('embedded section templates', () => {
     expect(matrix.rows.every((row: { cells: string[] }) => row.cells.length === matrix.columns.length)).toBe(true);
     expect(parse(templates['hero-split']!).terminal).toEqual({ body: '$ zel --help' });
   });
+
+  it('keeps text-or-number starters editable when schemas use primitive type arrays', () => {
+    expect(parse(templates['stats-band']!).stats[0].value).toBe('TODO');
+    expect(parse(templates.timeline!).items[0].date).toBe('TODO');
+  });
 });
