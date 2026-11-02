@@ -3205,3 +3205,21 @@ No version bump or release tag was made, no native release was published, no
 manual provider/registry deployment occurred, and no local Docker daemon was
 started. The intended next candidate is 0.2.0-rc.1, after reviewed versioning and
 full CI. Current native source and latest public release still say 0.1.3.
+
+
+Release review follow-up: c7931f250214117cf58b2955db86399866b66946 changes
+zimage-push's default from latest to local and zimage-all to local feature tags,
+matching zimage. Explicit raw pushes remain available; release helpers apply
+channel policy. Generated release notes now show matching ZELLIJ_IMAGE settings
+for both Unix and PowerShell. Fourteen release tests pass locally, including
+execution of the branch manifest command and development image helpers.
+
+PR #49: https://github.com/mylife-inc/Zellij/pull/49. Initial run 41533203275
+passed all six native package/installer targets, engine and schema checks before
+the final follow-up was pushed; it does not certify the updated head. Refresh
+PR #49's final head/checks before merging. Read-only setup checks confirmed that
+RELEASES_GITHUB_TOKEN, NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID exist by name;
+DEPLOY_DOCS is unset. Secret values were neither read nor printed. Presence does
+not establish token validity or destination permissions. The development repo
+has no published releases; the shared repo's newest Zellij release is still
+zellij-v0.1.3. No user setup action is currently needed for this milestone.
