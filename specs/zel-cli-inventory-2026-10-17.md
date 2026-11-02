@@ -844,3 +844,15 @@ promotion and matched production documentation. Other tracked scope remains:
 advanced build options, combined multi-platform site images, additional
 providers and converter fidelity. Candidate acceptance does not mean the full
 product has zero bugs or that every historical feature proposal is implemented.
+
+
+Candidate documentation follow-up: local installation, quickstart, CLI and
+contract pages now identify the published 0.2.0-rc.1 candidate, show pinned
+attached Unix/PowerShell installers and the matching engine image, and use the
+available candidate in copyable CI pins. Stale statements that source still
+reports 0.1.3 or Windows packages await publication were corrected. Stable
+0.1.3 remains explicitly distinguished from the candidate. The current-source
+sections were refreshed while dated implementation history was preserved.
+Strict/deep documentation validation passed: 55 routes, 53 guide pages and
+23 examples. Both release pages also link the successful acceptance run and
+retain the original publication failures. Production docs remain undeployed.

@@ -3,22 +3,21 @@ title: zel ci
 description: Generate a GitHub workflow from saved site settings, or dispatch an existing one.
 ---
 
-<Callout type="warning" title="Source implementation and release prerequisite">
-The new generator requires the CLI contract planned for **0.2.0 or later**.
-The published `zellij-v0.1.3` cannot run these workflows. While the development
-binary still reports 0.1.3, set an explicit `ci.zel-version` or `--zel-version`
-to prepare a workflow for the next release. Generation does not check whether
-that release exists. Publish the compatible binary release, and its engine
-image for hosted/image builds, before enabling the workflow. No release is
-created by `zel ci`.
+<Callout type="info" title="Compatible published candidate">
+The generator requires **0.2.0 or later, including release candidates**.
+Published candidate `0.2.0-rc.1` supplies its own version as the default pin, so
+`zel ci` is enough when site settings are saved. Stable `0.1.3` cannot run these
+workflows. To select another version, set `ci.zel-version` or `--zel-version`;
+its native assets and matching engine images must exist before the workflow runs.
+Generation neither checks release availability nor creates a release.
 </Callout>
 
 ## Generate locally
 
 ```bash
-zel ci --zel-version 0.2.0
-zel ci docs/manual --zel-version 0.2.0
-zel ci init github --site-root docs/manual --zel-version 0.2.0
+zel ci
+zel ci docs/manual
+zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.1
 ```
 
 The first form selects `./zel.yaml`, then `docs/zellij/zel.yaml`, using the usual
@@ -58,7 +57,7 @@ ci:
   system: github
   branch: main
   workflow: docs.yml
-  zel-version: 0.2.0
+  zel-version: 0.2.0-rc.1
   triggers: [pull_request, push, manual]
   production: false
 ```
@@ -66,9 +65,8 @@ ci:
 Then `zel ci` is enough to generate the workflow; use `--force` to replace it.
 Regenerate after changing CI or publication settings so the workflow reflects
 the selected artifacts, triggers and destinations. `--zel-version` overrides
-the saved pin. The current 0.2.0-rc.1 source supplies its own version as the
-fallback pin; its release assets must be published before the generated workflow
-can run. Versions are exact, optionally prefixed with `v`, and may include
+the saved pin. Candidate 0.2.0-rc.1 supplies its own published version as the
+fallback pin. Versions are exact, optionally prefixed with `v`, and may include
 release-candidate suffixes. `latest` and versions before 0.2.0 are rejected.
 The installer is downloaded from that exact release; it verifies the binary's
 checksum and reported version. Engine-backed builds use the matching versioned
@@ -82,7 +80,7 @@ Optional tag patterns and UTC schedules are independent additional triggers:
 
 ```yaml
 ci:
-  zel-version: 0.2.0
+  zel-version: 0.2.0-rc.1
   branch: main
   triggers: [pull_request, push, manual]
   tags: ['docs-v*']
@@ -155,9 +153,9 @@ old generator's automatic-provisioning behavior at the new CLI version boundary.
 an explicit legacy raw-content folder. These overrides remain available:
 
 ```bash
-zel ci init github --content content --target static --zel-version 0.2.0
-zel ci init github --content content --target image --zel-version 0.2.0
-zel ci init github --content content --deploy netlify --zel-version 0.2.0
+zel ci init github --content content --target static --zel-version 0.2.0-rc.1
+zel ci init github --content content --target image --zel-version 0.2.0-rc.1
+zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.1
 ```
 
 `--target static` generates validation and HTML builds with no publication.
@@ -205,8 +203,8 @@ of the pinned engine image. Multi-platform image lists remain unsupported.
 ## Freeze rendering features
 
 ```bash title="terminal"
-zel ci --features all --zel-version 0.2.0
-zel ci --features none --zel-version 0.2.0 --force
+zel ci --features all --zel-version 0.2.0-rc.1
+zel ci --features none --zel-version 0.2.0-rc.1 --force
 ```
 
 Generation accepts the same complete selection as build/delivery: `maths`,
