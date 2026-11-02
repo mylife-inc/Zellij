@@ -67,6 +67,13 @@ credentials are passed to these acceptance jobs. Native Windows
 and macOS/Linux acceptance remains on GitHub's native runners; there is no
 requirement to start Docker on the maintainer's laptop.
 
+Public-asset downloads allow at most three attempts for transient connection
+errors and timeouts. Each attempt starts with empty buffers and a fresh timeout;
+partial responses are discarded. Missing files, oversized responses, checksum
+failures and installer/source mismatches fail without retrying. The original
+0.2.0-rc.1 tag predates this download-recovery improvement; rerunning that tag's
+workflow still uses its original downloader.
+
 ## Stable promotion
 
 After candidate acceptance, commit the stable workspace version and run the
