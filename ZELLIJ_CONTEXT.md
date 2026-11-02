@@ -3009,3 +3009,12 @@ Remaining: combined multi-platform manifests, other advanced options/providers,
 conversion fidelity, matched native releases and documentation publication.
 No local Docker daemon was started, native release published or manual live
 provider/registry deployment performed for this milestone.
+
+Continuation checkpoint: `codex/cli-build-features` is pushed, but no PR has
+been created yet. The GitHub connector returns 403 for PR creation (read access
+works), and `gh auth status` reports no login, including outside the sandbox.
+The user was asked to run `gh auth login --hostname github.com --web
+--git-protocol ssh --skip-ssh-key`. Automatic approval review rejected opening
+arbitrary Safari state because of unrelated private browser content; do not
+retry that route. After authentication, create the PR, validate all CI jobs on
+its final head, merge under the user's existing authorization, and sync main.
