@@ -5,6 +5,7 @@ use zellij_core::site::SiteInput;
 use zellij_core::{
     Result,
     delivery::{ImageKind as BuildKind, ImagePlatform, validate_image_reference},
+    features::Features,
     site::{Renderer, Site},
 };
 use zellij_engine::{ContainerEngine, static_image};
@@ -54,21 +55,24 @@ pub(crate) fn static_image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     platform: Option<ImagePlatform>,
+    features: Option<Features>,
 ) -> Result<()> {
-    image(dir, tag, BuildKind::Static, platform)
+    image(dir, tag, BuildKind::Static, platform, features)
 }
 pub(crate) fn next_image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     platform: Option<ImagePlatform>,
+    features: Option<Features>,
 ) -> Result<()> {
-    image(dir, tag, BuildKind::Next, platform)
+    image(dir, tag, BuildKind::Next, platform, features)
 }
 fn image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     kind: BuildKind,
     platform: Option<ImagePlatform>,
+    features: Option<Features>,
 ) -> Result<()> {
     let (site, content) = selection(dir)?;
     let tag = selected_tag(&site, tag, kind)?;
@@ -79,7 +83,7 @@ fn image(
         kind.as_str(),
         site.renderer
     );
-    build_image(&site, &content, &engine, kind, &tag, platform)?;
+    build_image(&site, &content, &engine, kind, &tag, platform, features)?;
     zellij_core::statusln!(
         "\n✓ {tag}\n  Run it:   zel image run \"{tag}\"\n  Push it:  zel image push \"{tag}\""
     );
@@ -95,6 +99,7 @@ pub(crate) fn build_image(
     kind: BuildKind,
     tag: &str,
     platform: Option<ImagePlatform>,
+    features: Option<Features>,
 ) -> Result<()> {
     if let Some(platform) = platform {
         zellij_core::statusln!("  Platform {platform}");
@@ -107,7 +112,14 @@ pub(crate) fn build_image(
                     zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
                 })?
                 .join("site");
-            let report = zellij_docs::build(&site.input, &export, Default::default())?;
+            let report = zellij_docs::build(
+                &site.input,
+                &export,
+                zellij_docs::BuildOptions {
+                    features,
+                    ..Default::default()
+                },
+            )?;
             for warning in report.warnings {
                 zellij_core::diagnosticln!("warning: {warning}");
             }
@@ -117,7 +129,7 @@ pub(crate) fn build_image(
         (BuildKind::Static, Renderer::Hosted) => engine.image_build_recipe(
             content,
             tag,
-            &static_image::hosted(engine.image()),
+            &static_image::hosted(engine.image(), features),
             platform,
         ),
         (BuildKind::Next, Renderer::Portable) => {
@@ -127,17 +139,32 @@ pub(crate) fn build_image(
                     zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
                 })?
                 .join("content");
-            let report = zellij_docs::adapt_hosted(&site.input, &adapted)?;
+            let report = zellij_docs::adapt_hosted_with_options(
+                &site.input,
+                &adapted,
+                zellij_docs::BuildOptions {
+                    features,
+                    ..Default::default()
+                },
+            )?;
             for warning in report.warnings {
                 zellij_core::diagnosticln!("warning: {warning}");
             }
-            engine.image_build(&adapted, tag, Some(&report.features.join(",")), platform)
+            let selected = features.unwrap_or(Features {
+                maths: report.features.contains(&"maths"),
+                diagrams: report.features.contains(&"diagrams"),
+            });
+            engine.image_build(&adapted, tag, Some(selected), platform)
         }
-        (BuildKind::Next, Renderer::Hosted) => engine.image_build(content, tag, None, platform),
+        (BuildKind::Next, Renderer::Hosted) => engine.image_build(content, tag, features, platform),
     }
 }
 
-pub(crate) fn dockerfile(dir: Option<&SiteInput>, kind: ImageKind) -> Result<()> {
+pub(crate) fn dockerfile(
+    dir: Option<&SiteInput>,
+    kind: ImageKind,
+    features: Option<Features>,
+) -> Result<()> {
     if kind == ImageKind::Next {
         let selected = crate::select_site(dir)?;
         if (selected.explicit_config() || selected.root().is_dir())
@@ -147,12 +174,17 @@ pub(crate) fn dockerfile(dir: Option<&SiteInput>, kind: ImageKind) -> Result<()>
                 "a Next Dockerfile takes hosted content as its context; use `zel image next` / `zel ni` to adapt and package portable Markdown automatically".into(),
             ));
         }
-        return crate::image_dockerfile(&selected);
+        return crate::image_dockerfile(&selected, features);
     }
     let (site, _) = selection(dir)?;
     let body = match site.renderer {
-        Renderer::Portable => static_image::portable(),
-        Renderer::Hosted => static_image::hosted(&zellij_engine::configured_image(None)),
+        Renderer::Portable => {
+            if features.is_some() {
+                return Err(zellij_core::Error::InvalidArgument("a portable static Dockerfile packages already compiled HTML; apply --features with `zel build` or `zel image static`".into()));
+            }
+            static_image::portable()
+        }
+        Renderer::Hosted => static_image::hosted(&zellij_engine::configured_image(None), features),
     };
     use std::io::Write as _;
     std::io::stdout().lock().write_all(body.as_bytes())?;

@@ -208,6 +208,15 @@ fn describe(field: &Value) -> String {
         }
     }
 
+    if let Some(types) = field.get("type").and_then(Value::as_array) {
+        return types
+            .iter()
+            .filter_map(Value::as_str)
+            .filter(|kind| *kind != "null")
+            .collect::<Vec<_>>()
+            .join(" | ");
+    }
+
     match field.get("type").and_then(Value::as_str) {
         Some("array") => {
             let inner = field
@@ -219,5 +228,22 @@ fn describe(field: &Value) -> String {
         Some("object") => "object".to_owned(),
         Some(other) => other.to_owned(),
         None => "any".to_owned(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn generated_numeric_text_fields_keep_their_alternatives() {
+        for (section, collection, name) in [
+            ("stats-band", "stats", "value"),
+            ("timeline", "items", "date"),
+        ] {
+            let fields = nested_fields(section, collection).unwrap();
+            let field = fields.iter().find(|field| field.name == name).unwrap();
+            assert_eq!(field.type_name, "string | number");
+        }
     }
 }

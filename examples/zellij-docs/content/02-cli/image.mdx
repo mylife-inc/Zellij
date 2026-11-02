@@ -32,6 +32,7 @@ zel ir acme-docs:static --port 8080
 | --- | --- | --- |
 | `[site]` | Configured site root, or an explicit legacy content folder | Current site or `docs/zellij` |
 | `--tag <reference>` | Image name and tag | `image.name`, then `<site-name>-static:latest` |
+| `--features <selection>` | Complete selection for this image build | Existing renderer defaults |
 | `--platform <platform>` | `linux/amd64` or `linux/arm64` | `image.platform`, then runtime default |
 
 The generated name uses the selected folder's name, lowercases ASCII letters,
@@ -168,7 +169,32 @@ uses its native progress output. A nerdctl push uploads all content in the local
 image, preserving a selected architecture even when it differs from the host;
 see the [nerdctl command reference](https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md).
 
-`--features` and `--build-arg` remain unimplemented image CLI options.
+## Feature selection for one image
+
+```bash
+zel si --features maths
+zel ni --features all
+zel image build docs/hosted --features none
+zel image dockerfile docs/hosted --kind static --features diagrams
+```
+
+All image build forms and their aliases accept the same complete
+[`--features` selection as build](/cli/build#temporary-feature-selection).
+Portable static images compile the selected features natively; portable Next
+images adapt the selected Markdown and configure the hosted dependencies to
+match. Hosted static and Next images apply the selection inside the builder
+before installation. `none` explicitly disables both features even when the
+chosen base image enables them. Omission preserves portable settings/inferred
+requirements or the hosted base image's default.
+
+Hosted Dockerfile generation also accepts the option without requiring a runtime.
+A portable static Dockerfile packages already generated HTML, so it rejects this
+flag: apply it with `zel build` or `zel si` instead. Source files are unchanged;
+ordinary image builds never push automatically. Use `zel ip <tag>` to publish an
+image you built with an override. The delivery, preview and CI commands do not
+accept this temporary flag; they keep using their existing saved defaults.
+
+`--build-arg` remains unimplemented.
 
 ## `zel image run`
 

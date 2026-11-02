@@ -499,3 +499,65 @@ No manual live provider/registry deployment or native release was performed.
 Follow-up be57372ec7e32c4edad9bce538ac78ec9c914d5f selects native ARM64 generated-workflow runners.
 All nine workflow tests, scaffold tests, generated workflow lint, Clippy,
 formatting and strict/deep docs validation passed after this refinement.
+
+
+### Temporary build/image features — 2026-11-02
+
+PR #45 merged as 42bf4c906d1ca6be64940da8aaddfb9d63f1192c after all 13 CI
+jobs passed on 5c75428ca495a0afcae722a678607cafb6e4c368 (39220991457).
+Refreshed on November 2: main CI 39223399959 and Base image 39223399906 both
+passed. The latest public native release remains zellij-v0.1.3 (August 13).
+
+Fixing commit aa179631e7371d9c7185a07ec1929452e2262af5 adds --features to build/b,
+image static/next/build, si/ni and hosted image dockerfile. Accepted complete
+selections are maths, diagrams, maths,diagrams (either order), all and none.
+The override does not edit authored configuration or content. Portable builds
+apply it in memory; hosted exports and image recipes apply it to the disposable
+wrapper before npm install. Explicit none overrides an enabled base image.
+Portable Next adapters retain the selected rendering features and install the
+matching dependencies, including an explicit none for an empty selection.
+
+A shared typed parser rejects malformed/unknown/duplicate selections before
+work. Hosted feature selection requires featureSelectionVersion 1 from the
+engine manifest; older engines fail clearly instead of silently mishandling
+none. Previous exports survive build/compatibility failures. Portable static
+Dockerfiles take prebuilt HTML and direct users to build/si for feature changes.
+Preview/dev, delivery/ship and generated CI retain saved configuration or engine
+image variants; this temporary flag is not implemented for those commands.
+See contract stage 9b and the updated build/image/features references.
+
+Local verification: all 310 Rust tests in 38 suites passed. After the final
+engine compatibility guard, all 22 engine tests and 9 static-image tests passed;
+warnings-denied workspace Clippy, formatting, workflow lint, script syntax and
+strict/deep documentation validation passed (55 routes, 53 guide pages,
+23 examples). Hosted CI now exercises all/none folder exports and static images,
+enabling features in a hosted Next image, and refusal of an incompatible engine.
+Cross-platform and actual-container results are pending for this branch; refresh
+the final PR head/checks before claiming hosted acceptance or merge completion.
+
+Remaining: combined multi-platform manifests, other advanced options/providers,
+conversion fidelity, matched native releases and documentation publication.
+No local Docker daemon was started, native release published or manual live
+provider/registry deployment performed for this milestone.
+
+
+### PR #46 dependency and schema compatibility follow-up — 2026-11-02
+
+[PR #46](https://github.com/mylife-inc/Zellij/pull/46) is open. Its first run,
+41500959209 at 5dee8187c858c3fac3cfc7f509d41cd14f8a97ce, failed npm audit:
+Zod 4.4.3 is affected by [GHSA-mrhx-c7xc-m3w5](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+Fixing commit 1c9374665c64bff29bfd76054c9d28a75f5f9134 raises the engine dependency
+and lockfile to Zod 4.6.7. npm audit --audit-level=low now reports zero known
+vulnerabilities as checked on November 2; this is a dated audit result.
+
+The update exposed primitive unions emitted as JSON Schema type arrays instead
+of anyOf. Section template generation now handles those arrays, and Rust field
+descriptions retain their alternatives. The generated schema was refreshed;
+text context and generated YAML starters remain unchanged. Regressions exercise
+actual stats-band values and timeline dates, alongside every section starter.
+
+All 365 engine tests and 311 Rust tests (38 suites), workspace typechecks,
+engine packaging, warnings-denied Clippy, formatting and strict/deep docs
+validation passed locally. Final CI on the updated PR head remains required
+before merge; neither the initial failing run nor local checks establish hosted
+acceptance. Authentication works with XDG_CONFIG_HOME=/Users/hamid/Dev/config.

@@ -4,7 +4,7 @@ import { getSection, registeredSectionTypes } from '../sections/registry';
 import '../sections/schemas';
 
 type JsonSchema = {
-  type?: string;
+  type?: string | string[];
   properties?: Record<string, JsonSchema>;
   required?: string[];
   items?: JsonSchema;
@@ -23,6 +23,11 @@ const shared = new Set(['type', 'id', 'motion', 'background', 'padding', 'titleG
 /** JSON Schema supplies shapes and bounds; Zod below enforces refinements too. */
 function example(schema: JsonSchema, name: string): unknown {
   if (schema.const !== undefined) return schema.const;
+  // Primitive unions may use a type array instead of anyOf (Zod 4.6+).
+  if (Array.isArray(schema.type)) {
+    const type = schema.type.find((type) => type !== 'null') ?? 'null';
+    return example({ ...schema, type }, name);
+  }
   // Show the entry shape even when an optional list defaults to [].
   if (schema.type === 'array' && schema.items) {
     const count = Math.max(schema.minItems ?? 0, schema.maxItems === 0 ? 0 : 1);
@@ -36,6 +41,7 @@ function example(schema: JsonSchema, name: string): unknown {
     return Object.fromEntries((schema.required ?? []).map((key) => [key, example(schema.properties![key]!, key)]));
   }
   if (schema.type === 'boolean') return false;
+  if (schema.type === 'null') return null;
   if (schema.type === 'number' || schema.type === 'integer') return schema.minimum ?? 0;
   if (schema.type === 'string') {
     if (['image', 'visual', 'logos', 'avatar', 'photo', 'poster'].includes(name)) return 'assets/replace-me.svg';

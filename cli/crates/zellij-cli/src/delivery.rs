@@ -135,9 +135,15 @@ pub(crate) fn deploy(
 fn push_image(site: &Site, content: &Utf8Path, plan: &ImagePublication) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
     zellij_core::statusln!("\nBuilding image…");
-    if let Err(error) =
-        crate::images::build_image(site, content, &engine, plan.kind, &plan.tag, plan.platform)
-    {
+    if let Err(error) = crate::images::build_image(
+        site,
+        content,
+        &engine,
+        plan.kind,
+        &plan.tag,
+        plan.platform,
+        None,
+    ) {
         zellij_core::diagnosticln!(
             "Publication stopped during validation/build; no push was attempted."
         );

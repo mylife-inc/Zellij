@@ -301,9 +301,10 @@ output directory; do not add the marker by hand.
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
+| `--features <selection>` | Complete math/diagram selection for this invocation | Portable configuration, or hosted engine-image selection |
 
 Options that do not apply to the selected target are rejected. `--base-path`,
-`--site-url`, `--features`, and `--no-check` are not implemented
+`--site-url` and `--no-check` are not implemented
 Rust build flags. `--json` is currently limited to inspection commands.
 
 
@@ -311,3 +312,31 @@ For `--target image`, `--platform linux/amd64` or `--platform linux/arm64`
 overrides `image.platform` in the selected configuration. Other build targets
 reject this flag; HTML output has no container architecture. See
 [image platform selection](/cli/image#select-the-image-platform).
+
+
+## Temporary feature selection
+
+```bash
+zel build --features all
+zel b docs/manual --features maths
+zel build docs/hosted --features none
+zel build docs/hosted --target image --features diagrams
+```
+
+`--features` accepts `maths`, `diagrams`, `maths,diagrams` (either order), `all`,
+or `none`. Each value is a complete selection: `maths` turns Mermaid off as well
+as turning math on. Use `all` and `none` alone; duplicates, empty lists and unknown
+names fail before building. Native mindmaps are independent of this selection.
+
+For portable builds this overrides `markdown.math` and `markdown.mermaid` in
+memory, including when `--config` selects a named configuration file. Hosted
+folder and image builds select rendering and dependency requirements inside the
+disposable wrapper before npm installation. Source files, `zel.yaml`, and any
+authored wrapper manifest stay unchanged. Omission uses the existing defaults.
+
+To save a portable or editable-wrapper selection, use [`zel features`](/cli/features).
+`none` keeps formulas as text and Mermaid fences as code; it does not disable
+validation or change the existing staged-output protections. Container builds
+require engine feature-selection contract version 1; an older distribution
+fails with guidance before dependency installation. This flag does
+not install or start a local container runtime.

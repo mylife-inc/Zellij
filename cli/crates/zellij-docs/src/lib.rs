@@ -21,10 +21,11 @@ pub mod server;
 pub mod watch;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
 
-#[derive(Default)]
+#[derive(Default, Clone, Copy)]
 pub struct BuildOptions<'a> {
     pub name: Option<&'a str>,
     pub theme: Option<&'a str>,
+    pub features: Option<zellij_core::features::Features>,
 }
 
 /// Validate portable presentation settings without scanning or building content.
@@ -311,11 +312,15 @@ fn compile(
         config_name.to_owned()
     };
     let config_file = relative_config.as_path();
-    let config = diagnostics.capture(
+    let mut config = diagnostics.capture(
         config::Config::load(site.portable),
         Code::Configuration,
         Some(config_file),
     )?;
+    if let Some(features) = options.features {
+        config.markdown.math = features.maths;
+        config.markdown.mermaid = features.diagrams;
+    }
     let name = options
         .name
         .or(config.name.as_deref())
@@ -620,15 +625,18 @@ pub struct HostedReport {
 /// Adapt validated portable Markdown to the hosted engine's inert document
 /// format. Callers own the new/empty destination; authored content is never edited.
 pub fn adapt_hosted(source: impl Into<SiteInput>, output: &Utf8Path) -> Result<HostedReport> {
+    adapt_hosted_with_options(source, output, BuildOptions::default())
+}
+
+/// Adapt with invocation-only presentation overrides, leaving source files intact.
+pub fn adapt_hosted_with_options(
+    source: impl Into<SiteInput>,
+    output: &Utf8Path,
+    options: BuildOptions<'_>,
+) -> Result<HostedReport> {
     let source = source.into();
     let mut diagnostics = Diagnostics::new(source.root());
-    let compiled = compile(
-        &source,
-        BuildOptions::default(),
-        &mut diagnostics,
-        None,
-        true,
-    )?;
+    let compiled = compile(&source, options, &mut diagnostics, None, true)?;
     files::disjoint(&compiled.root, output)?;
     files::empty_directory(output)?;
     let writes: Vec<_> = compiled

@@ -10,7 +10,7 @@
 use camino::Utf8Path;
 use std::net::UdpSocket;
 use zellij_core::process::CommandExt;
-use zellij_core::{Error, Result};
+use zellij_core::{Error, Result, features::Features};
 
 use crate::runtime::{METADATA_TIMEOUT, Probe, Runtime, probe_output, probe_status};
 use crate::{BuildMode, CheckOptions, CheckReport, Engine};
@@ -410,12 +410,25 @@ impl Engine for ContainerEngine {
     /// directory rather than to a volume we then copy out of: one fewer moving
     /// part, and the result is on the host the moment the build finishes.
     fn build(&self, content: &Utf8Path, out: &Utf8Path, mode: BuildMode) -> Result<()> {
+        self.build_with_features(content, out, mode, None)
+    }
+}
+
+impl ContainerEngine {
+    /// Override only the disposable wrapper manifest before npm installation.
+    pub fn build_with_features(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        mode: BuildMode,
+        features: Option<Features>,
+    ) -> Result<()> {
         if mode != BuildMode::Static {
             return Err(Error::NoEngine {
                 reason: "only --target static is implemented so far".into(),
             });
         }
-        self.prepare_export(content, out, ExportLayout::Flat)?
+        self.prepare_export(content, out, ExportLayout::Flat, features)?
             .publish()
     }
 }
@@ -424,7 +437,7 @@ impl ContainerEngine {
     /// Export once into an HTTP-root layout, mounting files at the same basePath
     /// resolved by Next. Ordinary `build` exports retain their existing layout.
     pub fn build_for_deployment(&self, content: &Utf8Path, out: &Utf8Path) -> Result<String> {
-        let output = self.prepare_export(content, out, ExportLayout::Deployment)?;
+        let output = self.prepare_export(content, out, ExportLayout::Deployment, None)?;
         let prefix = take_prefix(&output)?;
         output.publish()?;
         Ok(prefix)
@@ -433,7 +446,7 @@ impl ContainerEngine {
     /// Flat export files, with the actual prefix resolved by the engine. The
     /// caller validates that prefix and controls publication/cancellation.
     pub fn prepare_preview(&self, content: &Utf8Path, out: &Utf8Path) -> Result<PreparedPreview> {
-        let output = self.prepare_export(content, out, ExportLayout::Preview)?;
+        let output = self.prepare_export(content, out, ExportLayout::Preview, None)?;
         let base_path = take_prefix(&output)?;
         Ok(PreparedPreview { output, base_path })
     }
@@ -443,6 +456,7 @@ impl ContainerEngine {
         content: &Utf8Path,
         out: &Utf8Path,
         layout: ExportLayout,
+        features: Option<Features>,
     ) -> Result<crate::output::StaticOutput> {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
@@ -477,11 +491,14 @@ impl ContainerEngine {
             }
             ExportLayout::Flat => "cp -a out/. /out/",
         };
+        let feature_step = features
+            .map(|features| format!("{} && ", crate::image::feature_command(features)))
+            .unwrap_or_default();
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
                 "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
-                 npm install --install-links --no-audit --no-fund --loglevel=error && \
+                 {feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
                  {copy}{handback}"
             ),

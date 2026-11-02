@@ -73,6 +73,8 @@ async function browserChecks(origin, prefix, portable) {
       for (const url of ['/index.md','/zel.yaml','/unused.txt']) assert.equal((await fetch(`${origin}${url}`)).status,404);
     } else {
       await page.waitForURL(`${origin}${prefix}/manual`);
+      await page.locator('mjx-container svg').first().waitFor();
+      await page.locator('.zellij-mermaid svg').waitFor();
       await page.getByRole('link',{name:'Next page',exact:true}).first().click();
       await page.waitForURL(`${origin}${prefix}/manual/next`);
       await page.reload();
@@ -134,10 +136,10 @@ try {
     await write('hosted/zel.yaml','version: 1\nrenderer: hosted\n');
     await write('hosted/content/site.yaml','name: Hosted Next\nhome: manual\nbasePath: /products/.docs\n');
     await write('hosted/content/manual/_sidebar.yaml','title: Manual\nnav: [index, next]\n');
-    await write('hosted/content/manual/index.mdx','# Hosted Next\n\n[Next page](/manual/next)\n');
+    await write('hosted/content/manual/index.mdx','# Hosted Next\n\n[Next page](/manual/next)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n');
     await write('hosted/content/manual/next.mdx','# More documentation\n\nHosted prefix.\n');
     const hosted = `zellij-next-hosted:${suffix}`; images.push(hosted);
-    run(['image','next','hosted','--tag',hosted]);
+    run(['image','next','hosted','--tag',hosted,'--features','all']);
     await container(hosted,'/products/.docs',false);
   }
   assert.equal(await readFile(path.join(root,'docs/zellij/site/index.html'),'utf8'),'previous output');

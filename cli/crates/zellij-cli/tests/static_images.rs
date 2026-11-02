@@ -39,6 +39,7 @@ case "$1" in
     printf '%s' "$last" > context-path
     find "$last" -type f | sed "s|$last/||" | sort > context-files
     if [ -f "$last/index.html" ]; then cp "$last/index.html" captured.html; fi
+    if [ -f "$last/manual/p0.zeldoc.json" ]; then cp "$last/manual/p0.zeldoc.json" captured.json; fi
     exit "${FAKE_BUILD_EXIT:-0}";;
   *) exit 99;;
 esac
@@ -349,6 +350,169 @@ fn runtime_build_and_push_arguments_preserve_foreign_platforms() {
             push.contains("--all-platforms"),
             program == "nerdctl",
             "{push}"
+        );
+    }
+}
+
+#[test]
+fn image_features_override_portable_parsing_and_hosted_recipes_without_source_changes() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    let markdown = "# Features\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n";
+    fs::write(root.join("docs/zellij/content/index.md"), markdown).unwrap();
+    for renderer in ["portable", "hosted"] {
+        let config = format!("version: 1\nrenderer: {renderer}\n");
+        fs::write(root.join("docs/zellij/zel.yaml"), &config).unwrap();
+        if renderer == "hosted" {
+            fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
+        }
+        let mut forms = vec![vec!["si"], vec!["ni"]];
+        if renderer == "hosted" {
+            forms.extend([vec!["image", "build"], vec!["b", "--target", "image"]]);
+        }
+        for form in forms {
+            for features in ["all", "none"] {
+                let out = command(root)
+                    .args(&form)
+                    .args(["--features", features])
+                    .output()
+                    .unwrap();
+                assert!(
+                    out.status.success(),
+                    "{renderer} {form:?} {features}: {out:?}"
+                );
+                let recipe = fs::read_to_string(root.join("recipe")).unwrap();
+                if renderer == "portable" && form[0] == "si" {
+                    let html = fs::read_to_string(root.join("captured.html")).unwrap();
+                    assert_eq!(html.contains("<math"), features == "all");
+                    assert_eq!(
+                        html.contains("class=\"mermaid-diagram\""),
+                        features == "all"
+                    );
+                    assert!(!recipe.contains("npm install"));
+                } else {
+                    let selected = if features == "all" {
+                        "maths,diagrams"
+                    } else {
+                        "none"
+                    };
+                    let select = recipe
+                        .find(&format!("features \"{selected}\" /app"))
+                        .unwrap();
+                    assert!(select < recipe.find("npm install").unwrap(), "{recipe}");
+                    if renderer == "portable" {
+                        let document = fs::read_to_string(root.join("captured.json")).unwrap();
+                        assert_eq!(document.contains("language-math"), features == "all");
+                        assert_eq!(document.contains("language-mermaid"), features == "all");
+                    }
+                }
+                assert_eq!(
+                    fs::read_to_string(root.join("docs/zellij/zel.yaml")).unwrap(),
+                    config
+                );
+                assert_eq!(
+                    fs::read_to_string(root.join("docs/zellij/content/index.md")).unwrap(),
+                    markdown
+                );
+                assert_eq!(
+                    fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
+                    "previous"
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn hosted_dockerfiles_apply_features_without_a_runtime_and_portable_static_rejects_them() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    let rejected = command(root)
+        .args([
+            "image",
+            "dockerfile",
+            "--kind",
+            "static",
+            "--features",
+            "all",
+        ])
+        .output()
+        .unwrap();
+    assert_eq!(rejected.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&rejected.stderr).contains("already compiled HTML"));
+    fs::write(
+        root.join("docs/zellij/zel.yaml"),
+        "version: 1\nrenderer: hosted\n",
+    )
+    .unwrap();
+    fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
+    fs::remove_file(root.join("bin/docker")).unwrap();
+    for kind in ["static", "next"] {
+        let out = command(root)
+            .args(["image", "dockerfile", "--kind", kind, "--features", "none"])
+            .output()
+            .unwrap();
+        assert!(out.status.success(), "{out:?}");
+        let recipe = String::from_utf8(out.stdout).unwrap();
+        assert!(
+            recipe.find("features \"none\" /app").unwrap() < recipe.find("npm install").unwrap()
+        );
+    }
+}
+
+#[test]
+fn hosted_folder_build_selects_features_before_install_and_preserves_previous_export_on_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    fs::write(
+        root.join("docs/zellij/zel.yaml"),
+        "version: 1\nrenderer: hosted\n",
+    )
+    .unwrap();
+    fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
+    let script = fs::read_to_string(root.join("bin/docker"))
+        .unwrap()
+        .replace(
+            "  *) exit 99;;",
+            "  run) printf '%s\\n' \"$@\" > run-args; exit 1;;\n  *) exit 99;;",
+        );
+    fs::write(root.join("bin/docker"), script).unwrap();
+    // Own the previous export with the actual native writer, avoiding a fake marker.
+    let export = root.join("owned-output");
+    let content = camino::Utf8Path::from_path(&root.join("docs/zellij/content"))
+        .unwrap()
+        .to_owned();
+    let export_path = camino::Utf8Path::from_path(&export).unwrap();
+    let stage = zellij_core::output::StaticOutput::prepare(&content, export_path).unwrap();
+    fs::write(stage.directory.join("index.html"), "previous").unwrap();
+    stage.publish().unwrap();
+    for features in ["all", "none"] {
+        let out = command(root)
+            .args(["build", "--features", features, "--out", "owned-output"])
+            .output()
+            .unwrap();
+        assert_eq!(out.status.code(), Some(3), "{out:?}");
+        let args = fs::read_to_string(root.join("run-args")).unwrap();
+        let selected = if features == "all" {
+            "maths,diagrams"
+        } else {
+            "none"
+        };
+        assert!(
+            args.find(&format!("features \"{selected}\" /app &&"))
+                .unwrap()
+                < args.find("npm install").unwrap()
+        );
+        assert_eq!(
+            fs::read_to_string(export.join("index.html")).unwrap(),
+            "previous"
+        );
+        assert_eq!(
+            fs::read_to_string(root.join("docs/zellij/content/site.yaml")).unwrap(),
+            "name: Hosted\n"
         );
     }
 }

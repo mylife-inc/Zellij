@@ -210,3 +210,103 @@ fn feature_selection_refuses_linked_configs() {
         "version: 1\nrenderer: portable\n"
     );
 }
+
+#[test]
+fn build_overrides_are_complete_temporary_and_work_with_explicit_configs() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let config =
+        "# authored\nversion: 1\nrenderer: portable\nmarkdown: { math: true, mermaid: true }\n";
+    let markdown = "# Feature overrides\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n\n```mindmap\nRoot: [Child]\n```\n";
+    write(root, "docs/manual/custom.yaml", config);
+    write(root, "docs/manual/content/index.md", markdown);
+    // An invalid neighboring default proves the exact config stays selected.
+    write(root, "docs/manual/zel.yaml", "invalid: [");
+    for (selection, maths, diagrams) in [
+        (None, true, true),
+        (Some("none"), false, false),
+        (Some("maths"), true, false),
+        (Some("diagrams"), false, true),
+        (Some("all"), true, true),
+    ] {
+        let mut args = vec!["b", "--config", "docs/manual/custom.yaml"];
+        if let Some(selection) = selection {
+            args.extend(["--features", selection]);
+        }
+        run(root, &args, 0);
+        let html = fs::read_to_string(root.join("docs/manual/site/index.html")).unwrap();
+        assert_eq!(html.contains("<math"), maths, "{selection:?}");
+        assert_eq!(
+            html.contains("class=\"mermaid-diagram\""),
+            diagrams,
+            "{selection:?}"
+        );
+        assert_eq!(
+            root.join("docs/manual/site/_zellij/mermaid/mermaid.js")
+                .exists(),
+            diagrams
+        );
+        assert!(html.contains("mindmap"));
+        assert_eq!(
+            fs::read_to_string(root.join("docs/manual/custom.yaml")).unwrap(),
+            config
+        );
+        assert_eq!(
+            fs::read_to_string(root.join("docs/manual/content/index.md")).unwrap(),
+            markdown
+        );
+    }
+    // Returning to no override restores saved configuration, after explicit none.
+    run(
+        root,
+        &[
+            "build",
+            "--config",
+            "docs/manual/custom.yaml",
+            "--features",
+            "none",
+        ],
+        0,
+    );
+    run(root, &["build", "--config", "docs/manual/custom.yaml"], 0);
+    assert!(
+        fs::read_to_string(root.join("docs/manual/site/index.html"))
+            .unwrap()
+            .contains("<math")
+    );
+}
+
+#[test]
+fn invalid_build_features_and_failed_builds_preserve_config_and_output() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let config = "version: 1\nrenderer: portable\n";
+    write(root, "zel.yaml", config);
+    write(root, "content/index.md", "# Stable\n");
+    run(root, &["build"], 0);
+    let previous = fs::read(root.join("site/index.html")).unwrap();
+    for command in [
+        vec!["build"],
+        vec!["si"],
+        vec!["ni"],
+        vec!["image", "build"],
+        vec!["image", "dockerfile"],
+    ] {
+        for invalid in [
+            "none,maths",
+            "all,diagrams",
+            "maths,maths",
+            "maths;echo",
+            "",
+        ] {
+            let mut args = command.clone();
+            args.extend(["--features", invalid]);
+            run(root, &args, 2);
+            assert_eq!(fs::read(root.join("site/index.html")).unwrap(), previous);
+            assert_eq!(fs::read_to_string(root.join("zel.yaml")).unwrap(), config);
+        }
+    }
+    write(root, "content/index.md", "# Bad\n\n[Missing](missing.md)\n");
+    run(root, &["build", "--features", "none"], 2);
+    assert_eq!(fs::read(root.join("site/index.html")).unwrap(), previous);
+}

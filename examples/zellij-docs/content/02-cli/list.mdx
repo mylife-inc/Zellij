@@ -114,8 +114,8 @@ from the same generated catalog as the renderer.
 
 JSON is also available for [`context`](/cli/context), [`explain`](/cli/explain)
 and [`detect`](/cli/detect). Other Rust commands reject `--json` with exit code
-2 before running. `--verbose` / `-v` is not implemented and is rejected as an
-unknown option.
+2 before running. Shared `--verbose` adds diagnostics on stderr; `-v` is not
+a flag (`v` remains the view command shortcut).
 
 ## See also
 
