@@ -3,8 +3,10 @@
 Last refreshed: **2026-11-02**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest CLI work: temporary build/image feature selection on
-`codex/cli-build-features`, source commit `aa17963`. Image platform selection
+Latest CLI work: session feature selection for preview/development on
+`codex/cli-preview-features`, source commit `6ab08a3`. Temporary build/image
+selection merged in PR #46, including the Zod/schema compatibility fix.
+Image platform selection
 merged in PR #45. Shared output controls merged in PR #44.
 Explicit --config merged in PR #43; shared --cwd and
 --site-root merged in PR #42.
@@ -3046,3 +3048,45 @@ engine packaging, warnings-denied Clippy, formatting and strict/deep docs
 validation passed locally. Final CI on the updated PR head remains required
 before merge; neither the initial failing run nor local checks establish hosted
 acceptance. Authentication works with XDG_CONFIG_HOME=/Users/hamid/Dev/config.
+
+
+### Preview/development feature selection — 2026-11-02
+
+PR #46 merged as eea28d6053622f9d692d6b56aa4150492d9f0f21 after all 13 CI
+jobs passed on e5d619687e6460bb454a06a7a722715998bc9378 (41502232990).
+Both post-merge runs now passed: CI 41506317359 and Base image 41506317357.
+The latest public native release is still zellij-v0.1.3 (August 13), refreshed
+on November 2; source capabilities below are not a claim about that executable.
+
+Fixing commit 6ab08a3bcee51133a5fa176d3af2eb5bfb5bd554 adds --features to view/v
+and dev for both portable and hosted sites. Typed complete selections match
+build/image. Overrides survive every watched rebuild, portable configuration
+edit and recovery, without changing authored files. Omitting the flag on a
+later invocation restores saved/default selection. Serve still serves prebuilt
+output and does not accept rendering options. See contract stage 9c.
+
+Hosted dev and preview apply the override before dependency installation, using
+the existing engine compatibility guard. Hosted export/dev dependency caches
+now include the canonical explicit feature selection, preventing a build with
+another selection from uninstalling a live dev session's packages. Equivalent
+all and maths,diagrams share a cache; omission and none remain distinct. Old
+caches are not deleted. Hosted dev now distinguishes content-validation errors
+from dependency/startup failures instead of reporting all failures as bad content.
+
+Local verification: 312 Rust tests in 38 suites, warnings-denied Clippy,
+formatting, workflow lint, JavaScript syntax and strict/deep docs validation
+passed (55 routes, 53 guide pages, 23 examples). Actual Chromium preview/watch
+acceptance covers config edits, rendering, failure preservation, recovery,
+source immutability, default restoration and Ctrl-C. Hosted orchestration with
+an isolated runtime fixture also passed, including feature propagation on
+rebuilds and cancellation. An initial full Rust run had one existing fake-runtime
+probe timeout while other checks were active; the isolated full two-thread run
+passed. Do not treat this as a runtime-probe implementation fix.
+
+CI now checks actual hosted preview math/Mermaid rendering through rebuilds,
+then explicit none in a subsequent preview; hosted development checks both in
+a browser before and after edits. Final cross-platform/container CI and merge
+are pending for this branch. No local Docker daemon was started or native release
+published. Remaining work includes delivery/CI temporary controls, advanced
+build options, combined image manifests, providers beyond Netlify, conversion
+fidelity, and matched native release/documentation publication.
