@@ -224,11 +224,19 @@ jobs:
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
       - name: Enable ARM64 image acceptance
+        # The preceding exports leave large unused Next/npm build layers on
+        # hosted runners. Keep the tagged engine image, discard only build cache.
+        # Reclaim again between image groups so a successful earlier build
+        # cannot exhaust disk during a later package installation.
+        # The actual cleanup steps are separate for clear failure diagnostics.
         uses: docker/setup-qemu-action@v4
         with:
           platforms: arm64
       - name: Cross-architecture image build, registry and HTTP acceptance
         run: node scripts/check-image-platform.mjs cli/target/debug/zel
+
+      - name: Reclaim container build cache before static images
+        run: docker builder prune --all --force
 
       - name: Static image publication and portable/hosted HTTP acceptance
         env:
@@ -236,15 +244,24 @@ jobs:
         run: |
           node scripts/check-static-images.mjs cli/target/debug/zel
 
+      - name: Reclaim container build cache before Next images
+        run: docker builder prune --all --force
+
       - name: Next image publication and portable/hosted browser acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
 
+      - name: Reclaim container build cache before imported images
+        run: docker builder prune --all --force
+
       - name: Ship imports to static and Next images with registry and browser acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-ship.mjs cli/target/debug/zel
+
+      - name: Reclaim container build cache before final exports
+        run: docker builder prune --all --force
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:
