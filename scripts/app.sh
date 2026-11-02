@@ -198,19 +198,17 @@ zimage() {
 }
 
 zimage-all() {
-  # The four CI publishes. They differ only in which optional dependencies the
-  # generated manifest asks for, so they are nearly the same size — the saving
-  # lands on whoever builds a site, not on whoever pulls the image.
+  # Local development variants. Stable aliases belong to the release helpers.
   local ok=0
-  zimage none     latest    || ok=1
-  zimage maths    maths     || ok=1
-  zimage diagrams diagrams  || ok=1
-  zimage all      all       || ok=1
+  zimage none     local          || ok=1
+  zimage maths    local-maths    || ok=1
+  zimage diagrams local-diagrams || ok=1
+  zimage all      local-all      || ok=1
   return $ok
 }
 
 zimage-push() {
-  local tag="${1:-latest}"
+  local tag="${1:-local}"
 
   docker image inspect "${ZELLIJ_IMAGE}:$tag" >/dev/null 2>&1 ||
     _zdie "No ${ZELLIJ_IMAGE}:$tag locally. Run: zimage <features> $tag" || return 1
@@ -334,6 +332,9 @@ EOF
     return 1
   fi
 
+  # Candidates must not prompt for or enable production docs publication.
+  case "${1:-}" in *-*) return 0 ;; esac
+
   local deploy; deploy="$(_zvar DEPLOY_DOCS)"
   [ "$deploy" = "true" ] && return 0
 
@@ -355,11 +356,14 @@ EOF
 }
 
 zrelease() {
-  local version="$1"
+  local version="${1:-}"
   [ -n "$version" ] || _zdie "Usage: zrelease v0.2.0" || return 1
   [[ "$version" == v* ]] || _zdie "Versions start with v — try v$version" || return 1
 
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
+
+  command -v node >/dev/null || _zdie "Node 24 is required for release tooling" || return 1
+  node "$ZELLIJ_ROOT/scripts/package-native.mjs" "$version" --check-version || return 1
 
   git -C "$ZELLIJ_ROOT" diff --quiet && git -C "$ZELLIJ_ROOT" diff --cached --quiet ||
     _zdie "Working tree is dirty. Commit before releasing." || return 1
@@ -367,7 +371,7 @@ zrelease() {
   git -C "$ZELLIJ_ROOT" rev-parse "$version" >/dev/null 2>&1 &&
     _zdie "$version already exists. Releases are not re-cut; pick the next one." && return 1
 
-  _zrelease_preflight || return 1
+  _zrelease_preflight "$version" || return 1
 
   # Locally first, because a tag is public the moment it is pushed and a
   # release that fails in CI has already been announced by its own tag.
@@ -379,14 +383,17 @@ zrelease() {
   git -C "$ZELLIJ_ROOT" push origin "$version" || return 1
 
   local docs_dest="built, not published"
-  [ "$(_zvar DEPLOY_DOCS)" = "true" ] && docs_dest="→ $ZELLIJ_SITE_DOMAIN"
+  case "$version" in
+    *-*) docs_dest="built, not published (prerelease)" ;;
+    *) [ "$(_zvar DEPLOY_DOCS)" = "true" ] && docs_dest="→ $ZELLIJ_SITE_DOMAIN" ;;
+  esac
 
   cat <<EOF
 
   Tagged and pushed. GitHub is now building:
 
     · the four container images, for amd64 and arm64  → GHCR
-    · zel for five platforms, with checksums          → the release page
+    · zel for six platforms, with checksums          → the release page
     · the documentation site                          $docs_dest
 
   Watch it:  zrelease-watch
@@ -519,23 +526,19 @@ _zsay "Zellij commands loaded. Run zhelp."
 
 # Publish `zel` from this machine, without GitHub Actions.
 #
-# `zrelease` tags and lets CI do the work, which is the right shape and is
-# currently blocked — the organisation's Actions spending is capped, and the
-# release workflow cannot run. This builds the binaries here and uploads them,
-# so a working `zel` exists for the pipelines that install one.
-#
-# Deliberately not a replacement. It skips everything a pipeline gives you:
-# a clean machine, a recorded environment, five platforms instead of two. Use
-# `zrelease` again the moment CI can run.
+# Emergency fallback when CI is unavailable. It builds only the host and Linux
+# x64 packages; normal releases use zrelease and the six-platform CI workflow.
 ZELLIJ_RELEASES_REPO="${ZELLIJ_RELEASES_REPO:-mylife-inc/releases}"
 
 zrelease-local() {
-  local v="$1"
+  local v="${1:-}"
   [ -n "$v" ] || { _zdie "Usage: zrelease-local v0.1.0"; return 1; }
   [[ "$v" == v* ]] || { _zdie "Versions start with v — try v$v"; return 1; }
 
   command -v gh >/dev/null || { _zdie "The GitHub CLI (gh) is not installed"; return 1; }
   command -v docker >/dev/null || { _zdie "docker is required for the Linux build"; return 1; }
+  command -v node >/dev/null || { _zdie "Node 24 is required for release tooling"; return 1; }
+  node "$ZELLIJ_ROOT/scripts/package-native.mjs" "$v" --check-version || return 1
 
   local scoped="zellij-$v"
   if gh release view "$scoped" --repo "$ZELLIJ_RELEASES_REPO" >/dev/null 2>&1; then
@@ -575,19 +578,8 @@ zrelease-local() {
 
   ( cd "$stage" && shasum -a 256 ./*.tar.gz > SHA256SUMS && shasum -a 256 -c SHA256SUMS ) || return 1
 
-  _zsay "Publishing $scoped to $ZELLIJ_RELEASES_REPO"
-  ( cd "$stage" && gh release create "$scoped" \
-      --repo "$ZELLIJ_RELEASES_REPO" \
-      --title "Zellij $v" \
-      --notes "\`zel\` $v, built locally.
-
-\`\`\`
-curl -fsSL https://raw.githubusercontent.com/$ZELLIJ_RELEASES_REPO/main/zellij/install.sh | sh
-\`\`\`
-
-Two platforms rather than five — this was cut from a laptop while the
-release pipeline is unavailable." \
-      ./*.tar.gz SHA256SUMS ) || {
+  ZELLIJ_RELEASES_REPO="$ZELLIJ_RELEASES_REPO" ZELLIJ_RELEASE_SCOPE=zellij \
+    bash "$ZELLIJ_ROOT/scripts/publish.sh" release "$v" "$stage" || {
     _zwarn "Publishing failed. Artefacts are in $stage"
     return 1
   }

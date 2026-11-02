@@ -1,6 +1,6 @@
 # Publishes the Zellij base image to GHCR.
 #
-# The image is public even though this repository is not: it is how Zellij is
+# The image is public: it is how Zellij is
 # distributed to people who cannot clone the source. Nothing secret goes into
 # it — the engine is shipped as its build output, and the layer holding it is
 # the same layer everyone else pulls.
@@ -23,8 +23,8 @@ name: Base image
 # instead of eight and two jobs racing to claim the same tags with
 # `imagetools create` — whichever finished last winning, silently.
 #
-# So: this one keeps `main` and `latest` current, and a release owns everything
-# a release publishes.
+# This workflow only updates main (and its feature variants). Stable releases
+# own latest and version-series tags; candidates only publish exact versions.
 on:
   push:
     branches: [main]
@@ -44,6 +44,7 @@ jobs:
   # two jobs racing to claim it would leave whichever finished last. The digests
   # are collected and named in one place, below.
   build:
+    if: github.ref == 'refs/heads/main'
     name: ${{ matrix.features }} · ${{ matrix.platform.arch }}
     runs-on: ${{ matrix.platform.runner }}
     permissions:
@@ -139,13 +140,13 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
           flavor: |
-            suffix=${{ matrix.suffix }},onlatest=true
+            latest=false
+            suffix=${{ matrix.suffix }}
           # No semver patterns: this workflow never sees a tag now, and a
           # pattern that can never match is a claim about behaviour that does
           # not exist.
           tags: |
             type=ref,event=branch
-            type=raw,value=latest,enable={{is_default_branch}}
 
       # Everything this step depends on, before it depends on it. Two runs
       # failed here with eight green builds above them, and a bare
@@ -170,10 +171,16 @@ jobs:
       - name: Stitch the architectures into one manifest
         working-directory: /tmp/digests
         run: |
-          set -x
-          docker buildx imagetools create \
-            $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf "${REGISTRY}/${IMAGE}@sha256:%s " *)
+          args=()
+          while IFS= read -r tag; do args+=(-t "$tag"); done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          test "${#args[@]}" -gt 0 || { echo "No branch tags selected"; exit 1; }
+          digests=(*)
+          test "${#digests[@]}" = 2 || { echo "Expected two architecture digests"; exit 1; }
+          for digest in "${digests[@]}"; do
+            [[ "$digest" =~ ^[a-f0-9]{64}$ ]] || { echo "Invalid digest filename"; exit 1; }
+            args+=("${REGISTRY}/${IMAGE}@sha256:$digest")
+          done
+          docker buildx imagetools create "${args[@]}"
 
       - name: Show what was published
         env:
@@ -215,7 +222,6 @@ jobs:
           # not exist.
           tags: |
             type=ref,event=branch
-            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build a site from it
         env:

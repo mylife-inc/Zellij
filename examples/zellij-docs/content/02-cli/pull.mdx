@@ -15,6 +15,12 @@ set `ZELLIJ_IMAGE` for subsequent builds to use the same image. Tags and
 default `latest` is mutable; use a compatible published tag or digest when
 reproducibility matters.
 
+The release pipeline reserves `latest` and version-series aliases for stable
+releases. Candidates publish exact version tags, without a leading `v`, including
+their feature suffix where applicable. Development builds from `main` update
+`main` and its feature variants. This policy does not retag images published by
+older workflows; choose an exact matching tag when testing a candidate.
+
 `pull` uses the same Docker, Podman or nerdctl discovery as hosted builds.
 Explicit runtime endpoint variables are respected. It does not install/start a
 runtime, change endpoint settings or log in to a registry. If no runtime answers,

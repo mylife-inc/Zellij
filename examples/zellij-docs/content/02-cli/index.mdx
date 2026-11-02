@@ -49,6 +49,12 @@ fails. The Windows installer requires a native Windows archive; a Linux archive
 is used only inside WSL. Native portable `build`, `check`, `dev`, `serve` and `view`
 need no container runtime.
 
+Candidate releases require an explicit version. Follow the candidate release
+page's pinned instructions: they download the installer attached to that release
+and select its asset directory. The unpinned install command above selects a
+stable release. Container-based operations should use the matching exact engine
+image tag (without the version's leading `v`); candidates do not update `latest`.
+
 ## What it does
 
 <CardGrid>

@@ -670,3 +670,66 @@ No local container daemon was started, native release published, real provider
 site deployed or external registry image manually published. Remaining work:
 advanced build options, combined multi-platform images, additional providers,
 conversion fidelity and matched native release/documentation publication.
+
+
+### Release candidate isolation and runner capacity — 2026-11-02
+
+PR #48 merged as b1d636934d2be06b92e01a02b150c11dcbb3dfe9 after all 13 jobs
+passed on b365ad6e97c7c524a4dd396419c3d38c53e8265f (run 41523296482).
+The earlier PR #47 post-merge CI 41520378824 also passed. PR #48 post-merge
+Base image 41526351348 passed, but CI 41526351538 failed: 11 jobs passed, the
+CLI container group exhausted hosted runner disk during npm install in the
+Next ship image, and macOS ARM native packaging was cancelled before its first
+step. Neither the disk failure nor the cancellation proves a product regression;
+neither counts as successful acceptance. Logs identify ENOSPC, including failure
+to write the runner's own logs. Commit 7c0397c298935c0ce43fac01948d5a96e6e7bd04
+reclaims unused Docker builder cache between large acceptance groups while
+retaining tagged engine images. Hosted verification remains required.
+
+Fixing commit 0e5638f3b24ca057f26465f01bb1bdbc514d62d2 centralizes release policy
+in scripts/release-policy.mjs and applies it to tagged CI and local helpers:
+
+- Candidates publish exact image tags only, become GitHub prereleases, and
+  cannot update stable/latest image aliases, deploy production docs or replace
+  shared installer scripts. Branch builds only update main feature variants.
+- Both repository release pages now use version-pinned attached Unix/PowerShell
+  installers and correct image tags without the leading v. The previous
+  candidate notes invoked a stable installer and referenced nonexistent v-prefixed
+  image tags. Existing published aliases are not changed retroactively.
+- The emergency local publisher now uses the same policy, including --prerelease
+  and --latest=false. Both release helpers reject workspace version mismatches
+  before tagging/building. Candidate preflight never enables production docs.
+- The release workflow still allows native publication after an independent
+  image failure. Complete candidate acceptance requires checking all jobs and
+  final downloaded artifacts; a release page alone is not proof of completion.
+
+Local verification: 12 release policy tests passed, including actual publishing
+shells and manifest commands with fake Docker/GitHub/Git executables; no remote
+publication is possible through those fixtures. Workflow lint, Bash/Zsh syntax,
+workspace version check and strict/deep documentation validation also passed
+(55 routes, 53 guide pages, 23 examples). Tests run in ordinary CI and tagged
+release verification. Final hosted CI and merge are pending for this branch.
+
+See specs/zel-release-procedure.md for candidate preparation and stable promotion.
+No version bump or release tag was made, no native release was published, no
+manual provider/registry deployment occurred, and no local Docker daemon was
+started. The intended next candidate is 0.2.0-rc.1, after reviewed versioning and
+full CI. Current native source and latest public release still say 0.1.3.
+
+
+Release review follow-up: c7931f250214117cf58b2955db86399866b66946 changes
+zimage-push's default from latest to local and zimage-all to local feature tags,
+matching zimage. Explicit raw pushes remain available; release helpers apply
+channel policy. Generated release notes now show matching ZELLIJ_IMAGE settings
+for both Unix and PowerShell. Fourteen release tests pass locally, including
+execution of the branch manifest command and development image helpers.
+
+PR #49: https://github.com/mylife-inc/Zellij/pull/49. Initial run 41533203275
+passed all six native package/installer targets, engine and schema checks before
+the final follow-up was pushed; it does not certify the updated head. Refresh
+PR #49's final head/checks before merging. Read-only setup checks confirmed that
+RELEASES_GITHUB_TOKEN, NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID exist by name;
+DEPLOY_DOCS is unset. Secret values were neither read nor printed. Presence does
+not establish token validity or destination permissions. The development repo
+has no published releases; the shared repo's newest Zellij release is still
+zellij-v0.1.3. No user setup action is currently needed for this milestone.

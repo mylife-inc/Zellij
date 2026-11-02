@@ -70,6 +70,9 @@ PowerShell installer; Unix uses the shell installer. See the
 versions, commands and limits. These changes do not replace the older published
 `v0.1.3` binaries or create a new release automatically.
 
+Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
+candidate channels, pinned installation, and stable documentation publication.
+
 ## The examples
 
 Zellij is developed against real content rather than fixtures. Each of these is

@@ -6,9 +6,9 @@
 # the CLI binaries for every platform, and the documentation site. Tag-driven
 # because a release is a decision, and every commit to main is not one.
 #
-# Nothing here needs a token you have to create. `GITHUB_TOKEN` is issued to the
-# job and covers both GHCR and Releases; only Netlify needs secrets, and the
-# site is skipped rather than failed when they are absent.
+# GITHUB_TOKEN covers this repository and GHCR. The optional shared release
+# repository needs RELEASES_GITHUB_TOKEN. Production docs additionally require
+# a stable version, DEPLOY_DOCS=true and both Netlify secrets.
 name: Release
 
 on:
@@ -37,6 +37,10 @@ jobs:
   # code that does not pass what main has to pass.
   verify:
     name: Verify
+    outputs:
+      version: ${{ steps.policy.outputs.version }}
+      stable: ${{ steps.policy.outputs.stable }}
+      prerelease: ${{ steps.policy.outputs.prerelease }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -52,13 +56,16 @@ jobs:
           workspaces: cli
 
       - name: Require a tag matching the committed native version
+        id: policy
         env:
           REF_TYPE: ${{ github.ref_type }}
           VERSION: ${{ github.ref_name }}
         run: |
           test "$REF_TYPE" = tag || { echo "::error::Dispatch this workflow against a version tag."; exit 1; }
           node scripts/package-native.mjs "$VERSION" --check-version
+          node scripts/release-policy.mjs outputs "$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
+      - run: node --test scripts/release-policy.test.mjs
       - run: npm run typecheck
       - run: npx vitest run --root engine/packages/zellij
       - run: npm run build --workspace @shebka/zellij
@@ -137,17 +144,13 @@ jobs:
   # --------------------------------------------------------------- manifests
   manifests:
     name: Publish image ${{ matrix.features }}
-    needs: images
+    needs: [verify, images]
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { features: none, suffix: '' }
-          - { features: maths, suffix: '-maths' }
-          - { features: diagrams, suffix: '-diagrams' }
-          - { features: all, suffix: '-all' }
+        features: [none, maths, diagrams, all]
 
     steps:
       - uses: actions/checkout@v7
@@ -165,16 +168,14 @@ jobs:
           pattern: digest-${{ matrix.features }}-*
           merge-multiple: true
 
-      - id: meta
-        uses: docker/metadata-action@v5
+      - uses: actions/setup-node@v7
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE }}
-          flavor: |
-            suffix=${{ matrix.suffix }},onlatest=true
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest
+          node-version: 24
+      - name: Select release image tags
+        env:
+          VERSION: ${{ github.ref_name }}
+          FEATURES: ${{ matrix.features }}
+        run: node scripts/release-policy.mjs image-tags "$VERSION" "$REGISTRY/$IMAGE" "$FEATURES" > "$RUNNER_TEMP/zellij-image-tags.txt"
 
       # Says what it is about to do before doing it.
       #
@@ -195,13 +196,14 @@ jobs:
           digests=(*)
           echo "count: ${#digests[@]}  (expected 2)"
           echo "tags:"
-          jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON"
+          cat "$RUNNER_TEMP/zellij-image-tags.txt"
 
       - name: Stitch the architectures into one manifest
         working-directory: /tmp/digests
         run: |
           args=()
-          while IFS= read -r tag; do args+=(-t "$tag"); done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+          while IFS= read -r tag; do args+=(-t "$tag"); done < "$RUNNER_TEMP/zellij-image-tags.txt"
+          test "${#args[@]}" -gt 0 || { echo "No release tags selected"; exit 1; }
           digests=(*)
           test "${#digests[@]}" = 2 || { echo "Expected two architecture digests"; exit 1; }
           for digest in "${digests[@]}"; do
@@ -215,7 +217,7 @@ jobs:
       - name: The published image can build a site
         if: matrix.features == 'none'
         env:
-          VERSION: ${{ steps.meta.outputs.version }}
+          VERSION: ${{ needs.verify.outputs.version }}
         run: |
           docker build --progress plain \
             --build-arg ZELLIJ_VERSION="$VERSION" \
@@ -279,7 +281,7 @@ jobs:
       # produced binaries and images is still a release, and someone cloning
       # this repository has no Netlify site to deploy to.
       - name: Deploy to Netlify
-        if: env.DEPLOY_DOCS == 'true' && env.HAS_NETLIFY == 'true'
+        if: needs.verify.outputs.stable == 'true' && env.DEPLOY_DOCS == 'true' && env.HAS_NETLIFY == 'true'
         working-directory: examples/zellij-docs
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -294,10 +296,14 @@ jobs:
       # images is still a release, and the build itself still proves the content
       # exports cleanly.
       - name: Say why the site was not deployed
-        if: env.DEPLOY_DOCS != 'true' || env.HAS_NETLIFY != 'true'
+        if: needs.verify.outputs.stable != 'true' || env.DEPLOY_DOCS != 'true' || env.HAS_NETLIFY != 'true'
+        env:
+          STABLE: ${{ needs.verify.outputs.stable }}
         run: |
           echo "::notice::The site was built but not deployed."
-          if [ "$DEPLOY_DOCS" != "true" ]; then
+          if [ "$STABLE" != "true" ]; then
+            echo "Prereleases build documentation but never deploy production docs."
+          elif [ "$DEPLOY_DOCS" != "true" ]; then
             echo "Set the repository variable DEPLOY_DOCS=true to publish it."
           else
             echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."
@@ -306,7 +312,7 @@ jobs:
   # ------------------------------------------------------------------ publish
   publish:
     name: Publish the release
-    needs: [manifests, binaries, docs]
+    needs: [verify, manifests, binaries, docs]
 
     # Runs after the images, and not because of them.
     #
@@ -322,7 +328,7 @@ jobs:
     # attaches, and none if the documentation stopped building. A broken image
     # variant is visible on its own job and does not deserve to withhold the
     # thing people actually run.
-    if: ${{ always() && needs.binaries.result == 'success' && needs.docs.result == 'success' }}
+    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' }}
 
     runs-on: ubuntu-latest
 
@@ -363,38 +369,29 @@ jobs:
           cp scripts/install.sh scripts/install.ps1 artifacts/
           scripts/publish.sh checksums artifacts
 
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Write pinned release installation instructions
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          node scripts/release-policy.mjs notes "$VERSION" "$GITHUB_REPOSITORY" '' "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/release-notes.md"
+          node scripts/release-policy.mjs notes "$VERSION" "$RELEASES_REPO" zellij "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/shared-release-notes.md"
+
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ needs.verify.outputs.prerelease }}
+          make_latest: ${{ needs.verify.outputs.stable }}
           generate_release_notes: true
           files: artifacts/*
-          body: |
-            ## Install
-
-            ```
-            curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
-            ```
-
-            Or download the archive for your platform below, verify it against
-            its `.sha256`, and put `zel` on your PATH.
-
-            Windows: download `install.ps1` below, then run it in PowerShell
-            with `-Version ${{ github.ref_name }}`. Add its installation directory
-            to your user PATH. x64 and ARM64 packages are included.
-
-            ## Container images
-
-            ```
-            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}
-            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-maths
-            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-diagrams
-            ghcr.io/${{ github.repository_owner }}/zellij-base:${{ github.ref_name }}-all
-            ```
+          body_path: ${{ runner.temp }}/release-notes.md
 
       # Shared releases use `zellij-<version>` because the repository holds
       # artifacts for several projects. Installers also live on its main branch
       # to provide stable download URLs independent of a specific release.
+      # Prereleases attach their own installers but never replace those files.
       #
       # An asset would need a release to point at, and `latest` in a repository
       # shared by several projects is not necessarily ours — the same scoping
@@ -408,7 +405,7 @@ jobs:
       # to has none. The first release into an empty releases repository fails
       # at `git tag` unless something has committed first.
       - name: Keep the installer current in the releases repository
-        if: env.HAS_RELEASES_TOKEN == 'true'
+        if: needs.verify.outputs.stable == 'true' && env.HAS_RELEASES_TOKEN == 'true'
         env:
           TOKEN: ${{ secrets.RELEASES_GITHUB_TOKEN }}
           VERSION: ${{ github.ref_name }}
@@ -451,19 +448,10 @@ jobs:
           token: ${{ secrets.RELEASES_GITHUB_TOKEN }}
           tag_name: zellij-${{ github.ref_name }}
           name: Zellij ${{ github.ref_name }}
-          prerelease: ${{ contains(github.ref_name, '-') }}
+          prerelease: ${{ needs.verify.outputs.prerelease }}
+          make_latest: ${{ needs.verify.outputs.stable }}
           files: artifacts/*
-          body: |
-            `zel` — the Zellij CLI, ${{ github.ref_name }}.
-
-            ```
-            curl -fsSL https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh | sh
-            ```
-
-            Windows: download `install.ps1` from this release and run it in
-            PowerShell with `-Version ${{ github.ref_name }}`. Packages cover
-            x64 and ARM64 on Linux, macOS and Windows. Each archive is tested
-            through its installer before publication. Neither installer changes PATH.
+          body_path: ${{ runner.temp }}/shared-release-notes.md
 
       - name: Say why the public release was skipped
         if: env.HAS_RELEASES_TOKEN != 'true'

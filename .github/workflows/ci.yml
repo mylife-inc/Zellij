@@ -26,6 +26,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: node --test scripts/release-policy.test.mjs
       - run: npm audit --audit-level=low
       - run: npm run typecheck
       - run: npm test
@@ -230,21 +231,34 @@ jobs:
       - name: Cross-architecture image build, registry and HTTP acceptance
         run: node scripts/check-image-platform.mjs cli/target/debug/zel
 
+      # Each group builds large Next.js layers. Retain tagged engine images.
+      - name: Reclaim container build cache before static images
+        run: docker builder prune --all --force
+
       - name: Static image publication and portable/hosted HTTP acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: |
           node scripts/check-static-images.mjs cli/target/debug/zel
 
+      - name: Reclaim container build cache before Next images
+        run: docker builder prune --all --force
+
       - name: Next image publication and portable/hosted browser acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
 
+      - name: Reclaim container build cache before imported images
+        run: docker builder prune --all --force
+
       - name: Ship imports to static and Next images with registry and browser acceptance
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-ship.mjs cli/target/debug/zel
+
+      - name: Reclaim container build cache before final exports
+        run: docker builder prune --all --force
 
       - name: Packaged preparation matches exported routes and heading anchors
         env:
