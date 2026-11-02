@@ -202,6 +202,7 @@ case "$1" in
     for last do :; done
     printf '%s' "$last" > "$FIXTURE_ROOT/context"
     find "$last" -type f | sed "s|$last/||" | sort > "$FIXTURE_ROOT/context-files"
+    if [ -f "$last/index.html" ]; then cat "$last/index.html" > "$FIXTURE_ROOT/built.html"; fi
     exit "${FAKE_BUILD_EXIT:-0}";;
   push)
     printf '%s\n' "$@" > "$FIXTURE_ROOT/push-args"
@@ -306,6 +307,71 @@ esac
                     );
                 }
                 preserved(root);
+            }
+        }
+    }
+
+    #[test]
+    fn feature_selection_reaches_each_image_build_without_changing_saved_settings() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        fixture(root);
+        let markdown = "# Publication\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n";
+        for renderer in ["portable", "hosted"] {
+            for kind in ["static", "next"] {
+                for selection in ["all", "none"] {
+                    clear(root);
+                    let saved = selection == "none";
+                    let settings = format!(
+                        "{}{}",
+                        SETTINGS.replace("image: static", &format!("image: {kind}")),
+                        if renderer == "portable" {
+                            format!("markdown: {{math: {saved}, mermaid: {saved}}}\n")
+                        } else {
+                            String::new()
+                        }
+                    );
+                    config(root, "docs/zellij", renderer, &settings);
+                    write(root, "docs/zellij/content/index.md", markdown);
+                    let config_before = fs::read(root.join("docs/zellij/zel.yaml")).unwrap();
+                    let result = runtime(root)
+                        .args(["pub", "--features", selection])
+                        .output()
+                        .unwrap();
+                    assert!(result.status.success(), "{result:?}");
+                    let recipe = fs::read_to_string(root.join("recipe")).unwrap();
+                    if renderer == "portable" && kind == "static" {
+                        let html = fs::read_to_string(root.join("built.html")).unwrap();
+                        assert_eq!(html.contains("<math"), !saved);
+                        assert_eq!(html.contains("class=\"mermaid-diagram\""), !saved);
+                    } else {
+                        let canonical = if saved { "none" } else { "maths,diagrams" };
+                        assert!(
+                            recipe.contains(&format!("features \"{canonical}\" /app")),
+                            "{recipe}"
+                        );
+                    }
+                    assert_eq!(
+                        calls(root).lines().filter(|line| *line == "build").count(),
+                        1
+                    );
+                    assert_eq!(
+                        calls(root).lines().filter(|line| *line == "push").count(),
+                        1
+                    );
+                    assert_eq!(
+                        fs::read(root.join("docs/zellij/zel.yaml")).unwrap(),
+                        config_before
+                    );
+                    assert_eq!(
+                        fs::read_to_string(root.join("docs/zellij/content/index.md")).unwrap(),
+                        markdown
+                    );
+                    assert_eq!(
+                        fs::read_to_string(root.join("docs/zellij/site/keep.txt")).unwrap(),
+                        "authored existing output"
+                    );
+                }
             }
         }
     }

@@ -241,6 +241,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     import.report();
     if options.dry_run || !zellij_core::reporting::options().quiet {
         crate::delivery::describe_destination(&plan);
+        crate::delivery::describe_features(options.features);
     }
     import.write(&options.out, options.dry_run)?;
     if options.dry_run {
@@ -251,9 +252,20 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     }
     let execute = || {
         let site = Site::load(Utf8Path::new(&options.out))?;
-        crate::delivery::execute_plan(&site, &site.content, &plan)
+        crate::delivery::execute_plan(&site, &site.content, &plan, options.features)
     };
-    execute().inspect_err(|_| retained(&options.out))?;
+    execute().inspect_err(|_| {
+        retained(&options.out);
+        if let Some(features) = options.features {
+            zellij_core::diagnosticln!("The rendering selection was not saved; include --features {} when rebuilding this site.", features.as_str());
+        }
+    })?;
+    if let Some(features) = options.features {
+        zellij_core::statusln!(
+            "Rendering selection {} was not saved; pass --features again to repeat it.",
+            features.as_str()
+        );
+    }
     zellij_core::statusln!(
         "\nSaved delivery settings in {}/zel.yaml; future changes can use `zel publish <destination>` (Netlify defaults to a draft; --prod is never saved).",
         options.out

@@ -242,7 +242,12 @@ fn generated_portable_steps_execute_with_spaces_quotes_and_shell_characters() {
     repo(root);
     let dir = "docs/Team's [manual] 日本 $(touch ESCAPED)";
     site(root, dir, "ci: {zel-version: 0.2.0}\n");
-    run(root, &["ci", dir], 0);
+    write(
+        root,
+        &format!("{dir}/content/index.md"),
+        "# Guide\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n",
+    );
+    run(root, &["ci", dir, "--features", "all"], 0);
     let doc = workflow(root);
     fs::create_dir(root.join("bin")).unwrap();
     symlink(env!("CARGO_BIN_EXE_zel"), root.join("bin/zel")).unwrap();
@@ -261,6 +266,8 @@ fn generated_portable_steps_execute_with_spaces_quotes_and_shell_characters() {
         }
     }
     assert!(output.path().join("zellij-site/index.html").is_file());
+    let html = fs::read_to_string(output.path().join("zellij-site/index.html")).unwrap();
+    assert!(html.contains("<math") && html.contains("class=\"mermaid-diagram\""));
     assert!(!root.join("ESCAPED").exists());
     assert!(!root.join(dir).join("site").exists());
 }
@@ -522,4 +529,104 @@ fn image_platform_is_frozen_in_both_jobs_and_runner_matches_architecture() {
     run(root, &["ci", "--force", "--target", "static"], 0);
     let yaml = fs::read_to_string(root.join(".github/workflows/docs.yml")).unwrap();
     assert!(!yaml.contains("--platform") && !yaml.contains("qemu"));
+}
+
+#[test]
+fn features_are_frozen_in_all_build_and_delivery_commands_but_not_checks_or_pushes() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    let dir = "docs/Named manual";
+    let filename = format!("{dir}/delivery.yaml");
+    for renderer in ["portable", "hosted"] {
+        for (settings, extra) in [
+            ("", vec![]),
+            (
+                "publish: {action: deploy, provider: netlify, site: saved-id}\n",
+                vec![],
+            ),
+            (
+                "image: {name: ghcr.io/acme/docs:v1, platform: linux/arm64}\npublish: {action: push, image: static}\n",
+                vec![],
+            ),
+            (
+                "image: {name: ghcr.io/acme/docs:v1}\npublish: {action: push, image: next}\n",
+                vec![],
+            ),
+            ("", vec!["--target", "image"]),
+        ] {
+            site(root, dir, "");
+            let config =
+                format!("version: 1\nrenderer: {renderer}\nci: {{zel-version: 0.2.0}}\n{settings}");
+            write(root, &filename, &config);
+            write(root, &format!("{dir}/zel.yaml"), "invalid neighbor: [");
+            for (selection, canonical) in [
+                (Some("all"), "maths,diagrams"),
+                (Some("none"), "none"),
+                (Some("diagrams,maths"), "maths,diagrams"),
+                (None, ""),
+            ] {
+                let mut args = vec!["ci", "--config", &filename, "--force"];
+                args.extend_from_slice(&extra);
+                if let Some(value) = selection {
+                    args.extend(["--features", value]);
+                }
+                run(root, &args, 0);
+                let doc = workflow(root);
+                let mut builds = 0;
+                for job in doc["jobs"].as_object().unwrap().values() {
+                    for step in job["steps"].as_array().unwrap() {
+                        for line in step["run"].as_str().unwrap_or("").lines() {
+                            if !line.starts_with("zel ") {
+                                continue;
+                            }
+                            if line.starts_with("zel check") || line.starts_with("zel image push") {
+                                assert!(!line.contains("--features"), "{line}");
+                            } else {
+                                builds += 1;
+                                assert!(line.contains("--config \"$SITE_CONFIG\""), "{line}");
+                                assert_eq!(
+                                    line.contains("--features"),
+                                    selection.is_some(),
+                                    "{line}"
+                                );
+                                if selection.is_some() {
+                                    assert!(
+                                        line.ends_with(&format!("--features {canonical}")),
+                                        "{line}"
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+                assert_eq!(
+                    builds,
+                    if settings.is_empty() && extra.is_empty() {
+                        1
+                    } else {
+                        2
+                    }
+                );
+                assert_eq!(fs::read_to_string(root.join(&filename)).unwrap(), config);
+                let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+                run(
+                    root,
+                    &[
+                        "ci",
+                        "--config",
+                        &filename,
+                        "--force",
+                        "--features",
+                        "none,all",
+                    ],
+                    2,
+                );
+                assert_eq!(
+                    fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+                    previous
+                );
+            }
+        }
+    }
 }

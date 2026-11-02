@@ -199,3 +199,25 @@ jobs; AMD64/default workflows use `ubuntu-latest`. Native ARM64 avoids the
 intermittent Node failures observed with QEMU in hosted/Next builds. Generation
 does not change the local machine. Hosted/Next builds require an ARM64 variant
 of the pinned engine image. Multi-platform image lists remain unsupported.
+
+
+## Freeze rendering features
+
+```bash title="terminal"
+zel ci --features all --zel-version 0.2.0
+zel ci --features none --zel-version 0.2.0 --force
+```
+
+Generation accepts the same complete selection as build/delivery: `maths`,
+`diagrams`, `maths,diagrams`, `all`, or `none`. The selected features are written
+explicitly into both verification builds and publication commands, including
+Netlify, static/Next images and the legacy `--target image` form. Validation
+still runs first. Prebuilt image pushes receive no rendering flag.
+
+This changes the generated workflow, not `zel.yaml`. Once committed, the workflow
+keeps that choice until regenerated. Omitting the flag when regenerating removes
+the override and resumes saved portable settings or the pinned engine image's
+defaults at execution time. `ci run` only dispatches an existing workflow and
+does not accept this flag. Compatible native and engine releases must be
+published before running the generated workflow; generation does not publish or
+verify those releases.

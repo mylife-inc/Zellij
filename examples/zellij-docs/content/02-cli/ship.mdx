@@ -89,6 +89,23 @@ The composed command validates and builds once, then hands that result to the
 publication step. No push/upload follows a failed build. It does not create a
 persistent local `site/` export; use `zel build ./manual` when you want one.
 
+## Temporary feature selection
+
+```bash title="terminal"
+zel ship ./old-docs --out ./manual --image static --tag ghcr.io/acme/manual:v1 --features all
+```
+
+`--features maths|diagrams|maths,diagrams|all|none` applies a complete rendering
+selection to this command's build, for image or Netlify delivery. The plan
+shows the selection, and no push/upload occurs after a build failure.
+
+Unlike the destination and image platform, this override is not saved in the
+imported `zel.yaml`. After success or a failed build, pass the same flag to
+`zel publish ./manual --features all` to repeat that selection. Omitting it
+uses the engine image's default. A failed image push can still be retried
+without rebuilding using `zel image push <tag>`; that command needs no feature
+flag because the image is already built.
+
 ## Options
 
 | Option | Behavior |
@@ -101,6 +118,7 @@ persistent local `site/` export; use `zel build ./manual` when you want one.
 | `--tag <reference>` | Required with `--image`; exact registry destination |
 | `--site-id <id>` / `--site <id>` | Netlify site ID/domain; overrides environment |
 | `--prod` | Netlify production request; conflicts with `--image` |
+| `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--dry-run` | In-memory conversion and plan only |
 
 ## See also

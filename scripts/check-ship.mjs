@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { localRegistry, pullPublishedImage } from './fixtures/local-registry.mjs';
 
 const zel = path.resolve(process.argv[2]);
@@ -15,7 +15,7 @@ const docker = args => execFileSync('docker', args, { encoding: 'utf8', timeout:
 const run = args => execFileSync(zel, args, { cwd: root, stdio: 'inherit', timeout: 600000 });
 const source = {
   'mkdocs.yml': 'site_name: Imported manual\nnav: [index.md, next.md]\n',
-  'docs/index.md': '# Imported manual\n\n[Next page](next.md#details)\n\n![Logo](logo.svg)\n',
+  'docs/index.md': '# Imported manual\n\n[Next page](next.md#details)\n\n![Logo](logo.svg)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n',
   'docs/next.md': '# Second page\n\n## Details\n\n[Home](index.md)\n',
   'docs/logo.svg': '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>',
 };
@@ -29,7 +29,7 @@ try {
   for (const kind of ['static', 'next']) {
     const tag = `${registry}/acceptance/ship-${kind}:${suffix}`;
     images.push(tag);
-    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag]);
+    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, '--features', kind === 'static' ? 'all' : 'none']);
     pullPublishedImage(docker, tag);
     const name = `zel-ship-${kind}-${suffix}`;
     containers.push(name);
@@ -50,6 +50,13 @@ try {
       page.on('response', res => { if (res.status() >= 400) errors.push(`${res.status()} ${res.url()}`); });
       await page.goto(`${origin}/guide`);
       await page.getByRole('heading', { name: 'Imported manual', exact: true }).waitFor();
+      if (kind === 'static') {
+        await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 15000 });
+        await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 15000 });
+      } else {
+        await expect(page.locator('mjx-container, .zellij-mermaid')).toHaveCount(0);
+        assert((await page.locator('article').innerText()).includes('$x^2$'));
+      }
       const logo = page.locator('article img[alt="Logo"]');
       assert(await logo.evaluate(img => img.complete && img.naturalWidth > 0));
       await page.locator('article').getByRole('link', { name: 'Next page', exact: true }).click();
@@ -61,6 +68,7 @@ try {
     assert.equal(await (await fetch(`${origin}/_zellij/assets/imported/docs/logo.svg`)).text(), source['docs/logo.svg']);
     for (const url of ['/zel.yaml', '/site.yaml', '/docs/index.md']) assert.equal((await fetch(origin + url)).status, 404);
     for (const [relative, body] of Object.entries(source)) assert.equal(await readFile(path.join(root, 'source', relative), 'utf8'), body);
+    assert(!(await readFile(path.join(root, `manual ${kind}`, 'zel.yaml'), 'utf8')).includes('features'));
     run(['pub', `manual ${kind}`, '--dry-run']);
     console.log(`ship ${kind}: imported, published, pulled and verified navigation/assets; source unchanged.`);
   }

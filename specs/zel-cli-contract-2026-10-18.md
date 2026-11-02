@@ -975,3 +975,37 @@ ordering and diagnostics, cache isolation, native browser rendering through conf
 edits and failed-build recovery, and hosted preview orchestration on all three
 OS families. Actual container CI checks enabled math/Mermaid during hosted preview
 and development edits, then disables both for a subsequent preview.
+
+
+## Stage 9d: rendering features in delivery and CI (2026-11-02)
+
+publish/pub, deploy/netlify and ship accept the shared typed --features
+selection. It is complete, invocation-only, displayed in dry plans, and passed
+to the single portable/hosted static or image build before publication. Saved
+configuration, authored content and previous local exports remain unchanged.
+Malformed values fail during argument parsing before writes or tool/provider
+access. Omission preserves defaults; explicit none disables both optional
+renderers. Existing validation, compatibility guards, runtime checks and
+no-publication-after-build-failure behavior remain in force.
+
+Ship saves its existing destination/platform settings but does not save the
+feature override. Its success/failure messages explain how to repeat the
+selection on a later publish. No feature flag applies to manual image push,
+which publishes an already-built artifact.
+
+ci and ci init github accept --features for generation. Both verification and
+publication builds receive the canonical explicit selection, including build-only,
+Netlify, static/Next image and legacy image workflows, plus named configuration
+and platform combinations. Check and prebuilt image-push commands do not receive
+it. Selection is frozen in the generated YAML until regenerated; regenerating
+without it restores saved/default behavior. ci run/publish dispatch does not
+accept rendering options. No new settings keys or implicit credential provisioning
+are introduced. Existing compatible-release requirements still apply.
+
+Verification covers generated commands executed against the native portable
+renderer, all workflow delivery forms, malformed inputs/output preservation,
+portable upload bytes, each renderer/image kind, ship retention and build/push
+ordering. Hosted CI exercises selected features in Netlify exports, portable
+Next image publication and imported static/Next images. Remaining work includes
+advanced build options, combined image manifests, additional providers,
+conversion fidelity and matched native release/documentation publication.

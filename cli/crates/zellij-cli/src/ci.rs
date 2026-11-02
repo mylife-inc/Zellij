@@ -140,6 +140,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         },
         site_root: relative,
         platform,
+        features: args.features,
         settings,
         version,
         publish,

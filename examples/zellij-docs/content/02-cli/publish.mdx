@@ -121,6 +121,21 @@ registry: that option prefixes a new destination for the existing manual push
 command. A failed push may have uploaded some layers; Zellij does not attempt
 to delete registry state or roll back a previously published tag.
 
+## Temporary feature selection
+
+`zel pub --features all` enables math and Mermaid for this publication;
+`zel pub --features none` disables both. The same flag works with `publish`,
+`deploy`, and `netlify`, for either renderer and either image kind. Choose
+`maths`, `diagrams`, `maths,diagrams`, `all`, or `none`; the value is a complete
+selection. Mindmaps remain independent.
+
+The selection appears in `--dry-run` plans and reaches the single build before
+push/upload. It does not modify source or saved configuration. A later command
+without the flag uses saved portable settings or the hosted engine image's
+defaults again. Hosted builds require a compatible engine supporting feature
+selection; an incompatible engine stops before publication. Content validation
+and credential/runtime checks still apply.
+
 ## Options
 
 | Option | Meaning |
@@ -128,6 +143,7 @@ to delete registry state or roll back a previously published tag.
 | `[site]` | Configured site root; otherwise use the standard discovery order |
 | `--tag <reference>` | Override `image.name` for both build and push |
 | `--platform <platform>` | Override `image.platform` for image publication; choose `linux/amd64` or `linux/arm64` |
+| `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
 | `--to netlify` | Select static-site deployment; rejected for a saved image-push plan |
 | `--site-id <id-or-domain>` | Netlify destination override; `--site` is equivalent |

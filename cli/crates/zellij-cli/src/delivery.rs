@@ -3,6 +3,7 @@ use camino::Utf8Path;
 use zellij_core::{
     Result,
     delivery::{DeliveryPlan, ImagePublication},
+    features::Features,
     site::{Renderer, Site},
 };
 
@@ -21,6 +22,7 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
     .with_platform(options.platform)?;
     if options.dry_run || !zellij_core::reporting::options().quiet {
         describe(&plan, &site, &content);
+        describe_features(options.features);
     }
     if options.dry_run {
         zellij_core::reportln!(
@@ -28,7 +30,7 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
         );
         return Ok(());
     }
-    execute_plan(&site, &content, &plan)
+    execute_plan(&site, &content, &plan, options.features)
 }
 
 pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
@@ -59,15 +61,26 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
     }
 }
 
-pub(crate) fn execute_plan(site: &Site, content: &Utf8Path, plan: &DeliveryPlan) -> Result<()> {
+pub(crate) fn describe_features(features: Option<Features>) {
+    if let Some(features) = features {
+        zellij_core::reportln!("  Features {} (this invocation only)", features.as_str());
+    }
+}
+
+pub(crate) fn execute_plan(
+    site: &Site,
+    content: &Utf8Path,
+    plan: &DeliveryPlan,
+    features: Option<Features>,
+) -> Result<()> {
     match plan {
-        DeliveryPlan::Push(plan) => push_image(site, content, plan),
+        DeliveryPlan::Push(plan) => push_image(site, content, plan, features),
         DeliveryPlan::Netlify {
             site: id,
             production,
         } => {
             let client = crate::netlify::Client::from_environment()?;
-            deploy(site, content, &client, id, *production)
+            deploy(site, content, &client, id, *production, features)
         }
     }
 }
@@ -78,6 +91,7 @@ pub(crate) fn deploy(
     client: &crate::netlify::Client,
     id: &str,
     production: bool,
+    features: Option<Features>,
 ) -> Result<()> {
     // Authenticate/read the existing site before an expensive hosted build.
     client.check_site(id)?;
@@ -107,9 +121,16 @@ pub(crate) fn deploy(
     zellij_core::statusln!("Building static site…");
     let build = || -> Result<String> {
         match engine {
-            Some(engine) => engine.build_for_deployment(content, &export),
+            Some(engine) => engine.build_for_deployment_with_features(content, &export, features),
             None => {
-                let report = zellij_docs::build(&site.input, &export, Default::default())?;
+                let report = zellij_docs::build(
+                    &site.input,
+                    &export,
+                    zellij_docs::BuildOptions {
+                        features,
+                        ..Default::default()
+                    },
+                )?;
                 for warning in report.warnings {
                     zellij_core::diagnosticln!("warning: {warning}");
                 }
@@ -132,7 +153,12 @@ pub(crate) fn deploy(
     Ok(())
 }
 
-fn push_image(site: &Site, content: &Utf8Path, plan: &ImagePublication) -> Result<()> {
+fn push_image(
+    site: &Site,
+    content: &Utf8Path,
+    plan: &ImagePublication,
+    features: Option<Features>,
+) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
     zellij_core::statusln!("\nBuilding image…");
     if let Err(error) = crate::images::build_image(
@@ -142,7 +168,7 @@ fn push_image(site: &Site, content: &Utf8Path, plan: &ImagePublication) -> Resul
         plan.kind,
         &plan.tag,
         plan.platform,
-        None,
+        features,
     ) {
         zellij_core::diagnosticln!(
             "Publication stopped during validation/build; no push was attempted."

@@ -129,8 +129,10 @@ try {
     const registry = await localRegistry(docker, containers, suffix);
     const portable = `${registry}/acceptance/next:${suffix}`; images.push(portable);
     const config = await readFile(path.join(root,'docs/zellij/zel.yaml'),'utf8');
-    await write('docs/zellij/zel.yaml',`${config}image: {name: '${portable}'}\npublish: {action: push, image: next}\n`);
-    run(['pub']);
+    await write('docs/zellij/zel.yaml',`${config.replace('math: true, mermaid: true', 'math: false, mermaid: false')}image: {name: '${portable}'}\npublish: {action: push, image: next}\n`);
+    const savedConfig = await readFile(path.join(root,'docs/zellij/zel.yaml'),'utf8');
+    run(['pub', '--features', 'all']);
+    assert.equal(await readFile(path.join(root,'docs/zellij/zel.yaml'),'utf8'), savedConfig);
     pullPublishedImage(docker, portable);
     await container(portable,'',true);
     await write('hosted/zel.yaml','version: 1\nrenderer: hosted\n');
