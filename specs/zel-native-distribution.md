@@ -94,3 +94,8 @@ run the complete CI gates, and tag that reviewed commit. Release naming,
 documentation publication and the long-term shared repository remain deliberate
 release decisions; this work does not tag, deploy the documentation, or change
 repository visibility.
+
+The [release procedure](zel-release-procedure.md) now defines stable versus
+candidate channels and the checks required before tagging. Candidates publish
+exact image tags and pinned installers, without promoting stable aliases,
+deploying production docs or replacing shared installer scripts.

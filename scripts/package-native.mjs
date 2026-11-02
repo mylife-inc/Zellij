@@ -1,4 +1,5 @@
 // One archive contract for CI, tagged releases, and local packaging. No npm dependencies.
+import { releasePolicy } from './release-policy.mjs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rename, rm, writeFile, access, lstat } from 'node:fs/promises';
@@ -16,7 +17,8 @@ const manifest = await readFile(path.join(root, 'cli/Cargo.toml'), 'utf8');
 const version = manifest.match(/\[workspace\.package\]([\s\S]*?)(?:\n\[|$)/)?.[1].match(/^version\s*=\s*"([^"]+)"/m)?.[1];
 if (!version) throw new Error('Cannot read the Rust workspace version');
 const tag = requestedVersion === 'workspace' ? `v${version}` : requestedVersion;
-if (tag !== `v${version}` || !/^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(tag)) {
+releasePolicy(tag);
+if (tag !== `v${version}`) {
   throw new Error(`Requested version ${tag} must match the committed workspace version v${version}`);
 }
 if (target === '--check-version') { console.log(`Release version matches ${tag}`); process.exit(0); }

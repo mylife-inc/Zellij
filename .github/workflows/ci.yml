@@ -26,6 +26,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: node --test scripts/release-policy.test.mjs
       - run: npm audit --audit-level=low
       - run: npm run typecheck
       - run: npm test
@@ -224,17 +225,13 @@ jobs:
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
       - name: Enable ARM64 image acceptance
-        # The preceding exports leave large unused Next/npm build layers on
-        # hosted runners. Keep the tagged engine image, discard only build cache.
-        # Reclaim again between image groups so a successful earlier build
-        # cannot exhaust disk during a later package installation.
-        # The actual cleanup steps are separate for clear failure diagnostics.
         uses: docker/setup-qemu-action@v4
         with:
           platforms: arm64
       - name: Cross-architecture image build, registry and HTTP acceptance
         run: node scripts/check-image-platform.mjs cli/target/debug/zel
 
+      # Each group builds large Next.js layers. Retain tagged engine images.
       - name: Reclaim container build cache before static images
         run: docker builder prune --all --force
 
