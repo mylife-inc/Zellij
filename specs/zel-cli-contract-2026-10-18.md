@@ -910,3 +910,37 @@ delivery ordering and no-push-on-failure, all runtime argv, dry plans, retained
 ship configuration, and CI generation. CI adds a real ARM64 portable-image
 build/push/pull/HTTP round trip plus an AMD64 override. Full cross-architecture
 hosted/Next emulated builds are not claimed by that small acceptance fixture.
+
+
+## Stage 9b: per-build rendering features (2026-11-02)
+
+Implemented --features maths|diagrams|maths,diagrams|all|none for build/b
+(all three targets), image static/next/build (including si/ni), and hosted
+Dockerfile generation. Values are typed complete selections, not arbitrary
+Dockerfile/shell strings; duplicate/unknown features, empty lists and all/none
+combinations fail during parsing. Mindmaps remain independent.
+
+Portable compilation and adaptation apply overrides after validating the
+selected configuration, without writing it. Hosted exports and image recipes
+require feature-selection contract version 1 before selecting the disposable
+wrapper's feature manifest and running npm install. Older distributions fail
+with guidance without replacing an existing export. Explicit
+none is a real operation even on an enabled base. A portable Next build matches
+its inferred requirements explicitly, including none when no optional features
+are needed. Omission otherwise preserves existing defaults. Authored files and
+failed-export preservation are unchanged; local images never publish implicitly.
+Portable static Dockerfiles consume already-built HTML and reject the override.
+
+Preview/dev, delivery/ship and generated CI do not accept this invocation-only
+flag in this increment. Persistent portable settings and hosted image variants
+remain their defaults. Use build/image then an explicit push when a temporary
+image override is wanted. Generic --build-arg, site-url/no-check, combined image
+manifests, additional providers/conversion work and compatible release/docs
+publication remain on the backlog.
+
+Regression coverage includes named configs, source immutability, enable/disable,
+invalid values, output preservation, adapted document trees, recipe/install
+ordering and no-runtime Dockerfile generation. Container CI exercises hosted
+exports with all -> none on a shared cache, static images overriding an enabled
+base, and Next images enabling features from the default base, with browser
+checks for rendered math and Mermaid.

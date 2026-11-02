@@ -88,6 +88,7 @@ fn cli_overrides_and_removing_configuration_restore_defaults() {
         BuildOptions {
             name: Some("Override"),
             theme: Some("cupertino"),
+            ..Default::default()
         },
     )
     .unwrap();

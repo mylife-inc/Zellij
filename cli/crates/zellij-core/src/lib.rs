@@ -8,6 +8,7 @@
 pub mod ci;
 pub mod delivery;
 pub mod error;
+pub mod features;
 pub mod files;
 pub mod output;
 pub mod process;

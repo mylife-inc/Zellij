@@ -220,6 +220,7 @@ impl Watcher {
                     BuildOptions {
                         name: options.name.as_deref(),
                         theme: options.theme.as_deref(),
+                        ..Default::default()
                     },
                     Some(configured),
                 )?;

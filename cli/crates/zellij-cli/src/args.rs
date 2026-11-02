@@ -1,6 +1,7 @@
 //! Command definitions, shortcuts and completion share one argument schema.
 use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
 use zellij_core::delivery::ImagePlatform;
+use zellij_core::features::Features;
 use zellij_core::site::SiteInput;
 
 // Each flattened shortcut declares its spelling, descriptive route, and mapping
@@ -315,6 +316,9 @@ pub(crate) enum Command {
         /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
         #[arg(long)]
         platform: Option<ImagePlatform>,
+        /// Override this build: maths, diagrams, maths,diagrams, all, or none.
+        #[arg(long)]
+        features: Option<Features>,
 
         /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
         #[arg(long)]
@@ -484,6 +488,9 @@ pub(crate) enum ImageAction {
         /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
         #[arg(long)]
         platform: Option<ImagePlatform>,
+        /// Override this build: maths, diagrams, maths,diagrams, all, or none.
+        #[arg(long)]
+        features: Option<Features>,
     },
     /// Run it locally — the last check before it goes anywhere.
     Run(ImageRunArgs),
@@ -703,6 +710,9 @@ pub(crate) struct ImageDockerfileArgs {
 
     #[arg(long, value_enum, default_value = "next")]
     pub(crate) kind: ImageKind,
+    /// Override this build: maths, diagrams, maths,diagrams, all, or none.
+    #[arg(long)]
+    pub(crate) features: Option<Features>,
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
@@ -722,6 +732,9 @@ pub(crate) struct SiteImageArgs {
     /// Target Linux image platform: linux/amd64 or linux/arm64. Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
+    /// Override this build: maths, diagrams, maths,diagrams, all, or none.
+    #[arg(long)]
+    pub(crate) features: Option<Features>,
 }
 
 #[cfg(test)]

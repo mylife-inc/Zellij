@@ -64,6 +64,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         zellij_docs::BuildOptions {
             name: options.name,
             theme: options.theme,
+            ..Default::default()
         },
     );
     if stop.load(Ordering::Acquire) {

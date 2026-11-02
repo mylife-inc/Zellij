@@ -15,7 +15,7 @@ const suffix = `${process.pid}-${Date.now()}`;
 const images = [];
 const containers = [];
 const docker = (args) => execFileSync('docker', args, { encoding: 'utf8', timeout: 120_000 }).trim();
-const run = (args) => execFileSync(zel, args, { cwd: root, stdio: 'inherit', timeout: 600_000 });
+const run = (args, extra = {}) => execFileSync(zel, args, { cwd: root, env: { ...process.env, ...extra }, stdio: 'inherit', timeout: 600_000 });
 const asset = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>';
 async function write(relative, body) {
   const file = path.join(root, relative);
@@ -103,6 +103,13 @@ async function serve(tag, kind, prefix) {
       page.on('response', (res) => { if (res.status() >= 400) failures.push(`${res.status()} ${res.url()}`); });
       await page.goto(`${origin}${prefix}/`);
       await page.waitForURL(`${origin}${prefix}/manual`);
+      if (!prefix) {
+        await page.locator('mjx-container svg').first().waitFor();
+        await page.locator('.zellij-mermaid svg').waitFor();
+      } else {
+        assert.equal(await page.locator('mjx-container, .zellij-mermaid').count(), 0);
+        assert((await page.locator('article').innerText()).includes('$x^2$'));
+      }
       await page.getByRole('link', { name: 'Next', exact: true }).click();
       await page.waitForURL(`${origin}${prefix}/manual/next`);
       await page.reload();
@@ -137,18 +144,47 @@ try {
   // Two hosted builds cover both deployment roots using the same source.
   await write('hosted/zel.yaml', 'version: 1\nrenderer: hosted\n');
   await write('hosted/content/01-guide/_sidebar.yaml', 'title: Manual\nroute: /manual\nnav: [index, next]\n');
-  await write('hosted/content/01-guide/index.mdx', '# Hosted images\n\n[Next](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n');
+  await write('hosted/content/01-guide/index.mdx', '# Hosted images\n\n[Next](/manual/next)\n\n![Logo](/_zellij/assets/logo.svg)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n');
   await write('hosted/content/01-guide/next.mdx', '# Next page\n\nMore documentation.\n');
   await write('hosted/content/assets/logo.svg', asset);
+  // Start from an enabled base to prove --features none really overrides it.
+  // Feature selection changes only the disposable wrapper manifest here.
+  const enabledBase = `zel-features-base:${suffix}`;
+  images.push(enabledBase);
+  execFileSync('docker', ['build', '--build-arg', `BASE=${process.env.ZELLIJ_IMAGE || 'zellij-ci'}`, '-t', enabledBase, '-'], {
+    input: 'ARG BASE\nFROM ${BASE}\nRUN node /opt/zellij/bin/zellij.mjs features all /app\n',
+    stdio: ['pipe', 'inherit', 'inherit'], timeout: 120_000,
+  });
+  const originalContent = await readFile(path.join(root, 'hosted/content/01-guide/index.mdx'), 'utf8');
   for (const [label, prefix] of [['root', ''], ['prefix', '/products/.docs']]) {
     await write('hosted/content/site.yaml', `name: Hosted images\nhome: 01-guide\nbasePath: '${prefix}'\nnav: { search: true, themeToggle: true }\n`);
     execFileSync(process.execPath, [fileURLToPath(new URL('../engine/packages/zellij/bin/zellij.mjs', import.meta.url)),
       'check', path.join(root, 'hosted/content'), '--deep', '--strict'], { stdio: 'inherit' });
     const tag = `zellij-static-hosted-${label}:${suffix}`;
     images.push(tag);
-    run(['image', 'static', 'hosted', '--tag', tag]);
+    const selection = prefix ? 'none' : 'all';
+    // Reuse the export and module cache across all -> none to catch stale state.
+    run(['build', 'hosted', '--features', selection, '--out', 'hosted-output'], { ZELLIJ_IMAGE: enabledBase });
+    const html = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
+    assert.equal(html.includes('<mjx-container'), selection === 'all');
+    run(['image', 'static', 'hosted', '--tag', tag, '--features', selection], { ZELLIJ_IMAGE: enabledBase });
+    assert.equal(await readFile(path.join(root, 'hosted/content/01-guide/index.mdx'), 'utf8'), originalContent);
     await serve(tag, 'hosted-' + label, prefix);
   }
+  // A distribution predating explicit rendering selection must fail before npm
+  // installation and leave the last successful export in place.
+  const incompatibleBase = `zel-features-old-base:${suffix}`;
+  images.push(incompatibleBase);
+  execFileSync('docker', ['build', '--build-arg', `BASE=${enabledBase}`, '-t', incompatibleBase, '-'], {
+    input: "ARG BASE\nFROM ${BASE}\nRUN node -e 'const fs=require(\"fs\"); const p=\"/opt/zellij/package.json\"; const j=JSON.parse(fs.readFileSync(p)); delete j.zellij.featureSelectionVersion; fs.writeFileSync(p, JSON.stringify(j));'\n",
+    stdio: ['pipe', 'inherit', 'inherit'], timeout: 120_000,
+  });
+  const previous = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
+  assert.throws(() => execFileSync(zel, ['build', 'hosted', '--features', 'none', '--out', 'hosted-output'], {
+    cwd: root, env: { ...process.env, ZELLIJ_IMAGE: incompatibleBase }, encoding: 'utf8', timeout: 120_000,
+  }), error => error.status === 3 && error.stderr.includes('does not support explicit feature selection'));
+  assert.equal(await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8'), previous);
+
 } finally {
   for (const name of containers) {
     try { docker(['rm', '-f', name]); } catch { /* Keep the original failure. */ }
