@@ -3010,11 +3010,17 @@ conversion fidelity, matched native releases and documentation publication.
 No local Docker daemon was started, native release published or manual live
 provider/registry deployment performed for this milestone.
 
-Continuation checkpoint: `codex/cli-build-features` is pushed, but no PR has
-been created yet. The GitHub connector returns 403 for PR creation (read access
+Earlier handoff: `codex/cli-build-features` was pushed, but no PR had
+been created. The GitHub connector returned 403 for PR creation (read access
 works), and `gh auth status` reports no login, including outside the sandbox.
 The user was asked to run `gh auth login --hostname github.com --web
 --git-protocol ssh --skip-ssh-key`. Automatic approval review rejected opening
 arbitrary Safari state because of unrelated private browser content; do not
 retry that route. After authentication, create the PR, validate all CI jobs on
 its final head, merge under the user's existing authorization, and sync main.
+
+Authentication resolved on November 2 after the user logged in. The interactive
+shell sets `XDG_CONFIG_HOME=/Users/hamid/Dev/config`; use that setting with `gh`
+in noninteractive commands. The account is mylife-inc and uses the system
+keyring. Do not read or print credential files/tokens. PR creation, final CI,
+merge and local main synchronization are now the continuation steps.
