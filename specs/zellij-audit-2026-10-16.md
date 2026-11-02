@@ -2377,3 +2377,27 @@ are pending for this branch. No local Docker daemon was started or native releas
 published. Remaining work includes delivery/CI temporary controls, advanced
 build options, combined image manifests, providers beyond Netlify, conversion
 fidelity, and matched native release/documentation publication.
+
+
+### PR #47 development-origin regression — 2026-11-02
+
+First CI run 41511951845 at c98e226e565da6dcd1c9b5eec263fb090fff6b6a
+passed 10 jobs, including real hosted preview rendering and five native package
+targets. The CLI job failed the new hosted dev Mermaid browser check. Both
+macOS ARM jobs were cancelled before any step ran because GitHub reported
+hosted runner capacity constraints; these cancellations are not test results.
+
+The browser check exposed an existing hydration failure: Next binds 0.0.0.0
+inside the container, but the engine excluded loopback addresses from allowed
+origins. Opening 127.0.0.1 blocked the HMR connection and left client components
+unhydrated. This was reproduced locally with the real Turbopack dev server.
+Fixing commit b23e1d417dd93f2d708f5a4aa86c28a3b14033bf allows the exact IPv4
+and IPv6 loopback hosts (127.0.0.1 and [::1]). Direct wrapper browser acceptance
+now uses the container's wildcard binding and checks real math/diagram output,
+editing, search, recovery and origin enforcement. Requests from unrelated
+hosts, including a hostname resembling a loopback IP, still return 403.
+
+After the fix, real local Chromium/Turbopack acceptance and all 365 engine tests
+passed. Final CI on the updated PR head, including the actual container and
+both macOS ARM jobs, is still required before merge. No local Docker daemon
+was started. PR: https://github.com/mylife-inc/Zellij/pull/47.
