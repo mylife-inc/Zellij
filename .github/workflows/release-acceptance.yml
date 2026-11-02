@@ -1,0 +1,79 @@
+name: Published release acceptance
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+      shared:
+        type: boolean
+        default: false
+  # Select the published tag in the UI; a branch dispatch fails the version gate.
+  workflow_dispatch:
+    inputs:
+      shared:
+        description: Also check the shared mylife-inc/releases destination
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    name: Published install (${{ matrix.target }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04, target: x86_64-unknown-linux-gnu }
+          - { os: ubuntu-22.04-arm, target: aarch64-unknown-linux-gnu }
+          - { os: macos-15-intel, target: x86_64-apple-darwin }
+          - { os: macos-15, target: aarch64-apple-darwin }
+          - { os: windows-2022, target: x86_64-pc-windows-msvc }
+          - { os: windows-11-arm, target: aarch64-pc-windows-msvc }
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
+      TARGET: ${{ matrix.target }}
+      RELEASE_REPOSITORY: ${{ github.repository }}
+      SHARED_RELEASE: ${{ inputs.shared }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Require a published version tag matching this checkout
+        run: >-
+          node -e "if (process.env.GITHUB_REF_TYPE !== 'tag') throw new Error('Select a published version tag');"
+      - name: Install public downloads and exercise the released binary
+        run: node scripts/check-published-release.mjs
+
+  images:
+    name: Published images (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    env:
+      VERSION: ${{ inputs.version || github.ref_name }}
+      RELEASE_IMAGE: ghcr.io/${{ github.repository_owner }}/zellij-base
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Require a published version tag
+        run: >-
+          node -e "if (process.env.GITHUB_REF_TYPE !== 'tag') throw new Error('Select a published version tag');"
+      - name: Pull and execute every published feature variant natively
+        run: node scripts/check-published-images.mjs

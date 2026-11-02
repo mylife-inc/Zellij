@@ -66,8 +66,9 @@ ci:
 Then `zel ci` is enough to generate the workflow; use `--force` to replace it.
 Regenerate after changing CI or publication settings so the workflow reflects
 the selected artifacts, triggers and destinations. `--zel-version` overrides
-the saved pin; once a compatible CLI is released, its own version supplies the
-fallback pin. Versions are exact, optionally prefixed with `v`, and may include
+the saved pin. The current 0.2.0-rc.1 source supplies its own version as the
+fallback pin; its release assets must be published before the generated workflow
+can run. Versions are exact, optionally prefixed with `v`, and may include
 release-candidate suffixes. `latest` and versions before 0.2.0 are rejected.
 The installer is downloaded from that exact release; it verifies the binary's
 checksum and reported version. Engine-backed builds use the matching versioned

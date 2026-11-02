@@ -42,13 +42,16 @@ it('updates edited, added, renamed and deleted assets and canonical search route
   await f.start();
   const originalHash = (await f.json('asset-manifest.json'))['logo.svg'];
   await f.put('assets/logo.svg', '<svg>after!</svg>');
+  // Force separate watch batches: completing the logo edit cannot be used as
+  // a completion signal for an asset added by a later save.
+  await expect.poll(async () => (await f.json('asset-manifest.json'))['logo.svg']).not.toBe(originalHash);
   await f.put('assets/nested/new.svg', '<svg>added</svg>');
   await f.put('01-guide/index.mdx', '# Welcome\n\n## After\n\nChanged passage.\n');
   await f.put('01-guide/extra.mdx', '---\nroute: /extra\n---\n# Extra\n\nAdded passage.\n');
   await expect.poll(f.search).toContain('/manual#after');
   await expect.poll(f.search).toContain('/extra');
-  await expect.poll(async () => (await f.json('asset-manifest.json'))['logo.svg']).not.toBe(originalHash);
-  expect(await readFile(path.join(f.output, 'assets/nested/new.svg'), 'utf8')).toBe('<svg>added</svg>');
+  // Search is published before assets; wait for the requested asset itself.
+  await expect.poll(() => readFile(path.join(f.output, 'assets/nested/new.svg'), 'utf8')).toBe('<svg>added</svg>');
   await rename(path.join(f.content, 'assets/nested/new.svg'), path.join(f.content, 'assets/moved.svg'));
   await rm(path.join(f.content, '01-guide/extra.mdx'));
   await expect.poll(f.search).not.toContain('/extra');

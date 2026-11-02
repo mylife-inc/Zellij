@@ -80,6 +80,16 @@ test('both release repositories use their own pinned installers and correct imag
   assert.throws(() => releaseNotes('v1.0.0', 'example/releases', "evil'"));
 });
 
+test('candidate release pages include the reviewed version-specific notes', () => {
+  for (const scope of ['', 'zellij']) {
+    const notes = execFileSync(process.execPath, ['scripts/release-policy.mjs', 'notes', 'v0.2.0-rc.1', 'example/releases', scope], { cwd: root, encoding: 'utf8' });
+    assert.match(notes, /Candidate highlights/);
+    assert.match(notes, /Portable documentation/);
+    assert.match(notes, /Compatibility and current limits/);
+    assert.ok(notes.includes(`releases/download/${scope ? 'zellij-' : ''}v0.2.0-rc.1/install.sh`));
+  }
+});
+
 for (const version of ['v0.2.0-rc.1', 'v0.2.0']) {
   test(`local image publisher sends the exact ${version} tag set to Docker`, t => {
     const f = fixture(t);

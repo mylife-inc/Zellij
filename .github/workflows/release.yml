@@ -65,9 +65,9 @@ jobs:
           node scripts/package-native.mjs "$VERSION" --check-version
           node scripts/release-policy.mjs outputs "$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
-      - run: node --test scripts/release-policy.test.mjs
+      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs
       - run: npm run typecheck
-      - run: npx vitest run --root engine/packages/zellij
+      - run: npm test
       - run: npm run build --workspace @shebka/zellij
 
       # The schema is compiled into the binary about to be published, so a
@@ -313,6 +313,8 @@ jobs:
   publish:
     name: Publish the release
     needs: [verify, manifests, binaries, docs]
+    outputs:
+      shared: ${{ steps.destinations.outputs.shared }}
 
     # Runs after the images, and not because of them.
     #
@@ -340,6 +342,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+
+      - name: Record publication destinations for acceptance
+        id: destinations
+        run: echo "shared=$HAS_RELEASES_TOKEN" >> "$GITHUB_OUTPUT"
 
       # The binaries and their checksums, and nothing else in the run.
       #
@@ -459,3 +465,14 @@ jobs:
           echo "::warning::RELEASES_GITHUB_TOKEN is not set, so nothing was"
           echo "published to ${RELEASES_REPO}. The installer at"
           echo "https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh will not find this release."
+
+  acceptance:
+    name: Verify published artifacts
+    needs: [verify, publish]
+    if: ${{ always() && needs.verify.result == 'success' && needs.publish.result == 'success' }}
+    uses: ./.github/workflows/release-acceptance.yml
+    permissions:
+      contents: read
+    with:
+      version: ${{ github.ref_name }}
+      shared: ${{ needs.publish.outputs.shared == 'true' }}

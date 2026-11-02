@@ -1,6 +1,13 @@
 // Shared by tagged CI releases and the local publishing helpers. No npm dependencies.
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
+
+export const nativeTargets = [
+  'x86_64-unknown-linux-gnu', 'aarch64-unknown-linux-gnu',
+  'x86_64-apple-darwin', 'aarch64-apple-darwin',
+  'x86_64-pc-windows-msvc', 'aarch64-pc-windows-msvc',
+];
 
 export function releasePolicy(tag) {
   const match = /^v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$/.exec(tag ?? '');
@@ -24,7 +31,7 @@ export function imageTags(tag, image, features = 'none') {
   return versions.map(version => `${image}:${version}${suffix}`);
 }
 
-export function releaseNotes(tag, repository, scope = '', image = 'ghcr.io/mylife-inc/zellij-base') {
+export function releaseNotes(tag, repository, scope = '', image = 'ghcr.io/mylife-inc/zellij-base', details = '') {
   const policy = releasePolicy(tag);
   if (/\s/.test(repository + scope) || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository) || (scope && !/^[A-Za-z0-9-]+$/.test(scope))) {
     throw new Error('Invalid release repository or scope.');
@@ -32,6 +39,7 @@ export function releaseNotes(tag, repository, scope = '', image = 'ghcr.io/mylif
   const assetBase = `https://github.com/${repository}/releases/download/${scope ? `${scope}-` : ''}${tag}`;
   const images = ['none', 'maths', 'diagrams', 'all'].map(features => imageTags(tag, image, features)[0]);
   return `\`zel\` ${tag}.${policy.prerelease ? ' This is a prerelease; installation is explicitly pinned below.' : ''}
+${details ? `\n${details.trim()}\n` : ''}
 
 ## Install this version
 
@@ -82,7 +90,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     } else if (command === 'image-tags') {
       console.log(imageTags(tag, ...args).join('\n'));
     } else if (command === 'notes') {
-      process.stdout.write(releaseNotes(tag, ...args));
+      releasePolicy(tag);
+      let details = '';
+      try { details = readFileSync(new URL(`../specs/releases/${tag}.md`, import.meta.url), 'utf8'); }
+      catch (error) { if (error.code !== 'ENOENT') throw error; }
+      process.stdout.write(releaseNotes(tag, args[0], args[1], args[2], details));
     } else {
       throw new Error('Usage: release-policy.mjs outputs|image-tags|notes <version> [arguments]');
     }
