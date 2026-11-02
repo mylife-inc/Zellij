@@ -295,6 +295,9 @@ pub(crate) enum Command {
 
         #[arg(long)]
         port: Option<u16>,
+        /// Override this session: maths, diagrams, maths,diagrams, all, or none.
+        #[arg(long)]
+        features: Option<Features>,
     },
 
     /// Build the site.
@@ -390,6 +393,9 @@ pub(crate) enum Command {
         /// Portable theme; hosted sites use content/site.yaml.
         #[arg(long)]
         theme: Option<String>,
+        /// Override every preview build: maths, diagrams, maths,diagrams, all, or none.
+        #[arg(long)]
+        features: Option<Features>,
         /// Local port; use 0 to choose an available port.
         #[arg(long)]
         port: Option<u16>,

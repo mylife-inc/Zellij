@@ -291,6 +291,9 @@ fn invalid_build_features_and_failed_builds_preserve_config_and_output() {
         vec!["ni"],
         vec!["image", "build"],
         vec!["image", "dockerfile"],
+        vec!["view"],
+        vec!["v"],
+        vec!["dev"],
     ] {
         for invalid in [
             "none,maths",

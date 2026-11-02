@@ -944,3 +944,34 @@ ordering and no-runtime Dockerfile generation. Container CI exercises hosted
 exports with all -> none on a shared cache, static images overriding an enabled
 base, and Next images enabling features from the default base, with browser
 checks for rendered math and Mermaid.
+
+
+## Stage 9c: rendering features in preview sessions (2026-11-02)
+
+view/v and dev accept the same typed --features selection as build. It applies
+to the initial build and every rebuild for the lifetime of the session, including
+portable configuration edits. No authored configuration, content or wrapper files
+are modified. A later invocation without the flag resumes saved portable settings
+or the hosted engine image's default. Restart to change the session selection.
+serve/s continues serving existing output and does not accept rendering flags.
+Delivery/ship and generated CI still use their saved settings or engine variants.
+
+Portable dev uses the native watch/preview path; hosted dev selects the disposable
+wrapper's features before npm install and Next startup. Hosted view applies the
+override to every staged export, retaining prefix pinning, error recovery and
+cancellation protections. Both paths require the existing engine feature-selection
+contract before honoring an explicit selection. Content validation still runs.
+Hosted dev distinguishes invalid content from dependency/startup failures.
+
+Hosted exports and development sessions namespace their dependency volumes by
+the canonical explicit feature selection as well as the base image identity.
+Equivalent all and maths,diagrams values share a cache; none and omission do not.
+This prevents one selection from uninstalling dependencies used by a concurrent
+development session with another selection. Existing no-override cache behavior
+is retained; the CLI does not delete old caches or start a local runtime.
+
+Regression coverage includes malformed flags, absent runtimes, installation/startup
+ordering and diagnostics, cache isolation, native browser rendering through config
+edits and failed-build recovery, and hosted preview orchestration on all three
+OS families. Actual container CI checks enabled math/Mermaid during hosted preview
+and development edits, then disables both for a subsequent preview.

@@ -18,6 +18,7 @@ pub struct ViewOptions<'a> {
     pub out: Option<&'a str>,
     pub name: Option<&'a str>,
     pub theme: Option<&'a str>,
+    pub features: Option<zellij_core::features::Features>,
     pub port: Option<u16>,
     pub no_open: bool,
     pub browser: Option<&'a str>,
@@ -64,7 +65,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         zellij_docs::BuildOptions {
             name: options.name,
             theme: options.theme,
-            ..Default::default()
+            features: options.features,
         },
     );
     if stop.load(Ordering::Acquire) {
@@ -86,6 +87,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
                 output: zellij_core::files::absolute_path(&output)?,
                 name: options.name.map(str::to_owned),
                 theme: options.theme.map(str::to_owned),
+                features: options.features,
             },
             initial,
             live,

@@ -516,3 +516,104 @@ fn hosted_folder_build_selects_features_before_install_and_preserves_previous_ex
         );
     }
 }
+
+#[test]
+fn hosted_dev_selects_features_before_startup_and_isolates_dependency_caches() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    fs::write(
+        root.join("docs/zellij/zel.yaml"),
+        "version: 1\nrenderer: hosted\n",
+    )
+    .unwrap();
+    fs::write(root.join("docs/zellij/content/site.yaml"), "name: Hosted\n").unwrap();
+    let script = fs::read_to_string(root.join("bin/docker")).unwrap().replace(
+        "  *) exit 99;;",
+        "  image) echo sha256:0123456789abcdef; exit 0;;\n  run) printf '%s\\n' \"$@\" > run-args; exit \"${FAKE_RUN_EXIT:-0}\";;\n  *) exit 99;;",
+    );
+    fs::write(root.join("bin/docker"), script).unwrap();
+    let mut caches = std::collections::BTreeMap::new();
+    for selection in [
+        None,
+        Some("all"),
+        Some("none"),
+        Some("maths"),
+        Some("diagrams"),
+        Some("diagrams,maths"),
+    ] {
+        let mut cmd = command(root);
+        cmd.args(["dev", "--port", "4321"]);
+        if let Some(selection) = selection {
+            cmd.args(["--features", selection]);
+        }
+        let out = cmd.output().unwrap();
+        assert!(out.status.success(), "{out:?}");
+        let args = fs::read_to_string(root.join("run-args")).unwrap();
+        assert!(args.contains("4321:3000"));
+        assert!(args.contains(":/app/content:ro"));
+        let cache = args
+            .lines()
+            .find(|line| line.ends_with(":/app/node_modules"))
+            .unwrap()
+            .to_owned();
+        let canonical = selection.map(|value| {
+            value
+                .parse::<zellij_core::features::Features>()
+                .unwrap()
+                .as_str()
+        });
+        if let Some(canonical) = canonical {
+            let check = args.find("check /app/content || exit 96;").unwrap();
+            let guard = args.find("featureSelectionVersion").unwrap();
+            let select = args
+                .find(&format!("features \"{canonical}\" /app"))
+                .unwrap();
+            let install = args.find("npm install").unwrap();
+            assert!(check < guard && guard < select && select < install);
+            assert!(install < args.find("npm run dev").unwrap());
+            if let Some(previous) = caches.insert(canonical, cache) {
+                assert_eq!(previous, caches[canonical]);
+            }
+        } else {
+            assert!(!args.contains("zellij.mjs features"));
+            caches.insert("default", cache);
+        }
+    }
+    assert_eq!(
+        caches
+            .values()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        5
+    );
+    // Startup/dependency failures must not blame content that already validated.
+    for (code, message) in [
+        (1, "site build failed"),
+        (96, "content folder is not valid"),
+        (97, "not shared"),
+    ] {
+        let out = command(root)
+            .args(["dev", "--features", "none"])
+            .env("FAKE_RUN_EXIT", code.to_string())
+            .output()
+            .unwrap();
+        assert_eq!(
+            out.status.code(),
+            Some(if code == 97 { 4 } else { 3 }),
+            "{out:?}"
+        );
+        assert!(
+            String::from_utf8_lossy(&out.stderr).contains(message),
+            "{out:?}"
+        );
+    }
+    assert_eq!(
+        fs::read_to_string(root.join("docs/zellij/content/site.yaml")).unwrap(),
+        "name: Hosted\n"
+    );
+    assert_eq!(
+        fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
+        "previous"
+    );
+}

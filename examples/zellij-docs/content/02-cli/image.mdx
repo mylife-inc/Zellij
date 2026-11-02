@@ -191,7 +191,7 @@ Hosted Dockerfile generation also accepts the option without requiring a runtime
 A portable static Dockerfile packages already generated HTML, so it rejects this
 flag: apply it with `zel build` or `zel si` instead. Source files are unchanged;
 ordinary image builds never push automatically. Use `zel ip <tag>` to publish an
-image you built with an override. The delivery, preview and CI commands do not
+image you built with an override. The delivery and CI commands do not
 accept this temporary flag; they keep using their existing saved defaults.
 
 `--build-arg` remains unimplemented.

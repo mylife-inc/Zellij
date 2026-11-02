@@ -77,3 +77,8 @@ apply a complete selection for one build without saving changes. Use these for
 portable or hosted builds, including hosted content that has no local wrapper.
 The flag supports the same named features, `all`, and `none`. It does not change
 the defaults used by a later command.
+
+For a local editing session, use [`zel dev --features`](/cli/dev#temporary-feature-selection)
+or [`zel view --watch --features`](/cli/view#temporary-feature-selection).
+The override survives every rebuild until the command stops, including
+configuration edits. Restart to select another set of features.

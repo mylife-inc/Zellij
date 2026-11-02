@@ -190,6 +190,7 @@ pub struct WatchOptions {
     pub output: Utf8PathBuf,
     pub name: Option<String>,
     pub theme: Option<String>,
+    pub features: Option<zellij_core::features::Features>,
 }
 pub struct Watcher {
     stop: Arc<AtomicBool>,
@@ -220,7 +221,7 @@ impl Watcher {
                     BuildOptions {
                         name: options.name.as_deref(),
                         theme: options.theme.as_deref(),
-                        ..Default::default()
+                        features: options.features,
                     },
                     Some(configured),
                 )?;
