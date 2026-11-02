@@ -33,7 +33,7 @@ if (${JSON.stringify(tool)} === 'git') process.exit(99);
 `, { mode: 0o755 });
   }
   const env = { ...process.env, PATH: `${bin}:${path.dirname(process.execPath)}:${process.env.PATH}`, RECORDED_CALLS: calls,
-    DOCKER_HOST: 'unused://test', ZELLIJ_IMAGE: image, ZELLIJ_RELEASES_REPO: 'example/releases', ZELLIJ_RELEASE_SCOPE: 'zellij',
+    DOCKER_HOST: 'unused://test', ZELLIJ_REGISTRY: 'ghcr.io', ZELLIJ_OWNER: 'mylife-inc', ZELLIJ_IMAGE: image, ZELLIJ_RELEASES_REPO: 'example/releases', ZELLIJ_RELEASE_SCOPE: 'zellij',
     RUNNER_TEMP: dir, REGISTRY: 'ghcr.io', IMAGE: 'mylife-inc/zellij-base', GITHUB_OUTPUT: path.join(dir, 'outputs') };
   const records = () => {
     try { return readFileSync(calls, 'utf8').trim().split('\n').filter(Boolean).map(line => JSON.parse(line)); }
@@ -71,6 +71,8 @@ test('both release repositories use their own pinned installers and correct imag
       assert.ok(notes.includes(`ZEL_VERSION='${version}' ZEL_RELEASE_BASE_URL='${base}' sh ./install.sh`));
       assert.ok(notes.includes(`.\\install.ps1 -Version '${version}' -ReleaseBaseUrl '${base}'`));
       assert.ok(notes.includes(`${image}:${version.slice(1)}-all`));
+      assert.ok(notes.includes(`export ZELLIJ_IMAGE='${image}:${version.slice(1)}'`));
+      assert.ok(notes.includes(`$env:ZELLIJ_IMAGE = '${image}:${version.slice(1)}'`));
       assert.doesNotMatch(notes, /raw\.githubusercontent|:latest|:v0/);
     }
   }
@@ -177,6 +179,42 @@ _zsecret_exists() { echo 'unexpected secret read' >&2; exit 99; }
 _zrelease_preflight v0.2.0-rc.1
 `);
   assert.deepEqual(f.records().map(call => call.args), [['repo', 'view', 'example/project', '--json', 'name']]);
+});
+
+test('development image helpers default to local tags when building and pushing', t => {
+  const f = fixture(t);
+  f.shell(`source scripts/app.sh
+zimage-size() { :; }
+zimage-all
+GITHUB_TOKEN=fixture-token zimage-push
+`);
+  const calls = f.records();
+  const builds = calls.filter(call => call.args[0] === 'build');
+  assert.equal(builds.length, 4);
+  for (const [index, suffix] of ['', '-maths', '-diagrams', '-all'].entries()) {
+    const args = builds[index].args;
+    assert.deepEqual(args.flatMap((arg, i) => arg === '-t' ? [args[i + 1]] : []),
+      [`zellij-base:local${suffix}`, `${image}:local${suffix}`]);
+  }
+  assert.deepEqual(calls.at(-1).args, ['push', `${image}:local`]);
+  assert.ok(calls.every(call => call.args.every(arg => !arg.includes(':latest'))));
+});
+
+test('branch manifest command preserves main tags and validates architecture digests', t => {
+  const f = fixture(t);
+  const job = workflow('base-image').jobs.merge;
+  const digests = path.join(f.dir, 'digests');
+  mkdirSync(digests);
+  const hashes = ['a'.repeat(64), 'b'.repeat(64)];
+  for (const hash of hashes) writeFileSync(path.join(digests, hash), '');
+  const env = { ...f.env, DOCKER_METADATA_OUTPUT_JSON: JSON.stringify({ tags: [`${image}:main-all`] }) };
+  f.shell(step(job, 'Stitch the architectures into one manifest').run, { cwd: digests, env });
+  assert.deepEqual(f.records()[0].args, ['buildx', 'imagetools', 'create', '-t', `${image}:main-all`,
+    ...hashes.map(hash => `${image}@sha256:${hash}`)]);
+  rmSync(path.join(digests, hashes[0]));
+  writeFileSync(path.join(digests, 'invalid-digest'), '');
+  assert.throws(() => f.shell(step(job, 'Stitch the architectures into one manifest').run, { cwd: digests, env, stdio: 'pipe' }));
+  assert.equal(f.records().length, 1);
 });
 
 test('normal and emergency release helpers reject a mismatched workspace version before publishing', t => {

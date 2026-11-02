@@ -74,9 +74,15 @@ so the website does not advertise commands absent from the stable executable.
 `zrelease-local` delegates publication to that helper, but remains an emergency
 two-target fallback; it is not the six-target acceptance/release path.
 
+Development helpers `zimage` and `zimage-push` default to `local`; `zimage-all`
+builds `local`, `local-maths`, `local-diagrams` and `local-all`. The raw push helper
+still accepts an explicit tag. Use the release helpers for release publication,
+which apply the stable/candidate policy automatically.
+
 ## Verification
 
-Run `node --test scripts/release-policy.test.mjs` with Node 24 after `npm ci`.
+Run `node --test scripts/release-policy.test.mjs` with Node 24, Bash and jq
+after `npm ci`.
 The suite executes publishing scripts and manifest commands with fake Docker,
 GitHub and Git commands; it cannot upload assets or publish images. It covers
 stable/candidate tag sets, both repositories' pinned notes, workflow gates,

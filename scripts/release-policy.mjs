@@ -54,6 +54,17 @@ to your PATH. Or download an available platform archive below and verify its che
 
 ## Container images
 
+For hosted/container commands, select the matching engine for this session.
+Portable Markdown builds do not need an engine image.
+
+\`\`\`sh
+export ZELLIJ_IMAGE='${images[0]}'
+\`\`\`
+
+\`\`\`powershell
+$env:ZELLIJ_IMAGE = '${images[0]}'
+\`\`\`
+
 These are the exact version references; check the release workflow's image jobs
 before using them if image publication failed independently of native packaging.
 

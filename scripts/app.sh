@@ -198,19 +198,17 @@ zimage() {
 }
 
 zimage-all() {
-  # The four CI publishes. They differ only in which optional dependencies the
-  # generated manifest asks for, so they are nearly the same size — the saving
-  # lands on whoever builds a site, not on whoever pulls the image.
+  # Local development variants. Stable aliases belong to the release helpers.
   local ok=0
-  zimage none     latest    || ok=1
-  zimage maths    maths     || ok=1
-  zimage diagrams diagrams  || ok=1
-  zimage all      all       || ok=1
+  zimage none     local          || ok=1
+  zimage maths    local-maths    || ok=1
+  zimage diagrams local-diagrams || ok=1
+  zimage all      local-all      || ok=1
   return $ok
 }
 
 zimage-push() {
-  local tag="${1:-latest}"
+  local tag="${1:-local}"
 
   docker image inspect "${ZELLIJ_IMAGE}:$tag" >/dev/null 2>&1 ||
     _zdie "No ${ZELLIJ_IMAGE}:$tag locally. Run: zimage <features> $tag" || return 1
