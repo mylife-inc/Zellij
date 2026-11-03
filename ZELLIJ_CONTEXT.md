@@ -16,7 +16,8 @@ draft deployments, HTTP acceptance and browser search passed. Full-docs routes,
 images, bookmarks and search are retained, but React hydration errors remain:
 the newline preceding Netlify's hosting comment reproduces the problem locally.
 The user disabled the badge; its script disappeared, but the comment/newline
-and React #418 remain. A ready-to-send support report and verified local
+and React #418 remain. The user reports filing a Netlify bug and emailing
+support@netlify.com; a response is pending. The support report and verified local
 reproduction are in [the hydration diagnosis](specs/zellij-netlify-hydration-2026-11-02.md).
 Keep the old live site/domain intact. See the latest dated entry and
 specs/evidence/zellij-netlify-acceptance-2026-11-02.json.
@@ -3639,3 +3640,17 @@ extend that coverage when implementing the remedy. Full-docs remote hydration
 acceptance remains open. No production/domain/release/secret changes occurred.
 Temporary development servers were stopped and their generated source changes
 were removed. The source branch started from PR #57 merge df07f28.
+
+
+### Browser acceptance hardening — 2026-11-02
+
+The user reports filing the hosting bug with Netlify and emailing support.
+Development continues while that external issue is unresolved. The preservation
+checker now captures console.error as well as uncaught page errors, records the
+page URL, and waits for the docs theme control's mounted label on every full
+navigation. It fails before continuing when a page logs an error. Integration
+regressions run the actual checker against temporary copies of the built docs:
+one with the observed head newline and one with an uncaught exception. Normal
+preservation and both negative controls run in Engine CI. Syntax checks,
+actionlint and diff checks pass locally; hosted verification is pending.
+No product rendering workaround, production deploy or release was made here.

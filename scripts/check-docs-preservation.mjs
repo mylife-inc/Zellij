@@ -41,18 +41,32 @@ try {
   await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   const page = await context.newPage();
   const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
+  page.on('pageerror', error => errors.push({ kind: 'pageerror', url: page.url(), message: error.message }));
+  // React reports recoverable hydration failures through console.error, not
+  // necessarily pageerror. A page can recover and still fail acceptance.
+  page.on('console', message => {
+    if (message.type() === 'error') errors.push({ kind: 'console.error', url: page.url(), message: message.text() });
+  });
+  const assertNoErrors = () => assert.deepEqual(errors, [], `Browser runtime errors at ${page.url()}`);
+  const visit = async route => {
+    assert.equal((await page.goto(origin + route)).status(), 200, route);
+    // This docs fixture enables the theme toggle on every route. Its neutral
+    // SSR label changes only in useEffect, so load alone is not our readiness
+    // signal. This also detects a page whose client scripts never hydrate.
+    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor({ timeout: 15_000 });
+    assertNoErrors();
+  };
   let headingCount = 0;
   for (const entry of baseline.pages) {
-    assert.equal((await page.goto(origin + entry.route)).status(), 200, entry.route);
+    await visit(entry.route);
     const result = await page.evaluate(ids => ids.map(id => ({ id, count: [...document.querySelectorAll('[id]')].filter(el => el.id === id).length })), entry.heading_ids);
     for (const { id, count } of result) assert.equal(count, 1, `${entry.route}#${id}: expected one target`);
     headingCount += entry.heading_ids.length;
   }
-  for (const route of baseline.new_routes) assert.equal((await page.goto(origin + route)).status(), 200, route);
+  for (const route of baseline.new_routes) await visit(route);
   for (const route of new Set(aliases.map(alias => alias.route))) {
     const entries = aliases.filter(alias => alias.route === route);
-    await page.goto(origin + route + '#' + encodeURIComponent(entries[0].legacy_id));
+    await visit(route + '#' + encodeURIComponent(entries[0].legacy_id));
     await page.waitForFunction(id => {
       const top = document.getElementById(id).getBoundingClientRect().top;
       return top >= 0 && top < innerHeight;
@@ -60,7 +74,7 @@ try {
     const margins = await page.evaluate(ids => ids.map(id => ({ id, margin: parseFloat(getComputedStyle(document.getElementById(id)).scrollMarginTop) })), entries.map(entry => entry.legacy_id));
     for (const { id, margin } of margins) assert(margin > 0, `${route}#${id}: sticky-header offset missing`);
   }
-  await page.goto(origin);
+  await visit('/');
   assert(await page.locator('a[href="https://github.com/mylife-inc/Zellij"]').count() > 0);
   assert.equal(await page.locator('a[href="https://github.com/shebka/zellij"]').count(), 0);
   await page.locator('[data-zellij-search-trigger]').first().click();
@@ -72,8 +86,8 @@ try {
   ]);
   const fragment = new URL(page.url()).hash.slice(1);
   if (fragment) assert(await page.evaluate(id => Boolean(document.getElementById(id)), decodeURIComponent(fragment)), 'Search result fragment is missing');
-  assert.deepEqual(errors, [], 'Browser runtime errors');
-  console.log(`Preservation passed: ${baseline.pages.length} original routes, ${baseline.new_routes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images and current repository links.`);
+  assertNoErrors();
+  console.log(`Preservation passed: ${baseline.pages.length} original routes, ${baseline.new_routes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images, current repository links and no captured browser errors after hydration.`);
 } finally {
   if (browser) await browser.close();
   server.closeAllConnections();

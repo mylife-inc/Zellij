@@ -2932,3 +2932,17 @@ extend that coverage when implementing the remedy. Full-docs remote hydration
 acceptance remains open. No production/domain/release/secret changes occurred.
 Temporary development servers were stopped and their generated source changes
 were removed. The source branch started from PR #57 merge df07f28.
+
+
+### Browser acceptance hardening — 2026-11-02
+
+The user has filed the Netlify issue and emailed support@netlify.com. Provider
+resolution remains pending. The acceptance gap found during staging is addressed
+in scripts/check-docs-preservation.mjs: capture console.error/pageerror with
+route context and wait for the mounted theme control after every full navigation.
+Two integration regressions invoke the real checker on copied built HTML with
+an extra head newline or an uncaught exception. Each must fail with its expected
+error channel and diagnostic. The positive full-docs check remains the preceding
+Engine CI gate. Local syntax/actionlint/diff checks pass; final hosted results
+and fixing commit are to be recorded after verification. No application HTML
+cleanup or error suppression was introduced.

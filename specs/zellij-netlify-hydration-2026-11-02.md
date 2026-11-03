@@ -1,7 +1,8 @@
 # Netlify staging hydration reproduction — 2026-11-02
 
 Status: **diagnosed, unresolved**. This report is prepared for review/support;
-it has not been sent to Netlify. No production deployment or domain changed.
+the user subsequently reports filing the bug and emailing support@netlify.com.
+A provider response is pending. No production deployment or domain changed.
 
 ## Ready-to-send support request
 
@@ -88,3 +89,12 @@ References: [React error 418](https://react.dev/errors/418),
 [Netlify badge settings](https://docs.netlify.com/manage/projects/powered-by-netlify-badge/),
 [acceptance evidence](evidence/zellij-netlify-acceptance-2026-11-02.json), and
 [migration report](zellij-netlify-migration-2026-11-02.md).
+
+
+## Follow-up — browser acceptance
+
+The user reports sending the issue to Netlify. The checker is being hardened to
+capture console.error and wait for a mounted control on each page. Regression
+tests require the actual command to reject a head newline and an uncaught
+exception; their hosted CI result is pending. This addresses the test coverage
+gap described above, not the hosting transformation itself.
