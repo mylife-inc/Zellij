@@ -1,0 +1,146 @@
+{
+  "observed_on": "2026-11-02 America/Los_Angeles",
+  "source_commit": "311421951ac9c6d3bf1904f150b0e1c79d85ab81",
+  "native_candidate": "0.2.0-rc.1",
+  "full_documentation_staging": "https://zel-stage.netlify.app/",
+  "production": "https://zellij.shebka.net/",
+  "deliveries": [
+    {
+      "renderer": "portable",
+      "run_id": 41587034632,
+      "job_id": 125754847275,
+      "workflow_conclusion": "success",
+      "draft_url": "https://6ae97831f41a2555aa3f49e9--zel-stage.netlify.app/",
+      "http_acceptance": "passed after user made previews public",
+      "browser_search": "zirconium -> /guide/next.html",
+      "observed_browser_errors": 0
+    },
+    {
+      "renderer": "hosted",
+      "run_id": 41587142130,
+      "job_id": 125755188786,
+      "workflow_conclusion": "success",
+      "draft_url": "https://6ae978a309307ab3058e7340--zel-stage.netlify.app/",
+      "http_acceptance": "passed after user made previews public",
+      "browser_search": "zirconium -> /manual/next",
+      "observed_browser_errors": 0
+    }
+  ],
+  "public_fingerprints_before": [
+    {
+      "url": "https://zellij.shebka.net/",
+      "status": 200,
+      "bytes": 130579,
+      "sha256": "8e1204979df3a294646e794f378d91e02f4186e289522890a26b161b22cb47f7"
+    },
+    {
+      "url": "https://zellij.shebka.net/cli",
+      "status": 200,
+      "bytes": 124251,
+      "sha256": "8a895d38e705e5c6f5ab502996b3c316757d3a2683b913f0a935c28dc6d01247"
+    },
+    {
+      "url": "https://zellij.shebka.net/guide/quickstart",
+      "status": 200,
+      "bytes": 159412,
+      "sha256": "fdc8a5c4d7f67e5ced91a019c9693d165919fe4bbac0852df2f6a5042a83022d"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/",
+      "status": 200,
+      "bytes": 128739,
+      "sha256": "85c9b7646c23e383bda2f3c6005cc0c80fb98c52250d266932de21fac4b98971"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/cli",
+      "status": 200,
+      "bytes": 157905,
+      "sha256": "e8036e5486484b88834751980f1b4368aa706d0ddb7967b7d2f273326b25eedd"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/guide/quickstart",
+      "status": 200,
+      "bytes": 172384,
+      "sha256": "4e1da2036cee5c31c67ac5f9aaccb2619cb4d4f01f9d0559813dda5ac0be8262"
+    }
+  ],
+  "public_fingerprints_after": [
+    {
+      "url": "https://zellij.shebka.net/",
+      "status": 200,
+      "bytes": 130579,
+      "sha256": "8e1204979df3a294646e794f378d91e02f4186e289522890a26b161b22cb47f7"
+    },
+    {
+      "url": "https://zellij.shebka.net/cli",
+      "status": 200,
+      "bytes": 124251,
+      "sha256": "8a895d38e705e5c6f5ab502996b3c316757d3a2683b913f0a935c28dc6d01247"
+    },
+    {
+      "url": "https://zellij.shebka.net/guide/quickstart",
+      "status": 200,
+      "bytes": 159412,
+      "sha256": "fdc8a5c4d7f67e5ced91a019c9693d165919fe4bbac0852df2f6a5042a83022d"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/",
+      "status": 200,
+      "bytes": 128739,
+      "sha256": "85c9b7646c23e383bda2f3c6005cc0c80fb98c52250d266932de21fac4b98971"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/cli",
+      "status": 200,
+      "bytes": 157905,
+      "sha256": "e8036e5486484b88834751980f1b4368aa706d0ddb7967b7d2f273326b25eedd"
+    },
+    {
+      "url": "https://zel-stage.netlify.app/guide/quickstart",
+      "status": 200,
+      "bytes": 172384,
+      "sha256": "4e1da2036cee5c31c67ac5f9aaccb2619cb4d4f01f9d0559813dda5ac0be8262"
+    }
+  ],
+  "fingerprint_limit": "Three routes per site, not a proof of complete deployment identity.",
+  "full_docs": {
+    "html_routes_matching_validated_upload": 55,
+    "html_comparison_normalization": "Remove only observed Netlify hosting comment plus injected HUD script; raw Node responses differ from upload.",
+    "authored_image_hashes_matching_production": 29,
+    "original_routes_and_heading_ids": "Paced headless run passed all 46 original routes/282 IDs, then stopped on the first added route with a Netlify challenge.",
+    "normal_browser_added_pages": 9,
+    "normal_browser_legacy_targets": 82,
+    "normal_browser_legacy_pages": 16,
+    "normal_browser_search_result": "/cli/doctor#runtime-selection",
+    "browser_acceptance": "not clean: repeated React #418 hydration errors in normal browser",
+    "headless_limit": "Netlify connection-verification HTML returned HTTP 403; challenge was not bypassed."
+  },
+  "hydration_control": {
+    "page": "/cli/completions",
+    "browser": "ChatGPT in-app browser",
+    "plain_local_build_errors": 0,
+    "exact_netlify_html_errors": 1,
+    "only_netlify_comment_at_observed_position_errors": 1,
+    "only_netlify_badge_script_errors": 0,
+    "diagnosis": "Observed injected hosting comment at its original position is sufficient to reproduce React #418 on this page. Script-only control is clean.",
+    "pending": "User asked to turn off the staging Powered by Netlify badge; whether that also removes the comment remains unverified."
+  },
+  "historical_failures": [
+    "Earlier Netlify site preflights returned 404 before project/token correction.",
+    "First portable draft HTTP check returned 401 before preview visibility changed.",
+    "Raw HTML hash check initially rejected Netlify-added markup; additions were isolated explicitly, not ignored broadly."
+  ],
+  "safety": {
+    "old_production_replaced": false,
+    "domain_changed": false,
+    "local_docker_started": false,
+    "secret_values_read": false,
+    "stable_promoted": false
+  },
+  "next": [
+    "Verify whether badge setting removes comment and hydration errors.",
+    "Retain old Netlify full production deploy ZIP and configuration.",
+    "Review complete staged docs before separately approved production/domain cutover.",
+    "Publish a later native candidate for the workflow queue fix; do not replace rc.1."
+  ]
+}

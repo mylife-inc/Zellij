@@ -1066,3 +1066,24 @@ approved cutover. The public crawl is not a complete provider backup. Candidate
 0.2.0-rc.1 assets and stable 0.1.3 remain unchanged; the workflow queue fix still
 needs a later native candidate. See the migration report for the concrete user
 handoff. No local Docker daemon or production deployment was involved.
+
+
+### Live Netlify draft acceptance and staging browser finding — 2026-11-02
+
+Public candidate 0.2.0-rc.1 now passes actual portable and hosted Netlify draft
+deployment from generated GitHub workflows on main 3114219. Portable run
+41587034632 and hosted run 41587142130 succeeded against the user-selected
+zel-stage project with corrected credentials. After the user made previews
+public, both drafts passed HTTP pages/assets/source-isolation and browser
+search/navigation checks. Draft URLs, exact evidence and verification limits
+are in specs/evidence/zellij-netlify-acceptance-2026-11-02.json and the latest
+audit/migration-report entries. The initial 401 preview-access failure is retained.
+
+The full staged documentation separately exhibits React #418 when Netlify's
+hosting comment is injected into its HTML. Local controls reproduce the issue
+with that comment alone, not with the badge script alone. A user-side badge
+setting diagnostic is pending; do not describe full documentation browser
+acceptance as clean. Neither old production nor stable/candidate release assets
+were replaced. A later native candidate still needs to include the workflow
+queue fix. Successful main CI 41576279817 and Base image 41576279748 supersede
+the cancelled post-PR55 runs 41576036593 and 41576036573.

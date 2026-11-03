@@ -2840,3 +2840,67 @@ approved cutover. The public crawl is not a complete provider backup. Candidate
 0.2.0-rc.1 assets and stable 0.1.3 remain unchanged; the workflow queue fix still
 needs a later native candidate. See the migration report for the concrete user
 handoff. No local Docker daemon or production deployment was involved.
+
+
+### Live Netlify draft acceptance and staging browser finding — 2026-11-02
+
+The user created https://zel-stage.netlify.app, made the main site public,
+updated NETLIFY_SITE_ID and generated a new NETLIFY_AUTH_TOKEN. Secret names and
+update dates were checked without reading values; no repository variable
+supersedes the site-ID secret. RELEASES_GITHUB_TOKEN already exists and was
+left unchanged. The user subsequently made previews public after the first
+portable preview request returned HTTP 401. Netlify treats main-site and
+preview visibility separately.
+
+Both actual generated workflows ran on 311421951ac9c6d3bf1904f150b0e1c79d85ab81
+using the public 0.2.0-rc.1 CLI and exact engine image. No --prod flag was used.
+
+- Portable run 41587034632 passed; draft:
+  https://6ae97831f41a2555aa3f49e9--zel-stage.netlify.app/
+- Hosted run 41587142130 passed; draft:
+  https://6ae978a309307ab3058e7340--zel-stage.netlify.app/
+
+After preview visibility changed, both passed scripts/check-delivery-http.mjs:
+actual pages, exact logo bytes, linked styles/scripts/fonts and 404 responses
+for source/configuration paths. In the normal in-app browser, a search for
+zirconium opened /guide/next.html in the portable draft and /manual/next in the
+hosted draft. Neither flow emitted a captured console error. These small test
+fixtures are separate from the complete documentation at the staging root.
+Before/after SHA-256 fingerprints for /, /cli and /guide/quickstart matched on
+both the old production site and the staging main URL. This covers six public
+responses, not whole-site deployment identity.
+
+The full 55-route staged documentation matches the validated upload after
+removing only Netlify's observed added hosting comment and HUD script; raw
+responses are not all byte-identical. All 29 authored image hashes match.
+The paced headless browser verified all 46 original routes and 282 heading IDs,
+then received a Netlify connection-verification page (HTTP 403) on the first
+added route. The earlier run stopped at /cli/serve with the same status. These
+runs are incomplete, not clean full-browser passes. A normal in-app browser
+opened all nine new pages, checked all 82 compatibility targets/scroll margins,
+followed an old fragment on each of the 16 affected pages, and navigated search
+to /cli/doctor#runtime-selection.
+
+That browser also recorded repeated React #418 hydration errors on the full
+documentation. Controlled local comparison of /cli/completions found no errors
+for the original build, an error with byte-identical Netlify HTML, an error with
+only the observed hosting comment at its original position, and no error with
+only the badge script. Thus the injected comment is sufficient to reproduce
+this failure; the isolated script is not. This is a hosting interaction, not
+missing authored content, and has not yet been resolved. The user was asked to
+turn off the staging Powered by Netlify badge so we can test whether its setting
+also removes that comment. Do not claim the setting has changed or the error
+is fixed until the actual remote response and browser have been checked.
+
+Evidence: specs/evidence/zellij-netlify-acceptance-2026-11-02.json and ignored
+backups/zellij-netlify-acceptance-2026-11-02. The latter retains raw logs,
+fingerprints and diagnostic scripts. No authentication challenge was bypassed,
+credentials read, local Docker started, production site replaced, domain moved
+or stable release promoted. Original full Netlify deploy ZIP/settings and an
+explicit production cutover decision remain outstanding. The workflow queue
+fix still needs a later native candidate; published rc.1 assets are unchanged.
+
+Refresh of earlier pending checks: PR #55 post-merge runs 41576036593 and
+41576036573 were cancelled and must not be called passed. They were superseded
+by main CI 41576279817 and Base image 41576279748 on PR #56 merge 3114219;
+both completed successfully.
