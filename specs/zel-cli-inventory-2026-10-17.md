@@ -1087,3 +1087,14 @@ acceptance as clean. Neither old production nor stable/candidate release assets
 were replaced. A later native candidate still needs to include the workflow
 queue fix. Successful main CI 41576279817 and Base image 41576279748 supersede
 the cancelled post-PR55 runs 41576036593 and 41576036573.
+
+
+### Staging badge diagnostic outcome — 2026-11-02
+
+The user turned off the staging badge; the HUD script disappeared, but the
+hosting annotation/newline and React #418 remain. Local isolation identifies
+the added LF before viewport metadata as sufficient; a comment without it is
+clean. See specs/zellij-netlify-hydration-2026-11-02.md for verified reproduction
+and the prepared, unsent support request. The full-docs hosting issue remains
+open; the earlier portable/hosted candidate draft acceptance remains valid
+within its stated fixture coverage. No candidate assets or product code changed.

@@ -123,7 +123,55 @@
     "only_netlify_comment_at_observed_position_errors": 1,
     "only_netlify_badge_script_errors": 0,
     "diagnosis": "Observed injected hosting comment at its original position is sufficient to reproduce React #418 on this page. Script-only control is clean.",
-    "pending": "User asked to turn off the staging Powered by Netlify badge; whether that also removes the comment remains unverified."
+    "initially_pending": "User asked to turn off the staging Powered by Netlify badge; whether that also removes the comment remains unverified.",
+    "badge_off_followup": {
+      "user_confirmed_setting_change": true,
+      "http_probes": [
+        {
+          "route": "/",
+          "status": 200,
+          "hostingComment": true,
+          "badgeScript": false,
+          "matchesLocal": false,
+          "sha256": "ff0d4159b19def101688c4708a6ebd403a781a7e9cf4830a6bb6800c64f3ab7d",
+          "matchesLocalAfterRemovingSingleObservedComment": true
+        },
+        {
+          "route": "/cli/completions",
+          "status": 200,
+          "hostingComment": true,
+          "badgeScript": false,
+          "matchesLocal": false,
+          "sha256": "39e1d5db5a268c54d998acdd9cb90fb93e58d93f3ce19bfc2be64d2252ba1797",
+          "matchesLocalAfterRemovingSingleObservedComment": true
+        },
+        {
+          "route": "/guide/quickstart/new-project",
+          "status": 200,
+          "hostingComment": true,
+          "badgeScript": false,
+          "matchesLocal": false,
+          "sha256": "d5f3b3f3daa1c72cacbecd1fb37ed5e4e5aa6509cf36cc3aa6607246d857618f",
+          "matchesLocalAfterRemovingSingleObservedComment": true
+        }
+      ],
+      "fresh_browser_route": "/cli/completions",
+      "browser_error": "React #418",
+      "browser_error_timestamp_utc": "2026-11-03T06:23:22.406Z",
+      "newline_only_errors": 1,
+      "observed_comment_without_leading_newline_errors": 0,
+      "saved_reproduction": {
+        "path": "specs/evidence/serve-head-whitespace-repro.mjs",
+        "original_errors": 0,
+        "newline_errors": 1,
+        "minimal_comment_errors": 0,
+        "mounted_theme_control_verified": true,
+        "newline_error_timestamp_utc": "2026-11-03T06:33:43.390Z"
+      },
+      "development_reproduction": "Hydration mismatch at ZellijRootLayout head > style#zellij-theme; extra LF before viewport metadata.",
+      "diagnosis": "The leading newline in the observed hosting annotation is sufficient to interrupt React hydration. Disabling the badge does not remove it.",
+      "status": "unresolved; support report prepared, not sent"
+    }
   },
   "historical_failures": [
     "Earlier Netlify site preflights returned 404 before project/token correction.",
@@ -138,7 +186,8 @@
     "stable_promoted": false
   },
   "next": [
-    "Verify whether badge setting removes comment and hydration errors.",
+    "Obtain a supported hosting opt-out or tested framework-compatible remedy for the injected head newline, then repeat remote hydration acceptance.",
+    "Extend browser acceptance to collect recoverable errors reported through console.error.",
     "Retain old Netlify full production deploy ZIP and configuration.",
     "Review complete staged docs before separately approved production/domain cutover.",
     "Publish a later native candidate for the workflow queue fix; do not replace rc.1."
