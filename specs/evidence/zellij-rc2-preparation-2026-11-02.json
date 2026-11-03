@@ -1,0 +1,320 @@
+{
+  "observed_on": "2026-11-02 America/Los_Angeles",
+  "status": "prepared; explicit publication approval pending",
+  "proposed_tag": "v0.2.0-rc.2",
+  "proposed_tag_commit": "0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469",
+  "checked_tree": "4353ca74faba1aad6f6d8e9a4444ad1aa95cf2d0",
+  "pull_requests": [
+    {
+      "number": 59,
+      "head": "97f9f9f9a257fe69b23b3fa296d40f35475960d8",
+      "merge": "93dca084a018f7ff56e6259441beca4a82874c32",
+      "run": 41594855467,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "head": "04653b0ec3e9e8920ce7c4c3df0996cce1aa4d5b",
+      "merge": "0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469",
+      "run": 41595462484,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "browser_regressions": {
+    "clean_docs": "55 routes; 282 original headings; 82 compatibility mappings; 29 byte-identical images; search; no captured errors after hydration",
+    "head_newline": "correctly rejected with React #418",
+    "uncaught_exception": "correctly rejected",
+    "console_only_error": "correctly rejected"
+  },
+  "initial_pr59_run": {
+    "id": 41594298255,
+    "conclusion": "cancelled after superseding push",
+    "engine_failure": "Hydration negative control wrongly required console.error; hosted browser used pageerror. Final control accepts either and independently tests console.error."
+  },
+  "local_preparation": {
+    "release_download_tests": 29,
+    "native_cli_unit_tests": 26,
+    "workflow_integration_tests": 11,
+    "real_container_unit_tests_ignored_locally": 1,
+    "frozen_workflows_matching_generator": 6,
+    "initial_sandbox_failure": "Seven local mock API fixtures could not bind; identical loopback-authorized rerun passed.",
+    "final_zcheck": {
+      "result": "passed",
+      "exit_code": 0,
+      "mode": "RUST_TEST_THREADS=1 for this local invocation only",
+      "engine_tests": 365,
+      "rust_tests": {
+        "passed": 317,
+        "failed": 0,
+        "ignored": 1
+      },
+      "static_image_tests": 10,
+      "other_checks": [
+        "typecheck",
+        "schema drift",
+        "Rust formatting",
+        "warnings-denied Clippy"
+      ],
+      "unchanged": [
+        "product probe deadlines",
+        "CI test concurrency",
+        "real-container tests run in CI"
+      ],
+      "limitation": "Default local parallel fixture execution timed out; underlying OS-level startup delay is not diagnosed."
+    },
+    "default_parallel_zcheck": {
+      "result": "failed",
+      "completed_before_failure": [
+        "typecheck",
+        "365 engine tests",
+        "schema drift",
+        "Rust formatting",
+        "warnings-denied Clippy"
+      ],
+      "failure": "Four static_images tests hit the three-second mock-client info timeout; six passed.",
+      "isolated_suite_retry": "Eight passed; two hit the same timeout.",
+      "single_test_retry": "hosted_static_selects_content_context_and_legacy_next_keeps_its_recipe_and_tag passed alone.",
+      "log": "/private/tmp/zellij-rc2-final-checks.log"
+    },
+    "shell_startup_diagnostic": {
+      "description": "Twelve newly written shell scripts containing only an info/exit-zero case were launched concurrently outside Zellij, then rerun sequentially.",
+      "parallel_seconds": [
+        0.938,
+        0.538,
+        1.328,
+        1.725,
+        2.128,
+        2.56,
+        2.944,
+        3.304,
+        3.659,
+        4.035,
+        4.439,
+        4.841
+      ],
+      "sequential_same_scripts_seconds": [
+        0.013,
+        0.012,
+        0.015,
+        0.015,
+        0.014,
+        0.012,
+        0.022,
+        0.012,
+        0.022,
+        0.012,
+        0.013,
+        0.021
+      ],
+      "all_exit_codes": 0,
+      "interpretation": "Local process startup can exceed the runtime probe deadline independently of Zellij. The OS-level cause was not established. No product timeout was changed and no daemon was started."
+    }
+  },
+  "publication": {
+    "performed": false,
+    "approval_review": "rejected before command execution: explicit authorization required for public prerelease tag/assets",
+    "destinations": [
+      "mylife-inc/Zellij v0.2.0-rc.2",
+      "mylife-inc/releases zellij-v0.2.0-rc.2",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2 and maths/diagrams/all variants"
+    ],
+    "public_artifact_acceptance": "pending publication",
+    "released_delivery_acceptance": "pending publication"
+  },
+  "netlify": "User reports bug/support email sent; hosting newline remains unresolved; no production/domain changes.",
+  "local_log_sha256": {
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-rc2-final-checks.log": "ef103e966179750b65b8ac9f259e2ef25d930f5e813f96a13d80c6bf6af1f85e",
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-rc2-final-checks-serial.log": "4cdc6af56bc5bc8f0abe79de2261003f6d874c240467970059101ee9b5c65949",
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-rc2-native-tests.log": "b3d175a071af8c30df0a820c11f2c4ef5b7fccea853c3eb8c854aec773ed7934",
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-pr59-final.json": "ee83ca6f10e2393166ab1f2960227a6beea4ded0a5706b5ba84b9169f006abd7",
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-pr60-final.json": "1f7a3588cc0a598496093136ee0726f765bebd87922201f4776c76b368cec21f",
+    "backups/zellij-rc2-preparation-2026-11-02/zellij-hydration-ci-final-engine.log": "8cb9f631d87cdd4c43232b5e232dd7a1d01a392331f9fb02f1b71716b5318f44"
+  },
+  "post_merge_snapshot": {
+    "observed_at": "2026-11-03T07:57:31.818689+00:00",
+    "main_ci_run": 41598251651,
+    "main_ci": {
+      "conclusion": "",
+      "headSha": "0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469",
+      "jobs": [
+        {
+          "conclusion": "",
+          "name": "CLI",
+          "status": "in_progress"
+        },
+        {
+          "conclusion": "success",
+          "name": "Engine",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "",
+          "name": "Portable docs (windows-latest)",
+          "status": "in_progress"
+        },
+        {
+          "conclusion": "success",
+          "name": "Embedded schema is current",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Portable docs (macos-latest)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "Showcase end to end",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed"
+        },
+        {
+          "conclusion": "success",
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed"
+        }
+      ],
+      "status": "in_progress"
+    },
+    "base_image_run": 41598251612,
+    "base_image_conclusion": "success",
+    "note": "The main CI rerun is still in progress; do not count it as passed. Both final PR runs already passed all 13 jobs on the identical source tree. Refresh before publication."
+  }
+}
