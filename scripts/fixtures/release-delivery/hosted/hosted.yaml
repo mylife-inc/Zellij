@@ -1,0 +1,8 @@
+version: 1
+renderer: hosted
+ci:
+  branch: main
+  workflow: acceptance-hosted.yml
+  zel-version: 0.2.0-rc.1
+  triggers: [pull_request, manual]
+  production: false

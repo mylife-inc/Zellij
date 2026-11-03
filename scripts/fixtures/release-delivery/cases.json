@@ -1,0 +1,34 @@
+[
+  {
+    "name": "portable",
+    "config": "portable/portable.yaml",
+    "workflow": "acceptance-portable.yml"
+  },
+  {
+    "name": "hosted",
+    "config": "hosted/hosted.yaml",
+    "workflow": "acceptance-hosted.yml"
+  },
+  {
+    "name": "static",
+    "config": "portable/static.yaml",
+    "workflow": "acceptance-static.yml",
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.1"
+  },
+  {
+    "name": "next",
+    "config": "portable/next.yaml",
+    "workflow": "acceptance-next.yml",
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.1"
+  },
+  {
+    "name": "netlify-portable",
+    "config": "portable/netlify-portable.yaml",
+    "workflow": "acceptance-netlify-portable.yml"
+  },
+  {
+    "name": "netlify-hosted",
+    "config": "hosted/netlify-hosted.yaml",
+    "workflow": "acceptance-netlify-hosted.yml"
+  }
+]

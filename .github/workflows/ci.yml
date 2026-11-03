@@ -26,7 +26,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs
+      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs
       - run: npm audit --audit-level=low
       - run: npm run typecheck
       - run: npm test
@@ -181,6 +181,8 @@ jobs:
       - run: npm run build --workspace @shebka/zellij
 
       - run: cargo build --manifest-path cli/Cargo.toml
+      - name: Manual release-delivery workflows match the CLI generator
+        run: node scripts/prepare-delivery-acceptance.mjs cli/target/debug/zel
       - name: Build the engine image from this checkout
         run: docker build -f docker/base.Dockerfile -t zellij-ci .
 

@@ -1,0 +1,14 @@
+version: 1
+renderer: portable
+name: Candidate delivery acceptance
+image:
+  name: ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.1
+publish:
+  action: push
+  image: static
+ci:
+  branch: main
+  workflow: acceptance-static.yml
+  zel-version: 0.2.0-rc.1
+  triggers: [pull_request, manual]
+  production: false

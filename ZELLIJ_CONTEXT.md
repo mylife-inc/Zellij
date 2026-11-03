@@ -3,7 +3,13 @@
 Last refreshed: **2026-11-02**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest work: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
+Latest source work: `codex/generated-delivery-acceptance`, fixing commit
+`0a79f95`, isolates generated multi-site workflow queues and adds six actual
+GitHub delivery fixtures plus fresh registry-pull inspection. Local checks pass;
+PR/runtime acceptance is pending. Netlify draft tests await the user's target
+choice. The generator fix is not in the published binary; see the final entry.
+
+Latest release: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
 All eight public-artifact acceptance jobs passed in run `41548199714` using
 corrected harness `29029e1`: six native platforms and both Linux image
 architectures. The original release run has two Windows downloader failures;
@@ -3379,3 +3385,55 @@ No local Docker daemon was started. The next work is live candidate delivery
 acceptance and an explicit stable-promotion decision, alongside the tracked
 advanced build/provider/conversion backlog. Do not infer a zero-bug or complete
 historical-feature claim from these passing checks.
+
+
+### Generated workflow and delivery acceptance — 2026-11-02
+
+Refreshed PR #51 post-merge status: CI 41552573220 and Base image 41552573125
+both passed on 49d9a14. Candidate v0.2.0-rc.1 remains at 61881e8; no new release
+or stable promotion is part of this source change.
+
+Fixing commit 0a79f9504b233b39ad311eb112789e4299290a88 addresses a multi-site CI
+queue collision. Every generated workflow previously had the display name
+Documentation and used github.workflow in its concurrency group, so distinct
+site workflows on the same ref shared a queue. GitHub allows only one pending
+run per group by default, allowing a new site's run to replace another pending
+site run. See https://docs.github.com/en/actions/concepts/workflows-and-actions/concurrency.
+The generator now names workflows by their configured filename and derives a
+bounded group key from SHA-256 of that filename plus github.ref. The hash
+preserves case-sensitive file identity even though GitHub group names are
+case-insensitive. sha2 was already locked for the CLI; no third-party version
+changed. Tests cover independent sites, stable regeneration and case-only names.
+This generator fix is newer than the published candidate and needs a later
+native release. Existing workflows need deliberate regeneration/review.
+
+Six committed acceptance workflows are generated without hand-editing from
+scripts/fixtures/release-delivery. They use the corrected source generator,
+but install and execute the public 0.2.0-rc.1 binary and exact engine image.
+They cover native portable and hosted static builds, static/Next image delivery,
+and portable/hosted Netlify delivery. PR events only validate/build. Publication
+requires manual dispatch on main; Netlify never receives --prod. Dedicated image
+destinations are ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.1 and
+acceptance-next:0.2.0-rc.1. A separate manual read-only inspection workflow pulls
+those packages on fresh runners and verifies HTTP pages/assets, non-root users,
+health checks, registry digests and source-file isolation.
+
+The preparation helper regenerates workflows in a temporary Git repository,
+compares their exact bytes, requires independent queues and checks PR/manual
+triggers plus draft-only publication. Ordinary CI checks generated-workflow
+drift. The shared HTTP checker supports either public draft renderer and rejects
+missing pages/styles, altered assets and exposed sources. No local Docker daemon
+was started. No actual registry or Netlify publication has occurred at this
+preparation checkpoint. A user question about the Netlify test destination is
+pending: existing documentation-site draft previews or a separate supplied site.
+Do not manually dispatch Netlify delivery until that target choice is settled.
+
+Local verification: 317 Rust tests in 38 suites, warnings-denied Clippy, Rust
+formatting, all seven acceptance workflows plus CI through actionlint, exact
+workflow regeneration, and three HTTP-checker tests passed. The HTTP checker
+also passed against a real native portable build/temporary server. Hosted
+fixture deep/strict validation passed (3 routes, 2 guide pages), and product
+docs passed (55 routes, 53 guide pages, 23 examples). Full PR CI, actual generated
+GitHub execution, registry publication/pulls and selected Netlify drafts remain
+pending. Preserve their eventual run IDs and distinguish source-generator
+acceptance from capabilities actually shipped in the candidate binary.

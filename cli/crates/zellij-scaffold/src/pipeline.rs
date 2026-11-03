@@ -1,6 +1,7 @@
 //! Pure GitHub workflow generation. Values are serialized, never pasted into
 //! executable shell text. Delivery reuses the native build-once commands.
 use serde_json::{Value, json};
+use sha2::{Digest, Sha256};
 use zellij_core::{
     Error, Result,
     ci::{Settings, Trigger},
@@ -246,10 +247,15 @@ pub fn github(options: &CiOptions) -> Result<String> {
         }
         jobs["publish"] = json!({"if":format!("${{{{ {condition} }}}}"), "runs-on":runner, "timeout-minutes":30, "permissions":permissions, "steps":steps});
     }
+    // GitHub group names are case-insensitive. Hash the case-sensitive filename
+    // so even Manual.yml and manual.yml have distinct, bounded-length keys.
+    let workflow_key = format!("{:x}", Sha256::digest(settings.workflow.as_bytes()));
     let mut doc = json!({
-        "name":"Documentation", "on": events, "permissions":{"contents":"read"},
+        "name":format!("Documentation ({})", settings.workflow), "on": events, "permissions":{"contents":"read"},
         "defaults":{"run":{"shell":"bash"}},
-        "concurrency":{"group":"docs-${{ github.workflow }}-${{ github.ref }}", "cancel-in-progress":false},
+        // The file identifies the workflow even if its display name is edited.
+        // A shared display name previously coupled independent sites' queues.
+        "concurrency":{"group":format!("docs-{workflow_key}-${{{{ github.ref }}}}"), "cancel-in-progress":false},
         "env":{"SITE_ROOT": if site_root == "." { ".".into() } else { format!("./{site_root}") }, "ZELLIJ_IMAGE":format!("ghcr.io/mylife-inc/zellij-base:{}", version.trim_start_matches('v'))},
         "jobs":jobs
     });
@@ -276,6 +282,22 @@ mod tests {
             platform: None,
             features: None,
         }
+    }
+
+    #[test]
+    fn workflow_queues_preserve_case_sensitive_file_identity() {
+        let mut options = options(Publish::Nothing);
+        options.settings.workflow = "Manual.yml".into();
+        let upper: Value = serde_yaml_ng::from_str(&github(&options).unwrap()).unwrap();
+        options.settings.workflow = "manual.yml".into();
+        let lower: Value = serde_yaml_ng::from_str(&github(&options).unwrap()).unwrap();
+        let group = |workflow: &Value| {
+            workflow["concurrency"]["group"]
+                .as_str()
+                .unwrap()
+                .to_lowercase()
+        };
+        assert_ne!(group(&upper), group(&lower));
     }
     fn parse(options: &CiOptions) -> Value {
         serde_yaml_ng::from_str(&github(options).unwrap()).unwrap()
