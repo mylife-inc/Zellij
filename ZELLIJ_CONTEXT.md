@@ -3,12 +3,12 @@
 Last refreshed: **2026-11-02**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest source work: PR #54 merged as `35a2261` after 13 CI jobs passed; both
-published test images passed corrected fresh-pull acceptance. Current branch
-`codex/documentation-migration-preservation`, source fix `8370ec4`, preserves
-82 legacy bookmarks before a proposed Netlify migration. Local checks pass;
-PR CI/merge remain pending. All 46 production routes and 29 referenced images
-are retained in the 55-route staging site. See
+Latest source work: PR #55 merged as `f1ca1ff` after all 13 CI jobs passed in
+`41573372928` on final head `2794773`. Source fix `8370ec4` preserves 82 legacy
+bookmarks before a proposed Netlify migration. All 46 production routes, 282
+original heading IDs and 29 referenced images are retained in the 55-route
+staging site. Both published test images passed corrected fresh-pull acceptance;
+PR #54 main CI `41572436263` also passed. See
 [the migration report](specs/zellij-netlify-migration-2026-11-02.md).
 The user is preparing a separate Netlify staging project because the intended
 transfer destination is unavailable. Await its URL/credentials readiness; keep
@@ -3543,3 +3543,31 @@ secrets for it. Await the new URL and readiness before running draft acceptance
 there. No credentials were read, no local Docker daemon started, and no existing
 production content replaced. Native candidate/stable channels are unchanged;
 the multi-site workflow fix still requires a later native candidate.
+
+### Preservation acceptance and staging handoff — 2026-11-02
+
+[PR #55](https://github.com/mylife-inc/Zellij/pull/55) merged as
+`f1ca1ff04f049366a1175b4dfe2bd6e78a6c34a1` after all 13 jobs passed in
+[41573372928](https://github.com/mylife-inc/Zellij/actions/runs/41573372928)
+on final head `27947739e2bfdfa126f323aca847e970627c71bc`. The new Engine gate
+built the docs with preserved authored images and passed route, legacy-anchor,
+asset and browser/search acceptance. Six native package targets, three portable
+platforms, full container delivery, schema and showcase checks also passed.
+This resolves the pending PR result above. PR #54 main CI `41572436263` passed.
+PR #55 post-merge CI `41576036593` and Base image `41576036573` were still
+running at this closeout; refresh them before relying on their results.
+
+Read-only DNS inspection found `zellij.shebka.net` pointing to
+`zellij-docs.netlify.app`; the domain's nameservers are `ns1.hostmonster.com`
+and `ns2.hostmonster.com`. No DNS setting changed. The user has the validated
+staging ZIP and instructions; the new temporary URL and confirmation that its
+GitHub secrets are ready remain pending. A temporary remote checker is prepared
+to compare all 55 served HTML bodies with the validated artifact, then check
+routes, anchors, images and search. Only its syntax has been checked; remote
+preservation and both Netlify CLI draft deployments remain unverified.
+
+Next: verify the selected staging URL, run portable and hosted draft acceptance,
+retain the old project's complete deploy ZIP/settings, and review the full
+staging docs before any separately approved production/domain cutover. The
+original live project stays available. No Netlify credentials, production
+content, candidate release assets or stable channel changed in this closeout.
