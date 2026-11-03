@@ -1,7 +1,7 @@
 # Zellij release channels and candidate procedure
 
 Implemented policy, November 2, 2026. This document does not announce a release.
-The source workspace now reports 0.2.0-rc.1. Publication status must be checked
+The source workspace is preparing 0.2.0-rc.2; 0.2.0-rc.1 remains published. Publication status must be checked
 in GitHub; a version change in source is not proof of an uploaded release.
 
 ## Channels
@@ -43,7 +43,7 @@ for candidate acceptance. Source development can explicitly select
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.1` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.2` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -57,8 +57,9 @@ for candidate acceptance. Source development can explicitly select
    against explicitly selected test destinations. CI artifact acceptance before
    upload and acceptance of the final downloaded release are separate checks.
 
-Candidate notes live in specs/releases/v0.2.0-rc.1.md and are included automatically
-in both release pages. The Published release acceptance workflow runs after
+Candidate notes live in specs/releases/<version>.md and are included automatically
+in both release pages. The next candidate notes are specs/releases/v0.2.0-rc.2.md;
+this preparation does not mean the candidate has been published. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
 installers, and exercises all six native targets. It also pulls and executes all
