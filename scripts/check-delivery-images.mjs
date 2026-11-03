@@ -23,14 +23,27 @@ try {
   const container = JSON.parse(docker(['inspect', name]))[0];
   const origin = `http://127.0.0.1:${container.NetworkSettings.Ports['3000/tcp'][0].HostPort}/`;
   let ready = false;
+  let lastFailure = 'no response';
   for (let attempt = 0; attempt < 120; attempt++) {
-    try { if ((await fetch(new URL('index.html', origin), { signal: AbortSignal.timeout(1000) })).ok) { ready = true; break; } } catch { /* Startup. */ }
+    try {
+      const response = await fetch(origin, { signal: AbortSignal.timeout(1000) });
+      await response.arrayBuffer();
+      if (response.ok) { ready = true; break; }
+      lastFailure = `HTTP ${response.status}`;
+    } catch (error) { lastFailure = error.message; }
     await delay(250);
   }
-  assert(ready, 'Published container did not become ready');
+  assert(ready, `Published container did not become ready (${lastFailure})`);
   docker(['exec', name, 'sh', '-c', info.Config.Healthcheck.Test[1]]);
   await checkDeliverySite(origin, 'portable');
   console.log(`${image}: fresh pull and HTTP acceptance passed (${info.RepoDigests.join(', ')})`);
+} catch (error) {
+  // This container contains only the public fixture, with no credentials.
+  // Keep useful startup evidence before removing it on failed acceptance.
+  if (started) {
+    try { console.error(docker(['logs', '--tail', '80', name])); } catch { /* Retain the original failure. */ }
+  }
+  throw error;
 } finally {
   if (started) docker(['rm', '--force', name]);
 }
