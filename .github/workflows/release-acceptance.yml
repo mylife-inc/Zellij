@@ -9,9 +9,13 @@ on:
       shared:
         type: boolean
         default: false
-  # Select the published tag in the UI; a branch dispatch fails the version gate.
+  # Use the selected tag, or run a newer harness with an explicit published tag.
   workflow_dispatch:
     inputs:
+      version:
+        description: Published tag to verify (required when running from a branch)
+        type: string
+        required: false
       shared:
         description: Also check the shared mylife-inc/releases destination
         type: boolean
@@ -48,11 +52,18 @@ jobs:
         with:
           node-version: 24
       - uses: dtolnay/rust-toolchain@stable
-      - name: Require a published version tag matching this checkout
+      - name: Validate published version
         run: >-
-          node -e "if (process.env.GITHUB_REF_TYPE !== 'tag') throw new Error('Select a published version tag');"
+          node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
+      - name: Check out the released source
+        uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ env.VERSION }}
+          path: release-source
+          persist-credentials: false
       - name: Install public downloads and exercise the released binary
-        run: node scripts/check-published-release.mjs
+        working-directory: release-source
+        run: node ../scripts/check-published-release.mjs
 
   images:
     name: Published images (${{ matrix.os }})
@@ -72,8 +83,15 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      - name: Require a published version tag
+      - name: Validate published version
         run: >-
-          node -e "if (process.env.GITHUB_REF_TYPE !== 'tag') throw new Error('Select a published version tag');"
+          node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
+      - name: Check out the released source
+        uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ env.VERSION }}
+          path: release-source
+          persist-credentials: false
       - name: Pull and execute every published feature variant natively
-        run: node scripts/check-published-images.mjs
+        working-directory: release-source
+        run: node ../scripts/check-published-images.mjs

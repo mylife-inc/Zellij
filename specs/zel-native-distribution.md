@@ -1,9 +1,11 @@
 # Native package and installer contract
 
-Status: implemented in source; hosted acceptance is recorded on the implementing
-pull request. No new version tag or public binary release is created by this work.
-The existing `zellij-v0.1.3` release predates the portable documentation workflow
-and contains no native Windows packages. Do not replace those existing assets.
+Status: published in candidate
+[0.2.0-rc.1](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1).
+[Public-artifact acceptance passed](https://github.com/mylife-inc/Zellij/actions/runs/41548199714)
+on all six native targets and both Linux image architectures. Stable
+`zellij-v0.1.3` predates the portable documentation workflow and has no native
+Windows packages. The candidate does not replace those stable assets.
 
 ## Package matrix
 

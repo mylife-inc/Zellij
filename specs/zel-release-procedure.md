@@ -67,6 +67,26 @@ credentials are passed to these acceptance jobs. Native Windows
 and macOS/Linux acceptance remains on GitHub's native runners; there is no
 requirement to start Docker on the maintainer's laptop.
 
+Public-asset downloads allow at most three attempts for transient connection
+errors and timeouts. Each attempt starts with empty buffers and a fresh timeout;
+partial responses are discarded. Missing files, oversized responses, checksum
+failures and installer/source mismatches fail without retrying. The original
+0.2.0-rc.1 tag predates this download-recovery improvement; rerunning that tag's
+workflow still uses its original downloader. To verify an existing release with
+the latest acceptance code, select the Published release acceptance workflow on
+`main` and provide its published `version` tag, for example:
+
+```sh
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.1 -f shared=true
+```
+
+The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,
+installer byte comparisons and the native acceptance suite use that tagged source;
+only the download/acceptance driver comes from the selected workflow revision.
+This performs public reads and temporary local installs on the runners. It does
+not rebuild, republish or move a release tag. Record both the source tag and the
+acceptance workflow revision when reporting this verification.
+
 ## Stable promotion
 
 After candidate acceptance, commit the stable workspace version and run the

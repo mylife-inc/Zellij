@@ -90,6 +90,30 @@ test('candidate release pages include the reviewed version-specific notes', () =
   }
 });
 
+test('published acceptance validates version input and checks the immutable tag separately from its harness', t => {
+  const f = fixture(t);
+  const acceptance = workflow('release-acceptance');
+  assert.equal(acceptance.on.workflow_dispatch.inputs.version.type, 'string');
+  assert.deepEqual(acceptance.permissions, { contents: 'read' });
+  for (const job of Object.values(acceptance.jobs)) {
+    const validate = step(job, 'Validate published version');
+    for (const version of ['v0.2.0-rc.1', 'v0.2.0']) f.shell(validate.run, { env: { ...f.env, VERSION: version } });
+    for (const version of ['main', 'refs/heads/main', 'v0.2.0\n', '']) {
+      const result = spawnSync('bash', ['-c', validate.run], { cwd: root, env: { ...f.env, VERSION: version }, encoding: 'utf8' });
+      assert.notEqual(result.status, 0);
+    }
+    const source = step(job, 'Check out the released source');
+    assert.equal(source.with.ref, 'refs/tags/${{ env.VERSION }}');
+    assert.equal(source.with.path, 'release-source');
+    assert.equal(source.with['persist-credentials'], false);
+    assert.ok(job.steps.indexOf(validate) < job.steps.indexOf(source));
+    const run = job.steps.at(-1);
+    assert.equal(run['working-directory'], source.with.path);
+    assert.match(run.run, /^node \.\.\/scripts\/check-published-(?:release|images)\.mjs$/);
+  }
+  assert.deepEqual(f.records(), []);
+});
+
 for (const version of ['v0.2.0-rc.1', 'v0.2.0']) {
   test(`local image publisher sends the exact ${version} tag set to Docker`, t => {
     const f = fixture(t);

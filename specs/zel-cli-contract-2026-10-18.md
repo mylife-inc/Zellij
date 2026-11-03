@@ -6,8 +6,9 @@ and validation watching, portable dev, hosted view, version/pull/upgrade, eject
 and explicit portable/hosted feature selection are implemented in source**.
 Working-directory, shared site selectors and explicit config-file selection are also implemented. Other
 providers and remaining advanced flags remain proposed. Stage records below
-and the local CLI reference describe actual support; public 0.1.3 predates these
-additions and compatible release publication is still separate work.
+and the local CLI reference describe actual support. Candidate 0.2.0-rc.1 is
+published with six native packages and verified public artifacts; stable 0.1.3
+predates these additions. Stable promotion and production docs remain separate work.
 See the [inventory](zel-cli-inventory-2026-10-17.md) for current implementation;
 the [original specification](zellij-cli-spec.md) remains design history.
 
@@ -322,10 +323,10 @@ a generated folder-derived name. Provider/site/credential fields are rejected
 for registry publication. `pub --dry-run` resolves the plan without tools,
 content validation, builds or remote requests; `--json` remains unsupported.
 
-The provider and `ci` blocks below are implemented. While the development
-package still reports 0.1.3, CI generation requires an explicit compatible
-release pin (minimum 0.2.0, including candidates); generation does not establish
-that the selected release has been published:
+The provider and `ci` blocks below are implemented. Candidate 0.2.0-rc.1 defaults
+to its own published version when no pin is supplied. Explicit pins require
+0.2.0 or later, including candidates; generation does not establish that an
+arbitrary selected version has been published:
 
 ```yaml
 build:
@@ -341,7 +342,7 @@ publish:
 ci:
   system: github
   branch: main
-  zel-version: 0.2.0
+  zel-version: 0.2.0-rc.1
   triggers: [pull_request, push, manual]
 ```
 
@@ -410,8 +411,8 @@ zel ci run
 zel mig ../old-manual --out docs/manual
 ```
 
-These examples use current source syntax. Generated CI still requires an explicit
-compatible release pin; public native release 0.1.3 predates these capabilities.
+These examples work with published candidate 0.2.0-rc.1. Generated CI uses its
+own version when no explicit pin is saved; stable 0.1.3 predates these capabilities.
 
 ## 6. Implementation sequence and acceptance
 
@@ -419,8 +420,9 @@ The sequence below records the implementation plan. Runtime prerequisites,
 configured sites, shortcuts, image packaging, Netlify delivery, CI generation,
 formatting and maintenance commands are now implemented in source. Portable
 `dev`, hosted `view`, `--cwd` and shared `--site-root` are also implemented.
-Remaining work includes output controls, additional deployment
-providers and matched release/documentation publication. Dated stage records
+Output controls are implemented too. Remaining work includes additional
+providers, advanced build/conversion options, combined image manifests, live
+candidate delivery acceptance and matched stable release/documentation publication. Dated stage records
 below give each milestone's actual scope and limitations.
 
 1. Introduce the versioned config/site resolver, retain explicit legacy paths,

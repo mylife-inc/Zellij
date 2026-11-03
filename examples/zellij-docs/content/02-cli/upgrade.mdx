@@ -11,11 +11,11 @@ zel upgrade v0.2.0-rc.1          # explicitly select a prerelease
 zel upgrade 0.2.0 --force        # reinstall the same version
 ```
 
-These are syntax examples, not a claim that `0.2.0` has been published. Current
-source implements this command; the public `zellij-v0.1.3` binaries predate it.
-Source currently still reports `0.1.3`, so a source build can be ahead of the
-public binary with the same version. Avoid `--force` against that older published
-archive unless replacing your source build is intentional.
+Candidate `0.2.0-rc.1` is published and includes this command. Stable `0.2.0`
+examples show syntax for a future release; stable is still `0.1.3`, which predates
+`upgrade`. Install the candidate using its [pinned installer instructions](/cli)
+when starting from that old binary. A candidate installation will not downgrade
+to `0.1.3` when checking the stable channel.
 
 With no version argument, `upgrade` reads the shared
 [`mylife-inc/releases` release channel](https://github.com/mylife-inc/releases/releases),

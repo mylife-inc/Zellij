@@ -47,6 +47,56 @@ test('shared release scope selects scoped asset URLs', async t => {
   assert.ok(f.calls.every(call => call.url.startsWith(`${result.base}/`)));
 });
 
+test('recovers a reset connection and a partial body without mixing archive bytes', async t => {
+  const f = await fixture(t);
+  let attempts = 0;
+  const result = await downloadRelease({ ...f.options, fetchImpl: async (url, init) => {
+    if (url.endsWith(`/${f.archive}`)) {
+      attempts++;
+      if (attempts === 1) throw new TypeError('fetch failed', { cause: Object.assign(new Error('read reset'), { code: 'ECONNRESET' }) });
+      if (attempts === 2) return { ok: true, body: (async function* () {
+        yield Buffer.from('incomplete bytes must be discarded');
+        throw Object.assign(new Error('other side closed'), { code: 'UND_ERR_SOCKET' });
+      })() };
+    }
+    return f.options.fetchImpl(url, init);
+  } });
+  assert.equal(attempts, 3);
+  assert.deepEqual(result.contents[f.archive], f.files[f.archive]);
+  assert.deepEqual(await readFile(path.join(f.options.destination, f.archive)), f.files[f.archive]);
+});
+
+test('bounds network retries and saves nothing when the connection never recovers', async t => {
+  const f = await fixture(t);
+  let attempts = 0;
+  await assert.rejects(downloadRelease({ ...f.options, fetchImpl: async () => {
+    attempts++;
+    throw new DOMException('Request timed out', 'TimeoutError');
+  } }), error => {
+    assert.match(error.message, new RegExp(f.archive.replaceAll('.', '\\.')));
+    assert.match(error.message, /example\/Zellij/);
+    assert.equal(error.cause.name, 'TimeoutError');
+    return true;
+  });
+  assert.equal(attempts, 3);
+  await assert.rejects(access(f.options.destination));
+});
+
+test('does not retry missing assets, oversized assets or integrity failures', async t => {
+  for (const [change, expectedCalls] of [
+    [f => { delete f.files[f.archive]; }, 1],
+    [f => { f.files['install.sh'] = Buffer.alloc(1024 * 1024 + 1); }, 4],
+    [f => { f.files[f.archive] = Buffer.from('corrupt'); }, 5],
+    [f => { f.files['install.ps1'] = Buffer.from('changed installer'); }, 5],
+  ]) {
+    const f = await fixture(t);
+    change(f);
+    await assert.rejects(downloadRelease(f.options));
+    assert.equal(f.calls.length, expectedCalls);
+    await assert.rejects(access(f.options.destination));
+  }
+});
+
 test('rejects corrupt, missing, ambiguous and mismatched assets without saving them', async t => {
   const cases = [
     f => { f.files[f.archive] = Buffer.from('corrupt archive'); },

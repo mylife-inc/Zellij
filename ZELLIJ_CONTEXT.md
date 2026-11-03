@@ -3,11 +3,14 @@
 Last refreshed: **2026-11-02**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest work: native 0.2.0-rc.1 preparation on `codex/release-0-2-0-rc1`,
-source commit `03ec06f`. Release safeguards merged in PR #49; its main image
-publication passed. Candidate versioning, notes and published-artifact acceptance
-are prepared; refresh GitHub before assuming the candidate was published.
-See the final dated entry and specs/zel-release-procedure.md before publishing.
+Latest work: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
+All eight public-artifact acceptance jobs passed in run `41548199714` using
+corrected harness `29029e1`: six native platforms and both Linux image
+architectures. The original release run has two Windows downloader failures;
+the follow-up checks the unchanged published assets. Download recovery and the
+ability to validate older tags are on `codex/release-download-recovery`, pending
+final PR CI/merge. Stable release remains `zellij-v0.1.3`; production docs were
+not deployed. See the final dated entry and specs/zel-release-procedure.md.
 Temporary build/image
 selection merged in PR #46, including the Zod/schema compatibility fix.
 Image platform selection
@@ -20,8 +23,8 @@ commands merged in PR #39.
 Portable development and hosted static preview merged in PR #38.
 Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
-CI generation in PR #34 and Netlify delivery in PR #33. Current source is ahead
-of public native release `zellij-v0.1.3`.
+CI generation in PR #34 and Netlify delivery in PR #33. These capabilities are
+available in candidate `zellij-v0.2.0-rc.1`; the stable native release is still `zellij-v0.1.3`.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -3277,3 +3280,73 @@ alone complete: native publication can still succeed while image jobs fail.
 No tag, native release or production website deployment has occurred in this
 preparation commit. Repository visibility and the old sealed repository are
 unchanged; development remains in public mylife-inc/Zellij.
+
+
+### Published 0.2.0-rc.1 and download recovery — 2026-11-02
+
+PR #50 merged as 61881e805fdf34af12757e33ca4c1703c314825e after all 13 CI jobs
+passed on 7b6838154cce0eaf69788c58a63abe0d1a2e5efa (41542526979). Annotated tag
+v0.2.0-rc.1 points to that merge commit. The candidate is now public in both
+repositories, each with six archives, six per-file checksums, SHA256SUMS and
+both installers (15 assets):
+
+- https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1
+- https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.1
+
+Release run 41546241822 built all six native targets, published all four exact
+engine image variants for Linux AMD64/ARM64, and built the documentation.
+Production Netlify deployment and shared stable-installer updates were skipped.
+Both release pages are prereleases; scoped stable Zellij remains zellij-v0.1.3.
+Main Base image run 41546163136 also passed. Main CI 41546163311 had 11 passing
+jobs with CLI and Windows portable acceptance still running at this checkpoint;
+refresh it before describing its final result.
+
+The original release run is NOT green: 27 jobs passed, while both Windows
+public-acceptance jobs failed after completing the development-repository
+installation and native suite. Their next fetch, from the shared repository,
+failed with ECONNRESET/UND_ERR_SOCKET. A failed-jobs retry reproduced this.
+This was an acceptance downloader failure; no checksum, installer or binary
+assertion failed. Do not erase these failures or move the published tag.
+
+Fix f9c6b45 adds at most three attempts for connection errors/timeouts. Each
+attempt discards partial bytes and retains size, checksum and installer/source
+checks. Missing/oversized assets and integrity failures are not retried. Fix
+29029e16e2caf30b1b1dbb99e43f64b95d5ee76d permits an explicit published version in
+manual acceptance runs. The harness checks out refs/tags/<version> separately,
+so source comparisons and native tests still use the actual release commit.
+
+Published release acceptance 41548199714 PASSED all eight jobs using harness
+29029e1 against unchanged source tag v0.2.0-rc.1 at 61881e8. All six native
+targets downloaded both repositories' assets, verified byte equality/checksums,
+and exercised public installation. Windows ran PowerShell 5.1 and 7; its x64
+log confirms a reset was recovered on attempt 2. Both native Linux architectures
+pulled and executed all four published image variants. Use this successful
+follow-up run together with the original publication run as candidate evidence:
+https://github.com/mylife-inc/Zellij/actions/runs/41548199714
+
+Local verification: 29 release/download tests, workflow lint and diff checks
+passed. The actual published Intel macOS archive also passed temporary
+installation from both repositories, replacement/refusal/upgrade tests, portable
+build, moved-output preview, serve/view and Ctrl-C. No local Docker daemon was
+started, and no global zel installation or PATH was changed. The download fix
+changes acceptance infrastructure; candidate archives/installers/images were
+not rebuilt or replaced. The fix branch still requires final PR CI and merge.
+
+Next: finish the workflow-fix review, then exercise candidate-generated CI and
+provider delivery against explicitly selected test destinations before stable
+promotion and matched production documentation. Other tracked scope remains:
+advanced build options, combined multi-platform site images, additional
+providers and converter fidelity. Candidate acceptance does not mean the full
+product has zero bugs or that every historical feature proposal is implemented.
+
+
+Candidate documentation follow-up: local installation, quickstart, CLI and
+contract pages now identify the published 0.2.0-rc.1 candidate, show pinned
+attached Unix/PowerShell installers and the matching engine image, and use the
+available candidate in copyable CI pins. Stale statements that source still
+reports 0.1.3 or Windows packages await publication were corrected. Stable
+0.1.3 remains explicitly distinguished from the candidate. The current-source
+sections were refreshed while dated implementation history was preserved.
+Strict/deep documentation validation passed: 55 routes, 53 guide pages and
+23 examples. Both release pages also link the successful acceptance run and
+retain the original publication failures. Production docs remain undeployed.

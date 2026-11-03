@@ -3,7 +3,42 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 import { nativeTargets, releasePolicy } from './release-policy.mjs';
+
+const transientDownloadErrors = new Set([
+  'ECONNRESET', 'EAI_AGAIN', 'ETIMEDOUT', 'UND_ERR_SOCKET',
+  'UND_ERR_CONNECT_TIMEOUT', 'UND_ERR_HEADERS_TIMEOUT', 'UND_ERR_BODY_TIMEOUT',
+]);
+
+async function downloadAsset(url, name, repository, limit, fetchImpl) {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const response = await fetchImpl(url, { signal: AbortSignal.timeout(60000) });
+      if (!response.ok || !response.body) {
+        await response.body?.cancel();
+        throw new Error(`Download failed (${response.status}): ${name} from ${repository}`);
+      }
+      // Start over on a broken stream; never combine bytes from separate attempts.
+      let size = 0;
+      const chunks = [];
+      for await (const chunk of response.body) {
+        size += chunk.length;
+        if (size > limit) throw new Error(`Release asset exceeds size limit: ${name}`);
+        chunks.push(chunk);
+      }
+      return Buffer.concat(chunks);
+    } catch (error) {
+      const transient = error.name === 'TimeoutError' ||
+        transientDownloadErrors.has(error.code) || transientDownloadErrors.has(error.cause?.code);
+      if (!transient || attempt === 3) {
+        throw new Error(`Cannot download ${name} from ${repository}: ${error.message}`, { cause: error });
+      }
+      console.warn(`Retrying ${name} from ${repository} after a connection failure (attempt ${attempt + 1}/3)`);
+      await delay(250 * attempt);
+    }
+  }
+}
 
 export function releaseAssets(version, target) {
   releasePolicy(version);
@@ -20,17 +55,8 @@ export async function downloadRelease({ version, target, repository, scope = '',
   const base = `https://github.com/${repository}/releases/download/${tag}`;
   const contents = {};
   for (const name of names) {
-    const response = await fetchImpl(`${base}/${name}`, { signal: AbortSignal.timeout(60000) });
-    if (!response.ok || !response.body) throw new Error(`Download failed (${response.status}): ${name} from ${repository}`);
     const limit = name === names[0] ? 128 * 1024 * 1024 : 1024 * 1024;
-    let size = 0;
-    const chunks = [];
-    for await (const chunk of response.body) {
-      size += chunk.length;
-      if (size > limit) throw new Error(`Release asset exceeds size limit: ${name}`);
-      chunks.push(chunk);
-    }
-    contents[name] = Buffer.concat(chunks);
+    contents[name] = await downloadAsset(`${base}/${name}`, name, repository, limit, fetchImpl);
   }
   const archive = names[0];
   const hash = createHash('sha256').update(contents[archive]).digest('hex');

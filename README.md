@@ -67,10 +67,10 @@ Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
 with installation tests against actual release archives. Windows uses the
 PowerShell installer; Unix uses the shell installer. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
-versions, commands and limits. These changes do not replace the older published
-`v0.1.3` binaries or create a new release automatically. Current source is
-versioned `0.2.0-rc.1`; check the release page and its acceptance run before
-installing it. See the [candidate notes](specs/releases/v0.2.0-rc.1.md).
+versions, commands and limits. [Candidate 0.2.0-rc.1 is published](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1)
+for all six targets, with [public-artifact acceptance passing](https://github.com/mylife-inc/Zellij/actions/runs/41548199714).
+Use its pinned installation instructions. Stable remains `0.1.3`, which predates
+these workflows. See the [candidate notes](specs/releases/v0.2.0-rc.1.md).
 
 Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
 candidate channels, pinned installation, and stable documentation publication.
