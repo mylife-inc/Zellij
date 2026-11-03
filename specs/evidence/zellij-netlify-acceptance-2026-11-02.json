@@ -191,5 +191,9 @@
     "Retain old Netlify full production deploy ZIP and configuration.",
     "Review complete staged docs before separately approved production/domain cutover.",
     "Publish a later native candidate for the workflow queue fix; do not replace rc.1."
-  ]
+  ],
+  "provider_followup": {
+    "user_reported": "Filed a Netlify bug and emailed support@netlify.com",
+    "response": "pending"
+  }
 }
