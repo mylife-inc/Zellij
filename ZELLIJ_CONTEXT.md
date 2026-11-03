@@ -14,10 +14,12 @@ The user created https://zel-stage.netlify.app and made its main site and
 previews public. Updated GitHub secrets now work: candidate portable/hosted
 draft deployments, HTTP acceptance and browser search passed. Full-docs routes,
 images, bookmarks and search are retained, but React hydration errors remain:
-the hosting comment inserted by Netlify reproduces the problem locally. A
-request to turn off the staging badge and test whether this also removes that
-comment is pending. Keep the old live site/domain intact. See the latest dated
-entry and specs/evidence/zellij-netlify-acceptance-2026-11-02.json.
+the newline preceding Netlify's hosting comment reproduces the problem locally.
+The user disabled the badge; its script disappeared, but the comment/newline
+and React #418 remain. A ready-to-send support report and verified local
+reproduction are in [the hydration diagnosis](specs/zellij-netlify-hydration-2026-11-02.md).
+Keep the old live site/domain intact. See the latest dated entry and
+specs/evidence/zellij-netlify-acceptance-2026-11-02.json.
 
 Latest release: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
 All eight public-artifact acceptance jobs passed in run `41548199714` using
@@ -3609,3 +3611,31 @@ no local Docker was started. Candidate/stable channels remain unchanged; the
 workflow queue fix still needs a later native candidate. Earlier post-PR55 runs
 41576036593/41576036573 were cancelled, superseded by successful main CI
 41576279817 and Base image 41576279748 on PR56 merge 3114219.
+
+
+### Badge-off result and whitespace isolation — 2026-11-02
+
+The user disabled Powered by Netlify badge. Fresh HTTP checks on `/`,
+`/cli/completions` and `/guide/quickstart/new-project` returned 200 with the
+badge script absent but the hosting comment/newline still present. Removing
+only that observed block makes each response identical to the validated upload.
+A fresh normal-browser visit to `/cli/completions` still emitted React #418.
+
+Further controlled tests isolate the leading LF: newline-only before viewport
+metadata reproduces #418; the same Netlify comment without its leading LF is
+clean. The saved loopback reproduction also verified clean original HTML,
+one error with a newline, and no error with a minimal comment. Hydration was
+confirmed via the mounted theme control. A development build reproduces the
+mismatch at `<style id="zellij-theme">`; installed React DOM's hydration scan
+stops at the extra text node. This refines the earlier comment-level finding;
+the badge setting did not fix it.
+
+See specs/zellij-netlify-hydration-2026-11-02.md for the ready-to-send Netlify
+support request and specs/evidence/serve-head-whitespace-repro.mjs for the
+read-only reproduction. The report has not been sent. No engine workaround or
+warning suppression was added. The preservation checker currently observes
+uncaught page errors, not recoverable errors logged through console.error;
+extend that coverage when implementing the remedy. Full-docs remote hydration
+acceptance remains open. No production/domain/release/secret changes occurred.
+Temporary development servers were stopped and their generated source changes
+were removed. The source branch started from PR #57 merge df07f28.

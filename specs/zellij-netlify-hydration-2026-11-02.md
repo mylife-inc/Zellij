@@ -1,0 +1,90 @@
+# Netlify staging hydration reproduction — 2026-11-02
+
+Status: **diagnosed, unresolved**. This report is prepared for review/support;
+it has not been sent to Netlify. No production deployment or domain changed.
+
+## Ready-to-send support request
+
+Subject: Added whitespace before viewport metadata causes React hydration failure
+
+Our static Next.js documentation at
+https://zel-stage.netlify.app/cli/completions emits React error 418 when
+hydrating. The uploaded HTML runs cleanly on a local static server. Some
+Netlify-served responses contain an extra newline and a hosting annotation
+between the charset and viewport meta elements. The annotation starts with
+`<!-- This site is hosted on Netlify.` and contains `utm_source=ai-legible`.
+
+We disabled **Powered by Netlify badge**. This removed the HUD script, but the
+annotation and newline remain, and a fresh browser visit still reports 418.
+There was no redeploy between these observations. The same annotation is
+present on `/` and `/guide/quickstart/new-project`.
+
+Controlled tests on the exact same static build isolate the cause:
+
+| HTML served locally | Captured hydration errors |
+| --- | --- |
+| Unmodified upload | 0 |
+| Exact observed Netlify HTML | 1 |
+| Observed annotation including its leading newline, before viewport | 1 |
+| Only the added newline before viewport | 1 |
+| Observed annotation without its leading newline | 0 |
+| Only the HUD badge script | 0 |
+
+The failure also reproduces in Next's development build. Its diagnostic points
+to the root layout's `<style id="zellij-theme">`: React cannot locate the
+expected style while scanning past the intervening metadata/whitespace.
+Next.js is 16.4.2 and the app's React/React DOM dependencies are 19.2.8.
+
+Can Netlify disable this annotation for this project, or change its insertion
+so it does not introduce a text node into `<head>`? Is there a documented
+project setting or response header to opt out of this transformation?
+Please confirm the appropriate remedy; the badge setting alone did not do so.
+
+The observed responses vary by client: Node's default fetch and the normal
+in-app browser exposed the issue; earlier Python urllib responses matched the
+upload without additions. This is an observation, not a confirmed rule for
+which requests Netlify transforms. No authentication bypass is involved.
+
+## Reproduce locally without Netlify credentials
+
+Use the validated `examples/zellij-docs/out` build, or extract
+`backups/zellij-staging-2026-11-02.zip` into a temporary directory. This script
+reads the existing build, serves only on loopback, and does not modify it:
+
+```sh
+node specs/evidence/serve-head-whitespace-repro.mjs
+# Or pass the extracted build directory as the first argument.
+```
+
+Open the three printed URLs in fresh tabs. After client hydration, inspect
+the browser console. `plain` is the original build, `newline` adds exactly
+one LF before `<meta name="viewport"`, and `comment` adds a small HTML comment
+at the same position without surrounding whitespace. The latter is a minimal
+comment control, independent of Netlify's marketing text. Stop with Ctrl+C.
+
+The blank line is not part of the authored theme stylesheet or content.
+Inspection of the installed Next-bundled React DOM code supports the causal
+diagnosis: `getNextHydratable` returns text nodes, while `canHydrateInstance`
+stops scanning when it encounters a non-element. Ordinary comments are skipped.
+This is a framework/host interaction, not evidence that every hosted page or
+every React version behaves identically.
+
+## Decision and remaining work
+
+Keep staging available for review and leave the old production site intact.
+Obtain a supported opt-out or a tested framework-compatible remedy, then
+repeat remote hydration and interaction checks. No verified opt-out was found
+in the reviewed Netlify documentation. No warning suppression, client-side
+HTML cleanup, dependency patch or hosting workaround was added to the engine.
+
+The existing preservation checker observes uncaught `pageerror` events; it does
+not yet collect recoverable React errors reported through `console.error`.
+Extend that gate when implementing the remedy. The earlier preservation pass
+establishes its stated route/anchor/image checks, not a clean remote hydration
+result. The two small released-CLI draft fixtures passed their observed flows
+separately; this finding concerns the complete documentation site.
+
+References: [React error 418](https://react.dev/errors/418),
+[Netlify badge settings](https://docs.netlify.com/manage/projects/powered-by-netlify-badge/),
+[acceptance evidence](evidence/zellij-netlify-acceptance-2026-11-02.json), and
+[migration report](zellij-netlify-migration-2026-11-02.md).

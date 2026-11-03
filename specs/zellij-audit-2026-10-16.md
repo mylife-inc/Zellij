@@ -2904,3 +2904,31 @@ Refresh of earlier pending checks: PR #55 post-merge runs 41576036593 and
 41576036573 were cancelled and must not be called passed. They were superseded
 by main CI 41576279817 and Base image 41576279748 on PR #56 merge 3114219;
 both completed successfully.
+
+
+### Badge-off result and whitespace isolation — 2026-11-02
+
+The user disabled Powered by Netlify badge. Fresh HTTP checks on `/`,
+`/cli/completions` and `/guide/quickstart/new-project` returned 200 with the
+badge script absent but the hosting comment/newline still present. Removing
+only that observed block makes each response identical to the validated upload.
+A fresh normal-browser visit to `/cli/completions` still emitted React #418.
+
+Further controlled tests isolate the leading LF: newline-only before viewport
+metadata reproduces #418; the same Netlify comment without its leading LF is
+clean. The saved loopback reproduction also verified clean original HTML,
+one error with a newline, and no error with a minimal comment. Hydration was
+confirmed via the mounted theme control. A development build reproduces the
+mismatch at `<style id="zellij-theme">`; installed React DOM's hydration scan
+stops at the extra text node. This refines the earlier comment-level finding;
+the badge setting did not fix it.
+
+See specs/zellij-netlify-hydration-2026-11-02.md for the ready-to-send Netlify
+support request and specs/evidence/serve-head-whitespace-repro.mjs for the
+read-only reproduction. The report has not been sent. No engine workaround or
+warning suppression was added. The preservation checker currently observes
+uncaught page errors, not recoverable errors logged through console.error;
+extend that coverage when implementing the remedy. Full-docs remote hydration
+acceptance remains open. No production/domain/release/secret changes occurred.
+Temporary development servers were stopped and their generated source changes
+were removed. The source branch started from PR #57 merge df07f28.
