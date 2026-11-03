@@ -3,6 +3,9 @@ title: zel ship
 description: Import into a configured site, build once, then deploy or publish an image.
 ---
 
+<div id="what-it-is" className="zellij-legacy-anchor" />
+<div id="why-one-command-for-five" className="zellij-legacy-anchor" />
+
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `ship` imports MkDocs or Docusaurus into a new configured hosted site, then uses
 shared delivery to build once and publish. These commands are available in
@@ -51,6 +54,8 @@ error with setup guidance; Zellij does not install or start them. The generated
 hosted HTML needs HTTP serving. For Markdown sites that support double-clicking
 `index.html`, use the [portable renderer](/cli/build).
 
+<div id="what-it-will-not-hide" className="zellij-legacy-anchor" />
+
 ## Inspect the conversion first
 
 ```bash title="terminal"
@@ -65,6 +70,9 @@ format detection requires `--from mkdocs` or `--from docusaurus`.
 Warnings about skipped documents, external navigation and unsupported source
 features stay visible. Building successfully establishes that the generated
 content compiles; review navigation and content to assess migration fidelity.
+
+<div id="the-one-risk-worth-naming" className="zellij-legacy-anchor" />
+<div id="until-it-lands" className="zellij-legacy-anchor" />
 
 ## After success or failure
 

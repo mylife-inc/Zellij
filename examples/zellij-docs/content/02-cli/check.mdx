@@ -66,6 +66,8 @@ dependent checks. Rendering and output-path failures also stop at their first
 fatal error. Fix reported problems and run again; the report does not promise
 to enumerate errors in phases that could not run.
 
+<div id="the-intended---json" className="zellij-legacy-anchor" />
+
 ### JSON reports
 
 Portable `--json` writes exactly one report to stdout on validation success or
@@ -125,12 +127,16 @@ order: `content/`, current root, `docs/`, then `documentation/`. Hosted markers
 are `site.yaml`, `pages.yaml`, `menu.yaml`, `sections/`, or a guide's `_sidebar.yaml`.
 No parent directory is searched. A guide-only site needs no `site.yaml`.
 
+<div id="the-one-thing-worth-understanding" className="zellij-legacy-anchor" />
+
 ### Shared engine schemas
 
 Hosted checks run the engine's own schemas. The CLI mounts your folder read-only
 and asks the engine to validate it, keeping the schemas shared with rendering.
 A successful check is still followed by preparation and compilation, which can
 detect additional errors.
+
+<div id="what-it-validates" className="zellij-legacy-anchor" />
 
 ### Hosted validation coverage
 
@@ -142,6 +148,8 @@ detect additional errors.
 | Every sidebar entry | Names a page that exists in that guide |
 | Route ownership | Physical pages, guide roots and home redirects cannot claim conflicting routes |
 | The home page | `home:` names a page that exists |
+
+<div id="errors-against-warnings" className="zellij-legacy-anchor" />
 
 #### Errors and warnings
 
@@ -181,6 +189,8 @@ Errors name the content file and field or body location. MDX coordinates are
 relative to the loaded body, after front matter and the leading title have been
 removed. Section examples rendered inside a page use that page's link context.
 
+<div id="what-it-does-not-do" className="zellij-legacy-anchor" />
+
 ### What still needs a hosted build
 
 Deep checking parses MDX; it does not compile or execute it. Computed JSX props,
@@ -206,6 +216,8 @@ zel check ./content --deep --strict
 zel build ./content
 ```
 
+<div id="where-it-belongs" className="zellij-legacy-anchor" />
+
 ### Hosted workflows
 
 **As a pre-commit hook.** It exits non-zero, takes a second, and catches the
@@ -220,6 +232,8 @@ validate and build/deliver once. Release and runner prerequisites still apply.
 Add an explicit `zel check --deep --strict` step for the stronger gate; they do not
 automatically enable it. Native `zel deploy netlify` is implemented; see
 [deployment](/cli/deploy).
+
+<div id="when-the-folder-is-somewhere-the-runtime-cannot-see" className="zellij-legacy-anchor" />
 
 ### Container file sharing
 

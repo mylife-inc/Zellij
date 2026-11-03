@@ -19,6 +19,10 @@ zel build ./content --target static --out ./dist
 zel build ./content --target image --tag acme-docs:v2
 ```
 
+<div id="there-are-two-products-not-four" className="zellij-legacy-anchor" />
+<div id="which-one-you-want" className="zellij-legacy-anchor" />
+<div id="what-happened-to-node-and-imagestatic" className="zellij-legacy-anchor" />
+
 ## Choose the output
 
 | Target | Input | Output and requirements |
@@ -253,6 +257,10 @@ build. Its shared math font is retained if native equations still need it.
 limit failures preserve the previous export; syntax errors appear after the
 successful rebuild, in the browser.
 
+<div id="static--the-html-already-exists" className="zellij-legacy-anchor" />
+<div id="what-you-get" className="zellij-legacy-anchor" />
+<div id="what-it-actually-does" className="zellij-legacy-anchor" />
+
 ## Hosted static website
 
 `--target static` renders structured YAML/MDX content through the container
@@ -265,6 +273,8 @@ Static export serves images as authored rather than using a running image
 optimizer. Configure the content's `site.yaml` for branding, theme, site URL,
 and deployment prefix. See [configuration](/cli/config) for the distinction
 between content configuration and planned CLI configuration.
+
+<div id="image--a-server-produces-the-html" className="zellij-legacy-anchor" />
 
 ## Container image
 
@@ -340,3 +350,9 @@ validation or change the existing staged-output protections. Container builds
 require engine feature-selection contract version 1; an older distribution
 fails with guidance before dependency installation. This flag does
 not install or start a local container runtime.
+
+## See also
+
+- [Preview an export](/cli/serve)
+- [Container images](/cli/image)
+- [Netlify deployment](/cli/deploy)

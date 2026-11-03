@@ -12,6 +12,10 @@ its native assets and matching engine images must exist before the workflow runs
 Generation neither checks release availability nor creates a release.
 </Callout>
 
+<div id="why-generate-it-rather-than-document-it" className="zellij-legacy-anchor" />
+<div id="who-this-is-for" className="zellij-legacy-anchor" />
+<div id="what-it-writes" className="zellij-legacy-anchor" />
+
 ## Generate locally
 
 ```bash
@@ -102,6 +106,10 @@ evaluate path filters for tag pushes. See the
 [GitHub workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
 for platform trigger behavior.
 
+<div id="what-it-always-writes" className="zellij-legacy-anchor" />
+<div id="scoped-to-your-content-folder" className="zellij-legacy-anchor" />
+<div id="checking-without-publishing" className="zellij-legacy-anchor" />
+
 ## What each run does
 
 The default events are pull requests, pushes to `ci.branch`, and manual dispatch.
@@ -153,6 +161,8 @@ secrets before retrying an uncertain result. No workflow is dispatched.
 
 `--no-provision` remains accepted and now expresses the default. This changes the
 old generator's automatic-provisioning behavior at the new CLI version boundary.
+
+<div id="options" className="zellij-legacy-anchor" />
 
 ## Compatibility options
 
@@ -227,3 +237,9 @@ defaults at execution time. `ci run` only dispatches an existing workflow and
 does not accept this flag. Compatible native and engine releases must be
 published before running the generated workflow; generation does not publish or
 verify those releases.
+
+## See also
+
+- [Validation](/cli/check)
+- [Saved publication](/cli/publish)
+- [Site configuration](/cli/config)

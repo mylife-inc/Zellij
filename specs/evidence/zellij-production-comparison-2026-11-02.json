@@ -1,0 +1,2016 @@
+{
+  "production_pages": 46,
+  "local_pages": 55,
+  "missing_routes": [],
+  "new_routes": [
+    "/cli/completions",
+    "/cli/eject",
+    "/cli/features",
+    "/cli/pull",
+    "/cli/shortcuts",
+    "/cli/upgrade",
+    "/cli/version",
+    "/cli/view",
+    "/cli/watch"
+  ],
+  "identical_text_routes": [
+    "/",
+    "/guide",
+    "/guide/content-model",
+    "/guide/converting",
+    "/guide/pages-and-sections",
+    "/guide/quickstart/existing-docs",
+    "/guide/quickstart/from-scratch",
+    "/sections/grids",
+    "/sections/media",
+    "/sections/narrative",
+    "/sections/openers",
+    "/sections/proof",
+    "/why"
+  ],
+  "authored_assets": [
+    {
+      "path": "/_zellij/assets/bento-model.png",
+      "present": true,
+      "identical": true,
+      "sha256": "092fa57c51b0b0251afc19dc92458d7bcf9c0b94241aee674571fa3ceaf00fa8"
+    },
+    {
+      "path": "/_zellij/assets/bento-themes.png",
+      "present": true,
+      "identical": true,
+      "sha256": "3d9c9464bf349aa32292d8bece4fcb965218460c732be957f91d88a2df63ad86"
+    },
+    {
+      "path": "/_zellij/assets/card-cli.png",
+      "present": true,
+      "identical": true,
+      "sha256": "374c31f5ff8b2b78176815000ac5ec01e6054d88b168269bdcdd307e8ae41555"
+    },
+    {
+      "path": "/_zellij/assets/card-content.png",
+      "present": true,
+      "identical": true,
+      "sha256": "0428658dba6c3461e94890b551bafb7e7c7070dd452fd88cae1fcf173d44d73a"
+    },
+    {
+      "path": "/_zellij/assets/card-guides.png",
+      "present": true,
+      "identical": true,
+      "sha256": "3d64ff86aedbf2b46d980a70cd4d4667ea82b07acd52e16ab964ca4460f71fdf"
+    },
+    {
+      "path": "/_zellij/assets/card-sections.png",
+      "present": true,
+      "identical": true,
+      "sha256": "9de5002e7631b538a360fa4cdbc99e313d4b0a18f8d75c9d8a01fc492bde11d3"
+    },
+    {
+      "path": "/_zellij/assets/card-themes.png",
+      "present": true,
+      "identical": true,
+      "sha256": "9c3b8141513ee545eb344f0981803e3cf0a8d2702f4e7f0acc0efdc781744753"
+    },
+    {
+      "path": "/_zellij/assets/example/mark-1.png",
+      "present": true,
+      "identical": true,
+      "sha256": "ba31d0a36d796555ec250f07100a18a08f7346aa0ff340d47558211fd603b946"
+    },
+    {
+      "path": "/_zellij/assets/example/mark-2.png",
+      "present": true,
+      "identical": true,
+      "sha256": "e9a82b9fc76064b4ee9262ac94e6689b40523633ee9e72757a1820136f285a15"
+    },
+    {
+      "path": "/_zellij/assets/example/mark-3.png",
+      "present": true,
+      "identical": true,
+      "sha256": "e1d95e8a70648fca93975387c1ad3a024f7d21e04dc4a9ac46480be55701da0b"
+    },
+    {
+      "path": "/_zellij/assets/example/mark-4.png",
+      "present": true,
+      "identical": true,
+      "sha256": "6e19b8118d03352f08076ee6b3cdd3e86726bf80ae9814dddd67f18cb0712576"
+    },
+    {
+      "path": "/_zellij/assets/example/person-1.png",
+      "present": true,
+      "identical": true,
+      "sha256": "fd3f3d4c5e29cb1e5ccf190e773d90dc6844b3f52abd6a132230be19b0c0768f"
+    },
+    {
+      "path": "/_zellij/assets/example/person-2.png",
+      "present": true,
+      "identical": true,
+      "sha256": "98f7449f67f9c5e72cd0d96b9a1ef34f02bafd121a8c1d01468acaa6c884d611"
+    },
+    {
+      "path": "/_zellij/assets/example/person-3.png",
+      "present": true,
+      "identical": true,
+      "sha256": "400615d42809ac58f5ed7035cbaa6c3ceaa386e7d8bfbcbdbe580820df59cec8"
+    },
+    {
+      "path": "/_zellij/assets/example/poster.png",
+      "present": true,
+      "identical": true,
+      "sha256": "1cf823a5a6ba5a666ef53972d7d382ff003943ee4178761cdb5d766a4badffb7"
+    },
+    {
+      "path": "/_zellij/assets/example/promo-1.png",
+      "present": true,
+      "identical": true,
+      "sha256": "3bf174da5eb8772479d995edb9c731c05d28c323a6fce44c6fbdb890baee1ae5"
+    },
+    {
+      "path": "/_zellij/assets/example/promo-2.png",
+      "present": true,
+      "identical": true,
+      "sha256": "fd88d9eb53dea3bf061fb0be158a9e598bf7b10fdd71ce49fc182fc50853ffbd"
+    },
+    {
+      "path": "/_zellij/assets/example/promo-wide.png",
+      "present": true,
+      "identical": true,
+      "sha256": "de2c9475a9520c9293916427436d53459170806ed621808c9a388ddd6b0fa27a"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-1.png",
+      "present": true,
+      "identical": true,
+      "sha256": "99a1c45c1cd7336c93e29839354b4600f8172b1923becade73f0656d6bab9aee"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-2.png",
+      "present": true,
+      "identical": true,
+      "sha256": "c0108b3ff6e152add660c5b8b095f5078dda7c9c301679fa38378ae7d7dc6ae2"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-3.png",
+      "present": true,
+      "identical": true,
+      "sha256": "e2da46c1477e821e12fc09effba9664063489e7d1392e733e14d49e0ee565b46"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-4.png",
+      "present": true,
+      "identical": true,
+      "sha256": "f4884aaec1883125e989bd50d90c1d9f84a0088b58a240e3d1c8ee6870bf7402"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-5.png",
+      "present": true,
+      "identical": true,
+      "sha256": "8ed56955b0c0647acc23957c4ef22addb500c2706979de45c3de9f2a3e7e161d"
+    },
+    {
+      "path": "/_zellij/assets/example/tile-6.png",
+      "present": true,
+      "identical": true,
+      "sha256": "03a3e4f7cf15c6f9dfdae118ca3484af8c413ee12044e0fce57de4248c297a0f"
+    },
+    {
+      "path": "/_zellij/assets/example/wide-1.png",
+      "present": true,
+      "identical": true,
+      "sha256": "5784e4004c7248a7ddcc6302d5bfa502d75052cc26a4a3b096e463dd23535bab"
+    },
+    {
+      "path": "/_zellij/assets/example/wide-2.png",
+      "present": true,
+      "identical": true,
+      "sha256": "8cb69d3af8652a9d1ed552c95bfbd68f9d3506f2becb9124522156f6eba363f2"
+    },
+    {
+      "path": "/_zellij/assets/hero.png",
+      "present": true,
+      "identical": true,
+      "sha256": "ae32787ab6cea8a5bf91520c60f213396deb08763c2b8e11de6830a021fbf69c"
+    },
+    {
+      "path": "/_zellij/assets/logo.png",
+      "present": true,
+      "identical": true,
+      "sha256": "87293137e954ee20b48b2d96014f414b619a6ad26c4e7fcaabe2d8b9d386d36b"
+    },
+    {
+      "path": "/_zellij/assets/panel-themes.png",
+      "present": true,
+      "identical": true,
+      "sha256": "a8735bedd1704c5426b1795bc7f23d279b23b89d2375525bfe01d1a577a6a264"
+    }
+  ],
+  "snapshot": {
+    "file": "backups/zellij-production-2026-11-02.tar.gz",
+    "bytes": 12619071,
+    "sha256": "6b3a447049d8b7e1d7768bff5145dbc6d2fc0becdac030f1cf964f44f555f422",
+    "scope": "Public sitemap, linked/search-index routes, returned HTML, extracted main text and directly referenced same-origin assets. Not a complete Netlify deploy ZIP or source backup."
+  },
+  "pages": [
+    {
+      "route": "/",
+      "status": 200,
+      "sha256": "8e1204979df3a294646e794f378d91e02f4186e289522890a26b161b22cb47f7",
+      "bytes": 130579,
+      "heading_ids": []
+    },
+    {
+      "route": "/cli",
+      "status": 200,
+      "sha256": "8a895d38e705e5c6f5ab502996b3c316757d3a2683b913f0a935c28dc6d01247",
+      "bytes": 124251,
+      "heading_ids": [
+        "installing",
+        "what-it-does",
+        "the-whole-surface",
+        "how-a-command-finds-your-content",
+        "where-docker-comes-in"
+      ]
+    },
+    {
+      "route": "/cli/build",
+      "status": 200,
+      "sha256": "b9b74e5099c6012af5a0f43b5fe8961d6306aad507c7d1fc1ed40f6a11e7f905",
+      "bytes": 136548,
+      "heading_ids": [
+        "there-are-two-products-not-four",
+        "static--the-html-already-exists",
+        "image--a-server-produces-the-html",
+        "which-one-you-want",
+        "what-happened-to-node-and-imagestatic",
+        "options",
+        "what-you-get",
+        "what-it-actually-does",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/check",
+      "status": 200,
+      "sha256": "17fe1f0f13ca2364335f2dbecd7b44d6900a54c48724efbdb7506874e2a5f7af",
+      "bytes": 132254,
+      "heading_ids": [
+        "the-one-thing-worth-understanding",
+        "what-it-validates",
+        "errors-against-warnings",
+        "what-it-does-not-do",
+        "where-it-belongs",
+        "when-the-folder-is-somewhere-the-runtime-cannot-see",
+        "options",
+        "the-intended---json",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/ci",
+      "status": 200,
+      "sha256": "6b1dd858d073fce0dec0b63f081c9e6d701ddb72e74ff05969cd4ce5a6504174",
+      "bytes": 145074,
+      "heading_ids": [
+        "why-generate-it-rather-than-document-it",
+        "who-this-is-for",
+        "what-it-writes",
+        "options",
+        "what-it-always-writes",
+        "scoped-to-your-content-folder",
+        "checking-without-publishing",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/config",
+      "status": 200,
+      "sha256": "9917ebca0c97ac1ed71f4916c7a761f0586a06fb89c65cbd3dfd60102302d400",
+      "bytes": 133006,
+      "heading_ids": [
+        "what-it-is-really-for",
+        "where-it-is-found",
+        "precedence",
+        "keys",
+        "top-level",
+        "build",
+        "deploy",
+        "check",
+        "a-worked-example",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/context",
+      "status": 200,
+      "sha256": "899a135c92bffe6d69488064d9fce7d7f6ee9f2874a373ce906713ce79ed3d8f",
+      "bytes": 116802,
+      "heading_ids": [
+        "the-problem-it-exists-for",
+        "using-it",
+        "why-it-is-generated-rather-than-written",
+        "it-is-also-just-a-document",
+        "--json",
+        "options",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/convert",
+      "status": 200,
+      "sha256": "dfe6212ffd9ce6592b6654f41b0fee8af6bd549d76013ac6530b31ad0d00c06e",
+      "bytes": 128723,
+      "heading_ids": [
+        "take-the-plan-first",
+        "options",
+        "what-is-recognised",
+        "what-does-not-come-across",
+        "when-docusaurus-computes-its-sidebar",
+        "markdown-that-is-not-mdx",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/deploy",
+      "status": 200,
+      "sha256": "a8a591a86e9cf7d77468571e95dbacffe5a08cf299dcdea0408743f4cab34ded",
+      "bytes": 133116,
+      "heading_ids": [
+        "the-provider-decides-the-artefact",
+        "where-the-content-comes-from",
+        "what-it-does",
+        "credentials",
+        "what-it-deliberately-will-not-do-for-you",
+        "options",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/detect",
+      "status": 200,
+      "sha256": "03ae63b2b4c687b0b4f6afd330aa845bc2ead698298987070648a4755968546f",
+      "bytes": 107409,
+      "heading_ids": [
+        "why-a-separate-command",
+        "the-three-answers",
+        "when-nothing-is-recognised",
+        "what-it-looks-at",
+        "options",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/dev",
+      "status": 200,
+      "sha256": "41b03525fbf43712e2774b8190275513b4c858671b8c0c43154ce13bdbda84e7",
+      "bytes": 122131,
+      "heading_ids": [
+        "what-it-is-for",
+        "what-happens-when-you-run-it",
+        "reload-not-watch",
+        "looking-at-it-on-a-phone",
+        "when-your-folder-is-somewhere-the-runtime-cannot-see",
+        "options",
+        "when-you-have-a-wrapper-app-instead",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/doctor",
+      "status": 200,
+      "sha256": "55cb7d711c48d3d0b224283cff777b5e6e5fcab5c68770288efd5cd6ee1542f6",
+      "bytes": 117823,
+      "heading_ids": [
+        "what-it-is-for",
+        "the-socket-line",
+        "the-engine-line",
+        "exit-code",
+        "what-it-will-report-later",
+        "housekeeping",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/explain",
+      "status": 200,
+      "sha256": "21c43668ed0bd1b75e461e30a6d8e09436b9606a77829ca74b167611561084fc",
+      "bytes": 119353,
+      "heading_ids": [
+        "what-problem-this-solves",
+        "reading-the-output",
+        "the-loop-it-belongs-to",
+        "for-tooling",
+        "why-not-just-read-the-website",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/fmt",
+      "status": 200,
+      "sha256": "41ce727c3ace303a86cbac39fe283ae0c3445c8d5358f66f180fdc55e58bc4e2",
+      "bytes": 115489,
+      "heading_ids": [
+        "what-it-is-for",
+        "what-it-decides",
+        "--check-in-ci",
+        "what-it-will-not-touch",
+        "options",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/image",
+      "status": 200,
+      "sha256": "3dc09e425c459161646075b0c65b8b79131f182275feb8791bb12a593a46961f",
+      "bytes": 132676,
+      "heading_ids": [
+        "what-you-do-not-write-a-dockerfile-buys-you",
+        "zel-image-build",
+        "zel-image-run",
+        "zel-image-push",
+        "zel-image-dockerfile",
+        "the-base-image",
+        "getting-the-wrapper-app-out-of-it",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/list",
+      "status": 200,
+      "sha256": "aa13fad93d382453e8f69f4650c764674a41dfad4c89eb2a53fc71d46dac8272",
+      "bytes": 113492,
+      "heading_ids": [
+        "why-it-exists",
+        "zel-list-sections",
+        "zel-list-themes",
+        "zel-list-formats",
+        "zel-list-targets",
+        "machine-readable",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/migrate",
+      "status": 200,
+      "sha256": "c112b4a988117b0c8c867f91c239ecaa09bf45159a6c5b81c705a2d0383038ac",
+      "bytes": 109826,
+      "heading_ids": [
+        "what-it-is",
+        "then-why-does-it-exist",
+        "what-it-does-not-do",
+        "options",
+        "when-to-run-the-three-commands-instead",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/new",
+      "status": 200,
+      "sha256": "5b253db2c24e7e3ea1ba7bfed69cb2cc07dff9761078e36e72bec9e834c60ef2",
+      "bytes": 183329,
+      "heading_ids": [
+        "which-one-you-want",
+        "what-every-one-of-them-refuses-to-do",
+        "zel-new-docs-dir",
+        "what-it-writes",
+        "why-a-folder-that-already-validates-was-not-an-explanation",
+        "options",
+        "zel-new-app-dir",
+        "what-it-writes-1",
+        "--with-docs-and-both-together",
+        "when-you-need-an-app-at-all",
+        "options-1",
+        "zel-new-section-type",
+        "zel-new-page-name",
+        "zel-new-guide-name",
+        "zel-new-project-name",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/publish",
+      "status": 200,
+      "sha256": "53661a5f41c5169dffb308a871a70d1f3f5172100d8cb3bffa76e97ff40aae9a",
+      "bytes": 113708,
+      "heading_ids": [
+        "what-it-is",
+        "why-it-exists",
+        "what-each-step-contributes",
+        "until-it-lands",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/serve",
+      "status": 200,
+      "sha256": "a08c6cf006b9896de9a7a4e2b216d44ad60053869c61a31f7ee765b8734a2520",
+      "bytes": 107297,
+      "heading_ids": [
+        "why-not-just-use-zel-dev",
+        "what-it-does",
+        "options",
+        "until-it-lands",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/cli/ship",
+      "status": 200,
+      "sha256": "79c38bbcb8190262a65be2d35431f2d390cb8c28b3a17c50c46acdb41763ab8b",
+      "bytes": 115611,
+      "heading_ids": [
+        "what-it-is",
+        "why-one-command-for-five",
+        "what-it-will-not-hide",
+        "the-one-risk-worth-naming",
+        "options",
+        "until-it-lands",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/guide",
+      "status": 200,
+      "sha256": "4d043b9139326627ef3ab28393cecd1e8b2819d8a93e69d0fa6c98e7f019fd5a",
+      "bytes": 109456,
+      "heading_ids": [
+        "getting-content-into-it",
+        "what-you-write",
+        "what-you-get",
+        "what-it-is-not",
+        "where-to-go-next"
+      ]
+    },
+    {
+      "route": "/guide/containers",
+      "status": 200,
+      "sha256": "13eea5af257517f5d010cf031b0bdcc1893d5e1c09e08adcc8afbb45f2dccd29",
+      "bytes": 129446,
+      "heading_ids": [
+        "the-base-image",
+        "optional-features",
+        "producing-a-container-of-your-own-site",
+        "in-a-pipeline",
+        "requirements",
+        "if-you-have-to-own-the-build",
+        "getting-the-wrapper-app-out",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/guide/content-model",
+      "status": 200,
+      "sha256": "144d446bd591ac41c81b280a1c70e2bc4989aa6f0ea88b0c89be3ebb456cd9ee",
+      "bytes": 123279,
+      "heading_ids": [
+        "the-two-kinds-of-page",
+        "routes",
+        "numeric-prefixes-are-stripped",
+        "what--shows",
+        "ordering",
+        "where-config-lives"
+      ]
+    },
+    {
+      "route": "/guide/converting",
+      "status": 200,
+      "sha256": "0642b88bf8682f39cd3318806df26d50926cae84e3c39985584d4e1f889ad81d",
+      "bytes": 115027,
+      "heading_ids": [
+        "what-is-recognised",
+        "what-does-not-come-across",
+        "when-docusaurus-computes-its-sidebar",
+        "markdown-that-is-not-mdx",
+        "when-nothing-is-recognised"
+      ]
+    },
+    {
+      "route": "/guide/deploying",
+      "status": 200,
+      "sha256": "7f4f19e32e4d51ff2869f32f205a4977429ddcc0947b6dd882424147468a5e74",
+      "bytes": 115201,
+      "heading_ids": [
+        "where-the-content-folder-lives",
+        "under-a-path-prefix",
+        "seo",
+        "performance",
+        "upgrading"
+      ]
+    },
+    {
+      "route": "/guide/guide-folders",
+      "status": 200,
+      "sha256": "7d2797b7224e08e20f189ada6ed8928fc3f06a6b797cc37b327bd953b4e79f59",
+      "bytes": 149154,
+      "heading_ids": [
+        "the-sidebar-file",
+        "the-files-own-fields",
+        "entries-and-how-deep-they-go",
+        "routes",
+        "page-frontmatter",
+        "what-is-checked",
+        "components-available-in-mdx",
+        "sectionpreview",
+        "search"
+      ]
+    },
+    {
+      "route": "/guide/maths-and-diagrams",
+      "status": 200,
+      "sha256": "176076f49faeca0aeb1f2da7125277cfa5d5e016c3c8210060654f3439c6ec2c",
+      "bytes": 255441,
+      "heading_ids": [
+        "what-each-one-costs",
+        "latex",
+        "theorem-environments",
+        "numbering-is-yours",
+        "mermaid-diagrams",
+        "mindmaps",
+        "colour-coded-maps"
+      ]
+    },
+    {
+      "route": "/guide/menu",
+      "status": 200,
+      "sha256": "877ddc71bba1dd509447b5c2fcdfe4e4ca051dca58e77038413b6088fc12e37a",
+      "bytes": 129513,
+      "heading_ids": [
+        "one-target-per-item",
+        "drawers-and-panels",
+        "when-there-is-no-menuyaml",
+        "sites-that-share-an-owner"
+      ]
+    },
+    {
+      "route": "/guide/motion",
+      "status": 200,
+      "sha256": "3f4038bdff054438260f2a92cbad0acb1b7c215fa91232cde54a420a51a51c55",
+      "bytes": 106761,
+      "heading_ids": [
+        "the-presets",
+        "two-rules-the-engine-keeps",
+        "video",
+        "testing-motion"
+      ]
+    },
+    {
+      "route": "/guide/pages-and-sections",
+      "status": 200,
+      "sha256": "161eb26971c30edf82f87c08e33212c738a90ee5b8af32ab243a86f692528539",
+      "bytes": 142259,
+      "heading_ids": [
+        "a-section-file",
+        "a-page",
+        "the-one-rule-about-overrides",
+        "backgrounds-and-gradients",
+        "unused-files",
+        "write-lists-in-block-style"
+      ]
+    },
+    {
+      "route": "/guide/quickstart",
+      "status": 200,
+      "sha256": "fdc8a5c4d7f67e5ced91a019c9693d165919fe4bbac0852df2f6a5042a83022d",
+      "bytes": 159412,
+      "heading_ids": [
+        "before-you-start",
+        "installing-a-container-runtime",
+        "start-the-image-downloading-now",
+        "install-zel",
+        "check-it",
+        "pick-your-lab",
+        "which-one-is-yours",
+        "one-optional-tool-for-publishing",
+        "after-a-lab"
+      ]
+    },
+    {
+      "route": "/guide/quickstart/existing-docs",
+      "status": 200,
+      "sha256": "937160263ee46ec4b9304480ab1dfda16e733af75284d2052fd39f19be286632",
+      "bytes": 143862,
+      "heading_ids": [
+        "what-each-source-gives-you",
+        "next"
+      ]
+    },
+    {
+      "route": "/guide/quickstart/existing-repo",
+      "status": 200,
+      "sha256": "c4bf0644012765cb2ff371b1eacde82f621c169507a21b5dde871eaa46f88595",
+      "bytes": 143871,
+      "heading_ids": [
+        "keeping-the-old-site-up-during-the-switch",
+        "what-this-buys-you",
+        "next"
+      ]
+    },
+    {
+      "route": "/guide/quickstart/from-scratch",
+      "status": 200,
+      "sha256": "081e9c93aafe0adf03770fc2c0de524ff763068d2e0330bcbb41d95d122b9859",
+      "bytes": 220707,
+      "heading_ids": [
+        "a--a-static-site-on-netlify",
+        "getting-the-two-values-ci-needs",
+        "a-custom-domain",
+        "b--a-container-running-locally",
+        "what-you-have",
+        "next"
+      ]
+    },
+    {
+      "route": "/guide/quickstart/new-project",
+      "status": 200,
+      "sha256": "5e03b3b4f4b437336bc65205ebebdceea0a9abf36f5a6aa6965e765b36a90bfe",
+      "bytes": 170630,
+      "heading_ids": [
+        "publishing-a-site-rather-than-an-image",
+        "settling-the-repeated-arguments",
+        "next"
+      ]
+    },
+    {
+      "route": "/guide/site-config",
+      "status": 200,
+      "sha256": "394daf759f8d9edabdcd9358b77bc15eaff494e2704cf6cdbf56e51efc0bf988",
+      "bytes": 157465,
+      "heading_ids": [
+        "identity",
+        "brand",
+        "look-and-feel",
+        "nav--the-top-bar",
+        "announcement",
+        "footer",
+        "analytics",
+        "what-is-checked"
+      ]
+    },
+    {
+      "route": "/guide/themes",
+      "status": 200,
+      "sha256": "d44f459b6e9477db42ac01eae76e5b8127d3afc105a8cd1b5046d14cbe899d7e",
+      "bytes": 128203,
+      "heading_ids": [
+        "the-fourteen",
+        "what-a-theme-controls",
+        "light-and-dark",
+        "overrides",
+        "the-runtime-picker",
+        "per-page-themes",
+        "adding-a-theme"
+      ]
+    },
+    {
+      "route": "/guide/wrapper",
+      "status": 200,
+      "sha256": "9e90d6e9b096c46e7e739307aa0ab7c22617ae3b1168c401d42fef5afdaa9bec",
+      "bytes": 119948,
+      "heading_ids": [
+        "the-build-steps-it-runs",
+        "what-fails-a-build",
+        "see-also"
+      ]
+    },
+    {
+      "route": "/sections",
+      "status": 200,
+      "sha256": "6bb814141c439011b4d7acd9ee1d085e3b77ee3cc9d904ec25d5b99148fa80df",
+      "bytes": 117757,
+      "heading_ids": [
+        "fields-every-section-has",
+        "backgrounds",
+        "the-families",
+        "adding-your-own"
+      ]
+    },
+    {
+      "route": "/sections/grids",
+      "status": 200,
+      "sha256": "67214d59712ae730c82c6f43e21c704950fec667d3317a12158d86ccdc200cd9",
+      "bytes": 321034,
+      "heading_ids": [
+        "feature-grid",
+        "bento-grid",
+        "card-carousel",
+        "promo-grid",
+        "pricing-table",
+        "code-cards",
+        "matrix"
+      ]
+    },
+    {
+      "route": "/sections/media",
+      "status": 200,
+      "sha256": "692496c8d933a44d86c14f62034f437f9671775fb2ec8a0690572ce926b72bc8",
+      "bytes": 138459,
+      "heading_ids": [
+        "gallery",
+        "video-embed",
+        "choosing-between-them",
+        "assets"
+      ]
+    },
+    {
+      "route": "/sections/narrative",
+      "status": 200,
+      "sha256": "a6ae5ad70fa37b626baa4800fe4864f6274b6545e84078472992fb6679721b2c",
+      "bytes": 203711,
+      "heading_ids": [
+        "zigzag",
+        "markdown-prose",
+        "timeline",
+        "steps-panel",
+        "faq"
+      ]
+    },
+    {
+      "route": "/sections/openers",
+      "status": 200,
+      "sha256": "177a4258630369d49c7d76e69130c5a8cd4367599d3e8e5b5dd8cac09b96dceb",
+      "bytes": 203836,
+      "heading_ids": [
+        "hero",
+        "hero-split",
+        "which-opener",
+        "the-terminal",
+        "emphasising-part-of-a-headline",
+        "showcase",
+        "media-panel",
+        "cta-banner"
+      ]
+    },
+    {
+      "route": "/sections/proof",
+      "status": 200,
+      "sha256": "1c759c5be635d0ff664b6042758c0927d52ab915444f8c61dbeb2006a343c1ad",
+      "bytes": 153332,
+      "heading_ids": [
+        "logo-strip",
+        "stats-band",
+        "testimonial",
+        "team-grid"
+      ]
+    },
+    {
+      "route": "/why",
+      "status": 200,
+      "sha256": "b2865f1e15acfaed3ddcdfdeee7054a416672f228138125206673d7e2a06dce1",
+      "bytes": 105874,
+      "heading_ids": [
+        "the-problem-is-the-seam-not-either-half"
+      ]
+    }
+  ],
+  "changed_pages": [
+    {
+      "route": "/cli",
+      "same_text": false,
+      "old_chars": 3601,
+      "new_chars": 10465,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/build",
+      "same_text": false,
+      "old_chars": 5112,
+      "new_chars": 16000,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "there-are-two-products-not-four",
+          "text": "There are two products, not four"
+        },
+        {
+          "level": "h3",
+          "id": "static--the-html-already-exists",
+          "text": "static — the HTML already exists"
+        },
+        {
+          "level": "h3",
+          "id": "image--a-server-produces-the-html",
+          "text": "image — a server produces the HTML"
+        },
+        {
+          "level": "h2",
+          "id": "which-one-you-want",
+          "text": "Which one you want"
+        },
+        {
+          "level": "h3",
+          "id": "what-happened-to-node-and-imagestatic",
+          "text": "What happened to node and image:static"
+        },
+        {
+          "level": "h2",
+          "id": "what-you-get",
+          "text": "What you get"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-actually-does",
+          "text": "What it actually does"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/check",
+      "same_text": false,
+      "old_chars": 4308,
+      "new_chars": 11437,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "the-one-thing-worth-understanding",
+          "text": "The one thing worth understanding"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-validates",
+          "text": "What it validates"
+        },
+        {
+          "level": "h3",
+          "id": "errors-against-warnings",
+          "text": "Errors against warnings"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does-not-do",
+          "text": "What it does not do"
+        },
+        {
+          "level": "h2",
+          "id": "where-it-belongs",
+          "text": "Where it belongs"
+        },
+        {
+          "level": "h2",
+          "id": "when-the-folder-is-somewhere-the-runtime-cannot-see",
+          "text": "When the folder is somewhere the runtime cannot see"
+        },
+        {
+          "level": "h3",
+          "id": "the-intended---json",
+          "text": "The intended --json"
+        }
+      ]
+    },
+    {
+      "route": "/cli/ci",
+      "same_text": false,
+      "old_chars": 5058,
+      "new_chars": 9964,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "why-generate-it-rather-than-document-it",
+          "text": "Why generate it rather than document it"
+        },
+        {
+          "level": "h2",
+          "id": "who-this-is-for",
+          "text": "Who this is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-writes",
+          "text": "What it writes"
+        },
+        {
+          "level": "h2",
+          "id": "options",
+          "text": "Options"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-always-writes",
+          "text": "What it always writes"
+        },
+        {
+          "level": "h2",
+          "id": "scoped-to-your-content-folder",
+          "text": "Scoped to your content folder"
+        },
+        {
+          "level": "h2",
+          "id": "checking-without-publishing",
+          "text": "Checking without publishing"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/config",
+      "same_text": false,
+      "old_chars": 3842,
+      "new_chars": 16336,
+      "changed_headings": [
+        {
+          "level": "h1",
+          "id": null,
+          "text": "zel.toml"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-is-really-for",
+          "text": "What it is really for"
+        },
+        {
+          "level": "h2",
+          "id": "where-it-is-found",
+          "text": "Where it is found"
+        },
+        {
+          "level": "h2",
+          "id": "precedence",
+          "text": "Precedence"
+        },
+        {
+          "level": "h2",
+          "id": "keys",
+          "text": "Keys"
+        },
+        {
+          "level": "h3",
+          "id": "top-level",
+          "text": "Top level"
+        },
+        {
+          "level": "h3",
+          "id": "build",
+          "text": "[build]"
+        },
+        {
+          "level": "h3",
+          "id": "deploy",
+          "text": "[deploy]"
+        },
+        {
+          "level": "h3",
+          "id": "check",
+          "text": "[check]"
+        },
+        {
+          "level": "h2",
+          "id": "a-worked-example",
+          "text": "A worked example"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/context",
+      "same_text": false,
+      "old_chars": 3750,
+      "new_chars": 4296,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/convert",
+      "same_text": false,
+      "old_chars": 5504,
+      "new_chars": 8691,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/deploy",
+      "same_text": false,
+      "old_chars": 4279,
+      "new_chars": 6834,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "the-provider-decides-the-artefact",
+          "text": "The provider decides the artefact"
+        },
+        {
+          "level": "h2",
+          "id": "where-the-content-comes-from",
+          "text": "Where the content comes from"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does",
+          "text": "What it does"
+        },
+        {
+          "level": "h2",
+          "id": "credentials",
+          "text": "Credentials"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-deliberately-will-not-do-for-you",
+          "text": "What it deliberately will not do for you"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/detect",
+      "same_text": false,
+      "old_chars": 2742,
+      "new_chars": 3393,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/dev",
+      "same_text": false,
+      "old_chars": 3979,
+      "new_chars": 5126,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-happens-when-you-run-it",
+          "text": "What happens when you run it"
+        },
+        {
+          "level": "h2",
+          "id": "reload-not-watch",
+          "text": "Reload, not watch"
+        },
+        {
+          "level": "h2",
+          "id": "looking-at-it-on-a-phone",
+          "text": "Looking at it on a phone"
+        },
+        {
+          "level": "h2",
+          "id": "when-your-folder-is-somewhere-the-runtime-cannot-see",
+          "text": "When your folder is somewhere the runtime cannot see"
+        },
+        {
+          "level": "h2",
+          "id": "when-you-have-a-wrapper-app-instead",
+          "text": "When you have a wrapper app instead"
+        }
+      ]
+    },
+    {
+      "route": "/cli/doctor",
+      "same_text": false,
+      "old_chars": 3364,
+      "new_chars": 5634,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "the-socket-line",
+          "text": "The socket line"
+        },
+        {
+          "level": "h2",
+          "id": "the-engine-line",
+          "text": "The engine line"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-report-later",
+          "text": "What it will report later"
+        }
+      ]
+    },
+    {
+      "route": "/cli/explain",
+      "same_text": false,
+      "old_chars": 3966,
+      "new_chars": 4253,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/fmt",
+      "same_text": false,
+      "old_chars": 2456,
+      "new_chars": 3561,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-decides",
+          "text": "What it decides"
+        },
+        {
+          "level": "h2",
+          "id": "--check-in-ci",
+          "text": "--check in CI"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-not-touch",
+          "text": "What it will not touch"
+        }
+      ]
+    },
+    {
+      "route": "/cli/image",
+      "same_text": false,
+      "old_chars": 5248,
+      "new_chars": 12707,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-you-do-not-write-a-dockerfile-buys-you",
+          "text": "What \"you do not write a Dockerfile\" buys you"
+        },
+        {
+          "level": "h3",
+          "id": "getting-the-wrapper-app-out-of-it",
+          "text": "Getting the wrapper app out of it"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/list",
+      "same_text": false,
+      "old_chars": 2726,
+      "new_chars": 3721,
+      "changed_headings": []
+    },
+    {
+      "route": "/cli/migrate",
+      "same_text": false,
+      "old_chars": 3078,
+      "new_chars": 2519,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "then-why-does-it-exist",
+          "text": "Then why does it exist"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does-not-do",
+          "text": "What it does not do"
+        },
+        {
+          "level": "h2",
+          "id": "when-to-run-the-three-commands-instead",
+          "text": "When to run the three commands instead"
+        }
+      ]
+    },
+    {
+      "route": "/cli/new",
+      "same_text": false,
+      "old_chars": 9502,
+      "new_chars": 14597,
+      "changed_headings": [
+        {
+          "level": "h3",
+          "id": "--with-docs-and-both-together",
+          "text": "--with-docs , and both together"
+        },
+        {
+          "level": "h3",
+          "id": "when-you-need-an-app-at-all",
+          "text": "When you need an app at all"
+        }
+      ]
+    },
+    {
+      "route": "/cli/publish",
+      "same_text": false,
+      "old_chars": 1821,
+      "new_chars": 7110,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "why-it-exists",
+          "text": "Why it exists"
+        },
+        {
+          "level": "h2",
+          "id": "what-each-step-contributes",
+          "text": "What each step contributes"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/serve",
+      "same_text": false,
+      "old_chars": 1739,
+      "new_chars": 3535,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "why-not-just-use-zel-dev",
+          "text": "Why not just use zel dev"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does",
+          "text": "What it does"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/ship",
+      "same_text": false,
+      "old_chars": 2598,
+      "new_chars": 5225,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "why-one-command-for-five",
+          "text": "Why one command for five"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-not-hide",
+          "text": "What it will not hide"
+        },
+        {
+          "level": "h2",
+          "id": "the-one-risk-worth-naming",
+          "text": "The one risk worth naming"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        }
+      ]
+    },
+    {
+      "route": "/guide/containers",
+      "same_text": false,
+      "old_chars": 4757,
+      "new_chars": 5136,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/deploying",
+      "same_text": false,
+      "old_chars": 2810,
+      "new_chars": 4164,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/guide-folders",
+      "same_text": false,
+      "old_chars": 5084,
+      "new_chars": 5482,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/maths-and-diagrams",
+      "same_text": false,
+      "old_chars": 4813,
+      "new_chars": 5286,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "what-each-one-costs",
+          "text": "What each one costs"
+        }
+      ]
+    },
+    {
+      "route": "/guide/menu",
+      "same_text": false,
+      "old_chars": 2933,
+      "new_chars": 3672,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/motion",
+      "same_text": false,
+      "old_chars": 2193,
+      "new_chars": 2973,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/quickstart",
+      "same_text": false,
+      "old_chars": 5918,
+      "new_chars": 6803,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/quickstart/existing-repo",
+      "same_text": false,
+      "old_chars": 4720,
+      "new_chars": 4952,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/quickstart/new-project",
+      "same_text": false,
+      "old_chars": 4898,
+      "new_chars": 3761,
+      "changed_headings": [
+        {
+          "level": "h2",
+          "id": "publishing-a-site-rather-than-an-image",
+          "text": "Publishing a site rather than an image"
+        },
+        {
+          "level": "h2",
+          "id": "settling-the-repeated-arguments",
+          "text": "Settling the repeated arguments"
+        },
+        {
+          "level": "h2",
+          "id": "next",
+          "text": "Next"
+        }
+      ]
+    },
+    {
+      "route": "/guide/site-config",
+      "same_text": false,
+      "old_chars": 4364,
+      "new_chars": 5439,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/themes",
+      "same_text": false,
+      "old_chars": 3608,
+      "new_chars": 4741,
+      "changed_headings": []
+    },
+    {
+      "route": "/guide/wrapper",
+      "same_text": false,
+      "old_chars": 3523,
+      "new_chars": 5570,
+      "changed_headings": []
+    },
+    {
+      "route": "/sections",
+      "same_text": false,
+      "old_chars": 2000,
+      "new_chars": 2689,
+      "changed_headings": [
+        {
+          "level": "h1",
+          "id": null,
+          "text": "All nineteen sections"
+        }
+      ]
+    }
+  ],
+  "changed_heading_anchors": [
+    {
+      "route": "/cli/build",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "there-are-two-products-not-four",
+          "text": "There are two products, not four"
+        },
+        {
+          "level": "h3",
+          "id": "static--the-html-already-exists",
+          "text": "static — the HTML already exists"
+        },
+        {
+          "level": "h3",
+          "id": "image--a-server-produces-the-html",
+          "text": "image — a server produces the HTML"
+        },
+        {
+          "level": "h2",
+          "id": "which-one-you-want",
+          "text": "Which one you want"
+        },
+        {
+          "level": "h3",
+          "id": "what-happened-to-node-and-imagestatic",
+          "text": "What happened to node and image:static"
+        },
+        {
+          "level": "h2",
+          "id": "what-you-get",
+          "text": "What you get"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-actually-does",
+          "text": "What it actually does"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/check",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "the-one-thing-worth-understanding",
+          "text": "The one thing worth understanding"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-validates",
+          "text": "What it validates"
+        },
+        {
+          "level": "h3",
+          "id": "errors-against-warnings",
+          "text": "Errors against warnings"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does-not-do",
+          "text": "What it does not do"
+        },
+        {
+          "level": "h2",
+          "id": "where-it-belongs",
+          "text": "Where it belongs"
+        },
+        {
+          "level": "h2",
+          "id": "when-the-folder-is-somewhere-the-runtime-cannot-see",
+          "text": "When the folder is somewhere the runtime cannot see"
+        },
+        {
+          "level": "h3",
+          "id": "the-intended---json",
+          "text": "The intended --json"
+        }
+      ]
+    },
+    {
+      "route": "/cli/ci",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "why-generate-it-rather-than-document-it",
+          "text": "Why generate it rather than document it"
+        },
+        {
+          "level": "h2",
+          "id": "who-this-is-for",
+          "text": "Who this is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-writes",
+          "text": "What it writes"
+        },
+        {
+          "level": "h2",
+          "id": "options",
+          "text": "Options"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-always-writes",
+          "text": "What it always writes"
+        },
+        {
+          "level": "h2",
+          "id": "scoped-to-your-content-folder",
+          "text": "Scoped to your content folder"
+        },
+        {
+          "level": "h2",
+          "id": "checking-without-publishing",
+          "text": "Checking without publishing"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/config",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-really-for",
+          "text": "What it is really for"
+        },
+        {
+          "level": "h2",
+          "id": "where-it-is-found",
+          "text": "Where it is found"
+        },
+        {
+          "level": "h2",
+          "id": "precedence",
+          "text": "Precedence"
+        },
+        {
+          "level": "h2",
+          "id": "keys",
+          "text": "Keys"
+        },
+        {
+          "level": "h3",
+          "id": "top-level",
+          "text": "Top level"
+        },
+        {
+          "level": "h3",
+          "id": "build",
+          "text": "[build]"
+        },
+        {
+          "level": "h3",
+          "id": "deploy",
+          "text": "[deploy]"
+        },
+        {
+          "level": "h3",
+          "id": "check",
+          "text": "[check]"
+        },
+        {
+          "level": "h2",
+          "id": "a-worked-example",
+          "text": "A worked example"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/deploy",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "the-provider-decides-the-artefact",
+          "text": "The provider decides the artefact"
+        },
+        {
+          "level": "h2",
+          "id": "where-the-content-comes-from",
+          "text": "Where the content comes from"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does",
+          "text": "What it does"
+        },
+        {
+          "level": "h2",
+          "id": "credentials",
+          "text": "Credentials"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-deliberately-will-not-do-for-you",
+          "text": "What it deliberately will not do for you"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/dev",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-happens-when-you-run-it",
+          "text": "What happens when you run it"
+        },
+        {
+          "level": "h2",
+          "id": "reload-not-watch",
+          "text": "Reload, not watch"
+        },
+        {
+          "level": "h2",
+          "id": "looking-at-it-on-a-phone",
+          "text": "Looking at it on a phone"
+        },
+        {
+          "level": "h2",
+          "id": "when-your-folder-is-somewhere-the-runtime-cannot-see",
+          "text": "When your folder is somewhere the runtime cannot see"
+        },
+        {
+          "level": "h2",
+          "id": "when-you-have-a-wrapper-app-instead",
+          "text": "When you have a wrapper app instead"
+        }
+      ]
+    },
+    {
+      "route": "/cli/doctor",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "the-socket-line",
+          "text": "The socket line"
+        },
+        {
+          "level": "h2",
+          "id": "the-engine-line",
+          "text": "The engine line"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-report-later",
+          "text": "What it will report later"
+        }
+      ]
+    },
+    {
+      "route": "/cli/fmt",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is-for",
+          "text": "What it is for"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-decides",
+          "text": "What it decides"
+        },
+        {
+          "level": "h2",
+          "id": "--check-in-ci",
+          "text": "--check in CI"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-not-touch",
+          "text": "What it will not touch"
+        }
+      ]
+    },
+    {
+      "route": "/cli/image",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-you-do-not-write-a-dockerfile-buys-you",
+          "text": "What \"you do not write a Dockerfile\" buys you"
+        },
+        {
+          "level": "h3",
+          "id": "getting-the-wrapper-app-out-of-it",
+          "text": "Getting the wrapper app out of it"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/migrate",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "then-why-does-it-exist",
+          "text": "Then why does it exist"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does-not-do",
+          "text": "What it does not do"
+        },
+        {
+          "level": "h2",
+          "id": "when-to-run-the-three-commands-instead",
+          "text": "When to run the three commands instead"
+        }
+      ]
+    },
+    {
+      "route": "/cli/new",
+      "headings": [
+        {
+          "level": "h3",
+          "id": "what-it-writes-1",
+          "text": "What it writes"
+        },
+        {
+          "level": "h3",
+          "id": "--with-docs-and-both-together",
+          "text": "--with-docs , and both together"
+        },
+        {
+          "level": "h3",
+          "id": "when-you-need-an-app-at-all",
+          "text": "When you need an app at all"
+        },
+        {
+          "level": "h3",
+          "id": "options-1",
+          "text": "Options"
+        }
+      ]
+    },
+    {
+      "route": "/cli/publish",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "why-it-exists",
+          "text": "Why it exists"
+        },
+        {
+          "level": "h2",
+          "id": "what-each-step-contributes",
+          "text": "What each step contributes"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/serve",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "why-not-just-use-zel-dev",
+          "text": "Why not just use zel dev"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-does",
+          "text": "What it does"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        },
+        {
+          "level": "h2",
+          "id": "see-also",
+          "text": "See also"
+        }
+      ]
+    },
+    {
+      "route": "/cli/ship",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-it-is",
+          "text": "What it is"
+        },
+        {
+          "level": "h2",
+          "id": "why-one-command-for-five",
+          "text": "Why one command for five"
+        },
+        {
+          "level": "h2",
+          "id": "what-it-will-not-hide",
+          "text": "What it will not hide"
+        },
+        {
+          "level": "h2",
+          "id": "the-one-risk-worth-naming",
+          "text": "The one risk worth naming"
+        },
+        {
+          "level": "h2",
+          "id": "until-it-lands",
+          "text": "Until it lands"
+        }
+      ]
+    },
+    {
+      "route": "/guide/maths-and-diagrams",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "what-each-one-costs",
+          "text": "What each one costs"
+        }
+      ]
+    },
+    {
+      "route": "/guide/quickstart/new-project",
+      "headings": [
+        {
+          "level": "h2",
+          "id": "publishing-a-site-rather-than-an-image",
+          "text": "Publishing a site rather than an image"
+        },
+        {
+          "level": "h2",
+          "id": "settling-the-repeated-arguments",
+          "text": "Settling the repeated arguments"
+        },
+        {
+          "level": "h2",
+          "id": "next",
+          "text": "Next"
+        }
+      ]
+    }
+  ]
+}

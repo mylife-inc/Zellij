@@ -41,6 +41,18 @@ jobs:
             node engine/packages/zellij/bin/zellij.mjs check "examples/$example/content" --deep --strict || exit 1
           done
 
+      - name: Build documentation with the preserved authored images
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: |
+          node ../../engine/packages/zellij/bin/zellij.mjs prepare
+          node ../../node_modules/next/dist/bin/next build --webpack
+
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Published documentation routes, bookmarks, assets and search survive
+        run: node scripts/check-docs-preservation.mjs
+
   # The guarantee that the CLI and the engine cannot disagree.
   #
   # `zel explain` and `zel context` are compiled from a JSON file the engine

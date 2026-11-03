@@ -34,3 +34,6 @@ cli/target/
 # build for the same lock files.
 cli/target-gnu/
 cli/.cargo-gnu/
+
+# Local production snapshots retained before hosting migrations.
+/backups/

@@ -3,6 +3,8 @@ title: zel fmt
 description: Format site YAML locally while preserving its values and comments.
 ---
 
+<div id="what-it-is-for" className="zellij-legacy-anchor" />
+
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 Formatting runs natively without Node, Docker or network access. The public
 `zellij-v0.1.3` binary predates this implementation.
@@ -14,6 +16,8 @@ zel fmt --check                 # report differences without writing
 zel fmt docs/manual             # a custom site folder
 zel fmt ./existing-content      # an explicit legacy content folder
 ```
+
+<div id="what-it-will-not-touch" className="zellij-legacy-anchor" />
 
 ## Files selected
 
@@ -31,6 +35,8 @@ the selected build output and directories marked as Zellij exports are skipped.
 Formatting does not read the whole software repository or change `docs/specs/`
 outside the selected site. Selected symbolic links and Windows junctions are
 rejected rather than followed.
+
+<div id="what-it-decides" className="zellij-legacy-anchor" />
 
 ## Formatting rules
 
@@ -62,6 +68,8 @@ cta: [{ label: Get started, href: /guide, style: primary }]
 
 This command formats syntax; it does not validate section schemas or repair
 broken references. Use [`zel check`](/cli/check) for those checks.
+
+<div id="--check-in-ci" className="zellij-legacy-anchor" />
 
 ## Check mode and writes
 

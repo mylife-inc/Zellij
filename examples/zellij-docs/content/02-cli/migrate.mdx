@@ -3,6 +3,9 @@ title: zel migrate
 description: Detect, convert and check in one step, stopping at the first failure.
 ---
 
+<div id="what-it-is" className="zellij-legacy-anchor" />
+<div id="then-why-does-it-exist" className="zellij-legacy-anchor" />
+
 ```bash title="terminal"
 zel migrate ./old-docs --out ./manual --layout site
 # Same command, shorter:
@@ -19,6 +22,8 @@ under `--out`**. `--layout content` explicitly selects that same legacy behavior
 The shortcut has identical defaults. The layout option is implemented in source
 and is newer than the public `zellij-v0.1.3` binary.
 
+<div id="when-to-run-the-three-commands-instead" className="zellij-legacy-anchor" />
+
 ## Inspect before writing
 
 ```bash title="terminal"
@@ -34,6 +39,8 @@ fails, the converted destination remains available for inspection; fix the issue
 and run `zel check ./manual`. Rerunning migration into the populated folder is
 refused. Destination and source must be disjoint, and the destination must be new
 or empty.
+
+<div id="what-it-does-not-do" className="zellij-legacy-anchor" />
 
 ## Validation and migration fidelity
 

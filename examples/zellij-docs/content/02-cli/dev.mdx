@@ -3,6 +3,8 @@ title: zel dev
 description: Edit portable Markdown with native preview or hosted content with Next.js development.
 ---
 
+<div id="what-it-is-for" className="zellij-legacy-anchor" />
+
 <Callout type="tip" title="Available in source">
 Portable `dev` builds, serves and watches natively. Hosted `dev` runs the Next.js
 development engine in a container. Neither opens a browser automatically.
@@ -38,6 +40,10 @@ the generated site. You can still open its `index.html` directly without a serve
 The port and output location stay fixed for the session; restart to change them.
 See [editing documents](/cli/view#editing-documents) for watching and recovery limits.
 
+<div id="what-happens-when-you-run-it" className="zellij-legacy-anchor" />
+<div id="reload-not-watch" className="zellij-legacy-anchor" />
+<div id="when-your-folder-is-somewhere-the-runtime-cannot-see" className="zellij-legacy-anchor" />
+
 ## Hosted YAML and MDX
 
 For a hosted site, `dev` mounts the content into the container engine, validates
@@ -61,6 +67,8 @@ Invalid edits are reported in the terminal. The engine retries after corrections
 initial preparation must succeed before startup. Restart after changing
 `basePath`, wrapper configuration or installed features. Ctrl-C stops development.
 Use a current engine image if an older image only prepares assets at startup.
+
+### Looking at it on a phone
 
 Hosted `dev` publishes the container's port on your machine and can be reached
 from another device using your machine's LAN address. Portable `dev` and both
@@ -96,6 +104,8 @@ so another build with different features cannot uninstall a live session's
 packages. A current engine with explicit feature-selection support is required;
 an older engine fails with upgrade guidance. Dependency or startup failures are
 reported separately from invalid content.
+
+<div id="when-you-have-a-wrapper-app-instead" className="zellij-legacy-anchor" />
 
 ## Editable wrapper apps
 

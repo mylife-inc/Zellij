@@ -37,7 +37,7 @@ nav:
   cta:
     - { label: Get started, href: /guide/quickstart, style: primary }
   social:
-    github: "https://github.com/shebka/zellij"
+    github: "https://github.com/mylife-inc/Zellij"
 
 footer:
   columns:
@@ -54,10 +54,10 @@ footer:
     - heading: More
       links:
         - { label: Why Zellij, page: why }
-        - { label: Source, href: "https://github.com/shebka/zellij" }
+        - { label: Source, href: "https://github.com/mylife-inc/Zellij" }
   legal: "© 2026 Shebka LLC"
   social:
-    github: "https://github.com/shebka/zellij"
+    github: "https://github.com/mylife-inc/Zellij"
 
 analytics:
   provider: none
