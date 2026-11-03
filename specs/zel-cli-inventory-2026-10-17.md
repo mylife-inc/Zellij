@@ -856,3 +856,31 @@ sections were refreshed while dated implementation history was preserved.
 Strict/deep documentation validation passed: 55 routes, 53 guide pages and
 23 examples. Both release pages also link the successful acceptance run and
 retain the original publication failures. Production docs remain undeployed.
+
+
+### Candidate acceptance closeout — 2026-11-02
+
+[PR #51](https://github.com/mylife-inc/Zellij/pull/51) merged as
+49d9a148f40df2b747d7ce6a0f46efc5a16c3954 after final CI
+[41549182222](https://github.com/mylife-inc/Zellij/actions/runs/41549182222)
+passed all 13 jobs on 9ab6232758f535cf517acff263523fc5ee96353b. This includes all
+six native package/installer jobs, three portable/browser platforms, engine,
+schema, showcase and full container delivery acceptance. The separate candidate
+source main CI 41546163311 also finished with all 13 jobs passing, superseding
+the pending result in the preparation record above.
+
+Published-artifact acceptance remains 41548199714: eight passing jobs against
+unchanged v0.2.0-rc.1 source 61881e8, using download harness 29029e1. Both release
+pages now link that result and preserve the original Windows download failures.
+An additional local smoke used the actual published Intel macOS executable to
+generate portable `zel ci` and hosted `zel new project` workflows in temporary
+repositories: both pinned 0.2.0-rc.1 and its matching engine and passed actionlint.
+This checked generation; live execution of those newly generated workflows and
+real provider delivery at designated test destinations remain the next gate.
+
+The candidate is available for acceptance use. Stable 0.1.3, production docs,
+and the published candidate binaries/installers/images retain their prior state.
+No local Docker daemon was started. The next work is live candidate delivery
+acceptance and an explicit stable-promotion decision, alongside the tracked
+advanced build/provider/conversion backlog. Do not infer a zero-bug or complete
+historical-feature claim from these passing checks.
