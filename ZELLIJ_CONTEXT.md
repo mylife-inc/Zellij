@@ -10,9 +10,14 @@ original heading IDs and 29 referenced images are retained in the 55-route
 staging site. Both published test images passed corrected fresh-pull acceptance;
 PR #54 main CI `41572436263` also passed. See
 [the migration report](specs/zellij-netlify-migration-2026-11-02.md).
-The user is preparing a separate Netlify staging project because the intended
-transfer destination is unavailable. Await its URL/credentials readiness; keep
-the old live site/domain intact. No Netlify draft has yet passed preflight.
+The user created https://zel-stage.netlify.app and made its main site and
+previews public. Updated GitHub secrets now work: candidate portable/hosted
+draft deployments, HTTP acceptance and browser search passed. Full-docs routes,
+images, bookmarks and search are retained, but React hydration errors remain:
+the hosting comment inserted by Netlify reproduces the problem locally. A
+request to turn off the staging badge and test whether this also removes that
+comment is pending. Keep the old live site/domain intact. See the latest dated
+entry and specs/evidence/zellij-netlify-acceptance-2026-11-02.json.
 
 Latest release: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
 All eight public-artifact acceptance jobs passed in run `41548199714` using
@@ -3571,3 +3576,36 @@ retain the old project's complete deploy ZIP/settings, and review the full
 staging docs before any separately approved production/domain cutover. The
 original live project stays available. No Netlify credentials, production
 content, candidate release assets or stable channel changed in this closeout.
+
+
+### Live Netlify draft acceptance and staging browser finding — 2026-11-02
+
+The selected project is https://zel-stage.netlify.app. The user made its main
+site and previews public and updated both Netlify GitHub secrets. Portable run
+41587034632 and hosted run 41587142130 passed using public candidate 0.2.0-rc.1
+on main 3114219. Both draft URLs passed HTTP pages/assets/source-isolation
+checks and browser search/navigation with no captured console errors.
+
+The full documentation preserves all 55 authored routes and 29 original images;
+all 282 original heading IDs and 82 compatibility targets were checked. Search
+and all nine added pages work. Raw HTML includes two Netlify additions, which
+are explicitly distinguished from authored content. Headless checks encountered
+Netlify's connection challenge; ordinary browser checks succeeded functionally
+but exposed repeated React #418 hydration errors on the full documentation.
+
+A local /cli/completions control is clean; exact Netlify HTML and its injected
+hosting comment alone reproduce #418, while its badge script alone is clean.
+The user was asked to turn off the staging badge to test whether this removes
+the comment. The last read still found both additions, so resolution is pending.
+Do not claim a clean full-documentation browser run. Details, draft URLs and
+limits are in the migration report, latest audit entry and
+specs/evidence/zellij-netlify-acceptance-2026-11-02.json. Detailed local evidence
+is retained under ignored backups/zellij-netlify-acceptance-2026-11-02.
+
+Before/after fingerprints matched for three routes on each public main site;
+production/domain were not changed. Old Netlify full-deploy backup/settings and
+a separate cutover decision remain outstanding. No secret values were read and
+no local Docker was started. Candidate/stable channels remain unchanged; the
+workflow queue fix still needs a later native candidate. Earlier post-PR55 runs
+41576036593/41576036573 were cancelled, superseded by successful main CI
+41576279817 and Base image 41576279748 on PR56 merge 3114219.
