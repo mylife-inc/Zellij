@@ -1037,3 +1037,32 @@ secrets for it. Await the new URL and readiness before running draft acceptance
 there. No credentials were read, no local Docker daemon started, and no existing
 production content replaced. Native candidate/stable channels are unchanged;
 the multi-site workflow fix still requires a later native candidate.
+
+
+### Preservation acceptance and staging handoff — 2026-11-02
+
+PR #55 merged as f1ca1ff04f049366a1175b4dfe2bd6e78a6c34a1 after all 13 jobs
+passed in 41573372928 on final head 27947739e2bfdfa126f323aca847e970627c71bc:
+https://github.com/mylife-inc/Zellij/actions/runs/41573372928
+Source fix 8370ec4 preserves 82 legacy bookmarks and corrects repository links.
+The Engine gate verified 46 original routes plus nine additions, 282 original
+heading IDs, 29 byte-identical images, legacy navigation and search. All six
+native package targets, three portable platforms, container delivery, schema
+and showcase checks passed. This closes the pending PR result above; it does
+not establish remote Netlify acceptance. PR #54 main CI 41572436263 also passed.
+PR #55 post-merge CI 41576036593 and Base image 41576036573 remain running at
+this closeout; their outcomes must be refreshed independently.
+
+Read-only DNS inspection: zellij.shebka.net CNAME zellij-docs.netlify.app;
+shebka.net nameservers ns1.hostmonster.com and ns2.hostmonster.com. No settings
+changed. The validated staging ZIP is ready; await the new project's temporary
+URL and confirmation that GitHub's Netlify secrets target it. The prepared
+remote checker has only been syntax-checked. Both CLI draft deployments and
+remote documentation preservation remain unverified pending that destination.
+
+Retain the original live project/domain. A complete production deploy ZIP,
+deploy ID and relevant settings remain prerequisites before a separately
+approved cutover. The public crawl is not a complete provider backup. Candidate
+0.2.0-rc.1 assets and stable 0.1.3 remain unchanged; the workflow queue fix still
+needs a later native candidate. See the migration report for the concrete user
+handoff. No local Docker daemon or production deployment was involved.

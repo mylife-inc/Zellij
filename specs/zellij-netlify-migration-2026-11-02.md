@@ -1,10 +1,11 @@
 # Netlify migration and content-preservation review — 2026-11-02
 
-Status: **planning and comparison only; no site deletion, transfer, domain
-change, production deployment or new project creation has been authorized or
-performed.** Keep the existing production project available while preparing any
-replacement. The user requires that the replacement retain the information
-currently published at https://zellij.shebka.net.
+Status: **staging package prepared and preservation fix merged; awaiting the
+new staging URL and credentials readiness.** No Netlify project has been created
+or modified by the agent. Keep the existing production project and domain in
+place; deletion, transfer and production cutover remain unapproved. The user
+requires that the replacement retain the information currently published at
+https://zellij.shebka.net.
 
 ## Account finding and recommendation
 
@@ -180,3 +181,39 @@ manual-deploy project in the intended Netlify account, retain its temporary
 netlify.app address, and set the existing GitHub Netlify secrets to that new
 project. New destination details and readiness are pending. These instructions
 do not authorize moving the production domain or deleting the original site.
+
+## Completed source acceptance and user handoff
+
+[PR #55](https://github.com/mylife-inc/Zellij/pull/55) merged as
+`f1ca1ff04f049366a1175b4dfe2bd6e78a6c34a1`. All 13 CI jobs passed in
+[41573372928](https://github.com/mylife-inc/Zellij/actions/runs/41573372928)
+on final head `27947739e2bfdfa126f323aca847e970627c71bc`, including the new
+documentation-preservation gate. PR #54 main CI `41572436263` also passed.
+Source acceptance does not establish acceptance of a remote Netlify deployment.
+
+The next user actions are:
+
+1. Log into the intended Netlify account/team and create a separate project by
+   manual deployment using the staging ZIP above, or the extracted files with
+   `index.html` at the root. Keep its temporary `netlify.app` address.
+2. Update `mylife-inc/Zellij` repository Actions secrets: `NETLIFY_SITE_ID` must
+   identify the new project; `NETLIFY_AUTH_TOKEN` must have access to it. Save
+   values directly in GitHub, not in chat. Do not revoke an old token if other
+   sites still rely on it.
+3. Send the temporary public URL and confirm that both secrets are ready. The
+   agent can then verify the full staging docs and run portable/hosted CLI
+   deployment acceptance as drafts on that selected project.
+4. Before considering cutover, download the old project's full currently
+   published deploy ZIP and retain its deploy ID and relevant build, redirect
+   and domain settings. Review the staging content and remote checks first.
+
+Read-only DNS observation on November 2: `zellij.shebka.net` has CNAME
+`zellij-docs.netlify.app`; `shebka.net` uses `ns1.hostmonster.com` and
+`ns2.hostmonster.com`. These settings have not changed. The existing project
+remains the production destination and recovery reference.
+
+A read-only remote checker is prepared to compare the 55 served HTML responses
+with the validated upload, then verify legacy headings, images and search in
+Chromium. It has passed syntax validation only. The staging URL is still needed
+to run it; neither remote preservation nor live Netlify draft acceptance is
+claimed as passed.
