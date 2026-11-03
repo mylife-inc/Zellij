@@ -107,3 +107,12 @@ The test now accepts either channel for React #418; a third control modifies
 only an existing JavaScript asset to emit a console-only sentinel. That control
 specifically guards the old console-capture gap without changing the HTML tree.
 The uncaught-exception control passed on the first run. Final CI is pending.
+
+
+## Acceptance gap resolved — 2026-11-02
+
+PR #59 merged as 93dca08 after all 13 checks passed on 97f9f9f in run
+41594855467. The checker now collects console.error/pageerror and waits for
+hydration. All 55 clean pages passed, and real-checker regressions rejected the
+head newline, an uncaught exception and a console-only error. This supersedes
+the pending coverage work above; the actual Netlify injection remains unresolved.

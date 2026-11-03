@@ -1117,3 +1117,65 @@ local API fixtures because loopback binding was denied; the identical rerun
 with loopback permission passed. Version preflight confirms v0.2.0-rc.2.
 Final-head CI, review/merge and publication remain pending; no rc.2 tag exists
 and stable/production channels have not changed.
+
+
+### Browser acceptance complete; rc.2 prepared — 2026-11-02
+
+PR #59 merged as 93dca084a018f7ff56e6259441beca4a82874c32. Source commits
+68db620 and 97f9f9f capture both browser error channels and wait for mounted
+controls. All 13 checks passed on final head 97f9f9f in run 41594855467. Engine
+verified all 55 routes, 282 original headings, 82 compatibility mappings, 29
+original image hashes and search with no captured browser errors after
+hydration. All three negative controls passed: head newline/React #418,
+uncaught exception, and a console-only error in an existing JavaScript asset.
+This resolves the acceptance coverage gap, not Netlify's HTML transformation.
+The first run 41594298255 was superseded/cancelled after its Engine negative
+test failed on an overly specific reporting-channel expectation; retain that
+failure separately from the passing final run.
+
+PR #60 merged as 0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469. All 13 checks
+passed on final head 04653b0 in run 41595462484. The merge and checked head both
+have tree 4353ca74faba1aad6f6d8e9a4444ad1aa95cf2d0. Version preparation is in
+249d0b1, with final scope/verification notes in 04653b0. The reviewed release
+notes are specs/releases/v0.2.0-rc.2.md. All six archive/installer platforms,
+three portable platforms, engine, schema, real containers and showcase passed.
+
+Automatic approval review rejected executing `zrelease v0.2.0-rc.2`: creation
+and publication of a public tag/assets requires explicit user approval beyond
+preparation/validation. The command did not execute. No tag, release assets,
+versioned images, stable promotion or production deployment was created by this
+attempt. Local non-publishing `zcheck` was started separately; its final result
+is recorded in the follow-up below. The source remains ready for a specifically
+authorized prerelease from 0fbf0a1. After approval, refresh checks and publish to
+mylife-inc/Zellij and mylife-inc/releases with matching exact GHCR tags, then
+verify the downloaded public artifacts and released delivery workflows.
+
+The user reports filing the Netlify bug and emailing support@netlify.com; a
+provider response remains pending. Preserve the old project/domain and obtain
+the full original deploy backup before any separately approved cutover.
+
+
+#### Final local validation — 2026-11-02
+
+The first full local `zcheck` passed typechecking, 365 engine tests, schema
+consistency, Rust formatting and warnings-denied Clippy, then failed four
+`static_images` mock-client probes at the three-second deadline. Repeating that
+suite yielded two timeouts; one affected test passed in isolation. A separate
+experiment, without Zellij, launched 12 new exit-zero shell scripts concurrently:
+five exceeded three seconds and the slowest took 4.841 seconds. Sequential
+re-execution took 0.012–0.022 seconds. This establishes startup latency outside
+the product; the OS-level cause was not diagnosed.
+
+The entire `zcheck` was then rerun with `RUST_TEST_THREADS=1`: exit 0, all
+365 engine tests and 317 Rust tests passed, with one intentionally ignored
+real-container test covered by CI. All ten mock-image tests passed. Product deadlines and CI
+parallelism are unchanged, and no local container daemon was started. Default
+parallel local execution remains a documented environment limitation, not a
+claimed product fix. Raw logs are retained under ignored
+backups/zellij-rc2-preparation-2026-11-02/ with hashes in the evidence JSON.
+Publication still requires the specific user approval described above.
+
+At this record, post-merge Base image run 41598251612 passed. Main CI rerun
+41598251651 has 11 successful jobs, with CLI and Windows portable checks still
+in progress; it is not recorded as passed. Both final PR runs already passed
+all 13 jobs. Refresh the main run before publication.
