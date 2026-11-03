@@ -6,7 +6,7 @@ import { checkDeliverySite } from './check-delivery-http.mjs';
 
 async function site(t, renderer) {
   const portable = renderer === 'portable';
-  const home = portable ? '/index.html' : '/manual';
+  const home = portable ? '/' : '/manual';
   const next = portable ? '/guide/next.html' : '/manual/next';
   const logo = portable ? '/assets/logo.svg' : '/_zellij/assets/logo.svg';
   const resources = new Map([
@@ -15,6 +15,7 @@ async function site(t, renderer) {
     [logo, await readFile(new URL(`./fixtures/release-delivery/${renderer}/content/assets/logo.svg`, import.meta.url), 'utf8')],
     ['/site.css', 'body { color: black; }'],
   ]);
+  if (portable) resources.set('/index.html', resources.get('/'));
   const server = createServer((req, res) => {
     const body = resources.get(req.url);
     res.writeHead(body === undefined ? 404 : 200);
@@ -31,6 +32,13 @@ for (const renderer of ['portable', 'hosted']) {
     await checkDeliverySite(fixture.base, renderer);
   });
 }
+
+test('accepts a portable Next wrapper whose home is / and has no /index.html route', async t => {
+  const fixture = await site(t, 'portable');
+  fixture.resources.delete('/index.html');
+  assert.equal((await fetch(new URL('index.html', fixture.base))).status, 404);
+  await checkDeliverySite(fixture.base, 'portable');
+});
 
 test('rejects a missing page or stylesheet, changed logo bytes, and exposed source files', async t => {
   for (const change of [

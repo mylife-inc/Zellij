@@ -2710,3 +2710,64 @@ docs passed (55 routes, 53 guide pages, 23 examples). Full PR CI, actual generat
 GitHub execution, registry publication/pulls and selected Netlify drafts remain
 pending. Preserve their eventual run IDs and distinguish source-generator
 acceptance from capabilities actually shipped in the candidate binary.
+
+
+### Live delivery results and Netlify account discovery — 2026-11-02
+
+PR #53 merged as bc3955bbd14a586a9d2da8375ff6f0f8717cb95b after all 19 executed
+checks passed on acbdb94: full CI 41561583999 (13 jobs) and six actual generated
+workflow checks (41561584047, 41561584073, 41561584038, 41561584027,
+41561584019, 41561584037). The four PR publication jobs were correctly skipped.
+Post-merge Base image run 41564319833 passed; CI 41564319708 was still running
+at this checkpoint and must be refreshed before stating its result.
+
+Manual generated workflows installed the public 0.2.0-rc.1 executable and
+published dedicated test packages. Static run 41564355308 passed. Next run
+41564361875 initially uploaded layers but GHCR denied the manifest; attempt 2
+passed with no code or permission changes. The first failure remains evidence
+of an undiagnosed registry failure, not a fixed product defect.
+
+Fresh-pull inspection initially exposed an acceptance-checker mistake:
+41565212699 passed static and could not find the not-yet-published Next tag;
+41565578836 passed static but probed /index.html for Next, whose adapted home
+route is /. Fix d2844ab9dcf28851e838aa9464cc06642c026d4b checks the HTTP root,
+adds a regression fixture with no /index.html route, and retains startup status
+and bounded container logs on failure. Four local HTTP tests passed (the new
+case failed before the fix). Corrected run 41565958521 passed BOTH jobs against
+the unchanged published images, checking AMD64, non-root users, health checks,
+actual pages/assets and source-file isolation. Registry digests:
+
+- ghcr.io/mylife-inc/zellij/acceptance-static@sha256:831a2eaec96ffa66d23133659fecdbb104128461f7b57f67e817b9c29a923740
+- ghcr.io/mylife-inc/zellij/acceptance-next@sha256:fd0cf3db3087c70e0bcfd3d9a452231f7874bd964f252de569fe36864ee6fb50
+
+The user authorized drafts on the existing Zellij Netlify site. The official
+OpenAPI contract was checked: createSiteDeploy takes a deployFiles JSON body
+with draft/async fields; the client sends draft: true without --prod.
+https://github.com/netlify/open-api/blob/master/swagger.yml
+Portable draft run 41564369100 failed GET-site preflight with HTTP 404 BEFORE
+building or creating any deployment. The user's screenshot confirmed both
+secret names exist, but not their current access. A temporary repository
+variable selected the known public domain zellij.shebka.net; run 41565327817
+also failed preflight with 404. That temporary variable was removed and the
+existing secrets were never read or changed. Hosted draft dispatch was held.
+No draft URL exists and live Netlify acceptance is NOT passed.
+
+The user then reported separate GitHub accounts (hamidbm and mylife-inc), with
+the existing Netlify deployment originating from hamidbm, and proposed a new
+Netlify project associated with mylife-inc. This is a migration discussion,
+NOT authorization to delete the live site or move its domain yet. Preserve
+existing production while comparing every published route and its information
+with current local documentation; prepare a separate staging destination before
+any cutover. Netlify account/token access, not GitHub repository identity alone,
+determines API access. User requires no loss of published information.
+
+Public response fingerprints for /, /cli, /guide/quickstart were identical
+before and after the failed preflights (130579, 124251, 159412 bytes). SHA-256:
+8e1204979df3a294646e794f378d91e02f4186e289522890a26b161b22cb47f7;
+8a895d38e705e5c6f5ab502996b3c316757d3a2683b913f0a935c28dc6d01247;
+fdc8a5c4d7f67e5ced91a019c9693d165919fe4bbac0852df2f6a5042a83022d.
+This proves those three bodies matched, not whole-site deployment identity.
+No local Docker daemon was started. Candidate assets/tag, stable channel and
+production docs were not promoted. The generator fix still needs a later native
+release; the checker fix requires PR CI and merge. Full content parity and the
+Netlify account migration remain separate unfinished work.

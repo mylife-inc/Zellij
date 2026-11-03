@@ -15,7 +15,9 @@ export async function checkDeliverySite(base, renderer) {
     assert.equal(res.status, status, `${url.pathname}: HTTP ${res.status}`);
     return res;
   }
-  const home = renderer === 'portable' ? 'index.html' : 'manual';
+  // HTTP servers expose the home at /. The adapted Next wrapper deliberately
+  // has no /index.html route; portable file exports still contain index.html.
+  const home = renderer === 'portable' ? './' : 'manual';
   const next = renderer === 'portable' ? 'guide/next.html' : 'manual/next';
   const html = await (await response(home)).text();
   assert(html.includes(renderer === 'portable' ? 'Candidate delivery acceptance' : 'Hosted delivery acceptance'));
