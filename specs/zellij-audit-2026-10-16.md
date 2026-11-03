@@ -2946,3 +2946,12 @@ error channel and diagnostic. The positive full-docs check remains the preceding
 Engine CI gate. Local syntax/actionlint/diff checks pass; final hosted results
 and fixing commit are to be recorded after verification. No application HTML
 cleanup or error suppression was introduced.
+
+
+PR #59 first run 41594298255 passed full-docs preservation with the new error
+capture and hydration wait, but its negative hydration test assumed that React
+always uses console.error. Hosted Chromium reported it through pageerror.
+The test now accepts either channel for React #418; a third control modifies
+only an existing JavaScript asset to emit a console-only sentinel. That control
+specifically guards the old console-capture gap without changing the HTML tree.
+The uncaught-exception control passed on the first run. Final CI is pending.

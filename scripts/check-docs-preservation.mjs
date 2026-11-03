@@ -53,8 +53,12 @@ try {
     // This docs fixture enables the theme toggle on every route. Its neutral
     // SSR label changes only in useEffect, so load alone is not our readiness
     // signal. This also detects a page whose client scripts never hydrate.
-    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor({ timeout: 15_000 });
-    assertNoErrors();
+    try {
+      await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor({ timeout: 15_000 });
+    } finally {
+      // Keep the causal browser error if it prevented mounting altogether.
+      assertNoErrors();
+    }
   };
   let headingCount = 0;
   for (const entry of baseline.pages) {

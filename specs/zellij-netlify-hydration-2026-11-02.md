@@ -98,3 +98,12 @@ capture console.error and wait for a mounted control on each page. Regression
 tests require the actual command to reject a head newline and an uncaught
 exception; their hosted CI result is pending. This addresses the test coverage
 gap described above, not the hosting transformation itself.
+
+
+PR #59 first run 41594298255 passed full-docs preservation with the new error
+capture and hydration wait, but its negative hydration test assumed that React
+always uses console.error. Hosted Chromium reported it through pageerror.
+The test now accepts either channel for React #418; a third control modifies
+only an existing JavaScript asset to emit a console-only sentinel. That control
+specifically guards the old console-capture gap without changing the HTML tree.
+The uncaught-exception control passed on the first run. Final CI is pending.
