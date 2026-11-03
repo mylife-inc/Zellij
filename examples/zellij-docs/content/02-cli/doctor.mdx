@@ -3,6 +3,8 @@ title: zel doctor
 description: Diagnose the container runtime, connection and engine image.
 ---
 
+<div id="what-it-is-for" className="zellij-legacy-anchor" />
+
 <Callout type="tip" title="Implemented in source">
 Runtime diagnostics work today. They do not yet resolve the proposed site-root
 configuration or check deployment credentials. The downloaded CLI release may
@@ -34,6 +36,8 @@ A container command that cannot find a usable runtime stops with **exit code
 4**, before starting its container operation. Portable commands remain usable.
 `zel` does not install software, start a daemon, change renderer, or send the
 work to a remote service as a fallback.
+
+<div id="the-socket-line" className="zellij-legacy-anchor" />
 
 ## Runtime selection
 
@@ -88,6 +92,8 @@ These are setup instructions for the user; `zel` does not run them automatically
 A responding client is a prerequisite, not proof that every image, network,
 registry credential or mounted directory will work.
 
+<div id="the-engine-line" className="zellij-legacy-anchor" />
+
 ## The engine image
 
 The report shows the configured image and whether inspection found it locally.
@@ -112,6 +118,8 @@ failed or endpoint settings were ambiguous. A missing local engine image does
 not fail doctor, and unavailable version/image metadata is reported without
 failing it. This is a container preflight, not a complete site validation or a
 prerequisite for portable commands.
+
+<div id="what-it-will-report-later" className="zellij-legacy-anchor" />
 
 ## Housekeeping
 

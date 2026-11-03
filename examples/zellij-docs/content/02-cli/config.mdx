@@ -8,6 +8,9 @@ Versioned `zel.yaml` selects a portable or hosted site with separate `content/`
 and `site/` folders. Native release packages may lag this source version.
 </Callout>
 
+<div id="what-it-is-really-for" className="zellij-legacy-anchor" />
+<div id="where-it-is-found" className="zellij-legacy-anchor" />
+
 ## Site layout and discovery
 
 ```text
@@ -135,6 +138,11 @@ content's `site.yaml`. It does not replace the documentation site's `zel.yaml`
 or support the legacy `marketing/` layout. Existing unversioned legacy wrapper
 configuration retains its validation rules.
 
+<div id="keys" className="zellij-legacy-anchor" />
+<div id="top-level" className="zellij-legacy-anchor" />
+<div id="build" className="zellij-legacy-anchor" />
+<div id="a-worked-example" className="zellij-legacy-anchor" />
+
 ## Portable Markdown
 
 Add the following presentation settings to a portable site’s `zel.yaml`.
@@ -169,6 +177,8 @@ zel build
 zel view --watch
 zel build --name "Release documentation" --theme cupertino
 ```
+
+<div id="precedence" className="zellij-legacy-anchor" />
 
 ### Selecting settings
 
@@ -249,6 +259,8 @@ The site name beside it always links home. Search and theme controls remain on
 the right. No external request occurs merely from displaying the company link;
 visiting an external website requires connectivity.
 
+<div id="check" className="zellij-legacy-anchor" />
+
 ### Editing and validation
 
 Unknown keys, duplicate YAML keys, incorrect value types, invalid theme names,
@@ -275,6 +287,8 @@ Portable settings do not load MkDocs plugins, `mkdocs.yml`, hosted navigation,
 or a TOML defaults file. Use [`zel check --strict`](/cli/check) to validate a
 configured portable site without writing an export; add `--json` for a structured
 report. Use [`zel new portable`](/cli/new) for a working starter.
+
+<div id="deploy" className="zellij-legacy-anchor" />
 
 ## Image and publication settings
 
@@ -360,3 +374,9 @@ by `--platform`. `ship --image --platform ...` saves it in the imported site;
 affect HTML builds or Netlify deployment. Omitting it uses the runtime default.
 Only one of these two Linux architectures is supported; combined manifests and
 other platform values are rejected. See [image platforms](/cli/image#select-the-image-platform).
+
+## See also
+
+- [Workflow generation](/cli/ci)
+- [Runtime diagnostics](/cli/doctor)
+- [Validation](/cli/check)

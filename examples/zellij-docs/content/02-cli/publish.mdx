@@ -3,6 +3,9 @@ title: zel publish
 description: Build once and deliver using saved registry or Netlify settings.
 ---
 
+<div id="what-it-is" className="zellij-legacy-anchor" />
+<div id="why-it-exists" className="zellij-legacy-anchor" />
+
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
@@ -71,6 +74,8 @@ export. Both build into temporary output and preserve the previous local site.
 rejects a saved image-push plan. Use explicit `deploy netlify` to choose static
 HTML in that case. `--tag` cannot accompany a Netlify deployment. Ordinary
 build/image commands never deploy, regardless of saved settings.
+
+<div id="what-each-step-contributes" className="zellij-legacy-anchor" />
 
 ## What runs for image publication
 
@@ -153,6 +158,8 @@ and credential/runtime checks still apply.
 and site selection; it does not prove that the content builds, credentials work,
 or the destination exists.
 
+<div id="until-it-lands" className="zellij-legacy-anchor" />
+
 ## Remaining delivery work
 
 Other providers and combined multi-platform image publication remain pending.
@@ -166,3 +173,9 @@ builds once for that architecture, then pushes the result. A failed build never
 starts a push. Saved image settings do not affect an explicit Netlify deployment;
 passing `--platform` to Netlify is rejected. See
 [platform prerequisites](/cli/image#select-the-image-platform).
+
+## See also
+
+- [Netlify deployment](/cli/deploy)
+- [Import and publish](/cli/ship)
+- [Site configuration](/cli/config)

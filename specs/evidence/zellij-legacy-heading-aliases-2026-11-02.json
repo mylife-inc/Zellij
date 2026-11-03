@@ -1,0 +1,412 @@
+[
+  {
+    "route": "/cli/build",
+    "legacy_id": "there-are-two-products-not-four",
+    "destination_heading": "Choose the output"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "which-one-you-want",
+    "destination_heading": "Choose the output"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "what-happened-to-node-and-imagestatic",
+    "destination_heading": "Choose the output"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "static--the-html-already-exists",
+    "destination_heading": "Hosted static website"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "what-you-get",
+    "destination_heading": "Hosted static website"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "what-it-actually-does",
+    "destination_heading": "Hosted static website"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "image--a-server-produces-the-html",
+    "destination_heading": "Container image"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "the-one-thing-worth-understanding",
+    "destination_heading": "Shared engine schemas"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "what-it-validates",
+    "destination_heading": "Hosted validation coverage"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "errors-against-warnings",
+    "destination_heading": "Errors and warnings"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "what-it-does-not-do",
+    "destination_heading": "What still needs a hosted build"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "where-it-belongs",
+    "destination_heading": "Hosted workflows"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "when-the-folder-is-somewhere-the-runtime-cannot-see",
+    "destination_heading": "Container file sharing"
+  },
+  {
+    "route": "/cli/check",
+    "legacy_id": "the-intended---json",
+    "destination_heading": "JSON reports"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "why-generate-it-rather-than-document-it",
+    "destination_heading": "Generate locally"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "who-this-is-for",
+    "destination_heading": "Generate locally"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "what-it-writes",
+    "destination_heading": "Generate locally"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "options",
+    "destination_heading": "Compatibility options"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "what-it-always-writes",
+    "destination_heading": "What each run does"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "scoped-to-your-content-folder",
+    "destination_heading": "What each run does"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "checking-without-publishing",
+    "destination_heading": "What each run does"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "what-it-is-really-for",
+    "destination_heading": "Site layout and discovery"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "where-it-is-found",
+    "destination_heading": "Site layout and discovery"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "precedence",
+    "destination_heading": "Selecting settings"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "keys",
+    "destination_heading": "Portable Markdown"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "top-level",
+    "destination_heading": "Portable Markdown"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "build",
+    "destination_heading": "Portable Markdown"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "a-worked-example",
+    "destination_heading": "Portable Markdown"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "deploy",
+    "destination_heading": "Image and publication settings"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "check",
+    "destination_heading": "Editing and validation"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "the-provider-decides-the-artefact",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "where-the-content-comes-from",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "what-it-does",
+    "destination_heading": "Build and upload"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "credentials",
+    "destination_heading": "Set up the destination"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "what-it-deliberately-will-not-do-for-you",
+    "destination_heading": "Set up the destination"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "what-it-is-for",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "what-happens-when-you-run-it",
+    "destination_heading": "Hosted YAML and MDX"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "reload-not-watch",
+    "destination_heading": "Hosted YAML and MDX"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "when-your-folder-is-somewhere-the-runtime-cannot-see",
+    "destination_heading": "Hosted YAML and MDX"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "looking-at-it-on-a-phone",
+    "destination_heading": "Looking at it on a phone"
+  },
+  {
+    "route": "/cli/dev",
+    "legacy_id": "when-you-have-a-wrapper-app-instead",
+    "destination_heading": "Editable wrapper apps"
+  },
+  {
+    "route": "/cli/doctor",
+    "legacy_id": "what-it-is-for",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/doctor",
+    "legacy_id": "the-socket-line",
+    "destination_heading": "Runtime selection"
+  },
+  {
+    "route": "/cli/doctor",
+    "legacy_id": "the-engine-line",
+    "destination_heading": "The engine image"
+  },
+  {
+    "route": "/cli/doctor",
+    "legacy_id": "what-it-will-report-later",
+    "destination_heading": "Housekeeping"
+  },
+  {
+    "route": "/cli/fmt",
+    "legacy_id": "what-it-is-for",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/fmt",
+    "legacy_id": "what-it-decides",
+    "destination_heading": "Formatting rules"
+  },
+  {
+    "route": "/cli/fmt",
+    "legacy_id": "--check-in-ci",
+    "destination_heading": "Check mode and writes"
+  },
+  {
+    "route": "/cli/fmt",
+    "legacy_id": "what-it-will-not-touch",
+    "destination_heading": "Files selected"
+  },
+  {
+    "route": "/cli/image",
+    "legacy_id": "what-you-do-not-write-a-dockerfile-buys-you",
+    "destination_heading": "zel image dockerfile"
+  },
+  {
+    "route": "/cli/image",
+    "legacy_id": "getting-the-wrapper-app-out-of-it",
+    "destination_heading": "The base image"
+  },
+  {
+    "route": "/cli/migrate",
+    "legacy_id": "what-it-is",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/migrate",
+    "legacy_id": "then-why-does-it-exist",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/migrate",
+    "legacy_id": "what-it-does-not-do",
+    "destination_heading": "Validation and migration fidelity"
+  },
+  {
+    "route": "/cli/migrate",
+    "legacy_id": "when-to-run-the-three-commands-instead",
+    "destination_heading": "Inspect before writing"
+  },
+  {
+    "route": "/cli/new",
+    "legacy_id": "what-it-writes-1",
+    "destination_heading": "zel new app [dir]"
+  },
+  {
+    "route": "/cli/new",
+    "legacy_id": "when-you-need-an-app-at-all",
+    "destination_heading": "zel new app [dir]"
+  },
+  {
+    "route": "/cli/new",
+    "legacy_id": "--with-docs-and-both-together",
+    "destination_heading": "Start with documentation included"
+  },
+  {
+    "route": "/cli/new",
+    "legacy_id": "options-1",
+    "destination_heading": "Options and prerequisites"
+  },
+  {
+    "route": "/cli/publish",
+    "legacy_id": "what-it-is",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/publish",
+    "legacy_id": "why-it-exists",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/publish",
+    "legacy_id": "what-each-step-contributes",
+    "destination_heading": "What runs for image publication"
+  },
+  {
+    "route": "/cli/publish",
+    "legacy_id": "until-it-lands",
+    "destination_heading": "Remaining delivery work"
+  },
+  {
+    "route": "/cli/serve",
+    "legacy_id": "why-not-just-use-zel-dev",
+    "destination_heading": "Build, serve, view, and dev"
+  },
+  {
+    "route": "/cli/serve",
+    "legacy_id": "until-it-lands",
+    "destination_heading": "Build, serve, view, and dev"
+  },
+  {
+    "route": "/cli/serve",
+    "legacy_id": "what-it-does",
+    "destination_heading": "What is served"
+  },
+  {
+    "route": "/cli/ship",
+    "legacy_id": "what-it-is",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/ship",
+    "legacy_id": "why-one-command-for-five",
+    "destination_heading": "__intro__"
+  },
+  {
+    "route": "/cli/ship",
+    "legacy_id": "what-it-will-not-hide",
+    "destination_heading": "Inspect the conversion first"
+  },
+  {
+    "route": "/cli/ship",
+    "legacy_id": "the-one-risk-worth-naming",
+    "destination_heading": "After success or failure"
+  },
+  {
+    "route": "/cli/ship",
+    "legacy_id": "until-it-lands",
+    "destination_heading": "After success or failure"
+  },
+  {
+    "route": "/guide/maths-and-diagrams",
+    "legacy_id": "what-each-one-costs",
+    "destination_heading": "Enable optional features"
+  },
+  {
+    "route": "/guide/quickstart/new-project",
+    "legacy_id": "publishing-a-site-rather-than-an-image",
+    "destination_heading": "Choose Netlify instead"
+  },
+  {
+    "route": "/guide/quickstart/new-project",
+    "legacy_id": "settling-the-repeated-arguments",
+    "destination_heading": "Choose Netlify instead"
+  },
+  {
+    "route": "/guide/quickstart/new-project",
+    "legacy_id": "next",
+    "destination_heading": "Choose Netlify instead"
+  },
+  {
+    "route": "/cli/build",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/ci",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/config",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/deploy",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/image",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/publish",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  },
+  {
+    "route": "/cli/serve",
+    "legacy_id": "see-also",
+    "destination_heading": "See also"
+  }
+]

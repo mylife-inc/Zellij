@@ -230,6 +230,8 @@ For a fully qualified reference, use `zel ip ghcr.io/acme/manual:v1` without
 `--registry`. [`zel pub`](/cli/publish) combines one image build and a push using
 saved settings; ordinary image builds never publish implicitly.
 
+<div id="what-you-do-not-write-a-dockerfile-buys-you" className="zellij-legacy-anchor" />
+
 ## `zel image dockerfile`
 
 `zel image dockerfile` / `zel idf` prints a recipe without runtime detection,
@@ -265,6 +267,8 @@ A saved Dockerfile no longer tracks future recipe changes; regenerate it when
 upgrading the CLI. Next Dockerfile output requires hosted content. For portable
 Markdown, use `zel ni`, which owns the temporary adaptation and image build.
 
+<div id="getting-the-wrapper-app-out-of-it" className="zellij-legacy-anchor" />
+
 ## The base image
 
 `ZELLIJ_IMAGE` overrides the hosted builder image (default
@@ -279,3 +283,9 @@ Next wrapper at `/app`. Dependencies install during the site build. The
 static runtime currently uses `nginxinc/nginx-unprivileged:stable-alpine`;
 custom runtime-base selection is not yet a CLI option. For a separately managed
 Dockerfile, pin image digests when you need fixed base versions.
+
+## See also
+
+- [Build outputs](/cli/build)
+- [Configured publication](/cli/publish)
+- [How containers work](/guide/containers)
