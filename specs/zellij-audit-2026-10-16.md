@@ -2955,3 +2955,22 @@ The test now accepts either channel for React #418; a third control modifies
 only an existing JavaScript asset to emit a console-only sentinel. That control
 specifically guards the old console-capture gap without changing the HTML tree.
 The uncaught-exception control passed on the first run. Final CI is pending.
+
+
+### Candidate 0.2.0-rc.2 preparation — 2026-11-02
+
+The user authorized continuing with browser acceptance and the next candidate.
+Workspace version and only the six local package versions in Cargo.lock are
+0.2.0-rc.2; external dependencies are unchanged. Reviewed candidate notes list
+the per-workflow queue fix, public-download recovery, preservation corrections,
+and strengthened hydration acceptance. The hosting newline issue remains open
+with Netlify and is explicitly not claimed fixed. rc.1 assets are immutable;
+normal installation documentation continues to target the published candidate.
+
+Local release/download tests: 29 passed. Native CLI unit/workflow tests: 26 unit
+and 11 integration tests passed; one real-container test remains intentionally
+ignored locally and is a CI gate. The first sandboxed unit run failed seven
+local API fixtures because loopback binding was denied; the identical rerun
+with loopback permission passed. Version preflight confirms v0.2.0-rc.2.
+Final-head CI, review/merge and publication remain pending; no rc.2 tag exists
+and stable/production channels have not changed.

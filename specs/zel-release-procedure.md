@@ -43,7 +43,7 @@ for candidate acceptance. Source development can explicitly select
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.1` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.2` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
