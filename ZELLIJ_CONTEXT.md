@@ -3654,3 +3654,12 @@ one with the observed head newline and one with an uncaught exception. Normal
 preservation and both negative controls run in Engine CI. Syntax checks,
 actionlint and diff checks pass locally; hosted verification is pending.
 No product rendering workaround, production deploy or release was made here.
+
+
+PR #59 first run 41594298255 passed full-docs preservation with the new error
+capture and hydration wait, but its negative hydration test assumed that React
+always uses console.error. Hosted Chromium reported it through pageerror.
+The test now accepts either channel for React #418; a third control modifies
+only an existing JavaScript asset to emit a console-only sentinel. That control
+specifically guards the old console-capture gap without changing the HTML tree.
+The uncaught-exception control passed on the first run. Final CI is pending.
