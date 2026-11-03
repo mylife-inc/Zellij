@@ -1,0 +1,11 @@
+version: 1
+renderer: hosted
+publish:
+  action: deploy
+  provider: netlify
+ci:
+  branch: main
+  workflow: acceptance-netlify-hosted.yml
+  zel-version: 0.2.0-rc.1
+  triggers: [pull_request, manual]
+  production: false

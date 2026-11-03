@@ -76,6 +76,13 @@ checksum and reported version. Engine-backed builds use the matching versioned
 `workflow` is a `.yml` or `.yaml` filename, without directories. Unknown settings,
 unsupported events and credentials in the CI block are errors.
 
+For multiple sites in one repository, choose a different `ci.workflow` filename
+for each site. Current source shows that filename in the display name and derives
+the concurrency group from it, so separate sites have independent queues. The
+published `0.2.0-rc.1` generator used one shared display name/group; this fix needs
+the next native release. Regenerate existing workflows with the corrected CLI
+and `--force` after reviewing local customizations.
+
 Optional tag patterns and UTC schedules are independent additional triggers:
 
 ```yaml

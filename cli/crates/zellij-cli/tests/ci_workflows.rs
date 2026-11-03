@@ -99,6 +99,39 @@ fn shorthand_full_form_defaults_nested_selection_and_reserved_names() {
     run(root, &["ci", "init", "gitlab", "--force"], 2);
 }
 #[test]
+fn independent_site_workflows_do_not_share_a_concurrency_queue() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    let mut groups = Vec::new();
+    let mut names = Vec::new();
+    for name in ["manual", "api"] {
+        let dir = format!("docs/{name}");
+        site(root, &dir, &format!("ci: {{workflow: {name}.yml}}\n"));
+        run(root, &["ci", &dir], 0);
+        let path = root.join(format!(".github/workflows/{name}.yml"));
+        let original = fs::read(&path).unwrap();
+        let workflow: Value = serde_yaml_ng::from_slice(&original).unwrap();
+        let group = workflow["concurrency"]["group"].as_str().unwrap();
+        assert!(
+            workflow["name"]
+                .as_str()
+                .unwrap()
+                .contains(&format!("{name}.yml"))
+        );
+        assert!(group.contains("${{ github.ref }}"));
+        assert!(!group.contains("github.workflow"));
+        assert_eq!(workflow["concurrency"]["cancel-in-progress"], false);
+        groups.push(group.to_lowercase());
+        names.push(workflow["name"].as_str().unwrap().to_owned());
+        run(root, &["ci", &dir, "--force"], 0);
+        assert_eq!(fs::read(path).unwrap(), original);
+    }
+    assert_ne!(groups[0], groups[1]);
+    assert_ne!(names[0], names[1]);
+}
+
+#[test]
 fn compatible_binary_pins_itself_and_invalid_settings_do_not_replace_a_workflow() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

@@ -1,0 +1,12 @@
+version: 1
+renderer: portable
+name: Candidate delivery acceptance
+publish:
+  action: deploy
+  provider: netlify
+ci:
+  branch: main
+  workflow: acceptance-netlify-portable.yml
+  zel-version: 0.2.0-rc.1
+  triggers: [pull_request, manual]
+  production: false
