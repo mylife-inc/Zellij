@@ -3,14 +3,16 @@
 Last refreshed: **2026-11-02**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Latest source work: PR #53 merged as `bc3955b` after 19 checks passed, fixing
-multi-site workflow queues (`0a79f95`) and adding generated delivery acceptance.
-Both dedicated GHCR images published and passed fresh-pull HTTP checks using
-checker correction `d2844ab` (branch `codex/delivery-entrypoint-check`, awaiting
-PR CI/merge). Netlify preflight returns 404; no draft was created. The user has
-identified separate GitHub/Netlify account ownership and is considering migration.
-Preserve the live site and audit published/local content before any cutover.
-The generator fix is newer than the released binary. See the final dated entry.
+Latest source work: PR #54 merged as `35a2261` after 13 CI jobs passed; both
+published test images passed corrected fresh-pull acceptance. Current branch
+`codex/documentation-migration-preservation`, source fix `8370ec4`, preserves
+82 legacy bookmarks before a proposed Netlify migration. Local checks pass;
+PR CI/merge remain pending. All 46 production routes and 29 referenced images
+are retained in the 55-route staging site. See
+[the migration report](specs/zellij-netlify-migration-2026-11-02.md).
+The user is preparing a separate Netlify staging project because the intended
+transfer destination is unavailable. Await its URL/credentials readiness; keep
+the old live site/domain intact. No Netlify draft has yet passed preflight.
 
 Latest release: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
 All eight public-artifact acceptance jobs passed in run `41548199714` using
@@ -3501,3 +3503,43 @@ No local Docker daemon was started. Candidate assets/tag, stable channel and
 production docs were not promoted. The generator fix still needs a later native
 release; the checker fix requires PR CI and merge. Full content parity and the
 Netlify account migration remain separate unfinished work.
+
+
+### Netlify staging and published-content preservation — 2026-11-02
+
+PR #54 merged as 35a2261f8112f05a3365c64e8659712dd6e28f64 after all 13 CI jobs
+passed in 41569977319. PR #53 main CI 41564319708 also passed. Both published
+acceptance images remain verified by 41565958521; Netlify drafts have not passed.
+
+The user reports separate hamidbm/mylife-inc identities and confirmed that the
+intended destination is unavailable in Netlify's transfer dialog. Proceed with
+a separate staging project under the intended account, while retaining the
+existing production project and zellij.shebka.net domain. Deletion, transfer,
+domain cutover and production replacement remain unapproved.
+
+Source fix 8370ec4fc43ef2af6e775096df7010b624b608d9 preserves old documentation
+bookmarks and corrects repository links. A fresh public inventory found 46
+pages; all exist in the 55-route local site. Thirteen normalized page bodies are
+identical and 33 contain reviewed corrections/expansion/reorganization. All 29
+referenced content images match source bytes. The initial comparison identified
+82 lost heading IDs; 74 static aliases and eight restored headings now retain
+them. Local Chromium verified all 282 original heading IDs, 46 original and nine
+new routes, 29 image hashes, fragment navigation, search and current GitHub links.
+Strict/deep validation (55 routes, 53 guide pages, 23 examples), static webpack
+build, workflow lint and diff checks passed. Normal Engine CI now runs this
+preservation check. Full PR CI/merge for this source fix remain pending.
+
+See specs/zellij-netlify-migration-2026-11-02.md and specs/evidence for the
+comparison, legacy mapping, limitations and migration gates. Local ignored
+artifacts: backups/zellij-production-2026-11-02.tar.gz (public crawl, not a full
+Netlify backup) and backups/zellij-staging-2026-11-02.zip (validated 55-page
+static upload). The report records their hashes. A full production deploy ZIP
+from Netlify is still needed before cutover; the crawl cannot discover unlinked
+files or provider settings. All generated build-only source changes were restored.
+
+The user has the staging upload and instructions to create a separate project,
+keep its temporary netlify.app address, and update the existing GitHub Netlify
+secrets for it. Await the new URL and readiness before running draft acceptance
+there. No credentials were read, no local Docker daemon started, and no existing
+production content replaced. Native candidate/stable channels are unchanged;
+the multi-site workflow fix still requires a later native candidate.
