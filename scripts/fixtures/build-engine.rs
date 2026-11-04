@@ -11,7 +11,9 @@ fn main() {
             let mut recipe = String::new();
             std::io::stdin().read_to_string(&mut recipe).unwrap();
             fs::write(root.join("recipe"), recipe).unwrap();
+            if env::var("ZELLIJ_BUILD_FAIL").as_deref() == Ok("yes") { std::process::exit(1); }
         }
+        Some("push") => { fs::write(root.join("pushed"), args.join("\n")).unwrap(); }
         Some("run") => {
             fs::write(root.join("args"), args.join("\n")).unwrap();
             if env::var("ZELLIJ_BUILD_FAIL").as_deref() == Ok("yes") { std::process::exit(96); }

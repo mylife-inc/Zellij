@@ -382,7 +382,9 @@ generation, accept the same flags; see [image overrides](/cli/image#hosted-url-a
 Portable Markdown converted into a Next.js image also supports them. Pure
 portable HTML builds and portable static images reject these flags: their URLs
 are relative and their validation is part of native compilation. Deploy,
-publication and CI-generation commands do not yet accept these three flags.
+publication and import-and-publish commands accept these flags for hosted output;
+[CI generation](/cli/ci#freeze-hosted-url-and-preflight-overrides) can freeze them
+in a workflow.
 Container builds require a current engine supporting build overrides; an older
 image fails with upgrade guidance before installation. The flags do not install
 or start a local container runtime.

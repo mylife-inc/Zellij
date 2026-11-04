@@ -544,12 +544,20 @@ impl ContainerEngine {
         out: &Utf8Path,
         features: Option<Features>,
     ) -> Result<String> {
-        let output = self.prepare_export(
+        self.build_for_deployment_with_options(
             content,
             out,
-            ExportLayout::Deployment,
             &crate::BuildOptions::with_features(features),
-        )?;
+        )
+    }
+
+    pub fn build_for_deployment_with_options(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        options: &crate::BuildOptions,
+    ) -> Result<String> {
+        let output = self.prepare_export(content, out, ExportLayout::Deployment, options)?;
         let prefix = take_prefix(&output)?;
         output.publish()?;
         Ok(prefix)

@@ -2,10 +2,11 @@
 use camino::Utf8Path;
 use zellij_core::{
     Result,
-    delivery::{DeliveryPlan, ImagePublication},
+    delivery::{DeliveryPlan, ImageKind, ImagePublication},
     features::Features,
     site::{Renderer, Site},
 };
+use zellij_engine::BuildOptions;
 
 pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArgs) -> Result<()> {
     let (site, content) = crate::images::selection(options.dir.as_ref())?;
@@ -20,17 +21,34 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
         options.prod,
     )?
     .with_platform(options.platform)?;
+    let build = options.overrides.options(options.features);
+    validate_options(&site, &plan, &build)?;
     if options.dry_run || !zellij_core::reporting::options().quiet {
         describe(&plan, &site, &content);
-        describe_features(options.features);
+        describe_options(&build);
     }
     if options.dry_run {
         zellij_core::reportln!(
-            "\nPlan only: validate/build once, then deliver.\nNo content validation, tool/credential checks, build or remote request was performed."
+            "\nPlan only: prepare/build once, then deliver.\nNo content validation, tool/credential checks, build or remote request was performed."
         );
         return Ok(());
     }
-    execute_plan(&site, &content, &plan, options.features)
+    execute_plan(&site, &content, &plan, &build)
+}
+
+fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
+    if site.renderer == Renderer::Portable
+        && !matches!(
+            plan,
+            DeliveryPlan::Push(ImagePublication {
+                kind: ImageKind::Next,
+                ..
+            })
+        )
+    {
+        crate::images::require_native_options(options)?;
+    }
+    Ok(())
 }
 
 pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
@@ -67,20 +85,40 @@ pub(crate) fn describe_features(features: Option<Features>) {
     }
 }
 
+pub(crate) fn describe_options(options: &BuildOptions) {
+    describe_features(options.features);
+    if let Some(prefix) = &options.overrides.base_path {
+        let prefix = prefix.to_string();
+        zellij_core::reportln!(
+            "  Base path {} (this invocation only)",
+            if prefix.is_empty() { "/" } else { &prefix }
+        );
+    }
+    if let Some(origin) = &options.overrides.site_url {
+        zellij_core::reportln!("  Site URL {origin} (this invocation only)");
+    }
+    if options.overrides.no_check {
+        zellij_core::reportln!(
+            "  Preflight skipped; preparation and rendering still validate content"
+        );
+    }
+}
+
 pub(crate) fn execute_plan(
     site: &Site,
     content: &Utf8Path,
     plan: &DeliveryPlan,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
+    validate_options(site, plan, options)?;
     match plan {
-        DeliveryPlan::Push(plan) => push_image(site, content, plan, features),
+        DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
         DeliveryPlan::Netlify {
             site: id,
             production,
         } => {
             let client = crate::netlify::Client::from_environment()?;
-            deploy(site, content, &client, id, *production, features)
+            deploy(site, content, &client, id, *production, options)
         }
     }
 }
@@ -91,8 +129,11 @@ pub(crate) fn deploy(
     client: &crate::netlify::Client,
     id: &str,
     production: bool,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
+    if site.renderer == Renderer::Portable {
+        crate::images::require_native_options(options)?;
+    }
     // Authenticate/read the existing site before an expensive hosted build.
     client.check_site(id)?;
     let engine = match site.renderer {
@@ -121,13 +162,13 @@ pub(crate) fn deploy(
     zellij_core::statusln!("Building static site…");
     let build = || -> Result<String> {
         match engine {
-            Some(engine) => engine.build_for_deployment_with_features(content, &export, features),
+            Some(engine) => engine.build_for_deployment_with_options(content, &export, options),
             None => {
                 let report = zellij_docs::build(
                     &site.input,
                     &export,
                     zellij_docs::BuildOptions {
-                        features,
+                        features: options.features,
                         ..Default::default()
                     },
                 )?;
@@ -157,7 +198,7 @@ fn push_image(
     site: &Site,
     content: &Utf8Path,
     plan: &ImagePublication,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
     zellij_core::statusln!("\nBuilding image…");
@@ -168,7 +209,7 @@ fn push_image(
         plan.kind,
         &plan.tag,
         plan.platform,
-        &zellij_engine::BuildOptions::with_features(features),
+        options,
     ) {
         zellij_core::diagnosticln!(
             "Publication stopped during validation/build; no push was attempted."

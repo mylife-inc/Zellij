@@ -666,3 +666,204 @@ fn features_are_frozen_in_all_build_and_delivery_commands_but_not_checks_or_push
         }
     }
 }
+
+#[test]
+fn build_overrides_are_data_and_skip_only_the_requested_preflight() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    let dir = "docs/Named manual";
+    let filename = format!("{dir}/delivery.yaml");
+    let prefix = "/日本語/'$(touch${IFS}INJECTED)`touch${IFS}INJECTED2`";
+    for (renderer, settings, extra, allowed) in [
+        ("hosted", "", vec![], true),
+        (
+            "hosted",
+            "publish: {action: deploy, provider: netlify, site: saved-id}\n",
+            vec![],
+            true,
+        ),
+        (
+            "hosted",
+            "image: {name: ghcr.io/acme/docs:v1}\npublish: {action: push, image: static}\n",
+            vec![],
+            true,
+        ),
+        (
+            "portable",
+            "image: {name: ghcr.io/acme/docs:v1}\npublish: {action: push, image: next}\n",
+            vec![],
+            true,
+        ),
+        ("portable", "", vec!["--target", "image"], true),
+        ("portable", "", vec![], false),
+        (
+            "portable",
+            "publish: {action: deploy, provider: netlify, site: saved-id}\n",
+            vec![],
+            false,
+        ),
+        (
+            "portable",
+            "image: {name: ghcr.io/acme/docs:v1}\npublish: {action: push, image: static}\n",
+            vec![],
+            false,
+        ),
+    ] {
+        site(root, dir, "");
+        let config = format!(
+            "version: 1\nrenderer: {renderer}\nci: {{zel-version: 0.2.0-rc.2}}\n{settings}"
+        );
+        write(root, &filename, &config);
+        write(root, &format!("{dir}/zel.yaml"), "invalid neighbor: [");
+        for no_check in [false, true] {
+            let mut args = vec![
+                "ci",
+                "--config",
+                &filename,
+                "--force",
+                "--base-path",
+                prefix,
+                "--site-url",
+                "https://DOCS.example:443/",
+                "--features",
+                "none",
+            ];
+            args.extend_from_slice(&extra);
+            if no_check {
+                args.push("--no-check");
+            }
+            let previous = fs::read(root.join(".github/workflows/docs.yml")).ok();
+            run(root, &args, if allowed { 0 } else { 2 });
+            if !allowed {
+                assert_eq!(
+                    fs::read(root.join(".github/workflows/docs.yml")).ok(),
+                    previous
+                );
+                continue;
+            }
+            let doc = workflow(root);
+            assert_eq!(doc["env"]["ZEL_BUILD_BASE_PATH"], prefix);
+            assert_eq!(doc["env"]["ZEL_BUILD_SITE_URL"], "https://docs.example");
+            for job in doc["jobs"].as_object().unwrap().values() {
+                let commands: Vec<_> = job["steps"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter_map(|s| s["run"].as_str())
+                    .collect();
+                assert_eq!(
+                    commands
+                        .iter()
+                        .filter(|c| c.starts_with("zel check"))
+                        .count(),
+                    usize::from(!no_check)
+                );
+                for line in commands
+                    .iter()
+                    .flat_map(|command| command.lines())
+                    .filter(|line| line.starts_with("zel "))
+                {
+                    let is_build =
+                        !line.starts_with("zel check") && !line.starts_with("zel image push");
+                    assert_eq!(
+                        line.contains("--base-path \"$ZEL_BUILD_BASE_PATH\""),
+                        is_build,
+                        "{line}"
+                    );
+                    assert_eq!(
+                        line.contains("--site-url \"$ZEL_BUILD_SITE_URL\""),
+                        is_build,
+                        "{line}"
+                    );
+                    assert_eq!(line.contains("--no-check"), is_build && no_check, "{line}");
+                    assert!(!line.contains(prefix));
+                }
+                // Generated jobs target Ubuntu, including its Bash 4+ case
+                // conversion in legacy image publication. macOS's system Bash
+                // cannot execute that existing workflow syntax. Every platform
+                // still checks generated data and native CLI forwarding.
+                #[cfg(target_os = "linux")]
+                {
+                    let capture = root.join("argv");
+                    let _ = fs::remove_file(&capture);
+                    let script = format!(
+                        "zel() {{ printf '%s\\0' \"$@\" >> \"$CAPTURE\"; }}\n{}",
+                        commands
+                            .iter()
+                            .filter(|c| c.starts_with("zel ") || c.starts_with("TAG="))
+                            .copied()
+                            .collect::<Vec<_>>()
+                            .join("\n")
+                    );
+                    let result = Command::new("bash")
+                        .args(["-eu", "-c", &script])
+                        .current_dir(root)
+                        .env("CAPTURE", &capture)
+                        .env("SITE_ROOT", dir)
+                        .env("SITE_CONFIG", &filename)
+                        .env("RUNNER_TEMP", root)
+                        .env("IMAGE_TAG", "ghcr.io/acme/docs:v1")
+                        .env("REPOSITORY", "acme/docs")
+                        .env("REVISION", "abcdef")
+                        .env("ZEL_BUILD_BASE_PATH", prefix)
+                        .env("ZEL_BUILD_SITE_URL", "https://docs.example")
+                        .output()
+                        .unwrap();
+                    assert!(result.status.success(), "{result:?}");
+                    let values = fs::read(capture).unwrap();
+                    assert_eq!(
+                        values
+                            .split(|b| *b == 0)
+                            .filter(|value| *value == prefix.as_bytes())
+                            .count(),
+                        1
+                    );
+                    assert!(!root.join("INJECTED").exists() && !root.join("INJECTED2").exists());
+                }
+            }
+            assert_eq!(fs::read_to_string(root.join(&filename)).unwrap(), config);
+        }
+    }
+    write(root, &filename, "version: 1\nrenderer: hosted\n");
+    run(
+        root,
+        &[
+            "ci",
+            "init",
+            "github",
+            "--config",
+            &filename,
+            "--force",
+            "--base-path",
+            "/",
+        ],
+        0,
+    );
+    assert_eq!(workflow(root)["env"]["ZEL_BUILD_BASE_PATH"], "/");
+    let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    for flags in [
+        vec!["--base-path", "/${{github.ref}}"],
+        vec!["--site-url", "https://docs.example/path"],
+        vec!["--no-check", "--zel-version", "0.2.0-rc.1"],
+        vec!["--no-check", "--zel-version", "0.2.0-beta.3"],
+    ] {
+        let mut args = vec!["ci", "--config", &filename, "--force"];
+        args.extend(flags);
+        run(root, &args, 2);
+        assert_eq!(
+            fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+            previous
+        );
+    }
+    run(root, &["ci", "--config", &filename, "--force"], 0);
+    let doc = workflow(root);
+    assert!(doc["env"].get("ZEL_BUILD_BASE_PATH").is_none());
+    assert!(
+        doc["jobs"]["verify"]["steps"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|s| s["name"] == "Validate documentation")
+    );
+}

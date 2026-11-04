@@ -3,11 +3,10 @@
 Last refreshed: **2026-11-04**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current implementation: hosted development reload, JSON validation and dev
-host/browser options are merged in PRs #62–#64. PR #64 merged as `706f543`
-after all 13 checks passed; refreshed main CI and Base image builds also passed.
-The current branch implements hosted build URL and preflight overrides; see the
-latest dated entry for scope and verification status.
+Current implementation: hosted build URL/preflight overrides merged in PR #65
+as `58623ff` after all 13 checks passed. The current branch extends those settings
+through deployment, publication, ship and generated GitHub workflows in `c20d48b`.
+See the latest dated entries for scope and verification status.
 The user requested completion of the remaining CLI capabilities. The prior rc.2
 release proposal awaits explicit publication approval and predates
 this new work. See the latest dated entry.
@@ -3978,3 +3977,78 @@ The corrected native development suite, including fragmented headers, passes
 locally with fake browser executables and loopback sockets. JavaScript syntax,
 actionlint and diff checks pass. The new build-override fixture now runs before
 longer native preview fixtures in each platform job.
+
+
+### Hosted build overrides — final acceptance, 2026-11-04
+
+PR #65 merged as `58623ff683e7597471607c59825966dec44d158e` after all 13
+checks passed in run `41815732030` on `a92b80c59bee232773267c20dc07ea98015e42d0`.
+The merge and tested head have identical trees. This includes Windows acceptance
+after fixture correction `fc3397f`, real hosted exports, both image kinds and
+browser/health checks. Earlier failed/canceled evidence remains above.
+Main Base image run `41819057643` passed; main CI `41819057870` was still running
+when refreshed for this next milestone. Native rc.1 remains the latest published
+release; no rc.2 publication or production/domain change was performed.
+
+### Build overrides in delivery and generated CI — 2026-11-04
+
+Implementation `c20d48b` extends `--base-path`, `--site-url` and `--no-check` to
+`netlify`, `deploy`, `publish`/`pub`, `ship`, and GitHub workflow generation.
+The same typed options reach the single hosted export or image build before
+upload/push. Pure portable static delivery rejects them before runtime or remote
+work; portable-to-Next publication accepts them. Dry runs show normalized values,
+including `/` for an explicitly cleared prefix, and the skipped content preflight.
+Netlify credentials/site access still precede the build. Failed builds never
+create a deployment or push. Temporary exports, authored files and prior local
+output retain their existing protections.
+
+`ship` keeps its converted site and saved delivery destination after failure,
+but never saves invocation-only build settings. Both success and failure guidance
+say to repeat the applicable overrides. Bare saved `deploy` uses discovery or
+`--site-root`; its first positional remains the explicit provider selector.
+
+Generated workflows serialize URL settings as environment values and pass quoted
+arguments only to build/delivery commands. GitHub expression syntax in values is
+rejected. `/` retains its root-reset meaning. `--no-check` removes the separate
+workflow deep/strict check and skips the build's preflight; preparation/schema/
+rendering, credential/runtime checks and publication event gates remain active.
+Without it, the workflow validates authored content as before. The generator
+requires version 0.2.0-rc.2 or later when these flags are used; it still does not
+publish or verify release availability. Omission on regeneration restores default
+checks/settings. Existing generated release-acceptance workflows are byte-identical.
+
+Local validation passed: 325 Rust tests (one real-container test intentionally
+ignored locally), warnings-denied Clippy, formatting, all 12 workflow tests and
+11 parser tests after the command enum allocation correction. Native fake-runtime
+coverage verifies publication aliases, no push on failed builds, imported-site
+retention, dry plans, root reset, portable rejection and unchanged source. A Bash
+replay verifies shell-looking prefix values remain literal; workflow failures
+preserve the previous file. Mock Netlify tests retain authentication preflight.
+Generated workflows pass actionlint with and without preflight; all 55 docs
+routes and 23 examples pass deep/strict validation. Script syntax/diff checks pass.
+No local Docker or GUI browser was used.
+
+CI now exercises prefixed imported static and Next images through push/pull,
+browser navigation, canonical/sitemap metadata and health checks. Hosted Netlify
+acceptance uses an overridden deployment prefix/origin and verifies invalid
+content under `--no-check` cannot create a deployment. Final platform/container
+results must be refreshed from the pull request before merging.
+
+Remaining CLI work includes image build arguments, combined multi-platform image
+publication, additional deployment/CI providers and broader import fidelity.
+The Netlify hosting-injected hydration issue remains external. Candidate release
+publication and production migration remain separate, pending decisions.
+
+
+### Delivery overrides — CI harness correction, 2026-11-04
+
+[PR #66](https://github.com/mylife-inc/Zellij/pull/66) tracks `c20d48b` and
+context record `d634507`. Run `41821800581` failed the macOS workflow test because
+its system Bash cannot execute the existing `${REPOSITORY,,}` expression in the
+Ubuntu-only legacy image job. Correction `0c1802a` runs full workflow-shell replay
+on Linux, matching the generated runner. All operating systems still check the
+workflow data, option placement, release compatibility, rejection/preservation,
+and native delivery forwarding. No product behavior or generated workflow changed.
+The focused regression, formatting and diff checks pass locally after correction.
+Final CI acceptance is pending on the replacement head; the first run is not
+claimed as complete acceptance.

@@ -114,6 +114,24 @@ uses the engine image's default. A failed image push can still be retried
 without rebuilding using `zel image push <tag>`; that command needs no feature
 flag because the image is already built.
 
+## Build overrides for the imported site
+
+The current source accepts `--base-path`, `--site-url` and `--no-check` for both
+image kinds and Netlify delivery, since imported content uses hosted rendering:
+
+```bash
+zel ship ./old-docs --out ./manual --image next --tag ghcr.io/acme/manual:v1 --base-path /manual --site-url https://docs.example.com
+```
+
+The flags appear in dry-run plans and apply to the single build, using the same
+[URL and validation rules as build](/cli/build#hosted-url-and-validation-overrides).
+They are not saved in the converted site's configuration. Repeat them with a
+later `zel pub ./manual` invocation to reuse them. Failure guidance names this
+requirement while retaining converted files and leaving the source unchanged.
+`--no-check` still requires valid preparation/rendering and does not bypass
+credentials, runtime or conversion checks. These flags require a current CLI
+and compatible engine; candidate `0.2.0-rc.1` does not include them.
+
 ## Options
 
 | Option | Behavior |
@@ -127,6 +145,9 @@ flag because the image is already built.
 | `--site-id <id>` / `--site <id>` | Netlify site ID/domain; overrides environment |
 | `--prod` | Netlify production request; conflicts with `--image` |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
+| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
+| `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | In-memory conversion and plan only |
 
 ## See also

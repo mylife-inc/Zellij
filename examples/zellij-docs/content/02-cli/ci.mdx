@@ -238,6 +238,32 @@ does not accept this flag. Compatible native and engine releases must be
 published before running the generated workflow; generation does not publish or
 verify those releases.
 
+## Freeze hosted URL and preflight overrides
+
+```bash
+zel ci docs/hosted --base-path /manual --site-url https://docs.example.com --zel-version 0.2.0-rc.2
+zel ci docs/hosted --base-path / --no-check --force
+```
+
+The current source writes these invocation settings into every verification
+build and publication command, including Netlify and static/Next images. The
+workflow retains them until regenerated; `zel.yaml` remains unchanged. Omission
+when regenerating restores authored/default settings. Pure portable HTML/static
+image workflows reject these flags; portable-to-Next workflows accept them.
+
+`--no-check` removes the workflow's separate deep/strict validation step and
+passes the flag to the build or delivery command, skipping its own preflight.
+Preparation, schema/rendering checks, runtime detection, credential checks and
+publication event gates remain active. Without the flag, the separate check
+continues validating authored content before the overridden build.
+
+URL values are serialized as environment data and expanded as quoted arguments.
+GitHub expression syntax in these values is rejected rather than evaluated.
+The flags require a pinned CLI version of `0.2.0-rc.2` or later and its matching
+engine; generation rejects older pins before writing a workflow. Generation
+does not verify release availability or publish a release. `ci run` dispatches
+an existing workflow and does not accept these generation flags.
+
 ## See also
 
 - [Validation](/cli/check)
