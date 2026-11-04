@@ -1434,3 +1434,17 @@ in run `41882538968` attempt 2 on `ba37a8a`; merge/head trees match. The first
 attempt's existing Docker info timeout recovered on retry without a code change.
 Main base-image run `41889745285` passed; main CI `41889745157` was still running
 at this entry. The Netlify hosting-comment hydration issue remains external.
+
+
+### Combined publication — first CI fixture correction, 2026-11-04
+
+[PR #68](https://github.com/mylife-inc/Zellij/pull/68) tracks this milestone.
+Compatibility correction `c215266` preserves Node's original container entrypoint
+in the trimmed runtime; all 25 engine tests passed afterward. Run `41893692905`
+on `ec35452` built/pushed/pulled static and Next images on both native Linux
+architectures. Static serving and size comparison passed. The new Next acceptance
+fixture then requested `/index.html`, but the portable-to-hosted adapter maps the
+home page to `/` (confirmed in source and the generated route table). The server
+started successfully; the fixture's incorrect route caused both failures.
+The fixture now requests the renderer's actual home and reports HTTP status on
+failure. Full container acceptance, final size figures and merge remain pending.

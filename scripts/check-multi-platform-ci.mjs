@@ -28,12 +28,18 @@ async function serve(tag, kind) {
   docker(['run', '-d', '--name', name, '-p', '127.0.0.1::3000', tag]);
   const info = JSON.parse(docker(['inspect', name]))[0];
   const origin = `http://127.0.0.1:${info.NetworkSettings.Ports['3000/tcp'][0].HostPort}`;
+  const home = kind === 'next' ? '/' : '/index.html';
   let ready = false;
+  let lastStatus;
   for (let n = 0; n < 120; n++) {
-    try { const res = await fetch(`${origin}/index.html`); if (res.ok && (await res.text()).includes('Native publication')) { ready = true; break; } } catch { /* startup */ }
+    try {
+      const res = await fetch(`${origin}${home}`, { signal: AbortSignal.timeout(1000) });
+      lastStatus = res.status;
+      if (res.ok && (await res.text()).includes('Native publication')) { ready = true; break; }
+    } catch { /* startup */ }
     await new Promise(resolve => setTimeout(resolve, 250));
   }
-  assert(ready, docker(['logs', name]));
+  assert(ready, `${kind} home ${home}, last HTTP ${lastStatus}: ${docker(['logs', name])}`);
   assert((await (await fetch(`${origin}/next.html`)).text()).includes('Second document'));
   assert.equal((await fetch(`${origin}/index.md`)).status, 404);
   docker(['exec', name, 'sh', '-ec', info.Config.Healthcheck.Test[1]]);
