@@ -308,24 +308,32 @@ fn inventory_refuses_linked_directories_before_following_them() {
     docusaurus(&source, r#"{"docs":["home"]}"#);
     write(&source, "docs/home.md", "# Home\n");
     write(temp.path(), "outside/private.md", "Do not read or import");
-    let link = source.join("docs/linked");
+    // cmd's mklink requires native separators even though Rust accepts both.
+    let link = source.join("docs").join("linked");
     let target = temp.path().join("outside");
     #[cfg(unix)]
     std::os::unix::fs::symlink(&target, &link).unwrap();
     #[cfg(windows)]
-    assert!(
-        Command::new("cmd")
+    {
+        let created = Command::new("cmd")
             .arg("/C")
             .arg("mklink")
             .arg("/J")
             .arg(&link)
             .arg(&target)
             .output()
-            .unwrap()
-            .status
-            .success()
-    );
+            .unwrap();
+        assert!(
+            created.status.success(),
+            "{}\n{}",
+            String::from_utf8_lossy(&created.stdout),
+            String::from_utf8_lossy(&created.stderr)
+        );
+    }
     let result = convert(&source, &out);
+    // Unlink before temporary-directory cleanup, even if an assertion fails.
+    #[cfg(windows)]
+    fs::remove_dir(&link).unwrap();
     assert!(!result.status.success());
     assert!(String::from_utf8_lossy(&result.stderr).contains("symbolic links and junctions"));
     assert!(!out.exists());
