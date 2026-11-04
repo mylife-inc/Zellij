@@ -37,6 +37,9 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
+    if matches!(plan, DeliveryPlan::Netlify { .. }) {
+        options.require_no_image_args()?;
+    }
     if site.renderer == Renderer::Portable
         && !matches!(
             plan,
@@ -87,6 +90,17 @@ pub(crate) fn describe_features(features: Option<Features>) {
 
 pub(crate) fn describe_options(options: &BuildOptions) {
     describe_features(options.features);
+    if !options.build_args.is_empty() {
+        zellij_core::reportln!(
+            "  Build arguments {} (values omitted; this invocation only)",
+            options
+                .build_args
+                .iter()
+                .map(|arg| arg.name())
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
+    }
     if let Some(prefix) = &options.overrides.base_path {
         let prefix = prefix.to_string();
         zellij_core::reportln!(
@@ -131,6 +145,7 @@ pub(crate) fn deploy(
     production: bool,
     options: &BuildOptions,
 ) -> Result<()> {
+    options.require_no_image_args()?;
     if site.renderer == Renderer::Portable {
         crate::images::require_native_options(options)?;
     }

@@ -101,6 +101,7 @@ pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
             platform: None,
             features: None,
             overrides: Default::default(),
+            build_args: Vec::new(),
             config: None,
             site_root: docs_dir.clone(),
             settings: zellij_core::ci::Settings::default(),

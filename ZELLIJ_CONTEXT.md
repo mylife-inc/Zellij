@@ -3,10 +3,10 @@
 Last refreshed: **2026-11-04**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current implementation: hosted build URL/preflight overrides merged in PR #65
-as `58623ff` after all 13 checks passed. The current branch extends those settings
-through deployment, publication, ship and generated GitHub workflows in `c20d48b`.
-See the latest dated entries for scope and verification status.
+Current implementation: delivery and generated-CI build overrides merged in
+PR #66 as `b7a076a` after all 13 PR checks passed. The current branch adds explicit
+image build arguments across builds, delivery and CI in `86b6d2d`.
+See the latest dated entries for verification and the Windows ARM main-run retry.
 The user requested completion of the remaining CLI capabilities. The prior rc.2
 release proposal awaits explicit publication approval and predates
 this new work. See the latest dated entry.
@@ -4052,3 +4052,82 @@ and native delivery forwarding. No product behavior or generated workflow change
 The focused regression, formatting and diff checks pass locally after correction.
 Final CI acceptance is pending on the replacement head; the first run is not
 claimed as complete acceptance.
+
+
+### Delivery overrides — final acceptance and main follow-up, 2026-11-04
+
+PR #66 merged as `b7a076af0a72302f9c44f66e295ae9b208983ed8` after all 13
+checks passed in run `41822262323` on `c3b94705fdb096ce5f699e9c30172b414aa937c4`.
+The tested head and merge have identical trees. The changed Netlify export/upload
+and static/Next ship image tests passed, as did Linux/macOS/Windows acceptance.
+The earlier macOS harness failure remains recorded above.
+
+Main Base image run `41826282353` passed. Main CI `41826282286` passed 12 jobs;
+Windows ARM packaging compiled Rust successfully, then PowerShell crashed with
+`Internal CLR error (0x80131506)` while creating the ZIP. Only that failed job
+was rerun; attempt 2 was queued when this entry was written. This is not claimed
+as a source fix or a fully successful main run. Native rc.1 remains the latest
+published release; no rc.2 tag/release or production/domain change occurred.
+
+### Image build arguments — 2026-11-04
+
+Implementation `86b6d2d` adds repeatable explicit `--build-arg NAME=VALUE` to
+static/Next image commands and aliases, legacy image builds, printed Dockerfiles,
+image publication, image `ship`, and generated GitHub image workflows. Values
+are typed argv data. Names are ASCII identifiers; values allow Unicode, spaces,
+additional equals signs and literal shell syntax, but no control characters.
+Empty values are explicit and repeated names use the last value. Environment
+lookup is not implicit. Zellij-owned settings, historical FEATURES and automatic
+platform arguments are reserved for their dedicated flags.
+
+Recipes declare names only, before builder commands. Hosted final runtime stages
+do not redeclare arguments or receive added ENV settings. Portable static images
+apply them only during container packaging, after native Markdown compilation.
+Proxy/BUILDKIT arguments are forwarded without extra declarations. Printed
+recipes require the values again when built. Build arguments are not secrets:
+builders can retain them in metadata, and build scripts can bake them into files.
+Authored content and saved configuration are unchanged. Dry plans omit values;
+ship success/failure guidance explains that arguments must be repeated.
+
+Static-folder builds, Netlify delivery and Netlify ship reject image arguments
+before output, credentials or remote requests. Image build failures do not push.
+Generated workflows pass numbered environment assignments as quoted arguments
+only to build/publication commands, never checks or prebuilt pushes. GitHub
+expressions are rejected before writing; older CLI pins are rejected (minimum
+0.2.0-rc.2, still unpublished). Regeneration without arguments removes them.
+
+Local verification: 328 Rust tests passed, one real-container test intentionally
+ignored locally; warnings-denied Clippy and formatting passed. Native fake clients
+verify Docker/Podman/nerdctl argv, aliases, portable/hosted recipes, publication,
+ship retention, omission/reset, dry plans, early rejection and unchanged source.
+Existing override acceptance and all six generated release workflow comparisons
+pass. Generated static/Next/legacy image workflows pass actionlint with combined
+build arguments, features, URL overrides and ARM64 selection. All 55 docs routes
+and 23 examples pass deep/strict checks; script syntax and diff checks pass.
+
+CI adds the native fixture on all three operating systems. Real static/Next ship
+acceptance uses a custom builder script that consumes an exact literal argument
+and emits a public JSON file, then verifies the pulled artifact over HTTP and
+checks that argument names are absent from runtime ENV. No local Docker or GUI
+browser was used. Final CI acceptance must be refreshed before merging.
+Remaining work includes combined multi-platform image publication, additional
+providers and broader import fidelity. Netlify's hosting-injected hydration issue
+and the separate release/production-migration decisions remain pending.
+
+
+### Image arguments — first CI correction, 2026-11-04
+
+[PR #67](https://github.com/mylife-inc/Zellij/pull/67) tracks implementation
+`86b6d2d` and context `bcb0401`. Run `41880580238` failed the new Windows native
+fixture during the fake Docker info probe, before building. Rust on Windows
+searches the executable and system directories before inherited PATH; setting
+only the fixture PATH does not isolate an installed system Docker. Correction
+`45f44bf` copies zel beside its fake clients and verifies each selected probe
+writes the fixture marker. Production runtime discovery is unchanged. Corrected
+native acceptance, JavaScript syntax and diff checks pass locally; final Windows
+and real-container acceptance remain pending on the replacement head.
+
+The earlier main CI `41826282286` now passed on attempt 2: Windows ARM packaging
+job `126744911367` succeeded without source changes after the isolated PowerShell
+CLR crash. This is retry recovery, not a diagnosed product fix. No release was
+published and no production site changed.

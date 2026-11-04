@@ -129,13 +129,20 @@ pub(crate) fn build_image(
                 zellij_core::diagnosticln!("warning: {warning}");
             }
             std::fs::remove_file(export.join(".zellij-output"))?;
-            engine.image_build_recipe(&export, tag, &static_image::portable(), platform)
+            engine.image_build_recipe_with_args(
+                &export,
+                tag,
+                &static_image::portable_with_args(&options.build_args),
+                platform,
+                &options.build_args,
+            )
         }
-        (BuildKind::Static, Renderer::Hosted) => engine.image_build_recipe(
+        (BuildKind::Static, Renderer::Hosted) => engine.image_build_recipe_with_args(
             content,
             tag,
             &static_image::hosted_with_options(engine.image(), options),
             platform,
+            &options.build_args,
         ),
         (BuildKind::Next, Renderer::Portable) => {
             let temporary = tempfile::Builder::new().prefix("zel-next-").tempdir()?;
@@ -198,7 +205,7 @@ pub(crate) fn dockerfile(
             if options.features.is_some() {
                 return Err(zellij_core::Error::InvalidArgument("a portable static Dockerfile packages already compiled HTML; apply --features with `zel build` or `zel image static`".into()));
             }
-            static_image::portable()
+            static_image::portable_with_args(&options.build_args)
         }
         Renderer::Hosted => {
             static_image::hosted_with_options(&zellij_engine::configured_image(None), options)

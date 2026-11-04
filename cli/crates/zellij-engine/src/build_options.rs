@@ -4,9 +4,19 @@ use zellij_core::{build_overrides::BuildOverrides, features::Features};
 pub struct BuildOptions {
     pub features: Option<Features>,
     pub overrides: BuildOverrides,
+    pub build_args: Vec<zellij_core::build_args::BuildArg>,
 }
 
 impl BuildOptions {
+    pub fn require_no_image_args(&self) -> zellij_core::Result<()> {
+        if !self.build_args.is_empty() {
+            return Err(zellij_core::Error::InvalidArgument(
+                "--build-arg requires an image build or image publication; static-folder builds and Netlify do not build images".into(),
+            ));
+        }
+        Ok(())
+    }
+
     pub fn with_features(features: Option<Features>) -> Self {
         Self {
             features,

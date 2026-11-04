@@ -8,6 +8,7 @@ fn main() {
         Some("version" | "--version") => { println!("27.0.0"); return; }
         Some("image") => { println!("sha256:0123456789abcdef"); return; }
         Some("build") => {
+            fs::write(root.join("build-args"), args.join("\0")).unwrap();
             let mut recipe = String::new();
             std::io::stdin().read_to_string(&mut recipe).unwrap();
             fs::write(root.join("recipe"), recipe).unwrap();

@@ -392,6 +392,9 @@ fn build_dispatch(
             "--tag and --platform require --target image".into(),
         ));
     }
+    if target != "image" {
+        hosted_options.require_no_image_args()?;
+    }
     match target {
         "portable" => {
             images::require_native_options(hosted_options)?;
