@@ -1653,3 +1653,55 @@ entrypoint remains intact. Required runtime libraries and traced app dependencie
 are not pruned. Native CI verifies cache absence, NGINX startup metadata and the
 existing serving/health behavior, and measures compressed registry layers against
 the former runtime bases. No local container or browser was started.
+
+
+### Import heading anchors and completed image milestone — 2026-11-04
+
+PR #68 merged as `e7b0d7987787ee4e0856bb3d3edb280eaec0c9ae` after all
+16 checks passed in run `41897666269` on `f5c0a5c`; merge and tested trees match.
+Both native image jobs and the generated combined-manifest job passed, as did
+direct combined Buildx publication, native package/install checks on six targets,
+portable acceptance on three OS families, Next browser acceptance and the full
+CLI/container suite. Base image post-merge run `41902611084` passed; main CI
+`41902611421` had 14 of 16 successful jobs when this record was written.
+The final compressed-layer measurements are in
+`specs/evidence/zellij-image-publication-2026-11-04.json`: static images decreased
+from 27.1–27.5 MB to 6.6–7.0 MB (74.7–75.6%), and Next images from about 84.3 MB
+to 75.8–75.9 MB (10%). These compare identical fixture payloads and exclude small
+manifests/configuration and attestations; they are not universal site sizes.
+
+Source `d5b6fac` addresses another portion of audit R5: imports now preserve
+explicit document-level ATX/setext heading IDs in `{#id}` notation and Docusaurus
+MDX/HTML comment forms. The converter recognizes headings with Markdown parser
+offsets, preserves inline formatting/rewritten links, and emits literal MDX
+`h1`–`h6` elements. A leading H1 becomes a literal anchor below the layout's
+single title. Title extraction ignores code examples and removes ID syntax.
+Duplicate/unsupported IDs and nested identified headings fail before output
+writes; the error identifies the source document. Classes and other heading
+attributes are not carried over. Automatic source/plugin slugs and implicit
+leading-H1 anchors still need review; this does not close all of R5.
+
+The engine's shared heading reader now indexes literal JSX heading IDs for TOC
+and search without executing expressions or assuming spread/dynamic/component
+IDs. Existing deep validation checks the actual literal IDs, including collisions
+with generated anchors. No new runtime dependency was added.
+
+A new regression exposed the old fence scanner treating shorter or different
+fences inside examples as closing fences. Shared marker/width tracking fixes
+that in both Material demotion and MDX escaping. Balanced markup spanning a
+replaced heading still uses the complete document as its recognition context.
+
+Local validation: 56 converter unit tests and 29 CLI conversion/import/write
+safety tests passed; 54 engine heading/TOC/search/deep-check tests passed.
+Warnings-denied workspace Clippy, formatting, engine typechecking/packaging,
+and the docs deep/strict check (55 routes, 23 examples) passed. The real native
+CLI-to-engine fixture passed for MkDocs and Docusaurus: explicit title IDs,
+formatted and linked headings, Unicode IDs, reference URLs, unique rendered IDs,
+search/TOC targets, strict links and asset bytes. Its existing hosted CI step
+also checks full static exports, one page title and rendered TOC links.
+No local container or browser ran. Final-head CI and merge are pending for
+this import milestone; source functionality remains unpublished rc.2.
+
+Other providers, broader source-format fidelity and release/production migration
+remain separate work. Netlify's hosting-comment hydration issue remains external;
+the old production site/domain is retained. No new release was published.
