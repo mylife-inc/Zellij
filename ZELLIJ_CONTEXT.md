@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-03**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-04**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: hosted development auto-reload and JSON validation merged
@@ -3882,3 +3882,23 @@ Remaining CLI scope: advanced build overrides, image build arguments and combine
 multi-platform manifests, additional deployment/CI providers, and broader import
 coverage/fidelity. The Netlify hosting-injected hydration issue remains external.
 No release publication, production deployment or domain change is included.
+
+
+### Development options — acceptance follow-up, 2026-11-04
+
+PR #64's core implementation is `222ffda`. Follow-up `d0eae61` releases the
+session's temporary identity before the inaccessible-mount diagnostic exits;
+native regressions verify cleanup for invalid content and inaccessible mounts.
+Run `41795843334` on `d0eae61` passed 12 of 13 jobs, including all three native
+development-option suites and six native package/install jobs. Its CLI job
+failed before starting a container: the new browser fixture had made the app
+directory nonempty before scaffold initialization. This was an acceptance setup
+error, not evidence that container startup or cleanup had passed.
+
+Harness correction `3b95629` initializes the app first, waits for shutdown output
+to drain with a bounded deadline, and runs real development acceptance before
+long image-publication checks. The scaffold/launcher setup, JavaScript syntax,
+actionlint and diff checks pass locally without Docker or a GUI browser. Final
+container results are tracked in [PR #64](https://github.com/mylife-inc/Zellij/pull/64).
+Earlier run `41794505393` was canceled after the startup cleanup correction;
+it did not establish final acceptance. No release or production deployment was made.
