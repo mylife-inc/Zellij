@@ -204,8 +204,8 @@ impl Converter for MkDocs {
             }
         }
 
-        let documents = crate::read_documents(&tree, false)?;
-        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
+        let documents = crate::read_documents(&tree)?;
+        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned())?;
         crate::references::rewrite(&tree, &documents, None, options, &mut conversion)?;
 
         if derived {

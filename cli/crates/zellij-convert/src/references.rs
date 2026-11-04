@@ -2,9 +2,7 @@
 //! Markdown offsets keep code examples and link labels out of the rewrite.
 
 use crate::{
-    Conversion, ConvertOptions, OutputAsset, Unmapped,
-    emit::{slug_for, split_frontmatter},
-    material::demote_material,
+    Conversion, ConvertOptions, OutputAsset, Unmapped, emit::slug_for, material::demote_material,
     model::DocTree,
 };
 use camino::{Utf8Path, Utf8PathBuf};
@@ -395,18 +393,20 @@ pub(crate) fn rewrite(
             ));
         }
         resolver.routes.insert(source.clone(), target.clone());
-        if project.is_some() && source.extension() == Some("md") && !tree.root.join(source).exists()
+        if project.is_some()
+            && source.extension() == Some("mdx")
+            && !tree.root.join(source.with_extension("md")).exists()
         {
-            resolver.routes.insert(source.with_extension("mdx"), target);
+            resolver.routes.insert(source.with_extension("md"), target);
         }
     }
     for (source, raw) in documents {
-        let (_, body) = split_frontmatter(raw);
+        let body = crate::frontmatter::parse(raw, source)?.body;
         let body = demote_material(body);
         let rewritten = resolver.markdown(source, &body)?;
         let output = Utf8PathBuf::from(format!("01-guide/{}.mdx", slug_for(source)));
         if let Some(file) = conversion.files.iter_mut().find(|f| f.path == output) {
-            let (_, old_body) = split_frontmatter(&file.body);
+            let old_body = crate::frontmatter::parse(&file.body, &file.path)?.body;
             let prefix_len = file.body.len() - old_body.len();
             file.body.truncate(prefix_len);
             let rendered = crate::headings::render(&rewritten).map_err(|error| {
