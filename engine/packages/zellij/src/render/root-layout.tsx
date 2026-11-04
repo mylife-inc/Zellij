@@ -7,6 +7,9 @@ import { themeInitScript } from '../chrome/theme-preferences';
 import { THEME_NAMES } from '../config/schema';
 import { emitThemeCss } from '../themes/emit';
 import { fontVariables } from '../themes/fonts';
+import { DevelopmentReload } from '../chrome/development-reload';
+import { DEVELOPMENT_REVISION_FILE } from '../config/development';
+import { withBasePath } from '../content/paths';
 
 /**
  * The wrapper app's root layout. Emits the html/body shell, the theme + mode
@@ -15,7 +18,7 @@ import { fontVariables } from '../themes/fonts';
  */
 export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
   return async function ZellijRootLayout({ children }: { children: ReactNode }) {
-    const { site } = await loadZellijRuntime(options);
+    const { site, developmentRevision } = await loadZellijRuntime(options);
     const { config } = site;
 
     return (
@@ -49,6 +52,12 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
           <NavBar site={site} />
           {children}
           <Footer site={site} />
+          {process.env['NODE_ENV'] === 'development' && developmentRevision
+            ? <DevelopmentReload
+                url={withBasePath(`/_zellij/${DEVELOPMENT_REVISION_FILE}`, config.basePath)}
+                revision={developmentRevision}
+              />
+            : null}
           {process.env['NODE_ENV'] === 'production' && config.analytics.provider === 'plausible'
             ? <Analytics domain={config.analytics.domain} />
             : null}

@@ -286,7 +286,7 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-validation.mjs cli/target/debug/zel
 
-      - name: Rust dev refreshes mounted assets and search without restart
+      - name: Rust dev reloads browsers after mounted content and asset updates
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
@@ -372,7 +372,7 @@ jobs:
         working-directory: examples/showcase
       - name: Content-owned deployment prefix works in a production browser
         run: node scripts/check-basepath.mjs
-      - name: Development updates reach search and images in browsers
+      - name: Development browsers reload after valid edits and retain pages through invalid edits
         run: node scripts/check-dev-site.mjs
       - uses: actions/upload-artifact@v7
         # Keep the initial failure even when Playwright's retry makes the job green.

@@ -3,6 +3,7 @@
 // to build both imports with matching Next basePath and inspect generated HTML.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -40,6 +41,7 @@ const root = path.resolve(target);
 await mkdir(root);
 const zel = path.resolve(binary);
 const asset = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" /></svg>\n';
+const assetHash = createHash('sha256').update(asset).digest('hex').slice(0, 8);
 const pdf = Buffer.from([0x25, 0x50, 0x44, 0x46, 0, 255, 254]);
 for (const format of ['mkdocs', 'docusaurus']) {
   const source = path.join(root, `${format}-source`);
@@ -87,7 +89,7 @@ for (const format of ['mkdocs', 'docusaurus']) {
     for (const reference of [
       'href="/products/docs/guide/setup/api-reference?view=all#install"',
       'href="/products/docs/guide/cafe"',
-      'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"',
+      `src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,
       'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"',
     ]) assert(html.includes(reference), `Export missing ${reference}`);
     const installed = await readFile(path.join(output, 'guide/setup/api-reference.html'), 'utf8');
@@ -95,7 +97,7 @@ for (const format of ['mkdocs', 'docusaurus']) {
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/media/logo.svg'), 'utf8'), asset);
     assert.deepEqual(await readFile(path.join(output, '_zellij/assets/imported/docs/media/Q3 Report.pdf')), pdf);
     if (format === 'docusaurus') {
-      assert(html.includes('src="/products/docs/_zellij/assets/imported/static/img/static.svg"'));
+      assert(html.includes(`src="/products/docs/_zellij/assets/imported/static/img/static.svg?v=${assetHash}"`));
       assert.equal(await readFile(path.join(output, '_zellij/assets/imported/static/img/static.svg'), 'utf8'), asset);
     }
   }

@@ -58,13 +58,16 @@ an automatically selected port, use `zel view --watch --port 0` instead.
 
 The engine watches content edits, additions and deletions, including images and
 guide routes. After a short debounce it refreshes public assets, fingerprints and
-the search index. Save and reload the page to see changes; reopening the search
-dialog fetches the updated index. Automatic browser reload for hosted **dev**
-content edits is not implemented. Hosted **view --watch** provides that behavior
-by rebuilding the static export.
+the search index, then open browser tabs reload their current URL automatically.
+Image-only edits also reload the page with updated image fingerprints. This is a
+full page reload, so transient UI such as an open search dialog is reset.
 
-Invalid edits are reported in the terminal. The engine retries after corrections;
-initial preparation must succeed before startup. Restart after changing
+Invalid edits are reported in the terminal without triggering an automatic
+reload; the open document stays visible. Correcting the content resumes
+preparation and browser reloads. Initial preparation must succeed before startup.
+Development polling uses a preparation signal created by the watcher; production
+pages do not poll. Use a current engine image or updated editable wrapper package for
+this behavior. Restart after changing
 `basePath`, wrapper configuration or installed features. Ctrl-C stops development.
 Use a current engine image if an older image only prepares assets at startup.
 

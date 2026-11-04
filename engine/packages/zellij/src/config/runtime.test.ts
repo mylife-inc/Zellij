@@ -8,6 +8,7 @@ const roots: string[] = [];
 afterEach(async () => {
   resetZellijRuntime();
   vi.unstubAllEnvs();
+  vi.restoreAllMocks();
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 async function fixture() {
@@ -54,4 +55,27 @@ it('retries a failed production load after the content is repaired', async () =>
   await expect(loadZellijRuntime({ appRoot })).rejects.toThrow();
   await writeFile(path.join(appRoot, 'content/site.yaml'), 'name: Repaired\n');
   expect((await loadZellijRuntime({ appRoot })).site.config.name).toBe('Repaired');
+});
+
+it('invalidates the development memo on successful preparation without waiting for the TTL', async () => {
+  vi.stubEnv('NODE_ENV', 'development');
+  vi.spyOn(Date, 'now').mockReturnValue(1000);
+  const appRoot = await fixture();
+  const prepared = path.join(appRoot, 'public/_zellij');
+  await mkdir(prepared, { recursive: true });
+  const revision = (value: string) => writeFile(path.join(prepared, 'dev-revision.json'), JSON.stringify({ version: 1, revision: value }));
+  await revision('first');
+  const initial = await loadZellijRuntime({ appRoot });
+  expect(initial.developmentRevision).toBe('first');
+  await writeFile(path.join(appRoot, 'content/site.yaml'), 'name: Updated\n');
+  await revision('second');
+  const updated = await loadZellijRuntime({ appRoot });
+  expect(updated.site.config.name).toBe('Updated');
+  expect(updated.developmentRevision).toBe('second');
+
+  vi.stubEnv('NODE_ENV', 'production');
+  const production = await loadZellijRuntime({ appRoot });
+  expect(production.developmentRevision).toBeUndefined();
+  await revision('third');
+  expect(await loadZellijRuntime({ appRoot })).toBe(production);
 });

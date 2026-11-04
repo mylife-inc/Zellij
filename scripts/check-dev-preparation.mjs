@@ -47,7 +47,7 @@ async function stop(run, signal, expected) {
 }
 try {
   await put(path.join(installed, 'package.json'), '{"type":"module"}');
-  for (const name of ['bin/zellij.mjs', 'dist/cli/dev-bundle.js']) {
+  for (const name of ['bin/zellij.mjs', 'dist/cli/dev-bundle.js', 'dist/cli/sync-assets-bundle.js', 'dist/cli/write-search-index-bundle.js']) {
     await mkdir(path.dirname(path.join(installed, name)), { recursive: true });
     await copyFile(path.join(repo, 'engine/packages/zellij', name), path.join(installed, name));
   }
@@ -56,6 +56,7 @@ try {
   await put(path.join(content, '01-guide/index.mdx'), '# Welcome\n\n## Original\n\nBefore edits.\n');
   await put(path.join(content, 'assets/café.svg'), '<svg>original</svg>');
   const index = path.join(app, 'public/_zellij/search-index.json');
+  const revision = path.join(app, 'public/_zellij/dev-revision.json');
   const run = start(['prepare', '--watch', '--content', content]);
   await until(async () => (await json(index)).some((entry) => entry.route === '/manual#original'), 'initial preparation');
   await put(path.join(content, '01-guide/index.mdx'), '# Welcome\n\n## Changed\n\nNew passage.\n');
@@ -63,6 +64,7 @@ try {
   await until(async () => (await json(index)).some((entry) => entry.route === '/manual#changed'), 'watched search update');
   await until(async () => (await readFile(path.join(app, 'public/_zellij/assets/café.svg'), 'utf8')).includes('changed'), 'watched asset update');
   await stop(run, 'SIGINT', 130);
+  await assert.rejects(readFile(revision), { code: 'ENOENT' }, 'stopping a watcher removes its reload signal');
 
   // A tiny stand-in for Next verifies argument boundaries, exit propagation and
   // signal forwarding. Real Next is tested separately, not inferred from this.
@@ -91,6 +93,11 @@ try {
   await until(() => invalid.child.exitCode !== null, 'initial invalid content fails');
   assert.equal((await invalid.done).code, 1);
   await assert.rejects(readFile(marker), { code: 'ENOENT' }, 'Next must not start before preparation succeeds');
+  await put(path.join(content, 'site.yaml'), 'name: Repaired\nhome: 01-guide\n');
+  await put(revision, '{"version":1,"revision":"stale-after-crash"}');
+  const prepare = spawnSync(process.execPath, [cli, 'prepare', '--content', content], { cwd: app, encoding: 'utf8', timeout: 15000 });
+  assert.equal(prepare.status, 0, prepare.stderr);
+  await assert.rejects(readFile(revision), { code: 'ENOENT' }, 'one-shot preparation removes stale development state');
   for (const args of [['prepare', '--watch=false'], ['prepare', '--watch', '--content'], ['dev', '--port', '1234']]) {
     assert.notEqual(spawnSync(process.execPath, [cli, ...args], { cwd: app, timeout: 5000 }).status, 0);
   }

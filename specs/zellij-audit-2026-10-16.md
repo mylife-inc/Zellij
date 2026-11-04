@@ -3036,3 +3036,46 @@ At this record, post-merge Base image run 41598251612 passed. Main CI rerun
 41598251651 has 11 successful jobs, with CLI and Windows portable checks still
 in progress; it is not recorded as passed. Both final PR runs already passed
 all 13 jobs. Refresh the main run before publication.
+
+
+### Hosted development auto-reload — 2026-11-03
+
+The user asked to continue implementing the remaining CLI capabilities. Hosted
+`dev` and updated editable wrappers now publish an opaque development revision
+only after successful search/asset preparation. Development layouts poll that
+revision and reload the current URL; image-only edits are included. Invalid
+edits do not announce a reload. The development runtime cache is keyed by the
+revision so a reload inside the normal 250 ms memo window cannot reuse the old
+revision. Production layouts omit the poller. Watcher shutdown removes its
+signal; one-shot preparation removes a signal left by an interrupted process.
+
+Focused regressions and all 369 engine tests pass, as do workspace typechecks,
+the packaged engine build, installed-CLI watcher/child lifecycle acceptance,
+actionlint, syntax/diff checks, and deep/strict validation of all 55 docs routes
+and 23 examples. Browser acceptance now requires automatic content and image-only
+reloads, no reload on invalid edits, recovery and removed navigation entries,
+and no production polling. Final hosted CI and fixing commit remain pending.
+No local container daemon was started and no release was published.
+
+This extends the unpublished rc.2 candidate notes. The earlier proposed release
+commit 0fbf0a1 predates this work; any later release proposal must use a reviewed
+commit containing its final advertised scope. Publication approval is still
+pending. Remaining CLI work includes hosted JSON validation, advanced options,
+combined image manifests, additional deployment/CI providers and converters.
+
+PR #62's first browser run (41775973925) passed Chromium reload/recovery but
+failed WebKit's image check: the updated document retained a cached 140px image
+instead of the new 120px image. Markdown images used public asset URLs without
+fingerprints. The follow-up applies prepared hashes to those URLs while keeping
+encoded filenames, query values and fragments; it also invalidates the asset
+manifest cache on atomic replacement instead of waiting 250 ms. A fixed-clock
+regression checks replacement, removal/recreation and production memoization.
+The original failure is retained here; final browser verification is pending.
+
+Run 41777437141 subsequently passed both browser engines and real-container
+development reload/recovery. Its last conversion-export assertion still expected
+an unversioned Markdown image URL and failed after the successful export. The
+acceptance script now requires the exact SHA-256 content fingerprint for both
+MkDocs and Docusaurus image URLs, while continuing to verify exported bytes and
+links. This updates the expected URL contract; the fingerprint implementation is
+unchanged. The full run is retained as failed until the corrected check passes.

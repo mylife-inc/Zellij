@@ -63,14 +63,20 @@ it('keeps previous output through invalid edits and recovers without restarting'
   const f = await fixture();
   await f.start();
   const original = await f.search();
+  const revision = await f.json('dev-revision.json');
   await f.put('01-guide/index.mdx', '# Broken\n\n<Callout>\n');
   await f.put('assets/logo.svg', '<svg>after</svg>');
   await expect.poll(() => f.errors.length).toBe(1);
   expect(await f.search()).toBe(original);
+  expect(await f.json('dev-revision.json')).toEqual(revision);
   expect(await readFile(path.join(f.output, 'assets/logo.svg'), 'utf8')).toBe('<svg>before</svg>');
   await delay(100);
   expect(f.errors).toHaveLength(1);
   await f.put('01-guide/index.mdx', '# Repaired\n\nRecovered passage.\n');
+  await expect.poll(() => f.json('dev-revision.json')).not.toEqual(revision);
+  // The reload signal follows both prepared outputs, not just the search index.
+  expect(await f.search()).toContain('Recovered passage');
+  expect(await readFile(path.join(f.output, 'assets/logo.svg'), 'utf8')).toBe('<svg>after</svg>');
   await expect.poll(f.search).toContain('Recovered passage');
   await expect.poll(() => readFile(path.join(f.output, 'assets/logo.svg'), 'utf8')).toBe('<svg>after</svg>');
   await f.put('site.yaml', 'name: [');
@@ -95,6 +101,7 @@ it('handles whole-directory removal/recreation and stops all updates on close', 
   await f.put('01-guide/index.mdx', '# Returned\n\nThe root returned.\n');
   await expect.poll(f.search).toContain('The root returned');
   await watcher.close();
+  await expect(f.json('dev-revision.json')).rejects.toMatchObject({ code: 'ENOENT' });
   await f.put('01-guide/index.mdx', '# Stopped\n\nMust not publish.\n');
   await delay(100);
   expect(await f.search()).not.toContain('Must not publish');
@@ -117,10 +124,12 @@ it('does not loop on its own output when content is the application root', async
   await f.start();
   await delay(200); // allow the first public directory creation to settle
   const before = (await stat(path.join(f.output, 'search-index.json'))).mtimeMs;
+  const revision = await f.json('dev-revision.json');
   await mkdir(path.join(f.appRoot, '.next'), { recursive: true });
   await writeFile(path.join(f.appRoot, '.next/build'), 'Next output');
   await delay(200);
   expect((await stat(path.join(f.output, 'search-index.json'))).mtimeMs).toBe(before);
+  expect(await f.json('dev-revision.json')).toEqual(revision);
   expect(f.errors).toEqual([]);
 });
 
@@ -134,7 +143,9 @@ it('does not recopy images for prose edits or rebuild search for asset-only edit
   expect((await stat(manifest)).mtimeMs).toBe(before);
   const index = path.join(f.output, 'search-index.json');
   const indexBefore = (await stat(index)).mtimeMs;
+  const revision = await f.json('dev-revision.json');
   await f.put('assets/logo.svg', '<svg>only image changed</svg>');
+  await expect.poll(() => f.json('dev-revision.json')).not.toEqual(revision);
   await expect.poll(() => readFile(path.join(f.output, 'assets/logo.svg'), 'utf8')).toContain('only image changed');
   expect((await stat(index)).mtimeMs).toBe(indexBefore);
 });

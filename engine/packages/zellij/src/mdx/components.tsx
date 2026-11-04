@@ -10,7 +10,8 @@ import { Screenshot } from './screenshot';
 import { SectionPreview, type SectionPreviewProps } from './section-preview';
 import { Step, Steps } from './steps';
 import { CodeGroup, Tab, Tabs } from './tabs';
-import { ASSET_PUBLIC_PREFIX, isExternal, withBasePath } from '../content/paths';
+import { isExternal } from '../content/paths';
+import { publicAssetHref } from '../content/asset-href';
 import type { Site } from '../content/site';
 import { ZellijContentError } from '../errors';
 
@@ -67,13 +68,14 @@ export function mdxComponents(site?: Site) {
   return {
     a: MdxLink,
     // Markdown images use ordinary <img>, so Next cannot add basePath for
-    // them. Imported assets are already public URLs; preserve other sources.
+    // them. Fingerprint imported public asset URLs too, so a reload cannot
+    // reuse a browser-cached image after preparation changes its bytes.
     img: ({ src, ...props }: ImgHTMLAttributes<HTMLImageElement>) => (
       <img
         {...props}
         src={
-          typeof src === 'string' && src.startsWith(`${ASSET_PUBLIC_PREFIX}/`)
-            ? withBasePath(src, basePath)
+          typeof src === 'string'
+            ? publicAssetHref(src, basePath)
             : src
         }
       />

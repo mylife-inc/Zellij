@@ -1,10 +1,13 @@
-import { lstat, readdir, realpath, stat } from 'node:fs/promises';
+import { lstat, readdir, realpath, rm, stat } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import { resolveContentLocation } from '../../deployment-config.cjs';
 import type { ZellijRuntimeOptions } from '../config/runtime';
 import { syncAssets } from './sync-assets';
 import { writeSearchIndex } from './write-search-index';
+import { writePreparedFile } from './write-prepared-file';
+import { DEVELOPMENT_REVISION_FILE, readDevelopmentRevision } from '../config/development';
 
 export async function prepareContent(
   options: ZellijRuntimeOptions,
@@ -72,15 +75,24 @@ export async function watchPreparation(
   const stop = () => controller.abort();
   settings.signal?.addEventListener('abort', stop, { once: true });
   if (settings.signal?.aborted) stop();
+  const { appRoot } = resolveContentLocation(options);
+  const revisionFile = path.join(appRoot, 'public', '_zellij', DEVELOPMENT_REVISION_FILE);
+  let revision: string | undefined;
+  const publishRevision = async () => {
+    const next = randomUUID();
+    await writePreparedFile(revisionFile, JSON.stringify({ version: 1, revision: next }));
+    revision = next;
+  };
   let applied: Snapshot;
   try {
     applied = await snapshot(options);
     await prepareContent(options);
+    await publishRevision();
   } catch (error) {
     settings.signal?.removeEventListener('abort', stop);
     throw error;
   }
-  console.log('[zellij] Watching content for asset and search updates. Reload the browser after saving.');
+  console.log('[zellij] Watching content; browsers reload after successful preparation.');
   const done = (async () => {
     let pending: string | undefined;
     let attempted = JSON.stringify(applied);
@@ -97,6 +109,9 @@ export async function watchPreparation(
         attempted = key;
         pending = undefined;
         await prepareContent(options, { search: current.search !== applied.search, assets: current.assets !== applied.assets });
+        // Announce only complete preparation, including asset fingerprints.
+        // Invalid edits leave the open browser on its last usable document.
+        await publishRevision();
         // Failed preparations must not acknowledge pending asset edits: fixing
         // the prose later still needs to publish both kinds of changes.
         applied = current;
@@ -111,6 +126,10 @@ export async function watchPreparation(
         }
       }
     }
-  })().finally(() => settings.signal?.removeEventListener('abort', stop));
+  })().finally(async () => {
+    settings.signal?.removeEventListener('abort', stop);
+    // Do not remove a newer watcher's signal if another session took over.
+    if (revision === await readDevelopmentRevision(appRoot)) await rm(revisionFile, { force: true });
+  });
   return { done, close: async () => { stop(); await done; } };
 }

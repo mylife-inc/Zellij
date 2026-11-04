@@ -90,10 +90,11 @@ and loads FlexSearch on first open. Section pages are excluded by design.
 
 During development, edited/added/deleted files update the assets, fingerprints
 and search index after a short polling debounce. Polling also covers container
-mounts and external content folders. Invalid edits are reported and the watcher
-recovers when corrected. Reload the page for content/image changes; close and
-reopen search to fetch the updated index. Automatic browser reload for content
-edits is not implemented. Restart the server after changing `basePath` or wrapper
+mounts and external content folders. Once preparation succeeds, open development
+tabs automatically reload their current URL, including for image-only edits.
+Invalid edits are reported without reloading the displayed page; the watcher
+recovers and reloads after correction. Production pages do not poll for updates.
+This requires the updated engine package. Restart the server after changing `basePath` or wrapper
 configuration. Existing wrappers using `next dev` need the `dev` script above,
 or a separate `zellij prepare --watch` process.
 

@@ -74,10 +74,14 @@ try {
   for (const [name, engine] of Object.entries(engines)) {
     const token = `Updated${name}`;
     let page;
+    let navigations = 0;
+    const browserErrors = [];
     if (engine) {
       browser = await engine.launch();
       page = await browser.newPage();
-      page.on('pageerror', error => { log += `\n[browser] ${error.stack ?? error}\n`; });
+      page.on('pageerror', error => { browserErrors.push(error.message); log += `\n[browser] ${error.stack ?? error}\n`; });
+      page.on('console', message => { if (message.type() === 'error') browserErrors.push(message.text()); });
+      page.on('framenavigated', frame => { if (frame === page.mainFrame()) navigations++; });
       page.on('requestfailed', request => { log += `\n[browser] ${request.url()}: ${request.failure()?.errorText}\n`; });
       const checkFonts = observeThemeFonts(page, `http://127.0.0.1:${port}`, prefix, { development: true });
       await page.goto(`${origin}/manual`);
@@ -108,39 +112,63 @@ try {
     await until(async () => (await index()).some((entry) => entry.route === `/manual#${token.toLowerCase()}`), 'updated search route');
     await until(async () => (await (await fetchFile('assets/diagram.svg')).text()).includes('width="120"'), 'updated asset bytes');
     if (page) {
-      // Reopen on the same page: production caching must not hide dev edits.
-      await page.keyboard.press('ControlOrMeta+k');
+      // No manual reload: successful preparation must update the open tab.
+      const heading = page.locator(`h2#${token.toLowerCase()}`);
+      await expect(heading).toBeVisible({ timeout: 30000 });
+      await expect(heading).toHaveAccessibleName(token);
+      await expect(page).toHaveURL(`${origin}/manual`);
+      await expect(async () => {
+        await page.keyboard.press('ControlOrMeta+k');
+        await expect(page.getByRole('dialog')).toBeVisible({ timeout: 1000 });
+      }).toPass({ timeout: 15000 });
       await page.locator('.zellij-search-input').fill(token);
       await expect(page.locator('.zellij-search-result').first()).toContainText(token);
       await page.keyboard.press('Escape');
-      await page.reload();
-      const heading = page.locator(`h2#${token.toLowerCase()}`);
-      await expect(heading).toBeVisible();
-      await expect(heading).toHaveAccessibleName(token);
       await expect(page.locator('mjx-container svg')).toBeVisible({ timeout: 30000 });
       await expect(page.locator('.zellij-mermaid svg')).toBeVisible({ timeout: 30000 });
       await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(120);
+      // Images alone must trigger a reload with a new fingerprint too.
+      await put('assets/diagram.svg', svg(160));
+      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth), { timeout: 30000 }).toBe(160);
       await page.getByRole('link', { name: `Added${name}`, exact: true }).first().click();
       await expect(page.getByRole('heading', { name: `Added${name}`, exact: true })).toBeVisible();
+      await page.goBack();
+      await expect(heading).toBeVisible();
     } else {
       await until(async () => (await (await fetch(`${origin}/manual`)).text()).includes(token), 'rendered content after edit');
       assert((await fetch(`${origin}/manual/extra`)).ok);
     }
     const good = await index();
+    const goodRevision = await (await fetchFile('dev-revision.json')).json();
+    const goodNavigations = navigations;
     const priorErrors = (log.match(/Preparation failed/g) ?? []).length;
     await put('01-guide/index.mdx', '# Invalid\n\n<Callout>\n');
+    await put('assets/diagram.svg', svg(140));
     await until(() => (log.match(/Preparation failed/g) ?? []).length > priorErrors, 'invalid edit reported');
     assert.deepEqual(await index(), good, 'invalid edit preserves last prepared index');
+    assert.deepEqual(await (await fetchFile('dev-revision.json')).json(), goodRevision, 'invalid edit must not announce a reload');
+    if (page) {
+      await delay(1500); // span the browser poll after the watcher reported failure
+      assert.equal(navigations, goodNavigations, 'invalid edit must retain the open document');
+      await expect(page.locator(`h2#${token.toLowerCase()}`)).toBeVisible();
+      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(160);
+    }
     await put('01-guide/index.mdx', markdown(`Recovered${name}`));
     await rm(path.join(content, '01-guide/extra.mdx'));
     await put('01-guide/_sidebar.yaml', 'route: /manual\nnav: [index]\n');
     await until(async () => { const entries = await index(); return entries.some((entry) => entry.text.includes(`Recovered${name}`)) && !entries.some((entry) => entry.route === '/manual/extra'); }, 'recovery and deleted document');
+    if (page) {
+      await expect(page.locator(`h2#recovered${name}`)).toBeVisible({ timeout: 30000 });
+      await expect(page.getByRole('link', { name: `Added${name}`, exact: true })).toHaveCount(0);
+      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(140);
+      assert.deepEqual(browserErrors, [], `${name}: browser hydration and reload must not report errors`);
+    }
+    await browser?.close(); browser = undefined;
     await rename(path.join(content, 'assets'), path.join(app, 'saved-assets'));
     await until(async () => (await fetchFile('assets/diagram.svg')).status === 404, 'entire assets directory removed');
     await rename(path.join(app, 'saved-assets'), path.join(content, 'assets'));
     await until(async () => (await fetchFile('assets/diagram.svg')).ok, 'assets directory restored');
-    await browser?.close(); browser = undefined;
-    console.log(`${name}: dev edits/additions/deletions, search, images and invalid-edit recovery passed.`);
+    console.log(`${name}: automatic dev reload, edits/additions/deletions, search, image-only updates and invalid-edit recovery passed.`);
   }
 } catch (error) {
   console.error(log.slice(-12000));
