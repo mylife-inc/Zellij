@@ -214,7 +214,8 @@ ARM64 image workflows use GitHub's native `ubuntu-24.04-arm` runner for both
 jobs; AMD64/default workflows use `ubuntu-latest`. Native ARM64 avoids the
 intermittent Node failures observed with QEMU in hosted/Next builds. Generation
 does not change the local machine. Hosted/Next builds require an ARM64 variant
-of the pinned engine image. Multi-platform image lists remain unsupported.
+of the pinned engine image. To publish both architectures under one tag, use
+`--platform all` as described below.
 
 
 ## Freeze rendering features
