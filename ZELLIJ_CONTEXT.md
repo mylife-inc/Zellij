@@ -5,7 +5,8 @@ Last refreshed: **2026-11-03**. Initial review baseline: local `main` at
 
 Current implementation: hosted development auto-reload and JSON validation merged
 in PRs #62 and #63 after all checks passed. Development host/browser options are
-implemented in `222ffda`, with local validation complete and CI acceptance pending.
+implemented in `222ffda`; [PR #64](https://github.com/mylife-inc/Zellij/pull/64)
+tracks platform/container acceptance and subsequent cleanup corrections.
 The user requested completion of the remaining CLI capabilities. The prior rc.2
 release proposal awaits explicit publication approval and predates
 this new work. See the latest dated entry.

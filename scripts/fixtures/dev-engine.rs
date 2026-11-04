@@ -49,10 +49,17 @@ fn main() {
     let binding = option("-p").strip_suffix(":3000").unwrap().to_owned();
     fs::write(root.join("args"), args.join("\n")).unwrap();
     fs::write(root.join("name"), &name).unwrap();
+    assert!(
+        env::temp_dir().join(&name).is_dir(),
+        "session identity exists during startup"
+    );
     println!("fixture runtime is starting development");
     eprintln!("fixture runtime startup diagnostic");
     if mode == "fail" {
         std::process::exit(96);
+    }
+    if mode == "empty-mount" {
+        std::process::exit(97);
     }
     let prefix = "/products/manual";
     let metadata = format!(

@@ -1,7 +1,7 @@
 // Native process/HTTP acceptance on Linux, macOS and Windows. No GUI or daemon.
 import assert from 'node:assert/strict';
 import { spawn, spawnSync, execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, writeFile, rm } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import net from 'node:net';
@@ -126,12 +126,21 @@ try {
     assert.match(result.stderr, /IPv4\/IPv6/);
     assert.equal(await text(path.join(f.folder, 'args')), '');
   }
-  const failing = await fixture('initial-failure', 'hosted', 'fail');
-  const failed = failing.start(['--port', String(await reserve()), '--browser', browserExe]);
-  await until(() => failed.exit, () => detail(failed));
-  assert.equal(failed.exit.code, 3, detail(failed));
-  assert.equal(await text(failing.record), '');
-  active.delete(failed);
+  for (const [mode, code] of [['fail', 3], ['empty-mount', 4]]) {
+    const failing = await fixture(`initial-${mode}`, 'hosted', mode);
+    const temporary = path.join(failing.folder, 'tmp');
+    await mkdir(temporary);
+    for (const key of Object.keys(failing.env)) if (['TMPDIR', 'TMP', 'TEMP'].includes(key.toUpperCase())) delete failing.env[key];
+    for (const key of ['TMPDIR', 'TMP', 'TEMP']) failing.env[key] = temporary;
+    const failed = failing.start(['--port', String(await reserve()), '--browser', browserExe]);
+    await until(() => failed.exit, () => detail(failed));
+    assert.equal(failed.exit.code, code, detail(failed));
+    assert.equal(await text(failing.record), '');
+    const name = await text(path.join(failing.folder, 'name'));
+    assert.match(name, /^zel-dev-/);
+    await assert.rejects(stat(path.join(temporary, name)), { code: 'ENOENT' }, 'failure releases the temporary session identity');
+    active.delete(failed);
+  }
   const occupied = net.createServer();
   await new Promise(resolve => occupied.listen(0, '127.0.0.1', resolve));
   try {

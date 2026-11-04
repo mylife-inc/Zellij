@@ -75,6 +75,9 @@ pub fn run(
             Ok(Some(())) => return Ok(()),
             Err(error @ Error::MountEmpty { .. }) => {
                 crate::report_empty_mount(&error);
+                // process::exit bypasses destructors; release the session's
+                // temporary identity before reporting this specialized error.
+                drop(session);
                 std::process::exit(error.exit_code());
             }
             Err(error) => return Err(error),
