@@ -397,7 +397,12 @@ impl Converter for Docusaurus {
             )?;
             let raw = std::fs::read_to_string(&path)?;
 
-            if let Some(construct) = dynamic_construct(&raw) {
+            let construct = if path.extension() == Some("json") {
+                None // JSON strings can mention JavaScript without executing it.
+            } else {
+                dynamic_construct(&raw)
+            };
+            if let Some(construct) = construct {
                 // Declining is the point. A sidebar half-read from a file that
                 // computes its exports is worse than no sidebar, because it
                 // looks finished.

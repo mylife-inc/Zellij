@@ -363,3 +363,22 @@ fn empty_or_filtered_navigation_never_promotes_orphans() {
         }
     }
 }
+
+#[test]
+fn json_sidebar_strings_are_data_not_javascript() {
+    let temp = tempfile::tempdir().unwrap();
+    let source = temp.path().join("source");
+    let out = temp.path().join("out");
+    docusaurus(
+        &source,
+        r#"{"docs":[{"type":"doc","id":"home","label":"Details... and `require()`"}]}"#,
+    );
+    write(&source, "docs/home.md", "# Home");
+    write(&source, "docs/orphan.md", "# Orphan");
+    success(convert(&source, &out));
+    assert!(!out.join("01-guide/orphan.mdx").exists());
+    let sidebar: serde_yaml_ng::Value =
+        serde_yaml_ng::from_str(&fs::read_to_string(out.join("01-guide/_sidebar.yaml")).unwrap())
+            .unwrap();
+    assert_eq!(sidebar["nav"][0]["label"], "Details... and `require()`");
+}
