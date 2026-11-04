@@ -140,9 +140,13 @@ uses canonical guide routes and heading IDs, and removes stale generated
 assets even when the source assets folder has been removed. `prepare` alone is
 one-shot. `dev` and `prepare --watch` poll for edits, additions and deletions,
 including on container mounts, and update assets and search after a short debounce.
-Invalid edits are reported; watching resumes when the content is corrected.
-Reload the browser to see page/image changes; reopening search fetches its new
-index in development. There is no automatic browser reload for content edits.
+Successful preparation publishes a revision after assets and search are ready;
+open development tabs reload their current URL, including for image-only edits.
+Invalid edits are reported without reloading the displayed page; correcting the
+content resumes preparation and reloads. The runtime memo follows the revision
+so a reload cannot reuse an older prepared revision within its cache window.
+Production pages never poll for revisions. Stopping the watcher removes its
+signal; one-shot preparation also removes a signal left by an interrupted session.
 Restart dev after changing the deployment prefix or wrapper configuration.
 Pass Next options after `--`, for example
 `zellij dev --content ../../docs/external -- --port 4000 --hostname 127.0.0.1`.

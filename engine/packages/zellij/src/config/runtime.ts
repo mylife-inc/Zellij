@@ -1,6 +1,7 @@
 import path from 'node:path';
 import { stat } from 'node:fs/promises';
 import { ZellijContentError } from '../errors';
+import { readDevelopmentRevision } from './development';
 import { FolderContentSource } from '../content/folder-source';
 import { LegacyContentSource } from '../content/legacy-source';
 import { loadSite, type Site } from '../content/site';
@@ -35,6 +36,8 @@ export interface ZellijRuntime {
   contentDir: string;
   /** Which layout was detected — the legacy path is removed after one release. */
   layout: 'folder' | 'legacy';
+  /** Successful preparation used by development browser reloads; never in production. */
+  developmentRevision?: string;
 }
 
 /**
@@ -111,17 +114,28 @@ export async function createContentSource(
  * a file and switching to the browser shows the new text. A build sets
  * NODE_ENV=production and keeps the permanent cache, because content cannot
  * change underneath a build.
+ * Successful watched preparation also changes the development cache key. A
+ * browser reload must see that revision even inside the usual memo window.
  */
 const DEV_TTL_MS = 250;
 
 const cache = new Map<string, { value: Promise<ZellijRuntime>; createdAt: number }>();
 
 export function loadZellijRuntime(options: ZellijRuntimeOptions = {}): Promise<ZellijRuntime> {
+  if (process.env.NODE_ENV === 'development') {
+    const { appRoot } = resolveContentPaths(options);
+    return readDevelopmentRevision(appRoot).then((revision) => loadRuntime(options, revision));
+  }
+  return loadRuntime(options);
+}
+
+function loadRuntime(options: ZellijRuntimeOptions, developmentRevision?: string): Promise<ZellijRuntime> {
   const { appRoot, configFile } = resolveContentPaths(options);
   const key = JSON.stringify([
     appRoot, configFile,
     options.contentDir === undefined ? null : path.resolve(appRoot, options.contentDir),
     options.basePath ?? null, process.env.ZELLIJ_BASE_PATH ?? null,
+    developmentRevision ?? null,
   ]);
   const now = Date.now();
   const cached = cache.get(key);
@@ -137,7 +151,7 @@ export function loadZellijRuntime(options: ZellijRuntimeOptions = {}): Promise<Z
     const site = await loadSite(source);
     site.config.basePath = basePath;
     for (const warning of site.warnings) warn(warning);
-    return { site, contentDir, layout };
+    return { site, contentDir, layout, developmentRevision };
   })();
   cache.set(key, { value, createdAt: now });
   // A failed load must not poison the process after its input is repaired.

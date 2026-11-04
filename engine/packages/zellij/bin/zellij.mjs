@@ -5,6 +5,7 @@
  */
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { rm } from 'node:fs/promises';
 
 const [command, ...rest] = process.argv.slice(2);
 
@@ -95,6 +96,10 @@ switch (command) {
       const { runDev } = await load('dev');
       process.exitCode = await runDev(options, command === 'dev' ? nextArgs : undefined);
       break;
+    }
+    if (command === 'prepare') {
+      // A build after an interrupted dev session must not export its signal.
+      await rm(path.join(options.appRoot, 'public/_zellij/dev-revision.json'), { force: true });
     }
     if (command !== 'search-index') {
       const { syncAssets } = await load('sync-assets');

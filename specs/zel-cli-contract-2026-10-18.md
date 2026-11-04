@@ -1011,3 +1011,29 @@ ordering. Hosted CI exercises selected features in Netlify exports, portable
 Next image publication and imported static/Next images. Remaining work includes
 advanced build options, combined image manifests, additional providers,
 conversion fidelity and matched native release/documentation publication.
+
+
+### Hosted development auto-reload — 2026-11-03
+
+The user asked to continue implementing the remaining CLI capabilities. Hosted
+`dev` and updated editable wrappers now publish an opaque development revision
+only after successful search/asset preparation. Development layouts poll that
+revision and reload the current URL; image-only edits are included. Invalid
+edits do not announce a reload. The development runtime cache is keyed by the
+revision so a reload inside the normal 250 ms memo window cannot reuse the old
+revision. Production layouts omit the poller. Watcher shutdown removes its
+signal; one-shot preparation removes a signal left by an interrupted process.
+
+Focused regressions and all 369 engine tests pass, as do workspace typechecks,
+the packaged engine build, installed-CLI watcher/child lifecycle acceptance,
+actionlint, syntax/diff checks, and deep/strict validation of all 55 docs routes
+and 23 examples. Browser acceptance now requires automatic content and image-only
+reloads, no reload on invalid edits, recovery and removed navigation entries,
+and no production polling. Final hosted CI and fixing commit remain pending.
+No local container daemon was started and no release was published.
+
+This extends the unpublished rc.2 candidate notes. The earlier proposed release
+commit 0fbf0a1 predates this work; any later release proposal must use a reviewed
+commit containing its final advertised scope. Publication approval is still
+pending. Remaining CLI work includes hosted JSON validation, advanced options,
+combined image manifests, additional deployment/CI providers and converters.

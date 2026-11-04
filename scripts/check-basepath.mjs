@@ -92,6 +92,10 @@ try {
       context = await browser.newContext();
       await context.tracing.start({ screenshots: true, snapshots: true });
       const page = await context.newPage();
+      const developmentRequests = [];
+      page.on('request', request => {
+        if (new URL(request.url()).pathname.endsWith('/_zellij/dev-revision.json')) developmentRequests.push(request.url());
+      });
       const checkFonts = observeThemeFonts(page, origin, prefix);
       const failures = [];
       page.on('pageerror', (error) => failures.push(error.message));
@@ -151,6 +155,7 @@ try {
       assert(videoUrl);
       assert.equal((await fetch(new URL(videoUrl, origin))).status, 200);
       assert.deepEqual(failures, [], `${name}: browser resources and hydration must succeed`);
+      assert.deepEqual(developmentRequests, [], 'Production pages must never poll for development updates');
       console.log(`${name}: prefixed redirects, accessible heading permalinks, decoded local video/poster, links, images, Next resources, metadata, sitemap and search passed.`);
       await context.tracing.stop();
     } catch (error) {
