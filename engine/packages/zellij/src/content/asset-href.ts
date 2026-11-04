@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 
-import { ASSET_MANIFEST_FILE, assetKey, assetUrl, isExternal, withBasePath } from './paths';
+import { ASSET_MANIFEST_FILE, ASSET_PUBLIC_PREFIX, assetKey, assetUrl, isExternal, withBasePath } from './paths';
 
 /**
  * The URL to use for a content asset: public path, base path, and the content
@@ -26,27 +26,44 @@ export function assetHref(relPath: string, basePath = ''): string {
   return hash ? `${url}?v=${hash}` : url;
 }
 
+/** Markdown imports already carry public URLs, including encoded filenames. */
+export function publicAssetHref(src: string, basePath = ''): string {
+  if (!src.startsWith(`${ASSET_PUBLIC_PREFIX}/`)) return src;
+  try {
+    const url = new URL(src, 'http://zellij.invalid');
+    const key = decodeURIComponent(url.pathname.slice(ASSET_PUBLIC_PREFIX.length + 1));
+    const hash = manifest()[key];
+    if (hash) {
+      url.searchParams.set('v', hash);
+      return withBasePath(`${url.pathname}${url.search}${url.hash}`, basePath);
+    }
+  } catch { /* An invalid escape must not crash an otherwise renderable image. */ }
+  return withBasePath(src, basePath);
+}
+
 /*
  * Read once in production, and re-read while writing.
  *
  * The manifest is rewritten by preparation and the development watcher, so a dev
  * server that memoised it for its lifetime would serve fingerprints for assets
  * that had since been replaced — the precise failure this file exists to
- * prevent, reintroduced one layer up. The TTL matches the content runtime's.
+ * prevent, reintroduced one layer up. Preparation atomically replaces the
+ * manifest, so its identity/mtime invalidates the cache even if an automatic
+ * reload arrives within the old 250 ms memo window.
  */
-const DEV_TTL_MS = 250;
-
 let cached: Record<string, string> | undefined;
-let cachedAt = 0;
+let cachedSignature: string | undefined;
 
 function manifest(): Record<string, string> {
-  if (cached && (process.env['NODE_ENV'] === 'production' || Date.now() - cachedAt < DEV_TTL_MS)) {
-    return cached;
-  }
+  if (cached && process.env['NODE_ENV'] === 'production') return cached;
 
   try {
     const file = path.join(process.cwd(), 'public', '_zellij', ASSET_MANIFEST_FILE);
+    const metadata = statSync(file, { bigint: true });
+    const signature = `${file}:${metadata.ino}:${metadata.mtimeNs}:${metadata.ctimeNs}:${metadata.size}`;
+    if (cached && signature === cachedSignature) return cached;
     cached = JSON.parse(readFileSync(file, 'utf8')) as Record<string, string>;
+    cachedSignature = signature;
   } catch {
     /*
      * No manifest is a normal state, not an error: a site that has never run
@@ -55,8 +72,8 @@ function manifest(): Record<string, string> {
      * lost is the cache busting.
      */
     cached = {};
+    cachedSignature = undefined;
   }
 
-  cachedAt = Date.now();
   return cached;
 }

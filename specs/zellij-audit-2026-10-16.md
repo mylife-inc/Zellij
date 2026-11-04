@@ -3062,3 +3062,12 @@ commit 0fbf0a1 predates this work; any later release proposal must use a reviewe
 commit containing its final advertised scope. Publication approval is still
 pending. Remaining CLI work includes hosted JSON validation, advanced options,
 combined image manifests, additional deployment/CI providers and converters.
+
+PR #62's first browser run (41775973925) passed Chromium reload/recovery but
+failed WebKit's image check: the updated document retained a cached 140px image
+instead of the new 120px image. Markdown images used public asset URLs without
+fingerprints. The follow-up applies prepared hashes to those URLs while keeping
+encoded filenames, query values and fragments; it also invalidates the asset
+manifest cache on atomic replacement instead of waiting 250 ms. A fixed-clock
+regression checks replacement, removal/recreation and production memoization.
+The original failure is retained here; final browser verification is pending.
