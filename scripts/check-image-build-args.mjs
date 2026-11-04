@@ -5,9 +5,12 @@ import { copyFile, mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-const zel = path.resolve(`cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
+const builtZel = path.resolve(`cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const root = await mkdtemp(path.join(tmpdir(), 'zel-image-args-'));
 const bin = path.join(root, 'bin');
+// Windows searches the parent's executable directory before system folders and
+// PATH. Keep zel beside the fake clients so an installed Docker cannot win.
+const zel = path.join(bin, process.platform === 'win32' ? 'zel.exe' : 'zel');
 const env = { ...process.env, ZELLIJ_BUILD_FIXTURE: root };
 const selectors = ['DOCKER_CONTEXT', 'DOCKER_HOST', 'CONTAINER_CONNECTION', 'CONTAINER_HOST', 'CONTAINERD_ADDRESS', 'CONTAINERD_NAMESPACE'];
 for (const key of Object.keys(env)) if (['PATH', 'NETLIFY_SITE_ID', 'NETLIFY_AUTH_TOKEN', ...selectors].includes(key.toUpperCase())) delete env[key];
@@ -32,6 +35,7 @@ async function captured() {
 }
 try {
   await mkdir(bin);
+  await copyFile(builtZel, zel);
   const exe = name => path.join(bin, name + (process.platform === 'win32' ? '.exe' : ''));
   execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/build-engine.rs', '-o', exe('podman')], { stdio: 'pipe' });
   for (const name of ['docker', 'nerdctl']) await copyFile(exe('podman'), exe(name));
@@ -41,7 +45,9 @@ try {
   }
   // All runtime clients receive literal argv, including empty/Unicode values.
   for (const selector of ['CONTAINER_CONNECTION', 'DOCKER_CONTEXT', 'CONTAINERD_NAMESPACE']) {
+    await rm(path.join(root, 'probed'), { force: true });
     run(['si', 'portable', ...flags], 0, { CONTAINER_CONNECTION: '', [selector]: 'fixture' });
+    assert.equal(await read('probed'), 'yes', 'The selected probe must reach the isolated fake client');
     await captured();
   }
   for (const [command, site] of [
