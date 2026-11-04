@@ -1593,3 +1593,11 @@ refreshed before any publication, which still needs explicit approval following
 the earlier automatic approval rejection. Netlify's hosting-comment issue,
 production cutover, other deployment/CI providers and broader import fidelity
 remain separate work. The existing production site/domain remains intact.
+
+
+Follow-up review fix `0fb7e14`: plain JSON sidebar strings are always parsed as
+inert data, so labels containing ellipses, backticks or `require()` do not
+trigger JavaScript fallback and accidentally include omitted files. All nine
+metadata CLI fixtures pass locally after this correction (38 CLI tests across
+the milestone's four suites, plus 60 converter tests). PR #70 hosts the final
+native/full-export acceptance; CI on the corrected head is pending.
