@@ -239,6 +239,11 @@ jobs:
           npx playwright install --with-deps chromium
           node scripts/check-hosted-preview.mjs --real
 
+      - name: Rust dev reloads browsers after mounted content and asset updates
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
+
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
@@ -287,11 +292,6 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-validation.mjs cli/target/debug/zel
-
-      - name: Rust dev reloads browsers after mounted content and asset updates
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
 
       - name: Scaffold names, rendered links, and content discovery
         env:

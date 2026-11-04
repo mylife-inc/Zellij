@@ -39,8 +39,8 @@ async function until(check, label, timeout = 30000, allowExited = false) {
   throw new Error(`${label}\n${last ?? ''}\n${log.slice(-6000)}`);
 }
 try {
-  if (binary) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/dev-browser.rs', '-o', browserExe], { stdio: 'pipe' });
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'watch-fixture'], { env, stdio: 'inherit' });
+  if (binary) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/dev-browser.rs', '-o', browserExe], { stdio: 'pipe' });
   if (!binary) execFileSync(process.execPath, [cli, 'features', 'all', app], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true });
   // A custom content root must reach preparation, rendering and Next config.
@@ -67,7 +67,8 @@ try {
   server = binary
     ? spawn(binary, ['dev', content, '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
-  exited = once(server, 'exit');
+  // Wait for stdio to drain too, before asserting the final shutdown message.
+  exited = once(server, 'close');
   server.stdout.on('data', (data) => { log += data; });
   server.stderr.on('data', (data) => { log += data; });
   const fetchFile = (name) => fetch(`${origin}/_zellij/${name}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
@@ -193,9 +194,10 @@ try {
   if (server && server.exitCode === null && server.signalCode === null) {
     // Signal only zel: it must clean up its own named container and runtime client.
     server.kill(binary ? 'SIGINT' : 'SIGTERM');
-    const timer = setTimeout(() => server.kill('SIGKILL'), 10000);
-    const [code, signal] = await exited;
-    clearTimeout(timer);
+    let timer;
+    const [code, signal] = await Promise.race([exited, new Promise((_, reject) => {
+      timer = setTimeout(() => { server.kill('SIGKILL'); reject(new Error(`Dev shutdown timed out: ${log}`)); }, 10000);
+    })]).finally(() => clearTimeout(timer));
     if (binary) { assert.equal(code, 0, `dev shutdown ${signal}: ${log}`); assert(log.includes('Stopped.')); }
   }
   if (binary && containerName) {
