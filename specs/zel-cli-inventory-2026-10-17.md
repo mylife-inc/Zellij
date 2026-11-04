@@ -1768,3 +1768,11 @@ trigger JavaScript fallback and accidentally include omitted files. All nine
 metadata CLI fixtures pass locally after this correction (38 CLI tests across
 the milestone's four suites, plus 60 converter tests). PR #70 hosts the final
 native/full-export acceptance; CI on the corrected head is pending.
+
+
+Native CI follow-up: run `41913945831` on `1bc4b1f` passed eight metadata
+fixtures on Windows but failed while creating the ninth fixture's junction,
+before invoking the importer. `d3db17c` builds that path with native Windows
+separators, matching the existing passing junction fixtures, logs setup errors,
+and removes the junction before cleanup. All nine fixtures pass locally after
+the correction; final-head Windows and full acceptance must still pass.
