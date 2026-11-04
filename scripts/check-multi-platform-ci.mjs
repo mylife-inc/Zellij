@@ -60,6 +60,12 @@ async function serve(tag, kind) {
   assert((await (await fetch(`${origin}/next.html`)).text()).includes('Second document'));
   assert.equal((await fetch(`${origin}/index.md`)).status, 404);
   docker(['exec', name, 'sh', '-ec', info.Config.Healthcheck.Test[1]]);
+  docker(['exec', name, 'sh', '-ec', 'test -z "$(ls -A /var/cache/apk)"']);
+  if (kind === 'static') {
+    docker(['exec', name, 'sh', '-ec', 'test ! -e /usr/sbin/nginx-debug']);
+    assert.equal(info.Config.StopSignal, 'SIGQUIT');
+    assert.deepEqual(info.Config.Entrypoint, ['/docker-entrypoint.sh']);
+  }
   if (kind === 'next') docker(['exec', name, 'sh', '-ec', 'node --version; ! command -v npm; ! command -v yarn; test ! -d /usr/local/include/node']);
 }
 try {

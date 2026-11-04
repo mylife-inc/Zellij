@@ -3512,3 +3512,18 @@ and full final-head CI remain pending. No live external registry was used.
 Prior main CI `41889745157` is now successful. Superseded PR run `41893692905`
 required force-cancellation after its macOS preview job did not stop following a
 normal cancellation request; this unblocked the corrected run, not a product fix.
+
+
+### Combined publication — final runtime footprint pass, 2026-11-04
+
+Read-only inspection of the tested AMD64 image archive confirmed that most Next
+runtime space is Node itself and traced app dependencies, with negligible source
+maps. It also exposed retained Alpine package-index caches. The final recipes
+remove those caches. Static packaging additionally removes the unused alternate
+NGINX debug executable and copies the prepared filesystem into a fresh stage so
+upstream deleted/cache layers do not inflate downloads. NGINX's entrypoint,
+non-root user and SIGQUIT shutdown signal are explicitly retained. Node's
+entrypoint remains intact. Required runtime libraries and traced app dependencies
+are not pruned. Native CI verifies cache absence, NGINX startup metadata and the
+existing serving/health behavior, and measures compressed registry layers against
+the former runtime bases. No local container or browser was started.

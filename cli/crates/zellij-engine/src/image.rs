@@ -86,6 +86,7 @@ RUN node -e "const fs=require('fs'); const {{basePath}}=require('./node_modules/
 # Keep Node's matching Alpine libraries, certificates, licenses and shell.
 FROM node:24-alpine AS node-runtime
 RUN rm -rf /usr/local/lib/node_modules/npm /opt/yarn-v* /usr/local/include/node \
+    /var/cache/apk/* \
     /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/yarn /usr/local/bin/yarnpkg \
     && addgroup -g 1001 -S nodejs && adduser -S -u 1001 -G nodejs nextjs
 

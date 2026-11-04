@@ -8,9 +8,11 @@ pub const STATIC_BASE: &str = "nginxinc/nginx-unprivileged:stable-alpine-slim";
 
 fn runtime(copy: &str, health: &str, build_args: &str) -> String {
     format!(
-        r#"FROM {STATIC_BASE} AS runtime
+        r#"# Compact the prepared filesystem so package caches deleted by upstream
+# layers and our cleanup are absent from the downloaded image too.
+FROM {STATIC_BASE} AS static-runtime
 {build_args}USER root
-RUN rm -rf /usr/share/nginx/html/* && printf '%s\n' \
+RUN rm -rf /usr/share/nginx/html/* /var/cache/apk/* /usr/sbin/nginx-debug && printf '%s\n' \
     'server {{' \
     '  listen 3000;' \
     '  listen [::]:3000;' \
@@ -23,10 +25,15 @@ RUN rm -rf /usr/share/nginx/html/* && printf '%s\n' \
     '}}' > /etc/nginx/conf.d/default.conf
 {copy}
 {health}
+FROM scratch AS runtime
+COPY --from=static-runtime / /
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 USER nginx
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD wget -q -O /dev/null "http://127.0.0.1:3000$(cat /etc/zellij-health-path)" || exit 1
+ENTRYPOINT ["/docker-entrypoint.sh"]
+STOPSIGNAL SIGQUIT
 CMD ["nginx", "-g", "daemon off;"]
 "#
     )

@@ -130,8 +130,10 @@ server runs without root on port 3000. The final runtime excludes npm, Yarn and
 Node development headers; they remain available in the builder. Required Alpine
 libraries, certificates, licenses and the shell used by health checks are kept.
 Static images use the smaller NGINX Alpine slim variant without optional dynamic
-modules. Both recipes keep compilation tools and build caches out of the final
-image; Next copies only its traced production dependencies.
+modules or the separate debug executable. Both runtime filesystems exclude Alpine
+package-index caches, preserve their original entrypoints, and keep compilation
+tools and build caches out of the final image. Next copies only its traced
+production dependencies.
 
 ## Select the image platform
 
