@@ -167,7 +167,12 @@ See [image build arguments](/cli/image#image-build-arguments) for value semantic
 - [Converting existing docs](/guide/converting) — supported mappings and limits
 
 
-Image delivery also accepts `--platform linux/amd64` or `--platform linux/arm64`.
+Image delivery also accepts `--platform linux/amd64`, `--platform linux/arm64`,
+or `--platform all` to publish both architectures under the supplied tag.
 The choice is shown in the plan, saved as `image.platform` in the imported site's
 `zel.yaml`, and used by the build and later `zel pub` commands. This flag
 requires `--image`; it cannot select a platform for a Netlify deployment.
+Combined publication requires a builder supporting both architectures. If it
+fails, the converted site remains available for `zel pub`; inspect the registry
+before retrying since uploaded layers may exist. See
+[image publication prerequisites](/cli/image#select-the-image-platform).

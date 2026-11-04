@@ -214,7 +214,8 @@ ARM64 image workflows use GitHub's native `ubuntu-24.04-arm` runner for both
 jobs; AMD64/default workflows use `ubuntu-latest`. Native ARM64 avoids the
 intermittent Node failures observed with QEMU in hosted/Next builds. Generation
 does not change the local machine. Hosted/Next builds require an ARM64 variant
-of the pinned engine image. Multi-platform image lists remain unsupported.
+of the pinned engine image. To publish both architectures under one tag, use
+`--platform all` as described below.
 
 
 ## Freeze rendering features
@@ -237,6 +238,30 @@ defaults at execution time. `ci run` only dispatches an existing workflow and
 does not accept this flag. Compatible native and engine releases must be
 published before running the generated workflow; generation does not publish or
 verify those releases.
+
+## Publish both image architectures
+
+```bash
+zel ci --platform all
+```
+
+For saved static/Next image publication or legacy `--target image`, this generates
+native AMD64 and ARM64 build jobs. Pull requests verify both architectures without
+registry credentials. Authorized publication events build and push each architecture
+to a unique staging tag, then a dependent job publishes the final tag from the two
+immutable registry digests. A failed build prevents that final publication. No
+Node/Next build runs under emulation.
+
+The staging tags use the workflow run ID, attempt and architecture. They remain
+in the registry; configure retention for the `zel-` tags if desired. Retries do
+not overwrite another run's staging images. Existing event restrictions,
+permissions and registry credentials still apply. Build arguments and other
+invocation settings reach both native builds, not the final manifest command.
+
+Save `image.platform: all` to use this default, or override it with a single
+architecture. Regeneration with the saved/default selection removes temporary
+overrides. This mode requires 0.2.0-rc.2 or later; generation does not confirm that
+the pinned release exists. Current rc.2 source has not yet been published.
 
 ## Freeze hosted URL and preflight overrides
 

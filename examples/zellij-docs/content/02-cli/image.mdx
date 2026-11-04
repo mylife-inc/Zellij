@@ -126,7 +126,14 @@ The generated multi-stage recipe copies the selected content into the wrapper,
 installs dependencies, checks content, builds Next, then copies the standalone
 server, static chunks, public assets, and the selected content needed for
 server-side route resolution into a Node 24 Alpine runtime. The
-server runs without root on port 3000.
+server runs without root on port 3000. The final runtime excludes npm, Yarn and
+Node development headers; they remain available in the builder. Required Alpine
+libraries, certificates, licenses and the shell used by health checks are kept.
+Static images use the smaller NGINX Alpine slim variant without optional dynamic
+modules or the separate debug executable. Both runtime filesystems exclude Alpine
+package-index caches, preserve their original entrypoints, and keep compilation
+tools and build caches out of the final image. Next copies only its traced
+production dependencies.
 
 ## Select the image platform
 
@@ -152,11 +159,35 @@ container runtime's default. The legacy Next build forms read `image.platform`
 while retaining their existing tag rules. Platform selection applies to every
 Dockerfile stage, including its base images.
 
-Supported values are `linux/amd64` and `linux/arm64`. These describe the container,
+Local builds accept `linux/amd64` and `linux/arm64`. These describe the container,
 not the OS running `zel`: native Windows and macOS CLIs also build Linux images.
-Combined lists, other operating systems and architecture abbreviations are
-rejected before a build. Combined multi-platform image publication remains
-future work.
+Other operating systems and architecture abbreviations are rejected before a build.
+
+Current source also supports `all` for registry publication (requires 0.2.0-rc.2
+or later, still unpublished). With saved publication settings:
+
+```bash
+zel pub --platform all
+zel ci --platform all
+```
+
+This publishes one tag containing both Linux architectures. A client pulls only
+the architecture it needs, not both images. Save `image.platform: all` to make
+`zel pub` use it by default. The explicit comma list `linux/amd64,linux/arm64`
+(or reversed order) is equivalent. Local-only image commands reject this selection;
+override it with one architecture when building an image to run locally.
+
+Docker uses the selected Buildx builder with direct registry output; Podman
+builds an isolated temporary manifest and pushes all its images; nerdctl uses its
+BuildKit image exporter. Authenticate with the selected client first. The builder
+must support both architectures and each base image must provide both. Zel does
+not create a builder, install emulation, or change runtime connections.
+
+Combined publication does not promise a local image tag. If it fails, uploaded
+layers may already exist: inspect the registry, fix the reported problem, and
+retry `zel pub`. Podman's temporary manifest is removed after the attempt.
+[`zel ci`](/cli/ci) uses native AMD64 and ARM64 runners and combines their
+published digests only after both builds succeed.
 
 Foreign-architecture `RUN` steps require a builder with emulation or native
 support, and every base image must provide the requested platform. A failed
@@ -355,7 +386,7 @@ use the current Zellij base image when upgrading the CLI.
 
 The hosted builder carries the Zellij engine at `/opt/zellij` and a generated
 Next wrapper at `/app`. Dependencies install during the site build. The
-static runtime currently uses `nginxinc/nginx-unprivileged:stable-alpine`;
+static runtime currently uses `nginxinc/nginx-unprivileged:stable-alpine-slim`;
 custom runtime-base selection is not yet a CLI option. For a separately managed
 Dockerfile, pin image digests when you need fixed base versions.
 

@@ -81,16 +81,24 @@ RUN npm run build
 RUN node -e "const fs=require('fs'); const {{basePath}}=require('./node_modules/@shebka/zellij/deployment-config.cjs').resolveContentLocation(); fs.writeFileSync('/app/zellij-health-path',encodeURI((basePath||'')+'/'))"
 
 # ------------------------------------------------------------------- runtime
-FROM node:24-alpine AS runtime
+# Trim in a separate stage, then copy its filesystem into a fresh image. A RUN
+# deletion in the final image would still download npm/Yarn/headers in old layers.
+# Keep Node's matching Alpine libraries, certificates, licenses and shell.
+FROM node:24-alpine AS node-runtime
+RUN rm -rf /usr/local/lib/node_modules/npm /opt/yarn-v* /usr/local/include/node \
+    /var/cache/apk/* \
+    /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+    && addgroup -g 1001 -S nodejs && adduser -S -u 1001 -G nodejs nextjs
+
+FROM scratch AS runtime
+COPY --from=node-runtime / /
 {overrides}
 
-ENV NODE_ENV=production \
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+    NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000 \
     HOSTNAME=0.0.0.0
-
-# Not root. The site serves pages and needs nothing a user cannot do.
-RUN addgroup -g 1001 -S nodejs && adduser -S -u 1001 -G nodejs nextjs
 
 WORKDIR /app
 
@@ -110,6 +118,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+require('fs').readFileSync('/app/zellij-health-path','utf8')).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]
 "#
     )
@@ -163,6 +172,9 @@ impl ContainerEngine {
         platform: Option<ImagePlatform>,
         build_args: &[zellij_core::build_args::BuildArg],
     ) -> Result<()> {
+        if platform == Some(ImagePlatform::All) {
+            return self.image_publish_recipe(content, tag, body, build_args);
+        }
         // Stream the Dockerfile: no temporary file can overwrite authored
         // content or accidentally become part of COPY's build context.
         let mut command = self.runtime().command();
@@ -180,29 +192,127 @@ impl ContainerEngine {
             command.args(["--build-arg", arg.assignment()]);
         }
 
-        let mut child = command.arg(content.as_str()).zel_spawn()?;
-        let written = child
-            .child
-            .stdin
-            .take()
-            .expect("piped stdin")
-            .write_all(body.as_bytes());
-        if let Err(error) = written {
-            let _ = child.kill();
-            let _ = child.wait();
-            return Err(error.into());
-        }
-        match child.wait()?.code() {
-            Some(0) => Ok(()),
-            _ => {
-                if let Some(platform) = platform {
-                    zellij_core::diagnosticln!(
-                        "Image build for {platform} failed. Check the runtime output: base images must provide this platform, and foreign-architecture RUN steps need a compatible builder or emulation. zel does not install emulators or start services."
-                    );
+        command.arg(content.as_str());
+        stream_build(&mut command, body).inspect_err(|_| {
+            if let Some(platform) = platform {
+                zellij_core::diagnosticln!(
+                    "Image build for {platform} failed. Check the runtime output: base images must provide this platform, and foreign-architecture RUN steps need a compatible builder or emulation. zel does not install emulators or start services."
+                );
+            }
+        })
+    }
+
+    /// Direct registry output avoids Docker's single-platform local image store.
+    /// Use the caller's configured builder/connection without creating services.
+    fn image_publish_recipe(
+        &self,
+        content: &Utf8Path,
+        tag: &str,
+        body: &str,
+        build_args: &[zellij_core::build_args::BuildArg],
+    ) -> Result<()> {
+        let runtime = self.runtime();
+        let mut command = runtime.command();
+        // Podman appends to an existing manifest. A unique, invocation-owned
+        // name prevents stale architectures or a prior partial build leaking in.
+        let temporary = tempfile::Builder::new().prefix("zel-multi-").tempdir()?;
+        let manifest = format!(
+            "zel-multi-{}",
+            temporary
+                .path()
+                .file_name()
+                .unwrap()
+                .as_encoded_bytes()
+                .iter()
+                .map(|byte| format!("{byte:02x}"))
+                .collect::<String>()
+        );
+        match runtime.program.as_str() {
+            "docker" => {
+                if crate::runtime::probe_status(
+                    runtime.command().args(["buildx", "version"]),
+                    std::time::Duration::from_secs(5),
+                ) != crate::runtime::Probe::Ready
+                {
+                    return Err(Error::InvalidArgument("Multi-platform publication requires Docker Buildx. Install/enable the plugin and select a builder supporting both Linux architectures, then retry; zel does not install or start a builder.".into()));
                 }
-                Err(Error::BuildFailed)
+                command.args([
+                    "buildx",
+                    "build",
+                    "--push",
+                    "-t",
+                    tag,
+                    "--progress",
+                    "plain",
+                ]);
+            }
+            "podman" => {
+                command.args(["build", "--manifest", &manifest]);
+            }
+            "nerdctl" => {
+                command.args([
+                    "build",
+                    "--output",
+                    &format!("type=image,name={tag},push=true"),
+                    "--progress",
+                    "plain",
+                ]);
+            }
+            _ => {
+                return Err(Error::InvalidArgument(
+                    "Combined publication supports Docker, Podman and nerdctl".into(),
+                ));
             }
         }
+        command.args([
+            "-f",
+            "-",
+            "--platform",
+            ImagePlatform::All.build_platforms(),
+        ]);
+        for arg in build_args {
+            command.args(["--build-arg", arg.assignment()]);
+        }
+        command.arg(content.as_str());
+        let result = stream_build(&mut command, body).and_then(|()| {
+            if runtime.program == "podman" {
+                let status = runtime
+                    .command()
+                    .args([
+                        "manifest",
+                        "push",
+                        "--all",
+                        &manifest,
+                        &format!("docker://{tag}"),
+                    ])
+                    .zel_status()?;
+                if !status.success() {
+                    return Err(Error::ImageOperationFailed {
+                        operation: "manifest push",
+                    });
+                }
+            }
+            Ok(())
+        });
+        if runtime.program == "podman" {
+            // Only remove the manifest allocated above, on success or failure.
+            // Preserve the actual build/push result if cleanup also fails.
+            let cleanup = crate::runtime::probe_status(
+                runtime.command().args(["manifest", "rm", &manifest]),
+                std::time::Duration::from_secs(5),
+            );
+            if cleanup != crate::runtime::Probe::Ready {
+                zellij_core::diagnosticln!(
+                    "Could not remove temporary Podman manifest {manifest}; remove it with `podman manifest rm {manifest}` if it exists."
+                );
+            }
+        }
+        if result.is_err() {
+            zellij_core::diagnosticln!(
+                "Multi-platform build/publication failed. Check registry credentials, base-image architecture support and the selected builder. Foreign RUN steps need emulation or native builder nodes; `zel ci --platform all` generates native-runner builds. No services or emulators were installed."
+            );
+        }
+        result
     }
 
     /// Run a built image, publishing its port.
@@ -255,6 +365,25 @@ impl ContainerEngine {
     }
 }
 
+fn stream_build(command: &mut std::process::Command, body: &str) -> Result<()> {
+    let mut child = command.stdin(Stdio::piped()).zel_spawn()?;
+    let written = child
+        .child
+        .stdin
+        .take()
+        .expect("piped stdin")
+        .write_all(body.as_bytes());
+    if let Err(error) = written {
+        let _ = child.kill();
+        let _ = child.wait();
+        return Err(error.into());
+    }
+    match child.wait()?.code() {
+        Some(0) => Ok(()),
+        _ => Err(Error::BuildFailed),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -302,7 +431,12 @@ mod tests {
     fn the_runtime_stage_copies_standalone_not_the_whole_build_dependency_tree() {
         let out = dockerfile("ghcr.io/example/zellij-base:latest", None);
 
-        assert!(out.contains("FROM node:24-alpine AS runtime"), "{out}");
+        assert!(out.contains("FROM node:24-alpine AS node-runtime"), "{out}");
+        assert!(out.contains("FROM scratch AS runtime\nCOPY --from=node-runtime / /"));
+        assert!(out.contains("ENTRYPOINT [\"docker-entrypoint.sh\"]"));
+        assert!(
+            out.contains("/usr/local/lib/node_modules/npm /opt/yarn-v* /usr/local/include/node")
+        );
         assert!(!out.contains("COPY --from=build --chown=nextjs:nodejs /app/node_modules"));
         assert!(!out.contains("/opt/zellij AS runtime"));
     }

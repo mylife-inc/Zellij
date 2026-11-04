@@ -1546,3 +1546,110 @@ The earlier main CI `41826282286` now passed on attempt 2: Windows ARM packaging
 job `126744911367` succeeded without source changes after the isolated PowerShell
 CLR crash. This is retry recovery, not a diagnosed product fix. No release was
 published and no production site changed.
+
+
+### Combined image publication and smaller runtimes — 2026-11-04
+
+The user authorized the next CLI milestone and requested smaller images.
+Implementation `a29a792121ce0cb3fa6ba027e243173d6e0a40e7` adds `--platform all`
+(and either ordering of the explicit AMD64/ARM64 comma list) to registry
+publication and ship. `image.platform: all` saves the default. Single-platform
+local commands remain compatible; combined selection on a local-only image
+command fails before runtime discovery with publication/override guidance.
+Netlify still rejects explicit image platform flags.
+
+Both renderers and static/Next image kinds share the same recipe/argument paths.
+Docker uses the caller's selected Buildx builder and direct registry output;
+Podman uses an invocation-owned lowercase manifest, pushes all architectures,
+and cleans the manifest after success/failure; nerdctl uses its image exporter.
+No builder, emulator or daemon is installed/started. Combined publication does
+not promise a local image; failure guidance acknowledges possible remote layers
+and recommends inspecting the registry before retrying. Ship retains its
+converted site and saved architecture choice after delivery failure.
+
+Generated combined CI verifies both architectures without credentials on PRs.
+Publication events use native AMD64/ARM64 runners, unique per-run/attempt staging
+tags, and a dependent final job joining immutable digests only after both jobs
+succeed. Staging tags remain for registry retention policies. Existing event
+restrictions, permissions, explicit configuration selectors and build overrides
+are retained. Minimum CLI pin is 0.2.0-rc.2 (still unpublished); single-platform
+workflows, including all six release acceptance files, are unchanged.
+
+Static images use upstream NGINX Alpine slim without optional dynamic modules.
+Next images trim npm, Yarn and Node headers in a separate stage and copy that
+filesystem into a fresh runtime, so removed tools do not remain in inherited
+layers. Node's matching Alpine libraries, certificates, licenses and shell are
+kept, alongside traced app dependencies, public assets and runtime content.
+New CI jobs build/run both image kinds on both native architectures, replay the
+generated publication/manifest commands against loopback registries, and compare
+uncompressed image size against the old runtime bases with identical site data.
+The existing container job also tests direct combined Buildx static publication,
+both architecture pulls/HTTP serving, and the existing Next browser suite.
+
+Local verification: 329 Rust tests passed, one real-container test ignored;
+warnings-denied Clippy, formatting, isolated native runtime acceptance, existing
+image-argument acceptance, all six generated release-workflow comparisons, and
+12 combined generated workflows through actionlint passed. Docs deep/strict
+checks passed all 55 routes and 23 examples. An initial parallel Rust run hit
+three known local fake-shell info-probe timeouts; the full serial run passed.
+No local Docker or browser was used. Actual image sizes and final CI acceptance
+remain pending for this branch; do not claim measured savings or a merge yet.
+Remaining CLI areas include additional providers and broader import fidelity;
+release publication and Netlify production migration remain separate decisions.
+
+Prior milestone evidence: PR #67 merged as `557d8b6` after all 13 checks passed
+in run `41882538968` attempt 2 on `ba37a8a`; merge/head trees match. The first
+attempt's existing Docker info timeout recovered on retry without a code change.
+Main base-image run `41889745285` passed; main CI `41889745157` was still running
+at this entry. The Netlify hosting-comment hydration issue remains external.
+
+
+### Combined publication — first CI fixture correction, 2026-11-04
+
+[PR #68](https://github.com/mylife-inc/Zellij/pull/68) tracks this milestone.
+Compatibility correction `c215266` preserves Node's original container entrypoint
+in the trimmed runtime; all 25 engine tests passed afterward. Run `41893692905`
+on `ec35452` built/pushed/pulled static and Next images on both native Linux
+architectures. Static serving and size comparison passed. The new Next acceptance
+fixture then requested `/index.html`, but the portable-to-hosted adapter maps the
+home page to `/` (confirmed in source and the generated route table). The server
+started successfully; the fixture's incorrect route caused both failures.
+The fixture now requests the renderer's actual home and reports HTTP status on
+failure. Full container acceptance, final size figures and merge remain pending.
+
+
+### Combined publication — native acceptance and size accounting, 2026-11-04
+
+Run `41894634123` on `eec6ca1` passed both native image jobs and the dependent
+combined-manifest job (`126803607170`, `126803607619`, `126805836087`). Both static
+and Next images build, push, pull, serve both documents, deny Markdown-source
+access and pass health checks on AMD64 and ARM64. The generated final command
+joins the exact platform digests. Node/npm/Yarn/header checks also pass.
+
+The first size report used Docker's Size field and called it uncompressed;
+that label is not portable between classic and containerd image stores. The
+runner-local comparison showed reductions, but raw AMD64 and ARM64 counts must
+not be compared directly. Acceptance now also pushes the identical-payload
+baseline to the disposable loopback registry and sums compressed layer sizes
+from its platform manifest. This supplies consistent download-size comparisons
+and keeps Docker-reported sizes explicitly labeled. Final compressed figures
+and full final-head CI remain pending. No live external registry was used.
+
+Prior main CI `41889745157` is now successful. Superseded PR run `41893692905`
+required force-cancellation after its macOS preview job did not stop following a
+normal cancellation request; this unblocked the corrected run, not a product fix.
+
+
+### Combined publication — final runtime footprint pass, 2026-11-04
+
+Read-only inspection of the tested AMD64 image archive confirmed that most Next
+runtime space is Node itself and traced app dependencies, with negligible source
+maps. It also exposed retained Alpine package-index caches. The final recipes
+remove those caches. Static packaging additionally removes the unused alternate
+NGINX debug executable and copies the prepared filesystem into a fresh stage so
+upstream deleted/cache layers do not inflate downloads. NGINX's entrypoint,
+non-root user and SIGQUIT shutdown signal are explicitly retained. Node's
+entrypoint remains intact. Required runtime libraries and traced app dependencies
+are not pruned. Native CI verifies cache absence, NGINX startup metadata and the
+existing serving/health behavior, and measures compressed registry layers against
+the former runtime bases. No local container or browser was started.

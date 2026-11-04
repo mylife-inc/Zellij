@@ -90,6 +90,9 @@ async function container(tag, prefix, portable, publicOrigin) {
   docker(['run','-d','--name',name,'-p','127.0.0.1::3000',tag]);
   const info = JSON.parse(docker(['inspect',name]))[0];
   assert.equal(info.Config.User,'nextjs');
+  // Check the actual shipped filesystem, not just recipe text. Node and the
+  // shell/healthcheck remain; build-only package managers and headers do not.
+  docker(['exec',name,'sh','-ec','node --version; ! command -v npm; ! command -v yarn; test ! -d /usr/local/include/node; test ! -d /usr/local/lib/node_modules/npm']);
   const origin = `http://127.0.0.1:${info.NetworkSettings.Ports['3000/tcp'][0].HostPort}`;
   await ready(origin,prefix);
   if (publicOrigin) {

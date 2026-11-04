@@ -53,6 +53,105 @@ fn workflow(root: &Path) -> Value {
 }
 
 #[test]
+fn combined_publication_builds_natively_and_joins_only_successful_digest_outputs() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    for kind in ["static", "next", "legacy"] {
+        site(
+            root,
+            "docs/Named manual",
+            &format!(
+                "ci: {{zel-version: 0.2.0-rc.2}}\nimage: {{name: 'registry.example:5000/acme/docs:v1', platform: all}}\npublish: {{action: push, image: {}}}\n",
+                if kind == "legacy" { "next" } else { kind }
+            ),
+        );
+        let file = "docs/Named manual/delivery.yaml";
+        fs::rename(root.join("docs/Named manual/zel.yaml"), root.join(file)).unwrap();
+        let mut args = vec![
+            "ci",
+            "--config",
+            file,
+            "--force",
+            "--features",
+            "none",
+            "--build-arg",
+            "LABEL=日本語 $(literal) =",
+        ];
+        if kind == "legacy" {
+            args.extend(["--target", "image"]);
+        }
+        run(root, &args, 0);
+        let doc = workflow(root);
+        assert!(!doc.to_string().contains("qemu"));
+        let verify = &doc["jobs"]["verify"];
+        assert_eq!(
+            verify["strategy"]["matrix"]["include"]
+                .as_array()
+                .unwrap()
+                .len(),
+            2
+        );
+        assert!(!verify.to_string().contains("secrets."));
+        assert!(!verify.to_string().contains("zel image push"));
+        for (arch, runner) in [("amd64", "ubuntu-latest"), ("arm64", "ubuntu-24.04-arm")] {
+            let job = &doc["jobs"][format!("publish_{arch}")];
+            assert_eq!(job["runs-on"], runner);
+            assert_eq!(job["outputs"]["image"], "${{ steps.image.outputs.image }}");
+            let steps = job["steps"].as_array().unwrap();
+            let build = steps.last().unwrap();
+            let script = build["run"].as_str().unwrap();
+            assert!(script.contains(&format!("--platform linux/{arch}")));
+            assert!(script.contains("--features none --build-arg \"$ZEL_IMAGE_ARG_0\""));
+            assert!(script.contains("--config \"$SITE_CONFIG\""));
+            assert!(script.contains("${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"));
+            assert!(script.contains(".RepoDigests 0"));
+            assert!(!script.contains("日本語") && !script.contains(":v1"));
+            assert!(
+                job["if"]
+                    .as_str()
+                    .unwrap()
+                    .contains("github.ref == 'refs/heads/main'")
+            );
+            assert_eq!(
+                script
+                    .lines()
+                    .find(|line| line.starts_with("zel image push"))
+                    .unwrap(),
+                "zel image push \"$BUILD_TAG\""
+            );
+            if kind != "legacy" {
+                assert_eq!(
+                    build["env"]["IMAGE_REPOSITORY"],
+                    "registry.example:5000/acme/docs"
+                );
+            }
+        }
+        let publish = &doc["jobs"]["publish"];
+        assert_eq!(
+            publish["needs"],
+            serde_json::json!(["publish_amd64", "publish_arm64"])
+        );
+        let final_step = publish["steps"].as_array().unwrap().last().unwrap();
+        assert_eq!(
+            final_step["env"]["ARM64_IMAGE"],
+            "${{ needs.publish_arm64.outputs.image }}"
+        );
+        let script = final_step["run"].as_str().unwrap();
+        assert!(script.contains("--tag \"$IMAGE_TAG\" \"$AMD64_IMAGE\" \"$ARM64_IMAGE\""));
+        assert!(!script.contains("--build-arg") && !script.contains("zel "));
+        // An older release cannot run these workflows; preserve the written file.
+        let before = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+        args.extend(["--zel-version", "0.2.0-rc.1"]);
+        run(root, &args, 2);
+        assert_eq!(
+            fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+            before
+        );
+    }
+}
+
+#[test]
 fn image_build_arguments_are_quoted_data_in_both_jobs_and_require_image_delivery() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();

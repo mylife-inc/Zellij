@@ -167,7 +167,7 @@ CLI and compatible engine; they are absent from candidate `0.2.0-rc.1`.
 | --- | --- |
 | `[site]` | Configured site root; otherwise use the standard discovery order |
 | `--tag <reference>` | Override `image.name` for both build and push |
-| `--platform <platform>` | Override `image.platform` for image publication; choose `linux/amd64` or `linux/arm64` |
+| `--platform <platform>` | Override `image.platform`; choose `linux/amd64`, `linux/arm64`, or `all` for one tag with both |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
@@ -185,15 +185,19 @@ or the destination exists.
 
 ## Remaining delivery work
 
-Other providers and combined multi-platform image publication remain pending.
+Other deployment providers remain pending.
 The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
 `zel ci [site]`, with local-only generation and explicit credential provisioning.
 
 
 Image plans include the effective platform in `--dry-run` output. Publication
-builds once for that architecture, then pushes the result. A failed build never
-starts a push. Saved image settings do not affect an explicit Netlify deployment;
+builds once for a single architecture, then pushes the result. A failed single-
+architecture build never starts a push. `zel pub --platform all` builds and
+publishes both Linux architectures directly as one tag, with the same features,
+URL settings and explicit build arguments. This mode needs a compatible builder
+and does not promise a local image; inspect the registry before retrying a failed
+attempt because layers may have uploaded. Saved image settings do not affect an explicit Netlify deployment;
 passing `--platform` to Netlify is rejected. See
 [platform prerequisites](/cli/image#select-the-image-platform).
 
