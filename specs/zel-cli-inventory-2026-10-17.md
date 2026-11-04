@@ -1254,3 +1254,46 @@ Remaining CLI scope includes additional deployment and CI providers, combined
 multi-platform image manifests/build arguments, broader import fidelity,
 hosted dev host/browser options, and advanced build overrides. The Netlify
 hosting-injected hydration failure remains a separate provider issue.
+
+
+### Development host and browser options — 2026-11-03
+
+Implementation `222ffda` adds `zel dev --host`, `--open` and
+`--browser <executable>` for portable and hosted sites. Defaults remain portable
+loopback (`127.0.0.1`) and hosted IPv4 wildcard (`0.0.0.0`). `localhost` and
+literal IPv4/IPv6 addresses are accepted; wildcard browser URLs use loopback.
+Portable preview validates request hosts against the connection's local address,
+including dual-stack address normalization, while retaining path/source guards.
+
+Hosted development owns a uniquely named container. Successful engine preparation
+publishes its session and current `basePath` with the development revision. The
+CLI confirms both container metadata and the matching HTTP response before
+announcing/opening the URL, once per session. Failed startup, occupied ports and
+unrelated listeners cannot cause a browser launch. Current engine metadata and
+a reachable published port are required; after five minutes without confirmation,
+manual-opening guidance is printed and development continues. Ctrl-C uses bounded
+runtime stop/removal, reaps the foreground client and retains the dependency cache.
+Quiet cancellation does not replay runtime logs as an unexpected failure.
+
+Local verification: 322 Rust tests passed (one real-container test intentionally
+ignored), warnings-denied Clippy, formatting, 374 engine tests, workspace
+typechecks and package build. All 55 documentation routes and 23 examples pass
+deep/strict checks. Native fake-runtime/browser acceptance passed IPv4/IPv6,
+readiness delay, prefix handling, one-time launch, wrong-session rejection,
+startup/port/browser failures, quiet mode and cancellation during startup/serving.
+No local Docker or GUI browser was used. The new native acceptance runs on all
+three CI operating systems; real-container/browser coverage now checks explicit
+loopback publishing, prefixed browser opening and container/port cleanup. CI
+results must be checked before merging; this entry records local evidence only.
+
+Prior milestones are now merged: PR #62 as `e6a83bbc7fff5ed383d146a04fa2b5c25d83bb29`
+with all 13 checks passing in run `41780233137` on `caf5e3c`; PR #63 as
+`a3a1571a2a479b8d8dd679a30b31a23b1c3afe21` with all 13 passing in `41780276435`
+on `09d1b65`. Each merge tree matches its tested head. Main `a3a1571` CI
+`41782982430` and Base image `41782982399` also passed. Earlier failed runs remain
+part of the dated history above.
+
+Remaining CLI scope: advanced build overrides, image build arguments and combined
+multi-platform manifests, additional deployment/CI providers, and broader import
+coverage/fidelity. The Netlify hosting-injected hydration issue remains external.
+No release publication, production deployment or domain change is included.
