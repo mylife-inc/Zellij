@@ -145,6 +145,66 @@ fn dry_run_reports_assets_without_creating_destination() {
 }
 
 #[test]
+fn explicit_heading_links_and_title_anchors_survive_both_imports() {
+    for docusaurus in [false, true] {
+        let temp = tempfile::tempdir().unwrap();
+        let source = temp.path().join("source");
+        let out = temp.path().join("out");
+        fixture(&source, docusaurus);
+        write(
+            &source,
+            "docs/index.md",
+            "# Welcome {#welcome}\n\n[Title](#welcome)\n\n[Install](02-Setup/APIReference.md#install-stable)\n\n[Setext](02-Setup/APIReference.md#setext)\n\n````md\n```\n# Literal {#literal}\n````\n",
+        );
+        write(
+            &source,
+            if docusaurus {
+                "docs/02-Setup/APIReference.mdx"
+            } else {
+                "docs/02-Setup/APIReference.md"
+            },
+            "# Reference {#reference}\n\n## Install **now** {#install-stable}\n\nRead [home](../index.md#welcome).\n\nSetext {#setext}\n------\n\nMore.\n",
+        );
+        success(convert(&source, &out, &[]));
+        let home = fs::read_to_string(out.join("01-guide/index.mdx")).unwrap();
+        assert!(home.contains("title: \"Welcome\""), "{home}");
+        assert!(home.contains("<div id=\"welcome\" />"), "{home}");
+        assert!(!home.contains("# Welcome"), "{home}");
+        assert!(home.contains("[Install](</guide/setup/api-reference#install-stable>)"));
+        assert!(home.contains("# Literal {#literal}"));
+        let page = fs::read_to_string(out.join("01-guide/02-Setup/APIReference.mdx")).unwrap();
+        assert!(
+            page.contains("<h2 id=\"install-stable\">Install **now**</h2>"),
+            "{page}"
+        );
+        assert!(page.contains("<h2 id=\"setext\">Setext</h2>"), "{page}");
+        assert!(page.contains("[home](</guide#welcome>)"), "{page}");
+    }
+}
+
+#[test]
+fn duplicate_or_unsafe_imported_heading_ids_leave_destination_untouched() {
+    for markdown in [
+        "## One {#same}\n\n## Two {#same}\n",
+        "## Unsafe {#bad\"id}\n",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let source = temp.path().join("source");
+        let out = temp.path().join("out");
+        fixture(&source, false);
+        write(&source, "docs/index.md", markdown);
+        let output = convert(&source, &out, &[]);
+        assert!(!output.status.success());
+        assert!(String::from_utf8_lossy(&output.stderr).contains("heading ID"));
+        assert!(!out.exists());
+        assert_eq!(
+            fs::read_to_string(source.join("docs/index.md")).unwrap(),
+            markdown
+        );
+    }
+}
+
+#[test]
 fn missing_unlisted_and_html_references_are_reported_without_copying_orphans() {
     let temp = tempfile::tempdir().unwrap();
     let source = temp.path().join("source");

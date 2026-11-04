@@ -5,7 +5,6 @@ use crate::{
     Conversion, ConvertOptions, OutputAsset, Unmapped,
     emit::{slug_for, split_frontmatter},
     material::demote_material,
-    mdx::make_mdx_safe,
     model::DocTree,
 };
 use camino::{Utf8Path, Utf8PathBuf};
@@ -410,8 +409,10 @@ pub(crate) fn rewrite(
             let (_, old_body) = split_frontmatter(&file.body);
             let prefix_len = file.body.len() - old_body.len();
             file.body.truncate(prefix_len);
-            file.body
-                .push_str(make_mdx_safe(&rewritten).trim_start_matches('\n'));
+            let rendered = crate::headings::render(&rewritten).map_err(|error| {
+                zellij_core::Error::InvalidArgument(format!("{source}: {error}"))
+            })?;
+            file.body.push_str(rendered.trim_start_matches('\n'));
         }
     }
     conversion.assets = resolver
@@ -421,7 +422,7 @@ pub(crate) fn rewrite(
         .collect();
     conversion.unmapped.extend(resolver.unmapped);
     if resolver.fragments {
-        conversion.notes.push("Link fragments were retained. Review source-specific heading IDs and links to a leading H1 (Zellij renders that title outside the Markdown body); those anchors are not translated automatically.".into());
+        conversion.notes.push("Link fragments and explicit heading IDs ({#id}) were retained. Review source/plugin-generated heading IDs and links to leading H1s without explicit IDs; automatic anchor rules can differ.".into());
     }
     Ok(())
 }

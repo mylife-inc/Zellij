@@ -1,0 +1,57 @@
+{
+  "recorded": "2026-11-04",
+  "pullRequest": "https://github.com/mylife-inc/Zellij/pull/68",
+  "testedHead": "f5c0a5c30b3e28871d25ae9a9a147e51d36dc718",
+  "mergeCommit": "e7b0d7987787ee4e0856bb3d3edb280eaec0c9ae",
+  "identicalTrees": true,
+  "ciRun": "https://github.com/mylife-inc/Zellij/actions/runs/41897666269",
+  "successfulChecks": 16,
+  "measurement": "Compressed registry layer bytes for identical two-page fixture payloads, excluding manifests/configuration and attestations. Docker-reported sizes use different store accounting on the runners and must not be compared across architectures.",
+  "nativeImageJobs": {
+    "amd64": 126811936697,
+    "arm64": 126811936440
+  },
+  "combinedManifestJob": 126813398092,
+  "sizes": [
+    {
+      "kind": "static",
+      "arch": "arm64",
+      "dockerReportedBytes": 13342434,
+      "previousDockerReportedBytes": 61660769,
+      "currentCompressedBytes": 6963919,
+      "previousCompressedBytes": 27499578,
+      "savedCompressedBytes": 20535659,
+      "reductionPercent": 74.7
+    },
+    {
+      "kind": "next",
+      "arch": "arm64",
+      "dockerReportedBytes": 209551094,
+      "previousDockerReportedBytes": 235917363,
+      "currentCompressedBytes": 75871267,
+      "previousCompressedBytes": 84315310,
+      "savedCompressedBytes": 8444043,
+      "reductionPercent": 10.0
+    },
+    {
+      "kind": "static",
+      "arch": "amd64",
+      "dockerReportedBytes": 6619395,
+      "previousDockerReportedBytes": 27144207,
+      "currentCompressedBytes": 6616115,
+      "previousCompressedBytes": 27126906,
+      "savedCompressedBytes": 20510791,
+      "reductionPercent": 75.6
+    },
+    {
+      "kind": "next",
+      "arch": "amd64",
+      "dockerReportedBytes": 75815504,
+      "previousDockerReportedBytes": 84279380,
+      "currentCompressedBytes": 75809525,
+      "previousCompressedBytes": 84270409,
+      "savedCompressedBytes": 8460884,
+      "reductionPercent": 10.0
+    }
+  ]
+}
