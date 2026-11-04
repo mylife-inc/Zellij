@@ -13,7 +13,7 @@ use zellij_core::process::CommandExt;
 use zellij_core::{Error, Result, features::Features};
 
 use crate::runtime::{METADATA_TIMEOUT, Probe, Runtime, probe_output, probe_status};
-use crate::{BuildMode, CheckOptions, CheckReport, Engine};
+use crate::{BuildMode, CheckOptions, CheckReport, Engine, HostedCheckReport};
 
 /// Where the engine's own CLI lives inside the image.
 const ENGINE_CLI: &str = "/opt/zellij/bin/zellij.mjs";
@@ -77,6 +77,53 @@ fn bind_path(path: &Utf8Path) -> String {
 }
 
 impl ContainerEngine {
+    pub fn check_json(
+        &self,
+        content: &Utf8Path,
+        options: CheckOptions,
+    ) -> Result<HostedCheckReport> {
+        let output = self.run_check(content, options, true)?;
+        HostedCheckReport::decode(
+            &output.stdout,
+            output.status.code(),
+            MOUNTED_CONTENT,
+            content,
+            options,
+        )
+    }
+
+    fn run_check(
+        &self,
+        content: &Utf8Path,
+        options: CheckOptions,
+        json: bool,
+    ) -> Result<std::process::Output> {
+        let mount = Self::content_mount(content)?;
+        let output = self
+            .run_command()
+            .args(["--rm", "-v", &mount, &self.image])
+            .args([
+                "sh",
+                "-c",
+                &guarded(
+                    MOUNTED_CONTENT,
+                    &format!(
+                        "exec node {ENGINE_CLI} check {MOUNTED_CONTENT}{}{}{}",
+                        if options.deep { " --deep" } else { "" },
+                        if options.strict { " --strict" } else { "" },
+                        if json { " --json" } else { "" },
+                    ),
+                ),
+            ])
+            .output()?;
+        if output.status.code() == Some(EMPTY_MOUNT) {
+            return Err(Error::MountEmpty {
+                path: content.to_owned(),
+            });
+        }
+        Ok(output)
+    }
+
     pub fn new(runtime: Runtime, image: impl Into<String>) -> Self {
         Self {
             runtime,
@@ -387,30 +434,7 @@ fn guarded(mount: &str, command: &str) -> String {
 
 impl Engine for ContainerEngine {
     fn check(&self, content: &Utf8Path, options: CheckOptions) -> Result<CheckReport> {
-        let mount = Self::content_mount(content)?;
-
-        let output = self
-            .run_command()
-            .args(["--rm", "-v", &mount, &self.image])
-            .args([
-                "sh",
-                "-c",
-                &guarded(
-                    MOUNTED_CONTENT,
-                    &format!(
-                        "exec node {ENGINE_CLI} check {MOUNTED_CONTENT}{}{}",
-                        if options.deep { " --deep" } else { "" },
-                        if options.strict { " --strict" } else { "" }
-                    ),
-                ),
-            ])
-            .output()?;
-
-        if output.status.code() == Some(EMPTY_MOUNT) {
-            return Err(Error::MountEmpty {
-                path: content.to_owned(),
-            });
-        }
+        let output = self.run_check(content, options, false)?;
 
         // The engine prints its findings to both streams, and a reader wants
         // them in one piece rather than sorted by which one they came from.

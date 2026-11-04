@@ -11,6 +11,10 @@ fn run(root: &Path, args: &[&str]) -> Output {
         .current_dir(root)
         .args(args)
         .env("PATH", root.join("no-external-tools"))
+        // Conflicting explicit endpoints fail before probing even a runtime
+        // discoverable through Windows' executable-directory search.
+        .env("DOCKER_HOST", "unix:///fixture-docker.sock")
+        .env("CONTAINER_HOST", "unix:///fixture-podman.sock")
         .output()
         .unwrap()
 }
@@ -182,15 +186,15 @@ fn strict_and_invalid_checks_have_nonzero_exits_and_valid_json() {
 }
 
 #[test]
-fn check_target_selection_matches_build_and_hosted_json_fails_before_execution() {
+fn check_target_selection_matches_build_and_hosted_json_reports_missing_runtime() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     fs::write(root.join("README.md"), "# Home\n").unwrap();
     fs::write(root.join("site.yaml"), "name: Hosted\n").unwrap();
-    let hosted = run(root, &["check", ".", "--json"]);
-    assert_eq!(hosted.status.code(), Some(2));
-    assert!(hosted.stdout.is_empty());
-    assert!(String::from_utf8_lossy(&hosted.stderr).contains("hosted validation"));
+    let hosted = report(root, &["check", ".", "--json"], 4);
+    assert_eq!(hosted["target"], "static");
+    assert_eq!(hosted["ok"], false);
+    assert_eq!(hosted["diagnostics"][0]["code"], "runtime");
     assert!(
         report(root, &["check", ".", "--target", "portable", "--json"], 0)["ok"]
             .as_bool()

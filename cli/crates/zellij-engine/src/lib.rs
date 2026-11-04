@@ -10,12 +10,14 @@
 
 use camino::Utf8Path;
 
+mod check_report;
 pub mod container;
 pub mod image;
 mod output;
 pub mod runtime;
 pub mod static_image;
 
+pub use check_report::{HostedCheckReport, HostedDiagnostic, Severity};
 pub use container::ContainerEngine;
 pub use runtime::Runtime;
 

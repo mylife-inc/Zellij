@@ -49,7 +49,7 @@ fn main() {
         )
     {
         zellij_core::diagnosticln!(
-            "error: --json is supported only by context, list, explain, detect, version and portable check; no command was run"
+            "error: --json is supported only by context, list, explain, detect, version and check; no command was run"
         );
         std::process::exit(2);
     }
