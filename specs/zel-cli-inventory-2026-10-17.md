@@ -1368,3 +1368,27 @@ manifests, propagation of these options to delivery/CI where appropriate,
 additional deployment/CI providers and broader import fidelity. Netlify's
 hosting-injected hydration problem remains external. No release publication,
 production deployment or domain change is included.
+
+
+### Hosted build overrides — first CI follow-up, 2026-11-04
+
+[PR #65](https://github.com/mylife-inc/Zellij/pull/65) tracks implementation
+`62ec4f1` and context/probe regression `23d471e`. In run `41814544611`, the real
+hosted override export checks passed, including canonical/sitemap/robots URLs,
+root reset, invalid-content preservation and old-engine rejection. Engine,
+showcase and all six native package/install jobs passed. The Windows portable
+job failed earlier in the existing development-options fixture with an HTTP
+`ECONNRESET`, before reaching the new override fixture.
+
+Correction `fc3397f`: the fake development server used a single socket read, which could respond and
+close before a complete request arrived. The correction explicitly sets accepted
+sockets to blocking mode (Windows can inherit listener mode), consumes bounded
+complete headers, adds a deliberately fragmented request regression, and labels
+HTTP failures. It adds no blanket retry and does not change production server
+behavior. The superseding CI run must verify Windows and full image acceptance;
+this partial run is not claimed as complete acceptance.
+
+The corrected native development suite, including fragmented headers, passes
+locally with fake browser executables and loopback sockets. JavaScript syntax,
+actionlint and diff checks pass. The new build-override fixture now runs before
+longer native preview fixtures in each platform job.
