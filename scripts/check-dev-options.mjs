@@ -48,6 +48,32 @@ async function fixture(name, renderer = 'hosted', mode = '') {
   return { folder, record, env, start };
 }
 const detail = s => `${s.stdout}\n${s.stderr}\n${JSON.stringify(s.exit)}`;
+async function response(url, label) {
+  try { return await fetch(url, { signal: AbortSignal.timeout(5000) }); }
+  catch (error) { throw new Error(`${label}: HTTP request failed at ${url}`, { cause: error }); }
+}
+async function fragmentedRequest(url) {
+  const parsed = new URL(url);
+  const socket = net.createConnection({ host: parsed.hostname, port: Number(parsed.port) });
+  let received = '';
+  socket.on('data', data => received += data);
+  const complete = new Promise((resolve, reject) => {
+    socket.once('error', reject);
+    socket.once('end', resolve);
+    socket.setTimeout(5000, () => socket.destroy(new Error('Fragmented fixture request timed out')));
+  });
+  // Attach rejection handling while deliberately pausing between TCP chunks.
+  void complete.catch(() => {});
+  try {
+    socket.write(`GET ${parsed.pathname} HTTP/1.1\r\nHost: ${parsed.host}\r\nConnection: close\r\n`);
+    await delay(100);
+    assert.equal(received, '', 'Fixture must wait for complete request headers');
+    socket.write('\r\n');
+    await complete;
+    assert.match(received, /^HTTP\/1.1 200 /);
+    assert.match(received, /"revision":"first"/);
+  } finally { socket.destroy(); }
+}
 async function stop(s) {
   if (!s.exit) { if (windows) s.child.stdin.end('stop\n'); else s.child.kill('SIGINT'); }
   await until(() => s.exit, () => `Shutdown timed out: ${detail(s)}`);
@@ -66,7 +92,7 @@ try {
     assert(!s.exit, detail(s));
     const url = (await text(f.record)).trim();
     assert.equal(new URL(url).hostname, host.includes(':') ? '[::1]' : '127.0.0.1');
-    assert.match(await (await fetch(url)).text(), /Portable development/);
+    assert.match(await (await response(url, `portable ${host}`)).text(), /Portable development/);
     await stop(s);
     await reserve(host.includes(':') ? '::1' : '127.0.0.1', Number(new URL(url).port));
   }
@@ -98,6 +124,7 @@ try {
       assert(!s.exit, detail(s));
       const url = `http://${local === '::1' ? '[::1]' : local}:${port}/products/manual/`;
       assert(s.stdout.includes(`Serving at ${url}`), detail(s));
+      if (name === 'hosted-default') await fragmentedRequest(`${url}_zellij/dev-revision.json`);
       if (opening && mode !== 'browser-failure') {
         await until(async () => await text(f.record), () => detail(s));
         assert.equal(await text(f.record), `${url}\n`);
@@ -105,7 +132,7 @@ try {
         assert.equal(await text(f.record), `${url}\n`, 'Open once per session');
       } else if (mode === 'browser-failure') {
         await until(() => s.stderr.includes('could not open the browser'), () => detail(s));
-        assert.equal((await fetch(`${url}_zellij/dev-revision.json`)).status, 200);
+        assert.equal((await response(`${url}_zellij/dev-revision.json`, name)).status, 200);
       } else assert.equal(await text(f.record), '');
     }
     await stop(s);
