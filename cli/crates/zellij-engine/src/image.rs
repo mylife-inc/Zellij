@@ -117,6 +117,7 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \
   CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+require('fs').readFileSync('/app/zellij-health-path','utf8')).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "server.js"]
 "#
     )
@@ -431,6 +432,7 @@ mod tests {
 
         assert!(out.contains("FROM node:24-alpine AS node-runtime"), "{out}");
         assert!(out.contains("FROM scratch AS runtime\nCOPY --from=node-runtime / /"));
+        assert!(out.contains("ENTRYPOINT [\"docker-entrypoint.sh\"]"));
         assert!(
             out.contains("/usr/local/lib/node_modules/npm /opt/yarn-v* /usr/local/include/node")
         );
