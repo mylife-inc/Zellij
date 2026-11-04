@@ -779,7 +779,11 @@ fn build_overrides_are_data_and_skip_only_the_requested_preflight() {
                     assert_eq!(line.contains("--no-check"), is_build && no_check, "{line}");
                     assert!(!line.contains(prefix));
                 }
-                #[cfg(unix)]
+                // Generated jobs target Ubuntu, including its Bash 4+ case
+                // conversion in legacy image publication. macOS's system Bash
+                // cannot execute that existing workflow syntax. Every platform
+                // still checks generated data and native CLI forwarding.
+                #[cfg(target_os = "linux")]
                 {
                     let capture = root.join("argv");
                     let _ = fs::remove_file(&capture);
