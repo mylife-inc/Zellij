@@ -66,12 +66,6 @@ fn capitalise(word: &str) -> String {
     }
 }
 
-/// True where a line opens or closes a fenced code block.
-fn is_fence(line: &str) -> bool {
-    let t = line.trim_start();
-    t.starts_with("```") || t.starts_with("~~~")
-}
-
 /// Strips a trailing attribute list: `[text](url){ .md-button }`.
 ///
 /// Material uses these to style links as buttons. They are not Markdown, so the
@@ -105,17 +99,11 @@ fn strip_attr_lists(line: &str) -> String {
 /// Rewrites Material's own syntax into Markdown every renderer understands.
 pub fn demote_material(source: &str) -> String {
     let mut out = String::with_capacity(source.len());
-    let mut in_fence = false;
+    let mut fence = crate::fences::Fence::default();
     let mut block: Option<usize> = None;
 
     for line in source.lines() {
-        if is_fence(line) {
-            in_fence = !in_fence;
-            out.push_str(line);
-            out.push('\n');
-            continue;
-        }
-        if in_fence {
+        if fence.contains(line) {
             out.push_str(line);
             out.push('\n');
             continue;
@@ -209,5 +197,15 @@ mod tests {
         let out = demote_material("```\n!!! note\n=== \"x\"\n```\n");
         assert!(out.contains("!!! note"), "{out}");
         assert!(out.contains("=== \"x\""), "{out}");
+    }
+
+    #[test]
+    fn inner_fences_do_not_expose_literal_material_or_heading_syntax() {
+        for source in [
+            "````md\n```\n!!! note\n## Example {#example}\n````\n",
+            "~~~md\n```\n=== \"Example\"\n~~~\n",
+        ] {
+            assert_eq!(demote_material(source), source);
+        }
     }
 }

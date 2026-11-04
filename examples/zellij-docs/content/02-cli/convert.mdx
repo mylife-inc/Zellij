@@ -128,18 +128,45 @@ that escapes the allowed root, uses a symlink, or targets Git metadata is
 rejected before output is written. Duplicate output filenames and public page
 routes are rejected too. Unlisted documents are reported, never copied as assets.
 
+Explicit IDs on document-level headings are retained. These source forms work:
+
+```md
+# Getting started {#start}
+## Installation {#install}
+## Docusaurus MDX comment {/* #mdx-install */}
+## Docusaurus HTML comment <!-- #html-install -->
+
+Setext heading {#setext}
+--------------
+```
+
+The converter writes literal MDX headings with those IDs. Links such as
+`setup.md#install` and `#install` continue to target them; heading entries in
+search and the table of contents use the same IDs. A leading title's explicit
+ID becomes an anchor below the page title, so the title appears only once.
+Formatting and links inside headings are preserved. Fenced examples remain
+literal, including examples that contain shorter code fences.
+
+IDs must be unique within a document and use letters, numbers, `_`, `-`, `.` or
+`:`. Unsupported IDs and explicitly identified headings inside lists or
+blockquotes or footnotes fail before output is written. Heading classes and other source
+attributes are not carried over. After conversion, use `zel check --deep
+--strict` to catch collisions with automatically generated or other authored
+anchors too.
+
 Missing and ambiguous targets, unmapped root-relative URLs, and HTML/JSX
 `href`/`src` attributes appear in the conversion report. They need manual work.
 JavaScript imports, custom static directories, source route overrides, and
-plugin-generated URLs are not interpreted. Fragment text is retained, but
-source-specific heading IDs and fragments targeting the document's leading H1
-need review: Zellij renders that title outside the Markdown body. Always build
+plugin-generated URLs are not interpreted. Automatically generated heading IDs
+can differ between tools, and links to a leading H1 without an explicit ID still
+need review. Add an explicit ID in the source before converting when a stable
+target is needed. Always build
 and inspect the converted site before publishing it.
 
 ## What does not come across
 
 **A landing page.** Every one of these tools describes a documentation tree.
-Zellij has that *and* marketing pages built from nineteen section types with no
+Zellij has that *and* marketing pages built from 23 section types with no
 equivalent anywhere in the source — there is no MkDocs concept that becomes a
 pricing table. So a conversion writes a faithful guide folder, a `site.yaml`
 carrying whatever identity it found, and a `pages.yaml` with one hero to build

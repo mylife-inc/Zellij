@@ -11,12 +11,6 @@
 //! looks right and fails — and the failure lands on someone who did not write
 //! the file and has no reason to suspect the conversion.
 
-/// True where a line opens or closes a fenced code block.
-fn is_fence(line: &str) -> bool {
-    let trimmed = line.trim_start();
-    trimmed.starts_with("```") || trimmed.starts_with("~~~")
-}
-
 /// True when `<` at this position begins something MDX will accept as a tag:
 /// `<div`, `</div`, `<Foo`, or a comment.
 ///
@@ -230,19 +224,22 @@ fn escape_line(line: &str, document: &str) -> String {
 
 /// Rewrites Markdown so MDX will compile it, leaving code blocks alone.
 pub fn make_mdx_safe(source: &str) -> String {
+    make_mdx_safe_in_context(source, source)
+}
+
+/// A heading replacement splits a document into passages. Balanced authored
+/// tags can span those passages, so markup detection still needs the full body.
+pub(crate) fn make_mdx_safe_in_context(source: &str, document: &str) -> String {
     let mut out = String::with_capacity(source.len());
-    let mut in_fence = false;
+    let mut fence = crate::fences::Fence::default();
 
     for line in source.lines() {
-        if is_fence(line) {
-            in_fence = !in_fence;
-            out.push_str(line);
-        } else if in_fence {
+        if fence.contains(line) {
             // Code is quoted verbatim by definition. Escaping inside a fence
             // would put backslashes into commands people copy and run.
             out.push_str(line);
         } else {
-            out.push_str(&escape_line(line, source));
+            out.push_str(&escape_line(line, document));
         }
         out.push('\n');
     }

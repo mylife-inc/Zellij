@@ -15,6 +15,25 @@ export interface Heading {
   end: number;
 }
 
+// remark-rehype passes literal JSX through to MDX's renderer. These nodes are
+// not HAST elements, but an authored <h2 id="..."> is still a real heading.
+interface LiteralHeading {
+  type: string;
+  name?: string;
+  attributes?: Array<{ type: string; name?: string; value?: unknown }>;
+}
+
+function explicitHeading(node: Root | RootContent): { id: string; depth: number } | undefined {
+  const jsx = node as LiteralHeading;
+  if (!['mdxJsxFlowElement', 'mdxJsxTextElement'].includes(jsx.type)
+    || !jsx.name || !/^h[1-6]$/.test(jsx.name)) return;
+  // A spread or expression can override the ID. Do not execute it or guess.
+  if (jsx.attributes?.some(attribute => attribute.type !== 'mdxJsxAttribute')) return;
+  const ids = jsx.attributes?.filter(attribute => attribute.name === 'id');
+  if (ids?.length !== 1 || typeof ids[0]!.value !== 'string' || !ids[0]!.value) return;
+  return { id: ids[0]!.value, depth: Number(jsx.name[1]) };
+}
+
 // Parse, but never evaluate, MDX. Preserve MDX nodes just as its renderer does
 // while converting Markdown headings to HTML and assigning rehype-slug IDs.
 function headingProcessor(remarkPlugins: PluggableList) {
@@ -53,13 +72,15 @@ export function readHeadings(source: string, options: HeadingOptions = {}): Head
   const tree = processor.runSync(processor.parse(source));
   const headings: Heading[] = [];
   function visit(node: Root | RootContent): void {
-    if (node.type === 'element' && /^h[1-6]$/.test(node.tagName)) {
+    const heading = node.type === 'element' && /^h[1-6]$/.test(node.tagName)
+      ? { id: String(node.properties.id), depth: Number(node.tagName[1]) }
+      : explicitHeading(node);
+    if (heading) {
       const start = node.position?.start.offset;
       const end = node.position?.end.offset;
       // Generated headings (e.g. the GFM footnote label) have no source passage.
       if (start !== undefined && end !== undefined) headings.push({
-        id: String(node.properties.id), text: toString(node),
-        depth: Number(node.tagName[1]), start, end,
+        ...heading, text: toString(node), start, end,
       });
     }
     if ('children' in node) for (const child of node.children) visit(child);

@@ -73,11 +73,9 @@ fn label_of<'a>(entries: &'a [Entry], source: &Utf8PathBuf) -> Option<&'a str> {
     None
 }
 
-/// The first ATX heading in a Markdown document.
+/// The first document-level H1, excluding code and source ID annotations.
 fn first_heading(body: &str) -> Option<String> {
-    body.lines()
-        .find(|line| line.starts_with("# "))
-        .map(|line| line.trim_start_matches("# ").trim().to_owned())
+    crate::headings::first_title(body)
 }
 
 /// Splits existing YAML frontmatter off a document, if it has any.

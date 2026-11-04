@@ -24,6 +24,9 @@ await build({
     export { loadSite } from './engine/packages/zellij/src/content/site';
     export { mdxOptions } from './engine/packages/zellij/src/mdx/pipeline';
     export { mdxComponents } from './engine/packages/zellij/src/mdx/components';
+    export { extractToc } from './engine/packages/zellij/src/guide/toc';
+    export { indexGuidePage } from './engine/packages/zellij/src/search/build-index';
+    export { deepCheck } from './engine/packages/zellij/src/cli/deep-check';
   `, resolveDir: repo },
   bundle: true, packages: 'external', platform: 'node', format: 'esm', jsx: 'automatic', outfile: helper,
   // Shared CJS config uses Node builtins; provide require in this ESM bundle,
@@ -33,7 +36,7 @@ await build({
     builder.onResolve({ filter: /^next\// }, ({ path: name }) => ({ path: require.resolve(name), external: true }));
   } }],
 });
-const { FolderContentSource, loadSite, mdxOptions, mdxComponents } = await import(pathToFileURL(helper));
+const { FolderContentSource, loadSite, mdxOptions, mdxComponents, extractToc, indexGuidePage, deepCheck } = await import(pathToFileURL(helper));
 await rm(cache, { recursive: true });
 const [binary, target, mode] = process.argv.slice(2);
 assert(binary && target, 'Pass a zel binary and a new fixture directory');
@@ -59,16 +62,19 @@ for (const format of ['mkdocs', 'docusaurus']) {
     await write('sidebars.js', "module.exports = {docs: ['index', '02-Setup/APIReference', '03-Café/index']};");
     await write('static/img/static.svg', asset);
   }
-  await write(`docs/02-Setup/APIReference.${format === 'mkdocs' ? 'md' : 'mdx'}`, '# Reference\n\n## Install\n\n[Home](../index.md)\n');
+  const titleId = format === 'mkdocs' ? '{#reference}' : '{/* #reference */}';
+  const installId = format === 'mkdocs' ? '{#stable-install}' : '<!-- #stable-install -->';
+  await write(`docs/02-Setup/APIReference.${format === 'mkdocs' ? 'md' : 'mdx'}`, `# Reference ${titleId}\n\n## Install\n\n[Home](../index.md#welcome)\n\n## Install **again** ${installId}\n\nA searchable installation passage.\n\nSetext [home](../index.md#welcome) {#setext}\n------\n\nA searchable setext passage.\n\n## Café {#café}\n\nUnicode passage.\n\n[Self](#stable-install)\n\n[Unicode](#caf%C3%A9)\n`);
   await write('docs/03-Café/index.md', '# Café\n\n[Reference](../02-Setup/APIReference.md)\n');
   await write('docs/media/logo.svg', asset);
   await write('docs/media/Q3 Report.pdf', pdf);
-  await write('docs/index.md', `# Welcome\n\n[Install **now**][install]\n\n[Café](03-Caf%C3%A9/index.md)\n\n![Diagram][logo]\n\n[Download](<media/Q3 Report.pdf>)\n\n[install]: 02-Setup/APIReference.md?view=all#install "Install guide"\n[logo]: media/logo.svg\n\n${format === 'docusaurus' ? '![Static](/img/static.svg)\n' : ''}`);
+  await write('docs/index.md', `# Welcome {#welcome}\n\n[Install **now**][install]\n\n[Stable install](02-Setup/APIReference.md#stable-install)\n\n[Reference title](02-Setup/APIReference.md#reference)\n\n[Setext](02-Setup/APIReference.md#setext)\n\n[Café](03-Caf%C3%A9/index.md)\n\n![Diagram][logo]\n\n[Download](<media/Q3 Report.pdf>)\n\n[install]: 02-Setup/APIReference.md?view=all#install "Install guide"\n[logo]: media/logo.svg\n\n${format === 'docusaurus' ? '![Static](/img/static.svg)\n' : ''}\n\n\`\`\`\`md\n\`\`\`\n# Literal {#literal}\n!!! note\n\`\`\`\`\n`);
   execFileSync(zel, [configured && mode === '--export' ? 'migrate' : 'convert', source, '--out', destination, '--from', format, '--layout', configured ? 'site' : 'content'], { stdio: 'inherit' });
   // A non-empty deployment prefix exercises the ordinary Markdown image path.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', { flag: 'a' });
   execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
   const site = await loadSite(new FolderContentSource({ contentDir: content }));
+  assert.deepEqual(await deepCheck(site, content), { errors: [], warnings: [] });
   assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/setup/api-reference']);
   const rendered = new Map();
   for (const page of site.guidePages) {
@@ -79,6 +85,16 @@ for (const format of ['mkdocs', 'docusaurus']) {
   assert(home.includes('href="/guide/setup/api-reference?view=all#install"'));
   assert(home.includes('href="/guide/cafe"'));
   assert(rendered.get('/guide/setup/api-reference').includes('id="install"'));
+  assert(home.includes('id="welcome"'));
+  assert(!home.includes('<h1'), 'The imported title is rendered only by the layout');
+  const reference = site.guidePages.find(page => page.route === '/guide/setup/api-reference');
+  assert.equal(reference.title, 'Reference');
+  const headingOptions = { remarkPlugins: (await mdxOptions()).mdxOptions.remarkPlugins };
+  assert.deepEqual(extractToc(reference.body, headingOptions).map(heading => heading.id), ['install', 'stable-install', 'setext', 'café']);
+  assert(indexGuidePage(reference, headingOptions).some(entry => entry.route.endsWith('#stable-install') && entry.text.includes('searchable installation')));
+  for (const id of ['reference', 'stable-install', 'setext', 'café']) {
+    assert.equal(rendered.get(reference.route).split(`id="${id}"`).length - 1, 1, `Unique rendered ID ${id}`);
+  }
   assert(home.includes('src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"'));
   assert(home.includes('href="/_zellij/assets/imported/docs/media/Q3%20Report.pdf"'));
   assert.deepEqual(await readFile(path.join(content, 'assets/imported/docs/media/Q3 Report.pdf')), pdf);
@@ -94,6 +110,10 @@ for (const format of ['mkdocs', 'docusaurus']) {
     ]) assert(html.includes(reference), `Export missing ${reference}`);
     const installed = await readFile(path.join(output, 'guide/setup/api-reference.html'), 'utf8');
     assert(installed.includes('id="install"'));
+    for (const id of ['reference', 'stable-install', 'setext', 'café']) assert(installed.includes(`id="${id}"`));
+    assert.equal((installed.match(/<h1(?:\s|>)/g) ?? []).length, 1, 'One page title after full export');
+    assert(html.includes('href="/products/docs/guide/setup/api-reference#stable-install"'));
+    assert(installed.includes('href="#stable-install"'), 'TOC links to the preserved heading');
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/media/logo.svg'), 'utf8'), asset);
     assert.deepEqual(await readFile(path.join(output, '_zellij/assets/imported/docs/media/Q3 Report.pdf')), pdf);
     if (format === 'docusaurus') {
