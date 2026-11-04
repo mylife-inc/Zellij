@@ -4,6 +4,7 @@ use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use zellij_core::{
     Error, Result,
+    build_overrides::BuildOverrides,
     ci::{Settings, Trigger},
     delivery::{ImageKind, ImagePlatform},
     features::Features,
@@ -31,6 +32,7 @@ pub struct CiOptions {
     pub publish: Publish,
     pub platform: Option<ImagePlatform>,
     pub features: Option<Features>,
+    pub overrides: BuildOverrides,
 }
 
 fn invalid(message: &str) -> Error {
@@ -62,12 +64,15 @@ fn install(version: &str) -> Value {
         "run": "set -eu\nbase=\"https://github.com/mylife-inc/releases/releases/download/zellij-$ZEL_VERSION\"\ncurl --fail --silent --show-error --location \"$base/install.sh\" --output \"$RUNNER_TEMP/zel-install.sh\" || { echo 'The pinned zel release must be published before this workflow can run.' >&2; exit 1; }\nsh \"$RUNNER_TEMP/zel-install.sh\"\nprintf '%s\\n' \"$ZEL_INSTALL_DIR\" >> \"$GITHUB_PATH\"\n"
     })
 }
-fn initial_steps(version: &str, selector: &str) -> Vec<Value> {
-    vec![
+fn initial_steps(version: &str, selector: &str, no_check: bool) -> Vec<Value> {
+    let mut steps = vec![
         json!({"uses":"actions/checkout@v7", "with":{"persist-credentials": false}}),
         install(version),
-        json!({"name":"Validate documentation", "run":format!("zel check {selector} --strict --deep")}),
-    ]
+    ];
+    if !no_check {
+        steps.push(json!({"name":"Validate documentation", "run":format!("zel check {selector} --strict --deep")}));
+    }
+    steps
 }
 fn publication_condition(settings: &Settings) -> String {
     let branch = format!("github.ref == 'refs/heads/{}'", settings.branch);
@@ -103,6 +108,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
         publish,
         platform,
         features,
+        overrides,
     } = options;
     if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
         return Err(invalid("platform requires image delivery"));
@@ -122,6 +128,34 @@ pub fn github(options: &CiOptions) -> Result<String> {
         .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
+    if !overrides.is_empty()
+        && !semver::Version::parse(version.trim_start_matches('v'))
+            .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
+    {
+        return Err(invalid(
+            "build overrides require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+        ));
+    }
+    let mut override_flags = String::new();
+    let mut override_env = serde_json::Map::new();
+    if let Some(prefix) = &overrides.base_path {
+        let prefix = prefix.to_string();
+        literal(&prefix)?;
+        override_env.insert(
+            "ZEL_BUILD_BASE_PATH".into(),
+            json!(if prefix.is_empty() { "/" } else { &prefix }),
+        );
+        override_flags.push_str(" --base-path \"$ZEL_BUILD_BASE_PATH\"");
+    }
+    if let Some(origin) = &overrides.site_url {
+        let origin = origin.to_string();
+        literal(&origin)?;
+        override_env.insert("ZEL_BUILD_SITE_URL".into(), json!(origin));
+        override_flags.push_str(" --site-url \"$ZEL_BUILD_SITE_URL\"");
+    }
+    if overrides.no_check {
+        override_flags.push_str(" --no-check");
+    }
     literal(site_root)?;
     if let Some(config) = config {
         literal(config)?;
@@ -181,7 +215,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
     }
     let condition = publication_condition(settings);
     let delivering = !matches!(publish, Publish::Nothing);
-    let mut steps = initial_steps(&version, selector);
+    let mut steps = initial_steps(&version, selector, overrides.no_check);
     let build = match publish {
         Publish::Image { kind, .. } => format!(
             "zel image {} {selector} --tag zel-ci-check:local",
@@ -190,11 +224,11 @@ pub fn github(options: &CiOptions) -> Result<String> {
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
-    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}{features_flag}")}));
+    steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}{features_flag}{override_flags}")}));
     let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
     if delivering {
         jobs["verify"]["if"] = json!(format!("${{{{ !({condition}) }}}}"));
-        let mut steps = initial_steps(&version, selector);
+        let mut steps = initial_steps(&version, selector, overrides.no_check);
         let mut permissions = json!({"contents":"read"});
         match publish {
             Publish::Image { .. } | Publish::LegacyImage => {
@@ -228,9 +262,9 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
                 }}));
                 if let Some(tag) = tag {
-                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}{features_flag}")}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"IMAGE_TAG": tag}, "run":format!("zel publish {selector} --tag \"$IMAGE_TAG\"{platform_flag}{features_flag}{override_flags}")}));
                 } else {
-                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}{features_flag}"))}));
+                    steps.push(json!({"name":"Build once and publish", "env":{"REPOSITORY":"${{ github.repository }}", "REVISION":"${{ github.sha }}"}, "run":"TAG=\"ghcr.io/${REPOSITORY,,}/docs:$REVISION\"\nzel image next \"$SITE_ROOT\" --tag \"$TAG\"\nzel image push \"$TAG\"\n".replace("\"$SITE_ROOT\"", selector).replace("--tag \"$TAG\"", &format!("--tag \"$TAG\"{platform_flag}{features_flag}{override_flags}"))}));
                 }
             }
             Publish::Netlify { site_id } => {
@@ -241,7 +275,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
                 steps.push(json!({"name":"Build once and deploy", "env":{
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
-                }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}")}));
+                }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
             }
             Publish::Nothing => unreachable!(),
         }
@@ -262,6 +296,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if let Some(config) = config {
         doc["env"]["SITE_CONFIG"] = json!(format!("./{config}"));
     }
+    doc["env"].as_object_mut().unwrap().extend(override_env);
     let yaml = serde_yaml_ng::to_string(&doc)
         .map_err(|e| invalid(&format!("cannot serialize workflow: {e}")))?;
     Ok(format!(
@@ -281,6 +316,7 @@ mod tests {
             publish,
             platform: None,
             features: None,
+            overrides: BuildOverrides::default(),
         }
     }
 

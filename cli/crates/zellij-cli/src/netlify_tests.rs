@@ -290,7 +290,7 @@ fn portable_delivery_builds_generated_files_once_and_preserves_previous_output()
         &server.client(),
         "site123",
         false,
-        None,
+        &zellij_engine::BuildOptions::default(),
     )
     .unwrap();
     assert_eq!(
@@ -312,7 +312,7 @@ fn portable_delivery_builds_generated_files_once_and_preserves_previous_output()
             &server.client(),
             "site123",
             false,
-            None
+            &zellij_engine::BuildOptions::default()
         )
         .is_err()
     );
@@ -365,7 +365,7 @@ fn portable_delivery_uploads_the_selected_features_without_persisting_overrides(
             &server.client(),
             "site123",
             false,
-            selection.map(|s| s.parse().unwrap()),
+            &zellij_engine::BuildOptions::with_features(selection.map(|s| s.parse().unwrap())),
         )
         .unwrap();
         let requests = server.requests.lock().unwrap();
@@ -384,6 +384,63 @@ fn portable_delivery_uploads_the_selected_features_without_persisting_overrides(
             "previous output"
         );
     }
+}
+
+#[test]
+fn build_overrides_reject_portable_delivery_and_keep_remote_preflight() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(tmp.path()).unwrap();
+    write(root, "zel.yaml", "version: 1\nrenderer: portable\n");
+    write(root, "content/index.md", "# Preserved\n");
+    let options = zellij_engine::BuildOptions {
+        overrides: zellij_core::build_overrides::BuildOverrides {
+            base_path: Some("/manual".parse().unwrap()),
+            site_url: Some("https://docs.example".parse().unwrap()),
+            no_check: true,
+        },
+        ..Default::default()
+    };
+    let server =
+        Server::new(|_, _| panic!("portable override rejection must precede remote access"));
+    let site = zellij_core::site::Site::load(root).unwrap();
+    let error = crate::delivery::deploy(
+        &site,
+        &site.content,
+        &server.client(),
+        "site123",
+        false,
+        &options,
+    )
+    .unwrap_err();
+    assert!(error.to_string().contains("hosted rendering"));
+    assert!(server.requests.lock().unwrap().is_empty());
+
+    write(root, "zel.yaml", "version: 1\nrenderer: hosted\n");
+    let server = Server::new(|request, _| {
+        assert_eq!(request.method, "GET");
+        Reply {
+            status: 403,
+            body: json!({}),
+            redirect: None,
+        }
+    });
+    let site = zellij_core::site::Site::load(root).unwrap();
+    let error = crate::delivery::deploy(
+        &site,
+        &site.content,
+        &server.client(),
+        "site123",
+        false,
+        &options,
+    )
+    .unwrap_err();
+    assert!(error.to_string().contains("HTTP 403"));
+    assert_eq!(server.requests.lock().unwrap().len(), 1);
+    assert!(!root.join("site").exists());
+    assert_eq!(
+        std::fs::read_to_string(root.join("content/index.md")).unwrap(),
+        "# Preserved\n"
+    );
 }
 
 #[test]
@@ -511,7 +568,7 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     write(
         root,
         "content/site.yaml",
-        "name: Netlify acceptance\nhome: 01-guide\nbasePath: /products/.docs\nnav: {search: true, themeToggle: true}\n",
+        "name: Netlify acceptance\nhome: 01-guide\nbasePath: /authored\nsiteUrl: https://authored.example\nnav: {search: true, themeToggle: true}\n",
     );
     write(
         root,
@@ -612,7 +669,14 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         &server.client(),
         "site123",
         false,
-        Some("all".parse().unwrap()),
+        &zellij_engine::BuildOptions {
+            features: Some("all".parse().unwrap()),
+            overrides: zellij_core::build_overrides::BuildOverrides {
+                base_path: Some("/products/.docs".parse().unwrap()),
+                site_url: Some("https://deploy.example".parse().unwrap()),
+                no_check: true,
+            },
+        },
     )
     .unwrap();
     let files = manifest.lock().unwrap();
@@ -635,6 +699,16 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
     // Check actual links/assets in the rendered guide, not the redirect page.
     let manual = String::from_utf8_lossy(&bytes[&files["/products/.docs/manual.html"]]);
     assert!(manual.contains("Netlify acceptance"));
+    assert!(manual.contains("href=\"https://deploy.example/products/.docs/manual\""));
+    assert!(
+        String::from_utf8_lossy(&bytes[&files["/products/.docs/sitemap.xml"]])
+            .contains("https://deploy.example/products/.docs/manual")
+    );
+    assert!(
+        std::fs::read_to_string(root.join("content/site.yaml"))
+            .unwrap()
+            .contains("basePath: /authored\nsiteUrl: https://authored.example")
+    );
     assert!(manual.contains("mjx-container") && manual.contains("zellij-mermaid"));
     assert!(manual.contains("/products/.docs/manual/next"));
     assert!(manual.contains("/products/.docs/_zellij/assets/logo.svg"));
@@ -659,4 +733,40 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         std::fs::read_to_string(root.join("site/previous.txt")).unwrap(),
         "previous output"
     );
+    drop(files);
+    drop(bytes);
+    let requests = server.requests.lock().unwrap().len();
+    write(root, "content/site.yaml", "name: []\n");
+    let options = zellij_engine::BuildOptions {
+        overrides: zellij_core::build_overrides::BuildOverrides {
+            no_check: true,
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    assert!(
+        crate::delivery::deploy(
+            &site,
+            &site.content,
+            &server.client(),
+            "site123",
+            false,
+            &options
+        )
+        .is_err()
+    );
+    assert_eq!(
+        server.requests.lock().unwrap().len(),
+        requests + 1,
+        "only site preflight may run; invalid rendering must not create a deployment"
+    );
+    assert_eq!(
+        std::fs::read_to_string(root.join("site/previous.txt")).unwrap(),
+        "previous output"
+    );
+    assert_eq!(
+        std::fs::read_to_string(root.join("content/site.yaml")).unwrap(),
+        "name: []\n"
+    );
+    assert_eq!(std::fs::read_dir(root).unwrap().count(), 3);
 }

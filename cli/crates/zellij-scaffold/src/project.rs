@@ -100,6 +100,7 @@ pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
         pipeline::github(&pipeline::CiOptions {
             platform: None,
             features: None,
+            overrides: Default::default(),
             config: None,
             site_root: docs_dir.clone(),
             settings: zellij_core::ci::Settings::default(),

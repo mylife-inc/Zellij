@@ -27,21 +27,28 @@ try {
   }
   const registry = await localRegistry(docker, containers, suffix);
   for (const kind of ['static', 'next']) {
+    const prefix = `/manual-${kind}`;
     const tag = `${registry}/acceptance/ship-${kind}:${suffix}`;
     images.push(tag);
-    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, '--features', kind === 'static' ? 'all' : 'none']);
+    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, '--features', kind === 'static' ? 'all' : 'none', '--base-path', prefix, '--site-url', 'https://imported.example', '--no-check']);
     pullPublishedImage(docker, tag);
     const name = `zel-ship-${kind}-${suffix}`;
     containers.push(name);
     docker(['run', '-d', '--name', name, '-p', '127.0.0.1::3000', tag]);
     const info = JSON.parse(docker(['inspect', name]))[0];
-    const origin = `http://127.0.0.1:${info.NetworkSettings.Ports['3000/tcp'][0].HostPort}`;
+    const host = `http://127.0.0.1:${info.NetworkSettings.Ports['3000/tcp'][0].HostPort}`;
+    const origin = host + prefix;
     let ready = false;
     for (let n = 0; n < 120; n++) {
       try { if ((await fetch(`${origin}/guide`, { signal: AbortSignal.timeout(1000) })).ok) { ready = true; break; } } catch { /* startup */ }
       await new Promise(resolve => setTimeout(resolve, 250));
     }
     assert(ready, `Server did not start: ${docker(['logs', name])}`);
+    docker(['exec', name, 'sh', '-c', info.Config.Healthcheck.Test[1]]);
+    const html = await (await fetch(`${origin}/guide`)).text();
+    assert(html.includes(`href="https://imported.example${prefix}/guide"`));
+    assert((await (await fetch(`${origin}/sitemap.xml`)).text()).includes(`https://imported.example${prefix}/guide`));
+    assert.equal((await fetch(`${host}/guide`)).status, 404);
     const browser = await chromium.launch();
     try {
       const page = await browser.newPage();
@@ -68,7 +75,8 @@ try {
     assert.equal(await (await fetch(`${origin}/_zellij/assets/imported/docs/logo.svg`)).text(), source['docs/logo.svg']);
     for (const url of ['/zel.yaml', '/site.yaml', '/docs/index.md']) assert.equal((await fetch(origin + url)).status, 404);
     for (const [relative, body] of Object.entries(source)) assert.equal(await readFile(path.join(root, 'source', relative), 'utf8'), body);
-    assert(!(await readFile(path.join(root, `manual ${kind}`, 'zel.yaml'), 'utf8')).includes('features'));
+    const saved = await readFile(path.join(root, `manual ${kind}`, 'zel.yaml'), 'utf8');
+    assert(!/features|base-path|site-url|no-check|imported\.example/.test(saved));
     run(['pub', `manual ${kind}`, '--dry-run']);
     console.log(`ship ${kind}: imported, published, pulled and verified navigation/assets; source unchanged.`);
   }

@@ -141,6 +141,26 @@ defaults again. Hosted builds require a compatible engine supporting feature
 selection; an incompatible engine stops before publication. Content validation
 and credential/runtime checks still apply.
 
+## Hosted URL and preflight overrides
+
+The current source supports `--base-path`, `--site-url` and `--no-check` for
+hosted publication and portable Markdown adapted into a Next.js image:
+
+```bash
+zel pub docs/hosted --base-path /manual --site-url https://docs.example.com --dry-run
+zel pub docs/hosted --base-path /manual --site-url https://docs.example.com
+zel pub docs/hosted --base-path / --no-check
+```
+
+These flags follow the [build override rules](/cli/build#hosted-url-and-validation-overrides)
+and appear in dry-run plans. They reach the single build before push/upload,
+without changing source or saved settings. `/` clears the authored prefix.
+Portable static images and portable Netlify exports reject them before runtime,
+credential or remote checks. `--no-check` skips only content preflight;
+preparation, rendering, runtime and credential checks still apply. Failed builds
+never push an image or create a Netlify deployment. The flags require a current
+CLI and compatible engine; they are absent from candidate `0.2.0-rc.1`.
+
 ## Options
 
 | Option | Meaning |
@@ -149,6 +169,9 @@ and credential/runtime checks still apply.
 | `--tag <reference>` | Override `image.name` for both build and push |
 | `--platform <platform>` | Override `image.platform` for image publication; choose `linux/amd64` or `linux/arm64` |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
+| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
+| `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
 | `--to netlify` | Select static-site deployment; rejected for a saved image-push plan |
 | `--site-id <id-or-domain>` | Netlify destination override; `--site` is equivalent |

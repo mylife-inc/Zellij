@@ -144,6 +144,29 @@ source, configuration and previous local output remain unchanged. A later
 invocation without the flag uses saved/default features again. Explicit `none`
 disables both optional renderers, even when they are enabled by default.
 
+## Hosted URL and preflight overrides
+
+The current source accepts the hosted [build overrides](/cli/build#hosted-url-and-validation-overrides)
+with `netlify`, `deploy netlify`, and saved `publish`/`deploy` commands:
+
+```bash
+zel netlify docs/hosted --site-id YOUR_PROJECT_ID --base-path /manual --site-url https://docs.example.com --dry-run
+zel netlify docs/hosted --site-id YOUR_PROJECT_ID --base-path /manual --site-url https://docs.example.com
+```
+
+The override controls uploaded paths, canonical URLs, sitemap and robots
+metadata. The reported preview URL includes the actual exported prefix. Use
+`--base-path /` to clear a saved prefix. The public origin is an SEO setting;
+it does not create or move a Netlify domain or change which project receives
+the deployment. Draft previews remain the default.
+
+`--no-check` skips the separate content preflight. Netlify credentials and site
+access are still checked before building; preparation and rendering still
+validate content. A failed build creates no remote deployment and retains the
+previous local output. Portable Netlify output rejects these three flags.
+Authored configuration remains unchanged. These flags require a current CLI
+and compatible engine; candidate `0.2.0-rc.1` does not include them.
+
 ## Options
 
 | Option | Meaning |
@@ -153,6 +176,9 @@ disables both optional renderers, even when they are enabled by default.
 | `--site-id <id-or-domain>` | Destination; `--site` is equivalent |
 | `--prod` | Request live publication instead of a draft preview |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
+| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
+| `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Resolve and print the plan only |
 | `--to netlify` | Explicit provider for saved static deployment |
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |

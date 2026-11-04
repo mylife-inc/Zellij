@@ -365,7 +365,7 @@ pub(crate) enum Command {
     },
 
     /// Generate a GitHub workflow; `ci run` dispatches an existing workflow.
-    Ci(CiArgs),
+    Ci(Box<CiArgs>),
 
     /// Detect, convert and validate in one step.
     #[command(visible_alias = "mig")]
@@ -534,6 +534,8 @@ pub(crate) struct CiArgs {
 
 #[derive(clap::Args, Debug, Default, PartialEq, Eq)]
 pub(crate) struct CiInitArgs {
+    #[command(flatten)]
+    pub(crate) overrides: BuildOverrideArgs,
     /// Freeze rendering features in generated build/delivery commands: maths, diagrams, all, or none.
     #[arg(long)]
     pub(crate) features: Option<Features>,
@@ -795,6 +797,8 @@ mod tests;
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct DeliveryArgs {
+    #[command(flatten)]
+    pub(crate) overrides: BuildOverrideArgs,
     /// Override rendering features for this delivery: maths, diagrams, all, or none.
     #[arg(long)]
     pub(crate) features: Option<Features>,
@@ -846,6 +850,8 @@ pub(crate) struct ImportArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ShipArgs {
+    #[command(flatten)]
+    pub(crate) overrides: BuildOverrideArgs,
     /// Rendering features for this delivery only: maths, diagrams, all, or none.
     #[arg(long)]
     pub(crate) features: Option<Features>,

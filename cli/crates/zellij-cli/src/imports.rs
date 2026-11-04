@@ -231,6 +231,7 @@ fn retained(out: &str) {
 
 pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     let plan = plan(options)?;
+    let build = options.overrides.options(options.features);
     let import = Prepared::read(
         &options.source,
         &options.out,
@@ -241,7 +242,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     import.report();
     if options.dry_run || !zellij_core::reporting::options().quiet {
         crate::delivery::describe_destination(&plan);
-        crate::delivery::describe_features(options.features);
+        crate::delivery::describe_options(&build);
     }
     import.write(&options.out, options.dry_run)?;
     if options.dry_run {
@@ -252,18 +253,26 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     }
     let execute = || {
         let site = Site::load(Utf8Path::new(&options.out))?;
-        crate::delivery::execute_plan(&site, &site.content, &plan, options.features)
+        crate::delivery::execute_plan(&site, &site.content, &plan, &build)
     };
     execute().inspect_err(|_| {
         retained(&options.out);
         if let Some(features) = options.features {
             zellij_core::diagnosticln!("The rendering selection was not saved; include --features {} when rebuilding this site.", features.as_str());
         }
+        if !build.overrides.is_empty() {
+            zellij_core::diagnosticln!("Build URL/preflight overrides were not saved; repeat the applicable --base-path, --site-url and --no-check flags when rebuilding.");
+        }
     })?;
     if let Some(features) = options.features {
         zellij_core::statusln!(
             "Rendering selection {} was not saved; pass --features again to repeat it.",
             features.as_str()
+        );
+    }
+    if !build.overrides.is_empty() {
+        zellij_core::statusln!(
+            "Build URL/preflight overrides were not saved; repeat the applicable --base-path, --site-url and --no-check flags to reuse them."
         );
     }
     zellij_core::statusln!(

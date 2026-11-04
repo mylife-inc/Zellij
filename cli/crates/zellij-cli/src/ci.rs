@@ -124,6 +124,18 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     } else {
         None
     };
+    let build = args.overrides.options(args.features);
+    if site.renderer == zellij_core::site::Renderer::Portable
+        && !matches!(
+            publish,
+            Publish::Image {
+                kind: zellij_core::delivery::ImageKind::Next,
+                ..
+            } | Publish::LegacyImage
+        )
+    {
+        crate::images::require_native_options(&build)?;
+    }
     let path = Utf8PathBuf::from(format!(".github/workflows/{}", settings.workflow));
     let options = CiOptions {
         config: if site.input.explicit_config() {
@@ -141,6 +153,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         site_root: relative,
         platform,
         features: args.features,
+        overrides: build.overrides,
         settings,
         version,
         publish,
