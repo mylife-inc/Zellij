@@ -35,13 +35,38 @@ pub enum ImagePlatform {
     Amd64,
     #[serde(rename = "linux/arm64")]
     Arm64,
+    #[serde(
+        rename = "all",
+        alias = "linux/amd64,linux/arm64",
+        alias = "linux/arm64,linux/amd64"
+    )]
+    All,
 }
 impl ImagePlatform {
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Amd64 => "linux/amd64",
             Self::Arm64 => "linux/arm64",
+            Self::All => "all",
         }
+    }
+
+    pub fn build_platforms(self) -> &'static str {
+        match self {
+            Self::All => "linux/amd64,linux/arm64",
+            _ => self.as_str(),
+        }
+    }
+
+    /// Combined images go directly to a registry; ordinary local image stores
+    /// cannot consistently load an index across the supported clients.
+    pub fn require_local(platform: Option<Self>) -> Result<()> {
+        if platform == Some(Self::All) {
+            return Err(Error::InvalidArgument(
+                "--platform all requires registry publication: use `zel pub --platform all` or `zel ship --image static|next --platform all`; for a local image choose linux/amd64 or linux/arm64".into(),
+            ));
+        }
+        Ok(())
     }
 }
 impl std::fmt::Display for ImagePlatform {
@@ -55,7 +80,8 @@ impl std::str::FromStr for ImagePlatform {
         match value {
             "linux/amd64" => Ok(Self::Amd64),
             "linux/arm64" => Ok(Self::Arm64),
-            _ => Err("choose one platform: linux/amd64 or linux/arm64; combined multi-platform images are not implemented".into()),
+            "all" | "linux/amd64,linux/arm64" | "linux/arm64,linux/amd64" => Ok(Self::All),
+            _ => Err("choose linux/amd64, linux/arm64, or all (both architectures for registry publication)".into()),
         }
     }
 }

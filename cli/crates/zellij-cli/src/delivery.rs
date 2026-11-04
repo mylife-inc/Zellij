@@ -216,6 +216,7 @@ fn push_image(
     options: &BuildOptions,
 ) -> Result<()> {
     let engine = zellij_engine::ContainerEngine::detect(None)?;
+    let combined = plan.platform == Some(zellij_core::delivery::ImagePlatform::All);
     zellij_core::statusln!("\nBuilding image…");
     if let Err(error) = crate::images::build_image(
         site,
@@ -226,10 +227,20 @@ fn push_image(
         plan.platform,
         options,
     ) {
-        zellij_core::diagnosticln!(
-            "Publication stopped during validation/build; no push was attempted."
-        );
+        if combined {
+            zellij_core::diagnosticln!(
+                "Combined publication did not complete. The builder may have uploaded layers; inspect the registry before retrying `zel pub`. No local combined image is promised."
+            );
+        } else {
+            zellij_core::diagnosticln!(
+                "Publication stopped during validation/build; no push was attempted."
+            );
+        }
         return Err(error);
+    }
+    if combined {
+        zellij_core::statusln!("✓ Published {} (linux/amd64, linux/arm64)", plan.tag);
+        return Ok(());
     }
     zellij_core::statusln!("✓ Built {}\nPushing image…", plan.tag);
     if let Err(error) = engine.image_push(&plan.tag, None) {

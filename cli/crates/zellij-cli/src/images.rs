@@ -80,6 +80,7 @@ fn image(
     }
     let tag = selected_tag(&site, tag, kind)?;
     let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
+    ImagePlatform::require_local(platform)?;
     let engine = ContainerEngine::detect(None)?;
     zellij_core::statusln!(
         "  Content  {content}\n  Kind     {} ({:?})\n  Tag      {tag}\n",

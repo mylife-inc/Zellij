@@ -605,6 +605,9 @@ fn image_build(
         Some(tag) => tag.to_owned(),
         None => site_tag(dir, &content)?,
     };
+    let site = zellij_core::site::Site::load(dir)?;
+    let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
+    zellij_core::delivery::ImagePlatform::require_local(platform)?;
     let engine = zellij_engine::ContainerEngine::detect(None)?;
 
     zellij_core::statusln!("  Engine   {}", engine.image());
@@ -612,8 +615,6 @@ fn image_build(
     zellij_core::statusln!("  Tag      {tag}");
     zellij_core::statusln!();
 
-    let site = zellij_core::site::Site::load(dir)?;
-    let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
     if let Some(platform) = platform {
         zellij_core::statusln!("  Platform {platform}");
     }

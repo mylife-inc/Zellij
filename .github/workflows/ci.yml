@@ -11,6 +11,67 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  image-platforms:
+    name: Native images (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { arch: amd64, runner: ubuntu-latest }
+          - { arch: arm64, runner: ubuntu-24.04-arm }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: docker build --progress=plain -f docker/base.Dockerfile -t zellij-ci .
+      - name: Replay native generated CI and measure image size
+        env:
+          DOCKER_CONTEXT: default
+          ZELLIJ_IMAGE: zellij-ci
+          TARGET_ARCH: ${{ matrix.arch }}
+        run: node scripts/check-multi-platform-ci.mjs "$TARGET_ARCH" "$RUNNER_TEMP/multi-images"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: multi-images-${{ matrix.arch }}
+          path: ${{ runner.temp }}/multi-images
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+
+  image-manifest:
+    name: Combined image manifests
+    needs: image-platforms
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: multi-images-amd64
+          path: ${{ runner.temp }}/multi-images/amd64
+      - uses: actions/download-artifact@v8
+        with:
+          name: multi-images-arm64
+          path: ${{ runner.temp }}/multi-images/arm64
+      - name: Replay generated manifest publication against a local registry
+        run: node scripts/check-multi-platform-ci.mjs combine "$RUNNER_TEMP/multi-images"
+
   native-packages:
     uses: ./.github/workflows/native-packages.yml
     permissions:
@@ -137,6 +198,8 @@ jobs:
         run: node scripts/check-build-overrides.mjs
       - name: Image build arguments and delivery on the native platform
         run: node scripts/check-image-build-args.mjs
+      - name: Combined image publication on the native platform
+        run: node scripts/check-multi-platform.mjs
       - name: Native dev bindings, browser readiness and cancellation
         run: node scripts/check-dev-options.mjs
       - name: Hosted preview orchestration and cancellation on the native platform

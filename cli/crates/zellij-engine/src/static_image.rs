@@ -2,7 +2,9 @@
 //! hosted input is content compiled inside the builder stage. Only HTML and
 //! its public assets reach the final image, which runs NGINX without root.
 
-pub const STATIC_BASE: &str = "nginxinc/nginx-unprivileged:stable-alpine";
+// Only NGINX core is needed for static files; omit the optional dynamic modules
+// and their image-processing/XML dependencies from the ordinary Alpine variant.
+pub const STATIC_BASE: &str = "nginxinc/nginx-unprivileged:stable-alpine-slim";
 
 fn runtime(copy: &str, health: &str, build_args: &str) -> String {
     format!(
