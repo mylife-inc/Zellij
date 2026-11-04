@@ -3327,3 +3327,17 @@ Remaining CLI work includes image build arguments, combined multi-platform image
 publication, additional deployment/CI providers and broader import fidelity.
 The Netlify hosting-injected hydration issue remains external. Candidate release
 publication and production migration remain separate, pending decisions.
+
+
+### Delivery overrides — CI harness correction, 2026-11-04
+
+[PR #66](https://github.com/mylife-inc/Zellij/pull/66) tracks `c20d48b` and
+context record `d634507`. Run `41821800581` failed the macOS workflow test because
+its system Bash cannot execute the existing `${REPOSITORY,,}` expression in the
+Ubuntu-only legacy image job. Correction `0c1802a` runs full workflow-shell replay
+on Linux, matching the generated runner. All operating systems still check the
+workflow data, option placement, release compatibility, rejection/preservation,
+and native delivery forwarding. No product behavior or generated workflow changed.
+The focused regression, formatting and diff checks pass locally after correction.
+Final CI acceptance is pending on the replacement head; the first run is not
+claimed as complete acceptance.
