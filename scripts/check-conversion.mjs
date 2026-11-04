@@ -56,15 +56,15 @@ for (const format of ['mkdocs', 'docusaurus']) {
     await writeFile(path.join(source, file), body);
   }
   if (format === 'mkdocs') {
-    await write('mkdocs.yml', 'site_name: Converted docs\nnav:\n  - index.md\n  - 02-Setup/APIReference.md\n  - 03-Café/index.md\n');
+    await write('mkdocs.yml', 'site_name: Converted docs\nnav:\n  - index.md\n  - API navigation: 02-Setup/APIReference.md\n  - 03-Café/index.md\n');
   } else {
     await write('docusaurus.config.js', "module.exports = {title: 'Converted docs'};");
-    await write('sidebars.js', "module.exports = {docs: ['index', '02-Setup/APIReference', '03-Café/index']};");
+    await write('sidebars.js', "module.exports = {docs: ['index', {type: 'doc', id: 'Setup/custom', label: 'Overridden'}, 'Café/index']};");
     await write('static/img/static.svg', asset);
   }
   const titleId = format === 'mkdocs' ? '{#reference}' : '{/* #reference */}';
   const installId = format === 'mkdocs' ? '{#stable-install}' : '<!-- #stable-install -->';
-  await write(`docs/02-Setup/APIReference.${format === 'mkdocs' ? 'md' : 'mdx'}`, `# Reference ${titleId}\n\n## Install\n\n[Home](../index.md#welcome)\n\n## Install **again** ${installId}\n\nA searchable installation passage.\n\nSetext [home](../index.md#welcome) {#setext}\n------\n\nA searchable setext passage.\n\n## Café {#café}\n\nUnicode passage.\n\n[Self](#stable-install)\n\n[Unicode](#caf%C3%A9)\n`);
+  await write(`docs/02-Setup/APIReference.${format === 'mkdocs' ? 'md' : 'mdx'}`, `\uFEFF---\r\nid: custom\r\ntitle: Authored reference title\r\ndescription: Authored reference description\r\nsidebar_label: API navigation\r\nslug: /source-only-slug\r\n...\r\n# Reference ${titleId}\n\n## Install\n\n[Home](../index.md#welcome)\n\n## Install **again** ${installId}\n\nA searchable installation passage.\n\nSetext [home](../index.md#welcome) {#setext}\n------\n\nA searchable setext passage.\n\n## Café {#café}\n\nUnicode passage.\n\n[Self](#stable-install)\n\n[Unicode](#caf%C3%A9)\n`);
   await write('docs/03-Café/index.md', '# Café\n\n[Reference](../02-Setup/APIReference.md)\n');
   await write('docs/media/logo.svg', asset);
   await write('docs/media/Q3 Report.pdf', pdf);
@@ -88,7 +88,10 @@ for (const format of ['mkdocs', 'docusaurus']) {
   assert(home.includes('id="welcome"'));
   assert(!home.includes('<h1'), 'The imported title is rendered only by the layout');
   const reference = site.guidePages.find(page => page.route === '/guide/setup/api-reference');
-  assert.equal(reference.title, 'Reference');
+  assert.equal(reference.title, 'Authored reference title');
+  assert.equal(reference.description, 'Authored reference description');
+  assert.deepEqual(site.guides[0].sidebar.find(node => node.route === reference.route),
+    { kind: 'link', label: 'API navigation', route: reference.route });
   const headingOptions = { remarkPlugins: (await mdxOptions()).mdxOptions.remarkPlugins };
   assert.deepEqual(extractToc(reference.body, headingOptions).map(heading => heading.id), ['install', 'stable-install', 'setext', 'café']);
   assert(indexGuidePage(reference, headingOptions).some(entry => entry.route.endsWith('#stable-install') && entry.text.includes('searchable installation')));
@@ -112,6 +115,9 @@ for (const format of ['mkdocs', 'docusaurus']) {
     assert(installed.includes('id="install"'));
     for (const id of ['reference', 'stable-install', 'setext', 'café']) assert(installed.includes(`id="${id}"`));
     assert.equal((installed.match(/<h1(?:\s|>)/g) ?? []).length, 1, 'One page title after full export');
+    assert(installed.includes('Authored reference title'), 'Authored page title survives export');
+    assert(installed.includes('name="description" content="Authored reference description"'), 'Authored description survives export');
+    assert(installed.includes('API navigation'), 'Distinct navigation label survives export');
     assert(html.includes('href="/products/docs/guide/setup/api-reference#stable-install"'));
     assert(installed.includes('href="#stable-install"'), 'TOC links to the preserved heading');
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/media/logo.svg'), 'utf8'), asset);

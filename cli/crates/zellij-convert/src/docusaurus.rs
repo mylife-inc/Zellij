@@ -20,11 +20,212 @@
 //! nobody notices for a month.
 
 use camino::{Utf8Path, Utf8PathBuf};
+use regex::Regex;
 use serde_json::Value;
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    sync::LazyLock,
+};
 use walkdir::WalkDir;
+use zellij_core::{Error, Result};
 
 use crate::model::{DocTree, Entry};
-use crate::{Confidence, Conversion, ConvertOptions, Converter, emit::emit};
+use crate::{Confidence, Conversion, ConvertOptions, Converter, Unmapped, emit::emit};
+
+struct Document {
+    raw: String,
+    id: String,
+    sidebar_label: Option<String>,
+    excluded: bool,
+}
+
+// Docusaurus's default numberPrefixParser preserves date/version-like names.
+// Custom JavaScript parsers are not executed by this data-only importer.
+fn strip_number_prefix(name: &str) -> &str {
+    static DATE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^[0-9]+[-_.][0-9]+").unwrap());
+    static PREFIX: LazyLock<Regex> =
+        LazyLock::new(|| Regex::new(r"^[0-9]+\s*[-_.]+\s*([^-_.\s].*)$").unwrap());
+    if DATE.is_match(name) {
+        return name;
+    }
+    PREFIX
+        .captures(name)
+        .and_then(|c| c.get(1))
+        .map_or(name, |m| m.as_str())
+}
+
+fn document_id(path: &Utf8Path, metadata: &crate::frontmatter::Frontmatter<'_>) -> Result<String> {
+    let prefixes = metadata.boolean("parse_number_prefixes")?.unwrap_or(true);
+    let basename = path.file_stem().expect("document has a filename");
+    let custom = metadata.string("id")?;
+    let basename = custom.unwrap_or_else(|| {
+        if prefixes {
+            strip_number_prefix(basename)
+        } else {
+            basename
+        }
+    });
+    if basename.contains(['/', '\\', '\0']) || matches!(basename, "." | "..") {
+        return Err(Error::InvalidArgument(format!(
+            "{path}: front matter id must be a single document name, without path separators or parent segments"
+        )));
+    }
+    let mut parts: Vec<_> = path
+        .parent()
+        .unwrap_or(Utf8Path::new(""))
+        .as_str()
+        .split('/')
+        .filter(|s| !s.is_empty())
+        .map(|s| if prefixes { strip_number_prefix(s) } else { s })
+        .collect();
+    parts.push(basename);
+    Ok(parts.join("/"))
+}
+
+fn read_inventory(root: &Utf8Path) -> Result<BTreeMap<Utf8PathBuf, Document>> {
+    let mut documents = BTreeMap::new();
+    for entry in WalkDir::new(root).sort_by_file_name() {
+        let entry = entry
+            .map_err(|e| Error::InvalidArgument(format!("cannot inspect Docusaurus docs: {e}")))?;
+        let path = Utf8Path::from_path(entry.path()).ok_or_else(|| {
+            Error::InvalidArgument("Docusaurus document paths must be UTF-8".into())
+        })?;
+        if path == root {
+            continue;
+        }
+        let relative = path.strip_prefix(root).expect("walk stays under root");
+        let relative = Utf8PathBuf::from(
+            relative
+                .components()
+                .map(|part| part.as_str())
+                .collect::<Vec<_>>()
+                .join("/"),
+        );
+        // Validate directories as well so junctions cannot be traversed on
+        // Windows, even if the OS reports them as ordinary directories.
+        let full = zellij_core::files::contained_path(root, &relative)?;
+        if !entry.file_type().is_file() || !matches!(relative.extension(), Some("md" | "mdx")) {
+            continue;
+        }
+        let raw = std::fs::read_to_string(full)?;
+        let metadata = crate::frontmatter::parse(&raw, &relative)?;
+        let id = document_id(&relative, &metadata)?;
+        let sidebar_label = metadata.string("sidebar_label")?.map(str::to_owned);
+        let draft = metadata.boolean("draft")?.unwrap_or(false);
+        let unlisted = metadata.boolean("unlisted")?.unwrap_or(false);
+        let excluded = draft || unlisted;
+        documents.insert(
+            relative.to_owned(),
+            Document {
+                raw,
+                id,
+                sidebar_label,
+                excluded,
+            },
+        );
+    }
+    Ok(documents)
+}
+
+fn resolve_navigation(
+    tree: &mut DocTree,
+    documents: &BTreeMap<Utf8PathBuf, Document>,
+    derive_from_folder: bool,
+) -> Result<Vec<Unmapped>> {
+    let mut ids = BTreeMap::new();
+    let mut paths = BTreeMap::new();
+    for (path, doc) in documents {
+        if let Some(previous) = ids.insert(doc.id.as_str(), path) {
+            return Err(Error::InvalidArgument(format!(
+                "duplicate Docusaurus document ID {:?}: {previous} and {path}",
+                doc.id
+            )));
+        }
+        let stem = path.with_extension("").to_string();
+        if let Some(previous) = paths.insert(stem, path) {
+            return Err(Error::InvalidArgument(format!(
+                "ambiguous Markdown/MDX source files: {previous} and {path}"
+            )));
+        }
+    }
+    let mut excluded = BTreeSet::new();
+    fn walk(
+        entries: &mut Vec<Entry>,
+        ids: &BTreeMap<&str, &Utf8PathBuf>,
+        paths: &BTreeMap<String, &Utf8PathBuf>,
+        documents: &BTreeMap<Utf8PathBuf, Document>,
+        excluded: &mut BTreeSet<Utf8PathBuf>,
+    ) -> Result<()> {
+        let mut resolved = Vec::new();
+        for mut entry in std::mem::take(entries) {
+            match &mut entry {
+                Entry::Page { label, source } => {
+                    let id = source
+                        .as_str()
+                        .strip_suffix(".md")
+                        .expect("sidebar parser supplies an ID marker");
+                    let canonical = ids.get(id).copied();
+                    let legacy = paths.get(id).copied();
+                    if let (Some(a), Some(b)) = (canonical, legacy)
+                        && a != b
+                    {
+                        return Err(Error::InvalidArgument(format!(
+                            "ambiguous Docusaurus sidebar ID {id:?}: document ID selects {a}, but the legacy filename selects {b}"
+                        )));
+                    }
+                    let path = canonical.or(legacy).ok_or_else(|| {
+                        Error::InvalidArgument(format!(
+                            "Docusaurus sidebar ID {id:?} does not match a source document"
+                        ))
+                    })?;
+                    let doc = &documents[path];
+                    if doc.excluded {
+                        excluded.insert(path.clone());
+                        continue;
+                    }
+                    *source = path.clone();
+                    if let Some(authored) = &doc.sidebar_label {
+                        *label = Some(authored.clone());
+                    }
+                }
+                Entry::Group { items, .. } => walk(items, ids, paths, documents, excluded)?,
+                Entry::Foreign { .. } => {}
+            }
+            resolved.push(entry);
+        }
+        *entries = resolved;
+        Ok(())
+    }
+    if derive_from_folder {
+        for (source, doc) in documents {
+            if doc.excluded {
+                excluded.insert(source.clone());
+                continue;
+            }
+            tree.nav.push(Entry::Page {
+                label: doc.sidebar_label.clone(),
+                source: source.clone(),
+            });
+        }
+    } else {
+        walk(&mut tree.nav, &ids, &paths, documents, &mut excluded)?;
+    }
+    let listed: BTreeSet<_> = tree.pages().into_iter().cloned().collect();
+    for (path, doc) in documents {
+        if doc.excluded {
+            excluded.insert(path.clone());
+        } else if !listed.contains(path) {
+            tree.orphans.push(path.clone());
+        }
+    }
+    Ok(excluded
+        .into_iter()
+        .map(|source| Unmapped {
+            source,
+            reason: "marked draft or unlisted in Docusaurus front matter; not converted".into(),
+        })
+        .collect())
+}
 
 /// Strips the module wrapper so the object literal can be parsed as JSON5.
 fn unwrap_module(source: &str) -> Option<&str> {
@@ -187,6 +388,7 @@ impl Converter for Docusaurus {
 
         let mut notes = Vec::new();
         let mut nav: Vec<Entry> = Vec::new();
+        let mut derive_from_folder = true;
 
         if let Some(path) = sidebar_path(source) {
             let path = zellij_core::files::contained_path(
@@ -195,7 +397,12 @@ impl Converter for Docusaurus {
             )?;
             let raw = std::fs::read_to_string(&path)?;
 
-            if let Some(construct) = dynamic_construct(&raw) {
+            let construct = if path.extension() == Some("json") {
+                None // JSON strings can mention JavaScript without executing it.
+            } else {
+                dynamic_construct(&raw)
+            };
+            if let Some(construct) = construct {
                 // Declining is the point. A sidebar half-read from a file that
                 // computes its exports is worse than no sidebar, because it
                 // looks finished.
@@ -205,15 +412,21 @@ impl Converter for Docusaurus {
                      The pages below came from the folder instead, and their order is alphabetical \
                      rather than yours. Reordering `_sidebar.yaml` by hand is usually a few minutes."
                 ));
-            } else if let Some(body) = unwrap_module(&raw) {
+            } else if let Some(body) = if path.extension() == Some("json") {
+                Some(raw.as_str())
+            } else {
+                unwrap_module(&raw)
+            } {
                 match json5::from_str::<Value>(body) {
                     Ok(Value::Object(sidebars)) => {
+                        derive_from_folder = false;
                         // Every named sidebar, in order. Most projects have one.
                         for entries in sidebars.values().filter_map(Value::as_array) {
                             nav.extend(entries.iter().filter_map(parse_entry));
                         }
                     }
                     Ok(Value::Array(entries)) => {
+                        derive_from_folder = false;
                         nav.extend(entries.iter().filter_map(parse_entry));
                     }
                     _ => notes.push(format!(
@@ -235,50 +448,19 @@ impl Converter for Docusaurus {
             orphans: Vec::new(),
         };
 
-        let derived = tree.nav.is_empty();
-        let listed: Vec<String> = tree
+        let inventory = read_inventory(&root)?;
+        let excluded = resolve_navigation(&mut tree, &inventory, derive_from_folder)?;
+        let documents: BTreeMap<_, _> = tree
             .pages()
-            .iter()
-            .map(|path| path.as_str().to_owned())
-            .collect();
-
-        for entry in WalkDir::new(&root)
-            .sort_by_file_name()
             .into_iter()
-            .flatten()
-        {
-            let Ok(path) = Utf8PathBuf::from_path_buf(entry.path().to_path_buf()) else {
-                continue;
-            };
-            if !path.as_str().ends_with(".md") && !path.as_str().ends_with(".mdx") {
-                continue;
-            }
-            let Ok(relative) = path.strip_prefix(&root) else {
-                continue;
-            };
-
-            // The sidebar names documents by id, which is the path without an
-            // extension — so a `.mdx` page is listed as if it were `.md`.
-            let as_md = relative.as_str().replace(".mdx", ".md");
-            if listed.contains(&as_md) {
-                continue;
-            }
-
-            if derived {
-                tree.nav.push(Entry::Page {
-                    label: None,
-                    source: relative.to_owned(),
-                });
-            } else {
-                tree.orphans.push(relative.to_owned());
-            }
-        }
-
-        let documents = crate::read_documents(&tree, true)?;
-        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned());
+            .map(|path| (path.clone(), inventory[path].raw.clone()))
+            .collect();
+        let mut conversion = emit(&tree, |relative| documents.get(relative).cloned())?;
         crate::references::rewrite(&tree, &documents, Some(source), options, &mut conversion)?;
 
         conversion.notes.extend(notes);
+        conversion.unmapped.extend(excluded);
+        conversion.notes.push("Docusaurus document IDs and sidebar labels use front matter and the default number-prefix rules. Source filenames determine Zellij routes; custom slugs, plugin paths, custom prefix parsers and autogenerated sidebar ordering still require review.".into());
         Ok(conversion)
     }
 }
@@ -290,6 +472,36 @@ inventory::submit! {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn document_ids_follow_default_prefix_and_custom_basename_rules() {
+        for (path, fields, expected) in [
+            ("01-Guides/02-Start.md", "", "Guides/Start"),
+            ("01-Guides/02-Start.mdx", "id: custom", "Guides/custom"),
+            (
+                "01-Guides/02-Start.mdx",
+                "id: 03-custom",
+                "Guides/03-custom",
+            ),
+            (
+                "01-Guides/02-Start.md",
+                "parse_number_prefixes: false",
+                "01-Guides/02-Start",
+            ),
+            (
+                "01-Guides/02-Start.md",
+                "id: custom\nparse_number_prefixes: false",
+                "01-Guides/custom",
+            ),
+            ("2026-11-04/v1.2.md", "", "2026-11-04/v1.2"),
+            ("1.2/03__ Chapter.md", "", "1.2/Chapter"),
+        ] {
+            let raw = format!("---\n{fields}\n---\n");
+            let path = Utf8Path::new(path);
+            let metadata = crate::frontmatter::parse(&raw, path).unwrap();
+            assert_eq!(document_id(path, &metadata).unwrap(), expected);
+        }
+    }
 
     #[test]
     fn unwraps_common_js() {

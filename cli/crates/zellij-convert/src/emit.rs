@@ -39,13 +39,26 @@ fn write_nav(entries: &[Entry], depth: usize, out: &mut String) {
 
     for entry in entries {
         match entry {
-            Entry::Page { source, .. } => {
-                out.push_str(&format!("{indent}- {}\n", yaml_string(&slug_for(source))));
+            Entry::Page { source, label } => {
+                if let Some(label) = label {
+                    out.push_str(&format!(
+                        "{indent}- page: {}\n{indent}  label: {}\n",
+                        yaml_string(&slug_for(source)),
+                        yaml_string(label)
+                    ));
+                } else {
+                    out.push_str(&format!("{indent}- {}\n", yaml_string(&slug_for(source))));
+                }
             }
             Entry::Group { label, items } => {
                 out.push_str(&format!("{indent}- label: {}\n", yaml_string(label)));
-                out.push_str(&format!("{indent}  items:\n"));
-                write_nav(items, depth + 1, out);
+                let mut children = String::new();
+                write_nav(items, depth + 1, &mut children);
+                if children.is_empty() {
+                    out.push_str(&format!("{indent}  items: []\n"));
+                } else {
+                    out.push_str(&format!("{indent}  items:\n{children}"));
+                }
             }
             // External links have no place in a sidebar of pages; the report
             // names them so the author can put them in `menu.yaml` instead.
@@ -78,24 +91,15 @@ fn first_heading(body: &str) -> Option<String> {
     crate::headings::first_title(body)
 }
 
-/// Splits existing YAML frontmatter off a document, if it has any.
-pub(crate) fn split_frontmatter(source: &str) -> (Option<&str>, &str) {
-    let Some(rest) = source.strip_prefix("---\n") else {
-        return (None, source);
-    };
-
-    match rest.find("\n---\n") {
-        Some(end) => (Some(&rest[..end]), &rest[end + 5..]),
-        None => (None, source),
-    }
-}
-
 /// Builds the content folder for a documentation tree.
 ///
 /// `read` supplies the body of a source file. Passing it in rather than reading
 /// from disk keeps this function testable against a tree that was never
 /// written down, which is what the golden tests rely on.
-pub fn emit(tree: &DocTree, read: impl Fn(&Utf8PathBuf) -> Option<String>) -> Conversion {
+pub fn emit(
+    tree: &DocTree,
+    read: impl Fn(&Utf8PathBuf) -> Option<String>,
+) -> zellij_core::Result<Conversion> {
     let mut conversion = Conversion::default();
 
     // ---- the sidebar
@@ -108,8 +112,13 @@ pub fn emit(tree: &DocTree, read: impl Fn(&Utf8PathBuf) -> Option<String>) -> Co
     if let Some(description) = &tree.description {
         sidebar.push_str(&format!("description: {}\n", yaml_string(description)));
     }
-    sidebar.push_str("\nnav:\n");
-    write_nav(&tree.nav, 0, &mut sidebar);
+    let mut navigation = String::new();
+    write_nav(&tree.nav, 0, &mut navigation);
+    if navigation.is_empty() {
+        sidebar.push_str("\nnav: []\n");
+    } else {
+        sidebar.push_str(&format!("\nnav:\n{navigation}"));
+    }
 
     conversion.files.push(OutputFile {
         path: Utf8PathBuf::from(format!("{GUIDE_DIR}/_sidebar.yaml")),
@@ -126,20 +135,28 @@ pub fn emit(tree: &DocTree, read: impl Fn(&Utf8PathBuf) -> Option<String>) -> Co
             continue;
         };
 
-        let (existing, body) = split_frontmatter(&raw);
-        let title = label_of(&tree.nav, source)
+        let metadata = crate::frontmatter::parse(&raw, source)?;
+        let body = metadata.body;
+        let title = metadata
+            .string("title")?
             .map(str::to_owned)
             .or_else(|| first_heading(body))
+            .or_else(|| label_of(&tree.nav, source).map(str::to_owned))
             .unwrap_or_else(|| slug_for(source));
 
         let mut page = String::from("---\n");
         page.push_str(&format!("title: {}\n", yaml_string(&title)));
-        if let Some(existing) = existing {
+        if let Some(description) = metadata.string("description")? {
+            page.push_str(&format!("description: {}\n", yaml_string(description)));
+        }
+        if let Some(existing) = metadata.raw {
             // Whatever the source tool put here is kept, commented, rather than
             // discarded: it is often the only record of an author's intent, and
             // guessing which keys Zellij happens to share would drop the rest.
             page.push_str("# Frontmatter from the source, for reference:\n");
-            for line in existing.lines() {
+            // YAML recognizes more line separators than Rust's lines(). Keep
+            // every retained line commented, including Unicode separators.
+            for line in existing.split(['\n', '\r', '\u{85}', '\u{2028}', '\u{2029}']) {
                 page.push_str(&format!("#   {line}\n"));
             }
         }
@@ -219,7 +236,7 @@ pub fn emit(tree: &DocTree, read: impl Fn(&Utf8PathBuf) -> Option<String>) -> Co
             .into(),
     );
 
-    conversion
+    Ok(conversion)
 }
 
 #[cfg(test)]
@@ -256,6 +273,7 @@ mod tests {
         emit(&tree(), |path| {
             Some(format!("# Heading\n\nBody of {path}.\n"))
         })
+        .unwrap()
     }
 
     fn file<'a>(conversion: &'a Conversion, path: &str) -> &'a OutputFile {
@@ -270,9 +288,9 @@ mod tests {
     fn writes_a_sidebar_that_nests() {
         let conversion = convert();
         let body = &file(&conversion, "01-guide/_sidebar.yaml").body;
-        assert!(body.contains(r#"- "index""#));
+        assert!(body.contains(r#"- page: "index""#));
         assert!(body.contains(r#"- label: "Guides""#));
-        assert!(body.contains(r#"- "guides/install""#));
+        assert!(body.contains(r#"- page: "guides/install""#));
     }
 
     #[test]
@@ -280,8 +298,8 @@ mod tests {
         // An unquoted colon makes YAML read the rest as a mapping, which turns
         // a sidebar entry into something structurally different and silently.
         let conversion = convert();
-        let body = &file(&conversion, "01-guide/guides/install.mdx").body;
-        assert!(body.contains(r#"title: "Install: the short way""#));
+        let body = &file(&conversion, "01-guide/_sidebar.yaml").body;
+        assert!(body.contains(r#"label: "Install: the short way""#));
     }
 
     #[test]
@@ -301,25 +319,56 @@ mod tests {
                 label: Some(title.into()),
                 source: "index.md".into(),
             }];
-            let converted = emit(&tree, |_| Some("# Heading\n\nBody.\n".into()));
+            let converted = emit(&tree, |_| {
+                Some(format!(
+                    "---\ntitle: {}\ndescription: {}\n---\n# Heading\n\nBody.\n",
+                    yaml_string(title),
+                    yaml_string(title)
+                ))
+            })
+            .unwrap();
             let site: serde_yaml_ng::Value =
                 serde_yaml_ng::from_str(&file(&converted, "site.yaml").body).unwrap();
             assert_eq!(site["name"].as_str(), Some(title));
             let sidebar: serde_yaml_ng::Value =
                 serde_yaml_ng::from_str(&file(&converted, "01-guide/_sidebar.yaml").body).unwrap();
             assert_eq!(sidebar["description"].as_str(), Some(title));
-            let (metadata, _) = split_frontmatter(&file(&converted, "01-guide/index.mdx").body);
+            assert_eq!(sidebar["nav"][0]["label"].as_str(), Some(title));
+            let metadata = crate::frontmatter::parse(
+                &file(&converted, "01-guide/index.mdx").body,
+                camino::Utf8Path::new("index.mdx"),
+            )
+            .unwrap()
+            .raw;
             let metadata: serde_yaml_ng::Value =
                 serde_yaml_ng::from_str(metadata.unwrap()).unwrap();
             assert_eq!(metadata["title"].as_str(), Some(title));
+            assert_eq!(metadata["description"].as_str(), Some(title));
         }
     }
 
     #[test]
-    fn takes_the_title_from_the_navigation_before_the_heading() {
+    fn keeps_the_heading_title_separate_from_the_navigation_label() {
         let conversion = convert();
         let body = &file(&conversion, "01-guide/index.mdx").body;
-        assert!(body.contains(r#"title: "Home""#));
+        assert!(body.contains(r#"title: "Heading""#));
+        assert!(
+            file(&conversion, "01-guide/_sidebar.yaml")
+                .body
+                .contains(r#"label: "Home""#)
+        );
+    }
+
+    #[test]
+    fn retained_metadata_cannot_activate_fields_through_unicode_line_breaks() {
+        for separator in ['\u{85}', '\u{2028}', '\u{2029}'] {
+            let conversion = emit(&tree(), |_| Some(format!("---\nunknown: |\n  retained{separator}route: /source-only-route\n---\n# Heading\n"))).unwrap();
+            let page = file(&conversion, "01-guide/index.mdx");
+            let parsed = crate::frontmatter::parse(&page.body, &page.path).unwrap();
+            assert_eq!(parsed.string("title").unwrap(), Some("Heading"));
+            assert_eq!(parsed.string("route").unwrap(), None);
+            assert!(page.body.contains("#   route: /source-only-route"));
+        }
     }
 
     #[test]
@@ -346,7 +395,7 @@ mod tests {
 
     #[test]
     fn reports_a_page_the_navigation_names_but_disk_does_not_have() {
-        let conversion = emit(&tree(), |_| None);
+        let conversion = emit(&tree(), |_| None).unwrap();
         assert!(
             conversion
                 .unmapped
