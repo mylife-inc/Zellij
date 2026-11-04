@@ -7,7 +7,8 @@ description: Edit portable Markdown with native preview or hosted content with N
 
 <Callout type="tip" title="Available in source">
 Portable `dev` builds, serves and watches natively. Hosted `dev` runs the Next.js
-development engine in a container. Neither opens a browser automatically.
+development engine in a container. Add `--open` to open the ready site in your
+default browser, or `--browser <executable>` to choose a browser.
 Native release packages may lag the source version.
 </Callout>
 
@@ -16,6 +17,9 @@ zel dev                         # ./zel.yaml, then ./docs/zellij/zel.yaml
 zel dev docs/manual             # a custom configured site or raw content folder
 zel dev --port 4000
 zel dev --features maths
+zel dev --open
+zel dev --host localhost --browser firefox
+zel dev --host 0.0.0.0           # allow access through your machine's LAN address
 ```
 
 The selected site's renderer determines the editing workflow. A configured site
@@ -25,9 +29,9 @@ reads `content/`; the folder containing `zel.yaml` can have any name.
 ## Portable Markdown
 
 Portable `dev` is the same editing loop as [`zel view --watch --no-open`](/cli/view):
-it validates and builds the documents, prints a loopback HTTP URL, and watches
-for content and configuration edits. Open the URL yourself, or use `view --watch`
-when you want the browser opened automatically.
+it validates and builds the documents, prints an HTTP URL, and watches
+for content and configuration edits. It binds to loopback by default. Add
+`--open` to open the URL after the initial build succeeds and the server is ready.
 
 No Docker, Node or other runtime is needed. Use `--port 0` to choose an available
 port automatically. The initial build must succeed before serving; later failures
@@ -68,14 +72,22 @@ preparation and browser reloads. Initial preparation must succeed before startup
 Development polling uses a preparation signal created by the watcher; production
 pages do not poll. Use a current engine image or updated editable wrapper package for
 this behavior. Restart after changing
-`basePath`, wrapper configuration or installed features. Ctrl-C stops development.
+`basePath`, wrapper configuration or installed features. Ctrl-C stops development
+and removes that session's container, retaining its reusable dependency cache.
 Use a current engine image if an older image only prepares assets at startup.
 
 ### Looking at it on a phone
 
-Hosted `dev` publishes the container's port on your machine and can be reached
-from another device using your machine's LAN address. Portable `dev` and both
-`view` renderers bind only to `127.0.0.1`.
+Hosted `dev` binds to `0.0.0.0` by default and can be reached from another device
+using your machine's LAN address. Portable `dev` defaults to `127.0.0.1`; use
+`--host 0.0.0.0` to allow LAN access. Both accept `--host localhost`, a specific
+IPv4 address, or an IPv6 address such as `--host ::1`. Use `--host ::` for an IPv6
+wildcard binding. IPv6 container publishing depends on your runtime's networking.
+Pass only the address, without a URL scheme, brackets or port.
+
+With wildcard bindings, the printed browser URL uses loopback; another device
+uses your machine's LAN address instead. The `serve` and `view` commands retain
+their loopback-only behavior.
 
 If the runtime cannot see the content mount, `zel` reports that the folder is
 not shared. Configure file sharing in your runtime, or move the content into an
@@ -87,10 +99,24 @@ already shared directory. `zel doctor` helps diagnose runtime availability.
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit raw content folder | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
 | `--port <n>` | Preview port; 0 is supported for portable sites | `preview.port`, otherwise 3000 |
+| `--host <address>` | Bind to `localhost`, an IPv4 address or an IPv6 address | Portable: `127.0.0.1`; hosted: `0.0.0.0` |
+| `--open` | Open the ready site in the default browser | Off |
+| `--browser <executable>` | Launch this executable with the site URL; implies `--open` | System default when `--open` is used |
 | `--features <selection>` | Complete rendering selection for this session | Portable configuration or hosted engine image |
 
-`--open` and `--host` remain planned. Use `view --watch` for browser
-launch options and `view --out` for an explicit static export destination.
+The browser opens once per session. For a hosted site, `zel` waits for successful
+preparation and an HTTP response from that session, then includes the site's
+`basePath` in the URL. The first page may still need to compile. An occupied port
+or failed initial build does not open an unrelated server. A custom browser is
+an executable name or path, not a shell command with arguments; quote paths
+containing spaces. Browser-launch failure prints the URL and keeps serving.
+
+Automatic hosted opening requires a current engine image and a published port
+reachable from the machine running `zel`. With an older image or a remote runtime,
+the development server can continue running, but `zel` warns after five minutes
+if it cannot confirm the URL. Open the runtime's reachable address and your site's
+`basePath` manually in that case. Use `view --out` for an explicit static export
+destination.
 
 ## Temporary feature selection
 

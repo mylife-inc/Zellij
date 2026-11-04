@@ -295,6 +295,15 @@ pub(crate) enum Command {
 
         #[arg(long)]
         port: Option<u16>,
+        /// Bind IP (or localhost). Default: portable 127.0.0.1; hosted 0.0.0.0.
+        #[arg(long, value_parser = zellij_core::network::parse_host)]
+        host: Option<std::net::IpAddr>,
+        /// Open the site in the default browser after startup succeeds.
+        #[arg(long)]
+        open: bool,
+        /// Browser executable, passed the URL as one argument; implies --open.
+        #[arg(long)]
+        browser: Option<String>,
         /// Override this session: maths, diagrams, maths,diagrams, all, or none.
         #[arg(long)]
         features: Option<Features>,

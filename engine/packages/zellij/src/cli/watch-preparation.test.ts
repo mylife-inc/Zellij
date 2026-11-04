@@ -2,7 +2,7 @@ import { mkdir, mkdtemp, readFile, rename, rm, stat, symlink, writeFile } from '
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
-import { afterEach, expect, it } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import { watchPreparation, type PreparationWatch } from './watch-preparation';
 
 const roots: string[] = [];
@@ -10,6 +10,31 @@ const watchers: PreparationWatch[] = [];
 afterEach(async () => {
   await Promise.all(watchers.splice(0).map((watcher) => watcher.close()));
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
+  vi.unstubAllEnvs();
+});
+
+it('publishes the current prefix and container session only after successful preparation', async () => {
+  vi.stubEnv('ZELLIJ_DEV_SESSION', 'zel-dev-fixture');
+  const f = await fixture();
+  await f.put('site.yaml', 'name: Watch\nhome: 01-guide\nbasePath: /docs\n');
+  await f.start();
+  const first = await f.json('dev-revision.json');
+  expect(first).toMatchObject({ version: 1, basePath: '/docs', session: 'zel-dev-fixture' });
+  expect(first.revision).toBeTruthy();
+  await f.put('site.yaml', 'name: [');
+  await expect.poll(() => f.errors.length).toBe(1);
+  expect(await f.json('dev-revision.json')).toEqual(first);
+  await f.put('site.yaml', 'name: Watch\nhome: 01-guide\nbasePath: /changed\n');
+  await expect.poll(async () => (await f.json('dev-revision.json')).basePath).toBe('/changed');
+});
+
+it('omits container identity in ordinary wrapper development', async () => {
+  vi.stubEnv('ZELLIJ_DEV_SESSION', undefined);
+  const f = await fixture();
+  await f.start();
+  const marker = await f.json('dev-revision.json');
+  expect(marker.basePath).toBe('');
+  expect(marker).not.toHaveProperty('session');
 });
 async function fixture(inAppRoot = false) {
   const appRoot = await mkdtemp(path.join(tmpdir(), 'zellij-watch-'));

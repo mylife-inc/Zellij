@@ -133,6 +133,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Native dev bindings, browser readiness and cancellation
+        run: node scripts/check-dev-options.mjs
       - name: Hosted preview orchestration and cancellation on the native platform
         run: node scripts/check-hosted-preview.mjs
       - name: Native distribution extraction, failures and cancellation
@@ -237,6 +239,11 @@ jobs:
           npx playwright install --with-deps chromium
           node scripts/check-hosted-preview.mjs --real
 
+      - name: Rust dev reloads browsers after mounted content and asset updates
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
+
       - name: Fresh site builds without font downloads or network access
         run: docker build --progress=plain -f scripts/fixtures/fonts.Dockerfile .
 
@@ -285,11 +292,6 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-validation.mjs cli/target/debug/zel
-
-      - name: Rust dev reloads browsers after mounted content and asset updates
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-dev-site.mjs --container cli/target/debug/zel
 
       - name: Scaffold names, rendered links, and content discovery
         env:
