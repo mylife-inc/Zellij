@@ -1360,3 +1360,21 @@ browser was used. Final CI acceptance must be refreshed before merging.
 Remaining work includes combined multi-platform image publication, additional
 providers and broader import fidelity. Netlify's hosting-injected hydration issue
 and the separate release/production-migration decisions remain pending.
+
+
+### Image arguments — first CI correction, 2026-11-04
+
+[PR #67](https://github.com/mylife-inc/Zellij/pull/67) tracks implementation
+`86b6d2d` and context `bcb0401`. Run `41880580238` failed the new Windows native
+fixture during the fake Docker info probe, before building. Rust on Windows
+searches the executable and system directories before inherited PATH; setting
+only the fixture PATH does not isolate an installed system Docker. Correction
+`45f44bf` copies zel beside its fake clients and verifies each selected probe
+writes the fixture marker. Production runtime discovery is unchanged. Corrected
+native acceptance, JavaScript syntax and diff checks pass locally; final Windows
+and real-container acceptance remain pending on the replacement head.
+
+The earlier main CI `41826282286` now passed on attempt 2: Windows ARM packaging
+job `126744911367` succeeded without source changes after the isolated PowerShell
+CLR crash. This is retry recovery, not a diagnosed product fix. No release was
+published and no production site changed.
