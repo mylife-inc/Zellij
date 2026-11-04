@@ -11,10 +11,11 @@ use std::{
     thread,
 };
 use zellij_core::Result;
-use zellij_docs::server::{StaticServer, listener};
+use zellij_docs::server::{StaticServer, listener_on};
 use zellij_docs::watch::{LiveReload, Snapshot, WatchOptions, Watcher};
 
 pub struct ViewOptions<'a> {
+    pub host: std::net::IpAddr,
     pub out: Option<&'a str>,
     pub name: Option<&'a str>,
     pub theme: Option<&'a str>,
@@ -48,7 +49,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
         return hosted::view(site, options);
     }
     // Reserve before writing output, so a bind failure cannot replace a site.
-    let socket = listener(options.port.unwrap_or(site.port))?;
+    let socket = listener_on(options.host, options.port.unwrap_or(site.port))?;
     let source = site.input;
     let initial = options
         .watch
@@ -104,7 +105,7 @@ pub fn view(dir: Option<&SiteInput>, options: ViewOptions<'_>) -> Result<()> {
     )
 }
 
-fn signals() -> Result<Arc<AtomicBool>> {
+pub(crate) fn signals() -> Result<Arc<AtomicBool>> {
     let stop = Arc::new(AtomicBool::new(false));
     let signal = stop.clone();
     ctrlc::set_handler(move || signal.store(true, Ordering::Release)).map_err(io::Error::other)?;
@@ -129,15 +130,7 @@ fn run(
     }
     io::stdout().flush()?;
     if let Some(executable) = open_browser {
-        let url = server.url().to_owned();
-        let executable = executable.map(str::to_owned);
-        // Launchers can wait for a GUI to close. Keep HTTP and Ctrl-C responsive
-        // while they run, and retain the usable URL if no desktop is available.
-        thread::Builder::new().name("zel-browser".into()).spawn(move || {
-            if let Err(error) = launch(&url, executable.as_deref()) {
-                zellij_core::diagnosticln!("warning: could not open the browser: {error}\n  Open {url} manually; the server is still running.");
-            }
-        })?;
+        open(server.url(), executable)?;
     }
     let result = server.run(&stop);
     // Join the worker before reporting completion; an in-progress staged build
@@ -145,6 +138,18 @@ fn run(
     drop(watcher);
     result?;
     zellij_core::statusln!("Stopped.");
+    Ok(())
+}
+
+pub(crate) fn open(url: &str, executable: Option<&str>) -> Result<()> {
+    let url = url.to_owned();
+    let executable = executable.map(str::to_owned);
+    // GUI launchers can wait for a browser to close. Do not block HTTP or Ctrl-C.
+    thread::Builder::new().name("zel-browser".into()).spawn(move || {
+        if let Err(error) = launch(&url, executable.as_deref()) {
+            zellij_core::diagnosticln!("warning: could not open the browser: {error}\n  Open {url} manually; the server is still running.");
+        }
+    })?;
     Ok(())
 }
 

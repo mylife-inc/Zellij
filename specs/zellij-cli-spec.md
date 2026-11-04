@@ -219,8 +219,8 @@ produces a wrong sidebar that looks right.
 
 | Command | Does |
 | --- | --- |
-| `zel check [dir]` | Native portable compiler or hosted engine schemas. `--target portable\|static` selects explicitly. Native checks always validate references and support `--json`; hosted `--deep` adds static-reference/syntax checks. Both support `--strict`. Hosted JSON remains planned. |
-| `zel dev [dir]` | Hosted development server with mounted content and automatic preparation updates; page/image changes currently need a browser refresh. Portable Markdown uses `zel view --watch`. |
+| `zel check [dir]` | Native portable compiler or hosted engine schemas. `--target portable\|static` selects explicitly. Native checks always validate references; hosted `--deep` adds static-reference/syntax checks. Both support `--strict` and `--json`. Hosted JSON requires a current engine image. |
+| `zel dev [dir]` | Portable watch/preview or hosted Next.js development with automatic page/image reload. Both support `--host`, `--open` and `--browser`. |
 | `zel build [dir]` | Builds. See targets below. |
 | `zel serve [dir]` | Implemented native loopback HTTP preview of an existing export; port/prefix and Ctrl-C support. |
 | `zel view [dir] [--watch]` | Implemented portable build + loopback server + browser launch; optional `--watch` rebuild/reload, `--no-open` and executable override. |

@@ -17,6 +17,7 @@ use serde_json::json;
 use std::io::Write;
 mod ci;
 mod delivery;
+mod development;
 mod eject;
 mod features;
 mod formatting;
@@ -88,7 +89,10 @@ fn main() {
             ref dir,
             port,
             features,
-        } => dev(dir.as_ref(), port, features),
+            host,
+            open,
+            ref browser,
+        } => development::run(dir.as_ref(), port, host, open, browser.as_deref(), features),
         Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
             ref dir,
@@ -113,6 +117,7 @@ fn main() {
         } => preview::view(
             dir.as_ref(),
             preview::ViewOptions {
+                host: std::net::Ipv4Addr::LOCALHOST.into(),
                 out: out.as_deref(),
                 name: name.as_deref(),
                 theme: theme.as_deref(),
@@ -308,56 +313,6 @@ fn check(dir: &SiteInput, options: zellij_engine::CheckOptions) -> zellij_core::
     }
 
     Ok(())
-}
-
-fn dev(
-    dir: Option<&SiteInput>,
-    port: Option<u16>,
-    features: Option<zellij_core::features::Features>,
-) -> zellij_core::Result<()> {
-    let dir = select_site(dir)?;
-    let site = zellij_core::site::Site::load(&dir)?;
-    let port = port.unwrap_or(site.port);
-    if site.renderer == zellij_core::site::Renderer::Portable {
-        return preview::view(
-            Some(&dir),
-            preview::ViewOptions {
-                out: None,
-                name: None,
-                theme: None,
-                features,
-                port: Some(port),
-                no_open: true,
-                browser: None,
-                watch: true,
-            },
-        );
-    }
-    if port == 0 {
-        return Err(zellij_core::Error::InvalidArgument(
-            "hosted dev requires --port 1–65535; use view --watch --port 0 for an automatically selected static preview port".into(),
-        ));
-    }
-    let content = resolve_content(&dir)?;
-    let engine = zellij_engine::ContainerEngine::detect(None)?;
-
-    zellij_core::statusln!("  Engine   {}", engine.image());
-    if engine.image_is_local() == Some(false) {
-        zellij_core::statusln!("           not pulled yet — this first run fetches ~237 MB");
-    }
-    zellij_core::statusln!("  Content  {content}");
-    zellij_core::statusln!("  Serving  http://localhost:{port}");
-    zellij_core::statusln!();
-    zellij_core::statusln!("  Edit anything under {content} and reload. Ctrl-C to stop.");
-    zellij_core::statusln!();
-
-    match engine.dev_with_features(&content, port, features) {
-        Err(err @ zellij_core::Error::MountEmpty { .. }) => {
-            report_empty_mount(&err);
-            std::process::exit(err.exit_code());
-        }
-        other => other,
-    }
 }
 
 /// Shared by every command that mounts content, because every one of them can

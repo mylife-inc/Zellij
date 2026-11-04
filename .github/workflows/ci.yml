@@ -133,6 +133,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Native dev bindings, browser readiness and cancellation
+        run: node scripts/check-dev-options.mjs
       - name: Hosted preview orchestration and cancellation on the native platform
         run: node scripts/check-hosted-preview.mjs
       - name: Native distribution extraction, failures and cancellation

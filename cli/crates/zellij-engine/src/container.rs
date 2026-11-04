@@ -13,7 +13,9 @@ use zellij_core::process::CommandExt;
 use zellij_core::{Error, Result, features::Features};
 
 use crate::runtime::{METADATA_TIMEOUT, Probe, Runtime, probe_output, probe_status};
+mod dev;
 use crate::{BuildMode, CheckOptions, CheckReport, Engine, HostedCheckReport};
+pub use dev::{DevReady, DevSession};
 
 /// Where the engine's own CLI lives inside the image.
 const ENGINE_CLI: &str = "/opt/zellij/bin/zellij.mjs";
@@ -288,8 +290,35 @@ impl ContainerEngine {
         port: u16,
         features: Option<Features>,
     ) -> Result<()> {
+        self.start_dev(
+            content,
+            port,
+            std::net::Ipv4Addr::UNSPECIFIED.into(),
+            features,
+        )?
+        .wait()
+    }
+
+    pub fn start_dev(
+        &self,
+        content: &Utf8Path,
+        port: u16,
+        host: std::net::IpAddr,
+        features: Option<Features>,
+    ) -> Result<DevSession> {
+        let identity = tempfile::Builder::new()
+            .prefix("zel-dev-")
+            .rand_bytes(16)
+            .tempdir()?;
+        let name = identity
+            .path()
+            .file_name()
+            .unwrap()
+            .to_str()
+            .unwrap()
+            .to_owned();
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
-        let ports = format!("{port}:3000");
+        let ports = format!("{}:3000", std::net::SocketAddr::new(host, port));
         let volume = format!("{}:/app/node_modules", self.modules_volume_for(features));
 
         // Validate, install, serve — one container, in that order. Checking
@@ -307,28 +336,26 @@ impl ContainerEngine {
             ),
         );
 
-        let origins = format!("ZELLIJ_DEV_ORIGINS={}", dev_origins());
+        let origins = format!("ZELLIJ_DEV_ORIGINS={}", dev_origins(host));
 
-        let status = self
+        let process = self
             .run_command()
-            .args(["--rm", "--init"])
+            .args(["--rm", "--init", "--name", &name])
+            .args(["-e", &format!("ZELLIJ_DEV_SESSION={name}")])
             .args(["-v", &mount])
             .args(["-v", &volume])
             .args(["-p", &ports])
             .args(["-e", &origins])
             .arg(&self.image)
             .args(["sh", "-c", &script])
-            .zel_status()?;
-
-        match status.code() {
-            Some(EMPTY_MOUNT) => Err(Error::MountEmpty {
-                path: content.to_owned(),
-            }),
-            // 130 is Ctrl-C, which is how this command is meant to end.
-            Some(0) | Some(130) | None => Ok(()),
-            Some(CONTENT_INVALID) => Err(Error::ContentInvalid),
-            Some(_) => Err(Error::BuildFailed),
-        }
+            .zel_spawn()?;
+        Ok(DevSession::new(
+            self.runtime.clone(),
+            identity,
+            name,
+            content.to_owned(),
+            process,
+        ))
     }
 }
 
@@ -346,8 +373,17 @@ impl ContainerEngine {
 /// machine you are working on and nothing else. Anything already in the
 /// environment is preserved, which is how a tunnel — ngrok, Tailscale, a
 /// forwarded Codespaces port — gets added.
-fn dev_origins() -> String {
-    let existing = std::env::var("ZELLIJ_DEV_ORIGINS").unwrap_or_default();
+fn dev_origins(host: std::net::IpAddr) -> String {
+    let mut existing = std::env::var("ZELLIJ_DEV_ORIGINS").unwrap_or_default();
+    if !host.is_unspecified() {
+        if !existing.is_empty() {
+            existing.push(',');
+        }
+        existing.push_str(&match host {
+            std::net::IpAddr::V4(ip) => ip.to_string(),
+            std::net::IpAddr::V6(ip) => format!("[{ip}]"),
+        });
+    }
 
     match lan_address() {
         Some(address) if existing.is_empty() => address,

@@ -16,7 +16,9 @@ const app = await mkdtemp(path.join(repo, '.zellij-dev-'));
 const cli = path.join(repo, 'engine/packages/zellij/bin/zellij.mjs');
 const content = path.join(app, 'authored docs');
 const prefix = '/docs';
-const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1' };
+const browserRecord = path.join(app, 'browser.txt');
+const browserExe = path.join(app, 'browser-fixture');
+const env = { ...process.env, NEXT_TELEMETRY_DISABLED: '1', ZELLIJ_DEV_BROWSER_LOG: browserRecord };
 delete env.ZELLIJ_OUTPUT;
 delete env.ZELLIJ_BASE_PATH;
 let server;
@@ -24,18 +26,20 @@ let exited;
 let serverPort;
 let log = '';
 let browser;
+let containerName;
 const put = async (name, text) => { await mkdir(path.dirname(path.join(content, name)), { recursive: true }); await writeFile(path.join(content, name), text); };
-async function until(check, label, timeout = 30000) {
+async function until(check, label, timeout = 30000, allowExited = false) {
   const start = Date.now();
   let last;
   while (Date.now() - start < timeout) {
-    if (server?.exitCode !== null && server?.exitCode !== undefined) throw new Error(`Dev exited: ${log}`);
+    if (!allowExited && server?.exitCode !== null && server?.exitCode !== undefined) throw new Error(`Dev exited: ${log}`);
     try { if (await check()) return; } catch (error) { last = error; }
     await delay(250);
   }
   throw new Error(`${label}\n${last ?? ''}\n${log.slice(-6000)}`);
 }
 try {
+  if (binary) execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/dev-browser.rs', '-o', browserExe], { stdio: 'pipe' });
   execFileSync(process.execPath, [cli, 'init', app, '--name', 'watch-fixture'], { env, stdio: 'inherit' });
   if (!binary) execFileSync(process.execPath, [cli, 'features', 'all', app], { env, stdio: 'inherit' });
   await rm(path.join(app, 'content'), { recursive: true });
@@ -61,7 +65,7 @@ try {
   await new Promise((resolve, reject) => reservation.close((error) => error ? reject(error) : resolve()));
   const origin = `http://127.0.0.1:${port}${prefix}`;
   server = binary
-    ? spawn(binary, ['dev', content, '--port', String(port), '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
+    ? spawn(binary, ['dev', content, '--port', String(port), '--host', '127.0.0.1', '--browser', browserExe, '--features', 'all'], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] })
     : spawn(process.execPath, [cli, 'dev', '--content', './authored docs', '--', '--hostname', '0.0.0.0', '--port', String(port), ...(process.env.ZELLIJ_TEST_WEBPACK ? ['--webpack'] : [])], { cwd: app, env, stdio: ['ignore', 'pipe', 'pipe'] });
   exited = once(server, 'exit');
   server.stdout.on('data', (data) => { log += data; });
@@ -69,6 +73,16 @@ try {
   const fetchFile = (name) => fetch(`${origin}/_zellij/${name}`, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
   const index = async () => (await fetchFile('search-index.json')).json();
   await until(async () => (await index()).some((entry) => entry.route === '/manual#original'), 'initial dev preparation', binary ? 240000 : 60000);
+  if (binary) {
+    const marker = await (await fetchFile('dev-revision.json')).json();
+    containerName = marker.session;
+    assert.match(containerName, /^zel-dev-/);
+    assert.equal(marker.basePath, prefix);
+    await until(async () => (await readFile(browserRecord, 'utf8')) === `${origin}/\n`, 'browser opens once at the configured prefix');
+    assert(log.includes(`Serving at ${origin}/`));
+    const [container] = JSON.parse(execFileSync('docker', ['inspect', containerName], { encoding: 'utf8' }));
+    assert(container.HostConfig.PortBindings['3000/tcp'].every(binding => binding.HostIp === '127.0.0.1'));
+  }
   await until(async () => (await fetch(`${origin}/manual`, { signal: AbortSignal.timeout(10000) })).ok, 'first page compiles', 120000);
   const engines = binary ? { chromium } : process.env.CI ? { chromium, webkit } : { chromium };
   for (const [name, engine] of Object.entries(engines)) {
@@ -170,29 +184,22 @@ try {
     await until(async () => (await fetchFile('assets/diagram.svg')).ok, 'assets directory restored');
     console.log(`${name}: automatic dev reload, edits/additions/deletions, search, image-only updates and invalid-edit recovery passed.`);
   }
+  if (binary) assert.equal(await readFile(browserRecord, 'utf8'), `${origin}/\n`, 'content reloads must not reopen the browser');
 } catch (error) {
   console.error(log.slice(-12000));
   throw error;
 } finally {
   await browser?.close();
   if (server && server.exitCode === null && server.signalCode === null) {
-    // Rust's Docker child receives terminal signals as part of the process
-    // group in CI. A direct test runner needs to stop its container explicitly.
-    if (binary) {
-      const { execFileSync: exec } = await import('node:child_process');
-      const ids = exec('docker', ['ps', '-q'], { encoding: 'utf8' }).trim().split(/\s+/).filter(Boolean);
-      if (ids.length) {
-        const containers = JSON.parse(exec('docker', ['inspect', ...ids], { encoding: 'utf8' }));
-        for (const container of containers) {
-          if (container.Mounts.some((mount) => mount.Type === 'bind' && mount.Source === content)) {
-            exec('docker', ['stop', '--time', '5', container.Id], { stdio: 'ignore' });
-          }
-        }
-      }
-    } else server.kill('SIGTERM');
+    // Signal only zel: it must clean up its own named container and runtime client.
+    server.kill(binary ? 'SIGINT' : 'SIGTERM');
     const timer = setTimeout(() => server.kill('SIGKILL'), 10000);
-    await exited;
+    const [code, signal] = await exited;
     clearTimeout(timer);
+    if (binary) { assert.equal(code, 0, `dev shutdown ${signal}: ${log}`); assert(log.includes('Stopped.')); }
+  }
+  if (binary && containerName) {
+    await until(() => !execFileSync('docker', ['ps', '-aq', '--filter', `name=^/${containerName}$`], { encoding: 'utf8' }).trim(), 'dev removes its container', 30000, true);
   }
   if (process.env.ZELLIJ_TEST_DEV_LOG) await writeFile(process.env.ZELLIJ_TEST_DEV_LOG, log);
   await rm(app, { recursive: true, force: true });

@@ -172,6 +172,23 @@ fn fixture() -> tempfile::TempDir {
 }
 
 #[test]
+fn chosen_bindings_serve_matching_hosts_without_allowing_rebinding() {
+    for host in ["127.0.0.1", "0.0.0.0", "::1", "::"] {
+        let root = fixture();
+        let listener = zellij_docs::server::listener_on(host.parse().unwrap(), 0).unwrap();
+        let server = Running::from_server(
+            StaticServer::from_listener(Utf8Path::from_path(root.path()).unwrap(), listener, "/")
+                .unwrap(),
+        );
+        assert!(!server.address().starts_with("0.0.0.0:"));
+        assert!(!server.address().starts_with("[::]:"));
+        assert_eq!(server.request("GET", "/", None).0, 200, "{host}");
+        assert_eq!(server.request("GET", "/", Some("untrusted.example")).0, 403);
+        assert_eq!(server.request("GET", "/.secret", None).0, 403);
+    }
+}
+
+#[test]
 fn next_export_directories_do_not_hide_flat_parent_pages() {
     let root = fixture();
     for (path, body) in [

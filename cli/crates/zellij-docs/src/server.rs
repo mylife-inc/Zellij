@@ -1,4 +1,4 @@
-//! Loopback preview. Ordinary serving leaves bytes unchanged; an explicitly
+//! Static preview. Ordinary serving leaves bytes unchanged; an explicitly
 //! enabled watch preview injects its reload client only into HTTP responses.
 use camino::{Utf8Path, Utf8PathBuf};
 use futures_util::TryStreamExt;
@@ -37,7 +37,11 @@ const WATCH_NOT_FOUND: &[u8] = br#"<!doctype html>
 build. Restore it or navigate back to another page.</p></body></html>"#;
 
 pub fn listener(port: u16) -> Result<TcpListener> {
-    TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port)).map_err(|error| {
+    listener_on(std::net::Ipv4Addr::LOCALHOST.into(), port)
+}
+
+pub fn listener_on(host: std::net::IpAddr, port: u16) -> Result<TcpListener> {
+    TcpListener::bind((host, port)).map_err(|error| {
         if error.kind() == io::ErrorKind::AddrInUse {
             Error::InvalidArgument(format!(
                 "port {port} is already in use; choose another --port (or --port 0)"
@@ -105,9 +109,11 @@ impl StaticServer {
 
     /// `view` reserves the port before building, then supplies that same socket.
     pub fn from_listener(root: &Utf8Path, listener: TcpListener, base_path: &str) -> Result<Self> {
-        let port = listener.local_addr()?.port();
+        let address = listener.local_addr()?;
+        let port = address.port();
         let site = Self::site(root, base_path, port)?;
-        let url = format!("http://127.0.0.1:{port}{}/", encode(&site.prefix));
+        let browser = zellij_core::network::browser_address(address.ip(), port);
+        let url = format!("http://{browser}{}/", encode(&site.prefix));
         Ok(Self {
             listener,
             site: Arc::new(site),
@@ -184,6 +190,9 @@ impl StaticServer {
                         Err(error) => return Err(error.into()),
                     };
                     let site = self.site.clone();
+                    // Dual-stack listeners represent IPv4 clients as mapped
+                    // IPv6 addresses; browsers still send an IPv4 Host header.
+                    let local_ip = stream.local_addr()?.ip().to_canonical();
                     connections.spawn(async move {
                         let service = service_fn(move |request: Request<hyper::body::Incoming>| {
                             let site = site.clone();
@@ -191,7 +200,7 @@ impl StaticServer {
                                 // No request body is needed by this GET/HEAD server.
                                 let (parts, _) = request.into_parts();
                                 let response = tokio::task::spawn_blocking(move || {
-                                    site.response(&Request::from_parts(parts, ()))
+                                    site.response(&Request::from_parts(parts, ()), local_ip)
                                 }).await.unwrap_or_else(|_| text_response(500, "Could not read file\n"));
                                 Ok::<_, Infallible>(response)
                             }
@@ -303,7 +312,7 @@ impl Site {
             })
     }
 
-    fn response(&self, request: &Request<()>) -> HttpResponse {
+    fn response(&self, request: &Request<()>, local_ip: std::net::IpAddr) -> HttpResponse {
         let revision = self.live.as_ref().map(|live| live.read());
         let version = self
             .live
@@ -321,12 +330,16 @@ impl Site {
             response
         } else if request.headers().get_all("host").iter().any(|value| {
             let host = value.to_str().unwrap_or_default().to_ascii_lowercase();
-            !(self.port == 80 && ["localhost", "127.0.0.1"].contains(&host.as_str()))
-                && ![
-                    format!("127.0.0.1:{}", self.port),
-                    format!("localhost:{}", self.port),
-                ]
-                .contains(&host)
+            let address = std::net::SocketAddr::new(local_ip, self.port).to_string();
+            let bare = match local_ip {
+                std::net::IpAddr::V4(ip) => ip.to_string(),
+                std::net::IpAddr::V6(ip) => format!("[{ip}]"),
+            };
+            host != address
+                && !(self.port == 80 && host == bare)
+                && !(local_ip.is_loopback()
+                    && (host == format!("localhost:{}", self.port)
+                        || (self.port == 80 && host == "localhost")))
         }) {
             text_response(403, "Forbidden host\n")
         } else {

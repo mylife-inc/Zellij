@@ -103,6 +103,17 @@ impl Running {
     pub fn kill(&mut self) -> io::Result<()> {
         self.child.kill()
     }
+
+    /// Reap an intentionally cancelled child without replaying its captured
+    /// output as a quiet-mode failure (its signal exit is expected).
+    pub fn cancel(&mut self) -> io::Result<()> {
+        if self.child.try_wait()?.is_none() {
+            self.child.kill()?;
+        }
+        self.child.wait()?;
+        self.finished = true;
+        Ok(())
+    }
 }
 impl Drop for Running {
     fn drop(&mut self) {

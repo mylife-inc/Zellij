@@ -80,7 +80,11 @@ export async function watchPreparation(
   let revision: string | undefined;
   const publishRevision = async () => {
     const next = randomUUID();
-    await writePreparedFile(revisionFile, JSON.stringify({ version: 1, revision: next }));
+    const { basePath } = resolveContentLocation(options);
+    await writePreparedFile(revisionFile, JSON.stringify({
+      version: 1, revision: next, basePath: basePath ?? '',
+      ...(process.env.ZELLIJ_DEV_SESSION ? { session: process.env.ZELLIJ_DEV_SESSION } : {}),
+    }));
     revision = next;
   };
   let applied: Snapshot;
