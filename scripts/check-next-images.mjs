@@ -84,7 +84,7 @@ async function browserChecks(origin, prefix, portable) {
     assert.deepEqual(errors,[],'Browser errors or failed resources');
   } finally { await browser.close(); }
 }
-async function container(tag, prefix, portable) {
+async function container(tag, prefix, portable, publicOrigin) {
   const name = `zel-next-${portable?'portable':'hosted'}-${suffix}`;
   containers.push(name);
   docker(['run','-d','--name',name,'-p','127.0.0.1::3000',tag]);
@@ -92,6 +92,11 @@ async function container(tag, prefix, portable) {
   assert.equal(info.Config.User,'nextjs');
   const origin = `http://127.0.0.1:${info.NetworkSettings.Ports['3000/tcp'][0].HostPort}`;
   await ready(origin,prefix);
+  if (publicOrigin) {
+    const html = await (await fetch(`${origin}${prefix}/manual`)).text();
+    assert(html.includes(`href="${publicOrigin}${prefix}/manual"`));
+    assert((await (await fetch(`${origin}${prefix}/sitemap.xml`)).text()).includes(`<loc>${publicOrigin}${prefix}/manual</loc>`));
+  }
   docker(['exec',name,'sh','-c',info.Config.Healthcheck.Test[1]]);
   await browserChecks(origin,prefix,portable);
 }
@@ -136,13 +141,15 @@ try {
     pullPublishedImage(docker, portable);
     await container(portable,'',true);
     await write('hosted/zel.yaml','version: 1\nrenderer: hosted\n');
-    await write('hosted/content/site.yaml','name: Hosted Next\nhome: manual\nbasePath: /products/.docs\n');
+    const hostedSettings = 'name: Hosted Next\nhome: manual\nbasePath: /authored\nsiteUrl: https://authored.example\n';
+    await write('hosted/content/site.yaml',hostedSettings);
     await write('hosted/content/manual/_sidebar.yaml','title: Manual\nnav: [index, next]\n');
     await write('hosted/content/manual/index.mdx','# Hosted Next\n\n[Next page](/manual/next)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n');
     await write('hosted/content/manual/next.mdx','# More documentation\n\nHosted prefix.\n');
     const hosted = `zellij-next-hosted:${suffix}`; images.push(hosted);
-    run(['image','next','hosted','--tag',hosted,'--features','all']);
-    await container(hosted,'/products/.docs',false);
+    run(['image','next','hosted','--tag',hosted,'--features','all','--base-path','/products/.docs','--site-url','https://next.example','--no-check']);
+    assert.equal(await readFile(path.join(root,'hosted/content/site.yaml'),'utf8'),hostedSettings);
+    await container(hosted,'/products/.docs',false,'https://next.example');
   }
   assert.equal(await readFile(path.join(root,'docs/zellij/site/index.html'),'utf8'),'previous output');
   assert.equal(await readFile(path.join(root,'docs/zellij/content/index.md'),'utf8'),original);

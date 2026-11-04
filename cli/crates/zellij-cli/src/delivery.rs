@@ -168,7 +168,7 @@ fn push_image(
         plan.kind,
         &plan.tag,
         plan.platform,
-        features,
+        &zellij_engine::BuildOptions::with_features(features),
     ) {
         zellij_core::diagnosticln!(
             "Publication stopped during validation/build; no push was attempted."

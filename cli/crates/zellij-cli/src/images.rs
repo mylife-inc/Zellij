@@ -8,7 +8,7 @@ use zellij_core::{
     features::Features,
     site::{Renderer, Site},
 };
-use zellij_engine::{ContainerEngine, static_image};
+use zellij_engine::{BuildOptions, ContainerEngine, static_image};
 
 use crate::args::ImageKind;
 
@@ -55,26 +55,29 @@ pub(crate) fn static_image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     platform: Option<ImagePlatform>,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
-    image(dir, tag, BuildKind::Static, platform, features)
+    image(dir, tag, BuildKind::Static, platform, options)
 }
 pub(crate) fn next_image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     platform: Option<ImagePlatform>,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
-    image(dir, tag, BuildKind::Next, platform, features)
+    image(dir, tag, BuildKind::Next, platform, options)
 }
 fn image(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     kind: BuildKind,
     platform: Option<ImagePlatform>,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
     let (site, content) = selection(dir)?;
+    if kind == BuildKind::Static && site.renderer == Renderer::Portable {
+        require_native_options(options)?;
+    }
     let tag = selected_tag(&site, tag, kind)?;
     let platform = platform.or(site.image.as_ref().and_then(|image| image.platform));
     let engine = ContainerEngine::detect(None)?;
@@ -83,7 +86,7 @@ fn image(
         kind.as_str(),
         site.renderer
     );
-    build_image(&site, &content, &engine, kind, &tag, platform, features)?;
+    build_image(&site, &content, &engine, kind, &tag, platform, options)?;
     zellij_core::statusln!(
         "\n✓ {tag}\n  Run it:   zel image run \"{tag}\"\n  Push it:  zel image push \"{tag}\""
     );
@@ -99,13 +102,15 @@ pub(crate) fn build_image(
     kind: BuildKind,
     tag: &str,
     platform: Option<ImagePlatform>,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
+    let features = options.features;
     if let Some(platform) = platform {
         zellij_core::statusln!("  Platform {platform}");
     }
     match (kind, site.renderer) {
         (BuildKind::Static, Renderer::Portable) => {
+            require_native_options(options)?;
             let temporary = tempfile::Builder::new().prefix("zel-image-").tempdir()?;
             let export = Utf8Path::from_path(temporary.path())
                 .ok_or_else(|| {
@@ -129,7 +134,7 @@ pub(crate) fn build_image(
         (BuildKind::Static, Renderer::Hosted) => engine.image_build_recipe(
             content,
             tag,
-            &static_image::hosted(engine.image(), features),
+            &static_image::hosted_with_options(engine.image(), options),
             platform,
         ),
         (BuildKind::Next, Renderer::Portable) => {
@@ -154,16 +159,26 @@ pub(crate) fn build_image(
                 maths: report.features.contains(&"maths"),
                 diagrams: report.features.contains(&"diagrams"),
             });
-            engine.image_build(&adapted, tag, Some(selected), platform)
+            engine.image_build_with_options(
+                &adapted,
+                tag,
+                platform,
+                &BuildOptions {
+                    features: Some(selected),
+                    ..options.clone()
+                },
+            )
         }
-        (BuildKind::Next, Renderer::Hosted) => engine.image_build(content, tag, features, platform),
+        (BuildKind::Next, Renderer::Hosted) => {
+            engine.image_build_with_options(content, tag, platform, options)
+        }
     }
 }
 
 pub(crate) fn dockerfile(
     dir: Option<&SiteInput>,
     kind: ImageKind,
-    features: Option<Features>,
+    options: &BuildOptions,
 ) -> Result<()> {
     if kind == ImageKind::Next {
         let selected = crate::select_site(dir)?;
@@ -174,19 +189,31 @@ pub(crate) fn dockerfile(
                 "a Next Dockerfile takes hosted content as its context; use `zel image next` / `zel ni` to adapt and package portable Markdown automatically".into(),
             ));
         }
-        return crate::image_dockerfile(&selected, features);
+        return crate::image_dockerfile(&selected, options);
     }
     let (site, _) = selection(dir)?;
     let body = match site.renderer {
         Renderer::Portable => {
-            if features.is_some() {
+            require_native_options(options)?;
+            if options.features.is_some() {
                 return Err(zellij_core::Error::InvalidArgument("a portable static Dockerfile packages already compiled HTML; apply --features with `zel build` or `zel image static`".into()));
             }
             static_image::portable()
         }
-        Renderer::Hosted => static_image::hosted(&zellij_engine::configured_image(None), features),
+        Renderer::Hosted => {
+            static_image::hosted_with_options(&zellij_engine::configured_image(None), options)
+        }
     };
     use std::io::Write as _;
     std::io::stdout().lock().write_all(body.as_bytes())?;
+    Ok(())
+}
+
+pub(crate) fn require_native_options(options: &BuildOptions) -> Result<()> {
+    if !options.overrides.is_empty() {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--base-path, --site-url and --no-check apply to hosted rendering. Portable HTML uses relative URLs at any prefix, and validates while compiling. For a hosted image from Markdown, use `zel ni`.".into()
+        ));
+    }
     Ok(())
 }

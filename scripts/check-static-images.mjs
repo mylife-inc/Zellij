@@ -87,6 +87,8 @@ async function serve(tag, kind, prefix) {
   } else {
     const manual = await (await response(origin, `${prefix}/manual`)).text();
     assert(manual.includes('Hosted images'));
+    assert(manual.includes(`href="https://static.example${prefix}/manual"`));
+    assert((await (await response(origin, `${prefix}/sitemap.xml`)).text()).includes(`<loc>https://static.example${prefix}/manual</loc>`));
     assert((await (await response(origin, `${prefix}/manual/next`)).text()).includes('More documentation'));
     assert.equal(await (await response(origin, `${prefix}/_zellij/assets/logo.svg`)).text(), asset);
     const search = await (await response(origin, `${prefix}/_zellij/search-index.json`)).json();
@@ -157,17 +159,20 @@ try {
   });
   const originalContent = await readFile(path.join(root, 'hosted/content/01-guide/index.mdx'), 'utf8');
   for (const [label, prefix] of [['root', ''], ['prefix', '/products/.docs']]) {
-    await write('hosted/content/site.yaml', `name: Hosted images\nhome: 01-guide\nbasePath: '${prefix}'\nnav: { search: true, themeToggle: true }\n`);
+    const settings = `name: Hosted images\nhome: 01-guide\nbasePath: /authored\nsiteUrl: https://authored.example\nnav: { search: true, themeToggle: true }\n`;
+    await write('hosted/content/site.yaml', settings);
     execFileSync(process.execPath, [fileURLToPath(new URL('../engine/packages/zellij/bin/zellij.mjs', import.meta.url)),
       'check', path.join(root, 'hosted/content'), '--deep', '--strict'], { stdio: 'inherit' });
     const tag = `zellij-static-hosted-${label}:${suffix}`;
     images.push(tag);
     const selection = prefix ? 'none' : 'all';
     // Reuse the export across all -> none to catch stale rendered output.
-    run(['build', 'hosted', '--features', selection, '--out', 'hosted-output'], { ZELLIJ_IMAGE: enabledBase });
+    const overrides = ['--base-path', prefix || '/', '--site-url', 'https://static.example', ...(prefix ? ['--no-check'] : [])];
+    run(['build', 'hosted', '--features', selection, '--out', 'hosted-output', ...overrides], { ZELLIJ_IMAGE: enabledBase });
     const html = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
     assert.equal(html.includes('<mjx-container'), selection === 'all');
-    run(['image', 'static', 'hosted', '--tag', tag, '--features', selection], { ZELLIJ_IMAGE: enabledBase });
+    run(['image', 'static', 'hosted', '--tag', tag, '--features', selection, ...overrides], { ZELLIJ_IMAGE: enabledBase });
+    assert.equal(await readFile(path.join(root, 'hosted/content/site.yaml'), 'utf8'), settings);
     assert.equal(await readFile(path.join(root, 'hosted/content/01-guide/index.mdx'), 'utf8'), originalContent);
     await serve(tag, 'hosted-' + label, prefix);
   }

@@ -137,6 +137,7 @@ fn main() {
             features,
             ref name,
             ref theme,
+            ref overrides,
         } => build_dispatch(
             dir.as_ref(),
             target.as_deref(),
@@ -148,6 +149,7 @@ fn main() {
                 features,
             },
             platform,
+            &overrides.options(features),
         ),
         Command::Image { ref action } => match action {
             ImageAction::Static(SiteImageArgs {
@@ -155,19 +157,37 @@ fn main() {
                 tag,
                 platform,
                 features,
-            }) => images::static_image(dir.as_ref(), tag.as_deref(), *platform, *features),
+                overrides,
+            }) => images::static_image(
+                dir.as_ref(),
+                tag.as_deref(),
+                *platform,
+                &overrides.options(*features),
+            ),
             ImageAction::Next(SiteImageArgs {
                 dir,
                 tag,
                 platform,
                 features,
-            }) => images::next_image(dir.as_ref(), tag.as_deref(), *platform, *features),
+                overrides,
+            }) => images::next_image(
+                dir.as_ref(),
+                tag.as_deref(),
+                *platform,
+                &overrides.options(*features),
+            ),
             ImageAction::Build {
                 dir,
                 tag,
                 platform,
                 features,
-            } => image_build_selected(dir.as_ref(), tag.as_deref(), *platform, *features),
+                overrides,
+            } => image_build_selected(
+                dir.as_ref(),
+                tag.as_deref(),
+                *platform,
+                &overrides.options(*features),
+            ),
             ImageAction::Run(ImageRunArgs {
                 tag,
                 port,
@@ -180,7 +200,8 @@ fn main() {
                 dir,
                 kind,
                 features,
-            }) => images::dockerfile(dir.as_ref(), *kind, *features),
+                overrides,
+            }) => images::dockerfile(dir.as_ref(), *kind, &overrides.options(*features)),
         },
         Command::Publish(ref options) => delivery::execute(None, options),
         Command::Deploy {
@@ -352,6 +373,7 @@ fn build_dispatch(
     tag: Option<&str>,
     options: zellij_docs::BuildOptions<'_>,
     platform: Option<zellij_core::delivery::ImagePlatform>,
+    hosted_options: &zellij_engine::BuildOptions,
 ) -> zellij_core::Result<()> {
     let selected = select_site(dir)?;
     let dir = &selected;
@@ -372,6 +394,7 @@ fn build_dispatch(
     }
     match target {
         "portable" => {
+            images::require_native_options(hosted_options)?;
             let output = build_portable(dir, out, options)?;
             zellij_core::statusln!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
@@ -379,14 +402,14 @@ fn build_dispatch(
             );
             Ok(())
         }
-        "static" => build(dir, target, out, options.features),
+        "static" => build(dir, target, out, hosted_options),
         "image" => {
             if out.is_some() {
                 return Err(zellij_core::Error::InvalidArgument(
                     "--out does not apply to image builds; use --tag".into(),
                 ));
             }
-            image_build(dir, tag, options.features, platform)
+            image_build(dir, tag, hosted_options, platform)
         }
         _ => Err(zellij_core::Error::InvalidArgument(format!(
             "unknown build target {target:?}; run zel list targets"
@@ -416,7 +439,7 @@ fn build(
     dir: &SiteInput,
     target: &str,
     out: Option<&str>,
-    features: Option<zellij_core::features::Features>,
+    options: &zellij_engine::BuildOptions,
 ) -> zellij_core::Result<()> {
     use zellij_engine::BuildMode;
 
@@ -440,7 +463,7 @@ fn build(
     zellij_core::statusln!("  Target   {target} → {out}");
     zellij_core::statusln!();
 
-    match engine.build_with_features(&content, &out, mode, features) {
+    match engine.build_with_options(&content, &out, mode, options) {
         Err(err @ zellij_core::Error::MountEmpty { .. }) => {
             report_empty_mount(&err);
             std::process::exit(err.exit_code());
@@ -554,9 +577,9 @@ fn image_build_selected(
     dir: Option<&SiteInput>,
     tag: Option<&str>,
     platform: Option<zellij_core::delivery::ImagePlatform>,
-    features: Option<zellij_core::features::Features>,
+    options: &zellij_engine::BuildOptions,
 ) -> zellij_core::Result<()> {
-    image_build(&select_site(dir)?, tag, features, platform)
+    image_build(&select_site(dir)?, tag, options, platform)
 }
 
 fn site_tag(dir: &SiteInput, content: &Utf8Path) -> zellij_core::Result<String> {
@@ -571,7 +594,7 @@ fn site_tag(dir: &SiteInput, content: &Utf8Path) -> zellij_core::Result<String> 
 fn image_build(
     dir: &SiteInput,
     tag: Option<&str>,
-    features: Option<zellij_core::features::Features>,
+    options: &zellij_engine::BuildOptions,
     platform: Option<zellij_core::delivery::ImagePlatform>,
 ) -> zellij_core::Result<()> {
     let content = resolve_content(dir)?;
@@ -591,7 +614,7 @@ fn image_build(
     if let Some(platform) = platform {
         zellij_core::statusln!("  Platform {platform}");
     }
-    engine.image_build(&content, &tag, features, platform)?;
+    engine.image_build_with_options(&content, &tag, platform, options)?;
 
     zellij_core::statusln!();
     zellij_core::statusln!("✓ {tag}");
@@ -626,12 +649,15 @@ fn image_push(tag: &str, registry: Option<&str>) -> zellij_core::Result<()> {
 
 fn image_dockerfile(
     dir: &SiteInput,
-    features: Option<zellij_core::features::Features>,
+    options: &zellij_engine::BuildOptions,
 ) -> zellij_core::Result<()> {
     let _ = resolve_content(dir)?;
     print!(
         "{}",
-        zellij_engine::image::dockerfile(&zellij_engine::configured_image(None), features)
+        zellij_engine::image::dockerfile_with_options(
+            &zellij_engine::configured_image(None),
+            options
+        )
     );
     Ok(())
 }

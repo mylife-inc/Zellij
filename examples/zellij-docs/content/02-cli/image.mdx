@@ -198,6 +198,32 @@ image you built with an override. Delivery and CI generation also accept
 
 `--build-arg` remains unimplemented.
 
+## Hosted URL and validation overrides
+
+```bash
+zel si docs/hosted --base-path /manual --site-url https://docs.example.com
+zel ni docs/manual --base-path /manual --site-url https://docs.example.com
+zel ni docs/hosted --base-path / --no-check
+zel idf docs/hosted --kind next --base-path /manual
+```
+
+Hosted static images, Next.js images, legacy `image build` / `build --target image`,
+and hosted Dockerfile generation support [`--base-path`, `--site-url` and
+`--no-check`](/cli/build#hosted-url-and-validation-overrides). `si` and `ni` keep
+their short syntax. A Next.js image built from portable Markdown supports these
+options after conversion; a portable static image rejects them. A standalone
+portable static Dockerfile packages already generated relative-link HTML and
+rejects them too.
+
+The chosen prefix governs routes, assets and the image's health check. Next.js
+images retain the same settings at runtime, including when an unknown URL needs
+content loading before returning 404. The public origin affects canonical links,
+sitemap and robots metadata. Settings stay in the generated artifact; authored
+files are unchanged. `/` explicitly clears a saved prefix, and `--no-check`
+only skips the separate preflight, leaving preparation and rendering validation
+enabled. These options require a current engine image. Ordinary builds remain
+local to the runtime; use `zel ip <tag>` to push a completed image.
+
 ## `zel image run`
 
 ```bash

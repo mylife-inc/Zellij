@@ -14,7 +14,7 @@
 
 import { networkInterfaces } from 'node:os';
 import { resolveFeatures } from './feature-config.cjs';
-import { resolveContentLocation, resolveDeploymentBasePath } from './deployment-config.cjs';
+import { resolveContentLocation, resolveDeploymentBasePath, readBuildOverrides } from './deployment-config.cjs';
 
 /** @typedef {Record<string, unknown> & { transpilePackages?: string[], serverExternalPackages?: string[], images?: Record<string, unknown>, allowedDevOrigins?: string[] }} ZellijNextConfig */
 
@@ -86,8 +86,9 @@ export function withZellij(config = {}, contentOptions = {}) {
   const disabled = Object.fromEntries(Object.entries({ maths: 'maths', diagrams: 'mermaid' })
     .filter(([name]) => !features[name])
     .map(([, loader]) => [`@shebka/zellij/optional-${loader}`, '@shebka/zellij/disabled-feature']));
-  const basePath = resolveDeploymentBasePath(content.basePath, config.basePath);
-  if (config.env?.ZELLIJ_BASE_PATH !== undefined) {
+  const overrides = readBuildOverrides();
+  const basePath = resolveDeploymentBasePath(content.basePath, overrides.basePath === undefined ? config.basePath : undefined);
+  if (config.env?.ZELLIJ_BASE_PATH !== undefined && overrides.basePath === undefined) {
     resolveDeploymentBasePath(basePath, config.env.ZELLIJ_BASE_PATH);
   }
   return {
@@ -96,6 +97,7 @@ export function withZellij(config = {}, contentOptions = {}) {
     // Next inlines this build-time value in the server runtime too. A wrapper
     // prefix must reach ordinary assets/metadata, not only Next's own links.
     env: { ...config.env, ZELLIJ_BASE_PATH: basePath,
+      ...(process.env.ZELLIJ_BUILD_OVERRIDES !== undefined ? { ZELLIJ_BUILD_OVERRIDES: process.env.ZELLIJ_BUILD_OVERRIDES } : {}),
       ZELLIJ_MATHS: String(features.maths), NEXT_PUBLIC_ZELLIJ_DIAGRAMS: String(features.diagrams) },
     turbopack: { ...config.turbopack, resolveAlias: { ...config.turbopack?.resolveAlias, ...disabled } },
     webpack(webpackConfig, context) {

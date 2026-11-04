@@ -7,7 +7,7 @@ import { LegacyContentSource } from '../content/legacy-source';
 import { loadSite, type Site } from '../content/site';
 import type { ContentSource } from '../content/types';
 import {
-  resolveContentPaths, resolveContentLocation, normalizeDeploymentBasePath, resolveDeploymentBasePath,
+  resolveContentPaths, resolveContentLocation, normalizeDeploymentBasePath, resolveDeploymentBasePath, readBuildOverrides,
 } from '../../deployment-config.cjs';
 export { resolveContentPaths } from '../../deployment-config.cjs';
 
@@ -60,9 +60,11 @@ export async function createContentSource(
     await new LegacyContentSource({ contentDir: appRoot, configFile, onWarning: warn }).loadLegacyConfig();
   }
   const builtBasePath = process.env.ZELLIJ_BASE_PATH;
+  const overrides = readBuildOverrides();
+  const optionBasePath = overrides.basePath === undefined ? options.basePath : undefined;
   const basePath = builtBasePath === undefined
-    ? normalizeDeploymentBasePath(options.basePath ?? authoredBasePath)
-    : resolveDeploymentBasePath(authoredBasePath, options.basePath, builtBasePath);
+    ? normalizeDeploymentBasePath(optionBasePath ?? authoredBasePath)
+    : resolveDeploymentBasePath(authoredBasePath, optionBasePath, builtBasePath);
 
   const root = await stat(contentDir).catch((error: NodeJS.ErrnoException) => {
     if (error.code !== 'ENOENT') throw error;
@@ -76,7 +78,7 @@ export async function createContentSource(
         `deprecated — see specs/zellij-content-model-design.md §12 for the migration.`,
     );
     return {
-      source: new LegacyContentSource({ contentDir, configFile, onWarning: warn }),
+      source: new LegacyContentSource({ contentDir, configFile, basePath, siteUrl: overrides.siteUrl, onWarning: warn }),
       contentDir,
       layout: 'legacy',
       basePath,
@@ -87,6 +89,7 @@ export async function createContentSource(
     source: new FolderContentSource({
       contentDir,
       basePath,
+      siteUrl: overrides.siteUrl,
       onWarning: warn,
     }),
     contentDir,
@@ -134,7 +137,7 @@ function loadRuntime(options: ZellijRuntimeOptions, developmentRevision?: string
   const key = JSON.stringify([
     appRoot, configFile,
     options.contentDir === undefined ? null : path.resolve(appRoot, options.contentDir),
-    options.basePath ?? null, process.env.ZELLIJ_BASE_PATH ?? null,
+    options.basePath ?? null, process.env.ZELLIJ_BASE_PATH ?? null, process.env.ZELLIJ_BUILD_OVERRIDES ?? null,
     developmentRevision ?? null,
   ]);
   const now = Date.now();

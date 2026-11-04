@@ -43,6 +43,41 @@ function resolveDeploymentBasePath(...values) {
   return explicit[0] ?? '';
 }
 
+// Private CLI-to-engine protocol, also retained in a generated Next image.
+// Decoding data here keeps authored strings out of shell/Dockerfile syntax.
+function readBuildOverrides() {
+  const encoded = process.env.ZELLIJ_BUILD_OVERRIDES;
+  if (encoded === undefined) return {};
+  if (encoded.length > 32768 || !/^(?:[0-9a-f]{2})+$/i.test(encoded)) {
+    throw new Error('Invalid Zellij build overrides encoding');
+  }
+  let value;
+  try { value = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(Buffer.from(encoded, 'hex'))); }
+  catch { throw new Error('Invalid Zellij build overrides JSON'); }
+  if (!value || typeof value !== 'object' || Array.isArray(value) || value.version !== 1
+      || Object.keys(value).some(key => !['version', 'basePath', 'siteUrl', 'noCheck'].includes(key))
+      || typeof value.noCheck !== 'boolean') {
+    throw new Error('Unsupported Zellij build overrides; use a matching CLI and engine');
+  }
+  const result = {};
+  if (Object.hasOwn(value, 'basePath')) {
+    if (typeof value.basePath !== 'string' || value.basePath.length > 2048 || /[\s\u0000-\u001f\u007f]/u.test(value.basePath)) throw new Error('Invalid build basePath');
+    result.basePath = normalizeDeploymentBasePath(value.basePath);
+  }
+  if (Object.hasOwn(value, 'siteUrl')) {
+    if (typeof value.siteUrl !== 'string' || value.siteUrl.length > 2048 || /[\s\\@]/u.test(value.siteUrl)
+        || !/^https?:\/\/[^/?#]+\/?$/i.test(value.siteUrl)) throw new Error('Invalid build siteUrl');
+    let url;
+    try { url = new URL(value.siteUrl); } catch { throw new Error('Invalid build siteUrl'); }
+    if (!['http:', 'https:'].includes(url.protocol) || !url.hostname || url.username || url.password
+        || url.pathname !== '/' || url.search || url.hash || value.siteUrl.includes('?') || value.siteUrl.includes('#')) {
+      throw new Error('Build siteUrl must be an HTTP(S) origin; use basePath for a deployment prefix');
+    }
+    result.siteUrl = url.origin;
+  }
+  return result;
+}
+
 function resolveContentLocation(options = {}) {
   const { appRoot, configFile } = resolveContentPaths(options);
   let legacy = options.contentDir ? undefined : readConfig(configFile);
@@ -58,7 +93,8 @@ function resolveContentLocation(options = {}) {
   if (layout === 'legacy' && wrapperConfig) throw new Error('versioned wrapper config requires the current hosted folder layout, not marketing/');
   if (layout === 'legacy' && legacy === undefined) legacy = readConfig(configFile);
   const settings = layout === 'legacy' ? legacy : readConfig(path.join(contentDir, 'site.yaml'));
-  const basePath = settings?.basePath === undefined ? undefined : normalizeDeploymentBasePath(settings.basePath);
+  const authoredBasePath = settings?.basePath === undefined ? undefined : normalizeDeploymentBasePath(settings.basePath);
+  const basePath = readBuildOverrides().basePath ?? authoredBasePath;
   return { appRoot, configFile, contentDir, layout, basePath, legacyConfigUsed };
 }
 
@@ -66,3 +102,4 @@ exports.resolveContentPaths = resolveContentPaths;
 exports.resolveContentLocation = resolveContentLocation;
 exports.normalizeDeploymentBasePath = normalizeDeploymentBasePath;
 exports.resolveDeploymentBasePath = resolveDeploymentBasePath;
+exports.readBuildOverrides = readBuildOverrides;

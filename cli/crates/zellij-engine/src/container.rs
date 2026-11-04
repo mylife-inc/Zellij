@@ -506,12 +506,27 @@ impl ContainerEngine {
         mode: BuildMode,
         features: Option<Features>,
     ) -> Result<()> {
+        self.build_with_options(
+            content,
+            out,
+            mode,
+            &crate::BuildOptions::with_features(features),
+        )
+    }
+
+    pub fn build_with_options(
+        &self,
+        content: &Utf8Path,
+        out: &Utf8Path,
+        mode: BuildMode,
+        options: &crate::BuildOptions,
+    ) -> Result<()> {
         if mode != BuildMode::Static {
             return Err(Error::NoEngine {
                 reason: "only --target static is implemented so far".into(),
             });
         }
-        self.prepare_export(content, out, ExportLayout::Flat, features)?
+        self.prepare_export(content, out, ExportLayout::Flat, options)?
             .publish()
     }
 }
@@ -529,7 +544,12 @@ impl ContainerEngine {
         out: &Utf8Path,
         features: Option<Features>,
     ) -> Result<String> {
-        let output = self.prepare_export(content, out, ExportLayout::Deployment, features)?;
+        let output = self.prepare_export(
+            content,
+            out,
+            ExportLayout::Deployment,
+            &crate::BuildOptions::with_features(features),
+        )?;
         let prefix = take_prefix(&output)?;
         output.publish()?;
         Ok(prefix)
@@ -547,7 +567,12 @@ impl ContainerEngine {
         out: &Utf8Path,
         features: Option<Features>,
     ) -> Result<PreparedPreview> {
-        let output = self.prepare_export(content, out, ExportLayout::Preview, features)?;
+        let output = self.prepare_export(
+            content,
+            out,
+            ExportLayout::Preview,
+            &crate::BuildOptions::with_features(features),
+        )?;
         let base_path = take_prefix(&output)?;
         Ok(PreparedPreview { output, base_path })
     }
@@ -557,11 +582,14 @@ impl ContainerEngine {
         content: &Utf8Path,
         out: &Utf8Path,
         layout: ExportLayout,
-        features: Option<Features>,
+        options: &crate::BuildOptions,
     ) -> Result<crate::output::StaticOutput> {
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
-        let volume = format!("{}:/app/node_modules", self.modules_volume_for(features));
+        let volume = format!(
+            "{}:/app/node_modules",
+            self.modules_volume_for(options.features)
+        );
         let out_mount = format!("{}:/out", bind_path(&output.directory));
 
         // Give the output back to whoever asked for it.
@@ -592,14 +620,20 @@ impl ContainerEngine {
             }
             ExportLayout::Flat => "cp -a out/. /out/",
         };
-        let feature_step = features
+        let feature_step = options
+            .features
             .map(|features| format!("{} && ", crate::image::feature_command(features)))
             .unwrap_or_default();
+        let check = if options.overrides.no_check {
+            String::new()
+        } else {
+            format!("node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; ")
+        };
+        let guard = options.guard();
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
-                "node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; \
-                 {feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
+                "{guard}{check}{feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
                  {copy}{handback}"
             ),
@@ -614,6 +648,7 @@ impl ContainerEngine {
             // The image defaults to `standalone`, which is what a site image
             // wants. A folder for a CDN is a different artefact.
             .args(["-e", "ZELLIJ_OUTPUT=export"])
+            .args(options.environment())
             .arg(&self.image)
             .args(["sh", "-c", &script])
             .zel_status()?;

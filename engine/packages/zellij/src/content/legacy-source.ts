@@ -183,6 +183,8 @@ function toMenuLeaf(leaf: z.infer<typeof legacyNavLeafSchema>): AuthoredMenuItem
 /* --------------------------------------------------------- the old layout */
 
 export interface LegacyContentSourceOptions {
+  basePath?: string;
+  siteUrl?: string;
   /** Absolute path to the content directory. */
   contentDir: string;
   /** Absolute path to zellij.config.yaml. */
@@ -238,7 +240,10 @@ export class LegacyContentSource implements ContentSource {
   }
 
   async loadSiteConfig(): Promise<SiteConfig> {
-    return toSiteConfig(await this.loadLegacyConfig());
+    const config = toSiteConfig(await this.loadLegacyConfig());
+    if (this.options.basePath !== undefined) config.basePath = this.options.basePath;
+    if (this.options.siteUrl !== undefined) config.siteUrl = this.options.siteUrl;
+    return config;
   }
 
   async loadMenu(): Promise<AuthoredMenuItem[] | undefined> {
