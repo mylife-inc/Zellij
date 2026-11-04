@@ -4,7 +4,7 @@ fn main() {
     let args: Vec<_> = env::args().skip(1).collect();
     let root = PathBuf::from(env::var_os("ZELLIJ_BUILD_FIXTURE").unwrap());
     match args.first().map(String::as_str) {
-        Some("info") => return,
+        Some("info") => { fs::write(root.join("probed"), "yes").unwrap(); return; }
         Some("version" | "--version") => { println!("27.0.0"); return; }
         Some("image") => { println!("sha256:0123456789abcdef"); return; }
         Some("build") => {

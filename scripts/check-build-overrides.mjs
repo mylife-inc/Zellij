@@ -77,6 +77,7 @@ try {
   assert(defaults.includes('RUN npx zellij check content'));
   assert.deepEqual(decode(defaults), []);
   await rm(path.join(root, 'args')); await rm(path.join(root, 'recipe'));
+  await rm(path.join(root, 'probed'));
   for (const command of [['build'], ['si'], ['idf', '--kind', 'static']]) {
     for (const option of [['--base-path', '/docs'], ['--site-url', 'https://docs.example'], ['--no-check']]) {
       const result = run([...command, 'portable', ...option], 2);
@@ -86,7 +87,7 @@ try {
   for (const option of [['--base-path', '/../docs'], ['--site-url', 'https://docs.example/path'], ['--site-url', 'https://user:password@docs.example']]) {
     run(['build', 'hosted', ...option], 2);
   }
-  for (const file of ['args', 'recipe', 'portable/site', 'hosted/site']) await assert.rejects(stat(path.join(root, file)), { code: 'ENOENT' });
+  for (const file of ['args', 'recipe', 'probed', 'portable/site', 'hosted/site']) await assert.rejects(stat(path.join(root, file)), { code: 'ENOENT' });
   assert.equal(await read('hosted/content/site.yaml'), authored);
   assert.equal(await read('portable/content/index.md'), '# Documentation\n');
   console.log('Hosted build overrides: native aliases, recipes, root reset, preflight selection, rejection and preservation passed.');

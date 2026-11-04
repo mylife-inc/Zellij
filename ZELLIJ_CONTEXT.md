@@ -3,10 +3,11 @@
 Last refreshed: **2026-11-04**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current implementation: hosted development auto-reload and JSON validation merged
-in PRs #62 and #63 after all checks passed. Development host/browser options are
-implemented in `222ffda`; [PR #64](https://github.com/mylife-inc/Zellij/pull/64)
-tracks platform/container acceptance and subsequent cleanup corrections.
+Current implementation: hosted development reload, JSON validation and dev
+host/browser options are merged in PRs #62–#64. PR #64 merged as `706f543`
+after all 13 checks passed; refreshed main CI and Base image builds also passed.
+The current branch implements hosted build URL and preflight overrides; see the
+latest dated entry for scope and verification status.
 The user requested completion of the remaining CLI capabilities. The prior rc.2
 release proposal awaits explicit publication approval and predates
 this new work. See the latest dated entry.
@@ -3902,3 +3903,54 @@ actionlint and diff checks pass locally without Docker or a GUI browser. Final
 container results are tracked in [PR #64](https://github.com/mylife-inc/Zellij/pull/64).
 Earlier run `41794505393` was canceled after the startup cleanup correction;
 it did not establish final acceptance. No release or production deployment was made.
+
+
+### Development options — final acceptance, 2026-11-04
+
+PR #64 merged as `706f5430772a13ba9428aeef0d60f3237fd2dd4f` after all
+13 checks passed in run `41798421655` on `bae81ce2cdc63616ed20c8b8c39b71dd9653b49b`.
+The tested head and merge have identical trees. Refreshed main CI `41801848062`
+and Base image `41801847816` both passed. This supersedes the pending acceptance
+status above while retaining its earlier failure/correction history.
+
+### Hosted build overrides — local implementation, 2026-11-04
+
+The current branch adds invocation-only `--base-path`, `--site-url` and
+`--no-check` to hosted `build`/`b`, static/Next image commands (`si`/`ni`), legacy
+Next image builds and hosted Dockerfile generation (`idf`). Portable Markdown
+adapted into a Next image accepts them; pure portable HTML/static images reject
+them before runtime probing. Deploy/publication/CI generation do not yet accept
+these three flags. Existing delivery callers retain default behavior.
+
+An explicit prefix overrides the authored/wrapper prefix; `/` clears it. The
+public site URL is an HTTP(S) origin only, with the path supplied separately.
+Both reach rendering, SEO metadata, image layout and health checks. Next images
+retain settings at runtime, including unknown-route content loads. Authored
+configuration is validated before applying overrides and is never rewritten.
+`--no-check` removes only the separate preflight; preparation, schema, rendering
+and output ownership validation remain active. Failed exports preserve the last
+successful site.
+
+A typed Rust settings value crosses the CLI/engine boundary as versioned,
+hex-encoded JSON in `ZELLIJ_BUILD_OVERRIDES`. User strings never become shell or
+Dockerfile instructions. Engine capability `buildOverridesVersion: 1` is checked
+before installation; older images fail with upgrade guidance. The shared Node
+bootstrap validates/normalizes the protocol and supplies both Next configuration
+and content sources. The production runtime cache keys include these settings.
+
+Implementation: `62ec4f1`. Local verification passed: 323 Rust tests (one real
+container test intentionally ignored locally), warnings-denied Clippy, formatting,
+415 engine tests, workspace typechecks, package build and isolated installed
+checker acceptance. All 55 documentation routes and 23 examples pass deep/strict
+validation. Native fake-runtime acceptance covers aliases, generated recipes,
+root reset, preflight selection, invalid arguments, portable rejection and source/
+output preservation. JavaScript syntax, actionlint and diff checks pass. Rust
+fixtures ran serially with loopback access for their existing mock services.
+No local Docker or GUI browser was used. CI adds the native fixture on all three
+operating systems plus real export/static-image/Next-image URL and health checks;
+final platform/container results are pending.
+Remaining CLI scope includes image build arguments and combined multi-platform
+manifests, propagation of these options to delivery/CI where appropriate,
+additional deployment/CI providers and broader import fidelity. Netlify's
+hosting-injected hydration problem remains external. No release publication,
+production deployment or domain change is included.
