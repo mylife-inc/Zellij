@@ -84,7 +84,7 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
         if let Some(severity) = severity {
             expected["ok"] = json!(false);
             expected["diagnostics"] = json!([{"severity": severity, "code": "deep", "file": null,
-                "message": "Missing reference in /content/guide/page.mdx"}]);
+                "message": "guide/page.mdx: no page resolves for /content/help"}]);
         }
         fs::write(
             root.join("engine-report"),
@@ -103,12 +103,6 @@ fn forwards_validation_options_and_preserves_success_errors_and_strict_warnings(
         .env("FAKE_EXIT", if exit == 0 { "0" } else { "1" });
         let actual = report(cmd, exit);
         expected["root"] = json!(content.to_str().unwrap());
-        if severity.is_some() {
-            expected["diagnostics"][0]["message"] = json!(format!(
-                "Missing reference in {}/guide/page.mdx",
-                content.display()
-            ));
-        }
         assert_eq!(actual, expected);
         let arguments = fs::read_to_string(root.join("arguments")).unwrap();
         assert!(arguments.contains(":/content:ro\n"));

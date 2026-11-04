@@ -3,9 +3,9 @@
 Last refreshed: **2026-11-03**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current implementation: hosted development auto-reload is under verification;
+Current implementation: hosted development auto-reload and JSON validation are under verification;
 the user requested completion of the remaining CLI capabilities. The prior rc.2
-release proposal is paused at the publication approval boundary and predates
+release proposal awaits explicit publication approval and predates
 this new work. See the latest dated entry.
 
 Latest content-preservation work: PR #55 merged as `f1ca1ff` after all 13 CI jobs passed in
@@ -3787,3 +3787,31 @@ commit 0fbf0a1 predates this work; any later release proposal must use a reviewe
 commit containing its final advertised scope. Publication approval is still
 pending. Remaining CLI work includes hosted JSON validation, advanced options,
 combined image manifests, additional deployment/CI providers and converters.
+
+
+### Hosted JSON validation — 2026-11-03
+
+Hosted `zel check --json` now consumes a versioned engine report. It preserves
+real content/deep findings and warning severity, including strict warning-only
+failures. Native success is exit 0, content/strict failure 3, unavailable runtime
+or inaccessible mount 4, configuration conflict 2, and incompatible/failed engine
+report 1. Normal JSON mode writes one stdout report and no stderr diagnostics
+after site/checker selection; explicit verbose diagnostics still use stderr.
+The Node check command emits the same validation schema but retains exit 1 for
+failed validation. Hosted `pages` counts loaded routes, not compiled HTML files.
+
+The protocol validates version, target, mounted root, requested options, status
+and findings before accepting success. The structured host root preserves
+quotes, backslashes and Unicode; diagnostic messages stay verbatim so authored
+URLs cannot be mistaken for container paths. Older engine
+images fail with image-selection/pull guidance rather than parsing terminal
+text. Runtime/configuration failures also receive structured reports. Content
+mounts remain read-only. Invalid CLI flags and discovery failures before the
+checker is selected retain ordinary CLI errors.
+
+Regressions cover engine findings, strict warnings, bootstrap failures, malformed
+or inconsistent reports, native option forwarding, host path escaping and
+missing runtimes. The installed-package/real-container acceptance script now
+exercises JSON success, deep failure, strict warnings and recovery. Final full
+verification and fixing commit will be recorded after CI. No release or
+production deployment is part of this implementation.

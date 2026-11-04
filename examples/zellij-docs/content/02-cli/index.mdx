@@ -150,8 +150,8 @@ suppress the success summary but retain diagnostics; their JSON remains complete
 `context --json <file>` writes the file and suppresses its notice under `--quiet`.
 
 Verbose JSON commands still write only the requested JSON on stdout; verbose
-messages use stderr. Without `--verbose`, portable check JSON retains its existing
-one-report/no-stderr behavior, including validation failures. Unsupported JSON
+messages use stderr. Without `--verbose`, portable and hosted check JSON emit
+one report with no stderr diagnostics, including validation failures. Unsupported JSON
 commands remain errors. Quiet/verbose never change strictness, overwrite rules,
 publication intent, browser launching or watch behavior. Quiet previews suppress
 their readiness URL; choose a known `--port` when using them interactively.

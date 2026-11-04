@@ -3071,3 +3071,31 @@ encoded filenames, query values and fragments; it also invalidates the asset
 manifest cache on atomic replacement instead of waiting 250 ms. A fixed-clock
 regression checks replacement, removal/recreation and production memoization.
 The original failure is retained here; final browser verification is pending.
+
+
+### Hosted JSON validation — 2026-11-03
+
+Hosted `zel check --json` now consumes a versioned engine report. It preserves
+real content/deep findings and warning severity, including strict warning-only
+failures. Native success is exit 0, content/strict failure 3, unavailable runtime
+or inaccessible mount 4, configuration conflict 2, and incompatible/failed engine
+report 1. Normal JSON mode writes one stdout report and no stderr diagnostics
+after site/checker selection; explicit verbose diagnostics still use stderr.
+The Node check command emits the same validation schema but retains exit 1 for
+failed validation. Hosted `pages` counts loaded routes, not compiled HTML files.
+
+The protocol validates version, target, mounted root, requested options, status
+and findings before accepting success. The structured host root preserves
+quotes, backslashes and Unicode; diagnostic messages stay verbatim so authored
+URLs cannot be mistaken for container paths. Older engine
+images fail with image-selection/pull guidance rather than parsing terminal
+text. Runtime/configuration failures also receive structured reports. Content
+mounts remain read-only. Invalid CLI flags and discovery failures before the
+checker is selected retain ordinary CLI errors.
+
+Regressions cover engine findings, strict warnings, bootstrap failures, malformed
+or inconsistent reports, native option forwarding, host path escaping and
+missing runtimes. The installed-package/real-container acceptance script now
+exercises JSON success, deep failure, strict warnings and recovery. Final full
+verification and fixing commit will be recorded after CI. No release or
+production deployment is part of this implementation.

@@ -76,12 +76,10 @@ impl HostedCheckReport {
         {
             return Err(invalid());
         }
-        // Rewrite fields after parsing: host paths may contain JSON quotes,
-        // backslashes and Unicode. Never replace inside encoded JSON bytes.
+        // The structured root is the host path. Keep messages verbatim: an
+        // authored route such as /content/help is not a container filesystem
+        // path, and replacing substrings would corrupt the actual finding.
         report.root = content.to_string();
-        for diagnostic in &mut report.diagnostics {
-            diagnostic.message = diagnostic.message.replace(mounted, content.as_str());
-        }
         Ok(report)
     }
 }
@@ -121,7 +119,7 @@ mod tests {
         let report = decode(&invalid, Some(1)).unwrap();
         assert_eq!(
             report.diagnostics[0].message,
-            "Invalid C:\\docs \"日本\"/site.yaml: expected a string"
+            "Invalid /content/site.yaml: expected a string"
         );
         let encoded = serde_json::to_vec(&report).unwrap();
         assert_eq!(

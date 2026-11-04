@@ -223,6 +223,7 @@ switch (command) {
         `  check [dir]    validate a content root without building\n` +
         `                   --deep            check MDX syntax and local references\n` +
         `                   --strict          fail on warnings\n` +
+        `                   --json            emit a versioned validation report\n` +
         `  prepare        sync assets and build the search index\n` +
         `                   --watch           keep prepared files up to date\n` +
         `  dev [options] -- [Next.js dev options]\n` +
