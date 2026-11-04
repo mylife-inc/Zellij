@@ -133,6 +133,8 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Hosted build overrides and image recipes on the native platform
+        run: node scripts/check-build-overrides.mjs
       - name: Native dev bindings, browser readiness and cancellation
         run: node scripts/check-dev-options.mjs
       - name: Hosted preview orchestration and cancellation on the native platform
@@ -206,6 +208,11 @@ jobs:
         # Automatic fallback can select Podman when Docker's probe fails under
         # load, but Podman cannot see the image in Docker's local image store.
         run: printf 'DOCKER_CONTEXT=%s\n' "$(docker context show)" >> "$GITHUB_ENV"
+
+      - name: Hosted build overrides affect output without changing authored content
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-hosted-build-overrides.mjs
 
       - name: Ejected distribution installs, validates and builds outside the checkout
         env:

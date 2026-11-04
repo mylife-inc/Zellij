@@ -332,6 +332,9 @@ pub(crate) enum Command {
         #[arg(long)]
         features: Option<Features>,
 
+        #[command(flatten)]
+        overrides: BuildOverrideArgs,
+
         /// Portable site name: overrides zel.yaml, then defaults to the source folder name.
         #[arg(long)]
         name: Option<String>,
@@ -506,6 +509,8 @@ pub(crate) enum ImageAction {
         /// Override this build: maths, diagrams, maths,diagrams, all, or none.
         #[arg(long)]
         features: Option<Features>,
+        #[command(flatten)]
+        overrides: BuildOverrideArgs,
     },
     /// Run it locally — the last check before it goes anywhere.
     Run(ImageRunArgs),
@@ -731,6 +736,8 @@ pub(crate) struct ImageDockerfileArgs {
     /// Override this build: maths, diagrams, maths,diagrams, all, or none.
     #[arg(long)]
     pub(crate) features: Option<Features>,
+    #[command(flatten)]
+    pub(crate) overrides: BuildOverrideArgs,
 }
 
 #[derive(clap::ValueEnum, Clone, Copy, Debug, PartialEq, Eq)]
@@ -753,6 +760,33 @@ pub(crate) struct SiteImageArgs {
     /// Override this build: maths, diagrams, maths,diagrams, all, or none.
     #[arg(long)]
     pub(crate) features: Option<Features>,
+    #[command(flatten)]
+    pub(crate) overrides: BuildOverrideArgs,
+}
+
+#[derive(clap::Args, Clone, Debug, Default, PartialEq, Eq)]
+pub(crate) struct BuildOverrideArgs {
+    /// Hosted deployment prefix for this build; / clears the configured prefix.
+    #[arg(long)]
+    pub(crate) base_path: Option<zellij_core::build_overrides::BasePath>,
+    /// Hosted public HTTP(S) origin for canonical URLs and sitemap metadata.
+    #[arg(long)]
+    pub(crate) site_url: Option<zellij_core::build_overrides::SiteUrl>,
+    /// Skip the separate hosted preflight check; rendering still validates content.
+    #[arg(long)]
+    pub(crate) no_check: bool,
+}
+impl BuildOverrideArgs {
+    pub(crate) fn options(&self, features: Option<Features>) -> zellij_engine::BuildOptions {
+        zellij_engine::BuildOptions {
+            features,
+            overrides: zellij_core::build_overrides::BuildOverrides {
+                base_path: self.base_path.clone(),
+                site_url: self.site_url.clone(),
+                no_check: self.no_check,
+            },
+        }
+    }
 }
 
 #[cfg(test)]

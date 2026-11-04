@@ -71,12 +71,24 @@ fn main() {
     fs::write(root.join("listening"), "ready").unwrap();
     while !root.join("stopped").exists() {
         if let Ok((mut socket, _)) = listener.accept() {
+            // Windows accepted sockets can inherit the listener's nonblocking
+            // mode. Consume the complete request headers before closing, or a
+            // partial read can reset the client's connection instead of sending
+            // a usable response.
+            socket.set_nonblocking(false).unwrap();
             socket
                 .set_read_timeout(Some(Duration::from_secs(1)))
                 .unwrap();
-            let mut request = [0; 4096];
-            let count = socket.read(&mut request).unwrap_or(0);
-            let request = String::from_utf8_lossy(&request[..count]);
+            let mut request = Vec::new();
+            let mut chunk = [0; 4096];
+            while !request.windows(4).any(|part| part == b"\r\n\r\n") && request.len() < 16384 {
+                match socket.read(&mut chunk) {
+                    Ok(0) | Err(_) => break,
+                    Ok(count) => request.extend_from_slice(&chunk[..count]),
+                }
+            }
+            if !request.windows(4).any(|part| part == b"\r\n\r\n") { continue; }
+            let request = String::from_utf8_lossy(&request);
             let (code, body) =
                 if request.starts_with(&format!("GET {prefix}/_zellij/dev-revision.json ")) {
                     let body = if mode == "wrong-session" {

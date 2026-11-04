@@ -14,3 +14,4 @@ export function resolveContentLocation(options?: ContentLocationOptions): {
 };
 export function normalizeDeploymentBasePath(value: string | undefined): string;
 export function resolveDeploymentBasePath(...values: (string | undefined)[]): string;
+export function readBuildOverrides(): { basePath?: string; siteUrl?: string };

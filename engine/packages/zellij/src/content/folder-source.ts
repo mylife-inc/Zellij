@@ -47,6 +47,7 @@ export interface FolderContentSourceOptions {
   contentDir: string;
   /** Overrides `basePath` from site.yaml; the wrapper app owns where it mounts. */
   basePath?: string;
+  siteUrl?: string;
   onWarning?: (message: string) => void;
 }
 
@@ -104,6 +105,7 @@ export class FolderContentSource implements ContentSource {
 
     const config = result.data;
     if (this.options.basePath !== undefined) config.basePath = this.options.basePath;
+    if (this.options.siteUrl !== undefined) config.siteUrl = this.options.siteUrl;
 
     this.configCache = config;
     return config;

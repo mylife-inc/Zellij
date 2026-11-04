@@ -312,10 +312,12 @@ output directory; do not add the marker by hand.
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
 | `--features <selection>` | Complete math/diagram selection for this invocation | Portable configuration, or hosted engine-image selection |
+| `--base-path <path>` | Hosted deployment prefix; `/` clears it | Authored `basePath` |
+| `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata | Authored `siteUrl` |
+| `--no-check` | Skip the separate hosted validation preflight | Preflight enabled |
 
-Options that do not apply to the selected target are rejected. `--base-path`,
-`--site-url` and `--no-check` are not implemented
-Rust build flags. `--json` is currently limited to inspection commands.
+Options that do not apply to the selected target are rejected. `--json` is
+currently limited to inspection commands.
 
 
 For `--target image`, `--platform linux/amd64` or `--platform linux/arm64`
@@ -350,6 +352,40 @@ validation or change the existing staged-output protections. Container builds
 require engine feature-selection contract version 1; an older distribution
 fails with guidance before dependency installation. This flag does
 not install or start a local container runtime.
+
+## Hosted URL and validation overrides
+
+```bash
+zel b docs/hosted --base-path /products/manual --site-url https://docs.example.com
+zel b docs/hosted --base-path /                  # clear the saved prefix
+zel b docs/hosted --no-check                     # omit the separate preflight
+zel b docs/hosted --target image --tag acme-docs:test --site-url https://preview.example.com
+```
+
+These flags affect one build and leave authored configuration unchanged. An
+explicit `--base-path` takes precedence over the site's prefix. Use `/` to build
+at the host root, or a path such as `/products/manual`; a trailing slash is
+removed. Traversal, URL escapes, whitespace, query strings and fragments are
+rejected. `--site-url` must be an absolute HTTP(S) origin, optionally with a port,
+without credentials, a path, query or fragment. Supply its path separately with
+`--base-path`. Canonical links, sitemap and robots metadata use the selected
+origin and prefix; ordinary navigation stays on the host serving the site.
+
+`--no-check` skips the separate validation command before compilation. Content
+preparation, schema validation and rendering still run and can fail the build.
+Output ownership checks also remain active, and a failed build preserves the
+previous export. Invalid authored configuration must be corrected even when an
+override replaces that setting.
+
+Hosted static and Next.js image commands, including their aliases and Dockerfile
+generation, accept the same flags; see [image overrides](/cli/image#hosted-url-and-validation-overrides).
+Portable Markdown converted into a Next.js image also supports them. Pure
+portable HTML builds and portable static images reject these flags: their URLs
+are relative and their validation is part of native compilation. Deploy,
+publication and CI-generation commands do not yet accept these three flags.
+Container builds require a current engine supporting build overrides; an older
+image fails with upgrade guidance before installation. The flags do not install
+or start a local container runtime.
 
 ## See also
 
