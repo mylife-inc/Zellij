@@ -671,6 +671,7 @@ fn hosted_container_export_upload_preserves_prefix_assets_and_previous_output() 
         false,
         &zellij_engine::BuildOptions {
             features: Some("all".parse().unwrap()),
+            build_args: Vec::new(),
             overrides: zellij_core::build_overrides::BuildOverrides {
                 base_path: Some("/products/.docs".parse().unwrap()),
                 site_url: Some("https://deploy.example".parse().unwrap()),

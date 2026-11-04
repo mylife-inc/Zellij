@@ -190,6 +190,13 @@ adapters; they are not aliases for Netlify.
 See [`zel publish`](/cli/publish) for image registry publication and
 [`zel ci`](/cli/ci) for workflow generation from saved delivery settings.
 
+## Image build arguments
+
+Current source accepts `--build-arg NAME=VALUE` only when bare `zel deploy` selects
+saved image publication. `zel netlify`, `deploy netlify` and saved Netlify delivery
+reject it before credentials, building or remote requests. See
+[image build arguments](/cli/image#image-build-arguments).
+
 ## See also
 
 - [Build outputs](/cli/build)

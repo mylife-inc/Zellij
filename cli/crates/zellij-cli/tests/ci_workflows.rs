@@ -51,6 +51,143 @@ fn workflow(root: &Path) -> Value {
     serde_yaml_ng::from_str(&fs::read_to_string(root.join(".github/workflows/docs.yml")).unwrap())
         .unwrap()
 }
+
+#[test]
+fn image_build_arguments_are_quoted_data_in_both_jobs_and_require_image_delivery() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    let dir = "docs/Named manual";
+    let file = format!("{dir}/delivery.yaml");
+    let assignment = "DOCS_LABEL=日本語 '$(touch INJECTED)`echo literal` = ";
+    for renderer in ["portable", "hosted"] {
+        for kind in ["static", "next", "legacy"] {
+            site(root, dir, "");
+            let settings = if kind == "legacy" {
+                String::new()
+            } else {
+                format!(
+                    "image: {{name: ghcr.io/acme/docs:v1}}\npublish: {{action: push, image: {kind}}}\n"
+                )
+            };
+            let config = format!(
+                "version: 1\nrenderer: {renderer}\nci: {{zel-version: 0.2.0-rc.2}}\n{settings}"
+            );
+            write(root, &file, &config);
+            write(root, &format!("{dir}/zel.yaml"), "invalid neighbor: [");
+            let mut args = vec![
+                "ci",
+                "--config",
+                &file,
+                "--force",
+                "--build-arg",
+                "DOCS_LABEL=old",
+                "--build-arg",
+                assignment,
+                "--build-arg",
+                "EMPTY=",
+            ];
+            if kind == "legacy" {
+                args.extend(["--target", "image"]);
+            }
+            run(root, &args, 0);
+            let doc = workflow(root);
+            assert_eq!(doc["env"]["ZEL_IMAGE_ARG_0"], assignment);
+            assert_eq!(doc["env"]["ZEL_IMAGE_ARG_1"], "EMPTY=");
+            for job in doc["jobs"].as_object().unwrap().values() {
+                let commands: Vec<_> = job["steps"]
+                    .as_array()
+                    .unwrap()
+                    .iter()
+                    .filter_map(|s| s["run"].as_str())
+                    .filter(|s| s.starts_with("zel ") || s.starts_with("TAG="))
+                    .collect();
+                for line in commands
+                    .iter()
+                    .flat_map(|s| s.lines())
+                    .filter(|s| s.starts_with("zel "))
+                {
+                    let build =
+                        !line.starts_with("zel check") && !line.starts_with("zel image push");
+                    assert_eq!(
+                        line.contains("--build-arg \"$ZEL_IMAGE_ARG_0\""),
+                        build,
+                        "{line}"
+                    );
+                    assert_eq!(
+                        line.contains("--build-arg \"$ZEL_IMAGE_ARG_1\""),
+                        build,
+                        "{line}"
+                    );
+                    assert!(!line.contains(assignment));
+                }
+                #[cfg(target_os = "linux")]
+                {
+                    let capture = root.join("argv");
+                    let _ = fs::remove_file(&capture);
+                    let script = format!(
+                        "zel() {{ printf '%s\\0' \"$@\" >> \"$CAPTURE\"; }}\n{}",
+                        commands.join("\n")
+                    );
+                    let output = Command::new("bash")
+                        .args(["-eu", "-c", &script])
+                        .current_dir(root)
+                        .env("CAPTURE", &capture)
+                        .env("SITE_CONFIG", &file)
+                        .env("SITE_ROOT", dir)
+                        .env("IMAGE_TAG", "ghcr.io/acme/docs:v1")
+                        .env("REPOSITORY", "acme/docs")
+                        .env("REVISION", "abc")
+                        .env("ZEL_IMAGE_ARG_0", assignment)
+                        .env("ZEL_IMAGE_ARG_1", "EMPTY=")
+                        .output()
+                        .unwrap();
+                    assert!(output.status.success(), "{output:?}");
+                    let values = fs::read(capture).unwrap();
+                    for expected in [assignment, "EMPTY="] {
+                        assert_eq!(
+                            values
+                                .split(|b| *b == 0)
+                                .filter(|v| *v == expected.as_bytes())
+                                .count(),
+                            1
+                        );
+                    }
+                    assert!(!root.join("INJECTED").exists());
+                }
+            }
+            assert_eq!(fs::read_to_string(root.join(&file)).unwrap(), config);
+            let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+            for extra in [
+                vec!["--target", "static"],
+                vec!["--deploy", "netlify"],
+                vec!["--zel-version", "0.2.0-rc.1"],
+                vec!["--build-arg", "EXPRESSION=${{github.ref}}"],
+            ] {
+                let mut invalid = args.clone();
+                if kind == "legacy" {
+                    invalid.truncate(invalid.len() - 2);
+                }
+                invalid.extend(extra);
+                run(root, &invalid, 2);
+                assert_eq!(
+                    fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+                    previous
+                );
+            }
+            let mut defaults = vec!["ci", "init", "github", "--config", &file, "--force"];
+            if kind == "legacy" {
+                defaults.extend(["--target", "image"]);
+            }
+            run(root, &defaults, 0);
+            assert!(
+                !fs::read_to_string(root.join(".github/workflows/docs.yml"))
+                    .unwrap()
+                    .contains("ZEL_IMAGE_ARG_")
+            );
+        }
+    }
+}
 #[test]
 fn shorthand_full_form_defaults_nested_selection_and_reserved_names() {
     let temp = tempfile::tempdir().unwrap();

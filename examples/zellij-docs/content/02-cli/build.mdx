@@ -389,6 +389,15 @@ Container builds require a current engine supporting build overrides; an older
 image fails with upgrade guidance before installation. The flags do not install
 or start a local container runtime.
 
+## Image build arguments
+
+For `build --target image` (also `b --target image`), current source accepts
+repeatable `--build-arg NAME=VALUE`. Static-folder and portable HTML builds reject
+it before output or runtime work. Prefer `zel ni --build-arg
+NODE_OPTIONS=--max-old-space-size=4096` for the short image form. See
+[image build arguments](/cli/image#image-build-arguments) for value semantics,
+reserved names, generated Dockerfiles and limitations.
+
 ## See also
 
 - [Preview an export](/cli/serve)

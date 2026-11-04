@@ -196,7 +196,55 @@ image you built with an override. Delivery and CI generation also accept
 `--features`; see [publication](/cli/publish#temporary-feature-selection) and
 [CI generation](/cli/ci). A generated workflow keeps that selection until regenerated.
 
-`--build-arg` remains unimplemented.
+## Image build arguments
+
+Current source (after candidate `0.2.0-rc.1`) accepts repeatable `--build-arg
+NAME=VALUE` flags on `si`, `ni`, `image static`, `image next`, legacy `image build`
+and `build --target image`:
+
+```bash
+zel ni --build-arg NODE_OPTIONS=--max-old-space-size=4096
+zel si docs/hosted --build-arg NPM_CONFIG_FETCH_RETRIES=5
+zel pub --build-arg NODE_OPTIONS=--max-old-space-size=4096
+```
+
+Each argument needs an explicit `=`; `NAME=` passes an empty value. Names use
+ASCII letters, digits and underscores, with no leading digit. Values may contain
+spaces, Unicode, additional `=` signs and shell-looking text when quoted for your
+shell, but not control characters. A repeated name uses its last value. Zellij
+does not look up omitted values from your environment or save these settings to
+`zel.yaml`. A subsequent command without the flags uses the normal defaults.
+
+The CLI passes values directly to Docker, Podman or nerdctl. It declares names
+in the generated builder stage so install/build scripts and a custom engine can
+consume them. They have an effect only when a build tool or script reads them;
+there is no automatic content-variable substitution. For portable static images,
+arguments affect container packaging, not the preceding native Markdown build.
+Hosted images do not declare them in their separate runtime stage, and Zellij
+does not turn them into runtime `ENV` settings. Builders may still retain values
+in image history, provenance or generated files: use these flags for non-secret
+build configuration, not tokens or passwords. See
+[Docker build-variable semantics](https://docs.docker.com/build/building/variables/).
+
+Proxy arguments (`HTTP_PROXY`, `HTTPS_PROXY`, `FTP_PROXY`, `ALL_PROXY`, `NO_PROXY`,
+including lowercase forms) and `BUILDKIT_*` controls are forwarded without extra
+`ARG` declarations, preserving the builder's predefined behavior. Zellij-owned
+`ZELLIJ_*` settings, the historical `FEATURES` name and automatic `BUILD*`/`TARGET*`
+platform variables are reserved. Use the dedicated `--features`, URL/preflight
+and `--platform` flags for those settings.
+
+`idf` / `image dockerfile` also accepts build arguments, for either supported
+recipe kind. Its output declares **names only**; it does not embed supplied values.
+When building that recipe yourself, supply the values again with the container
+client's `--build-arg` flags. Dockerfile generation requires no runtime.
+
+Image publication (`pub`, `publish`, saved image `deploy`) and image `ship` carry
+arguments through the single build before pushing. Dry runs list names while
+omitting values. Failures do not attempt a push; a failed `ship` retains converted
+content and explains that the arguments must be repeated. Static-folder builds,
+Netlify delivery and Netlify `ship` reject the option before output or remote work.
+Prebuilt `image push` / `image run` do not accept build arguments. For generated
+workflows, see [CI build arguments](/cli/ci#freeze-image-build-arguments).
 
 ## Hosted URL and validation overrides
 

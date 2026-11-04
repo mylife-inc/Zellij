@@ -768,6 +768,9 @@ pub(crate) struct SiteImageArgs {
 
 #[derive(clap::Args, Clone, Debug, Default, PartialEq, Eq)]
 pub(crate) struct BuildOverrideArgs {
+    /// Image builds only: explicit NAME=VALUE; repeat for multiple arguments. Not for secrets.
+    #[arg(long = "build-arg", value_name = "NAME=VALUE")]
+    pub(crate) build_args: Vec<zellij_core::build_args::BuildArg>,
     /// Hosted deployment prefix for this build; / clears the configured prefix.
     #[arg(long)]
     pub(crate) base_path: Option<zellij_core::build_overrides::BasePath>,
@@ -782,6 +785,7 @@ impl BuildOverrideArgs {
     pub(crate) fn options(&self, features: Option<Features>) -> zellij_engine::BuildOptions {
         zellij_engine::BuildOptions {
             features,
+            build_args: zellij_core::build_args::normalize(&self.build_args),
             overrides: zellij_core::build_overrides::BuildOverrides {
                 base_path: self.base_path.clone(),
                 site_url: self.site_url.clone(),

@@ -135,6 +135,8 @@ jobs:
       - run: npm run build --workspace @shebka/zellij
       - name: Hosted build overrides and image recipes on the native platform
         run: node scripts/check-build-overrides.mjs
+      - name: Image build arguments and delivery on the native platform
+        run: node scripts/check-image-build-args.mjs
       - name: Native dev bindings, browser readiness and cancellation
         run: node scripts/check-dev-options.mjs
       - name: Hosted preview orchestration and cancellation on the native platform

@@ -264,6 +264,26 @@ engine; generation rejects older pins before writing a workflow. Generation
 does not verify release availability or publish a release. `ci run` dispatches
 an existing workflow and does not accept these generation flags.
 
+## Freeze image build arguments
+
+```bash
+zel ci --build-arg NODE_OPTIONS=--max-old-space-size=4096 --zel-version 0.2.0-rc.2
+```
+
+For image workflows, current source accepts the same repeatable explicit
+`NAME=VALUE` syntax as [image builds](/cli/image#image-build-arguments). The last
+value for a repeated name wins. Arguments reach verification builds and
+publication builds, including legacy `--target image`; they never reach
+`zel check` or a prebuilt image push.
+
+The generator writes the assignments as workflow environment data and references
+them using quoted shell arguments. GitHub expressions in values are rejected.
+Values are visible in the generated workflow, so do not use secrets. These are
+workflow settings, not saved `zel.yaml` fields; regenerate without the flags to
+remove them. Static HTML/Netlify workflows reject them before writing, and
+`ci run` does not accept generation options. Pins older than `0.2.0-rc.2` are
+rejected; the chosen release still needs to be published before execution.
+
 ## See also
 
 - [Validation](/cli/check)

@@ -197,6 +197,15 @@ starts a push. Saved image settings do not affect an explicit Netlify deployment
 passing `--platform` to Netlify is rejected. See
 [platform prerequisites](/cli/image#select-the-image-platform).
 
+## Image build arguments
+
+Current source supports repeatable `--build-arg NAME=VALUE` on `publish`, `pub`
+and bare saved image `deploy`. Arguments apply to the single build before push;
+duplicate names use their last explicit value. Dry plans list names without
+values, and the flags never change `zel.yaml`. Netlify publication rejects them
+before credential checks or remote work. See
+[image build arguments](/cli/image#image-build-arguments).
+
 ## See also
 
 - [Netlify deployment](/cli/deploy)

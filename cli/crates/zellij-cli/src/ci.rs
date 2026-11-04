@@ -125,6 +125,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         None
     };
     let build = args.overrides.options(args.features);
+    if !image_delivery {
+        build.require_no_image_args()?;
+    }
     if site.renderer == zellij_core::site::Renderer::Portable
         && !matches!(
             publish,
@@ -154,6 +157,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         platform,
         features: args.features,
         overrides: build.overrides,
+        build_args: build.build_args,
         settings,
         version,
         publish,

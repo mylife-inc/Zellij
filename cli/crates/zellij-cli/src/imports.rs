@@ -232,6 +232,9 @@ fn retained(out: &str) {
 pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     let plan = plan(options)?;
     let build = options.overrides.options(options.features);
+    if matches!(plan, DeliveryPlan::Netlify { .. }) {
+        build.require_no_image_args()?;
+    }
     let import = Prepared::read(
         &options.source,
         &options.out,
@@ -257,6 +260,9 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     };
     execute().inspect_err(|_| {
         retained(&options.out);
+        if !build.build_args.is_empty() {
+            zellij_core::diagnosticln!("Image build arguments were not saved; repeat --build-arg NAME=VALUE when rebuilding.");
+        }
         if let Some(features) = options.features {
             zellij_core::diagnosticln!("The rendering selection was not saved; include --features {} when rebuilding this site.", features.as_str());
         }
@@ -264,6 +270,11 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
             zellij_core::diagnosticln!("Build URL/preflight overrides were not saved; repeat the applicable --base-path, --site-url and --no-check flags when rebuilding.");
         }
     })?;
+    if !build.build_args.is_empty() {
+        zellij_core::statusln!(
+            "Image build arguments were not saved; repeat --build-arg NAME=VALUE to reuse them."
+        );
+    }
     if let Some(features) = options.features {
         zellij_core::statusln!(
             "Rendering selection {} was not saved; pass --features again to repeat it.",

@@ -592,6 +592,7 @@ impl ContainerEngine {
         layout: ExportLayout,
         options: &crate::BuildOptions,
     ) -> Result<crate::output::StaticOutput> {
+        options.require_no_image_args()?;
         let output = crate::output::StaticOutput::prepare(content, out)?;
         let mount = Self::mount_at(content, WRAPPER_CONTENT)?;
         let volume = format!(

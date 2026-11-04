@@ -33,6 +33,7 @@ pub struct CiOptions {
     pub platform: Option<ImagePlatform>,
     pub features: Option<Features>,
     pub overrides: BuildOverrides,
+    pub build_args: Vec<zellij_core::build_args::BuildArg>,
 }
 
 fn invalid(message: &str) -> Error {
@@ -109,7 +110,11 @@ pub fn github(options: &CiOptions) -> Result<String> {
         platform,
         features,
         overrides,
+        build_args,
     } = options;
+    if !build_args.is_empty() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
+        return Err(invalid("--build-arg requires image CI delivery"));
+    }
     if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
         return Err(invalid("platform requires image delivery"));
     }
@@ -128,16 +133,25 @@ pub fn github(options: &CiOptions) -> Result<String> {
         .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
-    if !overrides.is_empty()
+    if (!overrides.is_empty() || !build_args.is_empty())
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "build overrides require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "build overrides and image build arguments require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
     let mut override_env = serde_json::Map::new();
+    for (i, arg) in zellij_core::build_args::normalize(build_args)
+        .iter()
+        .enumerate()
+    {
+        literal(arg.assignment())?;
+        let key = format!("ZEL_IMAGE_ARG_{i}");
+        override_env.insert(key.clone(), json!(arg.assignment()));
+        override_flags.push_str(&format!(" --build-arg \"${key}\""));
+    }
     if let Some(prefix) = &overrides.base_path {
         let prefix = prefix.to_string();
         literal(&prefix)?;
@@ -317,6 +331,7 @@ mod tests {
             platform: None,
             features: None,
             overrides: BuildOverrides::default(),
+            build_args: Vec::new(),
         }
     }
 

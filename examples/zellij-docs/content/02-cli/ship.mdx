@@ -150,6 +150,15 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | In-memory conversion and plan only |
 
+## Image build arguments
+
+Current source accepts repeatable `--build-arg NAME=VALUE` with `--image static`
+or `--image next`. The arguments reach the imported site's image build before
+push. They are not saved in the converted site's configuration; repeat them when
+rebuilding. Failure retains the converted content and gives that reminder.
+Netlify `ship` rejects the option before conversion writes or remote requests.
+See [image build arguments](/cli/image#image-build-arguments) for value semantics.
+
 ## See also
 
 - [`zel convert`](/cli/convert) — import without validation or delivery
