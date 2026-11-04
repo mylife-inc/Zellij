@@ -25,8 +25,8 @@ an actionable error. Explicit legacy folders and flat portable configs work too.
 
 Use `--target portable` or `--target static` to choose the checker for raw content.
 A versioned site's renderer must match. `image` is not a check target. Malformed
-configuration produces an error, including a structured diagnostic in portable
-`--json` mode. Hosted JSON remains unsupported.
+configuration produces an error. Both targets support `--json`; once a checker
+is selected, validation and runtime failures are reported as JSON too.
 
 ## Native Markdown checks
 
@@ -72,8 +72,8 @@ to enumerate errors in phases that could not run.
 
 Portable `--json` writes exactly one report to stdout on validation success or
 failure. Validation diagnostics go in the report, with no additional stderr
-messages. Invalid CLI options and unsupported hosted JSON requests still use
-normal CLI errors on stderr and exit 2 before running the checker.
+messages. Invalid CLI options and site-selection errors before the checker runs
+still use normal CLI errors on stderr.
 
 ```json
 {
@@ -118,6 +118,7 @@ the first fatal error determines the exit status.
 zel check ./content --target static
 zel check ./content --deep
 zel check ./content --deep --strict
+zel check ./content --deep --strict --json > check-report.json
 ```
 
 A configured hosted site reads its `content/` directory. For legacy hosted
@@ -135,6 +136,34 @@ Hosted checks run the engine's own schemas. The CLI mounts your folder read-only
 and asks the engine to validate it, keeping the schemas shared with rendering.
 A successful check is still followed by preparation and compilation, which can
 detect additional errors.
+
+### Hosted JSON reports
+
+`--json` emits one report on stdout with the same common fields shown above,
+`target: "static"`, and an additional `deep` boolean. The report comes from the
+engine's actual validation results. `pages` counts loaded routes when site
+loading succeeds, even if deep checks or strict warnings fail; otherwise it is
+`null`. It is not a count of successfully compiled HTML files.
+
+Content-model failures use diagnostic code `content`; static MDX/reference
+findings use `deep`; warnings use `warning`. Diagnostic messages retain the
+engine's detail. `file` is source-relative when the engine provides it directly,
+otherwise `null`; locations are not guessed from message text. `root` is the
+selected host content directory. Messages stay verbatim and can mention the
+container's `/content` mount; authored URLs inside messages are never rewritten.
+
+The native CLI exits 0 on success and 3 for invalid content or strict warnings.
+Unavailable runtimes and inaccessible bind mounts produce `runtime` diagnostics
+and exit 4. Configuration conflicts produce `configuration` diagnostics and
+exit 2. An incompatible report or failed engine invocation produces an `engine`
+diagnostic and exit 1. These operational failures have `pages: null` and do not
+claim that the content was checked.
+
+Use a matching engine image with JSON support. With an older image, select a
+compatible `ZELLIJ_IMAGE` and refresh it with `zel pull`; a text check can expose
+the underlying engine/runtime output. JSON mode never tries to parse the older
+engine's terminal messages into findings. Without `--verbose`, diagnostics stay
+inside the report and stderr remains empty once the checker has been selected.
 
 <div id="what-it-validates" className="zellij-legacy-anchor" />
 
@@ -259,18 +288,19 @@ colima stop && colima start --mount '/tmp:w'
 | `--target` | `portable` | `static` |
 | `--deep` | Accepted; local references are always checked | Adds MDX syntax and static-reference checks |
 | `--strict` | Warnings fail the command | Warnings fail the command |
-| `--json` | Structured report on success and validation failure | Rejected before execution |
+| `--json` | Structured report on success and validation failure | Structured report, including engine/runtime failures |
 
 `--strict` is off by default. Hosted strict mode includes unknown top-level
 keys, unused sections and other existing warnings. Use `--deep --strict` to
 include warnings about unverified dynamic MDX. The hosted Node command accepts
-these two flags: `npx zellij check ./content --deep --strict`.
+these flags too: `npx zellij check ./content --deep --strict --json`.
+The Node command exits 1 on failed validation; native `zel` uses exit 3.
 
 `--quiet` suppresses the native success summary while retaining warnings/errors
 and the complete JSON report. Hosted checks retain their full engine report.
 `--verbose` adds execution details on stderr; `--no-color` removes terminal styling.
-See [shared output controls](/cli/#output-controls). Hosted JSON reports remain
-planned. JSON is additionally available for `context`, `list`, `explain`, `detect`
+See [shared output controls](/cli/#output-controls). JSON is additionally available
+for `context`, `list`, `explain`, `detect`
 and `version`.
 
 ## See also

@@ -195,7 +195,7 @@ switch (command) {
     let literal = false;
     for (const arg of rest) {
       if (!literal && arg === '--') { literal = true; continue; }
-      if (!literal && (arg === '--deep' || arg === '--strict')) options[arg.slice(2)] = true;
+      if (!literal && (arg === '--deep' || arg === '--strict' || arg === '--json')) options[arg.slice(2)] = true;
       else if (!literal && arg.startsWith('-')) throw new Error(`Unknown check option: ${arg}`);
       else if (options.contentDir !== undefined) throw new Error('check accepts one content directory.');
       else options.contentDir = arg;
@@ -223,6 +223,7 @@ switch (command) {
         `  check [dir]    validate a content root without building\n` +
         `                   --deep            check MDX syntax and local references\n` +
         `                   --strict          fail on warnings\n` +
+        `                   --json            emit a versioned validation report\n` +
         `  prepare        sync assets and build the search index\n` +
         `                   --watch           keep prepared files up to date\n` +
         `  dev [options] -- [Next.js dev options]\n` +

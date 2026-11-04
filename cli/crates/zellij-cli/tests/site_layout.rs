@@ -182,8 +182,11 @@ fn hosted_roots_route_to_the_engine_and_native_commands_explain_mismatches() {
     run(root, &["new", "docs", "docs/manual", "--guide"], 0);
     assert!(root.join("docs/manual/content/site.yaml").is_file());
     assert!(root.join("docs/manual/zel.yaml").is_file());
-    let error = run(root, &["check", "docs/manual", "--json"], 2);
-    assert!(String::from_utf8_lossy(&error.stderr).contains("hosted validation"));
+    let error = run(root, &["check", "docs/manual", "--json"], 4);
+    assert!(error.stderr.is_empty());
+    let report: Value = serde_json::from_slice(&error.stdout).unwrap();
+    assert_eq!(report["target"], "static");
+    assert_eq!(report["diagnostics"][0]["code"], "runtime");
     run(root, &["image", "dockerfile", "docs/manual"], 0);
     run(root, &["build", "docs/manual", "--target", "portable"], 2);
     run(root, &["view", "docs/manual", "--name", "Portable only"], 2);

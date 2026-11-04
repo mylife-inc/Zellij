@@ -36,6 +36,9 @@ pub enum Error {
     #[error("the content folder is not valid")]
     ContentInvalid,
 
+    #[error("hosted validation could not complete: {0}")]
+    CheckFailed(String),
+
     /// The content validated and the build still failed.
     ///
     /// Kept apart from `ContentInvalid` because the two send you to different

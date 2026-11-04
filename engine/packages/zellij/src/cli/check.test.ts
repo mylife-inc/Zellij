@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, writeFile, rm, symlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
-import { check } from './check';
+import { check, type JsonCheckReport } from './check';
 
 const roots: string[] = [];
 afterEach(async () => {
@@ -24,6 +24,40 @@ async function fixture(files: Record<string, string>) {
 }
 const HOME = { 'pages.yaml': '- name: home\n  sections: [hero]\n', 'sections/hero.yaml': 'type: hero\nheadline: Home\n' };
 const GUIDE = { '01-guide/_sidebar.yaml': 'route: /manual\nnav: [intro, nested/detail]\n', '01-guide/intro.mdx': '# Introduction\n\n## Start\n\n## Start\n', '01-guide/nested/detail.mdx': '# Detail\n' };
+
+it('emits one JSON report for success, warnings, strict failure and deep findings', async () => {
+  const contentDir = await fixture({ ...HOME, ...GUIDE, 'site.yaml': 'name: JSON\nfutureOption: true\n' });
+  for (const strict of [false, true]) {
+    vi.mocked(console.log).mockClear();
+    const result = await check({ contentDir, json: true, deep: true, strict });
+    expect(result.ok).toBe(!strict);
+    expect(console.log).toHaveBeenCalledTimes(1);
+    const report: JsonCheckReport = JSON.parse(vi.mocked(console.log).mock.calls[0]![0]);
+    expect(report).toMatchObject({ schema_version: 1, target: 'static', root: contentDir, deep: true, strict, ok: !strict });
+    expect(report.pages).toBeGreaterThan(0);
+    expect(report.diagnostics).toEqual([expect.objectContaining({ severity: 'warning', code: 'warning', file: null, message: expect.stringContaining('unknown key') })]);
+    expect(console.warn).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
+  }
+  await writeFile(path.join(contentDir, 'site.yaml'), 'name: JSON\n');
+  await writeFile(path.join(contentDir, '01-guide/intro.mdx'), '# Intro\n\n[Missing](/missing)\n');
+  vi.mocked(console.log).mockClear();
+  expect((await check({ contentDir, json: true, deep: true })).ok).toBe(false);
+  const report: JsonCheckReport = JSON.parse(vi.mocked(console.log).mock.calls[0]![0]);
+  expect(report.diagnostics).toEqual([expect.objectContaining({ severity: 'error', code: 'deep', message: expect.stringContaining('no page resolves') })]);
+  expect(console.error).not.toHaveBeenCalled();
+});
+
+it('keeps bootstrap and schema failures machine-readable without dumping the loaded site', async () => {
+  const contentDir = await fixture({ ...HOME, 'site.yaml': 'name: [\n' });
+  expect((await check({ contentDir, json: true })).ok).toBe(false);
+  const report: JsonCheckReport = JSON.parse(vi.mocked(console.log).mock.calls[0]![0]);
+  expect(report).toMatchObject({ ok: false, target: 'static', root: contentDir, pages: null });
+  expect(report.diagnostics[0]).toMatchObject({ severity: 'error', code: 'content' });
+  expect(report).not.toHaveProperty('site');
+  expect(console.warn).not.toHaveBeenCalled();
+  expect(console.error).not.toHaveBeenCalled();
+});
 
 it('keeps fast checks but deep mode rejects section links, missing assets and malformed MDX', async () => {
   const contentDir = await fixture({ ...HOME, ...GUIDE,

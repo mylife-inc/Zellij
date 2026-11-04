@@ -1205,3 +1205,52 @@ commit 0fbf0a1 predates this work; any later release proposal must use a reviewe
 commit containing its final advertised scope. Publication approval is still
 pending. Remaining CLI work includes hosted JSON validation, advanced options,
 combined image manifests, additional deployment/CI providers and converters.
+
+
+### Hosted JSON validation — 2026-11-03
+
+Hosted `zel check --json` now consumes a versioned engine report. It preserves
+real content/deep findings and warning severity, including strict warning-only
+failures. Native success is exit 0, content/strict failure 3, unavailable runtime
+or inaccessible mount 4, configuration conflict 2, and incompatible/failed engine
+report 1. Normal JSON mode writes one stdout report and no stderr diagnostics
+after site/checker selection; explicit verbose diagnostics still use stderr.
+The Node check command emits the same validation schema but retains exit 1 for
+failed validation. Hosted `pages` counts loaded routes, not compiled HTML files.
+
+The protocol validates version, target, mounted root, requested options, status
+and findings before accepting success. The structured host root preserves
+quotes, backslashes and Unicode; diagnostic messages stay verbatim so authored
+URLs cannot be mistaken for container paths. Older engine
+images fail with image-selection/pull guidance rather than parsing terminal
+text. Runtime/configuration failures also receive structured reports. Content
+mounts remain read-only. Invalid CLI flags and discovery failures before the
+checker is selected retain ordinary CLI errors.
+
+Regressions cover engine findings, strict warnings, bootstrap failures, malformed
+or inconsistent reports, native option forwarding, host path escaping and
+missing runtimes. The installed-package/real-container acceptance script now
+exercises JSON success, deep failure, strict warnings and recovery.
+
+Implementation commits: `9a3d740`, `06e9d1e`, `9d89dd5`; review and hosted
+acceptance are tracked in [PR #63](https://github.com/mylife-inc/Zellij/pull/63).
+Local verification passed: 321 Rust tests (one real-container test intentionally
+ignored locally), warnings-denied Clippy, formatting, 372 engine tests,
+workspace typechecks, engine package build and installed JSON checks. All 55
+documentation routes and 23 examples pass deep/strict validation; actionlint,
+JavaScript syntax and diff checks pass. Rust fixtures used serial execution and
+loopback access for mock HTTP services. Two obsolete tests expecting hosted
+JSON rejection were updated to assert its structured runtime failures.
+
+The dependent reload implementation is `3ddd2cd` plus image-cache correction
+`8d3d4f1`, tracked in [PR #62](https://github.com/mylife-inc/Zellij/pull/62).
+Both Chromium and WebKit passed automatic content/image reload, invalid-edit
+preservation and recovery in job 126401231393 of run 41777437141. Existing
+showcase browser coverage also passed 317 tests. Current full platform/container
+results remain available in the PR checks; refresh them before relying on a
+release source. Neither implementation publishes a release or deploys production.
+
+Remaining CLI scope includes additional deployment and CI providers, combined
+multi-platform image manifests/build arguments, broader import fidelity,
+hosted dev host/browser options, and advanced build overrides. The Netlify
+hosting-injected hydration failure remains a separate provider issue.

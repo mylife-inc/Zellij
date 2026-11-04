@@ -129,7 +129,7 @@ generated.
 | `zellij prepare --watch` | Watches preparation in a separate process when you own the server command |
 | `zellij sync-assets` | Copies `<content>/assets/**` → `public/_zellij/assets/**` |
 | `zellij search-index` | Writes `public/_zellij/search-index.json` |
-| `zellij check [dir] [--deep] [--strict]` | Fast content validation; optionally parse MDX and check static references, or fail on warnings |
+| `zellij check [dir] [--deep] [--strict] [--json]` | Fast content validation; optionally parse MDX, check static references, fail on warnings, or emit a versioned JSON report |
 
 The preparation commands accept `--content <directory>` (absolute or relative
 to the wrapper root) and `--config <legacy-config>`. Set `--content` to the same

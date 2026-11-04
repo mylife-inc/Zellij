@@ -7,18 +7,13 @@ pub fn check(
     options: zellij_engine::CheckOptions,
     as_json: bool,
 ) -> Result<()> {
-    if as_json && target == Some("static") {
-        return Err(Error::InvalidArgument("--json is supported only for portable checks; hosted validation does not yet provide structured reports; no command was run".into()));
-    }
     let selected = crate::select_site(dir)?;
     let dir = &selected;
     // Invalid configuration is reported through the native check's structured
     // diagnostics, preserving --json's one-report/no-stderr contract.
     let automatic = crate::default_target(dir).unwrap_or("portable");
     match target.unwrap_or(automatic) {
-        "static" if as_json => return Err(Error::InvalidArgument(
-            "--json is supported only for portable checks; hosted validation does not yet provide structured reports; no command was run".into(),
-        )),
+        "static" if as_json => return hosted_json(dir, options),
         "static" => return crate::check(dir, options),
         "portable" => {}
         _ => unreachable!("clap validates the check target"),
@@ -27,6 +22,52 @@ pub fn check(
     // accepted for shared CI commands without changing the validation coverage.
     let exit_code = portable(dir, options.strict, as_json)?;
     // One-shot CLI behavior; watch consumes the same report without exiting.
+    if exit_code != 0 {
+        std::process::exit(exit_code);
+    }
+    Ok(())
+}
+
+fn hosted_json(dir: &SiteInput, options: zellij_engine::CheckOptions) -> Result<()> {
+    use zellij_engine::{ContainerEngine, HostedCheckReport, HostedDiagnostic, Severity};
+    let mut root = dir.root().to_string();
+    let result = (|| {
+        let content = crate::resolve_content(dir)?;
+        root = content.to_string();
+        ContainerEngine::detect(None)?.check_json(&content, options)
+    })();
+    let (report, exit_code) = match result {
+        Ok(report) => {
+            let code = if report.ok { 0 } else { 3 };
+            (report, code)
+        }
+        Err(error) => {
+            let code = match &error {
+                Error::NoEngine { .. } | Error::MountEmpty { .. } => "runtime",
+                Error::InvalidArgument(_) | Error::UnsafePath { .. } => "configuration",
+                _ => "engine",
+            };
+            (
+                HostedCheckReport {
+                    schema_version: 1,
+                    target: "static".into(),
+                    root,
+                    deep: options.deep,
+                    strict: options.strict,
+                    ok: false,
+                    pages: None,
+                    diagnostics: vec![HostedDiagnostic {
+                        severity: Severity::Error,
+                        code: code.into(),
+                        file: None,
+                        message: error.to_string(),
+                    }],
+                },
+                error.exit_code(),
+            )
+        }
+    };
+    crate::print_json(&serde_json::to_value(report).map_err(std::io::Error::other)?)?;
     if exit_code != 0 {
         std::process::exit(exit_code);
     }
