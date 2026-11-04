@@ -3072,6 +3072,14 @@ manifest cache on atomic replacement instead of waiting 250 ms. A fixed-clock
 regression checks replacement, removal/recreation and production memoization.
 The original failure is retained here; final browser verification is pending.
 
+Run 41777437141 subsequently passed both browser engines and real-container
+development reload/recovery. Its last conversion-export assertion still expected
+an unversioned Markdown image URL and failed after the successful export. The
+acceptance script now requires the exact SHA-256 content fingerprint for both
+MkDocs and Docusaurus image URLs, while continuing to verify exported bytes and
+links. This updates the expected URL contract; the fingerprint implementation is
+unchanged. The full run is retained as failed until the corrected check passes.
+
 
 ### Hosted JSON validation — 2026-11-03
 
