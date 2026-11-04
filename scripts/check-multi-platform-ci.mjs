@@ -22,6 +22,23 @@ async function script(step, env) {
   // Every user-controlled value stays in the environment, including paths.
   execFileSync('bash', ['-c', step.run], { cwd: root, env: { ...process.env, ...env }, stdio: 'inherit', timeout: 600000 });
 }
+// Docker's Size field differs between classic and containerd image stores.
+// Registry layer descriptors measure compressed bytes consistently on both.
+async function compressedLayers(registry, repository, reference, arch) {
+  const response = await fetch(`http://${registry}/v2/${repository}/manifests/${reference}`, {
+    headers: { Accept: 'application/vnd.oci.image.index.v1+json, application/vnd.oci.image.manifest.v1+json, application/vnd.docker.distribution.manifest.list.v2+json, application/vnd.docker.distribution.manifest.v2+json' },
+    signal: AbortSignal.timeout(10000),
+  });
+  assert(response.ok, `Registry manifest HTTP ${response.status}`);
+  const manifest = await response.json();
+  if (manifest.manifests) {
+    const platform = manifest.manifests.find(m => m.platform.os === 'linux' && m.platform.architecture === arch);
+    assert(platform, `Missing ${arch} image`);
+    return compressedLayers(registry, repository, platform.digest, arch);
+  }
+  assert(Array.isArray(manifest.layers));
+  return manifest.layers.reduce((total, layer) => total + layer.size, 0);
+}
 async function serve(tag, kind) {
   const name = `zel-multi-${kind}-${suffix}`;
   containers.push(name);
@@ -81,7 +98,12 @@ try {
       execFileSync('docker', ['build', '-f', '-', '-t', baseline, root], { input: `FROM ${base}\nCOPY --from=${tag} ${payload}/ ${payload}/\n`, stdio: ['pipe', 'inherit', 'inherit'], timeout: 300000 });
       const oldSize = JSON.parse(docker(['image', 'inspect', baseline]))[0].Size;
       assert(info.Size < oldSize - 1000000, `${kind}: expected a smaller runtime, got ${info.Size} versus ${oldSize}`);
-      sizes.push({ kind, arch: mode, currentBytes: info.Size, previousBaseBytes: oldSize, savedBytes: oldSize - info.Size });
+      const baselineTag = `${registry}/acceptance/${kind}:baseline-${mode}`; images.push(baselineTag);
+      docker(['tag', baseline, baselineTag]); docker(['push', baselineTag]);
+      const currentCompressedBytes = await compressedLayers(registry, `acceptance/${kind}`, digest.split('@')[1], mode);
+      const previousCompressedBytes = await compressedLayers(registry, `acceptance/${kind}`, `baseline-${mode}`, mode);
+      assert(currentCompressedBytes < previousCompressedBytes - 1000000, `${kind}: compressed layers did not shrink`);
+      sizes.push({ kind, arch: mode, dockerReportedBytes: info.Size, previousDockerReportedBytes: oldSize, currentCompressedBytes, previousCompressedBytes, savedCompressedBytes: previousCompressedBytes - currentCompressedBytes });
       await writeFile(path.join(artifact, `${kind}.workflow.json`), JSON.stringify(workflow));
     }
     docker(['save', '--output', path.join(artifact, 'images.tar'), ...saved]);
@@ -116,7 +138,7 @@ try {
     }
   }
   console.log(JSON.stringify(sizes, null, 2));
-  if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, `\nRuntime image size comparison (uncompressed bytes, identical site payload):\n\n\`\`\`json\n${JSON.stringify(sizes, null, 2)}\n\`\`\`\n`);
+  if (process.env.GITHUB_STEP_SUMMARY) await appendFile(process.env.GITHUB_STEP_SUMMARY, `\nRuntime image size comparison (identical site payload). Compressed sizes sum registry layer bytes, excluding small manifests/configuration and attestations. Docker-reported sizes use each runner's image-store accounting.\n\n\`\`\`json\n${JSON.stringify(sizes, null, 2)}\n\`\`\`\n`);
 } finally {
   for (const container of containers.reverse()) { try { docker(['rm', '-f', container]); } catch { /* original failure wins */ } }
   for (const image of images) { try { docker(['image', 'rm', image]); } catch { /* failed builds */ } }

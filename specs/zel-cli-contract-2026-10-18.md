@@ -1448,3 +1448,25 @@ home page to `/` (confirmed in source and the generated route table). The server
 started successfully; the fixture's incorrect route caused both failures.
 The fixture now requests the renderer's actual home and reports HTTP status on
 failure. Full container acceptance, final size figures and merge remain pending.
+
+
+### Combined publication — native acceptance and size accounting, 2026-11-04
+
+Run `41894634123` on `eec6ca1` passed both native image jobs and the dependent
+combined-manifest job (`126803607170`, `126803607619`, `126805836087`). Both static
+and Next images build, push, pull, serve both documents, deny Markdown-source
+access and pass health checks on AMD64 and ARM64. The generated final command
+joins the exact platform digests. Node/npm/Yarn/header checks also pass.
+
+The first size report used Docker's Size field and called it uncompressed;
+that label is not portable between classic and containerd image stores. The
+runner-local comparison showed reductions, but raw AMD64 and ARM64 counts must
+not be compared directly. Acceptance now also pushes the identical-payload
+baseline to the disposable loopback registry and sums compressed layer sizes
+from its platform manifest. This supplies consistent download-size comparisons
+and keeps Docker-reported sizes explicitly labeled. Final compressed figures
+and full final-head CI remain pending. No live external registry was used.
+
+Prior main CI `41889745157` is now successful. Superseded PR run `41893692905`
+required force-cancellation after its macOS preview job did not stop following a
+normal cancellation request; this unblocked the corrected run, not a product fix.
