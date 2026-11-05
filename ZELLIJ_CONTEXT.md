@@ -32,6 +32,7 @@ CI has 15 passing jobs with CLI acceptance still running. Current source
 `5631e6c` adds declarative Hugo sections and page bundles, all three metadata
 formats, publication rules, source links and eligible resources. Local 171 Rust
 tests, Clippy, formatting, strict docs and all five rendering fixtures pass.
+Resource ownership correction `f7f0121` also passes targeted tests and Clippy.
 Its own final-head hosted/native checks and merge remain pending.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -4967,3 +4968,11 @@ The conversion reference, guides, detection/help overview, current CLI status,
 and unpublished rc.2 notes were updated. Sphinx imports and the remaining
 provider/CI/interactive/advanced-option backlog are still incomplete. Native
 release publication and production Netlify migration remain separate work.
+
+#### Hugo resource ownership correction — 2026-11-05
+
+Source `f7f0121` keeps implicit top-level section resources independent of a
+draft home page. A section's visible image remains eligible while a resource
+owned by the omitted home page stays excluded. The expanded real-CLI fixture
+passes all 14 Hugo tests; warnings-denied Clippy passes. This joins PR #79 and
+requires the new final-head CI run before merge.
