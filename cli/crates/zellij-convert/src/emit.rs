@@ -126,7 +126,12 @@ pub fn emit(
     });
 
     // ---- the pages
+    let mut emitted = std::collections::BTreeSet::new();
     for source in tree.pages() {
+        // Multiple sidebar slices may intentionally reference the same page.
+        if !emitted.insert(source) {
+            continue;
+        }
         let Some(raw) = read(source) else {
             conversion.unmapped.push(Unmapped {
                 source: source.clone(),

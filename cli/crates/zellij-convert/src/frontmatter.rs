@@ -51,6 +51,21 @@ pub(crate) fn parse<'a>(source: &'a str, path: &'a Utf8Path) -> Result<Frontmatt
 }
 
 impl Frontmatter<'_> {
+    pub fn number(&self, field: &str) -> Result<Option<f64>> {
+        match self.data.get(field) {
+            None | Some(Value::Null) => Ok(None),
+            Some(Value::Number(value)) => value
+                .as_f64()
+                .filter(|n| n.is_finite())
+                .map(Some)
+                .ok_or_else(|| invalid(self.path, format!("{field} must be a finite number"))),
+            _ => Err(invalid(
+                self.path,
+                format!("{field} must be a finite number"),
+            )),
+        }
+    }
+
     pub fn string(&self, field: &str) -> Result<Option<&str>> {
         match self.data.get(field) {
             None | Some(Value::Null) => Ok(None),
