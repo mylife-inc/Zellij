@@ -100,3 +100,15 @@ import-rendering fixtures. Its own hosted/native CI and merge remain pending.
 source `0073bca` passes 155 local Rust tests, Clippy/formatting, deep/strict docs
 and all four Node rendering fixtures. Its own hosted/native CI and merge remain
 pending; Hugo has not been implemented by this milestone.
+
+### 2026-11-05 — Hugo documentation import implementation
+
+Source `5631e6c` adds one-file TOML/YAML/JSON Hugo configuration, Markdown
+sections/bundles, publication rules, source links and eligible assets through
+convert/cv, migrate/mig and ship. Explicit output filename mapping preserves
+visible `_index.md` pages and original source links. Menus, modules, cascades,
+localization and complex routing remain limited. Local 171 Rust tests, Clippy,
+strict docs and five Node rendering fixtures pass; final-head CI is pending.
+See the current CLI status and the dated audit for precise scope and evidence.
+PR #78 merged as `6190e51` after all 16 checks passed on `ffdeca7`; post-merge
+base image passed, with main CI still running. Sphinx remains planned.

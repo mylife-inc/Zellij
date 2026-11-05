@@ -4113,3 +4113,70 @@ command arguments in failed-command diagnostics, and bounds retries only for
 filesystem cleanup (10 retries with 100 ms linear backoff). No installer or
 acceptance assertion is retried or skipped. Node syntax and diff checks pass;
 new final-head Windows and full CI evidence are required before merge.
+
+### 2026-11-05 — Jekyll closure and Hugo documentation imports
+
+PR #78 merged as `6190e51bcfca91a874f508af3f2a523492319440` after all 16
+checks passed in [42085346212](https://github.com/mylife-inc/Zellij/actions/runs/42085346212)
+on `ffdeca7f8d245979e9dcd4b7d58e2d40a093ca92`. Its tree equals tested tree
+`c594f2570f1664de72cdec025206748e965218d8`. Windows ARM64 job `127449174329`
+passed both installers, native upgrades/refusals/cancellation, portable output,
+HTTP serve/view and real Ctrl-C. The earlier masked cleanup failure remains
+historical evidence; this passing run does not establish its original cause.
+Post-merge base image `42090020402` passed. Main `42090020416` has 15 passing
+jobs with CLI acceptance still running at this refresh. Local main was clean
+and synchronized before the Hugo branch; published native candidate remains rc.1.
+
+Source `5631e6c` registers Hugo detection and conversion through convert/cv,
+migrate/mig and ship. One `hugo.*` or legacy `config.*` TOML/YAML/JSON file
+selects contained content/static roots. Markdown pages accept optional front
+matter in all three formats, case-insensitive keys, UTC/offset ISO dates,
+publication flags and supported page build rules. Draft, future, expired,
+headless and unlisted pages stay excluded unless a supported explicit build
+flag permits them. Date decisions are made once at conversion time.
+
+Hugo section `_index.md` maps to visible `index.mdx`; leaf bundles keep their
+index pages and do not promote Markdown resources into pages. `DocTree` now
+has an explicit source-to-output filename map, leaving original source keys
+available for Markdown links and asset lookup. Shared emit/rewrite defaults
+remain unchanged for existing importers. Derived section navigation uses
+weight, descending date, case-folded link title and source path. Theme menus
+and locale-specific collation are outside this subset.
+
+Supported deployment prefixes, pretty URLs, regular-page slugs/URLs and
+source-file links map to filename-derived Zellij routes. Eligible referenced
+content/static resources retain their bytes; implicit sections preserve asset
+filename case. Static/resource URL conflicts and unsafe paths fail before
+writes. Explicit section/bundle route overrides, menus, split configuration,
+modules, cascades, localization, custom date rules and complex routing require
+manual migration. Shortcodes and aliases remain reported source metadata/text;
+no Go, template or theme execution takes place.
+
+Tagged Hugo v0.169.0 source inspection found that leading ASCII whitespace and
+inline opening delimiters still introduce front matter. The importer matches
+this behavior so draft rules cannot be bypassed; Org front matter and malformed
+end delimiters fail explicitly. Official references:
+[configuration](https://gohugo.io/configuration/introduction/),
+[front matter](https://gohugo.io/content-management/front-matter/),
+[bundles](https://gohugo.io/content-management/page-bundles/),
+[publication options](https://gohugo.io/content-management/build-options/),
+[URLs](https://gohugo.io/content-management/urls/) and the tagged
+[front matter parser](https://github.com/gohugoio/hugo/blob/v0.169.0/parser/pageparser/pagelexer_intro.go),
+[path helper](https://github.com/gohugoio/hugo/blob/v0.169.0/common/paths/path.go),
+[ordering](https://github.com/gohugoio/hugo/blob/v0.169.0/resources/page/pages_sort.go).
+
+Local verification passed: **171 distinct Rust tests** (66 converter unit,
+105 import/inspection integration), including final targeted regressions after
+parser/resource corrections; warnings-denied Clippy, formatting, actionlint and
+diff checks; deep/strict docs covering 55 routes and 23 examples; and Node-only
+CLI-to-engine rendering for all five importers. The Hugo fixture checks section
+pages, a leaf bundle, links, Unicode asset paths, titles, headings/search and
+static resources. The same fixture's hosted export and three-OS import tests
+are in CI; final-head hosted/native acceptance and merge are still pending.
+No local Docker, browser or GUI tests ran. The TOML and date dependencies use
+minimal features; no runtime dependency installation is added for users.
+
+The conversion reference, guides, detection/help overview, current CLI status,
+and unpublished rc.2 notes were updated. Sphinx imports and the remaining
+provider/CI/interactive/advanced-option backlog are still incomplete. Native
+release publication and production Netlify migration remain separate work.
