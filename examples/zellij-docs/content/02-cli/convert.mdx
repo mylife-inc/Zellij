@@ -1,6 +1,6 @@
 ---
 title: zel convert
-description: Read a MkDocs, Docusaurus, VitePress, Jekyll or Hugo tree and write the Zellij equivalent beside it.
+description: Read a MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx tree and write the Zellij equivalent beside it.
 ---
 
 <Callout type="tip" title="Available">
@@ -129,6 +129,7 @@ zel list formats
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets |
 | Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, output collections, scoped defaults, navigation data, source URLs and eligible assets |
 | Hugo | `hugo.*` or legacy `config.*` in TOML, YAML or JSON | Markdown sections, page bundles, publication rules, source URLs and referenced resources |
+| Sphinx | `conf.py` | Literal configuration, `.rst` pages, explicit toctrees, supported reStructuredText, references and eligible assets |
 
 Converters are plugins compiled into the binary, so `zel list formats` prints
 what your build can actually read.
@@ -376,9 +377,100 @@ and unsupported content formats are outside this subset. Shortcodes remain
 literal text with a report. Read the report and build the result before
 publishing. Hugo support is newer than the published rc.1 executable.
 
+## Sphinx imports
+
+```bash title="terminal"
+zel cv ./sphinx/source --from sphinx --out ./manual --layout site --dry-run
+zel cv ./sphinx/source --from sphinx --out ./manual --layout site
+```
+
+Pass the **source directory containing `conf.py`**, not its parent build
+project. Conversion needs neither Python nor Sphinx. Configuration is read as
+literal data; Python imports, expressions, functions and extensions are never
+executed. If the original configuration is dynamic, prepare a separate source
+copy with a simplified `conf.py` before importing:
+
+```python
+project = 'Product manual'
+extensions = []
+root_doc = 'index'
+source_suffix = {'.rst': 'restructuredtext'}
+exclude_patterns = ['_build', 'private']
+html_baseurl = 'https://old.example.test/manual/'
+```
+
+Accepted literals are single/double-quoted strings, integers, booleans, `None`,
+lists, tuples and string-keyed dictionaries. Comments and multiline collections
+are supported. Triple-quoted strings, string prefixes, computed values and
+duplicate assignments are rejected. `master_doc` is the older name for
+`root_doc`; when both exist they must agree. Only UTF-8 `.rst` input is
+supported; `source_suffix` may be `'.rst'`, `['.rst']` or the dictionary above.
+`exclude_patterns` accepts explicit relative file/directory paths, not globs.
+`include_patterns` must retain its default `['**']`. Unknown configuration that
+could transform content is refused. Theme/presentation settings do not recreate
+the original theme.
+
+`language` must be absent, `None` or empty. Sphinx can select different image
+files based on that setting, even for English; choose localized resources
+explicitly in a source copy before importing. Local image/download names are
+literal filenames: a filename containing `%20` remains distinct from one
+containing a space. This differs from URL escaping in ordinary website links.
+
+Navigation starts at `root_doc` (default `index`) and follows explicit
+`.. toctree::` entries in order. Relative document names resolve beside the
+containing page; `/name` resolves from the source root. Explicit titles,
+captions, nested document trees and `self` are supported. Hidden toctrees still
+define navigation but produce no inline link list. `maxdepth` is reported as a
+presentation difference; the full document hierarchy is imported. External
+entries stay in visible inline lists and are reported for sidebar migration.
+Missing/excluded targets, cycles and ambiguous destination routes fail before
+writes. Unlisted pages are reported and not published; add them to the source
+toctree if they should be imported. This differs from Sphinx's ability to build
+unlisted/orphan documents.
+
+Supported reStructuredText includes underline/overline headings, paragraphs,
+emphasis, strong text, inline literals, flat bullet/numbered lists, indented
+literal blocks, `code`/`code-block`/`sourcecode`, standard admonitions, and
+`image` with optional `:alt:`. Explicit section labels must occur directly before
+a heading. `:doc:`, `:ref:` and `:download:` support automatic or explicit link
+text. Inline explicit hyperlinks and named hyperlink definitions are supported.
+Code, literal, command, file and keyboard roles become inline code; emphasis and
+strong roles retain formatting. Source HTML is treated as literal text. Code
+blocks remain literal, including directive-looking examples and backticks.
+
+Section labels and supported implicit section IDs become explicit anchors used
+by links, TOC and search. Non-decomposing Unicode heading identifiers need an
+explicit ASCII label. Duplicate heading IDs/implicit names are rejected. Review
+old bookmark URLs: Sphinx can emit additional aliases for a labelled heading,
+and those alternate IDs are not generated. Page titles come from their document
+heading; navigation titles remain separate.
+
+Source `.rst` links and ordinary HTML-builder `.html` links map to Zellij guide
+routes. `html_baseurl` supplies the old site's origin/prefix for same-origin
+links; it does not set the destination deployment URL. Referenced contained
+images/downloads are copied byte-for-byte; root-relative resource paths resolve
+from the source directory independently of `html_baseurl`. Excluded files, templates, source
+documents, configuration and script files are ineligible as downloads.
+`_build`, `_templates`, hidden directories and `node_modules` are omitted.
+`html_static_path` and `html_extra_path` are not copied wholesale; use source
+asset paths, not Sphinx-generated `_images` or `_downloads` URLs. Asset skip and
+dry-run options retain their normal safety checks.
+
+This is a **conservative reStructuredText subset**, newer than published rc.1.
+MyST, autodoc/domain roles, custom extensions, `include`/`literalinclude`, raw
+directives, tables, substitutions, field lists (including `:orphan:`), footnotes,
+definition/quote blocks, nested lists, glob/numbered toctrees, extra directive
+options and custom/dirhtml builders require manual migration. Unsupported parsed
+constructs fail with the source filename before output is created. No source
+build or dependency installation is attempted. See the upstream
+[configuration rules](https://www.sphinx-doc.org/en/master/usage/configuration.html),
+[toctrees](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#table-of-contents),
+[reStructuredText primer](https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html)
+and [cross-references](https://www.sphinx-doc.org/en/master/usage/referencing.html).
+
 ## Page metadata and document IDs
 
-All five importers preserve an authored `title` and `description` as active
+The five Markdown importers preserve an authored `title` and `description` as active
 page metadata. The title falls back to the first document-level H1, then the
 navigation label, then the source filename without its extension. A navigation
 label stays in the sidebar independently of the page title. Original front

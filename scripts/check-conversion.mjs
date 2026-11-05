@@ -1,6 +1,6 @@
 // Verify actual CLI output against engine routes, MDX rendering and asset bytes.
 // With --export, use the matching engine image via ZELLIJ_IMAGE
-// to build all four imports with matching Next basePath and inspect generated HTML.
+// to build all imports with matching Next basePath and inspect generated HTML.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -242,4 +242,125 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     }
   }
   console.log(`${format}: converted routes, heading fragment, rendered URLs and asset bytes verified.`);
+}
+
+// Sphinx starts from reStructuredText, not from the Markdown fixtures above.
+{
+  const source = path.join(root, 'sphinx-source');
+  const content = path.join(root, 'sphinx-content');
+  async function write(file, body) {
+    await mkdir(path.dirname(path.join(source, file)), { recursive: true });
+    await writeFile(path.join(source, file), body);
+  }
+  await write('conf.py', "project='Sphinx manual'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\n");
+  await write('index.rst', `.. _welcome:
+
+Welcome
+========
+
+.. toctree::
+   :caption: Documentation
+
+   API navigation <02-Setup/APIReference>
+   03-Café/index
+
+Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
+
+\`Website <https://legacy.example.test/manual/02-Setup/APIReference.html?q=1#stable-install>\`_
+
+.. image:: /media/logo.svg
+   :alt: Logo
+
+:download:\`Report <media/Q3 Report.pdf>\`
+
+:download:\`Literal percent <media/Report%20.pdf>\`
+
+.. image:: media/chart%20.svg
+
+<script>literal_source()</script> and {literal_expression()}
+
+:strong:\`<strong>literal role</strong>\` and \`\`a\`{literal_code}\`\`
+`);
+  await write('02-Setup/APIReference.rst', `.. _reference:
+
+Authored reference title
+========================
+
+.. _stable-install:
+
+Installation
+------------
+
+Searchable installation with **strong** and \`\`inline_{code}\`\`.
+
+.. warning:: Keep your source.
+
+   Return :ref:\`Home <welcome>\`.
+
+\`Website home <../index.html?from=relative#welcome>\`_
+
+.. code-block:: text
+
+   .. include:: private-file
+   :ref:\`literal\`
+`);
+  await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
+  await write('media/logo.svg', asset);
+  await write('media/Q3 Report.pdf', pdf);
+  await write('media/Report%20.pdf', pdf);
+  await write('media/Report .pdf', 'wrong source');
+  await write('media/chart%20.svg', asset);
+  await write('media/chart .svg', '<svg>wrong source</svg>');
+  execFileSync(zel, ['convert', source, '--out', content, '--from', 'sphinx', ...(mode === '--export' ? ['--validate'] : [])], {stdio:'inherit'});
+  await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
+  const site = await loadSite(new FolderContentSource({contentDir:content}));
+  assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/setup/api-reference']);
+  const rendered = new Map();
+  for (const page of site.guidePages) {
+    const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
+    rendered.set(page.route, renderToStaticMarkup(result.content));
+  }
+  const home = rendered.get('/guide');
+  for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
+  assert(!home.includes('<script>') && !home.includes('<h1'));
+  assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));
+  assert(home.includes('a`{literal_code}') && !home.includes('a`\\{literal_code\\}'));
+  assert(home.includes('href="/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
+  assert(home.includes('src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg"'));
+  const page = site.guidePages.find(p => p.route === '/guide/setup/api-reference');
+  const html = rendered.get(page.route);
+  for (const text of ['id="stable-install"', 'href="/guide#welcome"', 'href="/guide?from=relative#welcome"', '.. include:: private-file']) assert(html.includes(text), `Sphinx reference missing ${text}`);
+  const headingOptions = {remarkPlugins:(await mdxOptions()).mdxOptions.remarkPlugins};
+  assert.deepEqual(extractToc(page.body,headingOptions).map(h=>h.id), ['stable-install']);
+  assert(indexGuidePage(page,headingOptions).some(e=>e.route===`${page.route}#stable-install` && e.text.includes('Searchable installation')));
+  assert.deepEqual(site.guides[0].sidebar, [
+    {kind:'link',label:'Welcome',route:'/guide'},
+    {kind:'group',label:'Documentation',children:[
+      {kind:'link',label:'API navigation',route:'/guide/setup/api-reference'},
+      {kind:'link',label:'Café',route:'/guide/cafe'},
+    ]},
+  ]);
+  assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
+  assert.deepEqual(await readFile(path.join(content,'assets/imported/docs/media/Q3 Report.pdf')),pdf);
+  assert.deepEqual(await readFile(path.join(content,'assets/imported/docs/media/Report%20.pdf')),pdf);
+  assert.equal(await readFile(path.join(content,'assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
+  if (mode === '--export') {
+    const output = path.join(root,'sphinx-site');
+    execFileSync(zel,['build',content,'--out',output],{stdio:'inherit'});
+    const home = await readFile(path.join(output,'guide.html'),'utf8');
+    const reference = await readFile(path.join(output,'guide/setup/api-reference.html'),'utf8');
+    const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');
+    for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);
+    for (const text of ['id="stable-install"','href="#stable-install"','href="/products/docs/guide#welcome"','href="/products/docs/guide?from=relative#welcome"','API navigation']) assert(reference.includes(text), `Sphinx exported reference missing ${text}`);
+    assert.equal((reference.match(/<h1(?:\s|>)/g)??[]).length,1);
+    assert(cafe.includes('<h1>Café</h1>') && cafe.includes('href="/products/docs/guide/setup/api-reference"'));
+    assert.equal(await readFile(path.join(output,'_zellij/assets/imported/docs/media/logo.svg'),'utf8'),asset);
+    assert.deepEqual(await readFile(path.join(output,'_zellij/assets/imported/docs/media/Q3 Report.pdf')),pdf);
+    assert(home.includes('href="/products/docs/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
+    assert(home.includes(`src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg?v=${assetHash}"`));
+    assert.deepEqual(await readFile(path.join(output,'_zellij/assets/imported/docs/media/Report%20.pdf')),pdf);
+    assert.equal(await readFile(path.join(output,'_zellij/assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
+  }
+  console.log('sphinx: reStructuredText navigation, references, literal code/HTML, search, headings and assets verified.');
 }

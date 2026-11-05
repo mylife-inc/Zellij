@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll and declarative Hugo documentation. Sphinx remains planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -56,6 +56,15 @@ weight/date/title ordering. Source URLs and eligible content/static assets map
 into editable hosted content. Menus, split configuration, modules, cascades,
 localization, custom date rules and complex routing remain outside this subset.
 Shortcodes and aliases are reported for manual work. See the conversion reference.
+
+Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
+and convert a conservative reStructuredText subset without Python or Docutils.
+Supported headings, labels, flat lists, code, admonitions and images retain
+content; document/section/download references and HTML-builder URLs map to
+hosted guide routes and eligible assets. Unknown executable configuration,
+extensions, MyST, API domains, includes, tables, substitutions, nested lists and
+custom builders still require manual migration. Unlisted documents are omitted
+and reported. The conversion reference specifies the exact accepted forms.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
 is newer and has not been published as rc.2. The old rc.2 publication proposal
@@ -112,3 +121,39 @@ strict docs and five Node rendering fixtures pass; final-head CI is pending.
 See the current CLI status and the dated audit for precise scope and evidence.
 PR #78 merged as `6190e51` after all 16 checks passed on `ffdeca7`; post-merge
 base image passed, with main CI still running. Sphinx remains planned.
+
+
+### 2026-11-05 — Sphinx reStructuredText implementation
+
+Source `968b469` adds the Sphinx converter through detect/formats/convert/migrate
+and ship. Literal conf.py, explicit toctrees, a conservative reStructuredText
+subset, doc/ref/download roles, HTML-builder URLs and eligible referenced assets
+are supported without Python execution or installation. Unsupported constructs
+fail before writes; unlisted sources remain unpublished. Full Sphinx/MyST/domain
+fidelity is incomplete. The same change repairs inline literal backtick escaping.
+See the conversion reference for precise syntax and limits, and the context/audit
+for evidence. Local 183 Rust tests, Clippy/formatting, strict docs and six Node
+render fixtures pass; final-head native/hosted CI and merge remain pending.
+PR #79 merged as `7a03f50` after all 16 checks passed on `8102782` in `42095877145`.
+Both post-merge workflows passed (`42099649036`, `42099648776`); PR #78's main
+`42090020416` passed too. Native rc.2 and production migration remain unpublished.
+
+
+#### Sphinx literal resource follow-up — 2026-11-05
+
+Source `6b5b1d2` preserves literal local image/download filenames before the
+shared Markdown URL resolver. A source filename containing `%20` remains
+separate from one containing a space; both original bytes and encoded emitted
+URLs are covered. Root-relative resource paths retain source-root semantics.
+Sphinx can also select localized image variants based on `language`, so nonempty
+language settings are now rejected with guidance to choose resources explicitly
+in a separate source copy. Absent/None/empty language settings remain supported.
+The official [asset collector](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/collectors/asset.py)
+was inspected read-only; no Python/Sphinx execution was introduced.
+
+All 11 Sphinx integration tests, warnings-denied Clippy, formatting, strict docs
+and all six Node rendering fixtures pass, including the percent/space ambiguity.
+The expanded hosted export fixture checks real HTML URLs and copied bytes too.
+Local distinct Rust coverage is now 184 tests. Initial PR #80 CI on `a850843`
+had 14 passing jobs and no failures when this correction was prepared; that
+older run does not validate this source. New final-head CI and merge are pending.
