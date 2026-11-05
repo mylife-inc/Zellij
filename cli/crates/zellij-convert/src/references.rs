@@ -21,7 +21,7 @@ use zellij_core::{
 
 // Keep these rules aligned with content/naming.ts and guide-folder.ts. The CI
 // fixture compares converted links to routes loaded by the actual engine.
-fn route(source: &Utf8PathBuf) -> String {
+pub(crate) fn route(source: &Utf8PathBuf) -> String {
     static PREFIX: LazyLock<Regex> =
         LazyLock::new(|| Regex::new(r"^[0-9]+\s*[-._]\s*(\S.*)$").unwrap());
     static ACRONYM: LazyLock<Regex> =
@@ -71,7 +71,7 @@ fn decode(value: &str) -> Option<String> {
     String::from_utf8(bytes).ok()
 }
 
-fn encode_path(value: &str) -> String {
+pub(crate) fn encode_path(value: &str) -> String {
     let mut out = String::new();
     for b in value.bytes() {
         if b.is_ascii_alphanumeric() || b"/-._~".contains(&b) {

@@ -37,15 +37,18 @@ Index documents remain accessible as the first child link, or a single link
 when they are the folder's only page. Partial and hidden documents are excluded.
 Malformed metadata, ambiguous IDs and missing targets fail before writing output.
 
-Generated category landing pages, manual category links, source styling,
-custom source slugs and plugin routing still need manual work: output routes
-come from source filenames. See [the conversion reference](/cli/convert) for
+Manual category links import their linked documents. Generated category indexes
+become editable MDX pages with titles, descriptions and nested child links under
+`01-guide/category/`; generated filenames avoid authored routes. Empty or fully
+excluded categories do not produce empty pages. Source styling, custom source
+slugs, generated-index images/keywords and plugin routing still need manual
+work: authored document routes come from source filenames. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
 These metadata improvements are newer than the published rc.1 executable.
 
 ## What does not come across
 
-**A landing page.** Every one of these tools describes a documentation tree.
+**A marketing landing page.** Every one of these tools describes a documentation tree.
 Zellij has that *and* marketing pages built from 23 section types with no
 equivalent in the source. So a conversion writes a faithful guide folder, a
 `site.yaml` carrying whatever identity it could find, and a `pages.yaml` with

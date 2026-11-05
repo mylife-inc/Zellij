@@ -220,9 +220,10 @@ fn category_index_links_inherit_metadata_and_explicit_null_disables_conventions(
     assert_eq!(nav[0]["items"][0]["page"], "a/landing");
     assert_eq!(names(&nav[0]["items"]), ["Inherited", "a/child"]);
     assert_eq!(nav[1]["items"][0]["page"], "b/index");
-    assert_eq!(names(&nav[2]["items"]), ["c/index"]);
+    assert_eq!(names(&nav[2]["items"]), ["Source landing", "c/index"]);
     assert_eq!(names(&nav[3]["items"]), ["d/a"]);
-    assert!(report.contains("generated category landing page is not created"));
+    assert!(report.contains("category link fields not mapped: slug"));
+    assert!(out.join("01-guide/category/c/index.mdx").exists());
     assert!(!out.join("01-guide/d/draft.mdx").exists());
 }
 
