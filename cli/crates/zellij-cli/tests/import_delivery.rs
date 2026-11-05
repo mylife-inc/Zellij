@@ -35,6 +35,13 @@ fn fixture(root: &Path, format: &str) {
             "source/mkdocs.yml",
             "site_name: Import\nnav:\n  - index.md\n  - next.md\n  - External: https://example.com\n",
         );
+    } else if format == "jekyll" {
+        write(root, "source/_config.yml", "title: Import\nsource: docs\n");
+        write(
+            root,
+            "source/docs/_data/navigation.yml",
+            "- name: Home\n  link: /\n- name: Next\n  link: /next.html\n",
+        );
     } else if format == "vitepress" {
         write(
             root,
@@ -65,6 +72,13 @@ fn fixture(root: &Path, format: &str) {
         [0x25, 0x50, 0x44, 0x46, 0, 255],
     );
     write(root, "source/docs/orphan.md", "# Outside navigation\n");
+    if format == "jekyll" {
+        for name in ["index.md", "next.md", "orphan.md"] {
+            let file = format!("source/docs/{name}");
+            let body = fs::read_to_string(root.join(&file)).unwrap();
+            write(root, &file, format!("---\n---\n{body}"));
+        }
+    }
 }
 fn command(root: &Path) -> Command {
     #[cfg(not(windows))]
@@ -105,7 +119,7 @@ fn run(root: &Path, args: &[&str], code: i32) -> Output {
 }
 #[test]
 fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes() {
-    for format in ["mkdocs", "docusaurus", "vitepress"] {
+    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);
@@ -174,7 +188,7 @@ fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes
 
 #[test]
 fn skipped_assets_keep_original_urls_while_document_links_are_converted() {
-    for format in ["mkdocs", "docusaurus", "vitepress"] {
+    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);

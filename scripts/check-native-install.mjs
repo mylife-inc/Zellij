@@ -63,7 +63,7 @@ async function run(command, args, env = process.env, succeeds = true, cwd) {
   const timeout = setTimeout(() => state.child.kill(), 90000);
   try {
     const code = await state.closed;
-    assert.equal(code === 0, succeeds, `${command}: ${state.stdout}\n${state.stderr}`);
+    assert.equal(code === 0, succeeds, `${command} ${JSON.stringify(args)}: ${state.stdout}\n${state.stderr}`);
     return state;
   } finally { clearTimeout(timeout); }
 }
@@ -76,6 +76,7 @@ const until = async (predicate, message) => {
   const end = Date.now() + 15000;
   while (!predicate()) { if (Date.now() > end) throw new Error(message); await delay(25); }
 };
+let acceptanceFailure;
 try {
   // Both supported Windows shells execute the same installer. No persistent PATH changes.
   const shells = windows ? ['powershell.exe', 'pwsh'] : ['sh'];
@@ -229,10 +230,22 @@ try {
     assert.equal(state.exit, 0, state.stderr); assert.match(state.stdout, /Stopped\./);
   }
   console.log(`${target}: installed release version/architecture, native starter/check/build, moved output, HTTP serve/view and real Ctrl-C passed.`);
+} catch (error) {
+  acceptanceFailure = error;
+  throw error;
 } finally {
   for (const state of active) { if (windows) state.child.stdin.end('stop\n'); else state.child.kill(); }
   await Promise.all([...active].map(state => state.closed));
   server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));
-  await rm(temp, { recursive: true, force: true });
+  try {
+    // Windows can briefly retain an executable lock after its process closes.
+    // Retry only disposable-file cleanup, never an installation assertion.
+    await rm(temp, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
+  } catch (cleanupFailure) {
+    // A cleanup error must not erase the assertion that led us here.
+    throw acceptanceFailure
+      ? new AggregateError([acceptanceFailure, cleanupFailure], 'Native installation acceptance and cleanup both failed')
+      : cleanupFailure;
+  }
 }

@@ -129,6 +129,7 @@ fn external(url: &str) -> bool {
 #[derive(Clone, Copy)]
 pub(crate) enum AssetSource<'a> {
     Documents,
+    Jekyll(&'a BTreeSet<Utf8PathBuf>),
     Docusaurus(&'a Utf8Path),
     VitePress,
 }
@@ -150,7 +151,7 @@ impl Resolver<'_> {
         relative: Utf8PathBuf,
     ) -> Result<(Utf8PathBuf, Utf8PathBuf, &'static str)> {
         let (root, namespace) = match self.asset_source {
-            AssetSource::Documents => (self.tree.root.clone(), "docs"),
+            AssetSource::Documents | AssetSource::Jekyll(_) => (self.tree.root.clone(), "docs"),
             AssetSource::Docusaurus(project) => {
                 (contained_path(project, Utf8Path::new("static"))?, "static")
             }
@@ -216,7 +217,10 @@ impl Resolver<'_> {
             }
             website_asset = urls.asset(&website_path).map(Utf8PathBuf::from);
             if website_asset.is_none()
-                && (matches!(self.asset_source, AssetSource::Documents) || !path.starts_with('/'))
+                && (matches!(
+                    self.asset_source,
+                    AssetSource::Documents | AssetSource::Jekyll(_)
+                ) || !path.starts_with('/'))
             {
                 self.report(source, url, "URL is outside the source deployment prefix");
                 return Ok(url.to_owned());
@@ -229,7 +233,7 @@ impl Resolver<'_> {
         // Docusaurus documents static-folder assets as /img/x and
         // @site/static/img/x. Neither authorizes arbitrary project-root reads.
         let static_path = match self.asset_source {
-            AssetSource::Documents => None,
+            AssetSource::Documents | AssetSource::Jekyll(_) => None,
             AssetSource::Docusaurus(_) => path
                 .strip_prefix("@site/static/")
                 .or_else(|| path.strip_prefix('/')),
@@ -350,6 +354,16 @@ impl Resolver<'_> {
             return Ok(url.to_owned());
         }
         let full = contained_path(&root, &relative)?;
+        if let AssetSource::Jekyll(eligible) = self.asset_source
+            && !eligible.contains(&relative)
+        {
+            self.report(
+                source,
+                url,
+                "excluded, template-only or unavailable Jekyll asset; not copied",
+            );
+            return Ok(url.to_owned());
+        }
         if !full.is_file() {
             self.report(
                 source,

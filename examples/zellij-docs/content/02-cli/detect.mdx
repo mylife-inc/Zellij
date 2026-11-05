@@ -70,9 +70,11 @@ writes the whole content model as one file, an agent does the structuring, and
 | MkDocs | `mkdocs.yml` or `mkdocs.yaml` | `docs/index.md` without a config file |
 | Docusaurus | `docusaurus.config.js` or `.ts` | `sidebars.js`, `.ts`, `.json` or `.cjs` without a config file |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | — |
+| Jekyll | `_config.yml`, `_config.yaml` or `_config.toml` | — |
 
 Detection recognizes file names and layout. It does not parse configuration or
-validate its contents; conversion performs that work.
+validate its contents; conversion performs that work. For example, Jekyll TOML
+configuration is recognized, but the current converter requires a YAML copy.
 
 What *your* binary can detect is what [`zel list formats`](/cli/list) prints.
 Converters are compiled in, so the answer is specific to the build you have

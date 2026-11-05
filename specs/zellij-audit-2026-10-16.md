@@ -4044,3 +4044,72 @@ Semantics were checked against VitePress 1.6.4 source and its
 Current vitepress.dev defaults to a newer development version; this milestone
 does not claim that version's full behavior. The published native release
 remains rc.1. Release publication and production Netlify migration are separate.
+
+### 2026-11-05 — VitePress closure and Jekyll documentation imports
+
+PR #77 merged as `0729235ed7d8e3a0835b324e045e5e19a15d79e3` after all 16
+checks passed in [42014697065](https://github.com/mylife-inc/Zellij/actions/runs/42014697065)
+on `155f09c0feb9cc77477f1d7fbc197fc8e2943012`. Its tree matches the tested
+`3f5edcf76ad3ab9e5e5028a8643124200ae5c38b`. Final fix `155f09c` prevents a
+URL in a sidebar query string from making a local VitePress page look external.
+Both post-merge workflows passed: main `42017999796`, base image `42017999836`.
+PR #76's previously pending main run `42011273809` also passed, completing
+both of that merge's post-merge workflows. Local main was clean and synchronized
+at the start of this milestone; native release remains `v0.2.0-rc.1`.
+
+Source `0073bca` registers `jekyll` with detection, formats, convert/migrate and
+ship. It supports one YAML config, contained source/data/output roots, front-
+matter `.md`/`.markdown` pages, enabled documentation collections and literal
+scoped defaults. Supported navigation data arrays (`name/link` or `title/url`,
+optional children, optionally wrapped in `main`) retain order and nesting.
+Without a navigation file, published pages precede enabled collections; literal
+collection order lists precede filename order. Empty explicit navigation stays
+empty; omitted/unpublished/navigation-excluded pages are reported.
+
+Root-relative, same-origin and relative website links use source URL settings,
+index conventions, supported permalink styles, literal page permalinks and
+collection `:collection`/`:path`/`:output_ext` patterns. These map to existing
+filename-derived Zellij routes, not destination permalink overrides. Referenced
+static assets must be eligible under the Jekyll source inventory: excluded,
+internal data/template and generated files cannot be published through links.
+Canonical source roots fix macOS alias comparisons; BOM/CRLF template detection
+is covered. Original metadata is retained alongside effective defaults.
+
+Limits are explicit: no Ruby/Liquid/theme/plugin execution, blog migration,
+dated collections, glob policies/scopes, forced includes, TOML import or
+arbitrary routing patterns. Unsupported navigation/configuration fails before
+writes; Liquid/theme presentation is reported for manual work. The importer
+adds no dependencies. Hugo remains the next importer; Sphinx and other
+provider/CI/interactive work remain in the broader CLI backlog.
+
+Local verification passed: **155 Rust tests** (64 converter unit tests plus
+91 import/inspection integration tests), final targeted Jekyll regressions,
+warnings-denied Clippy, formatting, actionlint and diff checks. Deep/strict docs
+cover 55 routes and 23 examples. Node-only rendering passes all four formats,
+including a Jekyll collection, source-relative assets, anchors, search/TOC and
+website links. Three-OS import acceptance and real hosted export join CI;
+final-head hosted/native checks and merge remain pending. No local Docker or
+browser/GUI test ran. User docs, current CLI status and unpublished rc.2 release
+notes were updated with behavior, command examples and limits.
+
+Source semantics were checked against Jekyll 4.4.1's
+[configuration](https://jekyllrb.com/docs/configuration/options/),
+[collections](https://jekyllrb.com/docs/collections/),
+[navigation tutorial](https://jekyllrb.com/docs/step-by-step/06-data-files/),
+[permalinks](https://jekyllrb.com/docs/permalinks/) and matching tagged source
+for page/collection URLs, publication and scoped defaults. This remains a
+conservative documentation subset. Production documentation deployment,
+Netlify migration and native release publication are separate pending work.
+
+#### Windows ARM64 acceptance follow-up — 2026-11-05
+
+Initial Jekyll PR #78 run `42084376374` failed native ARM64 Windows job
+`127445423055` after the binary built and both PowerShell installers passed.
+The visible error was `EBUSY` deleting the installed executable from the
+harness's disposable directory. The unconditional cleanup could replace an
+earlier assertion error, so the original cause cannot be inferred from that
+log alone. Source `e460f40` preserves both errors with `AggregateError`, includes
+command arguments in failed-command diagnostics, and bounds retries only for
+filesystem cleanup (10 retries with 100 ms linear backoff). No installer or
+acceptance assertion is retried or skipped. Node syntax and diff checks pass;
+new final-head Windows and full CI evidence are required before merge.

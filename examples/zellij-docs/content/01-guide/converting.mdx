@@ -1,6 +1,6 @@
 ---
 title: Converting existing docs
-description: Bring a MkDocs, Docusaurus or VitePress tree across, and know what does not come with it.
+description: Bring a MkDocs, Docusaurus, VitePress or Jekyll tree across, and know what does not come with it.
 ---
 
 ```bash
@@ -26,6 +26,7 @@ the published rc.1 CLI; see [conversion options](/cli/convert).
 | MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir`. |
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative. |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets. |
+| Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, enabled documentation collections, scoped defaults, navigation data, links and eligible assets. |
 
 `zel detect` says which, and how sure it is. A folder with the format's own
 config file is certain; one that merely looks like the default layout is not,
@@ -78,6 +79,21 @@ File links, supported `base`/`cleanUrls` website links, and referenced source or
 presentation need manual work. Dynamic configuration and custom routing or
 exclusion settings fail before writes. See [VitePress import limits](/cli/convert#vitepress-imports)
 before converting. This converter is newer than the published rc.1 executable.
+
+## Jekyll sites
+
+The YAML importer reads Markdown pages with front matter and documentation
+collections that declare `output: true`. Literal scoped defaults preserve page
+metadata; supported `_data/navigation` arrays preserve order and nesting. When
+navigation data is absent, pages and collections supply a documented filename
+order. Omitted, unpublished and navigation-excluded pages are reported.
+
+Supported source permalinks and website links map to Zellij guide routes.
+Referenced static assets are copied while respecting exclusions, generated
+output and internal directories. Ruby, Liquid, plugins and themes are not run.
+Posts, dated collections, custom routing and theme-specific navigation need
+manual work. See [Jekyll import limits](/cli/convert#jekyll-imports). This
+converter is newer than the published rc.1 executable.
 
 ## What does not come across
 

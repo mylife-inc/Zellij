@@ -1,6 +1,6 @@
 ---
 title: zel convert
-description: Read a MkDocs, Docusaurus or VitePress tree and write the Zellij equivalent beside it.
+description: Read a MkDocs, Docusaurus, VitePress or Jekyll tree and write the Zellij equivalent beside it.
 ---
 
 <Callout type="tip" title="Available">
@@ -127,6 +127,7 @@ zel list formats
 | MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir` |
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets |
+| Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, output collections, scoped defaults, navigation data, source URLs and eligible assets |
 
 Converters are plugins compiled into the binary, so `zel list formats` prints
 what your build can actually read.
@@ -201,9 +202,101 @@ into equivalent Zellij components. Inspect the report and build the result.
 This supported subset follows VitePress 1.x conventions and is newer than the
 published rc.1 executable.
 
+## Jekyll imports
+
+```bash title="terminal"
+zel cv ./jekyll-site --from jekyll --out ./manual --layout site --dry-run
+zel cv ./jekyll-site --from jekyll --out ./manual --layout site
+```
+
+Pass the directory containing `_config.yml` or `_config.yaml`. Exactly one
+configuration file is accepted; `_config.toml` is detected but requires a YAML
+source copy before conversion. YAML aliases/merge keys are read as data; Ruby
+and Liquid are never executed. The source stays untouched.
+
+The importer reads `title`, `description`, a contained `source` directory,
+`url`, `baseurl`, literal `exclude` paths and scoped front matter defaults.
+Default scopes support literal path prefixes and optional types (`pages` or a
+collection name). Longer paths take precedence, then type-specific scopes,
+then later entries. Authored metadata takes precedence over defaults. Titles
+and descriptions become active Zellij metadata; other fields and original front
+matter remain in comments for review.
+
+Only `.md` and `.markdown` files with YAML front matter become pages. An empty
+front matter block is sufficient. Files without that block are reported as
+static Markdown and skipped. `published: false` or null and `nav_exclude: true`
+are excluded. Posts/drafts, hidden files, dependencies, generated output and
+internal template directories are not imported as documentation.
+
+### Documentation collections
+
+```yaml
+collections:
+  reference:
+    output: true
+    order: [overview.md, api.md]
+    permalink: /reference/:path/
+```
+
+This reads `_reference/overview.md`, `_reference/api.md` and other Markdown
+pages in that collection. `output: true` is required. With derived navigation,
+listed `order` entries come first, followed by remaining pages in filename
+order. Collection groups follow ordinary pages and are sorted by name.
+Collection URL patterns support `:collection`, `:path` and `:output_ext` only.
+Dated collection files and `sort_by` require manual migration; posts remain
+excluded even when their collection declares output.
+
+### Navigation data
+
+The importer recognizes one `_data/navigation.yml`, `.yaml` or `.json` file,
+using an array or an object containing only a `main` array. A contained
+`data_dir` can change the data directory. Both `name`/`link` and `title`/`url`
+entries are supported, with optional nested `children`:
+
+```yaml
+- name: Welcome
+  link: /
+- title: Reference
+  children:
+    - title: API
+      url: /reference/api/
+```
+
+Local entries address source website URLs, including supported permalinks.
+Array order is retained; a linked group places its page first. External links
+are reported for migration to the Zellij menu. An explicit empty array stays
+empty. Pages absent from declared navigation are reported and skipped. Without
+this file, navigation is derived from eligible pages and enabled collections;
+theme-specific ordering or hierarchy requires review.
+
+### Links, assets and limits
+
+Source `date`, `none` and `ordinal` permalink styles use HTML page URLs;
+`pretty` uses directory URLs. Index pages, literal per-page permalinks and the
+supported collection patterns are recognized. Markdown links, root-relative
+and same-origin website URLs map to Zellij's filename-derived guide routes,
+retaining queries and fragments. Relative website links use the original page
+URL directory. Original permalinks do not become destination route overrides.
+
+Referenced eligible static files are copied byte-for-byte to
+`assets/imported/docs/`, preserving source-relative paths. Literal exclusions,
+internal data/template directories and generated output remain excluded even
+when linked. Files beginning with YAML front matter are treated as templates,
+not copied as static assets. `--assets skip` retains asset URLs but still checks
+unsafe paths. Missing or excluded assets are reported.
+
+Liquid expressions, includes, layouts, plugins, theme-supplied configuration,
+HTML pages and custom Markdown features need manual migration. TOML/config
+merging, glob exclusions or default scopes, forced `include` rules, custom
+collection roots, unsupported permalink placeholders and localization settings
+are rejected before output. Custom layout/include/plugin directory settings
+also require a source copy using the documented defaults. This is a Jekyll 4.x
+documentation subset, not a theme or blog migration. Read the report and build
+the result before publishing. It is newer than the published rc.1 executable.
+
 ## Page metadata and document IDs
 
-All three importers preserve an authored YAML `title` and `description` as active
+All four importers preserve an authored YAML `title` and `description` as active
 page metadata. The title falls back to the first document-level H1, then the
 navigation label, then the source filename without its extension. A navigation
 label stays in the sidebar independently of the page title. Original front
