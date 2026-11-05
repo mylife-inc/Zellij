@@ -40,7 +40,7 @@ fn literal_configs_detect_and_import_titles_navigation_urls_and_asset_bytes() {
         let source = temp.path().join("source");
         let out = temp.path().join("out");
         let config = format!(
-            "\u{feff}// Config\nimport {{ defineConfig }} from 'vitepress'\nexport default defineConfig({{title:'A: handbook', description:'Product docs', srcDir:'./pages/', base:'/old/manual/', cleanUrls:{clean}, themeConfig:{{sidebar:[{{text:'Home label',link:'/'}},{{text:'Guides',items:[{{text:'Install label',link:'/02-Guides/Install'}},{{link:'/Caf%C3%A9.md'}}]}},{{text:'External',link:'https://example.test'}}]}}}}); // done\n"
+            "\u{feff}// Config\nimport {{ defineConfig }} from 'vitepress'\nexport default defineConfig({{title:'A: handbook', description:'Product docs', srcDir:'./pages/', base:'/old/manual/', cleanUrls:{clean}, themeConfig:{{sidebar:[{{text:'Home label',link:'/'}},{{text:'Guides',items:[{{text:'Install label',link:'/02-Guides/Install?next=https://example.test#install'}},{{link:'/Caf%C3%A9.md'}}]}},{{text:'External',link:'https://example.test'}}]}}}}); // done\n"
         );
         write(&source, &format!(".vitepress/config.{extension}"), &config);
         write(
@@ -91,6 +91,7 @@ fn literal_configs_detect_and_import_titles_navigation_urls_and_asset_bytes() {
         assert!(read(&content, "01-guide/02-Guides/Install.mdx").contains("[Home](</guide#home>)"));
         assert!(read(&content, "01-guide/_sidebar.yaml").contains("Install label"));
         assert!(report(&output).contains("orphan.md"));
+        assert!(report(&output).contains("sidebar query/fragment"));
         assert!(!content.join("01-guide/orphan.mdx").exists());
         assert_eq!(
             fs::read(content.join("assets/imported/public/report.pdf")).unwrap(),

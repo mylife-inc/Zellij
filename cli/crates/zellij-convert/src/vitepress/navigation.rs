@@ -8,7 +8,8 @@ use super::config::{invalid, string};
 use crate::{Unmapped, model::Entry, references::decode};
 
 fn external(link: &str) -> bool {
-    link.starts_with("//") || link.contains(':')
+    let path = link.split(['?', '#']).next().unwrap_or(link);
+    path.starts_with("//") || path.contains(':')
 }
 
 fn page(
