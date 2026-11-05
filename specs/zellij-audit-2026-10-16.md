@@ -4425,3 +4425,13 @@ passed. Evidence: `/private/tmp/zellij-vercel-workspace.log`,
 `/private/tmp/zellij-vercel-ci-ba1_mb0e/.github/workflows/docs.yml`.
 Final-head GitHub acceptance and merge remain pending. No local Docker/browser
 or live provider deployment ran.
+
+PR #82 initial run `42126186780` exposed a Windows-only fixture setup error:
+`bad?.html` is not a legal Windows filename, so the test failed before calling
+Zel's validation. Fix **`4475d66`** uses `bad#.html`, legal on all supported OSes
+but rejected by the same upload-path rule. No assertion or Windows test is
+skipped. All 11 local Vercel tests pass after the correction (one real hosted
+test remains CI-only); formatting passes. Log:
+`/private/tmp/zellij-pr82-windows.log`, with local recheck in
+`/private/tmp/zellij-vercel-final-tests.log`. Final-head CI is still required;
+the initial run does not validate this correction.
