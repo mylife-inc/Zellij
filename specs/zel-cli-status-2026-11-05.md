@@ -121,3 +121,19 @@ strict docs and five Node rendering fixtures pass; final-head CI is pending.
 See the current CLI status and the dated audit for precise scope and evidence.
 PR #78 merged as `6190e51` after all 16 checks passed on `ffdeca7`; post-merge
 base image passed, with main CI still running. Sphinx remains planned.
+
+
+### 2026-11-05 — Sphinx reStructuredText implementation
+
+Source `968b469` adds the Sphinx converter through detect/formats/convert/migrate
+and ship. Literal conf.py, explicit toctrees, a conservative reStructuredText
+subset, doc/ref/download roles, HTML-builder URLs and eligible referenced assets
+are supported without Python execution or installation. Unsupported constructs
+fail before writes; unlisted sources remain unpublished. Full Sphinx/MyST/domain
+fidelity is incomplete. The same change repairs inline literal backtick escaping.
+See the conversion reference for precise syntax and limits, and the context/audit
+for evidence. Local 183 Rust tests, Clippy/formatting, strict docs and six Node
+render fixtures pass; final-head native/hosted CI and merge remain pending.
+PR #79 merged as `7a03f50` after all 16 checks passed on `8102782` in `42095877145`.
+Both post-merge workflows passed (`42099649036`, `42099648776`); PR #78's main
+`42090020416` passed too. Native rc.2 and production migration remain unpublished.

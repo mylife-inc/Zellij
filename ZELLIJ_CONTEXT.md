@@ -26,16 +26,12 @@ watch-readiness assertion race, corrected in `a1003bd`. PR #76 merged relative
 website document URLs and that harness fix as `e8f525d`, after all 16 final-head
 checks passed; both post-merge workflows passed. VitePress imports merged in
 PR #77 as `0729235`, after all 16 final-head checks passed; both post-merge
-workflows passed too. Jekyll imports merged in PR #78 as `6190e51`, after all
-16 final-head checks passed. Its base-image workflow passed; main post-merge
-CI has 15 passing jobs with CLI acceptance still running. Current source
-`5631e6c` adds declarative Hugo sections and page bundles, all three metadata
-formats, publication rules, source links and eligible resources. Local 171 Rust
-tests, Clippy, formatting, strict docs and all five rendering fixtures pass.
-Resource ownership correction `f7f0121` also passes targeted tests and Clippy.
-Windows CI found a native separator in renamed section output; `771e40e`
-normalizes that path and passes local tests/Clippy. New final-head CI and merge
-remain pending.
+workflows passed too. Jekyll imports merged in PR #78 as `6190e51`, and Hugo imports merged in
+PR #79 as `7a03f50`, each after all 16 final-head checks passed. Both post-merge
+workflows passed for each PR. Current source `968b469` adds a conservative
+Sphinx/reStructuredText importer and fixes inline-code backtick handling.
+Local 183 Rust tests, Clippy, formatting, strict docs and all six rendering
+fixtures pass; hosted/native final-head CI and merge remain pending.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -4988,3 +4984,64 @@ relative path, which the portable-path validator correctly refused. Source
 The existing section/link integration fixture covers the failure. All 14 Hugo
 tests and warnings-denied Clippy pass locally; new Windows and full final-head
 CI evidence are still required before merge. The safety validator is unchanged.
+
+
+### 2026-11-05 — Hugo closure and Sphinx reStructuredText imports
+
+PR #79 merged as `7a03f50c54421ba03a4a00f1be4cc5c747fccd65` after all 16
+checks passed in [42095877145](https://github.com/mylife-inc/Zellij/actions/runs/42095877145)
+on `8102782f0252c97d222236bd6b9b3161d71045ce`. Tested and merged tree:
+`cf3541bcae5aeac20caf35e665a97758c95c6ef0`. Both post-merge workflows passed:
+main `42099649036` (all 16 jobs) and base image `42099648776`. This closes the
+Windows section-path correction `771e40e` and implicit-section resource fix
+`f7f0121`. PR #78's previously pending main run `42090020416` passed too; both
+of that merge's workflows are green. Main was clean and synchronized when this
+branch began. The published native candidate remains `v0.2.0-rc.1`.
+
+Source `968b469` registers Sphinx in detect/formats/convert/cv/migrate/mig/ship.
+The directory containing `conf.py` is the source root. Configuration is parsed
+as literal Python data with no Python interpreter or dependency installation.
+Supported settings include project, root_doc/master_doc, .rst source_suffix,
+UTF-8, explicit exclusions and html_baseurl. Executable/dynamic configuration,
+extensions and unsupported content-transforming settings fail before writes.
+Theme/presentation values are not applied as destination theme configuration.
+
+Explicit toctrees preserve order, captions, labels and nested page groups.
+Hidden trees define navigation without inline lists; self does not recurse.
+Navigation cycles, excluded/missing targets, unsafe paths and route/label
+collisions fail before output. Unlisted pages are reported and not published,
+unlike Sphinx's ability to build orphan pages. The reStructuredText adapter
+handles headings, paragraphs, emphasis, inline literals, flat lists, literal/code
+blocks, standard admonitions, images, named hyperlinks and doc/ref/download
+roles. Source HTML and directive-looking code remain literal. Section labels
+and supported implicit IDs feed links, TOC and search. Alternate old heading IDs
+require review. Unsupported syntax produces a source-specific preflight error;
+this is a conservative subset, not full Sphinx/MyST/API-extension fidelity.
+
+.rst links and HTML-builder website addresses map into filename-derived guide
+routes. Contained referenced eligible assets retain bytes; source-root-relative
+images/downloads do not inherit html_baseurl. Excluded sources, templates,
+configuration and script files cannot be copied as downloads. Resource paths
+are checked even under --assets skip. No source tool or configuration code runs.
+No new dependencies were added.
+
+The same source fixes shared MDX escaping of inline code containing shorter
+backtick runs: literal spans match equal-length delimiters, preserving braces
+and angle brackets instead of escaping code text. Regression tests cover this
+and real Sphinx-to-engine rendering covers literal HTML, role text and code.
+
+Local verification passed: **183 distinct Rust tests** (68 converter unit and
+115 import/inspection integration), with final targeted Sphinx regressions after
+resource/punctuation corrections; warnings-denied Clippy, formatting, actionlint
+and diff checks; strict/deep documentation (55 routes, 23 examples); and Node-only
+rendering for all six import formats. Hosted exports and the new three-OS Sphinx
+suite are CI gates; final-head CI and merge are pending for this source. No local
+Docker, browser or GUI tests ran. Logs use /private/tmp/zellij-sphinx-*; durable
+scope and upstream references are in the conversion reference.
+
+User documentation, quickstarts, CLI status and unpublished rc.2 notes were
+updated. Remaining work includes richer Sphinx/other-format fidelity, provider
+adapters, GitLab/CircleCI, interactive authoring and advanced options. Native
+release publication needs separate explicit authorization; the old rc.2 proposal
+predates this work. Production Netlify migration and the vendor's hosting-comment
+hydration issue remain separate. No production deployment or domain change ran.

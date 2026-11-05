@@ -442,7 +442,8 @@ heading; navigation titles remain separate.
 Source `.rst` links and ordinary HTML-builder `.html` links map to Zellij guide
 routes. `html_baseurl` supplies the old site's origin/prefix for same-origin
 links; it does not set the destination deployment URL. Referenced contained
-images/downloads are copied byte-for-byte. Excluded files, templates, source
+images/downloads are copied byte-for-byte; root-relative resource paths resolve
+from the source directory independently of `html_baseurl`. Excluded files, templates, source
 documents, configuration and script files are ineligible as downloads.
 `_build`, `_templates`, hidden directories and `node_modules` are omitted.
 `html_static_path` and `html_extra_path` are not copied wholesale; use source
