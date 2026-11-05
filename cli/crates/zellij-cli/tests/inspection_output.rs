@@ -205,6 +205,7 @@ fn detection_distinguishes_no_match_multiple_matches_and_bad_paths() {
     .unwrap();
     fs::write(temp.path().join("_config.yml"), "title: Jekyll\n").unwrap();
     fs::write(temp.path().join("hugo.toml"), "title='Hugo'\n").unwrap();
+    fs::write(temp.path().join("conf.py"), "project='Sphinx'\n").unwrap();
     fs::create_dir(temp.path().join(".vitepress")).unwrap();
     fs::write(
         temp.path().join(".vitepress/config.ts"),
@@ -218,7 +219,14 @@ fn detection_distinguishes_no_match_multiple_matches_and_bad_paths() {
             .iter()
             .map(|m| m["id"].as_str().unwrap())
             .collect::<Vec<_>>(),
-        ["docusaurus", "hugo", "jekyll", "mkdocs", "vitepress"]
+        [
+            "docusaurus",
+            "hugo",
+            "jekyll",
+            "mkdocs",
+            "sphinx",
+            "vitepress"
+        ]
     );
     for found in matches {
         assert_eq!(found["confidence"], 1.0);

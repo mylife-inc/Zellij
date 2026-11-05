@@ -130,6 +130,7 @@ fn external(url: &str) -> bool {
 pub(crate) enum AssetSource<'a> {
     Documents,
     Jekyll(&'a BTreeSet<Utf8PathBuf>),
+    Sphinx(&'a BTreeSet<Utf8PathBuf>),
     Hugo(&'a crate::hugo::Assets),
     Docusaurus(&'a Utf8Path),
     VitePress,
@@ -152,7 +153,9 @@ impl Resolver<'_> {
         relative: Utf8PathBuf,
     ) -> Result<(Utf8PathBuf, Utf8PathBuf, &'static str)> {
         let (root, namespace) = match self.asset_source {
-            AssetSource::Documents | AssetSource::Jekyll(_) => (self.tree.root.clone(), "docs"),
+            AssetSource::Documents | AssetSource::Jekyll(_) | AssetSource::Sphinx(_) => {
+                (self.tree.root.clone(), "docs")
+            }
             AssetSource::Hugo(assets) => {
                 let content = assets.website.get(&relative);
                 let static_file = contained_path(&assets.static_root, &relative)?.is_file();
@@ -248,7 +251,10 @@ impl Resolver<'_> {
         // Docusaurus documents static-folder assets as /img/x and
         // @site/static/img/x. Neither authorizes arbitrary project-root reads.
         let static_path = match self.asset_source {
-            AssetSource::Documents | AssetSource::Jekyll(_) | AssetSource::Hugo(_) => None,
+            AssetSource::Documents
+            | AssetSource::Jekyll(_)
+            | AssetSource::Hugo(_)
+            | AssetSource::Sphinx(_) => None,
             AssetSource::Docusaurus(_) => path
                 .strip_prefix("@site/static/")
                 .or_else(|| path.strip_prefix('/')),
@@ -391,6 +397,16 @@ impl Resolver<'_> {
                 source,
                 url,
                 "excluded, template-only or unavailable Jekyll asset; not copied",
+            );
+            return Ok(url.to_owned());
+        }
+        if let AssetSource::Sphinx(eligible) = self.asset_source
+            && !eligible.contains(&relative)
+        {
+            self.report(
+                source,
+                url,
+                "excluded, source/configuration or unavailable Sphinx asset; not copied",
             );
             return Ok(url.to_owned());
         }

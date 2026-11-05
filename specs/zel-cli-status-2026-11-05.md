@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll and declarative Hugo documentation. Sphinx remains planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -56,6 +56,15 @@ weight/date/title ordering. Source URLs and eligible content/static assets map
 into editable hosted content. Menus, split configuration, modules, cascades,
 localization, custom date rules and complex routing remain outside this subset.
 Shortcodes and aliases are reported for manual work. See the conversion reference.
+
+Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
+and convert a conservative reStructuredText subset without Python or Docutils.
+Supported headings, labels, flat lists, code, admonitions and images retain
+content; document/section/download references and HTML-builder URLs map to
+hosted guide routes and eligible assets. Unknown executable configuration,
+extensions, MyST, API domains, includes, tables, substitutions, nested lists and
+custom builders still require manual migration. Unlisted documents are omitted
+and reported. The conversion reference specifies the exact accepted forms.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
 is newer and has not been published as rc.2. The old rc.2 publication proposal

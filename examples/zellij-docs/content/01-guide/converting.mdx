@@ -1,6 +1,6 @@
 ---
 title: Converting existing docs
-description: Bring a MkDocs, Docusaurus, VitePress, Jekyll or Hugo tree across, and know what does not come with it.
+description: Bring a MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx tree across, and know what does not come with it.
 ---
 
 ```bash
@@ -28,6 +28,7 @@ the published rc.1 CLI; see [conversion options](/cli/convert).
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets. |
 | Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, enabled documentation collections, scoped defaults, navigation data, links and eligible assets. |
 | Hugo | `hugo.*` or `config.*` in TOML, YAML or JSON | Markdown sections and page bundles, publication rules, links and referenced resources. |
+| Sphinx | `conf.py` | Literal settings, `.rst` pages, explicit toctrees, supported reStructuredText and references/assets. |
 
 `zel detect` says which, and how sure it is. A folder with the format's own
 config file is certain; one that merely looks like the default layout is not,
@@ -110,6 +111,26 @@ which pages are imported, and eligible referenced content/static assets are
 copied. Go templates and shortcodes are not executed. Menus, cascades, modules,
 localization and custom routing require manual migration. See the full
 [Hugo import limits](/cli/convert#hugo-imports). This feature is newer than rc.1.
+
+## Sphinx sites
+
+```bash title="terminal"
+zel cv ./sphinx/source --from sphinx --out ./manual --layout site --dry-run
+zel cv ./sphinx/source --from sphinx --out ./manual --layout site
+```
+
+The importer reads literal `conf.py` assignments and follows explicit toctrees
+from `root_doc`. It converts a documented reStructuredText subset: headings,
+paragraphs, flat lists, code blocks, admonitions, images and document/section
+references. Referenced eligible assets are copied and source links become Zellij
+guide links. Python, extensions and templates are not executed or installed.
+
+Unlisted documents are reported and not published. Unsupported constructs such
+as autodoc, MyST, tables, includes, substitutions, nested lists and dynamic
+configuration require manual migration; conversion fails before writing output.
+Use a separate source copy when simplifying a project for import. Read the
+[Sphinx limits and examples](/cli/convert#sphinx-imports) first. This converter
+is newer than the published rc.1 executable.
 
 ## What does not come across
 

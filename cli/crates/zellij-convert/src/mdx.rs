@@ -151,8 +151,6 @@ fn autolink(rest: &str) -> Option<&str> {
 /// same line.
 fn escape_line(line: &str, document: &str) -> String {
     let mut out = String::with_capacity(line.len());
-    // Inline code spans are literal in MDX too, so their contents are left be.
-    let mut in_code_span = false;
     // How many bytes of the line the autolink rewrite has already consumed.
     let mut skip_until = 0usize;
 
@@ -163,14 +161,29 @@ fn escape_line(line: &str, document: &str) -> String {
 
         match ch {
             '`' => {
-                in_code_span = !in_code_span;
-                out.push(ch);
+                // Markdown matches runs of equal length, not alternating
+                // individual backticks. Skip a complete literal span so braces
+                // and shorter backtick runs inside it remain byte-for-byte.
+                let run = line[index..].bytes().take_while(|b| *b == b'`').count();
+                let mut cursor = index + run;
+                let mut close = None;
+                while let Some(offset) = line[cursor..].find('`') {
+                    let at = cursor + offset;
+                    let length = line[at..].bytes().take_while(|b| *b == b'`').count();
+                    cursor = at + length;
+                    if length == run {
+                        close = Some(cursor);
+                        break;
+                    }
+                }
+                skip_until = close.unwrap_or(index + run);
+                out.push_str(&line[index..skip_until]);
             }
-            '{' | '}' if !in_code_span => {
+            '{' | '}' => {
                 out.push('\\');
                 out.push(ch);
             }
-            '<' if !in_code_span => {
+            '<' => {
                 let rest = &line[index + 1..];
 
                 // `](<path>)` is Markdown's angle-bracket link destination, the
@@ -429,6 +442,19 @@ mod tests {
         assert_eq!(
             make_mdx_safe("use `{placeholder}` here\n"),
             "use `{placeholder}` here\n"
+        );
+    }
+
+    #[test]
+    fn inline_literals_match_backtick_runs_instead_of_toggling_each_character() {
+        let source = "use ``a`{value}<tag>`` or ```a``{other}``` and {prose}\n";
+        assert_eq!(
+            make_mdx_safe(source),
+            "use ``a`{value}<tag>`` or ```a``{other}``` and \\{prose\\}\n"
+        );
+        assert_eq!(
+            make_mdx_safe("unclosed ` {prose}\n"),
+            "unclosed ` \\{prose\\}\n"
         );
     }
 }
