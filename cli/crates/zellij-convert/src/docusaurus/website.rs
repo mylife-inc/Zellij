@@ -157,6 +157,14 @@ pub(super) fn read(
         .map(|_| field(&config, "url", ""))
         .transpose()?;
     let mut urls = SourceUrls::new(origin, field(&config, "baseUrl", "/")?)?;
+    let trailing_slash = config
+        .get("trailingSlash")
+        .map(|value| {
+            value.as_bool().ok_or_else(|| {
+                Error::InvalidArgument("Docusaurus trailingSlash must be a boolean".into())
+            })
+        })
+        .transpose()?;
     let docs_base = field(&options, "routeBasePath", "docs")?;
     if docs_base.starts_with("//") {
         return Err(Error::InvalidArgument(
@@ -195,7 +203,16 @@ pub(super) fn read(
                 .cloned()
                 .unwrap_or_else(|| route(source))
         });
-        urls.add(&format!("{docs_base}{slug}"), target)?;
+        let permalink = format!("{docs_base}{slug}");
+        urls.add(&permalink, target)?;
+        // An unspecified policy can produce different browser-relative URLs
+        // after host redirects. Require agreement instead of guessing a host.
+        if trailing_slash != Some(true) {
+            urls.add_page(source, permalink.trim_end_matches('/'))?;
+        }
+        if trailing_slash != Some(false) {
+            urls.add_page(source, &format!("{}/", permalink.trim_end_matches('/')))?;
+        }
     }
     for (source, slug) in pages.explicit_routes() {
         urls.add(

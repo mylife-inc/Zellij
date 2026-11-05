@@ -1805,3 +1805,20 @@ All 31 targeted local import tests pass after the correction, alongside the
 prior converter/alias checks (131 distinct Rust tests total). Full final-head
 CI, including the Windows rerun, is still required before merge. This is a
 code defect correction, not a retry of an unexplained CI failure.
+
+
+### 2026-11-05 — relative website links (source `d141846`)
+
+Relative document URLs now use the original page URL directory for supported
+MkDocs and Docusaurus routing. Explicit Markdown files and regular local assets
+keep their prior semantics; unknown slash policies, omitted/ambiguous URLs and
+conflicting extensionless filename guesses are reported unchanged. No new asset
+search root or source execution is introduced. Unsafe paths fail before writes.
+See the conversion reference and ZELLIJ_CONTEXT.md for compatibility details.
+
+Local verification: 132 Rust tests, warnings-denied Clippy, formatting,
+actionlint, deep/strict docs and both CLI-to-engine fixtures passed. Three-OS
+native tests and actual container HTML-export acceptance are CI gates, pending
+for this source. PR #75's all-16-check result and merge are recorded in the
+context separately; they do not validate the new source. The full CLI design
+remains incomplete; see zel-cli-status-2026-11-05.md.

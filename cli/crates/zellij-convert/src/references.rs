@@ -215,16 +215,15 @@ impl Resolver<'_> {
                 self.report(source, url, "root-relative source URLs cannot be mapped without the source deployment configuration");
                 return Ok(url.to_owned());
             }
-            let Some(relative) = resolve(source.parent().unwrap_or(Utf8Path::new("")), path) else {
-                return Err(unsafe_path(
-                    Utf8Path::new(path),
-                    "reference escapes the documentation root or is not a portable UTF-8 path",
-                ));
-            };
-            if !image && let Some(route) = self.routes.get(&relative) {
+            let relative = resolve(source.parent().unwrap_or(Utf8Path::new("")), path);
+            if !image && let Some(route) = relative.as_ref().and_then(|p| self.routes.get(p)) {
                 return Ok(format!("{}{suffix}", encode_path(route)));
             }
-            if !image && relative.extension().is_none() {
+            let mut routes = BTreeSet::new();
+            if !image
+                && let Some(relative) = &relative
+                && relative.extension().is_none()
+            {
                 // A unique extensionless document or directory index is safe;
                 // competing candidates are reported instead of guessed.
                 let candidates = [
@@ -235,17 +234,62 @@ impl Resolver<'_> {
                     relative.join("index.mdx"),
                     relative.join("index.markdown"),
                 ];
-                let routes: BTreeSet<_> = candidates
+                routes = candidates
                     .iter()
                     .filter_map(|p| self.routes.get(p))
                     .collect();
-                if routes.len() == 1 {
-                    return Ok(format!("{}{suffix}", encode_path(routes.first().unwrap())));
+            }
+            // Exact local files (including HTML downloads) retain their source
+            // semantics. URL lookup is a fallback, never a new asset root.
+            let local_file = relative
+                .as_ref()
+                .filter(|p| !p.as_str().is_empty())
+                .map(|p| contained_path(&self.tree.root, p))
+                .transpose()?
+                .is_some_and(|p| p.is_file());
+            let markdown_file = decode(path).is_some_and(|path| {
+                Utf8Path::new(&path).extension().is_some_and(|extension| {
+                    ["md", "mdx", "markdown"]
+                        .iter()
+                        .any(|known| extension.eq_ignore_ascii_case(known))
+                })
+            });
+            if !local_file
+                && !markdown_file
+                && let Some(urls) = self.source_urls
+                && let Some(target) = urls.relative_document(source, path)?
+            {
+                use crate::source_urls::DocumentMatch;
+                match target {
+                    DocumentMatch::Found(target) if !image => {
+                        if routes.iter().any(|route| route.as_str() != target) {
+                            self.report(source, url, "relative URL and extensionless file lookup select different documents; use an explicit Markdown file or root-relative website URL");
+                            return Ok(url.to_owned());
+                        }
+                        return Ok(format!("{}{suffix}", encode_path(target)));
+                    }
+                    _ => {
+                        self.report(source, url, if image {
+                            "relative website URL identifies a document, not an image asset"
+                        } else {
+                            "relative source website URL is ambiguous, its document was not imported, or its destination depends on an unspecified trailingSlash setting"
+                        });
+                    }
                 }
-                if routes.len() > 1 {
-                    self.report(source, url, "ambiguous document target");
-                    return Ok(url.to_owned());
-                }
+                return Ok(url.to_owned());
+            }
+            let Some(relative) = relative else {
+                return Err(unsafe_path(
+                    Utf8Path::new(path),
+                    "reference escapes the documentation root or is not a portable UTF-8 path",
+                ));
+            };
+            if routes.len() == 1 {
+                return Ok(format!("{}{suffix}", encode_path(routes.first().unwrap())));
+            }
+            if routes.len() > 1 {
+                self.report(source, url, "ambiguous document target");
+                return Ok(url.to_owned());
             }
             (self.tree.root.clone(), relative, "docs")
         };

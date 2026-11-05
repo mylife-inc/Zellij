@@ -55,8 +55,11 @@ Duplicate or unsafe routes fail before writes. Source styling, generated-index
 images/keywords and custom/plugin routing still need review. Supported
 root-relative and same-origin website links now map through the source's
 deployment prefix to the actual Zellij routes. MkDocs directory/HTML URLs and
-Docusaurus literal URL settings are supported; computed, versioned and localized
-source routing still require review. See [the conversion reference](/cli/convert) for
+Docusaurus literal URL settings are supported. Relative document URLs resolve
+from the original page URL; ambiguous slash policies or conflicting filename
+guesses are reported. Explicit Markdown file links and local asset copying keep
+their existing semantics. Computed, versioned and localized source routing still
+require review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
 These metadata improvements are newer than the published rc.1 executable.
 

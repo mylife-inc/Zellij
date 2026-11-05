@@ -1,6 +1,7 @@
 //! Source website addresses are lookup keys, never arbitrary filesystem roots.
 use std::collections::BTreeMap;
 
+use camino::{Utf8Path, Utf8PathBuf};
 use unicode_normalization::UnicodeNormalization;
 use url::Url;
 use zellij_core::{Error, Result};
@@ -68,6 +69,14 @@ pub(crate) struct SourceUrls {
     // None reserves a known omitted/ambiguous document URL, preventing it from
     // being copied as an asset or silently redirected to another document.
     documents: BTreeMap<String, Option<String>>,
+    // URL directories of each source page, not its filesystem parent. More
+    // than one means that hosting/trailing-slash behavior is unspecified.
+    directories: BTreeMap<Utf8PathBuf, Vec<String>>,
+}
+
+pub(crate) enum DocumentMatch<'a> {
+    Found(&'a str),
+    Unmapped,
 }
 
 impl SourceUrls {
@@ -87,6 +96,7 @@ impl SourceUrls {
             base: path_key(base)?.trim_end_matches('/').to_owned(),
             origin,
             documents: BTreeMap::new(),
+            directories: BTreeMap::new(),
         })
     }
 
@@ -116,6 +126,53 @@ impl SourceUrls {
             })
             .or_insert(target);
         Ok(())
+    }
+
+    /// Register a decoded source page URL, retaining the significant trailing
+    /// slash. Call more than once when the source's slash policy is unknown.
+    pub fn add_page(&mut self, source: &Utf8Path, relative: &str) -> Result<()> {
+        let path = format!("{}/{}", self.base, relative.trim_start_matches('/'));
+        let key = path_key(&encode_path(&path))?;
+        let directory = if path.ends_with('/') {
+            key.trim_end_matches('/').to_owned()
+        } else {
+            key.rsplit_once('/').unwrap().0.to_owned()
+        };
+        let directories = self.directories.entry(source.to_owned()).or_default();
+        if !directories.contains(&directory) {
+            directories.push(directory);
+        }
+        Ok(())
+    }
+
+    /// Resolve only known document URLs. Never interpret the result as a file
+    /// path: ordinary relative asset references keep their source semantics.
+    pub fn relative_document(
+        &self,
+        source: &Utf8Path,
+        value: &str,
+    ) -> Result<Option<DocumentMatch<'_>>> {
+        let Some(directories) = self.directories.get(source) else {
+            return Ok(None);
+        };
+        let targets = directories
+            .iter()
+            .map(|directory| {
+                let path = path_key(&format!("{}/{value}", encode_path(directory)))?;
+                Ok(self.documents.get(&path))
+            })
+            .collect::<Result<Vec<_>>>()?;
+        if targets.iter().all(Option::is_none) {
+            return Ok(None);
+        }
+        // A match for only one possible slash policy is not evidence that
+        // the other policy was never used. Leave such links for review.
+        if let Some(Some(Some(target))) = targets.first()
+            && targets.iter().all(|candidate| *candidate == targets[0])
+        {
+            return Ok(Some(DocumentMatch::Found(target)));
+        }
+        Ok(Some(DocumentMatch::Unmapped))
     }
 
     /// Full URLs are recognized only for the configured origin. Nothing is fetched.

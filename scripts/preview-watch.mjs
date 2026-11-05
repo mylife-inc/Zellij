@@ -20,6 +20,13 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
     await rm(extra, { force: true });
     await rm(path.join(source, 'zel.yaml'), { force: true });
     const server = await start(['view', source, '--out', output, '--port', '0', '--no-open', '--watch']);
+    // start() waits for the serving URL. The subsequent watch announcement
+    // can arrive in a later pipe chunk, especially through the Windows relay.
+    await until(() => server.stdout.includes('Watching content and configuration') || server.exit,
+      'watch readiness announcement').catch(error => {
+      throw new Error(`Watch startup failed:\n${server.stdout}\n${server.stderr}`, { cause: error });
+    });
+    assert(!server.exit, `Watcher exited during startup:\n${server.stdout}\n${server.stderr}`);
     assert(server.stdout.includes('Watching content and configuration'));
     const status = async () => {
       const response = await fetch(`${server.url}_zellij/preview.json`);

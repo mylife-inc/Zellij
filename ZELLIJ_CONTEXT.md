@@ -18,12 +18,15 @@ after all 16 final-head checks passed; both post-merge workflows passed. It adds
 explicit Docusaurus slugs, fixes encoded Next page lookup/active navigation,
 and allows selected runtimes the existing twelve-second discovery budget.
 PR #74 merged import asset controls and optional `convert --validate` as
-`74abf77`; all 16 PR checks and both post-merge workflows passed. Current source
-`8f46bd4` maps supported MkDocs/Docusaurus website URLs and makes CLI dispatch
-exhaustive; `74bacea` fixes Windows MkDocs path normalization found by CI. Local
-131 Rust tests, Clippy, formatting, deep/strict docs and both
-CLI-to-engine fixtures pass; hosted/native CI and merge are pending for this
-new work. Every registered command family has a handler, but the full design
+`74abf77`; all 16 PR checks and both post-merge workflows passed. PR #75 merged
+website URL mapping and exhaustive CLI dispatch as `2c5ac7c`, after all 16
+final-head checks passed, including the Windows correction in `74bacea`.
+Its base-image post-merge workflow passed; main CI later exposed a Windows
+watch-readiness assertion race, corrected in `a1003bd`. Current source `d141846` adds relative website document URLs using
+source page locations, explicit slash policies and conservative ambiguity
+reports. Local 132 Rust tests, Clippy, formatting, deep/strict docs and both
+CLI-to-engine fixtures pass; final-head hosted/native CI and merge are pending.
+Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
 rc.2 release proposal awaits explicit publication approval and predates these
@@ -4708,3 +4711,68 @@ All 31 targeted local import tests pass after the correction, alongside the
 prior converter/alias checks (131 distinct Rust tests total). Full final-head
 CI, including the Windows rerun, is still required before merge. This is a
 code defect correction, not a retry of an unexplained CI failure.
+
+
+### 2026-11-05 — relative website document links
+
+PR #75 merged as `2c5ac7caae98af6bf4ec552c467d2614904ef1fe` after all 16
+checks passed in [42001094217](https://github.com/mylife-inc/Zellij/actions/runs/42001094217)
+on final head `bb2527a5f50b3b9ecd870c5bb5e3a9f9c20962b1`. Tested and merged
+tree: `185ce605b71138a58d700b8e7a6c9e9f1850f77c`. This closes the preceding
+Windows/final-PR pending status. Base-image post-merge run `42005279024` passed;
+main `42005279080` was still running at this refresh.
+
+Source `d141846` adds relative website document URL lookup to both importers.
+The base is the original page URL directory, including MkDocs directory/HTML
+style, Docusaurus slugs and literal `trailingSlash` settings. Missing Docusaurus
+slash policy requires agreement across both possibilities. Known omitted or
+ambiguous destinations, image references to documents, and conflicts between
+website targets and extensionless filename inference are reported unchanged.
+Ordinary Markdown file links retain priority, including missing/omitted files;
+existing regular assets (including HTML downloads) retain copy/skip semantics.
+Website lookup maps known documents only and never creates a new asset root.
+Source paths still pass containment/symlink checks; invalid input fails before
+writes, and dry runs remain inert. Query/fragment text and code examples survive.
+
+Compatibility: an extensionless link previously guessed from filenames can now
+be reported when its URL interpretation is ambiguous. Use an explicit Markdown
+file link or root-relative website URL to state its destination. The original
+shared reference fixture now declares `trailingSlash: true`; a new fixture
+asserts reporting when that policy is missing. This is an intentional contract
+correction, not removal of the existing file-link acceptance assertions.
+
+Local verification passed: **132 Rust tests** (60 converter unit tests and 72
+CLI import tests), warnings-denied workspace Clippy, formatting, actionlint,
+deep/strict documentation (55 routes, 23 examples), and both actual CLI-to-engine
+MDX/rendering fixtures. Eight new native regressions cover URL/file distinctions,
+category links, Unicode, omissions, asset controls, ambiguity and unsafe inputs.
+CI includes them on Linux/macOS/Windows; the real-container export fixture also
+asserts a relative source link in generated HTML. Those final-head CI gates
+remain required before merge. No local Docker daemon or browser was used.
+
+Primary behavior references: MkDocs structure/pages.py and configuration docs;
+Docusaurus Markdown links and trailingSlash docs, linked in the local reference.
+Relative website assets, HTML/JSX attributes, computed/custom/versioned routing
+remain review tasks. All command families still have handlers, but the wider
+provider/format/interactive specification remains incomplete. Public candidate
+`v0.2.0-rc.1` is unchanged; no rc.2 publication or production Netlify migration
+was requested. The Netlify hosting-comment issue remains with support.
+
+
+#### Windows preview harness follow-up — 2026-11-05
+
+PR #75 post-merge main run `42005279080` failed the Windows native preview
+step in job `127170334382`. HTTP serving, Chromium watch acceptance and the
+Windows import tests had passed. The WebKit watch iteration then asserted that
+stdout already contained “Watching content and configuration” immediately after
+start() observed “Serving at…”. The CLI emits those lines separately, and the
+Windows console helper relays stdout asynchronously; a single pipe chunk is
+not a guarantee that both messages have arrived. The assertion failed before
+browser startup/tracing, so the original log had no browser trace artifact.
+
+Source `a1003bd` uses the harness's bounded wait for the watch announcement,
+retains the assertion, detects early process exit, and includes captured stdout
+and stderr on startup failure. No product timing or watcher behavior is changed,
+and no arbitrary sleep/retry or acceptance skip is added. Node syntax and diff
+checks pass. Real Windows/browser execution remains CI-only. The original
+failed post-merge run is retained; new final-head CI must verify this fix.

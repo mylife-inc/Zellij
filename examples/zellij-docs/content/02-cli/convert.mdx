@@ -291,8 +291,8 @@ Markdown links to converted documents become their Zellij routes. For example,
 `02-Setup/APIReference.md#install` becomes
 `/guide/setup/api-reference#install`. Nested paths, directory indexes, URL-encoded
 filenames, query strings, images and reference-style links are supported. Code
-examples are left alone. Extensionless links resolve only when there is one
-matching converted document.
+examples are left alone. Extensionless file lookup requires one matching
+converted document and must not conflict with a recognized source website URL.
 
 Referenced local files are copied byte-for-byte into `assets/imported/docs/`,
 keeping their source directory structure. Docusaurus also supports Markdown
@@ -329,6 +329,26 @@ explicit slugs, and index/README/folder-name conventions. Explicit generated
 category slugs are recognized too. The target is the actual emitted Zellij
 route, which may differ from the original filename or public URL.
 
+Relative website links also resolve from the original page's URL directory.
+For example, from a MkDocs page at `/manual/nested/topic/`, the link
+`../../index.html#welcome` becomes `/guide#welcome`. With
+`use_directory_urls: false`, that page is at `/manual/nested/topic.html`, so
+the equivalent link is `../index.html#welcome`.
+
+Docusaurus relative document URLs follow the original slug and literal
+`trailingSlash: true` or `false` setting. When that setting is absent, a URL
+must identify the same imported document with both possible slash policies;
+otherwise the converter reports it and leaves it unchanged. Make the intended
+destination explicit with a Markdown file link or a root-relative website URL.
+This also applies when website lookup and extensionless file lookup disagree.
+Existing imports that relied on a guessed extensionless target may now require
+that correction.
+
+Explicit Markdown file links retain file-relative semantics, including links to
+missing or omitted documents. Existing local asset files, including `.html`
+downloads, retain their usual copying policy. Relative website lookup only maps
+known document URLs; it does not introduce a new asset search directory.
+
 Referenced assets under the original deployment prefix use the usual contained
 docs/static roots and copying policy. Docusaurus's existing `/img/...` and
 `@site/static/...` asset references continue to work. Other origins, ports or
@@ -339,13 +359,15 @@ Known omitted documents and ambiguous source URLs are reported and left
 unchanged. Malformed supported configuration and unsafe local paths fail before
 output is written. Computed JavaScript, custom presets/plugins, multiple docs
 instances, custom docs/static directories, localization, versioned sites and
-generated-category URLs without explicit slugs still need review. Relative
-website URLs such as `../install.html`, HTML/JSX attributes and custom routing
-plugins are not newly interpreted; relative Markdown file links retain their
-existing behavior. These improvements are newer than the published rc.1 CLI.
+generated-category URLs without explicit slugs still need review. HTML/JSX
+attributes, relative website assets without a corresponding local file, and
+custom routing plugins are not newly interpreted. These improvements are newer
+than the published rc.1 CLI.
 
 Source behavior follows the upstream [MkDocs URL settings](https://www.mkdocs.org/user-guide/configuration/#use_directory_urls)
-and [Docusaurus document URLs](https://docusaurus.io/docs/create-doc#doc-urls).
+and [Docusaurus document URLs](https://docusaurus.io/docs/create-doc#doc-urls),
+[Markdown links](https://docusaurus.io/docs/markdown-features/links), and
+[trailing slashes](https://docusaurus.io/docs/api/docusaurus-config#trailingSlash).
 
 Copying is the default (`--assets copy`). To import only documents and generated
 configuration, use:
