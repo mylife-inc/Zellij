@@ -22,10 +22,13 @@ PR #74 merged import asset controls and optional `convert --validate` as
 website URL mapping and exhaustive CLI dispatch as `2c5ac7c`, after all 16
 final-head checks passed, including the Windows correction in `74bacea`.
 Its base-image post-merge workflow passed; main CI later exposed a Windows
-watch-readiness assertion race, corrected in `a1003bd`. Current source `d141846` adds relative website document URLs using
-source page locations, explicit slash policies and conservative ambiguity
-reports. Local 132 Rust tests, Clippy, formatting, deep/strict docs and both
-CLI-to-engine fixtures pass; final-head hosted/native CI and merge are pending.
+watch-readiness assertion race, corrected in `a1003bd`. PR #76 merged relative
+website document URLs and that harness fix as `e8f525d`, after all 16 final-head
+checks passed. Its post-merge base-image workflow passed; main CI has 15 passing
+jobs with CLI acceptance still running. Current source `38b9d41` adds declarative
+VitePress import support, including sidebars, source URLs and referenced public
+assets. Local 140 Rust tests, Clippy, formatting, deep/strict docs and all three
+CLI-to-engine import fixtures pass; final-head hosted/native CI and merge are pending.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -4776,3 +4779,51 @@ and stderr on startup failure. No product timing or watcher behavior is changed,
 and no arbitrary sleep/retry or acceptance skip is added. Node syntax and diff
 checks pass. Real Windows/browser execution remains CI-only. The original
 failed post-merge run is retained; new final-head CI must verify this fix.
+
+### 2026-11-05 — PR #76 closure and VitePress import source
+
+PR #76 merged as `e8f525d1e765f0a455de192b200866377f2dd45b` after all 16
+checks passed in [42007978630](https://github.com/mylife-inc/Zellij/actions/runs/42007978630)
+on `903c66d236bd9a48746a6be6070d9446482d2c93`. Merge and tested head share
+tree `1f4e626af5a93b747c1b28471f04e4b57e704eab`. This closes relative website
+links (`d141846`) and the Windows watch-announcement relay race (`a1003bd`).
+Post-merge base-image run `42011273390` passed. Main `42011273809` has 15
+successful jobs, including Windows preview; CLI acceptance is still running.
+
+Source `38b9d41` adds the registered VitePress converter to `detect`,
+`list formats`, `convert`/`cv`, `migrate`/`mig` and `ship`. It reads exactly one
+`.vitepress/config.{js,ts,mjs,mts}`, accepting literal exports or the standard
+`import { defineConfig } from 'vitepress'` wrapper without evaluation. Supports
+contained `srcDir`, title/description, nested and multiple declarative sidebars,
+inherited item bases, linked groups, page metadata, Markdown links, source
+`base`/`cleanUrls` URLs and referenced source/public assets. Multiple sidebars
+become prefix-labelled groups in lexical order; omitted documents are reported,
+and explicit empty/false sidebars stay empty. Absent sidebars derive visible
+Markdown navigation. Absolute HTTP(S) URLs stay external without an origin.
+
+Dynamic config, custom routing/exclusions/locales, dynamic parameter files and
+custom output/cache roots fail before writes. Vue components, top navigation,
+home layouts and custom Markdown extensions remain manual migration work;
+source text/metadata and reports are retained. Public assets use a separate
+`assets/imported/public/` namespace; conflicting source/public root URLs fail
+before writes, including with `--assets skip`. Existing shared preflight retains
+source isolation, symlink/junction rejection, route collisions and inert dry
+runs. This is a documented subset, not complete VitePress fidelity.
+
+Local verification passed: **140 Rust tests** (62 converter unit tests and 78
+import/inspection integration tests), Clippy with warnings denied, formatting,
+actionlint and diff checks; deep/strict docs cover 55 routes and 23 examples.
+The Node-only CLI-to-engine fixture passes for all three formats, checking
+rendered routes, titles, heading/TOC/search anchors, query/fragment links and
+copied bytes under a deployment prefix. Hosted export and three-OS VitePress
+acceptance are added to CI; final-head hosted/native verification and merge
+remain pending. No local Docker or browser/GUI tests were run.
+
+Semantics were checked against VitePress 1.6.4 source and its
+[routing](https://vuejs.github.io/vitepress/v1/guide/routing),
+[sidebar](https://vuejs.github.io/vitepress/v1/reference/default-theme-sidebar),
+[asset](https://vuejs.github.io/vitepress/v1/guide/asset-handling) and
+[config](https://vuejs.github.io/vitepress/v1/reference/site-config) documentation.
+Current vitepress.dev defaults to a newer development version; this milestone
+does not claim that version's full behavior. The published native release
+remains rc.1. Release publication and production Netlify migration are separate.

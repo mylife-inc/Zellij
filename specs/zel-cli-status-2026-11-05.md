@@ -69,3 +69,10 @@ The PR #75 post-merge Windows preview step subsequently failed an immediate
 watch-announcement assertion. Source `a1003bd` waits for the separately relayed
 stdout message, retaining bounded readiness, early-exit checks and the assertion.
 This harness fix joins the relative-link PR and requires new Windows CI evidence.
+
+**PR #76 closure:** relative website links and the Windows watch-readiness fix
+merged as `e8f525d` after all 16 checks passed on `903c66d` in run `42007978630`.
+Post-merge base-image run `42011273390` passed; main `42011273809` has 15 passing
+jobs with CLI acceptance still running. New VitePress source `38b9d41` passes
+140 local Rust tests, Clippy/formatting, deep/strict docs and all three Node
+import-rendering fixtures. Its own hosted/native CI and merge remain pending.

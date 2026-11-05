@@ -1985,3 +1985,15 @@ native tests and actual container HTML-export acceptance are CI gates, pending
 for this source. PR #75's all-16-check result and merge are recorded in the
 context separately; they do not validate the new source. The full CLI design
 remains incomplete; see zel-cli-status-2026-11-05.md.
+
+### 2026-11-05 — declarative VitePress imports
+
+Source `38b9d41` implements the previously planned VitePress converter through
+the existing `detect`/formats/convert/migrate/ship registry. Literal config,
+`srcDir`, nested/multiple sidebars, metadata, source URLs and referenced public
+assets are supported; computed config/custom routing and Vue presentation have
+explicit limits. Local 140 Rust tests and all three Node import-rendering
+fixtures pass. Final-head hosted/native CI and merge remain pending. See the
+latest [audit entry](zellij-audit-2026-10-16.md) for source semantics, limits,
+verification, and PR #76 closure; the [current status](zel-cli-status-2026-11-05.md)
+separates implemented handlers from remaining format/provider scope.
