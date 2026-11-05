@@ -139,6 +139,7 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `<source>` | Required external documentation root |
 | `--out <path>` | Required new or empty configured site root |
 | `--from <format>` | Force the converter instead of detecting |
+| `--assets copy\|skip` | Copy referenced assets by default; skip retains original URLs and reports omissions |
 | `--provider netlify` | Deploy static HTML to an existing site |
 | `--image static\|next` | Publish this image kind; conflicts with `--provider` |
 | `--tag <reference>` | Required with `--image`; exact registry destination |
@@ -149,6 +150,15 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | In-memory conversion and plan only |
+
+The current source accepts `--assets skip` when you intend to manage assets
+separately. It omits referenced asset files without changing their URLs; links
+between imported documents still convert. Those asset references may need repair
+before the site can build or work correctly. Inspect the dry-run report or use
+`convert` first if repairs are needed before delivery. This import-only policy
+is not saved in `zel.yaml`; later `zel publish` uses the files already imported.
+See [asset policy](/cli/convert#document-links-and-assets). The flag is newer than
+the published rc.1 CLI.
 
 ## Image build arguments
 

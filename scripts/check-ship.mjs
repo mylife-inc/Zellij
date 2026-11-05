@@ -48,7 +48,7 @@ fs.writeFileSync('/app/public/build-argument.json', JSON.stringify({label:proces
     const prefix = `/manual-${kind}`;
     const tag = `${registry}/acceptance/ship-${kind}:${suffix}`;
     images.push(tag);
-    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, '--features', kind === 'static' ? 'all' : 'none', '--base-path', prefix, '--site-url', 'https://imported.example', '--no-check', '--build-arg', 'DOCS_BUILD_LABEL=old', '--build-arg', `DOCS_BUILD_LABEL=${buildLabel}`, '--build-arg', 'EMPTY=']);
+    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, ...(kind === 'static' ? ['--assets', 'copy'] : []), '--features', kind === 'static' ? 'all' : 'none', '--base-path', prefix, '--site-url', 'https://imported.example', '--no-check', '--build-arg', 'DOCS_BUILD_LABEL=old', '--build-arg', `DOCS_BUILD_LABEL=${buildLabel}`, '--build-arg', 'EMPTY=']);
     pullPublishedImage(docker, tag);
     const name = `zel-ship-${kind}-${suffix}`;
     containers.push(name);

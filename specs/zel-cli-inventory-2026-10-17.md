@@ -1858,3 +1858,44 @@ runtime/engine Rust tests, Clippy/formatting/docs passed. The conversion export
 step is now verified to be in the CLI job after image/runtime setup; its prior
 placement in the portable matrix caused a missing-image failure in `41971949013`.
 Final-head hosted CI remains required before PR #73 merges.
+
+
+### 2026-11-04 — import asset policy and optional validation
+
+PR #73 merged as `a4b575ddbe35b9a0f4c176526bd1a704e682194d` after all 16
+checks passed in [CI 41972577587](https://github.com/mylife-inc/Zellij/actions/runs/41972577587)
+on final head `208e339234ae336489cb4e46f573c53530a10a95`. Tested/merged tree:
+`02a8c4c6c7eee05e05ab8a1403698d9c3d17e31c`. Both post-merge workflows passed:
+main CI `41975635129` and base image `41975635128`. This closes the preceding
+pending status; earlier failed runs remain recorded above.
+
+Source `ae7c611` exposes the converter library's existing asset-copy policy as
+`--assets copy|skip` on `convert`/`cv`, `migrate`/`mig` and `ship`. Copy remains
+the default. Skip preserves original asset references and reports omissions;
+document links still resolve to imported routes. Path containment, symlink and
+hidden-source protections still apply before writing. Omitted assets may need
+manual placement/reference repair before publishing. The original design's
+`link` policy is not implemented; Clap rejects it before any output is written.
+This import-only policy is not saved as a delivery/build setting.
+
+`convert`/`cv --validate` uses migrate's existing hosted check after writing
+content or site layout. Missing runtimes return exit 4, content-check failures
+return exit 3, and both retain the completed import for review and `zel check`.
+Migrate always validates; accepting the shared flag does not run a second check.
+Dry runs never validate, write, probe runtimes or invoke delivery. This supersedes
+the original design's suggestion to report validation as skipped on an unavailable
+runtime: an explicitly requested check must not report success when it did not run.
+
+Local verification passed: 54 CLI import regressions, 27 CLI unit tests (one
+existing ignored test), 60 converter tests, warnings-denied workspace Clippy,
+formatting, deep/strict docs (55 routes, 23 examples), and both real CLI-to-engine
+conversion fixtures. Unit tests requiring loopback sockets passed outside the
+socket-restricting sandbox. No local Docker daemon or browser was used. CI's
+real export fixture now tests `convert --validate` alongside migrate, and image
+publication acceptance exercises explicit asset copying. Final-head native
+three-OS and hosted CI remain required before merge.
+
+Public release remains `zellij-v0.2.0-rc.1`; these controls are unpublished rc.2
+source. No release, production Netlify deployment or domain change was requested.
+Netlify's hosting-comment hydration defect remains with support. Import source
+URL/plugin fidelity and additional deployment providers remain incomplete.

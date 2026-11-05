@@ -835,6 +835,12 @@ pub(crate) enum ImportLayout {
     Site,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, clap::ValueEnum)]
+pub(crate) enum ImportAssets {
+    Copy,
+    Skip,
+}
+
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ImportArgs {
     pub(crate) source: String,
@@ -847,6 +853,12 @@ pub(crate) struct ImportArgs {
     /// Site writes zel.yaml and content/; content preserves the legacy layout.
     #[arg(long, value_enum, default_value = "content")]
     pub(crate) layout: ImportLayout,
+    /// Copy referenced assets, or skip them and retain their original URLs.
+    #[arg(long, value_enum, default_value = "copy")]
+    pub(crate) assets: ImportAssets,
+    /// Validate after writing; migrate always validates. Dry-run never validates.
+    #[arg(long)]
+    pub(crate) validate: bool,
     /// Convert in memory and report files/warnings without writing or validating.
     #[arg(long)]
     pub(crate) dry_run: bool,
@@ -865,6 +877,9 @@ pub(crate) struct ShipArgs {
     pub(crate) out: String,
     #[arg(long)]
     pub(crate) from: Option<String>,
+    /// Copy referenced assets, or skip them and retain their original URLs.
+    #[arg(long, value_enum, default_value = "copy")]
+    pub(crate) assets: ImportAssets,
     /// Deploy static HTML to an existing Netlify site.
     #[arg(long, required_unless_present = "image", conflicts_with = "image")]
     pub(crate) provider: Option<String>,

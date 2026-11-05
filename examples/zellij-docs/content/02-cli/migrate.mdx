@@ -62,7 +62,14 @@ See [conversion limits](/cli/convert).
 | `--out <path>` | Required new or empty destination outside the source |
 | `--layout content\|site` | Legacy raw content (default) or configured site |
 | `--from <format>` | Force a converter instead of detecting |
+| `--assets copy\|skip` | Copy assets by default; skip retains original URLs and reports omissions |
+| `--validate` | Accepted for parity with `convert`; migration already validates |
 | `--dry-run` | In-memory conversion only; no writes or validation |
+
+The current source supports `--assets skip` for document-only imports. Asset
+references remain unchanged and may need manual repair; document links still
+convert normally. See [asset policy](/cli/convert#document-links-and-assets).
+The asset and optional validation flags are newer than the published rc.1 CLI.
 
 ## See also
 
