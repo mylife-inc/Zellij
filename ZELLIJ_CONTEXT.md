@@ -4885,3 +4885,16 @@ Source semantics were checked against Jekyll 4.4.1's
 for page/collection URLs, publication and scoped defaults. This remains a
 conservative documentation subset. Production documentation deployment,
 Netlify migration and native release publication are separate pending work.
+
+#### Windows ARM64 acceptance follow-up — 2026-11-05
+
+Initial Jekyll PR #78 run `42084376374` failed native ARM64 Windows job
+`127445423055` after the binary built and both PowerShell installers passed.
+The visible error was `EBUSY` deleting the installed executable from the
+harness's disposable directory. The unconditional cleanup could replace an
+earlier assertion error, so the original cause cannot be inferred from that
+log alone. Source `e460f40` preserves both errors with `AggregateError`, includes
+command arguments in failed-command diagnostics, and bounds retries only for
+filesystem cleanup (10 retries with 100 ms linear backoff). No installer or
+acceptance assertion is retried or skipped. Node syntax and diff checks pass;
+new final-head Windows and full CI evidence are required before merge.
