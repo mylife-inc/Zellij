@@ -478,7 +478,14 @@ fn creation_failure_is_not_retried() {
 fn failure_environment_identity_url_and_deadline_are_checked() {
     let temp = tempfile::tempdir().unwrap();
     write(root(&temp), "index.html", "docs");
-    for scenario in ["failure", "environment", "url", "identity", "timeout"] {
+    for scenario in [
+        "failure",
+        "environment",
+        "url",
+        "identity",
+        "timeout",
+        "skipped",
+    ] {
         let server = Server::new(move |r, _| {
             if r.path.ends_with("upload-token") {
                 return ok(json!({"jwt":"jwt"}));
@@ -492,6 +499,7 @@ fn failure_environment_identity_url_and_deadline_are_checked() {
             let mut response = ready(false);
             match scenario {
                 "failure" => response["latest_stage"]["status"] = json!("failure"),
+                "skipped" => response["is_skipped"] = json!(true),
                 "environment" => response["environment"] = json!("production"),
                 "url" => response["url"] = json!("http://secret@evil.invalid/"),
                 "identity" if r.method == "GET" => response["id"] = json!("other"),

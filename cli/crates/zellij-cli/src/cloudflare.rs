@@ -70,6 +70,8 @@ struct Deployment {
     environment: String,
     latest_stage: Stage,
     url: String,
+    #[serde(default)]
+    is_skipped: bool,
 }
 pub(crate) struct Deployed {
     pub id: String,
@@ -328,6 +330,11 @@ impl Client {
         }
         zellij_core::statusln!("  Deploy ID {id}");
         loop {
+            if deployed.is_skipped {
+                return Err(failed(
+                    "Cloudflare skipped this deployment; inspect the project's deployment settings in the dashboard",
+                ));
+            }
             if deployed.id != id
                 || deployed.environment
                     != if target.production {

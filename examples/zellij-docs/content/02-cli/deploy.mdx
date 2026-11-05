@@ -84,7 +84,7 @@ of your local Git branch. Repeated previews update that branch alias and receive
 individual deployment URLs. If the project's production branch is named
 `zel-preview`, preview deployment fails before building; change that project
 setting first. `--prod` selects the production branch returned by project
-preflight. The command waits for the deployment stage to succeed and reports
+preflight. Skipped deployments are reported as failures. The command waits for the deployment stage to succeed and reports
 its HTTPS `pages.dev` URL, with the hosted base path when configured. Project
 settings, access restrictions and concurrent deployments still govern live access.
 
