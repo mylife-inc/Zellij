@@ -130,6 +130,7 @@ fn external(url: &str) -> bool {
 pub(crate) enum AssetSource<'a> {
     Documents,
     Jekyll(&'a BTreeSet<Utf8PathBuf>),
+    Hugo(&'a crate::hugo::Assets),
     Docusaurus(&'a Utf8Path),
     VitePress,
 }
@@ -152,6 +153,20 @@ impl Resolver<'_> {
     ) -> Result<(Utf8PathBuf, Utf8PathBuf, &'static str)> {
         let (root, namespace) = match self.asset_source {
             AssetSource::Documents | AssetSource::Jekyll(_) => (self.tree.root.clone(), "docs"),
+            AssetSource::Hugo(assets) => {
+                let content = assets.website.get(&relative);
+                let static_file = contained_path(&assets.static_root, &relative)?.is_file();
+                if content.is_some() && static_file {
+                    return Err(unsafe_path(
+                        &relative,
+                        "Hugo resource and static file share a website URL; resolve the ambiguity before importing",
+                    ));
+                }
+                if let Some(content) = content {
+                    return Ok((self.tree.root.clone(), content.clone(), "docs"));
+                }
+                (assets.static_root.clone(), "static")
+            }
             AssetSource::Docusaurus(project) => {
                 (contained_path(project, Utf8Path::new("static"))?, "static")
             }
@@ -219,7 +234,7 @@ impl Resolver<'_> {
             if website_asset.is_none()
                 && (matches!(
                     self.asset_source,
-                    AssetSource::Documents | AssetSource::Jekyll(_)
+                    AssetSource::Documents | AssetSource::Jekyll(_) | AssetSource::Hugo(_)
                 ) || !path.starts_with('/'))
             {
                 self.report(source, url, "URL is outside the source deployment prefix");
@@ -233,7 +248,7 @@ impl Resolver<'_> {
         // Docusaurus documents static-folder assets as /img/x and
         // @site/static/img/x. Neither authorizes arbitrary project-root reads.
         let static_path = match self.asset_source {
-            AssetSource::Documents | AssetSource::Jekyll(_) => None,
+            AssetSource::Documents | AssetSource::Jekyll(_) | AssetSource::Hugo(_) => None,
             AssetSource::Docusaurus(_) => path
                 .strip_prefix("@site/static/")
                 .or_else(|| path.strip_prefix('/')),
@@ -354,6 +369,21 @@ impl Resolver<'_> {
             return Ok(url.to_owned());
         }
         let full = contained_path(&root, &relative)?;
+        if let AssetSource::Hugo(assets) = self.asset_source {
+            let eligible = if namespace == "static" {
+                &assets.static_files
+            } else {
+                &assets.content
+            };
+            if !eligible.contains(&relative) {
+                self.report(
+                    source,
+                    url,
+                    "excluded, page-resource or unavailable Hugo asset; not copied",
+                );
+                return Ok(url.to_owned());
+            }
+        }
         if let AssetSource::Jekyll(eligible) = self.asset_source
             && !eligible.contains(&relative)
         {
@@ -516,8 +546,10 @@ pub(crate) fn rewrite(
     };
     let mut occupied = BTreeMap::new();
     for source in documents.keys() {
-        if source.as_str().split('/').any(|part| part.starts_with('.'))
-            || source.file_name().is_some_and(|name| name.starts_with('_'))
+        let output = tree.output_source(source);
+        zellij_core::files::relative_path(output)?;
+        if output.as_str().split('/').any(|part| part.starts_with('.'))
+            || output.file_name().is_some_and(|name| name.starts_with('_'))
         {
             return Err(unsafe_path(
                 source,
@@ -528,7 +560,7 @@ pub(crate) fn rewrite(
             .routes
             .get(source)
             .cloned()
-            .unwrap_or_else(|| route(source));
+            .unwrap_or_else(|| route(tree.output_source(source)));
         if let Some(previous) = occupied.insert(route_key(&target), source) {
             return Err(unsafe_path(
                 source,
@@ -547,7 +579,10 @@ pub(crate) fn rewrite(
         let body = crate::frontmatter::parse(raw, source)?.body;
         let body = demote_material(body);
         let rewritten = resolver.markdown(source, &body)?;
-        let output = Utf8PathBuf::from(format!("01-guide/{}.mdx", slug_for(source)));
+        let output = Utf8PathBuf::from(format!(
+            "01-guide/{}.mdx",
+            slug_for(tree.output_source(source))
+        ));
         if let Some(file) = conversion.files.iter_mut().find(|f| f.path == output) {
             let old_body = crate::frontmatter::parse(&file.body, &file.path)?.body;
             let prefix_len = file.body.len() - old_body.len();

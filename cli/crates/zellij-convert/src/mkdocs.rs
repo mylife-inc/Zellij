@@ -149,6 +149,7 @@ impl Converter for MkDocs {
             .unwrap_or_default();
 
         let mut tree = DocTree {
+            output_sources: Default::default(),
             site_name: parsed
                 .get("site_name")
                 .and_then(Value::as_str)

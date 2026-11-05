@@ -1,6 +1,6 @@
 ---
 title: zel convert
-description: Read a MkDocs, Docusaurus, VitePress or Jekyll tree and write the Zellij equivalent beside it.
+description: Read a MkDocs, Docusaurus, VitePress, Jekyll or Hugo tree and write the Zellij equivalent beside it.
 ---
 
 <Callout type="tip" title="Available">
@@ -128,6 +128,7 @@ zel list formats
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets |
 | Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, output collections, scoped defaults, navigation data, source URLs and eligible assets |
+| Hugo | `hugo.*` or legacy `config.*` in TOML, YAML or JSON | Markdown sections, page bundles, publication rules, source URLs and referenced resources |
 
 Converters are plugins compiled into the binary, so `zel list formats` prints
 what your build can actually read.
@@ -294,9 +295,90 @@ also require a source copy using the documented defaults. This is a Jekyll 4.x
 documentation subset, not a theme or blog migration. Read the report and build
 the result before publishing. It is newer than the published rc.1 executable.
 
+## Hugo imports
+
+```bash title="terminal"
+zel cv ./hugo-site --from hugo --out ./manual --layout site --dry-run
+zel cv ./hugo-site --from hugo --out ./manual --layout site
+```
+
+Pass the directory containing one `hugo.toml`, `hugo.yaml`, `hugo.yml`, or
+`hugo.json` file. Legacy `config.*` names with the same extensions are accepted.
+Configuration and front matter are read as data. Go templates, themes, modules
+and shortcodes are not executed. The source files remain untouched.
+
+The importer reads a contained `contentDir` (default `content`) and one
+`staticDir` (default `static`). Content, static and generated `publishDir`
+(default `public`) must not overlap. It reads the site title, description or
+`params.description`, and `baseURL`. Only `.md` and `.markdown` pages are
+converted. YAML, TOML and JSON front matter are supported; front matter is
+optional. Metadata keys are case-insensitive, and conflicting keys are rejected.
+
+### Sections and page bundles
+
+```text
+hugo.toml
+content/
+  _index.md
+  guide/
+    _index.md
+    introduction.md
+    install/
+      index.md
+      diagram.svg
+static/
+  logo.svg
+```
+
+`_index.md` supplies a home or section page and becomes `index.mdx` in Zellij.
+Links authored against `_index.md` still work. A leaf bundle uses `index.md`;
+other Markdown files inside it are page resources, not standalone pages, and
+are reported rather than published. Root `index.md` and conflicting bundle
+indexes require a source copy with an unambiguous `_index.md` home page.
+
+Navigation is derived from sections and bundles. A section's own page comes
+first within its group. Siblings sort by nonzero `weight` ascending, then date
+descending, then case-folded `linkTitle`/title and source path. Zero or missing
+weights come after weighted entries. Theme-specific ordering and locale-aware
+collation need review. Declared menus require manual migration; they are not
+silently treated as a complete documentation sidebar.
+
+### Visibility, links and assets
+
+Draft, future, expired, headless and unlisted/unrendered pages are excluded.
+The explicit `buildDrafts`, `buildFuture` and `buildExpired` configuration flags
+are honored. Supported page `build`/legacy `_build` rules read `list` and
+`render`; conditional resource publication requires manual migration. Publication
+dates and aliases such as `pubdate` are evaluated at conversion time. This does
+not create ongoing publication scheduling in the converted site.
+
+Dates accept ISO calendar dates, ISO local timestamps interpreted in UTC, and
+RFC3339 timestamps with offsets. A configured time zone other than UTC or custom
+front matter date rules requires normalization in a source copy.
+
+Markdown-file links and supported source website URLs map to Zellij guide
+routes, preserving queries and fragments. Directory URLs, `baseURL` prefixes,
+regular-page `slug`/`url`, and `disablePathToLower` are recognized. Section and
+bundle route overrides, custom permalink patterns and `uglyURLs` require manual
+migration. Source route overrides do not become destination overrides. Redirect
+aliases remain metadata for review; no redirect files are generated.
+
+Referenced content resources and static files are copied to
+`assets/imported/docs/` and `assets/imported/static/`. Hidden content, omitted
+bundle resources and page resources cannot be copied through asset links.
+Conflicting resource/static URLs and unsafe paths fail before output. Assets
+use source-relative paths; template-generated or transformed asset URLs need
+manual migration. `--assets skip` retains asset URLs while still checking paths.
+
+Split/environment configuration, modules/mounts, multilingual or versioned
+content, cascades, menus, content adapters, ignore patterns, alternate outputs,
+and unsupported content formats are outside this subset. Shortcodes remain
+literal text with a report. Read the report and build the result before
+publishing. Hugo support is newer than the published rc.1 executable.
+
 ## Page metadata and document IDs
 
-All four importers preserve an authored YAML `title` and `description` as active
+All five importers preserve an authored `title` and `description` as active
 page metadata. The title falls back to the first document-level H1, then the
 navigation label, then the source filename without its extension. A navigation
 label stays in the sidebar independently of the page title. Original front

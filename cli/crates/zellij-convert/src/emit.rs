@@ -34,7 +34,7 @@ pub(crate) fn slug_for(source: &Utf8PathBuf) -> String {
     without_extension.trim_end_matches('/').to_owned()
 }
 
-fn write_nav(entries: &[Entry], depth: usize, out: &mut String) {
+fn write_nav(tree: &DocTree, entries: &[Entry], depth: usize, out: &mut String) {
     let indent = "  ".repeat(depth + 1);
 
     for entry in entries {
@@ -43,17 +43,20 @@ fn write_nav(entries: &[Entry], depth: usize, out: &mut String) {
                 if let Some(label) = label {
                     out.push_str(&format!(
                         "{indent}- page: {}\n{indent}  label: {}\n",
-                        yaml_string(&slug_for(source)),
+                        yaml_string(&slug_for(tree.output_source(source))),
                         yaml_string(label)
                     ));
                 } else {
-                    out.push_str(&format!("{indent}- {}\n", yaml_string(&slug_for(source))));
+                    out.push_str(&format!(
+                        "{indent}- {}\n",
+                        yaml_string(&slug_for(tree.output_source(source)))
+                    ));
                 }
             }
             Entry::Group { label, items } => {
                 out.push_str(&format!("{indent}- label: {}\n", yaml_string(label)));
                 let mut children = String::new();
-                write_nav(items, depth + 1, &mut children);
+                write_nav(tree, items, depth + 1, &mut children);
                 if children.is_empty() {
                     out.push_str(&format!("{indent}  items: []\n"));
                 } else {
@@ -113,7 +116,7 @@ pub fn emit(
         sidebar.push_str(&format!("description: {}\n", yaml_string(description)));
     }
     let mut navigation = String::new();
-    write_nav(&tree.nav, 0, &mut navigation);
+    write_nav(tree, &tree.nav, 0, &mut navigation);
     if navigation.is_empty() {
         sidebar.push_str("\nnav: []\n");
     } else {
@@ -174,7 +177,10 @@ pub fn emit(
         page.push_str(make_mdx_safe(&demote_material(body)).trim_start_matches('\n'));
 
         conversion.files.push(OutputFile {
-            path: Utf8PathBuf::from(format!("{GUIDE_DIR}/{}.mdx", slug_for(source))),
+            path: Utf8PathBuf::from(format!(
+                "{GUIDE_DIR}/{}.mdx",
+                slug_for(tree.output_source(source))
+            )),
             body: page,
         });
     }
@@ -253,6 +259,7 @@ mod tests {
 
     fn tree() -> DocTree {
         DocTree {
+            output_sources: Default::default(),
             site_name: Some("Acme".into()),
             description: None,
             root: Utf8PathBuf::from("/docs"),

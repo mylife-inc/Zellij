@@ -524,6 +524,7 @@ impl Converter for Docusaurus {
             )?
         };
         let mut tree = DocTree {
+            output_sources: Default::default(),
             site_name,
             description,
             root: root.clone(),

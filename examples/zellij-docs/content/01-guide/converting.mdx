@@ -1,6 +1,6 @@
 ---
 title: Converting existing docs
-description: Bring a MkDocs, Docusaurus, VitePress or Jekyll tree across, and know what does not come with it.
+description: Bring a MkDocs, Docusaurus, VitePress, Jekyll or Hugo tree across, and know what does not come with it.
 ---
 
 ```bash
@@ -27,6 +27,7 @@ the published rc.1 CLI; see [conversion options](/cli/convert).
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative. |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets. |
 | Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, enabled documentation collections, scoped defaults, navigation data, links and eligible assets. |
+| Hugo | `hugo.*` or `config.*` in TOML, YAML or JSON | Markdown sections and page bundles, publication rules, links and referenced resources. |
 
 `zel detect` says which, and how sure it is. A folder with the format's own
 config file is certain; one that merely looks like the default layout is not,
@@ -94,6 +95,21 @@ output and internal directories. Ruby, Liquid, plugins and themes are not run.
 Posts, dated collections, custom routing and theme-specific navigation need
 manual work. See [Jekyll import limits](/cli/convert#jekyll-imports). This
 converter is newer than the published rc.1 executable.
+
+## Hugo sites
+
+```bash title="terminal"
+zel cv ./hugo-site --from hugo --out ./manual --layout site --dry-run
+zel cv ./hugo-site --from hugo --out ./manual --layout site
+```
+
+The importer reads a single configuration file, Markdown sections and page
+bundles, and TOML/YAML/JSON front matter. Section `_index.md` pages become visible
+Zellij index pages; source links keep working. Draft/publication settings control
+which pages are imported, and eligible referenced content/static assets are
+copied. Go templates and shortcodes are not executed. Menus, cascades, modules,
+localization and custom routing require manual migration. See the full
+[Hugo import limits](/cli/convert#hugo-imports). This feature is newer than rc.1.
 
 ## What does not come across
 

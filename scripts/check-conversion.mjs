@@ -46,7 +46,7 @@ const zel = path.resolve(binary);
 const asset = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" /></svg>\n';
 const assetHash = createHash('sha256').update(asset).digest('hex').slice(0, 8);
 const pdf = Buffer.from([0x25, 0x50, 0x44, 0x46, 0, 255, 254]);
-for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll']) {
+for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
   const source = path.join(root, `${format}-source`);
   const destination = path.join(root, `${format}-content`);
   const configured = format === 'docusaurus';
@@ -77,6 +77,11 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll']) {
     await write('docs/_reference/Extra.md', '---\ntitle: Extra reference\n---\n# Reference\n\n[Home](../index.md#welcome)\n\n![Chart](chart.svg)\n');
     await write('docs/_reference/chart.svg', asset);
   }
+  if (format === 'hugo') {
+    await write('hugo.toml', "title='Converted docs'\ncontentDir='docs'\nbaseURL='https://legacy.example.test/manual/'\ndisablePathToLower=true\n");
+    await write('static/static.svg', asset);
+    await write('docs/02-Setup/_index.md', '---\ntitle: Setup overview\nweight: 1\n---\n# Setup\n\n[Home](../_index.md#welcome)\n');
+  }
   const titleId = configured ? '{/* #reference */}' : '{#reference}';
   const installId = configured ? '<!-- #stable-install -->' : '{#stable-install}';
   await write(`docs/02-Setup/APIReference.${configured ? 'mdx' : 'md'}`, `\uFEFF---\r\nid: custom\r\ntitle: Authored reference title\r\ndescription: Authored reference description\r\nsidebar_label: API navigation\r\nslug: /Public/API\r\n...\r\n# Reference ${titleId}\n\n## Install\n\n[Home](../index.md#welcome)\n\n## Install **again** ${installId}\n\nA searchable installation passage.\n\nSetext [home](../index.md#welcome) {#setext}\n------\n\nA searchable setext passage.\n\n## Café {#café}\n\nUnicode passage.\n\n[Self](#stable-install)\n\n[Unicode](#caf%C3%A9)\n`);
@@ -92,13 +97,24 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll']) {
   const absoluteReference = format === 'vitepress' ? `https://legacy.example.test${sourcePageUrl}` : referenceUrl;
   await writeFile(path.join(source, 'docs/index.md'), `\n[Website URL](${sourcePageUrl}?source=website#stable-install)\n\n[Absolute URL](https://legacy.example.test${sourcePageUrl}#reference)\n\n![Website asset](https://legacy.example.test${sourceAssetUrl})\n`, { flag: 'a' });
   if (format === 'vitepress') await writeFile(path.join(source, 'docs/index.md'), '\n![Public asset](/static.svg)\n', { flag: 'a' });
+  if (format === 'hugo') {
+    const homePath = path.join(source, 'docs/index.md');
+    const home = await readFile(homePath, 'utf8');
+    await write('docs/_index.md', home + '\n![Static asset](/manual/static.svg)\n');
+    await rm(homePath);
+    const ref = path.join(source, 'docs/02-Setup/APIReference.md');
+    await writeFile(ref, (await readFile(ref, 'utf8')).replace('slug: /Public/API', 'linkTitle: API navigation').replace('...\r\n', '---\r\n').replaceAll('../index.md', '../_index.md'));
+    const cafe = path.join(source, 'docs/03-Café/index.md');
+    await writeFile(cafe, '---\nweight: 2\n---\n' + await readFile(cafe, 'utf8') + '\n![Bundle](chart.svg)\n');
+    await write('docs/03-Café/chart.svg', asset);
+  }
   execFileSync(zel, [configured && mode === '--export' ? 'migrate' : 'convert', source, '--out', destination, '--from', format, '--layout', configured ? 'site' : 'content', '--assets', 'copy', ...(!configured && mode === '--export' ? ['--validate'] : [])], { stdio: 'inherit' });
   // A non-empty deployment prefix exercises the ordinary Markdown image path.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', { flag: 'a' });
   execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
   const site = await loadSite(new FolderContentSource({ contentDir: content }));
   assert.deepEqual(await deepCheck(site, content), { errors: [], warnings: [] });
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', cafeRoute, ...(configured ? ['/guide/Overview', '/guide/Sections/Setup'] : format === 'jekyll' ? ['/guide/reference/extra'] : []), referenceRoute].sort());
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', cafeRoute, ...(configured ? ['/guide/Overview', '/guide/Sections/Setup'] : format === 'jekyll' ? ['/guide/reference/extra'] : format === 'hugo' ? ['/guide/setup'] : []), referenceRoute].sort());
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({ source: page.body, options: await mdxOptions(), components: mdxComponents(site) });
@@ -136,6 +152,12 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll']) {
     assert(rendered.get(overview.route).includes(`href="${referenceUrl}"`));
     assert(rendered.get('/guide/Overview').includes('href="/guide/Sections/Setup"'));
     assert(indexGuidePage(overview).some(entry => entry.text.includes('Build <docs> {safely}')));
+  } else if (format === 'hugo') {
+    const setup = sidebar.find(node => node.kind === 'group' && node.label === 'Setup overview');
+    assert.deepEqual(setup.children, [{kind:'link',label:'Setup overview',route:'/guide/setup'},{kind:'link',label:'API navigation',route:reference.route}]);
+    assert(rendered.get('/guide/setup').includes('href="/guide#welcome"'));
+    assert(rendered.get(cafeRoute).includes('src="/products/docs/_zellij/assets/imported/docs/03-Caf%C3%A9/chart.svg"'));
+    assert(home.includes('src="/products/docs/_zellij/assets/imported/static/static.svg"'));
   } else {
     assert.deepEqual(sidebar.find(node => node.route === reference.route),
       { kind: 'link', label: 'API navigation', route: reference.route });
@@ -197,6 +219,13 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll']) {
     assert(installed.includes('href="#stable-install"'), 'TOC links to the preserved heading');
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/media/logo.svg'), 'utf8'), asset);
     assert.deepEqual(await readFile(path.join(output, '_zellij/assets/imported/docs/media/Q3 Report.pdf')), pdf);
+    if (format === 'hugo') {
+      const section = await readFile(path.join(output, 'guide/setup.html'), 'utf8');
+      assert(section.includes('<h1>Setup overview</h1>'));
+      assert(section.includes('href="/products/docs/guide#welcome"'));
+      assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/03-Café/chart.svg'), 'utf8'), asset);
+      assert.equal(await readFile(path.join(output, '_zellij/assets/imported/static/static.svg'), 'utf8'), asset);
+    }
     if (format === 'jekyll') {
       const extra = await readFile(path.join(output, 'guide/reference/extra.html'), 'utf8');
       assert(extra.includes('<h1>Extra reference</h1>'));
