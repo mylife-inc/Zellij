@@ -207,7 +207,58 @@ impl Converter for MkDocs {
 
         let documents = crate::read_documents(&tree)?;
         let mut conversion = emit(&tree, |relative| documents.get(relative).cloned())?;
-        crate::references::rewrite(&tree, &documents, None, options, &mut conversion)?;
+        let site_url = parsed
+            .get("site_url")
+            .filter(|value| !value.is_null())
+            .map(|value| {
+                value.as_str().ok_or_else(|| {
+                    zellij_core::Error::InvalidArgument("mkdocs site_url must be a string".into())
+                })
+            })
+            .transpose()?;
+        let mut urls = crate::source_urls::SourceUrls::from_site_url(site_url)?;
+        let directories = parsed
+            .get("use_directory_urls")
+            .map(|value| {
+                value.as_bool().ok_or_else(|| {
+                    zellij_core::Error::InvalidArgument(
+                        "mkdocs use_directory_urls must be a boolean".into(),
+                    )
+                })
+            })
+            .transpose()?
+            .unwrap_or(true)
+            && site_url != Some("");
+        for source in documents.keys().chain(tree.orphans.iter()) {
+            let parent = source.parent().unwrap_or(Utf8Path::new(""));
+            let name = source.file_stem().unwrap();
+            let name = if name == "README" { "index" } else { name };
+            let stem = if parent.as_str().is_empty() {
+                name.to_owned()
+            } else {
+                format!("{parent}/{name}")
+            };
+            let html = if name == "index" || !directories {
+                format!("{stem}.html")
+            } else {
+                format!("{stem}/index.html")
+            };
+            let target = documents
+                .contains_key(source)
+                .then(|| crate::references::route(source));
+            urls.add(&html, target.clone())?;
+            if directories {
+                urls.add(html.strip_suffix("index.html").unwrap(), target)?;
+            }
+        }
+        crate::references::rewrite(
+            &tree,
+            &documents,
+            None,
+            Some(&urls),
+            options,
+            &mut conversion,
+        )?;
 
         if derived {
             conversion.notes.push(

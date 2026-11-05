@@ -18,6 +18,7 @@ pub mod mdx;
 pub mod mkdocs;
 pub mod model;
 mod references;
+mod source_urls;
 
 use camino::{Utf8Path, Utf8PathBuf};
 

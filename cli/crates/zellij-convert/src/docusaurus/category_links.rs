@@ -134,6 +134,12 @@ pub(super) struct Pages {
 }
 
 impl Pages {
+    pub fn explicit_routes(&self) -> impl Iterator<Item = (&Utf8PathBuf, &String)> {
+        self.pages
+            .iter()
+            .filter_map(|(path, page)| page.route.as_ref().map(|route| (path, route)))
+    }
+
     pub fn new(documents: &BTreeMap<Utf8PathBuf, Document>) -> Self {
         // Reserve even excluded/orphan sources, so generated pages cannot take
         // over their routes if the user later adds those documents to the nav.

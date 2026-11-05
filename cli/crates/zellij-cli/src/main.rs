@@ -258,9 +258,10 @@ fn main() {
             ref product_dir,
         })) => new_project(name, product_lang, docs_dir, product_dir),
         Command::Convert(ref options) => imports::convert(options, false),
-        _ => {
-            zellij_core::diagnosticln!("not implemented yet — see specs/zellij-cli-spec.md");
-            std::process::exit(1);
+        // Parsing normalizes these aliases. Keep dispatch exhaustive so a new
+        // command cannot compile while silently falling into a stub handler.
+        Command::Shortcut(_) | Command::Netlify(_) => {
+            unreachable!("CLI aliases are normalized before dispatch")
         }
     };
 
