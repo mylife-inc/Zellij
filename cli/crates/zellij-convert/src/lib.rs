@@ -13,6 +13,7 @@ pub mod emit;
 mod fences;
 mod frontmatter;
 mod headings;
+pub mod jekyll;
 pub mod material;
 pub mod mdx;
 pub mod mkdocs;

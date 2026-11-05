@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus and declarative VitePress. Sphinx and Jekyll/Hugo converters remain planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress and YAML Jekyll documentation. Sphinx and Hugo converters remain planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -39,6 +39,15 @@ source/public assets. Dynamic config, rewrites, locales, exclusion patterns and
 custom output/cache paths are rejected before writes. Vue, home layout and
 custom Markdown presentation remain manual migration tasks. VitePress is new in
 source; published rc.1 does not include it.
+
+Jekyll imports accept YAML configuration, front-matter Markdown pages, enabled
+documentation collections, literal scoped defaults and supported navigation
+arrays. Links use source permalinks and deployment prefixes; eligible referenced
+static assets respect exclusions, internal data/templates and generated output.
+Liquid/Ruby/theme code is not executed. TOML, blog posts, dated collections,
+globs, custom source routing and theme-specific navigation remain limited or
+unsupported. See the conversion reference for exact accepted forms. Hugo is
+still planned; this milestone does not implement it.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
 is newer and has not been published as rc.2. The old rc.2 publication proposal

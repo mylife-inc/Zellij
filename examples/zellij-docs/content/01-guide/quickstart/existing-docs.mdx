@@ -1,6 +1,6 @@
 ---
 title: Lab 2 — Documentation you already have
-description: MkDocs, Docusaurus, VitePress or loose Markdown, brought across without losing the original.
+description: MkDocs, Docusaurus, VitePress, Jekyll or loose Markdown, brought across without losing the original.
 ---
 
 **You have:** documentation, in some tool or none. **You will have:** the same
@@ -13,7 +13,7 @@ so a conversion you dislike costs you the folder you delete.
 
 <Callout type="info" title="What runs today">
 The current source supports all six steps, including Netlify deployment.
-VitePress import and the newest conversion improvements are newer than the
+VitePress/Jekyll imports and the newest conversion improvements are newer than the
 published rc.1 executable; `zel list formats` shows what your binary supports.
 </Callout>
 
@@ -48,6 +48,7 @@ zel list formats
 
 ```
 docusaurus     Docusaurus — sidebars.js and a docs folder
+jekyll         Jekyll — YAML configuration, Markdown pages and collections
 mkdocs         MkDocs — mkdocs.yml with a nav tree
 vitepress      VitePress — declarative .vitepress/config and Markdown
 ```
@@ -233,6 +234,7 @@ production deployment.
 | MkDocs | `nav` tree, `site_name`, `site_description`, all pages | Theme, plugins, macros |
 | Docusaurus | Declarative `sidebars.js`, categories, nesting, all docs | `docusaurus.config.js` theming, React components in MDX |
 | VitePress | Literal config, declared sidebars, page metadata, Markdown links and referenced assets | Vue components, home layout, computed config and custom routing |
+| Jekyll | YAML config, Markdown pages, output collections, supported navigation/defaults, links and assets | Liquid, themes, plugins, blog posts and custom routing |
 | Loose Markdown | Nothing automatic — use the AI route | — |
 
 In every case the landing page is yours to build. That is not a gap in the
