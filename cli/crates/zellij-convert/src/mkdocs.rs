@@ -189,7 +189,16 @@ impl Converter for MkDocs {
             let Ok(relative) = path.strip_prefix(&root) else {
                 continue;
             };
-            let relative = relative.to_owned();
+            // Navigation, emitted paths and URL lookup use portable '/'
+            // separators. Native Windows walk paths must not be reported as
+            // distinct orphans or generate backslash-containing output names.
+            let relative = Utf8PathBuf::from(
+                relative
+                    .components()
+                    .map(|part| part.as_str())
+                    .collect::<Vec<_>>()
+                    .join("/"),
+            );
 
             if listed.contains(&relative.as_str().to_owned()) {
                 continue;

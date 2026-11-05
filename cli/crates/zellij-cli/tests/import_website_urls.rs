@@ -71,6 +71,15 @@ fn mkdocs_directory_and_html_urls_preserve_prefix_origin_suffixes_and_asset_byte
         write(&source, "docs/media/logo.svg", "<svg/>");
         write(&source, "docs/media/report.pdf", [0, 255, 3, 4]);
         let output = convert(&source, &out, &[], 0);
+        let report = String::from_utf8_lossy(&output.stdout);
+        assert!(
+            !report.contains("03-Start.md: on disk but absent"),
+            "{report}"
+        );
+        assert!(
+            !report.contains("README.md: on disk but absent"),
+            "{report}"
+        );
         let page = text(&out, "01-guide/index.mdx");
         for expected in [
             "[Start](</guide/guides/start?v=2#install>)",
@@ -93,6 +102,30 @@ fn mkdocs_directory_and_html_urls_preserve_prefix_origin_suffixes_and_asset_byte
         );
         assert_eq!(text(&source, "docs/index.md"), index);
     }
+}
+
+#[test]
+fn mkdocs_folder_derived_navigation_keeps_nested_paths_portable() {
+    let temp = tempfile::tempdir().unwrap();
+    let source = temp.path().join("source");
+    let out = temp.path().join("out");
+    write(&source, "mkdocs.yml", "site_name: Derived\n");
+    write(
+        &source,
+        "docs/index.md",
+        "# Home\n\n[Deep](/01-Guides/Deep/02-Start/)\n",
+    );
+    write(
+        &source,
+        "docs/01-Guides/Deep/02-Start.md",
+        "# Start\n\n[Home](../../index.md)\n",
+    );
+    convert(&source, &out, &[], 0);
+    let sidebar = text(&out, "01-guide/_sidebar.yaml");
+    assert!(sidebar.contains("01-Guides/Deep/02-Start"), "{sidebar}");
+    assert!(!sidebar.contains('\\'), "{sidebar}");
+    assert!(text(&out, "01-guide/index.mdx").contains("[Deep](</guide/guides/deep/start>)"));
+    assert!(text(&out, "01-guide/01-Guides/Deep/02-Start.mdx").contains("[Home](</guide>)"));
 }
 
 #[test]
