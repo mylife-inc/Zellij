@@ -170,20 +170,25 @@ neither can drift.
 | Command | Does |
 | --- | --- |
 | `zel detect <dir>` | Says what tool a documentation folder was written for, and how sure it is. Changes nothing. |
-| `zel convert <src> --out <dir>` | Converts into a new folder. `--from` to force a format, `--dry-run` to see the plan, `--assets copy\|link\|skip`, `--validate` to check the result. |
+| `zel convert <src> --out <dir>` | Converts into a new folder. `--from` to force a format, `--dry-run` to see the plan, `--assets copy\|skip`, `--validate` to check the result. |
 
-`--validate` is opt-in because it is the one part of conversion that needs a
-container. Asked for and available, the result is checked against the real
-schemas. Asked for and unavailable, the conversion still completes and the tool
-says what was skipped and why:
+Implemented in current source (newer than rc.1): `--assets copy` is the default;
+`skip` retains original asset URLs and reports omissions while document links
+still convert. Source-path protections remain active. The originally proposed
+`link` policy remains unimplemented and is rejected by the parser. These asset
+controls also apply to `migrate` and `ship`.
 
-    ✓ Converted 47 pages into ./content
-    ! Skipped validation: no container runtime found.
-      Install Docker and run `zel check ./content` to validate.
+`--validate` is opt-in because hosted validation needs a running container
+runtime and compatible engine. After conversion, it performs the same content
+check as `migrate`, for either `--layout content` or `--layout site`. A missing
+runtime returns exit 4 and a content-check failure returns exit 3. The completed
+conversion is retained, with guidance to correct the issue and run `zel check`
+on that destination. Dry runs never validate or probe runtimes.
 
-Not a failure. Someone converting documentation on a machine without Docker has
-still got their documentation converted, and telling them otherwise would be
-punishing them for a dependency they did not choose to need.
+This supersedes the original proposal to return success after skipping an
+explicitly requested check. Conversion without `--validate` still needs no
+runtime. Neither validation nor a successful build establishes complete import
+fidelity; review unmapped features and navigation before publishing.
 
 Detection reports a confidence, and an ambiguous tree asks rather than guesses.
 When nothing is recognised the command does **not** attempt a conversion: it
