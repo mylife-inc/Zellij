@@ -19,6 +19,7 @@ pub mod mkdocs;
 pub mod model;
 mod references;
 mod source_urls;
+pub mod vitepress;
 
 use camino::{Utf8Path, Utf8PathBuf};
 

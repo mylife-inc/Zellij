@@ -1,6 +1,6 @@
 ---
 title: Lab 2 — Documentation you already have
-description: MkDocs, Docusaurus or loose Markdown, brought across without losing the original.
+description: MkDocs, Docusaurus, VitePress or loose Markdown, brought across without losing the original.
 ---
 
 **You have:** documentation, in some tool or none. **You will have:** the same
@@ -12,9 +12,9 @@ The original is never modified. Everything below writes into a **new folder**,
 so a conversion you dislike costs you the folder you delete.
 
 <Callout type="info" title="What runs today">
-Steps 1 to 5 all run. The only gap is step 6: `zel deploy` is still landing, so
-build with `zel build` and upload the folder with your host's own tool — the
-step says how.
+The current source supports all six steps, including Netlify deployment.
+VitePress import and the newest conversion improvements are newer than the
+published rc.1 executable; `zel list formats` shows what your binary supports.
 </Callout>
 
 <Steps>
@@ -49,6 +49,7 @@ zel list formats
 ```
 docusaurus     Docusaurus — sidebars.js and a docs folder
 mkdocs         MkDocs — mkdocs.yml with a nav tree
+vitepress      VitePress — declarative .vitepress/config and Markdown
 ```
 
 Converters are compiled into the binary, so that is what *your* build can read.
@@ -217,7 +218,9 @@ zel image build ./content --tag acme-docs:v1
 zel image run acme-docs:v1
 ```
 
-`zel deploy netlify ./content` will collapse the first pair once it lands.
+`zel deploy netlify ./content` builds and deploys in one command. It creates a
+draft by default; see [Netlify deployment](/cli/deploy) for credentials and
+production deployment.
 
 </Step>
 
@@ -229,6 +232,7 @@ zel image run acme-docs:v1
 | --- | --- | --- |
 | MkDocs | `nav` tree, `site_name`, `site_description`, all pages | Theme, plugins, macros |
 | Docusaurus | Declarative `sidebars.js`, categories, nesting, all docs | `docusaurus.config.js` theming, React components in MDX |
+| VitePress | Literal config, declared sidebars, page metadata, Markdown links and referenced assets | Vue components, home layout, computed config and custom routing |
 | Loose Markdown | Nothing automatic — use the AI route | — |
 
 In every case the landing page is yours to build. That is not a gap in the

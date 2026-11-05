@@ -116,7 +116,17 @@ impl SourceUrls {
     /// Relative is a decoded source permalink, not a source file to be read.
     pub fn add(&mut self, relative: &str, target: Option<String>) -> Result<()> {
         let path = format!("{}/{}", self.base, relative.trim_start_matches('/'));
-        let key = path_key(&encode_path(&path))?;
+        self.add_absolute(&path, target)
+    }
+
+    /// Some source compilers prepend base to authored root-relative links.
+    /// Register those authored addresses separately from deployed addresses.
+    pub fn add_unprefixed(&mut self, relative: &str, target: Option<String>) -> Result<()> {
+        self.add_absolute(&format!("/{}", relative.trim_start_matches('/')), target)
+    }
+
+    fn add_absolute(&mut self, path: &str, target: Option<String>) -> Result<()> {
+        let key = path_key(&encode_path(path))?;
         self.documents
             .entry(key)
             .and_modify(|old| {

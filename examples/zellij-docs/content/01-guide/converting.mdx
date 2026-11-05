@@ -1,6 +1,6 @@
 ---
 title: Converting existing docs
-description: Bring a MkDocs or Docusaurus tree across, and know what does not come with it.
+description: Bring a MkDocs, Docusaurus or VitePress tree across, and know what does not come with it.
 ---
 
 ```bash
@@ -25,6 +25,7 @@ the published rc.1 CLI; see [conversion options](/cli/convert).
 | --- | --- | --- |
 | MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir`. |
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative. |
+| VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets. |
 
 `zel detect` says which, and how sure it is. A folder with the format's own
 config file is certain; one that merely looks like the default layout is not,
@@ -62,6 +63,21 @@ their existing semantics. Computed, versioned and localized source routing still
 require review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
 These metadata improvements are newer than the published rc.1 executable.
+
+## VitePress sites
+
+Pass the folder containing `.vitepress/`; the importer follows literal `srcDir`
+and sidebar settings. It accepts direct object exports and the standard
+`defineConfig({...})` wrapper without executing source code. Multiple sidebars
+become groups in one guide. A missing sidebar derives navigation from visible
+Markdown; an explicitly empty sidebar stays empty. Only declared pages are
+imported when a sidebar exists, and omitted pages are reported.
+
+File links, supported `base`/`cleanUrls` website links, and referenced source or
+`public/` assets are mapped. Vue components, home layout and custom Markdown
+presentation need manual work. Dynamic configuration and custom routing or
+exclusion settings fail before writes. See [VitePress import limits](/cli/convert#vitepress-imports)
+before converting. This converter is newer than the published rc.1 executable.
 
 ## What does not come across
 

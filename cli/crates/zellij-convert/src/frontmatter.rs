@@ -51,6 +51,10 @@ pub(crate) fn parse<'a>(source: &'a str, path: &'a Utf8Path) -> Result<Frontmatt
 }
 
 impl Frontmatter<'_> {
+    pub fn contains(&self, field: &str) -> bool {
+        self.data.get(field).is_some()
+    }
+
     pub fn number(&self, field: &str) -> Result<Option<f64>> {
         match self.data.get(field) {
             None | Some(Value::Null) => Ok(None),
