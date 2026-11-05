@@ -1813,3 +1813,27 @@ category styling and embedded DocCardList still require review.
 Local validation: 111 Rust tests, Clippy, formatting, deep/strict docs and both
 CLI-to-engine fixtures passed. Native three-OS coverage and full exported-page
 acceptance are CI gates, pending for this source. No public release was created.
+
+
+### 2026-11-04 — explicit imported URL slugs
+
+PR #72 category pages merged as `ab768ea` after all 16 checks on `1d4e5b6`
+passed (`41963452333`), with equal tested/merged trees. Its post-merge base image
+passed; main CI hit a Docker info timeout before hosted acceptance and is still
+running its Windows portable job. Retry/final status must be refreshed.
+
+Source `6e9f942` preserves explicit Docusaurus document/category slugs as `/guide`
+route overrides. Relative document slugs use physical parent directories with
+per-document prefix rules; category slugs use the docs root. Physical filenames
+and asset bases stay unchanged. Navigation, search and converted file links use
+actual routes. Case/Unicode/encoded spaces are supported; ambiguous, colliding
+and unsafe paths fail before writes. Generated defaults yield to explicit slugs
+regardless of sidebar order. Source `route` fields remain inert, MkDocs slugs
+remain unmapped, and documents without explicit slugs keep filename defaults.
+
+Local checks pass: 120 Rust tests, Clippy, formatting, deep/strict docs and both
+CLI-to-engine fixtures. Native three-OS and actual exported HTML checks are CI
+gates, pending for this source. Deployment prefixes/root-relative source URLs,
+plugin routing/generators, styling, category images/keywords and DocCardList
+remain incomplete. This is unpublished rc.2 functionality, with no new release
+or Netlify production change.

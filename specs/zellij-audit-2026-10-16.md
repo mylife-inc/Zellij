@@ -3764,3 +3764,50 @@ remain unsupported. The generated output is a nested Markdown link list, not
 Docusaurus cards. Source rc.2 remains unpublished; release preparation/approval,
 Netlify's hosting-comment issue and production cutover, additional cloud/CI
 providers and broader conversion fidelity remain separate tasks.
+
+
+### Explicit Docusaurus URL slugs — 2026-11-04
+
+Prior milestone closure: PR #72 merged as `ab768ea635750b13a092ad97c43f4b3e6782b0cd`
+after all 16 checks passed in run `41963452333` on `1d4e5b6`. Tested/merged
+trees match (`7e00781c79dc7d72c25ca36da857f8e1aefa4b9c`). The post-merge
+base-image workflow `41966348546` passed. Main workflow `41966348612` has a
+Docker `info` timeout in CLI job `127044130186`, before the first hosted build;
+the Windows portable job is still running. A targeted retry was refused while
+the run remained active; revisit after completion. This is not a diagnosed
+product fix. PR #71 main `41960754928` and base `41960754932` both passed.
+
+Source `6e9f942` addresses another part of audit R5. Explicit Docusaurus document
+and generated-category slugs become validated `route` front matter beneath
+`/guide`, using the engine's existing route override. Absolute document slugs
+start at that guide root; relative slugs resolve from the physical document's
+parent directories, applying default numeric-prefix removal unless disabled
+for that document. Literal relative dot segments may stay within the docs root.
+Category slugs resolve from the docs root regardless of their physical folder.
+Only explicit slugs change routes; other documents retain existing defaults.
+
+Imported filenames, sidebar source references and asset bases stay unchanged.
+Converted file links, category child links, navigation and search use the new
+routes. Case is retained; percent encoding is decoded once, Unicode is normalized
+to NFC and URL links are encoded. Trailing slashes are removed. Colliding routes
+(including case-only and Unicode-equivalent paths), malformed encoding, encoded
+separators/dot segments, root escapes, queries/fragments/hosts and nonportable
+segments fail before writes. Unknown source `route` metadata remains inert;
+MkDocs slug metadata is unchanged. Explicit category slugs are reserved before
+generated defaults, so defaults receive suffixes independently of sidebar order
+without changing their physical filenames. No engine schema/dependency changed.
+
+Local verification passed: **60 converter unit tests + 60 CLI integration tests**,
+workspace Clippy with warnings denied, formatting, deep/strict docs validation
+(55 routes, 23 examples) and both real CLI-to-engine fixtures. These fixtures
+exercise actual route loading, MDX rendering, sidebar/search links, category
+pages, heading anchors and asset bytes with uppercase and Unicode/space URLs.
+CI adds native slug coverage on Linux/macOS/Windows and full static-export HTML
+checks with `/products/docs`. Final-head hosted acceptance and merge are pending.
+No local container or GUI browser ran.
+
+Remaining import work includes original deployment prefixes/root-relative source
+URLs, plugin routing/generators, category styling, generated-index images/keywords
+and embedded DocCardList components. R5 is still only partially resolved. Source
+rc.2 remains unpublished; release preparation/approval, Netlify's hosting-comment
+issue/production cutover and additional deployment/CI providers remain separate.
