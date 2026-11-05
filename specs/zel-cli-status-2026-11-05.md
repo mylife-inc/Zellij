@@ -209,3 +209,13 @@ protocol details and verification. Native rc.1 remains unchanged.
 
 PR #81's Cloudflare implementation merged as `9cde253`, after all 16 checks on
 `b1bf1da` passed in `42119403884`; the tested/merged tree is identical.
+
+Vercel implementation commit **`28ea6f7`** passed all **487 local Rust workspace
+tests**, with three real hosted-provider tests deliberately ignored locally and
+selected explicitly in CI. Warnings-denied Clippy, formatting, strict/deep docs
+(55 routes / 23 examples), workflow actionlint and an emitted Vercel workflow
+passed. Evidence: `/private/tmp/zellij-vercel-workspace.log`,
+`zellij-vercel-clippy.log`, `zellij-vercel-docs.log`, and generated fixture
+`/private/tmp/zellij-vercel-ci-ba1_mb0e/.github/workflows/docs.yml`.
+Final-head GitHub acceptance and merge remain pending. No local Docker/browser
+or live provider deployment ran.
