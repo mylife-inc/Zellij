@@ -52,8 +52,11 @@ category slugs become route overrides under `/guide`, keeping original file
 locations and relative asset bases. Navigation, search and converted file links
 use the new routes. Documents without a slug retain filename-derived routes.
 Duplicate or unsafe routes fail before writes. Source styling, generated-index
-images/keywords, original deployment prefixes, root-relative source URLs and
-plugin routing still need review. See [the conversion reference](/cli/convert) for
+images/keywords and custom/plugin routing still need review. Supported
+root-relative and same-origin website links now map through the source's
+deployment prefix to the actual Zellij routes. MkDocs directory/HTML URLs and
+Docusaurus literal URL settings are supported; computed, versioned and localized
+source routing still require review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
 These metadata improvements are newer than the published rc.1 executable.
 

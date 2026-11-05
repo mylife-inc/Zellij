@@ -21,3 +21,4 @@ walkdir.workspace = true
 pulldown-cmark = { version = "0.13", default-features = false }
 regex = "1"
 unicode-normalization = "0.1"
+url = "2"

@@ -189,7 +189,7 @@ queries, fragments, hosts, encoded separators/dot segments, root escapes and
 nonportable path segments are rejected. Generated default category routes yield
 to explicit slugs, adding a numeric suffix when necessary without moving files.
 
-Original deployment prefixes, root-relative source URLs, plugin routes and
+Custom or versioned source routing, plugin routes and
 custom JavaScript number-prefix parsers still require review. These import
 improvements are implemented in source and are not included in the published
 rc.1 executable.
@@ -279,7 +279,7 @@ slices share one generated page for the same folder. Empty or fully excluded
 categories do not create empty landing pages and are reported.
 
 Source generated-index `image`, `keywords` and other unsupported link
-fields are reported for review. Source deployment prefixes are not reproduced;
+fields are reported for review. Source deployment prefixes are not reused as destination settings;
 inspect the new routes before publishing. The output is a plain link list, not Docusaurus
 cards or an embedded `DocCardList` component. Foreign sidebar links keep their
 existing report-only behavior. These category improvements are implemented in
@@ -301,6 +301,51 @@ references to its default `static/` folder using `/img/logo.svg` or
 Copied images and downloads use the published asset URL, including the site's
 `basePath` (also configure the same prefix in the wrapper's Next config).
 The dry-run plan lists asset files too.
+
+### Original website URLs
+
+Current source also rewrites root-relative Markdown URLs and absolute HTTP(S)
+URLs matching the configured source origin. It reads local files only; it never
+downloads a URL. Queries and fragments stay intact, and original deployment
+prefixes are removed when mapping to the new Zellij routes. For example:
+
+```text
+MkDocs site_url: https://old.example/manual/
+/manual/install/?lang=en#linux -> /guide/install?lang=en#linux
+https://old.example/manual/install/ -> /guide/install
+```
+
+MkDocs uses `site_url` for the origin/prefix and `use_directory_urls` for its
+directory or `.html` URL style. `index.md` and `README.md` use the original
+index convention; directory-style sites also recognize their `index.html`
+addresses. An omitted/null `site_url` assumes the root and does not claim any
+absolute origin. An empty `site_url` selects the source's `.html` style.
+
+Docusaurus uses `url`, `baseUrl`, and the docs plugin's `routeBasePath` (default
+`docs`). Routing settings must be a direct literal `module.exports = {...}` or
+`export default {...}` object. A single classic preset or docs plugin can supply
+literal options. URL lookup follows document IDs, numeric-prefix settings,
+explicit slugs, and index/README/folder-name conventions. Explicit generated
+category slugs are recognized too. The target is the actual emitted Zellij
+route, which may differ from the original filename or public URL.
+
+Referenced assets under the original deployment prefix use the usual contained
+docs/static roots and copying policy. Docusaurus's existing `/img/...` and
+`@site/static/...` asset references continue to work. Other origins, ports or
+schemes and protocol-relative URLs (`//host/path`) remain unchanged. URL path
+case is preserved, Unicode is normalized, and percent encoding is decoded once.
+
+Known omitted documents and ambiguous source URLs are reported and left
+unchanged. Malformed supported configuration and unsafe local paths fail before
+output is written. Computed JavaScript, custom presets/plugins, multiple docs
+instances, custom docs/static directories, localization, versioned sites and
+generated-category URLs without explicit slugs still need review. Relative
+website URLs such as `../install.html`, HTML/JSX attributes and custom routing
+plugins are not newly interpreted; relative Markdown file links retain their
+existing behavior. These improvements are newer than the published rc.1 CLI.
+
+Source behavior follows the upstream [MkDocs URL settings](https://www.mkdocs.org/user-guide/configuration/#use_directory_urls)
+and [Docusaurus document URLs](https://docusaurus.io/docs/create-doc#doc-urls).
 
 Copying is the default (`--assets copy`). To import only documents and generated
 configuration, use:

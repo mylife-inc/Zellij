@@ -129,6 +129,7 @@ fn external(url: &str) -> bool {
 struct Resolver<'a> {
     tree: &'a DocTree,
     project: Option<&'a Utf8Path>,
+    source_urls: Option<&'a crate::source_urls::SourceUrls>,
     options: &'a ConvertOptions,
     routes: BTreeMap<Utf8PathBuf, String>,
     assets: BTreeMap<Utf8PathBuf, Vec<u8>>,
@@ -145,24 +146,62 @@ impl Resolver<'_> {
     }
 
     fn href(&mut self, source: &Utf8Path, url: &str, image: bool) -> Result<String> {
-        if external(url) || url.is_empty() {
+        if url.is_empty() {
             return Ok(url.to_owned());
         }
-        if url.contains('#') {
-            self.fragments = true;
-        }
         if url.starts_with(['#', '?']) {
+            self.fragments |= url.contains('#');
             return Ok(url.to_owned());
         }
         let end = url.find(['?', '#']).unwrap_or(url.len());
         let (path, suffix) = url.split_at(end);
+        let mut website_asset = None;
+        if let Some(urls) = self.source_urls
+            && let Some(website_path) = urls.path(path)?
+        {
+            if let Some(target) = urls.document(&website_path) {
+                if !image && let Some(target) = target {
+                    self.fragments |= url.contains('#');
+                    return Ok(format!("{}{suffix}", encode_path(target)));
+                }
+                self.report(
+                    source,
+                    url,
+                    if image {
+                        "website URL identifies a document, not an image asset"
+                    } else {
+                        "source website URL is ambiguous or its document was not imported"
+                    },
+                );
+                return Ok(url.to_owned());
+            }
+            website_asset = urls.asset(&website_path).map(Utf8PathBuf::from);
+            if website_asset.is_none() && (self.project.is_none() || !path.starts_with('/')) {
+                self.report(source, url, "URL is outside the source deployment prefix");
+                return Ok(url.to_owned());
+            }
+        }
+        if website_asset.is_none() && external(url) {
+            return Ok(url.to_owned());
+        }
+        self.fragments |= url.contains('#');
         // Docusaurus documents static-folder assets as /img/x and
         // @site/static/img/x. Neither authorizes arbitrary project-root reads.
         let static_path = self.project.and_then(|_| {
             path.strip_prefix("@site/static/")
                 .or_else(|| path.strip_prefix('/'))
         });
-        let (root, relative, namespace) = if let Some(path) = static_path {
+        let (root, relative, namespace) = if let Some(relative) = website_asset {
+            if let Some(project) = self.project {
+                (
+                    contained_path(project, Utf8Path::new("static"))?,
+                    relative,
+                    "static",
+                )
+            } else {
+                (self.tree.root.clone(), relative, "docs")
+            }
+        } else if let Some(path) = static_path {
             let Some(relative) = resolve(Utf8Path::new(""), path) else {
                 return Err(unsafe_path(
                     Utf8Path::new(path),
@@ -368,12 +407,14 @@ pub(crate) fn rewrite(
     tree: &DocTree,
     documents: &BTreeMap<Utf8PathBuf, String>,
     project: Option<&Utf8Path>,
+    source_urls: Option<&crate::source_urls::SourceUrls>,
     options: &ConvertOptions,
     conversion: &mut Conversion,
 ) -> Result<()> {
     let mut resolver = Resolver {
         tree,
         project,
+        source_urls,
         options,
         routes: BTreeMap::new(),
         assets: BTreeMap::new(),

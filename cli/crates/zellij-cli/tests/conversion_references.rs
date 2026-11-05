@@ -222,11 +222,16 @@ fn missing_unlisted_and_html_references_are_reported_without_copying_orphans() {
         "missing.md",
         "hidden.md",
         "media/no.png",
-        "root-relative",
+        "/old/docs",
         "HTML/JSX",
     ] {
         assert!(report.contains(expected), "{report}");
     }
+    assert!(
+        fs::read_to_string(out.join("01-guide/index.mdx"))
+            .unwrap()
+            .contains("[Root](/old/docs)")
+    );
     assert!(!out.join("assets/imported/docs/hidden.md").exists());
     assert!(!out.join("assets/imported/docs/secret.MD").exists());
     assert!(!out.join("01-guide/hidden.mdx").exists());

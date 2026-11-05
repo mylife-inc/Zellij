@@ -26,8 +26,16 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 [Candidate 0.2.0-rc.1](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1)
 is available for GNU/Linux, macOS and Windows on x64 and ARM64.
 [All eight published-artifact checks passed](https://github.com/mylife-inc/Zellij/actions/runs/41548199714).
-This reference describes the candidate's commands. Stable `0.1.3` predates these
-workflows and has no native Windows packages.
+This reference covers the candidate and newer source additions; individual pages
+identify features newer than rc.1. Stable `0.1.3` predates these workflows and
+has no native Windows packages.
+
+The current source implements every registered command family. The broader CLI
+design remains incomplete: imports cover MkDocs and Docusaurus with documented
+limits, deployment supports Netlify and image registries, and workflow generation
+supports GitHub Actions. Additional import formats, cloud providers, CI systems,
+and interactive authoring remain planned. A working command does not imply that
+every provider or option from the original design has been implemented.
 
 ```bash title="terminal"
 curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.1/install.sh -o install.sh
