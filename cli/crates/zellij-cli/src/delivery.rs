@@ -83,6 +83,13 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
                 "preview (zel-preview branch)"
             }
         ),
+        DeliveryPlan::Vercel {
+            project,
+            production,
+        } => zellij_core::reportln!(
+            "  Provider vercel\n  Project  {project}\n  Team     VERCEL_TEAM_ID (optional)\n  Mode     {}",
+            if *production { "production" } else { "preview" }
+        ),
         DeliveryPlan::Netlify { site, production } => zellij_core::reportln!(
             "  Provider netlify\n  Site ID  {site}\n  Mode     {}",
             if *production {
@@ -139,6 +146,13 @@ pub(crate) fn execute_plan(
     validate_options(site, plan, options)?;
     match plan {
         DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
+        DeliveryPlan::Vercel {
+            project,
+            production,
+        } => {
+            let client = crate::vercel::Client::from_environment()?;
+            deploy_vercel(site, content, &client, project, *production, options)
+        }
         DeliveryPlan::Cloudflare {
             project,
             production,
@@ -202,6 +216,27 @@ pub(crate) fn deploy_cloudflare(
             Ok(())
         },
     )
+}
+
+pub(crate) fn deploy_vercel(
+    site: &Site,
+    content: &Utf8Path,
+    client: &crate::vercel::Client,
+    project: &str,
+    production: bool,
+    options: &BuildOptions,
+) -> Result<()> {
+    validate_static_options(site, options)?;
+    let target = client.check_project(project, production)?;
+    build_and_deploy(site, content, options, "Vercel", |export, prefix| {
+        let deployed = client.deploy(&target, export)?;
+        zellij_core::statusln!(
+            "✓ Vercel deployment {} is ready\n  {}",
+            deployed.id,
+            deployed.url(prefix)
+        );
+        Ok(())
+    })
 }
 
 fn validate_static_options(site: &Site, options: &BuildOptions) -> Result<()> {

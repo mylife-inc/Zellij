@@ -1889,3 +1889,17 @@ The context and audit retain protocol references, precise scope and evidence.
 PR #80 merged as `c067b5a` after all 16 final-head checks passed on `fb622d1`.
 Post-merge Windows preview encountered EPERM during a fixture directory rename;
 this follow-up retries only transient Windows rename failures with a deadline.
+
+### 2026-11-05 — Vercel static deployment
+
+Current source implements `deploy vercel`, `vercel` / `vc`, saved static
+publication, import-and-ship and GitHub workflow generation. Existing project
+IDs/names use `VERCEL_PROJECT_ID`; credentials use `VERCEL_TOKEN` and optional
+`VERCEL_TEAM_ID`. Prebuilt static output is uploaded directly, with previews as
+the default and production explicit. No Vercel CLI or remote source build is
+required. Documentation covers limits and failure behavior; live Vercel account
+acceptance remains pending. See the latest durable-context/audit entry for
+protocol details and verification. Native rc.1 remains unchanged.
+
+PR #81's Cloudflare implementation merged as `9cde253`, after all 16 checks on
+`b1bf1da` passed in `42119403884`; the tested/merged tree is identical.

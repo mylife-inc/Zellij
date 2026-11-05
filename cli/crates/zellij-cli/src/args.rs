@@ -97,6 +97,12 @@ impl Cli {
                 options,
             };
         }
+        if let Command::Vercel(options) = cli.command {
+            cli.command = Command::Deploy {
+                provider: Some("vercel".into()),
+                options,
+            };
+        }
         if let Command::Cloudflare(options) = cli.command {
             cli.command = Command::Deploy {
                 provider: Some("cloudflare".into()),
@@ -352,10 +358,10 @@ pub(crate) enum Command {
 
     /// Build static HTML and deploy it; omitted provider uses saved publication.
     #[command(
-        after_help = "Shortcuts: zel netlify [site], zel cf [site]. Bare zel deploy is equivalent to zel publish."
+        after_help = "Shortcuts: zel netlify [site], zel cf [site], zel vc [site]. Bare zel deploy is equivalent to zel publish."
     )]
     Deploy {
-        /// netlify or cloudflare. With no provider, use zel.yaml's publish settings.
+        /// netlify, cloudflare or vercel. With no provider, use zel.yaml's publish settings.
         provider: Option<String>,
         #[command(flatten)]
         options: DeliveryArgs,
@@ -367,6 +373,10 @@ pub(crate) enum Command {
     /// Shortcut for `zel deploy cloudflare` (Cloudflare Pages).
     #[command(visible_alias = "cf")]
     Cloudflare(DeliveryArgs),
+
+    /// Shortcut for `zel deploy vercel`.
+    #[command(visible_alias = "vc")]
+    Vercel(DeliveryArgs),
 
     /// Build, run and push container images.
     Image {
@@ -558,13 +568,13 @@ pub(crate) struct CiInitArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Override saved delivery with netlify or cloudflare deployment.
+    /// Override saved delivery with netlify, cloudflare or vercel deployment.
     #[arg(long, conflicts_with = "target")]
     pub(crate) deploy: Option<String>,
     /// Legacy override: static validates/builds; image builds/pushes a Next image.
     #[arg(long, value_parser = ["static", "image"], conflicts_with = "deploy")]
     pub(crate) target: Option<String>,
-    /// Netlify site ID or Cloudflare Pages project name; --site remains accepted.
+    /// Netlify site ID, Cloudflare Pages project name or Vercel project ID/name; --site remains accepted.
     #[arg(long, visible_alias = "site")]
     pub(crate) site_id: Option<String>,
     /// Request production deployments; previews are the default.
@@ -827,7 +837,7 @@ pub(crate) struct DeliveryArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Netlify site ID/domain or Cloudflare Pages project name; overrides provider environment and publish.site.
+    /// Netlify site ID/domain, Cloudflare Pages project name or Vercel project ID/name; overrides provider environment and publish.site.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
     /// Update the production site. Omit to create a preview.
@@ -890,7 +900,7 @@ pub(crate) struct ShipArgs {
     /// Copy referenced assets, or skip them and retain their original URLs.
     #[arg(long, value_enum, default_value = "copy")]
     pub(crate) assets: ImportAssets,
-    /// Deploy static HTML with netlify or cloudflare.
+    /// Deploy static HTML with netlify, cloudflare or vercel.
     #[arg(long, required_unless_present = "image", conflicts_with = "image")]
     pub(crate) provider: Option<String>,
     /// Build and push this image kind instead of deploying static HTML.
@@ -902,7 +912,7 @@ pub(crate) struct ShipArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long, requires = "image")]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Netlify site ID/domain or Cloudflare Pages project name; defaults to the provider environment.
+    /// Netlify site ID/domain, Cloudflare Pages project name or Vercel project ID/name; defaults to the provider environment.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
     /// Request production publication; the default is a draft preview.

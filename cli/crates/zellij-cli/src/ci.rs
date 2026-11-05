@@ -82,6 +82,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 Provider::Netlify => Publish::Netlify {
                     site_id: site_id.map(str::to_owned),
                 },
+                Provider::Vercel => Publish::Vercel {
+                    project: site_id.map(str::to_owned),
+                },
                 Provider::Cloudflare => Publish::Cloudflare {
                     project: site_id.map(str::to_owned),
                 },
@@ -104,6 +107,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     let deployment_provider = match publish {
         Publish::Netlify { .. } => Some(Provider::Netlify),
         Publish::Cloudflare { .. } => Some(Provider::Cloudflare),
+        Publish::Vercel { .. } => Some(Provider::Vercel),
         _ => None,
     };
     if deployment_provider.is_none()
@@ -217,7 +221,15 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "  Set repository variable CLOUDFLARE_ACCOUNT_ID (the same-named secret is also accepted)."
         );
     }
+    if deployment_provider == Some(Provider::Vercel) {
+        zellij_core::statusln!(
+            "  For a team project, set repository variable VERCEL_TEAM_ID (the same-named secret is also accepted)."
+        );
+    }
     match options.publish {
+        Publish::Vercel { project: None } => zellij_core::statusln!(
+            "  Set repository variable VERCEL_PROJECT_ID (the same-named secret is also accepted)."
+        ),
         Publish::Cloudflare { project: None } => zellij_core::statusln!(
             "  Set repository variable CLOUDFLARE_PAGES_PROJECT_NAME (the same-named secret is also accepted)."
         ),

@@ -22,6 +22,9 @@ pub enum Publish {
     Netlify {
         site_id: Option<String>,
     },
+    Vercel {
+        project: Option<String>,
+    },
     Cloudflare {
         project: Option<String>,
     },
@@ -139,12 +142,12 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if (!overrides.is_empty()
         || !build_args.is_empty()
         || *platform == Some(ImagePlatform::All)
-        || matches!(publish, Publish::Cloudflare { .. }))
+        || matches!(publish, Publish::Cloudflare { .. } | Publish::Vercel { .. }))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "Cloudflare deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare/Vercel deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -296,6 +299,17 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::Vercel { project } => {
+                if let Some(project) = project {
+                    Provider::Vercel.validate_site(project)?;
+                }
+                let prod = if settings.production { " --prod" } else { "" };
+                steps.push(json!({"name":"Build once and deploy", "env":{
+                    "VERCEL_PROJECT_ID": project.as_deref().unwrap_or("${{ vars.VERCEL_PROJECT_ID || secrets.VERCEL_PROJECT_ID }}"),
+                    "VERCEL_TEAM_ID":"${{ vars.VERCEL_TEAM_ID || secrets.VERCEL_TEAM_ID }}",
+                    "VERCEL_TOKEN":"${{ secrets.VERCEL_TOKEN }}"
+                }, "run":format!("zel deploy vercel {selector}{prod}{features_flag}{override_flags}")}));
             }
             Publish::Cloudflare { project } => {
                 if let Some(project) = project {

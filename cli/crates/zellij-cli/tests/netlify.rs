@@ -138,8 +138,8 @@ fn invalid_settings_options_and_missing_credentials_stop_before_any_build() {
     for args in [
         vec!["netlify", "--json"],
         vec!["netlify", "--tag", "acme/image"],
-        vec!["deploy", "vercel"],
-        vec!["pub", "--to", "vercel"],
+        vec!["deploy", "github-pages"],
+        vec!["pub", "--to", "github-pages"],
         vec!["deploy", "netlify", "--to", "fly"],
         vec!["netlify", "--site", "https://user:secret@site.test"],
     ] {

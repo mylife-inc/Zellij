@@ -490,7 +490,7 @@ fn invalid_imports_and_delivery_options_never_create_destinations() {
             "--out",
             "out",
             "--provider",
-            "vercel",
+            "github-pages",
             "--site-id",
             "fixture",
         ],
@@ -916,6 +916,46 @@ fn cloudflare_ship_plans_without_credentials_and_retains_site_on_credential_fail
     assert!(String::from_utf8_lossy(&output.stderr).contains("CLOUDFLARE_API_TOKEN"));
     let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
     assert!(config.contains("provider: cloudflare") && config.contains("manual"));
+    assert!(!config.contains("token"));
+    assert!(root.join("converted/content/site.yaml").is_file());
+    assert_eq!(tree(&root.join("source")), original);
+}
+
+#[test]
+fn vercel_ship_plans_without_credentials_and_retains_site_on_credential_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "converted",
+        "--provider",
+        "vercel",
+        "--site",
+        "manual",
+    ];
+    let output = command(root)
+        .env_remove("VERCEL_TOKEN")
+        .env_remove("VERCEL_TEAM_ID")
+        .args(args)
+        .arg("--dry-run")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("VERCEL_TOKEN")
+        .env_remove("VERCEL_TEAM_ID")
+        .args(args)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("VERCEL_TOKEN"));
+    let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
+    assert!(config.contains("provider: vercel") && config.contains("manual"));
     assert!(!config.contains("token"));
     assert!(root.join("converted/content/site.yaml").is_file());
     assert_eq!(tree(&root.join("source")), original);

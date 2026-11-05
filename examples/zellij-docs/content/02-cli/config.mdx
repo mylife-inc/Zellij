@@ -333,7 +333,7 @@ publish:
   site: acme-docs.netlify.app
 ```
 
-`netlify` is the only implemented provider. `site` is an optional string containing
+For `netlify`, `site` is an optional string containing
 an existing project ID or full domain. Explicit `--site-id` / `--site` wins over
 `NETLIFY_SITE_ID`, then `publish.site`. `NETLIFY_AUTH_TOKEN` supplies credentials;
 tokens, image kinds and production flags are rejected in this block. A draft
@@ -343,7 +343,7 @@ saved plan as `zel pub`. `--to netlify` cannot replace a saved image-push intent
 
 ## Planned CLI defaults
 
-The site layout, build/preview settings, image publication, Netlify delivery,
+The site layout, build/preview settings, image publication, static delivery,
 and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
 `system`, `branch`, `workflow`, `zel-version`, `triggers`, `tags`, `schedules` and
 `production`. CI settings require `version: 1`; they are shared by both renderers.
@@ -388,3 +388,12 @@ Here `site` is a Pages project name, overridden by `--site` and then
 `CLOUDFLARE_PAGES_PROJECT_NAME`. `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`
 are environment settings, never saved credentials. An explicit provider change
 does not inherit another provider's destination. See [preview defaults and setup](/cli/deploy#cloudflare-pages).
+
+## Vercel destination
+
+Current source accepts `publish: {action: deploy, provider: vercel, site: prj_YOUR_PROJECT_ID}`.
+The destination may be an existing project ID or name. `--site` / `--site-id`
+overrides `VERCEL_PROJECT_ID`, then saved `publish.site`. `VERCEL_TOKEN` and the
+optional `VERCEL_TEAM_ID` remain environment settings; do not store credentials
+in configuration. Provider changes never inherit another provider's destination.
+See [preview behavior and setup](/cli/deploy#vercel).

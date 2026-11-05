@@ -221,6 +221,10 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .unwrap_or_default(),
             image.kind.as_str()
         ),
+        DeliveryPlan::Vercel { project, .. } => format!(
+            "{SITE_CONFIG}publish:\n  action: deploy\n  provider: vercel\n  site: {}\n",
+            yaml::string(project)
+        ),
         DeliveryPlan::Cloudflare { project, .. } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: cloudflare\n  site: {}\n",
             yaml::string(project)

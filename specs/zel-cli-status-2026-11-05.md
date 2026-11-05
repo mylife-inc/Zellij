@@ -12,7 +12,7 @@ dated audit and implementation history.
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
-| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `publish`, `ship` | Netlify and Cloudflare Pages static adapters plus image registry publication are implemented. Cloudflare live-account acceptance is pending. Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
+| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `publish`, `ship` | Netlify, Cloudflare Pages and Vercel static adapters plus image registry publication are implemented. Cloudflare and Vercel live-account acceptance is pending. GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
@@ -195,3 +195,17 @@ overview now explicitly lists both static providers. Initial PR #81 CI
 `42118339455` on `8f2f327` had 11 passing jobs and no failures when this final
 correction was prepared; it does not validate this follow-up. Final-head CI
 and live Cloudflare account acceptance remain pending.
+
+### 2026-11-05 — Vercel static deployment
+
+Current source implements `deploy vercel`, `vercel` / `vc`, saved static
+publication, import-and-ship and GitHub workflow generation. Existing project
+IDs/names use `VERCEL_PROJECT_ID`; credentials use `VERCEL_TOKEN` and optional
+`VERCEL_TEAM_ID`. Prebuilt static output is uploaded directly, with previews as
+the default and production explicit. No Vercel CLI or remote source build is
+required. Documentation covers limits and failure behavior; live Vercel account
+acceptance remains pending. See the latest durable-context/audit entry for
+protocol details and verification. Native rc.1 remains unchanged.
+
+PR #81's Cloudflare implementation merged as `9cde253`, after all 16 checks on
+`b1bf1da` passed in `42119403884`; the tested/merged tree is identical.
