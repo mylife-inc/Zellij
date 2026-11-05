@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress and YAML Jekyll documentation. Sphinx and Hugo converters remain planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll and declarative Hugo documentation. Sphinx remains planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -46,8 +46,16 @@ arrays. Links use source permalinks and deployment prefixes; eligible referenced
 static assets respect exclusions, internal data/templates and generated output.
 Liquid/Ruby/theme code is not executed. TOML, blog posts, dated collections,
 globs, custom source routing and theme-specific navigation remain limited or
-unsupported. See the conversion reference for exact accepted forms. Hugo is
-still planned; this milestone does not implement it.
+unsupported. See the conversion reference for exact accepted forms.
+
+Hugo imports accept one TOML/YAML/JSON configuration, Markdown sections and
+bundles, and all three front matter formats. Explicit output filename mapping
+keeps `_index.md` section pages visible without losing source-file link lookup.
+Visibility includes draft/date/headless/build rules; derived navigation uses
+weight/date/title ordering. Source URLs and eligible content/static assets map
+into editable hosted content. Menus, split configuration, modules, cascades,
+localization, custom date rules and complex routing remain outside this subset.
+Shortcodes and aliases are reported for manual work. See the conversion reference.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
 is newer and has not been published as rc.2. The old rc.2 publication proposal
@@ -92,3 +100,15 @@ import-rendering fixtures. Its own hosted/native CI and merge remain pending.
 source `0073bca` passes 155 local Rust tests, Clippy/formatting, deep/strict docs
 and all four Node rendering fixtures. Its own hosted/native CI and merge remain
 pending; Hugo has not been implemented by this milestone.
+
+### 2026-11-05 — Hugo documentation import implementation
+
+Source `5631e6c` adds one-file TOML/YAML/JSON Hugo configuration, Markdown
+sections/bundles, publication rules, source links and eligible assets through
+convert/cv, migrate/mig and ship. Explicit output filename mapping preserves
+visible `_index.md` pages and original source links. Menus, modules, cascades,
+localization and complex routing remain limited. Local 171 Rust tests, Clippy,
+strict docs and five Node rendering fixtures pass; final-head CI is pending.
+See the current CLI status and the dated audit for precise scope and evidence.
+PR #78 merged as `6190e51` after all 16 checks passed on `ffdeca7`; post-merge
+base image passed, with main CI still running. Sphinx remains planned.

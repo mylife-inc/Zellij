@@ -35,6 +35,12 @@ fn fixture(root: &Path, format: &str) {
             "source/mkdocs.yml",
             "site_name: Import\nnav:\n  - index.md\n  - next.md\n  - External: https://example.com\n",
         );
+    } else if format == "hugo" {
+        write(
+            root,
+            "source/hugo.toml",
+            "title='Import'\ncontentDir='docs'\n",
+        );
     } else if format == "jekyll" {
         write(root, "source/_config.yml", "title: Import\nsource: docs\n");
         write(
@@ -72,6 +78,19 @@ fn fixture(root: &Path, format: &str) {
         [0x25, 0x50, 0x44, 0x46, 0, 255],
     );
     write(root, "source/docs/orphan.md", "# Outside navigation\n");
+    if format == "hugo" {
+        fs::rename(
+            root.join("source/docs/index.md"),
+            root.join("source/docs/_index.md"),
+        )
+        .unwrap();
+        write(root, "source/docs/next.md", "# Next\n\n[Home](_index.md)\n");
+        write(
+            root,
+            "source/docs/orphan.md",
+            "---\ndraft: true\n---\n# Outside navigation\n",
+        );
+    }
     if format == "jekyll" {
         for name in ["index.md", "next.md", "orphan.md"] {
             let file = format!("source/docs/{name}");
@@ -119,7 +138,7 @@ fn run(root: &Path, args: &[&str], code: i32) -> Output {
 }
 #[test]
 fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes() {
-    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll"] {
+    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll", "hugo"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);
@@ -188,7 +207,7 @@ fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes
 
 #[test]
 fn skipped_assets_keep_original_urls_while_document_links_are_converted() {
-    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll"] {
+    for format in ["mkdocs", "docusaurus", "vitepress", "jekyll", "hugo"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);

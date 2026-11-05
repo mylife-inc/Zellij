@@ -42,6 +42,10 @@ pub struct DocTree {
     /// Validated route overrides from the source adapter, keyed by source file.
     /// Unknown source front matter must never activate Zellij routes directly.
     pub routes: BTreeMap<Utf8PathBuf, String>,
+    /// Output filenames when a source convention (for example Hugo's
+    /// `_index.md`) would otherwise be hidden by the destination renderer.
+    /// Source keys remain unchanged for authored file links and asset lookup.
+    pub output_sources: BTreeMap<Utf8PathBuf, Utf8PathBuf>,
     /// Pages found on disk that the navigation never mentioned.
     ///
     /// Kept separately rather than appended: a tool that hides a page from its
@@ -51,6 +55,10 @@ pub struct DocTree {
 }
 
 impl DocTree {
+    pub fn output_source<'a>(&'a self, source: &'a Utf8PathBuf) -> &'a Utf8PathBuf {
+        self.output_sources.get(source).unwrap_or(source)
+    }
+
     /// Every page in the tree, navigation order first.
     pub fn pages(&self) -> Vec<&Utf8PathBuf> {
         fn walk<'a>(entries: &'a [Entry], out: &mut Vec<&'a Utf8PathBuf>) {
