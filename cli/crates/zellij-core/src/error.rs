@@ -53,7 +53,7 @@ pub enum Error {
     )]
     ImageOperationFailed { operation: &'static str },
 
-    #[error("Netlify deployment failed: {0}")]
+    #[error("Deployment failed: {0}")]
     DeploymentFailed(String),
 
     #[error("CLI upgrade failed: {0}")]

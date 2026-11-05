@@ -2,7 +2,7 @@
 use camino::Utf8Path;
 use zellij_core::{
     Result,
-    delivery::{DeliveryPlan, ImageKind, ImagePublication},
+    delivery::{DeliveryPlan, ImageKind, ImagePublication, Provider},
     features::Features,
     site::{Renderer, Site},
 };
@@ -10,7 +10,8 @@ use zellij_engine::BuildOptions;
 
 pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArgs) -> Result<()> {
     let (site, content) = crate::images::selection(options.dir.as_ref())?;
-    let environment_site = std::env::var("NETLIFY_SITE_ID").ok();
+    let selected = Provider::selected(&site, provider, options.to.as_deref())?;
+    let environment_site = selected.and_then(|p| std::env::var(p.site_environment()).ok());
     let plan = DeliveryPlan::resolve(
         &site,
         provider,
@@ -37,7 +38,7 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
-    if matches!(plan, DeliveryPlan::Netlify { .. }) {
+    if !matches!(plan, DeliveryPlan::Push(_)) {
         options.require_no_image_args()?;
     }
     if site.renderer == Renderer::Portable
@@ -71,6 +72,17 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
                 zellij_core::reportln!("  Platform {platform}");
             }
         }
+        DeliveryPlan::Cloudflare {
+            project,
+            production,
+        } => zellij_core::reportln!(
+            "  Provider cloudflare\n  Project  {project}\n  Account  CLOUDFLARE_ACCOUNT_ID\n  Mode     {}",
+            if *production {
+                "production"
+            } else {
+                "preview (zel-preview branch)"
+            }
+        ),
         DeliveryPlan::Netlify { site, production } => zellij_core::reportln!(
             "  Provider netlify\n  Site ID  {site}\n  Mode     {}",
             if *production {
@@ -127,6 +139,13 @@ pub(crate) fn execute_plan(
     validate_options(site, plan, options)?;
     match plan {
         DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
+        DeliveryPlan::Cloudflare {
+            project,
+            production,
+        } => {
+            let client = crate::cloudflare::Client::from_environment()?;
+            deploy_cloudflare(site, content, &client, project, *production, options)
+        }
         DeliveryPlan::Netlify {
             site: id,
             production,
@@ -145,12 +164,65 @@ pub(crate) fn deploy(
     production: bool,
     options: &BuildOptions,
 ) -> Result<()> {
+    validate_static_options(site, options)?;
+    client.check_site(id)?;
+    build_and_deploy(site, content, options, "Netlify", |export, prefix| {
+        let deployed = client.deploy(id, export, production)?;
+        zellij_core::statusln!(
+            "✓ Netlify deployment {} is ready\n  {}",
+            deployed.id,
+            deployed.url(prefix)
+        );
+        Ok(())
+    })
+}
+
+pub(crate) fn deploy_cloudflare(
+    site: &Site,
+    content: &Utf8Path,
+    client: &crate::cloudflare::Client,
+    project: &str,
+    production: bool,
+    options: &BuildOptions,
+) -> Result<()> {
+    validate_static_options(site, options)?;
+    let target = client.check_project(project, production)?;
+    build_and_deploy(
+        site,
+        content,
+        options,
+        "Cloudflare Pages",
+        |export, prefix| {
+            let deployed = client.deploy(&target, export)?;
+            zellij_core::statusln!(
+                "✓ Cloudflare Pages deployment {} is ready\n  {}",
+                deployed.id,
+                deployed.url(prefix)
+            );
+            Ok(())
+        },
+    )
+}
+
+fn validate_static_options(site: &Site, options: &BuildOptions) -> Result<()> {
     options.require_no_image_args()?;
     if site.renderer == Renderer::Portable {
         crate::images::require_native_options(options)?;
     }
-    // Authenticate/read the existing site before an expensive hosted build.
-    client.check_site(id)?;
+    Ok(())
+}
+
+fn build_and_deploy(
+    site: &Site,
+    content: &Utf8Path,
+    options: &BuildOptions,
+    provider: &str,
+    deliver: impl FnOnce(&Utf8Path, &str) -> Result<()>,
+) -> Result<()> {
+    options.require_no_image_args()?;
+    if site.renderer == Renderer::Portable {
+        crate::images::require_native_options(options)?;
+    }
     let engine = match site.renderer {
         Renderer::Hosted => Some(zellij_engine::ContainerEngine::detect(None)?),
         Renderer::Portable => None,
@@ -196,17 +268,11 @@ pub(crate) fn deploy(
     };
     let prefix = build().inspect_err(|_| {
         zellij_core::diagnosticln!(
-            "Deployment stopped during validation/build; no Netlify deployment was created."
+            "Deployment stopped during validation/build; no {provider} deployment was created."
         )
     })?;
-    zellij_core::statusln!("✓ Built static site\nUploading to Netlify…");
-    let deployed = client.deploy(id, &export, production).inspect_err(|_| zellij_core::diagnosticln!("Static build completed, but deployment did not complete. Check the Netlify dashboard before retrying; the remote deployment may still finish. Source and previous local output are unchanged."))?;
-    zellij_core::statusln!(
-        "✓ Netlify deployment {} is ready\n  {}",
-        deployed.id,
-        deployed.url(&prefix)
-    );
-    Ok(())
+    zellij_core::statusln!("✓ Built static site\nUploading to {provider}…");
+    deliver(&export, &prefix).inspect_err(|_| zellij_core::diagnosticln!("Static build completed, but deployment did not complete. Check the {provider} dashboard before retrying; the remote deployment may still finish. Source and previous local output are unchanged."))
 }
 
 fn push_image(

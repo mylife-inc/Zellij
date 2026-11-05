@@ -4,7 +4,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use zellij_convert::{ConvertOptions, Unmapped};
 use zellij_core::{
     Error, Result,
-    delivery::{DeliveryPlan, ImageKind, ImagePublication},
+    delivery::{DeliveryPlan, ImageKind, ImagePublication, Provider},
     files,
     site::Site,
     yaml,
@@ -194,22 +194,20 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
         .map(DeliveryPlan::Push)
         .and_then(|plan| plan.with_platform(options.platform));
     }
-    if options.provider.as_deref() != Some("netlify") || options.tag.is_some() {
-        return Err(Error::InvalidArgument(
-            "ship requires --provider netlify or --image static|next with --tag".into(),
-        ));
-    }
-    let environment_site = std::env::var("NETLIFY_SITE_ID").ok();
+    let provider = Provider::parse(options.provider.as_deref().unwrap_or(""))?;
+    let environment_site = std::env::var(provider.site_environment()).ok();
     let id = options
         .site_id
         .as_deref()
         .or(environment_site.as_deref())
         .ok_or_else(|| {
-            Error::InvalidArgument(
-                "Netlify requires an existing site: pass --site-id or set NETLIFY_SITE_ID".into(),
-            )
+            Error::InvalidArgument(format!(
+                "{} requires an existing site: pass --site or set {}",
+                provider.as_str(),
+                provider.site_environment()
+            ))
         })?;
-    DeliveryPlan::netlify(id, options.prod)
+    provider.plan(id, options.prod)
 }
 
 fn configuration(plan: &DeliveryPlan) -> String {
@@ -222,6 +220,10 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .map(|platform| format!("  platform: {platform}\n"))
                 .unwrap_or_default(),
             image.kind.as_str()
+        ),
+        DeliveryPlan::Cloudflare { project, .. } => format!(
+            "{SITE_CONFIG}publish:\n  action: deploy\n  provider: cloudflare\n  site: {}\n",
+            yaml::string(project)
         ),
         DeliveryPlan::Netlify { site, .. } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: netlify\n  site: {}\n",
@@ -239,7 +241,7 @@ fn retained(out: &str) {
 pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     let plan = plan(options)?;
     let build = options.overrides.options(options.features);
-    if matches!(plan, DeliveryPlan::Netlify { .. }) {
+    if !matches!(plan, DeliveryPlan::Push(_)) {
         build.require_no_image_args()?;
     }
     let import = Prepared::read(
@@ -295,7 +297,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
         );
     }
     zellij_core::statusln!(
-        "\nSaved delivery settings in {}/zel.yaml; future changes can use `zel publish <destination>` (Netlify defaults to a draft; --prod is never saved).",
+        "\nSaved delivery settings in {}/zel.yaml; future changes can use `zel publish <destination>` (deployment defaults to a preview; --prod is never saved).",
         options.out
     );
     Ok(())

@@ -251,6 +251,13 @@ impl Site {
                 .remove("publish")
                 .map(|value| parse(&config, value))
                 .transpose()?;
+            if let Some(crate::delivery::PublishSettings::Deploy {
+                provider,
+                site: Some(destination),
+            }) = &publish
+            {
+                provider.validate_site(destination)?;
+            }
             if let Some(value) = settings.remove("ci") {
                 ci = parse(&config, value)?;
                 ci.validate()?;

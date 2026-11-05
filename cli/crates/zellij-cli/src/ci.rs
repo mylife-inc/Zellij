@@ -8,7 +8,7 @@ use std::{
 use zellij_core::site::SiteInput;
 use zellij_core::{
     Error, Result,
-    delivery::{DeliveryPlan, PublishSettings},
+    delivery::{DeliveryPlan, Provider, PublishSettings},
     files,
 };
 use zellij_scaffold::pipeline::{self, CiOptions, Publish};
@@ -54,23 +54,20 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         .or(settings.zel_version.as_deref())
         .unwrap_or(env!("CARGO_PKG_VERSION"));
     let version = zellij_core::ci::version_pin(version).map_err(|error| invalid(&format!("CI needs a pinned compatible release (0.2.0 or later). Set ci.zel-version or pass --zel-version, for example 0.2.0-rc.1. This binary reports {}. Generation prepares a file but does not publish or verify release availability. {error}", env!("CARGO_PKG_VERSION"))))?;
-    let environment_site = std::env::var("NETLIFY_SITE_ID")
-        .ok()
+    let provider = Provider::selected(&site, args.deploy.as_deref(), None)?;
+    let environment_site = provider
+        .and_then(|p| std::env::var(p.site_environment()).ok())
         .filter(|s| !s.trim().is_empty());
     let publish = match (args.deploy.as_deref(), args.target.as_deref()) {
-        (Some(provider), _) if provider != "netlify" => {
-            return Err(invalid(
-                "only Netlify static-site deployment is implemented",
-            ));
-        }
         (None, Some("static")) => Publish::Nothing,
         (None, Some("image")) => Publish::LegacyImage,
-        (Some("netlify"), _) | (None, None)
-            if args.deploy.is_some()
-                || matches!(site.publish, Some(PublishSettings::Deploy { .. })) =>
-        {
+        (_, None) if provider.is_some() => {
+            let provider = provider.expect("selected provider");
             let saved = match &site.publish {
-                Some(PublishSettings::Deploy { site, .. }) => site.as_deref(),
+                Some(PublishSettings::Deploy {
+                    provider: saved,
+                    site,
+                }) if *saved == provider => site.as_deref(),
                 _ => None,
             };
             let site_id = args
@@ -78,19 +75,16 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 .as_deref()
                 .or(environment_site.as_deref())
                 .or(saved);
-            // A repository variable/secret can provide the ID at execution time.
-            // The shared resolver still validates the provider and supplied ID.
-            DeliveryPlan::resolve(
-                &site,
-                Some("netlify"),
-                None,
-                None,
-                Some(site_id.unwrap_or("configured-in-ci")),
-                None,
-                settings.production,
-            )?;
-            Publish::Netlify {
-                site_id: site_id.map(str::to_owned),
+            if let Some(id) = site_id {
+                provider.validate_site(id)?;
+            }
+            match provider {
+                Provider::Netlify => Publish::Netlify {
+                    site_id: site_id.map(str::to_owned),
+                },
+                Provider::Cloudflare => Publish::Cloudflare {
+                    project: site_id.map(str::to_owned),
+                },
             }
         }
         (None, None) if matches!(site.publish, Some(PublishSettings::Push { .. })) => {
@@ -107,11 +101,16 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         (None, None) => Publish::Nothing,
         _ => return Err(invalid("conflicting CI delivery options")),
     };
-    if !matches!(publish, Publish::Netlify { .. })
+    let deployment_provider = match publish {
+        Publish::Netlify { .. } => Some(Provider::Netlify),
+        Publish::Cloudflare { .. } => Some(Provider::Cloudflare),
+        _ => None,
+    };
+    if deployment_provider.is_none()
         && (args.site_id.is_some() || settings.production || args.provision)
     {
         return Err(invalid(
-            "--site-id, production and --provision require Netlify CI delivery",
+            "--site-id, production and --provision require static-site CI delivery",
         ));
     }
     let image_delivery = matches!(publish, Publish::Image { .. } | Publish::LegacyImage);
@@ -181,7 +180,12 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     // Token validation before the write, remote mutation only after it. Never
     // infer provisioning from a token merely existing in the environment.
     let token = if args.provision {
-        Some(std::env::var("NETLIFY_AUTH_TOKEN").ok().filter(|t| !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic())).ok_or_else(|| invalid("--provision requires NETLIFY_AUTH_TOKEN in the environment; no workflow was written"))?)
+        {
+            let name = deployment_provider
+                .expect("validated deployment")
+                .token_environment();
+            Some(std::env::var(name).ok().filter(|t| !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic())).ok_or_else(|| invalid(&format!("--provision requires {name} in the environment; no workflow was written")))?)
+        }
     } else {
         None
     };
@@ -195,13 +199,28 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         "  Review and commit the workflow after that compatible release is published."
     );
     if let Some(token) = token {
-        provision(&repo, &token)?;
-    } else if matches!(options.publish, Publish::Netlify { .. }) {
+        provision(
+            &repo,
+            deployment_provider
+                .expect("validated deployment")
+                .token_environment(),
+            &token,
+        )?;
+    } else if let Some(provider) = deployment_provider {
+        let name = provider.token_environment();
         zellij_core::statusln!(
-            "  Set the repository secret NETLIFY_AUTH_TOKEN, or re-run with --force --provision to upload it from the environment."
+            "  Set the repository secret {name}, or re-run with --force --provision to upload it from the environment."
+        );
+    }
+    if deployment_provider == Some(Provider::Cloudflare) {
+        zellij_core::statusln!(
+            "  Set repository variable CLOUDFLARE_ACCOUNT_ID (the same-named secret is also accepted)."
         );
     }
     match options.publish {
+        Publish::Cloudflare { project: None } => zellij_core::statusln!(
+            "  Set repository variable CLOUDFLARE_PAGES_PROJECT_NAME (the same-named secret is also accepted)."
+        ),
         Publish::Netlify { site_id: None } => zellij_core::statusln!(
             "  Set repository variable NETLIFY_SITE_ID (the same-named secret is also accepted)."
         ),
@@ -212,11 +231,11 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     }
     Ok(())
 }
-fn provision(repo: &Utf8Path, token: &str) -> Result<()> {
+fn provision(repo: &Utf8Path, name: &str, token: &str) -> Result<()> {
     let operation = (|| -> std::io::Result<bool> {
         let mut child = Command::new("gh")
             .current_dir(repo)
-            .args(["secret", "set", "NETLIFY_AUTH_TOKEN"])
+            .args(["secret", "set", name])
             .stdin(Stdio::piped())
             .stdout(Stdio::null())
             .stderr(Stdio::null())
@@ -232,11 +251,9 @@ fn provision(repo: &Utf8Path, token: &str) -> Result<()> {
     })();
     if !matches!(operation, Ok(true)) {
         return Err(std::io::Error::other(
-            "workflow written, but gh could not confirm NETLIFY_AUTH_TOKEN provisioning; check GitHub CLI installation, login and repository secret permissions. The remote result may be uncertain; inspect repository secrets before retrying. No deployment was started.",
+            format!("workflow written, but gh could not confirm {name} provisioning; check GitHub CLI installation, login and repository secret permissions. The remote result may be uncertain; inspect repository secrets before retrying. No deployment was started."),
         ).into());
     }
-    zellij_core::statusln!(
-        "  NETLIFY_AUTH_TOKEN uploaded to repository secrets; no deployment started."
-    );
+    zellij_core::statusln!("  {name} uploaded to repository secrets; no deployment started.");
     Ok(())
 }

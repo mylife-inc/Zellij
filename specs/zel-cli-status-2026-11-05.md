@@ -12,7 +12,7 @@ dated audit and implementation history.
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
-| Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
+| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `publish`, `ship` | Netlify and Cloudflare Pages static adapters plus image registry publication are implemented. Cloudflare live-account acceptance is pending. Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
@@ -157,3 +157,26 @@ The expanded hosted export fixture checks real HTML URLs and copied bytes too.
 Local distinct Rust coverage is now 184 tests. Initial PR #80 CI on `a850843`
 had 14 passing jobs and no failures when this correction was prepared; that
 older run does not validate this source. New final-head CI and merge are pending.
+
+
+### 2026-11-05 — Cloudflare Pages delivery
+
+Current source implements `deploy cloudflare`, `cloudflare` / `cf`, saved
+publish/deploy, ship and GitHub CI generation for existing Pages projects.
+Preview branch `zel-preview` is the default; production requires explicit intent.
+Provider changes do not reuse another provider's destination. Environment token
+and account ID stay outside configuration. Static-only limits, credentials and
+failure behavior are documented in [deployment](../examples/zellij-docs/content/02-cli/deploy.mdx#cloudflare-pages).
+Live Cloudflare account acceptance remains pending; published rc.1 is unchanged.
+The context and audit retain protocol references, precise scope and evidence.
+PR #80 merged as `c067b5a` after all 16 final-head checks passed on `fb622d1`.
+Post-merge Windows preview encountered EPERM during a fixture directory rename;
+this follow-up retries only transient Windows rename failures with a deadline.
+
+Local validation: all **471 Rust workspace tests passed**, with the two real
+hosted deployment tests deliberately ignored locally and selected explicitly
+in CI. Final CLI/unit and CI-generator rechecks cover updated provider-token
+provisioning. Warnings-denied workspace Clippy, Rust formatting, Node syntax,
+workflow actionlint (including an emitted Cloudflare workflow), and strict/deep
+Zellij documentation checks passed (55 routes, 23 examples). No local Docker or
+browser process was started. Final-head hosted/native CI and merge remain pending.

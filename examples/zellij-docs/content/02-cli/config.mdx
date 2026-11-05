@@ -380,3 +380,11 @@ other platform values are rejected. See [image platforms](/cli/image#select-the-
 - [Workflow generation](/cli/ci)
 - [Runtime diagnostics](/cli/doctor)
 - [Validation](/cli/check)
+
+## Cloudflare Pages destination
+
+Current source accepts `publish: {action: deploy, provider: cloudflare, site: manual}`.
+Here `site` is a Pages project name, overridden by `--site` and then
+`CLOUDFLARE_PAGES_PROJECT_NAME`. `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`
+are environment settings, never saved credentials. An explicit provider change
+does not inherit another provider's destination. See [preview defaults and setup](/cli/deploy#cloudflare-pages).

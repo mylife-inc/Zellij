@@ -97,6 +97,12 @@ impl Cli {
                 options,
             };
         }
+        if let Command::Cloudflare(options) = cli.command {
+            cli.command = Command::Deploy {
+                provider: Some("cloudflare".into()),
+                options,
+            };
+        }
         if let Some(root) = cli.site_root.take() {
             cli.command
                 .select_root(SiteInput::from(root.as_str()), "--site-root")?;
@@ -346,10 +352,10 @@ pub(crate) enum Command {
 
     /// Build static HTML and deploy it; omitted provider uses saved publication.
     #[command(
-        after_help = "Shortcut: zel netlify [site]. Bare zel deploy is equivalent to zel publish."
+        after_help = "Shortcuts: zel netlify [site], zel cf [site]. Bare zel deploy is equivalent to zel publish."
     )]
     Deploy {
-        /// Currently netlify. With no provider, use zel.yaml's publish settings.
+        /// netlify or cloudflare. With no provider, use zel.yaml's publish settings.
         provider: Option<String>,
         #[command(flatten)]
         options: DeliveryArgs,
@@ -357,6 +363,10 @@ pub(crate) enum Command {
 
     /// Shortcut for `zel deploy netlify`.
     Netlify(DeliveryArgs),
+
+    /// Shortcut for `zel deploy cloudflare` (Cloudflare Pages).
+    #[command(visible_alias = "cf")]
+    Cloudflare(DeliveryArgs),
 
     /// Build, run and push container images.
     Image {
@@ -548,22 +558,22 @@ pub(crate) struct CiInitArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Override saved delivery with Netlify deployment.
+    /// Override saved delivery with netlify or cloudflare deployment.
     #[arg(long, conflicts_with = "target")]
     pub(crate) deploy: Option<String>,
     /// Legacy override: static validates/builds; image builds/pushes a Next image.
     #[arg(long, value_parser = ["static", "image"], conflicts_with = "deploy")]
     pub(crate) target: Option<String>,
-    /// Netlify site ID; --site remains accepted.
+    /// Netlify site ID or Cloudflare Pages project name; --site remains accepted.
     #[arg(long, visible_alias = "site")]
     pub(crate) site_id: Option<String>,
-    /// Request production Netlify deployments; previews are the default.
+    /// Request production deployments; previews are the default.
     #[arg(long)]
     pub(crate) prod: bool,
     /// Overwrite the selected workflow, retaining all other files.
     #[arg(long)]
     pub(crate) force: bool,
-    /// Explicitly upload NETLIFY_AUTH_TOKEN through gh after writing the workflow.
+    /// Explicitly upload the provider token through gh after writing the workflow.
     #[arg(long, conflicts_with = "no_provision")]
     pub(crate) provision: bool,
     /// Retained spelling for the default: write local files only.
@@ -817,10 +827,10 @@ pub(crate) struct DeliveryArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Existing Netlify site ID or domain; overrides NETLIFY_SITE_ID and publish.site.
+    /// Netlify site ID/domain or Cloudflare Pages project name; overrides provider environment and publish.site.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
-    /// Update the live Netlify site. Omit to create a draft preview.
+    /// Update the production site. Omit to create a preview.
     #[arg(long)]
     pub(crate) prod: bool,
     /// Print the plan without tools, credentials, builds or remote requests.
@@ -880,7 +890,7 @@ pub(crate) struct ShipArgs {
     /// Copy referenced assets, or skip them and retain their original URLs.
     #[arg(long, value_enum, default_value = "copy")]
     pub(crate) assets: ImportAssets,
-    /// Deploy static HTML to an existing Netlify site.
+    /// Deploy static HTML with netlify or cloudflare.
     #[arg(long, required_unless_present = "image", conflicts_with = "image")]
     pub(crate) provider: Option<String>,
     /// Build and push this image kind instead of deploying static HTML.
@@ -892,7 +902,7 @@ pub(crate) struct ShipArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long, requires = "image")]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Existing Netlify site ID or domain; defaults to NETLIFY_SITE_ID.
+    /// Netlify site ID/domain or Cloudflare Pages project name; defaults to the provider environment.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
     /// Request production publication; the default is a draft preview.
