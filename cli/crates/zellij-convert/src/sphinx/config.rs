@@ -270,6 +270,13 @@ pub fn validate(v: &Value) -> Result<()> {
             "Sphinx extensions (including MyST/autodoc) require manual migration",
         ));
     }
+    if v.get("language")
+        .is_some_and(|language| !language.is_null() && language.as_str() != Some(""))
+    {
+        return Err(invalid(
+            "language-dependent processing (including localized image selection) requires manual migration; use a source copy with language = None and explicitly chosen resources",
+        ));
+    }
     if v.get("include_patterns").is_some() && strings(v, "include_patterns")? != ["**"] {
         return Err(invalid(
             "only the default include_patterns = ['**'] is supported",

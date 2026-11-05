@@ -155,6 +155,8 @@ fn config_python_is_never_executed_and_unsupported_settings_fail_atomically() {
         "root_doc='a'\nmaster_doc='b'",
         "templates_path=['../outside']",
         "source_encoding='latin1'",
+        "language='en'",
+        "language='fr'",
     ] {
         let t = tempfile::tempdir().unwrap();
         let s = t.path().join("s");
@@ -283,6 +285,41 @@ fn source_html_is_literal_and_code_fences_cannot_escape() {
     assert!(!page.contains("<script>"), "{page}");
     assert!(page.contains("`````text\n````"), "{page}");
     assert!(page.contains("hidden"));
+}
+
+#[test]
+fn resource_names_are_literal_not_percent_decoded_as_source_urls() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n:download:`Percent <Report%20.pdf>`\n\n:download:`Space <Report .pdf>`\n\n.. image:: chart%20.svg\n",
+    );
+    write(&s, "Report%20.pdf", b"literal percent");
+    write(&s, "Report .pdf", b"space");
+    write(&s, "chart%20.svg", b"<svg>percent</svg>");
+    write(&s, "chart .svg", b"<svg>space</svg>");
+    run(&s, &o, &[], 0);
+    assert_eq!(
+        read(&o, "assets/imported/docs/Report%20.pdf"),
+        "literal percent"
+    );
+    assert_eq!(read(&o, "assets/imported/docs/Report .pdf"), "space");
+    assert_eq!(
+        read(&o, "assets/imported/docs/chart%20.svg"),
+        "<svg>percent</svg>"
+    );
+    assert!(!o.join("assets/imported/docs/chart .svg").exists());
+    let page = read(&o, "01-guide/index.mdx");
+    assert!(
+        page.contains("Report%2520.pdf")
+            && page.contains("Report%20.pdf")
+            && page.contains("chart%2520.svg"),
+        "{page}"
+    );
 }
 
 #[test]

@@ -410,6 +410,12 @@ supported; `source_suffix` may be `'.rst'`, `['.rst']` or the dictionary above.
 could transform content is refused. Theme/presentation settings do not recreate
 the original theme.
 
+`language` must be absent, `None` or empty. Sphinx can select different image
+files based on that setting, even for English; choose localized resources
+explicitly in a source copy before importing. Local image/download names are
+literal filenames: a filename containing `%20` remains distinct from one
+containing a space. This differs from URL escaping in ordinary website links.
+
 Navigation starts at `root_doc` (default `index`) and follows explicit
 `.. toctree::` entries in order. Relative document names resolve beside the
 containing page; `/name` resolves from the source root. Explicit titles,

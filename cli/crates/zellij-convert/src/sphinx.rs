@@ -83,14 +83,21 @@ fn relative_link(source: &Utf8Path, target: &Utf8Path) -> String {
 fn asset_reference(source: &Utf8Path, target: &str) -> String {
     // Root-relative source resources do not inherit html_baseurl. The shared
     // resolver still enforces containment and the eligible-resource allowlist.
-    if let Some(path) = target.strip_prefix('/')
+    if target.contains("://") || target.starts_with("//") || target.starts_with("data:") {
+        return target.into();
+    }
+    let target = if let Some(path) = target.strip_prefix('/')
         && !target.starts_with("//")
     {
         let depth = source.parent().unwrap().components().count();
         format!("{}{path}", "../".repeat(depth))
     } else {
         target.into()
-    }
+    };
+    // Sphinx's local resource names are filesystem names, not URL-encoded
+    // Markdown destinations. Encode once here so the shared decoder selects
+    // that exact file, including a literal '%' or '#'.
+    encode_path(&target)
 }
 fn navigation(
     path: &Utf8PathBuf,

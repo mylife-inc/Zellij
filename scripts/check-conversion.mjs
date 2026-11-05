@@ -273,6 +273,10 @@ Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
 :download:\`Report <media/Q3 Report.pdf>\`
 
+:download:\`Literal percent <media/Report%20.pdf>\`
+
+.. image:: media/chart%20.svg
+
 <script>literal_source()</script> and {literal_expression()}
 
 :strong:\`<strong>literal role</strong>\` and \`\`a\`{literal_code}\`\`
@@ -303,6 +307,10 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
   await write('media/logo.svg', asset);
   await write('media/Q3 Report.pdf', pdf);
+  await write('media/Report%20.pdf', pdf);
+  await write('media/Report .pdf', 'wrong source');
+  await write('media/chart%20.svg', asset);
+  await write('media/chart .svg', '<svg>wrong source</svg>');
   execFileSync(zel, ['convert', source, '--out', content, '--from', 'sphinx', ...(mode === '--export' ? ['--validate'] : [])], {stdio:'inherit'});
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
@@ -318,6 +326,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   assert(!home.includes('<script>') && !home.includes('<h1'));
   assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));
   assert(home.includes('a`{literal_code}') && !home.includes('a`\\{literal_code\\}'));
+  assert(home.includes('href="/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
+  assert(home.includes('src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg"'));
   const page = site.guidePages.find(p => p.route === '/guide/setup/api-reference');
   const html = rendered.get(page.route);
   for (const text of ['id="stable-install"', 'href="/guide#welcome"', 'href="/guide?from=relative#welcome"', '.. include:: private-file']) assert(html.includes(text), `Sphinx reference missing ${text}`);
@@ -333,6 +343,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
   assert.deepEqual(await readFile(path.join(content,'assets/imported/docs/media/Q3 Report.pdf')),pdf);
+  assert.deepEqual(await readFile(path.join(content,'assets/imported/docs/media/Report%20.pdf')),pdf);
+  assert.equal(await readFile(path.join(content,'assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
   if (mode === '--export') {
     const output = path.join(root,'sphinx-site');
     execFileSync(zel,['build',content,'--out',output],{stdio:'inherit'});
@@ -345,6 +357,10 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert(cafe.includes('<h1>Café</h1>') && cafe.includes('href="/products/docs/guide/setup/api-reference"'));
     assert.equal(await readFile(path.join(output,'_zellij/assets/imported/docs/media/logo.svg'),'utf8'),asset);
     assert.deepEqual(await readFile(path.join(output,'_zellij/assets/imported/docs/media/Q3 Report.pdf')),pdf);
+    assert(home.includes('href="/products/docs/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
+    assert(home.includes(`src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg?v=${assetHash}"`));
+    assert.deepEqual(await readFile(path.join(output,'_zellij/assets/imported/docs/media/Report%20.pdf')),pdf);
+    assert.equal(await readFile(path.join(output,'_zellij/assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
   }
   console.log('sphinx: reStructuredText navigation, references, literal code/HTML, search, headings and assets verified.');
 }
