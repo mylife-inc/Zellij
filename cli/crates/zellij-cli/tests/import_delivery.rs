@@ -35,6 +35,12 @@ fn fixture(root: &Path, format: &str) {
             "source/mkdocs.yml",
             "site_name: Import\nnav:\n  - index.md\n  - next.md\n  - External: https://example.com\n",
         );
+    } else if format == "vitepress" {
+        write(
+            root,
+            "source/.vitepress/config.ts",
+            "export default {title:'Import', srcDir:'docs', themeConfig:{sidebar:[{link:'/'},{link:'/next'}]}};",
+        );
     } else {
         write(
             root,
@@ -99,7 +105,7 @@ fn run(root: &Path, args: &[&str], code: i32) -> Output {
 }
 #[test]
 fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes() {
-    for format in ["mkdocs", "docusaurus"] {
+    for format in ["mkdocs", "docusaurus", "vitepress"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);
@@ -168,7 +174,7 @@ fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes
 
 #[test]
 fn skipped_assets_keep_original_urls_while_document_links_are_converted() {
-    for format in ["mkdocs", "docusaurus"] {
+    for format in ["mkdocs", "docusaurus", "vitepress"] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         fixture(root, format);

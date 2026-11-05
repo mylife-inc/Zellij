@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `publish`, `ship` | Netlify static deployment and image registry publication work. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs and Docusaurus only. VitePress, Sphinx, Jekyll/Hugo converters remain planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus and declarative VitePress. Sphinx and Jekyll/Hugo converters remain planned. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -31,6 +31,14 @@ report ambiguous slash policies or conflicting file interpretations. Versioned,
 localized, multi-instance and custom plugin routing, HTML/JSX attributes and
 relative website assets still require review. No source JavaScript is executed
 and no URL is fetched. See [the conversion reference](../examples/zellij-docs/content/02-cli/convert.mdx).
+
+VitePress imports accept literal `.vitepress/config.{js,ts,mjs,mts}` modules
+and the standard `defineConfig` wrapper without evaluation. They read `srcDir`,
+nested/multiple sidebars, page metadata, `base`/`cleanUrls` links and referenced
+source/public assets. Dynamic config, rewrites, locales, exclusion patterns and
+custom output/cache paths are rejected before writes. Vue, home layout and
+custom Markdown presentation remain manual migration tasks. VitePress is new in
+source; published rc.1 does not include it.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
 is newer and has not been published as rc.2. The old rc.2 publication proposal
@@ -61,3 +69,10 @@ The PR #75 post-merge Windows preview step subsequently failed an immediate
 watch-announcement assertion. Source `a1003bd` waits for the separately relayed
 stdout message, retaining bounded readiness, early-exit checks and the assertion.
 This harness fix joins the relative-link PR and requires new Windows CI evidence.
+
+**PR #76 closure:** relative website links and the Windows watch-readiness fix
+merged as `e8f525d` after all 16 checks passed on `903c66d` in run `42007978630`.
+Post-merge base-image run `42011273390` passed; main `42011273809` has 15 passing
+jobs with CLI acceptance still running. New VitePress source `38b9d41` passes
+140 local Rust tests, Clippy/formatting, deep/strict docs and all three Node
+import-rendering fixtures. Its own hosted/native CI and merge remain pending.

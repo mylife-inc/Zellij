@@ -561,7 +561,7 @@ impl Converter for Docusaurus {
         crate::references::rewrite(
             &tree,
             &documents,
-            Some(source),
+            crate::references::AssetSource::Docusaurus(source),
             urls.as_ref(),
             options,
             &mut conversion,

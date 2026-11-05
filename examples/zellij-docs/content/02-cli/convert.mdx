@@ -1,6 +1,6 @@
 ---
 title: zel convert
-description: Read a MkDocs or Docusaurus tree and write the Zellij equivalent beside it.
+description: Read a MkDocs, Docusaurus or VitePress tree and write the Zellij equivalent beside it.
 ---
 
 <Callout type="tip" title="Available">
@@ -126,13 +126,84 @@ zel list formats
 | --- | --- | --- |
 | MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir` |
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative |
+| VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets |
 
 Converters are plugins compiled into the binary, so `zel list formats` prints
 what your build can actually read.
 
+## VitePress imports
+
+```bash title="terminal"
+zel cv ./vitepress-site --from vitepress --out ./manual --layout site --dry-run
+zel cv ./vitepress-site --from vitepress --out ./manual --layout site
+```
+
+Pass the directory containing `.vitepress/`, even when `srcDir` moves the
+Markdown elsewhere. Exactly one supported config file must exist. The importer
+reads literal `export default {...}` and `module.exports = {...}` objects, plus
+the standard wrapper below, as data. It does not execute JavaScript or install
+VitePress:
+
+```ts
+import { defineConfig } from 'vitepress'
+export default defineConfig({
+  title: 'Product manual',
+  description: 'How to use the product',
+  srcDir: 'content',
+  base: '/manual/',
+  cleanUrls: true,
+  themeConfig: {
+    sidebar: [
+      { text: 'Welcome', link: '/' },
+      { text: 'Guides', items: [{ text: 'Install', link: '/guide/install' }] }
+    ]
+  }
+})
+```
+
+This reads `content/index.md` and `content/guide/install.md`. `srcDir` defaults
+to the config's parent site directory and must stay inside it. Sidebar links
+resolve from that source root; item `base` values prefix descendant links.
+Array order and nested labels are retained. A linked group places its page
+first. Multiple sidebars are combined into one guide, grouped by route prefix
+in lexical order, with a report explaining the change. Repeated pages are
+written once. Styling fields and sidebar query/fragment suffixes are reported.
+
+Without a sidebar, visible `.md` files supply navigation in filename order.
+An explicitly empty or `false` sidebar stays empty. Files absent from a declared
+sidebar are reported and skipped, even though VitePress's file-based routing
+could publish them. Hidden/underscore trees, `node_modules` and `public` are
+not scanned as documentation; `.mdx` files are reported and skipped.
+
+Markdown file links and supported root-relative `.md`, extensionless, `.html`
+and directory-index URLs become Zellij guide routes. Both authored root URLs
+and URLs with the configured `base` are recognized. Relative website document
+links use the source page's `cleanUrls`/index location. Queries and fragments
+are preserved. VitePress provides no site-origin setting here, so absolute
+HTTP(S) URLs remain external; nothing is fetched.
+
+Referenced document-relative assets go to `assets/imported/docs/`. Root-relative
+assets can also come from `public/` inside `srcDir`, and then go to
+`assets/imported/public/`. If the same root URL names files in both places,
+conversion fails before writes so you can resolve the ambiguity. `--assets skip`
+still checks paths and ambiguity. Unreferenced public files are not copied.
+
+Computed config, extra imports, functions, spreads and TypeScript type expressions
+are rejected before output. Nonempty `rewrites`, `locales`, `srcExclude` and
+`vite` settings, dynamic `[parameter]` Markdown paths, config inheritance/hooks,
+and custom `outDir`/`cacheDir` also require simplification in a source copy first.
+This prevents the importer from guessing routes, exclusions or generated trees.
+
+Vue components, top navigation, home-page layout and custom Markdown features
+such as containers, includes and code imports require manual migration. Source
+text/metadata is retained, with conversion notes; these features are not turned
+into equivalent Zellij components. Inspect the report and build the result.
+This supported subset follows VitePress 1.x conventions and is newer than the
+published rc.1 executable.
+
 ## Page metadata and document IDs
 
-Both importers preserve an authored YAML `title` and `description` as active
+All three importers preserve an authored YAML `title` and `description` as active
 page metadata. The title falls back to the first document-level H1, then the
 navigation label, then the source filename without its extension. A navigation
 label stays in the sidebar independently of the page title. Original front

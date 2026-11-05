@@ -267,7 +267,7 @@ impl Converter for MkDocs {
         crate::references::rewrite(
             &tree,
             &documents,
-            None,
+            crate::references::AssetSource::Documents,
             Some(&urls),
             options,
             &mut conversion,

@@ -126,9 +126,16 @@ fn external(url: &str) -> bool {
         })
 }
 
+#[derive(Clone, Copy)]
+pub(crate) enum AssetSource<'a> {
+    Documents,
+    Docusaurus(&'a Utf8Path),
+    VitePress,
+}
+
 struct Resolver<'a> {
     tree: &'a DocTree,
-    project: Option<&'a Utf8Path>,
+    asset_source: AssetSource<'a>,
     source_urls: Option<&'a crate::source_urls::SourceUrls>,
     options: &'a ConvertOptions,
     routes: BTreeMap<Utf8PathBuf, String>,
@@ -138,6 +145,38 @@ struct Resolver<'a> {
 }
 
 impl Resolver<'_> {
+    fn absolute_asset(
+        &self,
+        relative: Utf8PathBuf,
+    ) -> Result<(Utf8PathBuf, Utf8PathBuf, &'static str)> {
+        let (root, namespace) = match self.asset_source {
+            AssetSource::Documents => (self.tree.root.clone(), "docs"),
+            AssetSource::Docusaurus(project) => {
+                (contained_path(project, Utf8Path::new("static"))?, "static")
+            }
+            AssetSource::VitePress => {
+                let public = contained_path(&self.tree.root, Utf8Path::new("public"))?;
+                if relative.as_str().is_empty() {
+                    return Ok((public, relative, "public"));
+                }
+                let public_file = contained_path(&public, &relative)?.is_file();
+                let source_file = contained_path(&self.tree.root, &relative)?.is_file();
+                if public_file && source_file {
+                    return Err(unsafe_path(
+                        &relative,
+                        "VitePress asset exists in both the source and public directories; resolve the ambiguity before importing",
+                    ));
+                }
+                if public_file {
+                    (public, "public")
+                } else {
+                    (self.tree.root.clone(), "docs")
+                }
+            }
+        };
+        Ok((root, relative, namespace))
+    }
+
     fn report(&mut self, source: &Utf8Path, url: &str, reason: &str) {
         self.unmapped.push(Unmapped {
             source: source.to_owned(),
@@ -176,7 +215,9 @@ impl Resolver<'_> {
                 return Ok(url.to_owned());
             }
             website_asset = urls.asset(&website_path).map(Utf8PathBuf::from);
-            if website_asset.is_none() && (self.project.is_none() || !path.starts_with('/')) {
+            if website_asset.is_none()
+                && (matches!(self.asset_source, AssetSource::Documents) || !path.starts_with('/'))
+            {
                 self.report(source, url, "URL is outside the source deployment prefix");
                 return Ok(url.to_owned());
             }
@@ -187,20 +228,15 @@ impl Resolver<'_> {
         self.fragments |= url.contains('#');
         // Docusaurus documents static-folder assets as /img/x and
         // @site/static/img/x. Neither authorizes arbitrary project-root reads.
-        let static_path = self.project.and_then(|_| {
-            path.strip_prefix("@site/static/")
-                .or_else(|| path.strip_prefix('/'))
-        });
+        let static_path = match self.asset_source {
+            AssetSource::Documents => None,
+            AssetSource::Docusaurus(_) => path
+                .strip_prefix("@site/static/")
+                .or_else(|| path.strip_prefix('/')),
+            AssetSource::VitePress => path.strip_prefix('/'),
+        };
         let (root, relative, namespace) = if let Some(relative) = website_asset {
-            if let Some(project) = self.project {
-                (
-                    contained_path(project, Utf8Path::new("static"))?,
-                    relative,
-                    "static",
-                )
-            } else {
-                (self.tree.root.clone(), relative, "docs")
-            }
+            self.absolute_asset(relative)?
         } else if let Some(path) = static_path {
             let Some(relative) = resolve(Utf8Path::new(""), path) else {
                 return Err(unsafe_path(
@@ -208,8 +244,7 @@ impl Resolver<'_> {
                     "asset reference escapes its static root or is not portable",
                 ));
             };
-            let root = contained_path(self.project.unwrap(), Utf8Path::new("static"))?;
-            (root, relative, "static")
+            self.absolute_asset(relative)?
         } else {
             if path.starts_with('/') {
                 self.report(source, url, "root-relative source URLs cannot be mapped without the source deployment configuration");
@@ -450,14 +485,14 @@ impl Resolver<'_> {
 pub(crate) fn rewrite(
     tree: &DocTree,
     documents: &BTreeMap<Utf8PathBuf, String>,
-    project: Option<&Utf8Path>,
+    asset_source: AssetSource<'_>,
     source_urls: Option<&crate::source_urls::SourceUrls>,
     options: &ConvertOptions,
     conversion: &mut Conversion,
 ) -> Result<()> {
     let mut resolver = Resolver {
         tree,
-        project,
+        asset_source,
         source_urls,
         options,
         routes: BTreeMap::new(),
@@ -487,7 +522,7 @@ pub(crate) fn rewrite(
             ));
         }
         resolver.routes.insert(source.clone(), target.clone());
-        if project.is_some()
+        if matches!(asset_source, AssetSource::Docusaurus(_))
             && source.extension() == Some("mdx")
             && !tree.root.join(source.with_extension("md")).exists()
         {
