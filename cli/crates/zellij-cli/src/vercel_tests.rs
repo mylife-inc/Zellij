@@ -420,7 +420,9 @@ fn invalid_configuration_and_export_fail_before_any_upload() {
     for team in ["", "team_", "https://example.com", "bad"] {
         assert!(Client::new(API, "token", Some(team), Duration::ZERO, Duration::ZERO).is_err());
     }
-    for file in ["vercel.json", ".vercel/output/config.json", "bad?.html"] {
+    // '#' is a valid filename on every supported OS, but invalid for this
+    // upload protocol. Windows rejects '?' before zel can inspect the file.
+    for file in ["vercel.json", ".vercel/output/config.json", "bad#.html"] {
         let tmp = tempfile::tempdir().unwrap();
         write(root(&tmp), "index.html", "Docs");
         write(root(&tmp), file, "unsupported");
