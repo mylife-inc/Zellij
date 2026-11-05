@@ -3699,3 +3699,18 @@ and plugin routing remain unsupported and documented for review. This remains
 unpublished rc.2 functionality; release preparation and approval, Netlify's
 hosting-comment issue/production cutover, and additional deployment/CI providers
 remain separate work.
+
+
+CI follow-up: run `41955787336` on `8fa5b20` passed 15 jobs, including all
+native import suites, but the CLI job failed an existing development-browser
+fixture assertion: navigation count changed from 9 to 10 after the test used
+Back and then wrote an invalid edit. Both the search index and server revision
+remained unchanged across that edit. The fixture recorded its baseline before
+waiting for the restored page to acknowledge the last valid asset revision.
+
+Fix `a4c4e44` waits for two successful revision polls in the same document
+before recording that baseline, and rechecks the valid heading/image. It keeps
+the existing assertions that invalid edits preserve the revision, navigation
+count, content and image. No product runtime was changed. JavaScript syntax and
+12 deterministic reload/watcher unit tests pass locally. Browser confirmation
+and all final-head CI gates remain pending; no local browser/container ran.
