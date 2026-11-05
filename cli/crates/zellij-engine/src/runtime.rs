@@ -259,7 +259,9 @@ fn select_runtime(
 }
 
 /// Detect a runtime without an unbounded wait. The info probes share a 12-second
-/// budget, with at most 3 seconds per process; version reporting gets 2 seconds.
+/// budget. Automatic discovery allows 3 seconds per process; an explicitly
+/// selected runtime can use the full budget because no fallback is allowed.
+/// Version reporting gets 2 seconds.
 pub fn detect() -> Result<Runtime> {
     zellij_core::verbose!("Discovering a usable container runtime (no services are started).");
     let selected = selected_program(env_is_set)?;
@@ -275,6 +277,13 @@ pub fn detect() -> Result<Runtime> {
         Vec::new()
     };
     let started = Instant::now();
+    // A selected endpoint has no fallback candidates to reserve time for.
+    // Docker may spend several seconds probing client plugins before its daemon.
+    let probe_limit = if selected.is_some() {
+        DISCOVERY_BUDGET
+    } else {
+        INFO_TIMEOUT
+    };
     let mut runtime = select_runtime(selected, &hosts, |program, host| {
         let mut command = Command::new(program);
         if let Some(host) = host {
@@ -282,7 +291,7 @@ pub fn detect() -> Result<Runtime> {
         }
         probe_status(
             command.arg("info"),
-            INFO_TIMEOUT.min(DISCOVERY_BUDGET.saturating_sub(started.elapsed())),
+            probe_limit.min(DISCOVERY_BUDGET.saturating_sub(started.elapsed())),
         )
     })?;
     zellij_core::verbose!(
