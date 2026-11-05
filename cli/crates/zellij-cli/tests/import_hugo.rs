@@ -284,6 +284,16 @@ fn implicit_sections_preserve_resource_filename_case() {
         page.contains("/_zellij/assets/imported/docs/Logo.svg"),
         "{page}"
     );
+    write(
+        &s,
+        "content/_index.md",
+        "---\ndraft: true\n---\n# Hidden home\n",
+    );
+    let second = t.path().join("draft-home");
+    run(&s, &second, &[], 0);
+    assert!(second.join("assets/imported/docs/Guide/Photo.svg").exists());
+    assert!(!second.join("assets/imported/docs/Logo.svg").exists());
+    assert!(!second.join("01-guide/index.mdx").exists());
 }
 
 #[test]

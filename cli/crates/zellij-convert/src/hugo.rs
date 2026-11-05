@@ -330,7 +330,13 @@ impl Converter for Hugo {
                 .filter(|(p, page)| {
                     (page.branch || page.leaf) && path.starts_with(p.parent().unwrap())
                 })
-                .max_by_key(|(p, _)| p.components().count());
+                .max_by_key(|(p, _)| p.components().count())
+                // An implicit top-level section owns its resources even when
+                // the home page is draft; home metadata does not cascade.
+                .filter(|(p, _)| {
+                    !p.parent().unwrap().as_str().is_empty()
+                        || path.parent().unwrap().as_str().is_empty()
+                });
             if owner.is_some_and(|(_, p)| !p.published) {
                 continue;
             }
