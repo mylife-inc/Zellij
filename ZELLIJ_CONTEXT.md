@@ -5126,3 +5126,10 @@ provisioning. Warnings-denied workspace Clippy, Rust formatting, Node syntax,
 workflow actionlint (including an emitted Cloudflare workflow), and strict/deep
 Zellij documentation checks passed (55 routes, 23 examples). No local Docker or
 browser process was started. Final-head hosted/native CI and merge remain pending.
+
+Implementation commit **`8898a30`** contains the Cloudflare adapter, provider
+resolution/CI changes, matching documentation and bounded Windows fixture rename
+retry. Local evidence: `/private/tmp/zellij-cloudflare-workspace.log` (471 passed),
+`zellij-cloudflare-final-tests.log` (40 CLI unit + 16 workflow tests passed),
+`zellij-cloudflare-clippy.log`, and `zellij-cloudflare-docs.log`.
+Final-head GitHub checks, hosted export acceptance and merge are pending.
