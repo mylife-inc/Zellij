@@ -109,13 +109,14 @@ fn generated_manual_indexes_preserve_text_and_link_to_nested_children() {
     let raw = fs::read_to_string(out.join("01-guide/category/guides/index.mdx")).unwrap();
     let metadata: Value = serde_yaml_ng::from_str(raw.split("---").nth(1).unwrap()).unwrap();
     assert_eq!(metadata["title"], "Read <Guide> {now}");
+    assert_eq!(metadata["route"], "/guide/old");
     assert!(raw.contains("[Welcome &#91;literal&#93; &#123;text&#125;](</guide/welcome>)"));
     assert!(raw.contains("[Nested](</guide/category/nested>)"));
     assert!(raw.contains("[Child](</guide/deep/child>)"));
     assert!(raw.contains("[Last](</guide/last>)"));
     assert!(raw.contains("&#60;img&#47;&#62;"));
     assert!(!raw.split("---").last().unwrap().contains("<img/>"));
-    assert!(report.contains("category link fields not mapped: image, keywords, slug"));
+    assert!(report.contains("category link fields not mapped: image, keywords"));
     assert!(!report.contains("reference "));
 }
 

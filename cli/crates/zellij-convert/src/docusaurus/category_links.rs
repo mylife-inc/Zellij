@@ -9,7 +9,7 @@ use super::{DocIndex, Document};
 use crate::{
     Unmapped,
     model::Entry,
-    references::{encode_path, route},
+    references::{encode_path, route, route_key},
 };
 
 #[derive(Default)]
@@ -24,6 +24,7 @@ pub(super) enum Link {
 pub(super) struct GeneratedIndex {
     title: Option<String>,
     description: Option<String>,
+    route: Option<String>,
 }
 
 fn invalid(source: &Utf8Path, message: impl std::fmt::Display) -> Error {
@@ -65,9 +66,16 @@ pub(super) fn parse(
                 return Err(invalid(source, "title must be a nonempty string"));
             }
             let description = text(value.get("description"), source, "description")?;
+            let route = text(value.get("slug"), source, "slug")?
+                .map(|slug| super::slugs::category(&slug, source))
+                .transpose()?;
             (
-                Link::Generated(GeneratedIndex { title, description }),
-                &["type", "title", "description"],
+                Link::Generated(GeneratedIndex {
+                    title,
+                    description,
+                    route,
+                }),
+                &["type", "title", "description", "slug"],
             )
         }
         _ => return Err(invalid(source, "type must be doc or generated-index")),
@@ -116,6 +124,7 @@ struct Page {
     title: String,
     description: Option<String>,
     items: Vec<Entry>,
+    route: Option<String>,
 }
 
 pub(super) struct Pages {
@@ -129,7 +138,10 @@ impl Pages {
         // Reserve even excluded/orphan sources, so generated pages cannot take
         // over their routes if the user later adds those documents to the nav.
         Self {
-            occupied: documents.keys().map(route).collect(),
+            occupied: documents
+                .keys()
+                .map(|path| route_key(&route(path)))
+                .collect(),
             keys: BTreeMap::new(),
             pages: BTreeMap::new(),
         }
@@ -187,7 +199,7 @@ impl Pages {
                     format!("{stem}-{suffix}")
                 };
                 let candidate = Utf8PathBuf::from(format!("category/{name}/index.md"));
-                if self.occupied.insert(route(&candidate)) {
+                if self.occupied.insert(route_key(&route(&candidate))) {
                     break candidate;
                 }
                 suffix += 1;
@@ -199,6 +211,7 @@ impl Pages {
         self.pages.entry(path.clone()).or_insert_with(|| Page {
             title: title.clone(),
             description: metadata.description,
+            route: metadata.route,
             items: items.clone(),
         });
         let linked = Entry::Page {
@@ -206,6 +219,47 @@ impl Pages {
             source: path,
         };
         with_document(label, items, linked)
+    }
+
+    /// Assign public routes after collecting all categories, so an explicit
+    /// slug takes precedence over defaults regardless of sidebar order. File
+    /// paths stay stable; route overrides do not select filesystem paths.
+    pub fn routes(
+        &self,
+        documents: &BTreeMap<Utf8PathBuf, Document>,
+    ) -> BTreeMap<Utf8PathBuf, String> {
+        let mut overrides: BTreeMap<_, _> = documents
+            .iter()
+            .filter_map(|(path, doc)| {
+                doc.route
+                    .as_ref()
+                    .map(|route| (path.clone(), route.clone()))
+            })
+            .chain(self.pages.iter().filter_map(|(path, page)| {
+                page.route
+                    .as_ref()
+                    .map(|route| (path.clone(), route.clone()))
+            }))
+            .collect();
+        let mut occupied: BTreeSet<_> = documents
+            .iter()
+            .map(|(path, doc)| route_key(&doc.route.clone().unwrap_or_else(|| route(path))))
+            .chain(overrides.values().map(|route| route_key(route)))
+            .collect();
+        for (path, page) in &self.pages {
+            if page.route.is_some() {
+                continue;
+            }
+            let base = route(path);
+            let mut candidate = base.clone();
+            let mut suffix = 2;
+            while !occupied.insert(route_key(&candidate)) {
+                candidate = format!("{base}-{suffix}");
+                suffix += 1;
+            }
+            overrides.insert(path.clone(), candidate);
+        }
+        overrides
     }
 
     pub fn documents(&self, index: &DocIndex<'_>) -> BTreeMap<Utf8PathBuf, String> {

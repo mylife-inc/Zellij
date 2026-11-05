@@ -9,6 +9,7 @@
 //! rewrite.
 
 use camino::Utf8PathBuf;
+use std::collections::BTreeMap;
 
 /// An entry in a documentation tree.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -38,6 +39,9 @@ pub struct DocTree {
     /// The absolute path the pages were read from.
     pub root: Utf8PathBuf,
     pub nav: Vec<Entry>,
+    /// Validated route overrides from the source adapter, keyed by source file.
+    /// Unknown source front matter must never activate Zellij routes directly.
+    pub routes: BTreeMap<Utf8PathBuf, String>,
     /// Pages found on disk that the navigation never mentioned.
     ///
     /// Kept separately rather than appended: a tool that hides a page from its
