@@ -85,3 +85,10 @@ Post-merge base-image run `42011273390` passed; main `42011273809` has 15 passin
 jobs with CLI acceptance still running. New VitePress source `38b9d41` passes
 140 local Rust tests, Clippy/formatting, deep/strict docs and all three Node
 import-rendering fixtures. Its own hosted/native CI and merge remain pending.
+
+**PR #77 closure:** VitePress merged as `0729235` after all 16 checks passed on
+`155f09c` in `42014697065`. Both post-merge workflows passed (`42017999796`,
+`42017999836`); PR #76's main run `42011273809` passed too. Current Jekyll
+source `0073bca` passes 155 local Rust tests, Clippy/formatting, deep/strict docs
+and all four Node rendering fixtures. Its own hosted/native CI and merge remain
+pending; Hugo has not been implemented by this milestone.

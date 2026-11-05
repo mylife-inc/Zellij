@@ -1834,3 +1834,15 @@ fixtures pass. Final-head hosted/native CI and merge remain pending. See the
 latest [audit entry](zellij-audit-2026-10-16.md) for source semantics, limits,
 verification, and PR #76 closure; the [current status](zel-cli-status-2026-11-05.md)
 separates implemented handlers from remaining format/provider scope.
+
+### 2026-11-05 — Jekyll documentation imports
+
+Source `0073bca` adds the Jekyll converter through the shared formats/detection,
+convert/migrate/ship pipeline. YAML config, front-matter Markdown pages, enabled
+collections, literal defaults/navigation, source URLs and eligible assets are
+supported. Ruby/Liquid/theme execution, blogs, dated collections, TOML and
+custom routing/glob behavior remain explicitly limited. Local 155 Rust tests,
+Clippy, docs validation and all four Node rendering fixtures pass; final-head
+hosted/native CI is pending. See the latest [audit entry](zellij-audit-2026-10-16.md)
+for verification and PR #77 closure, and the [current status](zel-cli-status-2026-11-05.md)
+for remaining scope. Hugo remains planned.
