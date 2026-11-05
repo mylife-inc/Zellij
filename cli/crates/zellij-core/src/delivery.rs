@@ -101,10 +101,85 @@ pub enum PublishSettings {
     },
 }
 
-#[derive(Clone, Copy, Debug, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Provider {
     Netlify,
+    Cloudflare,
+}
+impl Provider {
+    pub fn parse(value: &str) -> Result<Self> {
+        match value {
+            "netlify" => Ok(Self::Netlify),
+            "cloudflare" => Ok(Self::Cloudflare),
+            _ => Err(Error::InvalidArgument(
+                "unsupported deployment provider; choose netlify or cloudflare".into(),
+            )),
+        }
+    }
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Netlify => "netlify",
+            Self::Cloudflare => "cloudflare",
+        }
+    }
+    pub fn site_environment(self) -> &'static str {
+        match self {
+            Self::Netlify => "NETLIFY_SITE_ID",
+            Self::Cloudflare => "CLOUDFLARE_PAGES_PROJECT_NAME",
+        }
+    }
+    pub fn token_environment(self) -> &'static str {
+        match self {
+            Self::Netlify => "NETLIFY_AUTH_TOKEN",
+            Self::Cloudflare => "CLOUDFLARE_API_TOKEN",
+        }
+    }
+    pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
+        if provider.is_some() && to.is_some() && provider != to {
+            return Err(Error::InvalidArgument(
+                "the explicit provider conflicts with --to".into(),
+            ));
+        }
+        if let Some(value) = provider.or(to) {
+            return Self::parse(value).map(Some);
+        }
+        Ok(match site.publish {
+            Some(PublishSettings::Deploy { provider, .. }) => Some(provider),
+            _ => None,
+        })
+    }
+    pub fn validate_site(self, value: &str) -> Result<()> {
+        match self {
+            Self::Netlify => validate_site_identifier(value),
+            Self::Cloudflare => {
+                if value.is_empty()
+                    || value.len() > 58
+                    || value.starts_with('-')
+                    || value.ends_with('-')
+                    || !value
+                        .bytes()
+                        .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
+                {
+                    return Err(Error::InvalidArgument("Cloudflare requires an existing Pages project name (1–58 lowercase letters, digits or hyphens, beginning and ending with a letter or digit); use its name, not its URL".into()));
+                }
+                Ok(())
+            }
+        }
+    }
+    pub fn plan(self, destination: &str, production: bool) -> Result<DeliveryPlan> {
+        self.validate_site(destination)?;
+        Ok(match self {
+            Self::Netlify => DeliveryPlan::Netlify {
+                site: destination.into(),
+                production,
+            },
+            Self::Cloudflare => DeliveryPlan::Cloudflare {
+                project: destination.into(),
+                production,
+            },
+        })
+    }
 }
 
 fn site_identifier<'de, D: serde::Deserializer<'de>>(
@@ -138,6 +213,7 @@ pub fn validate_site_identifier(value: &str) -> Result<()> {
 pub enum DeliveryPlan {
     Push(ImagePublication),
     Netlify { site: String, production: bool },
+    Cloudflare { project: String, production: bool },
 }
 
 impl DeliveryPlan {
@@ -147,9 +223,9 @@ impl DeliveryPlan {
         if let Some(platform) = platform {
             match &mut self {
                 Self::Push(image) => image.platform = Some(platform),
-                Self::Netlify { .. } => {
+                Self::Netlify { .. } | Self::Cloudflare { .. } => {
                     return Err(Error::InvalidArgument(
-                        "--platform requires image publication; Netlify accepts static HTML".into(),
+                        "--platform requires image publication; deployment providers accept static HTML".into(),
                     ));
                 }
             }
@@ -168,17 +244,7 @@ impl DeliveryPlan {
         environment_site: Option<&str>,
         production: bool,
     ) -> Result<Self> {
-        if provider.is_some() && to.is_some() && provider != to {
-            return Err(Error::InvalidArgument(
-                "the explicit provider conflicts with --to".into(),
-            ));
-        }
-        let explicit = provider.or(to);
-        if explicit.is_some_and(|p| p != "netlify") {
-            return Err(Error::InvalidArgument(
-                "unsupported deployment provider; currently only netlify is implemented".into(),
-            ));
-        }
+        let selected = Provider::selected(site, provider, to)?;
         if provider.is_none() && matches!(site.publish, Some(PublishSettings::Push { .. })) {
             if to.is_some() || site_id.is_some() || production {
                 return Err(Error::InvalidArgument("image publication does not accept --to, --site-id or --prod; use `zel deploy netlify` for an explicit static-site deployment".into()));
@@ -186,19 +252,19 @@ impl DeliveryPlan {
             return ImagePublication::resolve(site, tag).map(Self::Push);
         }
         let saved_site = match &site.publish {
-            Some(PublishSettings::Deploy { site, .. }) => site.as_deref(),
+            Some(PublishSettings::Deploy { provider, site }) if Some(*provider) == selected => {
+                site.as_deref()
+            }
             _ => None,
         };
-        if explicit.is_none() && !matches!(site.publish, Some(PublishSettings::Deploy { .. })) {
-            return Err(Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify --site-id <id>`".into()));
-        }
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare --site <destination>`".into()))?;
         if tag.is_some() {
             return Err(Error::InvalidArgument(
-                "Netlify accepts generated static HTML, not an image tag; remove --tag".into(),
+                "deployment accepts generated static HTML, not an image tag; remove --tag".into(),
             ));
         }
-        let destination = site_id.or(environment_site).or(saved_site).ok_or_else(|| Error::InvalidArgument("Netlify requires an existing site: pass --site-id (or --site), set NETLIFY_SITE_ID, or save publish.site in zel.yaml".into()))?;
-        Self::netlify(destination, production)
+        let destination = site_id.or(environment_site).or(saved_site).ok_or_else(|| Error::InvalidArgument(format!("{} requires an existing site: pass --site-id (or --site), set {}, or save publish.site in zel.yaml", selected.as_str(), selected.site_environment())))?;
+        selected.plan(destination, production)
     }
 
     /// Shared constructor for saved delivery and a newly imported site.

@@ -1,6 +1,6 @@
 ---
 title: zel deploy
-description: Build static HTML once and upload it directly to Netlify.
+description: Build static HTML once and upload it directly to Netlify or Cloudflare Pages.
 ---
 
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
@@ -9,7 +9,7 @@ description: Build static HTML once and upload it directly to Netlify.
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Other providers remain planned and are rejected.
+predates these commands. Cloudflare Pages is available in current source; rc.1 does not include it.
 </Callout>
 
 ```bash title="terminal"
@@ -25,7 +25,7 @@ folder when needed. See [site discovery](/cli/config#site-layout-and-discovery).
 <div id="credentials" className="zellij-legacy-anchor" />
 <div id="what-it-deliberately-will-not-do-for-you" className="zellij-legacy-anchor" />
 
-## Set up the destination
+## Set up Netlify
 
 Create a Netlify project using Netlify's dashboard. Copy its **Project ID** and
 generate a personal access token with access to that project. Supply the token
@@ -44,6 +44,74 @@ Token values belong in the environment, not `zel.yaml`, command arguments or
 committed files. Missing credentials fail before building; a read-only API
 request checks access to the selected project before the build starts. Both
 preview and production deployment need network access and valid credentials.
+
+## Cloudflare Pages
+
+Current source adds `zel deploy cloudflare`, `zel cloudflare`, and the short
+alias `zel cf`. These commands are not in the published rc.1 binary.
+
+```bash
+zel cf --site manual --dry-run
+zel cf --site manual             # preview
+zel cf docs/manual --site manual --prod
+```
+
+Use an **existing Pages project**. Set `CLOUDFLARE_ACCOUNT_ID` to its account ID
+and `CLOUDFLARE_API_TOKEN` to an API token with **Account → Cloudflare Pages → Edit**
+access for that account. Tokens stay in your environment or CI secret store.
+`--site` / `--site-id` takes the project name, such as `manual`, not a `pages.dev`
+URL. It overrides `CLOUDFLARE_PAGES_PROJECT_NAME`, then saved `publish.site`.
+Read [Cloudflare's Direct Upload setup](https://developers.cloudflare.com/pages/get-started/direct-upload/)
+and [CI token setup](https://developers.cloudflare.com/pages/how-to/use-direct-upload-with-continuous-integration/)
+for account-side configuration. `zel` neither creates projects nor installs or
+invokes Wrangler. It does not load Wrangler configuration or stored credentials.
+
+```yaml title="docs/zellij/zel.yaml"
+version: 1
+renderer: portable
+publish:
+  action: deploy
+  provider: cloudflare
+  site: manual
+```
+
+`zel pub` and bare `zel deploy` then use this destination. An explicit provider
+change never inherits another provider's saved destination or environment ID.
+The account ID remains an environment setting; it is not saved in `zel.yaml`.
+
+**Preview is the default.** The command selects branch `zel-preview`, regardless
+of your local Git branch. Repeated previews update that branch alias and receive
+individual deployment URLs. If the project's production branch is named
+`zel-preview`, preview deployment fails before building; change that project
+setting first. `--prod` selects the production branch returned by project
+preflight. Skipped deployments are reported as failures. The command waits for the deployment stage to succeed and reports
+its HTTPS `pages.dev` URL, with the hosted base path when configured. Project
+settings, access restrictions and concurrent deployments still govern live access.
+
+Both renderers build once into temporary output. Portable builds need no Docker
+or Node.js; hosted builds retain their container requirement. Hosted URL/feature
+flags below also work with Cloudflare. Source files and previous local output
+remain intact, and `ship --provider cloudflare --site manual` saves the converted
+site's destination for later `pub` calls. The `--prod` choice is never saved by ship.
+
+This adapter uploads generated **static assets**, with a maximum of 20,000 files
+and 25 MiB per file. It hashes assets, skips already uploaded content and batches
+missing uploads. Worker code, Functions and root `_headers`, `_redirects` or
+`_routes.json` are rejected; custom platform rules and server-side Next apps are
+outside this adapter. Symlinks, junctions and non-regular files are rejected,
+as are asset paths containing `#`, `?`, backslashes or control characters.
+Unicode, spaces and literal percent signs retain their filenames.
+
+Cloudflare applies its [HTML route rules](https://developers.cloudflare.com/pages/configuration/serving-pages/),
+including redirects from `.html` URLs to clean routes. Downloaded portable output
+still supports direct-file navigation. No DNS or custom-domain changes are made.
+
+Credentials and project access are checked before a build. API redirects are
+refused, errors omit response bodies and tokens, and requests have bounded
+connection/request/deployment timeouts. Failed requests are not retried
+automatically. An uncertain create response may already have published; check
+the Cloudflare dashboard before repeating a command. Tests cover the upload
+protocol and generated exports; live Cloudflare account acceptance remains pending.
 
 ## Save the choice
 
@@ -171,20 +239,20 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 
 | Option | Meaning |
 | --- | --- |
-| `[provider]` | `netlify`; omit to execute saved publication settings |
+| `[provider]` | `netlify` or `cloudflare`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
-| `--site-id <id-or-domain>` | Destination; `--site` is equivalent |
+| `--site-id <destination>` | Netlify ID/domain or Cloudflare project name; `--site` is equivalent |
 | `--prod` | Request live publication instead of a draft preview |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Resolve and print the plan only |
-| `--to netlify` | Explicit provider for saved static deployment |
+| `--to <provider>` | Explicit provider for saved static deployment |
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
 
 `--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
-the default. Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway remain future
+the default. Vercel, GitHub Pages, S3, Fly and Railway remain future
 adapters; they are not aliases for Netlify.
 
 See [`zel publish`](/cli/publish) for image registry publication and

@@ -16,6 +16,7 @@ mod args;
 use serde_json::json;
 use std::io::Write;
 mod ci;
+mod cloudflare;
 mod delivery;
 mod development;
 mod eject;
@@ -260,7 +261,7 @@ fn main() {
         Command::Convert(ref options) => imports::convert(options, false),
         // Parsing normalizes these aliases. Keep dispatch exhaustive so a new
         // command cannot compile while silently falling into a stub handler.
-        Command::Shortcut(_) | Command::Netlify(_) => {
+        Command::Shortcut(_) | Command::Netlify(_) | Command::Cloudflare(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

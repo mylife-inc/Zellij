@@ -155,7 +155,7 @@ fn delivery_configuration_is_typed_strict_and_versioned_for_both_renderers() {
             "publish: {action: push, image: static, provider: netlify}",
             "publish: {action: push, image: static, site: other}",
             "publish: {action: push, image: static, token: secret}",
-            "publish: {action: deploy, provider: cloudflare, site: other}",
+            "publish: {action: deploy, provider: vercel, site: other}",
             "ci: {system: github}",
         ] {
             config(root, "manual", renderer, settings);
@@ -569,4 +569,92 @@ fn platform_plans_validate_override_and_reject_irrelevant_targets_without_tools(
     let missing_tag = run(root, &["pub", "--dry-run"], 2);
     assert!(String::from_utf8_lossy(&missing_tag.stderr).contains("explicit destination"));
     run(root, &["pub", "--tag", "acme/docs:v1", "--dry-run"], 0);
+}
+
+#[test]
+fn cloudflare_defaults_aliases_overrides_and_provider_isolation() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: cloudflare, site: saved-project}\n",
+    );
+    for route in [
+        vec!["publish"],
+        vec!["deploy"],
+        vec!["deploy", "cloudflare"],
+        vec!["cloudflare"],
+        vec!["cf"],
+    ] {
+        let mut cmd = command(root);
+        cmd.env_remove("CLOUDFLARE_PAGES_PROJECT_NAME")
+            .env_remove("CLOUDFLARE_API_TOKEN")
+            .env_remove("CLOUDFLARE_ACCOUNT_ID");
+        let output = cmd.args(route).arg("--dry-run").output().unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        assert!(text.contains("saved-project") && text.contains("zel-preview"));
+        assert!(!root.join("docs/zellij/site").exists());
+    }
+    let output = command(root)
+        .env("CLOUDFLARE_PAGES_PROJECT_NAME", "environment-project")
+        .args(["cf", "--site", "explicit-project", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("explicit-project"));
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("environment-project"));
+    for flags in [
+        vec!["--platform", "linux/amd64"],
+        vec!["--tag", "acme/image:v1"],
+        vec!["--to", "netlify"],
+        vec!["--site", "https://manual.pages.dev"],
+    ] {
+        let mut cmd = command(root);
+        cmd.args(["cf", "--dry-run"]).args(flags);
+        assert_eq!(cmd.output().unwrap().status.code(), Some(2));
+    }
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let output = command(root)
+        .env_remove("CLOUDFLARE_PAGES_PROJECT_NAME")
+        .env("NETLIFY_SITE_ID", "old-env-site")
+        .args(["cf", "--dry-run"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("CLOUDFLARE_PAGES_PROJECT_NAME"));
+    config(root, "docs/zellij", "portable", SETTINGS);
+    assert_eq!(
+        command(root)
+            .args(["pub", "--to", "cloudflare", "--site", "manual", "--dry-run"])
+            .output()
+            .unwrap()
+            .status
+            .code(),
+        Some(2)
+    );
+}
+
+#[test]
+fn cloudflare_missing_credentials_stop_before_build_or_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(root, "docs/zellij", "hosted", "");
+    let result = command(root)
+        .env_remove("CLOUDFLARE_API_TOKEN")
+        .env_remove("CLOUDFLARE_ACCOUNT_ID")
+        .args(["cf", "--site", "manual"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(2));
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(error.contains("CLOUDFLARE_API_TOKEN"), "{error}");
+    assert!(!root.join("docs/zellij/site").exists());
 }

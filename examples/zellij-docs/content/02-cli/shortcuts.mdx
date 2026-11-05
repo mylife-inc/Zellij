@@ -109,3 +109,11 @@ pin required while the current public binary is older than this contract.
 Conversion shortcuts preserve the legacy raw-content default. Add `--layout site`
 to `zel cv` or `zel mig` for `zel.yaml` plus `content/`. `zel ship` always uses
 that configured layout and requires `--out` plus an explicit delivery destination.
+
+## Cloudflare Pages shortcut
+
+Current source adds `zel cf [site] --site manual` as the short form of
+`zel deploy cloudflare [site] --site manual`. `zel cloudflare` is also accepted.
+With a saved Cloudflare destination, `zel pub` needs no provider or project
+argument. Preview is the default; production requires `--prod`. See
+[setup and limits](/cli/deploy#cloudflare-pages). These forms are newer than rc.1.

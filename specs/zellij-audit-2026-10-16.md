@@ -4279,3 +4279,74 @@ The expanded hosted export fixture checks real HTML URLs and copied bytes too.
 Local distinct Rust coverage is now 184 tests. Initial PR #80 CI on `a850843`
 had 14 passing jobs and no failures when this correction was prepared; that
 older run does not validate this source. New final-head CI and merge are pending.
+
+
+### 2026-11-05 — Cloudflare Pages native deployment
+
+The next provider is Cloudflare Pages Direct Upload for generated static HTML.
+`zel deploy cloudflare`, `zel cloudflare` / `cf`, saved `publish` / bare `deploy`,
+`ship --provider cloudflare`, and `ci --deploy cloudflare` share provider intent.
+The destination is an existing project name: explicit `--site` / `--site-id`,
+then `CLOUDFLARE_PAGES_PROJECT_NAME`, then same-provider `publish.site`.
+Changing providers never reuses the old provider's saved destination or env ID.
+`CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` stay in the environment;
+there is no account/project creation, Wrangler invocation or stored-login lookup.
+
+Project preflight precedes the temporary build. Preview uses `zel-preview`,
+independent of the local Git branch, and rejects a project whose production
+branch has that name. Explicit `--prod` uses the preflight production branch.
+The adapter inventories generated files, uses Cloudflare's BLAKE3/base64/extension
+asset keys, upload JWTs, missing-hash lookup, bounded batches and multipart
+manifest creation, then waits for deployment-stage success. Account tokens and
+upload JWTs are never combined in a request. Identity/environment/URL checks,
+redirect refusal, redacted provider errors and bounded requests apply. Creation
+POSTs are never automatically retried; uncertain deployments require dashboard
+inspection. Both renderers preserve source and previous output.
+
+Supported exports contain at most 20,000 files, each at most 25 MiB. Symlinks,
+junctions, special files and reserved Workers/Functions/custom rules are rejected;
+this adapter does not deploy a Next server. Hosted URL/feature overrides retain
+existing behavior. CI generates provider-specific variables/secrets, excludes
+publication credentials from PR verification, supports explicit token provisioning,
+and requires rc.2 or later. Published rc.1 remains unchanged. Docs explain setup,
+preview behavior, unsupported forms and pending live-account acceptance.
+
+Protocol references inspected read-only:
+[deployment API](https://developers.cloudflare.com/api/resources/pages/subresources/projects/subresources/deployments/methods/create/),
+[official upload implementation](https://github.com/cloudflare/workers-sdk/blob/main/packages/wrangler/src/pages/upload.ts),
+[asset hashing](https://github.com/cloudflare/workers-sdk/blob/main/packages/deploy-helpers/src/deploy/helpers/hash.ts).
+Rust mock HTTP tests cover uploads, caching, batches, Unicode/percent filenames,
+validation ordering, failures, timeouts and portable output. GitHub CI adds a
+real hosted-export/Cloudflare-protocol fixture. No live provider account was used.
+
+PR #80 closure: all 16 checks passed on `fb622d1f84c3516e6ba6d0affbd21cd39b043b44`
+in `42109434915`; merge `c067b5ae17a8a6f3e724e0c625383cccd041cd74` has identical
+tested tree `550b8b21d753a5dc33e84848a391a76c5b2c6052`. Post-merge base-image run
+`42113725968` passed. Main `42113725983` hit Windows EPERM in
+`scripts/preview-watch.mjs:130` during the fixture's source-directory rename;
+all Rust tests had passed. The follow-up adds Windows-only, bounded retries for
+EPERM/EACCES/EBUSY on the two fixture renames; other errors still fail immediately.
+Windows/hosted final-head CI must validate this follow-up before merge.
+
+Local validation: all **471 Rust workspace tests passed**, with the two real
+hosted deployment tests deliberately ignored locally and selected explicitly
+in CI. Final CLI/unit and CI-generator rechecks cover updated provider-token
+provisioning. Warnings-denied workspace Clippy, Rust formatting, Node syntax,
+workflow actionlint (including an emitted Cloudflare workflow), and strict/deep
+Zellij documentation checks passed (55 routes, 23 examples). No local Docker or
+browser process was started. Final-head hosted/native CI and merge remain pending.
+
+Implementation commit **`8898a30`** contains the Cloudflare adapter, provider
+resolution/CI changes, matching documentation and bounded Windows fixture rename
+retry. Local evidence: `/private/tmp/zellij-cloudflare-workspace.log` (471 passed),
+`zellij-cloudflare-final-tests.log` (40 CLI unit + 16 workflow tests passed),
+`zellij-cloudflare-clippy.log`, and `zellij-cloudflare-docs.log`.
+Final-head GitHub checks, hosted export acceptance and merge are pending.
+
+Cloudflare follow-up **`6cd0517`** rejects API deployments marked `is_skipped`,
+even if their stage otherwise appears successful. The protocol fixture covers
+this case; all 13 local Cloudflare tests, Clippy and strict docs pass. The CLI
+overview now explicitly lists both static providers. Initial PR #81 CI
+`42118339455` on `8f2f327` had 11 passing jobs and no failures when this final
+correction was prepared; it does not validate this follow-up. Final-head CI
+and live Cloudflare account acceptance remain pending.

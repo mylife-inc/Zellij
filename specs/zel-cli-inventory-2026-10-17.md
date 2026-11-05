@@ -2037,3 +2037,18 @@ render fixtures pass; final-head native/hosted CI and merge remain pending.
 PR #79 merged as `7a03f50` after all 16 checks passed on `8102782` in `42095877145`.
 Both post-merge workflows passed (`42099649036`, `42099648776`); PR #78's main
 `42090020416` passed too. Native rc.2 and production migration remain unpublished.
+
+
+### 2026-11-05 — Cloudflare Pages delivery
+
+Current source implements `deploy cloudflare`, `cloudflare` / `cf`, saved
+publish/deploy, ship and GitHub CI generation for existing Pages projects.
+Preview branch `zel-preview` is the default; production requires explicit intent.
+Provider changes do not reuse another provider's destination. Environment token
+and account ID stay outside configuration. Static-only limits, credentials and
+failure behavior are documented in [deployment](../examples/zellij-docs/content/02-cli/deploy.mdx#cloudflare-pages).
+Live Cloudflare account acceptance remains pending; published rc.1 is unchanged.
+The context and audit retain protocol references, precise scope and evidence.
+PR #80 merged as `c067b5a` after all 16 final-head checks passed on `fb622d1`.
+Post-merge Windows preview encountered EPERM during a fixture directory rename;
+this follow-up retries only transient Windows rename failures with a deadline.

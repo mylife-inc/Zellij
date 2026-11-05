@@ -143,6 +143,26 @@ ID is available, execution reads repository variable `NETLIFY_SITE_ID`, falling
 back to the same-named secret. Default delivery is a draft preview; set
 `ci.production: true` or pass `--prod` to generate production deployments.
 
+## Cloudflare Pages workflows
+
+Current source accepts saved `publish.provider: cloudflare` or
+`zel ci --deploy cloudflare --site manual`. The generated workflow requires
+`0.2.0-rc.2` or later; generation does not verify release availability, and rc.2
+has not yet been published. Set repository secret `CLOUDFLARE_API_TOKEN` and
+repository variable `CLOUDFLARE_ACCOUNT_ID` (a same-named secret also works).
+
+Project precedence is `--site`, local `CLOUDFLARE_PAGES_PROJECT_NAME`, then
+`publish.site` for the selected provider. The resolved project name is written
+to the workflow; otherwise it reads repository variable
+`CLOUDFLARE_PAGES_PROJECT_NAME`, falling back to that secret. A provider override
+does not inherit a saved Netlify destination. Account IDs are resolved only
+when the workflow executes, never copied from the generator's local environment.
+
+The publish step uses `zel deploy cloudflare`. Previews on `zel-preview` are
+the default; `--prod` or `ci.production: true` explicitly requests the project's
+production branch. Pull requests validate/build without provider credentials.
+See [Cloudflare setup and limits](/cli/deploy#cloudflare-pages).
+
 ## Provisioning is explicit
 
 Generation writes a local workflow only, even if credentials exist in your shell.
@@ -152,7 +172,8 @@ To also upload your environment's token to the site's GitHub repository:
 zel ci --force --provision
 ```
 
-This requires a Netlify delivery plan, `NETLIFY_AUTH_TOKEN`, and an authenticated
+This requires a Netlify or Cloudflare delivery plan, its environment token
+(`NETLIFY_AUTH_TOKEN` or `CLOUDFLARE_API_TOKEN`), and an authenticated
 GitHub CLI with permission to set repository secrets. The token is sent to `gh`
 over stdin; it is never written into the workflow or passed as an argument.
 The workflow is written before the remote operation. If provisioning fails,

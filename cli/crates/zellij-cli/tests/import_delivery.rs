@@ -880,3 +880,43 @@ fn ship_saves_the_platform_before_a_missing_runtime_and_dry_run_writes_nothing()
     assert!(result.status.success(), "{result:?}");
     assert!(String::from_utf8_lossy(&result.stdout).contains("linux/arm64"));
 }
+
+#[test]
+fn cloudflare_ship_plans_without_credentials_and_retains_site_on_credential_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "converted",
+        "--provider",
+        "cloudflare",
+        "--site",
+        "manual",
+    ];
+    let output = command(root)
+        .env_remove("CLOUDFLARE_API_TOKEN")
+        .env_remove("CLOUDFLARE_ACCOUNT_ID")
+        .args(args)
+        .arg("--dry-run")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("CLOUDFLARE_API_TOKEN")
+        .env_remove("CLOUDFLARE_ACCOUNT_ID")
+        .args(args)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("CLOUDFLARE_API_TOKEN"));
+    let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
+    assert!(config.contains("provider: cloudflare") && config.contains("manual"));
+    assert!(!config.contains("token"));
+    assert!(root.join("converted/content/site.yaml").is_file());
+    assert_eq!(tree(&root.join("source")), original);
+}

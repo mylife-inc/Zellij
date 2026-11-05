@@ -6,7 +6,7 @@ use zellij_core::{
     Error, Result,
     build_overrides::BuildOverrides,
     ci::{Settings, Trigger},
-    delivery::{ImageKind, ImagePlatform},
+    delivery::{ImageKind, ImagePlatform, Provider},
     features::Features,
 };
 
@@ -21,6 +21,9 @@ pub enum Publish {
     LegacyImage,
     Netlify {
         site_id: Option<String>,
+    },
+    Cloudflare {
+        project: Option<String>,
     },
 }
 #[derive(Debug, Clone)]
@@ -133,12 +136,15 @@ pub fn github(options: &CiOptions) -> Result<String> {
         .unwrap_or_default();
     settings.validate()?;
     let version = zellij_core::ci::version_pin(version)?;
-    if (!overrides.is_empty() || !build_args.is_empty() || *platform == Some(ImagePlatform::All))
+    if (!overrides.is_empty()
+        || !build_args.is_empty()
+        || *platform == Some(ImagePlatform::All)
+        || matches!(publish, Publish::Cloudflare { .. }))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -290,6 +296,17 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::Cloudflare { project } => {
+                if let Some(project) = project {
+                    Provider::Cloudflare.validate_site(project)?;
+                }
+                let prod = if settings.production { " --prod" } else { "" };
+                steps.push(json!({"name":"Build once and deploy", "env":{
+                    "CLOUDFLARE_PAGES_PROJECT_NAME": project.as_deref().unwrap_or("${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME || secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}"),
+                    "CLOUDFLARE_ACCOUNT_ID":"${{ vars.CLOUDFLARE_ACCOUNT_ID || secrets.CLOUDFLARE_ACCOUNT_ID }}",
+                    "CLOUDFLARE_API_TOKEN":"${{ secrets.CLOUDFLARE_API_TOKEN }}"
+                }, "run":format!("zel deploy cloudflare {selector}{prod}{features_flag}{override_flags}")}));
             }
             Publish::Nothing => unreachable!(),
         }

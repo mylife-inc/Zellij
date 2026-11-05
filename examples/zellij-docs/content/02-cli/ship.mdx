@@ -186,3 +186,13 @@ Combined publication requires a builder supporting both architectures. If it
 fails, the converted site remains available for `zel pub`; inspect the registry
 before retrying since uploaded layers may exist. See
 [image publication prerequisites](/cli/image#select-the-image-platform).
+
+## Ship to Cloudflare Pages
+
+Current source accepts `zel ship source --out converted --provider cloudflare
+--site manual`. It converts into a configured hosted site, then builds once and
+uploads a Pages preview. `--prod` requests production for this invocation only.
+The generated configuration saves `provider: cloudflare` and the project name;
+future updates use `zel pub converted`. A failed credential check or deployment
+retains the imported site for correction. See [credentials and limits](/cli/deploy#cloudflare-pages).
+Published rc.1 does not include this provider.

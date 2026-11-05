@@ -212,6 +212,18 @@ const CASES: &[Case] = &[
             "--dry-run",
         ],
     ),
+    (
+        "cloudflare",
+        "deploy cloudflare",
+        &[],
+        &["manual", "--site", "project", "--prod", "--dry-run"],
+    ),
+    (
+        "cf",
+        "deploy cloudflare",
+        &[],
+        &["manual", "--site", "project", "--dry-run"],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -267,6 +279,7 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
     }
     aliases(&Cli::command_tree(), "", &mut actual);
     actual.insert("netlify".into());
+    actual.insert("cloudflare".into());
     assert_eq!(
         actual,
         CASES.iter().map(|(short, ..)| (*short).into()).collect()

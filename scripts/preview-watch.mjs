@@ -7,6 +7,20 @@ import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { chromium, webkit, expect } from '@playwright/test';
 
+async function renameWatchedFolder(from, to) {
+  // Windows can deny directory renames while the poller has an enumeration
+  // handle open. Retry only that transient fixture operation, with a deadline;
+  // the subsequent assertions still require real disappearance and recovery.
+  const deadline = Date.now() + 10000;
+  for (;;) {
+    try { await rename(from, to); return; }
+    catch (error) {
+      if (process.platform !== 'win32' || !['EPERM', 'EACCES', 'EBUSY'].includes(error.code) || Date.now() >= deadline) throw error;
+      await delay(100);
+    }
+  }
+}
+
 export async function checkWatch({ temp, source, output, start, stop, snapshot, until }) {
   const home = title => `# ${title}\n\n## Anchor\n\n![Logo](assets/logo.svg)\n\n[Next](guide/next.md#nebula)\n`;
   const svg = width => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="40"><rect width="${width}" height="40" fill="blue"/></svg>`;
@@ -127,9 +141,9 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       // Locator assertions reacquire the document across the expected reload.
       // A raw evaluate can lose its execution context between image reads.
       await expect(page.locator('article img')).toHaveJSProperty('naturalWidth', 177, { timeout: 20000 });
-      await rename(source, `${source}-temporarily-moved`);
+      await renameWatchedFolder(source, `${source}-temporarily-moved`);
       await expect(page.getByRole('alert')).toBeVisible({ timeout: 20000 });
-      await rename(`${source}-temporarily-moved`, source);
+      await renameWatchedFolder(`${source}-temporarily-moved`, source);
       await expect(page.getByRole('alert')).toHaveCount(0, { timeout: 20000 });
 
       const outside = path.join(temp, `outside-watch-${engine}`);
