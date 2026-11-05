@@ -20,7 +20,8 @@ and allows selected runtimes the existing twelve-second discovery budget.
 PR #74 merged import asset controls and optional `convert --validate` as
 `74abf77`; all 16 PR checks and both post-merge workflows passed. Current source
 `8f46bd4` maps supported MkDocs/Docusaurus website URLs and makes CLI dispatch
-exhaustive. Local 130 Rust tests, Clippy, formatting, deep/strict docs and both
+exhaustive; `74bacea` fixes Windows MkDocs path normalization found by CI. Local
+131 Rust tests, Clippy, formatting, deep/strict docs and both
 CLI-to-engine fixtures pass; hosted/native CI and merge are pending for this
 new work. Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -4689,3 +4690,21 @@ Refreshed public tag is `v0.2.0-rc.1` (some older entries incorrectly prefixed
 that candidate tag with `zellij-`). rc.2 remains unpublished, and its prior
 publication proposal predates this work. Netlify support's hosting-comment
 hydration issue and production migration remain separate.
+
+
+#### Windows path follow-up — 2026-11-05
+
+Initial PR #75 CI `42000267890` on `d65ded6` passed the real converted-link
+HTML export step but failed a new Windows URL regression. WalkDir returned
+native backslash paths while the MkDocs listed-path inventory used forward
+slashes. Nested listed documents were mistakenly added as orphans; their
+inconsistent route spelling then made website URLs ambiguous. The same path
+handling could also produce nonportable names for folder-derived navigation.
+
+Source `74bacea` normalizes discovered relative path components to `/`, as the
+Docusaurus inventory already does. The existing nested URL regression and an
+additional nested, no-nav fixture cover both cases on every CI platform.
+All 31 targeted local import tests pass after the correction, alongside the
+prior converter/alias checks (131 distinct Rust tests total). Full final-head
+CI, including the Windows rerun, is still required before merge. This is a
+code defect correction, not a retry of an unexplained CI failure.

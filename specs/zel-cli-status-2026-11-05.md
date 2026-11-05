@@ -42,3 +42,7 @@ checks passed on `5846c16c698aaa1212df6a42a89afe83c54aa877` in
 Both post-merge workflows passed: main `41995023512`, base image `41995023365`.
 This document's website-link milestone must still pass its own final-head CI
 before merge; the previous PR's results do not validate new changes.
+
+The first website-link CI run found a Windows MkDocs path-normalization bug.
+Source `74bacea` fixes nested-page inventory and derived navigation paths;
+final-head Windows and full CI acceptance are pending.
