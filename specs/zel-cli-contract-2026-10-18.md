@@ -1690,3 +1690,12 @@ CI step now runs earlier without dropping other checks. Final-head CI is pending
 PR #72 post-merge main/base workflows both passed after the CLI's targeted
 Docker-probe retry. A similar initial ARM64 timeout in PR #73 remains a runtime
 reliability follow-up; no fix or release is claimed.
+
+
+`0d605a6` follow-up: explicitly selected runtimes may use the existing full
+12-second discovery budget; automatic probes retain 3 seconds each. A four-second
+fake-runtime response passes through the real CLI without fallback. All 34
+runtime/engine Rust tests, Clippy/formatting/docs passed. The conversion export
+step is now verified to be in the CLI job after image/runtime setup; its prior
+placement in the portable matrix caused a missing-image failure in `41971949013`.
+Final-head hosted CI remains required before PR #73 merges.

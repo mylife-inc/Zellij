@@ -3845,3 +3845,31 @@ Recurring Docker info timeouts remain a follow-up. Docker's official
 [info implementation](https://github.com/docker/cli/blob/master/cli/command/system/info.go)
 probes client plugins, and the failed ARM64 log left a Compose helper to clean
 up. This is a diagnostic lead, not a proven cause or fix.
+
+
+#### Selected-runtime budget and CI prerequisite correction — 2026-11-04
+
+The next run, `41971949013` on `9eea726`, again hit the three-second Docker
+`info` limit on ARM64 immediately after Docker had built the engine image and
+started the local registry. It also exposed an error in the preceding CI edit:
+the earlier conversion-export step had been placed in the native portable job,
+which does not build `zellij-ci`, so it failed trying to pull that missing image.
+
+Source `0d605a6` restores the conversion check to the CLI container job after
+image creation/runtime selection and before the longer hosted tests. A parsed
+workflow assertion verifies that ordering and that the portable matrix does not
+contain the container-only step. All existing acceptance steps remain.
+
+The same source lets an explicitly selected runtime use the existing full
+**twelve-second discovery budget**: there are no fallback clients/sockets to
+reserve time for in that mode. Automatic discovery still allows three seconds
+per probe within twelve seconds overall. Metadata probes remain two seconds,
+endpoint selection/secrecy remain unchanged, and no service is started. This is
+bounded tolerance for slower healthy runtimes, not a claim to have diagnosed or
+fixed Docker's plugin latency. A real CLI fixture with a four-second fake Docker
+info response proves the selected endpoint succeeds without calling Podman.
+
+Local verification: 9 runtime-requirement CLI tests and 25 engine Rust unit tests
+passed, alongside the prior 120 import/safety Rust tests, 423 engine JavaScript
+tests and native Unicode export. Clippy, formatting and refreshed deep/strict
+documentation checks passed. Final-head CI must pass before merging PR #73.
