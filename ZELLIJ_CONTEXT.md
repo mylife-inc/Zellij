@@ -33,7 +33,9 @@ CI has 15 passing jobs with CLI acceptance still running. Current source
 formats, publication rules, source links and eligible resources. Local 171 Rust
 tests, Clippy, formatting, strict docs and all five rendering fixtures pass.
 Resource ownership correction `f7f0121` also passes targeted tests and Clippy.
-Its own final-head hosted/native checks and merge remain pending.
+Windows CI found a native separator in renamed section output; `771e40e`
+normalizes that path and passes local tests/Clippy. New final-head CI and merge
+remain pending.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -4976,3 +4978,13 @@ draft home page. A section's visible image remains eligible while a resource
 owned by the omitted home page stays excluded. The expanded real-CLI fixture
 passes all 14 Hugo tests; warnings-denied Clippy passes. This joins PR #79 and
 requires the new final-head CI run before merge.
+
+#### Hugo Windows path correction — 2026-11-05
+
+PR #79 run `42094771583` failed Windows import job `127482680944`: native
+`with_file_name` changed nested `_index.md` output to a backslash-containing
+relative path, which the portable-path validator correctly refused. Source
+`771e40e` normalizes generated output filenames from path components to `/`.
+The existing section/link integration fixture covers the failure. All 14 Hugo
+tests and warnings-denied Clippy pass locally; new Windows and full final-head
+CI evidence are still required before merge. The safety validator is unchanged.

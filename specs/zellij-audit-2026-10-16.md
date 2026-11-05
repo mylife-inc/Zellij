@@ -4188,3 +4188,13 @@ draft home page. A section's visible image remains eligible while a resource
 owned by the omitted home page stays excluded. The expanded real-CLI fixture
 passes all 14 Hugo tests; warnings-denied Clippy passes. This joins PR #79 and
 requires the new final-head CI run before merge.
+
+#### Hugo Windows path correction — 2026-11-05
+
+PR #79 run `42094771583` failed Windows import job `127482680944`: native
+`with_file_name` changed nested `_index.md` output to a backslash-containing
+relative path, which the portable-path validator correctly refused. Source
+`771e40e` normalizes generated output filenames from path components to `/`.
+The existing section/link integration fixture covers the failure. All 14 Hugo
+tests and warnings-denied Clippy pass locally; new Windows and full final-head
+CI evidence are still required before merge. The safety validator is unchanged.
