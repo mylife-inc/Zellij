@@ -74,7 +74,7 @@ for (const format of ['mkdocs', 'docusaurus']) {
   await write('docs/media/logo.svg', asset);
   await write('docs/media/Q3 Report.pdf', pdf);
   await write('docs/index.md', `---\nsidebar_position: 0\n---\n# Welcome {#welcome}\n\n[Install **now**][install]\n\n[Stable install](02-Setup/APIReference.md#stable-install)\n\n[Reference title](02-Setup/APIReference.md#reference)\n\n[Setext](02-Setup/APIReference.md#setext)\n\n[Café](03-Caf%C3%A9/index.md)\n\n![Diagram][logo]\n\n[Download](<media/Q3 Report.pdf>)\n\n[install]: 02-Setup/APIReference.md?view=all#install "Install guide"\n[logo]: media/logo.svg\n\n${format === 'docusaurus' ? '![Static](/img/static.svg)\n' : ''}\n\n\`\`\`\`md\n\`\`\`\n# Literal {#literal}\n!!! note\n\`\`\`\`\n`);
-  execFileSync(zel, [configured && mode === '--export' ? 'migrate' : 'convert', source, '--out', destination, '--from', format, '--layout', configured ? 'site' : 'content'], { stdio: 'inherit' });
+  execFileSync(zel, [configured && mode === '--export' ? 'migrate' : 'convert', source, '--out', destination, '--from', format, '--layout', configured ? 'site' : 'content', '--assets', 'copy', ...(!configured && mode === '--export' ? ['--validate'] : [])], { stdio: 'inherit' });
   // A non-empty deployment prefix exercises the ordinary Markdown image path.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', { flag: 'a' });
   execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });

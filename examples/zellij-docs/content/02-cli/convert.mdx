@@ -82,6 +82,8 @@ to be attached to makes it easier to act on.
 | `--out <path>` | Required. Where to write | — |
 | `--from <format>` | Force a format instead of detecting | detected |
 | `--layout content\|site` | Raw hosted content or a configured site | content |
+| `--assets copy\|skip` | Copy referenced assets or retain their original URLs without copying | copy |
+| `--validate` | Validate the converted hosted content after writing | off |
 | `--dry-run` | Report the plan, write nothing | off |
 
 **`--out` can never be the source, and there is no flag to permit it.** A
@@ -91,6 +93,28 @@ reason a migration is safe to try is that failing costs you a folder you delete.
 `--from` selects the parser explicitly. If multiple formats tie for the highest
 detection confidence, conversion refuses to guess and asks for this option.
 Forcing a format does not guarantee a faithful conversion; inspect warnings.
+
+## Optional validation
+
+```bash title="terminal"
+zel cv ./old-docs --out ./manual --layout site --validate
+```
+
+`--validate` performs the same hosted content check as [`zel migrate`](/cli/migrate)
+after writing either output layout. It requires a running Docker, Podman or
+nerdctl runtime and a compatible engine image. Conversion without this flag
+needs no runtime. `--dry-run` always skips validation, including runtime checks.
+
+If validation fails, the command returns a nonzero exit status and retains the
+converted files. A missing runtime returns exit 4; a content-check failure returns
+exit 3. Correct the issue and run `zel check ./manual`; converting again into the
+populated destination is refused. This checks the content model without compiling
+the full site. Use `zel check ./manual --deep` for MDX and local references, and
+`zel build ./manual` to compile. Successful validation does not guarantee complete
+source-tool fidelity; review the conversion report.
+
+`--validate` and `--assets` are available in source and are newer than the
+published `0.2.0-rc.1` executable.
 
 ## What is recognised
 
@@ -277,6 +301,21 @@ references to its default `static/` folder using `/img/logo.svg` or
 Copied images and downloads use the published asset URL, including the site's
 `basePath` (also configure the same prefix in the wrapper's Next config).
 The dry-run plan lists asset files too.
+
+Copying is the default (`--assets copy`). To import only documents and generated
+configuration, use:
+
+```bash title="terminal"
+zel cv ./old-docs --out ./manual --layout site --assets skip
+```
+
+`--assets skip` leaves local asset URLs unchanged, copies no referenced asset
+files, and reports each omitted reference. Links between converted documents
+still become Zellij routes. The skipped asset URLs may not work from their new
+locations: supply the files and update their references before publishing.
+This policy also applies to `migrate`/`mig` and `ship`; it does not bypass path
+safety checks. `copy` and `skip` are the only supported policies; linking files
+back to the source tree is not supported. Dry runs report the same omissions.
 
 Relative `..` segments in links may traverse within the docs root. A reference
 that escapes the allowed root, uses a symlink, or targets Git metadata is

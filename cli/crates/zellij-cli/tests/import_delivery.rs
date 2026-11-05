@@ -114,6 +114,8 @@ fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes
                 "explicit-legacy",
                 "--layout",
                 "content",
+                "--assets",
+                "copy",
             ],
             0,
         );
@@ -160,6 +162,247 @@ fn configured_and_legacy_imports_preserve_routes_assets_aliases_and_source_bytes
             );
             assert!(stdout.contains("orphan.md"), "{stdout}");
             assert!(!root.join("plan").exists());
+        }
+    }
+}
+
+#[test]
+fn skipped_assets_keep_original_urls_while_document_links_are_converted() {
+    for format in ["mkdocs", "docusaurus"] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        fixture(root, format);
+        if format == "docusaurus" {
+            write(root, "source/static/img/logo.svg", "<svg/>");
+            write(
+                root,
+                "source/docs/next.md",
+                "# Next\n\n![Logo](/img/logo.svg)\n",
+            );
+        }
+        let original = tree(&root.join("source"));
+        for (name, layout) in [("convert", "content"), ("cv", "site")] {
+            let result = run(
+                root,
+                &[
+                    name, "source", "--out", layout, "--layout", layout, "--assets", "skip",
+                ],
+                0,
+            );
+            let content = root.join(if layout == "site" {
+                "site/content"
+            } else {
+                "content"
+            });
+            assert!(!content.join("assets").exists());
+            let page = fs::read_to_string(content.join("01-guide/index.mdx")).unwrap();
+            assert!(page.contains("[Next](</guide/next>)"), "{page}");
+            assert!(page.contains("[Download](media/report.pdf)"), "{page}");
+            let report = String::from_utf8_lossy(&result.stdout);
+            assert!(
+                report.contains("media/report.pdf") && report.contains("asset copying is disabled"),
+                "{report}"
+            );
+            if format == "docusaurus" {
+                let page = fs::read_to_string(content.join("01-guide/next.mdx")).unwrap();
+                assert!(page.contains("![Logo](/img/logo.svg)"), "{page}");
+                assert!(report.contains("/img/logo.svg"), "{report}");
+            }
+        }
+        assert_eq!(tree(&root.join("source")), original);
+    }
+}
+
+#[test]
+fn import_controls_reject_unknown_asset_policies_and_unsafe_skipped_assets_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    for name in ["convert", "cv", "migrate", "mig", "ship"] {
+        let mut args = vec![name, "source", "--out", "out", "--assets", "link"];
+        if name == "ship" {
+            args.extend(["--image", "static", "--tag", "example/docs:v1"]);
+        }
+        run(root, &args, 2);
+        assert!(!root.join("out").exists());
+    }
+    for href in ["../../private.txt", "../.git/config"] {
+        write(
+            root,
+            "source/docs/index.md",
+            format!("# Unsafe\n\n[File]({href})\n"),
+        );
+        run(
+            root,
+            &["cv", "source", "--out", "out", "--assets", "skip"],
+            2,
+        );
+        assert!(!root.join("out").exists());
+    }
+    #[cfg(unix)]
+    {
+        write(root, "private.txt", "private bytes");
+        std::os::unix::fs::symlink(
+            root.join("private.txt"),
+            root.join("source/docs/private.txt"),
+        )
+        .unwrap();
+        write(
+            root,
+            "source/docs/index.md",
+            "# Unsafe\n\n[File](private.txt)\n",
+        );
+        run(
+            root,
+            &["cv", "source", "--out", "out", "--assets", "skip"],
+            2,
+        );
+        assert!(!root.join("out").exists());
+    }
+}
+
+#[test]
+fn validation_requests_are_inert_in_dry_runs_and_retain_imports_when_runtime_is_missing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    for name in ["convert", "cv", "migrate", "mig"] {
+        for layout in ["content", "site"] {
+            let destination = format!("{name}-{layout}");
+            let args = [
+                name,
+                "source",
+                "--out",
+                &destination,
+                "--layout",
+                layout,
+                "--assets",
+                "skip",
+                "--validate",
+            ];
+            let mut dry = args.to_vec();
+            dry.push("--dry-run");
+            let output = run(root, &dry, 0);
+            assert!(String::from_utf8_lossy(&output.stdout).contains("Plan only"));
+            assert!(!root.join(&destination).exists());
+            let result = run(root, &args, 4);
+            assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
+            let content =
+                root.join(&destination)
+                    .join(if layout == "site" { "content" } else { "" });
+            assert!(content.join("site.yaml").is_file());
+            assert!(!content.join("assets").exists());
+        }
+    }
+    for kind in ["static", "next"] {
+        let args = [
+            "ship",
+            "source",
+            "--out",
+            kind,
+            "--image",
+            kind,
+            "--tag",
+            "example/docs:v1",
+            "--assets",
+            "skip",
+        ];
+        let mut dry = args.to_vec();
+        dry.push("--dry-run");
+        run(root, &dry, 0);
+        assert!(!root.join(kind).exists());
+        let result = run(root, &args, 4);
+        assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
+        assert!(!root.join(kind).join("content/assets").exists());
+        let config = fs::read_to_string(root.join(kind).join("zel.yaml")).unwrap();
+        assert!(config.contains(&format!("image: {kind}")), "{config}");
+        assert!(!config.contains("assets:"));
+    }
+    assert_eq!(tree(&root.join("source")), original);
+}
+
+#[cfg(unix)]
+#[test]
+fn optional_validation_checks_the_written_layout_once_and_preserves_failures() {
+    use std::os::unix::fs::PermissionsExt;
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    write(
+        root,
+        "bin/docker",
+        r#"#!/bin/sh
+printf '%s\n' "$1" >> "$FIXTURE_ROOT/calls"
+case "$1" in
+  info) exit 0;;
+  --version) echo fixture;;
+  run)
+    printf '%s\n' "$@" > "$FIXTURE_ROOT/arguments"
+    test -f "$EXPECTED_CONTENT/site.yaml" || exit 99
+    test -f "$EXPECTED_CONTENT/01-guide/index.mdx" || exit 99
+    exit "$CHECK_EXIT";;
+  *) exit 99;;
+esac
+"#,
+    );
+    fs::set_permissions(root.join("bin/docker"), fs::Permissions::from_mode(0o755)).unwrap();
+    run(root, &["cv", "source", "--out", "unchecked"], 0);
+    run(
+        root,
+        &["cv", "source", "--out", "plan", "--validate", "--dry-run"],
+        0,
+    );
+    assert!(!root.join("calls").exists());
+    for layout in ["content", "site"] {
+        for (engine_exit, code) in [("0", 0), ("1", 3)] {
+            let destination = format!("checked-{layout}-{engine_exit}");
+            let content =
+                root.join(&destination)
+                    .join(if layout == "site" { "content" } else { "" });
+            let _ = fs::remove_file(root.join("calls"));
+            let output = command(root)
+                .args([
+                    "cv",
+                    "source",
+                    "--out",
+                    &destination,
+                    "--layout",
+                    layout,
+                    "--validate",
+                ])
+                .env("DOCKER_HOST", "unix:///fixture-docker.sock")
+                .env("ZELLIJ_IMAGE", "fixture/engine:test")
+                .env("FIXTURE_ROOT", root)
+                .env("EXPECTED_CONTENT", &content)
+                .env("CHECK_EXIT", engine_exit)
+                .output()
+                .unwrap();
+            assert_eq!(output.status.code(), Some(code), "{output:?}");
+            let calls = fs::read_to_string(root.join("calls")).unwrap();
+            assert_eq!(
+                calls.lines().filter(|line| *line == "run").count(),
+                1,
+                "{calls}"
+            );
+            let arguments = fs::read_to_string(root.join("arguments")).unwrap();
+            let mount = format!(
+                "{}:/content:ro\n",
+                content.canonicalize().unwrap().display()
+            );
+            assert!(
+                arguments.contains(&mount) && arguments.contains("check /content"),
+                "{arguments}"
+            );
+            assert!(
+                content
+                    .join("assets/imported/docs/media/report.pdf")
+                    .is_file()
+            );
+            assert_eq!(
+                String::from_utf8_lossy(&output.stderr).contains("Import completed"),
+                code != 0
+            );
         }
     }
 }

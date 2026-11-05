@@ -1,5 +1,5 @@
 //! Prepare imports completely before writing; compose delivery without rebuilding.
-use crate::args::{ImportArgs, ImportLayout, ShipArgs};
+use crate::args::{ImportArgs, ImportAssets, ImportLayout, ShipArgs};
 use camino::{Utf8Path, Utf8PathBuf};
 use zellij_convert::{ConvertOptions, Unmapped};
 use zellij_core::{
@@ -24,6 +24,7 @@ impl Prepared {
         out: &str,
         from: Option<&str>,
         layout: ImportLayout,
+        assets: ImportAssets,
         config: &str,
     ) -> Result<Self> {
         let source = Utf8Path::new(source);
@@ -58,7 +59,12 @@ impl Prepared {
             }
         };
         zellij_core::statusln!("Converting {source} as {}", converter.label());
-        let conversion = converter.convert(source, &ConvertOptions::default())?;
+        let conversion = converter.convert(
+            source,
+            &ConvertOptions {
+                copy_assets: assets == ImportAssets::Copy,
+            },
+        )?;
         let asset_count = conversion.assets.len();
         let mut files: Vec<_> = conversion
             .files
@@ -143,13 +149,14 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
         &options.out,
         options.from.as_deref(),
         options.layout,
+        options.assets,
         SITE_CONFIG,
     )?;
     import.report();
     import.write(&options.out, options.dry_run)?;
     if options.dry_run {
         zellij_core::reportln!("\nPlan only; no files written or content validation performed.");
-    } else if validate {
+    } else if validate || options.validate {
         crate::validation::check(
             Some(&zellij_core::site::SiteInput::from(options.out.as_str())),
             None,
@@ -240,6 +247,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
         &options.out,
         options.from.as_deref(),
         ImportLayout::Site,
+        options.assets,
         &configuration(&plan),
     )?;
     import.report();
