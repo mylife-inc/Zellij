@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-04**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-05**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -17,10 +17,14 @@ Docker info timeout on a targeted CLI-job retry. PR #73 merged as `a4b575d`
 after all 16 final-head checks passed; both post-merge workflows passed. It adds
 explicit Docusaurus slugs, fixes encoded Next page lookup/active navigation,
 and allows selected runtimes the existing twelve-second discovery budget.
-Current source `ae7c611` exposes `--assets copy|skip` on convert/migrate/ship
-and optional `convert --validate`. Local 141 Rust tests, Clippy, formatting,
-deep/strict docs and both CLI-to-engine import fixtures pass. Hosted/native CI
-and merge remain pending for these new controls. The prior
+PR #74 merged import asset controls and optional `convert --validate` as
+`74abf77`; all 16 PR checks and both post-merge workflows passed. Current source
+`8f46bd4` maps supported MkDocs/Docusaurus website URLs and makes CLI dispatch
+exhaustive. Local 130 Rust tests, Clippy, formatting, deep/strict docs and both
+CLI-to-engine fixtures pass; hosted/native CI and merge are pending for this
+new work. Every registered command family has a handler, but the full design
+remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
+for format/provider/advanced-option limits. The prior
 rc.2 release proposal awaits explicit publication approval and predates these
 changes. See the latest dated entries and the image measurement evidence.
 
@@ -4638,3 +4642,50 @@ Public release remains `zellij-v0.2.0-rc.1`; these controls are unpublished rc.2
 source. No release, production Netlify deployment or domain change was requested.
 Netlify's hosting-comment hydration defect remains with support. Import source
 URL/plugin fidelity and additional deployment providers remain incomplete.
+
+
+### 2026-11-05 — website-link import and CLI completion status
+
+PR #74 merged as `74abf77a6592633288692a1af21fee9905f3ace6`, after all 16
+checks passed in [41991356062](https://github.com/mylife-inc/Zellij/actions/runs/41991356062)
+on `5846c16c698aaa1212df6a42a89afe83c54aa877`. Tested/merged tree:
+`4f698704576125ff784b72469b8786c1a18bb430`. Both post-merge workflows passed:
+main `41995023512` and base image `41995023365`.
+
+The user asked whether all CLI commands are implemented and authorized the
+suggested website-link work. Every currently registered command family has
+handlers, but the entire original specification is not complete. Source
+`8f46bd4` replaces the generic dispatch stub with an exhaustive match; normalized
+aliases are the only unreachable forms. Future missing handlers now fail to
+compile. The current status table is `specs/zel-cli-status-2026-11-05.md`;
+additional providers, converters, CI adapters and interactive authoring remain.
+
+The same source maps root-relative and configured same-origin HTTP(S) Markdown
+links through source URL conventions to emitted Zellij routes. MkDocs uses
+site_url/use_directory_urls, including README/index and direct HTML addresses.
+Docusaurus reads direct literal url/baseUrl and a single classic preset/docs
+plugin routeBasePath. Default IDs, number-prefix and index conventions, explicit
+slugs and explicit category slugs participate. Queries/fragments are unchanged;
+URL paths preserve case, normalize Unicode and decode percent encoding once.
+Referenced website assets use contained source roots and the existing copy/skip
+policy. Other origins are untouched; no URLs are fetched and no JS is executed.
+
+Known omitted or colliding source URLs remain unchanged with reports. Invalid
+supported routing settings and unsafe local paths fail before writes. Computed,
+custom, localized, versioned and multiple-instance Docusaurus routing is reported
+for review, as are implicit generated-category URLs. Relative HTML URLs and
+HTML/JSX attributes remain outside the new mapping. Destination deployment
+settings are not inferred from the old site's prefix.
+
+Local checks passed: 60 converter unit tests, 63 CLI import tests, 7 alias tests,
+workspace Clippy with warnings denied, formatting, deep/strict documentation
+(55 routes, 23 examples), and both CLI-to-engine fixtures. CI now includes the
+new tests on three native OSes and real hosted exports containing source website
+links. No local Docker or browser was used. Final-head CI is required before merge.
+
+Upstream rules were verified against the MkDocs configuration/file URL code and
+Docusaurus create-doc/slug code; source links are in the conversion reference.
+Refreshed public tag is `v0.2.0-rc.1` (some older entries incorrectly prefixed
+that candidate tag with `zellij-`). rc.2 remains unpublished, and its prior
+publication proposal predates this work. Netlify support's hosting-comment
+hydration issue and production migration remain separate.
