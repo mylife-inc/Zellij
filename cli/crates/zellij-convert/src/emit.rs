@@ -151,6 +151,9 @@ pub fn emit(
 
         let mut page = String::from("---\n");
         page.push_str(&format!("title: {}\n", yaml_string(&title)));
+        if let Some(route) = tree.routes.get(source) {
+            page.push_str(&format!("route: {}\n", yaml_string(route)));
+        }
         if let Some(description) = metadata.string("description")? {
             page.push_str(&format!("description: {}\n", yaml_string(description)));
         }
@@ -270,6 +273,7 @@ mod tests {
                     target: "https://example.com".into(),
                 },
             ],
+            routes: Default::default(),
             orphans: vec![Utf8PathBuf::from("draft.md")],
         }
     }

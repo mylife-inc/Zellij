@@ -8,6 +8,7 @@ import {
   normalizeBasePath,
   normalizeRoute,
   routeToSegments,
+  resolvePathname,
   segmentsToRoute,
   splitAnchor,
   withBasePath,
@@ -129,5 +130,32 @@ describe('route helpers', () => {
     expect(isExternal('https://example.com')).toBe(true);
     expect(isExternal('mailto:a@b.co')).toBe(true);
     expect(isExternal('/features')).toBe(false);
+  });
+});
+
+
+describe('encoded Next pathnames', () => {
+  it('matches encoded or decoded Unicode and spaces without changing route case', () => {
+    const route = '/guide/Café/Release Notes';
+    const routes = new Set([route]);
+    expect(resolvePathname('/guide/Caf%C3%A9/Release%20Notes', routes)).toBe(route);
+    expect(resolvePathname(route, routes)).toBe(route);
+    expect(resolvePathname('/guide/caf%C3%A9/Release%20Notes', routes)).not.toBe(route);
+  });
+
+  it('prefers literal percent routes and never decodes twice', () => {
+    const routes = new Set(['/guide/space name', '/guide/space%20name', '/guide/100%']);
+    expect(resolvePathname('/guide/space%20name', routes)).toBe('/guide/space%20name');
+    expect(resolvePathname('/guide/100%25', routes)).toBe('/guide/100%');
+    expect(resolvePathname('/guide/space%2520name', routes)).toBe('/guide/space%20name');
+    expect(resolvePathname('/guide/space%2520name', new Set(['/guide/space name']))).toBe('/guide/space%2520name');
+  });
+
+  it('does not reinterpret malformed escapes, encoded separators or dot segments', () => {
+    for (const pathname of ['/guide/%', '/guide/%FF', '/guide/a%2Fb', '/guide/a%5Cb', '/guide/%2e', '/guide/%2E%2E', '/guide/a%3Fb', '/guide/a%23b']) {
+      let decoded: string;
+      try { decoded = decodeURIComponent(pathname); } catch { decoded = '/guide'; }
+      expect(resolvePathname(pathname, new Set([decoded]))).toBe(pathname);
+    }
   });
 });

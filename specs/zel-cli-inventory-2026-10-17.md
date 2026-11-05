@@ -1813,3 +1813,48 @@ category styling and embedded DocCardList still require review.
 Local validation: 111 Rust tests, Clippy, formatting, deep/strict docs and both
 CLI-to-engine fixtures passed. Native three-OS coverage and full exported-page
 acceptance are CI gates, pending for this source. No public release was created.
+
+
+### 2026-11-04 — explicit imported URL slugs
+
+PR #72 category pages merged as `ab768ea` after all 16 checks on `1d4e5b6`
+passed (`41963452333`), with equal tested/merged trees. Its post-merge base image
+passed; main CI hit a Docker info timeout before hosted acceptance and is still
+running its Windows portable job. Retry/final status must be refreshed.
+
+Source `6e9f942` preserves explicit Docusaurus document/category slugs as `/guide`
+route overrides. Relative document slugs use physical parent directories with
+per-document prefix rules; category slugs use the docs root. Physical filenames
+and asset bases stay unchanged. Navigation, search and converted file links use
+actual routes. Case/Unicode/encoded spaces are supported; ambiguous, colliding
+and unsafe paths fail before writes. Generated defaults yield to explicit slugs
+regardless of sidebar order. Source `route` fields remain inert, MkDocs slugs
+remain unmapped, and documents without explicit slugs keep filename defaults.
+
+Local checks pass: 120 Rust tests, Clippy, formatting, deep/strict docs and both
+CLI-to-engine fixtures. Native three-OS and actual exported HTML checks are CI
+gates, pending for this source. Deployment prefixes/root-relative source URLs,
+plugin routing/generators, styling, category images/keywords and DocCardList
+remain incomplete. This is unpublished rc.2 functionality, with no new release
+or Netlify production change.
+
+
+Unicode export follow-up: PR #73's initial CI `41968082371` found a real Next
+page lookup bug: encoded page params produced a 404 shell despite correct
+metadata. Source `9eb97ef` resolves exact routes first and safely decodes once
+as a fallback, also correcting the sidebar active state. All 423 engine tests,
+typechecking and an actual native command-line Unicode export pass. Export
+regressions assert the page heading, prefixed links and active navigation; their
+CI step now runs earlier without dropping other checks. Final-head CI is pending.
+PR #72 post-merge main/base workflows both passed after the CLI's targeted
+Docker-probe retry. A similar initial ARM64 timeout in PR #73 remains a runtime
+reliability follow-up; no fix or release is claimed.
+
+
+`0d605a6` follow-up: explicitly selected runtimes may use the existing full
+12-second discovery budget; automatic probes retain 3 seconds each. A four-second
+fake-runtime response passes through the real CLI without fallback. All 34
+runtime/engine Rust tests, Clippy/formatting/docs passed. The conversion export
+step is now verified to be in the CLI job after image/runtime setup; its prior
+placement in the portable matrix caused a missing-image failure in `41971949013`.
+Final-head hosted CI remains required before PR #73 merges.

@@ -40,9 +40,13 @@ Malformed metadata, ambiguous IDs and missing targets fail before writing output
 Manual category links import their linked documents. Generated category indexes
 become editable MDX pages with titles, descriptions and nested child links under
 `01-guide/category/`; generated filenames avoid authored routes. Empty or fully
-excluded categories do not produce empty pages. Source styling, custom source
-slugs, generated-index images/keywords and plugin routing still need manual
-work: authored document routes come from source filenames. See [the conversion reference](/cli/convert) for
+excluded categories do not produce empty pages. Explicit document and generated
+category slugs become route overrides under `/guide`, keeping original file
+locations and relative asset bases. Navigation, search and converted file links
+use the new routes. Documents without a slug retain filename-derived routes.
+Duplicate or unsafe routes fail before writes. Source styling, generated-index
+images/keywords, original deployment prefixes, root-relative source URLs and
+plugin routing still need review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
 These metadata improvements are newer than the published rc.1 executable.
 

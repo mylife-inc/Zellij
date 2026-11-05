@@ -222,7 +222,16 @@ fn category_index_links_inherit_metadata_and_explicit_null_disables_conventions(
     assert_eq!(nav[1]["items"][0]["page"], "b/index");
     assert_eq!(names(&nav[2]["items"]), ["Source landing", "c/index"]);
     assert_eq!(names(&nav[3]["items"]), ["d/a"]);
-    assert!(report.contains("category link fields not mapped: slug"));
+    assert!(!report.contains("category link fields not mapped: slug"));
+    let page: Value = serde_yaml_ng::from_str(
+        fs::read_to_string(out.join("01-guide/category/c/index.mdx"))
+            .unwrap()
+            .split("---")
+            .nth(1)
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(page["route"], "/guide/source-only");
     assert!(out.join("01-guide/category/c/index.mdx").exists());
     assert!(!out.join("01-guide/d/draft.mdx").exists());
 }

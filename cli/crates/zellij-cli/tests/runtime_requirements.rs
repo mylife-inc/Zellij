@@ -333,3 +333,26 @@ fn doctor_bounds_metadata_probes_and_reports_unknown_instead_of_missing_image() 
     );
     assert!(!stdout.contains("not pulled"), "{stdout}");
 }
+
+#[cfg(unix)]
+#[test]
+fn an_explicit_runtime_can_respond_after_the_automatic_probe_deadline() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    runtime(
+        root,
+        "docker",
+        "case \"$1\" in info) /bin/sleep 4;; --version) echo 'docker slow fixture';; image) exit 1;; *) exit 99;; esac",
+    );
+    runtime(root, "podman", "exit 0");
+    let start = std::time::Instant::now();
+    let output = command(root)
+        .arg("doctor")
+        .env("DOCKER_CONTEXT", "slow-fixture")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(start.elapsed() < std::time::Duration::from_secs(15));
+    assert!(String::from_utf8_lossy(&output.stdout).contains("docker slow fixture"));
+    assert!(!root.join("podman-calls").exists());
+}

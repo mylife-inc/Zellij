@@ -70,8 +70,11 @@ path. These conventions follow the clients' own settings:
 [Podman](https://docs.podman.io/en/latest/markdown/podman.1.html), and
 [nerdctl](https://github.com/containerd/nerdctl/blob/main/docs/config.md).
 
-Each `info` probe has a three-second timeout and discovery shares a twelve-second
-budget. Version and image inspection each have a two-second timeout. These
+Automatic discovery allows three seconds per `info` probe within a shared
+twelve-second budget. When endpoint environment variables explicitly select one
+runtime, its probe can use the full twelve seconds: there are no fallback clients
+to reserve time for. This accommodates slower startup and client plugin checks.
+Version and image inspection each have a two-second timeout. These
 limits cover preflight probes; builds, downloads and foreground servers can take
 longer. A working runtime with unavailable version or image metadata is still
 usable; doctor reports that metadata as unavailable or unknown.

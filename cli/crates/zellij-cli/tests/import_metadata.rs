@@ -79,6 +79,14 @@ fn both_importers_preserve_authored_metadata_and_distinct_sidebar_labels() {
             Some("First line\nSecond line\n")
         );
         assert!(page.get("slug").is_none());
+        assert_eq!(
+            page.get("route").and_then(serde_yaml_ng::Value::as_str),
+            if is_docusaurus {
+                Some("/guide/old-route")
+            } else {
+                None
+            }
+        );
         let body = fs::read_to_string(out.join("01-guide/01-guide/source.mdx")).unwrap();
         assert!(body.contains("#   unknown: !plugin value"));
         assert!(body.contains("<div id=\"body\" />"));

@@ -159,6 +159,7 @@ impl Converter for MkDocs {
                 .map(str::to_owned),
             root: root.clone(),
             nav,
+            routes: Default::default(),
             orphans: Vec::new(),
         };
 

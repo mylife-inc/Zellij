@@ -56,7 +56,7 @@ pub(crate) fn route(source: &Utf8PathBuf) -> String {
     out
 }
 
-fn decode(value: &str) -> Option<String> {
+pub(crate) fn decode(value: &str) -> Option<String> {
     let mut bytes = Vec::new();
     let mut iter = value.bytes();
     while let Some(b) = iter.next() {
@@ -69,6 +69,11 @@ fn decode(value: &str) -> Option<String> {
         }
     }
     String::from_utf8(bytes).ok()
+}
+
+/// Match case-insensitive and canonically equivalent export filenames.
+pub(crate) fn route_key(value: &str) -> String {
+    value.nfc().collect::<String>().to_lowercase()
 }
 
 pub(crate) fn encode_path(value: &str) -> String {
@@ -178,7 +183,7 @@ impl Resolver<'_> {
                 ));
             };
             if !image && let Some(route) = self.routes.get(&relative) {
-                return Ok(format!("{route}{suffix}"));
+                return Ok(format!("{}{suffix}", encode_path(route)));
             }
             if !image && relative.extension().is_none() {
                 // A unique extensionless document or directory index is safe;
@@ -196,7 +201,7 @@ impl Resolver<'_> {
                     .filter_map(|p| self.routes.get(p))
                     .collect();
                 if routes.len() == 1 {
-                    return Ok(format!("{}{suffix}", routes.first().unwrap()));
+                    return Ok(format!("{}{suffix}", encode_path(routes.first().unwrap())));
                 }
                 if routes.len() > 1 {
                     self.report(source, url, "ambiguous document target");
@@ -385,8 +390,12 @@ pub(crate) fn rewrite(
                 "document name is hidden from the engine; rename it before importing",
             ));
         }
-        let target = route(source);
-        if let Some(previous) = occupied.insert(target.clone(), source) {
+        let target = tree
+            .routes
+            .get(source)
+            .cloned()
+            .unwrap_or_else(|| route(source));
+        if let Some(previous) = occupied.insert(route_key(&target), source) {
             return Err(unsafe_path(
                 source,
                 format!("both {previous} and {source} would render at {target}"),

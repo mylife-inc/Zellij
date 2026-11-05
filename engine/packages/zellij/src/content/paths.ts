@@ -97,6 +97,24 @@ export function segmentsToRoute(segments: string[] | undefined): string {
   return `/${segments.join('/')}`;
 }
 
+/**
+ * Match Next's pathname to authored routes. Page rendering and usePathname can
+ * supply encoded segments while metadata receives decoded ones. Prefer an
+ * exact route, then decode once; never turn an encoded separator into a new
+ * segment or reinterpret malformed escapes. Stored routes stay unchanged.
+ */
+export function resolvePathname(pathname: string, routes: ReadonlySet<string>): string {
+  if (routes.has(pathname)) return pathname;
+  try {
+    const parts = pathname.split('/').map(decodeURIComponent);
+    if (parts.some(part => /[/\\?#]/.test(part) || part === '.' || part === '..')) return pathname;
+    const decoded = parts.join('/');
+    return routes.has(decoded) ? decoded : pathname;
+  } catch {
+    return pathname;
+  }
+}
+
 /** Separates a href into its route and optional anchor: "/f#sec" → ["/f","sec"]. */
 export function splitAnchor(href: string): [string, string | undefined] {
   const hashIndex = href.indexOf('#');

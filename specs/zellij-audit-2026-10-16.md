@@ -3764,3 +3764,112 @@ remain unsupported. The generated output is a nested Markdown link list, not
 Docusaurus cards. Source rc.2 remains unpublished; release preparation/approval,
 Netlify's hosting-comment issue and production cutover, additional cloud/CI
 providers and broader conversion fidelity remain separate tasks.
+
+
+### Explicit Docusaurus URL slugs — 2026-11-04
+
+Prior milestone closure: PR #72 merged as `ab768ea635750b13a092ad97c43f4b3e6782b0cd`
+after all 16 checks passed in run `41963452333` on `1d4e5b6`. Tested/merged
+trees match (`7e00781c79dc7d72c25ca36da857f8e1aefa4b9c`). The post-merge
+base-image workflow `41966348546` passed. Main workflow `41966348612` has a
+Docker `info` timeout in CLI job `127044130186`, before the first hosted build;
+the Windows portable job is still running. A targeted retry was refused while
+the run remained active; revisit after completion. This is not a diagnosed
+product fix. PR #71 main `41960754928` and base `41960754932` both passed.
+
+Source `6e9f942` addresses another part of audit R5. Explicit Docusaurus document
+and generated-category slugs become validated `route` front matter beneath
+`/guide`, using the engine's existing route override. Absolute document slugs
+start at that guide root; relative slugs resolve from the physical document's
+parent directories, applying default numeric-prefix removal unless disabled
+for that document. Literal relative dot segments may stay within the docs root.
+Category slugs resolve from the docs root regardless of their physical folder.
+Only explicit slugs change routes; other documents retain existing defaults.
+
+Imported filenames, sidebar source references and asset bases stay unchanged.
+Converted file links, category child links, navigation and search use the new
+routes. Case is retained; percent encoding is decoded once, Unicode is normalized
+to NFC and URL links are encoded. Trailing slashes are removed. Colliding routes
+(including case-only and Unicode-equivalent paths), malformed encoding, encoded
+separators/dot segments, root escapes, queries/fragments/hosts and nonportable
+segments fail before writes. Unknown source `route` metadata remains inert;
+MkDocs slug metadata is unchanged. Explicit category slugs are reserved before
+generated defaults, so defaults receive suffixes independently of sidebar order
+without changing their physical filenames. No engine schema/dependency changed.
+
+Local verification passed: **60 converter unit tests + 60 CLI integration tests**,
+workspace Clippy with warnings denied, formatting, deep/strict docs validation
+(55 routes, 23 examples) and both real CLI-to-engine fixtures. These fixtures
+exercise actual route loading, MDX rendering, sidebar/search links, category
+pages, heading anchors and asset bytes with uppercase and Unicode/space URLs.
+CI adds native slug coverage on Linux/macOS/Windows and full static-export HTML
+checks with `/products/docs`. Final-head hosted acceptance and merge are pending.
+No local container or GUI browser ran.
+
+Remaining import work includes original deployment prefixes/root-relative source
+URLs, plugin routing/generators, category styling, generated-index images/keywords
+and embedded DocCardList components. R5 is still only partially resolved. Source
+rc.2 remains unpublished; release preparation/approval, Netlify's hosting-comment
+issue/production cutover and additional deployment/CI providers remain separate.
+
+
+#### Unicode static-export follow-up — 2026-11-04
+
+PR #73 run `41968082371` on `a9251b6` passed 13 jobs, including all native
+import suites and packages. ARM64 image acceptance failed before image building
+with another Docker `info` timeout. The CLI job passed its prior acceptance
+steps but failed the new Unicode HTML assertion in the last conversion fixture.
+The combined manifest job was skipped because ARM64 had failed. Do not claim
+this run as final acceptance or the runtime timeout as fixed.
+
+A native command-line Next 16.4.2 webpack export reproduced the Unicode page
+as a 404 HTML shell. Instrumentation showed page params containing encoded
+`Caf%C3%A9`/`Release%20Notes`, while metadata received decoded `Café`/`Release Notes`.
+The hosted CI build using Next 16.4.5/Turbopack showed the same missing page link.
+Fix `9eb97ef` matches exact registered routes first, then tries one safe decoding
+step for page lookup and active sidebar navigation. Literal percent routes retain
+precedence; malformed encodings, encoded delimiters and dot segments do not
+become different routes. The route inventory and static params stay unchanged.
+
+All **423 engine tests** and engine typechecking pass. The actual native webpack
+export now contains the Café H1, the prefixed document link and an active sidebar
+link, with no Next error shell. This was a command-line build only: no local
+container or browser ran. Full-export acceptance retains its original links and
+adds explicit page-title/active-link checks. The same conversion check now runs
+immediately after the CI engine image is ready, before the long container suite;
+no acceptance steps were removed. All final-head CI gates must pass again.
+
+Prior PR #72 post-merge main workflow `41966348612` subsequently passed on its
+targeted CLI-job retry, with no source change; base `41966348546` also passed.
+Recurring Docker info timeouts remain a follow-up. Docker's official
+[info implementation](https://github.com/docker/cli/blob/master/cli/command/system/info.go)
+probes client plugins, and the failed ARM64 log left a Compose helper to clean
+up. This is a diagnostic lead, not a proven cause or fix.
+
+
+#### Selected-runtime budget and CI prerequisite correction — 2026-11-04
+
+The next run, `41971949013` on `9eea726`, again hit the three-second Docker
+`info` limit on ARM64 immediately after Docker had built the engine image and
+started the local registry. It also exposed an error in the preceding CI edit:
+the earlier conversion-export step had been placed in the native portable job,
+which does not build `zellij-ci`, so it failed trying to pull that missing image.
+
+Source `0d605a6` restores the conversion check to the CLI container job after
+image creation/runtime selection and before the longer hosted tests. A parsed
+workflow assertion verifies that ordering and that the portable matrix does not
+contain the container-only step. All existing acceptance steps remain.
+
+The same source lets an explicitly selected runtime use the existing full
+**twelve-second discovery budget**: there are no fallback clients/sockets to
+reserve time for in that mode. Automatic discovery still allows three seconds
+per probe within twelve seconds overall. Metadata probes remain two seconds,
+endpoint selection/secrecy remain unchanged, and no service is started. This is
+bounded tolerance for slower healthy runtimes, not a claim to have diagnosed or
+fixed Docker's plugin latency. A real CLI fixture with a four-second fake Docker
+info response proves the selected endpoint succeeds without calling Podman.
+
+Local verification: 9 runtime-requirement CLI tests and 25 engine Rust unit tests
+passed, alongside the prior 120 import/safety Rust tests, 423 engine JavaScript
+tests and native Unicode export. Clippy, formatting and refreshed deep/strict
+documentation checks passed. Final-head CI must pass before merging PR #73.
