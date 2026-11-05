@@ -155,6 +155,27 @@ try {
     }
     const good = await index();
     const goodRevision = await (await fetchFile('dev-revision.json')).json();
+    if (page) {
+      // Back navigation may restore a cached document whose revision predates
+      // the last successful asset update. Let its legitimate reload finish
+      // before measuring whether an invalid edit causes a new navigation.
+      // Two polls in the same document show that its reload watcher has
+      // accepted the current revision (a mismatched poll stops and reloads).
+      let polls = 0;
+      let priorNavigations = navigations;
+      await until(async () => {
+        const response = await page.waitForResponse(response =>
+          new URL(response.url()).pathname === `${prefix}/_zellij/dev-revision.json`,
+        { timeout: 5000 });
+        const marker = await response.json();
+        if (navigations !== priorNavigations || marker.revision !== goodRevision.revision) polls = 0;
+        priorNavigations = navigations;
+        if (marker.revision !== goodRevision.revision) return false;
+        return ++polls >= 2;
+      }, 'browser settles on the last successful preparation');
+      await expect(page.locator(`h2#${token.toLowerCase()}`)).toBeVisible();
+      await expect.poll(() => page.getByAltText('Watched image').evaluate((img) => img.naturalWidth)).toBe(160);
+    }
     const goodNavigations = navigations;
     const priorErrors = (log.match(/Preparation failed/g) ?? []).length;
     await put('01-guide/index.mdx', '# Invalid\n\n<Callout>\n');
