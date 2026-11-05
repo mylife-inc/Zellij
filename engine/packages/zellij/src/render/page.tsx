@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
-import { routeToSegments, segmentsToRoute, withBasePath } from '../content/paths';
+import { routeToSegments, segmentsToRoute, resolvePathname, withBasePath } from '../content/paths';
 import { assetHref } from '../content/asset-href';
 import type { GuidePage, SectionsPage } from '../content/types';
 import { flattenSidebar } from '../guide/navigation';
@@ -26,7 +26,7 @@ type Resolved =
 export function createZellijPages(options: ZellijRuntimeOptions = {}) {
   async function resolve(slug: string[] | undefined): Promise<Resolved> {
     const { site } = await loadZellijRuntime(options);
-    const route = segmentsToRoute(slug);
+    const route = resolvePathname(segmentsToRoute(slug), site.routes);
 
     const page = site.pages.find((p) => p.route === route);
     if (page) return { kind: 'sections', page };

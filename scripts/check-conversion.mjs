@@ -1,5 +1,5 @@
 // Verify actual CLI output against engine routes, MDX rendering and asset bytes.
-// With --export, use the conversion.Dockerfile fixture image via ZELLIJ_IMAGE
+// With --export, use the matching engine image via ZELLIJ_IMAGE
 // to build both imports with matching Next basePath and inspect generated HTML.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -140,7 +140,9 @@ for (const format of ['mkdocs', 'docusaurus']) {
     const installed = await readFile(path.join(output, `${referenceRoute.slice(1)}.html`), 'utf8');
     assert(installed.includes('id="install"'));
     const cafe = await readFile(path.join(output, `${cafeRoute.slice(1)}.html`), 'utf8');
+    assert(cafe.includes('<h1>Café</h1>'), 'The exported Unicode route renders its page instead of a 404 shell');
     assert(cafe.includes(`href="/products/docs${referenceUrl}"`), 'Encoded Unicode route exports and resolves its document link');
+    assert([...cafe.matchAll(/<a\b[^>]*aria-current="page"[^>]*>/g)].some(([tag]) => tag.includes('zellij-guide-sidebar-link') && tag.includes('data-active="true"')), 'The exported page marks its sidebar link active');
     for (const id of ['reference', 'stable-install', 'setext', 'café']) assert(installed.includes(`id="${id}"`));
     assert.equal((installed.match(/<h1(?:\s|>)/g) ?? []).length, 1, 'One page title after full export');
     assert(installed.includes('Authored reference title'), 'Authored page title survives export');

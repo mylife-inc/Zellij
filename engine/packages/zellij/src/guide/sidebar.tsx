@@ -5,7 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { SidebarNode } from '../content/types';
-import { findAncestors } from './navigation';
+import { findAncestors, flattenSidebar } from './navigation';
+import { resolvePathname } from '../content/paths';
 
 /**
  * Collapsed state is keyed per tree. A site can have many guide folders, and two
@@ -29,7 +30,9 @@ export function GuideSidebar({
   /** The tree's own title — a site may have several, and "Guide" names none. */
   label?: string;
 }) {
-  const pathname = usePathname() || '';
+  const currentPathname = usePathname() || '';
+  const routes = useMemo(() => new Set(flattenSidebar(sidebar).map(page => page.route)), [sidebar]);
+  const pathname = resolvePathname(currentPathname, routes);
 
   /**
    * Collapsed groups are stored, not expanded ones. A group added to the docs

@@ -194,6 +194,13 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run build --workspace @shebka/zellij
+      - name: Converted documents link to exported routes and assets
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: |
+          work=$(mktemp -d)
+          node scripts/check-conversion.mjs cli/target/debug/zel "$work/conversion" --export
+
       - name: Hosted build overrides and image recipes on the native platform
         run: node scripts/check-build-overrides.mjs
       - name: Image build arguments and delivery on the native platform
@@ -417,12 +424,6 @@ jobs:
           test -s "$work/site/_zellij/assets/replace-me.svg"
           test -s "$work/site/_zellij/assets/replace-me.mp4"
 
-      - name: Converted documents link to exported routes and assets
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: |
-          work=$(mktemp -d)
-          node scripts/check-conversion.mjs cli/target/debug/zel "$work/conversion" --export
 
   e2e:
     name: Showcase end to end
