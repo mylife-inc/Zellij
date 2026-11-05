@@ -314,6 +314,15 @@ jobs:
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
+      - name: Hosted Vercel prebuilt export and native upload acceptance
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        working-directory: cli
+        run: |
+          acceptance_test=vercel::tests::hosted_export_upload_preserves_prefix_assets_and_previous_output
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
+
       - name: Hosted validation watch uses the real engine and recovers after edits
         env:
           ZELLIJ_IMAGE: zellij-ci

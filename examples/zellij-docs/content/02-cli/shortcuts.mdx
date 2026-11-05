@@ -95,13 +95,13 @@ image from either renderer;
 `idf --kind static` prints its recipe, and the default `idf` retains the Next.js
 recipe. `si`, `ni`, `ir`, and `ip` require a usable container runtime.
 
-`pub` executes a saved image push or Netlify deployment; `pub --dry-run` only
+`pub` executes a saved image push or static deployment; `pub --dry-run` only
 resolves the plan. `netlify` builds and uploads static HTML, with a draft preview
 by default and `--prod` for live publication.
 
 `zel ci [site]` generates the same workflow as `zel ci init github --site-root
 <site>`, using saved settings. It writes local files by default; `--provision`
-explicitly uploads a Netlify token. See [CI](/cli/ci) for the compatible release
+explicitly uploads the selected provider's token. See [CI](/cli/ci) for the compatible release
 pin required while the current public binary is older than this contract.
 `na` creates editable hosted wrappers with a built local engine package; see
 [`zel new app`](/cli/new#zel-new-app-dir) for content selection and prerequisites.
@@ -117,3 +117,11 @@ Current source adds `zel cf [site] --site manual` as the short form of
 With a saved Cloudflare destination, `zel pub` needs no provider or project
 argument. Preview is the default; production requires `--prod`. See
 [setup and limits](/cli/deploy#cloudflare-pages). These forms are newer than rc.1.
+
+## Vercel shortcut
+
+`zel vc [site] --site prj_YOUR_PROJECT_ID` is equivalent to
+`zel deploy vercel [site] --site prj_YOUR_PROJECT_ID`. `zel vercel` also works.
+With a saved Vercel destination, `zel pub` needs no provider or project argument.
+Previews are the default; `--prod` is explicit. See [setup](/cli/deploy#vercel).
+These forms are newer than the published rc.1 binary.

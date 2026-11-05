@@ -40,6 +40,9 @@ fn command(root: &Path) -> Command {
         "CONTAINER_CONNECTION",
         "CONTAINERD_ADDRESS",
         "CONTAINERD_NAMESPACE",
+        "VERCEL_TOKEN",
+        "VERCEL_PROJECT_ID",
+        "VERCEL_TEAM_ID",
     ] {
         command.env_remove(key);
     }
@@ -155,7 +158,7 @@ fn delivery_configuration_is_typed_strict_and_versioned_for_both_renderers() {
             "publish: {action: push, image: static, provider: netlify}",
             "publish: {action: push, image: static, site: other}",
             "publish: {action: push, image: static, token: secret}",
-            "publish: {action: deploy, provider: vercel, site: other}",
+            "publish: {action: deploy, provider: github-pages, site: other}",
             "ci: {system: github}",
         ] {
             config(root, "manual", renderer, settings);
@@ -656,5 +659,93 @@ fn cloudflare_missing_credentials_stop_before_build_or_tools() {
     assert_eq!(result.status.code(), Some(2));
     let error = String::from_utf8_lossy(&result.stderr);
     assert!(error.contains("CLOUDFLARE_API_TOKEN"), "{error}");
+    assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn vercel_defaults_aliases_overrides_and_provider_isolation() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: vercel, site: prj_Saved123}\n",
+    );
+    for route in [
+        vec!["publish"],
+        vec!["deploy"],
+        vec!["deploy", "vercel"],
+        vec!["vercel"],
+        vec!["vc"],
+    ] {
+        let mut cmd = command(root);
+        cmd.env_remove("VERCEL_PROJECT_ID")
+            .env_remove("VERCEL_TOKEN")
+            .env_remove("VERCEL_TEAM_ID");
+        let output = cmd.args(route).arg("--dry-run").output().unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        assert!(text.contains("prj_Saved123") && text.contains("preview"));
+        assert!(!root.join("docs/zellij/site").exists());
+    }
+    let output = command(root)
+        .env("VERCEL_PROJECT_ID", "environment-project")
+        .args(["vc", "--site", "explicit-project", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("explicit-project"));
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("environment-project"));
+    for flags in [
+        vec!["--platform", "linux/amd64"],
+        vec!["--tag", "acme/image:v1"],
+        vec!["--to", "netlify"],
+        vec!["--site", "https://manual.vercel.app"],
+    ] {
+        let mut cmd = command(root);
+        cmd.args(["vc", "--dry-run"]).args(flags);
+        assert_eq!(cmd.output().unwrap().status.code(), Some(2));
+    }
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let output = command(root)
+        .env_remove("VERCEL_PROJECT_ID")
+        .env("NETLIFY_SITE_ID", "old-env-site")
+        .args(["vc", "--dry-run"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("VERCEL_PROJECT_ID"));
+    config(root, "docs/zellij", "portable", SETTINGS);
+    assert_eq!(
+        command(root)
+            .args(["pub", "--to", "vercel", "--site", "manual", "--dry-run"])
+            .output()
+            .unwrap()
+            .status
+            .code(),
+        Some(2)
+    );
+}
+
+#[test]
+fn vercel_missing_credentials_stop_before_build_or_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(root, "docs/zellij", "hosted", "");
+    let result = command(root)
+        .env_remove("VERCEL_TOKEN")
+        .env_remove("VERCEL_TEAM_ID")
+        .args(["vc", "--site", "manual"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(2));
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(error.contains("VERCEL_TOKEN"), "{error}");
     assert!(!root.join("docs/zellij/site").exists());
 }

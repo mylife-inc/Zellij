@@ -42,7 +42,10 @@ fn command(root: &Path, args: &[&str]) -> Command {
         .env_remove("NETLIFY_SITE_ID")
         .env_remove("CLOUDFLARE_PAGES_PROJECT_NAME")
         .env_remove("CLOUDFLARE_ACCOUNT_ID")
-        .env_remove("CLOUDFLARE_API_TOKEN");
+        .env_remove("CLOUDFLARE_API_TOKEN")
+        .env_remove("VERCEL_TOKEN")
+        .env_remove("VERCEL_PROJECT_ID")
+        .env_remove("VERCEL_TEAM_ID");
     command
 }
 fn run(root: &Path, args: &[&str], code: i32) -> Output {
@@ -553,6 +556,7 @@ fn provisioning_is_explicit_stdin_only_and_reports_partial_failure() {
     for (provider, token_name) in [
         ("netlify", "NETLIFY_AUTH_TOKEN"),
         ("cloudflare", "CLOUDFLARE_API_TOKEN"),
+        ("vercel", "VERCEL_TOKEN"),
     ] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
@@ -1183,4 +1187,74 @@ fn cloudflare_workflow_override_does_not_reuse_netlify_destination() {
     let doc = workflow(root).to_string();
     assert!(!doc.contains("old-site"));
     assert!(doc.contains("vars.CLOUDFLARE_PAGES_PROJECT_NAME"));
+}
+
+#[test]
+fn vercel_workflows_use_preview_by_default_and_isolate_credentials() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: vercel, site: manual}\n",
+    );
+    for prod in [false, true] {
+        let mut args = vec!["ci", "--force"];
+        if prod {
+            args.push("--prod");
+        }
+        let result = command(root, &args)
+            .env_remove("VERCEL_PROJECT_ID")
+            .env_remove("VERCEL_TOKEN")
+            .output()
+            .unwrap();
+        assert!(result.status.success(), "{result:?}");
+        let doc = workflow(root);
+        let publish = &doc["jobs"]["publish"];
+        let verify = doc["jobs"]["verify"].to_string();
+        assert!(!verify.contains("VERCEL") && !verify.contains("secrets."));
+        assert!(!publish["if"].as_str().unwrap().contains("pull_request"));
+        let step = publish["steps"].as_array().unwrap().last().unwrap();
+        assert!(
+            step["run"]
+                .as_str()
+                .unwrap()
+                .starts_with("zel deploy vercel")
+        );
+        assert_eq!(step["run"].as_str().unwrap().contains("--prod"), prod);
+        assert_eq!(step["env"]["VERCEL_PROJECT_ID"], "manual");
+        assert_eq!(step["env"]["VERCEL_TOKEN"], "${{ secrets.VERCEL_TOKEN }}");
+        assert!(
+            step["env"]["VERCEL_TEAM_ID"]
+                .as_str()
+                .unwrap()
+                .contains("vars.VERCEL_TEAM_ID")
+        );
+        assert!(!doc.to_string().contains("NETLIFY"));
+    }
+    let result = command(root, &["ci", "--force", "--zel-version", "0.2.0-rc.1"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("0.2.0-rc.2"));
+}
+#[test]
+fn vercel_workflow_override_does_not_reuse_netlify_destination() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let result = command(root, &["ci", "--deploy", "vercel"])
+        .env_remove("VERCEL_PROJECT_ID")
+        .output()
+        .unwrap();
+    assert!(result.status.success(), "{result:?}");
+    let doc = workflow(root).to_string();
+    assert!(!doc.contains("old-site"));
+    assert!(doc.contains("vars.VERCEL_PROJECT_ID"));
 }

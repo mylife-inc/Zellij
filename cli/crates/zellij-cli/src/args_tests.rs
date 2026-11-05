@@ -224,6 +224,18 @@ const CASES: &[Case] = &[
         &[],
         &["manual", "--site", "project", "--dry-run"],
     ),
+    (
+        "vercel",
+        "deploy vercel",
+        &[],
+        &["manual", "--site", "prj_123", "--prod", "--dry-run"],
+    ),
+    (
+        "vc",
+        "deploy vercel",
+        &[],
+        &["manual", "--site", "prj_123", "--dry-run"],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -280,6 +292,7 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
     aliases(&Cli::command_tree(), "", &mut actual);
     actual.insert("netlify".into());
     actual.insert("cloudflare".into());
+    actual.insert("vercel".into());
     assert_eq!(
         actual,
         CASES.iter().map(|(short, ..)| (*short).into()).collect()

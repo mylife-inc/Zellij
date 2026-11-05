@@ -106,14 +106,16 @@ pub enum PublishSettings {
 pub enum Provider {
     Netlify,
     Cloudflare,
+    Vercel,
 }
 impl Provider {
     pub fn parse(value: &str) -> Result<Self> {
         match value {
             "netlify" => Ok(Self::Netlify),
             "cloudflare" => Ok(Self::Cloudflare),
+            "vercel" => Ok(Self::Vercel),
             _ => Err(Error::InvalidArgument(
-                "unsupported deployment provider; choose netlify or cloudflare".into(),
+                "unsupported deployment provider; choose netlify, cloudflare or vercel".into(),
             )),
         }
     }
@@ -121,18 +123,21 @@ impl Provider {
         match self {
             Self::Netlify => "netlify",
             Self::Cloudflare => "cloudflare",
+            Self::Vercel => "vercel",
         }
     }
     pub fn site_environment(self) -> &'static str {
         match self {
             Self::Netlify => "NETLIFY_SITE_ID",
             Self::Cloudflare => "CLOUDFLARE_PAGES_PROJECT_NAME",
+            Self::Vercel => "VERCEL_PROJECT_ID",
         }
     }
     pub fn token_environment(self) -> &'static str {
         match self {
             Self::Netlify => "NETLIFY_AUTH_TOKEN",
             Self::Cloudflare => "CLOUDFLARE_API_TOKEN",
+            Self::Vercel => "VERCEL_TOKEN",
         }
     }
     pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
@@ -152,6 +157,23 @@ impl Provider {
     pub fn validate_site(self, value: &str) -> Result<()> {
         match self {
             Self::Netlify => validate_site_identifier(value),
+            Self::Vercel => {
+                let id = value
+                    .strip_prefix("prj_")
+                    .is_some_and(|v| !v.is_empty() && v.bytes().all(|b| b.is_ascii_alphanumeric()));
+                let name = !value.is_empty()
+                    && value.len() <= 100
+                    && !value.starts_with('-')
+                    && !value.ends_with('-')
+                    && !value.contains("---")
+                    && value.bytes().all(|b| {
+                        b.is_ascii_lowercase() || b.is_ascii_digit() || matches!(b, b'-' | b'_')
+                    });
+                if value.len() > 128 || !(id || name) {
+                    return Err(Error::InvalidArgument("Vercel requires an existing project ID (prj_…) or project name, without a URL, whitespace or credentials".into()));
+                }
+                Ok(())
+            }
             Self::Cloudflare => {
                 if value.is_empty()
                     || value.len() > 58
@@ -174,6 +196,10 @@ impl Provider {
                 site: destination.into(),
                 production,
             },
+            Self::Vercel => DeliveryPlan::Vercel {
+                project: destination.into(),
+                production,
+            },
             Self::Cloudflare => DeliveryPlan::Cloudflare {
                 project: destination.into(),
                 production,
@@ -187,10 +213,11 @@ fn site_identifier<'de, D: serde::Deserializer<'de>>(
 ) -> std::result::Result<Option<String>, D::Error> {
     let serde_yaml_ng::Value::String(value) = serde_yaml_ng::Value::deserialize(d)? else {
         return Err(serde::de::Error::custom(
-            "publish.site must be a site ID or domain string",
+            "publish.site must be a destination string",
         ));
     };
-    validate_site_identifier(&value).map_err(serde::de::Error::custom)?;
+    // The provider validates the destination when Site is loaded.
+    // Vercel project IDs contain underscores, unlike Netlify domains.
     Ok(Some(value))
 }
 
@@ -214,6 +241,7 @@ pub enum DeliveryPlan {
     Push(ImagePublication),
     Netlify { site: String, production: bool },
     Cloudflare { project: String, production: bool },
+    Vercel { project: String, production: bool },
 }
 
 impl DeliveryPlan {
@@ -223,7 +251,7 @@ impl DeliveryPlan {
         if let Some(platform) = platform {
             match &mut self {
                 Self::Push(image) => image.platform = Some(platform),
-                Self::Netlify { .. } | Self::Cloudflare { .. } => {
+                Self::Netlify { .. } | Self::Cloudflare { .. } | Self::Vercel { .. } => {
                     return Err(Error::InvalidArgument(
                         "--platform requires image publication; deployment providers accept static HTML".into(),
                     ));
@@ -257,7 +285,7 @@ impl DeliveryPlan {
             }
             _ => None,
         };
-        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare --site <destination>`".into()))?;
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel --site <destination>`".into()))?;
         if tag.is_some() {
             return Err(Error::InvalidArgument(
                 "deployment accepts generated static HTML, not an image tag; remove --tag".into(),

@@ -28,6 +28,7 @@ mod maintenance;
 mod netlify;
 mod preview;
 mod validation;
+mod vercel;
 mod watch;
 
 fn main() {
@@ -261,7 +262,10 @@ fn main() {
         Command::Convert(ref options) => imports::convert(options, false),
         // Parsing normalizes these aliases. Keep dispatch exhaustive so a new
         // command cannot compile while silently falling into a stub handler.
-        Command::Shortcut(_) | Command::Netlify(_) | Command::Cloudflare(_) => {
+        Command::Shortcut(_)
+        | Command::Netlify(_)
+        | Command::Cloudflare(_)
+        | Command::Vercel(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

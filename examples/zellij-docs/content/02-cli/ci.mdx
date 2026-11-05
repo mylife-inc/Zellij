@@ -172,7 +172,7 @@ To also upload your environment's token to the site's GitHub repository:
 zel ci --force --provision
 ```
 
-This requires a Netlify or Cloudflare delivery plan, its environment token
+This requires a Netlify, Cloudflare or Vercel delivery plan, its environment token
 (`NETLIFY_AUTH_TOKEN` or `CLOUDFLARE_API_TOKEN`), and an authenticated
 GitHub CLI with permission to set repository secrets. The token is sent to `gh`
 over stdin; it is never written into the workflow or passed as an argument.
@@ -335,3 +335,19 @@ rejected; the chosen release still needs to be published before execution.
 - [Validation](/cli/check)
 - [Saved publication](/cli/publish)
 - [Site configuration](/cli/config)
+
+## Vercel workflows
+
+Use saved `publish.provider: vercel` or `zel ci --deploy vercel
+--site prj_YOUR_PROJECT_ID`. Generated workflows require a compatible rc.2 or
+later release; generation does not check whether that release exists.
+
+Set repository secret `VERCEL_TOKEN`. Set repository variable `VERCEL_TEAM_ID`
+for a team project. If the project is not resolved from explicit, environment or
+saved settings during generation, set repository variable `VERCEL_PROJECT_ID`.
+Same-named secrets are accepted for the two IDs. The publish step runs
+`zel deploy vercel`; previews are the default, with `--prod` / saved
+`ci.production: true` explicitly selecting production. Pull-request verification
+never receives deployment credentials. Explicit `--provision` can copy the local
+`VERCEL_TOKEN` into GitHub's secret store after writing the workflow; it does not
+create a Vercel project or provision either ID. See [setup and limits](/cli/deploy#vercel).

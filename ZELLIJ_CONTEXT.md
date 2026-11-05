@@ -33,10 +33,12 @@ after all 16 checks passed on `fb622d1` in run `42109434915`. Its base-image
 post-merge run passed; main run `42113725983` exposed a Windows watched-folder
 rename EPERM in the preview fixture. This milestone bounds retries for that
 operation while retaining real disappearance/recovery assertions.
-Current work adds native Cloudflare Pages static deployment through `cf`,
-`deploy`, `publish`, `ship` and GitHub workflow generation. It uses existing
-projects, environment credentials and previews by default. Live Cloudflare
-account acceptance remains pending; see the latest dated entry.
+Cloudflare Pages static deployment merged in PR #81 as `9cde253`, after all
+16 final-head checks passed. Its base-image post-merge run passed; main CI is
+still running. Current work adds native Vercel prebuilt static deployment through
+`vc`, `deploy`, `publish`, `ship` and GitHub workflow generation. Both providers
+use existing projects, environment credentials and previews by default. Live
+Cloudflare and Vercel account acceptance remains pending; see the latest entry.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -5141,3 +5143,88 @@ overview now explicitly lists both static providers. Initial PR #81 CI
 `42118339455` on `8f2f327` had 11 passing jobs and no failures when this final
 correction was prepared; it does not validate this follow-up. Final-head CI
 and live Cloudflare account acceptance remain pending.
+
+### 2026-11-05 — Vercel prebuilt static delivery
+
+PR #81 (Cloudflare Pages) merged as `9cde253e29a50e3bb2ea7b90355f274be569e629`
+after all 16 checks passed on `b1bf1dac48cd19541e976d8a3408cb62ea6570ed` in
+run `42119403884`. Tested and merged trees match
+`c3d659a4c13a245292d69a370f44fecde9380137`. Post-merge base-image run
+`42123170846` passed; main `42123170594` was still running with no failures
+when this entry was prepared. Cloudflare live-account acceptance remains pending.
+
+Current source adds `zel vercel` / `zel vc`, `deploy vercel`, saved `publish`,
+`ship --provider vercel`, and `ci --deploy vercel`. Destination precedence is
+explicit `--site` / `--site-id`, `VERCEL_PROJECT_ID`, then same-provider
+`publish.site`. IDs (`prj_…`) and project names work. Provider changes do not
+reuse another provider's saved destination or environment ID. The shared saved
+site deserializer now enforces string typing, with destination syntax checked
+by the selected provider when Site loads; Netlify validation stays strict.
+
+The native adapter lives in `cli/crates/zellij-cli/src/vercel.rs`. It uses
+`VERCEL_TOKEN` and optional `VERCEL_TEAM_ID`, checks an existing project before
+building, then uses the shared temporary static export builder. Portable output
+requires no external runtime; hosted output retains container requirements and
+URL/feature overrides. Both preserve source files and prior output. No Vercel
+CLI, stored login, account/project creation, configuration/DNS changes or remote
+source build is involved. Default deployments are previews; `--prod` is explicit
+and ship never persists that choice. Production waits for alias assignment.
+
+The protocol uploads SHA-1-addressed assets to `/v2/files`, then creates exactly
+one `/v13/deployments?prebuilt=1` request containing `.vercel/output/static/*`
+and generated Build Output API v3 configuration. Content hashes deduplicate
+uploads; source/config files and Zellij's ownership marker are excluded. The
+routing configuration retains literal `.html` links and adds existing-file
+fallbacks for hosted clean paths and directory indexes. Full deployment polling
+checks ID, project, target environment, failure/alias status and HTTPS deployment
+hostname before reporting readiness. Provider bodies/tokens stay out of errors,
+redirects are refused and request/deployment budgets are bounded. Creation is
+never automatically retried; uncertain results require dashboard inspection.
+
+Initial limits are 15,000 static files / 100 MiB total; provider plan limits may
+be lower. Links/junctions/special files, reserved Vercel config/output paths and
+ambiguous control/#/?/backslash paths fail before uploads. Unicode/space/percent
+filenames remain intact. Server functions, middleware, custom Vercel rules and
+live-account acceptance are outside this milestone. Native publication remains
+separate; published rc.1 does not contain these changes.
+
+GitHub generation uses only the Vercel token and project/team variables or secrets
+on the publish step; PR verification has no deployment credentials. Explicit
+`--provision` copies only `VERCEL_TOKEN` via stdin after writing the workflow.
+A compatible rc.2-or-later pin is required, without claiming it is published.
+CLI docs, current status and unpublished release notes describe setup and limits.
+
+Official protocol references inspected read-only:
+[REST deployment](https://vercel.com/docs/rest-api/deployments/create-a-new-deployment),
+[file uploads](https://vercel.com/docs/rest-api/deployments/upload-deployment-files),
+[project preflight](https://vercel.com/docs/rest-api/projects/find-a-project-by-id-or-name),
+[prebuilt query in the official client](https://github.com/vercel/vercel/blob/main/packages/client/src/utils/query-string.ts),
+[Build Output configuration](https://vercel.com/docs/build-output-api/configuration).
+Authenticated response fields were cross-checked against Vercel's OpenAPI schema.
+
+Local tests cover protocol/identity/target selection, uploads and duplicates,
+credential redaction, redirects, deadlines, failures, output preservation, CLI
+aliases/provider isolation, ship retention and workflow secret provisioning.
+CI explicitly selects a real hosted-export/mock-upload test, including base paths,
+assets and failed-build preservation. Final local workspace checks and final-head
+GitHub acceptance are pending at this entry. No local Docker or browser ran.
+
+Vercel implementation commit **`28ea6f7`** passed all **487 local Rust workspace
+tests**, with three real hosted-provider tests deliberately ignored locally and
+selected explicitly in CI. Warnings-denied Clippy, formatting, strict/deep docs
+(55 routes / 23 examples), workflow actionlint and an emitted Vercel workflow
+passed. Evidence: `/private/tmp/zellij-vercel-workspace.log`,
+`zellij-vercel-clippy.log`, `zellij-vercel-docs.log`, and generated fixture
+`/private/tmp/zellij-vercel-ci-ba1_mb0e/.github/workflows/docs.yml`.
+Final-head GitHub acceptance and merge remain pending. No local Docker/browser
+or live provider deployment ran.
+
+PR #82 initial run `42126186780` exposed a Windows-only fixture setup error:
+`bad?.html` is not a legal Windows filename, so the test failed before calling
+Zel's validation. Fix **`4475d66`** uses `bad#.html`, legal on all supported OSes
+but rejected by the same upload-path rule. No assertion or Windows test is
+skipped. All 11 local Vercel tests pass after the correction (one real hosted
+test remains CI-only); formatting passes. Log:
+`/private/tmp/zellij-pr82-windows.log`, with local recheck in
+`/private/tmp/zellij-vercel-final-tests.log`. Final-head CI is still required;
+the initial run does not validate this correction.
