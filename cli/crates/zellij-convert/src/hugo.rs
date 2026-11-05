@@ -372,7 +372,19 @@ impl Converter for Hugo {
         let output_sources: BTreeMap<_, _> = pages
             .iter()
             .filter(|(_, p)| p.branch)
-            .map(|(p, _)| (p.clone(), p.with_file_name("index.md")))
+            .map(|(p, _)| {
+                // Native PathBuf filename changes insert backslashes on
+                // Windows; emitted names and reference keys use portable '/'.
+                let output = p.with_file_name("index.md");
+                let output = Utf8PathBuf::from(
+                    output
+                        .components()
+                        .map(|c| c.as_str())
+                        .collect::<Vec<_>>()
+                        .join("/"),
+                );
+                (p.clone(), output)
+            })
             .collect();
         let documents: BTreeMap<_, _> = pages
             .iter()
