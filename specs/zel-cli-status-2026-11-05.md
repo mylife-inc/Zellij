@@ -56,3 +56,8 @@ final-head Windows and full CI acceptance are pending.
 tree `185ce605b71138a58d700b8e7a6c9e9f1850f77c`. Base-image post-merge run
 `42005279024` passed; main `42005279080` was still running at this refresh.
 The new relative-link milestone requires its own final-head verification.
+
+The PR #75 post-merge Windows preview step subsequently failed an immediate
+watch-announcement assertion. Source `a1003bd` waits for the separately relayed
+stdout message, retaining bounded readiness, early-exit checks and the assertion.
+This harness fix joins the relative-link PR and requires new Windows CI evidence.

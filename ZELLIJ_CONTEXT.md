@@ -21,8 +21,8 @@ PR #74 merged import asset controls and optional `convert --validate` as
 `74abf77`; all 16 PR checks and both post-merge workflows passed. PR #75 merged
 website URL mapping and exhaustive CLI dispatch as `2c5ac7c`, after all 16
 final-head checks passed, including the Windows correction in `74bacea`.
-Its base-image post-merge workflow passed; main CI was still running at this
-refresh. Current source `d141846` adds relative website document URLs using
+Its base-image post-merge workflow passed; main CI later exposed a Windows
+watch-readiness assertion race, corrected in `a1003bd`. Current source `d141846` adds relative website document URLs using
 source page locations, explicit slash policies and conservative ambiguity
 reports. Local 132 Rust tests, Clippy, formatting, deep/strict docs and both
 CLI-to-engine fixtures pass; final-head hosted/native CI and merge are pending.
@@ -4757,3 +4757,22 @@ remain review tasks. All command families still have handlers, but the wider
 provider/format/interactive specification remains incomplete. Public candidate
 `v0.2.0-rc.1` is unchanged; no rc.2 publication or production Netlify migration
 was requested. The Netlify hosting-comment issue remains with support.
+
+
+#### Windows preview harness follow-up — 2026-11-05
+
+PR #75 post-merge main run `42005279080` failed the Windows native preview
+step in job `127170334382`. HTTP serving, Chromium watch acceptance and the
+Windows import tests had passed. The WebKit watch iteration then asserted that
+stdout already contained “Watching content and configuration” immediately after
+start() observed “Serving at…”. The CLI emits those lines separately, and the
+Windows console helper relays stdout asynchronously; a single pipe chunk is
+not a guarantee that both messages have arrived. The assertion failed before
+browser startup/tracing, so the original log had no browser trace artifact.
+
+Source `a1003bd` uses the harness's bounded wait for the watch announcement,
+retains the assertion, detects early process exit, and includes captured stdout
+and stderr on startup failure. No product timing or watcher behavior is changed,
+and no arbitrary sleep/retry or acceptance skip is added. Node syntax and diff
+checks pass. Real Windows/browser execution remains CI-only. The original
+failed post-merge run is retained; new final-head CI must verify this fix.
