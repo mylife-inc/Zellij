@@ -1678,3 +1678,15 @@ gates, pending for this source. Deployment prefixes/root-relative source URLs,
 plugin routing/generators, styling, category images/keywords and DocCardList
 remain incomplete. This is unpublished rc.2 functionality, with no new release
 or Netlify production change.
+
+
+Unicode export follow-up: PR #73's initial CI `41968082371` found a real Next
+page lookup bug: encoded page params produced a 404 shell despite correct
+metadata. Source `9eb97ef` resolves exact routes first and safely decodes once
+as a fallback, also correcting the sidebar active state. All 423 engine tests,
+typechecking and an actual native command-line Unicode export pass. Export
+regressions assert the page heading, prefixed links and active navigation; their
+CI step now runs earlier without dropping other checks. Final-head CI is pending.
+PR #72 post-merge main/base workflows both passed after the CLI's targeted
+Docker-probe retry. A similar initial ARM64 timeout in PR #73 remains a runtime
+reliability follow-up; no fix or release is claimed.

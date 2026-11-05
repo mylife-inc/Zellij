@@ -3811,3 +3811,37 @@ URLs, plugin routing/generators, category styling, generated-index images/keywor
 and embedded DocCardList components. R5 is still only partially resolved. Source
 rc.2 remains unpublished; release preparation/approval, Netlify's hosting-comment
 issue/production cutover and additional deployment/CI providers remain separate.
+
+
+#### Unicode static-export follow-up — 2026-11-04
+
+PR #73 run `41968082371` on `a9251b6` passed 13 jobs, including all native
+import suites and packages. ARM64 image acceptance failed before image building
+with another Docker `info` timeout. The CLI job passed its prior acceptance
+steps but failed the new Unicode HTML assertion in the last conversion fixture.
+The combined manifest job was skipped because ARM64 had failed. Do not claim
+this run as final acceptance or the runtime timeout as fixed.
+
+A native command-line Next 16.4.2 webpack export reproduced the Unicode page
+as a 404 HTML shell. Instrumentation showed page params containing encoded
+`Caf%C3%A9`/`Release%20Notes`, while metadata received decoded `Café`/`Release Notes`.
+The hosted CI build using Next 16.4.5/Turbopack showed the same missing page link.
+Fix `9eb97ef` matches exact registered routes first, then tries one safe decoding
+step for page lookup and active sidebar navigation. Literal percent routes retain
+precedence; malformed encodings, encoded delimiters and dot segments do not
+become different routes. The route inventory and static params stay unchanged.
+
+All **423 engine tests** and engine typechecking pass. The actual native webpack
+export now contains the Café H1, the prefixed document link and an active sidebar
+link, with no Next error shell. This was a command-line build only: no local
+container or browser ran. Full-export acceptance retains its original links and
+adds explicit page-title/active-link checks. The same conversion check now runs
+immediately after the CI engine image is ready, before the long container suite;
+no acceptance steps were removed. All final-head CI gates must pass again.
+
+Prior PR #72 post-merge main workflow `41966348612` subsequently passed on its
+targeted CLI-job retry, with no source change; base `41966348546` also passed.
+Recurring Docker info timeouts remain a follow-up. Docker's official
+[info implementation](https://github.com/docker/cli/blob/master/cli/command/system/info.go)
+probes client plugins, and the failed ARM64 log left a Compose helper to clean
+up. This is a diagnostic lead, not a proven cause or fix.
