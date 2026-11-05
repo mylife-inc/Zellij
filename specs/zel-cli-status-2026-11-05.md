@@ -26,8 +26,10 @@ normalization contract.
 Import website-link work adds root-relative and same-origin HTTP(S) Markdown
 URL mapping for supported source prefixes/routes, preserving queries, fragments,
 Unicode and asset bytes. Docusaurus routing is read only from direct literal
-configuration; versioned/localized/multi-instance/custom plugin routing and
-relative website URLs still require review. No source JavaScript is executed
+configuration. Relative document URLs now use source page URL directories and
+report ambiguous slash policies or conflicting file interpretations. Versioned,
+localized, multi-instance and custom plugin routing, HTML/JSX attributes and
+relative website assets still require review. No source JavaScript is executed
 and no URL is fetched. See [the conversion reference](../examples/zellij-docs/content/02-cli/convert.mdx).
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
@@ -46,3 +48,11 @@ before merge; the previous PR's results do not validate new changes.
 The first website-link CI run found a Windows MkDocs path-normalization bug.
 Source `74bacea` fixes nested-page inventory and derived navigation paths;
 final-head Windows and full CI acceptance are pending.
+
+**PR #75 closure:** all 16 final-head checks passed in
+[42001094217](https://github.com/mylife-inc/Zellij/actions/runs/42001094217) on
+`bb2527a5f50b3b9ecd870c5bb5e3a9f9c20962b1`. It merged as
+`2c5ac7caae98af6bf4ec552c467d2614904ef1fe`, with the identical tested source
+tree `185ce605b71138a58d700b8e7a6c9e9f1850f77c`. Base-image post-merge run
+`42005279024` passed; main `42005279080` was still running at this refresh.
+The new relative-link milestone requires its own final-head verification.

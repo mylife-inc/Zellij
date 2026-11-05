@@ -257,7 +257,11 @@ impl Converter for MkDocs {
                 .then(|| crate::references::route(source));
             urls.add(&html, target.clone())?;
             if directories {
-                urls.add(html.strip_suffix("index.html").unwrap(), target)?;
+                let directory = html.strip_suffix("index.html").unwrap();
+                urls.add(directory, target)?;
+                urls.add_page(source, directory)?;
+            } else {
+                urls.add_page(source, &html)?;
             }
         }
         crate::references::rewrite(

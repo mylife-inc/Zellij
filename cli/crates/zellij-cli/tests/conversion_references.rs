@@ -33,7 +33,7 @@ fn fixture(source: &Path, docusaurus: bool) {
         write(
             source,
             "docusaurus.config.js",
-            "module.exports = {title: 'Conversion'};",
+            "module.exports = {title: 'Conversion', trailingSlash: true};",
         );
         write(
             source,
