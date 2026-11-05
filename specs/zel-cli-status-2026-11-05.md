@@ -187,3 +187,11 @@ retry. Local evidence: `/private/tmp/zellij-cloudflare-workspace.log` (471 passe
 `zellij-cloudflare-final-tests.log` (40 CLI unit + 16 workflow tests passed),
 `zellij-cloudflare-clippy.log`, and `zellij-cloudflare-docs.log`.
 Final-head GitHub checks, hosted export acceptance and merge are pending.
+
+Cloudflare follow-up **`6cd0517`** rejects API deployments marked `is_skipped`,
+even if their stage otherwise appears successful. The protocol fixture covers
+this case; all 13 local Cloudflare tests, Clippy and strict docs pass. The CLI
+overview now explicitly lists both static providers. Initial PR #81 CI
+`42118339455` on `8f2f327` had 11 passing jobs and no failures when this final
+correction was prepared; it does not validate this follow-up. Final-head CI
+and live Cloudflare account acceptance remain pending.
