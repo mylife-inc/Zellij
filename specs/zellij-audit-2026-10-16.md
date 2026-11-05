@@ -4259,3 +4259,23 @@ adapters, GitLab/CircleCI, interactive authoring and advanced options. Native
 release publication needs separate explicit authorization; the old rc.2 proposal
 predates this work. Production Netlify migration and the vendor's hosting-comment
 hydration issue remain separate. No production deployment or domain change ran.
+
+
+#### Sphinx literal resource follow-up — 2026-11-05
+
+Source `6b5b1d2` preserves literal local image/download filenames before the
+shared Markdown URL resolver. A source filename containing `%20` remains
+separate from one containing a space; both original bytes and encoded emitted
+URLs are covered. Root-relative resource paths retain source-root semantics.
+Sphinx can also select localized image variants based on `language`, so nonempty
+language settings are now rejected with guidance to choose resources explicitly
+in a separate source copy. Absent/None/empty language settings remain supported.
+The official [asset collector](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/collectors/asset.py)
+was inspected read-only; no Python/Sphinx execution was introduced.
+
+All 11 Sphinx integration tests, warnings-denied Clippy, formatting, strict docs
+and all six Node rendering fixtures pass, including the percent/space ambiguity.
+The expanded hosted export fixture checks real HTML URLs and copied bytes too.
+Local distinct Rust coverage is now 184 tests. Initial PR #80 CI on `a850843`
+had 14 passing jobs and no failures when this correction was prepared; that
+older run does not validate this source. New final-head CI and merge are pending.

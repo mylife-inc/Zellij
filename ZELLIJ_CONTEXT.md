@@ -30,8 +30,9 @@ workflows passed too. Jekyll imports merged in PR #78 as `6190e51`, and Hugo imp
 PR #79 as `7a03f50`, each after all 16 final-head checks passed. Both post-merge
 workflows passed for each PR. Current source `968b469` adds a conservative
 Sphinx/reStructuredText importer and fixes inline-code backtick handling.
-Local 183 Rust tests, Clippy, formatting, strict docs and all six rendering
-fixtures pass; hosted/native final-head CI and merge remain pending.
+Resource correction `6b5b1d2` preserves literal filenames and rejects implicit
+localized asset selection. Local 184 Rust tests, Clippy, formatting, strict docs
+and all six rendering fixtures pass; final-head CI and merge remain pending.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -5045,3 +5046,23 @@ adapters, GitLab/CircleCI, interactive authoring and advanced options. Native
 release publication needs separate explicit authorization; the old rc.2 proposal
 predates this work. Production Netlify migration and the vendor's hosting-comment
 hydration issue remain separate. No production deployment or domain change ran.
+
+
+#### Sphinx literal resource follow-up — 2026-11-05
+
+Source `6b5b1d2` preserves literal local image/download filenames before the
+shared Markdown URL resolver. A source filename containing `%20` remains
+separate from one containing a space; both original bytes and encoded emitted
+URLs are covered. Root-relative resource paths retain source-root semantics.
+Sphinx can also select localized image variants based on `language`, so nonempty
+language settings are now rejected with guidance to choose resources explicitly
+in a separate source copy. Absent/None/empty language settings remain supported.
+The official [asset collector](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/collectors/asset.py)
+was inspected read-only; no Python/Sphinx execution was introduced.
+
+All 11 Sphinx integration tests, warnings-denied Clippy, formatting, strict docs
+and all six Node rendering fixtures pass, including the percent/space ambiguity.
+The expanded hosted export fixture checks real HTML URLs and copied bytes too.
+Local distinct Rust coverage is now 184 tests. Initial PR #80 CI on `a850843`
+had 14 passing jobs and no failures when this correction was prepared; that
+older run does not validate this source. New final-head CI and merge are pending.
