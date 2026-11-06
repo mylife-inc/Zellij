@@ -4871,3 +4871,42 @@ Full starter implementation: **`54f601dc9701a11ef3d2819874b26c96950cac9f`**.
 The preceding local verification covers this source and Windows recovery
 `608e5e8`; this context-only follow-up records their identities. Final-head
 GitHub acceptance and merge remain pending.
+
+
+## 2026-11-06 — PR #89 closure and doctor preflight follow-up
+
+PR #89 merged as `479eac4b899266311af84a5b4f8f55ea1b881356`; all 16 checks
+passed in `42267735005` on `80ba76c5f58f191b33e5dc2f8e753966f105e4e6`,
+without retries. Tree equality was verified. Windows x64 and ARM64 each passed
+eight upgrade tests and actual self-upgrade acceptance. Hosted full-starter
+export passed 26-route/section/media assertions. This closes the pending
+acceptance recorded above for sources `608e5e8` and `54f601d`.
+
+The post-merge base-image workflow `42272858763` passed. Main run `42272858943`
+passed 15 jobs; Ubuntu portable job `128081619870` timed out downloading
+Playwright system dependencies after native tests passed. Only that job was
+retried at the unchanged merge SHA. Its result is pending, not presumed green.
+
+Doctor previously probed the runtime before resolving content, could not accept
+site/config selectors, and failed without Docker even for a configured portable
+site. The current follow-up adds shared selection, native settings preflight,
+portable runtime bypass, useful site details on hosted runtime failure, and
+structured JSON. It preserves runtime-only diagnostics outside a site, existing
+bounded probes and hidden endpoint values. Configuration failures occur before
+runtime discovery. Tests use fake clients; no local Docker/browser is started.
+See the current doctor reference and durable context for the precise boundaries.
+Final source identity and verification follow after local checks.
+
+
+The PR #89 targeted retry completed: run `42272858943`, attempt 2, all 16 jobs
+successful at unchanged `479eac4`. This closes the pending post-merge acceptance
+without erasing the first attempt's dependency-download timeout.
+
+Doctor local verification passed **586 Rust tests**, with five existing real
+hosted-provider fixtures ignored and reserved for CI; all 16 runtime integration
+tests passed. Warnings-denied workspace Clippy, formatting, actionlint and
+strict/deep documentation (55 routes, 23 examples) passed. No local Docker or
+browser ran. Logs: `/private/tmp/zellij-doctor-{workspace,clippy,docs}.log`.
+
+Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**. The local verification above
+covers this source. Final-head GitHub CI and merge remain pending.

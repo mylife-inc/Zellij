@@ -556,3 +556,6 @@ runtime-only diagnostic remains available. Content, output readiness, credential
 and provider connectivity are not included. Regression tests cover fake clients
 and native filesystem behavior; final-head cross-platform CI and publication
 remain separate. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx).
+
+Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**. The local verification above
+covers this source. Final-head GitHub CI and merge remain pending.
