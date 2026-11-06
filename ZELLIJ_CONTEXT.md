@@ -5465,3 +5465,15 @@ selection, delivery/import/CI wiring, protocol and fake-tool regression tests,
 and matching documentation. Local verification above covers this source.
 Final-head GitHub CI and merge remain pending; live Fly account acceptance is
 not implied by loopback fixtures or shared image tests.
+
+
+Fly compatibility follow-up **`ecad3ca`** accepts the API's default init object
+with `tty: false` while retaining rejection of custom command/TTY overrides.
+Update receipts may omit `updated_at`; readiness then uses the subsequent GET's
+timestamp only after verifying the new instance ID and exact requested config.
+The baseline fixture now includes Fly's default init shape, and a new regression
+covers sparse update receipts. All 10 Fly tests and warnings-denied workspace
+Clippy pass. Distinct local Rust coverage is **542** tests. Evidence:
+`/private/tmp/zellij-fly-compat-tests.log`, `zellij-fly-compat-clippy.log`.
+PR #85's first run on `1b272fa` cannot validate this correction; the final head
+requires its own complete CI run before merge. Live Fly acceptance remains pending.

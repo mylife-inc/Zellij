@@ -581,7 +581,8 @@ for Fly; registry push settings retain their existing meaning.
   each running one container with HTTP service handlers on internal TCP port
   **3000**, autostop disabled, and configured health checks that currently pass.
   The app must have no other process groups, mounts, injected files, additional
-  containers or command/entrypoint overrides. `PORT` and `HOSTNAME` overrides
+  containers or command/entrypoint/TTY overrides (default `tty: false` is accepted).
+  `PORT` and `HOSTNAME` overrides
   must agree with `3000` and `0.0.0.0`.
 - Configure public IPs, DNS/TLS, app secrets and the initial Machines separately.
   Zel does not apply `fly.toml`, create Machines, scale, allocate IPs, change
