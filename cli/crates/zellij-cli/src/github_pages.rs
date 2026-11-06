@@ -287,7 +287,22 @@ impl Client {
         response
             .take(RESPONSE_LIMIT + 1)
             .read_to_end(&mut bytes)
-            .map_err(|_| failed(format!("{stage}: could not read response")))?;
+            .map_err(|error| {
+                let timed_out = Instant::now() >= deadline
+                    || error.kind() == std::io::ErrorKind::TimedOut
+                    || error
+                        .get_ref()
+                        .and_then(|source| source.downcast_ref::<reqwest::Error>())
+                        .is_some_and(reqwest::Error::is_timeout);
+                failed(format!(
+                    "{stage}: {}; inspect the repository before retrying",
+                    if timed_out {
+                        "response read timed out"
+                    } else {
+                        "could not read response"
+                    }
+                ))
+            })?;
         if bytes.len() as u64 > RESPONSE_LIMIT {
             return Err(failed(format!("{stage}: response exceeded 8 MiB")));
         }

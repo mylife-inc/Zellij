@@ -866,3 +866,42 @@ fn hosted_export_uses_pages_mount_and_preserves_assets_source_and_previous_outpu
         "failed build performs only repository, Pages and branch preflight"
     );
 }
+
+#[test]
+fn response_body_deadline_is_reported_as_a_timeout_without_echoing_bytes() {
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let address = format!("http://{}/", listener.local_addr().unwrap());
+    let headers_sent = Arc::new(AtomicBool::new(false));
+    let sent = headers_sent.clone();
+    let worker = thread::spawn(move || {
+        let (mut socket, _) = listener.accept().unwrap();
+        socket
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .unwrap();
+        let request = read_request(&socket).unwrap().unwrap();
+        assert_eq!(request.path, "/repos/acme/manual");
+        let body = json!({"message":"PRIVATE fixture-token"}).to_string();
+        write!(socket, "HTTP/1.1 200 Fixture\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n", body.len()).unwrap();
+        socket.flush().unwrap();
+        sent.store(true, Ordering::SeqCst);
+        thread::sleep(Duration::from_millis(1250));
+        let _ = socket.write_all(body.as_bytes());
+    });
+    let client = Client::new(
+        &address,
+        "fixture-token",
+        Duration::from_secs(1),
+        Duration::ZERO,
+        Duration::ZERO,
+    )
+    .unwrap();
+    let error = client.check_site(REPO).err().unwrap().to_string();
+    worker.join().unwrap();
+    assert!(headers_sent.load(Ordering::SeqCst));
+    assert!(
+        error.contains("timed out")
+            && !error.contains("PRIVATE")
+            && !error.contains("fixture-token"),
+        "{error}"
+    );
+}
