@@ -56,7 +56,7 @@ const CASES: &[Case] = &[
             "--theme",
             "cupertino",
             "--guide",
-            "--minimal",
+            "--full",
             "--force",
         ],
     ),

@@ -14,11 +14,13 @@ use zellij_core::{Error, Result};
 pub mod app;
 pub mod authoring;
 mod content;
+mod full;
 pub mod pipeline;
 mod portable;
 pub mod project;
 mod section;
 
+pub use full::configured_full_docs;
 pub use portable::{PortableOptions, portable};
 pub use section::section_file;
 
@@ -26,6 +28,7 @@ pub use section::section_file;
 #[derive(Debug, Default)]
 pub struct Scaffold {
     files: Vec<(Utf8PathBuf, String)>,
+    binary_files: Vec<(Utf8PathBuf, Vec<u8>)>,
 }
 
 impl Scaffold {
@@ -38,14 +41,35 @@ impl Scaffold {
         self
     }
 
+    pub fn add_bytes(
+        &mut self,
+        path: impl Into<Utf8PathBuf>,
+        body: impl Into<Vec<u8>>,
+    ) -> &mut Self {
+        self.binary_files.push((path.into(), body.into()));
+        self
+    }
+
+    /// Text files. Use `entries` for the complete scaffold, including media.
     pub fn files(&self) -> impl Iterator<Item = (&Utf8Path, &str)> {
         self.files
             .iter()
             .map(|(path, body)| (path.as_path(), body.as_str()))
     }
 
+    pub fn entries(&self) -> impl Iterator<Item = (&Utf8Path, &[u8])> {
+        self.files
+            .iter()
+            .map(|(path, body)| (path.as_path(), body.as_bytes()))
+            .chain(
+                self.binary_files
+                    .iter()
+                    .map(|(path, body)| (path.as_path(), body.as_slice())),
+            )
+    }
+
     pub fn is_empty(&self) -> bool {
-        self.files.is_empty()
+        self.files.is_empty() && self.binary_files.is_empty()
     }
 
     /// Write everything under `root`.
@@ -70,8 +94,8 @@ impl Scaffold {
     }
 
     fn write_with_policy(&self, root: &Utf8Path, overwrite: bool) -> Result<Vec<Utf8PathBuf>> {
-        zellij_core::files::write_files(root, &self.files().collect::<Vec<_>>(), overwrite)?;
-        Ok(self.files.iter().map(|(path, _)| path.clone()).collect())
+        zellij_core::files::write_files(root, &self.entries().collect::<Vec<_>>(), overwrite)?;
+        Ok(self.entries().map(|(path, _)| path.to_owned()).collect())
     }
 }
 

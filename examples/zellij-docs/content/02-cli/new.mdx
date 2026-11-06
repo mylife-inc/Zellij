@@ -122,6 +122,7 @@ created. The default destination is `docs/zellij`; any explicit name is allowed.
 zel new docs
 zel new docs ./product-docs
 zel new docs --name "Acme" --theme cupertino --guide
+zel nd --full                  # all section examples at docs/zellij
 ```
 
 Display names and guide titles are written as quoted YAML strings, so names
@@ -149,6 +150,38 @@ content/
 └── assets/
     └── .gitkeep
 ```
+
+### All section examples with `--full`
+
+**Current source, newer than published rc.1**, supports:
+
+```bash
+zel nd --full
+zel nd docs/manual --full --guide --name "Acme" --theme cupertino
+```
+
+The full starter keeps the normal home page and adds an **Examples** menu item,
+a catalogue at `/examples`, and one page per section type, such as
+`/example-pricing-table`. All 23 section types have an editable YAML example
+under `content/sections/examples/`. Active fields contain sample content;
+optional fields remain commented examples. The catalogue links each example
+and names its source file.
+
+A local SVG and a tiny sample MP4 are included under `content/assets/`, so the
+examples have no missing media or external media downloads. The video is only
+a short gray clip; replace the sample media and copy before publishing.
+`--guide` also adds the normal guide, its links and its menu item. This produces
+25 routes, or 26 with the guide.
+
+Creation is native and needs no Node, Docker or network. The generated site uses
+the hosted renderer: `zel check --strict --deep`, `zel dev` and `zel build` use
+their normal hosted runtime requirements. Use `new portable` for Markdown
+output that opens directly from disk.
+
+`--full` conflicts with `--minimal`. Existing-directory and `--force` rules are
+the same as the ordinary starter; text and binary destinations are all checked
+before writing. `--force` may replace generated example files and sample media,
+so keep your edits before recreating a site.
 
 ### Why "a folder that already validates" was not an explanation
 
@@ -186,6 +219,7 @@ theme: paper          # zel list themes — there are fourteen
 | `--theme <theme>` | One of the fourteen | `paper` |
 | `--guide` | Also create a guide folder | off |
 | `--minimal` | `site.yaml` and one page, nothing else | off |
+| `--full` | Home, examples catalogue, all 23 section examples and local media; conflicts with `--minimal` | off |
 | `--force` | Write into a directory that is not empty | off |
 
 Without `--force`, a non-empty target is an error rather than a merge. Merging

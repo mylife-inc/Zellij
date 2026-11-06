@@ -55,6 +55,9 @@ jobs:
         env:
           TARGET: ${{ matrix.target }}
         run: node scripts/check-native-install.mjs
+      - name: Windows upgrade lock recovery and preservation
+        if: runner.os == 'Windows'
+        run: cargo test --manifest-path cli/Cargo.toml --locked --release -p zellij-cli --bin zel maintenance::upgrade::tests
       - uses: actions/upload-artifact@v7
         with:
           name: binary-${{ matrix.target }}

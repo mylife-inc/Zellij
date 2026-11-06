@@ -126,7 +126,7 @@ knows how to assemble.
 | Command | Does |
 | --- | --- |
 | `zel new app [dir]` | A Next.js wrapper app with the engine installed. `--with-docs` adds a starter content folder so there is something to open. `--from <dir>` wraps an existing content folder instead. |
-| `zel new docs [dir]` | Just the content folder — for a repository that keeps documentation beside its source and builds elsewhere. `--full` writes one example of every section type. |
+| `zel new docs [dir]` | Just the content folder — for a repository that keeps documentation beside its source and builds elsewhere. `--full` writes a linked catalogue, one page/YAML example per section type and local sample media. It conflicts with `--minimal` and works with `--guide`. Implemented in current source, newer than rc.1. |
 | `zel new portable [dir]` | Implemented native Markdown starter with `zel.yaml`, defaulting to `docs`. `--name`, `--theme` and `--minimal` are supported. See `zel-portable-docs.md` for its implemented contract. |
 | `zel new section <type> [name]` | A section file with its required fields filled in and its optional ones listed as commented defaults. |
 | `zel new page <name>` | A page in `pages.yaml`, and the section files it references. |
