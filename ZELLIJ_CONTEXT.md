@@ -5951,3 +5951,14 @@ pending.
 Sphinx table implementation: **`2b06d934c3cc7d77456298368d930c492dfb3d5d`**. Local evidence above covers
 this source, including the final empty-cell depth guard. Final-head GitHub
 acceptance and merge remain pending.
+
+
+Sphinx table browser-fixture follow-up: initial PR #91 run `42314567470` on
+`926f76a` failed because the new fixture server rejected `/products/docs`
+without a trailing slash. The hosted Sphinx export had succeeded; browser
+navigation requested the prefix root and the unchanged HTTP/console assertions
+correctly caught its 404. Fix **`aa409e6393344f505655afbfcbb796e571c52554`**
+serves that exact root while retaining prefix containment and adds an explicit
+root-response check before browser launch. No product parser or error assertion
+changed. Node syntax and diff checks passed locally; no local browser or Docker
+ran. The corrected final head requires a new complete CI run before merge.
