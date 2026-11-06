@@ -297,7 +297,7 @@ and removing direct requirements does not force their absence.
 | `zel image push [registry]` | Pushes it. |
 | `zel image run` | Runs it locally — the last check before it goes anywhere. |
 | `zel image dockerfile` | Prints the Dockerfile, for a pipeline that must own the build. |
-| `zel ci init github\|gitlab\|circle` | Writes a pipeline that does all of the above on push. |
+| `zel ci [site] --system github\|gitlab\|circle` / `ci init <system>` | Generates standalone CI configuration from saved build, image and publication settings. |
 
 **The provider decides the target.** A CDN cannot run a container and a
 container host has nothing to do with a folder of HTML, so passing `--target` to

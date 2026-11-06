@@ -420,7 +420,7 @@ pub(crate) enum Command {
         action: ImageAction,
     },
 
-    /// Generate a GitHub workflow; `ci run` dispatches an existing workflow.
+    /// Generate GitHub/GitLab/CircleCI configuration; `ci run` dispatches GitHub only.
     Ci(Box<CiArgs>),
 
     /// Detect, convert and validate in one step.
@@ -590,6 +590,9 @@ pub(crate) struct CiArgs {
 
 #[derive(clap::Args, Debug, Default, PartialEq, Eq)]
 pub(crate) struct CiInitArgs {
+    /// CI service; overrides ci.system. Defaults to github.
+    #[arg(id = "ci_system", long = "system", value_name = "SYSTEM", value_parser = ["github", "gitlab", "circle", "circleci"])]
+    pub(crate) system: Option<String>,
     /// Fly/Railway image kind: static (default) or next. Overrides publish.image.
     #[arg(long, value_enum)]
     pub(crate) kind: Option<ImageKind>,
@@ -634,10 +637,10 @@ pub(crate) struct CiInitArgs {
 pub(crate) enum CiAction {
     /// Write a workflow into the Git repository containing the selected site.
     Init {
-        /// Currently github.
+        /// github, gitlab or circle (circleci is also accepted).
         system: String,
         #[command(flatten)]
-        options: CiInitArgs,
+        options: Box<CiInitArgs>,
     },
     /// Dispatch an existing workflow on GitHub; does not generate or deploy locally.
     #[command(name = "run", visible_alias = "publish")]

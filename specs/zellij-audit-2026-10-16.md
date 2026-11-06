@@ -4765,3 +4765,32 @@ uses the polling interval to exhaust the remaining budget, avoiding a 100 ms
 Windows scheduler race. Production deadlines are unchanged. All nine Railway
 protocol tests passed again; evidence: `/private/tmp/zellij-railway-protocol.log`.
 PR #86 must validate its final head before merge.
+
+## 2026-11-06 — Railway closure and GitLab/CircleCI generation
+
+Railway PR #86 merged as `b24b3dc`, after all 16 checks passed on `fdf2f6a` in
+run `42178970612` (attempt 2). Windows ARM PowerShell 7 encountered an internal
+CLR error in the first attempt; its unchanged-head retry passed. Tested/merged
+tree: `5918d4e341abfe3e566f887d218642809ff8d912`. Both post-merge workflows passed
+(main `42183211689`, base image `42183211386`). No live Railway deployment or
+native release was made.
+
+The next implementation addresses the missing GitLab/CircleCI generators with
+standalone configuration files, saved/explicit system selection, protected
+publication scopes, native AMD64/ARM64 builds and immutable manifest receipts.
+Remote dispatch/provisioning remain GitHub-only; schedules require separate
+provider setup. The current documentation records runner prerequisites,
+credential scope and live-run limitations. See the corresponding dated durable
+context entry for architecture and source references. Final source identity and
+verification follow once the implementation checks finish.
+
+Local verification: 564 Rust tests pass, five existing hosted-provider fixtures
+remain CI-only. The final parser adjustment passed 11 parser and 29 workflow
+tests. Clippy with denied warnings, formatting, strict/deep docs, JavaScript
+syntax and actionlint pass. Four generated cases for each new service pass its
+official JSON schema; the equivalent GitHub cases pass actionlint. Live CI
+service acceptance is distinct from these structural and script checks. Final
+GitHub native image acceptance and merge remain pending.
+
+Implementation commit **`9d3ba34`** contains this milestone and its regression
+coverage. The following context-only commit records that source identity.

@@ -355,7 +355,7 @@ fn shorthand_full_form_defaults_nested_selection_and_reserved_names() {
     );
     run(root, &["ci", "docs/zellij", "--site-root", "run"], 2);
     run(root, &["ci", "--provision", "--no-provision"], 2);
-    run(root, &["ci", "init", "gitlab", "--force"], 2);
+    run(root, &["ci", "init", "unknown", "--force"], 2);
 }
 #[test]
 fn independent_site_workflows_do_not_share_a_concurrency_queue() {
@@ -1676,4 +1676,305 @@ fn railway_workflows_scope_registry_and_provider_credentials_to_publication() {
         fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
         before
     );
+}
+
+#[test]
+fn external_ci_selection_saved_defaults_conflicts_and_write_boundaries() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    for (system, path) in [
+        ("gitlab", ".gitlab-ci.yml"),
+        ("circle", ".circleci/config.yml"),
+        ("circleci", ".circleci/config.yml"),
+    ] {
+        site(root, "docs/zellij", &format!("ci: {{system: {system}}}\n"));
+        run(root, &["ci", "--force"], 0);
+        let original = fs::read(root.join(path)).unwrap();
+        run(root, &["ci"], 2);
+        assert_eq!(fs::read(root.join(path)).unwrap(), original);
+        run(
+            root,
+            &["ci", "--provision", "--force", "--deploy", "netlify"],
+            2,
+        );
+        assert_eq!(fs::read(root.join(path)).unwrap(), original);
+        run(
+            root,
+            &["ci", "--system", "github"],
+            if root.join(".github/workflows/docs.yml").exists() {
+                2
+            } else {
+                0
+            },
+        );
+        run(
+            root,
+            &["ci", "init", "gitlab", "--system", "circle", "--force"],
+            2,
+        );
+        run(root, &["ci", "--target", "image", "--force"], 2);
+    }
+    for (system, path) in [
+        ("gitlab", ".gitlab/ci/manual.yaml"),
+        ("circle", ".circleci/manual.yaml"),
+    ] {
+        site(
+            root,
+            "docs/zellij",
+            &format!("ci: {{system: {system}, workflow: manual.yaml}}\n"),
+        );
+        run(root, &["ci"], 0);
+        assert!(root.join(path).is_file());
+    }
+    site(
+        root,
+        "docs/zellij",
+        "ci: {system: circle, publish-context: docs-prod}\npublish: {action: deploy, provider: netlify}\n",
+    );
+    run(root, &["ci", "--force"], 0);
+    let cc: Value =
+        serde_yaml_ng::from_slice(&fs::read(root.join(".circleci/config.yml")).unwrap()).unwrap();
+    assert_eq!(
+        cc["workflows"]["publish"]["jobs"][0]["zel_publish"]["context"][0],
+        "docs-prod"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn external_ci_refuses_linked_parent_or_destination_even_with_force() {
+    use std::os::unix::fs::symlink;
+    for (system, path, directory) in [
+        ("gitlab", ".gitlab-ci.yml", false),
+        ("circle", ".circleci", true),
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        repo(root);
+        site(root, "docs/zellij", &format!("ci: {{system: {system}}}\n"));
+        let outside = tempfile::tempdir().unwrap();
+        let target = if directory {
+            outside.path().to_owned()
+        } else {
+            let p = outside.path().join("keep");
+            fs::write(&p, "keep").unwrap();
+            p
+        };
+        symlink(&target, root.join(path)).unwrap();
+        run(root, &["ci", "--force"], 2);
+        assert_eq!(
+            fs::read_dir(outside.path()).unwrap().count(),
+            if directory { 0 } else { 1 }
+        );
+    }
+}
+
+#[cfg(unix)]
+mod external_scripts {
+    use super::*;
+    use std::os::unix::fs::PermissionsExt;
+    fn executable(root: &Path, name: &str, text: &str) {
+        let path = root.join("bin").join(name);
+        fs::create_dir_all(path.parent().unwrap()).unwrap();
+        fs::write(&path, text).unwrap();
+        fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
+    }
+    fn fixture(root: &Path) {
+        executable(
+            root,
+            "curl",
+            "#!/bin/sh\nfor last; do :; done\ncat > \"$last\" <<'INSTALL'\nmkdir -p \"$ZEL_INSTALL_DIR\"\ncp \"$FIXTURE_ROOT/bin/zel\" \"$ZEL_INSTALL_DIR/zel\"\nINSTALL\n",
+        );
+        executable(
+            root,
+            "zel",
+            "#!/bin/sh\nprintf 'zel' >> \"$FIXTURE_ROOT/trace\"\nprintf ' <%s>' \"$@\" >> \"$FIXTURE_ROOT/trace\"\nprintf '\\n' >> \"$FIXTURE_ROOT/trace\"\nif [ \"${FAIL_BUILD:-}\" = 1 ] && [ \"$1\" = image ] && [ \"${2:-}\" != push ]; then exit 37; fi\n",
+        );
+        executable(
+            root,
+            "docker",
+            "#!/bin/sh\nprintf 'docker' >> \"$FIXTURE_ROOT/trace\"\nprintf ' <%s>' \"$@\" >> \"$FIXTURE_ROOT/trace\"\nprintf '\\n' >> \"$FIXTURE_ROOT/trace\"\ncase \"$1\" in login) cat > \"$FIXTURE_ROOT/password\";; image) printf '%s\\n' \"${FAKE_DIGESTS:-}\";; esac\n",
+        );
+    }
+    fn shell(root: &Path, script: &str) -> Command {
+        let mut cmd = Command::new("sh");
+        cmd.arg("-c")
+            .arg(script)
+            .current_dir(root)
+            .env_clear()
+            .env(
+                "PATH",
+                format!("{}:/usr/bin:/bin", root.join("bin").display()),
+            )
+            .env("FIXTURE_ROOT", root)
+            .env("CI_BUILDS_DIR", root)
+            .env("CI_PIPELINE_ID", "123")
+            .env("CI_JOB_ID", "456")
+            .env("CIRCLE_WORKFLOW_ID", "a1-b2")
+            .env("CIRCLE_BUILD_NUM", "456")
+            .env("REGISTRY_USERNAME", "fixture-user")
+            .env("REGISTRY_PASSWORD", "private fixture token");
+        cmd
+    }
+    fn generated(root: &Path, system: &str) -> Value {
+        run(
+            root,
+            &[
+                "ci",
+                "--system",
+                system,
+                "--force",
+                "--build-arg",
+                "LABEL=Team's $HOME; $(touch PWNED)",
+            ],
+            0,
+        );
+        let path = if system == "gitlab" {
+            ".gitlab-ci.yml"
+        } else {
+            ".circleci/config.yml"
+        };
+        serde_yaml_ng::from_slice(&fs::read(root.join(path)).unwrap()).unwrap()
+    }
+    fn job<'a>(doc: &'a Value, system: &str, name: &str) -> &'a str {
+        if system == "gitlab" {
+            doc[name]["script"][0].as_str().unwrap()
+        } else {
+            doc["jobs"][name]["steps"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find_map(|step| step["run"]["command"].as_str())
+                .unwrap()
+        }
+    }
+    #[test]
+    fn emitted_scripts_quote_arguments_login_via_stdin_and_stop_on_failed_build() {
+        for system in ["gitlab", "circle"] {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path();
+            repo(root);
+            fixture(root);
+            site(
+                root,
+                "docs/Team's $manual",
+                "ci: {zel-version: 0.2.0-rc.2}\nimage: {name: 'ghcr.io/acme/manual:v1'}\npublish: {action: push, image: static}\n",
+            );
+            run(
+                root,
+                &[
+                    "ci",
+                    "docs/Team's $manual",
+                    "--system",
+                    system,
+                    "--build-arg",
+                    "LABEL=Team's $HOME; $(touch PWNED)",
+                ],
+                0,
+            );
+            let file = if system == "gitlab" {
+                ".gitlab-ci.yml"
+            } else {
+                ".circleci/config.yml"
+            };
+            let doc: Value =
+                serde_yaml_ng::from_slice(&fs::read(root.join(file)).unwrap()).unwrap();
+            let verify = shell(root, job(&doc, system, "zel_verify"))
+                .output()
+                .unwrap();
+            assert!(verify.status.success(), "{verify:?}");
+            let trace = fs::read_to_string(root.join("trace")).unwrap();
+            assert!(!trace.contains("docker") && !trace.contains("<push>"));
+            assert!(trace.contains("<./docs/Team's $manual>"));
+            assert!(trace.contains("<LABEL=Team's $HOME; $(touch PWNED)>"));
+            fs::remove_file(root.join("trace")).unwrap();
+            let result = shell(root, job(&doc, system, "zel_publish"))
+                .output()
+                .unwrap();
+            assert!(result.status.success(), "{result:?}");
+            let trace = fs::read_to_string(root.join("trace")).unwrap();
+            assert_eq!(trace.matches("zel <image> <static>").count(), 1);
+            assert!(trace.contains("--password-stdin") && trace.contains("docker <logout>"));
+            assert!(!trace.contains("private fixture token"));
+            assert_eq!(
+                fs::read_to_string(root.join("password")).unwrap(),
+                "private fixture token"
+            );
+            assert!(!root.join("PWNED").exists());
+            fs::remove_file(root.join("trace")).unwrap();
+            let failed = shell(root, job(&doc, system, "zel_publish"))
+                .env("FAIL_BUILD", "1")
+                .output()
+                .unwrap();
+            assert_eq!(failed.status.code(), Some(37));
+            let trace = fs::read_to_string(root.join("trace")).unwrap();
+            assert!(!trace.contains("<push>") && trace.contains("docker <logout>"));
+            assert!(!fs::read_dir(root).unwrap().any(|e| {
+                e.unwrap()
+                    .file_name()
+                    .to_string_lossy()
+                    .starts_with("zel-ci.")
+            }));
+        }
+    }
+    #[test]
+    fn emitted_manifest_accepts_only_matching_complete_immutable_receipts() {
+        for system in ["gitlab", "circle"] {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path();
+            repo(root);
+            fixture(root);
+            site(
+                root,
+                "docs/zellij",
+                "image: {name: 'docker.io/acme/manual:final', platform: all}\npublish: {action: push, image: static}\n",
+            );
+            let doc = generated(root, system);
+            let digest = format!("acme/manual@sha256:{}", "a".repeat(64));
+            let out = shell(root, job(&doc, system, "zel_publish_amd64"))
+                .env("FAKE_DIGESTS", &digest)
+                .output()
+                .unwrap();
+            assert!(out.status.success(), "{out:?}");
+            let receipt = fs::read_dir(root)
+                .unwrap()
+                .map(|e| e.unwrap().path())
+                .find(|p| {
+                    p.file_name()
+                        .unwrap()
+                        .to_string_lossy()
+                        .starts_with(".zel-ci-")
+                })
+                .unwrap();
+            fs::write(
+                receipt.join("arm64.digest"),
+                format!("docker.io/acme/manual@sha256:{}\n", "b".repeat(64)),
+            )
+            .unwrap();
+            let manifest = job(&doc, system, "zel_manifest");
+            let out = shell(root, manifest).output().unwrap();
+            assert!(out.status.success(), "{out:?}");
+            assert!(
+                fs::read_to_string(root.join("trace"))
+                    .unwrap()
+                    .contains("<imagetools> <create>")
+            );
+            for bad in [
+                "evil.example/manual@sha256:aaaa".into(),
+                format!("acme/manual@sha256:{}\n--tag evil", "a".repeat(64)),
+                format!("acme/manual@sha256:{}", "g".repeat(64)),
+                "acme/manual@sha256:abc".into(),
+            ] {
+                fs::remove_file(root.join("trace")).unwrap();
+                fs::write(receipt.join("arm64.digest"), bad).unwrap();
+                assert!(!shell(root, manifest).output().unwrap().status.success());
+                assert!(
+                    !fs::read_to_string(root.join("trace"))
+                        .unwrap()
+                        .contains("<imagetools> <create>")
+                );
+            }
+        }
+    }
 }
