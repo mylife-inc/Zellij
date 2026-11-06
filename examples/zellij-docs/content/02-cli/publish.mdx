@@ -10,7 +10,7 @@ description: Build once and deliver using saved registry or Netlify settings.
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
 or Next.js image. These commands are available in candidate `0.2.0-rc.1`; stable `0.1.3` predates them.
-Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages and Vercel; see [deployment](/cli/deploy#cloudflare-pages).
+Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel and GitHub Pages; see [deployment](/cli/deploy#cloudflare-pages).
 </Callout>
 
 ## Save the destination
@@ -233,3 +233,14 @@ publication intent, while saved image-push plans still reject `--to`.
 Supply `VERCEL_TOKEN` and, for a team project, `VERCEL_TEAM_ID` in the environment.
 Previews are the default; production requires `--prod`. See
 [Vercel setup and limits](/cli/deploy#vercel). These forms are newer than rc.1.
+
+## GitHub Pages publication
+
+Save `publish: {action: deploy, provider: github-pages, site: acme/manual}` and
+run `zel pub --prod`. `pub --to github-pages --site acme/manual --prod` overrides
+a static destination without changing saved settings; saved image publication
+cannot be replaced this way. Dry runs also require `--prod` because Pages has no
+draft mode. This replaces the existing `gh-pages` root while retaining history,
+and waits for the matching commit's Pages build. See
+[setup, URL defaults and limits](/cli/deploy#github-pages). Current source only;
+the published rc.1 binary does not include this provider.

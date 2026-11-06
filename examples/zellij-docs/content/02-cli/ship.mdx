@@ -10,7 +10,7 @@ description: Import into a configured site, build once, then deploy or publish a
 Current source imports MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx into a
 new configured hosted site, then uses shared delivery to build once and publish.
 The original MkDocs/Docusaurus and Netlify/image paths are available in candidate
-`0.2.0-rc.1`; the additional import formats and Cloudflare/Vercel providers are
+`0.2.0-rc.1`; the additional import formats and Cloudflare/Vercel/GitHub Pages providers are
 newer source functionality. Stable `0.1.3` predates these commands.
 </Callout>
 
@@ -207,3 +207,18 @@ creates a preview. `--prod` explicitly requests production. The imported
 configuration saves the provider and project, never the token or production
 choice. If credentials, access, rendering or upload fails, the converted site
 remains for correction. See [Vercel setup and limits](/cli/deploy#vercel).
+
+## Ship to GitHub Pages
+
+```bash
+zel ship source --out converted --provider github-pages --site acme/manual --prod --dry-run
+zel ship source --out converted --provider github-pages --site acme/manual --prod
+```
+
+Current source supports importing and publishing to an existing GitHub Pages
+`gh-pages` branch. Production intent is required before conversion; no preview
+exists. The converted site's `zel.yaml` saves the provider and repository, but
+never credentials or the production choice. A later publication therefore uses
+`zel pub converted --prod`. A dry run performs no conversion or credential/API
+work. If delivery fails after conversion, the converted site remains for review
+and retry. See [GitHub Pages setup and limits](/cli/deploy#github-pages).

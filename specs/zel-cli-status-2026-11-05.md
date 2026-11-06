@@ -12,7 +12,7 @@ dated audit and implementation history.
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
-| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `publish`, `ship` | Netlify, Cloudflare Pages and Vercel static adapters plus image registry publication are implemented. Cloudflare and Vercel live-account acceptance is pending. GitHub Pages, S3, Fly and Railway adapters remain unimplemented. |
+| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel and GitHub Pages static adapters plus image registry publication are implemented. Cloudflare, Vercel and GitHub Pages live-account acceptance is pending. S3, Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
@@ -229,3 +229,48 @@ test remains CI-only); formatting passes. Log:
 `/private/tmp/zellij-pr82-windows.log`, with local recheck in
 `/private/tmp/zellij-vercel-final-tests.log`. Final-head CI is still required;
 the initial run does not validate this correction.
+
+
+### 2026-11-05 — GitHub Pages publication
+
+Current source implements `deploy github-pages`, `github-pages` / `ghp`, saved
+publication, ship and GitHub workflow generation. Existing gh-pages root sources
+and explicit production intent are required; this provider has no draft mode.
+Hosted URL defaults follow the existing Pages mount. Non-forced commit updates
+preserve history and CNAME; success requires the matching commit's Pages build.
+See [deployment setup and limits](../examples/zellij-docs/content/02-cli/deploy.mdx#github-pages)
+and the latest durable-context/audit entry for implementation and evidence.
+Live Pages account acceptance and final-head CI remain pending. PR #82 merged
+as `c8b485c` after all 16 checks passed; both its post-merge workflows passed.
+Published native rc.1 remains unchanged; rc.2 is not published.
+
+
+Local verification: all **505 Rust workspace tests passed**, with four real
+hosted-provider tests intentionally ignored locally and explicitly selected in
+CI. The final CLI/import/workflow recheck passed after credential-environment
+isolation and production-before-conversion assertions. Warnings-denied Clippy,
+Rust formatting, strict/deep docs (55 routes / 23 examples), workflow actionlint
+and an emitted Pages workflow passed. Evidence: `/private/tmp/zellij-pages-workspace.log`,
+`zellij-pages-final-tests.log`, `zellij-pages-clippy.log`, `zellij-pages-docs.log`,
+and `/private/tmp/zellij-pages-ci-zfwwsu3_/.github/workflows/docs.yml`.
+Final-head GitHub native/hosted checks and merge remain pending. No live provider
+publication, local Docker or browser process was started.
+
+
+GitHub Pages implementation commit **`b72e851`** contains the adapter, CLI/CI
+integration, regression tests and matching docs. Local verification above covers
+that implementation; final-head native/hosted CI and live account acceptance
+remain pending. The subsequent context-only commit records this source identity.
+
+
+PR #83 run `42135062241` exposed a Windows response-read deadline diagnostic:
+expiration while reading the HTTP body was reported as a generic read failure.
+Fix **`5dc95ec`** recognizes both reqwest's wrapped I/O timeout and the operation
+deadline, retaining response/token redaction. A regression delays the response
+body after headers. The original stale/missing-build timeout assertions remain;
+no Windows test or assertion was disabled. All 13 local Pages tests passed
+(one hosted test remains CI-only), with warnings-denied Clippy and formatting.
+Distinct local Rust coverage is now 506 tests. Evidence:
+`/private/tmp/zellij-pr83-windows.log` and `zellij-pages-timeout-tests.log`.
+The first run cannot validate this correction; final-head CI and merge remain
+pending, as does live GitHub Pages account acceptance.

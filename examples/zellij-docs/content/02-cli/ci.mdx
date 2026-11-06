@@ -172,8 +172,9 @@ To also upload your environment's token to the site's GitHub repository:
 zel ci --force --provision
 ```
 
-This requires a Netlify, Cloudflare or Vercel delivery plan, its environment token
-(`NETLIFY_AUTH_TOKEN` or `CLOUDFLARE_API_TOKEN`), and an authenticated
+This requires a Netlify, Cloudflare, Vercel or GitHub Pages delivery plan, its
+environment token (`NETLIFY_AUTH_TOKEN`, `CLOUDFLARE_API_TOKEN`, `VERCEL_TOKEN` or
+`GITHUB_PAGES_TOKEN`), and an authenticated
 GitHub CLI with permission to set repository secrets. The token is sent to `gh`
 over stdin; it is never written into the workflow or passed as an argument.
 The workflow is written before the remote operation. If provisioning fails,
@@ -351,3 +352,31 @@ Same-named secrets are accepted for the two IDs. The publish step runs
 never receives deployment credentials. Explicit `--provision` can copy the local
 `VERCEL_TOKEN` into GitHub's secret store after writing the workflow; it does not
 create a Vercel project or provision either ID. See [setup and limits](/cli/deploy#vercel).
+
+## GitHub Pages workflows
+
+Use saved `publish.provider: github-pages` or:
+
+```bash
+zel ci --deploy github-pages --site acme/manual --prod --zel-version 0.2.0-rc.2
+```
+
+Pages branch publishing has no preview mode, so generation requires `--prod` or
+saved `ci.production: true`. The source branch must differ from `gh-pages`.
+Prepare the existing Pages site and dedicated publishing branch as described in
+[GitHub Pages setup](/cli/deploy#github-pages). The generated workflow requires
+a compatible rc.2 or later release; it does not verify availability. Rc.2 remains
+unpublished, so do not expect that pin to install until its release is published.
+
+Set repository secret `GITHUB_PAGES_TOKEN` to a dedicated token with Contents
+and Pages write permission on the destination. The built-in `GITHUB_TOKEN` is
+not selected. An explicit, local environment or same-provider saved repository
+is written to the workflow; otherwise set repository variable
+`GITHUB_PAGES_REPOSITORY` (a same-named secret is also accepted).
+
+Allowed publication events run `zel deploy github-pages --prod`; pull-request
+verification builds without receiving deployment credentials. Explicit
+`--provision` can save the local `GITHUB_PAGES_TOKEN` as a repository secret
+through `gh` after writing the workflow. It does not create/configure the Pages
+site or branch. The publication build derives hosted URL defaults from Pages;
+ordinary verification builds still use authored or explicit build settings.

@@ -107,6 +107,8 @@ pub enum Provider {
     Netlify,
     Cloudflare,
     Vercel,
+    #[serde(rename = "github-pages")]
+    GithubPages,
 }
 impl Provider {
     pub fn parse(value: &str) -> Result<Self> {
@@ -114,8 +116,9 @@ impl Provider {
             "netlify" => Ok(Self::Netlify),
             "cloudflare" => Ok(Self::Cloudflare),
             "vercel" => Ok(Self::Vercel),
+            "github-pages" => Ok(Self::GithubPages),
             _ => Err(Error::InvalidArgument(
-                "unsupported deployment provider; choose netlify, cloudflare or vercel".into(),
+                "unsupported deployment provider; choose netlify, cloudflare, vercel or github-pages".into(),
             )),
         }
     }
@@ -124,6 +127,7 @@ impl Provider {
             Self::Netlify => "netlify",
             Self::Cloudflare => "cloudflare",
             Self::Vercel => "vercel",
+            Self::GithubPages => "github-pages",
         }
     }
     pub fn site_environment(self) -> &'static str {
@@ -131,6 +135,7 @@ impl Provider {
             Self::Netlify => "NETLIFY_SITE_ID",
             Self::Cloudflare => "CLOUDFLARE_PAGES_PROJECT_NAME",
             Self::Vercel => "VERCEL_PROJECT_ID",
+            Self::GithubPages => "GITHUB_PAGES_REPOSITORY",
         }
     }
     pub fn token_environment(self) -> &'static str {
@@ -138,6 +143,7 @@ impl Provider {
             Self::Netlify => "NETLIFY_AUTH_TOKEN",
             Self::Cloudflare => "CLOUDFLARE_API_TOKEN",
             Self::Vercel => "VERCEL_TOKEN",
+            Self::GithubPages => "GITHUB_PAGES_TOKEN",
         }
     }
     pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
@@ -157,6 +163,29 @@ impl Provider {
     pub fn validate_site(self, value: &str) -> Result<()> {
         match self {
             Self::Netlify => validate_site_identifier(value),
+            Self::GithubPages => {
+                let valid = value.split_once('/').is_some_and(|(owner, repo)| {
+                    !owner.is_empty()
+                        && owner.len() <= 39
+                        && !owner.starts_with('-')
+                        && !owner.ends_with('-')
+                        && owner
+                            .bytes()
+                            .all(|b| b.is_ascii_alphanumeric() || b == b'-')
+                        && !repo.is_empty()
+                        && repo.len() <= 100
+                        && repo != "."
+                        && repo != ".."
+                        && !repo.ends_with(".git")
+                        && repo
+                            .bytes()
+                            .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
+                });
+                if !valid {
+                    return Err(Error::InvalidArgument("GitHub Pages requires an existing owner/repository, without a URL, .git suffix or credentials".into()));
+                }
+                Ok(())
+            }
             Self::Vercel => {
                 let id = value
                     .strip_prefix("prj_")
@@ -189,9 +218,19 @@ impl Provider {
             }
         }
     }
+    pub fn require_production(self, production: bool) -> Result<()> {
+        if self == Self::GithubPages && !production {
+            return Err(Error::InvalidArgument("GitHub Pages branch publishing has no draft previews; pass --prod explicitly (or --prod / ci.production: true when generating CI) to replace the published gh-pages snapshot".into()));
+        }
+        Ok(())
+    }
     pub fn plan(self, destination: &str, production: bool) -> Result<DeliveryPlan> {
         self.validate_site(destination)?;
+        self.require_production(production)?;
         Ok(match self {
+            Self::GithubPages => DeliveryPlan::GithubPages {
+                repository: destination.into(),
+            },
             Self::Netlify => DeliveryPlan::Netlify {
                 site: destination.into(),
                 production,
@@ -242,6 +281,7 @@ pub enum DeliveryPlan {
     Netlify { site: String, production: bool },
     Cloudflare { project: String, production: bool },
     Vercel { project: String, production: bool },
+    GithubPages { repository: String },
 }
 
 impl DeliveryPlan {
@@ -251,7 +291,10 @@ impl DeliveryPlan {
         if let Some(platform) = platform {
             match &mut self {
                 Self::Push(image) => image.platform = Some(platform),
-                Self::Netlify { .. } | Self::Cloudflare { .. } | Self::Vercel { .. } => {
+                Self::Netlify { .. }
+                | Self::Cloudflare { .. }
+                | Self::Vercel { .. }
+                | Self::GithubPages { .. } => {
                     return Err(Error::InvalidArgument(
                         "--platform requires image publication; deployment providers accept static HTML".into(),
                     ));
@@ -285,7 +328,7 @@ impl DeliveryPlan {
             }
             _ => None,
         };
-        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel --site <destination>`".into()))?;
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages --site <destination>`".into()))?;
         if tag.is_some() {
             return Err(Error::InvalidArgument(
                 "deployment accepts generated static HTML, not an image tag; remove --tag".into(),

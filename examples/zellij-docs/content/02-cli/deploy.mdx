@@ -1,6 +1,6 @@
 ---
 title: zel deploy
-description: Build static HTML once and upload it directly to Netlify, Cloudflare Pages or Vercel.
+description: Build static HTML once and upload it directly to Netlify, Cloudflare Pages, Vercel or GitHub Pages.
 ---
 
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
@@ -9,7 +9,7 @@ description: Build static HTML once and upload it directly to Netlify, Cloudflar
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Cloudflare Pages and Vercel are available in current source; rc.1 does not include them.
+predates these commands. Cloudflare Pages, Vercel and GitHub Pages are available in current source; rc.1 does not include them.
 </Callout>
 
 ```bash title="terminal"
@@ -175,6 +175,93 @@ response or timeout may leave a deployment running remotely; check the dashboard
 before repeating the command. Protocol and generated-export tests are automated;
 live Vercel account acceptance remains pending.
 
+## GitHub Pages
+
+Current source supports `zel deploy github-pages`, `zel github-pages`, and the
+short alias `zel ghp`. These commands are newer than the published rc.1 binary.
+This adapter publishes static files to an existing GitHub.com repository's
+`gh-pages` branch. **There is no draft mode: `--prod` is required**, including
+when printing a dry-run plan.
+
+```bash
+zel ghp --site acme/manual --prod --dry-run
+zel ghp --site acme/manual --prod
+zel ghp docs/manual --site acme/manual --prod
+```
+
+Prepare the destination once in GitHub:
+
+1. Use an existing repository with a dedicated `gh-pages` branch. Keep source
+   code on a different default branch, such as `main`. Everything at the
+   `gh-pages` root will be replaced by generated output; commit history remains.
+2. In **Settings → Pages**, select **Deploy from a branch**, `gh-pages`, and
+   **/ (root)**. Finish HTTPS/custom-domain setup there before deploying.
+3. Create a dedicated fine-grained token restricted to this repository with
+   **Contents: Read and write** and **Pages: Read and write**. Supply it as
+   `GITHUB_PAGES_TOKEN` in your environment or CI secret store. Repository rules
+   and organization token approval requirements still apply.
+
+See GitHub's [publishing-source setup](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site)
+and [Pages API permissions](https://docs.github.com/en/rest/pages/pages).
+`zel` does not create repositories, branches or Pages sites, change repository
+settings, read `gh` login credentials, or automatically use `GITHUB_TOKEN`.
+Custom Actions-based Pages deployments, `/docs` publishing sources, other
+publishing branches and GitHub Enterprise hosts are outside this adapter.
+
+`--site` / `--site-id` takes `owner/repository`, not a URL or `.git` remote.
+It overrides `GITHUB_PAGES_REPOSITORY`, then same-provider saved `publish.site`:
+
+```yaml title="docs/zellij/zel.yaml"
+version: 1
+renderer: portable
+publish:
+  action: deploy
+  provider: github-pages
+  site: acme/manual
+```
+
+This enables `zel pub --prod` and bare `zel deploy --prod`. The production
+choice and credentials are never saved in this publication block. An explicit
+provider change does not reuse another provider's destination.
+
+Repository, Pages configuration and branch access are checked before building.
+Portable output needs no Node.js or container runtime. Hosted output retains
+its container requirement. Both build once into temporary output and preserve
+source files and previous local output.
+
+For hosted output, the existing Pages URL determines the build's default
+`basePath` and site origin. A project at `https://acme.github.io/manual/` builds
+links under `/manual`, but uploads its files at the branch root. This avoids a
+doubled `/manual/manual/` path. These invocation defaults override authored
+URL settings without editing them. Explicit `--base-path` must equal or sit
+below the Pages mount; `/manual/reference` publishes under `reference/` in the
+branch. An explicit `--site-url` remains an SEO override. Portable links remain
+relative and need no mount override. The reported URL includes the chosen path.
+
+The adapter preserves a configured custom domain by generating `CNAME` from the
+Pages settings, and includes `.nojekyll`. It refuses an exported `CNAME` that
+conflicts with those settings. It creates Git blobs, a complete tree and a commit
+with the old branch head as its parent, then rechecks the destination and updates
+`gh-pages` **without force-pushing**. Concurrent branch/settings changes fail.
+It requests a Pages build and waits for a successful build of that exact commit;
+an older successful build is not accepted as success. No DNS changes are made.
+
+The initial limits are **5,000 static files, 25 MiB per file and 100 MiB total**.
+Small UTF-8 files are included directly in the tree; up to 200 distinct binary
+or large-file uploads are supported per invocation. Tree requests are capped at
+6 MiB. GitHub account limits may be lower. Git/workflow/Jekyll configuration,
+symlinks, junctions, non-regular files and paths containing `#`, `?`, backslashes
+or control characters are rejected. The local output marker is excluded.
+
+Requests refuse redirects and omit provider response bodies and credentials
+from errors. Upload/publication has a ten-minute budget, with a 60-second limit
+per request and 15 seconds to connect. Mutations are paced and never retried
+automatically. A failure may leave uploaded Git objects, or a published commit
+whose Pages build is still running. Inspect **Settings → Pages** and the
+repository's Actions/build history before retrying; automatic rollback and
+resume are not implemented. Protocol and export tests are automated; live
+GitHub Pages account acceptance remains pending.
+
 ## Save the choice
 
 ```yaml title="docs/zellij/zel.yaml"
@@ -206,7 +293,7 @@ invalid for Netlify. Ordinary build/image commands never deploy.
 
 ## Preview and production
 
-The default is a **draft preview** with its own deployment URL. Use `--prod` to
+For Netlify, the default is a **draft preview** with its own deployment URL. Use `--prod` to
 request an update to the live site. The command prints the deployment ID and
 its HTTPS preview URL once Netlify reports `ready`; hosted basePath is appended
 to that URL. Site locks or a newer concurrent deployment can affect which deploy
@@ -301,10 +388,10 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 
 | Option | Meaning |
 | --- | --- |
-| `[provider]` | `netlify`, `cloudflare` or `vercel`; omit to execute saved publication settings |
+| `[provider]` | `netlify`, `cloudflare`, `vercel` or `github-pages`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
-| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name or Vercel project ID/name; `--site` is equivalent |
-| `--prod` | Request live publication instead of a draft preview |
+| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name or GitHub owner/repository; `--site` is equivalent |
+| `--prod` | Request live publication; required for GitHub Pages, which has no draft mode |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
@@ -314,8 +401,8 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
 
 `--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
-the default. GitHub Pages, S3, Fly and Railway remain future
-adapters; they are not aliases for Netlify.
+the default for Netlify, Cloudflare and Vercel; GitHub Pages requires `--prod`.
+S3, Fly and Railway remain future adapters; they are not aliases for Netlify.
 
 See [`zel publish`](/cli/publish) for image registry publication and
 [`zel ci`](/cli/ci) for workflow generation from saved delivery settings.

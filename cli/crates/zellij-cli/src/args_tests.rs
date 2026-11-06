@@ -236,6 +236,18 @@ const CASES: &[Case] = &[
         &[],
         &["manual", "--site", "prj_123", "--dry-run"],
     ),
+    (
+        "github-pages",
+        "deploy github-pages",
+        &[],
+        &["manual", "--site", "acme/manual", "--prod", "--dry-run"],
+    ),
+    (
+        "ghp",
+        "deploy github-pages",
+        &[],
+        &["manual", "--site", "acme/manual", "--prod", "--dry-run"],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -293,6 +305,7 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
     actual.insert("netlify".into());
     actual.insert("cloudflare".into());
     actual.insert("vercel".into());
+    actual.insert("github-pages".into());
     assert_eq!(
         actual,
         CASES.iter().map(|(short, ..)| (*short).into()).collect()

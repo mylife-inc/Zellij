@@ -33,12 +33,14 @@ after all 16 checks passed on `fb622d1` in run `42109434915`. Its base-image
 post-merge run passed; main run `42113725983` exposed a Windows watched-folder
 rename EPERM in the preview fixture. This milestone bounds retries for that
 operation while retaining real disappearance/recovery assertions.
-Cloudflare Pages static deployment merged in PR #81 as `9cde253`, after all
-16 final-head checks passed. Its base-image post-merge run passed; main CI is
-still running. Current work adds native Vercel prebuilt static deployment through
-`vc`, `deploy`, `publish`, `ship` and GitHub workflow generation. Both providers
-use existing projects, environment credentials and previews by default. Live
-Cloudflare and Vercel account acceptance remains pending; see the latest entry.
+Cloudflare Pages static deployment merged in PR #81 as `9cde253`, and Vercel
+static deployment merged in PR #82 as `c8b485c`, each after all 16 final-head
+checks passed. Both post-merge workflows passed for both PRs. Current work adds
+GitHub Pages branch publication through `ghp`, `deploy`, `publish`, `ship` and
+GitHub workflow generation. It requires an existing gh-pages root source and
+explicit production intent; hosted URL defaults follow the existing Pages URL.
+Live Cloudflare, Vercel and GitHub Pages account acceptance remains pending.
+See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The prior
@@ -5228,3 +5230,95 @@ test remains CI-only); formatting passes. Log:
 `/private/tmp/zellij-pr82-windows.log`, with local recheck in
 `/private/tmp/zellij-vercel-final-tests.log`. Final-head CI is still required;
 the initial run does not validate this correction.
+
+
+### 2026-11-05 — GitHub Pages branch publication
+
+Current source adds `deploy github-pages`, `github-pages` / `ghp`, saved static
+publication, import-and-ship and GitHub workflow generation. The destination is
+an existing GitHub.com `owner/repository`; `--site` / `--site-id` overrides
+`GITHUB_PAGES_REPOSITORY`, then same-provider `publish.site`. Authentication uses
+only `GITHUB_PAGES_TOKEN`, a dedicated token with Contents and Pages write access.
+No gh-login discovery, implicit GITHUB_TOKEN selection or external Git process is
+used for deployment. Generation still uses Git for repository discovery and
+explicit provisioning uses gh stdin, as with the earlier adapters.
+
+This adapter has no preview mode and requires `--prod`, even for a dry-run plan;
+CI generation accepts `--prod` or saved `ci.production: true`. Ship saves provider
+and destination but never production intent or credentials. The destination must
+already use Pages branch publishing (`build_type: legacy`) from `gh-pages /`;
+the repository cannot be archived or have gh-pages as its default/source branch.
+No repository, branch, site, DNS, protection or settings changes are performed.
+
+The entire gh-pages root is replaced by a static snapshot. Git trees use no base
+tree, commits retain the old head as their parent, and the branch is updated with
+force:false after another repository/Pages/ref check. Concurrent changes fail.
+The command explicitly requests a Pages build and accepts success only for its
+published commit, then rechecks configuration/ref. Stale success, missing build,
+failed/superseded build and timeouts cannot report success. A failed request can
+leave Git objects or a published commit; mutations are never automatically
+retried, resumed or rolled back. Ten minutes bounds the upload/publish phase;
+individual requests/connects retain 60/15-second limits and reject redirects.
+Response bodies/token values are omitted from errors.
+
+Hosted deployments derive invocation defaults for basePath and site origin from
+the Pages URL, overriding authored defaults without modifying source. An explicit
+prefix must equal or be below the site's mount. Upload strips that mount once,
+so /repository links have branch-root files rather than a doubled path. Explicit
+site origin remains an SEO override. Portable output stays relative. CNAME comes
+from the existing API configuration; conflicting exports fail. .nojekyll is
+added and .zellij-output excluded. Git/workflow/Jekyll configuration, links and
+special files are rejected. Limits: 5,000 static files, 25 MiB/file, 100 MiB total,
+200 distinct binary/large uploads, 6 MiB tree JSON. Small UTF-8 files are inlined
+within a 2 MiB budget; other assets use Git SHA-1 blobs and base64 byte upload.
+
+Official protocol references inspected: [Pages API](https://docs.github.com/en/rest/pages/pages),
+[publishing sources](https://docs.github.com/en/pages/getting-started-with-github-pages/configuring-a-publishing-source-for-your-github-pages-site),
+[Git trees](https://docs.github.com/en/rest/git/trees),
+[Git references](https://docs.github.com/en/rest/git/refs),
+[Git blobs](https://docs.github.com/en/rest/git/blobs), and
+[Git commits](https://docs.github.com/en/rest/git/commits).
+Tests use local API fixtures; a real hosted export test is explicitly selected
+by CI using its already-running engine image. Local Docker and browser execution
+remain excluded. Live Pages account acceptance is pending; no live site or branch
+was deployed. Broader provider work includes S3, Fly and Railway; GitLab/CircleCI,
+wizard and richer imports remain separate. Native rc.2 and production Netlify
+migration remain unpublished.
+
+Prior milestone closure: PR #82 merged as `c8b485c567ecf108bb30771039ad317b75950b8b`
+after all 16 checks passed on `b12af984d6bfdc220b8c4e06ad6598fff38c183f` in
+`42126815665`; tested/merged tree `c79bd527ff19ccb198ca5eeb8b0bec0589f43c0f` matches.
+Post-merge base-image `42130753789` and main CI `42130753939` both passed.
+PR #81 post-merge `42123170594` and `42123170846` also both passed. The published
+native candidate remains v0.2.0-rc.1; no release action was taken this milestone.
+
+
+Local verification: all **505 Rust workspace tests passed**, with four real
+hosted-provider tests intentionally ignored locally and explicitly selected in
+CI. The final CLI/import/workflow recheck passed after credential-environment
+isolation and production-before-conversion assertions. Warnings-denied Clippy,
+Rust formatting, strict/deep docs (55 routes / 23 examples), workflow actionlint
+and an emitted Pages workflow passed. Evidence: `/private/tmp/zellij-pages-workspace.log`,
+`zellij-pages-final-tests.log`, `zellij-pages-clippy.log`, `zellij-pages-docs.log`,
+and `/private/tmp/zellij-pages-ci-zfwwsu3_/.github/workflows/docs.yml`.
+Final-head GitHub native/hosted checks and merge remain pending. No live provider
+publication, local Docker or browser process was started.
+
+
+GitHub Pages implementation commit **`b72e851`** contains the adapter, CLI/CI
+integration, regression tests and matching docs. Local verification above covers
+that implementation; final-head native/hosted CI and live account acceptance
+remain pending. The subsequent context-only commit records this source identity.
+
+
+PR #83 run `42135062241` exposed a Windows response-read deadline diagnostic:
+expiration while reading the HTTP body was reported as a generic read failure.
+Fix **`5dc95ec`** recognizes both reqwest's wrapped I/O timeout and the operation
+deadline, retaining response/token redaction. A regression delays the response
+body after headers. The original stale/missing-build timeout assertions remain;
+no Windows test or assertion was disabled. All 13 local Pages tests passed
+(one hosted test remains CI-only), with warnings-denied Clippy and formatting.
+Distinct local Rust coverage is now 506 tests. Evidence:
+`/private/tmp/zellij-pr83-windows.log` and `zellij-pages-timeout-tests.log`.
+The first run cannot validate this correction; final-head CI and merge remain
+pending, as does live GitHub Pages account acceptance.

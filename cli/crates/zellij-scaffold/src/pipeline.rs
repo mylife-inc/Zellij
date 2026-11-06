@@ -22,6 +22,9 @@ pub enum Publish {
     Netlify {
         site_id: Option<String>,
     },
+    GithubPages {
+        repository: Option<String>,
+    },
     Vercel {
         project: Option<String>,
     },
@@ -138,16 +141,27 @@ pub fn github(options: &CiOptions) -> Result<String> {
         .map(|features| format!(" --features {}", features.as_str()))
         .unwrap_or_default();
     settings.validate()?;
+    if matches!(publish, Publish::GithubPages { .. }) {
+        Provider::GithubPages.require_production(settings.production)?;
+        if settings.branch == "gh-pages" {
+            return Err(invalid(
+                "GitHub Pages CI must run from a source branch other than gh-pages",
+            ));
+        }
+    }
     let version = zellij_core::ci::version_pin(version)?;
     if (!overrides.is_empty()
         || !build_args.is_empty()
         || *platform == Some(ImagePlatform::All)
-        || matches!(publish, Publish::Cloudflare { .. } | Publish::Vercel { .. }))
+        || matches!(
+            publish,
+            Publish::Cloudflare { .. } | Publish::Vercel { .. } | Publish::GithubPages { .. }
+        ))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "Cloudflare/Vercel deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare/Vercel/GitHub Pages deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -299,6 +313,15 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::GithubPages { repository } => {
+                if let Some(repository) = repository {
+                    Provider::GithubPages.validate_site(repository)?;
+                }
+                steps.push(json!({"name":"Build once and publish GitHub Pages", "env":{
+                    "GITHUB_PAGES_REPOSITORY":repository.as_deref().unwrap_or("${{ vars.GITHUB_PAGES_REPOSITORY || secrets.GITHUB_PAGES_REPOSITORY }}"),
+                    "GITHUB_PAGES_TOKEN":"${{ secrets.GITHUB_PAGES_TOKEN }}"
+                },"run":format!("zel deploy github-pages {selector} --prod{features_flag}{override_flags}")}));
             }
             Publish::Vercel { project } => {
                 if let Some(project) = project {
