@@ -1974,3 +1974,18 @@ Protocol references: Fly [Machines API](https://docs.fly.io/machines/api/machine
 [official SDK token normalization](https://github.com/superfly/fly-go/blob/master/tokens/tokens.go).
 See [user setup and exact limits](../examples/zellij-docs/content/02-cli/deploy.mdx#fly).
 Final source identity and verification are recorded in the subsequent entry.
+
+
+## 2026-11-06 — Site-aware doctor preflight
+
+`doctor [site]` now accepts the shared `--site-root`, `--config` and `--cwd`
+selectors. It reports selected site paths, renderer, layout and default preview
+port; portable sites skip runtime discovery. Hosted sites and invocations outside
+a site retain bounded container diagnostics without pulling or starting services.
+Invalid settings fail before runtime probes. `--json` provides a single versioned
+preflight report, including handled errors and exit status, with no duplicate
+stderr error. Argument parsing and invalid working-directory errors retain normal
+CLI handling. This does not validate content, output ownership/writability,
+credentials or provider access. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx)
+for the report schema, selection rules and exit codes. Native release and final
+cross-platform CI are separate from this implementation record.

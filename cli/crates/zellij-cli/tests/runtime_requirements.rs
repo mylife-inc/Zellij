@@ -44,6 +44,181 @@ fn content(root: &Path) {
     fs::write(root.join("content/index.md"), "# Test\n").unwrap();
 }
 
+fn doctor_report(root: &Path, args: &[&str], code: i32) -> serde_json::Value {
+    let output = command(root).args(args).arg("--json").output().unwrap();
+    assert_eq!(output.status.code(), Some(code), "{output:?}");
+    assert!(output.stderr.is_empty(), "{output:?}");
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["schema_version"], 1);
+    assert_eq!(report["exit_code"], code);
+    assert_eq!(report["ok"], code == 0);
+    report
+}
+
+#[test]
+fn portable_doctor_discovers_site_without_runtime_or_filesystem_writes() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let site = root.join("docs/zellij");
+    fs::create_dir_all(site.join("content")).unwrap();
+    let config =
+        "version: 1\nrenderer: portable\nbuild:\n  out: generated/site\npreview:\n  port: 4321\n";
+    fs::write(site.join("zel.yaml"), config).unwrap();
+    // Doctor checks settings, not content references. check remains necessary.
+    fs::write(site.join("content/index.md"), "[Broken](missing.md)").unwrap();
+    #[cfg(unix)]
+    runtime(root, "docker", "exit 99");
+    let output = command(root)
+        .args(["doctor", "--quiet", "--json"])
+        .env("DOCKER_HOST", "ssh://secret-endpoint")
+        .env("CONTAINER_HOST", "ssh://conflicting-secret")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(output.stderr.is_empty());
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["site"]["renderer"], "portable");
+    assert_eq!(report["site"]["layout"], "versioned");
+    assert_eq!(report["site"]["preview_port"], 4321);
+    let canonical = site.canonicalize().unwrap();
+    assert_eq!(
+        Path::new(report["site"]["root"].as_str().unwrap()),
+        canonical
+    );
+    assert_eq!(
+        Path::new(report["site"]["content"].as_str().unwrap()),
+        canonical.join("content")
+    );
+    assert_eq!(
+        Path::new(report["site"]["output"].as_str().unwrap()),
+        canonical.join("generated/site")
+    );
+    assert_eq!(report["runtime"]["status"], "not_required");
+    assert!(report["image"].is_null());
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("secret"));
+    assert!(!root.join("docker-calls").exists());
+    assert!(!site.join("generated").exists());
+    assert_eq!(fs::read_to_string(site.join("zel.yaml")).unwrap(), config);
+    assert_eq!(fs::read_dir(&site).unwrap().count(), 2);
+    let human = command(root).args(["doctor", "--quiet"]).output().unwrap();
+    assert!(human.status.success());
+    assert!(
+        String::from_utf8_lossy(&human.stdout)
+            .contains("not required for portable sites; not probed")
+    );
+}
+
+#[test]
+fn doctor_honors_paths_custom_config_and_working_directory() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir_all(root.join("Manual 日本/content")).unwrap();
+    fs::write(
+        root.join("Manual 日本/custom.yaml"),
+        "version: 1\nrenderer: portable\n",
+    )
+    .unwrap();
+    // Explicit selection must ignore even an invalid conventional configuration.
+    fs::write(root.join("Manual 日本/zel.yaml"), "invalid: [").unwrap();
+    let first = doctor_report(root, &["doctor", "--config", "Manual 日本/custom.yaml"], 0);
+    let second = doctor_report(
+        root,
+        &["--cwd", "Manual 日本", "--config", "custom.yaml", "doctor"],
+        0,
+    );
+    assert_eq!(first, second);
+    fs::remove_file(root.join("Manual 日本/zel.yaml")).unwrap();
+    fs::rename(
+        root.join("Manual 日本/custom.yaml"),
+        root.join("Manual 日本/zel.yaml"),
+    )
+    .unwrap();
+    assert_eq!(
+        doctor_report(root, &["doctor", "Manual 日本"], 0),
+        doctor_report(root, &["doctor", "--site-root", "Manual 日本"], 0)
+    );
+}
+
+#[test]
+fn doctor_supports_raw_markdown_and_legacy_portable_config() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir(root.join("pages")).unwrap();
+    fs::write(root.join("pages/index.md"), "# Example").unwrap();
+    let raw = doctor_report(root, &["doctor", "pages"], 0);
+    assert!(raw["site"]["config"].is_null());
+    assert_eq!(raw["site"]["layout"], "legacy");
+    assert_eq!(raw["site"]["renderer"], "portable");
+    assert!(Path::new(raw["site"]["output"].as_str().unwrap()).ends_with("pages-site"));
+    fs::write(root.join("pages/zel.yaml"), "name: Example\ntheme: slate\n").unwrap();
+    let configured = doctor_report(root, &["doctor", "pages"], 0);
+    assert!(!configured["site"]["config"].is_null());
+    assert_eq!(configured["site"]["layout"], "legacy");
+    assert_eq!(configured["runtime"]["status"], "not_required");
+}
+
+#[test]
+fn doctor_configuration_errors_stop_before_runtime_discovery() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir(root.join("content")).unwrap();
+    for config in [
+        "version: 1\nrenderer: invalid\n",
+        "version: 1\nrenderer: portable\ntheme: invalid\n",
+        "version: 1\nrenderer: portable\nunknown: value\n",
+        "version: 1\nrenderer: hosted\nunknown: value\n",
+        "invalid: [",
+    ] {
+        fs::write(root.join("zel.yaml"), config).unwrap();
+        let report = doctor_report(root, &["doctor"], 2);
+        assert_eq!(report["runtime"]["status"], "not_checked");
+        assert_eq!(report["error"]["kind"], "configuration");
+    }
+    for args in [
+        vec!["doctor", "missing"],
+        vec!["doctor", "--config", "missing.yaml"],
+    ] {
+        let report = doctor_report(root, &args, 2);
+        assert_eq!(report["runtime"]["status"], "not_checked");
+    }
+    // A bad cwd config takes precedence over a valid conventional nested site.
+    fs::create_dir_all(root.join("docs/zellij/content")).unwrap();
+    fs::write(
+        root.join("docs/zellij/zel.yaml"),
+        "version: 1\nrenderer: portable\n",
+    )
+    .unwrap();
+    doctor_report(root, &["doctor"], 2);
+    assert!(!root.join("site").exists());
+}
+
+#[test]
+fn doctor_reports_hosted_site_even_when_runtime_is_unavailable() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    let legacy = doctor_report(root, &["doctor"], 4);
+    assert_eq!(legacy["site"]["renderer"], "hosted");
+    assert_eq!(legacy["site"]["layout"], "legacy");
+    assert!(Path::new(legacy["site"]["content"].as_str().unwrap()).ends_with("content"));
+    assert!(Path::new(legacy["site"]["output"].as_str().unwrap()).ends_with("dist"));
+    fs::write(root.join("zel.yaml"), "version: 1\nrenderer: hosted\n").unwrap();
+    let versioned = doctor_report(root, &["doctor"], 4);
+    assert_eq!(versioned["site"]["layout"], "versioned");
+    assert_eq!(versioned["runtime"]["status"], "unavailable");
+    assert_eq!(versioned["error"]["kind"], "runtime");
+    assert!(Path::new(versioned["site"]["output"].as_str().unwrap()).ends_with("site"));
+}
+
+#[test]
+fn doctor_outside_site_retains_runtime_diagnostics_without_inventing_a_site() {
+    let temp = tempfile::tempdir().unwrap();
+    fs::write(temp.path().join("README.md"), "# Product").unwrap();
+    let report = doctor_report(temp.path(), &["doctor"], 4);
+    assert!(report["site"].is_null());
+    assert_eq!(report["runtime"]["status"], "unavailable");
+}
+
 #[test]
 fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     let temp = tempfile::tempdir().unwrap();
@@ -304,6 +479,51 @@ fn explicit_broken_endpoint_is_not_replaced_and_client_errors_do_not_leak_secret
     assert_eq!(
         fs::read_to_string(root.join("docker-calls")).unwrap(),
         "info\n"
+    );
+    let output = command(root)
+        .args(["doctor", "--json"])
+        .env(
+            "DOCKER_HOST",
+            "ssh://username:password-do-not-print@example.invalid",
+        )
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(4));
+    assert!(output.stderr.is_empty());
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("password-do-not-print"));
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["error"]["kind"], "runtime");
+    assert!(!root.join("podman-calls").exists());
+}
+
+#[cfg(unix)]
+#[test]
+fn hosted_doctor_json_reports_local_image_and_redacts_selected_endpoint() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    content(root);
+    runtime(
+        root,
+        "docker",
+        "case \"$1\" in info|image) exit 0;; --version) echo 'docker fixture';; *) exit 99;; esac",
+    );
+    let output = command(root)
+        .args(["--json", "doctor"])
+        .env("DOCKER_HOST", "ssh://username:secret@example.invalid")
+        .env("ZELLIJ_IMAGE", "registry.example/base:pinned")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(output.stderr.is_empty());
+    let report: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(report["runtime"]["status"], "available");
+    assert_eq!(report["runtime"]["endpoint"], "DOCKER_HOST (value hidden)");
+    assert_eq!(report["image"]["reference"], "registry.example/base:pinned");
+    assert_eq!(report["image"]["status"], "local");
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("secret"));
+    assert_eq!(
+        fs::read_to_string(root.join("docker-calls")).unwrap(),
+        "info\n--version\nimage inspect registry.example/base:pinned\n"
     );
 }
 

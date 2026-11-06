@@ -1,22 +1,50 @@
 ---
 title: zel doctor
-description: Diagnose the container runtime, connection and engine image.
+description: Diagnose selected site settings and required container tooling.
 ---
 
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
 <Callout type="tip" title="Implemented in source">
-Runtime diagnostics work today. They do not yet resolve the proposed site-root
-configuration or check deployment credentials. The downloaded CLI release may
-predate the runtime handling described here.
+Site-aware diagnostics and JSON reports are available in current source. The
+downloaded CLI release may predate these changes. Deployment credentials and
+remote services are not checked.
 </Callout>
 
 ```bash title="terminal"
 zel doctor
+zel doctor docs/manual
+zel doctor --config docs/manual/preview.yaml
+zel doctor --cwd ../my-product --site-root docs/manual --json
 ```
 
-The report includes the binary version and platform, selected container client,
-connection, engine image status, and any discovered hosted content folder.
+The report includes the binary version and platform, selected site root,
+configuration file, renderer, content and default output paths, layout, and
+preview port. Hosted sites also report the selected container client, connection
+and local engine image status.
+
+## Site selection
+
+Without a path, doctor looks for `zel.yaml` in the working directory, then in
+`docs/zellij`. An invalid discovered configuration is an error, not a reason to
+skip to another folder. `--site-root` selects a folder; `--config` selects one
+configuration file and uses its parent as the site root. These share the
+[global selection rules](/cli/config). Explicit paths also support legacy hosted
+content, legacy flat portable configurations, and raw Markdown folders.
+
+A **portable** site does not need a container runtime: doctor skips every runtime
+probe, even when container endpoint variables are set. For a **hosted** site it
+checks the runtime as described below. Without a configuration or explicit path,
+legacy hosted content can still be discovered. If no site is found, doctor
+retains its runtime-only diagnostic behavior; a product README alone does not
+select a portable site. Pass `.` explicitly to diagnose a raw Markdown folder.
+
+Doctor parses site settings and portable presentation settings. It does not scan
+pages, check navigation targets or assets, validate content, test output ownership
+or writability, reserve the preview port, or contact deployment providers. The
+output path and port describe defaults; they are not readiness guarantees.
+Use [`zel check`](/cli/check) to validate the selected site's content. Doctor does
+not write configuration, generate output, pull images or start services.
 
 ## Which commands need a runtime?
 
@@ -99,7 +127,8 @@ registry credential or mounted directory will work.
 
 ## The engine image
 
-The report shows the configured image and whether inspection found it locally.
+For hosted sites and runtime-only diagnostics, the report shows the configured
+image and whether inspection found it locally.
 A failed inspection is reported as not pulled; a timeout or an unavailable
 inspection is reported as unknown. This check never pulls an image.
 
@@ -114,13 +143,33 @@ The first container operation may download an absent image. Hosted builds also
 install app dependencies, so a local base image alone does not guarantee an
 offline build.
 
-## Exit code
+## JSON and exit codes
 
-`0` means a container runtime answered successfully. `4` means runtime discovery
-failed or endpoint settings were ambiguous. A missing local engine image does
-not fail doctor, and unavailable version/image metadata is reported without
-failing it. This is a container preflight, not a complete site validation or a
-prerequisite for portable commands.
+`zel doctor --json` writes one report to stdout with `schema_version: 1`, binary
+`version` and `target`, `ok`, `exit_code`, `site`, `runtime`, `image` and `error`.
+`site` is null when no site could be resolved; otherwise it contains `root`,
+`config` (null for inferred settings), `layout` (`versioned` or `legacy`),
+`renderer`, `content`, `output`, and `preview_port`.
+
+Runtime status is `not_required` for portable sites, `not_checked` when site
+configuration fails first, `available`, or `unavailable`. An available runtime
+includes `program`, `version` and a redacted `endpoint`. Image inspection reports
+`reference` and status `local`, `not_pulled`, or `unknown`; `image` is null when
+not inspected. `error` is null on success, otherwise an object with `kind`
+(`configuration` or `runtime`) and `message`.
+
+| Exit code | Meaning |
+| --- | --- |
+| `0` | Site settings passed preflight and any required runtime responded, or runtime-only diagnostics succeeded |
+| `2` | Invalid site selection or configuration |
+| `4` | Required runtime discovery failed or endpoint settings were ambiguous |
+| `1` | Filesystem or other unexpected I/O error |
+
+An absent local image or unavailable version/image metadata does not fail doctor.
+Handled configuration/runtime errors appear in the JSON report without duplicate
+stderr diagnostics. `--verbose` can add tracing to stderr; `--quiet` preserves the
+report. Argument parsing errors and an invalid `--cwd` occur before the doctor
+report starts and keep the CLI's ordinary stderr diagnostics.
 
 <div id="what-it-will-report-later" className="zellij-legacy-anchor" />
 

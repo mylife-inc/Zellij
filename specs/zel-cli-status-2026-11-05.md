@@ -9,7 +9,7 @@ dated audit and implementation history.
 | Area | Implemented command forms | Remaining scope or limits |
 | --- | --- | --- |
 | Creation | `new portable` / `init`, `new docs`, `new app`, `new section`, `new page`, `new guide`, `new project`, with documented aliases | `new docs --full` now adds a browsable catalogue, all 23 section examples and local media. Section wizard, scalar `--set`, list `--count`, pricing `--tiers`/`--highlight` and positional output are implemented in current source. There is no whole-site/page wizard or arbitrary YAML editing through flags. |
-| Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
+| Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor resolves site settings, skips runtime probes for portable sites, and offers JSON preflight reports. Content validation and provider credentials remain separate. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
@@ -545,3 +545,14 @@ Full starter implementation: **`54f601dc9701a11ef3d2819874b26c96950cac9f`**.
 The preceding local verification covers this source and Windows recovery
 `608e5e8`; this context-only follow-up records their identities. Final-head
 GitHub acceptance and merge remain pending.
+
+
+## 2026-11-06 — Doctor site/configuration diagnostics
+
+Current source implements `doctor [site]`, shared site/config/working-directory
+selectors, portable settings checks without a runtime, and JSON preflight reports.
+Hosted failures retain selected site information. Outside a site the existing
+runtime-only diagnostic remains available. Content, output readiness, credentials
+and provider connectivity are not included. Regression tests cover fake clients
+and native filesystem behavior; final-head cross-platform CI and publication
+remain separate. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx).
