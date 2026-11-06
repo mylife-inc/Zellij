@@ -4866,3 +4866,8 @@ engine-check,clippy,final-clippy,docs}.log`.
 Windows upgrade recovery source: **`608e5e8db1f7c77380493063f7fb73c467c9fe83`**.
 It adds operation-specific diagnostics, bounded sharing-lock retries and native
 Windows file-lock regression coverage. Final-head GitHub acceptance is pending.
+
+Full starter implementation: **`54f601dc9701a11ef3d2819874b26c96950cac9f`**.
+The preceding local verification covers this source and Windows recovery
+`608e5e8`; this context-only follow-up records their identities. Final-head
+GitHub acceptance and merge remain pending.
