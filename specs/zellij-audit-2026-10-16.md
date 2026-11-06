@@ -4791,3 +4791,6 @@ syntax and actionlint pass. Four generated cases for each new service pass its
 official JSON schema; the equivalent GitHub cases pass actionlint. Live CI
 service acceptance is distinct from these structural and script checks. Final
 GitHub native image acceptance and merge remain pending.
+
+Implementation commit **`9d3ba34`** contains this milestone and its regression
+coverage. The following context-only commit records that source identity.

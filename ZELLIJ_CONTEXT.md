@@ -5651,3 +5651,9 @@ Evidence: `/private/tmp/zellij-external-ci-workspace.log`,
 are located by `/private/tmp/zellij-external-ci-generated-path`.
 No local Docker/browser or live provider mutation ran. Final-head GitHub image
 acceptance and merge are pending at this checkpoint.
+
+Implementation commit **`9d3ba34`** contains the GitLab/CircleCI generators,
+shared command preparation, CLI/config selection, regression fixtures, native
+GitHub replay harness and user documentation. The local verification above
+covers this source; the following context-only commit records its identity.
+Final-head GitHub acceptance and merge remain pending.
