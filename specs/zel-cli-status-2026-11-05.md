@@ -12,7 +12,7 @@ dated audit and implementation history.
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
-| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel and GitHub Pages static adapters plus image registry publication are implemented. Cloudflare, Vercel and GitHub Pages live-account acceptance is pending. S3, Fly and Railway adapters remain unimplemented. |
+| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly and Railway adapters remain unimplemented. |
 | CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
@@ -274,3 +274,17 @@ Distinct local Rust coverage is now 506 tests. Evidence:
 `/private/tmp/zellij-pr83-windows.log` and `zellij-pages-timeout-tests.log`.
 The first run cannot validate this correction; final-head CI and merge remain
 pending, as does live GitHub Pages account acceptance.
+
+### 2026-11-05 — AWS S3 static website uploads
+
+Current source implements `deploy s3`, `s3`, saved `publish`/`pub`, `ship` and
+GitHub CI generation for an existing S3 website bucket. Destination is bucket
+or bucket/prefix; production intent is mandatory. Native SigV4 uploads use
+explicit environment credentials, region and expected owner. Hosted prefixes
+are applied once and clean-route HTML copies are included. All object
+preconditions are captured before conditional writes; uploads remain non-atomic
+and old keys remain. No bucket, policy, ACL, DNS or CDN setup is performed.
+See [setup and limits](../examples/zellij-docs/content/02-cli/deploy.mdx#aws-s3).
+Live AWS account acceptance is pending. The published rc.1 lacks this provider;
+rc.2 remains unpublished. Fly/Railway, other CI systems, wizard and advanced
+import gaps remain separate work.

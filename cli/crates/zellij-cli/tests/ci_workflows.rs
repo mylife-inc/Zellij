@@ -46,6 +46,14 @@ fn command(root: &Path, args: &[&str]) -> Command {
         .env_remove("VERCEL_TOKEN")
         .env_remove("VERCEL_PROJECT_ID")
         .env_remove("VERCEL_TEAM_ID")
+        .env_remove("AWS_ACCESS_KEY_ID")
+        .env_remove("AWS_SECRET_ACCESS_KEY")
+        .env_remove("AWS_SESSION_TOKEN")
+        .env_remove("AWS_REGION")
+        .env_remove("S3_EXPECTED_BUCKET_OWNER")
+        .env_remove("S3_DESTINATION")
+        .env_remove("AWS_ENDPOINT_URL")
+        .env_remove("AWS_ENDPOINT_URL_S3")
         .env_remove("GITHUB_PAGES_TOKEN")
         .env_remove("GITHUB_PAGES_REPOSITORY");
     command
@@ -1337,4 +1345,169 @@ fn github_pages_workflow_override_does_not_reuse_another_providers_destination()
     let doc = workflow(root).to_string();
     assert!(!doc.contains("old-site"));
     assert!(doc.contains("vars.GITHUB_PAGES_REPOSITORY"));
+}
+
+#[test]
+fn s3_workflow_requires_production_and_isolates_aws_credentials() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: s3, site: acme-docs/manual}\n",
+    );
+    run(root, &["ci"], 2);
+    assert!(!root.join(".github/workflows/docs.yml").exists());
+    run(root, &["ci", "--prod"], 0);
+    let doc = workflow(root);
+    let publish = &doc["jobs"]["publish"];
+    assert!(!doc["jobs"]["verify"].to_string().contains("secrets."));
+    assert!(!publish["if"].as_str().unwrap().contains("pull_request"));
+    let step = publish["steps"].as_array().unwrap().last().unwrap();
+    assert!(step["run"].as_str().unwrap().starts_with("zel deploy s3"));
+    assert!(step["run"].as_str().unwrap().contains("--prod"));
+    assert_eq!(step["env"]["S3_DESTINATION"], "acme-docs/manual");
+    for key in [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+    ] {
+        assert_eq!(step["env"][key], format!("${{{{ secrets.{key} }}}}"));
+    }
+    for key in ["AWS_REGION", "S3_EXPECTED_BUCKET_OWNER"] {
+        assert!(
+            step["env"][key]
+                .as_str()
+                .unwrap()
+                .contains(&format!("vars.{key}"))
+        );
+    }
+    let original = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    run(
+        root,
+        &["ci", "--prod", "--force", "--zel-version", "0.2.0-rc.1"],
+        2,
+    );
+    assert_eq!(
+        fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+        original
+    );
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2, production: true}\npublish: {action: deploy, provider: s3, site: acme-docs/manual}\n",
+    );
+    run(root, &["ci", "--force"], 0);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    run(root, &["ci", "--deploy", "s3", "--prod", "--force"], 0);
+    let text = workflow(root).to_string();
+    assert!(text.contains("vars.S3_DESTINATION") && !text.contains("old-site"));
+}
+#[test]
+fn s3_provision_validates_all_credentials_before_writing_workflow() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2, production: true}\npublish: {action: deploy, provider: s3, site: acme-docs/manual}\n",
+    );
+    for (access, secret, session) in [
+        ("", "", ""),
+        ("AKIAIOSFODNN7EXAMPLE", "", ""),
+        ("ASIAIOSFODNN7EXAMPLE", "fixture-secret", ""),
+        ("ASIAIOSFODNN7EXAMPLE", "fixture-secret", "bad\ntoken"),
+    ] {
+        let output = command(root, &["ci", "--provision"])
+            .env("AWS_ACCESS_KEY_ID", access)
+            .env("AWS_SECRET_ACCESS_KEY", secret)
+            .env("AWS_SESSION_TOKEN", session)
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{output:?}");
+        assert!(!root.join(".github/workflows/docs.yml").exists());
+        assert!(!String::from_utf8_lossy(&output.stderr).contains("fixture-secret"));
+    }
+}
+#[cfg(unix)]
+#[test]
+fn s3_provision_sends_multiple_secrets_only_on_stdin_and_keeps_partial_workflow() {
+    use std::os::unix::fs::PermissionsExt;
+    for fail in [
+        "none",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        repo(root);
+        site(
+            root,
+            "docs/zellij",
+            "ci: {zel-version: 0.2.0-rc.2, production: true}\npublish: {action: deploy, provider: s3, site: acme-docs/manual}\n",
+        );
+        write(
+            root,
+            "bin/gh",
+            "#!/bin/sh\n[ -f .github/workflows/docs.yml ] || exit 9\nprintf '%s\\n' \"$@\" >> gh-args\ncat > \"stdin-$3\"\n[ \"$3\" = \"$FAIL_SECRET\" ] && exit 7\nexit 0\n",
+        );
+        fs::set_permissions(root.join("bin/gh"), fs::Permissions::from_mode(0o755)).unwrap();
+        let path = std::env::join_paths(
+            std::iter::once(root.join("bin"))
+                .chain(std::env::split_paths(&std::env::var_os("PATH").unwrap())),
+        )
+        .unwrap();
+        let invoke = |provision: bool| {
+            let mut cmd = command(root, &["ci", "--force"]);
+            cmd.env("PATH", &path)
+                .env("FAIL_SECRET", fail)
+                .env("AWS_ACCESS_KEY_ID", "ASIAIOSFODNN7EXAMPLE")
+                .env("AWS_SECRET_ACCESS_KEY", "fixture-secret")
+                .env("AWS_SESSION_TOKEN", "fixture-session");
+            if provision {
+                cmd.arg("--provision");
+            }
+            cmd.output().unwrap()
+        };
+        assert!(invoke(false).status.success());
+        assert!(!root.join("gh-args").exists());
+        let result = invoke(true);
+        assert_eq!(
+            result.status.code(),
+            Some(if fail == "none" { 0 } else { 1 })
+        );
+        let diagnostic = String::from_utf8_lossy(&result.stderr);
+        assert!(!diagnostic.contains("fixture-secret") && !diagnostic.contains("fixture-session"));
+        if fail != "none" {
+            assert!(diagnostic.contains("workflow written"));
+        }
+        let mut expected = String::new();
+        for (key, value) in [
+            ("AWS_ACCESS_KEY_ID", "ASIAIOSFODNN7EXAMPLE"),
+            ("AWS_SECRET_ACCESS_KEY", "fixture-secret"),
+            ("AWS_SESSION_TOKEN", "fixture-session"),
+        ] {
+            expected.push_str(&format!("secret\nset\n{key}\n"));
+            assert_eq!(
+                fs::read_to_string(root.join(format!("stdin-{key}"))).unwrap(),
+                value
+            );
+            if fail == key {
+                break;
+            }
+        }
+        assert_eq!(fs::read_to_string(root.join("gh-args")).unwrap(), expected);
+        assert!(
+            !fs::read_to_string(root.join(".github/workflows/docs.yml"))
+                .unwrap()
+                .contains("fixture-secret")
+        );
+    }
 }

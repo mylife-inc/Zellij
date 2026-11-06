@@ -28,6 +28,7 @@ mod imports;
 mod maintenance;
 mod netlify;
 mod preview;
+mod s3;
 mod validation;
 mod vercel;
 mod watch;
@@ -267,7 +268,8 @@ fn main() {
         | Command::Netlify(_)
         | Command::Cloudflare(_)
         | Command::Vercel(_)
-        | Command::GithubPages(_) => {
+        | Command::GithubPages(_)
+        | Command::S3(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

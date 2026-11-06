@@ -248,6 +248,18 @@ const CASES: &[Case] = &[
         &[],
         &["manual", "--site", "acme/manual", "--prod", "--dry-run"],
     ),
+    (
+        "s3",
+        "deploy s3",
+        &[],
+        &[
+            "manual",
+            "--site",
+            "acme-docs/manual",
+            "--prod",
+            "--dry-run",
+        ],
+    ),
     ("comp", "completions", &["bash"], &["powershell"]),
 ];
 
@@ -306,6 +318,7 @@ fn every_registered_shortcut_is_tested_and_names_do_not_collide() {
     actual.insert("cloudflare".into());
     actual.insert("vercel".into());
     actual.insert("github-pages".into());
+    actual.insert("s3".into());
     assert_eq!(
         actual,
         CASES.iter().map(|(short, ..)| (*short).into()).collect()

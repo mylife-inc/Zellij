@@ -1,6 +1,6 @@
 ---
 title: zel deploy
-description: Build static HTML once and upload it directly to Netlify, Cloudflare Pages, Vercel or GitHub Pages.
+description: Build static HTML once and upload it directly to Netlify, Cloudflare Pages, Vercel, GitHub Pages or S3.
 ---
 
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
@@ -9,7 +9,7 @@ description: Build static HTML once and upload it directly to Netlify, Cloudflar
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Cloudflare Pages, Vercel and GitHub Pages are available in current source; rc.1 does not include them.
+predates these commands. Cloudflare Pages, Vercel, GitHub Pages and S3 are available in current source; rc.1 does not include them.
 </Callout>
 
 ```bash title="terminal"
@@ -174,6 +174,108 @@ from diagnostics. Creation requests are never automatically retried. An uncertai
 response or timeout may leave a deployment running remotely; check the dashboard
 before repeating the command. Protocol and generated-export tests are automated;
 live Vercel account acceptance remains pending.
+
+## AWS S3
+
+Current source supports `zel deploy s3` and the shortcut `zel s3`. This is newer
+than the published rc.1 binary. The adapter uploads static HTML to an **existing
+S3 website bucket**, optionally under a prefix. **There is no draft mode:
+`--prod` is required**, including for a dry-run plan.
+
+```bash
+zel s3 --site acme-docs/manual --prod --dry-run
+zel s3 --site acme-docs/manual --prod
+zel s3 docs/manual --site acme-docs/manual --prod
+```
+
+Prepare the bucket in AWS first:
+
+1. Use a general-purpose bucket in a supported commercial AWS region. Enable
+   static website hosting with **index.html** as the index document. An error
+   document is optional; redirect-all settings and routing rules are unsupported.
+2. Configure website read access according to your intended audience. `zel`
+   does not change bucket policies, public-access settings, ACLs or DNS.
+3. Supply `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` through your shell
+   environment or CI secret store. Temporary credentials also require
+   `AWS_SESSION_TOKEN`. Set `AWS_REGION` to the bucket's region and
+   `S3_EXPECTED_BUCKET_OWNER` to its owner's 12-digit AWS account ID.
+
+The upload identity needs `s3:ListBucket` and `s3:GetBucketWebsite` on the bucket,
+and `s3:GetObject` and `s3:PutObject` for the destination keys. It needs no delete,
+ACL or bucket-configuration permissions. Bucket policy, encryption and other
+account controls can impose additional requirements. See AWS's
+[HeadBucket](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadBucket.html),
+[GetBucketWebsite](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetBucketWebsite.html),
+[HeadObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html) and
+[PutObject](https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutObject.html) references.
+
+`--site` / `--site-id` accepts `bucket` or `bucket/prefix`, not an `s3://` URI or
+website URL. It overrides `S3_DESTINATION`, then same-provider `publish.site`:
+
+```yaml title="docs/zellij/zel.yaml"
+version: 1
+renderer: portable
+publish:
+  action: deploy
+  provider: s3
+  site: acme-docs/manual
+```
+
+Then use `zel pub --prod` or bare `zel deploy --prod`. Prefix segments accept
+ASCII letters, digits, dots, underscores and hyphens, with no empty/dot segments
+or trailing slash. Prefix length is limited to 512 bytes. Credentials, region
+and expected owner remain environment settings. They are never saved in this
+publication block. An explicit provider change does not reuse another provider's
+destination.
+
+`zel` signs HTTPS requests directly. It neither requires nor invokes the AWS CLI
+or reads AWS profiles, stored login, credential processes or instance metadata.
+It does not assume roles or refresh temporary credentials; supply current values.
+Custom `AWS_ENDPOINT_URL` / `AWS_ENDPOINT_URL_S3` settings are rejected.
+S3-compatible services, China/GovCloud regions, access points and directory
+buckets are outside this adapter.
+
+Bucket region, expected owner and website configuration are checked before
+building. Both renderers build once into temporary output and preserve source
+files and previous local output. Portable output needs no Node.js or container
+runtime; hosted output retains its container requirement. Portable keys receive
+the destination prefix and their links remain relative.
+
+For hosted output, the destination prefix becomes the invocation's default
+`basePath`, and the S3 website origin becomes its default site URL. These
+invocation defaults override authored URL settings without editing them.
+Explicit `--base-path` must equal or sit below the destination prefix. Files
+already contain that build prefix, so it is not prepended twice. The adapter
+also uploads extensionless copies of non-index HTML pages: `/manual/guide`
+and `/manual/guide.html` both resolve. A collision with another output file
+fails before any upload. Explicit `--site-url` remains an SEO override; it does
+not configure a domain or CDN. A website/CDN origin must serve the bucket root.
+
+AWS website endpoints use **HTTP**, although the upload API uses HTTPS. Use
+separately configured CloudFront or another suitable CDN for HTTPS delivery;
+this command does not configure it or invalidate caches. See AWS's
+[website endpoint behavior](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteEndpoints.html).
+The success message reports uploaded objects and the website URL, not a
+verification that anonymous website access works.
+
+**Uploads are not atomic.** All planned keys are inspected before the first
+write; existing keys use their ETag as an `If-Match` condition and missing keys
+use `If-None-Match: *`. Concurrent changes fail instead of being overwritten
+silently. Assets upload first, then HTML, with the selected entry `index.html`
+last. Requests carry SHA-256 checksums and `Cache-Control: no-cache`. Existing
+keys with other names are retained, including removed pages and stale assets.
+There is no prune, automatic retry, resume or rollback operation. A failed
+upload can leave a partially updated website; inspect the bucket before retrying.
+
+Limits: **5,000 objects, 25 MiB per file and 100 MiB total**, counting clean-route
+copies. Keys are limited to 1,024 UTF-8 bytes. Links, junctions, non-regular files
+and paths containing `#`, `?`, backslashes or control characters are rejected;
+Unicode, spaces and literal percent filenames are preserved. The local output
+marker is excluded. Requests refuse redirects, redact response bodies and
+credentials, and use 60-second request / 15-second connect limits within a
+15-minute upload budget. Website configuration is rechecked before writes and
+after upload. Protocol and generated-export tests are automated; live AWS
+account acceptance remains pending.
 
 ## GitHub Pages
 
@@ -388,10 +490,10 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 
 | Option | Meaning |
 | --- | --- |
-| `[provider]` | `netlify`, `cloudflare`, `vercel` or `github-pages`; omit to execute saved publication settings |
+| `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
 | `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name or GitHub owner/repository; `--site` is equivalent |
-| `--prod` | Request live publication; required for GitHub Pages, which has no draft mode |
+| `--prod` | Request live publication; required for GitHub Pages and S3, which have no draft mode |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
@@ -401,8 +503,8 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
 
 `--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
-the default for Netlify, Cloudflare and Vercel; GitHub Pages requires `--prod`.
-S3, Fly and Railway remain future adapters; they are not aliases for Netlify.
+the default for Netlify, Cloudflare and Vercel; GitHub Pages and S3 require `--prod`.
+Fly and Railway remain future adapters; they are not aliases for Netlify.
 
 See [`zel publish`](/cli/publish) for image registry publication and
 [`zel ci`](/cli/ci) for workflow generation from saved delivery settings.

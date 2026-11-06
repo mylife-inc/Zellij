@@ -45,6 +45,14 @@ fn command(root: &Path) -> Command {
         "VERCEL_TEAM_ID",
         "GITHUB_PAGES_TOKEN",
         "GITHUB_PAGES_REPOSITORY",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_REGION",
+        "S3_EXPECTED_BUCKET_OWNER",
+        "S3_DESTINATION",
+        "AWS_ENDPOINT_URL",
+        "AWS_ENDPOINT_URL_S3",
     ] {
         command.env_remove(key);
     }
@@ -160,7 +168,7 @@ fn delivery_configuration_is_typed_strict_and_versioned_for_both_renderers() {
             "publish: {action: push, image: static, provider: netlify}",
             "publish: {action: push, image: static, site: other}",
             "publish: {action: push, image: static, token: secret}",
-            "publish: {action: deploy, provider: s3, site: other}",
+            "publish: {action: deploy, provider: fly, site: other}",
             "ci: {system: github}",
         ] {
             config(root, "manual", renderer, settings);
@@ -771,6 +779,14 @@ fn github_pages_defaults_aliases_overrides_and_provider_isolation() {
     ] {
         let mut cmd = command(root);
         cmd.env_remove("GITHUB_PAGES_REPOSITORY")
+            .env_remove("AWS_ACCESS_KEY_ID")
+            .env_remove("AWS_SECRET_ACCESS_KEY")
+            .env_remove("AWS_SESSION_TOKEN")
+            .env_remove("AWS_REGION")
+            .env_remove("S3_EXPECTED_BUCKET_OWNER")
+            .env_remove("S3_DESTINATION")
+            .env_remove("AWS_ENDPOINT_URL")
+            .env_remove("AWS_ENDPOINT_URL_S3")
             .env_remove("GITHUB_PAGES_TOKEN");
         let output = cmd
             .args(route)
@@ -880,4 +896,183 @@ fn github_pages_requires_production_even_for_saved_publication_and_dry_runs() {
         assert_eq!(output.status.code(), Some(2), "{repository}");
     }
     assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn s3_defaults_aliases_overrides_and_provider_isolation() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: s3, site: acme-docs/saved}\n",
+    );
+    for route in [
+        vec!["publish"],
+        vec!["deploy"],
+        vec!["deploy", "s3"],
+        vec!["s3"],
+    ] {
+        let mut cmd = command(root);
+        cmd.env_remove("S3_DESTINATION")
+            .env_remove("AWS_ACCESS_KEY_ID")
+            .env_remove("AWS_SECRET_ACCESS_KEY")
+            .env_remove("AWS_SESSION_TOKEN")
+            .env_remove("AWS_REGION")
+            .env_remove("S3_EXPECTED_BUCKET_OWNER")
+            .env_remove("S3_DESTINATION")
+            .env_remove("AWS_ENDPOINT_URL")
+            .env_remove("AWS_ENDPOINT_URL_S3")
+            .env_remove("AWS_ACCESS_KEY_ID");
+        let output = cmd
+            .args(route)
+            .args(["--prod", "--dry-run"])
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        assert!(text.contains("acme-docs/saved") && text.contains("production"));
+        assert!(!root.join("docs/zellij/site").exists());
+    }
+    let output = command(root)
+        .env("S3_DESTINATION", "acme-docs/environment")
+        .args(["s3", "--site", "acme-docs/explicit", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("acme-docs/explicit"));
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("acme-docs/environment"));
+    for flags in [
+        vec!["--platform", "linux/amd64"],
+        vec!["--tag", "acme-docs/image:v1"],
+        vec!["--to", "netlify"],
+        vec!["--site", "https://github.com/acme-docs/manual"],
+    ] {
+        let mut cmd = command(root);
+        cmd.args(["s3", "--prod", "--dry-run"]).args(flags);
+        assert_eq!(cmd.output().unwrap().status.code(), Some(2));
+    }
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let output = command(root)
+        .env_remove("S3_DESTINATION")
+        .env("NETLIFY_SITE_ID", "old-env-site")
+        .args(["s3", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("S3_DESTINATION"));
+    config(root, "docs/zellij", "portable", SETTINGS);
+    assert_eq!(
+        command(root)
+            .args([
+                "pub",
+                "--to",
+                "s3",
+                "--site",
+                "acme-docs/manual",
+                "--dry-run"
+            ])
+            .output()
+            .unwrap()
+            .status
+            .code(),
+        Some(2)
+    );
+}
+
+#[test]
+fn s3_missing_credentials_stop_before_build_or_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(root, "docs/zellij", "hosted", "");
+    let result = command(root)
+        .env_remove("AWS_ACCESS_KEY_ID")
+        .args(["s3", "--site", "acme-docs/manual", "--prod"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(2));
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(error.contains("AWS_ACCESS_KEY_ID"), "{error}");
+    assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn s3_requires_production_even_for_saved_publication_and_dry_runs() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: s3, site: acme-docs/manual}\n",
+    );
+    for route in [vec!["s3"], vec!["pub"], vec!["deploy", "s3"]] {
+        let output = command(root).args(route).arg("--dry-run").output().unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert!(String::from_utf8_lossy(&output.stderr).contains("--prod"));
+    }
+    for repository in [
+        "UPPER",
+        "acme-docs/../extra",
+        "../manual",
+        "-acme-docs/manual",
+        "acme-docs/..",
+        "acme-docs/",
+        "acme-docs/bad repo",
+    ] {
+        let output = command(root)
+            .args(["s3", "--prod", "--dry-run", "--site", repository])
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{repository}");
+    }
+    assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn s3_environment_validation_never_starts_a_build_or_uses_custom_endpoints() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(root, "docs/zellij", "hosted", "");
+    for (key, value, expected) in [
+        (
+            "AWS_ENDPOINT_URL",
+            "https://private.invalid",
+            "AWS_ENDPOINT_URL",
+        ),
+        (
+            "AWS_ENDPOINT_URL_S3",
+            "https://private.invalid",
+            "AWS_ENDPOINT_URL_S3",
+        ),
+        ("AWS_REGION", "cn-north-1", "AWS_REGION"),
+        (
+            "S3_EXPECTED_BUCKET_OWNER",
+            "bad-owner",
+            "S3_EXPECTED_BUCKET_OWNER",
+        ),
+    ] {
+        let result = command(root)
+            .env("AWS_ACCESS_KEY_ID", "AKIAIOSFODNN7EXAMPLE")
+            .env("AWS_SECRET_ACCESS_KEY", "fixture-secret")
+            .env("AWS_REGION", "us-east-1")
+            .env("S3_EXPECTED_BUCKET_OWNER", "123456789012")
+            .env(key, value)
+            .args(["s3", "--site", "acme-docs/manual", "--prod"])
+            .output()
+            .unwrap();
+        assert_eq!(result.status.code(), Some(2), "{result:?}");
+        let e = String::from_utf8_lossy(&result.stderr);
+        assert!(
+            e.contains(expected) && !e.contains("fixture-secret") && !e.contains("private.invalid"),
+            "{e}"
+        );
+        assert!(!root.join("docs/zellij/site").exists());
+    }
 }

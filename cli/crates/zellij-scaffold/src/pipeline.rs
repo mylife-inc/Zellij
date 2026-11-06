@@ -22,6 +22,9 @@ pub enum Publish {
     Netlify {
         site_id: Option<String>,
     },
+    S3 {
+        destination: Option<String>,
+    },
     GithubPages {
         repository: Option<String>,
     },
@@ -149,19 +152,25 @@ pub fn github(options: &CiOptions) -> Result<String> {
             ));
         }
     }
+    if matches!(publish, Publish::S3 { .. }) {
+        Provider::S3.require_production(settings.production)?;
+    }
     let version = zellij_core::ci::version_pin(version)?;
     if (!overrides.is_empty()
         || !build_args.is_empty()
         || *platform == Some(ImagePlatform::All)
         || matches!(
             publish,
-            Publish::Cloudflare { .. } | Publish::Vercel { .. } | Publish::GithubPages { .. }
+            Publish::Cloudflare { .. }
+                | Publish::Vercel { .. }
+                | Publish::GithubPages { .. }
+                | Publish::S3 { .. }
         ))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "Cloudflare/Vercel/GitHub Pages deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare/Vercel/GitHub Pages/S3 deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -313,6 +322,19 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::S3 { destination } => {
+                if let Some(destination) = destination {
+                    Provider::S3.validate_site(destination)?;
+                }
+                steps.push(json!({"name":"Build once and upload S3 website", "env":{
+                    "S3_DESTINATION":destination.as_deref().unwrap_or("${{ vars.S3_DESTINATION || secrets.S3_DESTINATION }}"),
+                    "AWS_REGION":"${{ vars.AWS_REGION || secrets.AWS_REGION }}",
+                    "S3_EXPECTED_BUCKET_OWNER":"${{ vars.S3_EXPECTED_BUCKET_OWNER || secrets.S3_EXPECTED_BUCKET_OWNER }}",
+                    "AWS_ACCESS_KEY_ID":"${{ secrets.AWS_ACCESS_KEY_ID }}",
+                    "AWS_SECRET_ACCESS_KEY":"${{ secrets.AWS_SECRET_ACCESS_KEY }}",
+                    "AWS_SESSION_TOKEN":"${{ secrets.AWS_SESSION_TOKEN }}"
+                },"run":format!("zel deploy s3 {selector} --prod{features_flag}{override_flags}")}));
             }
             Publish::GithubPages { repository } => {
                 if let Some(repository) = repository {

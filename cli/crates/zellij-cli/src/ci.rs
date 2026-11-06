@@ -83,6 +83,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 Provider::Netlify => Publish::Netlify {
                     site_id: site_id.map(str::to_owned),
                 },
+                Provider::S3 => Publish::S3 {
+                    destination: site_id.map(str::to_owned),
+                },
                 Provider::GithubPages => Publish::GithubPages {
                     repository: site_id.map(str::to_owned),
                 },
@@ -113,6 +116,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         Publish::Cloudflare { .. } => Some(Provider::Cloudflare),
         Publish::Vercel { .. } => Some(Provider::Vercel),
         Publish::GithubPages { .. } => Some(Provider::GithubPages),
+        Publish::S3 { .. } => Some(Provider::S3),
         _ => None,
     };
     if deployment_provider.is_none()
@@ -188,16 +192,47 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     files::preflight(&repo, &[&path], args.force)?;
     // Token validation before the write, remote mutation only after it. Never
     // infer provisioning from a token merely existing in the environment.
-    let token = if args.provision {
-        {
-            let name = deployment_provider
-                .expect("validated deployment")
-                .token_environment();
-            Some(std::env::var(name).ok().filter(|t| !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic())).ok_or_else(|| invalid(&format!("--provision requires {name} in the environment; no workflow was written")))?)
+    let mut credentials = Vec::new();
+    if args.provision {
+        let provider = deployment_provider.expect("validated deployment");
+        for &name in provider.credential_environments() {
+            let value = std::env::var(name)
+                .ok()
+                .filter(|t| !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic()))
+                .ok_or_else(|| {
+                    invalid(&format!(
+                        "--provision requires {name} in the environment; no workflow was written"
+                    ))
+                })?;
+            credentials.push((name, value));
         }
-    } else {
-        None
-    };
+        if provider == Provider::S3 {
+            match std::env::var("AWS_SESSION_TOKEN") {
+                Ok(value) if !value.is_empty() => {
+                    if !value.bytes().all(|b| b.is_ascii_graphic()) {
+                        return Err(invalid(
+                            "invalid AWS_SESSION_TOKEN; no workflow was written",
+                        ));
+                    }
+                    credentials.push(("AWS_SESSION_TOKEN", value));
+                }
+                Err(std::env::VarError::NotUnicode(_)) => {
+                    return Err(invalid(
+                        "invalid AWS_SESSION_TOKEN; no workflow was written",
+                    ));
+                }
+                _ => {}
+            }
+            crate::s3::validate_credentials(
+                &credentials[0].1,
+                &credentials[1].1,
+                credentials
+                    .iter()
+                    .find(|(name, _)| *name == "AWS_SESSION_TOKEN")
+                    .map(|(_, v)| v.as_str()),
+            )?;
+        }
+    }
     files::write_files(&repo, &[(&path, yaml)], args.force)?;
     zellij_core::statusln!("✓ {}", repo.join(&path));
     zellij_core::statusln!(
@@ -207,18 +242,14 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     zellij_core::statusln!(
         "  Review and commit the workflow after that compatible release is published."
     );
-    if let Some(token) = token {
-        provision(
-            &repo,
-            deployment_provider
-                .expect("validated deployment")
-                .token_environment(),
-            &token,
-        )?;
+    if args.provision {
+        for (name, value) in credentials {
+            provision(&repo, name, &value)?;
+        }
     } else if let Some(provider) = deployment_provider {
-        let name = provider.token_environment();
+        let names = provider.credential_environments().join(", ");
         zellij_core::statusln!(
-            "  Set the repository secret {name}, or re-run with --force --provision to upload it from the environment."
+            "  Set repository secrets {names}, or re-run with --force --provision to upload them from the environment."
         );
     }
     if deployment_provider == Some(Provider::Cloudflare) {
@@ -231,12 +262,20 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "  For a team project, set repository variable VERCEL_TEAM_ID (the same-named secret is also accepted)."
         );
     }
+    if deployment_provider == Some(Provider::S3) {
+        zellij_core::statusln!(
+            "  Set repository variables AWS_REGION and S3_EXPECTED_BUCKET_OWNER; optional temporary credentials also require the AWS_SESSION_TOKEN secret. Configure the bucket website with index.html first."
+        );
+    }
     if deployment_provider == Some(Provider::GithubPages) {
         zellij_core::statusln!(
             "  Use a dedicated GITHUB_PAGES_TOKEN with Contents and Pages write access; the built-in GITHUB_TOKEN is not selected. Configure Pages to deploy gh-pages / (root) first."
         );
     }
     match options.publish {
+        Publish::S3 { destination: None } => zellij_core::statusln!(
+            "  Set repository variable S3_DESTINATION (bucket or bucket/prefix)."
+        ),
         Publish::GithubPages { repository: None } => zellij_core::statusln!(
             "  Set repository variable GITHUB_PAGES_REPOSITORY (owner/repository; the same-named secret is also accepted)."
         ),
