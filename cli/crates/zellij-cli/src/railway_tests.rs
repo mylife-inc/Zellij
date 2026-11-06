@@ -397,7 +397,10 @@ fn railway_timeout_does_not_repeat_deployment() {
     let server = fixture("timeout");
     let mut client = client(&server);
     let before = client.check(SERVICE).unwrap();
-    client.budget = Duration::from_millis(100);
+    // Leave enough time for the fixture requests on Windows; use the poll
+    // interval to exhaust the remaining budget without a timing-sensitive wait.
+    client.budget = Duration::from_secs(5);
+    client.interval = Duration::from_secs(5);
     let error = client
         .rollout(SERVICE, &before, REPOSITORY, &image())
         .unwrap_err()

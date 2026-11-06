@@ -450,3 +450,10 @@ Railway implementation commit **`3ace654`** contains the adapter, shared digest
 handling, CLI/CI/import wiring, regression fixtures and matching user docs.
 The local verification above covers this implementation. Final-head GitHub CI
 and merge remain pending; no live Railway acceptance or native release is implied.
+
+
+The final Railway timeout fixture leaves five seconds for loopback requests and
+uses the polling interval to exhaust the remaining budget, avoiding a 100 ms
+Windows scheduler race. Production deadlines are unchanged. All nine Railway
+protocol tests passed again; evidence: `/private/tmp/zellij-railway-protocol.log`.
+PR #86 must validate its final head before merge.
