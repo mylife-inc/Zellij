@@ -12,6 +12,7 @@ use camino::{Utf8Path, Utf8PathBuf};
 use zellij_core::{Error, Result};
 
 pub mod app;
+pub mod authoring;
 mod content;
 pub mod pipeline;
 mod portable;

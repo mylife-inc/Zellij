@@ -8,7 +8,7 @@ dated audit and implementation history.
 
 | Area | Implemented command forms | Remaining scope or limits |
 | --- | --- | --- |
-| Creation | `new portable` / `init`, `new docs`, `new app`, `new section`, `new page`, `new guide`, `new project`, with documented aliases | Interactive authoring and proposed per-field wizard flags remain unimplemented. |
+| Creation | `new portable` / `init`, `new docs`, `new app`, `new section`, `new page`, `new guide`, `new project`, with documented aliases | Section wizard, scalar `--set`, list `--count`, pricing `--tiers`/`--highlight` and positional output are implemented in current source. There is no whole-site/page wizard or arbitrary YAML editing through flags. |
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
@@ -468,3 +468,22 @@ and short `ci --system` forms select them. These are standalone configurations,
 not mergers of existing pipelines. `ci run`/`--provision` remain GitHub-only.
 Schedules and protected credential scopes need provider-side setup; actual
 GitLab/CircleCI project acceptance and native release publication remain pending.
+
+## 2026-11-06 — CI generator closure and section authoring
+
+GitLab/CircleCI PR #87 merged as `b590cb2dd1309601525f663285dfc98c1dc00406`
+after all 16 checks passed on `3eb218812b33163d228cf0ef92bbb5d576081079` in
+run `42201229972` (attempt 1). Tested and merged tree:
+`7398f45e8e1e30797fba9c70436f5617efeac79d`. Both post-merge workflows passed:
+main `42205322276` (16 jobs), base image `42205322053` (13 jobs). The native
+AMD64/ARM64 jobs replayed generated provider publication and manifest scripts
+against a disposable registry; actual GitLab/CircleCI runner acceptance remains
+separate. The published native candidate remains rc.1; no rc.2 was published.
+
+The section authoring milestone adds native prompts, scalar/list options and
+pricing shortcuts, with shared engine/native cross-field rules and no-overwrite
+output. Local verification: 574 Rust tests (five existing hosted fixtures remain
+CI-only), 424 engine tests, all 23 types checked against actual engine schemas,
+Clippy, formatting, TypeScript, strict/deep docs and actionlint pass. The durable
+context and updated creation reference describe exact behavior and limits.
+Final-head cross-platform CI and merge remain pending.

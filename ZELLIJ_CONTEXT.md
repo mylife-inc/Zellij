@@ -41,9 +41,10 @@ both post-merge workflows passed. S3 static website uploads merged in PR #84 as
 `9e3dd79`, after all 16 final-head checks passed on `d141aa8`. Both post-merge workflows passed: main `42155106031`, base image
 `42155106146`. Fly merged in PR #85 as `30a0272` after all 16 final-head checks passed;
 both post-merge workflows passed. Railway merged in PR #86 as `b24b3dc` after
-all 16 final-head checks passed; both post-merge workflows passed. Current work
-adds GitLab and CircleCI generation through saved `ci.system`, `ci --system`
-and `ci init <system>`, including native combined-image publication.
+all 16 final-head checks passed; both post-merge workflows passed. GitLab and
+CircleCI generation merged in PR #87 as `b590cb2`, after all 16 final-head
+checks passed; both post-merge workflows passed. Current work adds native
+interactive section authoring, scalar/list flags and pricing shortcuts.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -5657,3 +5658,55 @@ shared command preparation, CLI/config selection, regression fixtures, native
 GitHub replay harness and user documentation. The local verification above
 covers this source; the following context-only commit records its identity.
 Final-head GitHub acceptance and merge remain pending.
+
+## 2026-11-06 — CI generator closure and section authoring
+
+GitLab/CircleCI PR #87 merged as `b590cb2dd1309601525f663285dfc98c1dc00406`
+after all 16 checks passed on `3eb218812b33163d228cf0ef92bbb5d576081079` in
+run `42201229972` (attempt 1). Tested and merged tree:
+`7398f45e8e1e30797fba9c70436f5617efeac79d`. Both post-merge workflows passed:
+main `42205322276` (16 jobs), base image `42205322053` (13 jobs). The native
+AMD64/ARM64 jobs replayed generated provider publication and manifest scripts
+against a disposable registry; actual GitLab/CircleCI runner acceptance remains
+separate. The published native candidate remains rc.1; no rc.2 was published.
+
+Current implementation adds `zel new section [type] [file]` / `zel ns`, with
+`-i`/`--interactive`, repeatable scalar `--set FIELD=VALUE`, bounded list
+`--count FIELD=N`, and pricing `--tiers`/`--highlight` shortcuts. Omitting the
+type launches the wizard only when stdin and stderr are terminals; pipelines
+without a type fail promptly. Explicit interactive mode also accepts piped
+answers. Prompts use stderr; generated YAML uses stdout unless a destination is
+supplied. Enter keeps starter values; `:q`, EOF and interruption write nothing.
+Existing files and output links remain protected. Original no-option templates
+are byte-for-byte unchanged.
+
+The engine owns section schemas, templates and new shared cross-field metadata
+(`sections/authoring-rules.ts`), exported into the native embedded schema.
+`zellij-scaffold::authoring::Section` edits fresh templates and validates the
+current schema vocabulary, exclusive media alternatives and matrix row widths.
+Unknown future constraints fail closed until supported. Optional parent objects
+are seeded; newly added list entries use fresh defaults rather than duplicating
+authored content. Dotted array indexes are zero-based; pricing highlight numbers
+are one-based. Conflicting assignments fail before writes, and wizard resizing
+cannot discard explicit flags. Plain string scalars preserve Unicode, quotes,
+newlines and YAML-looking values through the existing YAML string encoder.
+`zellij-cli/src/authoring.rs` owns prompting and output handling.
+
+This is section authoring, not a whole-site/page wizard or arbitrary YAML edit
+command. Validation checks section shape, not filesystem assets, route targets
+or renderer prerequisites. Review TODOs and run site validation afterward.
+User docs, short-command reference, CLI spec and current status are updated;
+the previous section heading anchor remains available for old bookmarks.
+
+Local verification: **574 Rust tests passed**, five existing hosted-provider
+fixtures remain CI-only; **424 engine tests passed**. Workspace Clippy with
+denied warnings, formatting, TypeScript checks, strict/deep docs (55 routes,
+23 examples), actionlint and embedded-schema comparison pass. The new Node
+acceptance script validates all 23 authored types against actual engine Zod
+schemas, including optional unions, media choices, arrays, pricing, Unicode and
+piped prompting. GitHub's Windows/macOS/Linux portable jobs now run it alongside
+native authoring integration tests. A local terminal session confirmed automatic
+wizard selection, output creation and Ctrl-C cancellation without an output
+directory. No local Docker/browser or live provider mutation ran.
+Evidence: `/private/tmp/zellij-authoring-{workspace,engine-full,parity,typecheck,
+clippy,docs}.log`. Final-head cross-platform CI and merge remain pending.

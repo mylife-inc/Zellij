@@ -2408,6 +2408,7 @@ name = "zellij-scaffold"
 version = "0.2.0-rc.2"
 dependencies = [
  "camino",
+ "regex",
  "semver",
  "serde_json",
  "serde_yaml_ng",

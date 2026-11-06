@@ -303,40 +303,105 @@ container workflow without maintaining a local wrapper.
 
 ---
 
-## `zel new section <type>`
+<div id="zel-new-section-type" className="zellij-legacy-anchor" />
 
-Writes one section file, with its required fields filled in and its optional
-ones present as commented defaults.
+## `zel new section [type] [file]`
 
-```bash title="terminal"
-zel new section pricing-table --out sections/home/plans.yaml
-zel new section pricing-table                      # to stdout
-```
-
-Without `--out` it prints, so it composes:
+Writes a hosted section with required content and commented optional defaults.
+The short form is `zel ns`. With a type and no customization, the original
+engine-generated template is unchanged:
 
 ```bash title="terminal"
-zel new section faq >> sections/home/faq.yaml
+zel ns pricing-table --out content/sections/home/plans.yaml
+zel ns hero content/sections/home/intro.yaml
+zel ns faq                                      # YAML on stdout
 ```
 
-A type that does not exist is an error naming it, and `--out` never overwrites
-a file that already exists — there is no flag for that, because a section
-somebody has filled in is not recoverable. Write elsewhere and move it.
+The positional filename and `--out` are equivalent and cannot be combined.
+An output file is never overwritten, including a dangling symlink. There is no
+`--force`; choose another filename for an existing authored section.
 
-The generated file:
+### Interactive authoring
 
-```yaml title="sections/home/plans.yaml"
-type: pricing-table
-tiers:
-  - { name: TODO, price: TODO }
+**Current source, newer than published rc.1**, adds a native section wizard:
 
-# Uncomment what you need.
-# heading: TODO
-# subhead: TODO
+```bash
+zel ns                         # starts the wizard in a terminal
+zel ns --interactive
+zel ns pricing-table -i --out content/sections/home/plans.yaml
 ```
 
-Commented rather than omitted, because a field you can see and uncomment is
-discoverable and a field you have to look up is not.
+Choose a type by name or its displayed number. The wizard asks for list sizes
+and the required content in the starter, including nested fields such as tier
+names and prices. Pricing tables also ask which tier to highlight. Optional
+fields stay discoverable as commented examples; the wizard does not ask you to
+fill every possible field.
+
+Press Enter to keep the displayed starter value. `:q`, Ctrl-C, or end of input
+cancels before the section is written. Prompts use stderr, so stdout contains
+only YAML when no output file is selected. `--quiet` still shows required
+prompts. Without a type, automatic prompting requires terminal stdin and stderr;
+pipelines fail with guidance instead of waiting. Explicit `--interactive` also
+accepts piped answers, with the same validation and cancellation behavior.
+
+If `--out` was omitted, the wizard asks for a filename at the end. Press Enter
+to print YAML. Existing destinations are rejected before writing. A preset output
+path is checked before prompting, and checked again when writing.
+
+### Scriptable field values
+
+Every answer can be supplied without prompts:
+
+```bash
+zel ns hero --set 'headline=Ship with confidence' --set 'badge=New'
+zel ns pricing-table --tiers 3 \
+  --set 'tiers.0.name=Free' --set 'tiers.0.price=$0' \
+  --set 'tiers.1.name=Team' --set 'tiers.1.price=$20' \
+  --set 'tiers.2.name=Business' --set 'tiers.2.price=Contact us' \
+  --highlight Team --out content/sections/home/plans.yaml
+zel ns faq --count items=2 --set 'items.0.question=Where do I start?' \
+  --set 'items.0.answer=Read the guide.'
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--set FIELD=VALUE` | Set a scalar field; repeat for multiple values |
+| `--count FIELD=N` | Set an array size; repeat for different arrays |
+| `--tiers N` | Pricing shortcut for `--count tiers=N` |
+| `--highlight VALUE` | Pricing tier name, 1-based number, or `none` to clear highlighting |
+| `--interactive` / `-i` | Prompt for values not supplied by flags |
+| `--out FILE` or positional file | Write a new file; otherwise print YAML |
+
+Field paths use dots and **zero-based** array indexes: `tiers.0.name`,
+`cards.1.code.body`, `background.gradient.0`. `zel explain <type>` describes
+available fields. Strings remain literal text, including `42`, `true`, quotes,
+newlines and shell-like text. Boolean-only fields accept `true` or `false`;
+numeric fields require JSON numbers. Quote shell arguments as appropriate.
+`--set` does not evaluate YAML, JSON objects, JavaScript or shell expressions.
+
+Counts are applied before field assignments. Existing entries are retained;
+new entries receive starter values. Schema minimum/maximum counts apply; arrays
+without a schema maximum are limited to 256 entries during authoring. Create
+optional lists with `--count` before assigning indexes. Missing required parent
+objects are filled with starter values. Repeated or conflicting assignments
+are rejected. Values supplied by flags are skipped in the wizard, and a count
+answer cannot discard those values.
+
+A numeric highlight selects a **1-based** tier; other names must match exactly
+one tier. Numeric tier names and a tier named `none` can be selected by position.
+`--highlight` cannot be combined with explicit `tiers.N.highlighted` assignments.
+
+The engine's cross-field rules still apply. Setting a media alternative switches
+the exclusive choice in `hero-split`, `steps-panel` or `media-panel`; the previous
+alternative remains as a commented example. For a matrix, `--count columns=N`
+resizes every row's cells, and `--count rows=N` adds correctly sized rows. Cell
+counts cannot be changed independently. Conflicting flags fail before writing.
+
+Authoring needs neither Docker nor Node. The CLI validates field types, choices,
+bounds and shared cross-field rules using embedded engine metadata. It does not
+resolve links or check whether asset files exist. Review remaining `TODO` values
+and placeholder media paths, add the section to your page, then run
+`zel check --strict --deep` on the hosted site before publishing.
 
 ---
 

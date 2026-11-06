@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { z } from 'zod';
 import { buildSectionTemplates } from './section-templates';
+import { sectionAuthoringRules } from '../sections/authoring-rules';
 
 import { siteConfigSchema, THEME_NAMES } from '../config/schema';
 import { THEMES } from '../themes/tokens';
@@ -348,6 +349,7 @@ export function buildSchemaJson(): string {
         description: THEMES[name].description,
       })),
       sectionTemplates: buildSectionTemplates(),
+      sectionAuthoringRules,
       sections,
       files: {
         'site.yaml': toJson(siteConfigSchema as unknown as z.ZodType),

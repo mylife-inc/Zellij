@@ -13,6 +13,7 @@ use args::*;
 use camino::{Utf8Path, Utf8PathBuf};
 mod app;
 mod args;
+mod authoring;
 use serde_json::json;
 use std::io::Write;
 mod ci;
@@ -244,10 +245,7 @@ fn main() {
             minimal,
             force,
         })) => new_docs(dir, name.as_deref(), theme, guide, minimal, force),
-        Command::New(NewTarget::Section(NewSectionArgs {
-            ref section_type,
-            ref out,
-        })) => new_section(section_type, out.as_deref()),
+        Command::New(NewTarget::Section(ref options)) => authoring::run(options),
         Command::New(NewTarget::Page(NewPageArgs {
             ref name,
             ref sections,
@@ -967,39 +965,6 @@ fn new_project(
     Ok(())
 }
 
-fn new_section(section_type: &str, out: Option<&str>) -> zellij_core::Result<()> {
-    if !zellij_core::schema::is_section_type(section_type) {
-        zellij_core::diagnosticln!("error: no section type called \"{section_type}\"");
-        zellij_core::diagnosticln!("       zel list sections — there are nineteen");
-        std::process::exit(2);
-    }
-
-    let body = zellij_scaffold::section_file(section_type);
-
-    let Some(out) = out else {
-        print!("{body}");
-        return Ok(());
-    };
-
-    let path = Utf8PathBuf::from(out);
-
-    // The parent is an explicit user-selected root; the leaf must be new,
-    // including when an existing dangling symlink occupies that name.
-    let parent = path
-        .parent()
-        .filter(|p| !p.as_str().is_empty())
-        .unwrap_or(camino::Utf8Path::new("."));
-    let name = path
-        .file_name()
-        .ok_or_else(|| zellij_core::files::unsafe_path(&path, "expected a filename"))?;
-    zellij_core::files::write_files(parent, &[(camino::Utf8Path::new(name), &body)], false)?;
-
-    zellij_core::statusln!("✓ {path}");
-    zellij_core::statusln!("  zel explain {section_type} — every field it takes");
-
-    Ok(())
-}
-
 fn authoring_content(dir: Option<&SiteInput>) -> zellij_core::Result<Utf8PathBuf> {
     if let Some(dir) = dir
         && !dir.has_config()
@@ -1013,7 +978,7 @@ fn new_page(name: &str, sections: &[String], dir: Option<&SiteInput>) -> zellij_
     for section_type in sections {
         if !zellij_core::schema::is_section_type(section_type) {
             zellij_core::diagnosticln!("error: no section type called \"{section_type}\"");
-            zellij_core::diagnosticln!("       zel list sections — there are nineteen");
+            zellij_core::diagnosticln!("       zel list sections — available section types");
             std::process::exit(2);
         }
     }

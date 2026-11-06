@@ -93,6 +93,11 @@ pub fn section_schema(section_type: &str) -> Option<&'static Value> {
     SCHEMA.get("sections")?.get(section_type)
 }
 
+/// Engine-owned cross-field constraints, exported alongside the JSON schemas.
+pub fn authoring_rules(section_type: &str) -> Option<&'static Value> {
+    SCHEMA.get("sectionAuthoringRules")?.get(section_type)
+}
+
 /// Ready-to-edit YAML, validated against the full Zod schema when generated.
 pub fn section_template(section_type: &str) -> Option<&'static str> {
     SCHEMA.get("sectionTemplates")?.get(section_type)?.as_str()

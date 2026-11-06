@@ -133,7 +133,7 @@ knows how to assemble.
 | `zel new guide <name>` | A guide folder with `_sidebar.yaml` and an index page. |
 | `zel eject [site] --out <directory>` | Extracts the selected image's wrapper and engine sources. `--with-docs` keeps its starter content. Run npm install afterward; see the current CLI contract. |
 
-`zel new section` is the one people will use daily. Nineteen types with their
+`zel new section` is the one people will use daily. Twenty-three types with their
 own fields is more than anyone holds in their head, and the failure it prevents
 — writing a plausible section that the build rejects — is the most common way
 to lose ten minutes.
@@ -148,7 +148,18 @@ to lose ten minutes.
 Interactive when a terminal is attached and no arguments are given; every
 prompt has a flag, so the same thing is scriptable:
 
-    zel new section pricing-table --tiers 3 --highlight Team --out sections/home/plans.yaml
+    zel new section pricing-table --tiers 3 --set tiers.1.name=Team --highlight Team --out sections/home/plans.yaml
+
+Implemented 2026-11-06: `zel ns` starts the section wizard when stdin and stderr
+are terminals and no type is given. Explicit `--interactive` / `-i` also accepts
+piped answers; EOF or `:q` cancels without writing. Scalar answers use repeatable
+`--set FIELD=VALUE`; array sizes use `--count FIELD=N` with zero-based dotted
+indexes. `--tiers` and `--highlight` are pricing shortcuts. Positional output and
+`--out` are equivalent; existing files are never replaced. All inputs are
+validated before writing, using embedded schemas and engine-owned cross-field
+rules. Matrix cells follow column count; exclusive media choices switch together.
+The wizard covers starter content, leaving optional field examples for editing.
+These changes are in source and require the next native release.
 
 ### 3.2 Understanding
 
