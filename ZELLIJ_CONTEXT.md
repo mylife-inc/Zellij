@@ -5864,3 +5864,13 @@ Final-head cross-platform acceptance and merge remain pending.
 
 Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**. The local verification above
 covers this source. Final-head GitHub CI and merge remain pending.
+
+
+Doctor CI follow-up: run `42297958566` on `8ee56f9` caught a missing legacy
+`/cli/doctor#exit-code` target after the heading was renamed to describe JSON.
+The documentation now retains that ID as an explicit legacy anchor. Existing
+content-preservation assertions remain unchanged. This failure was a real
+bookmark regression; the corrected final head must pass its own complete CI.
+
+Bookmark fix: **`22277623932783505d555da2a693bbb9c8ed05f7`**. Strict/deep documentation checks pass
+(55 routes, 23 examples); the browser preservation check runs only in CI.

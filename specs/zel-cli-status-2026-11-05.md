@@ -569,3 +569,13 @@ Its post-merge base-image run `42272858763` passed. Main run `42272858943`
 passed on attempt 2 after retrying only an Ubuntu browser dependency-download
 timeout at the unchanged merge SHA. The durable context/audit retain the
 first attempt and complete acceptance evidence.
+
+
+Doctor CI follow-up: run `42297958566` on `8ee56f9` caught a missing legacy
+`/cli/doctor#exit-code` target after the heading was renamed to describe JSON.
+The documentation now retains that ID as an explicit legacy anchor. Existing
+content-preservation assertions remain unchanged. This failure was a real
+bookmark regression; the corrected final head must pass its own complete CI.
+
+Bookmark fix: **`22277623932783505d555da2a693bbb9c8ed05f7`**. Strict/deep documentation checks pass
+(55 routes, 23 examples); the browser preservation check runs only in CI.
