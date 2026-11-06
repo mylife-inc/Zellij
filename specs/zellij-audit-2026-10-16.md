@@ -4752,3 +4752,9 @@ actionlint and an actual emitted Railway workflow passed. Evidence:
 in `/private/tmp/zellij-railway-generated-workflow-path`.
 No local Docker/browser or live provider mutation ran. Final-head GitHub CI and
 merge remain pending; live Railway account acceptance remains separate.
+
+
+Railway implementation commit **`3ace654`** contains the adapter, shared digest
+handling, CLI/CI/import wiring, regression fixtures and matching user docs.
+The local verification above covers this implementation. Final-head GitHub CI
+and merge remain pending; no live Railway acceptance or native release is implied.
