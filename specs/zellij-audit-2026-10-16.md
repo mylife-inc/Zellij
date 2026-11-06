@@ -4813,3 +4813,8 @@ CI-only), 424 engine tests, all 23 types checked against actual engine schemas,
 Clippy, formatting, TypeScript, strict/deep docs and actionlint pass. The durable
 context and updated creation reference describe exact behavior and limits.
 Final-head cross-platform CI and merge remain pending.
+
+Implementation commit **`ff42301adc435f697b8bb729f2aceb91e11f8eca`** contains the section wizard, native
+validation, shared engine metadata, cross-platform regression checks and user
+documentation. The verification above covers this source; the following
+context-only commit records its identity. Final-head GitHub CI is pending.

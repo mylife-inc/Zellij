@@ -5710,3 +5710,8 @@ wizard selection, output creation and Ctrl-C cancellation without an output
 directory. No local Docker/browser or live provider mutation ran.
 Evidence: `/private/tmp/zellij-authoring-{workspace,engine-full,parity,typecheck,
 clippy,docs}.log`. Final-head cross-platform CI and merge remain pending.
+
+Implementation commit **`ff42301adc435f697b8bb729f2aceb91e11f8eca`** contains the section wizard, native
+validation, shared engine metadata, cross-platform regression checks and user
+documentation. The verification above covers this source; the following
+context-only commit records its identity. Final-head GitHub CI is pending.
