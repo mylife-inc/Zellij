@@ -211,7 +211,8 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
     provider
         .plan(id, options.prod)?
         .with_platform(options.platform)?
-        .with_kind(options.kind.map(Into::into))
+        .with_kind(options.kind.map(Into::into))?
+        .with_registry(options.tag.as_deref())
 }
 
 fn configuration(plan: &DeliveryPlan) -> String {
@@ -224,6 +225,12 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .map(|platform| format!("  platform: {platform}\n"))
                 .unwrap_or_default(),
             image.kind.as_str()
+        ),
+        DeliveryPlan::Railway { service, kind, tag } => format!(
+            "{SITE_CONFIG}image:\n  name: {}\npublish:\n  action: deploy\n  provider: railway\n  site: {}\n  image: {}\n",
+            yaml::string(tag),
+            yaml::string(service),
+            kind.as_str()
         ),
         DeliveryPlan::Fly { app, kind } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: fly\n  site: {}\n  image: {}\n",
@@ -262,7 +269,10 @@ fn retained(out: &str) {
 pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     let plan = plan(options)?;
     let build = options.overrides.options(options.features);
-    if !matches!(plan, DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. }) {
+    if !matches!(
+        plan,
+        DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. } | DeliveryPlan::Railway { .. }
+    ) {
         build.require_no_image_args()?;
     }
     let import = Prepared::read(

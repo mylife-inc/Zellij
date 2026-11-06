@@ -35,6 +35,10 @@ fn command(root: &Path) -> Command {
         .env("PATH", root.join("no-tools"))
         .env("DOCKER_HOST", "unix:///fixture-zellij.sock");
     for key in [
+        "RAILWAY_TOKEN",
+        "RAILWAY_PROJECT_ID",
+        "RAILWAY_ENVIRONMENT_ID",
+        "RAILWAY_SERVICE_ID",
         "FLY_APP",
         "FLY_ORG",
         "FLY_API_TOKEN",
@@ -1191,4 +1195,111 @@ fn deployment_image_kind_is_only_valid_for_fly() {
     );
     let output = run(root, &["pub", "--dry-run"], 2);
     assert!(String::from_utf8_lossy(&output.stderr).contains("publish.image"));
+}
+
+#[test]
+fn railway_delivery_plans_resolve_kind_registry_and_scope_without_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    let service = "33333333-3333-4333-8333-333333333333";
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        &format!(
+            "publish: {{action: deploy, provider: railway, site: {service}, image: next}}\nimage: {{name: 'ghcr.io/acme/docs:v1', platform: all}}\n"
+        ),
+    );
+    for route in [
+        vec!["railway"],
+        vec!["rw"],
+        vec!["deploy", "railway"],
+        vec!["pub"],
+    ] {
+        let mut args = route;
+        args.push("--dry-run");
+        run(root, &args, 2);
+        args.push("--prod");
+        let out = run(root, &args, 0);
+        let text = String::from_utf8_lossy(&out.stdout);
+        assert!(
+            text.contains(service)
+                && text.contains("next")
+                && text.contains("ghcr.io/acme/docs:v1")
+                && text.contains("linux/amd64"),
+            "{text}"
+        );
+    }
+    let out = run(
+        root,
+        &[
+            "rw",
+            "--prod",
+            "--dry-run",
+            "--kind",
+            "static",
+            "--tag",
+            "docker.io/acme/docs:v2",
+        ],
+        0,
+    );
+    assert!(String::from_utf8_lossy(&out.stdout).contains("docker.io/acme/docs:v2"));
+    for flags in [
+        vec!["--platform", "all"],
+        vec!["--platform", "linux/arm64"],
+        vec!["--site", "name"],
+        vec!["--tag", "local-image"],
+        vec!["--tag", "localhost:5000/acme/docs:v1"],
+        vec!["--tag", "ghcr.io/acme/docs"],
+    ] {
+        let mut args = vec!["rw", "--prod", "--dry-run"];
+        args.extend(flags);
+        run(root, &args, 2);
+    }
+    run(
+        root,
+        &[
+            "rw",
+            "--prod",
+            "--dry-run",
+            "--kind",
+            "next",
+            "--base-path",
+            "/manual",
+        ],
+        0,
+    );
+    run(
+        root,
+        &[
+            "rw",
+            "--prod",
+            "--dry-run",
+            "--kind",
+            "static",
+            "--base-path",
+            "/manual",
+        ],
+        2,
+    );
+    let output = command(root)
+        .env_remove("RAILWAY_TOKEN")
+        .args(["rw", "--prod"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("RAILWAY_TOKEN"));
+    assert!(!root.join("docs/zellij/site").exists());
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        &format!("publish: {{action: deploy, provider: railway, site: {service}}}\n"),
+    );
+    run(root, &["rw", "--prod", "--dry-run"], 2);
+    run(
+        root,
+        &["rw", "--prod", "--dry-run", "--tag", "ghcr.io/acme/docs:v3"],
+        0,
+    );
 }

@@ -22,6 +22,11 @@ pub enum Publish {
     Netlify {
         site_id: Option<String>,
     },
+    Railway {
+        service: Option<String>,
+        kind: ImageKind,
+        tag: String,
+    },
     Fly {
         app: Option<String>,
         kind: ImageKind,
@@ -131,7 +136,10 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if !build_args.is_empty()
         && !matches!(
             publish,
-            Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+            Publish::Image { .. }
+                | Publish::LegacyImage
+                | Publish::Fly { .. }
+                | Publish::Railway { .. }
         )
     {
         return Err(invalid("--build-arg requires image CI delivery"));
@@ -139,7 +147,10 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if platform.is_some()
         && !matches!(
             publish,
-            Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+            Publish::Image { .. }
+                | Publish::LegacyImage
+                | Publish::Fly { .. }
+                | Publish::Railway { .. }
         )
     {
         return Err(invalid("platform requires image delivery"));
@@ -166,6 +177,12 @@ pub fn github(options: &CiOptions) -> Result<String> {
             ));
         }
     }
+    if matches!(publish, Publish::Railway { .. }) {
+        Provider::Railway.require_production(settings.production)?;
+        if platform.is_some_and(|p| p != ImagePlatform::Amd64) {
+            return Err(invalid("Railway images require linux/amd64"));
+        }
+    }
     if matches!(publish, Publish::Fly { .. }) {
         Provider::Fly.require_production(settings.production)?;
         if platform.is_some_and(|p| p != ImagePlatform::Amd64) {
@@ -186,12 +203,13 @@ pub fn github(options: &CiOptions) -> Result<String> {
                 | Publish::GithubPages { .. }
                 | Publish::S3 { .. }
                 | Publish::Fly { .. }
+                | Publish::Railway { .. }
         ))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "Cloudflare/Vercel/GitHub Pages/S3/Fly deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare/Vercel/GitHub Pages/S3/Fly/Railway deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -284,10 +302,12 @@ pub fn github(options: &CiOptions) -> Result<String> {
     let delivering = !matches!(publish, Publish::Nothing);
     let mut steps = initial_steps(&version, selector, overrides.no_check);
     let build = match publish {
-        Publish::Image { kind, .. } | Publish::Fly { kind, .. } => format!(
-            "zel image {} {selector} --tag zel-ci-check:local",
-            kind.as_str()
-        ),
+        Publish::Image { kind, .. } | Publish::Fly { kind, .. } | Publish::Railway { kind, .. } => {
+            format!(
+                "zel image {} {selector} --tag zel-ci-check:local",
+                kind.as_str()
+            )
+        }
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
         _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
     };
@@ -343,6 +363,28 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::Railway { service, kind, tag } => {
+                if let Some(service) = service {
+                    Provider::Railway.validate_site(service)?;
+                }
+                let repository = zellij_core::delivery::railway_image_repository(tag)?;
+                let registry = repository.split('/').next().expect("validated registry");
+                let ghcr = registry == "ghcr.io";
+                if ghcr {
+                    permissions["packages"] = json!("write");
+                }
+                steps.push(json!({"name":"Sign in to registry", "uses":"docker/login-action@v3", "with": {
+                    "registry":registry,
+                    "username": if ghcr { "${{ github.actor }}" } else { "${{ secrets.REGISTRY_USERNAME }}" },
+                    "password": if ghcr { "${{ secrets.GITHUB_TOKEN }}" } else { "${{ secrets.REGISTRY_PASSWORD }}" }
+                }}));
+                steps.push(json!({"name":"Build once and deploy Railway service", "env":{
+                    "RAILWAY_SERVICE_ID":service.as_deref().unwrap_or("${{ vars.RAILWAY_SERVICE_ID || secrets.RAILWAY_SERVICE_ID }}"),
+                    "RAILWAY_PROJECT_ID":"${{ vars.RAILWAY_PROJECT_ID || secrets.RAILWAY_PROJECT_ID }}",
+                    "RAILWAY_ENVIRONMENT_ID":"${{ vars.RAILWAY_ENVIRONMENT_ID || secrets.RAILWAY_ENVIRONMENT_ID }}",
+                    "RAILWAY_TOKEN":"${{ secrets.RAILWAY_TOKEN }}", "IMAGE_TAG":tag
+                }, "run":format!("zel deploy railway {selector} --kind {} --tag \"$IMAGE_TAG\" --prod{features_flag}{override_flags}", kind.as_str())}));
             }
             Publish::Fly { app, kind } => {
                 if let Some(app) = app {

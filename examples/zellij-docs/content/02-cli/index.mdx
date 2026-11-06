@@ -32,7 +32,7 @@ has no native Windows packages.
 
 The current source implements every registered command family. The broader CLI
 design remains incomplete: imports cover MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx with documented
-limits, deployment supports Netlify, Cloudflare Pages, Vercel, GitHub Pages, S3, existing Fly web apps and image registries, and workflow generation
+limits, deployment supports Netlify, Cloudflare Pages, Vercel, GitHub Pages, S3, existing Fly web apps, Railway image services and image registries, and workflow generation
 supports GitHub Actions. Additional import formats, cloud providers, CI systems,
 and interactive authoring remain planned. A working command does not imply that
 every provider or option from the original design has been implemented.
@@ -109,11 +109,11 @@ Image tags omit the version's leading `v`; candidates do not update `latest`.
 | [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
 | [`zel view`](/cli/view) | Build portable or hosted content, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
-| [`zel deploy`](/cli/deploy) | Deploy static HTML to Netlify, Cloudflare Pages, Vercel, GitHub Pages or S3, or images to existing Fly apps; shortcuts `netlify` / `cf` / `vc` / `ghp` / `s3` / `fly` | **Available** |
+| [`zel deploy`](/cli/deploy) | Deploy static HTML to Netlify, Cloudflare Pages, Vercel, GitHub Pages or S3, or images to existing Fly apps or Railway services; shortcuts `netlify` / `cf` / `vc` / `ghp` / `s3` / `fly` / `rw` | **Available** |
 | [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
-| [`zel publish`](/cli/publish) | Execute saved image push or Netlify/Cloudflare/Vercel/GitHub Pages/S3/Fly deployment; shortcut `pub` | **Available** |
-| [`zel ship`](/cli/ship) | Configured import, then Netlify/Cloudflare/Vercel/GitHub Pages/S3/Fly deployment or static/Next image publication | **Available** |
+| [`zel publish`](/cli/publish) | Execute saved image push or Netlify/Cloudflare/Vercel/GitHub Pages/S3/Fly/Railway deployment; shortcut `pub` | **Available** |
+| [`zel ship`](/cli/ship) | Configured import, then Netlify/Cloudflare/Vercel/GitHub Pages/S3/Fly/Railway deployment or static/Next image publication | **Available** |
 | [`zel doctor`](/cli/doctor) | What is installed, what is missing | **Available** |
 | [`zel version`](/cli/version) | Binary, embedded schema/engine and selected image | **Available** |
 | [`zel pull`](/cli/pull) | Download the selected engine image | **Available** |
