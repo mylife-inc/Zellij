@@ -4591,3 +4591,8 @@ Evidence: `/private/tmp/zellij-s3-workspace.log`, `zellij-s3-final-tests.log`,
 `zellij-s3-bin-final.log`, `zellij-s3-clippy.log`, `zellij-s3-docs.log`, and
 `/private/var/folders/1p/q48lnmt15932t129b48z_mrr0000gn/T/zellij-s3-ci-gjue2ymx/.github/workflows/docs.yml`.
 Final-head hosted/native CI and merge remain pending, as does live AWS acceptance.
+
+S3 implementation commit **`db164b5`** contains the adapter, CLI/CI integration,
+regression tests and matching documentation. Local verification above covers this
+implementation; final-head native/hosted CI and live account acceptance remain
+pending. This subsequent context-only commit records the source identity.
