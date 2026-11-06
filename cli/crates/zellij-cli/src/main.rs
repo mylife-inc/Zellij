@@ -242,9 +242,10 @@ fn main() {
             ref name,
             ref theme,
             guide,
+            full,
             minimal,
             force,
-        })) => new_docs(dir, name.as_deref(), theme, guide, minimal, force),
+        })) => new_docs(dir, name.as_deref(), theme, guide, minimal, full, force),
         Command::New(NewTarget::Section(ref options)) => authoring::run(options),
         Command::New(NewTarget::Page(NewPageArgs {
             ref name,
@@ -868,6 +869,7 @@ fn new_docs(
     theme: &str,
     guide: bool,
     minimal: bool,
+    full: bool,
     force: bool,
 ) -> zellij_core::Result<()> {
     let target = Utf8PathBuf::from(dir);
@@ -892,7 +894,12 @@ fn new_docs(
         minimal,
     };
 
-    let written = zellij_scaffold::configured_docs(&options).write(&target, force)?;
+    let scaffold = if full {
+        zellij_scaffold::configured_full_docs(&options)?
+    } else {
+        zellij_scaffold::configured_docs(&options)
+    };
+    let written = scaffold.write(&target, force)?;
 
     zellij_core::statusln!("✓ {target}");
     for path in &written {

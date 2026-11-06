@@ -715,6 +715,10 @@ pub(crate) struct NewDocsArgs {
     #[arg(long)]
     pub(crate) guide: bool,
 
+    /// Include a browsable example of every section type and local sample media.
+    #[arg(long, conflicts_with = "minimal")]
+    pub(crate) full: bool,
+
     /// site.yaml and one page, and nothing else.
     #[arg(long)]
     pub(crate) minimal: bool,

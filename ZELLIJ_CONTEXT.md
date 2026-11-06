@@ -43,8 +43,10 @@ both post-merge workflows passed. S3 static website uploads merged in PR #84 as
 both post-merge workflows passed. Railway merged in PR #86 as `b24b3dc` after
 all 16 final-head checks passed; both post-merge workflows passed. GitLab and
 CircleCI generation merged in PR #87 as `b590cb2`, after all 16 final-head
-checks passed; both post-merge workflows passed. Current work adds native
-interactive section authoring, scalar/list flags and pricing shortcuts.
+checks passed; both post-merge workflows passed. Section authoring merged in
+PR #88 as `5078b51` after all 16 final-head checks passed. Its post-merge base
+image passed; main CI exposed a Windows ARM upgrade sharing-lock failure.
+Current work adds `new docs --full` and bounded Windows upgrade lock recovery.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -5715,3 +5717,75 @@ Implementation commit **`ff42301adc435f697b8bb729f2aceb91e11f8eca`** contains th
 validation, shared engine metadata, cross-platform regression checks and user
 documentation. The verification above covers this source; the following
 context-only commit records its identity. Final-head GitHub CI is pending.
+
+## 2026-11-06 — Section authoring closure and full starter
+
+Section authoring PR #88 merged as `5078b51e8e01d326fc2b391da4381a00099bf126`
+after all 16 checks passed on `fe69695b152c09e3a55a426bed91ebe8f7b6fadc` in
+run `42210390950` (attempt 1). Tested and merged tree:
+`578c819fd9c049a6d68c38e55111d1a151a90629`. The PR body records the verified
+merge and source-tree equality. Post-merge base image `42214445273` passed all
+13 jobs. Main run `42214445315` passed 15/16: Windows ARM installer job
+`127880840580` failed upgrading a separate installation to the higher fixture
+version with Windows error 32 after download. The log did not identify the
+individual file operation or lock holder; it is not evidence of a schema or
+section-authoring failure, nor a clean post-merge run.
+
+Current source adds bounded retries for Windows sharing/lock violations (32/33)
+during candidate permission changes, staged-archive removal and the Windows
+rename/restore sequence. Each operation has a five-second budget; other errors
+fail immediately. Errors identify the operation. Cancellation is checked before
+the old executable moves, then commit/restoration complete without cancellation.
+Existing checksum/version/architecture checks and backup retention are unchanged.
+The Windows x64/ARM64 package jobs now run tests with actual exclusive file
+handles as well as the existing real self-upgrade fixture. Unit cases also cover
+non-Windows behavior, permanent errors, exhausted budgets and cancellation.
+The exact original lock holder remains unknown; this handles the observed error
+class rather than claiming a particular antivirus/process diagnosis.
+References: [Windows error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes--0-499-)
+and [file move/replacement sharing requirements](https://learn.microsoft.com/en-us/windows/win32/fileio/moving-and-replacing-files).
+
+`zel new docs --full` / `zel nd --full` now produces the normal home page, an
+Examples menu/catalogue, and a linked page/YAML example for each of the 23
+engine-registered types. `--guide` adds the existing guide normally; `--minimal`
+conflicts before writes. The default stays `docs/zellij`; custom destinations,
+names and themes retain the existing convention. Examples have live sample
+copy and commented optional fields, a small authored SVG and a 1,691-byte
+generated MP4. No remote media, new dependencies or local runtime are required
+to create the files. Hosted checking/building/previewing still needs its normal
+runtime. The site has 25 routes, or 26 with the guide; its sample video is a short
+gray clip intended for replacement.
+
+`zellij-scaffold::configured_full_docs` uses the embedded engine templates and
+native section authoring validator. `Scaffold::files()` retains its text-only
+iterator; the new `entries()` includes binary media. Text and binary destinations
+share one preflight/staged write and output receipt, including no-overwrite and
+symlink handling. Full generation is an explicit entry point; existing plain,
+minimal, app and project scaffolds retain their current output. Local sample
+media and provenance are under `cli/crates/zellij-scaffold/assets/`.
+
+The new integration fixtures exercise default/custom directories, Unicode names,
+all types, catalogue links, exact asset bytes, optional guides, invalid flag
+combinations, force behavior and binary collision preflight. The Node boundary
+script runs strict/deep engine checks on both guide variants on Windows/macOS/
+Linux. Its separate CI-only `--build` mode exports the guide variant and verifies
+all 26 routes, rendered section markers, catalogue links and exact media bytes.
+User creation/shortcut/upgrade docs, CLI spec and status are synchronized.
+No local Docker/browser or live provider mutation ran. Native rc.2 remains
+unpublished; the actual release channel still has candidate rc.1 and stable
+v0.1.3. Final-head CI and merge remain pending at this checkpoint.
+
+Local verification: **579 Rust tests passed**, with five existing hosted-provider
+fixtures reserved for CI. The final cancellation assertion also passed all seven
+upgrade unit tests. Warnings-denied workspace Clippy and the final CLI Clippy
+check pass, as do formatting, actionlint, strict/deep documentation (55 routes,
+23 examples) and the full-starter engine boundary script. The first unprivileged
+CLI-unit attempt lacked loopback socket permission; the full suite above ran
+with loopback access and passed. Actual Windows lock tests and hosted full-site export still need final-head
+GitHub acceptance.
+Evidence: `/private/tmp/zellij-full-{workspace,starter-tests,upgrade-tests,
+engine-check,clippy,final-clippy,docs}.log`.
+
+Windows upgrade recovery source: **`608e5e8db1f7c77380493063f7fb73c467c9fe83`**.
+It adds operation-specific diagnostics, bounded sharing-lock retries and native
+Windows file-lock regression coverage. Final-head GitHub acceptance is pending.
