@@ -4678,3 +4678,90 @@ Clippy pass. Distinct local Rust coverage is **542** tests. Evidence:
 `/private/tmp/zellij-fly-compat-tests.log`, `zellij-fly-compat-clippy.log`.
 PR #85's first run on `1b272fa` cannot validate this correction; the final head
 requires its own complete CI run before merge. Live Fly acceptance remains pending.
+
+
+### 2026-11-05 — Fly PR #85 closure
+
+Fly implementation `a9b650c` and API compatibility correction `ecad3ca` merged
+in PR #85 as `30a02721d6d703adffe9ccc93ecc5b4e9b7cf5a0`, after all 16 checks
+passed on final head `101e5d4dd196e593a460b1375f32fa2b0bac2347` in run
+`42160670652`. Tested/merged tree: `9ab7fa9981ded274ba132aa3a568d6e3fe419d44`.
+Both post-merge workflows passed: main `42163948890`, base image `42163948889`.
+Native releases remain rc.1 and stable 0.1.3; no rc.2 tag/release was created.
+Live Fly account acceptance remains pending.
+
+
+### 2026-11-05 — Railway image deployment to existing services
+
+Current source adds `railway` / `rw`, `deploy railway`, saved `pub`, imported
+`ship`, and GitHub CI delivery. Static/Next images use the existing compact
+builders with linux/amd64. `image.name` or `--tag` is required; supported remote
+registries are GHCR, Docker Hub, GitLab, Quay and MCR. The image is built once,
+pushed, and its unambiguous SHA-256 RepoDigest is used as the service source.
+Bounded digest inspection is shared with Fly; Docker Hub's abbreviated receipt
+names are normalized without admitting other repositories or ambiguous hashes.
+
+The native public GraphQL adapter uses an environment-scoped project token in
+`RAILWAY_TOKEN` and requires expected `RAILWAY_PROJECT_ID` and
+`RAILWAY_ENVIRONMENT_ID`. Destination precedence is explicit service UUID,
+`RAILWAY_SERVICE_ID`, then same-provider `publish.site`. `--prod` is mandatory;
+`--kind` overrides same-provider `publish.image`, defaulting to static. Ship
+requires an explicit tag and saves the registry/image/provider selection without
+credentials or implicit production permission. CI gets the tag from image.name.
+
+Preflight verifies token scope, project/environment/service identity, no staged
+changes or attached volumes, a successful existing image deployment, startup
+healthcheck, PORT=3000, compatible HOSTNAME, and no custom start/pre-deploy/cron,
+repository config or sleeping. A complete volume inventory is required (at most
+100 per environment). It rechecks the service after building, patches only the
+environment-scoped image source, calls serviceInstanceDeployV2 once, validates
+the returned deployment identity, polls within five minutes, and rechecks the
+source/settings/latest deployment before success. Responses are capped, redirects
+refused and GraphQL partial errors rejected without printing response details.
+No automatic retry, rollback, resource creation or variable write occurs.
+
+The API update/deploy sequence has no atomic lock; concurrent external writes
+can still race. Failed operations can leave a new source or deployment running;
+the registry image remains. SUCCESS reports Railway startup deployment status,
+not independent attestation of the running digest, public DNS/TLS, reachability,
+or continuing health. Live Railway account acceptance is pending.
+
+GitHub verification jobs build the selected image without credentials. Publish
+jobs log in to the explicit registry (GHCR GITHUB_TOKEN/packages:write, otherwise
+REGISTRY_USERNAME/PASSWORD) and scope the Railway token to the deploy step.
+Railway needs its own pull access; local registry login is not sufficient.
+Release availability is not checked by generation; rc.2 remains unpublished.
+
+Protocol references: Railway [authentication](https://docs.railway.com/integrations/api),
+[services](https://docs.railway.com/integrations/api/manage-services),
+[healthchecks](https://docs.railway.com/deployments/healthchecks), and
+[official CLI schema at bd4d490](https://github.com/railwayapp/cli/blob/bd4d490c11d084c39d7cdea114708a9995d1ccc0/src/gql/schema.json).
+The experimental environmentApplyChangeSet endpoint is not used.
+See [setup and exact limits](../examples/zellij-docs/content/02-cli/deploy.mdx#railway).
+Final source identity and verification will be recorded below.
+
+
+Railway local verification: **556 Rust tests passed**, with five existing real
+hosted-provider fixtures intentionally ignored locally and selected in CI.
+The final Railway import/workflow fixtures also passed after isolating their
+processes from inherited Railway environment variables. Warnings-denied workspace
+Clippy, formatting, strict/deep documentation (55 routes, 23 examples), repository
+actionlint and an actual emitted Railway workflow passed. Evidence:
+`/private/tmp/zellij-railway-workspace.log`, `zellij-railway-final-focused.log`,
+`zellij-railway-clippy.log`, `zellij-railway-docs.log`; the workflow path is saved
+in `/private/tmp/zellij-railway-generated-workflow-path`.
+No local Docker/browser or live provider mutation ran. Final-head GitHub CI and
+merge remain pending; live Railway account acceptance remains separate.
+
+
+Railway implementation commit **`3ace654`** contains the adapter, shared digest
+handling, CLI/CI/import wiring, regression fixtures and matching user docs.
+The local verification above covers this implementation. Final-head GitHub CI
+and merge remain pending; no live Railway acceptance or native release is implied.
+
+
+The final Railway timeout fixture leaves five seconds for loopback requests and
+uses the polling interval to exhaust the remaining budget, avoiding a 100 ms
+Windows scheduler race. Production deadlines are unchanged. All nine Railway
+protocol tests passed again; evidence: `/private/tmp/zellij-railway-protocol.log`.
+PR #86 must validate its final head before merge.

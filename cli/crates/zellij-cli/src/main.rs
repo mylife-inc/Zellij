@@ -29,6 +29,8 @@ mod imports;
 mod maintenance;
 mod netlify;
 mod preview;
+mod published_image;
+mod railway;
 mod s3;
 mod validation;
 mod vercel;
@@ -271,7 +273,8 @@ fn main() {
         | Command::Vercel(_)
         | Command::GithubPages(_)
         | Command::S3(_)
-        | Command::Fly(_) => {
+        | Command::Fly(_)
+        | Command::Railway(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

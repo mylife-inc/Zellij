@@ -39,7 +39,10 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
-    if !matches!(plan, DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. }) {
+    if !matches!(
+        plan,
+        DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. } | DeliveryPlan::Railway { .. }
+    ) {
         options.require_no_image_args()?;
     }
     if site.renderer == Renderer::Portable
@@ -48,7 +51,10 @@ fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) ->
             DeliveryPlan::Push(ImagePublication {
                 kind: ImageKind::Next,
                 ..
-            }) | DeliveryPlan::Fly {
+            }) | DeliveryPlan::Railway {
+                kind: ImageKind::Next,
+                ..
+            } | DeliveryPlan::Fly {
                 kind: ImageKind::Next,
                 ..
             }
@@ -86,6 +92,10 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
             } else {
                 "preview (zel-preview branch)"
             }
+        ),
+        DeliveryPlan::Railway { service, kind, tag } => zellij_core::reportln!(
+            "  Provider railway\n  Service  {service}\n  Kind     {}\n  Image    {tag}\n  Platform linux/amd64\n  Mode     production (selected environment)\n  Scope    RAILWAY_PROJECT_ID / RAILWAY_ENVIRONMENT_ID",
+            kind.as_str()
         ),
         DeliveryPlan::Fly { app, kind } => zellij_core::reportln!(
             "  Provider fly\n  App      {app}\n  Kind     {}\n  Platform linux/amd64\n  Mode     production (update existing web Machines)\n  Account  FLY_ORG",
@@ -160,6 +170,9 @@ pub(crate) fn execute_plan(
     validate_options(site, plan, options)?;
     match plan {
         DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
+        DeliveryPlan::Railway { service, kind, tag } => {
+            crate::railway::deploy(site, content, service, *kind, tag, options)
+        }
         DeliveryPlan::Fly { app, kind } => crate::fly::deploy(site, content, app, *kind, options),
         DeliveryPlan::S3 { destination } => {
             let client = crate::s3::Client::from_environment()?;

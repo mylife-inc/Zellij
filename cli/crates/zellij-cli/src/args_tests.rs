@@ -201,6 +201,22 @@ const CASES: &[Case] = &[
         &["manual", "--tag", "ghcr.io/acme/docs:v2", "--dry-run"],
     ),
     (
+        "rw",
+        "deploy railway",
+        &[],
+        &[
+            "manual",
+            "--site",
+            "33333333-3333-4333-8333-333333333333",
+            "--kind",
+            "next",
+            "--tag",
+            "ghcr.io/acme/docs:v1",
+            "--prod",
+            "--dry-run",
+        ],
+    ),
+    (
         "netlify",
         "deploy netlify",
         &[],

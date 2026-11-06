@@ -6,7 +6,6 @@ use serde_json::{Value, json};
 use std::{
     collections::BTreeSet,
     io::Read,
-    process::Stdio,
     time::{Duration, Instant, SystemTime, UNIX_EPOCH},
 };
 use zellij_core::{
@@ -501,69 +500,7 @@ fn validate_digest(app: &str, image: &str) -> Result<()> {
 }
 
 fn inspect(engine: &ContainerEngine, tag: &str, app: &str) -> Result<String> {
-    // File-backed capture avoids blocked pipes and bounds output before parsing.
-    let output = tempfile::NamedTempFile::new()?;
-    let mut command = engine.runtime().command();
-    command
-        .args(["image", "inspect", "--format", "{{json .RepoDigests}}", tag])
-        .stdin(Stdio::null())
-        .stdout(output.reopen()?)
-        .stderr(Stdio::null());
-    struct Child(std::process::Child);
-    impl Drop for Child {
-        fn drop(&mut self) {
-            let _ = self.0.kill();
-            let _ = self.0.wait();
-        }
-    }
-    let mut child = Child(
-        command
-            .spawn()
-            .map_err(|_| failed("cannot inspect the pushed Fly image"))?,
-    );
-    let deadline = Instant::now() + Duration::from_secs(30);
-    loop {
-        if output.as_file().metadata()?.len() > 64 * 1024 {
-            return Err(failed("Fly image inspection output exceeded its limit"));
-        }
-        if let Some(status) = child.0.try_wait()? {
-            if !status.success() {
-                return Err(failed(
-                    "cannot inspect the pushed Fly image; no Machines updated",
-                ));
-            }
-            break;
-        }
-        if Instant::now() >= deadline {
-            return Err(failed(
-                "Fly image inspection timed out; no Machines updated",
-            ));
-        }
-        std::thread::sleep(Duration::from_millis(20));
-    }
-    let mut bytes = Vec::new();
-    output
-        .reopen()?
-        .take(64 * 1024 + 1)
-        .read_to_end(&mut bytes)?;
-    if bytes.len() > 64 * 1024 {
-        return Err(failed("Fly image inspection output exceeded its limit"));
-    }
-    let values: Vec<String> = serde_json::from_slice(&bytes).map_err(|_| {
-        failed(
-            "container runtime did not return repository digests after push; no Machines updated",
-        )
-    })?;
-    let digests: BTreeSet<_> = values
-        .into_iter()
-        .filter(|v| validate_digest(app, v).is_ok())
-        .collect();
-    if digests.len() != 1 {
-        return Err(failed(
-            "container runtime did not return one unambiguous Fly repository digest; no Machines updated",
-        ));
-    }
-    Ok(digests.into_iter().next().unwrap())
+    crate::published_image::inspect(engine, tag, &format!("registry.fly.io/{app}"))
 }
 pub(crate) fn deploy(
     site: &Site,

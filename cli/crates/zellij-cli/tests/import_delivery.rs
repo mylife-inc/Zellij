@@ -116,7 +116,13 @@ fn command(root: &Path) -> Command {
         executable
     };
     let mut command = Command::new(executable);
-    command.current_dir(root).env("PATH", root.join("bin"));
+    command
+        .current_dir(root)
+        .env_remove("RAILWAY_TOKEN")
+        .env_remove("RAILWAY_PROJECT_ID")
+        .env_remove("RAILWAY_ENVIRONMENT_ID")
+        .env_remove("RAILWAY_SERVICE_ID")
+        .env("PATH", root.join("bin"));
     for key in [
         "DOCKER_HOST",
         "DOCKER_CONTEXT",
@@ -1113,5 +1119,52 @@ fn fly_ship_preserves_source_and_saves_selected_kind_after_credential_failure() 
             && config.contains("manual")
     );
     assert!(!config.contains("token") && !config.contains("production"));
+    assert_eq!(tree(&root.join("source")), original);
+}
+
+#[test]
+fn railway_ship_validates_before_import_and_retains_import_on_credential_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "converted",
+        "--provider",
+        "railway",
+        "--site",
+        "33333333-3333-4333-8333-333333333333",
+        "--kind",
+        "next",
+        "--prod",
+    ];
+    let output = command(root).args(args).output().unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .args(args)
+        .args(["--tag", "ghcr.io/acme/docs:v1", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("RAILWAY_TOKEN")
+        .args(args)
+        .args(["--tag", "ghcr.io/acme/docs:v1"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("RAILWAY_TOKEN"));
+    let saved = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
+    assert!(
+        saved.contains("provider: railway")
+            && saved.contains("image: next")
+            && saved.contains("ghcr.io/acme/docs:v1")
+    );
+    assert!(!saved.contains("token") && !saved.contains("production"));
     assert_eq!(tree(&root.join("source")), original);
 }

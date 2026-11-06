@@ -81,6 +81,26 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 provider.validate_site(id)?;
             }
             match provider {
+                Provider::Railway => {
+                    let tag = site.image.as_ref().and_then(|i| i.name.as_deref()).ok_or_else(|| invalid("Railway CI requires image.name with an explicit registry/repository:tag"))?;
+                    zellij_core::delivery::railway_image_repository(tag)?;
+                    Publish::Railway {
+                        service: site_id.map(str::to_owned),
+                        tag: tag.into(),
+                        kind: args
+                            .kind
+                            .map(Into::into)
+                            .or(match &site.publish {
+                                Some(PublishSettings::Deploy {
+                                    provider: Provider::Railway,
+                                    image,
+                                    ..
+                                }) => *image,
+                                _ => None,
+                            })
+                            .unwrap_or(zellij_core::delivery::ImageKind::Static),
+                    }
+                }
                 Provider::Fly => Publish::Fly {
                     app: site_id.map(str::to_owned),
                     kind: args
@@ -134,6 +154,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         Publish::GithubPages { .. } => Some(Provider::GithubPages),
         Publish::S3 { .. } => Some(Provider::S3),
         Publish::Fly { .. } => Some(Provider::Fly),
+        Publish::Railway { .. } => Some(Provider::Railway),
         _ => None,
     };
     if deployment_provider.is_none()
@@ -143,22 +164,27 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "--site-id, production and --provision require static-site CI delivery",
         ));
     }
-    if args.kind.is_some() && !matches!(publish, Publish::Fly { .. }) {
-        return Err(invalid("--kind is only supported for Fly deployment"));
+    if args.kind.is_some() && !matches!(publish, Publish::Fly { .. } | Publish::Railway { .. }) {
+        return Err(invalid(
+            "--kind is only supported for Fly/Railway deployment",
+        ));
     }
     let image_delivery = matches!(
         publish,
-        Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+        Publish::Image { .. }
+            | Publish::LegacyImage
+            | Publish::Fly { .. }
+            | Publish::Railway { .. }
     );
     if args.platform.is_some() && !image_delivery {
         return Err(invalid("--platform requires image CI delivery"));
     }
-    let platform = if matches!(publish, Publish::Fly { .. }) {
+    let platform = if matches!(publish, Publish::Fly { .. } | Publish::Railway { .. }) {
         if args
             .platform
             .is_some_and(|p| p != zellij_core::delivery::ImagePlatform::Amd64)
         {
-            return Err(invalid("Fly images require linux/amd64"));
+            return Err(invalid("Fly/Railway images require linux/amd64"));
         }
         Some(zellij_core::delivery::ImagePlatform::Amd64)
     } else if image_delivery {
@@ -178,6 +204,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 kind: zellij_core::delivery::ImageKind::Next,
                 ..
             } | Publish::Fly {
+                kind: zellij_core::delivery::ImageKind::Next,
+                ..
+            } | Publish::Railway {
                 kind: zellij_core::delivery::ImageKind::Next,
                 ..
             } | Publish::LegacyImage
@@ -300,6 +329,11 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     if deployment_provider == Some(Provider::Vercel) {
         zellij_core::statusln!(
             "  For a team project, set repository variable VERCEL_TEAM_ID (the same-named secret is also accepted)."
+        );
+    }
+    if deployment_provider == Some(Provider::Railway) {
+        zellij_core::statusln!(
+            "Set RAILWAY_PROJECT_ID, RAILWAY_ENVIRONMENT_ID and (unless saved) RAILWAY_SERVICE_ID as repository variables. RAILWAY_TOKEN must be a project token for that environment. GHCR uses GITHUB_TOKEN; other registries need REGISTRY_USERNAME/REGISTRY_PASSWORD. Railway must be able to pull the image separately (public image or existing private registry credentials)."
         );
     }
     if deployment_provider == Some(Provider::Fly) {

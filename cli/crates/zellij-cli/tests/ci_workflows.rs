@@ -37,6 +37,10 @@ fn command(root: &Path, args: &[&str]) -> Command {
     let mut command = Command::new(env!("CARGO_BIN_EXE_zel"));
     command
         .current_dir(root)
+        .env_remove("RAILWAY_TOKEN")
+        .env_remove("RAILWAY_PROJECT_ID")
+        .env_remove("RAILWAY_ENVIRONMENT_ID")
+        .env_remove("RAILWAY_SERVICE_ID")
         .args(args)
         .env_remove("FLY_APP")
         .env_remove("FLY_ORG")
@@ -1586,4 +1590,90 @@ fn fly_workflows_build_the_selected_kind_without_credentials_on_prs() {
     run(root, &["ci", "--deploy", "fly", "--prod", "--force"], 0);
     let text = workflow(root).to_string();
     assert!(text.contains("vars.FLY_APP") && !text.contains("other-site"));
+}
+
+#[test]
+fn railway_workflows_scope_registry_and_provider_credentials_to_publication() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    let service = "33333333-3333-4333-8333-333333333333";
+    for registry in ["ghcr.io", "docker.io"] {
+        site(
+            root,
+            "docs/zellij",
+            &format!(
+                "ci: {{zel-version: 0.2.0-rc.2}}\npublish: {{action: deploy, provider: railway, site: {service}, image: next}}\nimage: {{name: '{registry}/acme/docs:v1', platform: all}}\n"
+            ),
+        );
+        run(root, &["ci", "--prod", "--force"], 0);
+        let doc = workflow(root);
+        let verify = doc["jobs"]["verify"].to_string();
+        assert!(
+            verify.contains("zel image next")
+                && verify.contains("linux/amd64")
+                && !verify.contains("secrets.")
+                && !verify.contains("RAILWAY_TOKEN")
+        );
+        let steps = doc["jobs"]["publish"]["steps"].as_array().unwrap();
+        let deploy = steps.last().unwrap();
+        assert_eq!(deploy["env"]["RAILWAY_SERVICE_ID"], service);
+        assert_eq!(
+            deploy["env"]["RAILWAY_TOKEN"],
+            "${{ secrets.RAILWAY_TOKEN }}"
+        );
+        assert!(
+            deploy["run"]
+                .as_str()
+                .unwrap()
+                .contains("zel deploy railway")
+        );
+        assert!(
+            deploy["run"]
+                .as_str()
+                .unwrap()
+                .contains("--kind next --tag \"$IMAGE_TAG\" --prod")
+        );
+        let login = steps
+            .iter()
+            .find(|s| s["name"] == "Sign in to registry")
+            .unwrap();
+        assert_eq!(login["with"]["registry"], registry);
+        if registry == "ghcr.io" {
+            assert_eq!(login["with"]["password"], "${{ secrets.GITHUB_TOKEN }}");
+            assert_eq!(doc["jobs"]["publish"]["permissions"]["packages"], "write");
+        } else {
+            assert_eq!(
+                login["with"]["password"],
+                "${{ secrets.REGISTRY_PASSWORD }}"
+            );
+            assert!(doc["jobs"]["publish"]["permissions"]["packages"].is_null());
+        }
+    }
+    for flags in [
+        vec![],
+        vec!["--prod", "--platform", "all"],
+        vec!["--prod", "--platform", "linux/arm64"],
+        vec!["--prod", "--zel-version", "0.2.0-rc.1"],
+    ] {
+        let mut args = vec!["ci", "--force"];
+        args.extend(flags);
+        run(root, &args, 2);
+    }
+    run(root, &["ci", "--prod", "--force", "--kind", "static"], 0);
+    assert!(
+        workflow(root)["jobs"]["verify"]
+            .to_string()
+            .contains("zel image static")
+    );
+    let before = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    let output = command(root, &["ci", "--prod", "--force", "--provision"])
+        .env("RAILWAY_TOKEN", "bad\ntoken")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(
+        fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+        before
+    );
 }

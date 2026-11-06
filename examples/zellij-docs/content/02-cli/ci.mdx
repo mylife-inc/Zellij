@@ -440,3 +440,31 @@ feature/build overrides are retained. Production intent is required, either as
 Generation requires a pinned CLI version of rc.2 or later but does not publish
 or verify it. **rc.2 is still unpublished; rc.1 cannot execute Fly deployment.**
 The workflow can be reviewed now and enabled after a compatible release exists.
+
+
+## Railway workflows
+
+Save Railway delivery settings and `image.name`, then run:
+
+```bash title="terminal"
+zel ci --deploy railway --kind next --prod --zel-version 0.2.0-rc.2
+```
+
+The workflow uses the saved service UUID, or `RAILWAY_SERVICE_ID` from repository
+variables/secrets. Set `RAILWAY_PROJECT_ID`, `RAILWAY_ENVIRONMENT_ID`, and the
+`RAILWAY_TOKEN` project-token secret for that environment. `ci --provision` can
+store this token through authenticated `gh` explicitly; it does not create the
+Railway service or registry credentials.
+
+Pull requests build the selected amd64 image without provider or registry
+credentials. Publication events log in to the registry and run one Railway
+deployment. GHCR uses `GITHUB_TOKEN` with `packages: write`; other registries use
+`REGISTRY_USERNAME` and `REGISTRY_PASSWORD` secrets. Registry login is cleaned up
+by the login action. Railway still needs independent pull access: make the image
+public or configure supported private registry credentials on the service.
+
+`--kind` overrides saved `publish.image`; `image.name` supplies the exact push
+tag. The generated workflow serializes GitHub runs on the same ref, but cannot
+lock other workflows, branches, dashboard edits or external deployers. Use one
+publisher per service and avoid concurrent changes. Generation is local and
+checks neither credentials nor release availability: rc.2 is still unpublished.

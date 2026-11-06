@@ -113,6 +113,7 @@ pub enum Provider {
     GithubPages,
     S3,
     Fly,
+    Railway,
 }
 impl Provider {
     pub fn parse(value: &str) -> Result<Self> {
@@ -123,8 +124,9 @@ impl Provider {
             "github-pages" => Ok(Self::GithubPages),
             "s3" => Ok(Self::S3),
             "fly" => Ok(Self::Fly),
+            "railway" => Ok(Self::Railway),
             _ => Err(Error::InvalidArgument(
-                "unsupported deployment provider; choose netlify, cloudflare, vercel, github-pages, s3 or fly".into(),
+                "unsupported deployment provider; choose netlify, cloudflare, vercel, github-pages, s3, fly or railway".into(),
             )),
         }
     }
@@ -136,6 +138,7 @@ impl Provider {
             Self::GithubPages => "github-pages",
             Self::S3 => "s3",
             Self::Fly => "fly",
+            Self::Railway => "railway",
         }
     }
     pub fn site_environment(self) -> &'static str {
@@ -146,6 +149,7 @@ impl Provider {
             Self::GithubPages => "GITHUB_PAGES_REPOSITORY",
             Self::S3 => "S3_DESTINATION",
             Self::Fly => "FLY_APP",
+            Self::Railway => "RAILWAY_SERVICE_ID",
         }
     }
     pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
@@ -164,6 +168,7 @@ impl Provider {
     }
     pub fn validate_site(self, value: &str) -> Result<()> {
         match self {
+            Self::Railway => validate_railway_id(value),
             Self::Fly => {
                 if !(1..=63).contains(&value.len())
                     || value.starts_with('-')
@@ -269,6 +274,7 @@ impl Provider {
         match self {
             Self::S3 => &["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
             Self::Fly => &["FLY_API_TOKEN"],
+            Self::Railway => &["RAILWAY_TOKEN"],
             Self::Netlify => &["NETLIFY_AUTH_TOKEN"],
             Self::Cloudflare => &["CLOUDFLARE_API_TOKEN"],
             Self::Vercel => &["VERCEL_TOKEN"],
@@ -276,6 +282,9 @@ impl Provider {
         }
     }
     pub fn require_production(self, production: bool) -> Result<()> {
+        if self == Self::Railway && !production {
+            return Err(Error::InvalidArgument("Railway service updates have no draft mode; pass --prod (or ci.production: true) to deploy to the selected environment".into()));
+        }
         if self == Self::Fly && !production {
             return Err(Error::InvalidArgument("Fly Machine updates have no draft mode; pass --prod (or ci.production: true for CI generation) to update the existing app".into()));
         }
@@ -291,6 +300,11 @@ impl Provider {
         self.validate_site(destination)?;
         self.require_production(production)?;
         Ok(match self {
+            Self::Railway => DeliveryPlan::Railway {
+                service: destination.into(),
+                kind: ImageKind::Static,
+                tag: String::new(),
+            },
             Self::Fly => DeliveryPlan::Fly {
                 app: destination.into(),
                 kind: ImageKind::Static,
@@ -348,21 +362,55 @@ pub fn validate_site_identifier(value: &str) -> Result<()> {
 #[derive(Debug, PartialEq, Eq)]
 pub enum DeliveryPlan {
     Push(ImagePublication),
-    Netlify { site: String, production: bool },
-    Cloudflare { project: String, production: bool },
-    Vercel { project: String, production: bool },
-    GithubPages { repository: String },
-    S3 { destination: String },
-    Fly { app: String, kind: ImageKind },
+    Netlify {
+        site: String,
+        production: bool,
+    },
+    Cloudflare {
+        project: String,
+        production: bool,
+    },
+    Vercel {
+        project: String,
+        production: bool,
+    },
+    GithubPages {
+        repository: String,
+    },
+    S3 {
+        destination: String,
+    },
+    Fly {
+        app: String,
+        kind: ImageKind,
+    },
+    Railway {
+        service: String,
+        kind: ImageKind,
+        tag: String,
+    },
 }
 
 impl DeliveryPlan {
     pub fn with_kind(mut self, kind: Option<ImageKind>) -> Result<Self> {
         if let Some(kind) = kind {
             match &mut self {
-                Self::Fly { kind: selected, .. } => *selected = kind,
-                _ => return Err(Error::InvalidArgument("--kind is only for Fly deployment; use --image for ship registry publication or publish.image for saved pushes".into())),
+                Self::Fly { kind: selected, .. } | Self::Railway { kind: selected, .. } => *selected = kind,
+                _ => return Err(Error::InvalidArgument("--kind is only for Fly/Railway deployment; use --image for ship registry publication or publish.image for saved pushes".into())),
             }
+        }
+        Ok(self)
+    }
+
+    pub fn with_registry(mut self, tag: Option<&str>) -> Result<Self> {
+        if let Self::Railway { tag: selected, .. } = &mut self {
+            let value = tag.ok_or_else(|| Error::InvalidArgument("Railway requires image.name in zel.yaml or --tag with an explicit registry/repository:tag".into()))?;
+            railway_image_repository(value)?;
+            *selected = value.into();
+        } else if tag.is_some() {
+            return Err(Error::InvalidArgument(
+                "--tag is only for registry publication or Railway deployment".into(),
+            ));
         }
         Ok(self)
     }
@@ -373,10 +421,10 @@ impl DeliveryPlan {
         if let Some(platform) = platform {
             match &mut self {
                 Self::Push(image) => image.platform = Some(platform),
-                Self::Fly { .. } if platform == ImagePlatform::Amd64 => {}
-                Self::Fly { .. } => {
+                Self::Fly { .. } | Self::Railway { .. } if platform == ImagePlatform::Amd64 => {}
+                Self::Fly { .. } | Self::Railway { .. } => {
                     return Err(Error::InvalidArgument(
-                        "Fly images require linux/amd64".into(),
+                        "Fly/Railway images require linux/amd64".into(),
                     ));
                 }
                 Self::Netlify { .. }
@@ -417,8 +465,8 @@ impl DeliveryPlan {
             }
             _ => None,
         };
-        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages|s3|fly --site <destination>`".into()))?;
-        if tag.is_some() {
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages|s3|fly|railway --site <destination>`".into()))?;
+        if tag.is_some() && selected != Provider::Railway {
             return Err(Error::InvalidArgument(
                 "deployment chooses its output destination; --tag is only for registry publication"
                     .into(),
@@ -431,9 +479,15 @@ impl DeliveryPlan {
             }) if *provider == selected => *image,
             _ => None,
         };
+        let registry = if selected == Provider::Railway {
+            tag.or(site.image.as_ref().and_then(|i| i.name.as_deref()))
+        } else {
+            None
+        };
         selected
             .plan(destination, production)?
-            .with_kind(saved_kind)
+            .with_kind(saved_kind)?
+            .with_registry(registry)
     }
 
     /// Shared constructor for saved delivery and a newly imported site.
@@ -653,6 +707,81 @@ mod tests {
             "日本/docs",
         ] {
             assert!(validate_image_reference(reference).is_err(), "{reference}");
+        }
+    }
+}
+
+/// Railway UUIDs are IDs, never URLs, names or credentials.
+pub fn validate_railway_id(value: &str) -> Result<()> {
+    if value.len() != 36
+        || !value.bytes().enumerate().all(|(i, b)| {
+            if [8, 13, 18, 23].contains(&i) {
+                b == b'-'
+            } else {
+                b.is_ascii_digit() || (b'a'..=b'f').contains(&b)
+            }
+        })
+    {
+        return Err(Error::InvalidArgument(
+            "Railway requires a lowercase UUID service/project/environment ID".into(),
+        ));
+    }
+    Ok(())
+}
+
+/// Require an explicit supported remote registry and tag; no implicit Docker Hub
+/// namespace, localhost destination, digest input, or tag-expression evaluation.
+pub fn railway_image_repository(tag: &str) -> Result<&str> {
+    validate_image_reference(tag)?;
+    let (registry, rest) = tag.split_once('/').ok_or_else(|| {
+        Error::InvalidArgument("Railway requires an explicit registry/repository:tag".into())
+    })?;
+    if ![
+        "ghcr.io",
+        "docker.io",
+        "registry.gitlab.com",
+        "quay.io",
+        "mcr.microsoft.com",
+    ]
+    .contains(&registry)
+        || !rest.contains(':')
+    {
+        return Err(Error::InvalidArgument("Railway images require an explicit tag in ghcr.io, docker.io, registry.gitlab.com, quay.io or mcr.microsoft.com".into()));
+    }
+    Ok(tag.rsplit_once(':').expect("validated tag").0)
+}
+
+#[cfg(test)]
+mod railway_tests {
+    use super::*;
+    #[test]
+    fn railway_ids_and_remote_taggable_images_are_explicit() {
+        assert!(validate_railway_id("33333333-3333-4333-8333-333333333333").is_ok());
+        for id in [
+            "name",
+            "33333333-3333-4333-8333-33333333333Z",
+            "33333333_3333_4333_8333_333333333333",
+            "https://example.com",
+        ] {
+            assert!(validate_railway_id(id).is_err());
+        }
+        for tag in [
+            "ghcr.io/acme/docs:v1",
+            "docker.io/acme/docs:v2",
+            "registry.gitlab.com/acme/docs:latest",
+            "quay.io/acme/docs:edge",
+        ] {
+            assert!(railway_image_repository(tag).is_ok());
+        }
+        for tag in [
+            "docs",
+            "acme/docs:v1",
+            "localhost:5000/acme/docs:v1",
+            "ghcr.io/acme/docs",
+            "https://ghcr.io/acme/docs:v1",
+            "docker.io/acme/docs@sha256:abc",
+        ] {
+            assert!(railway_image_repository(tag).is_err());
         }
     }
 }

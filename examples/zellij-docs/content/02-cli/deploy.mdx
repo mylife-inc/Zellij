@@ -9,7 +9,7 @@ description: Build and deploy static HTML or containerized documentation to an e
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Cloudflare Pages, Vercel, GitHub Pages, S3 and Fly are available in current source; rc.1 does not include them.
+predates these commands. Cloudflare Pages, Vercel, GitHub Pages, S3, Fly and Railway are available in current source; rc.1 does not include them.
 </Callout>
 
 ```bash title="terminal"
@@ -490,23 +490,23 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 
 | Option | Meaning |
 | --- | --- |
-| `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3` or `fly`; omit to execute saved publication settings |
+| `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3`, `fly` or `railway`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
-| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix or Fly app name; `--site` is equivalent |
-| `--prod` | Request live publication; required for GitHub Pages, S3 and Fly, which have no draft mode |
-| `--kind <kind>` | Fly image kind; defaults to same-provider `publish.image`, then `static` |
-| `--platform <platform>` | Fly accepts only `linux/amd64`; saved `image.platform` is ignored for Fly |
+| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix Fly app name or Railway service UUID; `--site` is equivalent |
+| `--prod` | Request live publication; required for GitHub Pages, S3, Fly and Railway, which have no draft mode |
+| `--kind <kind>` | Fly/Railway image kind; defaults to same-provider `publish.image`, then `static` |
+| `--platform <platform>` | Fly/Railway accept only `linux/amd64`; saved `image.platform` is ignored for both |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Resolve and print the plan only |
 | `--to <provider>` | Explicit provider for saved static deployment |
-| `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
+| `--tag <reference>` | Image reference for saved registry publication or Railway deployment |
 
 `--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
-the default for Netlify, Cloudflare and Vercel; GitHub Pages, S3 and Fly require `--prod`.
-Railway remains a future adapter. Fly uses existing web Machines; see its setup below.
+the default for Netlify, Cloudflare and Vercel; GitHub Pages, S3, Fly and Railway require `--prod`.
+Fly uses existing web Machines; Railway uses existing image services. See their setup below.
 
 See [`zel publish`](/cli/publish) for image registry publication and
 [`zel ci`](/cli/ci) for workflow generation from saved delivery settings.
@@ -514,7 +514,7 @@ See [`zel publish`](/cli/publish) for image registry publication and
 ## Image build arguments
 
 Current source accepts `--build-arg NAME=VALUE` only when bare `zel deploy` selects
-saved image publication, or for Fly image deployment. `zel netlify`, `deploy netlify` and saved Netlify delivery
+saved image publication, or for Fly/Railway image deployment. `zel netlify`, `deploy netlify` and saved Netlify delivery
 reject it before credentials, building or remote requests. See
 [image build arguments](/cli/image#image-build-arguments).
 
@@ -554,7 +554,7 @@ publish:
 
 Use `zel pub --prod` or `zel fly --prod`. **Fly has no draft mode**, so `--prod`
 is required even for a dry run. `publish.image` in a deployment is valid only
-for Fly; registry push settings retain their existing meaning.
+for Fly and Railway; registry push settings retain their existing meaning.
 
 ### Prepare an existing app
 
@@ -621,3 +621,95 @@ five-minute total budget; leases last ten minutes and are released on handled
 success/failure paths. A killed process or failed cleanup may leave leases until
 expiry. Success confirms Machine state and health checks, not external DNS/TLS
 or public reachability. Source files and previous local site output are retained.
+
+
+## Railway
+
+Current source supports `zel railway` (alias `rw`) and `zel deploy railway`
+for an **existing image service in an explicit Railway environment**. It builds
+one static or Next.js image for `linux/amd64`, pushes it to your registry, changes
+the service's image source to that immutable digest, and waits for the returned
+deployment to reach `SUCCESS`. Live Railway account acceptance is pending; this
+adapter is newer than published rc.1, and rc.2 remains unpublished.
+
+```yaml title="zel.yaml"
+version: 1
+renderer: portable
+image:
+  name: ghcr.io/acme/manual:v1
+publish:
+  action: deploy
+  provider: railway
+  site: 33333333-3333-4333-8333-333333333333
+  image: static
+```
+
+```bash title="terminal"
+zel rw --prod --dry-run
+zel rw --prod
+zel rw --kind next --tag ghcr.io/acme/manual:v2 --prod
+zel pub --prod
+```
+
+Replace the example service UUID and registry reference. `--site` overrides
+`RAILWAY_SERVICE_ID`, which overrides same-provider `publish.site`. `--kind`
+overrides same-provider `publish.image`, defaulting to `static`. `--tag` overrides
+`image.name` and is the exact build/push tag; existing contents of that tag can
+be replaced. Choose a new tag to retain an older registry tag. Deployment uses
+the repository digest, so later changes to the tag do not change the deployed
+source. Explicit `--platform` accepts only `linux/amd64`; saved image platform
+settings are ignored for Railway.
+
+### Railway setup
+
+1. Build and push an initial image using `zel image static --tag <reference>`
+   (or `zel image next`) followed by `zel image push <reference>`. Create the
+   Railway service from that image in the intended project/environment.
+2. Set the service variable `PORT=3000`, configure an HTTP healthcheck path
+   that returns a successful response (usually `/`), and wait for a successful
+   initial deployment. Leave `HOSTNAME` unset or set it to `0.0.0.0`.
+3. Create a **project token for that environment**, and supply it through
+   `RAILWAY_TOKEN`. Set `RAILWAY_PROJECT_ID` and `RAILWAY_ENVIRONMENT_ID` to the
+   expected UUIDs. Account/workspace tokens and stored Railway CLI logins are
+   not used. The command verifies the project token's scope before building.
+4. Authenticate the selected container runtime to your image registry.
+   Railway must also be able to pull the image: use a public image, or configure
+   private registry credentials on the service using a Railway plan that
+   supports them. Local registry login does not grant Railway pull access.
+
+Image references require an explicit registry, repository and tag. Supported
+registries are `ghcr.io`, `docker.io`, `registry.gitlab.com`, `quay.io`, and
+`mcr.microsoft.com`. Supply credentials through environment variables or the
+registry client's login flow; never save tokens in `zel.yaml`.
+
+### Railway limits and failure behavior
+
+`--prod` explicitly authorizes an update to the selected environment, even if
+that environment is named staging. There is no implicit preview environment.
+The service must already use an image source, have a successful deployment,
+and have no mounted volumes, custom start/pre-deploy/cron commands, repository
+configuration file, or application sleeping. Resolve staged environment changes
+and other deployments first. The adapter supports an environment with at most
+100 volume instances so it can verify a complete inventory.
+
+Only the environment-scoped image source is patched. Other service settings,
+variables, domains, registry credentials and resources are retained; no project,
+environment, service, domain or volume is created. A Git-connected service is not
+converted. The service and runtime variables are checked before building and
+again before the update. These API calls are **not an atomic lock**: avoid
+concurrent dashboard edits or deployments. The command detects observed changes
+and checks the selected deployment and service source again before reporting
+success.
+
+The provider phase has a five-minute deadline, individual requests are bounded,
+and API response bodies/GraphQL errors are omitted from diagnostics. A failure
+after the image push retains the image; a failure after the source update can
+leave the new source configured or a deployment still running. No automatic
+retry, rollback or cleanup of published images occurs. Inspect Railway before
+retrying. `SUCCESS` reflects Railway's deployment result and startup healthcheck;
+it does not prove public DNS/TLS, external reachability, ongoing health, or
+independently attest the running container's digest.
+
+See Railway's [API authentication](https://docs.railway.com/integrations/api),
+[service API](https://docs.railway.com/integrations/api/manage-services), and
+[startup healthchecks](https://docs.railway.com/deployments/healthchecks).

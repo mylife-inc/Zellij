@@ -103,6 +103,12 @@ impl Cli {
                 options,
             };
         }
+        if let Command::Railway(options) = cli.command {
+            cli.command = Command::Deploy {
+                provider: Some("railway".into()),
+                options,
+            };
+        }
         if let Command::Fly(options) = cli.command {
             cli.command = Command::Deploy {
                 provider: Some("fly".into()),
@@ -374,12 +380,12 @@ pub(crate) enum Command {
         theme: Option<String>,
     },
 
-    /// Build static HTML and deploy it; omitted provider uses saved publication.
+    /// Build and deploy static HTML or an image; omitted provider uses saved publication.
     #[command(
-        after_help = "Shortcuts: zel netlify [site], zel cf [site], zel vc [site], zel ghp [site] --prod, zel s3 [site] --prod, zel fly [site] --prod. Bare zel deploy is equivalent to zel publish."
+        after_help = "Shortcuts: zel netlify [site], zel cf [site], zel vc [site], zel ghp [site] --prod, zel s3 [site] --prod, zel fly [site] --prod, zel rw [site] --prod. Bare zel deploy is equivalent to zel publish."
     )]
     Deploy {
-        /// netlify, cloudflare, vercel, github-pages, s3 or fly. With no provider, use zel.yaml's publish settings.
+        /// netlify, cloudflare, vercel, github-pages, s3, fly or railway. With no provider, use zel.yaml's publish settings.
         provider: Option<String>,
         #[command(flatten)]
         options: DeliveryArgs,
@@ -404,6 +410,9 @@ pub(crate) enum Command {
     S3(DeliveryArgs),
     /// Build and deploy an image to an existing Fly app (requires --prod).
     Fly(DeliveryArgs),
+    /// Shortcut for `zel deploy railway` (alias: rw; requires --prod).
+    #[command(visible_alias = "rw")]
+    Railway(DeliveryArgs),
 
     /// Build, run and push container images.
     Image {
@@ -581,7 +590,7 @@ pub(crate) struct CiArgs {
 
 #[derive(clap::Args, Debug, Default, PartialEq, Eq)]
 pub(crate) struct CiInitArgs {
-    /// Fly image kind: static (default) or next. Overrides publish.image.
+    /// Fly/Railway image kind: static (default) or next. Overrides publish.image.
     #[arg(long, value_enum)]
     pub(crate) kind: Option<ImageKind>,
     #[command(flatten)]
@@ -598,16 +607,16 @@ pub(crate) struct CiInitArgs {
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Override saved delivery with netlify, cloudflare, vercel, github-pages, s3 or fly deployment.
+    /// Override saved delivery with netlify, cloudflare, vercel, github-pages, s3, fly or railway deployment.
     #[arg(long, conflicts_with = "target")]
     pub(crate) deploy: Option<String>,
     /// Legacy override: static validates/builds; image builds/pushes a Next image.
     #[arg(long, value_parser = ["static", "image"], conflicts_with = "deploy")]
     pub(crate) target: Option<String>,
-    /// Netlify site ID, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix or Fly app name; --site remains accepted.
+    /// Netlify site ID, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository, S3 bucket/prefix, Fly app name or Railway service UUID; --site remains accepted.
     #[arg(long, visible_alias = "site")]
     pub(crate) site_id: Option<String>,
-    /// Request production deployments; required for GitHub Pages, S3 and Fly.
+    /// Request production deployments; required for GitHub Pages, S3, Fly and Railway.
     #[arg(long)]
     pub(crate) prod: bool,
     /// Overwrite the selected workflow, retaining all other files.
@@ -859,7 +868,7 @@ mod tests;
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct DeliveryArgs {
-    /// Fly image kind: static (default) or next. Overrides publish.image.
+    /// Fly/Railway image kind: static (default) or next. Overrides publish.image.
     #[arg(long, value_enum)]
     pub(crate) kind: Option<ImageKind>,
     #[command(flatten)]
@@ -872,16 +881,16 @@ pub(crate) struct DeliveryArgs {
     /// Explicit provider override for saved static-site deployment.
     #[arg(long)]
     pub(crate) to: Option<String>,
-    /// Exact image reference for saved registry publication only.
+    /// Exact image reference for registry publication or Railway deployment.
     #[arg(long)]
     pub(crate) tag: Option<String>,
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Netlify site ID/domain, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix or Fly app name; overrides provider environment and publish.site.
+    /// Netlify site ID/domain, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository, S3 bucket/prefix, Fly app name or Railway service UUID; overrides provider environment and publish.site.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
-    /// Update the production site; required for GitHub Pages, S3 and Fly.
+    /// Update the production site; required for GitHub Pages, S3, Fly and Railway.
     #[arg(long)]
     pub(crate) prod: bool,
     /// Print the plan without tools, credentials, builds or remote requests.
@@ -927,7 +936,7 @@ pub(crate) struct ImportArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct ShipArgs {
-    /// Fly image kind: static (default) or next. Overrides publish.image.
+    /// Fly/Railway image kind: static (default) or next. Overrides publish.image.
     #[arg(long, value_enum)]
     pub(crate) kind: Option<ImageKind>,
     #[command(flatten)]
@@ -944,22 +953,22 @@ pub(crate) struct ShipArgs {
     /// Copy referenced assets, or skip them and retain their original URLs.
     #[arg(long, value_enum, default_value = "copy")]
     pub(crate) assets: ImportAssets,
-    /// Deploy through netlify, cloudflare, vercel, github-pages, s3 or fly.
+    /// Deploy through netlify, cloudflare, vercel, github-pages, s3, fly or railway.
     #[arg(long, required_unless_present = "image", conflicts_with = "image")]
     pub(crate) provider: Option<String>,
     /// Build and push this image kind instead of deploying static HTML.
     #[arg(long, value_enum, requires = "tag", conflicts_with_all = ["site_id", "prod"])]
     pub(crate) image: Option<ImageKind>,
-    /// Exact registry destination for --image.
-    #[arg(long, requires = "image")]
+    /// Exact registry destination for --image or --provider railway.
+    #[arg(long)]
     pub(crate) tag: Option<String>,
     /// Linux image platform: linux/amd64 or linux/arm64; all publishes both (pub/ship/ci only). Overrides image.platform.
     #[arg(long)]
     pub(crate) platform: Option<ImagePlatform>,
-    /// Netlify site ID/domain, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix or Fly app name; defaults to the provider environment.
+    /// Netlify site ID/domain, Cloudflare Pages project name, Vercel project ID/name, GitHub owner/repository, S3 bucket/prefix, Fly app name or Railway service UUID; defaults to the provider environment.
     #[arg(long = "site-id", visible_alias = "site")]
     pub(crate) site_id: Option<String>,
-    /// Request production publication; required for GitHub Pages, S3 and Fly.
+    /// Request production publication; required for GitHub Pages, S3, Fly and Railway.
     #[arg(long)]
     pub(crate) prod: bool,
     /// Convert in memory and show delivery intent; no writes, tools or network.

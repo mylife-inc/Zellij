@@ -259,11 +259,11 @@ impl Site {
             {
                 provider.validate_site(destination)?;
             }
-            if matches!(&publish, Some(crate::delivery::PublishSettings::Deploy { provider, image: Some(_), .. }) if *provider != crate::delivery::Provider::Fly)
+            if matches!(&publish, Some(crate::delivery::PublishSettings::Deploy { provider, image: Some(_), .. }) if !matches!(provider, crate::delivery::Provider::Fly | crate::delivery::Provider::Railway))
             {
                 return Err(invalid(
                     &config,
-                    "publish.image for deployment is only supported by Fly",
+                    "publish.image for deployment is only supported by Fly/Railway",
                 ));
             }
             if let Some(value) = settings.remove("ci") {

@@ -10,7 +10,7 @@ description: Build once and deliver using saved registry or Netlify settings.
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
 or Next.js image. These commands are available in candidate `0.2.0-rc.1`; stable `0.1.3` predates them.
-Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel, GitHub Pages, S3 and Fly; see [deployment](/cli/deploy#cloudflare-pages).
+Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel, GitHub Pages, S3, Fly and Railway; see [deployment](/cli/deploy#cloudflare-pages).
 </Callout>
 
 ## Save the destination
@@ -168,15 +168,15 @@ CLI and compatible engine; they are absent from candidate `0.2.0-rc.1`.
 | `[site]` | Configured site root; otherwise use the standard discovery order |
 | `--tag <reference>` | Override `image.name` for both build and push |
 | `--platform <platform>` | Override `image.platform`; choose `linux/amd64`, `linux/arm64`, or `all` for one tag with both |
-| `--kind <kind>` | Fly only: `static` or `next`; overrides `publish.image` |
+| `--kind <kind>` | Fly/Railway only: `static` or `next`; overrides `publish.image` |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
-| `--to <provider>` | Select `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3` or `fly`; rejected for a saved image-push plan |
+| `--to <provider>` | Select `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3`, `fly` or `railway`; rejected for a saved image-push plan |
 | `--site-id <destination>` | Provider-specific project, repository or bucket/prefix override; `--site` is equivalent |
-| `--prod` | Request live publication; required for GitHub Pages, S3 and Fly, preview by default for other implemented providers |
+| `--prod` | Request live publication; required for GitHub Pages, S3, Fly and Railway, preview by default for other implemented providers |
 
 `--json` is not supported and fails before work. A dry run checks shared settings
 and site selection; it does not prove that the content builds, credentials work,
@@ -186,7 +186,7 @@ or the destination exists.
 
 ## Remaining delivery work
 
-Railway remains pending; Fly supports existing configured web Machines.
+Live-account acceptance for the newer adapters remains pending. Fly supports existing configured web Machines; Railway supports existing image services.
 The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
 `zel ci [site]`, with local-only generation and explicit credential provisioning.
@@ -266,3 +266,15 @@ deployment provider. Destinations and image kinds from another provider are
 not reused. Fly uses amd64 images regardless of saved `image.platform` and
 creates its own registry tag; `--tag` is reserved for registry publication.
 See [Fly setup, health checks and partial-rollout behavior](/cli/deploy#fly).
+
+
+## Railway publication
+
+Save `publish.provider: railway`, the service UUID in `publish.site`, the image
+kind in `publish.image`, and a registry reference in `image.name`. Then run
+`zel pub --prod`. `--kind` and `--tag` override the image kind and registry tag
+for this invocation. `pub --to railway --site <service-uuid> --tag <reference>
+--prod` can change a saved deployment provider; another provider's destination
+and image kind are not reused. The expected project/environment and project
+token come from the Railway environment variables. See
+[Railway setup and failure behavior](/cli/deploy#railway).
