@@ -4920,3 +4920,79 @@ bookmark regression; the corrected final head must pass its own complete CI.
 
 Bookmark fix: **`22277623932783505d555da2a693bbb9c8ed05f7`**. Strict/deep documentation checks pass
 (55 routes, 23 examples); the browser preservation check runs only in CI.
+
+
+## 2026-11-06 — Doctor closure and Sphinx table imports
+
+PR #90 merged as **`e6733067bb49ee7f831896f2659a2dfa7300c203`** after all 16
+checks passed on **`0fb8da2fa97df6cbbdf035fe8b407780aed93b28`** in
+[42298531414](https://github.com/mylife-inc/Zellij/actions/runs/42298531414),
+attempt 1. Tested and merged tree: `28d7416e410217080dfc31793d6d2d25b9f83a80`.
+Doctor cases passed on Windows/macOS/Linux; all six native packages, both image
+architectures/manifests and broader hosted/browser tests passed. Preservation
+retained 46 original routes, 282 original heading IDs, 82 compatibility mappings
+and 29 byte-identical images. Source `1c2091b` and bookmark fix `2227762` are
+identified in the preceding history. Post-merge main run `42303348733` passed
+all 16 jobs; base-image run `42303348916` passed all 13. Both were refreshed
+before this milestone. The current repository release inventory lists rc.1;
+no rc.2 publication was attempted.
+
+Current work adds rectangular Sphinx grid/simple tables and optional captions
+through `.. table::`, without Python or a source build. The table parser in
+`cli/crates/zellij-convert/src/sphinx/tables.rs` validates border geometry and
+uses `unicode-width` (locked 0.2.3) for wide/combining character columns. Simple
+rows preserve first-column continuation semantics, paragraph breaks and the
+unbounded final column. Grid cells preserve their common margin and multiline
+content. Both forms retain headerless tables and multiple header rows.
+
+The RST block model now has a Table node; cells reuse the existing supported
+block parser, sharing a 16-level table/admonition depth limit. Rendering emits
+semantic HTML table/head/body/caption/cell tags with Markdown inside cells.
+This preserves supported inline markup, lists, admonitions, code, images and
+references through the existing MDX, link rewriting, asset, heading and search
+pipeline. Source HTML stays literal. Tables have at most 128 columns, 10000
+rows, 100000 cells and a 16384-column border. No filesystem links, outside reads,
+source execution or network fetching are introduced.
+
+Spanning cells, malformed geometry, list/csv tables, table directive options,
+and headings/section labels/toctrees inside cells still fail with the source
+filename before output is created. Existing unsupported RST content remains
+unsupported inside cells; no lossy flattening is attempted. The conversion
+reference and CLI status describe these limits. A small missing comma in the
+JSON command reference is corrected too.
+
+The shared `scripts/fixtures/sphinx-tables.rst` is exercised by native CLI
+integration tests and `scripts/check-conversion.mjs`. Node-only MDX rendering
+and deep checks passed locally across all six importers; the Sphinx fixture
+verifies semantic headers, Unicode, captions, blocks, escaped source HTML,
+code containing pipes/braces, links, exact assets and searchable cell text.
+The same script checks the real hosted export in GitHub CI. Local Rust tests
+cover malformed/spanning/unsafe forms, boundaries, dry run and asset skip.
+No local Docker or browser ran. Final local suite and cross-platform CI remain
+pending; live providers, native release and Netlify migration remain separate.
+
+References: [Docutils table syntax](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#tables),
+[table directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#table),
+[Unicode width implementation](https://github.com/unicode-rs/unicode-width).
+
+
+Local verification: the workspace suite passed **592 tests**, with five existing
+hosted-provider fixtures reserved for CI. After tightening the depth guard for
+empty cells, all **15 Sphinx CLI integration tests** passed, including the new
+16-level acceptance/17-level rejection case (593 distinct native cases across
+these checks). Final warnings-denied workspace Clippy, formatting, actionlint,
+strict/deep documentation (55 routes, 23 examples), and Node-only MDX rendering
+across all six converters passed. Logs are under
+`/private/tmp/zellij-tables-{workspace,import-final,clippy-final,engine-final,docs}.log`.
+
+CI additionally runs `scripts/check-imported-tables.mjs` from conversion export
+acceptance. It checks browser hydration, semantic header/body cells, local image
+loading and document navigation under the deployment prefix, capturing console
+and runtime errors and rejecting external requests. The existing Chromium setup
+step moves before conversion acceptance; it is not duplicated. This helper is
+not imported by local server-render-only checks. Final-head CI and merge remain
+pending.
+
+Sphinx table implementation: **`2b06d934c3cc7d77456298368d930c492dfb3d5d`**. Local evidence above covers
+this source, including the final empty-cell depth guard. Final-head GitHub
+acceptance and merge remain pending.
