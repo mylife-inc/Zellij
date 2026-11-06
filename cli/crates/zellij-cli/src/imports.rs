@@ -192,7 +192,8 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
                 .ok_or_else(|| Error::InvalidArgument("--image requires --tag".into()))?,
         )
         .map(DeliveryPlan::Push)
-        .and_then(|plan| plan.with_platform(options.platform));
+        .and_then(|plan| plan.with_platform(options.platform))
+        .and_then(|plan| plan.with_kind(options.kind.map(Into::into)));
     }
     let provider = Provider::parse(options.provider.as_deref().unwrap_or(""))?;
     let environment_site = std::env::var(provider.site_environment()).ok();
@@ -207,7 +208,10 @@ fn plan(options: &ShipArgs) -> Result<DeliveryPlan> {
                 provider.site_environment()
             ))
         })?;
-    provider.plan(id, options.prod)
+    provider
+        .plan(id, options.prod)?
+        .with_platform(options.platform)?
+        .with_kind(options.kind.map(Into::into))
 }
 
 fn configuration(plan: &DeliveryPlan) -> String {
@@ -220,6 +224,11 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .map(|platform| format!("  platform: {platform}\n"))
                 .unwrap_or_default(),
             image.kind.as_str()
+        ),
+        DeliveryPlan::Fly { app, kind } => format!(
+            "{SITE_CONFIG}publish:\n  action: deploy\n  provider: fly\n  site: {}\n  image: {}\n",
+            yaml::string(app),
+            kind.as_str()
         ),
         DeliveryPlan::S3 { destination } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: s3\n  site: {}\n",
@@ -253,7 +262,7 @@ fn retained(out: &str) {
 pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
     let plan = plan(options)?;
     let build = options.overrides.options(options.features);
-    if !matches!(plan, DeliveryPlan::Push(_)) {
+    if !matches!(plan, DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. }) {
         build.require_no_image_args()?;
     }
     let import = Prepared::read(

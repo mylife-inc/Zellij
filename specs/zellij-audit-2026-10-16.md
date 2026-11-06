@@ -4596,3 +4596,85 @@ S3 implementation commit **`db164b5`** contains the adapter, CLI/CI integration,
 regression tests and matching documentation. Local verification above covers this
 implementation; final-head native/hosted CI and live account acceptance remain
 pending. This subsequent context-only commit records the source identity.
+
+
+### 2026-11-05 — Fly image deployment to existing apps
+
+Current source implements `fly`, `deploy fly`, saved publication, import-and-ship
+and GitHub workflow generation. `--kind static|next` selects the image; saved
+`publish.image` is supported only for Fly deployments. Static is the default.
+Explicit `--prod` is mandatory. App selection uses explicit site, FLY_APP, then
+same-provider saved site. FLY_ORG guards organization identity; FLY_API_TOKEN
+supports one raw or scheme-prefixed token. Credentials are never saved in YAML.
+
+The native Machines API adapter requires 1–10 already-started, healthy web
+Machines, HTTP services on port 3000, autostop disabled, and no additional process
+groups, mounts, injected files or entrypoint overrides. It preserves full config
+and changes only the image. Existing shared image builders produce small static
+or Next wrappers for linux/amd64; no local runtime is installed or started.
+The selected runtime must already be authenticated to registry.fly.io. Unique
+tags and a validated repository digest identify the image for deployment.
+
+Preflight precedes building. After one build/push, identity, membership and
+versions are rechecked. All leases are acquired before updates, with optimistic
+version guards. Sequential updates wait for the new instance, matching digest,
+and fresh passing checks. Final state is checked before releasing leases.
+Five-minute rollout budget, ten-minute leases, bounded/redacted HTTP responses,
+no redirects, retries or automatic rollback. Failures may leave a partial rollout
+and retained images. This does not create/configure apps, Machines, networking,
+secrets, scaling or Fly release records; fly.toml is not applied. Public DNS/TLS
+and reachability are not acceptance claims.
+
+GitHub PR jobs build the selected image without credentials; authorized publish
+events log in with stdin, deploy once and log out. Provisioning remains explicit.
+Live Fly account acceptance is pending. Shared real static/Next image acceptance
+runs in existing CI; protocol/fake-client fixtures do not prove live Fly behavior.
+Railway, other CI systems, wizard and advanced imports remain separate work.
+Rc.2 is unpublished pending explicit release authorization; production Netlify
+migration remains blocked by the reported hosting-comment hydration issue.
+
+Protocol references: Fly [Machines API](https://docs.fly.io/machines/api/machines-resource),
+[Apps API](https://docs.fly.io/machines/api/apps-resource),
+[registry](https://docs.fly.io/blueprints/using-the-fly-docker-registry), and
+[official SDK token normalization](https://github.com/superfly/fly-go/blob/master/tokens/tokens.go).
+See [user setup and exact limits](../examples/zellij-docs/content/02-cli/deploy.mdx#fly).
+Final source identity and verification are recorded in the subsequent entry.
+
+
+PR #84 closure: S3 merged as `9e3dd79e48c2cd256e16f9e24085fcf5a45b78c4`
+after all 16 checks passed on `d141aa8ed44fff8643601e2f1a93b21053cc9be2`
+in run `42150590098`, attempt 2. Only the Ubuntu job was retried after slow
+Azure package downloads exhausted its time limit; assertions were unchanged.
+Tested/merged tree: `4d85791532ca267dff6a1bf028307f7196c1924e`.
+Both post-merge workflows passed: main `42155106031`, base image `42155106146`.
+
+Fly local verification: **541 distinct Rust tests passed** (538 in the full
+workspace run, plus three added cases in final focused runs). Final CLI binary,
+delivery, import and workflow suites passed 149 tests, with five real hosted
+provider fixtures intentionally ignored locally and selected in existing CI.
+Warnings-denied workspace Clippy, formatting, strict/deep documentation (55 routes,
+23 examples), repository actionlint and an emitted Fly workflow passed.
+Evidence: `/private/tmp/zellij-fly-workspace.log`, `zellij-fly-final-tests.log`,
+`zellij-fly-clippy.log`, `zellij-fly-docs.log`, and generated workflow
+`/private/var/folders/1p/q48lnmt15932t129b48z_mrr0000gn/T/zellij-fly-ci-22txs7eu/.github/workflows/docs.yml`.
+No local Docker/browser or live Fly mutation ran. Final-head cross-platform CI
+and merge remain pending; live provider acceptance remains a separate limitation.
+
+
+Fly implementation commit **`a9b650c`** contains the native adapter, static/Next
+selection, delivery/import/CI wiring, protocol and fake-tool regression tests,
+and matching documentation. Local verification above covers this source.
+Final-head GitHub CI and merge remain pending; live Fly account acceptance is
+not implied by loopback fixtures or shared image tests.
+
+
+Fly compatibility follow-up **`ecad3ca`** accepts the API's default init object
+with `tty: false` while retaining rejection of custom command/TTY overrides.
+Update receipts may omit `updated_at`; readiness then uses the subsequent GET's
+timestamp only after verifying the new instance ID and exact requested config.
+The baseline fixture now includes Fly's default init shape, and a new regression
+covers sparse update receipts. All 10 Fly tests and warnings-denied workspace
+Clippy pass. Distinct local Rust coverage is **542** tests. Evidence:
+`/private/tmp/zellij-fly-compat-tests.log`, `zellij-fly-compat-clippy.log`.
+PR #85's first run on `1b272fa` cannot validate this correction; the final head
+requires its own complete CI run before merge. Live Fly acceptance remains pending.

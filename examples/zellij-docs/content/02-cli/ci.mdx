@@ -413,3 +413,30 @@ An absent/empty optional session token does not delete an existing repository
 secret. When switching to long-lived credentials, clear any stale
 `AWS_SESSION_TOKEN` secret yourself. Region, owner and destination are not
 provisioned by this option.
+
+
+## Fly workflows
+
+```bash
+zel ci --deploy fly --site manual --kind next --prod --zel-version 0.2.0-rc.2
+```
+
+Saved `publish.provider: fly` and `publish.image` also work. `--kind` overrides
+that image kind; `static` is the default. Configure repository secret
+`FLY_API_TOKEN`, variable `FLY_ORG` (the expected organization slug), and `FLY_APP`
+when no app is saved in the workflow. Same-named secrets can supply these variables.
+Destination precedence is `--site`, local `FLY_APP`, then same-provider saved site.
+`--provision` explicitly uploads the local token through `gh` on stdin after
+writing the workflow; it accepts the optional Fly token scheme and never stores
+the token in YAML. Without that flag, generation writes only local files.
+
+Pull-request jobs validate and build the selected image without Fly credentials.
+Eligible publication events authenticate Docker to Fly's registry using stdin,
+run one `zel deploy fly --kind … --prod`, and log out when the step exits. They
+use an amd64 runner; an explicit arm64/combined platform is rejected. Normal
+feature/build overrides are retained. Production intent is required, either as
+`--prod` or `ci.production: true`. See [existing-app requirements](/cli/deploy#fly).
+
+Generation requires a pinned CLI version of rc.2 or later but does not publish
+or verify it. **rc.2 is still unpublished; rc.1 cannot execute Fly deployment.**
+The workflow can be reviewed now and enabled after a compatible release exists.

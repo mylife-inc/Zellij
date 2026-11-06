@@ -38,6 +38,9 @@ fn command(root: &Path, args: &[&str]) -> Command {
     command
         .current_dir(root)
         .args(args)
+        .env_remove("FLY_APP")
+        .env_remove("FLY_ORG")
+        .env_remove("FLY_API_TOKEN")
         .env_remove("NETLIFY_AUTH_TOKEN")
         .env_remove("NETLIFY_SITE_ID")
         .env_remove("CLOUDFLARE_PAGES_PROJECT_NAME")
@@ -1510,4 +1513,77 @@ fn s3_provision_sends_multiple_secrets_only_on_stdin_and_keeps_partial_workflow(
                 .contains("fixture-secret")
         );
     }
+}
+
+#[test]
+fn fly_workflows_build_the_selected_kind_without_credentials_on_prs() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: fly, site: manual, image: next}\nimage: {platform: all}\n",
+    );
+    run(root, &["ci"], 2);
+    assert!(!root.join(".github/workflows/docs.yml").exists());
+    run(root, &["ci", "--prod"], 0);
+    let doc = workflow(root);
+    let verify = doc["jobs"]["verify"].to_string();
+    assert!(
+        verify.contains("zel image next")
+            && verify.contains("linux/amd64")
+            && !verify.contains("FLY_API_TOKEN")
+            && !verify.contains("secrets.")
+    );
+    let step = doc["jobs"]["publish"]["steps"]
+        .as_array()
+        .unwrap()
+        .last()
+        .unwrap();
+    assert!(
+        step["run"].as_str().unwrap().contains("zel deploy fly")
+            && step["run"].as_str().unwrap().contains("--kind next --prod")
+    );
+    assert!(
+        step["run"].as_str().unwrap().contains("--password-stdin")
+            && step["run"].as_str().unwrap().contains("docker logout")
+    );
+    assert_eq!(step["env"]["FLY_APP"], "manual");
+    assert_eq!(step["env"]["FLY_API_TOKEN"], "${{ secrets.FLY_API_TOKEN }}");
+    assert_eq!(doc["jobs"]["publish"]["runs-on"], "ubuntu-latest");
+    run(root, &["ci", "--prod", "--kind", "static", "--force"], 0);
+    assert!(
+        workflow(root)["jobs"]["verify"]
+            .to_string()
+            .contains("zel image static")
+    );
+    for flags in [
+        vec!["--platform", "all"],
+        vec!["--platform", "linux/arm64"],
+        vec!["--zel-version", "0.2.0-rc.1"],
+        vec!["--target", "static", "--kind", "next"],
+    ] {
+        let mut args = vec!["ci", "--prod", "--force"];
+        args.extend(flags);
+        run(root, &args, 2);
+    }
+    let before = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    let output = command(root, &["ci", "--prod", "--provision", "--force"])
+        .env("FLY_API_TOKEN", "bad\ntoken")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert_eq!(
+        fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+        before
+    );
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: netlify, site: other-site}\n",
+    );
+    run(root, &["ci", "--deploy", "fly", "--prod", "--force"], 0);
+    let text = workflow(root).to_string();
+    assert!(text.contains("vars.FLY_APP") && !text.contains("other-site"));
 }

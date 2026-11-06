@@ -98,6 +98,8 @@ pub enum PublishSettings {
         provider: Provider,
         #[serde(default, deserialize_with = "site_identifier")]
         site: Option<String>,
+        #[serde(default)]
+        image: Option<ImageKind>,
     },
 }
 
@@ -110,6 +112,7 @@ pub enum Provider {
     #[serde(rename = "github-pages")]
     GithubPages,
     S3,
+    Fly,
 }
 impl Provider {
     pub fn parse(value: &str) -> Result<Self> {
@@ -119,8 +122,9 @@ impl Provider {
             "vercel" => Ok(Self::Vercel),
             "github-pages" => Ok(Self::GithubPages),
             "s3" => Ok(Self::S3),
+            "fly" => Ok(Self::Fly),
             _ => Err(Error::InvalidArgument(
-                "unsupported deployment provider; choose netlify, cloudflare, vercel, github-pages or s3".into(),
+                "unsupported deployment provider; choose netlify, cloudflare, vercel, github-pages, s3 or fly".into(),
             )),
         }
     }
@@ -131,6 +135,7 @@ impl Provider {
             Self::Vercel => "vercel",
             Self::GithubPages => "github-pages",
             Self::S3 => "s3",
+            Self::Fly => "fly",
         }
     }
     pub fn site_environment(self) -> &'static str {
@@ -140,6 +145,7 @@ impl Provider {
             Self::Vercel => "VERCEL_PROJECT_ID",
             Self::GithubPages => "GITHUB_PAGES_REPOSITORY",
             Self::S3 => "S3_DESTINATION",
+            Self::Fly => "FLY_APP",
         }
     }
     pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
@@ -158,6 +164,18 @@ impl Provider {
     }
     pub fn validate_site(self, value: &str) -> Result<()> {
         match self {
+            Self::Fly => {
+                if !(1..=63).contains(&value.len())
+                    || value.starts_with('-')
+                    || value.ends_with('-')
+                    || !value
+                        .bytes()
+                        .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
+                {
+                    return Err(Error::InvalidArgument("Fly requires an existing app name: lowercase letters, digits and internal hyphens, up to 63 characters".into()));
+                }
+                Ok(())
+            }
             Self::Netlify => validate_site_identifier(value),
             Self::S3 => {
                 let (bucket, prefix) = value.split_once('/').unwrap_or((value, ""));
@@ -250,6 +268,7 @@ impl Provider {
     pub fn credential_environments(self) -> &'static [&'static str] {
         match self {
             Self::S3 => &["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+            Self::Fly => &["FLY_API_TOKEN"],
             Self::Netlify => &["NETLIFY_AUTH_TOKEN"],
             Self::Cloudflare => &["CLOUDFLARE_API_TOKEN"],
             Self::Vercel => &["VERCEL_TOKEN"],
@@ -257,6 +276,9 @@ impl Provider {
         }
     }
     pub fn require_production(self, production: bool) -> Result<()> {
+        if self == Self::Fly && !production {
+            return Err(Error::InvalidArgument("Fly Machine updates have no draft mode; pass --prod (or ci.production: true for CI generation) to update the existing app".into()));
+        }
         if self == Self::S3 && !production {
             return Err(Error::InvalidArgument("S3 website uploads have no draft mode; pass --prod (or ci.production: true for CI generation). Existing matching objects will be replaced; other objects are retained".into()));
         }
@@ -269,6 +291,10 @@ impl Provider {
         self.validate_site(destination)?;
         self.require_production(production)?;
         Ok(match self {
+            Self::Fly => DeliveryPlan::Fly {
+                app: destination.into(),
+                kind: ImageKind::Static,
+            },
             Self::S3 => DeliveryPlan::S3 {
                 destination: destination.into(),
             },
@@ -327,15 +353,32 @@ pub enum DeliveryPlan {
     Vercel { project: String, production: bool },
     GithubPages { repository: String },
     S3 { destination: String },
+    Fly { app: String, kind: ImageKind },
 }
 
 impl DeliveryPlan {
+    pub fn with_kind(mut self, kind: Option<ImageKind>) -> Result<Self> {
+        if let Some(kind) = kind {
+            match &mut self {
+                Self::Fly { kind: selected, .. } => *selected = kind,
+                _ => return Err(Error::InvalidArgument("--kind is only for Fly deployment; use --image for ship registry publication or publish.image for saved pushes".into())),
+            }
+        }
+        Ok(self)
+    }
+
     /// Apply a per-invocation override only to image delivery. Saved image
     /// defaults remain irrelevant to explicit static-site deployments.
     pub fn with_platform(mut self, platform: Option<ImagePlatform>) -> Result<Self> {
         if let Some(platform) = platform {
             match &mut self {
                 Self::Push(image) => image.platform = Some(platform),
+                Self::Fly { .. } if platform == ImagePlatform::Amd64 => {}
+                Self::Fly { .. } => {
+                    return Err(Error::InvalidArgument(
+                        "Fly images require linux/amd64".into(),
+                    ));
+                }
                 Self::Netlify { .. }
                 | Self::Cloudflare { .. }
                 | Self::Vercel { .. }
@@ -369,19 +412,28 @@ impl DeliveryPlan {
             return ImagePublication::resolve(site, tag).map(Self::Push);
         }
         let saved_site = match &site.publish {
-            Some(PublishSettings::Deploy { provider, site }) if Some(*provider) == selected => {
+            Some(PublishSettings::Deploy { provider, site, .. }) if Some(*provider) == selected => {
                 site.as_deref()
             }
             _ => None,
         };
-        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages|s3 --site <destination>`".into()))?;
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages|s3|fly --site <destination>`".into()))?;
         if tag.is_some() {
             return Err(Error::InvalidArgument(
-                "deployment accepts generated static HTML, not an image tag; remove --tag".into(),
+                "deployment chooses its output destination; --tag is only for registry publication"
+                    .into(),
             ));
         }
         let destination = site_id.or(environment_site).or(saved_site).ok_or_else(|| Error::InvalidArgument(format!("{} requires an existing site: pass --site-id (or --site), set {}, or save publish.site in zel.yaml", selected.as_str(), selected.site_environment())))?;
-        selected.plan(destination, production)
+        let saved_kind = match &site.publish {
+            Some(PublishSettings::Deploy {
+                provider, image, ..
+            }) if *provider == selected => *image,
+            _ => None,
+        };
+        selected
+            .plan(destination, production)?
+            .with_kind(saved_kind)
     }
 
     /// Shared constructor for saved delivery and a newly imported site.
