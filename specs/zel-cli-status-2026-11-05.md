@@ -557,5 +557,15 @@ and provider connectivity are not included. Regression tests cover fake clients
 and native filesystem behavior; final-head cross-platform CI and publication
 remain separate. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx).
 
-Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**. The local verification above
-covers this source. Final-head GitHub CI and merge remain pending.
+Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**.
+Local verification for this source: 586 Rust tests passed, five existing hosted
+fixtures reserved for CI; warnings-denied workspace Clippy, formatting,
+actionlint and strict/deep documentation (55 routes, 23 examples) passed.
+Final-head GitHub CI and merge remain pending.
+
+The preceding full-starter/Windows-recovery milestone merged in PR #89 as
+`479eac4` after all 16 final-head checks passed on `80ba76c` in `42267735005`.
+Its post-merge base-image run `42272858763` passed. Main run `42272858943`
+passed on attempt 2 after retrying only an Ubuntu browser dependency-download
+timeout at the unchanged merge SHA. The durable context/audit retain the
+first attempt and complete acceptance evidence.
