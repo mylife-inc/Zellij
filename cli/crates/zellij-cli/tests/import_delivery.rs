@@ -1060,3 +1060,58 @@ fn s3_ship_plans_without_credentials_and_retains_site_on_credential_failure() {
     assert!(root.join("converted/content/site.yaml").is_file());
     assert_eq!(tree(&root.join("source")), original);
 }
+
+#[test]
+fn fly_ship_preserves_source_and_saves_selected_kind_after_credential_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "converted",
+        "--provider",
+        "fly",
+        "--site",
+        "manual",
+        "--kind",
+        "next",
+    ];
+    let denied = command(root).args(args).output().unwrap();
+    assert_eq!(denied.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("--prod"));
+    assert!(!root.join("converted").exists());
+    let denied = command(root)
+        .args(args)
+        .args(["--prod", "--platform", "all"])
+        .output()
+        .unwrap();
+    assert_eq!(denied.status.code(), Some(2));
+    assert!(!root.join("converted").exists());
+    let plan = command(root)
+        .args(args)
+        .args(["--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(plan.status.success(), "{plan:?}");
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("FLY_API_TOKEN")
+        .env_remove("FLY_ORG")
+        .args(args)
+        .arg("--prod")
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("FLY_API_TOKEN"));
+    let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
+    assert!(
+        config.contains("provider: fly")
+            && config.contains("image: next")
+            && config.contains("manual")
+    );
+    assert!(!config.contains("token") && !config.contains("production"));
+    assert_eq!(tree(&root.join("source")), original);
+}

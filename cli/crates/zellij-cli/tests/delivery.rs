@@ -35,6 +35,9 @@ fn command(root: &Path) -> Command {
         .env("PATH", root.join("no-tools"))
         .env("DOCKER_HOST", "unix:///fixture-zellij.sock");
     for key in [
+        "FLY_APP",
+        "FLY_ORG",
+        "FLY_API_TOKEN",
         "DOCKER_CONTEXT",
         "CONTAINER_HOST",
         "CONTAINER_CONNECTION",
@@ -1075,4 +1078,117 @@ fn s3_environment_validation_never_starts_a_build_or_uses_custom_endpoints() {
         );
         assert!(!root.join("docs/zellij/site").exists());
     }
+}
+
+#[test]
+fn fly_plans_select_image_kind_and_require_explicit_production_without_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: fly, site: saved-app, image: next}\nimage: {platform: all}\n",
+    );
+    for route in [vec!["fly"], vec!["pub"], vec!["deploy", "fly"]] {
+        let mut args = route.clone();
+        args.push("--dry-run");
+        let output = run(root, &args, 2);
+        assert!(String::from_utf8_lossy(&output.stderr).contains("--prod"));
+        args.push("--prod");
+        let output = run(root, &args, 0);
+        let out = String::from_utf8_lossy(&output.stdout);
+        assert!(
+            out.contains("saved-app") && out.contains("next") && out.contains("linux/amd64"),
+            "{out}"
+        );
+    }
+    let output = command(root)
+        .env("FLY_APP", "env-app")
+        .args([
+            "fly",
+            "--site",
+            "explicit-app",
+            "--kind",
+            "static",
+            "--prod",
+            "--dry-run",
+        ])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    let out = String::from_utf8_lossy(&output.stdout);
+    assert!(
+        out.contains("explicit-app")
+            && out.contains("static")
+            && !out.contains("saved-app")
+            && !out.contains("env-app")
+    );
+    for flags in [
+        vec!["--platform", "all"],
+        vec!["--platform", "linux/arm64"],
+        vec!["--tag", "my-image"],
+        vec!["--site", "https://manual.fly.dev"],
+    ] {
+        let mut args = vec!["fly", "--prod", "--dry-run"];
+        args.extend(flags);
+        run(root, &args, 2);
+    }
+    run(
+        root,
+        &[
+            "fly",
+            "--prod",
+            "--dry-run",
+            "--platform",
+            "linux/amd64",
+            "--kind",
+            "next",
+            "--base-path",
+            "/manual",
+        ],
+        0,
+    );
+    run(
+        root,
+        &[
+            "fly",
+            "--prod",
+            "--dry-run",
+            "--kind",
+            "static",
+            "--base-path",
+            "/manual",
+        ],
+        2,
+    );
+    run(
+        root,
+        &[
+            "deploy",
+            "netlify",
+            "--site",
+            "other-site",
+            "--kind",
+            "next",
+            "--dry-run",
+        ],
+        2,
+    );
+    let output = run(root, &["fly", "--prod"], 2);
+    assert!(String::from_utf8_lossy(&output.stderr).contains("FLY_API_TOKEN"));
+    assert!(!root.join("docs/zellij/site").exists());
+}
+#[test]
+fn deployment_image_kind_is_only_valid_for_fly() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: netlify, site: manual, image: next}\n",
+    );
+    let output = run(root, &["pub", "--dry-run"], 2);
+    assert!(String::from_utf8_lossy(&output.stderr).contains("publish.image"));
 }

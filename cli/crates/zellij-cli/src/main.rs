@@ -21,6 +21,7 @@ mod delivery;
 mod development;
 mod eject;
 mod features;
+mod fly;
 mod formatting;
 mod github_pages;
 mod images;
@@ -269,7 +270,8 @@ fn main() {
         | Command::Cloudflare(_)
         | Command::Vercel(_)
         | Command::GithubPages(_)
-        | Command::S3(_) => {
+        | Command::S3(_)
+        | Command::Fly(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

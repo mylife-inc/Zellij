@@ -1,6 +1,6 @@
 ---
 title: zel deploy
-description: Build static HTML once and upload it directly to Netlify, Cloudflare Pages, Vercel, GitHub Pages or S3.
+description: Build and deploy static HTML or containerized documentation to an existing hosting destination.
 ---
 
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
@@ -9,7 +9,7 @@ description: Build static HTML once and upload it directly to Netlify, Cloudflar
 <Callout type="tip" title="Available in candidate 0.2.0-rc.1">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Cloudflare Pages, Vercel, GitHub Pages and S3 are available in current source; rc.1 does not include them.
+predates these commands. Cloudflare Pages, Vercel, GitHub Pages, S3 and Fly are available in current source; rc.1 does not include them.
 </Callout>
 
 ```bash title="terminal"
@@ -490,10 +490,12 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 
 | Option | Meaning |
 | --- | --- |
-| `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3`; omit to execute saved publication settings |
+| `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3` or `fly`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
-| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name, GitHub owner/repository or S3 bucket/prefix; `--site` is equivalent |
-| `--prod` | Request live publication; required for GitHub Pages and S3, which have no draft mode |
+| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name, GitHub owner/repository S3 bucket/prefix or Fly app name; `--site` is equivalent |
+| `--prod` | Request live publication; required for GitHub Pages, S3 and Fly, which have no draft mode |
+| `--kind <kind>` | Fly image kind; defaults to same-provider `publish.image`, then `static` |
+| `--platform <platform>` | Fly accepts only `linux/amd64`; saved `image.platform` is ignored for Fly |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
@@ -503,8 +505,8 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--tag <reference>` | Only valid for saved image publication via bare `deploy` or `publish` |
 
 `--json`, `--target`, `--message`, and `--preview` are not supported. Preview is
-the default for Netlify, Cloudflare and Vercel; GitHub Pages and S3 require `--prod`.
-Fly and Railway remain future adapters; they are not aliases for Netlify.
+the default for Netlify, Cloudflare and Vercel; GitHub Pages, S3 and Fly require `--prod`.
+Railway remains a future adapter. Fly uses existing web Machines; see its setup below.
 
 See [`zel publish`](/cli/publish) for image registry publication and
 [`zel ci`](/cli/ci) for workflow generation from saved delivery settings.
@@ -512,7 +514,7 @@ See [`zel publish`](/cli/publish) for image registry publication and
 ## Image build arguments
 
 Current source accepts `--build-arg NAME=VALUE` only when bare `zel deploy` selects
-saved image publication. `zel netlify`, `deploy netlify` and saved Netlify delivery
+saved image publication, or for Fly image deployment. `zel netlify`, `deploy netlify` and saved Netlify delivery
 reject it before credentials, building or remote requests. See
 [image build arguments](/cli/image#image-build-arguments).
 
@@ -521,3 +523,100 @@ reject it before credentials, building or remote requests. See
 - [Build outputs](/cli/build)
 - [Container publication](/cli/publish)
 - [Workflow generation](/cli/ci)
+
+
+## Fly
+
+Current source implements `zel fly` and `zel deploy fly` for **existing Fly apps**.
+It builds either the small static web-server image or the Next.js wrapper image,
+pushes it to the app's Fly registry repository, and updates existing Machines
+using the immutable image digest. This feature is newer than published rc.1;
+rc.2 has not been published. Live Fly account acceptance is still pending.
+
+```bash
+zel fly --site manual --prod --dry-run
+zel fly --site manual --prod
+zel fly --site manual --kind next --prod
+```
+
+The positional folder uses normal Zellij discovery; `--site` identifies the
+remote app. Destination precedence is `--site` / `--site-id`, `FLY_APP`, then
+same-provider `publish.site`. Image kind precedence is `--kind`, same-provider
+`publish.image`, then `static`. For short repeated commands:
+
+```yaml
+publish:
+  action: deploy
+  provider: fly
+  site: manual
+  image: next
+```
+
+Use `zel pub --prod` or `zel fly --prod`. **Fly has no draft mode**, so `--prod`
+is required even for a dry run. `publish.image` in a deployment is valid only
+for Fly; registry push settings retain their existing meaning.
+
+### Prepare an existing app
+
+- Set `FLY_API_TOKEN` to one app-scoped deploy token, preferably with a limited
+  lifetime. A raw token or one prefixed by `FlyV1 ` or `Bearer ` is accepted;
+  comma-separated token sets, token files and stored Fly logins are not read.
+- Set `FLY_ORG` to the expected organization slug. The API must return this
+  organization and the selected app name before any build begins.
+- Authenticate the **selected container runtime** to `registry.fly.io` before
+  running the command. Docker users can use `fly auth docker` if they already
+  use Fly's CLI. For a token-based Docker login on macOS/Linux:
+
+  ```bash
+  TOKEN="${FLY_API_TOKEN#FlyV1 }"
+  TOKEN="${TOKEN#Bearer }"
+  printf '%s' "$TOKEN" | docker login registry.fly.io --username x --password-stdin
+  unset TOKEN
+  ```
+
+  Podman/nerdctl users must authenticate that client instead. Zel preserves the
+  caller's runtime/context and does not install, start or log in a local runtime.
+  Fly's CLI is not required by Zel's deployment adapter.
+- The app must already have 1–10 started, reachable, uncordoned web Machines,
+  each running one container with HTTP service handlers on internal TCP port
+  **3000**, autostop disabled, and configured health checks that currently pass.
+  The app must have no other process groups, mounts, injected files, additional
+  containers or command/entrypoint overrides. `PORT` and `HOSTNAME` overrides
+  must agree with `3000` and `0.0.0.0`.
+- Configure public IPs, DNS/TLS, app secrets and the initial Machines separately.
+  Zel does not apply `fly.toml`, create Machines, scale, allocate IPs, change
+  service settings, execute release commands or create Fly release records.
+
+See Fly's [registry authentication](https://docs.fly.io/blueprints/using-the-fly-docker-registry),
+[scoped API tokens](https://docs.fly.io/security/tokens), and
+[Machines API](https://docs.fly.io/machines/api/machines-resource) references.
+
+### Build and rollout behavior
+
+Both image kinds use **linux/amd64**. Explicit `--platform linux/amd64` is accepted;
+`linux/arm64` and `all` fail before building. Saved `image.platform` and `image.name`
+are not Fly defaults. On an ARM development machine, the selected builder must
+already support amd64 builds. Zel does not configure emulation. CI uses an amd64
+runner. Normal image feature selection and build arguments remain available;
+portable static images still reject hosted-only URL/preflight overrides.
+
+The image gets a unique `registry.fly.io/<app>:zel-…` tag. Zel builds once and
+pushes, then requires the runtime's repository digest receipt. An absent or
+ambiguous digest stops before any Machine update. Local and remote images are
+retained on failure; `--tag` is not a Fly option.
+
+Before updates, Zel rechecks app identity, Machine membership, versions and full
+configuration. It acquires all Machine leases, then updates one Machine at a
+time with an optimistic version guard. Only the image field changes. Each new
+version must start with the requested digest and fresh passing results for all
+previous health checks before the next Machine is updated. A final app and
+Machine check precedes success. API bodies and credentials are omitted from
+error diagnostics; requests reject redirects and bound response sizes.
+
+**Updates are not atomic.** A timeout or failure can leave some Machines running
+the new image. There is no automatic retry or rollback. Inspect the app before
+retrying; a single-Machine app can have downtime during restart. Rollout has a
+five-minute total budget; leases last ten minutes and are released on handled
+success/failure paths. A killed process or failed cleanup may leave leases until
+expiry. Success confirms Machine state and health checks, not external DNS/TLS
+or public reachability. Source files and previous local site output are retained.

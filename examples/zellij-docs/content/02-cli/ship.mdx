@@ -10,7 +10,7 @@ description: Import into a configured site, build once, then deploy or publish a
 Current source imports MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx into a
 new configured hosted site, then uses shared delivery to build once and publish.
 The original MkDocs/Docusaurus and Netlify/image paths are available in candidate
-`0.2.0-rc.1`; the additional import formats and Cloudflare/Vercel/GitHub Pages/S3 providers are
+`0.2.0-rc.1`; the additional import formats and Cloudflare/Vercel/GitHub Pages/S3/Fly providers are
 newer source functionality. Stable `0.1.3` predates these commands.
 </Callout>
 
@@ -142,11 +142,12 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--out <path>` | Required new or empty configured site root |
 | `--from <format>` | Force the converter instead of detecting |
 | `--assets copy\|skip` | Copy referenced assets by default; skip retains original URLs and reports omissions |
-| `--provider <provider>` | Deploy static HTML using `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3` |
+| `--kind <kind>` | Fly image kind: `static` (default) or `next`; distinct from registry-only `--image` |
+| `--provider <provider>` | Deploy using `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3` or `fly` |
 | `--image static\|next` | Publish this image kind; conflicts with `--provider` |
 | `--tag <reference>` | Required with `--image`; exact registry destination |
-| `--site-id <destination>` / `--site <destination>` | Provider-specific project, repository or bucket/prefix; overrides provider environment |
-| `--prod` | Request production; required for GitHub Pages and S3, conflicts with `--image` |
+| `--site-id <destination>` / `--site <destination>` | Provider-specific project, repository, bucket/prefix or Fly app; overrides provider environment |
+| `--prod` | Request production; required for GitHub Pages, S3 and Fly, conflicts with `--image` |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
 | `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
@@ -183,7 +184,7 @@ Image delivery also accepts `--platform linux/amd64`, `--platform linux/arm64`,
 or `--platform all` to publish both architectures under the supplied tag.
 The choice is shown in the plan, saved as `image.platform` in the imported site's
 `zel.yaml`, and used by the build and later `zel pub` commands. This flag
-requires `--image`; it cannot select a platform for a Netlify deployment.
+requires `--image`, except Fly also accepts `--platform linux/amd64`; static upload providers reject it.
 Combined publication requires a builder supporting both architectures. If it
 fails, the converted site remains available for `zel pub`; inspect the registry
 before retrying since uploaded layers may exist. See
@@ -235,3 +236,19 @@ intent is required before conversion begins, including dry runs. Ship saves the
 provider and destination, never credentials or `--prod`. If deployment fails,
 the converted site remains; inspect any partial remote upload, then use
 `zel pub converted --prod` when ready to retry. See [S3 setup and limits](/cli/deploy#aws-s3).
+
+
+## Ship to Fly
+
+```bash
+zel ship source --out converted --provider fly --site manual --kind next --prod --dry-run
+zel ship source --out converted --provider fly --site manual --kind next --prod
+```
+
+The conversion writes a configured site with `publish.image: next`, then builds
+and deploys using the shared [Fly adapter](/cli/deploy#fly). Missing production
+intent or an invalid kind/platform fails before conversion writes. After a
+successful import, a build, authentication or rollout failure retains the converted
+files; review them and retry with `zel pub converted --prod`. Source content is
+unchanged. Use `--kind` for Fly; `--image` selects registry publication and cannot
+be combined with a provider. Only amd64 is supported by Fly.

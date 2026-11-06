@@ -2094,3 +2094,46 @@ See [setup and limits](../examples/zellij-docs/content/02-cli/deploy.mdx#aws-s3)
 Live AWS account acceptance is pending. The published rc.1 lacks this provider;
 rc.2 remains unpublished. Fly/Railway, other CI systems, wizard and advanced
 import gaps remain separate work.
+
+
+### 2026-11-05 — Fly image deployment to existing apps
+
+Current source implements `fly`, `deploy fly`, saved publication, import-and-ship
+and GitHub workflow generation. `--kind static|next` selects the image; saved
+`publish.image` is supported only for Fly deployments. Static is the default.
+Explicit `--prod` is mandatory. App selection uses explicit site, FLY_APP, then
+same-provider saved site. FLY_ORG guards organization identity; FLY_API_TOKEN
+supports one raw or scheme-prefixed token. Credentials are never saved in YAML.
+
+The native Machines API adapter requires 1–10 already-started, healthy web
+Machines, HTTP services on port 3000, autostop disabled, and no additional process
+groups, mounts, injected files or entrypoint overrides. It preserves full config
+and changes only the image. Existing shared image builders produce small static
+or Next wrappers for linux/amd64; no local runtime is installed or started.
+The selected runtime must already be authenticated to registry.fly.io. Unique
+tags and a validated repository digest identify the image for deployment.
+
+Preflight precedes building. After one build/push, identity, membership and
+versions are rechecked. All leases are acquired before updates, with optimistic
+version guards. Sequential updates wait for the new instance, matching digest,
+and fresh passing checks. Final state is checked before releasing leases.
+Five-minute rollout budget, ten-minute leases, bounded/redacted HTTP responses,
+no redirects, retries or automatic rollback. Failures may leave a partial rollout
+and retained images. This does not create/configure apps, Machines, networking,
+secrets, scaling or Fly release records; fly.toml is not applied. Public DNS/TLS
+and reachability are not acceptance claims.
+
+GitHub PR jobs build the selected image without credentials; authorized publish
+events log in with stdin, deploy once and log out. Provisioning remains explicit.
+Live Fly account acceptance is pending. Shared real static/Next image acceptance
+runs in existing CI; protocol/fake-client fixtures do not prove live Fly behavior.
+Railway, other CI systems, wizard and advanced imports remain separate work.
+Rc.2 is unpublished pending explicit release authorization; production Netlify
+migration remains blocked by the reported hosting-comment hydration issue.
+
+Protocol references: Fly [Machines API](https://docs.fly.io/machines/api/machines-resource),
+[Apps API](https://docs.fly.io/machines/api/apps-resource),
+[registry](https://docs.fly.io/blueprints/using-the-fly-docker-registry), and
+[official SDK token normalization](https://github.com/superfly/fly-go/blob/master/tokens/tokens.go).
+See [user setup and exact limits](../examples/zellij-docs/content/02-cli/deploy.mdx#fly).
+Final source identity and verification are recorded in the subsequent entry.

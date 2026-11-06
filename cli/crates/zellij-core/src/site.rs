@@ -254,9 +254,17 @@ impl Site {
             if let Some(crate::delivery::PublishSettings::Deploy {
                 provider,
                 site: Some(destination),
+                ..
             }) = &publish
             {
                 provider.validate_site(destination)?;
+            }
+            if matches!(&publish, Some(crate::delivery::PublishSettings::Deploy { provider, image: Some(_), .. }) if *provider != crate::delivery::Provider::Fly)
+            {
+                return Err(invalid(
+                    &config,
+                    "publish.image for deployment is only supported by Fly",
+                ));
             }
             if let Some(value) = settings.remove("ci") {
                 ci = parse(&config, value)?;

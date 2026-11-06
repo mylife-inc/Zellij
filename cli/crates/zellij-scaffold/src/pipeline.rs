@@ -22,6 +22,10 @@ pub enum Publish {
     Netlify {
         site_id: Option<String>,
     },
+    Fly {
+        app: Option<String>,
+        kind: ImageKind,
+    },
     S3 {
         destination: Option<String>,
     },
@@ -124,10 +128,20 @@ pub fn github(options: &CiOptions) -> Result<String> {
         overrides,
         build_args,
     } = options;
-    if !build_args.is_empty() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
+    if !build_args.is_empty()
+        && !matches!(
+            publish,
+            Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+        )
+    {
         return Err(invalid("--build-arg requires image CI delivery"));
     }
-    if platform.is_some() && !matches!(publish, Publish::Image { .. } | Publish::LegacyImage) {
+    if platform.is_some()
+        && !matches!(
+            publish,
+            Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+        )
+    {
         return Err(invalid("platform requires image delivery"));
     }
     // Use native runners: Node/Next RUN steps have previously crashed under
@@ -152,6 +166,12 @@ pub fn github(options: &CiOptions) -> Result<String> {
             ));
         }
     }
+    if matches!(publish, Publish::Fly { .. }) {
+        Provider::Fly.require_production(settings.production)?;
+        if platform.is_some_and(|p| p != ImagePlatform::Amd64) {
+            return Err(invalid("Fly images require linux/amd64"));
+        }
+    }
     if matches!(publish, Publish::S3 { .. }) {
         Provider::S3.require_production(settings.production)?;
     }
@@ -165,12 +185,13 @@ pub fn github(options: &CiOptions) -> Result<String> {
                 | Publish::Vercel { .. }
                 | Publish::GithubPages { .. }
                 | Publish::S3 { .. }
+                | Publish::Fly { .. }
         ))
         && !semver::Version::parse(version.trim_start_matches('v'))
             .is_ok_and(|version| version >= semver::Version::parse("0.2.0-rc.2").unwrap())
     {
         return Err(invalid(
-            "Cloudflare/Vercel/GitHub Pages/S3 deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
+            "Cloudflare/Vercel/GitHub Pages/S3/Fly deployment, build overrides, image build arguments and combined image publication require a CLI release of 0.2.0-rc.2 or later; generation does not verify that the release has been published",
         ));
     }
     let mut override_flags = String::new();
@@ -263,7 +284,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
     let delivering = !matches!(publish, Publish::Nothing);
     let mut steps = initial_steps(&version, selector, overrides.no_check);
     let build = match publish {
-        Publish::Image { kind, .. } => format!(
+        Publish::Image { kind, .. } | Publish::Fly { kind, .. } => format!(
             "zel image {} {selector} --tag zel-ci-check:local",
             kind.as_str()
         ),
@@ -322,6 +343,18 @@ pub fn github(options: &CiOptions) -> Result<String> {
                     "NETLIFY_SITE_ID": site_id.as_deref().unwrap_or("${{ vars.NETLIFY_SITE_ID || secrets.NETLIFY_SITE_ID }}"),
                     "NETLIFY_AUTH_TOKEN":"${{ secrets.NETLIFY_AUTH_TOKEN }}"
                 }, "run":format!("zel deploy netlify {selector}{prod}{features_flag}{override_flags}")}));
+            }
+            Publish::Fly { app, kind } => {
+                if let Some(app) = app {
+                    Provider::Fly.validate_site(app)?;
+                }
+                // Secrets are scoped to this publication step. No token is put in
+                // argv, outputs or the generated file. Runner credentials are ephemeral.
+                steps.push(json!({"name":"Build once and deploy Fly Machines", "env":{
+                    "FLY_APP":app.as_deref().unwrap_or("${{ vars.FLY_APP || secrets.FLY_APP }}"),
+                    "FLY_ORG":"${{ vars.FLY_ORG || secrets.FLY_ORG }}",
+                    "FLY_API_TOKEN":"${{ secrets.FLY_API_TOKEN }}"
+                }, "run":format!("set -eu\nTOKEN=\"$FLY_API_TOKEN\"\ncase \"$TOKEN\" in 'FlyV1 '*) TOKEN=${{TOKEN#'FlyV1 '}} ;; 'Bearer '*) TOKEN=${{TOKEN#'Bearer '}} ;; esac\ntrap 'docker logout registry.fly.io >/dev/null 2>&1 || true' EXIT\nprintf '%s' \"$TOKEN\" | docker login registry.fly.io --username x --password-stdin\nunset TOKEN\nzel deploy fly {selector} --kind {} --prod{features_flag}{override_flags}\n", kind.as_str())}));
             }
             Publish::S3 { destination } => {
                 if let Some(destination) = destination {

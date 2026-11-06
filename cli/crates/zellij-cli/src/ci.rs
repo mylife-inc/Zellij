@@ -68,6 +68,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 Some(PublishSettings::Deploy {
                     provider: saved,
                     site,
+                    ..
                 }) if *saved == provider => site.as_deref(),
                 _ => None,
             };
@@ -80,6 +81,21 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
                 provider.validate_site(id)?;
             }
             match provider {
+                Provider::Fly => Publish::Fly {
+                    app: site_id.map(str::to_owned),
+                    kind: args
+                        .kind
+                        .map(Into::into)
+                        .or(match &site.publish {
+                            Some(PublishSettings::Deploy {
+                                provider: Provider::Fly,
+                                image,
+                                ..
+                            }) => *image,
+                            _ => None,
+                        })
+                        .unwrap_or(zellij_core::delivery::ImageKind::Static),
+                },
                 Provider::Netlify => Publish::Netlify {
                     site_id: site_id.map(str::to_owned),
                 },
@@ -117,6 +133,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         Publish::Vercel { .. } => Some(Provider::Vercel),
         Publish::GithubPages { .. } => Some(Provider::GithubPages),
         Publish::S3 { .. } => Some(Provider::S3),
+        Publish::Fly { .. } => Some(Provider::Fly),
         _ => None,
     };
     if deployment_provider.is_none()
@@ -126,11 +143,25 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "--site-id, production and --provision require static-site CI delivery",
         ));
     }
-    let image_delivery = matches!(publish, Publish::Image { .. } | Publish::LegacyImage);
+    if args.kind.is_some() && !matches!(publish, Publish::Fly { .. }) {
+        return Err(invalid("--kind is only supported for Fly deployment"));
+    }
+    let image_delivery = matches!(
+        publish,
+        Publish::Image { .. } | Publish::LegacyImage | Publish::Fly { .. }
+    );
     if args.platform.is_some() && !image_delivery {
         return Err(invalid("--platform requires image CI delivery"));
     }
-    let platform = if image_delivery {
+    let platform = if matches!(publish, Publish::Fly { .. }) {
+        if args
+            .platform
+            .is_some_and(|p| p != zellij_core::delivery::ImagePlatform::Amd64)
+        {
+            return Err(invalid("Fly images require linux/amd64"));
+        }
+        Some(zellij_core::delivery::ImagePlatform::Amd64)
+    } else if image_delivery {
         args.platform
             .or(site.image.as_ref().and_then(|image| image.platform))
     } else {
@@ -144,6 +175,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         && !matches!(
             publish,
             Publish::Image {
+                kind: zellij_core::delivery::ImageKind::Next,
+                ..
+            } | Publish::Fly {
                 kind: zellij_core::delivery::ImageKind::Next,
                 ..
             } | Publish::LegacyImage
@@ -198,7 +232,13 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         for &name in provider.credential_environments() {
             let value = std::env::var(name)
                 .ok()
-                .filter(|t| !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic()))
+                .filter(|t| {
+                    if provider == Provider::Fly {
+                        crate::fly::token(t).is_ok()
+                    } else {
+                        !t.is_empty() && t.bytes().all(|b| b.is_ascii_graphic())
+                    }
+                })
                 .ok_or_else(|| {
                     invalid(&format!(
                         "--provision requires {name} in the environment; no workflow was written"
@@ -260,6 +300,11 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     if deployment_provider == Some(Provider::Vercel) {
         zellij_core::statusln!(
             "  For a team project, set repository variable VERCEL_TEAM_ID (the same-named secret is also accepted)."
+        );
+    }
+    if deployment_provider == Some(Provider::Fly) {
+        zellij_core::statusln!(
+            "Set FLY_ORG to the expected organization slug and FLY_APP if the workflow has no saved app. Publication signs in to registry.fly.io using FLY_API_TOKEN; PR jobs have no credentials."
         );
     }
     if deployment_provider == Some(Provider::S3) {
