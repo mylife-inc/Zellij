@@ -172,7 +172,7 @@ fn image() -> String {
 }
 fn machine(id: &str) -> Value {
     json!({"id":id,"instance_id":format!("v1-{id}"),"name":format!("web-{id}"),"region":"iad","state":"started","host_status":"ok","cordoned":false,"updated_at":BEFORE,
-        "config":{"image":"registry.fly.io/manual:old","env":{"KEEP":"unchanged"},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_process_group":"app","custom":"keep"},"restart":{"policy":"always"},"services":[{"protocol":"tcp","internal_port":3000,"ports":[{"port":443,"handlers":["tls","http"]}],"checks":[{"type":"http","port":3000,"path":"/"}]}]},
+        "config":{"init":{"exec":null,"entrypoint":null,"cmd":null,"tty":false},"image":"registry.fly.io/manual:old","env":{"KEEP":"unchanged"},"guest":{"cpu_kind":"shared","cpus":1,"memory_mb":256},"metadata":{"fly_process_group":"app","custom":"keep"},"restart":{"policy":"always"},"services":[{"protocol":"tcp","internal_port":3000,"ports":[{"port":443,"handlers":["tls","http"]}],"checks":[{"type":"http","port":3000,"path":"/"}]}]},
         "checks":[{"name":"servicecheck-00-http-3000","status":"passing","updated_at":BEFORE}],"image_ref":{"digest":format!("sha256:{}","b".repeat(64))}})
 }
 #[derive(Clone, Copy, Default)]
@@ -182,6 +182,7 @@ enum Fault {
     LeaseSecond,
     UpdateSecond,
     WrongReceipt,
+    ReceiptWithoutTimestamp,
     StaleCheck,
     MissingCheck,
     WrongDigest,
@@ -271,6 +272,9 @@ fn fixture(fault: Fault) -> (Server, Arc<Mutex<Vec<Value>>>) {
                 m["image_ref"]["digest"] = json!(image().split_once('@').unwrap().1);
             }
             let mut receipt = m.clone();
+            if matches!(fault, Fault::ReceiptWithoutTimestamp) {
+                receipt.as_object_mut().unwrap().remove("updated_at");
+            }
             if matches!(fault, Fault::WrongReceipt) {
                 receipt["instance_id"] = json!("v1-a1");
             }
@@ -315,6 +319,16 @@ fn rollout_preserves_configuration_and_releases_all_leases() {
     assert_eq!(server.mutations("POST", true), 2);
     assert_eq!(server.mutations("DELETE", true), 2);
 }
+#[test]
+fn receipt_without_timestamp_uses_the_new_versions_get_timestamp() {
+    let (server, _) = fixture(Fault::ReceiptWithoutTimestamp);
+    let client = server.client();
+    let target = client.check("manual").unwrap();
+    client.rollout(&target, &image()).unwrap();
+    assert_eq!(server.mutations("POST", false), 2);
+    assert_eq!(server.mutations("DELETE", true), 2);
+}
+
 #[test]
 fn lease_conflicts_and_version_drift_do_not_update_any_machine() {
     for fault in [Fault::LeaseSecond, Fault::Drift] {
@@ -371,6 +385,7 @@ fn preflight_rejects_other_accounts_redirects_and_incompatible_apps() {
         cases.push(m);
     }
     for (key, value) in [
+        ("init", json!({"tty":true})),
         ("mounts", json!([{"volume":"vol"}])),
         ("init", json!({"cmd":["other"]})),
         ("containers", json!([{}])),

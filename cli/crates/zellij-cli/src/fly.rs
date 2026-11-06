@@ -267,7 +267,13 @@ impl Client {
                 config["image"] = json!(image);
                 let response = self.request(Method::POST, &path, Some(&json!({"config":config,"current_version":identifier(machine,"instance_id")?,"skip_launch":false})), Some(nonce), deadline)?;
                 let version = identifier(&response, "instance_id")?;
-                let since = timestamp(&response["updated_at"])?;
+                // Some update receipts omit updated_at. Use the subsequent GET
+                // for this exact instance in that case, never the local clock.
+                let since = if response["updated_at"].is_null() {
+                    None
+                } else {
+                    Some(timestamp(&response["updated_at"])?)
+                };
                 if response["id"] != *id
                     || response["instance_id"] == machine["instance_id"]
                     || response["config"] != config
@@ -288,6 +294,10 @@ impl Client {
                             "Fly Machine identity, configuration or host changed during rollout",
                         ));
                     }
+                    let since = match since {
+                        Some(since) => since,
+                        None => timestamp(&current["updated_at"])?,
+                    };
                     if current["state"] == "started"
                         && checks_ready(&current, machine, since)
                         && current["image_ref"]["digest"] == image.split_once('@').unwrap().1
@@ -388,9 +398,10 @@ fn validate_machine(machine: &Value) -> Result<()> {
         || ["mounts", "files", "containers", "processes"]
             .iter()
             .any(|key| !empty(&config[key]))
-        || config["init"]
-            .as_object()
-            .is_some_and(|o| o.values().any(|v| !empty(v)))
+        || config["init"].as_object().is_some_and(|o| {
+            o.iter()
+                .any(|(key, value)| !empty(value) && !(key == "tty" && value == false))
+        })
         || (!config["init"].is_null() && !config["init"].is_object())
         || config["env"]["PORT"].as_str().is_some_and(|s| s != "3000")
         || config["env"]["HOSTNAME"]
