@@ -12,7 +12,7 @@ export async function checkImportedTables(output) {
   const server = createServer(async (req, res) => {
     try {
       const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname);
-      if (!pathname.startsWith(prefix + '/')) { res.writeHead(404).end(); return; }
+      if (pathname !== prefix && !pathname.startsWith(prefix + '/')) { res.writeHead(404).end(); return; }
       const base = path.resolve(output, '.' + pathname.slice(prefix.length));
       if (base !== output && !base.startsWith(output + path.sep)) { res.writeHead(403).end(); return; }
       for (const candidate of [base, `${base}.html`, path.join(base, 'index.html')]) {
@@ -29,6 +29,8 @@ export async function checkImportedTables(output) {
   const origin = `http://127.0.0.1:${server.address().port}`;
   let browser;
   try {
+    // Navigation may prefetch the prefix root without a trailing slash.
+    assert.equal((await fetch(`${origin}${prefix}`)).status, 200);
     browser = await chromium.launch();
     const page = await browser.newPage();
     const errors = [];
