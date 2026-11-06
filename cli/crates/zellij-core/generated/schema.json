@@ -122,6 +122,34 @@
     "video-embed": "type: video-embed\nsrc: assets/replace-me.mp4\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# poster: assets/replace-me.svg\n# caption: TODO\n",
     "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
   },
+  "sectionAuthoringRules": {
+    "hero-split": {
+      "exactlyOne": [
+        "visual",
+        "terminal"
+      ]
+    },
+    "steps-panel": {
+      "exactlyOne": [
+        "visual",
+        "terminal",
+        "diagram"
+      ]
+    },
+    "media-panel": {
+      "exactlyOne": [
+        "image",
+        "video"
+      ]
+    },
+    "matrix": {
+      "alignedRows": {
+        "columns": "columns",
+        "rows": "rows",
+        "cells": "cells"
+      }
+    }
+  },
   "sections": {
     "bento-grid": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",

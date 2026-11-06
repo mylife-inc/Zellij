@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { parse, stringify } from 'yaml';
 import { getSection, registeredSectionTypes } from '../sections/registry';
 import '../sections/schemas';
+import { sectionAuthoringRules } from '../sections/authoring-rules';
 
 type JsonSchema = {
   type?: string | string[];
@@ -64,10 +65,10 @@ export function buildSectionTemplates(): Record<string, string> {
     // These choices cannot be expressed by the JSON Schema exported from Zod.
     if (type === 'hero-split' || type === 'steps-panel') {
       live.terminal = { body: '$ zel --help' };
-      note = `# Keep exactly one of: ${type === 'steps-panel' ? 'visual, terminal, diagram' : 'visual, terminal'}.\n`;
+      note = `# Keep exactly one of: ${sectionAuthoringRules[type]!.exactlyOne!.join(', ')}.\n`;
     } else if (type === 'media-panel') {
       live.image = 'assets/replace-me.svg';
-      note = '# Keep exactly one of: image, video.\n';
+      note = `# Keep exactly one of: ${sectionAuthoringRules[type]!.exactlyOne!.join(', ')}.\n`;
     } else if (type === 'matrix') {
       const columns = live.columns as unknown[];
       for (const row of live.rows as Array<{ cells: string[] }>) {

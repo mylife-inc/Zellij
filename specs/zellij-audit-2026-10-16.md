@@ -4794,3 +4794,27 @@ GitHub native image acceptance and merge remain pending.
 
 Implementation commit **`9d3ba34`** contains this milestone and its regression
 coverage. The following context-only commit records that source identity.
+
+## 2026-11-06 — CI generator closure and section authoring
+
+GitLab/CircleCI PR #87 merged as `b590cb2dd1309601525f663285dfc98c1dc00406`
+after all 16 checks passed on `3eb218812b33163d228cf0ef92bbb5d576081079` in
+run `42201229972` (attempt 1). Tested and merged tree:
+`7398f45e8e1e30797fba9c70436f5617efeac79d`. Both post-merge workflows passed:
+main `42205322276` (16 jobs), base image `42205322053` (13 jobs). The native
+AMD64/ARM64 jobs replayed generated provider publication and manifest scripts
+against a disposable registry; actual GitLab/CircleCI runner acceptance remains
+separate. The published native candidate remains rc.1; no rc.2 was published.
+
+The section authoring milestone adds native prompts, scalar/list options and
+pricing shortcuts, with shared engine/native cross-field rules and no-overwrite
+output. Local verification: 574 Rust tests (five existing hosted fixtures remain
+CI-only), 424 engine tests, all 23 types checked against actual engine schemas,
+Clippy, formatting, TypeScript, strict/deep docs and actionlint pass. The durable
+context and updated creation reference describe exact behavior and limits.
+Final-head cross-platform CI and merge remain pending.
+
+Implementation commit **`ff42301adc435f697b8bb729f2aceb91e11f8eca`** contains the section wizard, native
+validation, shared engine metadata, cross-platform regression checks and user
+documentation. The verification above covers this source; the following
+context-only commit records its identity. Final-head GitHub CI is pending.

@@ -3,6 +3,7 @@ import { parse } from 'yaml';
 import { buildSectionTemplates } from './section-templates';
 import { buildSchemaJson } from './context';
 import { getSection, registeredSectionTypes } from '../sections/registry';
+import { sectionAuthoringRules } from '../sections/authoring-rules';
 
 describe('embedded section templates', () => {
   const templates = buildSectionTemplates();
@@ -13,6 +14,7 @@ describe('embedded section templates', () => {
 
   it('embeds exactly the templates validated by the engine for Rust to consume', () => {
     expect(JSON.parse(buildSchemaJson()).sectionTemplates).toEqual(templates);
+    expect(JSON.parse(buildSchemaJson()).sectionAuthoringRules).toEqual(sectionAuthoringRules);
     expect(Object.keys(templates)).toEqual(registeredSectionTypes());
   });
 
@@ -40,4 +42,25 @@ describe('embedded section templates', () => {
     expect(parse(templates['stats-band']!).stats[0].value).toBe('TODO');
     expect(parse(templates.timeline!).items[0].date).toBe('TODO');
   });
+});
+
+
+it('exports the same cross-field constraints enforced by engine validation', () => {
+  const templates = buildSectionTemplates();
+  for (const [type, rules] of Object.entries(sectionAuthoringRules)) {
+    const value = parse(templates[type]!);
+    if (rules.exactlyOne) {
+      for (const field of rules.exactlyOne) delete value[field];
+      expect(getSection(type)!.schema.safeParse(value).success).toBe(false);
+      Object.assign(value, parse(templates[type]!));
+      const missing = rules.exactlyOne.find((field) => !(field in value))!;
+      value[missing] = missing === 'terminal' ? { body: 'hello' } : 'assets/example.svg';
+      expect(getSection(type)!.schema.safeParse(value).success).toBe(false);
+    }
+    if (rules.alignedRows) {
+      const { rows, cells } = rules.alignedRows;
+      value[rows][0][cells].push('extra cell');
+      expect(getSection(type)!.schema.safeParse(value).success).toBe(false);
+    }
+  }
 });

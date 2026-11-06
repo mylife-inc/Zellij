@@ -1,3 +1,4 @@
+import { satisfiesAuthoringRules } from './authoring-rules';
 import { z } from 'zod';
 import { backgroundSchema, baseSectionSchema, registerSection } from './registry';
 import { ctaSchema } from '../config/schema';
@@ -93,7 +94,7 @@ export const heroSplitSchema = baseSectionSchema.extend({
       body: z.string().min(1),
     })
     .optional(),
-}).refine((section) => [section.visual, section.terminal].filter(Boolean).length === 1, {
+}).refine((section) => satisfiesAuthoringRules('hero-split', section), {
   message: 'a hero-split must declare exactly one of: visual, terminal',
 });
 
@@ -168,7 +169,7 @@ export const stepsPanelSchema = baseSectionSchema
   })
   .refine(
     (section) =>
-      [section.visual, section.terminal, section.diagram].filter(Boolean).length === 1,
+      satisfiesAuthoringRules('steps-panel', section),
     { message: 'a steps-panel must declare exactly one of: visual, terminal, diagram' },
   );
 
@@ -264,7 +265,7 @@ export const matrixSchema = baseSectionSchema
 
     footnote: inlineReferenceSchema.optional(),
   })
-  .refine((section) => section.rows.every((row) => row.cells.length === section.columns.length), {
+  .refine((section) => satisfiesAuthoringRules('matrix', section), {
     message: 'every row needs exactly one cell per column',
   });
 
@@ -448,7 +449,7 @@ export const mediaPanelSchema = baseSectionSchema
     cta: cta1or2.default([]),
     href: hrefReferenceSchema.optional(),
   })
-  .refine((section) => [section.image, section.video].filter(Boolean).length === 1, {
+  .refine((section) => satisfiesAuthoringRules('media-panel', section), {
     message: 'a media-panel must declare exactly one of: image, video',
   });
 

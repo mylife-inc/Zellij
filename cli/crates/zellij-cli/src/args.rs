@@ -726,8 +726,26 @@ pub(crate) struct NewDocsArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct NewSectionArgs {
-    pub(crate) section_type: String,
-
+    /// Section type; omitted in the interactive wizard.
+    pub(crate) section_type: Option<String>,
+    /// Optional output filename; equivalent to --out.
+    #[arg(conflicts_with = "out")]
+    pub(crate) name: Option<String>,
+    /// Ask for the section type, item counts and required content before writing.
+    #[arg(long, short = 'i')]
+    pub(crate) interactive: bool,
+    /// Set a scalar field, for example headline=Hello or tiers.0.name=Team. Repeatable.
+    #[arg(long = "set", value_name = "FIELD=VALUE")]
+    pub(crate) fields: Vec<String>,
+    /// Set a list size, for example items=3 or tiers.0.features=2. Repeatable.
+    #[arg(long = "count", value_name = "FIELD=COUNT")]
+    pub(crate) counts: Vec<String>,
+    /// Pricing-table shortcut for --count tiers=N.
+    #[arg(long)]
+    pub(crate) tiers: Option<usize>,
+    /// Pricing tier name, 1-based number, or none.
+    #[arg(long)]
+    pub(crate) highlight: Option<String>,
     #[arg(long)]
     pub(crate) out: Option<String>,
 }
