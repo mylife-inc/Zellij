@@ -98,6 +98,7 @@ pub fn project(options: &ProjectOptions) -> zellij_core::Result<Scaffold> {
     scaffold.add(
         ".github/workflows/docs.yml",
         pipeline::github(&pipeline::CiOptions {
+            renderer: zellij_core::site::Renderer::Hosted,
             platform: None,
             features: None,
             overrides: Default::default(),

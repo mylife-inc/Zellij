@@ -223,9 +223,9 @@ fn main() {
         Command::Features(ref options) => features::run(options),
         Command::Completions { shell } => args::completions(shell),
         Command::Ci(ref args) => match &args.action {
-            Some(CiAction::Init { system, options }) => ci::generate(system, None, options),
+            Some(CiAction::Init { system, options }) => ci::generate(Some(system), None, options),
             Some(CiAction::Run { workflow, r#ref }) => ci_publish(workflow, r#ref),
-            None => ci::generate("github", args.dir.as_ref(), &args.options),
+            None => ci::generate(None, args.dir.as_ref(), &args.options),
         },
         Command::Migrate(ref options) => imports::convert(options, true),
         Command::Ship(ref options) => imports::ship(options),

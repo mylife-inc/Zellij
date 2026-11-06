@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-05**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-06**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -40,8 +40,10 @@ publication merged in PR #83 as `e25d8d9`, after all 16 final-head checks passed
 both post-merge workflows passed. S3 static website uploads merged in PR #84 as
 `9e3dd79`, after all 16 final-head checks passed on `d141aa8`. Both post-merge workflows passed: main `42155106031`, base image
 `42155106146`. Fly merged in PR #85 as `30a0272` after all 16 final-head checks passed;
-both post-merge workflows passed. Current work adds Railway static/Next image
-deployment through `railway` / `rw`, `deploy`, `publish`, `ship` and GitHub CI.
+both post-merge workflows passed. Railway merged in PR #86 as `b24b3dc` after
+all 16 final-head checks passed; both post-merge workflows passed. Current work
+adds GitLab and CircleCI generation through saved `ci.system`, `ci --system`
+and `ci init <system>`, including native combined-image publication.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -5564,3 +5566,88 @@ uses the polling interval to exhaust the remaining budget, avoiding a 100 ms
 Windows scheduler race. Production deadlines are unchanged. All nine Railway
 protocol tests passed again; evidence: `/private/tmp/zellij-railway-protocol.log`.
 PR #86 must validate its final head before merge.
+
+## 2026-11-06 — Railway closure and additional CI systems
+
+Railway PR #86 merged as **`b24b3dcca70a8f3ff0dd5ac7696dfdd9f1d40927`** after
+all 16 checks passed in run **42178970612**, attempt 2, on final head
+`fdf2f6a2e01fe74c0b4080c64d0c5389ea7be9d9`. The tested and merged source trees
+both equal `5918d4e341abfe3e566f887d218642809ff8d912`. The initial Windows ARM
+PowerShell 7 installer job hit an internal CLR error after its package and
+Windows PowerShell checks passed; the targeted unchanged-head retry passed.
+No assertions were relaxed. Both post-merge workflows now passed: main
+**42183211689** (16 jobs), base image **42183211386** (13 jobs). The authenticated
+release inventory still has native `zellij-v0.2.0-rc.1` as the newest candidate
+in `mylife-inc/releases`. No rc.2 was published.
+
+Current implementation adds GitLab and CircleCI standalone configuration
+renderers alongside the existing GitHub generator. Shared validation/preparation
+retains build overrides, explicit configuration files, version gates, provider
+production rules and image-kind selection. CLI defaults to saved `ci.system`
+(GitHub when absent); `--system` and `ci init <system>` override it. CircleCI
+accepts `circle` and `circleci`; conflicting explicit choices fail before writes.
+Default paths are `.gitlab-ci.yml` and `.circleci/config.yml`; custom filenames
+write `.gitlab/ci/<file>` and `.circleci/<file>`. Users select custom configuration
+paths in the CI project settings. No existing root configurations are merged.
+`--force` only replaces the selected file; symlink/junction parents are rejected.
+Remote `ci run` and credential `--provision` remain explicitly GitHub-only.
+
+GitLab uses native Linux SaaS runners, Ubuntu 24.04, and Docker-in-Docker with
+TLS only for hosted/image/manifest jobs. Temp files live under the runner's
+shared builds directory for bind-mount visibility. Self-managed runners need
+privileged Docker executors, shared build/TLS volumes and appropriate tags.
+Publication requires protected refs and a dedicated generated environment;
+users must scope protected credentials to that environment and disable their
+availability in MR pipelines. Built-in GitLab job credentials still exist.
+CircleCI targets Cloud + GitHub App/OAuth integration with native Ubuntu machine
+executors. Publication jobs alone attach the `zellij-publish` context (override
+with `ci.publish-context`). Users must configure context project/user/ref
+restrictions; workflow conditions alone are not credential authorization.
+No CircleCI Server or other VCS integration is claimed.
+
+Both support the existing seven deployment adapters and explicit static/Next
+registry images. GHCR uses user-supplied registry credentials outside GitHub;
+GitLab's built-in registry pair is a fallback only for its matching registry
+and only when neither custom credential is set. Docker passwords go through
+stdin, using an isolated temporary Docker configuration. `platform: all` runs
+native AMD64/ARM64 builds, transfers validated immutable digest receipts via
+GitLab artifacts/CircleCI workspaces and publishes the final manifest only
+after both succeed. No staging-tag cleanup is automatic. Schedules are accepted
+as events but must be created remotely by the user; requested cron expressions
+are printed rather than silently treated as provisioned. These generators do
+not add path filters.
+
+Primary references checked on 2026-11-06:
+- [GitLab DinD](https://docs.gitlab.com/ci/docker/docker_in_docker/) and
+  [native hosted runners](https://docs.gitlab.com/ci/runners/hosted_runners/linux/).
+- [GitLab variable protection](https://docs.gitlab.com/ci/variables/).
+- [CircleCI configuration](https://circleci.com/docs/reference/configuration-reference/),
+  [pipeline events](https://circleci.com/docs/guides/orchestrate/pipeline-variables/)
+  and [contexts](https://circleci.com/docs/guides/security/contexts/).
+The generator uses `pipeline.event.name`, not the deprecated trigger-source
+value. Docker DinD is pinned to 29.9.3, listed in the
+[official Engine release notes](https://docs.docker.com/engine/release-notes/29/).
+
+User documentation lives in `examples/zellij-docs/content/02-cli/ci.mdx`; command
+help, shortcuts, runtime guidance and the current status table are synchronized.
+GitHub-hosted native image acceptance now replays generated GitLab/CircleCI
+publication scripts with the candidate binary and a disposable registry, then
+replays manifest scripts against immutable AMD64/ARM64 receipts. This exercises
+commands on GitHub runners, not an actual GitLab/CircleCI control plane. Live
+provider-runner acceptance needs account access and remains separate. Native
+release publication still requires its own explicit authorization.
+
+Local verification: **564 Rust tests passed**, five existing container-backed
+provider fixtures intentionally ignored locally and selected by CI. The final
+CLI parser adjustment also passed all 11 parser tests and all 29 CI workflow
+integration tests. Warnings-denied workspace Clippy, formatting, strict/deep
+docs (55 routes, 23 examples), JavaScript syntax and repository actionlint pass.
+Emitted portable, hosted, combined-image and Netlify configurations pass both
+services' official JSON schemas; the same four GitHub cases pass actionlint.
+Schema validation is structural, not live pipeline acceptance.
+Evidence: `/private/tmp/zellij-external-ci-workspace.log`,
+`zellij-external-ci-final-args.log`, `zellij-external-ci-final-workflows.log`,
+`zellij-external-ci-clippy.log`, `zellij-external-ci-docs.log`; generated examples
+are located by `/private/tmp/zellij-external-ci-generated-path`.
+No local Docker/browser or live provider mutation ran. Final-head GitHub image
+acceptance and merge are pending at this checkpoint.

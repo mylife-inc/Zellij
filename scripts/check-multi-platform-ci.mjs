@@ -7,6 +7,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import YAML from 'yaml';
 import { localRegistry } from './fixtures/local-registry.mjs';
+import { externalNative, externalManifest } from './fixtures/external-ci.mjs';
 
 const [mode, directory] = process.argv.slice(2);
 assert(['amd64', 'arm64', 'combine'].includes(mode) && directory);
@@ -112,6 +113,7 @@ try {
       sizes.push({ kind, arch: mode, dockerReportedBytes: info.Size, previousDockerReportedBytes: oldSize, currentCompressedBytes, previousCompressedBytes, savedCompressedBytes: previousCompressedBytes - currentCompressedBytes });
       await writeFile(path.join(artifact, `${kind}.workflow.json`), JSON.stringify(workflow));
     }
+    await externalNative({ root, zel, arch: mode, registry, artifact, suffix, docker, images });
     docker(['save', '--output', path.join(artifact, 'images.tar'), ...saved]);
     await writeFile(path.join(artifact, 'sizes.json'), JSON.stringify(sizes, null, 2));
   } else {
@@ -137,6 +139,7 @@ try {
       const workflow = JSON.parse(await readFile(path.join(artifact, 'amd64', `${kind}.workflow.json`), 'utf8'));
       const step = workflow.jobs.publish.steps.at(-1);
       await script(step, { ...step.env, IMAGE_TAG: `${registry}/acceptance/${kind}:final`, AMD64_IMAGE: digests.amd64, ARM64_IMAGE: digests.arm64 });
+      if (kind === 'static') await externalManifest({ root, registry, artifact, digests });
       const index = await (await fetch(`http://${registry}/v2/acceptance/${kind}/manifests/final`, { headers: { Accept: 'application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json' } })).json();
       const platforms = index.manifests.filter(m => m.platform.os === 'linux');
       assert.deepEqual(platforms.map(m => `${m.platform.os}/${m.platform.architecture}`).sort(), ['linux/amd64', 'linux/arm64']);

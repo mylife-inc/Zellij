@@ -1,6 +1,6 @@
 ---
 title: zel ci
-description: Generate a GitHub workflow from saved site settings, or dispatch an existing one.
+description: Generate GitHub Actions, GitLab or CircleCI configuration from saved site settings.
 ---
 
 <Callout type="info" title="Compatible published candidate">
@@ -21,6 +21,8 @@ Generation neither checks release availability nor creates a release.
 ```bash
 zel ci
 zel ci docs/manual
+zel ci --system gitlab
+zel ci --system circle
 zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.1
 ```
 
@@ -35,13 +37,14 @@ apply to workflow dispatch.
 
 Use `zel ci --config docs/manual/preview.yaml` to select a named configuration.
 The generated workflow passes that same file to check, build and delivery using
-a quoted environment value. Its folder is covered by change filters. The file
+a quoted environment value. GitHub change filters cover its folder. The file
 must be inside the selected site's Git working tree. `--config` also conflicts
 with a positional site and does not apply to `ci run`.
 
 Git locates the repository containing the selected site. The workflow is written
-to that repository's `.github/workflows/docs.yml`, including when you run from
-inside the site. Paths in the workflow are relative to the Git root. Existing
+to that repository's CI configuration, including when you run from inside the
+site. GitHub is the default and writes `.github/workflows/docs.yml`; GitLab
+writes `.gitlab-ci.yml`, and CircleCI writes `.circleci/config.yml`. Paths in the workflow are relative to the Git root. Existing
 files require `--force`; symlinks and junctions in the destination are rejected.
 Generation requires Git, but no Docker, Node, cloud login or credentials.
 
@@ -76,11 +79,13 @@ The installer is downloaded from that exact release; it verifies the binary's
 checksum and reported version. Engine-backed builds use the matching versioned
 `ghcr.io/mylife-inc/zellij-base` image.
 
-`system` currently accepts only `github`. `branch` is one literal branch name;
+`system` accepts `github`, `gitlab` or `circle` (`circleci` is also accepted).
+`--system` or `ci init <system>` overrides the saved choice; conflicting explicit
+choices are rejected. `branch` is one literal branch name;
 `workflow` is a `.yml` or `.yaml` filename, without directories. Unknown settings,
 unsupported events and credentials in the CI block are errors.
 
-For multiple sites in one repository, choose a different `ci.workflow` filename
+For multiple GitHub workflows in one repository, choose a different `ci.workflow` filename
 for each site. Current source shows that filename in the display name and derives
 the concurrency group from it, so separate sites have independent queues. The
 published `0.2.0-rc.1` generator used one shared display name/group; this fix needs
@@ -198,7 +203,7 @@ zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.1
 ```
 
 `--target static` generates validation and HTML builds with no publication.
-Legacy `--target image` builds a Next image and pushes
+On GitHub, legacy `--target image` builds a Next image and pushes
 `ghcr.io/<lowercase-owner>/<lowercase-repo>/docs:<commit-sha>`. It uses one image
 build followed by pushing that exact tag. Saved settings provide the explicit
 static/Next choice for new workflows. `--deploy netlify` chooses native static
@@ -219,8 +224,10 @@ the current command prints a manual request example and exits successfully
 without dispatching anything. That exit is not evidence of a GitHub run.
 
 `--json` is unsupported for generation and dispatch and fails before work.
-GitLab, CircleCI, other deployment providers, and automatic release publication
-remain outside this implementation.
+Dispatch and credential provisioning remain GitHub-only. Automatic release
+publication is separate from CI generation. GitLab/CircleCI generation is in
+current source and requires the next native release; published rc.1 does not
+contain these generators.
 
 
 ## Image architecture
@@ -468,3 +475,149 @@ tag. The generated workflow serializes GitHub runs on the same ref, but cannot
 lock other workflows, branches, dashboard edits or external deployers. Use one
 publisher per service and avoid concurrent changes. Generation is local and
 checks neither credentials nor release availability: rc.2 is still unpublished.
+
+## GitLab and CircleCI
+
+Current source adds both generators. Use a CLI built from current source until
+the next native release is published. Generation remains local: no runner,
+project, credential, schedule or registry is created.
+
+```bash
+zel ci --system gitlab
+zel ci --system circle
+zel ci init gitlab --site-root docs/manual
+zel ci init circle --site-root docs/manual
+```
+
+Save `ci.system: gitlab` or `ci.system: circle` to shorten these to `zel ci`.
+The same site selection, explicit `--config`, build overrides, renderer,
+static/Next image choice and seven deployment providers apply. Both support
+`--target static`. Outside GitHub, legacy `--target image` selects a Next image
+and requires an explicit saved `image.name`; it never guesses a GitHub owner.
+`--provision` fails before writing a file for these systems. `ci run` always
+means GitHub dispatch, regardless of saved `ci.system`.
+
+| System | Default file (`ci.workflow: docs.yml`) | Custom `ci.workflow: manual.yml` |
+| --- | --- | --- |
+| GitHub | `.github/workflows/docs.yml` | `.github/workflows/manual.yml` |
+| GitLab | `.gitlab-ci.yml` | `.gitlab/ci/manual.yml` |
+| CircleCI | `.circleci/config.yml` | `.circleci/manual.yml` |
+
+Each file is a **standalone pipeline**. Existing files require `--force`; they
+are replaced, not merged. For a custom path, select that configuration path in
+your CI project settings. Zellij does not combine several site pipelines into
+a shared root configuration. Review any existing CI before replacing it.
+
+These two generators run on all matching events, without path filters.
+Pull/merge requests validate and build. Enabled pushes and manual runs publish
+only from `ci.branch`; matching tag pushes are also eligible. Positive tag globs
+use `*` for any characters except `/`, `?` for one character except `/`, and
+`**` across `/`. Tags match the whole name. On GitLab, unprotected eligible refs
+only verify; publication additionally requires a protected branch or tag.
+CircleCI publication needs the restricted context described below.
+
+When `ci.schedules` is set, generated jobs accept schedule events on `ci.branch`.
+**Create the schedule triggers separately in the provider UI/API.** The file
+and generation output list the requested UTC cron expressions. GitLab accepts
+cron schedules; configure equivalent CircleCI schedule triggers using its
+schedule controls. Generation does not translate or provision those remote
+schedules. GitLab manual events include web/API/trigger pipelines; CircleCI
+manual events mean API-triggered pipelines. Arbitrary webhook, parent/child and
+multi-project pipeline events are not enabled.
+
+### GitLab setup
+
+The generated jobs target GitLab.com's native Linux AMD64/ARM64 runners and use
+an Ubuntu 24.04 job image. Portable HTML builds need no Docker. Hosted builds,
+images and manifest jobs install the Docker client and use a pinned Docker
+29.9.3-in-Docker service with TLS. Temporary build folders live under the shared
+build directory so container bind mounts see the same files.
+
+For self-managed runners, adjust the runner tags and configure a privileged
+Docker executor with shared `/builds` and `/certs/client` volumes. A remote
+daemon without those shared paths cannot run Zellij's hosted builds. See
+[GitLab's Docker-in-Docker setup](https://docs.gitlab.com/ci/docker/docker_in_docker/)
+and [hosted Linux runner requirements](https://docs.gitlab.com/ci/runners/hosted_runners/linux/).
+
+Before enabling publication:
+
+1. Protect the intended publication branch and any allowed release tags.
+2. Add provider/registry credentials as masked, **protected** GitLab CI variables.
+   Scope them to the exact `zellij/<hash>` environment printed in the generated
+   file. Verification jobs have no publication environment.
+3. Keep protected-variable access for merge request pipelines disabled. Review
+   GitLab's [variable protection settings](https://docs.gitlab.com/ci/variables/).
+4. Set the destination and other provider variables in that same environment.
+
+GitLab's built-in job token still exists in verification jobs. The generator
+keeps publication logins and deployments out of those jobs; project-level
+settings determine which credentials GitLab exposes.
+
+### CircleCI setup
+
+The generated configuration targets **CircleCI Cloud with a GitHub App or GitHub
+OAuth integration**. It uses current pipeline event values and native Ubuntu
+24.04 machine executors (`medium` / `arm.medium`), where Docker and source files
+share the same VM. CircleCI Server and other VCS integrations are outside this
+contract. Configure the project's trigger to send pull request events when
+`pull_request` verification is wanted. See the
+[pipeline event reference](https://circleci.com/docs/guides/orchestrate/pipeline-variables/)
+and [ARM executor setup](https://circleci.com/docs/guides/execute/using-arm/).
+
+Create a context named `zellij-publish`, or save another name:
+
+```yaml
+ci:
+  system: circle
+  publish-context: product-docs-publish
+  branch: main
+```
+
+Put publication credentials and provider scope variables in that context,
+**not in project-wide environment variables**. Restrict the context to the
+intended project, trusted users and publication refs using CircleCI's context
+access controls. Verification jobs never attach it. Workflow filters alone are
+not an access policy: someone editing a pipeline could change those filters.
+See [CircleCI contexts](https://circleci.com/docs/guides/security/contexts/).
+
+### Publication credentials and combined images
+
+Use the following variable names in the protected GitLab environment or
+restricted CircleCI context. Saved destination values take precedence over the
+same-named runtime variables. Tokens are never written into the generated file.
+
+| Delivery | Credentials | Destination/scope when not saved |
+| --- | --- | --- |
+| Registry image | `REGISTRY_USERNAME`, `REGISTRY_PASSWORD` | Explicit `image.name` in `zel.yaml` |
+| Netlify | `NETLIFY_AUTH_TOKEN` | `NETLIFY_SITE_ID` |
+| Cloudflare Pages | `CLOUDFLARE_API_TOKEN` | `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_PAGES_PROJECT_NAME` |
+| Vercel | `VERCEL_TOKEN` | `VERCEL_PROJECT_ID`, optional `VERCEL_TEAM_ID` |
+| GitHub Pages | `GITHUB_PAGES_TOKEN` | `GITHUB_PAGES_REPOSITORY` |
+| S3 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, optional `AWS_SESSION_TOKEN` | `S3_DESTINATION`, `AWS_REGION`, `S3_EXPECTED_BUCKET_OWNER` |
+| Fly | `FLY_API_TOKEN` | `FLY_APP`, `FLY_ORG` |
+| Railway | `RAILWAY_TOKEN` plus registry credentials | `RAILWAY_PROJECT_ID`, `RAILWAY_ENVIRONMENT_ID`, `RAILWAY_SERVICE_ID`; saved `image.name` |
+
+GHCR also requires registry credentials on these systems. GitLab can use its
+built-in registry user/password only when `image.name` targets that project's
+`CI_REGISTRY` host and neither custom registry credential is set. A partial
+custom credential pair fails instead of silently falling back.
+
+Fly logs in to `registry.fly.io` using its API token. Railway needs independent
+permission to pull the pushed image, as described in [deployment setup](/cli/deploy#railway).
+GitHub Pages, S3, Fly and Railway still require `--prod` or `ci.production: true`.
+Other providers retain draft-by-default behavior.
+
+For registry publication with `image.platform: all`, both generators build
+AMD64 and ARM64 images on native runners. Each job pushes a unique staging tag
+and records a validated immutable digest. The final job requires both successful
+builds, validates their receipts, and publishes the combined tag. It does not
+rebuild either image. Single-target publication and manifest updates use a queue
+identified by the configuration filename. Different files have independent queues.
+GitLab receipts use job artifacts; CircleCI uses workflow workspaces. If a
+CircleCI rerun conflicts with an existing workspace receipt, start a new
+pipeline. Staging registry tags are retained for your registry retention policy.
+
+Local tests execute generated scripts with fake tools. GitHub-hosted acceptance
+replays their image publication and manifest commands against a disposable
+registry on native Linux architectures. Live runs on actual GitLab and CircleCI
+projects remain a separate acceptance step; account access is needed for those.

@@ -14,6 +14,33 @@ pub enum Trigger {
 pub enum System {
     #[default]
     Github,
+    Gitlab,
+    #[serde(alias = "circleci")]
+    Circle,
+}
+impl std::str::FromStr for System {
+    type Err = Error;
+    fn from_str(value: &str) -> Result<Self> {
+        match value {
+            "github" => Ok(Self::Github),
+            "gitlab" => Ok(Self::Gitlab),
+            "circle" | "circleci" => Ok(Self::Circle),
+            _ => Err(invalid(
+                "system must be github, gitlab or circle (circleci is also accepted)",
+            )),
+        }
+    }
+}
+impl System {
+    pub fn path(self, workflow: &str) -> String {
+        match self {
+            Self::Github => format!(".github/workflows/{workflow}"),
+            Self::Gitlab if workflow == "docs.yml" => ".gitlab-ci.yml".into(),
+            Self::Gitlab => format!(".gitlab/ci/{workflow}"),
+            Self::Circle if workflow == "docs.yml" => ".circleci/config.yml".into(),
+            Self::Circle => format!(".circleci/{workflow}"),
+        }
+    }
 }
 #[derive(Clone, Debug, Deserialize)]
 #[serde(default, deny_unknown_fields, rename_all = "kebab-case")]
@@ -30,6 +57,8 @@ pub struct Settings {
     #[serde(deserialize_with = "strict_version")]
     pub zel_version: Option<String>,
     pub production: bool,
+    /// Dedicated CircleCI context, attached only to publication jobs.
+    pub publish_context: Option<String>,
 }
 impl Default for Settings {
     fn default() -> Self {
@@ -42,6 +71,7 @@ impl Default for Settings {
             schedules: vec![],
             zel_version: None,
             production: false,
+            publish_context: None,
         }
     }
 }
@@ -73,6 +103,19 @@ fn invalid(message: &str) -> Error {
 }
 impl Settings {
     pub fn validate(&self) -> Result<()> {
+        if let Some(context) = &self.publish_context {
+            if self.system != System::Circle
+                || context.is_empty()
+                || context.len() > 200
+                || !context
+                    .bytes()
+                    .all(|b| b.is_ascii_alphanumeric() || b"_-".contains(&b))
+            {
+                return Err(invalid(
+                    "publish-context requires system: circle and a name of 1–200 letters, digits, _ or -",
+                ));
+            }
+        }
         if self.branch.is_empty()
             || self.branch.starts_with(['-', '/'])
             || self.branch.ends_with(['.', '/'])
@@ -230,7 +273,7 @@ mod tests {
                 .unwrap();
         }
         for yaml in [
-            "system: gitlab",
+            "system: unknown",
             "triggers: [pull_request_target]",
             "token: private",
             "branch: true",

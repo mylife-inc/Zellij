@@ -13,7 +13,7 @@ dated audit and implementation history.
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
-| CI | `ci`, `ci init github`, `ci run` and legacy `ci publish` | GitHub Actions generation/dispatch work; GitLab/CircleCI adapters remain unimplemented. |
+| CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance and the next native release remain pending. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
@@ -457,3 +457,14 @@ uses the polling interval to exhaust the remaining budget, avoiding a 100 ms
 Windows scheduler race. Production deadlines are unchanged. All nine Railway
 protocol tests passed again; evidence: `/private/tmp/zellij-railway-protocol.log`.
 PR #86 must validate its final head before merge.
+
+## 2026-11-06 CI system milestone
+
+Railway PR #86 merged as `b24b3dc`; all 16 final-head checks and both post-merge
+workflows passed. GitLab/CircleCI generators are now implemented in current
+source, covering portable/hosted builds, static/Next images, combined native
+architectures and the seven existing deployment providers. Saved `ci.system`
+and short `ci --system` forms select them. These are standalone configurations,
+not mergers of existing pipelines. `ci run`/`--provision` remain GitHub-only.
+Schedules and protected credential scopes need provider-side setup; actual
+GitLab/CircleCI project acceptance and native release publication remain pending.

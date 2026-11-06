@@ -5,12 +5,12 @@ use std::{
     io::Write,
     process::{Command, Stdio},
 };
-use zellij_core::site::SiteInput;
 use zellij_core::{
     Error, Result,
     delivery::{DeliveryPlan, Provider, PublishSettings},
     files,
 };
+use zellij_core::{ci::System, site::SiteInput};
 use zellij_scaffold::pipeline::{self, CiOptions, Publish};
 
 fn invalid(message: &str) -> Error {
@@ -31,9 +31,19 @@ fn repository(root: &Utf8Path) -> Result<Utf8PathBuf> {
     Ok(Utf8Path::new(path.trim_end_matches(['\r', '\n'])).canonicalize_utf8()?)
 }
 
-pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs) -> Result<()> {
-    if system != "github" {
-        return Err(invalid("only the github workflow generator is implemented"));
+pub(crate) fn generate(
+    system: Option<&str>,
+    dir: Option<&SiteInput>,
+    args: &CiInitArgs,
+) -> Result<()> {
+    let explicit = system.map(str::parse::<System>).transpose()?;
+    let flag = args
+        .system
+        .as_deref()
+        .map(str::parse::<System>)
+        .transpose()?;
+    if explicit.zip(flag).is_some_and(|(a, b)| a != b) {
+        return Err(invalid("ci init and --system select different CI services"));
     }
     let (site, _) = crate::images::selection(dir.or(args.site_root.as_ref()))?;
     let repo = repository(&site.root)?;
@@ -47,6 +57,13 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         relative.iter().collect::<Vec<_>>().join("/")
     };
     let mut settings = site.ci.clone();
+    settings.system = explicit.or(flag).unwrap_or(settings.system);
+    let system = settings.system;
+    if system != System::Github && args.provision {
+        return Err(invalid(
+            "--provision is GitHub-only; configure protected GitLab variables or a restricted CircleCI context yourself. No workflow was written.",
+        ));
+    }
     settings.production |= args.prod;
     let version = args
         .zel_version
@@ -60,6 +77,10 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         .filter(|s| !s.trim().is_empty());
     let publish = match (args.deploy.as_deref(), args.target.as_deref()) {
         (None, Some("static")) => Publish::Nothing,
+        (None, Some("image")) if system != System::Github => Publish::Image {
+            kind: zellij_core::delivery::ImageKind::Next,
+            tag: site.image.as_ref().and_then(|image| image.name.clone()).ok_or_else(|| invalid("GitLab/CircleCI image publication requires image.name with an explicit registry/repository:tag"))?,
+        },
         (None, Some("image")) => Publish::LegacyImage,
         (_, None) if provider.is_some() => {
             let provider = provider.expect("selected provider");
@@ -214,8 +235,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     {
         crate::images::require_native_options(&build)?;
     }
-    let path = Utf8PathBuf::from(format!(".github/workflows/{}", settings.workflow));
+    let path = Utf8PathBuf::from(system.path(&settings.workflow));
     let options = CiOptions {
+        renderer: site.renderer,
         config: if site.input.explicit_config() {
             Some(
                 site.config_path
@@ -237,21 +259,12 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         version,
         publish,
     };
-    let yaml = pipeline::github(&options)?;
-    for relative in [
-        Utf8Path::new(".github"),
-        Utf8Path::new(".github/workflows"),
-        &path,
-    ] {
-        if std::fs::symlink_metadata(repo.join(relative))
-            .is_ok_and(|meta| zellij_core::site::is_link(&meta))
-        {
-            return Err(files::unsafe_path(
-                relative,
-                "workflow destinations cannot follow symlinks or junctions",
-            ));
-        }
-    }
+    let yaml = match system {
+        System::Github => pipeline::github(&options),
+        System::Gitlab => pipeline::gitlab(&options),
+        System::Circle => pipeline::circle(&options),
+    }?;
+    files::contained_path(&repo, &path)?;
     files::preflight(&repo, &[&path], args.force)?;
     // Token validation before the write, remote mutation only after it. Never
     // infer provisioning from a token merely existing in the environment.
@@ -311,6 +324,36 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
     zellij_core::statusln!(
         "  Review and commit the workflow after that compatible release is published."
     );
+    if system != System::Github {
+        zellij_core::statusln!(
+            "  Standalone configuration: review before enabling. Custom paths must be selected in your CI project settings."
+        );
+        match system {
+            System::Gitlab => zellij_core::statusln!(
+                "  Publication requires protected refs and protected variables scoped to the generated zellij/... environment. Keep protected-variable access disabled for merge requests."
+            ),
+            System::Circle => zellij_core::statusln!(
+                "  Put publication credentials in the restricted {} context, never project-wide environment variables. Configure allowed project/ref restrictions in CircleCI.",
+                options
+                    .settings
+                    .publish_context
+                    .as_deref()
+                    .unwrap_or("zellij-publish")
+            ),
+            System::Github => unreachable!(),
+        }
+        if !options.settings.schedules.is_empty() {
+            zellij_core::statusln!(
+                "  Create schedule triggers separately for branch {} (requested UTC cron: {}). The file accepts schedule events but does not create schedules.",
+                options.settings.branch,
+                options.settings.schedules.join("; ")
+            );
+        }
+        zellij_core::statusln!(
+            "  See the CI documentation for runner requirements and provider credential names. ci run and --provision remain GitHub-only."
+        );
+        return Ok(());
+    }
     if args.provision {
         for (name, value) in credentials {
             provision(&repo, name, &value)?;

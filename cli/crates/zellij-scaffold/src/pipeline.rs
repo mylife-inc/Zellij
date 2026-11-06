@@ -1,5 +1,8 @@
-//! Pure GitHub workflow generation. Values are serialized, never pasted into
-//! executable shell text. Delivery reuses the native build-once commands.
+//! Pure CI workflow generation. Authored values are serialized as environment
+//! data or shell-quoted literals. Delivery reuses the native build-once commands.
+mod external;
+pub use external::{circle, gitlab};
+
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use zellij_core::{
@@ -46,6 +49,7 @@ pub enum Publish {
 }
 #[derive(Debug, Clone)]
 pub struct CiOptions {
+    pub renderer: zellij_core::site::Renderer,
     pub site_root: String,
     pub config: Option<String>,
     pub settings: Settings,
@@ -121,7 +125,16 @@ fn publication_condition(settings: &Settings) -> String {
     }
 }
 
-pub fn github(options: &CiOptions) -> Result<String> {
+struct Prepared {
+    version: String,
+    runner: &'static str,
+    platform_flag: String,
+    features_flag: String,
+    override_flags: String,
+    override_env: serde_json::Map<String, Value>,
+    selector: &'static str,
+}
+fn prepare(options: &CiOptions) -> Result<Prepared> {
     let CiOptions {
         site_root,
         config,
@@ -132,6 +145,7 @@ pub fn github(options: &CiOptions) -> Result<String> {
         features,
         overrides,
         build_args,
+        ..
     } = options;
     if !build_args.is_empty()
         && !matches!(
@@ -262,6 +276,36 @@ pub fn github(options: &CiOptions) -> Result<String> {
     if site_root != "." {
         zellij_core::files::relative_path(camino::Utf8Path::new(site_root))?;
     }
+    Ok(Prepared {
+        version,
+        runner,
+        platform_flag,
+        features_flag,
+        override_flags,
+        override_env,
+        selector,
+    })
+}
+
+pub fn github(options: &CiOptions) -> Result<String> {
+    let Prepared {
+        version,
+        runner,
+        platform_flag,
+        features_flag,
+        override_flags,
+        override_env,
+        selector,
+    } = prepare(options)?;
+    let CiOptions {
+        site_root,
+        config,
+        settings,
+        publish,
+        platform,
+        overrides,
+        ..
+    } = options;
     let path = if site_root == "." {
         "**".into()
     } else {
@@ -565,6 +609,7 @@ mod tests {
     use super::*;
     fn options(publish: Publish) -> CiOptions {
         CiOptions {
+            renderer: zellij_core::site::Renderer::Hosted,
             site_root: "docs/Team's [manual] 日本".into(),
             config: None,
             settings: Settings::default(),
