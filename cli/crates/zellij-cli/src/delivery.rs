@@ -83,6 +83,9 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
                 "preview (zel-preview branch)"
             }
         ),
+        DeliveryPlan::GithubPages { repository } => zellij_core::reportln!(
+            "  Provider github-pages\n  Repository {repository}\n  Mode     production (replace gh-pages root; preserve history)\n  URL      existing Pages URL; hosted build defaults follow it"
+        ),
         DeliveryPlan::Vercel {
             project,
             production,
@@ -146,6 +149,10 @@ pub(crate) fn execute_plan(
     validate_options(site, plan, options)?;
     match plan {
         DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
+        DeliveryPlan::GithubPages { repository } => {
+            let client = crate::github_pages::Client::from_environment()?;
+            deploy_github_pages(site, content, &client, repository, options)
+        }
         DeliveryPlan::Vercel {
             project,
             production,
@@ -234,6 +241,27 @@ pub(crate) fn deploy_vercel(
             "✓ Vercel deployment {} is ready\n  {}",
             deployed.id,
             deployed.url(prefix)
+        );
+        Ok(())
+    })
+}
+
+pub(crate) fn deploy_github_pages(
+    site: &Site,
+    content: &Utf8Path,
+    client: &crate::github_pages::Client,
+    repository: &str,
+    options: &BuildOptions,
+) -> Result<()> {
+    validate_static_options(site, options)?;
+    let target = client.check_site(repository)?;
+    let build = target.build_options(site.renderer, options)?;
+    build_and_deploy(site, content, &build, "GitHub Pages", |export, prefix| {
+        let deployed = client.deploy(&target, export, site.renderer, prefix)?;
+        zellij_core::statusln!(
+            "✓ GitHub Pages commit {} is published\n  {}",
+            deployed.commit,
+            deployed.url
         );
         Ok(())
     })

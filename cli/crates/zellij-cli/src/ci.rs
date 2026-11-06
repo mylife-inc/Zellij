@@ -63,6 +63,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         (None, Some("image")) => Publish::LegacyImage,
         (_, None) if provider.is_some() => {
             let provider = provider.expect("selected provider");
+            provider.require_production(settings.production)?;
             let saved = match &site.publish {
                 Some(PublishSettings::Deploy {
                     provider: saved,
@@ -81,6 +82,9 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             match provider {
                 Provider::Netlify => Publish::Netlify {
                     site_id: site_id.map(str::to_owned),
+                },
+                Provider::GithubPages => Publish::GithubPages {
+                    repository: site_id.map(str::to_owned),
                 },
                 Provider::Vercel => Publish::Vercel {
                     project: site_id.map(str::to_owned),
@@ -108,6 +112,7 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
         Publish::Netlify { .. } => Some(Provider::Netlify),
         Publish::Cloudflare { .. } => Some(Provider::Cloudflare),
         Publish::Vercel { .. } => Some(Provider::Vercel),
+        Publish::GithubPages { .. } => Some(Provider::GithubPages),
         _ => None,
     };
     if deployment_provider.is_none()
@@ -226,7 +231,15 @@ pub(crate) fn generate(system: &str, dir: Option<&SiteInput>, args: &CiInitArgs)
             "  For a team project, set repository variable VERCEL_TEAM_ID (the same-named secret is also accepted)."
         );
     }
+    if deployment_provider == Some(Provider::GithubPages) {
+        zellij_core::statusln!(
+            "  Use a dedicated GITHUB_PAGES_TOKEN with Contents and Pages write access; the built-in GITHUB_TOKEN is not selected. Configure Pages to deploy gh-pages / (root) first."
+        );
+    }
     match options.publish {
+        Publish::GithubPages { repository: None } => zellij_core::statusln!(
+            "  Set repository variable GITHUB_PAGES_REPOSITORY (owner/repository; the same-named secret is also accepted)."
+        ),
         Publish::Vercel { project: None } => zellij_core::statusln!(
             "  Set repository variable VERCEL_PROJECT_ID (the same-named secret is also accepted)."
         ),

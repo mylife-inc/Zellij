@@ -125,3 +125,10 @@ argument. Preview is the default; production requires `--prod`. See
 With a saved Vercel destination, `zel pub` needs no provider or project argument.
 Previews are the default; `--prod` is explicit. See [setup](/cli/deploy#vercel).
 These forms are newer than the published rc.1 binary.
+
+## GitHub Pages shortcut
+
+Current source provides `zel ghp` and `zel github-pages` for `zel deploy github-pages`.
+For example, `zel ghp --site acme/manual --prod`; with a saved destination, use
+`zel ghp --prod`. Dry-run plans also require `--prod`: Pages branch publishing has
+no draft mode. See [setup and limits](/cli/deploy#github-pages).

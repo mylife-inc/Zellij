@@ -397,3 +397,15 @@ overrides `VERCEL_PROJECT_ID`, then saved `publish.site`. `VERCEL_TOKEN` and the
 optional `VERCEL_TEAM_ID` remain environment settings; do not store credentials
 in configuration. Provider changes never inherit another provider's destination.
 See [preview behavior and setup](/cli/deploy#vercel).
+
+## GitHub Pages destination
+
+Current source accepts `publish: {action: deploy, provider: github-pages, site: acme/manual}`.
+The repository is `owner/name`, without a URL or `.git` suffix. `--site` /
+`--site-id` overrides `GITHUB_PAGES_REPOSITORY`, then same-provider saved settings.
+Keep `GITHUB_PAGES_TOKEN` outside configuration. Publication requires `--prod`
+each time; CI generation accepts `--prod` or `ci.production: true`.
+
+The existing Pages URL supplies hosted deployment defaults for the mount and
+site origin without changing authored settings. See
+[GitHub Pages setup and behavior](/cli/deploy#github-pages).

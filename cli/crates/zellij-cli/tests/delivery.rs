@@ -43,6 +43,8 @@ fn command(root: &Path) -> Command {
         "VERCEL_TOKEN",
         "VERCEL_PROJECT_ID",
         "VERCEL_TEAM_ID",
+        "GITHUB_PAGES_TOKEN",
+        "GITHUB_PAGES_REPOSITORY",
     ] {
         command.env_remove(key);
     }
@@ -158,7 +160,7 @@ fn delivery_configuration_is_typed_strict_and_versioned_for_both_renderers() {
             "publish: {action: push, image: static, provider: netlify}",
             "publish: {action: push, image: static, site: other}",
             "publish: {action: push, image: static, token: secret}",
-            "publish: {action: deploy, provider: github-pages, site: other}",
+            "publish: {action: deploy, provider: s3, site: other}",
             "ci: {system: github}",
         ] {
             config(root, "manual", renderer, settings);
@@ -747,5 +749,135 @@ fn vercel_missing_credentials_stop_before_build_or_tools() {
     assert_eq!(result.status.code(), Some(2));
     let error = String::from_utf8_lossy(&result.stderr);
     assert!(error.contains("VERCEL_TOKEN"), "{error}");
+    assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn github_pages_defaults_aliases_overrides_and_provider_isolation() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: github-pages, site: acme/saved}\n",
+    );
+    for route in [
+        vec!["publish"],
+        vec!["deploy"],
+        vec!["deploy", "github-pages"],
+        vec!["github-pages"],
+        vec!["ghp"],
+    ] {
+        let mut cmd = command(root);
+        cmd.env_remove("GITHUB_PAGES_REPOSITORY")
+            .env_remove("GITHUB_PAGES_TOKEN");
+        let output = cmd
+            .args(route)
+            .args(["--prod", "--dry-run"])
+            .output()
+            .unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let text = String::from_utf8_lossy(&output.stdout);
+        assert!(text.contains("acme/saved") && text.contains("production"));
+        assert!(!root.join("docs/zellij/site").exists());
+    }
+    let output = command(root)
+        .env("GITHUB_PAGES_REPOSITORY", "acme/environment")
+        .args(["ghp", "--site", "acme/explicit", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert!(output.status.success());
+    assert!(String::from_utf8_lossy(&output.stdout).contains("acme/explicit"));
+    assert!(!String::from_utf8_lossy(&output.stdout).contains("acme/environment"));
+    for flags in [
+        vec!["--platform", "linux/amd64"],
+        vec!["--tag", "acme/image:v1"],
+        vec!["--to", "netlify"],
+        vec!["--site", "https://github.com/acme/manual"],
+    ] {
+        let mut cmd = command(root);
+        cmd.args(["ghp", "--prod", "--dry-run"]).args(flags);
+        assert_eq!(cmd.output().unwrap().status.code(), Some(2));
+    }
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let output = command(root)
+        .env_remove("GITHUB_PAGES_REPOSITORY")
+        .env("NETLIFY_SITE_ID", "old-env-site")
+        .args(["ghp", "--prod", "--dry-run"])
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("GITHUB_PAGES_REPOSITORY"));
+    config(root, "docs/zellij", "portable", SETTINGS);
+    assert_eq!(
+        command(root)
+            .args([
+                "pub",
+                "--to",
+                "github-pages",
+                "--site",
+                "acme/manual",
+                "--dry-run"
+            ])
+            .output()
+            .unwrap()
+            .status
+            .code(),
+        Some(2)
+    );
+}
+
+#[test]
+fn github_pages_missing_credentials_stop_before_build_or_tools() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(root, "docs/zellij", "hosted", "");
+    let result = command(root)
+        .env_remove("GITHUB_PAGES_TOKEN")
+        .args(["ghp", "--site", "acme/manual", "--prod"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(2));
+    let error = String::from_utf8_lossy(&result.stderr);
+    assert!(error.contains("GITHUB_PAGES_TOKEN"), "{error}");
+    assert!(!root.join("docs/zellij/site").exists());
+}
+
+#[test]
+fn github_pages_requires_production_even_for_saved_publication_and_dry_runs() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    config(
+        root,
+        "docs/zellij",
+        "portable",
+        "publish: {action: deploy, provider: github-pages, site: acme/manual}\n",
+    );
+    for route in [vec!["ghp"], vec!["pub"], vec!["deploy", "github-pages"]] {
+        let output = command(root).args(route).arg("--dry-run").output().unwrap();
+        assert_eq!(output.status.code(), Some(2));
+        assert!(String::from_utf8_lossy(&output.stderr).contains("--prod"));
+    }
+    for repository in [
+        "manual",
+        "acme/manual/extra",
+        "../manual",
+        "-acme/manual",
+        "acme/..",
+        "acme/manual.git",
+        "acme/bad repo",
+    ] {
+        let output = command(root)
+            .args(["ghp", "--prod", "--dry-run", "--site", repository])
+            .output()
+            .unwrap();
+        assert_eq!(output.status.code(), Some(2), "{repository}");
+    }
     assert!(!root.join("docs/zellij/site").exists());
 }

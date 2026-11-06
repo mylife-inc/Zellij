@@ -221,6 +221,10 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .unwrap_or_default(),
             image.kind.as_str()
         ),
+        DeliveryPlan::GithubPages { repository } => format!(
+            "{SITE_CONFIG}publish:\n  action: deploy\n  provider: github-pages\n  site: {}\n",
+            yaml::string(repository)
+        ),
         DeliveryPlan::Vercel { project, .. } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: vercel\n  site: {}\n",
             yaml::string(project)

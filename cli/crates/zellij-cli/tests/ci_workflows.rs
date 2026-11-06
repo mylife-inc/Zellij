@@ -45,7 +45,9 @@ fn command(root: &Path, args: &[&str]) -> Command {
         .env_remove("CLOUDFLARE_API_TOKEN")
         .env_remove("VERCEL_TOKEN")
         .env_remove("VERCEL_PROJECT_ID")
-        .env_remove("VERCEL_TEAM_ID");
+        .env_remove("VERCEL_TEAM_ID")
+        .env_remove("GITHUB_PAGES_TOKEN")
+        .env_remove("GITHUB_PAGES_REPOSITORY");
     command
 }
 fn run(root: &Path, args: &[&str], code: i32) -> Output {
@@ -557,15 +559,21 @@ fn provisioning_is_explicit_stdin_only_and_reports_partial_failure() {
         ("netlify", "NETLIFY_AUTH_TOKEN"),
         ("cloudflare", "CLOUDFLARE_API_TOKEN"),
         ("vercel", "VERCEL_TOKEN"),
+        ("github-pages", "GITHUB_PAGES_TOKEN"),
     ] {
         let temp = tempfile::tempdir().unwrap();
         let root = temp.path();
         repo(root);
+        let destination = if provider == "github-pages" {
+            "acme/manual"
+        } else {
+            "site-id"
+        };
         site(
             root,
             "docs/zellij",
             &format!(
-                "publish: {{action: deploy, provider: {provider}, site: site-id}}\nci: {{zel-version: 0.2.0-rc.2}}\n"
+                "publish: {{action: deploy, provider: {provider}, site: {destination}}}\nci: {{zel-version: 0.2.0-rc.2, production: true}}\n"
             ),
         );
         write(
@@ -1257,4 +1265,76 @@ fn vercel_workflow_override_does_not_reuse_netlify_destination() {
     let doc = workflow(root).to_string();
     assert!(!doc.contains("old-site"));
     assert!(doc.contains("vars.VERCEL_PROJECT_ID"));
+}
+
+#[test]
+fn github_pages_workflow_requires_production_and_uses_dedicated_credentials() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: github-pages, site: acme/manual}\n",
+    );
+    let denied = command(root, &["ci"]).output().unwrap();
+    assert_eq!(denied.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("--prod"));
+    assert!(!root.join(".github/workflows/docs.yml").exists());
+    run(root, &["ci", "--prod"], 0);
+    let original = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    let doc = workflow(root);
+    let publish = &doc["jobs"]["publish"];
+    let verify = doc["jobs"]["verify"].to_string();
+    assert!(!verify.contains("secrets.") && !verify.contains("GITHUB_PAGES_TOKEN"));
+    assert!(!publish["if"].as_str().unwrap().contains("pull_request"));
+    let step = publish["steps"].as_array().unwrap().last().unwrap();
+    assert!(
+        step["run"]
+            .as_str()
+            .unwrap()
+            .starts_with("zel deploy github-pages")
+    );
+    assert!(step["run"].as_str().unwrap().contains("--prod"));
+    assert_eq!(step["env"]["GITHUB_PAGES_REPOSITORY"], "acme/manual");
+    assert_eq!(
+        step["env"]["GITHUB_PAGES_TOKEN"],
+        "${{ secrets.GITHUB_PAGES_TOKEN }}"
+    );
+    assert!(!doc.to_string().contains("secrets.GITHUB_TOKEN"));
+    for args in [
+        vec!["ci", "--prod", "--force", "--branch", "gh-pages"],
+        vec!["ci", "--prod", "--force", "--zel-version", "0.2.0-rc.1"],
+    ] {
+        run(root, &args, 2);
+        assert_eq!(
+            fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+            original
+        );
+    }
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2, production: true}\npublish: {action: deploy, provider: github-pages, site: acme/manual}\n",
+    );
+    run(root, &["ci", "--force"], 0);
+}
+#[test]
+fn github_pages_workflow_override_does_not_reuse_another_providers_destination() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "ci: {zel-version: 0.2.0-rc.2}\npublish: {action: deploy, provider: netlify, site: old-site}\n",
+    );
+    let result = command(root, &["ci", "--deploy", "github-pages", "--prod"])
+        .env_remove("GITHUB_PAGES_REPOSITORY")
+        .output()
+        .unwrap();
+    assert!(result.status.success(), "{result:?}");
+    let doc = workflow(root).to_string();
+    assert!(!doc.contains("old-site"));
+    assert!(doc.contains("vars.GITHUB_PAGES_REPOSITORY"));
 }

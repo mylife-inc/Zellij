@@ -22,6 +22,7 @@ mod development;
 mod eject;
 mod features;
 mod formatting;
+mod github_pages;
 mod images;
 mod imports;
 mod maintenance;
@@ -265,7 +266,8 @@ fn main() {
         Command::Shortcut(_)
         | Command::Netlify(_)
         | Command::Cloudflare(_)
-        | Command::Vercel(_) => {
+        | Command::Vercel(_)
+        | Command::GithubPages(_) => {
             unreachable!("CLI aliases are normalized before dispatch")
         }
     };

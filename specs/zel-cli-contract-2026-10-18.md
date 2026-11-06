@@ -1903,3 +1903,17 @@ protocol details and verification. Native rc.1 remains unchanged.
 
 PR #81's Cloudflare implementation merged as `9cde253`, after all 16 checks on
 `b1bf1da` passed in `42119403884`; the tested/merged tree is identical.
+
+
+### 2026-11-05 — GitHub Pages publication
+
+Current source implements `deploy github-pages`, `github-pages` / `ghp`, saved
+publication, ship and GitHub workflow generation. Existing gh-pages root sources
+and explicit production intent are required; this provider has no draft mode.
+Hosted URL defaults follow the existing Pages mount. Non-forced commit updates
+preserve history and CNAME; success requires the matching commit's Pages build.
+See [deployment setup and limits](../examples/zellij-docs/content/02-cli/deploy.mdx#github-pages)
+and the latest durable-context/audit entry for implementation and evidence.
+Live Pages account acceptance and final-head CI remain pending. PR #82 merged
+as `c8b485c` after all 16 checks passed; both its post-merge workflows passed.
+Published native rc.1 remains unchanged; rc.2 is not published.
