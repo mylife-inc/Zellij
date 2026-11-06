@@ -142,13 +142,13 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `--out <path>` | Required new or empty configured site root |
 | `--from <format>` | Force the converter instead of detecting |
 | `--assets copy\|skip` | Copy referenced assets by default; skip retains original URLs and reports omissions |
-| `--provider netlify` | Deploy static HTML to an existing site |
+| `--provider <provider>` | Deploy static HTML using `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3` |
 | `--image static\|next` | Publish this image kind; conflicts with `--provider` |
 | `--tag <reference>` | Required with `--image`; exact registry destination |
-| `--site-id <id>` / `--site <id>` | Netlify site ID/domain; overrides environment |
-| `--prod` | Netlify production request; conflicts with `--image` |
+| `--site-id <destination>` / `--site <destination>` | Provider-specific project, repository or bucket/prefix; overrides provider environment |
+| `--prod` | Request production; required for GitHub Pages and S3, conflicts with `--image` |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
-| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | In-memory conversion and plan only |

@@ -492,10 +492,10 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | --- | --- |
 | `[provider]` | `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3`; omit to execute saved publication settings |
 | `[site]` | Site root, using normal discovery when omitted |
-| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name or GitHub owner/repository; `--site` is equivalent |
+| `--site-id <destination>` | Netlify ID/domain, Cloudflare project name, Vercel project ID/name, GitHub owner/repository or S3 bucket/prefix; `--site` is equivalent |
 | `--prod` | Request live publication; required for GitHub Pages and S3, which have no draft mode |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
-| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Resolve and print the plan only |
