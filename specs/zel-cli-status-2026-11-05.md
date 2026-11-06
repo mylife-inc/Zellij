@@ -261,3 +261,16 @@ GitHub Pages implementation commit **`b72e851`** contains the adapter, CLI/CI
 integration, regression tests and matching docs. Local verification above covers
 that implementation; final-head native/hosted CI and live account acceptance
 remain pending. The subsequent context-only commit records this source identity.
+
+
+PR #83 run `42135062241` exposed a Windows response-read deadline diagnostic:
+expiration while reading the HTTP body was reported as a generic read failure.
+Fix **`5dc95ec`** recognizes both reqwest's wrapped I/O timeout and the operation
+deadline, retaining response/token redaction. A regression delays the response
+body after headers. The original stale/missing-build timeout assertions remain;
+no Windows test or assertion was disabled. All 13 local Pages tests passed
+(one hosted test remains CI-only), with warnings-denied Clippy and formatting.
+Distinct local Rust coverage is now 506 tests. Evidence:
+`/private/tmp/zellij-pr83-windows.log` and `zellij-pages-timeout-tests.log`.
+The first run cannot validate this correction; final-head CI and merge remain
+pending, as does live GitHub Pages account acceptance.
