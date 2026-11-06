@@ -126,6 +126,14 @@ fn command(root: &Path) -> Command {
         "CONTAINERD_NAMESPACE",
         "NETLIFY_AUTH_TOKEN",
         "NETLIFY_SITE_ID",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_SECRET_ACCESS_KEY",
+        "AWS_SESSION_TOKEN",
+        "AWS_REGION",
+        "S3_EXPECTED_BUCKET_OWNER",
+        "S3_DESTINATION",
+        "AWS_ENDPOINT_URL",
+        "AWS_ENDPOINT_URL_S3",
     ] {
         command.env_remove(key);
     }
@@ -490,7 +498,7 @@ fn invalid_imports_and_delivery_options_never_create_destinations() {
             "--out",
             "out",
             "--provider",
-            "s3",
+            "fly",
             "--site-id",
             "fixture",
         ],
@@ -1002,6 +1010,52 @@ fn github_pages_ship_plans_without_credentials_and_retains_site_on_credential_fa
     assert!(String::from_utf8_lossy(&output.stderr).contains("GITHUB_PAGES_TOKEN"));
     let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
     assert!(config.contains("provider: github-pages") && config.contains("manual"));
+    assert!(!config.contains("token") && !config.contains("production"));
+    assert!(root.join("converted/content/site.yaml").is_file());
+    assert_eq!(tree(&root.join("source")), original);
+}
+
+#[test]
+fn s3_ship_plans_without_credentials_and_retains_site_on_credential_failure() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let original = tree(&root.join("source"));
+    let args = [
+        "ship",
+        "source",
+        "--out",
+        "converted",
+        "--provider",
+        "s3",
+        "--site",
+        "acme-docs/manual",
+        "--prod",
+    ];
+    let denied = command(root)
+        .args(&args[..args.len() - 1])
+        .output()
+        .unwrap();
+    assert_eq!(denied.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&denied.stderr).contains("--prod"));
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("AWS_ACCESS_KEY_ID")
+        .args(args)
+        .arg("--dry-run")
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert!(!root.join("converted").exists());
+    let output = command(root)
+        .env_remove("AWS_ACCESS_KEY_ID")
+        .args(args)
+        .output()
+        .unwrap();
+    assert_eq!(output.status.code(), Some(2));
+    assert!(String::from_utf8_lossy(&output.stderr).contains("AWS_ACCESS_KEY_ID"));
+    let config = fs::read_to_string(root.join("converted/zel.yaml")).unwrap();
+    assert!(config.contains("provider: s3") && config.contains("manual"));
     assert!(!config.contains("token") && !config.contains("production"));
     assert!(root.join("converted/content/site.yaml").is_file());
     assert_eq!(tree(&root.join("source")), original);

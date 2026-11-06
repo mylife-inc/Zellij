@@ -221,6 +221,10 @@ fn configuration(plan: &DeliveryPlan) -> String {
                 .unwrap_or_default(),
             image.kind.as_str()
         ),
+        DeliveryPlan::S3 { destination } => format!(
+            "{SITE_CONFIG}publish:\n  action: deploy\n  provider: s3\n  site: {}\n",
+            yaml::string(destination)
+        ),
         DeliveryPlan::GithubPages { repository } => format!(
             "{SITE_CONFIG}publish:\n  action: deploy\n  provider: github-pages\n  site: {}\n",
             yaml::string(repository)

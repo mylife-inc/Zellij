@@ -332,6 +332,15 @@ jobs:
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
           cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
 
+      - name: S3 hosted export and upload acceptance
+        working-directory: cli
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: |
+          acceptance_test=s3::tests::hosted_export_uses_s3_mount_and_preserves_assets_source_and_previous_output
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --list | grep -F "$acceptance_test: test"
+          cargo test --locked -p zellij-cli --bin zel "$acceptance_test" -- --ignored --exact --nocapture
+
       - name: Hosted validation watch uses the real engine and recovers after edits
         env:
           ZELLIJ_IMAGE: zellij-ci

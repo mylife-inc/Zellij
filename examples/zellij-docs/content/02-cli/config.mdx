@@ -409,3 +409,13 @@ each time; CI generation accepts `--prod` or `ci.production: true`.
 The existing Pages URL supplies hosted deployment defaults for the mount and
 site origin without changing authored settings. See
 [GitHub Pages setup and behavior](/cli/deploy#github-pages).
+
+## S3 destination
+
+Current source accepts `publish: {action: deploy, provider: s3, site: acme-docs/manual}`.
+Use `zel pub --prod`; S3 has no preview mode. `--site` / `--site-id` overrides
+`S3_DESTINATION`, then this saved destination. AWS credentials, region and expected
+bucket owner belong in the environment. The production choice is not saved in
+`publish`; generated CI may opt in with `ci.production: true`. Hosted URL defaults
+follow the bucket website origin and destination prefix without editing authored
+settings. See [S3 setup and upload limits](/cli/deploy#aws-s3).

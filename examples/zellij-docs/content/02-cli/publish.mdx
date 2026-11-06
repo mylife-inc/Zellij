@@ -10,7 +10,7 @@ description: Build once and deliver using saved registry or Netlify settings.
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
 or Next.js image. These commands are available in candidate `0.2.0-rc.1`; stable `0.1.3` predates them.
-Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel and GitHub Pages; see [deployment](/cli/deploy#cloudflare-pages).
+Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel, GitHub Pages and S3; see [deployment](/cli/deploy#cloudflare-pages).
 </Callout>
 
 ## Save the destination
@@ -169,13 +169,13 @@ CLI and compatible engine; they are absent from candidate `0.2.0-rc.1`.
 | `--tag <reference>` | Override `image.name` for both build and push |
 | `--platform <platform>` | Override `image.platform`; choose `linux/amd64`, `linux/arm64`, or `all` for one tag with both |
 | `--features <selection>` | Complete rendering selection for this build only; saved settings stay unchanged |
-| `--base-path <path>` | Hosted deployment prefix for this invocation; `/` clears it |
+| `--base-path <path>` | Hosted deployment prefix; `/` clears it only when compatible with the provider mount |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata |
 | `--no-check` | Skip content preflight; retain preparation, rendering and credential checks |
 | `--dry-run` | Print resolved settings and intended stages; perform no tool probes, content validation, build or registry requests |
-| `--to netlify` | Select static-site deployment; rejected for a saved image-push plan |
-| `--site-id <id-or-domain>` | Netlify destination override; `--site` is equivalent |
-| `--prod` | Request live Netlify publication; default is draft preview |
+| `--to <provider>` | Select `netlify`, `cloudflare`, `vercel`, `github-pages` or `s3`; rejected for a saved image-push plan |
+| `--site-id <destination>` | Provider-specific project, repository or bucket/prefix override; `--site` is equivalent |
+| `--prod` | Request live publication; required for GitHub Pages and S3, preview by default for other implemented providers |
 
 `--json` is not supported and fails before work. A dry run checks shared settings
 and site selection; it does not prove that the content builds, credentials work,
@@ -185,7 +185,7 @@ or the destination exists.
 
 ## Remaining delivery work
 
-Other deployment providers remain pending.
+Fly and Railway deployment adapters remain pending.
 The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
 `zel ci [site]`, with local-only generation and explicit credential provisioning.
@@ -244,3 +244,13 @@ draft mode. This replaces the existing `gh-pages` root while retaining history,
 and waits for the matching commit's Pages build. See
 [setup, URL defaults and limits](/cli/deploy#github-pages). Current source only;
 the published rc.1 binary does not include this provider.
+
+## S3 publication
+
+Save `publish: {action: deploy, provider: s3, site: acme-docs/manual}` and use
+`zel pub --prod`. `pub --to s3 --site acme-docs/manual --prod` overrides a saved
+deployment provider, while saved image-push plans keep their existing conflict
+checks. S3 requires `--prod`, even for dry runs. Uploads replace matching keys
+individually and retain other keys; they are not atomic. Both renderers preserve
+local source and previous output. See [S3 setup and limits](/cli/deploy#aws-s3).
+Current source only; the published rc.1 does not include this provider.

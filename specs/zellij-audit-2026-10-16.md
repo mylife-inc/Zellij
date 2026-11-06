@@ -4527,3 +4527,72 @@ Distinct local Rust coverage is now 506 tests. Evidence:
 `/private/tmp/zellij-pr83-windows.log` and `zellij-pages-timeout-tests.log`.
 The first run cannot validate this correction; final-head CI and merge remain
 pending, as does live GitHub Pages account acceptance.
+
+### 2026-11-05 — GitHub Pages milestone closure and S3 implementation
+
+PR #83 merged as **`e25d8d9c45e959c61da229fa8d3b2911021ab2f5`** after all
+16 checks passed on final head `b11bdd697076a0005423da4967ddc887005c6db1`
+in run `42135824730`. Tested and merged tree:
+`c872806f12719cf8d366991514c56d837adf8b70`. Attempt 1 completed 15 checks;
+the remaining Linux job stalled downloading Ubuntu packages at about 45 kB/s.
+Only that unfinished job was cancelled and retried on the unchanged head;
+attempt 2 passed. This was infrastructure delay, not a disabled assertion.
+Post-merge base-image run `42139995450` and main CI `42139995418` both passed.
+Evidence: `/private/tmp/zellij-pr83-premerge.json`, `zellij-pr83-ci.json`,
+`zellij-pr83-merge.json` and the final PR description.
+
+Current work adds native AWS S3 website uploads to `deploy s3`, shortcut `s3`,
+saved publication, ship and GitHub CI generation. Destination is an existing
+commercial-region general-purpose bucket, optionally with an ASCII prefix.
+`--prod` is mandatory even for plans; CI may use saved `ci.production: true`.
+Environment credentials, `AWS_REGION` and `S3_EXPECTED_BUCKET_OWNER` are required.
+Temporary access keys require `AWS_SESSION_TOKEN`. No AWS CLI/profile/metadata
+credential lookup or custom endpoint is used. Secrets never enter configuration
+or argv. Explicit CI provisioning validates all keys before writing, then sends
+required and supplied optional secrets individually over stdin; partial failures
+retain the workflow and may have set some secrets.
+
+The native SigV4 adapter checks bucket region, expected owner and website setup
+before building. It requires index.html with no redirects/routing rules. It
+builds once into temporary output and retains source/previous local output.
+Portable keys receive the destination prefix; hosted invocation defaults derive
+from that prefix and the website origin. Hosted files already contain the prefix
+and are uploaded without duplication. Non-index HTML also gets extensionless
+copies for clean links; collisions fail before uploads.
+
+All key ETags/missing states are captured before conditional PUTs. Assets upload
+first, then HTML, selected index last. SHA-256 receipts are verified. Configuration
+is rechecked before and after upload. S3 publication remains non-atomic; failures
+can leave partial changes. There is no automatic retry, rollback, prune, bucket
+configuration, public-access/policy/ACL change, DNS or CloudFront setup. Old keys
+remain. Website URLs use HTTP; uploads use HTTPS. Success means objects uploaded,
+not that public website access was verified. Limits: 5,000 objects, 25 MiB/file,
+100 MiB total including clean-route copies, 1,024-byte keys, 512-byte destination
+prefix. Redirects are refused, provider bodies redacted, responses bounded to
+256 KiB, with 60/15-second request/connect limits and a 15-minute upload budget.
+
+Docs, command help, inventory, contract, current status and draft release notes
+are updated together. Tests cover published AWS signing vectors, byte/path
+preservation, sessions, conditional writes, failed receipts, drift, quotas,
+preflight-before-build, source preservation and explicit multi-secret provisioning.
+The hosted real-export fixture is selected only in GitHub CI. No local Docker,
+Playwright or live AWS mutation was run. Live AWS/Cloudflare/Vercel/Pages acceptance,
+Fly/Railway, other CI systems, wizard and advanced imports remain separate work.
+Native rc.2 remains unpublished pending explicit release authorization. Netlify's
+hosting-comment hydration issue and production migration remain pending.
+
+Local verification: **528 distinct Rust tests passed** (524 in the full workspace
+run, plus four added regression cases in the final focused runs). The final CLI
+binary suite passed 78 tests with five real hosted-provider tests intentionally
+ignored locally and explicitly selected in CI. The final delivery/import/workflow
+suites passed. Warnings-denied Clippy, Rust formatting, strict/deep documentation
+(55 routes / 23 examples), repository actionlint and an emitted S3 workflow passed.
+Evidence: `/private/tmp/zellij-s3-workspace.log`, `zellij-s3-final-tests.log`,
+`zellij-s3-bin-final.log`, `zellij-s3-clippy.log`, `zellij-s3-docs.log`, and
+`/private/var/folders/1p/q48lnmt15932t129b48z_mrr0000gn/T/zellij-s3-ci-gjue2ymx/.github/workflows/docs.yml`.
+Final-head hosted/native CI and merge remain pending, as does live AWS acceptance.
+
+S3 implementation commit **`db164b5`** contains the adapter, CLI/CI integration,
+regression tests and matching documentation. Local verification above covers this
+implementation; final-head native/hosted CI and live account acceptance remain
+pending. This subsequent context-only commit records the source identity.

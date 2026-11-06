@@ -83,6 +83,9 @@ pub(crate) fn describe_destination(plan: &DeliveryPlan) {
                 "preview (zel-preview branch)"
             }
         ),
+        DeliveryPlan::S3 { destination } => zellij_core::reportln!(
+            "  Provider s3\n  Destination {destination}\n  Mode     production (replace matching objects; retain other keys)\n  Region   AWS_REGION\n  Owner    S3_EXPECTED_BUCKET_OWNER"
+        ),
         DeliveryPlan::GithubPages { repository } => zellij_core::reportln!(
             "  Provider github-pages\n  Repository {repository}\n  Mode     production (replace gh-pages root; preserve history)\n  URL      existing Pages URL; hosted build defaults follow it"
         ),
@@ -149,6 +152,10 @@ pub(crate) fn execute_plan(
     validate_options(site, plan, options)?;
     match plan {
         DeliveryPlan::Push(plan) => push_image(site, content, plan, options),
+        DeliveryPlan::S3 { destination } => {
+            let client = crate::s3::Client::from_environment()?;
+            deploy_s3(site, content, &client, destination, options)
+        }
         DeliveryPlan::GithubPages { repository } => {
             let client = crate::github_pages::Client::from_environment()?;
             deploy_github_pages(site, content, &client, repository, options)
@@ -241,6 +248,27 @@ pub(crate) fn deploy_vercel(
             "✓ Vercel deployment {} is ready\n  {}",
             deployed.id,
             deployed.url(prefix)
+        );
+        Ok(())
+    })
+}
+
+pub(crate) fn deploy_s3(
+    site: &Site,
+    content: &Utf8Path,
+    client: &crate::s3::Client,
+    destination: &str,
+    options: &BuildOptions,
+) -> Result<()> {
+    validate_static_options(site, options)?;
+    let target = client.check_site(destination)?;
+    let build = target.build_options(site.renderer, options)?;
+    build_and_deploy(site, content, &build, "S3", |export, prefix| {
+        let deployed = client.deploy(&target, export, site.renderer, prefix)?;
+        zellij_core::statusln!(
+            "✓ Uploaded {} S3 objects\n  {}\n  Website access still depends on your bucket policy; old keys are retained.",
+            deployed.objects,
+            deployed.url
         );
         Ok(())
     })

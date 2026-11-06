@@ -109,6 +109,7 @@ pub enum Provider {
     Vercel,
     #[serde(rename = "github-pages")]
     GithubPages,
+    S3,
 }
 impl Provider {
     pub fn parse(value: &str) -> Result<Self> {
@@ -117,8 +118,9 @@ impl Provider {
             "cloudflare" => Ok(Self::Cloudflare),
             "vercel" => Ok(Self::Vercel),
             "github-pages" => Ok(Self::GithubPages),
+            "s3" => Ok(Self::S3),
             _ => Err(Error::InvalidArgument(
-                "unsupported deployment provider; choose netlify, cloudflare, vercel or github-pages".into(),
+                "unsupported deployment provider; choose netlify, cloudflare, vercel, github-pages or s3".into(),
             )),
         }
     }
@@ -128,6 +130,7 @@ impl Provider {
             Self::Cloudflare => "cloudflare",
             Self::Vercel => "vercel",
             Self::GithubPages => "github-pages",
+            Self::S3 => "s3",
         }
     }
     pub fn site_environment(self) -> &'static str {
@@ -136,14 +139,7 @@ impl Provider {
             Self::Cloudflare => "CLOUDFLARE_PAGES_PROJECT_NAME",
             Self::Vercel => "VERCEL_PROJECT_ID",
             Self::GithubPages => "GITHUB_PAGES_REPOSITORY",
-        }
-    }
-    pub fn token_environment(self) -> &'static str {
-        match self {
-            Self::Netlify => "NETLIFY_AUTH_TOKEN",
-            Self::Cloudflare => "CLOUDFLARE_API_TOKEN",
-            Self::Vercel => "VERCEL_TOKEN",
-            Self::GithubPages => "GITHUB_PAGES_TOKEN",
+            Self::S3 => "S3_DESTINATION",
         }
     }
     pub fn selected(site: &Site, provider: Option<&str>, to: Option<&str>) -> Result<Option<Self>> {
@@ -163,6 +159,39 @@ impl Provider {
     pub fn validate_site(self, value: &str) -> Result<()> {
         match self {
             Self::Netlify => validate_site_identifier(value),
+            Self::S3 => {
+                let (bucket, prefix) = value.split_once('/').unwrap_or((value, ""));
+                let valid_bucket = (3..=63).contains(&bucket.len())
+                    && bucket.bytes().all(|b| {
+                        b.is_ascii_lowercase() || b.is_ascii_digit() || b".-".contains(&b)
+                    })
+                    && bucket.as_bytes()[0].is_ascii_alphanumeric()
+                    && bucket.as_bytes()[bucket.len() - 1].is_ascii_alphanumeric()
+                    && !bucket.contains("..")
+                    && !bucket.contains(".-")
+                    && !bucket.contains("-.")
+                    && bucket.parse::<std::net::Ipv4Addr>().is_err()
+                    && !["xn--", "sthree-", "amzn-s3-demo-"]
+                        .iter()
+                        .any(|p| bucket.starts_with(p))
+                    && !["-s3alias", "--ol-s3", ".mrap", "--x-s3", "--table-s3"]
+                        .iter()
+                        .any(|p| bucket.ends_with(p));
+                let valid_prefix = prefix.len() <= 512
+                    && (!value.contains('/') || !prefix.is_empty())
+                    && (prefix.is_empty()
+                        || prefix.split('/').all(|p| {
+                            !p.is_empty()
+                                && p != "."
+                                && p != ".."
+                                && p.bytes()
+                                    .all(|b| b.is_ascii_alphanumeric() || b"._-".contains(&b))
+                        }));
+                if !valid_bucket || !valid_prefix {
+                    return Err(Error::InvalidArgument("S3 destination must be a general-purpose bucket name, optionally followed by /prefix; use ASCII letters, digits, dots, underscores and hyphens in prefix segments, without empty/dot segments, URLs or trailing slash".into()));
+                }
+                Ok(())
+            }
             Self::GithubPages => {
                 let valid = value.split_once('/').is_some_and(|(owner, repo)| {
                     !owner.is_empty()
@@ -218,7 +247,19 @@ impl Provider {
             }
         }
     }
+    pub fn credential_environments(self) -> &'static [&'static str] {
+        match self {
+            Self::S3 => &["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+            Self::Netlify => &["NETLIFY_AUTH_TOKEN"],
+            Self::Cloudflare => &["CLOUDFLARE_API_TOKEN"],
+            Self::Vercel => &["VERCEL_TOKEN"],
+            Self::GithubPages => &["GITHUB_PAGES_TOKEN"],
+        }
+    }
     pub fn require_production(self, production: bool) -> Result<()> {
+        if self == Self::S3 && !production {
+            return Err(Error::InvalidArgument("S3 website uploads have no draft mode; pass --prod (or ci.production: true for CI generation). Existing matching objects will be replaced; other objects are retained".into()));
+        }
         if self == Self::GithubPages && !production {
             return Err(Error::InvalidArgument("GitHub Pages branch publishing has no draft previews; pass --prod explicitly (or --prod / ci.production: true when generating CI) to replace the published gh-pages snapshot".into()));
         }
@@ -228,6 +269,9 @@ impl Provider {
         self.validate_site(destination)?;
         self.require_production(production)?;
         Ok(match self {
+            Self::S3 => DeliveryPlan::S3 {
+                destination: destination.into(),
+            },
             Self::GithubPages => DeliveryPlan::GithubPages {
                 repository: destination.into(),
             },
@@ -282,6 +326,7 @@ pub enum DeliveryPlan {
     Cloudflare { project: String, production: bool },
     Vercel { project: String, production: bool },
     GithubPages { repository: String },
+    S3 { destination: String },
 }
 
 impl DeliveryPlan {
@@ -294,7 +339,8 @@ impl DeliveryPlan {
                 Self::Netlify { .. }
                 | Self::Cloudflare { .. }
                 | Self::Vercel { .. }
-                | Self::GithubPages { .. } => {
+                | Self::GithubPages { .. }
+                | Self::S3 { .. } => {
                     return Err(Error::InvalidArgument(
                         "--platform requires image publication; deployment providers accept static HTML".into(),
                     ));
@@ -328,7 +374,7 @@ impl DeliveryPlan {
             }
             _ => None,
         };
-        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages --site <destination>`".into()))?;
+        let selected = selected.ok_or_else(|| Error::InvalidArgument("publish requires saved publish settings in version: 1 zel.yaml; or use `zel deploy netlify|cloudflare|vercel|github-pages|s3 --site <destination>`".into()))?;
         if tag.is_some() {
             return Err(Error::InvalidArgument(
                 "deployment accepts generated static HTML, not an image tag; remove --tag".into(),

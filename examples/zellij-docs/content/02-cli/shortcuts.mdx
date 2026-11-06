@@ -132,3 +132,10 @@ Current source provides `zel ghp` and `zel github-pages` for `zel deploy github-
 For example, `zel ghp --site acme/manual --prod`; with a saved destination, use
 `zel ghp --prod`. Dry-run plans also require `--prod`: Pages branch publishing has
 no draft mode. See [setup and limits](/cli/deploy#github-pages).
+
+## S3 shortcut
+
+Current source provides `zel s3` for `zel deploy s3`. Use
+`zel s3 --site acme-docs/manual --prod`, or `zel s3 --prod` with a saved destination.
+Dry-run plans also require `--prod`: S3 uploads have no draft mode.
+See [setup and upload behavior](/cli/deploy#aws-s3).

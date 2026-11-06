@@ -2080,3 +2080,17 @@ and the latest durable-context/audit entry for implementation and evidence.
 Live Pages account acceptance and final-head CI remain pending. PR #82 merged
 as `c8b485c` after all 16 checks passed; both its post-merge workflows passed.
 Published native rc.1 remains unchanged; rc.2 is not published.
+
+### 2026-11-05 — AWS S3 static website uploads
+
+Current source implements `deploy s3`, `s3`, saved `publish`/`pub`, `ship` and
+GitHub CI generation for an existing S3 website bucket. Destination is bucket
+or bucket/prefix; production intent is mandatory. Native SigV4 uploads use
+explicit environment credentials, region and expected owner. Hosted prefixes
+are applied once and clean-route HTML copies are included. All object
+preconditions are captured before conditional writes; uploads remain non-atomic
+and old keys remain. No bucket, policy, ACL, DNS or CDN setup is performed.
+See [setup and limits](../examples/zellij-docs/content/02-cli/deploy.mdx#aws-s3).
+Live AWS account acceptance is pending. The published rc.1 lacks this provider;
+rc.2 remains unpublished. Fly/Railway, other CI systems, wizard and advanced
+import gaps remain separate work.

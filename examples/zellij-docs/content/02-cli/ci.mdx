@@ -166,16 +166,16 @@ See [Cloudflare setup and limits](/cli/deploy#cloudflare-pages).
 ## Provisioning is explicit
 
 Generation writes a local workflow only, even if credentials exist in your shell.
-To also upload your environment's token to the site's GitHub repository:
+To also upload your environment's provider credentials to the site's GitHub repository:
 
 ```bash
 zel ci --force --provision
 ```
 
-This requires a Netlify, Cloudflare, Vercel or GitHub Pages delivery plan, its
-environment token (`NETLIFY_AUTH_TOKEN`, `CLOUDFLARE_API_TOKEN`, `VERCEL_TOKEN` or
-`GITHUB_PAGES_TOKEN`), and an authenticated
-GitHub CLI with permission to set repository secrets. The token is sent to `gh`
+This requires a deployment delivery plan and its environment credentials.
+Netlify, Cloudflare, Vercel and GitHub Pages use an environment token (`NETLIFY_AUTH_TOKEN`, `CLOUDFLARE_API_TOKEN`, `VERCEL_TOKEN` or
+`GITHUB_PAGES_TOKEN`). S3 uses the credential variables described below.
+Provisioning requires an authenticated GitHub CLI with permission to set repository secrets. The token is sent to `gh`
 over stdin; it is never written into the workflow or passed as an argument.
 The workflow is written before the remote operation. If provisioning fails,
 the command reports that the file remains and asks you to inspect repository
@@ -202,7 +202,7 @@ Legacy `--target image` builds a Next image and pushes
 `ghcr.io/<lowercase-owner>/<lowercase-repo>/docs:<commit-sha>`. It uses one image
 build followed by pushing that exact tag. Saved settings provide the explicit
 static/Next choice for new workflows. `--deploy netlify` chooses native static
-site delivery. `--target` and `--deploy` conflict. Netlify site/provision/production
+site delivery. `--target` and `--deploy` conflict. Provider destination/provision/production
 options are rejected for image or build-only workflows.
 
 ## Dispatch an existing workflow
@@ -380,3 +380,36 @@ verification builds without receiving deployment credentials. Explicit
 through `gh` after writing the workflow. It does not create/configure the Pages
 site or branch. The publication build derives hosted URL defaults from Pages;
 ordinary verification builds still use authored or explicit build settings.
+
+## S3 workflows
+
+Use saved `publish.provider: s3` or:
+
+```bash
+zel ci --deploy s3 --site acme-docs/manual --prod --zel-version 0.2.0-rc.2
+```
+
+Generation requires `--prod` or `ci.production: true` before writing the workflow.
+Use a compatible published release before running it: rc.2 has not been published,
+and rc.1 lacks S3 support. Prepare the [S3 website bucket](/cli/deploy#aws-s3) first.
+Set repository secrets `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and, for
+temporary credentials, `AWS_SESSION_TOKEN`. Set repository variables `AWS_REGION`
+and `S3_EXPECTED_BUCKET_OWNER`; same-named secrets also work.
+
+Destination precedence is `--site`, local `S3_DESTINATION`, then same-provider
+`publish.site`. A resolved destination is written literally; otherwise the
+workflow reads repository variable `S3_DESTINATION`, falling back to that secret.
+Region and owner are resolved only when the workflow runs. Allowed publication
+events run `zel deploy s3 --prod`. Pull requests validate/build without AWS
+credentials. No IAM role, OIDC federation or bucket configuration is created.
+Temporary credentials must still be valid when the workflow executes.
+
+`--provision` explicitly sends both required AWS credential variables and a
+nonempty optional session token to GitHub secrets, one at a time over stdin.
+All credentials are validated before the workflow is written. Missing session
+tokens for temporary access keys fail at that point. A later provisioning failure
+leaves the workflow and may have set some secrets; inspect before retrying.
+An absent/empty optional session token does not delete an existing repository
+secret. When switching to long-lived credentials, clear any stale
+`AWS_SESSION_TOKEN` secret yourself. Region, owner and destination are not
+provisioned by this option.
