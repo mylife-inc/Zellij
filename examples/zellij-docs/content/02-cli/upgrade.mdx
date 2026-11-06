@@ -64,7 +64,12 @@ On Unix, a same-filesystem rename replaces the executable. On Windows, the old
 executable is moved aside, the new one takes its name, and a failed rename
 attempts to restore the old name. Windows keeps the previous executable in the
 printed `.zel-upgrade-<random>/zel.previous.exe` directory; it can be removed
-after the command exits. Abrupt machine/storage failure during replacement is
+after the command exits. Current source retries Windows sharing/lock violations
+for up to five seconds per permission, staged-archive removal or rename operation.
+Other errors fail immediately, and messages identify the failed operation.
+Cancellation remains available before replacement starts; commit and restoration
+finish without cancellation after the old executable has moved. These changes
+require the next native release. Abrupt machine/storage failure during replacement is
 not a recoverable transaction guarantee.
 
 ## Asset mirrors

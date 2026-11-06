@@ -191,3 +191,106 @@ fn executable_architecture_is_checked_before_running_it() {
     fs::write(&path, b"#!/bin/sh\necho zel 0.2.0").unwrap();
     assert!(archive::verify_target(&path, crate::TARGET).is_err());
 }
+
+#[test]
+fn file_changes_retry_only_windows_locks_and_obey_the_deadline_and_cancellation() {
+    use std::io;
+    for code in [32, 33] {
+        let mut attempts = 0;
+        let value = retry_file_change("test change", None, true, Duration::from_secs(1), || {
+            attempts += 1;
+            if attempts == 1 {
+                Err(io::Error::from_raw_os_error(code))
+            } else {
+                Ok(42)
+            }
+        })
+        .unwrap();
+        assert_eq!((value, attempts), (42, 2));
+    }
+    for (windows, code) in [(false, 32), (true, 5), (true, 2)] {
+        let mut attempts = 0;
+        let error = retry_file_change("test change", None, windows, Duration::from_secs(1), || {
+            attempts += 1;
+            Err::<(), _>(io::Error::from_raw_os_error(code))
+        })
+        .unwrap_err();
+        assert_eq!(attempts, 1);
+        assert!(error.to_string().contains("test change"));
+    }
+    let mut attempts = 0;
+    retry_file_change("locked", None, true, Duration::ZERO, || {
+        attempts += 1;
+        Err::<(), _>(io::Error::from_raw_os_error(32))
+    })
+    .unwrap_err();
+    assert_eq!(attempts, 1);
+    let stop = AtomicBool::new(false);
+    let error = retry_file_change(
+        "cancelled change",
+        Some(&stop),
+        true,
+        Duration::from_secs(1),
+        || {
+            stop.store(true, Ordering::Relaxed);
+            Err::<(), _>(io::Error::from_raw_os_error(32))
+        },
+    )
+    .unwrap_err();
+    assert!(error.to_string().contains("cancelled"));
+    let mut attempts = 0;
+    file_change("cancel before change", Some(&stop), || {
+        attempts += 1;
+        Ok(())
+    })
+    .unwrap_err();
+    assert_eq!(attempts, 0);
+}
+
+#[cfg(windows)]
+#[test]
+fn windows_rename_waits_for_a_real_sharing_lock_and_preserves_locked_files() {
+    use std::os::windows::fs::OpenOptionsExt;
+    let root = tempfile::tempdir().unwrap();
+    let source = root.path().join("old.exe");
+    let destination = root.path().join("new.exe");
+    fs::write(&source, b"verified bytes").unwrap();
+    let held = File::options()
+        .read(true)
+        .share_mode(0)
+        .open(&source)
+        .unwrap();
+    assert_eq!(
+        fs::rename(&source, &destination)
+            .unwrap_err()
+            .raw_os_error(),
+        Some(32)
+    );
+    let release = std::thread::spawn(move || {
+        std::thread::sleep(Duration::from_millis(150));
+        drop(held);
+    });
+    file_change("rename verified binary", None, || {
+        fs::rename(&source, &destination)
+    })
+    .unwrap();
+    release.join().unwrap();
+    assert!(!source.exists());
+    assert_eq!(fs::read(&destination).unwrap(), b"verified bytes");
+    let held = File::options()
+        .read(true)
+        .share_mode(0)
+        .open(&destination)
+        .unwrap();
+    retry_file_change(
+        "permanently locked",
+        None,
+        true,
+        Duration::from_millis(50),
+        || fs::rename(&destination, &source),
+    )
+    .unwrap_err();
+    drop(held);
+    assert!(!source.exists());
+    assert_eq!(fs::read(&destination).unwrap(), b"verified bytes");
+}

@@ -339,6 +339,48 @@ fn verify_binary(path: &Path, expected: &Version, stop: &AtomicBool) -> Result<(
     Ok(())
 }
 
+// Windows may retain a sharing/byte-range lock briefly after an executable
+// exits. Retry only those errors, never permission or missing-file failures.
+fn file_change<T>(
+    action: &str,
+    stop: Option<&AtomicBool>,
+    operation: impl FnMut() -> std::io::Result<T>,
+) -> Result<T> {
+    retry_file_change(
+        action,
+        stop,
+        cfg!(windows),
+        Duration::from_secs(5),
+        operation,
+    )
+}
+
+fn retry_file_change<T>(
+    action: &str,
+    stop: Option<&AtomicBool>,
+    windows: bool,
+    budget: Duration,
+    mut operation: impl FnMut() -> std::io::Result<T>,
+) -> Result<T> {
+    let deadline = Instant::now() + budget;
+    loop {
+        if let Some(stop) = stop {
+            cancelled(stop)?;
+        }
+        match operation() {
+            Ok(value) => return Ok(value),
+            Err(error) => {
+                let remaining = deadline.saturating_duration_since(Instant::now());
+                if !windows || !matches!(error.raw_os_error(), Some(32 | 33)) || remaining.is_zero()
+                {
+                    return Err(failed(format!("{action}: {error}")));
+                }
+                std::thread::sleep(remaining.min(Duration::from_millis(50)));
+            }
+        }
+    }
+}
+
 pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
     archive::supported(crate::TARGET)?;
     let requested = options.version.as_deref().map(parse_version).transpose()?;
@@ -458,8 +500,14 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
         .join(if cfg!(windows) { "zel.exe" } else { "zel" });
     archive::extract(&archive, &candidate, cfg!(windows), &stop)?;
     verify_binary(&candidate, &selected, &stop)?;
-    fs::set_permissions(&candidate, metadata.permissions())?;
-    fs::remove_file(&archive)?;
+    file_change(
+        "could not set candidate executable permissions",
+        Some(&stop),
+        || fs::set_permissions(&candidate, metadata.permissions()),
+    )?;
+    file_change("could not remove the staged archive", Some(&stop), || {
+        fs::remove_file(&archive)
+    })?;
     cancelled(&stop)?;
     if digest(&executable)? != original {
         return Err(failed(
@@ -471,17 +519,27 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
     #[cfg(windows)]
     {
         let backup = stage.path().join("zel.previous.exe");
-        fs::rename(&executable, &backup)?;
+        file_change(
+            "could not retain the previous executable",
+            Some(&stop),
+            || fs::rename(&executable, &backup),
+        )?;
         let retained = stage.keep();
-        if let Err(error) = fs::rename(&candidate, &executable) {
-            if let Err(restore) = fs::rename(&backup, &executable) {
+        if let Err(error) = file_change("could not install the verified executable", None, || {
+            fs::rename(&candidate, &executable)
+        }) {
+            if let Err(restore) =
+                file_change("could not restore the previous executable", None, || {
+                    fs::rename(&backup, &executable)
+                })
+            {
                 return Err(failed(format!(
                     "replacement failed ({error}); restoration failed ({restore}); the working binary is retained at {}",
                     backup.display()
                 )));
             }
             let _ = fs::remove_dir_all(&retained);
-            return Err(error.into());
+            return Err(error);
         }
         zellij_core::statusln!(
             "Previous executable retained at {} (removable after this command exits).",
