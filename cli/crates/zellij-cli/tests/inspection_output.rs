@@ -251,7 +251,6 @@ fn unsupported_json_is_rejected_before_any_command_action() {
         &["migrate", ".", "--out", "migrated"],
         &["dev"],
         &["build"],
-        &["doctor"],
         &["serve"],
         &["fmt"],
         &["image", "push", "example:latest"],

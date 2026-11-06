@@ -240,7 +240,7 @@ pub(crate) struct Cli {
     #[command(subcommand)]
     pub(crate) command: Command,
 
-    /// JSON output for context, list, explain, detect, version and check.
+    /// JSON output for context, list, explain, detect, version, doctor and check.
     #[arg(long, global = true)]
     pub(crate) json: bool,
 
@@ -498,8 +498,11 @@ pub(crate) enum Command {
         strict: bool,
     },
 
-    /// Check the environment: container runtime, image, versions.
-    Doctor,
+    /// Diagnose site settings and, when needed, the container runtime.
+    Doctor {
+        /// Site/content folder; otherwise discover zel.yaml or diagnose the runtime.
+        dir: Option<SiteInput>,
+    },
 
     /// Report binary, embedded engine/schema and selected image without a runtime.
     Version,
@@ -1064,6 +1067,7 @@ impl Command {
         };
         let slot = match self {
             Self::Check { dir, .. }
+            | Self::Doctor { dir }
             | Self::Dev { dir, .. }
             | Self::Build { dir, .. }
             | Self::Serve { dir, .. }

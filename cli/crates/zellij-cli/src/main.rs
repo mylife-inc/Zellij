@@ -20,6 +20,7 @@ mod ci;
 mod cloudflare;
 mod delivery;
 mod development;
+mod doctor;
 mod eject;
 mod features;
 mod fly;
@@ -54,11 +55,12 @@ fn main() {
                 | Command::Explain { .. }
                 | Command::Detect { .. }
                 | Command::Check { .. }
+                | Command::Doctor { .. }
                 | Command::Version
         )
     {
         zellij_core::diagnosticln!(
-            "error: --json is supported only by context, list, explain, detect, version and check; no command was run"
+            "error: --json is supported only by context, list, explain, detect, version, doctor and check; no command was run"
         );
         std::process::exit(2);
     }
@@ -216,7 +218,7 @@ fn main() {
             ref provider,
             ref options,
         } => delivery::execute(provider.as_deref(), options),
-        Command::Doctor => doctor(),
+        Command::Doctor { ref dir } => doctor::run(dir.as_ref(), cli.json),
         Command::Version => maintenance::version(cli.json),
         Command::Pull { ref image } => maintenance::pull(image.as_deref()),
         Command::Upgrade(ref options) => maintenance::upgrade::run(options),
@@ -777,51 +779,6 @@ fn on_path(program: &str) -> bool {
 }
 
 // ------------------------------------------------------------------ workflows
-
-fn doctor() -> zellij_core::Result<()> {
-    zellij_core::reportln!("zel            {}  ({})", env!("CARGO_PKG_VERSION"), TARGET);
-    zellij_core::reportln!();
-    zellij_core::reportln!("Container runtime");
-
-    match zellij_engine::ContainerEngine::detect(None) {
-        Ok(engine) => {
-            let runtime = engine.runtime();
-            zellij_core::reportln!(
-                "  ✓ {:<10} {} via {}",
-                runtime.program,
-                runtime.version,
-                runtime.endpoint()
-            );
-
-            let state = match engine.image_is_local() {
-                Some(true) => "local",
-                Some(false) => "not pulled — the first build will fetch it",
-                None => "unknown — image inspection unavailable or timed out",
-            };
-            zellij_core::reportln!("  {:<12} {}  ({state})", "· engine", engine.image());
-        }
-        Err(err) => {
-            // main prints the detailed error once on stderr.
-            zellij_core::reportln!("  ✗ unavailable");
-            zellij_core::reportln!();
-            zellij_core::reportln!("  Native commands still work without a container runtime:");
-            zellij_core::reportln!(
-                "  portable build/check/serve/view, new portable/docs/section/page/guide/project,"
-            );
-            zellij_core::reportln!("  explain, list, context, detect, convert, image dockerfile.");
-            return Err(err);
-        }
-    }
-
-    zellij_core::reportln!();
-    zellij_core::reportln!("Content");
-    match resolve_content(&SiteInput::from(".")) {
-        Ok(path) => zellij_core::reportln!("  ✓ {path}"),
-        Err(_) => zellij_core::reportln!("  · none here — `zel new docs` writes one"),
-    }
-
-    Ok(())
-}
 
 /// The triple this binary was built for, for bug reports.
 const TARGET: &str = env!("ZEL_TARGET");

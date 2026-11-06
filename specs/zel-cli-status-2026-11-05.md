@@ -9,7 +9,7 @@ dated audit and implementation history.
 | Area | Implemented command forms | Remaining scope or limits |
 | --- | --- | --- |
 | Creation | `new portable` / `init`, `new docs`, `new app`, `new section`, `new page`, `new guide`, `new project`, with documented aliases | `new docs --full` now adds a browsable catalogue, all 23 section examples and local media. Section wizard, scalar `--set`, list `--count`, pricing `--tiers`/`--highlight` and positional output are implemented in current source. There is no whole-site/page wizard or arbitrary YAML editing through flags. |
-| Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor principally diagnoses container tooling; it is not a universal provider/site diagnostic. |
+| Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor resolves site settings, skips runtime probes for portable sites, and offers JSON preflight reports. Content validation and provider credentials remain separate. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
@@ -545,3 +545,37 @@ Full starter implementation: **`54f601dc9701a11ef3d2819874b26c96950cac9f`**.
 The preceding local verification covers this source and Windows recovery
 `608e5e8`; this context-only follow-up records their identities. Final-head
 GitHub acceptance and merge remain pending.
+
+
+## 2026-11-06 — Doctor site/configuration diagnostics
+
+Current source implements `doctor [site]`, shared site/config/working-directory
+selectors, portable settings checks without a runtime, and JSON preflight reports.
+Hosted failures retain selected site information. Outside a site the existing
+runtime-only diagnostic remains available. Content, output readiness, credentials
+and provider connectivity are not included. Regression tests cover fake clients
+and native filesystem behavior; final-head cross-platform CI and publication
+remain separate. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx).
+
+Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**.
+Local verification for this source: 586 Rust tests passed, five existing hosted
+fixtures reserved for CI; warnings-denied workspace Clippy, formatting,
+actionlint and strict/deep documentation (55 routes, 23 examples) passed.
+Final-head GitHub CI and merge remain pending.
+
+The preceding full-starter/Windows-recovery milestone merged in PR #89 as
+`479eac4` after all 16 final-head checks passed on `80ba76c` in `42267735005`.
+Its post-merge base-image run `42272858763` passed. Main run `42272858943`
+passed on attempt 2 after retrying only an Ubuntu browser dependency-download
+timeout at the unchanged merge SHA. The durable context/audit retain the
+first attempt and complete acceptance evidence.
+
+
+Doctor CI follow-up: run `42297958566` on `8ee56f9` caught a missing legacy
+`/cli/doctor#exit-code` target after the heading was renamed to describe JSON.
+The documentation now retains that ID as an explicit legacy anchor. Existing
+content-preservation assertions remain unchanged. This failure was a real
+bookmark regression; the corrected final head must pass its own complete CI.
+
+Bookmark fix: **`22277623932783505d555da2a693bbb9c8ed05f7`**. Strict/deep documentation checks pass
+(55 routes, 23 examples); the browser preservation check runs only in CI.

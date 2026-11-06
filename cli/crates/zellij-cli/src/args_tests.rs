@@ -451,6 +451,7 @@ fn completion_scripts_include_all_forms_and_options() {
 #[test]
 fn global_selectors_normalize_all_site_commands_and_preserve_legacy_spelling() {
     for route in [
+        "doctor",
         "build",
         "b",
         "check",
@@ -577,7 +578,7 @@ fn ambiguous_and_inapplicable_site_selections_are_rejected_during_parsing() {
         vec!["ci", "run"],
         vec!["context"],
         vec!["sections"],
-        vec!["doctor"],
+        vec!["doctor", "manual"],
         vec!["version"],
         vec!["pull"],
         vec!["upgrade", "--check"],

@@ -46,7 +46,12 @@ CircleCI generation merged in PR #87 as `b590cb2`, after all 16 final-head
 checks passed; both post-merge workflows passed. Section authoring merged in
 PR #88 as `5078b51` after all 16 final-head checks passed. Its post-merge base
 image passed; main CI exposed a Windows ARM upgrade sharing-lock failure.
-Current work adds `new docs --full` and bounded Windows upgrade lock recovery.
+PR #89 merged `new docs --full` and Windows upgrade lock recovery as `479eac4`
+after all 16 final-head checks passed. Its post-merge base-image workflow passed;
+the Ubuntu portable job timed out downloading browser system dependencies and
+the targeted unchanged-head retry passed, so both post-merge workflows are green.
+Current work adds site-aware
+`doctor` diagnostics and JSON reports.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -5794,3 +5799,78 @@ Full starter implementation: **`54f601dc9701a11ef3d2819874b26c96950cac9f`**.
 The preceding local verification covers this source and Windows recovery
 `608e5e8`; this context-only follow-up records their identities. Final-head
 GitHub acceptance and merge remain pending.
+
+
+## 2026-11-06 — Full starter closure and site-aware doctor
+
+PR #89 merged as **`479eac4b899266311af84a5b4f8f55ea1b881356`** after all 16
+checks passed on **`80ba76c5f58f191b33e5dc2f8e753966f105e4e6`** in
+[42267735005](https://github.com/mylife-inc/Zellij/actions/runs/42267735005),
+attempt 1 without retries. Tested and merged tree:
+`30afe44fade65556abe6607e12446f4c6705b6fc`. Windows x64 and ARM64 each passed
+all eight upgrade tests (including real exclusive file handles) and the actual
+higher-version self-upgrade fixture. The hosted full starter exported 26 routes,
+with section markers, catalogue links and exact SVG/MP4 bytes verified.
+Implementation identities remain `608e5e8` for Windows recovery and `54f601d`
+for the full starter; the preceding entries remain the pre-CI history.
+
+Post-merge base-image run `42272858763` passed all 13 jobs. Main run
+`42272858943` passed 15 jobs but Ubuntu portable job `128081619870` reached its
+30-minute limit while apt downloaded Playwright system dependencies. Native
+fixture tests had passed; the log ended during a libflite download. This is not
+a successful browser acceptance result. A targeted retry of that job at the
+unchanged merge commit is in progress; no code or timeout was changed.
+
+Current doctor work moves preflight reporting into
+`cli/crates/zellij-cli/src/doctor.rs`. `doctor [site]` accepts `--site-root`,
+`--config` and `--cwd` through the shared argument resolver. Implicit selection
+uses cwd/`docs/zellij` config precedence, then legacy hosted discovery. Without
+a site it retains runtime-only diagnostics; arbitrary Markdown folders require
+an explicit path. Invalid selected configs never trigger fallback discovery.
+
+Reports include root/config/layout/renderer/content/default output/preview port.
+Portable sites validate native settings and skip all container probes. Hosted
+and runtime-only diagnostics retain bounded runtime discovery, endpoint
+redaction and image inspection without pulling or running containers. Resolved
+site information remains visible when runtime availability fails.
+
+`doctor --json` emits schema version 1, `ok`, `exit_code`, binary version/target,
+site, runtime, image and error. Handled failures remain a single stdout report;
+argument/working-directory errors precede it and use ordinary stderr. Verbose
+tracing is stderr-only. Runtime states distinguish not-required, not-checked,
+available and unavailable; missing image/version metadata does not fail doctor.
+
+This is configuration/runtime preflight, not content, output ownership or
+writability, port availability, credential or remote-provider validation. Use
+`check` for content. Nothing is written and no service is started. Regression
+coverage uses isolated fake clients and covers discovery, custom configs, Unicode
+paths, raw/legacy layouts, missing/invalid selection, read-only behavior, hosted
+failure reports, runtime-only operation, and endpoint/probe-output redaction.
+The command reference, global selector/JSON docs and CLI status are updated.
+Final local suite, final-head CI and merge remain pending.
+
+
+PR #89 post-merge follow-up: main run `42272858943`, attempt 2, completed
+successfully with all 16 jobs at unchanged `479eac4`. The targeted Ubuntu retry
+passed browser acceptance. The first attempt's dependency-download timeout is
+retained above; no source change was needed.
+
+Doctor local verification: **586 Rust tests passed**, five existing hosted-provider
+fixtures ignored locally and reserved for CI. All 16 runtime integration tests,
+including the seven added doctor cases, passed. Warnings-denied workspace Clippy,
+formatting, actionlint and strict/deep documentation checks (55 routes, 23 examples)
+passed. Evidence: `/private/tmp/zellij-doctor-{workspace,clippy,docs}.log`.
+Final-head cross-platform acceptance and merge remain pending.
+
+Doctor implementation: **`1c2091b922e136b70118ba59549eedb00d2c35c0`**. The local verification above
+covers this source. Final-head GitHub CI and merge remain pending.
+
+
+Doctor CI follow-up: run `42297958566` on `8ee56f9` caught a missing legacy
+`/cli/doctor#exit-code` target after the heading was renamed to describe JSON.
+The documentation now retains that ID as an explicit legacy anchor. Existing
+content-preservation assertions remain unchanged. This failure was a real
+bookmark regression; the corrected final head must pass its own complete CI.
+
+Bookmark fix: **`22277623932783505d555da2a693bbb9c8ed05f7`**. Strict/deep documentation checks pass
+(55 routes, 23 examples); the browser preservation check runs only in CI.
