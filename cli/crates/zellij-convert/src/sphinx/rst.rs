@@ -22,6 +22,11 @@ pub enum Block {
         alt: String,
     },
     Toc(Toc),
+    Table {
+        caption: Option<String>,
+        headers: usize,
+        rows: Vec<Vec<Vec<Block>>>,
+    },
     Note {
         title: String,
         body: Vec<Block>,
@@ -169,7 +174,7 @@ pub fn parse(raw: &str, language: &str) -> Result<Document> {
 }
 fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result<Vec<Block>> {
     if depth > 16 {
-        return Err(invalid("admonition nesting exceeds 16"));
+        return Err(invalid("table/admonition nesting exceeds 16"));
     }
     let lines: Vec<_> = raw.lines().collect();
     let mut out = Vec::new();
@@ -185,6 +190,18 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             i += 1;
             continue;
         }
+        if super::tables::starts(line) {
+            if pending_label.is_some() || i > 0 && !lines[i - 1].trim().is_empty() {
+                return Err(invalid(
+                    "tables need a preceding blank line and cannot use section labels",
+                ));
+            }
+            let (table, count) = super::tables::parse(&lines[i..])?;
+            out.push(table_block(table, None, language, doc, depth)?);
+            i += count;
+            list_indent = None;
+            continue;
+        }
         let over = adornment(line).is_some()
             && i + 2 < lines.len()
             && adornment(lines[i + 2]) == adornment(line)
@@ -194,7 +211,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
         if over || under {
             if depth > 0 {
                 return Err(invalid(
-                    "headings inside admonitions require manual migration",
+                    "headings inside tables/admonitions require manual migration",
                 ));
             }
             let (text, marker, count) = if over {
@@ -256,7 +273,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
         if let Some(rest) = line.strip_prefix(".. _") {
             if depth > 0 {
                 return Err(invalid(
-                    "targets inside admonitions require manual migration",
+                    "targets inside tables/admonitions require manual migration",
                 ));
             }
             let (label, href) = rest
@@ -290,6 +307,25 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 let arg = arg.trim();
                 let (opts, body) = options(&body)?;
                 match directive {
+                    "table" => {
+                        if !opts.is_empty() {
+                            return Err(invalid(
+                                "table directive options require manual migration",
+                            ));
+                        }
+                        let lines: Vec<_> = body.trim_matches('\n').lines().collect();
+                        let (table, count) = super::tables::parse(&lines)?;
+                        if lines[count..].iter().any(|l| !l.trim().is_empty()) {
+                            return Err(invalid("table directive must contain exactly one table"));
+                        }
+                        out.push(table_block(
+                            table,
+                            (!arg.is_empty()).then(|| arg.into()),
+                            language,
+                            doc,
+                            depth,
+                        )?);
+                    }
                     "toctree" => {
                         if depth > 0 || !arg.is_empty() {
                             return Err(invalid(
@@ -445,6 +481,39 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
         return Err(invalid("label has no following heading"));
     }
     Ok(out)
+}
+
+fn table_block(
+    table: super::tables::Table,
+    caption: Option<String>,
+    language: &str,
+    doc: &mut Document,
+    depth: usize,
+) -> Result<Block> {
+    if depth >= 16 {
+        return Err(invalid("table/admonition nesting exceeds 16"));
+    }
+    let rows = table
+        .rows
+        .into_iter()
+        .map(|row| {
+            row.into_iter()
+                .map(|cell| {
+                    // RST's escaped-whitespace marker explicitly requests an empty cell.
+                    if cell.trim() == "\\" && cell.ends_with(' ') {
+                        Ok(Vec::new())
+                    } else {
+                        blocks(&cell, language, doc, depth + 1)
+                    }
+                })
+                .collect::<Result<Vec<_>>>()
+        })
+        .collect::<Result<Vec<_>>>()?;
+    Ok(Block::Table {
+        caption,
+        headers: table.headers,
+        rows,
+    })
 }
 
 pub fn escaped(text: &str) -> String {
@@ -634,6 +703,39 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                 out.push('\n');
             }
             Block::Toc(_) => {}
+            Block::Table {
+                caption,
+                headers,
+                rows,
+            } => {
+                out.push_str("\n<table>\n");
+                if let Some(caption) = caption {
+                    out.push_str(&format!(
+                        "<caption>\n\n{}\n\n</caption>\n",
+                        inline(caption, resolve)?
+                    ));
+                }
+                if *headers > 0 {
+                    out.push_str("<thead>\n");
+                } else {
+                    out.push_str("<tbody>\n");
+                }
+                for (index, row) in rows.iter().enumerate() {
+                    if *headers > 0 && index == *headers {
+                        out.push_str("</thead>\n<tbody>\n");
+                    }
+                    out.push_str("<tr>\n");
+                    let tag = if index < *headers { "th" } else { "td" };
+                    for cell in row {
+                        out.push_str(&format!(
+                            "<{tag}>\n\n{}\n</{tag}>\n",
+                            render(cell, resolve)?
+                        ));
+                    }
+                    out.push_str("</tr>\n");
+                }
+                out.push_str("</tbody>\n</table>\n\n");
+            }
         }
     }
     Ok(out)

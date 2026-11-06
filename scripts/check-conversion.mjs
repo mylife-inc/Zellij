@@ -263,6 +263,7 @@ Welcome
 
    API navigation <02-Setup/APIReference>
    03-Café/index
+   tables
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -305,6 +306,9 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
    :ref:\`literal\`
 `);
   await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
+  await write('tables.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-tables.rst'), 'utf8'));
+  await write('details.rst', '.. _install:\n\nInstallation\n============\n');
+  await write('notes.txt', 'Table download bytes.\n');
   await write('media/logo.svg', asset);
   await write('media/Q3 Report.pdf', pdf);
   await write('media/Report%20.pdf', pdf);
@@ -315,7 +319,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/setup/api-reference']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/setup/api-reference', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
@@ -334,11 +338,33 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   const headingOptions = {remarkPlugins:(await mdxOptions()).mdxOptions.remarkPlugins};
   assert.deepEqual(extractToc(page.body,headingOptions).map(h=>h.id), ['stable-install']);
   assert(indexGuidePage(page,headingOptions).some(e=>e.route===`${page.route}#stable-install` && e.text.includes('Searchable installation')));
+  function assertTables(html, prefix) {
+    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 5);
+    assert.equal((html.match(/<thead(?:\s|>)/g) ?? []).length, 2, 'Headerless tables must not invent headers');
+    assert.equal((html.match(/<th(?:\s|>)/g) ?? []).length, 6, 'Both authored header rows survive');
+    assert(html.includes('<caption>') && html.includes('<strong>Feature</strong> matrix'));
+    for (const text of ['Café 漢字 é', 'a|{b}', '&lt;script&gt;literal&lt;/script&gt;',
+      'First paragraph.', 'Second paragraph.', 'First item', 'Second item',
+      'First line extends beyond the border.', 'Continuation with <strong>strong</strong> text.',
+      'Empty first cell.', 'No invented header.',
+      `href="${prefix}/guide/details"`, `href="${prefix}/guide/details#install"`,
+      `href="${prefix}/_zellij/assets/imported/docs/notes.txt"`,
+      'alt="Table logo"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg',
+    ]) assert(html.includes(text), `Sphinx table missing ${text}`);
+    assert(!html.includes('<script>literal</script>'));
+  }
+  assertTables(rendered.get('/guide/tables'), '');
+  const tablePage = site.guidePages.find(p => p.route === '/guide/tables');
+  assert(indexGuidePage(tablePage, headingOptions).some(e => e.text.includes('Empty first cell.')), 'Table cell text is searchable');
   assert.deepEqual(site.guides[0].sidebar, [
     {kind:'link',label:'Welcome',route:'/guide'},
     {kind:'group',label:'Documentation',children:[
       {kind:'link',label:'API navigation',route:'/guide/setup/api-reference'},
       {kind:'link',label:'Café',route:'/guide/cafe'},
+      {kind:'group',label:'Table reference',children:[
+        {kind:'link',label:'Table reference',route:'/guide/tables'},
+        {kind:'link',label:'Installation',route:'/guide/details'},
+      ]},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -351,6 +377,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const home = await readFile(path.join(output,'guide.html'),'utf8');
     const reference = await readFile(path.join(output,'guide/setup/api-reference.html'),'utf8');
     const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');
+    assertTables(await readFile(path.join(output, 'guide/tables.html'), 'utf8'), '/products/docs');
+    assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
     for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);
     for (const text of ['id="stable-install"','href="#stable-install"','href="/products/docs/guide#welcome"','href="/products/docs/guide?from=relative#welcome"','API navigation']) assert(reference.includes(text), `Sphinx exported reference missing ${text}`);
     assert.equal((reference.match(/<h1(?:\s|>)/g)??[]).length,1);
@@ -361,6 +389,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert(home.includes(`src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg?v=${assetHash}"`));
     assert.deepEqual(await readFile(path.join(output,'_zellij/assets/imported/docs/media/Report%20.pdf')),pdf);
     assert.equal(await readFile(path.join(output,'_zellij/assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
+    const { checkImportedTables } = await import('./check-imported-tables.mjs');
+    await checkImportedTables(output);
   }
-  console.log('sphinx: reStructuredText navigation, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, tables, references, literal code/HTML, search, headings and assets verified.');
 }
