@@ -5458,3 +5458,10 @@ Evidence: `/private/tmp/zellij-fly-workspace.log`, `zellij-fly-final-tests.log`,
 `/private/var/folders/1p/q48lnmt15932t129b48z_mrr0000gn/T/zellij-fly-ci-22txs7eu/.github/workflows/docs.yml`.
 No local Docker/browser or live Fly mutation ran. Final-head cross-platform CI
 and merge remain pending; live provider acceptance remains a separate limitation.
+
+
+Fly implementation commit **`a9b650c`** contains the native adapter, static/Next
+selection, delivery/import/CI wiring, protocol and fake-tool regression tests,
+and matching documentation. Local verification above covers this source.
+Final-head GitHub CI and merge remain pending; live Fly account acceptance is
+not implied by loopback fixtures or shared image tests.
