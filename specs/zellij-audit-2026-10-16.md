@@ -5213,3 +5213,41 @@ architectures/combined manifests passed. Both post-merge workflows passed on
 unchanged `2ed992d`, attempt 1: main `42336073179` (all 16 jobs) and base-image
 `42336073120` (all 13 jobs). The initial assertion-scope failure and correction
 remain recorded above. Native rc.1 remains the latest published candidate.
+
+
+## 2026-11-06 — Sphinx alphabetic and Roman numbering
+
+Source **`67b313f955bb7c9ab3d4af71381ab3fef5d019a0`** adds lower/upper alphabetic and Roman list styles to the
+shared Sphinx importer. All three punctuation forms and matching automatic
+markers retain starts, case, nesting and the existing block/reference pipeline
+through native HTML list attributes. Context resolves ambiguous I/V/etc.;
+wrapped alphabetic/Roman prose remains prose. Canonical Roman values are
+limited to the browser counter range 1–3999 and alphabetic values to 1–26.
+Malformed/mixed-case Roman markers and automatic overflow fail before output.
+No Python, source evaluation or new dependency was introduced.
+
+The same change fixes a decimal-list bug: an explicit enumerator after `#`
+must start a new list even if its value happens to be consecutive, matching
+Docutils. It also corrects obsolete overview/quickstart claims that tables and
+nested lists are unsupported, and clarifies that the remaining automatic
+numbering limitation concerns toctrees. Existing containment, shared depth and
+item bounds remain. Other Sphinx extensions, spanning cells, substitutions and
+source-execution limits remain documented; this does not complete all imports.
+
+Local focused validation passed **24 Sphinx CLI tests** and **81 converter unit
+tests**, warnings-denied workspace Clippy, formatting, strict/deep documentation
+validation (55 routes, 23 examples) and Node-only rendering/search for all six
+importers. A fixture heading underline initially failed validation; the fixture
+was corrected and rerun successfully. The final conversion-notice wording also
+passed the 24 Sphinx CLI cases. Full workspace verification is running;
+final-head hosted/native CI and merge remain pending.
+
+The shared native/render/browser fixture now contains nine ordered lists,
+including all four letter/Roman styles. CI additionally checks computed browser
+styles on lists and items, nested typed-list containment and a section link,
+while retaining existing media/navigation/hydration/error assertions. No local
+Docker, browser or GUI ran, and no native release or production migration ran.
+Evidence: `/private/tmp/zellij-numbering-{unit-final,import-final,message-check,clippy,docs,render,workspace}.log`.
+References: [Docutils enumeration](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists),
+[sequence parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py),
+[Roman browser counters](https://www.w3.org/TR/css-counter-styles-3/#lower-roman).
