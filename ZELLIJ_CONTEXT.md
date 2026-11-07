@@ -6275,3 +6275,49 @@ unchanged `3f14b99`, attempt 1: main `42342065734` (all 16 jobs), base-image
 `42342065709` (all 13 jobs). Earlier selector/display failures remain recorded.
 Native rc.1 remains the latest published candidate; no release or production
 migration ran.
+
+
+## 2026-11-06 — Sphinx reusable text and images
+
+Source **`958b87743468d47057a967e8e91654cad00fb787`** adds document-local
+`replace`/`image` substitutions, forward/nested references and named substitution
+hyperlinks to the shared Sphinx converter. Names normalize whitespace, prefer
+exact case and otherwise require a unique lowercase match. Images retain alt
+text and direct/named targets. URL targets ending in underscores remain URLs.
+Literal `version`/`release` values come from configuration and can be overridden
+by authored definitions. Code blocks, inline code and escaped pipes stay literal.
+Existing reference/asset handling applies through convert/cv, migrate/mig and
+ship, including copy/skip/dry-run containment checks. No source is executed.
+
+All definitions in published documents are validated before output, including
+unused ones. Missing/ambiguous names, duplicate definitions, cycles, nested links
+and unsupported constructs fail. Bounds are 1000 authored definitions per page,
+256-byte names, 64 KiB replacement paragraphs, and (for each validation/render
+pass) depth 16, 10000 references and 4 MiB processed expansion text. Headings and
+navigation labels still need plain text; global transforms, anonymous links,
+date/unicode and unsupported options remain manual migration tasks. The current
+conversion docs, quickstart, contract and CLI status describe this scope.
+
+The shared MDX pipeline marks Markdown images within prose for inline display,
+including linked images; standalone figures keep their block presentation.
+This corrects the CSS reset's default block behavior for inline images without
+adding browser JavaScript or dependencies. The native/render/browser fixture
+covers formatted reusable text, nested and forward definitions, copied images,
+section/download links, lists/table cells/captions, literal code and page scope.
+
+Focused checks pass **28 Sphinx CLI cases**, **86 converter unit tests**,
+**427 engine tests**, workspace type checking, warnings-denied Clippy,
+formatting and engine package build. All six converters pass Node-only
+render/search checks; strict/deep docs retain 55 routes and 23 examples.
+The final-source full Rust workspace rerun is in progress; its result and
+final-head hosted/native CI must be checked before merge.
+
+Local regression work caught a discarded blank separator that could admit a
+second replacement paragraph; parsing now rejects it. The first rendered-code
+assertion assumed syntax highlighting left a directive as contiguous HTML text;
+it now checks the code's retained text, with the same browser assertion. Clippy
+also caught test-module placement, corrected before the final lint pass.
+Evidence: `/private/tmp/zellij-substitutions-{import-exact,unit-final,engine-full,typecheck,package,clippy-final,render-exact,docs,workspace-final}.log`.
+No local Docker/browser/GUI, native release or production/provider mutation ran.
+References: [Docutils substitution definitions](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions),
+[replacement text](https://docutils.sourceforge.io/docs/ref/rst/directives.html#replacement-text).
