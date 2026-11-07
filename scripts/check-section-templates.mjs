@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { stringify } from 'yaml';
+import { parse, stringify } from 'yaml';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const [binary, target] = process.argv.slice(2);
@@ -22,6 +22,25 @@ for (const type of schema.sectionTypes) {
   assert.equal(await readFile(file, 'utf8'), schema.sectionTemplates[type]);
   pages.push({ name: type, title: type, description: `Generated ${type} template`, sections: [type] });
 }
+// The page wizard must preserve every selection and its order, while leaving
+// registration to the author. Exercise the same source on all native CI OSes.
+const originalPages = '# Keep authored comments and page order.\n' + stringify(pages);
+await writeFile(path.join(content, 'pages.yaml'), originalPages);
+const selected = [...schema.sectionTypes].reverse();
+const output = execFileSync(path.resolve(binary), ['np', '-i', '--dir', content], {
+  input: `wizard\n${selected.join(',')}\n`, encoding: 'utf8', stdio: 'pipe', timeout: 30000,
+});
+assert.equal(await readFile(path.join(content, 'pages.yaml'), 'utf8'), originalPages);
+const report = output.split('Add this to pages.yaml:\n\n')[1];
+assert(report, 'Page registration report missing');
+const [entry] = parse(report.split(/\r?\n/).map(line => line.replace(/^    /, '')).join('\n'));
+assert.equal(entry.name, 'wizard');
+assert.deepEqual(entry.sections, selected.map(type => `wizard/${type}`));
+for (const type of selected) assert.equal(
+  await readFile(path.join(content, `sections/wizard/${type}.yaml`), 'utf8'),
+  schema.sectionTemplates[type],
+);
+pages.push(entry); // Apply the report explicitly, as the author would.
 await writeFile(path.join(content, 'site.yaml'), stringify({ name: 'Section templates', home: 'hero', motion: 'none' }));
 await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 // Media templates deliberately name replaceable authored assets. Supply real
@@ -29,4 +48,4 @@ await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 await copyFile(path.join(repo, 'examples/showcase/content/assets/logo.svg'), path.join(content, 'assets/replace-me.svg'));
 await copyFile(path.join(repo, 'scripts/fixtures/template.mp4'), path.join(content, 'assets/replace-me.mp4'));
 execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
-console.log(`Validated ${pages.length} templates emitted by zel.`);
+console.log(`Validated ${schema.sectionTypes.length} templates and a wizard page with all ordered section references; authored registration stayed unchanged.`);

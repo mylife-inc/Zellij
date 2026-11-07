@@ -2124,3 +2124,30 @@ images, search and no-JavaScript behavior. The full hosted starter fixture check
 wizard output against engine validation and exports all 26 routes in CI. Page
 and app wizards, arbitrary YAML editing and live-provider acceptance remain
 separate work. Published rc.1 does not include this feature.
+
+
+### 2026-11-07 — Optional native page-creation wizard
+
+`new page` / `np` accepts `--interactive` / `-i`. A name remains required
+without that flag, with no implicit prompts. Interactive creation asks only
+for a missing name and missing `--sections`. Section choices accept exact
+catalogue names or displayed 1-based numbers, comma-separated in page order;
+Enter defaults to hero. Unknown and repeated types are rejected, since the
+existing scaffold creates one file per type per page. Invalid answers reprompt.
+Explicit `--sections` continues to take names, not catalogue numbers.
+
+The name identifies the page and its section subfolder. Interactive answers
+require nonempty text without controls; existing explicit names retain their
+path/YAML behavior. Paths must remain contained and noncolliding. No new title
+or route inference is introduced: the existing printed entry uses the name,
+initial capitalization for its title, and TODO description. Existing global
+working-directory/site/config selectors and --dir remain in effect.
+
+Prompts use stderr, including with --quiet, while the pages.yaml report remains
+on stdout. Explicit -i accepts piped answers. EOF, :q or interruption while
+answering creates no section files. The existing writer preflights the complete
+plan before any file creation and never overwrites sections. pages.yaml and
+menu.yaml remain untouched; authors must apply the report and register links.
+Templates retain their TODOs and placeholder media, which need review before
+strict/deep hosted validation. Generation runs natively without tools or network.
+App wizards and arbitrary YAML editing remain separate work; rc.1 is older.

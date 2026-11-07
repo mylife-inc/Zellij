@@ -766,7 +766,13 @@ pub(crate) struct NewSectionArgs {
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
 pub(crate) struct NewPageArgs {
-    pub(crate) name: String,
+    /// Page name and section subfolder; required unless --interactive is used.
+    #[arg(required_unless_present = "interactive")]
+    pub(crate) name: Option<String>,
+
+    /// Prompt for the page name and ordered section types not supplied by flags.
+    #[arg(long, short = 'i')]
+    pub(crate) interactive: bool,
 
     /// Comma-separated section types. Defaults to a single hero.
     #[arg(long, value_delimiter = ',')]
