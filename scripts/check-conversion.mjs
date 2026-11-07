@@ -264,6 +264,7 @@ Welcome
    API navigation <02-Setup/APIReference>
    03-Café/index
    tables
+   lists
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -307,6 +308,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
 `);
   await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
   await write('tables.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-tables.rst'), 'utf8'));
+  await write('lists.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-lists.rst'), 'utf8'));
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
   await write('media/logo.svg', asset);
@@ -319,7 +321,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/setup/api-reference', '/guide/tables']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/setup/api-reference', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
@@ -362,6 +364,29 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert(!html.includes('<script>literal</script>'));
   }
   assertTables(rendered.get('/guide/tables'), '');
+  function assertLists(html, prefix) {
+    if (prefix) {
+      // Hosted exports also contain navigation/sidebar lists. Count only the
+      // authored article, matching the MDX-only render used by the local check.
+      const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/);
+      assert(article, 'Hosted list fixture must contain its guide article');
+      html = article[1];
+    }
+    assert.equal((html.match(/<ul(?:\s|>)/g) ?? []).length, 6);
+    assert.equal((html.match(/<ol(?:\s|>)/g) ?? []).length, 5);
+    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 2);
+    for (const start of [9, 7, 3, 4, 2]) assert(html.includes(`start="${start}"`));
+    for (const text of ['Prepare <strong>workspace</strong>.', 'Nested searchable paragraph.',
+      'Unicode parent Café 漢字.', 'Unicode leaf.', 'Table child <strong>strong</strong>.',
+      ':header: literal option', '- literal bullet', '#. literal number', '.. include:: /not/executed',
+      '- literal block bullet', '9. literal block number', 'Nested table',
+      `href="${prefix}/guide/details"`, `href="${prefix}/guide/details#install"`,
+      'href="/products/docs/_zellij/assets/imported/docs/notes.txt"', 'alt="Nested logo"',
+    ]) assert(html.includes(text), `Nested Sphinx list missing ${text}`);
+  }
+  assertLists(rendered.get('/guide/lists'), '');
+  const listPage = site.guidePages.find(p => p.route === '/guide/lists');
+  assert(indexGuidePage(listPage, headingOptions).some(entry => entry.text.includes('Nested searchable paragraph.')));
   const tablePage = site.guidePages.find(p => p.route === '/guide/tables');
   const tableIndex = indexGuidePage(tablePage, headingOptions);
   for (const phrase of ['Empty first cell.', 'List second paragraph', 'Second CSV paragraph.']) {
@@ -376,6 +401,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
         {kind:'link',label:'Table reference',route:'/guide/tables'},
         {kind:'link',label:'Installation',route:'/guide/details'},
       ]},
+      {kind:'link',label:'Nested instructions',route:'/guide/lists'},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -389,6 +415,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const reference = await readFile(path.join(output,'guide/setup/api-reference.html'),'utf8');
     const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');
     assertTables(await readFile(path.join(output, 'guide/tables.html'), 'utf8'), '/products/docs');
+    assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
     for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);
     for (const text of ['id="stable-install"','href="#stable-install"','href="/products/docs/guide#welcome"','href="/products/docs/guide?from=relative#welcome"','API navigation']) assert(reference.includes(text), `Sphinx exported reference missing ${text}`);
@@ -403,5 +430,5 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const { checkImportedTables } = await import('./check-imported-tables.mjs');
     await checkImportedTables(output);
   }
-  console.log('sphinx: reStructuredText navigation, tables, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, tables, nested lists, references, literal code/HTML, search, headings and assets verified.');
 }

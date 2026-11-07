@@ -5130,3 +5130,69 @@ or production/provider mutation ran. PR #92's earlier CI head does not validate
 this follow-up; final-head CI is required before merge.
 
 The option/content distinction follows the [Docutils directive block parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py).
+
+
+## 2026-11-06 — Sphinx directive closure and nested lists
+
+PR #92 merged as **`0c4d79e80a232b403282d56cb56f2e7841c5fdc5`** after all
+16 checks passed on **`2eeb9c6d967274484f7f30015ed1662859c70427`** in
+[42324258639](https://github.com/mylife-inc/Zellij/actions/runs/42324258639),
+attempt 1. Tested and merged tree: `fe9232807c1325496e1a97b9f99eb479950dd56e`.
+All 19 Unix/18 Windows Sphinx tests passed. Hosted browser acceptance covered
+semantic tables, column/row headings, local images, navigation and exact native
+asset downloads. Documentation preservation retained 46 original routes, 282
+heading IDs, 82 compatibility mappings and 29 byte-identical images. Both
+post-merge workflows passed on unchanged `0c4d79e`, attempt 1: main
+`42326727478` (all 16 jobs) and base-image `42326727358`. Native rc.1 remains
+the latest published candidate; no native release or production migration ran.
+
+Nested-list source **`27889f655594059eb528383f3abd23b68acafb2a`** adds
+`sphinx/lists.rs` and a recursive `Block::List`. RST list items now retain
+nesting, wrapped/multiple paragraphs, literal code, tables, admonitions, images
+and references. Supported markers are ASCII and standard Unicode bullets,
+decimal `1.`/`1)`/`(1)` forms and corresponding `#` auto-enumerators. Explicit
+start values and sequence/style restarts become separate semantic HTML lists.
+Empty items are retained. Unicode bullets use display-column indentation,
+not UTF-8 byte length. Rendering shares the existing reference/asset and search
+pipeline through convert/cv, migrate/mig and ship. No dependency was added.
+
+Malformed indentation or block separators, alphabetic/Roman enumeration,
+out-of-range counters and unsupported nested constructs fail before output.
+Decimal counters must fit 0–2147483647; each list has at most 10000 items.
+Lists share the existing table/admonition depth limit of 16, including empty
+items. Existing external CSV, merged-cell, extension and source-execution limits
+remain. The conversion reference and CLI contract/status now describe this scope.
+
+A shared native/render/browser fixture covers six unordered lists, five numbered
+lists, numbering restarts, Unicode, an empty item, literal code, lists in tables
+and a table in a list. The hosted CI helper checks the actual parent/child DOM
+structure, numbering, nested media, document navigation and native downloads
+while retaining hydration and console/HTTP error assertions.
+
+Local tests caught and fixed a Unicode-marker byte/column mismatch before commit.
+The first additional-table rendering assertion assumed a caption had no nested
+paragraph element; the corrected assertion checks the retained caption text and
+table count, with browser containment checks. Neither failure was waived.
+Focused validation passed 23 Sphinx CLI cases and 78 converter unit tests,
+warnings-denied workspace Clippy, formatting, strict/deep docs (55 routes,
+23 examples), Node syntax and Node-only rendering/search checks for all six
+importers. The complete Rust workspace suite passed **608 tests**, with five
+existing hosted-provider fixtures reserved for CI. Final-head CI and merge
+remain pending. Evidence: `/private/tmp/zellij-lists-{workspace,import,unit,clippy,docs,render-verified}.log`.
+No local Docker, browser, GUI or live provider operation ran.
+
+Reference: [Docutils list syntax and indentation](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists).
+
+
+Nested-list hosted assertion follow-up: initial PR #93 run `42333097022` on
+`967df6a` failed in CLI job `128283842248` after the Sphinx export succeeded.
+The new list-count assertion scanned the complete exported page (12 unordered
+lists, including navigation/sidebar), while its expected six lists describe
+only the authored article. The earlier MDX-only render had correctly passed.
+
+Fix **`eb4b83154d3082412bb37d4f178338b6d915e7d5`** requires and selects the
+exported `<article>` before counting. Expected counts, numbering, content and
+all browser assertions remain unchanged; no product code changed. Node syntax
+and diff checks pass. No local browser or Docker ran. The initial run did not
+reach the new nested-list browser assertions, so a fresh full final-head CI run
+is required before merge.

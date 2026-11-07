@@ -22,6 +22,10 @@ pub enum Block {
         alt: String,
     },
     Toc(Toc),
+    List {
+        start: Option<u32>,
+        items: Vec<Vec<Block>>,
+    },
     Table {
         caption: Option<String>,
         headers: usize,
@@ -201,7 +205,7 @@ pub fn parse(raw: &str, language: &str) -> Result<Document> {
 }
 fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result<Vec<Block>> {
     if depth > 16 {
-        return Err(invalid("table/admonition nesting exceeds 16"));
+        return Err(invalid("table/admonition/list nesting exceeds 16"));
     }
     let lines: Vec<_> = raw.lines().collect();
     let mut out = Vec::new();
@@ -209,7 +213,6 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
     let mut styles = Vec::new();
     let mut used_ids = BTreeSet::new();
     let mut pending_label: Option<String> = None;
-    let mut list_indent: Option<usize> = None;
     while i < lines.len() {
         let line = lines[i].trim_end();
         if line.is_empty() {
@@ -226,7 +229,6 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             let (table, count) = super::tables::parse(&lines[i..])?;
             out.push(table_block(table, None, language, doc, depth)?);
             i += count;
-            list_indent = None;
             continue;
         }
         let over = adornment(line).is_some()
@@ -238,7 +240,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
         if over || under {
             if depth > 0 {
                 return Err(invalid(
-                    "headings inside tables/admonitions require manual migration",
+                    "headings inside tables/admonitions/lists require manual migration",
                 ));
             }
             let (text, marker, count) = if over {
@@ -294,7 +296,6 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 id: anchor,
             });
             i += count;
-            list_indent = None;
             continue;
         }
         if let Some(rest) = line.strip_prefix(".. _") {
@@ -326,11 +327,33 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 "explicit labels are supported directly before section headings only",
             ));
         }
+        if super::lists::marker(line)?.is_some() {
+            if depth >= 16 {
+                return Err(invalid("table/admonition/list nesting exceeds 16"));
+            }
+            if i > 0
+                && !lines[i - 1].trim().is_empty()
+                && !matches!(out.last(), Some(Block::List { .. }))
+            {
+                return Err(invalid("a list needs a preceding blank line"));
+            }
+            let (list, count) = super::lists::parse(&lines[i..])?;
+            let items = list
+                .items
+                .iter()
+                .map(|item| blocks(item, language, doc, depth + 1))
+                .collect::<Result<Vec<_>>>()?;
+            out.push(Block::List {
+                start: list.start,
+                items,
+            });
+            i += count;
+            continue;
+        }
         if let Some(rest) = line.strip_prefix(".. ") {
             let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
             let (body, next) = indented(&lines, i + 1);
             i = next;
-            list_indent = None;
             if let Some((directive, arg)) = rest.split_once("::") {
                 let arg = arg.trim();
                 let (opts, body) = if option_block {
@@ -454,44 +477,14 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 body,
             });
             i = next;
-            list_indent = None;
             continue;
         }
         let trimmed = line.trim_start();
         let indent = line.len() - trimmed.len();
-        let bullet =
-            trimmed.starts_with("- ") || trimmed.starts_with("* ") || trimmed.starts_with("+ ");
-        let enumeration = trimmed.split_once(". ").is_some_and(|(n, _)| {
-            n == "#" || !n.is_empty() && n.chars().all(|c| c.is_ascii_digit())
-        });
-        if bullet || enumeration {
-            if indent > 0 {
-                return Err(invalid(
-                    "nested lists require manual migration in this reStructuredText subset",
-                ));
-            }
-            let marker = if bullet {
-                2
-            } else {
-                trimmed.find(". ").unwrap() + 2
-            };
-            list_indent = Some(marker);
-            let text = if let Some(tail) = trimmed.strip_prefix("#. ") {
-                format!("1. {tail}")
-            } else {
-                line.into()
-            };
-            out.push(Block::Text(text));
-            i += 1;
-            continue;
-        }
-        if indent > 0 && list_indent != Some(indent) {
+        if indent > 0 {
             return Err(invalid(
-                "indented quote/definition/nested blocks require manual migration",
+                "indented quote/definition blocks require manual migration",
             ));
-        }
-        if indent == 0 {
-            list_indent = None;
         }
         if (trimmed.starts_with(':') && !trimmed.contains(":`"))
             || trimmed.starts_with(['|', '+', '='])
@@ -519,7 +512,7 @@ fn table_block(
     depth: usize,
 ) -> Result<Block> {
     if depth >= 16 {
-        return Err(invalid("table/admonition nesting exceeds 16"));
+        return Err(invalid("table/admonition/list nesting exceeds 16"));
     }
     let rows = table
         .rows
@@ -717,6 +710,19 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                     out.push_str(&format!("> {line}\n"));
                 }
                 out.push('\n');
+            }
+            Block::List { start, items } => {
+                let tag = if let Some(start) = start {
+                    out.push_str(&format!("\n<ol start=\"{start}\">\n"));
+                    "ol"
+                } else {
+                    out.push_str("\n<ul>\n");
+                    "ul"
+                };
+                for item in items {
+                    out.push_str(&format!("<li>\n\n{}\n</li>\n", render(item, resolve)?));
+                }
+                out.push_str(&format!("</{tag}>\n\n"));
             }
             Block::Toc(toc) if !toc.hidden => {
                 if let Some(caption) = &toc.caption {
