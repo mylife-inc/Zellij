@@ -64,7 +64,7 @@ alphabetic/Roman numbering and restored prose list markers as `3f14b99`, after
 all 16 final-head checks passed; both post-merge workflows passed. PR #95 merged
 document-local Sphinx text/image substitutions and inline image layout as
 `4dcb12c`, after all 16 final-head checks passed. Its base-image artifact upload
-recovered on a targeted retry; main CI is still running. Current work adds
+recovered on a targeted retry; both post-merge workflows passed. Current work adds
 optional native site-creation wizards (`init -i` / `nd -i`).
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
@@ -6426,3 +6426,36 @@ unchanged Rust code; final-head Windows/native and full CI must pass before
 merge. No local browser/container/GUI ran. References:
 [PowerShell JumpList guard](https://github.com/PowerShell/PowerShell/blob/master/src/Microsoft.PowerShell.ConsoleHost/WindowsTaskbarJumpList/TaskbarJumpList.cs),
 [libuv process startup](https://github.com/libuv/libuv/blob/v1.x/src/win/process.c).
+
+
+### 2026-11-07 — Preserve hosted name compatibility in the site wizard
+
+PR #96 run `42353774620` on `05a412e` passed 15 jobs, including all six
+native packages. Windows ARM job `128347405063` passed both `powershell.exe`
+and `pwsh` installer/checksum/archive/upgrade checks after `4df0d31`; its
+console and signal assertions stayed unchanged. All three portable-platform
+jobs passed wizard-generated standard/minimal offline navigation, assets,
+search and no-JavaScript acceptance in Chromium and WebKit.
+
+The CLI job `128347404872` failed at the existing scaffold-name acceptance:
+new validation rejected a hosted `--name` containing newline/tab characters.
+Those names were already supported through escaped YAML, so treating them as
+invalid was a compatibility regression. Source **`65de2c8`** restores literal
+hosted name values, including with `-i` when the name flag skips its question.
+Interactive name answers and portable names still exclude control characters;
+all names must be nonempty, and themes must be in the embedded catalogue.
+The user reference and CLI contract now distinguish these cases. This corrects
+the broader name-validation claim in the initial wizard entry above.
+
+All 9 focused wizard tests pass, including the new literal-name/interactive
+regression. The unchanged Node-only scaffold acceptance passes all 40 Rust
+starters, 10 Node starters and 10 guide titles with exact metadata and rendered
+links. Strict/deep project documentation validation passes 55 routes and
+23 examples. Full Rust rerun and final-head hosted/native CI remain pending;
+the earlier run cannot validate this correction or the hosted wizard export.
+No local Docker/browser/GUI, native release or provider mutation ran.
+Evidence: `/private/tmp/zellij-site-wizard-compat-{focused,scaffolds,docs}.log`.
+
+PR #95's post-merge main run `42351594650` subsequently passed all 16 jobs on
+unchanged `4dcb12c`, so both its post-merge workflows are now green. Its base
+image workflow retained the previously recorded artifact-upload retry.
