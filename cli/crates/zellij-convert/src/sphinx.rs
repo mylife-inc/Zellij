@@ -397,7 +397,7 @@ impl Converter for Sphinx {
             &mut result,
         )?;
         result.unmapped.extend(unmapped);
-        result.notes.push("Sphinx was read without running Python, Docutils, extensions, templates or a source build. Imports follow the root document's explicit toctree (including hidden trees); unlisted documents are not published. HTML-builder .html URLs are mapped; dirhtml/custom builders, automatic numbering, alternate heading anchors and theme presentation require review. Only referenced eligible resources are copied; html_static_path/html_extra_path are not copied wholesale. The original source is unchanged.".into());
+        result.notes.push("Sphinx was read without running Python, Docutils, extensions, templates or a source build. Imports follow the root document's explicit toctree (including hidden trees); unlisted documents are not published. HTML-builder .html URLs are mapped; dirhtml/custom builders, automatic toctree numbering, alternate heading anchors and theme presentation require review. Only referenced eligible resources are copied; html_static_path/html_extra_path are not copied wholesale. The original source is unchanged.".into());
         Ok(result)
     }
 }

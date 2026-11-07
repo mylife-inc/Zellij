@@ -58,8 +58,10 @@ workflow passed; its post-merge showcase dependency-download timeout recovered
 on a targeted retry of the unchanged commit, leaving all 16 main checks green.
 PR #92 merged Sphinx list/CSV table directives and directive boundary fixes as
 `0c4d79e`, after all 16 final-head checks passed. Both post-merge workflows
-passed. Current work adds nested Sphinx lists and preserves list numbering and
-block content.
+passed. PR #93 merged nested Sphinx lists as `2ed992d`, after all 16
+final-head checks passed; both post-merge workflows passed. Current work adds
+alphabetic and Roman list styles and fixes explicit numbering after automatic
+markers.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6158,3 +6160,99 @@ all browser assertions remain unchanged; no product code changed. Node syntax
 and diff checks pass. No local browser or Docker ran. The initial run did not
 reach the new nested-list browser assertions, so a fresh full final-head CI run
 is required before merge.
+
+
+## 2026-11-06 — Nested-list CI closure
+
+PR #93 merged as **`2ed992d977929ad15509618fcbf163b287139f54`** after
+all 16 checks passed on **`1b29b4a52df87c8ad6663f4f7c506aa87d253bbd`**
+in [42333764306](https://github.com/mylife-inc/Zellij/actions/runs/42333764306),
+attempt 1. The tested and merged tree was
+`42ccffe4af1735815377a5840e2b0cfffde6362f`. Hosted browser acceptance passed
+nested list structure, numbering, literal code, local images, document navigation,
+exact native downloads and hydration/error checks. Documentation preservation
+retained 46 original routes, 282 heading IDs, 82 compatibility mappings and
+29 byte-identical images. All six native packages and both Linux image
+architectures/combined manifests passed. Both post-merge workflows passed on
+unchanged `2ed992d`, attempt 1: main `42336073179` (all 16 jobs) and base-image
+`42336073120` (all 13 jobs). The initial assertion-scope failure and correction
+remain recorded above. Native rc.1 remains the latest published candidate.
+
+
+## 2026-11-06 — Sphinx alphabetic and Roman numbering
+
+Source **`67b313f955bb7c9ab3d4af71381ab3fef5d019a0`** adds lower/upper alphabetic and Roman list styles to the
+shared Sphinx importer. All three punctuation forms and matching automatic
+markers retain starts, case, nesting and the existing block/reference pipeline
+through native HTML list attributes. Context resolves ambiguous I/V/etc.;
+wrapped alphabetic/Roman prose remains prose. Canonical Roman values are
+limited to the browser counter range 1–3999 and alphabetic values to 1–26.
+Malformed/mixed-case Roman markers and automatic overflow fail before output.
+No Python, source evaluation or new dependency was introduced.
+
+The same change fixes a decimal-list bug: an explicit enumerator after `#`
+must start a new list even if its value happens to be consecutive, matching
+Docutils. It also corrects obsolete overview/quickstart claims that tables and
+nested lists are unsupported, and clarifies that the remaining automatic
+numbering limitation concerns toctrees. Existing containment, shared depth and
+item bounds remain. Other Sphinx extensions, spanning cells, substitutions and
+source-execution limits remain documented; this does not complete all imports.
+
+Local focused validation passed **24 Sphinx CLI tests** and **81 converter unit
+tests**, warnings-denied workspace Clippy, formatting, strict/deep documentation
+validation (55 routes, 23 examples) and Node-only rendering/search for all six
+importers. A fixture heading underline initially failed validation; the fixture
+was corrected and rerun successfully. The final conversion-notice wording also
+passed the 24 Sphinx CLI cases. Full workspace verification passed **612 tests**,
+with five existing hosted-provider fixtures reserved for CI. Final-head
+hosted/native CI and merge remain pending.
+
+The shared native/render/browser fixture now contains nine ordered lists,
+including all four letter/Roman styles. CI additionally checks computed browser
+styles on lists and items, nested typed-list containment and a section link,
+while retaining existing media/navigation/hydration/error assertions. No local
+Docker, browser or GUI ran, and no native release or production migration ran.
+Evidence: `/private/tmp/zellij-numbering-{unit-final,import-final,message-check,clippy,docs,render,workspace}.log`.
+References: [Docutils enumeration](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists),
+[sequence parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py),
+[Roman browser counters](https://www.w3.org/TR/css-counter-styles-3/#lower-roman).
+
+
+Numbering browser-selector follow-up: PR #94 run `42338890305` on `863d301`
+failed in CLI job `128302002257` after all importer exports and the preexisting
+Sphinx browser assertions succeeded. The new `ol[type="a"]` selector matched
+both `a` and `A` lists because HTML type attribute selectors compare without
+case, causing a count of two where one exact-case sequence was expected.
+
+Fix **`496f97984810ed87b382eef536cc7b17f216c95b`** reads the four typed lists' exact DOM attribute values
+and compares them in JavaScript. It retains exact starts, direct item counts,
+computed list/item styles and parent-child type assertions, and also requires
+exactly four typed lists. Product output and Rust code are unchanged. Node
+syntax and diff checks pass. The earlier run did not reach the new computed
+style assertions, so fresh final-head CI remains required. No local browser
+or Docker ran. The 612-test Rust result remains valid for unchanged Rust code.
+
+
+Numbering display follow-up: PR #94 run `42339535816` on `00be13b` failed in
+CLI job `128303947326`. Exact-case DOM selection succeeded, but the first
+alphabetic list and its item computed to `list-style-type: none`. Inspection
+identified Tailwind Preflight's general list reset, which also hides ordinary
+prose bullet/decimal markers. The semantic attributes alone did not establish
+visible numbering; the initial implementation's browser acceptance was incomplete.
+
+Fix **`21c663b69a1c2219b2123915f863837020c84b5b`** adds a prose-only `list-style-type: revert-layer` rule inside
+Tailwind's `base` layer. This undoes that layer's reset while preserving HTML
+presentation hints (including case-sensitive ol types) and native nested bullet
+styles. A plain `revert` would also discard author presentation hints. Navigation
+and component styling retain their existing rules. CI now also checks ordinary
+bullet/decimal styles and typed items' `display: list-item`; none of the original
+computed-style expectations were relaxed.
+
+Local Tailwind/PostCSS compilation passed with the rule retained in the built
+stylesheet (`/private/tmp/zellij-numbering-styles.css`), as did script syntax and
+diff checks. Rust code remains unchanged and its 612-test suite remains valid.
+The stylesheet change requires fresh final-head hosted browser acceptance.
+No local browser/Docker ran. Final CI and merge remain pending.
+References: [Tailwind Preflight](https://tailwindcss.com/docs/preflight),
+[CSS presentation-hint origins](https://www.w3.org/TR/css-cascade-5/#preshint),
+[layer rollback](https://www.w3.org/TR/css-cascade-5/#defaulting-keywords).

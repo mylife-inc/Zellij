@@ -74,12 +74,16 @@ export async function checkImportedTables(output) {
     await page.getByRole('heading', { name: 'Nested instructions', exact: true, level: 1 }).waitFor();
     await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
     const outer = article.locator('ul').first();
+    assert.equal(await outer.evaluate(list => getComputedStyle(list).listStyleType), 'disc');
+    assert.equal(await outer.locator(':scope > li').first().evaluate(item => getComputedStyle(item).listStyleType), 'disc');
     assert.equal(await outer.locator(':scope > li').count(), 4);
     assert.equal((await outer.locator(':scope > li').nth(2).innerText()).trim(), '');
     assert.equal(await outer.locator(':scope > li').last().locator('table td').count(), 2);
     assert((await outer.locator(':scope > li').last().locator('pre').innerText()).includes('- literal block bullet\n9. literal block number'));
     const ordered = outer.locator(':scope > li').first().locator(':scope > ol');
     assert.equal(await ordered.getAttribute('start'), '9');
+    assert.equal(await ordered.evaluate(list => getComputedStyle(list).listStyleType), 'decimal');
+    assert.equal(await ordered.locator(':scope > li').first().evaluate(item => getComputedStyle(item).listStyleType), 'decimal');
     assert.equal(await ordered.locator(':scope > li').count(), 3);
     const inner = ordered.locator(':scope > li').nth(1).locator(':scope > ul');
     assert.equal(await inner.locator(':scope > li').count(), 2);
@@ -87,8 +91,30 @@ export async function checkImportedTables(output) {
     assert((await inner.locator('blockquote').innerText()).includes('Keep original content.'));
     const nestedLogo = inner.getByRole('img', { name: 'Nested logo', exact: true });
     assert(await nestedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
-    for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol[start="${start}"]`).count(), 1);
+    for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol:not([type])[start="${start}"]`).count(), 1);
     assert.equal(await article.locator('table td ul ol').count(), 1);
+    // HTML type attribute selectors match case-insensitively. Read exact DOM
+    // values so a/A and i/I remain distinct in these assertions.
+    const sequences = await article.locator('ol[type]').evaluateAll(lists => lists.map(list => ({
+      type: list.getAttribute('type'),
+      start: list.getAttribute('start'),
+      count: [...list.children].filter(child => child.tagName === 'LI').length,
+      style: getComputedStyle(list).listStyleType,
+      itemStyle: getComputedStyle(list.querySelector(':scope > li')).listStyleType,
+      itemDisplay: getComputedStyle(list.querySelector(':scope > li')).display,
+      parentType: list.parentElement.tagName === 'LI' && list.parentElement.parentElement.tagName === 'OL'
+        ? list.parentElement.parentElement.getAttribute('type') : null,
+    })));
+    assert.equal(sequences.length, 4);
+    for (const [type, start, count, style] of [
+      ['a', '8', 3, 'lower-alpha'], ['A', '8', 4, 'upper-alpha'],
+      ['i', '4', 4, 'lower-roman'], ['I', '4', 3, 'upper-roman'],
+    ]) {
+      const matching = sequences.filter(sequence => sequence.type === type);
+      assert.equal(matching.length, 1);
+      assert.deepEqual(matching[0], { type, start, count, style, itemStyle: style, itemDisplay: 'list-item', parentType: type === 'i' ? 'A' : null });
+    }
+    assert.equal(await article.getByRole('link', { name: 'Roman reference', exact: true }).getAttribute('href'), `${prefix}/guide/details#install`);
     await article.getByRole('link', { name: 'Nested details', exact: true }).click();
     await page.waitForURL(`${origin}${prefix}/guide/details`);
     await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
@@ -103,7 +129,7 @@ export async function checkImportedTables(output) {
     assert.equal(await notes.text(), 'Table download bytes.\n');
     await page.waitForURL(notesUrl);
     assert.deepEqual(errors, [], 'Imported tables, lists and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, numbering, local image, document navigation and native asset navigation passed.');
+    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }

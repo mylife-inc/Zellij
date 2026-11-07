@@ -373,20 +373,26 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       html = article[1];
     }
     assert.equal((html.match(/<ul(?:\s|>)/g) ?? []).length, 6);
-    assert.equal((html.match(/<ol(?:\s|>)/g) ?? []).length, 5);
+    assert.equal((html.match(/<ol(?:\s|>)/g) ?? []).length, 9);
     assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 2);
     for (const start of [9, 7, 3, 4, 2]) assert(html.includes(`start="${start}"`));
+    for (const [type, start] of [['a', 8], ['A', 8], ['i', 4], ['I', 4]]) {
+      assert(html.includes(`<ol start="${start}" type="${type}">`), `Missing ${type} sequence`);
+    }
     for (const text of ['Prepare <strong>workspace</strong>.', 'Nested searchable paragraph.',
       'Unicode parent Café 漢字.', 'Unicode leaf.', 'Table child <strong>strong</strong>.',
       ':header: literal option', '- literal bullet', '#. literal number', '.. include:: /not/executed',
       '- literal block bullet', '9. literal block number', 'Nested table',
+      'Roman <strong>four</strong>', 'Upper alphabetic automatic eleven.', 'Lower alphabetic nine.',
       `href="${prefix}/guide/details"`, `href="${prefix}/guide/details#install"`,
       'href="/products/docs/_zellij/assets/imported/docs/notes.txt"', 'alt="Nested logo"',
     ]) assert(html.includes(text), `Nested Sphinx list missing ${text}`);
   }
   assertLists(rendered.get('/guide/lists'), '');
   const listPage = site.guidePages.find(p => p.route === '/guide/lists');
-  assert(indexGuidePage(listPage, headingOptions).some(entry => entry.text.includes('Nested searchable paragraph.')));
+  for (const phrase of ['Nested searchable paragraph.', 'Upper alphabetic automatic eleven.', 'Roman automatic seven.']) {
+    assert(indexGuidePage(listPage, headingOptions).some(entry => entry.text.includes(phrase)), `List text searchable: ${phrase}`);
+  }
   const tablePage = site.guidePages.find(p => p.route === '/guide/tables');
   const tableIndex = indexGuidePage(tablePage, headingOptions);
   for (const phrase of ['Empty first cell.', 'List second paragraph', 'Second CSV paragraph.']) {

@@ -334,6 +334,11 @@ fn nested_lists_preserve_numbering_blocks_references_assets_and_empty_items() {
         "<ol start=\"3\">",
         "<ol start=\"4\">",
         "<ol start=\"2\">",
+        "<ol start=\"8\" type=\"A\">",
+        "<ol start=\"8\" type=\"a\">",
+        "<ol start=\"4\" type=\"I\">",
+        "<ol start=\"4\" type=\"i\">",
+        "[Roman reference](</guide/details#install>)",
         "Prepare **workspace**.\nWrapped parent text.",
         "Nested searchable paragraph.",
         "[Nested details](</guide/details>)",
@@ -352,7 +357,7 @@ fn nested_lists_preserve_numbering_blocks_references_assets_and_empty_items() {
         assert!(body.contains(text), "{text}: {body}");
     }
     assert_eq!(body.matches("<ul>").count(), 6);
-    assert_eq!(body.matches("<ol start=").count(), 5);
+    assert_eq!(body.matches("<ol start=").count(), 9);
     assert_eq!(body.matches("<table>").count(), 2);
     assert_eq!(
         read(&out, "assets/imported/docs/notes.txt"),
@@ -372,6 +377,38 @@ fn nested_lists_preserve_numbering_blocks_references_assets_and_empty_items() {
 }
 
 #[test]
+fn enumerated_prose_and_automatic_restarts_keep_their_meaning() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("s");
+    let out = t.path().join("o");
+    basic(&source);
+    write(
+        &source,
+        "index.rst",
+        concat!(
+            "Home\n====\n\nA. Einstein was\na physicist.\n\n",
+            "9. nine\n#. ten\n11. explicit eleven\n\n",
+            "h. eight\n#. nine\nj. explicit ten\n\n",
+            "iv. four\n#. five\nvi. explicit six\n",
+        ),
+    );
+    run(&source, &out, &[], 0);
+    let body = read(&out, "01-guide/index.mdx");
+    assert!(body.contains("A. Einstein was\na physicist."), "{body}");
+    assert_eq!(body.matches("<ol start=").count(), 6, "{body}");
+    for start in [
+        "9",
+        "11",
+        "8\" type=\"a",
+        "10\" type=\"a",
+        "4\" type=\"i",
+        "6\" type=\"i",
+    ] {
+        assert!(body.contains(&format!("<ol start=\"{start}\">")), "{body}");
+    }
+}
+
+#[test]
 fn malformed_or_unsupported_list_content_fails_before_output() {
     for list in [
         "paragraph\n- missing blank",
@@ -380,8 +417,11 @@ fn malformed_or_unsupported_list_content_fails_before_output() {
         "- parent\nnot separated",
         "- parent\n\n   misaligned continuation",
         "2147483648. too large",
-        "- parent\n\n  a. alphabetic",
-        "- parent\n\n  (iv) roman",
+        "iiii. invalid Roman",
+        "iV. mixed case Roman",
+        "MMMM. too large Roman",
+        "z. last alphabetic\n#. overflow",
+        "mmmcmxcix. last Roman\n#. overflow",
         "2147483647. last\n#. overflow",
         "- parent\n\n  .. include:: ../secret",
         "- parent\n\n  .. toctree::\n\n     page",

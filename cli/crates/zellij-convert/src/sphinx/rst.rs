@@ -23,7 +23,7 @@ pub enum Block {
     },
     Toc(Toc),
     List {
-        start: Option<u32>,
+        numbering: Option<super::lists::Numbering>,
         items: Vec<Vec<Block>>,
     },
     Table {
@@ -327,7 +327,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 "explicit labels are supported directly before section headings only",
             ));
         }
-        if super::lists::marker(line)?.is_some() {
+        if super::lists::starts(&lines[i..])? {
             if depth >= 16 {
                 return Err(invalid("table/admonition/list nesting exceeds 16"));
             }
@@ -344,7 +344,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                 .map(|item| blocks(item, language, doc, depth + 1))
                 .collect::<Result<Vec<_>>>()?;
             out.push(Block::List {
-                start: list.start,
+                numbering: list.numbering,
                 items,
             });
             i += count;
@@ -711,9 +711,14 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                 }
                 out.push('\n');
             }
-            Block::List { start, items } => {
-                let tag = if let Some(start) = start {
-                    out.push_str(&format!("\n<ol start=\"{start}\">\n"));
+            Block::List { numbering, items } => {
+                let tag = if let Some(numbering) = numbering {
+                    let kind = numbering
+                        .style
+                        .html_type()
+                        .map(|c| format!(" type=\"{c}\""))
+                        .unwrap_or_default();
+                    out.push_str(&format!("\n<ol start=\"{}\"{kind}>\n", numbering.start));
                     "ol"
                 } else {
                     out.push_str("\n<ul>\n");
