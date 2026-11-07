@@ -72,3 +72,47 @@ second    More body.
    +----------+------------+
    | Inside   | A note     |
    +----------+------------+
+
+List and CSV directives
+-----------------------
+
+.. list-table:: **List** matrix
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: auto
+
+   * - Name
+     - Value
+   * - Alpha
+     - List first paragraph.
+
+       List second paragraph with :doc:`List details <details>`, :ref:`install`
+       and :download:`List download <notes.txt>`.
+   * - Beta
+     - .. code-block:: text
+
+          .. csv-table:: <script>{code}|literal</script>
+   * - Gamma
+     - .. image:: /media/logo.svg
+          :alt: List logo
+   * -
+     - Empty list row heading.
+
+.. csv-table:: CSV matrix
+   :header: "Kind", "Text", "Tail"
+            "Group", "Description", "Extra"
+   :header-rows: 1
+   :stub-columns: 1
+
+   Label, Meaning, More
+   Quotes,"Quoted ""word"", comma and **bold**.
+
+   Second CSV paragraph.",end
+   Download,:download:`CSV notes <notes.txt>`,saved
+   Short,Padded CSV row
+
+.. csv-table:: Unicode CSV
+   :delim: │
+   :quote: '
+
+   Café│'漢字│quoted ''word'''

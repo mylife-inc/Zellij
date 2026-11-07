@@ -8,6 +8,7 @@ use zellij_core::Result;
 #[derive(Debug)]
 pub struct Table {
     pub headers: usize,
+    pub stubs: usize,
     pub rows: Vec<Vec<String>>,
 }
 
@@ -123,6 +124,7 @@ pub fn parse(lines: &[&str]) -> Result<(Table, usize)> {
     }
     let mut table = Table {
         headers: 0,
+        stubs: 0,
         rows: Vec::new(),
     };
     let mut cells: Option<Vec<Vec<String>>> = None;

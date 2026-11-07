@@ -2002,3 +2002,21 @@ Spans, list/csv table directives, table options and unsupported nested content
 fail before output. See the conversion reference for limits and the durable
 context for source and verification evidence. Real hosted exports remain a CI
 check; the local renderer boundary does not start a browser or Docker.
+
+## 2026-11-06 — Sphinx list and inline CSV tables
+
+`convert`/`cv`, `migrate`/`mig` and the shared `ship` converter now accept uniform
+two-level `list-table` and inline `csv-table` directives, optional captions,
+nonnegative `header-rows`/`stub-columns`, and `widths: auto`. The common table
+renderer preserves column headings and gives body row headings `scope="row"`.
+CSV supports quoted multiline cells, doubled quotes, short-row padding,
+supplemental `header` rows (including continuation lines), literal Unicode
+`delim`/`quote`, `delim: space` and the `keepspace` flag. Options retain the
+source format's meaning; malformed input fails before output.
+
+Cell content uses the existing RST block parser, reference resolver and copied
+asset policy, with the same 16-level nesting and table size bounds. Sources are
+never executed. CSV `file`/`url`/`encoding`, custom escapes, character-code
+notation, numeric widths, alignment/classes/names, spanning cells and unsupported
+cell constructs still require manual migration. External CSV inputs are not read
+or fetched. This source is newer than the published rc.1 candidate.

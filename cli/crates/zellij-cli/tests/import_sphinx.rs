@@ -54,10 +54,11 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
     let r = run(&s, &o, &["--layout", "site"], 0);
     let c = o.join("content");
     let body = read(&c, "01-guide/index.mdx");
-    assert_eq!(body.matches("<table>").count(), 5);
-    assert_eq!(body.matches("<thead>").count(), 2);
-    assert_eq!(body.matches("<th>").count(), 6);
-    assert_eq!(body.matches("<caption>").count(), 1);
+    assert_eq!(body.matches("<table>").count(), 8);
+    assert_eq!(body.matches("<thead>").count(), 4);
+    assert_eq!(body.matches("<th>").count(), 17);
+    assert_eq!(body.matches("<caption>").count(), 4);
+    assert_eq!(body.matches("<th scope=\"row\">").count(), 7);
     for expected in [
         "**Feature** matrix",
         "Café 漢字 e\u{301}",
@@ -77,6 +78,18 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
         "Continuation with **strong** text.",
         "Empty first cell.",
         "No invented header.",
+        "**List** matrix",
+        "List first paragraph.\n\nList second paragraph",
+        "[List details](</guide/details>)",
+        "[List download](</_zellij/assets/imported/docs/notes.txt>)",
+        "![List logo](</_zellij/assets/imported/docs/media/logo.svg>)",
+        ".. csv-table:: <script>{code}|literal</script>",
+        "Empty list row heading.",
+        "Quoted \"word\", comma and **bold**.",
+        "Second CSV paragraph.",
+        "[CSV notes](</_zellij/assets/imported/docs/notes.txt>)",
+        "Padded CSV row",
+        "漢字│quoted 'word'",
     ] {
         assert!(body.contains(expected), "{expected}: {body}");
     }
@@ -99,6 +112,91 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
 }
 
 #[test]
+fn invalid_table_directives_and_external_csv_sources_fail_without_writes() {
+    for table in [
+        ".. list-table::\n\n   * plain item",
+        ".. list-table::\n   :header-rows: 1\n\n   * - only header",
+        ".. list-table::\n   :stub-columns: 1\n\n   * - only stub",
+        ".. list-table::\n   :header-rows: -1\n\n   * - cell",
+        ".. list-table::\n   :header: invalid CSV option\n\n   * - cell",
+        ".. csv-table::\n\n   key,\"unclosed",
+        ".. csv-table::\n\n   \"closed\"suffix,value",
+        ".. csv-table::\n   :header-rows: 2\n\n   key,value",
+        ".. csv-table::\n   :header-rows: 0\n   :header-rows: 0\n\n   key,value",
+        ".. csv-table::\n   :keepspace: true\n\n   key,value",
+        ".. csv-table::\n   :file: ../secret.csv",
+        ".. csv-table::\n   :url: http://127.0.0.1:9/private.csv",
+        ".. csv-table::\n   :encoding: utf-8\n\n   key,value",
+        ".. csv-table::\n   :escape: \\\n\n   key,value",
+        ".. csv-table::\n   :widths: 10 20\n\n   key,value",
+        ".. csv-table::\n\n   key,.. include:: ../secret.csv",
+        ".. list-table::\n\n   * - key\n     - .. raw:: html\n\n          <script>bad</script>",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("source");
+        basic(&source);
+        write(t.path(), "secret.csv", "outside-file-sentinel");
+        let text = format!("Home\n====\n\n{table}\n");
+        write(&source, "index.rst", &text);
+        for (index, args) in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]]
+            .iter()
+            .enumerate()
+        {
+            let out = t.path().join(format!("out-{index}"));
+            let result = run(&source, &out, args, 2);
+            assert!(report(&result).contains("index.rst"), "{result:?}");
+            assert!(!report(&result).contains("outside-file-sentinel"));
+            assert!(!out.exists(), "{table}");
+        }
+        assert_eq!(read(&source, "index.rst"), text);
+    }
+}
+
+#[test]
+fn list_and_csv_cells_apply_asset_containment_before_all_output_modes() {
+    for table in [
+        ".. list-table::\n\n   * - :download:`outside <../secret>`",
+        ".. csv-table::\n\n   :download:`outside <../secret>`",
+    ] {
+        for args in [vec![], vec!["--assets", "skip"], vec!["--dry-run"]] {
+            let t = tempfile::tempdir().unwrap();
+            let source = t.path().join("source");
+            let out = t.path().join("out");
+            basic(&source);
+            write(t.path(), "secret", "outside-file-sentinel");
+            write(&source, "index.rst", format!("Home\n====\n\n{table}\n"));
+            let result = run(&source, &out, &args, 2);
+            assert!(report(&result).contains("escapes"), "{result:?}");
+            assert!(!report(&result).contains("outside-file-sentinel"));
+            assert!(!out.exists());
+        }
+    }
+}
+
+#[test]
+fn nested_list_table_directives_share_the_existing_depth_limit() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    basic(&source);
+    let mut table = "cell".to_string();
+    for depth in 1..=17 {
+        table = format!(
+            ".. list-table::\n\n   * - {}",
+            table.replace('\n', "\n       ")
+        );
+        if depth >= 16 {
+            write(&source, "index.rst", format!("Home\n====\n\n{table}\n"));
+            let out = t.path().join(format!("out-{depth}"));
+            let result = run(&source, &out, &[], if depth == 16 { 0 } else { 2 });
+            if depth == 17 {
+                assert!(report(&result).contains("nesting exceeds 16"));
+                assert!(!out.exists());
+            }
+        }
+    }
+}
+
+#[test]
 fn unsupported_or_malformed_tables_fail_before_creating_output() {
     for table in [
         "+---+---+\n| a     |\n+---+---+", // column span
@@ -110,9 +208,9 @@ fn unsupported_or_malformed_tables_fail_before_creating_output() {
         "===  ===\na    b\n---  ---", // missing equals footer
         "===  ===\n     no preceding row\n===  ===",
         "===  ===\na   xb\n===  ===", // text in gutter
-        ".. table:: Caption\n   :widths: auto\n\n   ===  ===\n   a    b\n   ===  ===",
+        ".. table:: Caption\n   :align: left\n\n   ===  ===\n   a    b\n   ===  ===",
         ".. table:: Caption\n\n   ===  ===\n   a    b\n   ===  ===\n\n   extra content",
-        ".. list-table::\n\n   * - a\n     - b",
+        ".. list-table::\n\n   * - a\n     - b\n   * - missing column",
         ".. csv-table::\n   :file: /private/data",
         "===  ===\na    .. include:: file\n===  ===",
         "+-+\n|\\|\n+-+",

@@ -49,11 +49,20 @@ export async function checkImportedTables(output) {
       await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
     } finally { assert.deepEqual(errors, []); }
     const article = page.locator('article');
-    assert.equal(await article.locator('table').count(), 5);
-    assert.equal(await article.getByRole('columnheader').count(), 6);
+    assert.equal(await article.locator('table').count(), 8);
+    assert.equal(await article.getByRole('columnheader').count(), 17);
     assert.equal(await article.locator('table').nth(2).locator('th').count(), 0);
     assert.equal(await article.locator('table').nth(3).locator('th').count(), 0);
-    assert.equal(await article.locator('caption').innerText(), 'Feature matrix');
+    assert.equal(await article.locator('caption').first().innerText(), 'Feature matrix');
+    assert.equal(await article.getByRole('rowheader').count(), 7);
+    const list = article.locator('table').nth(5);
+    const csv = article.locator('table').nth(6);
+    assert.equal(await list.getByRole('rowheader').first().innerText(), 'Alpha');
+    assert.equal(await csv.locator('thead tr').count(), 3);
+    assert.equal((await csv.locator('tbody tr').last().locator('td').last().innerText()).trim(), '');
+    assert((await csv.innerText()).includes('Quoted "word", comma and bold.'));
+    const listLogo = article.getByRole('img', { name: 'List logo', exact: true });
+    assert(await listLogo.evaluate(image => image.complete && image.naturalWidth > 0));
     const logo = article.getByRole('img', { name: 'Table logo' });
     assert(await logo.evaluate(image => image.complete && image.naturalWidth > 0));
     await article.locator('table').first().getByRole('link', { name: 'Details', exact: true }).click();

@@ -440,6 +440,11 @@ blocks remain literal, including directive-looking examples and backticks.
 
 Rectangular **grid and simple tables** are supported, including tables without
 headers, multiple header rows, multiline cells and `.. table::` captions.
+`list-table` and in-document `csv-table` directives also support single-line captions,
+`header-rows` and `stub-columns` (left-hand row headings). Both default to zero.
+Keep at least one body row and one data column after those headings. List tables
+require a uniform two-level bullet list; CSV tables pad short rows with empty
+cells. `:widths: auto` is supported for all three table directives.
 Cells reuse the supported reStructuredText subset above: paragraphs, lists,
 admonitions, literal code, images and references keep their meaning. Generated
 MDX uses semantic HTML tables with Markdown inside cells, so links and copied
@@ -456,17 +461,49 @@ Wide characters and combining marks are measured as display columns.
    +----------+---------+
 ```
 
+```rst
+.. list-table:: Supported formats
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Format
+     - Status
+   * - Markdown
+     - **Supported**
+
+.. csv-table:: Supported formats
+   :header: "Format", "Status"
+
+   "Markdown", "**Supported**"
+   "Sphinx", "Supported subset"
+```
+
+CSV `:header:` adds header rows before any `:header-rows:` selected from the
+body; indented continuation lines allow multiple supplemental header rows.
+Quoted cells may contain commas and line breaks, and doubled quotes retain a
+literal quote. CSV defaults to comma separators and double quotes, ignoring
+ASCII spaces at the start of a field. `:delim:` and `:quote:` accept distinct
+literal Unicode characters; `:delim: space` is also supported. The flag
+`:keepspace:` retains leading spaces, which then follow the ordinary
+reStructuredText indentation rules inside the cell. Custom escape characters,
+character-code notation, tabs and external CSV `:file:`/`:url:`/`:encoding:`
+options require manual migration. No external CSV data is read or fetched.
+
 Simple-table continuation lines have an empty first column; use an empty comment
 (`..`) in that column to start a new row whose first cell is empty. The final
 column may extend beyond the border. Keep table borders aligned and separate a
 table from surrounding text with blank lines. The importer rejects row/column
-spans, malformed geometry, `list-table`/`csv-table`, table directive options,
-and headings/section labels/toctrees inside cells before creating output. It does
+spans, malformed geometry, other table options (including numeric column widths,
+alignment, classes and named table targets), and headings/section labels/toctrees
+inside cells before creating output. It does
 not flatten merged cells or silently reinterpret them. Tables are limited to
 128 columns, 10,000 rows, 100,000 cells and a 16,384-column border; table/admonition
 nesting shares a limit of 16. See the upstream
 [table syntax](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#tables)
-and [table directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#table).
+and the [table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#table),
+[list-table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table)
+and [csv-table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table)
+directives.
 
 Section labels and supported implicit section IDs become explicit anchors used
 by links, TOC and search. Non-decomposing Unicode heading identifiers need an
