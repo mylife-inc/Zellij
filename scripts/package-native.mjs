@@ -37,7 +37,7 @@ const stage = await mkdtemp(path.join(out, '.package-'));
 try {
   const archive = path.join(stage, name);
   if (windows) {
-    execFileSync('pwsh', ['-NoProfile', '-File', path.join(root, 'scripts/package-windows.ps1'), '-Binary', built, '-Archive', archive], { stdio: 'inherit' });
+    execFileSync('pwsh', ['-NoProfile', '-File', path.join(root, 'scripts/package-windows.ps1'), '-Binary', built, '-Archive', archive], { stdio: 'inherit', windowsHide: true });
   } else {
     // macOS otherwise adds a ._zel AppleDouble entry for provenance attributes.
     // Native archives contain one executable on every platform.
