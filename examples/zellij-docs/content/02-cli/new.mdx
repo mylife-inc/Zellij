@@ -150,7 +150,8 @@ existing files. Portable creation has no overwrite option.
 
 The wizard generates the same files as the equivalent flags and uses no Node,
 container, network, dependency installer or server. It covers whole-site
-creation; page and app wizards remain separate work.
+creation. Page creation also has a wizard, described below; an app wizard remains
+separate work.
 
 ## `zel new docs [dir]`
 
@@ -480,7 +481,7 @@ and placeholder media paths, add the section to your page, then run
 
 ---
 
-## `zel new page <name>`
+## `zel new page [name]`
 
 Prints an entry to add to `pages.yaml` and creates the section files it references.
 The default configured hosted site is selected as for `build`; `--dir` accepts a
@@ -507,6 +508,42 @@ zel new page pricing --sections hero,pricing-table,faq
 ```
 
 Without `--sections` it creates the page with a single hero.
+
+### Choose a page interactively
+
+**Current source, newer than published rc.1**, supports the short form:
+
+```bash
+zel np -i                         # ask for a name and ordered sections
+zel np pricing -i                  # name supplied; ask only for sections
+zel np -i --sections hero,faq       # sections supplied; ask only for the name
+zel np pricing --sections hero,faq # equivalent noninteractive command
+```
+
+`--interactive` / `-i` is opt-in. Without it, a name is required and commands
+never prompt. The wizard lists the built-in section types and accepts a
+comma-separated sequence of names or displayed numbers, in page order. Enter
+chooses one hero. Unknown or repeated types are rejected: each selected type
+creates one file under `sections/<name>/`. To use a type more than once, author
+separately named sections with `zel ns` and add their references to your page.
+
+The name identifies the page and its section subfolder; the printed title uses
+the same initial capitalization as the ordinary command. Interactive names must
+be nonempty and exclude control characters. Unsafe paths are refused. Supplied
+values skip their questions; invalid answers are requested again. `--cwd`,
+`--site-root`, `--config` and `--dir` retain their existing selection rules.
+
+Prompts go to stderr, including with `--quiet`; the registration report remains
+on stdout. Explicit `-i` accepts terminal or piped answers. `:q`, end of input,
+or interruption while answering cancels without writing section files. All
+destinations are checked before writing, so a collision later in the list does
+not leave earlier files behind. Existing sections are never overwritten.
+
+Generation needs no Node, Docker or network. The wizard uses the existing
+templates, including their editable `TODO` values and placeholder media paths.
+Add the printed entry to `pages.yaml`, edit the content and any menu links, then
+run `zel check --strict --deep` on the hosted site. Creating section files alone
+does not register a page or change `pages.yaml` or `menu.yaml`.
 
 <Callout type="info" title="Why it does not edit pages.yaml for you">
 Parsing that file and writing it back would lose the comments and the ordering

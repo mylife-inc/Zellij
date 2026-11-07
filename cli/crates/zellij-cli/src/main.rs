@@ -30,6 +30,7 @@ mod images;
 mod imports;
 mod maintenance;
 mod netlify;
+mod page_authoring;
 mod preview;
 mod published_image;
 mod railway;
@@ -237,11 +238,7 @@ fn main() {
         Command::New(NewTarget::Portable(ref options)) => site_authoring::portable(options),
         Command::New(NewTarget::Docs(ref options)) => site_authoring::docs(options),
         Command::New(NewTarget::Section(ref options)) => authoring::run(options),
-        Command::New(NewTarget::Page(NewPageArgs {
-            ref name,
-            ref sections,
-            ref dir,
-        })) => new_page(name, sections, dir.as_ref()),
+        Command::New(NewTarget::Page(ref options)) => page_authoring::run(options),
         Command::New(NewTarget::Guide(NewGuideArgs {
             ref name,
             ref title,
@@ -842,34 +839,6 @@ fn authoring_content(dir: Option<&SiteInput>) -> zellij_core::Result<Utf8PathBuf
         return Ok(dir.root().to_owned());
     }
     resolve_content(&select_site(dir)?)
-}
-
-fn new_page(name: &str, sections: &[String], dir: Option<&SiteInput>) -> zellij_core::Result<()> {
-    for section_type in sections {
-        if !zellij_core::schema::is_section_type(section_type) {
-            zellij_core::diagnosticln!("error: no section type called \"{section_type}\"");
-            zellij_core::diagnosticln!("       zel list sections — available section types");
-            std::process::exit(2);
-        }
-    }
-
-    let root = authoring_content(dir)?;
-    let (scaffold, entry) = zellij_scaffold::page(name, sections);
-    let written = scaffold.write_new(&root)?;
-
-    for path in &written {
-        zellij_core::statusln!("✓ {path}");
-    }
-
-    // pages.yaml is rewritten by hand rather than by us: parsing it and
-    // writing it back would lose the comments and the ordering somebody chose,
-    // and this is four lines to paste.
-    zellij_core::reportln!("\n  Add this to pages.yaml:\n");
-    for line in entry.lines() {
-        zellij_core::reportln!("    {line}");
-    }
-
-    Ok(())
 }
 
 fn new_guide(name: &str, title: Option<&str>, dir: Option<&SiteInput>) -> zellij_core::Result<()> {
