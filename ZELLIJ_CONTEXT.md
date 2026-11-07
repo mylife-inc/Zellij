@@ -66,8 +66,9 @@ document-local Sphinx text/image substitutions and inline image layout as
 `4dcb12c`, after all 16 final-head checks passed. Its base-image artifact upload
 recovered on a targeted retry; both post-merge workflows passed. Native site
 wizards merged in PR #96 as `0849faf`, after all 16 final-head checks passed.
-Its post-merge base-image workflow passed; main CI is still running. Current
-work adds an optional native page wizard (`np -i`).
+Both post-merge workflows passed. Native page wizards merged in PR #97 as
+`c10c1e1`, after all 16 final-head checks passed; both post-merge workflows passed.
+Current work adds an optional native app wizard (`na -i`).
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6510,3 +6511,56 @@ remain pending. No local Docker/browser/GUI ran.
 Evidence: `/private/tmp/zellij-page-wizard-{focused,focused-fixed,engine,clippy,docs-final,workspace}.log`.
 App wizards, arbitrary YAML editing, broader imports and live-provider acceptance
 remain separate work; the published rc.1 does not include this feature.
+
+
+## 2026-11-07 — Page wizard merge and app creation follow-up
+
+PR #97 merged as **`c10c1e1f822bfe6649a2f7ef8715137ca9b6b23c`** after all
+16 checks passed on `ad9e7672d3d3720fee1fc4e7227e374f826200e3` in
+[42359044185](https://github.com/mylife-inc/Zellij/actions/runs/42359044185),
+attempt 1. Tested/merged tree: `8ecc554b938d75b959a129e0a1d1222a961b1207`.
+The local suite passed 638 Rust tests (5 existing hosted cases selected separately
+in CI), and CI passed all 427 engine tests. All six native packages, both image
+architectures and the combined manifests passed. The real hosted export rendered
+the wizard page's 23 sections in their selected order. Documentation retained all
+46 original routes, 282 heading IDs, 82 compatibility mappings and 29 byte-identical
+images with no captured browser errors. Both post-merge workflows passed on their
+first attempts: main `42361341195` (16 jobs), base image `42361341102` (13 jobs).
+PR #96's main `42357950211` also completed successfully on its first attempt;
+both of its post-merge workflows are green.
+
+Source **`326c2b3`** adds optional `new app -i` / `na -i`. It asks only for missing
+engine path, content mode/source, display name, dev/start port and optional
+features. Existing hosted content stays referenced in place; the starter choice
+creates docs/zellij inside the new wrapper. Flags skip their questions, numeric
+choices are supported, and invalid answers retry. Standalone --features none
+explicitly selects no optional dependencies. The shared single-choice Prompt
+retains the site wizard's behavior and stderr/quiet semantics.
+
+All planning is read-only. EOF/:q/interruption while answering writes no wrapper,
+and the existing full-plan writer still enforces destination, overlap, symlink
+and collision checks before writes. Explicit configuration and --cwd semantics
+are preserved. No package installation or runtime/server starts during creation;
+the engine must already be built. Existing app creation's nonempty-destination
+error now says to choose another destination instead of suggesting unsupported
+--force. Ordinary flags and generated wrapper templates retain their behavior.
+
+All 12 app-scaffold tests pass on Unix (10 are portable to Windows), including
+both content modes and all feature choices, byte equivalence with flags, inherited
+ports, quiet prompts, Unicode/CRLF, numeric selections, explicit config/cwd,
+cancellation at each question, collisions and symlink preservation. Existing
+alias/site/page/section tests pass (42 focused cases total). One initial expected
+feature-metadata order was corrected to the existing maths/diagrams order; product
+ordering was unchanged. A wizard-generated starter with the real built engine
+passes strict/deep validation without installing dependencies. Warnings-denied
+Clippy, formatting, Node syntax and diff checks pass; strict/deep project docs
+validate 55 routes and 23 examples. The final Rust workspace suite passed all
+646 tests, with 5 existing hosted cases selected separately in CI.
+
+CI's existing native app acceptance now installs and builds wizard-generated
+starter/external wrappers and tests production browser navigation, reload, media
+and search on Linux/macOS/Windows. Final-head CI and merge remain pending. No
+local Docker/browser/GUI, native release or provider mutation ran. Published
+rc.1 predates these wizards; arbitrary YAML editing, broader imports and live
+provider acceptance remain separate work.
+Evidence: `/private/tmp/zellij-app-wizard-{focused-fixed,final-focused,engine,clippy,docs,workspace-final}.log`.
