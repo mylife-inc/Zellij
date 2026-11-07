@@ -1032,3 +1032,367 @@ fn substitution_configuration_stays_literal_and_authored_overrides_are_local() {
     assert!(body.contains("lower / upper. Body paragraph"), "{body}");
     assert!(!body.contains("configured"));
 }
+
+#[test]
+fn literalinclude_preserves_code_and_resolves_nested_blocks_without_asset_copying() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("s");
+    basic(&source);
+    let rst = include_str!("../../../../scripts/fixtures/sphinx-literalinclude.rst");
+    let code =
+        include_str!("../../../../scripts/fixtures/sphinx-literal-code.txt").replace("\r\n", "\n");
+    // Exercise CRLF input on every host, independently of Git checkout settings.
+    let source_code = code.replace('\n', "\r\n");
+    write(&source, "index.rst", rst);
+    write(&source, "snippets/Sample%20.py", &source_code);
+    write(&source, "snippets/Sample .py", "wrong file");
+    for (i, args) in [vec![], vec!["--assets", "skip"], vec!["--layout", "site"]]
+        .iter()
+        .enumerate()
+    {
+        let out = t.path().join(format!("out-{i}"));
+        run(&source, &out, args, 0);
+        let content = if i == 2 {
+            out.join("content")
+        } else {
+            out.clone()
+        };
+        let body = read(&content, "01-guide/index.mdx");
+        assert!(body.contains(&format!("`````text\n{code}`````")), "{body}");
+        assert!(body.contains("```text\nliteral_beta = \"{not_executed()} <script>literal()</script>\"\nliteral_alpha = \"Café 漢字\"\nliteral_beta ="), "{body}");
+        assert!(body.contains("> literal_alpha = \"Café 漢字\""), "{body}");
+        assert!(body.contains("<ul>") && body.contains("<table>"), "{body}");
+        assert!(!body.contains("wrong file"));
+        assert!(
+            !content
+                .join("assets/imported/docs/snippets/Sample%20.py")
+                .exists()
+        );
+    }
+    let dry = t.path().join("dry");
+    run(&source, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+    assert_eq!(read(&source, "snippets/Sample%20.py"), source_code);
+    assert_eq!(read(&source, "index.rst"), rst);
+}
+
+#[test]
+fn literalinclude_paths_are_document_relative_or_source_rooted_and_not_url_decoded() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("s");
+    basic(&source);
+    write(
+        &source,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n\n   nested/page\n",
+    );
+    write(
+        &source,
+        "nested/page.rst",
+        "Page\n====\n\n.. literalinclude:: ../snippets/Café #100%20.py\n\n.. literalinclude:: /snippets/Café #100%20.py\n",
+    );
+    write(
+        &source,
+        "snippets/Café #100%20.py",
+        "exact_literal_filename\n",
+    );
+    // Unpublished documents are parsed, but their file targets are not opened.
+    write(
+        &source,
+        "orphan.rst",
+        "Orphan\n======\n\n.. literalinclude:: missing.py\n",
+    );
+    let out = t.path().join("o");
+    run(&source, &out, &[], 0);
+    assert_eq!(
+        read(&out, "01-guide/nested/page.mdx")
+            .matches("exact_literal_filename")
+            .count(),
+        2
+    );
+}
+
+#[test]
+fn literalinclude_encoding_tabs_and_line_endings_are_explicit() {
+    for (i, (config, options, expected)) in [
+        ("", "", "a\n\tb\nc"),
+        ("source_encoding='utf-8'\n", "", "\u{feff}a\n\tb\nc"),
+        (
+            "source_encoding='utf-8'\n",
+            "   :encoding: utf-8-sig\n   :tab-width: 3\n",
+            "a\n   b\nc",
+        ),
+        ("", "   :encoding: utf-8\n", "\u{feff}a\n\tb\nc"),
+    ]
+    .iter()
+    .enumerate()
+    {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(
+            &s,
+            "conf.py",
+            format!("project='Manual'\nhighlight_language='python'\n{config}"),
+        );
+        write(
+            &s,
+            "index.rst",
+            format!("Home\n====\n\n.. literalinclude:: code.py\n{options}"),
+        );
+        write(&s, "code.py", "\u{feff}a\r\n\tb\rc");
+        let o = t.path().join("o");
+        run(&s, &o, &[], 0);
+        assert!(
+            read(&o, "01-guide/index.mdx").contains(&format!("```python\n{expected}\n```")),
+            "encoding case {i}"
+        );
+    }
+}
+
+#[test]
+fn literalinclude_selection_order_markers_and_dedent_are_preserved() {
+    for (options, expected) in [
+        (":lines: 4,1,3-4,2-", "d\na\nc\nd\nb\nc\nd\n"),
+        (":lines: -2", "a\nb\n"),
+        (":start-after: a\n:end-at: d\n:lines: 2-", "c\nd\n"),
+        (":start-at: b\n:end-before: d", "b\nc\n"),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(
+            &s,
+            "index.rst",
+            format!(
+                "Home\n====\n\n.. literalinclude:: code.py\n   {}\n",
+                options.replace('\n', "\n   ")
+            ),
+        );
+        write(&s, "code.py", "a\nb\nc\nd\n");
+        let o = t.path().join("o");
+        run(&s, &o, &[], 0);
+        assert!(
+            read(&o, "01-guide/index.mdx").contains(&format!("```text\n{expected}```")),
+            "{options}"
+        );
+    }
+    for (options, code, expected) in [
+        (
+            ":start-at: MARK\n:end-before: MARK",
+            "MARK\nkeep\nMARK\ndrop\n",
+            "MARK\nkeep\n",
+        ),
+        (
+            ":dedent:",
+            " \tfirst\n \t  second\n \t\n",
+            "first\n  second\n\n",
+        ),
+        (":dedent: 2", "  café\n    漢字\n\n", "café\n  漢字\n\n"),
+        (":dedent: 0", "  untouched\n", "  untouched\n"),
+        ("", "", "\n"),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(
+            &s,
+            "index.rst",
+            format!(
+                "Home\n====\n\n.. literalinclude:: code.py\n   {}\n",
+                options.replace('\n', "\n   ")
+            ),
+        );
+        write(&s, "code.py", code);
+        let o = t.path().join("o");
+        run(&s, &o, &[], 0);
+        assert!(
+            read(&o, "01-guide/index.mdx").contains(&format!("```text\n{expected}```")),
+            "{options}"
+        );
+    }
+}
+
+#[test]
+fn invalid_literalinclude_options_and_selections_fail_before_writes() {
+    for options in [
+        ":lines: 0",
+        ":lines: 3-1",
+        ":lines: 1,",
+        ":lines: -",
+        ":lines: 1-2-3",
+        ":lines: 999",
+        ":lines: 4-",
+        ":lines: +1",
+        ":lines: 999999999999999999999999",
+        ":start-at: absent",
+        ":end-before: absent",
+        ":start-at: alpha\n:start-after: alpha",
+        ":end-at: beta\n:end-before: beta",
+        ":start-at:",
+        ":end-at:",
+        ":dedent: 1",
+        ":dedent: -1",
+        ":tab-width: 0",
+        ":tab-width: 65",
+        ":encoding: latin1",
+        ":language: js{bad}",
+        ":language:",
+        ":lines: 1\n:lines: 2",
+        ":caption: caption",
+        ":linenos:",
+        ":lineno-start: 4",
+        ":lineno-match:",
+        ":emphasize-lines: 1",
+        ":pyobject: demo",
+        ":diff: other.py",
+        ":prepend: text",
+        ":append: text",
+        ":class: style",
+        ":name: code",
+        ":force:",
+    ] {
+        for args in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]] {
+            let t = tempfile::tempdir().unwrap();
+            let s = t.path().join("s");
+            basic(&s);
+            let rst = format!(
+                "Home\n====\n\n.. literalinclude:: code.py\n   {}\n",
+                options.replace('\n', "\n   ")
+            );
+            write(&s, "index.rst", &rst);
+            write(&s, "code.py", "alpha\nbeta\n");
+            let o = t.path().join("o");
+            let result = run(&s, &o, &args, 2);
+            assert!(!o.exists(), "{options}: {result:?}");
+            assert_eq!(read(&s, "index.rst"), rst);
+        }
+    }
+}
+
+#[test]
+fn literalinclude_rejects_unsafe_missing_excluded_and_nontext_files() {
+    for target in [
+        "../outside.py",
+        "//server/code.py",
+        "C:/code.py",
+        "https://example.test/code.py",
+        "nested\\code.py",
+        "<standard.txt>",
+        "missing.py",
+        "snippets",
+        ".hidden.py",
+        "excluded.py",
+        "EXCLUDED.py",
+        "snippets/CODE.py",
+        "_build/code.py",
+        "templates/code.py",
+        "binary.py",
+        "control.py",
+    ] {
+        for args in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]] {
+            let t = tempfile::tempdir().unwrap();
+            let s = t.path().join("s");
+            basic(&s);
+            write(
+                &s,
+                "conf.py",
+                "project='Manual'\nexclude_patterns=['excluded.py']\ntemplates_path=['templates']\n",
+            );
+            write(
+                &s,
+                "index.rst",
+                format!("Home\n====\n\n.. literalinclude:: {target}\n"),
+            );
+            for file in [
+                ".hidden.py",
+                "excluded.py",
+                "_build/code.py",
+                "templates/code.py",
+                "snippets/code.py",
+            ] {
+                write(&s, file, "literal-private-sentinel");
+            }
+            write(t.path(), "outside.py", "literal-private-sentinel");
+            write(&s, "binary.py", [0xff]);
+            write(&s, "control.py", [0]);
+            let o = t.path().join("o");
+            let result = run(&s, &o, &args, 2);
+            assert!(!o.exists());
+            assert!(
+                !report(&result).contains("literal-private-sentinel"),
+                "{result:?}"
+            );
+        }
+    }
+}
+
+#[test]
+fn literalinclude_limits_bound_files_selection_and_repeated_expansion() {
+    for (code, options, repeats) in [
+        ("x".repeat(8 * 1024 * 1024 + 1), "", 1),
+        ("x\n".repeat(100_001), ":lines: 1-", 1),
+        ("x".repeat(7 * 1024 * 1024), "", 5),
+        ("\t".repeat(1024 * 1024), ":tab-width: 64", 1),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(&s, "code.py", &code);
+        write(
+            &s,
+            "index.rst",
+            format!(
+                "Home\n====\n\n{}",
+                format!(".. literalinclude:: code.py\n   {options}\n\n").repeat(repeats)
+            ),
+        );
+        let o = t.path().join("o");
+        run(&s, &o, &[], 2);
+        assert!(!o.exists());
+    }
+}
+
+#[test]
+fn literalinclude_requires_target_and_no_body_and_does_not_enable_parsed_includes() {
+    for directive in [
+        ".. literalinclude::",
+        ".. literalinclude:: code.py\n\n   body",
+        ".. include:: code.py",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(&s, "code.py", "code\n");
+        write(&s, "index.rst", format!("Home\n====\n\n{directive}\n"));
+        let o = t.path().join("o");
+        run(&s, &o, &[], 2);
+        assert!(!o.exists());
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn literalinclude_rejects_symlinked_files_and_directories() {
+    for directory in [false, true] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(t.path(), "outside/code.py", "literal-private-sentinel");
+        let (from, to, target) = if directory {
+            ("outside", "linked", "linked/code.py")
+        } else {
+            ("outside/code.py", "linked.py", "linked.py")
+        };
+        std::os::unix::fs::symlink(t.path().join(from), s.join(to)).unwrap();
+        write(
+            &s,
+            "index.rst",
+            format!("Home\n====\n\n.. literalinclude:: {target}\n"),
+        );
+        let o = t.path().join("o");
+        let result = run(&s, &o, &[], 2);
+        assert!(!o.exists());
+        assert!(!report(&result).contains("literal-private-sentinel"));
+    }
+}

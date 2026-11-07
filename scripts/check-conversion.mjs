@@ -266,6 +266,7 @@ Welcome
    tables
    lists
    substitutions
+   literalinclude
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -311,6 +312,9 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('tables.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-tables.rst'), 'utf8'));
   await write('lists.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-lists.rst'), 'utf8'));
   await write('substitutions.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-substitutions.rst'), 'utf8'));
+  await write('literalinclude.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-literalinclude.rst'), 'utf8'));
+  const literalCode = await readFile(path.join(repo, 'scripts/fixtures/sphinx-literal-code.txt'), 'utf8');
+  await write('snippets/Sample%20.py', literalCode);
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
   await write('media/logo.svg', asset);
@@ -323,7 +327,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/literalinclude', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
@@ -406,6 +410,26 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     'Highlighted substitution definition must remain literal code');
   }
   assertSubstitutions(rendered.get('/guide/substitutions'), '');
+  function assertLiteralIncludes(html) {
+    const codes = [...html.matchAll(/<pre\b[^>]*>([\s\S]*?)<\/pre>/g)].map(match => match[1]
+      .replace(/<[^>]*>/g, '').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
+      .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
+    assert.equal(codes.length, 5);
+    assert.equal(codes[0].trimEnd(), literalCode.replace(/\r\n?/g, '\n').trimEnd());
+    const alpha = 'literal_alpha = "Café 漢字"';
+    const beta = 'literal_beta = "{not_executed()} <script>literal()</script>"';
+    assert.equal(codes[1].trimEnd(), `${beta}\n${alpha}\n${beta}`);
+    assert.equal(codes[2].trimEnd(), alpha);
+    assert.equal(codes[3].trimEnd(), beta);
+    assert.equal(codes[4].trimEnd(), `${alpha}\n${beta}`);
+    assert(!html.includes('<script>literal()</script>'));
+    assert(!html.includes('href="../missing.md"'));
+  }
+  assertLiteralIncludes(rendered.get('/guide/literalinclude'));
+  const literalPage = site.guidePages.find(p => p.route === '/guide/literalinclude');
+  assert(indexGuidePage(literalPage, headingOptions).some(entry => entry.text.includes('explanatory prose remains searchable')));
+  assert.deepEqual(extractToc(literalPage.body, headingOptions).map(h => h.id), ['selected-excerpt']);
+  await assert.rejects(readFile(path.join(content, 'assets/imported/docs/snippets/Sample%20.py')), {code:'ENOENT'});
   const substitutionPage = site.guidePages.find(p => p.route === '/guide/substitutions');
   assert(indexGuidePage(substitutionPage, headingOptions).some(entry => entry.text.includes('documentation engine')));
 
@@ -429,6 +453,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       ]},
       {kind:'link',label:'Nested instructions',route:'/guide/lists'},
       {kind:'link',label:'Reusable content',route:'/guide/substitutions'},
+      {kind:'link',label:'Referenced examples',route:'/guide/literalinclude'},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -444,6 +469,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assertTables(await readFile(path.join(output, 'guide/tables.html'), 'utf8'), '/products/docs');
     assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
     assertSubstitutions(await readFile(path.join(output, 'guide/substitutions.html'), 'utf8'), '/products/docs');
+    assertLiteralIncludes(await readFile(path.join(output, 'guide/literalinclude.html'), 'utf8'));
+    await assert.rejects(readFile(path.join(output, '_zellij/assets/imported/docs/snippets/Sample%20.py')), {code:'ENOENT'});
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
     for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);
     for (const text of ['id="stable-install"','href="#stable-install"','href="/products/docs/guide#welcome"','href="/products/docs/guide?from=relative#welcome"','API navigation']) assert(reference.includes(text), `Sphinx exported reference missing ${text}`);
@@ -458,5 +485,5 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const { checkImportedTables } = await import('./check-imported-tables.mjs');
     await checkImportedTables(output);
   }
-  console.log('sphinx: reStructuredText navigation, tables, nested lists, substitutions, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, tables, nested lists, substitutions, literalinclude excerpts, references, literal code/HTML, search, headings and assets verified.');
 }

@@ -61,10 +61,10 @@ Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
 and convert a conservative reStructuredText subset without Python or Docutils.
 Supported headings, labels, nested bullet/decimal/alphabetic/Roman lists, code, admonitions, images and rectangular
 grid/simple tables, list tables, inline CSV tables and document-local text/image
-substitutions retain content;
+substitutions and local UTF-8 `literalinclude` excerpts retain content;
 document/section/download references and HTML-builder URLs map to
 hosted guide routes and eligible assets. Unknown executable configuration,
-extensions, MyST, API domains, includes, spanning cells, external CSV sources,
+extensions, MyST, API domains, parsed includes, spanning cells, external CSV sources,
 custom table presentation/escape options, global content transforms and
 custom builders still require manual migration. Unlisted documents are omitted
 and reported. The conversion reference specifies the exact accepted forms.
@@ -658,3 +658,87 @@ pending.
 Sphinx table implementation: **`2b06d934c3cc7d77456298368d930c492dfb3d5d`**. Local evidence above covers
 this source, including the final empty-cell depth guard. Final-head GitHub
 acceptance and merge remain pending.
+
+
+## 2026-11-07 — Structured section merge and Sphinx literal inclusions
+
+PR #99 merged as **`6c01f4a30c9314a03132a8bda2f0fce6bd30cdb4`** after all
+16 checks passed on `a3681ff5623b46253e3b5f73e48cc31c516c47c0` in
+[42402060708](https://github.com/mylife-inc/Zellij/actions/runs/42402060708),
+attempt 1. Tested/merged tree: `cea5d6fda64d9d7743a8c109b67e3135117d8111`.
+Local main and origin/main were equal and clean before this follow-up. Both
+post-merge workflows passed on attempt 1: main `42404134767` (16 jobs), base
+image `42404134783` (13 jobs). The final local suite passed 655 Rust tests
+(5 hosted cases selected separately in CI); CI passed 427 engine tests, all six
+native packages, both image architectures and combined manifests. Documentation
+retained 46 original routes, 282 heading IDs, 82 compatibility mappings and 29
+byte-identical images without captured browser errors. Native rc.1 remains the
+latest published candidate.
+
+Source **`4cbbc7a6d10f4c97aae200dc43dd3122bf8c25f8`** adds Sphinx
+`literalinclude` for local UTF-8 code/text files. The parser records explicit
+include nodes; after navigation selects published documents, a bounded resolver
+reads contained regular files and replaces those nodes with literal code blocks,
+including nested lists/admonitions/table cells. No Python, included RST, remote
+file or source code is executed. Inclusion alone does not publish a raw source
+asset. File paths are document-relative or source-root-relative, with literal
+Unicode/space/percent/hash filenames; hidden, excluded, symlinked and escaping
+paths fail. Unpublished pages do not open their include targets.
+
+Language/encoding, tab stops, start/end markers, ordered one-based line ranges
+and numeric/common-prefix dedent are supported. Filters run in Sphinx order;
+missing markers, out-of-range lines and non-whitespace dedents fail rather than
+silently losing content. UTF-8 BOM handling follows the chosen encoding; line
+endings normalize to LF. Bounds are 8 MiB/file, 32 MiB unique input and expanded
+text, and 100,000 explicitly selected lines. Unsupported options (line numbers,
+captions, pyobject, diff, prepend/append, etc.) fail before writes. Parsed includes,
+MyST, extensions and untitled RST fragments remain unsupported. Sphinx's
+[directive documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-literalinclude)
+and upstream directive source were inspected read-only to check filter semantics.
+
+All 37 Sphinx CLI tests pass on Unix (35 on Windows), including nine new tests
+covering options, selection, nesting, resource bounds, read containment, literal
+content, source immutability and no-output failures in normal/dry-run/assets-skip
+modes. Node-only real-engine acceptance passes all six importer fixtures; the
+expanded Sphinx fixture retains nine routes, five literal blocks, selected code
+text, ordinary prose search, heading anchors and existing assets. The first Node
+run exposed an incorrect test assumption that fenced code is indexed; the test
+now checks prose, consistent with the engine's documented search policy. No
+search behavior changed. CI additionally checks exported HTML, hydration,
+nested DOM structure and reload without executing the included examples.
+
+Warnings-denied workspace Clippy, formatting, Node syntax, actionlint and diff
+checks pass. Strict/deep docs retain 55 routes and 23 examples. The full Rust
+workspace run and final-head CI/merge remain pending. No local Docker/browser/GUI,
+native release, Netlify production or live provider mutation ran. User docs,
+CLI contract/specification/status and this context describe the supported subset.
+Evidence: `/private/tmp/zellij-literalinclude-{focused,engine-final,clippy,docs,workspace}.log`.
+
+
+### Exact filename inventory follow-up
+
+The first complete local Rust run passed 664 tests (5 hosted cases selected
+separately in CI). Review then identified a case-insensitive-filesystem exclusion
+bypass in the initial literalinclude resolver: a differently capitalized target
+could resolve an excluded file. Fix **`e4be0eaca31f4fb07186120337279740b0d8ad5f`**
+requires an exact match in the already-filtered source file inventory, before
+contained-path and bounded-file reads. Regression cases cover both excluded-file
+case aliases and differently capitalized eligible files. The user reference now
+requires exact filename case on every OS. All 37 Sphinx CLI tests pass after the
+fix. Final workspace/engine checks and final-head GitHub CI remain pending.
+
+
+### Final local verification and Windows fixture correction
+
+The complete workspace rerun after the inventory fix passed **664 Rust tests**
+(5 hosted cases selected separately in CI). Final Clippy and Node conversion
+checks also passed; strict/deep docs retain 55 routes and 23 examples. Fixture-only
+commit `766c889` avoids the reserved Windows NUL filename for the control-byte
+case. Run `42412362640` then exposed a Windows assertion expecting raw CRLF
+checkout bytes where conversion intentionally produces LF. Test correction
+**`317e5072200c3102bc001a593e0f4e0fc99b3993`** explicitly writes CRLF on every OS,
+checks normalized output, and checks that source bytes remain untouched. Node
+acceptance normalizes the expected fixture similarly. All 37 Sphinx tests and
+all six importer engine fixtures pass after this correction. No product behavior
+was changed for this test fix. Final-head CI and merge remain pending.
+Evidence: `/private/tmp/zellij-literalinclude-{workspace-final,clippy-final,docs-final,engine-inventory,portable-fixture,crlf,engine-crlf}.log`.

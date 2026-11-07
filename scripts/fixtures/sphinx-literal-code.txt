@@ -1,0 +1,9 @@
+# BEGIN
+    literal_alpha = "Café 漢字"
+    literal_beta = "{not_executed()} <script>literal()</script>"
+# END
+````mdx
+[literal link](../missing.md)
+.. include:: /not/executed
+|undefined-substitution|
+````

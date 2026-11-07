@@ -160,7 +160,23 @@ export async function checkImportedTables(output) {
     assert.equal(substitutionNotes.status(), 200);
     assert.equal(await substitutionNotes.text(), 'Table download bytes.\n');
     await page.waitForURL(notesUrl);
-    assert.deepEqual(errors, [], 'Imported tables, lists and navigation must not cause hydration or browser errors');
+    await page.goto(`${origin}${prefix}/guide/literalinclude`);
+    await page.getByRole('heading', { name: 'Referenced examples', exact: true, level: 1 }).waitFor();
+    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
+    const included = await article.locator('pre').allTextContents();
+    assert.equal(included.length, 5);
+    assert(included[0].includes('[literal link](../missing.md)'));
+    assert(included[0].includes('.. include:: /not/executed'));
+    assert(included[0].includes('|undefined-substitution|'));
+    assert(included[1].includes('literal_beta = "{not_executed()} <script>literal()</script>"\nliteral_alpha = "Café 漢字"\nliteral_beta ='));
+    assert.equal(await article.locator('script, pre a').count(), 0);
+    assert.equal(await article.locator('blockquote pre').count(), 1);
+    assert.equal(await article.locator('li pre').count(), 1);
+    assert.equal(await article.locator('td pre').count(), 1);
+    await page.reload();
+    await page.getByRole('heading', { name: 'Referenced examples', exact: true, level: 1 }).waitFor();
+    assert.deepEqual(await article.locator('pre').allTextContents(), included);
+    assert.deepEqual(errors, [], 'Imported tables, lists, literalinclude and navigation must not cause hydration or browser errors');
     console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, text/image substitutions, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
