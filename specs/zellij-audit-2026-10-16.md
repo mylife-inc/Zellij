@@ -5713,3 +5713,19 @@ contained-path and bounded-file reads. Regression cases cover both excluded-file
 case aliases and differently capitalized eligible files. The user reference now
 requires exact filename case on every OS. All 37 Sphinx CLI tests pass after the
 fix. Final workspace/engine checks and final-head GitHub CI remain pending.
+
+
+### Final local verification and Windows fixture correction
+
+The complete workspace rerun after the inventory fix passed **664 Rust tests**
+(5 hosted cases selected separately in CI). Final Clippy and Node conversion
+checks also passed; strict/deep docs retain 55 routes and 23 examples. Fixture-only
+commit `766c889` avoids the reserved Windows NUL filename for the control-byte
+case. Run `42412362640` then exposed a Windows assertion expecting raw CRLF
+checkout bytes where conversion intentionally produces LF. Test correction
+**`317e5072200c3102bc001a593e0f4e0fc99b3993`** explicitly writes CRLF on every OS,
+checks normalized output, and checks that source bytes remain untouched. Node
+acceptance normalizes the expected fixture similarly. All 37 Sphinx tests and
+all six importer engine fixtures pass after this correction. No product behavior
+was changed for this test fix. Final-head CI and merge remain pending.
+Evidence: `/private/tmp/zellij-literalinclude-{workspace-final,clippy-final,docs-final,engine-inventory,portable-fixture,crlf,engine-crlf}.log`.
