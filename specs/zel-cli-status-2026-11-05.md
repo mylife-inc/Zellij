@@ -742,3 +742,57 @@ acceptance normalizes the expected fixture similarly. All 37 Sphinx tests and
 all six importer engine fixtures pass after this correction. No product behavior
 was changed for this test fix. Final-head CI and merge remain pending.
 Evidence: `/private/tmp/zellij-literalinclude-{workspace-final,clippy-final,docs-final,engine-inventory,portable-fixture,crlf,engine-crlf}.log`.
+
+
+## 2026-11-07 — Literal inclusion closure and search code boundaries
+
+PR #100 merged as **`9fb29c8f5a3abe0804d151cef6d6be710ffa1bc3`** after all
+16 checks passed on `77de5e41ae166974f49677d4eb681b645ab5062d` in
+[42412853970](https://github.com/mylife-inc/Zellij/actions/runs/42412853970),
+attempt 1. Tested/merged tree: `a0e48d25c9c9e90c4074fd463f45afea78e1dfb8`.
+Main and origin/main matched and were clean before this follow-up. Both automatic
+post-merge workflows passed on attempt 1: main `42415654053` (16 jobs) and base
+image `42415653990` (13 jobs). Final-head acceptance included 664 local Rust tests
+(5 hosted cases selected separately in CI), 427 engine tests, all six native
+packages, both image architectures and combined manifests. Sphinx acceptance
+passed 37 CLI tests on Unix and 35 on Windows; real exported code, nested DOM,
+hydration and reload passed. Documentation retained 46 original routes, 282
+heading IDs, 82 compatibility mappings and 29 byte-identical images without
+captured browser errors. Remote state/releases were refreshed; rc.1 remains the
+latest native release. No native tag/publication or production deployment ran.
+
+Source **`f9676f5261781b1fe854fd93aa0185cb7a50d825`** fixes a confirmed MDX search bug: fixed-three-character
+regular expressions could close a longer code fence too early and index example
+text. A four-backtick or four-tilde block containing a three-character fence and
+`fenced_only_sentinel` previously leaked that token into prose search. The initial
+regression run reproduced 18 failures before the implementation changed.
+
+The existing shared MDX/heading parser now records original Markdown code-block
+and inline-code ranges in one full-document parse. Search masks those ranges
+without changing UTF-16 offsets or CR/LF characters, then slices passages using
+the same rendered heading IDs. This handles longer/mixed/unfinished fences,
+quotes/lists/components, inline backtick runs, literal escaped/unmatched markers,
+JSX attributes and optional math parsing without evaluating authored JavaScript.
+Heading labels retain their code text. A section inside a component is never
+reparsed as an incomplete MDX fragment. Standalone `mdxToText` accepts complete
+MDX with optional parser plugins and reports malformed syntax; portable document
+payloads continue through their existing separate indexing path.
+
+The packaged CRLF fixture also exposed a pre-existing guide-loader bug: the
+leading H1 was not removed under CRLF, duplicating the title and shifting repeated
+heading anchors. The same source commit handles LF, CRLF and CR when removing the
+leading title, retaining later headings and literal code unchanged. Loader cases
+and the actual packaged preparation fixture verify stable canonical anchors.
+
+All **453 engine tests** pass (26 more than the baseline), including the 40 search
+cases, shared rendering/heading coverage and three line-ending loader cases.
+All 37 Sphinx CLI tests still pass with the extended fixture. All six Node-only
+importer/rendering fixtures pass; packaged preparation passes with actual bundled
+CLI artifacts, CRLF input and optional math. Engine build verification, workspace
+typechecking, strict/deep docs (55 routes, 23 examples), Node syntax, actionlint
+and diff checks pass. CI additionally reads exported search JSON and exercises
+the real search dialog: prose finds the correct heading, while a code-only token
+returns no results. No local container/browser/GUI was used. User guide, engine
+specification and durable context/status are updated. Final-head CI/merge remain
+pending; broad import/provider/release gaps remain as previously documented.
+Evidence: `/private/tmp/zellij-search-boundaries-{before,focused,engine-final,typecheck-all,build-final,sphinx,conversion,packaged-final,docs-final}.log`.
