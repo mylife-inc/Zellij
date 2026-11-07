@@ -64,8 +64,10 @@ alphabetic/Roman numbering and restored prose list markers as `3f14b99`, after
 all 16 final-head checks passed; both post-merge workflows passed. PR #95 merged
 document-local Sphinx text/image substitutions and inline image layout as
 `4dcb12c`, after all 16 final-head checks passed. Its base-image artifact upload
-recovered on a targeted retry; both post-merge workflows passed. Current work adds
-optional native site-creation wizards (`init -i` / `nd -i`).
+recovered on a targeted retry; both post-merge workflows passed. Native site
+wizards merged in PR #96 as `0849faf`, after all 16 final-head checks passed.
+Its post-merge base-image workflow passed; main CI is still running. Current
+work adds an optional native page wizard (`np -i`).
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6459,3 +6461,52 @@ Evidence: `/private/tmp/zellij-site-wizard-compat-{focused,scaffolds,docs}.log`.
 PR #95's post-merge main run `42351594650` subsequently passed all 16 jobs on
 unchanged `4dcb12c`, so both its post-merge workflows are now green. Its base
 image workflow retained the previously recorded artifact-upload retry.
+
+
+## 2026-11-07 — Site wizard merge and page authoring follow-up
+
+PR #96 merged as **`0849faf348526ef8a27225f89fc01f0e032864ed`** after all
+16 checks passed on `b98811bd894bf5eb82d79f78bba35877167e8870` in
+[42356363457](https://github.com/mylife-inc/Zellij/actions/runs/42356363457),
+attempt 1. Tested/merged tree: `136c390adae14417580ab323d44c778f192d0527`.
+The final local suite passed 630 Rust tests (5 existing hosted cases selected
+separately in CI), and CI passed all 427 engine tests. Hosted literal names
+were restored by `65de2c8`; Windows installer startup was corrected by `4df0d31`.
+All six native packages passed, as did wizard-generated portable browser/no-JS
+acceptance on Linux/macOS/Windows and the 26-route hosted wizard export.
+Documentation retained all 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images with no captured browser errors.
+
+Post-merge base-image run `42357950120` passed all 13 jobs. Main run
+`42357950211` has 14 passing jobs, with Windows portable and CLI acceptance still
+running at this checkpoint; no failures. Native rc.1 remains the latest published
+candidate. No native release or production/provider change was made.
+
+Source **`dd7c625`** adds optional `new page -i` / `np -i`. It asks only for a
+missing name and missing ordered section list, accepting exact catalogue names
+or displayed numbers; Enter selects hero. Unknown/duplicate types retry, while
+invalid supplied selections fail before questions. Ordinary commands keep their
+required name, default hero, templates and printed registration report.
+The shared Prompt stays on stderr, including with quiet; the pages.yaml report
+stays on stdout. EOF/:q/interruption during questions writes no section files.
+The entire writer plan still preflights collisions and containment before writes.
+Authored pages.yaml/menu.yaml remain untouched; manual registration, TODO content
+and placeholder media review are explicit in the docs. No dependency, runtime,
+network or new renderer behavior was introduced.
+
+All 8 focused page-wizard tests pass on Unix (7 portable to Windows), covering
+flag equivalence, ordered references, Unicode/CRLF, numeric choices, defaults,
+aliases, quiet reports, cancellation, late collisions, symlinks and global
+site/config/cwd selection. The 7 existing alias and 10 safe-write cases pass.
+Initial new test fixtures used the nonexistent type `features` instead of
+`feature-grid` and an unsupported custom content-folder setting; corrected to
+the established catalogue and content/ convention before the passing run.
+Node-only engine acceptance validates a wizard page with all 23 types in order,
+checks exact templates and preserves authored registration bytes. CI runs this
+on all three native OSes and checks the ordered section markers in hosted HTML.
+Warnings-denied Clippy, formatting, actionlint, diff checks and strict/deep docs
+(55 routes, 23 examples) pass. Full Rust workspace rerun and final-head CI/merge
+remain pending. No local Docker/browser/GUI ran.
+Evidence: `/private/tmp/zellij-page-wizard-{focused,focused-fixed,engine,clippy,docs-final,workspace}.log`.
+App wizards, arbitrary YAML editing, broader imports and live-provider acceptance
+remain separate work; the published rc.1 does not include this feature.
