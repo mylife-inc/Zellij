@@ -6366,3 +6366,40 @@ base-image jobs (attempt 2), including published-image acceptance. Main run
 `42351594650` has 15 passing jobs and CLI acceptance still running at this
 checkpoint. This was an artifact transport failure; no product fix or relaxed
 assertion was needed. Native rc.1 remains the latest published candidate.
+
+
+## 2026-11-06 — Native site-creation wizard
+
+Source **`b556b88`** adds opt-in `new portable` / `init -i` and `new docs` /
+`nd -i` creation. Native prompts choose name, embedded-catalogue theme, starter
+and a separate hosted guide. Explicit flags skip matching questions; ordinary
+commands retain their defaults and never prompt. Names/themes validate before
+writes, fixing hosted creation's acceptance of invalid values. The shared
+line-oriented prompt remains on stderr, including under quiet; EOF/:q cancels.
+
+A read-only scaffold preflight checks the root/common configuration before
+questions. The final plan checks every destination before writes; cancellation
+with force leaves old content intact. Portable output still has no overwrite
+flag. Existing templates generate the files, with no new dependency, client code,
+installer, network or runtime. Fixed relative next-step suggestions also avoid
+interpolating a destination path into a copied shell command. Docs, shortcuts,
+CLI status and contract describe exact defaults, scope and remaining page/app
+wizard work.
+
+All **629 Rust workspace tests pass** (5 existing hosted-provider cases ignored
+locally and selected in CI), including 8 site-wizard cases on Unix and all prior
+section/starter/alias tests. Tests cover every starter/guide combination, byte
+equivalence with flags, literal Unicode metadata, CRLF and numeric selections,
+invalid answers, quiet prompts, cancellation at every question, force preservation,
+symlink containment and native portable builds without tools on PATH. The initial
+new HTML assertion used `data-theme` instead of the established
+`data-zellij-theme`; corrected to the actual contract before final verification.
+
+Warnings-denied Clippy, formatting, workflow actionlint and script syntax pass.
+Node-only engine checks validate full ordinary/wizard starters with all 23
+section types and exact media; strict/deep project docs retain 55 routes and
+23 examples. CI extends the existing Linux/macOS/Windows fixtures: portable
+wizard starters are built, moved and viewed offline with/without JavaScript,
+and a hosted wizard full starter exports all 26 routes. Final-head CI and merge
+are pending. No local Docker/browser/GUI or live provider mutation ran.
+Evidence: `/private/tmp/zellij-site-wizard-{focused-final,workspace,clippy,engine,docs}.log`.
