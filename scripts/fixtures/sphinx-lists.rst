@@ -25,7 +25,7 @@ Nested instructions
      * .. image:: /media/logo.svg
           :alt: Nested logo
 
-  11. Complete the numbered sequence.
+  #. Complete the numbered sequence.
 
 - Finish the outer sequence.
 -
@@ -71,3 +71,29 @@ Lists in tables
 
          2. Table child **strong**.
          #. Table continuation.
+
+Alphabetic and Roman sequences
+------------------------------
+
+H. Upper alphabetic eight.
+
+   iv) Roman **four** with :ref:`Roman reference <install>`.
+   v) Roman five.
+   vi) Roman six.
+   #) Roman automatic seven.
+
+I. Upper alphabetic nine.
+J. Upper alphabetic ten.
+#. Upper alphabetic automatic eleven.
+
+Lower alphabetic sequence:
+
+(h) Lower alphabetic eight.
+(i) Lower alphabetic nine.
+(j) Lower alphabetic ten.
+
+Upper Roman sequence:
+
+(IV) Upper Roman four.
+(V) Upper Roman five.
+(VI) Upper Roman six.

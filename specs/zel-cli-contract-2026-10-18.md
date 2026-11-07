@@ -2038,3 +2038,25 @@ lists; each list is limited to 10000 items, and decimal values must fit the
 HTML ordered-list range 0–2147483647. Alphabetic/Roman enumeration and other
 unsupported RST constructs remain manual migration work. This source is newer
 than published rc.1; native/hosted CI and release publication remain separate.
+
+
+## 2026-11-06 — Sphinx alphabetic and Roman lists
+
+The list parser now accepts lower/upper alphabetic and canonical Roman
+sequences in all three punctuation forms, with matching automatic enumerators.
+It emits native `<ol start="N" type="a|A|i|I">` attributes so generated content
+retains case and numbering style without custom CSS. Alphabetic values remain
+within 1–26 and Roman values within the browser counter range 1–3999; automatic
+overflow fails before output. Decimal bounds remain unchanged.
+
+The active sequence resolves ambiguous I/V/X/etc. Standalone i/I starts Roman
+one; other single-letter starters are alphabetic, following Docutils. Wrapped
+alphabetic/Roman prose followed by unindented prose is not a list. Changes in
+case, format or sequence and numbering restarts split lists. Explicit markers
+after automatic markers also start a new list, correcting earlier decimal
+behavior. Blank-line, indentation, containment and shared nesting limits remain.
+See the conversion reference for examples and current remaining Sphinx limits.
+
+References: [Docutils enumerated lists](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists),
+[Docutils sequence parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py),
+[browser Roman counter range](https://www.w3.org/TR/css-counter-styles-3/#lower-roman).

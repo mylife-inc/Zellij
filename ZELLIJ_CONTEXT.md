@@ -58,8 +58,10 @@ workflow passed; its post-merge showcase dependency-download timeout recovered
 on a targeted retry of the unchanged commit, leaving all 16 main checks green.
 PR #92 merged Sphinx list/CSV table directives and directive boundary fixes as
 `0c4d79e`, after all 16 final-head checks passed. Both post-merge workflows
-passed. Current work adds nested Sphinx lists and preserves list numbering and
-block content.
+passed. PR #93 merged nested Sphinx lists as `2ed992d`, after all 16
+final-head checks passed; both post-merge workflows passed. Current work adds
+alphabetic and Roman list styles and fixes explicit numbering after automatic
+markers.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6158,3 +6160,20 @@ all browser assertions remain unchanged; no product code changed. Node syntax
 and diff checks pass. No local browser or Docker ran. The initial run did not
 reach the new nested-list browser assertions, so a fresh full final-head CI run
 is required before merge.
+
+
+## 2026-11-06 — Nested-list CI closure
+
+PR #93 merged as **`2ed992d977929ad15509618fcbf163b287139f54`** after
+all 16 checks passed on **`1b29b4a52df87c8ad6663f4f7c506aa87d253bbd`**
+in [42333764306](https://github.com/mylife-inc/Zellij/actions/runs/42333764306),
+attempt 1. The tested and merged tree was
+`42ccffe4af1735815377a5840e2b0cfffde6362f`. Hosted browser acceptance passed
+nested list structure, numbering, literal code, local images, document navigation,
+exact native downloads and hydration/error checks. Documentation preservation
+retained 46 original routes, 282 heading IDs, 82 compatibility mappings and
+29 byte-identical images. All six native packages and both Linux image
+architectures/combined manifests passed. Both post-merge workflows passed on
+unchanged `2ed992d`, attempt 1: main `42336073179` (all 16 jobs) and base-image
+`42336073120` (all 13 jobs). The initial assertion-scope failure and correction
+remain recorded above. Native rc.1 remains the latest published candidate.

@@ -87,8 +87,21 @@ export async function checkImportedTables(output) {
     assert((await inner.locator('blockquote').innerText()).includes('Keep original content.'));
     const nestedLogo = inner.getByRole('img', { name: 'Nested logo', exact: true });
     assert(await nestedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
-    for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol[start="${start}"]`).count(), 1);
+    for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol:not([type])[start="${start}"]`).count(), 1);
     assert.equal(await article.locator('table td ul ol').count(), 1);
+    for (const [type, start, count, style] of [
+      ['a', '8', 3, 'lower-alpha'], ['A', '8', 4, 'upper-alpha'],
+      ['i', '4', 4, 'lower-roman'], ['I', '4', 3, 'upper-roman'],
+    ]) {
+      const sequence = article.locator(`ol[type="${type}"]`);
+      assert.equal(await sequence.count(), 1);
+      assert.equal(await sequence.getAttribute('start'), start);
+      assert.equal(await sequence.locator(':scope > li').count(), count);
+      assert.equal(await sequence.evaluate(list => getComputedStyle(list).listStyleType), style);
+      assert.equal(await sequence.locator(':scope > li').first().evaluate(item => getComputedStyle(item).listStyleType), style);
+    }
+    assert.equal(await article.locator('ol[type="A"] > li > ol[type="i"]').count(), 1);
+    assert.equal(await article.getByRole('link', { name: 'Roman reference', exact: true }).getAttribute('href'), `${prefix}/guide/details#install`);
     await article.getByRole('link', { name: 'Nested details', exact: true }).click();
     await page.waitForURL(`${origin}${prefix}/guide/details`);
     await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
@@ -103,7 +116,7 @@ export async function checkImportedTables(output) {
     assert.equal(await notes.text(), 'Table download bytes.\n');
     await page.waitForURL(notesUrl);
     assert.deepEqual(errors, [], 'Imported tables, lists and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, numbering, local image, document navigation and native asset navigation passed.');
+    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }
