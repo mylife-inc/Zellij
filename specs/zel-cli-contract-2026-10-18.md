@@ -2062,3 +2062,29 @@ See the conversion reference for examples and current remaining Sphinx limits.
 References: [Docutils enumerated lists](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists),
 [Docutils sequence parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py),
 [browser Roman counter range](https://www.w3.org/TR/css-counter-styles-3/#lower-roman).
+
+
+## 2026-11-06 — Sphinx text and image substitutions
+
+The shared importer supports document-scoped `replace` and `image` definitions,
+forward/nested references and named substitution hyperlinks. `replace` requires
+one inline paragraph; image options are limited to alt text and a direct/named
+target. Whitespace-normalized names prefer exact case, then a unique lowercase
+match. Builtin version/release values are literal configuration text and may be
+overridden by an authored definition in the document. No source is evaluated.
+
+Expansion uses the existing link/asset rewrite pipeline. Code and escaped pipes
+remain literal. Published-document definitions are validated even when unused;
+cycles, missing/ambiguous names, nested links, unsupported directives and limits
+fail before output. Each validation/render pass is bounded to depth 16, 10000
+references and 4 MiB processed expansion text. Authored definitions are bounded
+to 1000 per document, 256-byte names and 64 KiB replacement paragraphs.
+Headings/navigation labels, global prolog/epilog transforms, anonymous links,
+date/unicode and unsupported options remain manual migration tasks.
+
+The shared MDX pipeline marks images embedded in prose so they retain inline
+flow, including linked images. Standalone figures remain blocks. This is a
+build-time transformation with no new browser code or package dependency.
+See the conversion reference for examples and the exact supported subset.
+References: [Docutils substitutions](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions),
+[replacement text](https://docutils.sourceforge.io/docs/ref/rst/directives.html#replacement-text).

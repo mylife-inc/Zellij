@@ -122,11 +122,11 @@ zel cv ./sphinx/source --from sphinx --out ./manual --layout site
 The importer reads literal `conf.py` assignments and follows explicit toctrees
 from `root_doc`. It converts a documented reStructuredText subset: headings,
 paragraphs, nested bullet/numbered lists, rectangular tables, code blocks,
-admonitions, images and document/section references. Referenced eligible assets are copied and source links become Zellij
+admonitions, text/image substitutions and document/section references. Referenced eligible assets are copied and source links become Zellij
 guide links. Python, extensions and templates are not executed or installed.
 
 Unlisted documents are reported and not published. Unsupported constructs such
-as autodoc, MyST, spanning tables, includes, substitutions and dynamic
+as autodoc, MyST, spanning tables, includes, global content transforms and dynamic
 configuration require manual migration; conversion fails before writing output.
 Use a separate source copy when simplifying a project for import. Read the
 [Sphinx limits and examples](/cli/convert#sphinx-imports) first. This converter

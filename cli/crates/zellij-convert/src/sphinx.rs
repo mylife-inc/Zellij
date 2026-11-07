@@ -2,6 +2,7 @@
 mod config;
 mod lists;
 mod rst;
+mod substitutions;
 mod table_directives;
 mod tables;
 
@@ -250,11 +251,17 @@ impl Converter for Sphinx {
                 {
                     return Err(invalid(format!("reserved Sphinx document name {rel}")));
                 }
-                let doc = rst::parse(
+                let mut doc = rst::parse(
                     &std::fs::read_to_string(path)?,
                     config::string(&config, "highlight_language")?.unwrap_or("text"),
                 )
                 .map_err(|e| invalid(format!("{rel}: {e}")))?;
+                for key in ["version", "release"] {
+                    let value = config::string(&config, key)?.unwrap_or("");
+                    doc.substitutions
+                        .entry(key.into())
+                        .or_insert(substitutions::literal(value)?);
+                }
                 docs.insert(rel, doc);
             } else if !matches!(
                 rel.extension().unwrap_or("").to_ascii_lowercase().as_str(),
@@ -315,7 +322,11 @@ impl Converter for Sphinx {
                 if kind == "asset" {
                     return Ok(asset_reference(path, text));
                 }
-                let (label, target) = rst::target(text)?;
+                let (label, target) = if kind == "named-target" {
+                    (None, text.to_owned())
+                } else {
+                    rst::target(text)?
+                };
                 if kind == "download" {
                     return rst::link(
                         label.as_deref().unwrap_or(&target),
@@ -353,7 +364,7 @@ impl Converter for Sphinx {
                         &format!("{}#{anchor}", relative_link(path, target)),
                     );
                 }
-                if kind == "link" && label.is_none() {
+                if kind == "named-target" || kind == "link" && label.is_none() {
                     let href = doc.links.get(&rst::name(&target)).ok_or_else(|| {
                         invalid(format!("{path}: unresolved named hyperlink {target:?}"))
                     })?;
@@ -362,13 +373,16 @@ impl Converter for Sphinx {
                             "indirect named hyperlinks require manual migration",
                         ));
                     }
+                    if kind == "named-target" {
+                        return Ok(href.clone());
+                    }
                     return rst::link(&target, href);
                 }
                 rst::link(label.as_deref().unwrap_or(&target), &target)
             };
             documents.insert(
                 path.clone(),
-                rst::render(&doc.blocks, &resolve).map_err(|e| invalid(format!("{path}: {e}")))?,
+                rst::render_document(doc, &resolve).map_err(|e| invalid(format!("{path}: {e}")))?,
             );
             for reason in &doc.notes {
                 unmapped.push(Unmapped {

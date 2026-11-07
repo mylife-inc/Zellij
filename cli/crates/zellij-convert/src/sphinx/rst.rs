@@ -1,6 +1,9 @@
 //! Block-oriented reStructuredText subset. Unsupported constructs fail rather
 //! than being mistaken for Markdown; literal blocks never enter the parser.
-use super::invalid;
+use super::{
+    invalid,
+    substitutions::{self, Definition, Expansion},
+};
 use std::collections::{BTreeMap, BTreeSet};
 use unicode_normalization::UnicodeNormalization;
 use zellij_core::Result;
@@ -50,6 +53,7 @@ pub struct Document {
     pub labels: BTreeMap<String, (String, String)>,
     pub links: BTreeMap<String, String>,
     pub notes: Vec<String>,
+    pub substitutions: substitutions::Definitions,
 }
 pub fn name(text: &str) -> String {
     text.split_whitespace()
@@ -88,7 +92,7 @@ fn plain_title(text: &str) -> Result<String> {
     }
     Ok(text.replace(['*', '`'], ""))
 }
-fn adornment(line: &str) -> Option<char> {
+pub(super) fn adornment(line: &str) -> Option<char> {
     let line = line.trim_end();
     let ch = line.chars().next()?;
     (line.len() >= 2 && ch.is_ascii_punctuation() && line.chars().all(|c| c == ch)).then_some(ch)
@@ -194,6 +198,7 @@ pub fn parse(raw: &str, language: &str) -> Result<Document> {
         labels: BTreeMap::new(),
         links: BTreeMap::new(),
         notes: Vec::new(),
+        substitutions: BTreeMap::new(),
     };
     doc.blocks = blocks(raw, language, &mut doc, 0)?;
     if doc.title.is_empty() {
@@ -350,6 +355,64 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             i += count;
             continue;
         }
+        if let Some(rest) = line.strip_prefix(".. |") {
+            let (key, rest) = rest
+                .split_once('|')
+                .ok_or_else(|| invalid("unclosed substitution definition"))?;
+            let key = substitutions::name(key)?;
+            if !rest.starts_with(char::is_whitespace) {
+                return Err(invalid(
+                    "substitution definition needs whitespace before its directive",
+                ));
+            }
+            let (directive, arg) = rest
+                .trim_start()
+                .split_once("::")
+                .ok_or_else(|| invalid("substitution definition needs an inline directive"))?;
+            let has_options = lines.get(i + 1).is_some_and(|l| !l.trim().is_empty());
+            let (body, next) = indented(&lines, i + 1);
+            let value = match directive {
+                "replace" => {
+                    if !arg.trim().is_empty() && !has_options && !body.is_empty() {
+                        return Err(invalid(
+                            "replace accepts one paragraph; a blank line starts another paragraph",
+                        ));
+                    }
+                    substitutions::replacement(arg.trim(), &body)?
+                }
+                "image" => {
+                    let (opts, content) = if has_options {
+                        options(&body, false)?
+                    } else {
+                        (BTreeMap::new(), body)
+                    };
+                    if arg.trim().is_empty()
+                        || !content.is_empty()
+                        || opts
+                            .keys()
+                            .any(|key| !matches!(key.as_str(), "alt" | "target"))
+                        || opts.get("target").is_some_and(|value| value.is_empty())
+                    {
+                        return Err(invalid(
+                            "image substitutions accept a source and optional alt/target only",
+                        ));
+                    }
+                    Definition::Image {
+                        source: arg.trim().into(),
+                        alt: opts.get("alt").cloned().unwrap_or_else(|| key.clone()),
+                        target: opts.get("target").cloned(),
+                    }
+                }
+                _ => {
+                    return Err(invalid(
+                        "only replace/image substitution directives are supported; date, unicode, raw and extensions require manual migration",
+                    ));
+                }
+            };
+            substitutions::insert(&mut doc.substitutions, key, value)?;
+            i = next;
+            continue;
+        }
         if let Some(rest) = line.strip_prefix(".. ") {
             let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
             let (body, next) = indented(&lines, i + 1);
@@ -386,7 +449,10 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                         let mut toc = Toc::default();
                         for (key, value) in &opts {
                             match key.as_str() {
-                                "caption" if !value.is_empty() => toc.caption = Some(value.clone()),
+                                "caption" if !value.is_empty() => {
+                                    if value.contains('|') { return Err(invalid("toctree captions require plain text; expand substitutions manually")); }
+                                    toc.caption = Some(value.clone());
+                                },
                                 "hidden" if value.is_empty() => toc.hidden = true,
                                 "titlesonly" | "includehidden" if value.is_empty() => {},
                                 "maxdepth" if value.parse::<u32>().is_ok() => doc.notes.push("toctree maxdepth is presentation-only; the full document hierarchy is imported".into()),
@@ -397,7 +463,13 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                             if entry.starts_with(char::is_whitespace) {
                                 return Err(invalid("toctree entries must have equal indentation"));
                             }
-                            toc.entries.push(target(entry)?);
+                            let entry = target(entry)?;
+                            if entry.0.as_ref().is_some_and(|label| label.contains('|')) {
+                                return Err(invalid(
+                                    "toctree titles require plain text; expand substitutions manually",
+                                ));
+                            }
+                            toc.entries.push(entry);
                         }
                         out.push(Block::Toc(toc));
                     }
@@ -487,7 +559,9 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             ));
         }
         if (trimmed.starts_with(':') && !trimmed.contains(":`"))
-            || trimmed.starts_with(['|', '+', '='])
+            || trimmed.starts_with(['+', '='])
+            || trimmed.starts_with("| ")
+            || trimmed == "|"
             || trimmed.starts_with(">>>")
             || adornment(trimmed).is_some()
         {
@@ -553,7 +627,7 @@ pub fn escaped(text: &str) -> String {
             out.push_str("&amp;");
             continue;
         }
-        if "\\[]`*_".contains(c) {
+        if "\\[]`*_|".contains(c) {
             out.push('\\');
         }
         out.push(c);
@@ -561,21 +635,20 @@ pub fn escaped(text: &str) -> String {
     out
 }
 pub fn link(label: &str, url: &str) -> Result<String> {
+    Ok(format!("[{}](<{}>)", escaped(label), destination(url)?))
+}
+pub fn destination(url: &str) -> Result<String> {
     if url.contains(['<', '>', '\n', '\r', '\0']) {
         return Err(invalid("invalid link destination"));
     }
-    Ok(format!(
-        "[{}](<{}>)",
-        escaped(label),
-        url.replace(' ', "%20")
-    ))
+    Ok(url.replace(' ', "%20"))
 }
 fn literal(text: &str) -> String {
     let fence = "`".repeat(text.split(|c| c != '`').map(str::len).max().unwrap_or(0) + 1);
     format!("{fence} {text} {fence}")
 }
-/// Inline tokens are scanned once. Generated links/code are never reparsed.
-pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Result<String> {
+/// Generated markup is never reparsed as reStructuredText.
+pub fn inline(text: &str, context: &mut Expansion<'_>) -> Result<String> {
     let mut out = String::new();
     let mut rest = text;
     while !rest.is_empty() {
@@ -607,7 +680,7 @@ pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Re
                     .split_once('`')
                     .ok_or_else(|| invalid("unclosed role"))?;
                 match role {
-                    "doc" | "ref" | "download" => out.push_str(&resolve(role, body)?),
+                    "doc" | "ref" | "download" => out.push_str(&context.reference(role, body)?),
                     "code" | "literal" | "command" | "file" | "kbd" => out.push_str(&literal(body)),
                     "emphasis" => out.push_str(&format!("*{}*", escaped(body))),
                     "strong" => out.push_str(&format!("**{}**", escaped(body))),
@@ -626,13 +699,61 @@ pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Re
                 .split_once('`')
                 .ok_or_else(|| invalid("unclosed interpreted text"))?;
             if let Some(tail) = tail.strip_prefix('_') {
-                out.push_str(&resolve("link", body)?);
+                out.push_str(&context.reference("link", body)?);
                 rest = tail.strip_prefix('_').unwrap_or(tail);
             } else {
                 return Err(invalid(
                     "default or trailing-role interpreted text requires an explicit supported prefix role",
                 ));
             }
+            continue;
+        }
+        if let Some(tail) = rest.strip_prefix('|') {
+            if let Some((key, tail)) = tail.split_once('|')
+                && !key.is_empty()
+                && key.trim() == key
+            {
+                let before = &text[..text.len() - rest.len()];
+                if before
+                    .chars()
+                    .next_back()
+                    .is_some_and(char::is_alphanumeric)
+                    || tail.chars().next().is_some_and(char::is_alphanumeric)
+                {
+                    return Err(invalid(
+                        "substitutions next to word characters need escaped whitespace",
+                    ));
+                }
+                let expanded = context.expand(key)?;
+                if tail.starts_with("__") {
+                    return Err(invalid(
+                        "anonymous substitution links require manual migration",
+                    ));
+                }
+                if let Some(tail) = tail.strip_prefix('_') {
+                    if tail
+                        .chars()
+                        .next()
+                        .is_some_and(|ch| ch.is_alphanumeric() || ch == '_')
+                    {
+                        return Err(invalid(
+                            "substitution links next to word characters need escaped whitespace",
+                        ));
+                    }
+                    out.push_str(&substitutions::linked(
+                        &expanded,
+                        &context.reference("named-target", key)?,
+                    )?);
+                    rest = tail;
+                } else {
+                    out.push_str(&expanded);
+                    rest = tail;
+                }
+                continue;
+            }
+            // An escaped opening pipe or an unpaired literal pipe is not a reference.
+            out.push_str("\\|");
+            rest = tail;
             continue;
         }
         let length = rest
@@ -647,7 +768,7 @@ pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Re
                         "anonymous reference targets require inline explicit URLs",
                     ));
                 }
-                out.push_str(&resolve("link", label)?);
+                out.push_str(&context.reference("link", label)?);
                 out.push_str(&word[reference.len()..]);
             } else {
                 out.push_str(&word.replace('_', "\\_"));
@@ -656,9 +777,9 @@ pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Re
             continue;
         }
         let ch = rest.chars().next().unwrap();
-        if matches!(ch, '|' | '[' | ']') {
+        if matches!(ch, '[' | ']') {
             return Err(invalid(
-                "substitutions, citations and bracket markup require manual migration",
+                "citations and bracket markup require manual migration",
             ));
         }
         // Markdown-only syntax should remain literal in the destination.
@@ -676,17 +797,30 @@ pub fn inline(text: &str, resolve: &impl Fn(&str, &str) -> Result<String>) -> Re
     Ok(out)
 }
 
-pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>) -> Result<String> {
+pub fn render_document(
+    doc: &Document,
+    resolve: &impl Fn(&str, &str) -> Result<String>,
+) -> Result<String> {
+    let mut validation = Expansion::new(&doc.substitutions, resolve);
+    for key in doc.substitutions.keys() {
+        validation.expand(key)?;
+    }
+    render(
+        &doc.blocks,
+        &mut Expansion::new(&doc.substitutions, resolve),
+    )
+}
+fn render(blocks: &[Block], context: &mut Expansion<'_>) -> Result<String> {
     let mut out = String::new();
     for block in blocks {
         match block {
             Block::Heading { level, text, id } => out.push_str(&format!(
                 "\n{} {} {{#{id}}}\n\n",
                 "#".repeat(*level),
-                inline(text, resolve)?
+                inline(text, context)?
             )),
             Block::Text(text) => {
-                out.push_str(&inline(text, resolve)?);
+                out.push_str(&inline(text, context)?);
                 out.push('\n');
             }
             Block::Code { language, body } => {
@@ -702,11 +836,11 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
             }
             Block::Image { target, alt } => out.push_str(&format!(
                 "\n!{}\n\n",
-                link(alt, &resolve("asset", target)?)?
+                link(alt, &context.reference("asset", target)?)?
             )),
             Block::Note { title, body } => {
-                out.push_str(&format!("\n> **{}**\n>\n", escaped(title)));
-                for line in render(body, resolve)?.lines() {
+                out.push_str(&format!("\n> **{}**\n>\n", inline(title, context)?));
+                for line in render(body, context)?.lines() {
                     out.push_str(&format!("> {line}\n"));
                 }
                 out.push('\n');
@@ -725,7 +859,7 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                     "ul"
                 };
                 for item in items {
-                    out.push_str(&format!("<li>\n\n{}\n</li>\n", render(item, resolve)?));
+                    out.push_str(&format!("<li>\n\n{}\n</li>\n", render(item, context)?));
                 }
                 out.push_str(&format!("</{tag}>\n\n"));
             }
@@ -738,7 +872,7 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                         .as_ref()
                         .map(|label| format!("{label} <{target}>"))
                         .unwrap_or(target.clone());
-                    out.push_str(&format!("- {}\n", resolve("toc", &text)?));
+                    out.push_str(&format!("- {}\n", context.reference("toc", &text)?));
                 }
                 out.push('\n');
             }
@@ -753,7 +887,7 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                 if let Some(caption) = caption {
                     out.push_str(&format!(
                         "<caption>\n\n{}\n\n</caption>\n",
-                        inline(caption, resolve)?
+                        inline(caption, context)?
                     ));
                 }
                 if *headers > 0 {
@@ -776,7 +910,7 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                         };
                         out.push_str(&format!(
                             "<{tag}{scope}>\n\n{}\n</{tag}>\n",
-                            render(cell, resolve)?
+                            render(cell, context)?
                         ));
                     }
                     out.push_str("</tr>\n");

@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm';
 import type { Pluggable } from 'unified';
 
 import { rehypeDiagrams } from './rehype-mermaid';
+import { rehypeInlineImages } from './rehype-inline-images';
 
 import { loadMaths } from './maths';
 import { featureEnabled } from '../../feature-config.cjs';
@@ -71,6 +72,7 @@ export async function mdxOptions() {
       remarkPlugins: [remarkGfm, ...remarkMaths!] as Pluggable[],
       rehypePlugins: [
         rehypeSlug,
+        rehypeInlineImages,
         [rehypeDiagrams, { mermaid: featureEnabled('diagrams') }],
         ...rehypeMaths!,
         [

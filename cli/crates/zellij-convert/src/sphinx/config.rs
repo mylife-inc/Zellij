@@ -261,7 +261,7 @@ pub fn validate(v: &Value) -> Result<()> {
                 | "nitpicky"
         ) {
             return Err(invalid(format!(
-                "unsupported config setting {key}; content transforms, custom routing, substitutions and extensions require manual migration"
+                "unsupported config setting {key}; global content transforms, custom routing and extensions require manual migration"
             )));
         }
     }

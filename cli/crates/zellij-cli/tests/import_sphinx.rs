@@ -649,7 +649,6 @@ fn unsupported_rst_fails_before_any_output_without_interpreting_literal_code() {
         ".. toctree::\n   :glob:\n\n   *",
         ".. toctree::\n   :numbered:\n\n   self",
         ".. image:: logo.svg\n   :width: 20",
-        ".. |replace| replace:: secret",
         ":orphan:",
         ":py:func:`run`",
         "|substitution|",
@@ -866,4 +865,170 @@ fn symlinked_configs_documents_and_assets_are_rejected() {
         run(&s, &o, &[], 2);
         assert!(!o.exists());
     }
+}
+
+#[test]
+fn substitutions_preserve_forward_references_inline_markup_images_links_and_scope() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("s");
+    let out = t.path().join("o");
+    basic(&source);
+    write(
+        &source,
+        "conf.py",
+        "project='Manual'\nversion='2.4'\nrelease='2.4.1'\n",
+    );
+    let fixture = include_str!("../../../../scripts/fixtures/sphinx-substitutions.rst");
+    write(
+        &source,
+        "index.rst",
+        format!("{fixture}\n.. toctree::\n\n   details\n"),
+    );
+    write(
+        &source,
+        "details.rst",
+        ".. _install:\n\nInstallation\n============\n\n|Product| is local.\n\n.. |Product| replace:: Different product\n",
+    );
+    write(&source, "media/logo.svg", "<svg>substitution image</svg>");
+    write(&source, "notes.txt", "Substitution download bytes.\n");
+    run(&source, &out, &[], 0);
+    let body = read(&out, "01-guide/index.mdx");
+    for text in [
+        "**Zellij** is the **Zellij** documentation engine.",
+        "[*Read* the guide](</guide/details#install>)",
+        "[![Substitution logo](</_zellij/assets/imported/docs/media/logo.svg>)](</guide/details#install>)",
+        "The release is 2\\.4\\.1 (2\\.4).",
+        "[Substituted section](</guide/details#install>)",
+        "[Substituted notes](</_zellij/assets/imported/docs/notes.txt>)",
+        "|undefined-in-code|",
+        ".. |ignored| replace:: not a definition",
+        "` |Product| `",
+        "**Zellij** features",
+        "<td>",
+    ] {
+        assert!(body.contains(text), "{text}: {body}");
+    }
+    assert_eq!(
+        read(&out, "assets/imported/docs/media/logo.svg"),
+        "<svg>substitution image</svg>"
+    );
+    assert_eq!(
+        read(&out, "assets/imported/docs/notes.txt"),
+        "Substitution download bytes.\n"
+    );
+    assert!(read(&out, "01-guide/details.mdx").contains("Different product is local."));
+    assert!(read(&source, "index.rst").starts_with(fixture));
+    let dry = t.path().join("dry");
+    run(&source, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+    let skip = t.path().join("skip");
+    run(&source, &skip, &["--assets", "skip"], 0);
+    assert!(!skip.join("assets/imported").exists());
+}
+
+#[test]
+fn invalid_substitutions_fail_before_output_even_when_unused() {
+    for text in [
+        "|missing|",
+        ".. |a| replace:: |a|",
+        ".. |a| replace:: |b|\n.. |b| replace:: |a|",
+        ".. |same| replace:: one\n.. |same| replace:: two",
+        ".. |a  b| replace:: one\n.. |a b| replace:: two",
+        ".. | bad| replace:: text",
+        ".. |a|replace:: text",
+        ".. |a| replace::",
+        ".. |a| replace:: first\n\n   second paragraph",
+        ".. toctree::\n   :caption: |a|\n\n   self\n\n.. |a| replace:: title",
+        ".. toctree::\n\n   |a| <self>\n\n.. |a| replace:: title",
+        ".. |a| replace:: - block list",
+        ".. |a| replace:: .. include:: private",
+        ".. |a| replace:: text\n   :trim:",
+        ".. |a| date::",
+        ".. |a| unicode:: 0x20",
+        ".. |a| raw:: html\n\n   <script>bad</script>",
+        ".. |a| image:: logo.svg\n   :width: 20",
+        ".. |a| image:: logo.svg\n   :target:",
+        ".. |a| image:: logo.svg\n\n   unwanted body",
+        "|CASE|\n\n.. |Case| replace:: first\n.. |case| replace:: second",
+        "|a|__\n\n.. |a| replace:: anonymous",
+        "|a|_\n\n.. |a| replace:: `nested <https://example.com>`_\n.. _a: https://example.net",
+        "word|a|\n\n.. |a| replace:: adjacent",
+        "|a|word\n\n.. |a| replace:: adjacent",
+        "|a|_word\n\n.. |a| replace:: adjacent\n.. _a: https://example.com",
+        "|a|\n====\n\n.. |a| replace:: complex heading",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("s");
+        let out = t.path().join("o");
+        basic(&source);
+        let raw = format!("Home\n====\n\n{text}\n");
+        write(&source, "index.rst", &raw);
+        run(&source, &out, &[], 2);
+        assert!(!out.exists(), "{text}");
+        assert_eq!(read(&source, "index.rst"), raw);
+    }
+}
+
+#[test]
+fn substitution_assets_enforce_containment_in_copy_skip_and_dry_runs() {
+    for definition in [
+        "image:: ../secret",
+        "replace:: :download:`secret <../secret>`",
+    ] {
+        for args in [vec![], vec!["--assets", "skip"], vec!["--dry-run"]] {
+            let t = tempfile::tempdir().unwrap();
+            let source = t.path().join("s");
+            let out = t.path().join("o");
+            basic(&source);
+            write(t.path(), "secret", "substitution-private-sentinel");
+            write(
+                &source,
+                "index.rst",
+                format!(
+                    "Home\n====\n\n|outer|\n\n.. |outer| replace:: |inner|\n.. |inner| {definition}\n"
+                ),
+            );
+            let result = run(&source, &out, &args, 2);
+            assert!(!out.exists());
+            assert!(report(&result).contains("escapes"), "{result:?}");
+            assert!(!report(&result).contains("substitution-private-sentinel"));
+        }
+    }
+}
+
+#[test]
+fn substitution_configuration_stays_literal_and_authored_overrides_are_local() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("s");
+    let out = t.path().join("o");
+    basic(&source);
+    write(
+        &source,
+        "conf.py",
+        "project='Manual'\nversion='1. |missing| **plain** <tag>'\nrelease='configured'\n",
+    );
+    write(
+        &source,
+        "index.rst",
+        concat!(
+            "Home\n====\n\n|VERSION|\n\n|release|. |Mixed name| / |MIXED NAME|.\n\n",
+            "|x| / |X|. |body|\n\n",
+            ".. |release| replace:: Authored release\n",
+            ".. |Mixed   name| replace:: Wrapped\n   continuation\n",
+            ".. |x| replace:: lower\n.. |X| replace:: upper\n",
+            ".. |body| replace::\n\n   Body paragraph\n",
+        ),
+    );
+    run(&source, &out, &[], 0);
+    let body = read(&out, "01-guide/index.mdx");
+    assert!(
+        body.contains("1\\. \\|missing\\| \\*\\*plain\\*\\* &lt;tag&gt;"),
+        "{body}"
+    );
+    assert!(
+        body.contains("Authored release. Wrapped continuation / Wrapped continuation."),
+        "{body}"
+    );
+    assert!(body.contains("lower / upper. Body paragraph"), "{body}");
+    assert!(!body.contains("configured"));
 }

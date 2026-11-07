@@ -305,6 +305,10 @@
   margin-top: 1.25rem;
 }
 
+.zellij-prose img.zellij-inline-image {
+  display: inline;
+}
+
 /*
  * Scoped with a hole in it, because a `<SectionPreview>` renders a real section
  * inside this prose. These rules select bare elements, so they outrank the
