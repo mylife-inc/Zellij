@@ -6675,3 +6675,16 @@ workspace run and final-head CI/merge remain pending. No local Docker/browser/GU
 native release, Netlify production or live provider mutation ran. User docs,
 CLI contract/specification/status and this context describe the supported subset.
 Evidence: `/private/tmp/zellij-literalinclude-{focused,engine-final,clippy,docs,workspace}.log`.
+
+
+### Exact filename inventory follow-up
+
+The first complete local Rust run passed 664 tests (5 hosted cases selected
+separately in CI). Review then identified a case-insensitive-filesystem exclusion
+bypass in the initial literalinclude resolver: a differently capitalized target
+could resolve an excluded file. Fix **`e4be0eaca31f4fb07186120337279740b0d8ad5f`**
+requires an exact match in the already-filtered source file inventory, before
+contained-path and bounded-file reads. Regression cases cover both excluded-file
+case aliases and differently capitalized eligible files. The user reference now
+requires exact filename case on every OS. All 37 Sphinx CLI tests pass after the
+fix. Final workspace/engine checks and final-head GitHub CI remain pending.
