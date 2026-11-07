@@ -470,7 +470,7 @@ jobs:
           node scripts/check-section-templates.mjs cli/target/debug/zel "$work/content"
           cli/target/debug/zel build "$work/content" --out "$work/site"
           test -s "$work/site/index.html"
-          node --input-type=module - "$work/site/wizard.html" <<'NODE'
+          node --input-type=module - "$work/site/wizard.html" "$work/site/structured.html" <<'NODE'
           import assert from 'node:assert/strict';
           import { readFileSync } from 'node:fs';
           const types = JSON.parse(readFileSync('cli/crates/zellij-core/generated/schema.json')).sectionTypes.slice().reverse();
@@ -478,6 +478,13 @@ jobs:
           const rendered = [...html.matchAll(/data-zellij-section="([^"]+)"/g)].map(match => match[1]);
           assert.deepEqual(rendered, types, 'Wizard section order changed in exported HTML');
           console.log('Wizard page exports all 23 sections in the selected order.');
+          const structured = readFileSync(process.argv[3], 'utf8');
+          assert.match(structured, /Structured authoring 日本/);
+          assert.match(structured, /id="structured-demo"/);
+          assert.match(structured, /href="#structured-demo"/);
+          assert.match(structured, /Read structured content/);
+          assert(!structured.includes('Old label'));
+          console.log('Structured section values, scalar refinements and optional-field removal survive hosted export.');
           NODE
           for type in $(node -p "require('./cli/crates/zellij-core/generated/schema.json').sectionTypes.filter(t => t !== 'hero').join(' ')"); do
             test -s "$work/site/$type.html"

@@ -45,6 +45,11 @@ try {
       else if (typeof entry === 'string') assert.equal(entry, text);
     } };
     compare(authored);
+    const jsonFields = Object.entries(authored).filter(([key]) => key !== 'type')
+      .flatMap(([key, value]) => ['--set-json', `${key}=${JSON.stringify(value)}`]);
+    const structured = YAML.parse(execute(kind, jsonFields));
+    assert.deepEqual(structured, authored, `${kind}: JSON replacement changed the supplied values`);
+    getSection(kind).schema.parse(structured);
   }
   for (const [kind, args] of [
     ['hero', ['--set', 'background.gradient.0=accent', '--set', 'background.gradient.1=surface', '--count', 'cta=2', '--set', 'cta.1.label=Read']],
@@ -54,10 +59,17 @@ try {
     ['cta-banner', ['--count', 'cta=2', '--set', 'cta.1.label=Read']],
     ['pricing-table', ['--tiers', '3', '--set', 'tiers.1.name=Team', '--highlight', 'Team']],
   ]) getSection(kind).schema.parse(YAML.parse(execute(kind, args)));
+  const refined = YAML.parse(execute('hero', [
+    '--set-json', 'cta=[{"label":"Old","href":"/guide","style":"ghost"}]',
+    '--set', 'cta.0.label=Read 日本', '--unset', 'cta.0.style',
+    '--set-json', 'background={"gradient":["accent","surface"]}',
+  ]));
+  assert.deepEqual(refined.cta, [{ label: 'Read 日本', href: '/guide' }]);
+  getSection('hero').schema.parse(refined);
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 23 authored section types, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 23 authored section types, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

@@ -41,6 +41,18 @@ for (const type of selected) assert.equal(
   schema.sectionTemplates[type],
 );
 pages.push(entry); // Apply the report explicitly, as the author would.
+// Exercise complete object/list input through a real hosted export too.
+const structuredFile = path.join(content, 'sections', 'structured.yaml');
+execFileSync(path.resolve(binary), ['ns', 'hero', '--out', structuredFile,
+  '--set', 'headline=Structured authoring 日本', '--set', 'id=structured-demo',
+  '--set-json', 'background={"gradient":["accent","surface"]}',
+  '--set-json', 'cta=[{"label":"Old label","href":"#structured-demo","style":"ghost"}]',
+  '--set', 'cta.0.label=Read structured content', '--unset', 'cta.0.style',
+], { stdio: 'pipe' });
+const structured = parse(await readFile(structuredFile, 'utf8'));
+assert.deepEqual(structured.cta, [{ label: 'Read structured content', href: '#structured-demo' }]);
+assert.deepEqual(structured.background, { gradient: ['accent', 'surface'] });
+pages.push({ name: 'structured', title: 'Structured fields', sections: ['structured'] });
 await writeFile(path.join(content, 'site.yaml'), stringify({ name: 'Section templates', home: 'hero', motion: 'none' }));
 await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 // Media templates deliberately name replaceable authored assets. Supply real
@@ -48,4 +60,4 @@ await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 await copyFile(path.join(repo, 'examples/showcase/content/assets/logo.svg'), path.join(content, 'assets/replace-me.svg'));
 await copyFile(path.join(repo, 'scripts/fixtures/template.mp4'), path.join(content, 'assets/replace-me.mp4'));
 execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
-console.log(`Validated ${schema.sectionTypes.length} templates and a wizard page with all ordered section references; authored registration stayed unchanged.`);
+console.log(`Validated ${schema.sectionTypes.length} templates, a wizard page with all ordered section references and a structured-field page; authored registration stayed unchanged.`);
