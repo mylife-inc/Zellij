@@ -89,18 +89,26 @@ export async function checkImportedTables(output) {
     assert(await nestedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
     for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol:not([type])[start="${start}"]`).count(), 1);
     assert.equal(await article.locator('table td ul ol').count(), 1);
+    // HTML type attribute selectors match case-insensitively. Read exact DOM
+    // values so a/A and i/I remain distinct in these assertions.
+    const sequences = await article.locator('ol[type]').evaluateAll(lists => lists.map(list => ({
+      type: list.getAttribute('type'),
+      start: list.getAttribute('start'),
+      count: [...list.children].filter(child => child.tagName === 'LI').length,
+      style: getComputedStyle(list).listStyleType,
+      itemStyle: getComputedStyle(list.querySelector(':scope > li')).listStyleType,
+      parentType: list.parentElement.tagName === 'LI' && list.parentElement.parentElement.tagName === 'OL'
+        ? list.parentElement.parentElement.getAttribute('type') : null,
+    })));
+    assert.equal(sequences.length, 4);
     for (const [type, start, count, style] of [
       ['a', '8', 3, 'lower-alpha'], ['A', '8', 4, 'upper-alpha'],
       ['i', '4', 4, 'lower-roman'], ['I', '4', 3, 'upper-roman'],
     ]) {
-      const sequence = article.locator(`ol[type="${type}"]`);
-      assert.equal(await sequence.count(), 1);
-      assert.equal(await sequence.getAttribute('start'), start);
-      assert.equal(await sequence.locator(':scope > li').count(), count);
-      assert.equal(await sequence.evaluate(list => getComputedStyle(list).listStyleType), style);
-      assert.equal(await sequence.locator(':scope > li').first().evaluate(item => getComputedStyle(item).listStyleType), style);
+      const matching = sequences.filter(sequence => sequence.type === type);
+      assert.equal(matching.length, 1);
+      assert.deepEqual(matching[0], { type, start, count, style, itemStyle: style, parentType: type === 'i' ? 'A' : null });
     }
-    assert.equal(await article.locator('ol[type="A"] > li > ol[type="i"]').count(), 1);
     assert.equal(await article.getByRole('link', { name: 'Roman reference', exact: true }).getAttribute('href'), `${prefix}/guide/details#install`);
     await article.getByRole('link', { name: 'Nested details', exact: true }).click();
     await page.waitForURL(`${origin}${prefix}/guide/details`);
