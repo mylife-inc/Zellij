@@ -6203,8 +6203,9 @@ tests**, warnings-denied workspace Clippy, formatting, strict/deep documentation
 validation (55 routes, 23 examples) and Node-only rendering/search for all six
 importers. A fixture heading underline initially failed validation; the fixture
 was corrected and rerun successfully. The final conversion-notice wording also
-passed the 24 Sphinx CLI cases. Full workspace verification is running;
-final-head hosted/native CI and merge remain pending.
+passed the 24 Sphinx CLI cases. Full workspace verification passed **612 tests**,
+with five existing hosted-provider fixtures reserved for CI. Final-head
+hosted/native CI and merge remain pending.
 
 The shared native/render/browser fixture now contains nine ordered lists,
 including all four letter/Roman styles. CI additionally checks computed browser
