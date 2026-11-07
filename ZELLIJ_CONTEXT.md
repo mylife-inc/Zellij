@@ -54,9 +54,10 @@ PR #90 merged site/configuration doctor diagnostics and JSON reports as
 `e673306`, after all 16 final-head checks passed. Both post-merge workflows
 passed. PR #91 merged rectangular Sphinx tables and fixed imported download
 navigation as `6b3b4b4`, after all 16 final-head checks passed. Its base-image
-workflow passed; the post-merge showcase job timed out downloading browser
-dependencies and is being retried on the unchanged commit. Current work adds
-Sphinx list-table and inline CSV table directives.
+workflow passed; its post-merge showcase dependency-download timeout recovered
+on a targeted retry of the unchanged commit, leaving all 16 main checks green.
+Current work adds Sphinx list-table and inline CSV table directives and fixes
+directive option/content separation.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6057,3 +6058,35 @@ deep checks and searchable-cell assertions across all six converters pass.
 Evidence: `/private/tmp/zellij-directives-{workspace,clippy,import,unit,docs,search}.log`.
 No local Docker/browser or live provider operation ran. Final-head CI and merge
 remain pending; main's unchanged-head showcase retry is still running.
+
+
+### 2026-11-06 — Directive boundaries and prior main-CI closure
+
+PR #91 main run `42319859257`, attempt 2, now has all 16 jobs successful on
+unchanged `6b3b4b4`. Retried showcase job `128249568949` passed. This closes
+the earlier dependency-download timeout without a source change; the original
+failure and its limited verification are retained above.
+
+Review of the new Sphinx directive parser found that leading blank lines were
+being discarded before option parsing. A code block beginning with `:header:`
+could therefore be rejected as if it contained directive options. CSV header
+continuations could also consume the separator and misclassify following data.
+Fix **`6b695697e7b95c476225a29e8aca079d64f6dd6d`** retains that boundary,
+requires a blank line between options and content, and rejects unsupported
+multiline table captions instead of silently importing them as CSV rows.
+
+Regression coverage checks literal option/include-looking code, multiline CSV
+headers followed by inline roles, missing separators and multiline captions.
+The shared native/rendered/browser fixture includes the literal field text.
+All 19 Sphinx CLI cases and 75 converter tests pass, as do warnings-denied
+Clippy, formatting, strict/deep docs (55 routes, 23 examples), script syntax
+and Node-only rendering/search checks for all six importers. The final complete
+Rust workspace suite passed **601 tests**, with five existing hosted fixtures
+reserved for CI. Fresh final-head CI and merge remain pending.
+
+Evidence: `/private/tmp/zellij-directives-final-{import,convert,clippy,docs}.log`
+and `/private/tmp/zellij-directives-exact-{workspace,render}.log`. No local Docker/browser
+or production/provider mutation ran. PR #92's earlier CI head does not validate
+this follow-up; final-head CI is required before merge.
+
+The option/content distinction follows the [Docutils directive block parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py).
