@@ -21,3 +21,20 @@ it('renders imported Markdown images beneath the site basePath, preserving exter
   expect(html).toContain('alt="Local diagram"');
   expect(html).toContain('src="https://example.com/a.png"');
 }, 30_000);
+
+it.each(['', '/products/docs'])('renders public asset links under basePath %j with encoded filenames, queries and fragments intact', async (basePath) => {
+  const site = await loadSite(new FolderContentSource({
+    contentDir: path.resolve('../../../examples/showcase/content'),
+    basePath,
+  }));
+  const { content } = await compileMDX({
+    source: '[Notes](/_zellij/assets/imported/docs/a%20b.txt?raw=1#part)\n\n[Page](/guide/tables)\n\n[Section](#part)\n\n[Remote](https://example.com/notes.txt)',
+    components: mdxComponents(site),
+    options: await mdxOptions(),
+  });
+  const html = renderToStaticMarkup(content);
+  expect(html).toContain(`href="${basePath}/_zellij/assets/imported/docs/a%20b.txt?raw=1#part"`);
+  expect(html).toContain('href="/guide/tables"');
+  expect(html).toContain('href="#part"');
+  expect(html).toContain('href="https://example.com/notes.txt" target="_blank" rel="noreferrer noopener"');
+}, 30_000);

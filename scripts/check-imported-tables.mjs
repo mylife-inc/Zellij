@@ -59,8 +59,18 @@ export async function checkImportedTables(output) {
     await article.locator('table').first().getByRole('link', { name: 'Details', exact: true }).click();
     await page.waitForURL(`${origin}${prefix}/guide/details`);
     await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
+    await page.goBack();
+    await article.locator('table').first().waitFor();
+    const notesUrl = `${origin}${prefix}/_zellij/assets/imported/docs/notes.txt`;
+    const [notes] = await Promise.all([
+      page.waitForResponse(response => response.url() === notesUrl && response.request().isNavigationRequest()),
+      article.getByRole('link', { name: 'Notes', exact: true }).click(),
+    ]);
+    assert.equal(notes.status(), 200);
+    assert.equal(await notes.text(), 'Table download bytes.\n');
+    await page.waitForURL(notesUrl);
     assert.deepEqual(errors, [], 'Imported tables and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, local image and document navigation passed.');
+    console.log('Sphinx tables: browser hydration, semantic cells, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }

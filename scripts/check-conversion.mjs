@@ -169,7 +169,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     assert.equal(rendered.get(reference.route).split(`id="${id}"`).length - 1, 1, `Unique rendered ID ${id}`);
   }
   assert(home.includes('src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"'));
-  assert(home.includes('href="/_zellij/assets/imported/docs/media/Q3%20Report.pdf"'));
+  assert(home.includes('href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"'));
   assert.deepEqual(await readFile(path.join(content, 'assets/imported/docs/media/Q3 Report.pdf')), pdf);
   if (format === 'jekyll') {
     const extra = rendered.get('/guide/reference/extra');
@@ -326,11 +326,11 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     rendered.set(page.route, renderToStaticMarkup(result.content));
   }
   const home = rendered.get('/guide');
-  for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
+  for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
   assert(!home.includes('<script>') && !home.includes('<h1'));
   assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));
   assert(home.includes('a`{literal_code}') && !home.includes('a`\\{literal_code\\}'));
-  assert(home.includes('href="/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
+  assert(home.includes('href="/products/docs/_zellij/assets/imported/docs/media/Report%2520.pdf"'));
   assert(home.includes('src="/products/docs/_zellij/assets/imported/docs/media/chart%2520.svg"'));
   const page = site.guidePages.find(p => p.route === '/guide/setup/api-reference');
   const html = rendered.get(page.route);
@@ -348,7 +348,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       'First line extends beyond the border.', 'Continuation with <strong>strong</strong> text.',
       'Empty first cell.', 'No invented header.',
       `href="${prefix}/guide/details"`, `href="${prefix}/guide/details#install"`,
-      `href="${prefix}/_zellij/assets/imported/docs/notes.txt"`,
+      'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
       'alt="Table logo"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg',
     ]) assert(html.includes(text), `Sphinx table missing ${text}`);
     assert(!html.includes('<script>literal</script>'));

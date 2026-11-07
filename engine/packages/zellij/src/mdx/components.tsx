@@ -10,14 +10,18 @@ import { Screenshot } from './screenshot';
 import { SectionPreview, type SectionPreviewProps } from './section-preview';
 import { Step, Steps } from './steps';
 import { CodeGroup, Tab, Tabs } from './tabs';
-import { isExternal } from '../content/paths';
+import { ASSET_PUBLIC_PREFIX, isExternal, withBasePath } from '../content/paths';
 import { publicAssetHref } from '../content/asset-href';
 import type { Site } from '../content/site';
 import { ZellijContentError } from '../errors';
 
-/** Internal links route through next/link so they get basePath and prefetching. */
-function MdxLink({ href, children, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement>) {
+/** Page links use Next navigation; public assets must be opened by the browser. */
+function MdxLink({ href, children, basePath, ...rest }: AnchorHTMLAttributes<HTMLAnchorElement> & { basePath: string }) {
   if (!href) return <a {...rest}>{children}</a>;
+
+  if (href.startsWith(`${ASSET_PUBLIC_PREFIX}/`)) {
+    return <a href={withBasePath(href, basePath)} {...rest}>{children}</a>;
+  }
 
   if (isExternal(href) || href.startsWith('#')) {
     const externalProps = isExternal(href)
@@ -66,7 +70,7 @@ function heading(Tag: 'h2' | 'h3' | 'h4') {
 export function mdxComponents(site?: Site) {
   const basePath = site?.config.basePath ?? '';
   return {
-    a: MdxLink,
+    a: (props: AnchorHTMLAttributes<HTMLAnchorElement>) => <MdxLink {...props} basePath={basePath} />,
     // Markdown images use ordinary <img>, so Next cannot add basePath for
     // them. Fingerprint imported public asset URLs too, so a reload cannot
     // reuse a browser-cached image after preparation changes its bytes.
