@@ -5267,3 +5267,28 @@ exactly four typed lists. Product output and Rust code are unchanged. Node
 syntax and diff checks pass. The earlier run did not reach the new computed
 style assertions, so fresh final-head CI remains required. No local browser
 or Docker ran. The 612-test Rust result remains valid for unchanged Rust code.
+
+
+Numbering display follow-up: PR #94 run `42339535816` on `00be13b` failed in
+CLI job `128303947326`. Exact-case DOM selection succeeded, but the first
+alphabetic list and its item computed to `list-style-type: none`. Inspection
+identified Tailwind Preflight's general list reset, which also hides ordinary
+prose bullet/decimal markers. The semantic attributes alone did not establish
+visible numbering; the initial implementation's browser acceptance was incomplete.
+
+Fix **`21c663b69a1c2219b2123915f863837020c84b5b`** adds a prose-only `list-style-type: revert-layer` rule inside
+Tailwind's `base` layer. This undoes that layer's reset while preserving HTML
+presentation hints (including case-sensitive ol types) and native nested bullet
+styles. A plain `revert` would also discard author presentation hints. Navigation
+and component styling retain their existing rules. CI now also checks ordinary
+bullet/decimal styles and typed items' `display: list-item`; none of the original
+computed-style expectations were relaxed.
+
+Local Tailwind/PostCSS compilation passed with the rule retained in the built
+stylesheet (`/private/tmp/zellij-numbering-styles.css`), as did script syntax and
+diff checks. Rust code remains unchanged and its 612-test suite remains valid.
+The stylesheet change requires fresh final-head hosted browser acceptance.
+No local browser/Docker ran. Final CI and merge remain pending.
+References: [Tailwind Preflight](https://tailwindcss.com/docs/preflight),
+[CSS presentation-hint origins](https://www.w3.org/TR/css-cascade-5/#preshint),
+[layer rollback](https://www.w3.org/TR/css-cascade-5/#defaulting-keywords).
