@@ -1285,7 +1285,7 @@ fn literalinclude_rejects_unsafe_missing_excluded_and_nontext_files() {
         "_build/code.py",
         "templates/code.py",
         "binary.py",
-        "nul.py",
+        "control.py",
     ] {
         for args in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]] {
             let t = tempfile::tempdir().unwrap();
@@ -1312,7 +1312,7 @@ fn literalinclude_rejects_unsafe_missing_excluded_and_nontext_files() {
             }
             write(t.path(), "outside.py", "literal-private-sentinel");
             write(&s, "binary.py", [0xff]);
-            write(&s, "nul.py", [0]);
+            write(&s, "control.py", [0]);
             let o = t.path().join("o");
             let result = run(&s, &o, &args, 2);
             assert!(!o.exists());
