@@ -71,7 +71,7 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
         "` a|{b} `",
         "&lt;script&gt;literal&lt;/script&gt;",
         "First paragraph.\n\nSecond paragraph.",
-        "- First item",
+        "First item",
         "> **note**",
         ".. include:: /not/executed",
         "First line extends beyond the border.",
@@ -307,6 +307,167 @@ fn nested_tables_enforce_the_depth_limit_even_with_empty_cells() {
 }
 
 #[test]
+fn nested_lists_preserve_numbering_blocks_references_assets_and_empty_items() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    basic(&source);
+    write(
+        &source,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n\n   lists\n   details\n",
+    );
+    let fixture = include_str!("../../../../scripts/fixtures/sphinx-lists.rst");
+    write(&source, "lists.rst", fixture);
+    write(
+        &source,
+        "details.rst",
+        ".. _install:\n\nInstallation\n============\n",
+    );
+    write(&source, "notes.txt", "Nested download bytes.\n");
+    write(&source, "media/logo.svg", "<svg>nested image</svg>");
+    run(&source, &out, &[], 0);
+    let body = read(&out, "01-guide/lists.mdx");
+    for text in [
+        "<ol start=\"9\">",
+        "<ol start=\"7\">",
+        "<ol start=\"3\">",
+        "<ol start=\"4\">",
+        "<ol start=\"2\">",
+        "Prepare **workspace**.\nWrapped parent text.",
+        "Nested searchable paragraph.",
+        "[Nested details](</guide/details>)",
+        "[Installation](</guide/details#install>)",
+        "[Nested notes](</_zellij/assets/imported/docs/notes.txt>)",
+        "![Nested logo](</_zellij/assets/imported/docs/media/logo.svg>)",
+        "> **note**",
+        "Keep **original** content.",
+        ":header: literal option\n- literal bullet\n#. literal number\n.. include:: /not/executed",
+        "Unicode parent Café 漢字.",
+        "Unicode leaf.",
+        "- literal block bullet\n9. literal block number",
+        "Table child **strong**.",
+        "<li>\n\n\n</li>",
+    ] {
+        assert!(body.contains(text), "{text}: {body}");
+    }
+    assert_eq!(body.matches("<ul>").count(), 6);
+    assert_eq!(body.matches("<ol start=").count(), 5);
+    assert_eq!(body.matches("<table>").count(), 2);
+    assert_eq!(
+        read(&out, "assets/imported/docs/notes.txt"),
+        "Nested download bytes.\n"
+    );
+    assert_eq!(
+        read(&out, "assets/imported/docs/media/logo.svg"),
+        "<svg>nested image</svg>"
+    );
+    assert_eq!(read(&source, "lists.rst"), fixture);
+    let dry = t.path().join("dry");
+    run(&source, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+    let skip = t.path().join("skip");
+    run(&source, &skip, &["--assets", "skip"], 0);
+    assert!(!skip.join("assets/imported").exists());
+}
+
+#[test]
+fn malformed_or_unsupported_list_content_fails_before_output() {
+    for list in [
+        "paragraph\n- missing blank",
+        "- parent\n  - missing nested blank",
+        "-   parent\n  too little indentation",
+        "- parent\nnot separated",
+        "- parent\n\n   misaligned continuation",
+        "2147483648. too large",
+        "- parent\n\n  a. alphabetic",
+        "- parent\n\n  (iv) roman",
+        "2147483647. last\n#. overflow",
+        "- parent\n\n  .. include:: ../secret",
+        "- parent\n\n  .. toctree::\n\n     page",
+        "- parent\n\n  .. _label:\n\n  Heading\n  =======",
+        "- parent\n\n  .. raw:: html\n\n     <script>run()</script>",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("s");
+        let out = t.path().join("o");
+        basic(&source);
+        let text = format!("Home\n====\n\n{list}\n");
+        write(&source, "index.rst", &text);
+        run(&source, &out, &[], 2);
+        assert!(!out.exists(), "{list}");
+        assert_eq!(read(&source, "index.rst"), text);
+    }
+}
+
+#[test]
+fn nested_list_assets_obey_containment_in_every_output_mode() {
+    for args in [vec![], vec!["--assets", "skip"], vec!["--dry-run"]] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("s");
+        let out = t.path().join("o");
+        basic(&source);
+        write(t.path(), "secret", "outside-list-sentinel");
+        write(
+            &source,
+            "index.rst",
+            "Home\n====\n\n- parent\n\n  1. child\n\n     * :download:`outside <../secret>`\n",
+        );
+        let result = run(&source, &out, &args, 2);
+        assert!(report(&result).contains("escapes"), "{result:?}");
+        assert!(!report(&result).contains("outside-list-sentinel"));
+        assert!(!out.exists());
+        assert_eq!(read(t.path(), "secret"), "outside-list-sentinel");
+    }
+}
+
+#[test]
+fn lists_share_the_table_and_admonition_depth_limit() {
+    for outer_note in [false, true] {
+        let limit = if outer_note { 15 } else { 16 };
+        let mut body = String::new(); // Empty innermost items still consume depth.
+        for depth in 1..=limit + 1 {
+            body = if depth == 1 {
+                "-\n".into()
+            } else {
+                format!(
+                    "- parent\n\n{}",
+                    body.lines().map(|l| format!("  {l}\n")).collect::<String>()
+                )
+            };
+            if depth < limit {
+                continue;
+            }
+            let t = tempfile::tempdir().unwrap();
+            let source = t.path().join("s");
+            let out = t.path().join("o");
+            basic(&source);
+            let content = if outer_note {
+                format!(
+                    ".. note::\n\n{}",
+                    body.lines()
+                        .map(|l| format!("   {l}\n"))
+                        .collect::<String>()
+                )
+            } else {
+                body.clone()
+            };
+            write(&source, "index.rst", format!("Home\n====\n\n{content}\n"));
+            let result = run(&source, &out, &[], if depth == limit { 0 } else { 2 });
+            if depth == limit {
+                assert_eq!(
+                    read(&out, "01-guide/index.mdx").matches("<ul>").count(),
+                    depth
+                );
+            } else {
+                assert!(report(&result).contains("nesting exceeds 16"));
+                assert!(!out.exists());
+            }
+        }
+    }
+}
+
+#[test]
 fn converts_navigation_labels_links_code_images_and_source_urls() {
     let t = tempfile::tempdir().unwrap();
     let s = t.path().join("source");
@@ -453,7 +614,6 @@ fn unsupported_rst_fails_before_any_output_without_interpreting_literal_code() {
         ":py:func:`run`",
         "|substitution|",
         "Term\n   definition",
-        "- parent\n\n  - nested",
         "+---+---+\n| a     |\n+---+---+",
         ".. _dangling:\n\nParagraph",
         ":ref:`missing`",

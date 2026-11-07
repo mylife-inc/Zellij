@@ -429,7 +429,7 @@ toctree if they should be imported. This differs from Sphinx's ability to build
 unlisted/orphan documents.
 
 Supported reStructuredText includes underline/overline headings, paragraphs,
-emphasis, strong text, inline literals, flat bullet/numbered lists, indented
+emphasis, strong text, inline literals, nested bullet/numbered lists, indented
 literal blocks, `code`/`code-block`/`sourcecode`, standard admonitions, and
 `image` with optional `:alt:`. Explicit section labels must occur directly before
 a heading. `:doc:`, `:ref:` and `:download:` support automatic or explicit link
@@ -439,6 +439,33 @@ strong roles retain formatting. Source HTML is treated as literal text. Code
 blocks remain literal, including directive-looking examples and backticks.
 Separate directive options from content with a blank line; option-like text
 inside a code block remains literal content.
+
+Lists support `*`, `+`, `-`, `•`, `‣` and `⁃` bullets, plus decimal numbering
+such as `1.`, `1)` and `(1)`. The matching `#.`, `#)` or `(#)` continues
+numbering automatically. Explicit numbering can start at 0–2147483647;
+a different marker style or a nonconsecutive explicit number starts a separate
+list. Alphabetic and Roman-numeral numbering require manual migration. Bullet
+glyphs and numbering punctuation use the site's ordinary list presentation.
+
+Align continuation text and nested blocks with the first text after the marker.
+Separate nested lists and paragraphs with blank lines. List items can contain
+the supported paragraphs, code, admonitions, images, tables and references;
+lists also work inside table cells. Empty items retain their position. Generated
+MDX preserves semantic list nesting and ordered-list start values, and list text
+remains searchable. Malformed indentation/separators and unsupported nested
+constructs fail before output. Lists are limited to 10,000 items each and share
+the table/admonition nesting limit of 16.
+
+```rst
+- Prepare the workspace.
+
+  3. Open the guide.
+  #. Follow the next step.
+
+     * Keep this nested note.
+
+- Finish.
+```
 
 Rectangular **grid and simple tables** are supported, including tables without
 headers, multiple header rows, multiline cells and `.. table::` captions.
@@ -499,7 +526,7 @@ spans, malformed geometry, other table options (including numeric column widths,
 alignment, classes and named table targets), and headings/section labels/toctrees
 inside cells before creating output. It does
 not flatten merged cells or silently reinterpret them. Tables are limited to
-128 columns, 10,000 rows, 100,000 cells and a 16,384-column border; table/admonition
+128 columns, 10,000 rows, 100,000 cells and a 16,384-column border; table/admonition/list
 nesting shares a limit of 16. See the upstream
 [table syntax](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#tables)
 and the [table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#table),

@@ -1,5 +1,6 @@
 //! Import declarative Sphinx/reStructuredText documentation without Python.
 mod config;
+mod lists;
 mod rst;
 mod table_directives;
 mod tables;

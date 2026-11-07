@@ -70,16 +70,40 @@ export async function checkImportedTables(output) {
     await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
     await page.goBack();
     await article.locator('table').first().waitFor();
+    await page.goto(`${origin}${prefix}/guide/lists`);
+    await page.getByRole('heading', { name: 'Nested instructions', exact: true, level: 1 }).waitFor();
+    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
+    const outer = article.locator('ul').first();
+    assert.equal(await outer.locator(':scope > li').count(), 4);
+    assert.equal((await outer.locator(':scope > li').nth(2).innerText()).trim(), '');
+    assert.equal(await outer.locator(':scope > li').last().locator('table td').count(), 2);
+    assert((await outer.locator(':scope > li').last().locator('pre').innerText()).includes('- literal block bullet\n9. literal block number'));
+    const ordered = outer.locator(':scope > li').first().locator(':scope > ol');
+    assert.equal(await ordered.getAttribute('start'), '9');
+    assert.equal(await ordered.locator(':scope > li').count(), 3);
+    const inner = ordered.locator(':scope > li').nth(1).locator(':scope > ul');
+    assert.equal(await inner.locator(':scope > li').count(), 2);
+    assert((await inner.locator('pre').innerText()).includes(':header: literal option\n- literal bullet\n#. literal number'));
+    assert((await inner.locator('blockquote').innerText()).includes('Keep original content.'));
+    const nestedLogo = inner.getByRole('img', { name: 'Nested logo', exact: true });
+    assert(await nestedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
+    for (const start of [7, 3, 4, 2]) assert.equal(await article.locator(`ol[start="${start}"]`).count(), 1);
+    assert.equal(await article.locator('table td ul ol').count(), 1);
+    await article.getByRole('link', { name: 'Nested details', exact: true }).click();
+    await page.waitForURL(`${origin}${prefix}/guide/details`);
+    await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
+    await page.goBack();
+    await article.getByRole('heading', { name: 'Nested instructions', exact: true }).waitFor();
     const notesUrl = `${origin}${prefix}/_zellij/assets/imported/docs/notes.txt`;
     const [notes] = await Promise.all([
       page.waitForResponse(response => response.url() === notesUrl && response.request().isNavigationRequest()),
-      article.getByRole('link', { name: 'Notes', exact: true }).click(),
+      article.getByRole('link', { name: 'Nested notes', exact: true }).click(),
     ]);
     assert.equal(notes.status(), 200);
     assert.equal(await notes.text(), 'Table download bytes.\n');
     await page.waitForURL(notesUrl);
-    assert.deepEqual(errors, [], 'Imported tables and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, local image, document navigation and native asset navigation passed.');
+    assert.deepEqual(errors, [], 'Imported tables, lists and navigation must not cause hydration or browser errors');
+    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, numbering, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }

@@ -2020,3 +2020,21 @@ never executed. CSV `file`/`url`/`encoding`, custom escapes, character-code
 notation, numeric widths, alignment/classes/names, spanning cells and unsupported
 cell constructs still require manual migration. External CSV inputs are not read
 or fetched. This source is newer than the published rc.1 candidate.
+
+
+## 2026-11-06 — Nested Sphinx lists
+
+The shared Sphinx converter now represents lists as block nodes rather than
+forwarding flat marker lines as Markdown. ASCII and standard Unicode bullets,
+decimal period/right-parenthesis/parenthesized enumerators and matching `#`
+auto-numbering retain nesting, start values, restarts and empty items. Generated
+MDX uses semantic `<ul>`, `<ol start>` and `<li>` elements containing the same
+block content and reference/asset pipeline used by tables and admonitions.
+
+Continuation indentation is measured from the first item text; Unicode bullet
+byte length does not change that column. Lists need blank-line separation from
+paragraphs and nested lists. The existing shared 16-level nesting bound includes
+lists; each list is limited to 10000 items, and decimal values must fit the
+HTML ordered-list range 0–2147483647. Alphabetic/Roman enumeration and other
+unsupported RST constructs remain manual migration work. This source is newer
+than published rc.1; native/hosted CI and release publication remain separate.
