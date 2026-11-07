@@ -365,6 +365,13 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   }
   assertTables(rendered.get('/guide/tables'), '');
   function assertLists(html, prefix) {
+    if (prefix) {
+      // Hosted exports also contain navigation/sidebar lists. Count only the
+      // authored article, matching the MDX-only render used by the local check.
+      const article = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/);
+      assert(article, 'Hosted list fixture must contain its guide article');
+      html = article[1];
+    }
     assert.equal((html.match(/<ul(?:\s|>)/g) ?? []).length, 6);
     assert.equal((html.match(/<ol(?:\s|>)/g) ?? []).length, 5);
     assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 2);
