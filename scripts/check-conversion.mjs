@@ -357,6 +357,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       'Second CSV paragraph.', 'Padded CSV row', '漢字│quoted &#x27;word&#x27;',
       `href="${prefix}/guide/details"`, 'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
       'alt="List logo"', '.. csv-table:: &lt;script&gt;{code}|literal&lt;/script&gt;',
+      ':header: literal field in code',
     ]) assert(html.includes(text), `Sphinx directive table missing ${text}`);
     assert(!html.includes('<script>literal</script>'));
   }

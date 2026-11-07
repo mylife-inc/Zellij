@@ -91,6 +91,7 @@ List and CSV directives
    * - Beta
      - .. code-block:: text
 
+          :header: literal field in code
           .. csv-table:: <script>{code}|literal</script>
    * - Gamma
      - .. image:: /media/logo.svg

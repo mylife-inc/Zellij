@@ -141,14 +141,26 @@ fn options(body: &str, csv_header: bool) -> Result<(BTreeMap<String, String>, St
                     "multiline directive options require manual migration (except CSV :header:)",
                 ));
             }
-            let (continuation, next) = indented(&lines, i);
+            // The first blank line ends the option block. Do not consume it
+            // while collecting a multiline header, or CSV body data could
+            // subsequently be mistaken for more options.
+            let end = i + lines[i..]
+                .iter()
+                .take_while(|line| line.starts_with(' ') && !line.trim().is_empty())
+                .count();
+            let (continuation, _) = indented(&lines[i..end], 0);
             value.push('\n');
             value.push_str(&continuation);
-            i = next;
+            i = end;
         }
         if options.insert(key.into(), value).is_some() {
             return Err(invalid("duplicate directive option"));
         }
+    }
+    if !options.is_empty() && lines.get(i).is_some_and(|line| !line.trim().is_empty()) {
+        return Err(invalid(
+            "directive options need a blank line before content",
+        ));
     }
     Ok((options, lines[i..].join("\n").trim_matches('\n').into()))
 }
@@ -315,14 +327,24 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             ));
         }
         if let Some(rest) = line.strip_prefix(".. ") {
+            let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
             let (body, next) = indented(&lines, i + 1);
             i = next;
             list_indent = None;
             if let Some((directive, arg)) = rest.split_once("::") {
                 let arg = arg.trim();
-                let (opts, body) = options(&body, directive == "csv-table")?;
+                let (opts, body) = if option_block {
+                    options(&body, directive == "csv-table")?
+                } else {
+                    (BTreeMap::new(), body)
+                };
                 match directive {
                     "table" | "list-table" | "csv-table" => {
+                        if option_block && opts.is_empty() && !body.is_empty() {
+                            return Err(invalid(
+                                "table content needs a blank line after the directive; multiline captions require manual migration",
+                            ));
+                        }
                         let table = super::table_directives::parse(directive, &opts, &body)?;
                         out.push(table_block(
                             table,

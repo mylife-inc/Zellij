@@ -84,6 +84,7 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
         "[List download](</_zellij/assets/imported/docs/notes.txt>)",
         "![List logo](</_zellij/assets/imported/docs/media/logo.svg>)",
         ".. csv-table:: <script>{code}|literal</script>",
+        ":header: literal field in code",
         "Empty list row heading.",
         "Quoted \"word\", comma and **bold**.",
         "Second CSV paragraph.",
@@ -112,6 +113,25 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
 }
 
 #[test]
+fn directive_separator_preserves_option_looking_literal_code_and_csv_content() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    basic(&source);
+    write(
+        &source,
+        "index.rst",
+        "Home\n====\n\n.. code-block:: text\n\n   :header: literal\n   :file: /not/read\n   .. include:: /not/read\n\n.. csv-table::\n   :header: First\n            Second\n\n   :strong:`Cell`\n\n.. csv-table::\n\n   :strong:`Body`\n",
+    );
+    run(&source, &out, &[], 0);
+    let body = read(&out, "01-guide/index.mdx");
+    assert!(body.contains(":header: literal\n:file: /not/read\n.. include:: /not/read"));
+    assert!(body.contains("**Cell**") && body.contains("**Body**"));
+    assert_eq!(body.matches("<thead>").count(), 1);
+    assert_eq!(body.matches("<th>").count(), 2);
+}
+
+#[test]
 fn invalid_table_directives_and_external_csv_sources_fail_without_writes() {
     for table in [
         ".. list-table::\n\n   * plain item",
@@ -122,6 +142,8 @@ fn invalid_table_directives_and_external_csv_sources_fail_without_writes() {
         ".. csv-table::\n\n   key,\"unclosed",
         ".. csv-table::\n\n   \"closed\"suffix,value",
         ".. csv-table::\n   :header-rows: 2\n\n   key,value",
+        ".. csv-table:: Long\n   continued caption\n\n   key,value",
+        ".. csv-table::\n   :header: Key,Value\n   key,value",
         ".. csv-table::\n   :header-rows: 0\n   :header-rows: 0\n\n   key,value",
         ".. csv-table::\n   :keepspace: true\n\n   key,value",
         ".. csv-table::\n   :file: ../secret.csv",
