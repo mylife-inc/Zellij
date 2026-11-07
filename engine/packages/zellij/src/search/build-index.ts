@@ -1,4 +1,4 @@
-import { readHeadings, type HeadingOptions } from '../mdx/headings';
+import { readMdxStructure, type HeadingOptions, type SourceRange } from '../mdx/headings';
 import { ZellijContentError } from '../errors';
 import type { GuidePage } from '../content/types';
 
@@ -20,14 +20,30 @@ export interface SearchEntry {
  * Code blocks are dropped rather than indexed: a search for "docker" should
  * find the paragraph explaining Docker, not every fenced snippet that happens
  * to mention it.
+ * Pass a complete MDX document and its optional parser plugins; malformed MDX
+ * raises a parse error. Section indexing parses once before slicing passages.
  */
-export function mdxToText(source: string): string {
+export function mdxToText(source: string, options: HeadingOptions = {}): string {
+  return proseToText(maskCode(source, readMdxStructure(source, options).codeRanges));
+}
+
+function maskCode(source: string, ranges: SourceRange[]): string {
+  const parts: string[] = [];
+  let cursor = 0;
+  for (const { start, end } of ranges) {
+    parts.push(source.slice(cursor, start));
+    // Preserve line endings and UTF-16 offsets, including surrogate pairs, so
+    // the original heading positions still delimit exactly the same passages.
+    parts.push(source.slice(start, end).replace(/[^\r\n]/g, ' '));
+    cursor = end;
+  }
+  parts.push(source.slice(cursor));
+  return parts.join('');
+}
+
+function proseToText(source: string): string {
   return (
     source
-      // Fenced code, then inline code.
-      .replace(/```[\s\S]*?```/g, ' ')
-      .replace(/~~~[\s\S]*?~~~/g, ' ')
-      .replace(/`[^`]*`/g, ' ')
       // JSX/HTML tags, keeping any text between them.
       .replace(/<\/?[A-Za-z][^>]*>/g, ' ')
       // Images before links, so alt text does not leak in as a label.
@@ -57,9 +73,11 @@ export function indexGuidePage(page: GuidePage, options: HeadingOptions = {}): S
       page: page.title, title: h.text, text: h.text,
     })),
   ];
-  const headings = readHeadings(page.body, options).filter((heading) => heading.depth === 2 || heading.depth === 3);
+  const structure = readMdxStructure(page.body, options);
+  const headings = structure.headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+  const prose = maskCode(page.body, structure.codeRanges);
   const entries: SearchEntry[] = [];
-  const intro = mdxToText(page.body.slice(0, headings[0]?.start));
+  const intro = proseToText(prose.slice(0, headings[0]?.start));
 
   entries.push({
     id: page.route,
@@ -70,7 +88,7 @@ export function indexGuidePage(page: GuidePage, options: HeadingOptions = {}): S
   });
 
   for (const [index, heading] of headings.entries()) {
-    const text = mdxToText(page.body.slice(heading.end, headings[index + 1]?.start));
+    const text = proseToText(prose.slice(heading.end, headings[index + 1]?.start));
     if (!text) continue;
     entries.push({
       id: `${page.route}#${heading.id}`,

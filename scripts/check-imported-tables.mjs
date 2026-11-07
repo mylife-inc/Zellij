@@ -164,7 +164,7 @@ export async function checkImportedTables(output) {
     await page.getByRole('heading', { name: 'Referenced examples', exact: true, level: 1 }).waitFor();
     await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
     const included = await article.locator('pre').allTextContents();
-    assert.equal(included.length, 5);
+    assert.equal(included.length, 6);
     assert(included[0].includes('[literal link](../missing.md)'));
     assert(included[0].includes('.. include:: /not/executed'));
     assert(included[0].includes('|undefined-substitution|'));
@@ -176,8 +176,20 @@ export async function checkImportedTables(output) {
     await page.reload();
     await page.getByRole('heading', { name: 'Referenced examples', exact: true, level: 1 }).waitFor();
     assert.deepEqual(await article.locator('pre').allTextContents(), included);
+    await page.locator('[data-zellij-search-trigger]').click();
+    const query = page.getByRole('searchbox', { name: 'Search the guide', exact: true });
+    await query.fill('explanation');
+    const proseResult = page.getByRole('option').filter({ hasText: 'Selected excerpt' });
+    await proseResult.waitFor();
+    await proseResult.click();
+    await page.waitForURL(`${origin}${prefix}/guide/literalinclude#selected-excerpt`);
+    await page.locator('[data-zellij-search-trigger]').click();
+    await query.fill('fenceonlytoken');
+    await page.getByText('No results for “fenceonlytoken”.', { exact: true }).waitFor();
+    assert.equal(await page.getByRole('option').count(), 0);
+    await page.keyboard.press('Escape');
     assert.deepEqual(errors, [], 'Imported tables, lists, literalinclude and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, text/image substitutions, local image, document navigation and native asset navigation passed.');
+    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, substitutions, literal examples excluded from search, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }

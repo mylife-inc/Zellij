@@ -14,7 +14,7 @@ const content = path.join(root, 'content = external');
 const packaged = path.join(root, 'node_modules/@shebka/zellij');
 const cli = path.join(packaged, 'bin/zellij.mjs');
 const [binary, mode] = process.argv.slice(2);
-const body = '# Install\n\n## Install\n\nFirst passage.\n\n## Install\n\nSecond passage.\n\n## [Use the CLI](/manual)\n\nThird passage.\n';
+const body = ('# Install\n\n## Install\n\nFirst passage.\n\n## Install\n\nSecond passage.\n\n## [Use the CLI](/manual)\n\nThird passage.\n\n````text\n```\npackageonlytoken\n````\n').replace(/\n/g, '\r\n');
 const files = {
   'site.yaml': 'name: Preparation fixture\nhome: 01-guide\n',
   '01-guide/_sidebar.yaml': 'route: /manual\nnav: [index, setup]\n',
@@ -44,6 +44,8 @@ try {
   assert.deepEqual(entries.map((entry) => entry.route), [
     '/manual', '/manual#install', '/manual#install-1', '/manual#use-the-cli', '/custom/start',
   ]);
+  assert.equal(entries.find(entry => entry.route === '/manual#use-the-cli').text, 'Third passage.');
+  assert(!entries.some(entry => entry.text.includes('packageonlytoken')));
   assert.equal(await readFile(path.join(output, 'assets/logo.svg'), 'utf8'), files['assets/logo.svg']);
   run(['check', content]);
 
@@ -81,7 +83,7 @@ try {
   run(['sync-assets', '--content', content]);
   await assert.rejects(readFile(path.join(output, 'assets/logo.svg')), { code: 'ENOENT' });
   assert.deepEqual(JSON.parse(await readFile(path.join(output, 'asset-manifest.json'), 'utf8')), {});
-  console.log('Packaged preparation: canonical routes/anchors, custom paths, legacy config, errors and asset deletion passed.');
+  console.log('Packaged preparation: canonical routes/anchors, nested code-fence exclusion, CRLF, custom paths, legacy config, errors and asset deletion passed.');
 } finally {
   await rm(root, { recursive: true, force: true });
 }

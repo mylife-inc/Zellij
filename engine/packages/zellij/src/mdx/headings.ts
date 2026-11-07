@@ -6,6 +6,12 @@ import remarkRehype from 'remark-rehype';
 import rehypeSlug from 'rehype-slug';
 import { toString } from 'hast-util-to-string';
 import type { Root, RootContent } from 'hast';
+import type { Root as MdastRoot, RootContent as MdastContent } from 'mdast';
+
+export interface SourceRange {
+  start: number;
+  end: number;
+}
 
 export interface Heading {
   id: string;
@@ -68,8 +74,31 @@ export function readAnchorIds(source: string, options: HeadingOptions = {}): str
 }
 
 export function readHeadings(source: string, options: HeadingOptions = {}): Heading[] {
+  return readMdxStructure(source, options).headings;
+}
+
+/** Parse one complete document so search can use code and heading boundaries
+ * without reparsing section slices that may contain only part of a component. */
+export function readMdxStructure(source: string, options: HeadingOptions = {}): {
+  headings: Heading[];
+  codeRanges: SourceRange[];
+} {
   const processor = headingProcessor(options.remarkPlugins ?? []);
-  const tree = processor.runSync(processor.parse(source));
+  const parsed = processor.parse(source);
+  const codeRanges: SourceRange[] = [];
+  function captureCode(node: MdastRoot | MdastContent): void {
+    if (node.type === 'code' || node.type === 'inlineCode') {
+      const start = node.position?.start.offset;
+      const end = node.position?.end.offset;
+      if (start !== undefined && end !== undefined) codeRanges.push({ start, end });
+      return;
+    }
+    if ('children' in node) for (const child of node.children) captureCode(child);
+  }
+  // Capture original syntax before plugins transform it into highlighted code,
+  // diagrams or HTML. The same parser extensions are used for rendering/TOC.
+  captureCode(parsed);
+  const tree = processor.runSync(parsed);
   const headings: Heading[] = [];
   function visit(node: Root | RootContent): void {
     const heading = node.type === 'element' && /^h[1-6]$/.test(node.tagName)
@@ -86,5 +115,5 @@ export function readHeadings(source: string, options: HeadingOptions = {}): Head
     if ('children' in node) for (const child of node.children) visit(child);
   }
   visit(tree);
-  return headings;
+  return { headings, codeRanges };
 }

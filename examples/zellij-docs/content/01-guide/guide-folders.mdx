@@ -206,3 +206,10 @@ never searches downloads neither.
 Results are split per heading, so a hit lands on the relevant section rather
 than the top of a long page. Sections pages are excluded by design — search
 here is for documentation.
+
+For MDX guides, search indexes the explanatory prose and heading labels.
+Markdown fenced code blocks and inline code spans are excluded from body text,
+including examples that contain shorter fences or appear inside lists, quotes
+or components. An unfinished fence keeps the remaining example out of the index.
+Code in a heading still contributes to that heading's label and link. Put terms
+visitors should find in the explanation around an example.
