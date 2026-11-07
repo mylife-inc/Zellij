@@ -491,6 +491,48 @@ Roman sequence:
 (#) Six.
 ```
 
+**Substitutions** can reuse formatted text and inline images. Define them with
+`replace` (one paragraph, optionally wrapped across lines) or `image` with
+optional `:alt:` and `:target:`. References may appear before definitions, and
+replacement text may use other substitutions, supported roles and named links.
+Definitions belong to their document; they are not shared between pages.
+
+```rst
+|Product| is the |edition|. Visit |guide|_ or click |logo|.
+
+.. |Product| replace:: **Zellij**
+.. |edition| replace:: |Product| documentation engine
+.. |guide| replace:: *Read* the guide
+.. _guide: details.html
+.. |logo| image:: media/logo.svg
+   :alt: Company logo
+   :target: guide_
+```
+
+Names normalize internal whitespace and prefer an exact-case match. If none
+exists, a unique case-insensitive match is accepted; ambiguous matches fail.
+`|name|_` uses a named hyperlink target. Image targets can be explicit URLs or
+named targets ending in `_`. Referenced images/downloads follow the normal
+asset policy, including containment checks in dry-run and asset-skip modes.
+Images embedded in a paragraph stay inline; standalone figures keep their
+block layout. Expanded text remains searchable.
+
+`|version|` and `|release|` use literal strings from `conf.py` (empty when
+unset); an authored definition overrides the corresponding default on that
+page. Those configuration strings are not interpreted as markup. Inline code,
+code blocks and escaped opening pipes remain literal. Use escaped spaces when
+a substitution must touch a neighboring word, as in `prefix\ |name|\ suffix`.
+
+Undefined references, cycles, duplicate definitions, nested hyperlinks and
+unsupported substitution directives fail before output. All definitions in a
+published document are validated, including unused ones. Limits are 1,000
+authored definitions per document, 256-byte names and 64 KiB replacement text.
+Each validation/rendering expansion pass allows at most 16 nested substitutions,
+10,000 references and 4 MiB of processed expansion text. Headings and toctree
+captions/titles still need plain text. Anonymous substitution links, `unicode`,
+`date`/automatic `today`, trimming/presentation options and global
+`rst_prolog`/`rst_epilog` transformations require manual migration.
+
 Rectangular **grid and simple tables** are supported, including tables without
 headers, multiple header rows, multiline cells and `.. table::` captions.
 `list-table` and in-document `csv-table` directives also support single-line captions,
@@ -578,7 +620,7 @@ dry-run options retain their normal safety checks.
 
 This is a **conservative reStructuredText subset**, newer than published rc.1.
 MyST, autodoc/domain roles, custom extensions, `include`/`literalinclude`, raw
-directives, spanning tables, substitutions, field lists (including `:orphan:`), footnotes,
+directives, spanning tables, unsupported substitution forms, field lists (including `:orphan:`), footnotes,
 definition/quote blocks, glob/numbered toctrees, extra directive
 options and custom/dirhtml builders require manual migration. Unsupported parsed
 constructs fail with the source filename before output is created. No source

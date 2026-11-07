@@ -128,8 +128,40 @@ export async function checkImportedTables(output) {
     assert.equal(notes.status(), 200);
     assert.equal(await notes.text(), 'Table download bytes.\n');
     await page.waitForURL(notesUrl);
+    await page.goto(`${origin}${prefix}/guide/substitutions`);
+    await page.getByRole('heading', { name: 'Reusable content', exact: true, level: 1 }).waitFor();
+    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
+    assert.equal(await article.locator('p').first().innerText(), 'Zellij is the Zellij documentation engine.');
+    assert.equal(await article.locator('p').first().locator('strong').count(), 2);
+    assert.equal(await article.locator('caption').innerText(), 'Zellij features');
+    assert.equal(await article.locator('table td').first().innerText(), 'Zellij');
+    const substitutionImages = article.getByRole('img', { name: 'Substitution logo', exact: true });
+    assert.equal(await substitutionImages.count(), 2);
+    assert(await substitutionImages.first().evaluate(image => image.complete && image.naturalWidth > 0));
+    assert.equal(await substitutionImages.first().evaluate(image => getComputedStyle(image).display), 'inline');
+    assert.equal(await substitutionImages.last().evaluate(image => getComputedStyle(image).display), 'block');
+    const substitutionCode = await article.locator('pre').innerText();
+    assert(substitutionCode.includes('|undefined-in-code|'));
+    assert(substitutionCode.includes('.. |ignored| replace:: not a definition'));
+    assert.equal(await article.locator('p').filter({ hasText: 'Inline code keeps' }).innerText(), 'Inline code keeps |Product| literal; an escaped |Product| stays literal too.');
+    await article.getByRole('link', { name: 'Read the guide', exact: true }).first().click();
+    await page.waitForURL(`${origin}${prefix}/guide/details#install`);
+    await page.getByRole('heading', { name: 'Installation', exact: true, level: 1 }).waitFor();
+    await page.goBack();
+    await article.getByRole('heading', { name: 'Reusable content', exact: true }).waitFor();
+    await substitutionImages.first().click();
+    await page.waitForURL(`${origin}${prefix}/guide/details#install`);
+    await page.goBack();
+    await article.getByRole('heading', { name: 'Reusable content', exact: true }).waitFor();
+    const [substitutionNotes] = await Promise.all([
+      page.waitForResponse(response => response.url() === notesUrl && response.request().isNavigationRequest()),
+      article.getByRole('link', { name: 'Substituted notes', exact: true }).click(),
+    ]);
+    assert.equal(substitutionNotes.status(), 200);
+    assert.equal(await substitutionNotes.text(), 'Table download bytes.\n');
+    await page.waitForURL(notesUrl);
     assert.deepEqual(errors, [], 'Imported tables, lists and navigation must not cause hydration or browser errors');
-    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, local image, document navigation and native asset navigation passed.');
+    console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, text/image substitutions, local image, document navigation and native asset navigation passed.');
   } finally {
     try { if (browser) await browser.close(); }
     finally { server.closeAllConnections(); await new Promise(resolve => server.close(resolve)); }

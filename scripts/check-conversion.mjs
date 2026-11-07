@@ -252,7 +252,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     await mkdir(path.dirname(path.join(source, file)), { recursive: true });
     await writeFile(path.join(source, file), body);
   }
-  await write('conf.py', "project='Sphinx manual'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\n");
+  await write('conf.py', "project='Sphinx manual'\nversion='2.4'\nrelease='2.4.1'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\n");
   await write('index.rst', `.. _welcome:
 
 Welcome
@@ -265,6 +265,7 @@ Welcome
    03-Café/index
    tables
    lists
+   substitutions
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -309,6 +310,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
   await write('tables.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-tables.rst'), 'utf8'));
   await write('lists.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-lists.rst'), 'utf8'));
+  await write('substitutions.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-substitutions.rst'), 'utf8'));
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
   await write('media/logo.svg', asset);
@@ -321,7 +323,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/setup/api-reference', '/guide/tables']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
@@ -389,6 +391,24 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     ]) assert(html.includes(text), `Nested Sphinx list missing ${text}`);
   }
   assertLists(rendered.get('/guide/lists'), '');
+  function assertSubstitutions(html, prefix) {
+    for (const text of [
+      '<strong>Zellij</strong> is the <strong>Zellij</strong> documentation engine.',
+      '<em>Read</em> the guide</a>', 'The release is 2.4.1 (2.4).',
+      `href="${prefix}/guide/details#install"`,
+      'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
+      'alt="Substitution logo"', 'class="zellij-inline-image"',
+      '|undefined-in-code|',
+      '<strong>Zellij</strong> features',
+    ]) assert(html.includes(text), `Sphinx substitution missing ${text}`);
+    assert([...html.matchAll(/<pre\b[^>]*>([\s\S]*?)<\/pre>/g)].some(match =>
+      match[1].replace(/<[^>]*>/g, '').includes('.. |ignored| replace:: not a definition')),
+    'Highlighted substitution definition must remain literal code');
+  }
+  assertSubstitutions(rendered.get('/guide/substitutions'), '');
+  const substitutionPage = site.guidePages.find(p => p.route === '/guide/substitutions');
+  assert(indexGuidePage(substitutionPage, headingOptions).some(entry => entry.text.includes('documentation engine')));
+
   const listPage = site.guidePages.find(p => p.route === '/guide/lists');
   for (const phrase of ['Nested searchable paragraph.', 'Upper alphabetic automatic eleven.', 'Roman automatic seven.']) {
     assert(indexGuidePage(listPage, headingOptions).some(entry => entry.text.includes(phrase)), `List text searchable: ${phrase}`);
@@ -408,6 +428,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
         {kind:'link',label:'Installation',route:'/guide/details'},
       ]},
       {kind:'link',label:'Nested instructions',route:'/guide/lists'},
+      {kind:'link',label:'Reusable content',route:'/guide/substitutions'},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -422,6 +443,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');
     assertTables(await readFile(path.join(output, 'guide/tables.html'), 'utf8'), '/products/docs');
     assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
+    assertSubstitutions(await readFile(path.join(output, 'guide/substitutions.html'), 'utf8'), '/products/docs');
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
     for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);
     for (const text of ['id="stable-install"','href="#stable-install"','href="/products/docs/guide#welcome"','href="/products/docs/guide?from=relative#welcome"','API navigation']) assert(reference.includes(text), `Sphinx exported reference missing ${text}`);
@@ -436,5 +458,5 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const { checkImportedTables } = await import('./check-imported-tables.mjs');
     await checkImportedTables(output);
   }
-  console.log('sphinx: reStructuredText navigation, tables, nested lists, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, tables, nested lists, substitutions, references, literal code/HTML, search, headings and assets verified.');
 }

@@ -5292,3 +5292,21 @@ No local browser/Docker ran. Final CI and merge remain pending.
 References: [Tailwind Preflight](https://tailwindcss.com/docs/preflight),
 [CSS presentation-hint origins](https://www.w3.org/TR/css-cascade-5/#preshint),
 [layer rollback](https://www.w3.org/TR/css-cascade-5/#defaulting-keywords).
+
+
+## 2026-11-06 — Numbering and prose-marker CI closure
+
+PR #94 merged as **`3f14b99b533e9e63b6f25d40c8ce00c2a2cb4fc2`** after all
+16 checks passed on **`fcbaa6b91e477a177f604a710f5c867228cbe9ff`** in
+[42340198858](https://github.com/mylife-inc/Zellij/actions/runs/42340198858),
+attempt 1. Tested/merged tree: `f13f7b7394f52a28a4d28ce84f27709404df6db8`.
+Hosted browser checks passed exact-case alphabetic/Roman styles, ordinary
+bullet/decimal markers, list-item display, nesting, media, navigation and native
+downloads with no hydration errors. Sphinx tests passed 24 cases on Unix and
+23 on Windows. All six native packages and both image architectures passed.
+Documentation retained 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images. Both post-merge workflows passed on
+unchanged `3f14b99`, attempt 1: main `42342065734` (all 16 jobs), base-image
+`42342065709` (all 13 jobs). Earlier selector/display failures remain recorded.
+Native rc.1 remains the latest published candidate; no release or production
+migration ran.

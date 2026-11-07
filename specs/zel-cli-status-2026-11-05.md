@@ -60,11 +60,12 @@ Shortcodes and aliases are reported for manual work. See the conversion referenc
 Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
 and convert a conservative reStructuredText subset without Python or Docutils.
 Supported headings, labels, nested bullet/decimal/alphabetic/Roman lists, code, admonitions, images and rectangular
-grid/simple tables, list tables and inline CSV tables retain content;
+grid/simple tables, list tables, inline CSV tables and document-local text/image
+substitutions retain content;
 document/section/download references and HTML-builder URLs map to
 hosted guide routes and eligible assets. Unknown executable configuration,
 extensions, MyST, API domains, includes, spanning cells, external CSV sources,
-custom table presentation/escape options, substitutions and
+custom table presentation/escape options, global content transforms and
 custom builders still require manual migration. Unlisted documents are omitted
 and reported. The conversion reference specifies the exact accepted forms.
 
