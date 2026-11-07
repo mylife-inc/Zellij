@@ -25,6 +25,7 @@ pub enum Block {
     Table {
         caption: Option<String>,
         headers: usize,
+        stubs: usize,
         rows: Vec<Vec<Vec<Block>>>,
     },
     Note {
@@ -113,29 +114,55 @@ fn indented(lines: &[&str], mut i: usize) -> (String, usize) {
         .join("\n");
     (body.trim_matches('\n').into(), i)
 }
-fn options(body: &str) -> Result<(BTreeMap<String, String>, String)> {
+fn options(body: &str, csv_header: bool) -> Result<(BTreeMap<String, String>, String)> {
     let mut options = BTreeMap::new();
-    let mut lines = body.lines().peekable();
-    while let Some(line) = lines.peek().copied() {
+    let lines: Vec<_> = body.lines().collect();
+    let mut i = 0;
+    while let Some(line) = lines.get(i) {
         let Some(rest) = line.strip_prefix(':') else {
             break;
         };
         let Some((key, value)) = rest.split_once(':') else {
             return Err(invalid("malformed directive option"));
         };
-        if options.insert(key.into(), value.trim().into()).is_some() {
+        // A role such as :download:`file` at the start of CSV data is not
+        // an option field: its closing colon is not followed by whitespace.
+        if !value.is_empty() && !value.starts_with(char::is_whitespace) {
+            break;
+        }
+        let mut value = value.trim().to_owned();
+        i += 1;
+        if lines
+            .get(i)
+            .is_some_and(|line| line.starts_with(' ') && !line.trim().is_empty())
+        {
+            if !csv_header || key != "header" {
+                return Err(invalid(
+                    "multiline directive options require manual migration (except CSV :header:)",
+                ));
+            }
+            // The first blank line ends the option block. Do not consume it
+            // while collecting a multiline header, or CSV body data could
+            // subsequently be mistaken for more options.
+            let end = i + lines[i..]
+                .iter()
+                .take_while(|line| line.starts_with(' ') && !line.trim().is_empty())
+                .count();
+            let (continuation, _) = indented(&lines[i..end], 0);
+            value.push('\n');
+            value.push_str(&continuation);
+            i = end;
+        }
+        if options.insert(key.into(), value).is_some() {
             return Err(invalid("duplicate directive option"));
         }
-        lines.next();
     }
-    Ok((
-        options,
-        lines
-            .collect::<Vec<_>>()
-            .join("\n")
-            .trim_matches('\n')
-            .into(),
-    ))
+    if !options.is_empty() && lines.get(i).is_some_and(|line| !line.trim().is_empty()) {
+        return Err(invalid(
+            "directive options need a blank line before content",
+        ));
+    }
+    Ok((options, lines[i..].join("\n").trim_matches('\n').into()))
 }
 pub fn target(text: &str) -> Result<(Option<String>, String)> {
     if let Some((label, tail)) = text.rsplit_once(" <") {
@@ -300,24 +327,25 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
             ));
         }
         if let Some(rest) = line.strip_prefix(".. ") {
+            let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
             let (body, next) = indented(&lines, i + 1);
             i = next;
             list_indent = None;
             if let Some((directive, arg)) = rest.split_once("::") {
                 let arg = arg.trim();
-                let (opts, body) = options(&body)?;
+                let (opts, body) = if option_block {
+                    options(&body, directive == "csv-table")?
+                } else {
+                    (BTreeMap::new(), body)
+                };
                 match directive {
-                    "table" => {
-                        if !opts.is_empty() {
+                    "table" | "list-table" | "csv-table" => {
+                        if option_block && opts.is_empty() && !body.is_empty() {
                             return Err(invalid(
-                                "table directive options require manual migration",
+                                "table content needs a blank line after the directive; multiline captions require manual migration",
                             ));
                         }
-                        let lines: Vec<_> = body.trim_matches('\n').lines().collect();
-                        let (table, count) = super::tables::parse(&lines)?;
-                        if lines[count..].iter().any(|l| !l.trim().is_empty()) {
-                            return Err(invalid("table directive must contain exactly one table"));
-                        }
+                        let table = super::table_directives::parse(directive, &opts, &body)?;
                         out.push(table_block(
                             table,
                             (!arg.is_empty()).then(|| arg.into()),
@@ -512,6 +540,7 @@ fn table_block(
     Ok(Block::Table {
         caption,
         headers: table.headers,
+        stubs: table.stubs,
         rows,
     })
 }
@@ -706,6 +735,7 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
             Block::Table {
                 caption,
                 headers,
+                stubs,
                 rows,
             } => {
                 out.push_str("\n<table>\n");
@@ -725,10 +755,16 @@ pub fn render(blocks: &[Block], resolve: &impl Fn(&str, &str) -> Result<String>)
                         out.push_str("</thead>\n<tbody>\n");
                     }
                     out.push_str("<tr>\n");
-                    let tag = if index < *headers { "th" } else { "td" };
-                    for cell in row {
+                    for (column, cell) in row.iter().enumerate() {
+                        let (tag, scope) = if index < *headers {
+                            ("th", "")
+                        } else if column < *stubs {
+                            ("th", " scope=\"row\"")
+                        } else {
+                            ("td", "")
+                        };
                         out.push_str(&format!(
-                            "<{tag}>\n\n{}\n</{tag}>\n",
+                            "<{tag}{scope}>\n\n{}\n</{tag}>\n",
                             render(cell, resolve)?
                         ));
                     }

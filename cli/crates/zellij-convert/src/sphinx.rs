@@ -1,6 +1,7 @@
 //! Import declarative Sphinx/reStructuredText documentation without Python.
 mod config;
 mod rst;
+mod table_directives;
 mod tables;
 
 use crate::{

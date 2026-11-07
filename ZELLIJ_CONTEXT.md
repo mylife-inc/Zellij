@@ -52,7 +52,12 @@ the Ubuntu portable job timed out downloading browser system dependencies and
 the targeted unchanged-head retry passed, so both post-merge workflows are green.
 PR #90 merged site/configuration doctor diagnostics and JSON reports as
 `e673306`, after all 16 final-head checks passed. Both post-merge workflows
-passed. Current work adds rectangular Sphinx grid/simple table imports.
+passed. PR #91 merged rectangular Sphinx tables and fixed imported download
+navigation as `6b3b4b4`, after all 16 final-head checks passed. Its base-image
+workflow passed; its post-merge showcase dependency-download timeout recovered
+on a targeted retry of the unchanged commit, leaving all 16 main checks green.
+Current work adds Sphinx list-table and inline CSV table directives and fixes
+directive option/content separation.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -5987,3 +5992,101 @@ checks for all six importers, strict/deep docs (55 routes, 23 examples), script
 syntax and diff checks passed locally. Evidence:
 `/private/tmp/zellij-tables-{engine-tests,typecheck,asset-render}.log`.
 No local browser or Docker ran. Final-head CI remains required before merge.
+
+
+## 2026-11-06 — Sphinx table closure and list/CSV directives
+
+PR #91 merged as **`6b3b4b4c25d5f20c5daefd6ffce0c6760f7e5d80`** after all 16
+checks passed on **`eda6ab6328d1cf978f7a9a862d08c7b70a56afe0`** in
+[42316324469](https://github.com/mylife-inc/Zellij/actions/runs/42316324469),
+attempt 1. Tested and merged tree: `6af059aa6f40eaec855351210567f5b0db692eef`.
+The table cases passed on Windows/macOS/Linux; browser acceptance confirmed
+hydration, semantic cells, image loading, document navigation and native asset
+navigation with exact bytes. All six native packages, both image architectures,
+combined manifests and broader hosted/browser tests passed. Preservation retained
+46 original routes, 282 heading IDs, 82 compatibility mappings and 29 images.
+The parser (`2b06d93`), fixture root fix (`aa409e6`) and shared download fix
+(`ba8a68e`) are recorded above with their original failures and verification.
+
+Post-merge base-image run `42319859200` passed. Main `42319859257` completed
+15 successful jobs; its showcase job `128241510788` hit the 20-minute limit
+while downloading Ubuntu browser dependencies, before application/browser tests.
+The log ends in the `playwright install --with-deps` apt download, with no test
+failure. A targeted retry on unchanged `6b3b4b4` was requested; its outcome is
+pending. Native rc.1 remains the newest published candidate; no release or
+production migration was attempted.
+
+Current work adds `list-table` and inline `csv-table` to the Sphinx converter.
+`cli/crates/zellij-convert/src/sphinx/table_directives.rs` parses the two-level
+row/cell bullet structure and strict quoted CSV without new dependencies or
+source execution. Both support captions, `header-rows`, `stub-columns` and
+`widths: auto`; CSV adds supplemental/multiline `header`, literal Unicode
+`delim`/`quote`, `delim: space` and `keepspace`. Short CSV rows are padded,
+while list rows must be uniform. A body row and a data column must remain after
+headers/stubs. The existing 128-column/10000-row/100000-cell and 16-level limits
+apply. The common RST table node now carries a stub count; body row headings
+render as `<th scope="row">` through the existing MDX pipeline.
+
+Cell bodies retain the existing supported RST constructs, reference resolution,
+asset containment and search behavior. Option parsing now distinguishes a field
+from a role at the start of CSV content, preserving `:download:` cells, and reads
+CSV header continuation lines without treating them as body data. External CSV
+file/URL/encoding options, custom escape rules, character-code notation, numeric
+widths, alignment/classes/names, spanning cells and unsupported nested constructs
+remain explicit errors before output. No CSV external input is read or fetched.
+
+The shared fixture now contains eight tables, four header groups, 17 column
+headings and seven row headings. Native regression coverage checks retained
+content, literal code, links, exact assets, dry runs, skip mode, invalid directives,
+unsafe paths and the list-table nesting bound. CI's existing browser helper now
+checks row-header roles, supplemental headers, padded cells and a second local
+image while keeping navigation/download and error assertions. Documentation,
+CLI status and the contract describe the accepted syntax and remaining limits.
+Local final verification and final-head CI remain pending.
+
+References: [Docutils list-table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#list-table),
+[CSV table](https://docutils.sourceforge.io/docs/ref/rst/directives.html#csv-table),
+and the [upstream parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/directives/tables.py).
+
+
+List/CSV implementation: **`bc70c45296d01c5b7369142db610c1da2fba15f1`**.
+Local verification passed **600 Rust workspace tests**, with five existing
+hosted-provider fixtures reserved for CI. All 18 Sphinx CLI cases and four new
+table-directive unit cases pass. Warnings-denied workspace Clippy, formatting,
+strict/deep docs (55 routes, 23 examples), script syntax, and Node-only rendering,
+deep checks and searchable-cell assertions across all six converters pass.
+Evidence: `/private/tmp/zellij-directives-{workspace,clippy,import,unit,docs,search}.log`.
+No local Docker/browser or live provider operation ran. Final-head CI and merge
+remain pending; main's unchanged-head showcase retry is still running.
+
+
+### 2026-11-06 — Directive boundaries and prior main-CI closure
+
+PR #91 main run `42319859257`, attempt 2, now has all 16 jobs successful on
+unchanged `6b3b4b4`. Retried showcase job `128249568949` passed. This closes
+the earlier dependency-download timeout without a source change; the original
+failure and its limited verification are retained above.
+
+Review of the new Sphinx directive parser found that leading blank lines were
+being discarded before option parsing. A code block beginning with `:header:`
+could therefore be rejected as if it contained directive options. CSV header
+continuations could also consume the separator and misclassify following data.
+Fix **`6b695697e7b95c476225a29e8aca079d64f6dd6d`** retains that boundary,
+requires a blank line between options and content, and rejects unsupported
+multiline table captions instead of silently importing them as CSV rows.
+
+Regression coverage checks literal option/include-looking code, multiline CSV
+headers followed by inline roles, missing separators and multiline captions.
+The shared native/rendered/browser fixture includes the literal field text.
+All 19 Sphinx CLI cases and 75 converter tests pass, as do warnings-denied
+Clippy, formatting, strict/deep docs (55 routes, 23 examples), script syntax
+and Node-only rendering/search checks for all six importers. The final complete
+Rust workspace suite passed **601 tests**, with five existing hosted fixtures
+reserved for CI. Fresh final-head CI and merge remain pending.
+
+Evidence: `/private/tmp/zellij-directives-final-{import,convert,clippy,docs}.log`
+and `/private/tmp/zellij-directives-exact-{workspace,render}.log`. No local Docker/browser
+or production/provider mutation ran. PR #92's earlier CI head does not validate
+this follow-up; final-head CI is required before merge.
+
+The option/content distinction follows the [Docutils directive block parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py).

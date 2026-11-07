@@ -339,9 +339,9 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   assert.deepEqual(extractToc(page.body,headingOptions).map(h=>h.id), ['stable-install']);
   assert(indexGuidePage(page,headingOptions).some(e=>e.route===`${page.route}#stable-install` && e.text.includes('Searchable installation')));
   function assertTables(html, prefix) {
-    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 5);
-    assert.equal((html.match(/<thead(?:\s|>)/g) ?? []).length, 2, 'Headerless tables must not invent headers');
-    assert.equal((html.match(/<th(?:\s|>)/g) ?? []).length, 6, 'Both authored header rows survive');
+    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 8);
+    assert.equal((html.match(/<thead(?:\s|>)/g) ?? []).length, 4, 'Headerless tables must not invent headers');
+    assert.equal((html.match(/<th(?:\s|>)/g) ?? []).length, 24, 'Column and row headings survive');
     assert(html.includes('<caption>') && html.includes('<strong>Feature</strong> matrix'));
     for (const text of ['Café 漢字 é', 'a|{b}', '&lt;script&gt;literal&lt;/script&gt;',
       'First paragraph.', 'Second paragraph.', 'First item', 'Second item',
@@ -351,11 +351,22 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
       'alt="Table logo"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg',
     ]) assert(html.includes(text), `Sphinx table missing ${text}`);
+    assert.equal((html.match(/<th scope="row"(?:\s|>)/g) ?? []).length, 7);
+    for (const text of ['<strong>List</strong> matrix', 'List first paragraph.', 'List second paragraph',
+      'Empty list row heading.', 'Quoted &quot;word&quot;, comma and <strong>bold</strong>.',
+      'Second CSV paragraph.', 'Padded CSV row', '漢字│quoted &#x27;word&#x27;',
+      `href="${prefix}/guide/details"`, 'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
+      'alt="List logo"', '.. csv-table:: &lt;script&gt;{code}|literal&lt;/script&gt;',
+      ':header: literal field in code',
+    ]) assert(html.includes(text), `Sphinx directive table missing ${text}`);
     assert(!html.includes('<script>literal</script>'));
   }
   assertTables(rendered.get('/guide/tables'), '');
   const tablePage = site.guidePages.find(p => p.route === '/guide/tables');
-  assert(indexGuidePage(tablePage, headingOptions).some(e => e.text.includes('Empty first cell.')), 'Table cell text is searchable');
+  const tableIndex = indexGuidePage(tablePage, headingOptions);
+  for (const phrase of ['Empty first cell.', 'List second paragraph', 'Second CSV paragraph.']) {
+    assert(tableIndex.some(entry => entry.text.includes(phrase)), `Table cell text is searchable: ${phrase}`);
+  }
   assert.deepEqual(site.guides[0].sidebar, [
     {kind:'link',label:'Welcome',route:'/guide'},
     {kind:'group',label:'Documentation',children:[
