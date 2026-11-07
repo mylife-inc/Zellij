@@ -1039,9 +1039,12 @@ fn literalinclude_preserves_code_and_resolves_nested_blocks_without_asset_copyin
     let source = t.path().join("s");
     basic(&source);
     let rst = include_str!("../../../../scripts/fixtures/sphinx-literalinclude.rst");
-    let code = include_str!("../../../../scripts/fixtures/sphinx-literal-code.txt");
+    let code =
+        include_str!("../../../../scripts/fixtures/sphinx-literal-code.txt").replace("\r\n", "\n");
+    // Exercise CRLF input on every host, independently of Git checkout settings.
+    let source_code = code.replace('\n', "\r\n");
     write(&source, "index.rst", rst);
-    write(&source, "snippets/Sample%20.py", code);
+    write(&source, "snippets/Sample%20.py", &source_code);
     write(&source, "snippets/Sample .py", "wrong file");
     for (i, args) in [vec![], vec!["--assets", "skip"], vec!["--layout", "site"]]
         .iter()
@@ -1069,7 +1072,7 @@ fn literalinclude_preserves_code_and_resolves_nested_blocks_without_asset_copyin
     let dry = t.path().join("dry");
     run(&source, &dry, &["--dry-run"], 0);
     assert!(!dry.exists());
-    assert_eq!(read(&source, "snippets/Sample%20.py"), code);
+    assert_eq!(read(&source, "snippets/Sample%20.py"), source_code);
     assert_eq!(read(&source, "index.rst"), rst);
 }
 

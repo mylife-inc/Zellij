@@ -415,7 +415,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       .replace(/<[^>]*>/g, '').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
       .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
     assert.equal(codes.length, 5);
-    assert.equal(codes[0].trimEnd(), literalCode.trimEnd());
+    assert.equal(codes[0].trimEnd(), literalCode.replace(/\r\n?/g, '\n').trimEnd());
     const alpha = 'literal_alpha = "Café 漢字"';
     const beta = 'literal_beta = "{not_executed()} <script>literal()</script>"';
     assert.equal(codes[1].trimEnd(), `${beta}\n${alpha}\n${beta}`);
