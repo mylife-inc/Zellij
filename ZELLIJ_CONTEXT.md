@@ -6144,3 +6144,17 @@ remain pending. Evidence: `/private/tmp/zellij-lists-{workspace,import,unit,clip
 No local Docker, browser, GUI or live provider operation ran.
 
 Reference: [Docutils list syntax and indentation](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#bullet-lists).
+
+
+Nested-list hosted assertion follow-up: initial PR #93 run `42333097022` on
+`967df6a` failed in CLI job `128283842248` after the Sphinx export succeeded.
+The new list-count assertion scanned the complete exported page (12 unordered
+lists, including navigation/sidebar), while its expected six lists describe
+only the authored article. The earlier MDX-only render had correctly passed.
+
+Fix **`eb4b83154d3082412bb37d4f178338b6d915e7d5`** requires and selects the
+exported `<article>` before counting. Expected counts, numbering, content and
+all browser assertions remain unchanged; no product code changed. Node syntax
+and diff checks pass. No local browser or Docker ran. The initial run did not
+reach the new nested-list browser assertions, so a fresh full final-head CI run
+is required before merge.
