@@ -5252,3 +5252,18 @@ Evidence: `/private/tmp/zellij-numbering-{unit-final,import-final,message-check,
 References: [Docutils enumeration](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#enumerated-lists),
 [sequence parser](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/states.py),
 [Roman browser counters](https://www.w3.org/TR/css-counter-styles-3/#lower-roman).
+
+
+Numbering browser-selector follow-up: PR #94 run `42338890305` on `863d301`
+failed in CLI job `128302002257` after all importer exports and the preexisting
+Sphinx browser assertions succeeded. The new `ol[type="a"]` selector matched
+both `a` and `A` lists because HTML type attribute selectors compare without
+case, causing a count of two where one exact-case sequence was expected.
+
+Fix **`496f97984810ed87b382eef536cc7b17f216c95b`** reads the four typed lists' exact DOM attribute values
+and compares them in JavaScript. It retains exact starts, direct item counts,
+computed list/item styles and parent-child type assertions, and also requires
+exactly four typed lists. Product output and Rust code are unchanged. Node
+syntax and diff checks pass. The earlier run did not reach the new computed
+style assertions, so fresh final-head CI remains required. No local browser
+or Docker ran. The 612-test Rust result remains valid for unchanged Rust code.
