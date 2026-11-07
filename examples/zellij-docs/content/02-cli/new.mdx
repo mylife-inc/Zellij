@@ -488,6 +488,8 @@ zel ns faq --count items=2 --set 'items.0.question=Where do I start?' \
 | Option | Meaning |
 | --- | --- |
 | `--set FIELD=VALUE` | Set a scalar field; repeat for multiple values |
+| `--set-json FIELD=JSON` | Replace a field with a complete JSON value, including lists and objects |
+| `--unset FIELD` | Omit an optional object field from the generated section |
 | `--count FIELD=N` | Set an array size; repeat for different arrays |
 | `--tiers N` | Pricing shortcut for `--count tiers=N` |
 | `--highlight VALUE` | Pricing tier name, 1-based number, or `none` to clear highlighting |
@@ -511,13 +513,58 @@ answer cannot discard those values.
 
 A numeric highlight selects a **1-based** tier; other names must match exactly
 one tier. Numeric tier names and a tier named `none` can be selected by position.
-`--highlight` cannot be combined with explicit `tiers.N.highlighted` assignments.
+`--highlight` cannot be combined with explicit `tiers.N.highlighted` assignments,
+complete JSON `tiers`/`tiers.N` values, or removal of those fields.
 
 The engine's cross-field rules still apply. Setting a media alternative switches
 the exclusive choice in `hero-split`, `steps-panel` or `media-panel`; the previous
 alternative remains as a commented example. For a matrix, `--count columns=N`
 resizes every row's cells, and `--count rows=N` adds correctly sized rows. Cell
 counts cannot be changed independently. Conflicting flags fail before writing.
+
+### Complete lists, objects and optional fields
+
+**Current source, newer than published rc.1**, accepts complete JSON values and
+optional-field removal when creating a section:
+
+```bash
+zel ns hero --set 'headline=Read the guide' \
+  --set-json 'cta=[{"label":"Read","href":"/guide","style":"ghost"}]' \
+  --unset cta.0.style
+zel ns hero --set-json 'background={"gradient":["accent","surface"]}'
+zel ns code-cards \
+  --set-json 'cards.0.code={"title":"Shell","body":"zel build"}' \
+  --set 'cards.0.code.body=zel build docs/manual' --unset cards.0.code.title
+```
+
+`--set-json` replaces the selected value; objects and lists are not merged with
+their starter values. The value must already satisfy its field schema, including
+required nested properties. It accepts JSON strings, numbers and booleans too:
+`--set-json 'headline="42"'` supplies a string, while `--set-json scrim=0.5`
+supplies a number to a media panel. `--set` retains its literal-text behavior.
+Unknown properties, wrong types, invalid JSON and out-of-bounds lists fail before
+writing. No YAML tags, JavaScript, shell expressions or file references are evaluated.
+
+The application order is fixed, regardless of argument position: counts first,
+then JSON replacements, scalar `--set` refinements, and `--unset` removals.
+Scalar/removal flags may refine children of a JSON replacement, as above.
+Two JSON replacements cannot overlap. Repeated field paths, assigning and removing
+the same field, contradictory counts (including `--tiers`) and changes that
+discard another supplied media value are rejected.
+
+`--unset` removes an optional property from an object. Its parent must exist,
+array indexes must be in range, and required fields cannot be removed. An already
+absent optional property is allowed. To remove list entries, replace the list or
+use `--count`; `--unset` does not renumber entries. Omitting a setting lets the
+engine apply its normal default, where one exists. This creates a new section;
+existing YAML files are never edited or overwritten.
+
+The wizard skips complete supplied JSON values and keeps explicit refinements
+and omissions. A supplied `tiers` list or tier object also skips the highlight
+question; include `highlighted` in its JSON or set `tiers.N.highlighted` explicitly.
+JSON matrix replacements must leave one cell per column in every row; supply
+matching `columns` and `rows` values together. All other media and schema rules
+still apply. These flags use the same new-file output and cancellation rules.
 
 Authoring needs neither Docker nor Node. The CLI validates field types, choices,
 bounds and shared cross-field rules using embedded engine metadata. It does not

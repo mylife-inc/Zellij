@@ -1,5 +1,5 @@
 //! Edit a fresh engine-owned section template without a runtime. This accepts
-//! scalar field edits and bounded array sizes, not executable snippets or schemas.
+//! scalar/JSON field edits, optional-field removal and bounded array sizes.
 use serde_json::{Map, Value, json};
 use zellij_core::{Error, Result, schema};
 
@@ -344,7 +344,16 @@ impl Section {
                 "--set accepts scalar text, booleans or numbers; use --count for lists",
             ));
         }
-        validate(field, &value, path)?;
+        self.assign(path, value)
+    }
+    pub fn set_json(&mut self, path: &str, text: &str) -> Result<()> {
+        // The normal JSON parser rejects trailing input and excessive nesting.
+        let value = serde_json::from_str(text)
+            .map_err(|_| failure(path, "expected a complete JSON value"))?;
+        self.assign(path, value)
+    }
+    fn assign(&mut self, path: &str, value: Value) -> Result<()> {
+        validate(self.field_schema(path)?, &value, path)?;
         let mut updated = self.value.clone();
         *target(
             &mut updated,
@@ -352,7 +361,7 @@ impl Section {
             &parts(path)?,
             path,
         )? = value;
-        // Setting a scalar media alternative switches the engine's exclusive group.
+        // Setting a media alternative switches the engine's exclusive group.
         if let Some(group) =
             schema::authoring_rules(&self.section_type).and_then(|r| r["exactlyOne"].as_array())
         {
@@ -367,6 +376,37 @@ impl Section {
             }
         }
         self.value = updated;
+        Ok(())
+    }
+    pub fn unset(&mut self, path: &str) -> Result<()> {
+        self.field_schema(path)?;
+        let parts = parts(path)?;
+        let (key, parents) = parts.split_last().unwrap();
+        let mut schema = schema::section_schema(&self.section_type).unwrap();
+        let mut value = &mut self.value;
+        for part in parents {
+            schema = field(schema, part, path)?;
+            value = match value {
+                Value::Object(object) => object.get_mut(*part),
+                Value::Array(items) => items.get_mut(index(part, path)?),
+                _ => None,
+            }
+            .ok_or_else(|| failure(path, "parent field is missing or has a different type"))?;
+        }
+        let object = value.as_object_mut().ok_or_else(|| {
+            failure(
+                path,
+                "--unset removes object fields; replace or resize a list instead",
+            )
+        })?;
+        let branch = shape(schema, key).unwrap();
+        if branch["required"]
+            .as_array()
+            .is_some_and(|required| required.iter().any(|name| name.as_str() == Some(*key)))
+        {
+            return Err(failure(path, "required field cannot be removed"));
+        }
+        object.remove(*key);
         Ok(())
     }
     pub fn count_bounds(&self, path: &str) -> Result<(usize, usize)> {
@@ -593,6 +633,96 @@ fn yaml_value(out: &mut String, value: &Value, indent: usize) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn complete_json_values_validate_before_replacing_a_field() {
+        let mut section = Section::new("hero").unwrap();
+        for (path, value) in [
+            ("cta", "[{\"label\":\"Read\"}]"),
+            (
+                "cta",
+                "[{\"label\":\"Read\",\"href\":\"/guide\",\"unknown\":true}]",
+            ),
+            ("cta", "[null]"),
+            ("headline", "42"),
+            ("headline", "null"),
+            ("headline", "\"First\" \"Second\""),
+            ("background", "{\"gradient\":[\"accent\"]}"),
+            ("type", "\"hero\""),
+        ] {
+            let before = section.value.clone();
+            assert!(section.set_json(path, value).is_err(), "{path}={value}");
+            assert_eq!(section.value, before);
+        }
+        section
+            .set_json("background", r#"{"gradient":["accent","surface"]}"#)
+            .unwrap();
+        section
+            .set_json(
+                "cta",
+                r#"[{"label":"Read 日本","href":"/guide","style":"ghost"}]"#,
+            )
+            .unwrap();
+        let value: Value = serde_yaml_ng::from_str(&section.render().unwrap()).unwrap();
+        assert_eq!(value, section.value);
+        assert_eq!(value["cta"][0]["label"], "Read 日本");
+    }
+    #[test]
+    fn optional_fields_can_be_removed_without_creating_missing_parents() {
+        let mut section = Section::new("hero").unwrap();
+        section
+            .set_json(
+                "cta",
+                r#"[{"label":"Read","href":"/guide","style":"ghost"}]"#,
+            )
+            .unwrap();
+        section.unset("cta.0.style").unwrap();
+        section.unset("cta.0.style").unwrap();
+        assert!(section.value["cta"][0].get("style").is_none());
+        for path in [
+            "headline",
+            "type",
+            "cta.0.label",
+            "cta.0",
+            "cta.1.style",
+            "unknown",
+            "background.gradient",
+            "cta.00.style",
+        ] {
+            let before = section.value.clone();
+            assert!(section.unset(path).is_err(), "{path}");
+            assert_eq!(section.value, before);
+        }
+        section.unset("cta").unwrap();
+        assert!(section.value.get("cta").is_none());
+        section.render().unwrap();
+    }
+    #[test]
+    fn structured_fields_retain_media_and_matrix_cross_field_rules() {
+        let mut media = Section::new("hero-split").unwrap();
+        media.set_json("visual", r#""assets/hero.svg""#).unwrap();
+        assert!(media.value.get("terminal").is_none());
+        media
+            .set_json("terminal", r#"{"body":"echo hello","title":"Demo"}"#)
+            .unwrap();
+        assert!(media.value.get("visual").is_none());
+        media.unset("terminal.title").unwrap();
+        media.render().unwrap();
+        media.unset("terminal").unwrap();
+        assert!(media.render().is_err());
+
+        let mut matrix = Section::new("matrix").unwrap();
+        matrix
+            .set_json("columns", r#"[{"label":"A"},{"label":"B"},{"label":"C"}]"#)
+            .unwrap();
+        assert!(matrix.render().is_err());
+        matrix
+            .set_json(
+                "rows",
+                r#"[{"label":"One","cells":["1","2","3"]},{"label":"Two","cells":["4","5","6"]}]"#,
+            )
+            .unwrap();
+        matrix.render().unwrap();
+    }
     #[test]
     fn every_embedded_template_is_accepted_and_unchanged() {
         for kind in schema::section_types() {

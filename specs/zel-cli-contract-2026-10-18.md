@@ -2184,3 +2184,31 @@ CI installs and builds wizard-generated wrappers and checks production browser
 navigation, reload, media and search on all three native operating systems.
 Published rc.1 predates this feature; arbitrary YAML editing and broader import
 and provider acceptance remain separate work.
+
+
+### 2026-11-07 — Structured section field authoring
+
+`new section` / `ns` accepts repeatable --set-json FIELD=JSON and --unset FIELD.
+The JSON value completely replaces a field and is validated against its embedded
+schema before mutation. Full objects/lists and typed scalars are supported; an
+object must contain its required properties. Optional fields can be omitted,
+including nested object fields, but required properties and array elements cannot
+be removed. Missing optional leaves are no-ops; missing/wrong-type parents and
+out-of-range indexes fail. Type selection remains the positional command argument.
+
+The fixed order is counts (including --tiers), then JSON replacements, scalar
+--set refinements, then removals. Scalar/removal flags may refine descendants of
+a JSON parent. JSON replacements must not overlap; duplicate paths, conflicting
+counts and unrelated media assignments that remove a supplied value fail before
+writing. All supplied counts are checked, including the --tiers shortcut.
+--highlight cannot override an explicitly supplied tiers list, tier object or
+highlighted field. The same selections suppress its interactive question.
+
+Wizard traversal skips complete supplied values and preserves explicit child
+refinements and omissions. Counts cannot discard their resulting values. Existing
+media alternatives still switch together; complete matrix replacements must leave
+matching column/cell counts without implicit repair. The complete generated section
+passes the same schema/cross-field checks before output. No existing YAML is edited,
+no dependency/runtime is needed, and no file reference or expression is evaluated.
+The source is newer than published rc.1. This extends new-section authoring; it is
+not a general editor for existing YAML documents.

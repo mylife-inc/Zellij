@@ -24,6 +24,300 @@ fn yaml(output: &std::process::Output) -> Value {
     serde_yaml_ng::from_slice(&output.stdout).unwrap()
 }
 #[test]
+fn json_lists_support_explicit_scalar_refinements_and_optional_field_removal() {
+    let temp = tempfile::tempdir().unwrap();
+    let cards = serde_json::json!([
+        {"title":"One", "featured":true, "code":{"title":"Shell", "body":"$(touch sentinel)\n日本\t42"}},
+        {"title":"Two", "code":{"body":"true: literal"}}
+    ]);
+    let assignment = format!("cards={cards}");
+    let refinements = [
+        "--set",
+        "cards.0.title=Updated 日本",
+        "--unset",
+        "cards.0.featured",
+        "--unset",
+        "cards.0.code.title",
+    ];
+    let mut first = vec!["ns", "code-cards", "--set-json", &assignment];
+    first.extend(refinements);
+    let out = run(temp.path(), &first, "", 0);
+    let mut expected = cards;
+    expected[0]["title"] = "Updated 日本".into();
+    expected[0].as_object_mut().unwrap().remove("featured");
+    expected[0]["code"].as_object_mut().unwrap().remove("title");
+    assert_eq!(yaml(&out)["cards"], expected);
+    assert!(!temp.path().join("sentinel").exists());
+    let mut reversed = vec!["new", "section", "code-cards"];
+    reversed.extend(refinements);
+    reversed.extend(["--set-json", &assignment]);
+    assert_eq!(run(temp.path(), &reversed, "", 0).stdout, out.stdout);
+    assert!(out.stderr.is_empty());
+}
+#[test]
+fn typed_json_scalars_and_complete_matrix_values_keep_their_types() {
+    let temp = tempfile::tempdir().unwrap();
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "media-panel",
+            "--set-json",
+            "scrim=0.5",
+            "--set-json",
+            r#"video="assets/movie.mp4""#,
+        ],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&out)["scrim"], 0.5);
+    assert!(yaml(&out).get("image").is_none());
+    let out = run(
+        temp.path(),
+        &["ns", "code-cards", "--set-json", "cards.0.featured=true"],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&out)["cards"][0]["featured"], true);
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "hero",
+            "--set-json",
+            r#"headline="42""#,
+            "--set-json",
+            "cta=[]",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&out)["headline"], "42");
+    assert_eq!(yaml(&out)["cta"], serde_json::json!([]));
+    let columns = r#"columns=[{"label":"A"},{"label":"B"},{"label":"C"}]"#;
+    let rows =
+        r#"rows=[{"label":"One","cells":["1","2","3"]},{"label":"Two","cells":["4","5","6"]}]"#;
+    let out = run(
+        temp.path(),
+        &["ns", "matrix", "--set-json", columns, "--set-json", rows],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&out)["rows"][1]["cells"][2], "6");
+    run(temp.path(), &["ns", "matrix", "--set-json", columns], "", 2);
+}
+#[test]
+fn invalid_json_or_removal_fails_before_any_prompt_or_output_write() {
+    let temp = tempfile::tempdir().unwrap();
+    for (kind, flags) in [
+        ("hero", vec!["--set-json", "headline=42"]),
+        ("hero", vec!["--set-json", "headline=null"]),
+        ("hero", vec!["--set-json", "cta=["]),
+        ("hero", vec!["--set-json", "cta=[] trailing"]),
+        ("hero", vec!["--set-json", r#"cta=[{"label":"Read"}]"#]),
+        (
+            "hero",
+            vec![
+                "--set-json",
+                r#"cta=[{"label":"Read","href":"/","typo":true}]"#,
+            ],
+        ),
+        ("hero", vec!["--set-json", r#"type="hero""#]),
+        ("hero", vec!["--unset", "headline"]),
+        ("hero", vec!["--unset", "typo"]),
+        ("hero", vec!["--unset", "background.gradient"]),
+        ("hero-split", vec!["--unset", "terminal"]),
+        ("code-cards", vec!["--unset", "cards.0"]),
+        ("code-cards", vec!["--unset", "cards.0.code.body"]),
+        ("code-cards", vec!["--unset", "cards.9.featured"]),
+    ] {
+        let mut args = vec!["ns", kind, "-i", "--out", "missing/section.yaml"];
+        args.extend(flags);
+        let out = run(temp.path(), &args, "", 2);
+        assert!(out.stdout.is_empty());
+        assert!(
+            !String::from_utf8(out.stderr)
+                .unwrap()
+                .contains("Press Enter")
+        );
+        assert!(!temp.path().join("missing").exists());
+    }
+}
+#[test]
+fn ambiguous_assignments_and_conflicting_counts_or_highlights_are_rejected() {
+    let temp = tempfile::tempdir().unwrap();
+    let tiers = r#"tiers=[{"name":"Free","price":"0"}]"#;
+    for (kind, flags) in [
+        (
+            "hero",
+            vec![
+                "--set-json",
+                r#"background="glow""#,
+                "--set",
+                "background.gradient.0=accent",
+            ],
+        ),
+        ("hero", vec!["--set-json", "cta=[]", "--set-json", "cta=[]"]),
+        (
+            "hero",
+            vec!["--set-json", r#"headline="A""#, "--set", "headline=A"],
+        ),
+        ("hero", vec!["--set-json", "cta=[]", "--unset", "cta"]),
+        ("hero", vec!["--unset", "badge", "--unset", "badge"]),
+        ("hero", vec!["--set", "badge=A", "--unset", "badge"]),
+        ("hero", vec!["--count", "cta=1", "--set-json", "cta=[]"]),
+        ("hero", vec!["--count", "cta=1", "--unset", "cta"]),
+        (
+            "hero-split",
+            vec![
+                "--set-json",
+                r#"terminal={"body":"Hello"}"#,
+                "--set-json",
+                r#"terminal.body="Hello""#,
+            ],
+        ),
+        (
+            "hero-split",
+            vec![
+                "--set-json",
+                r#"terminal.body="Hello""#,
+                "--set-json",
+                r#"terminal={"body":"Hello"}"#,
+            ],
+        ),
+        (
+            "hero-split",
+            vec![
+                "--set-json",
+                r#"terminal={"body":"Hello"}"#,
+                "--set",
+                "visual=assets/logo.svg",
+            ],
+        ),
+        ("pricing-table", vec!["--tiers", "2", "--set-json", tiers]),
+        (
+            "pricing-table",
+            vec!["--set-json", tiers, "--highlight", "1"],
+        ),
+        (
+            "pricing-table",
+            vec![
+                "--set-json",
+                r#"tiers.0={"name":"Free","price":"0"}"#,
+                "--highlight",
+                "none",
+            ],
+        ),
+    ] {
+        let mut args = vec!["ns", kind, "--out", "missing/section.yaml"];
+        args.extend(flags);
+        run(temp.path(), &args, "", 2);
+        assert!(!temp.path().join("missing").exists());
+    }
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "pricing-table",
+            "--tiers",
+            "1",
+            "--set-json",
+            tiers,
+            "--set",
+            "tiers.0.highlighted=true",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&out)["tiers"][0]["highlighted"], true);
+}
+#[test]
+fn wizard_preserves_complete_json_subtrees_and_explicit_omissions() {
+    let temp = tempfile::tempdir().unwrap();
+    let tiers = r#"tiers=[{"name":"Free","price":"0","description":"Remove me"},{"name":"Team","price":"20","highlighted":true}]"#;
+    let out = run(
+        temp.path(),
+        &[
+            "--quiet",
+            "ns",
+            "pricing-table",
+            "-i",
+            "--set-json",
+            tiers,
+            "--unset",
+            "tiers.0.description",
+        ],
+        "\n",
+        0,
+    );
+    let text = String::from_utf8_lossy(&out.stderr);
+    assert!(
+        !text.contains("tiers (items)")
+            && !text.contains("tiers.0")
+            && !text.contains("Highlight tier")
+    );
+    assert!(text.contains("Output file"));
+    let flags = run(
+        temp.path(),
+        &[
+            "ns",
+            "pricing-table",
+            "--set-json",
+            tiers,
+            "--unset",
+            "tiers.0.description",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(out.stdout, flags.stdout);
+    assert!(yaml(&flags)["tiers"][0].get("description").is_none());
+    assert_eq!(yaml(&flags)["tiers"][1]["highlighted"], true);
+}
+#[test]
+fn structured_authoring_honors_cwd_quiet_cancellation_and_existing_files() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fs::create_dir(root.join("Product 日本")).unwrap();
+    let args = [
+        "--cwd",
+        "Product 日本",
+        "--quiet",
+        "ns",
+        "hero",
+        "section.yaml",
+        "--set-json",
+        r#"headline="Authored""#,
+        "--unset",
+        "badge",
+    ];
+    let out = run(root, &args, "", 0);
+    assert!(out.stdout.is_empty() && out.stderr.is_empty());
+    let before = fs::read(root.join("Product 日本/section.yaml")).unwrap();
+    run(root, &args, "", 2);
+    assert_eq!(
+        fs::read(root.join("Product 日本/section.yaml")).unwrap(),
+        before
+    );
+    for input in ["", ":q\n"] {
+        run(
+            root,
+            &[
+                "ns",
+                "hero",
+                "-i",
+                "--set-json",
+                "cta=[]",
+                "--out",
+                "missing/section.yaml",
+            ],
+            input,
+            2,
+        );
+        assert!(!root.join("missing").exists());
+    }
+}
+#[test]
 fn all_templates_remain_identical_and_no_arguments_do_not_wait_in_pipelines() {
     let temp = tempfile::tempdir().unwrap();
     for kind in zellij_core::schema::section_types() {

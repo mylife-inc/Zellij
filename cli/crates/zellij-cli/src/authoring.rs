@@ -4,7 +4,7 @@ use crate::args::NewSectionArgs;
 use camino::{Utf8Path, Utf8PathBuf};
 use serde_json::Value;
 use std::{
-    collections::BTreeSet,
+    collections::{BTreeMap, BTreeSet},
     io::{self, BufRead, IsTerminal, Write},
 };
 use zellij_core::{Error, Result, files, schema};
@@ -18,6 +18,42 @@ fn assignment(input: &str) -> Result<(&str, &str)> {
         .split_once('=')
         .filter(|(key, _)| !key.is_empty())
         .ok_or_else(|| invalid("expected FIELD=VALUE"))
+}
+fn register_field(
+    fields: &mut BTreeSet<String>,
+    json_roots: &BTreeSet<String>,
+    path: &str,
+) -> Result<()> {
+    if fields.contains(path) {
+        return Err(invalid(format!(
+            "repeated field assignment or removal for {path}"
+        )));
+    }
+    if fields.iter().any(|other| {
+        (path.starts_with(&format!("{other}.")) && !json_roots.contains(other))
+            || other.starts_with(&format!("{path}."))
+    }) {
+        return Err(invalid(format!(
+            "overlapping field assignments or removals for {path}; supply each field once"
+        )));
+    }
+    fields.insert(path.to_owned());
+    Ok(())
+}
+fn remember_field(expected: &mut BTreeMap<String, Option<Value>>, section: &Section, path: &str) {
+    // Scalar/removal flags deliberately refine a complete JSON parent. Record
+    // that explicit override without masking changes to unrelated media fields.
+    for (parent, value) in expected.iter_mut() {
+        if path.starts_with(&format!("{parent}.")) {
+            *value = at(section.value(), parent).cloned();
+        }
+    }
+    expected.insert(path.to_owned(), at(section.value(), path).cloned());
+}
+fn fixes_highlight(path: &str) -> bool {
+    path == "tiers"
+        || (path.starts_with("tiers.")
+            && (path.split('.').count() == 2 || path.ends_with(".highlighted")))
 }
 fn output(path: &str) -> Result<(Utf8PathBuf, String)> {
     let path = Utf8Path::new(path);
@@ -130,6 +166,10 @@ impl<R: BufRead, W: Write> Prompt<R, W> {
         fields: &BTreeSet<String>,
         counts: &BTreeSet<String>,
     ) -> Result<()> {
+        // A complete JSON value owns the entire subtree, including its counts.
+        if fields.contains(path) {
+            return Ok(());
+        }
         let value = at(section.value(), path)
             .cloned()
             .ok_or_else(|| invalid("missing authoring field"))?;
@@ -195,7 +235,6 @@ impl<R: BufRead, W: Write> Prompt<R, W> {
                     self.fields(section, &format!("{path}.{i}"), fields, counts)?;
                 }
             }
-            _ if fields.contains(path) => {}
             value => {
                 let default = value
                     .as_str()
@@ -248,17 +287,17 @@ fn prepare<R: BufRead, W: Write>(
         return Err(invalid("--highlight requires pricing-table"));
     }
     let mut counts = BTreeSet::new();
+    let mut expected_counts = BTreeMap::new();
     for input in &args.counts {
         let (path, count) = assignment(input)?;
         if !counts.insert(path.to_owned()) {
             return Err(invalid(format!("repeated item count for {path}")));
         }
-        section.count(
-            path,
-            count
-                .parse()
-                .map_err(|_| invalid("item count must be a whole number"))?,
-        )?;
+        let count = count
+            .parse()
+            .map_err(|_| invalid("item count must be a whole number"))?;
+        section.count(path, count)?;
+        expected_counts.insert(path.to_owned(), count);
     }
     if let Some(count) = args.tiers {
         if kind != "pricing-table" {
@@ -268,45 +307,52 @@ fn prepare<R: BufRead, W: Write>(
             return Err(invalid("--tiers conflicts with --count tiers=N"));
         }
         section.count("tiers", count)?;
+        expected_counts.insert("tiers".into(), count);
     }
     let mut fields = BTreeSet::new();
-    for input in &args.fields {
+    let mut json_roots = BTreeSet::new();
+    let mut expected = BTreeMap::new();
+    for input in &args.json_fields {
         let (path, text) = assignment(input)?;
-        if !fields.insert(path.to_owned()) {
-            return Err(invalid(format!("repeated field assignment for {path}")));
+        // Two JSON replacements cannot overlap, regardless of argument order.
+        register_field(&mut fields, &BTreeSet::new(), path)?;
+        section.set_json(path, text)?;
+        if at(section.value(), path).is_some_and(|v| v.is_object() || v.is_array()) {
+            json_roots.insert(path.to_owned());
         }
-        section.set(path, text)?;
+        remember_field(&mut expected, &section, path);
     }
     for input in &args.fields {
         let (path, text) = assignment(input)?;
-        let matches = match at(section.value(), path) {
-            Some(Value::String(value)) => value == text,
-            Some(value) => serde_json::from_str::<Value>(text).ok().as_ref() == Some(value),
-            None => false,
-        };
-        if !matches {
+        register_field(&mut fields, &json_roots, path)?;
+        section.set(path, text)?;
+        remember_field(&mut expected, &section, path);
+    }
+    for path in &args.unset_fields {
+        register_field(&mut fields, &json_roots, path)?;
+        section.unset(path)?;
+        remember_field(&mut expected, &section, path);
+    }
+    for (path, value) in &expected {
+        if at(section.value(), path) != value.as_ref() {
             return Err(invalid(format!(
                 "conflicting field assignments remove or change {path}"
             )));
         }
     }
-    for input in &args.counts {
-        let (path, count) = assignment(input)?;
+    for (path, count) in &expected_counts {
         if at(section.value(), path)
             .and_then(Value::as_array)
             .map(Vec::len)
-            != count.parse::<usize>().ok()
+            != Some(*count)
         {
             return Err(invalid(format!("conflicting item counts for {path}")));
         }
     }
-    if args.highlight.is_some()
-        && fields
-            .iter()
-            .any(|p| p.starts_with("tiers.") && p.ends_with(".highlighted"))
-    {
+    let fixed_highlight = fields.iter().any(|p| fixes_highlight(p));
+    if args.highlight.is_some() && fixed_highlight {
         return Err(invalid(
-            "--highlight conflicts with explicit tier highlighted fields",
+            "--highlight conflicts with explicit tiers, tier objects or highlighted fields",
         ));
     }
     section.validate()?;
@@ -319,12 +365,7 @@ fn prepare<R: BufRead, W: Write>(
     }
     if let Some(highlight) = &args.highlight {
         section.highlight(highlight)?;
-    } else if interactive
-        && kind == "pricing-table"
-        && !fields
-            .iter()
-            .any(|s| s.starts_with("tiers.") && s.ends_with(".highlighted"))
-    {
+    } else if interactive && kind == "pricing-table" && !fixed_highlight {
         loop {
             let answer = prompt
                 .ask(

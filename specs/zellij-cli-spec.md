@@ -161,6 +161,14 @@ rules. Matrix cells follow column count; exclusive media choices switch together
 The wizard covers starter content, leaving optional field examples for editing.
 These changes are in source and require the next native release.
 
+Implemented 2026-11-07: section creation also accepts complete `--set-json
+FIELD=JSON` values and `--unset FIELD` for optional object properties. Counts
+precede JSON replacements, then scalar refinements and removals. Descendant
+scalar/removal flags can refine a JSON parent; overlapping JSON replacements and
+conflicting field/count/media selections fail before writes. The wizard retains
+the resulting values. Schema and cross-field validation still apply; existing
+authored YAML is never edited. See the section-authoring reference for details.
+
 ### 3.2 Understanding
 
 | Command | Does |

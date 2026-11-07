@@ -751,6 +751,12 @@ pub(crate) struct NewSectionArgs {
     /// Set a scalar field, for example headline=Hello or tiers.0.name=Team. Repeatable.
     #[arg(long = "set", value_name = "FIELD=VALUE")]
     pub(crate) fields: Vec<String>,
+    /// Replace a field with a complete JSON value, including a list or object. Repeatable.
+    #[arg(long = "set-json", value_name = "FIELD=JSON")]
+    pub(crate) json_fields: Vec<String>,
+    /// Omit an optional object field from the new section. Repeatable.
+    #[arg(long = "unset", value_name = "FIELD")]
+    pub(crate) unset_fields: Vec<String>,
     /// Set a list size, for example items=3 or tiers.0.features=2. Repeatable.
     #[arg(long = "count", value_name = "FIELD=COUNT")]
     pub(crate) counts: Vec<String>,

@@ -68,7 +68,9 @@ recovered on a targeted retry; both post-merge workflows passed. Native site
 wizards merged in PR #96 as `0849faf`, after all 16 final-head checks passed.
 Both post-merge workflows passed. Native page wizards merged in PR #97 as
 `c10c1e1`, after all 16 final-head checks passed; both post-merge workflows passed.
-Current work adds an optional native app wizard (`na -i`).
+Native app wizards merged in PR #98 as `2d7e4a5`, after all 16 final-head
+checks passed; both post-merge workflows passed. Current work adds complete JSON
+section values and optional-field removal.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -6564,3 +6566,55 @@ local Docker/browser/GUI, native release or provider mutation ran. Published
 rc.1 predates these wizards; arbitrary YAML editing, broader imports and live
 provider acceptance remain separate work.
 Evidence: `/private/tmp/zellij-app-wizard-{focused-fixed,final-focused,engine,clippy,docs,workspace-final}.log`.
+
+
+## 2026-11-07 — App wizard closure and structured section authoring
+
+PR #98 merged as **`2d7e4a58a16fb379290109f67950266e7fb982f9`** after all
+16 checks passed on `268c9361ae12940cfd135f59a9e5d8deb980671e` in
+[42390317045](https://github.com/mylife-inc/Zellij/actions/runs/42390317045),
+attempt 1. Tested/merged tree: `b26ef496a637bc38bb171fd30f122ad6318fa3a4`.
+The local suite passed 646 Rust tests (5 existing hosted cases selected separately
+in CI), and CI passed 427 engine tests. Wizard-generated wrappers passed real
+installation, production build, navigation, reload, media and search on Linux,
+macOS and Windows. All six native packages, both image architectures and combined
+manifests passed. Documentation retained all 46 original routes, 282 heading IDs,
+82 compatibility mappings and 29 byte-identical images without captured browser
+errors. Both post-merge workflows passed on attempt 1: main `42392744587`
+(16 jobs), base image `42392744541` (13 jobs). Remote main and native releases were
+refreshed before the follow-up; rc.1 remains the latest published candidate.
+
+Source **`f6e2c7e`** extends new section / ns with repeatable --set-json FIELD=JSON
+and --unset FIELD. Complete JSON values, including objects and lists, replace the
+selected field after embedded-schema validation. Optional properties can be
+removed without creating missing parents; required properties, list elements,
+unknown fields and out-of-range indexes fail. Engine defaults still apply to
+omitted settings. These options create new sections, not edits to existing YAML.
+
+Processing order is counts, JSON replacements, scalar refinements, then removals.
+A scalar/removal can refine a descendant of a JSON object/list. JSON replacements
+cannot overlap; scalar JSON values cannot be converted to objects by a descendant
+override. Duplicate paths, contradictory counts (now including --tiers), and
+media selections that discard another supplied value fail before writing.
+Complete tiers/tier-object values suppress the highlight question and conflict
+with --highlight; their highlighted values can be supplied directly. The wizard
+retains complete subtrees, refinements and omissions. Matrix and media rules,
+new-file output, cancellation, symlink and collision protection remain in force.
+
+All 12 section-authoring CLI tests pass on Unix (11 portable to Windows), covering
+complete nested values, typed scalars, deterministic refinements/removals, invalid
+JSON/schema/path cases, conflicts, quiet/cwd, cancellation and preservation.
+The 7 library authoring cases and existing alias/site/page/app tests pass (48
+focused CLI cases total). Node-only acceptance round-trips all 23 authored section
+types through JSON and the engine schemas, including literal Unicode/multiline
+text and explicit omissions. The expanded 25-route template fixture validates a
+structured hero; CI additionally asserts its final headline, link and anchor in
+hosted HTML alongside the unchanged 23-section wizard page.
+
+Warnings-denied Clippy, formatting, Node syntax, actionlint and diff checks pass;
+strict/deep project docs retain 55 routes and 23 examples. The complete Rust
+workspace passed 655 tests, with 5 existing hosted cases selected separately in
+CI. Final-head CI and merge remain pending. No local Docker/browser/GUI,
+native release or live provider mutation ran. User docs, CLI contract, specification
+and status distinguish new-section authoring from general existing-file editing.
+Evidence: `/private/tmp/zellij-structured-section-{focused,focused-final,library-final,engine,templates,clippy-final,docs,workspace}.log`.
