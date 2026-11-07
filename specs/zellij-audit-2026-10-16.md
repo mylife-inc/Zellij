@@ -5356,3 +5356,23 @@ Evidence: `/private/tmp/zellij-substitutions-{import-exact,unit-final,engine-ful
 No local Docker/browser/GUI, native release or production/provider mutation ran.
 References: [Docutils substitution definitions](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions),
 [replacement text](https://docutils.sourceforge.io/docs/ref/rst/directives.html#replacement-text).
+
+
+#### 2026-11-06 — Substitution final-suite and inline-layout review
+
+The final Rust workspace run on `1041870` completed successfully: **621 passed,
+5 ignored**, across 51 suites. Source **`26d2d01`** then corrected the shared
+image-layout helper after a new SSR regression reproduced missing inline classes
+in compact Markdown lists and GFM table cells. It recognizes text in the same
+inline flow, excluding nested blocks, so image-only figures stay blocks even
+when a nested list contains text. The expanded regression passes, as do all
+**427 engine tests** and workspace type checking. No Rust source changed after
+the full Rust result. Earlier passing checks remain recorded above.
+
+Evidence: `/private/tmp/zellij-substitutions-workspace-final.log`,
+`zellij-substitutions-image-review.log` (reproduced failure),
+`zellij-substitutions-image-review-fixed.log`,
+`zellij-substitutions-engine-review.log`, and
+`zellij-substitutions-typecheck-review.log`. Initial PR #95 CI `42348865898`
+on `1041870` does not validate this follow-up. Final-head hosted/native
+acceptance and merge remain pending. No local browser/container was run.
