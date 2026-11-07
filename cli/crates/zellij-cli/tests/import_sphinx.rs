@@ -37,6 +37,156 @@ fn basic(s: &Path) {
 }
 
 #[test]
+fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("source");
+    let o = t.path().join("out");
+    basic(&s);
+    let source = include_str!("../../../../scripts/fixtures/sphinx-tables.rst");
+    write(&s, "index.rst", source);
+    write(
+        &s,
+        "details.rst",
+        ".. _install:\n\nInstallation\n============\n",
+    );
+    write(&s, "notes.txt", "preserved download");
+    write(&s, "media/logo.svg", "<svg>preserved image</svg>");
+    let r = run(&s, &o, &["--layout", "site"], 0);
+    let c = o.join("content");
+    let body = read(&c, "01-guide/index.mdx");
+    assert_eq!(body.matches("<table>").count(), 5);
+    assert_eq!(body.matches("<thead>").count(), 2);
+    assert_eq!(body.matches("<th>").count(), 6);
+    assert_eq!(body.matches("<caption>").count(), 1);
+    for expected in [
+        "**Feature** matrix",
+        "Café 漢字 e\u{301}",
+        "[Details](</guide/details>)",
+        "[Installation](</guide/details#install>)",
+        "[Notes](</_zellij/assets/imported/docs/notes.txt>)",
+        "![Table logo](</_zellij/assets/imported/docs/media/logo.svg>)",
+        "**Bold**",
+        "*emphasis*",
+        "` a|{b} `",
+        "&lt;script&gt;literal&lt;/script&gt;",
+        "First paragraph.\n\nSecond paragraph.",
+        "- First item",
+        "> **note**",
+        ".. include:: /not/executed",
+        "First line extends beyond the border.",
+        "Continuation with **strong** text.",
+        "Empty first cell.",
+        "No invented header.",
+    ] {
+        assert!(body.contains(expected), "{expected}: {body}");
+    }
+    assert_eq!(
+        read(&c, "assets/imported/docs/notes.txt"),
+        "preserved download"
+    );
+    assert_eq!(
+        read(&c, "assets/imported/docs/media/logo.svg"),
+        "<svg>preserved image</svg>"
+    );
+    assert_eq!(read(&s, "index.rst"), source);
+    assert!(!report(&r).contains("HTML/JSX asset and link attributes"));
+    let dry = t.path().join("dry");
+    run(&s, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+    let skipped = t.path().join("skip");
+    run(&s, &skipped, &["--assets", "skip"], 0);
+    assert!(!skipped.join("assets/imported").exists());
+}
+
+#[test]
+fn unsupported_or_malformed_tables_fail_before_creating_output() {
+    for table in [
+        "+---+---+\n| a     |\n+---+---+", // column span
+        "+---+---+\n| a | b |\n+---+   |\n| c |   |\n+---+---+", // row span
+        "+---+---+\n| a | b |",            // missing border
+        "+---+---+\n| a | b |\n+===+---+", // mixed divider
+        "+---+---+\n| a | b | trailing\n+---+---+", // content outside grid
+        "===  ===\nspanning\n--------\n===  ===",
+        "===  ===\na    b\n---  ---", // missing equals footer
+        "===  ===\n     no preceding row\n===  ===",
+        "===  ===\na   xb\n===  ===", // text in gutter
+        ".. table:: Caption\n   :widths: auto\n\n   ===  ===\n   a    b\n   ===  ===",
+        ".. table:: Caption\n\n   ===  ===\n   a    b\n   ===  ===\n\n   extra content",
+        ".. list-table::\n\n   * - a\n     - b",
+        ".. csv-table::\n   :file: /private/data",
+        "===  ===\na    .. include:: file\n===  ===",
+        "+-+\n|\\|\n+-+",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        basic(&s);
+        let text = format!("Home\n====\n\n{table}\n");
+        write(&s, "index.rst", &text);
+        let r = run(&s, &o, &[], 2);
+        assert!(report(&r).contains("index.rst"), "{r:?}");
+        assert!(!o.exists(), "{table}");
+        assert_eq!(read(&s, "index.rst"), text);
+    }
+}
+
+#[test]
+fn table_asset_containment_applies_to_copy_skip_and_dry_runs() {
+    for args in [vec![], vec!["--assets", "skip"], vec!["--dry-run"]] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        basic(&s);
+        write(t.path(), "secret", "outside-file-sentinel");
+        write(
+            &s,
+            "index.rst",
+            "Home\n====\n\n===  ===\na    :download:`outside <../secret>`\n===  ===\n",
+        );
+        let output = run(&s, &o, &args, 2);
+        assert!(report(&output).contains("escapes"), "{output:?}");
+        assert!(!report(&output).contains("outside-file-sentinel"));
+        assert!(!o.exists());
+        assert_eq!(read(t.path(), "secret"), "outside-file-sentinel");
+    }
+}
+
+#[test]
+fn nested_tables_enforce_the_depth_limit_even_with_empty_cells() {
+    let mut table = "\\ ".to_string();
+    for depth in 1..=17 {
+        let width = table.lines().map(str::len).max().unwrap();
+        let border = format!("+{}+", "-".repeat(width + 2));
+        table = format!(
+            "{border}\n{}\n{border}",
+            table
+                .lines()
+                .map(|line| format!("| {line:width$} |"))
+                .collect::<Vec<_>>()
+                .join("\n")
+        );
+        if depth < 16 {
+            continue;
+        }
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        basic(&s);
+        write(&s, "index.rst", format!("Home\n====\n\n{table}\n"));
+        let output = run(&s, &o, &[], if depth == 16 { 0 } else { 2 });
+        if depth == 16 {
+            assert_eq!(
+                read(&o, "01-guide/index.mdx").matches("<table>").count(),
+                16
+            );
+        } else {
+            assert!(report(&output).contains("nesting exceeds 16"));
+            assert!(!o.exists());
+        }
+    }
+}
+
+#[test]
 fn converts_navigation_labels_links_code_images_and_source_urls() {
     let t = tempfile::tempdir().unwrap();
     let s = t.path().join("source");
@@ -184,7 +334,7 @@ fn unsupported_rst_fails_before_any_output_without_interpreting_literal_code() {
         "|substitution|",
         "Term\n   definition",
         "- parent\n\n  - nested",
-        "+---+---+\n| a | b |\n+---+---+",
+        "+---+---+\n| a     |\n+---+---+",
         ".. _dangling:\n\nParagraph",
         ":ref:`missing`",
         "`default role`",

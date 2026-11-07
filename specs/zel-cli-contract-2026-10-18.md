@@ -1989,3 +1989,16 @@ CLI handling. This does not validate content, output ownership/writability,
 credentials or provider access. See the [doctor reference](../examples/zellij-docs/content/02-cli/doctor.mdx)
 for the report schema, selection rules and exit codes. Native release and final
 cross-platform CI are separate from this implementation record.
+
+
+## 2026-11-06 — Rectangular Sphinx table conversion
+
+Sphinx conversion now accepts rectangular grid/simple tables and option-free
+`table` captions. It preserves headerless/multi-header tables, multiline cells,
+supported nested blocks, Unicode display columns and source references/assets.
+Generated MDX uses semantic HTML with Markdown cell bodies. Shared conversions
+in `migrate` and `ship`, dry run, and asset copy/skip retain their usual behavior.
+Spans, list/csv table directives, table options and unsupported nested content
+fail before output. See the conversion reference for limits and the durable
+context for source and verification evidence. Real hosted exports remain a CI
+check; the local renderer boundary does not start a browser or Docker.

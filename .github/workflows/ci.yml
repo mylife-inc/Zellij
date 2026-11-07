@@ -281,7 +281,9 @@ jobs:
         # load, but Podman cannot see the image in Docker's local image store.
         run: printf 'DOCKER_CONTEXT=%s\n' "$(docker context show)" >> "$GITHUB_ENV"
 
-      - name: Converted documents link to exported routes and assets
+      - run: npx playwright install --with-deps chromium
+
+      - name: Converted documents retain routes, assets and hydrated tables
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: |
@@ -296,9 +298,7 @@ jobs:
       - name: Ejected distribution installs, validates and builds outside the checkout
         env:
           ZELLIJ_IMAGE: zellij-ci
-        run: |
-          npx playwright install --with-deps chromium
-          node scripts/check-app-scaffold.mjs --eject
+        run: node scripts/check-app-scaffold.mjs --eject
 
       - name: Hosted optional features install and render only when selected
         run: node scripts/check-hosted-features.mjs

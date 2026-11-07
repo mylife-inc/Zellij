@@ -438,6 +438,36 @@ Code, literal, command, file and keyboard roles become inline code; emphasis and
 strong roles retain formatting. Source HTML is treated as literal text. Code
 blocks remain literal, including directive-looking examples and backticks.
 
+Rectangular **grid and simple tables** are supported, including tables without
+headers, multiple header rows, multiline cells and `.. table::` captions.
+Cells reuse the supported reStructuredText subset above: paragraphs, lists,
+admonitions, literal code, images and references keep their meaning. Generated
+MDX uses semantic HTML tables with Markdown inside cells, so links and copied
+assets still use the normal conversion pipeline and table text remains searchable.
+Wide characters and combining marks are measured as display columns.
+
+```rst
+.. table:: Supported formats
+
+   +----------+---------+
+   | Format   | Native? |
+   +==========+=========+
+   | Markdown | Yes     |
+   +----------+---------+
+```
+
+Simple-table continuation lines have an empty first column; use an empty comment
+(`..`) in that column to start a new row whose first cell is empty. The final
+column may extend beyond the border. Keep table borders aligned and separate a
+table from surrounding text with blank lines. The importer rejects row/column
+spans, malformed geometry, `list-table`/`csv-table`, table directive options,
+and headings/section labels/toctrees inside cells before creating output. It does
+not flatten merged cells or silently reinterpret them. Tables are limited to
+128 columns, 10,000 rows, 100,000 cells and a 16,384-column border; table/admonition
+nesting shares a limit of 16. See the upstream
+[table syntax](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#tables)
+and [table directive](https://docutils.sourceforge.io/docs/ref/rst/directives.html#table).
+
 Section labels and supported implicit section IDs become explicit anchors used
 by links, TOC and search. Non-decomposing Unicode heading identifiers need an
 explicit ASCII label. Duplicate heading IDs/implicit names are rejected. Review
@@ -458,7 +488,7 @@ dry-run options retain their normal safety checks.
 
 This is a **conservative reStructuredText subset**, newer than published rc.1.
 MyST, autodoc/domain roles, custom extensions, `include`/`literalinclude`, raw
-directives, tables, substitutions, field lists (including `:orphan:`), footnotes,
+directives, spanning tables, substitutions, field lists (including `:orphan:`), footnotes,
 definition/quote blocks, nested lists, glob/numbered toctrees, extra directive
 options and custom/dirhtml builders require manual migration. Unsupported parsed
 constructs fail with the source filename before output is created. No source
@@ -638,6 +668,8 @@ references to its default `static/` folder using `/img/logo.svg` or
 `@site/static/img/logo.svg`; those files go into `assets/imported/static/`.
 Copied images and downloads use the published asset URL, including the site's
 `basePath` (also configure the same prefix in the wrapper's Next config).
+Download links open the copied file through ordinary browser navigation, without
+requesting page data from the website router.
 The dry-run plan lists asset files too.
 
 ### Original website URLs

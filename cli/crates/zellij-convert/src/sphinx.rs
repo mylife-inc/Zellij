@@ -1,6 +1,7 @@
 //! Import declarative Sphinx/reStructuredText documentation without Python.
 mod config;
 mod rst;
+mod tables;
 
 use crate::{
     Confidence, Conversion, ConvertOptions, Converter, Unmapped,
