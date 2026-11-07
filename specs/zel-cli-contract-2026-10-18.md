@@ -2151,3 +2151,36 @@ menu.yaml remain untouched; authors must apply the report and register links.
 Templates retain their TODOs and placeholder media, which need review before
 strict/deep hosted validation. Generation runs natively without tools or network.
 App wizards and arbitrary YAML editing remain separate work; rc.1 is older.
+
+
+### 2026-11-07 — Optional native app-creation wizard
+
+`new app` / `na` accepts `--interactive` / `-i`. The positional destination
+continues to default to the current directory and must be new or empty under
+the existing dotfile/collision policy. No automatic prompts are introduced.
+The wizard asks only for missing engine path, content mode/source, name, port
+and optional features. Engine defaults to engine/packages/zellij; content mode
+defaults to existing; its folder defaults to normal configured discovery or
+otherwise docs/zellij. Name defaults to the destination name; port uses the
+selected site's preview.port or 3000 for a starter. Features default to none.
+
+Content mode and feature choices accept displayed numbers or exact names.
+Flags skip their questions; --with-docs and explicit global site/config selectors
+skip content choice/path questions. Engine and folder answers are literal paths
+relative to the effective --cwd. --config retains explicit-file semantics.
+App feature flags now also accept standalone none, equivalent to no features;
+none mixed with another selection is rejected. Existing feature lists and wrapper
+metadata ordering are unchanged. Invalid answers retry; invalid supplied engine,
+site, name and feature selections fail before questions.
+
+The shared Prompt stays on stderr under quiet mode. Explicit -i can read piped
+answers. EOF, :q or interruption while answering creates no wrapper files. The
+normal writer checks all destinations before writes and never overwrites authored
+files. Content/engine overlap and compatibility are validated in planning and
+again before writing. Existing content remains referenced in place; no copy,
+package installation, network call, runtime or server is started by the wizard.
+The local engine must already be built; npm install/check/dev remain separate.
+CI installs and builds wizard-generated wrappers and checks production browser
+navigation, reload, media and search on all three native operating systems.
+Published rc.1 predates this feature; arbitrary YAML editing and broader import
+and provider acceptance remain separate work.

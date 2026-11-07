@@ -150,8 +150,7 @@ existing files. Portable creation has no overwrite option.
 
 The wizard generates the same files as the equivalent flags and uses no Node,
 container, network, dependency installer or server. It covers whole-site
-creation. Page creation also has a wizard, described below; an app wizard remains
-separate work.
+creation. Page and app creation also have wizards, described below.
 
 ## `zel new docs [dir]`
 
@@ -307,6 +306,52 @@ Portable Markdown and the old `marketing/` layout are not supported by this
 wrapper command. For portable Markdown inside a Next image, use
 [`zel image next`](/cli/image), which includes the portable adapter.
 
+### Choose wrapper settings interactively
+
+**Current source, newer than published rc.1**, supports an optional wizard:
+
+```bash
+zel na website -i
+zel na website -i --with-docs --engine /path/to/Zellij/engine/packages/zellij
+zel na website -i --site-root docs/manual --features none
+```
+
+`--interactive` / `-i` asks only for settings not supplied by flags, in this order:
+
+1. The built local engine package, defaulting to `engine/packages/zellij`.
+2. Existing hosted content or a new starter (default: existing). With existing
+   content, choose its folder; the default is the normally discovered configured
+   site, or `docs/zellij` if none is found. `--with-docs`, `--site-root` or
+   `--config` skips these content questions.
+3. The app display name, defaulting to the destination folder's name.
+4. The development/start port, defaulting to the selected site's `preview.port`,
+   or 3000 for a starter.
+5. Optional features: `none`, `maths`, `diagrams`, or `all` (default: none).
+
+Content and feature choices also accept their displayed numbers. Enter keeps
+a displayed default. The destination remains the positional argument, defaulting
+to `.`; use a new or empty folder. Paths entered at prompts are literal paths
+relative to the selected working directory; do not add shell quotes. To select
+a nonstandard configuration file, use `--config`.
+
+Invalid answers are requested again. Explicit invalid flags, engines or site
+selections fail before questions. `--features none` explicitly selects no
+optional packages and skips its question; it cannot be combined with other
+feature selections. Existing flags and noninteractive defaults retain their
+behavior. Without `-i`, this command never prompts.
+
+Prompts use stderr, including with `--quiet`. Explicit `-i` accepts terminal or
+piped answers. `:q`, end of input or interruption while answering cancels without
+writing wrapper files. The engine must already be built and compatible; the
+wizard validates it without installing or executing it. Existing content is
+referenced in place, and its files stay intact. The normal output, overlap,
+symlink and collision checks still apply to the complete plan before writes.
+There is no overwrite option.
+
+The wizard generates the same wrapper as equivalent flags. It installs no
+dependencies and starts no server. After creation, run `npm install` in the
+wrapper, then `npm run check` and `npm run dev`, as described below.
+
 <div id="--with-docs-and-both-together" className="zellij-legacy-anchor" />
 
 ### Start with documentation included
@@ -353,12 +398,13 @@ site. The wrapper and Next images share their core template.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | New or empty wrapper destination | `.` |
+| `--interactive` / `-i` | Choose missing wrapper settings interactively | off |
 | `--site-root <path>` | Existing configured site or raw hosted content | Current `zel.yaml`, then `docs/zellij/zel.yaml` |
 | `--with-docs` | Create a hosted starter under the wrapper's `docs/zellij` | Off; conflicts with `--site-root` |
 | `--engine <path>` | Built local engine package | `./engine/packages/zellij`, when present in the working directory |
 | `--name <text>` | Display name for starter docs; normalized for npm's package name | Destination folder name |
 | `--port <number>` | Development and production server port, 1–65535 | Selected site's `preview.port`, otherwise 3000 |
-| `--features <list>` | Comma-separated `maths`, `diagrams`, or `all` | Neither feature enabled or required |
+| `--features <list>` | Comma-separated `maths`, `diagrams`, or `all`; standalone `none` disables both | Neither feature enabled or required |
 
 Scaffolding rejects incompatible/unbuilt engines and unsafe or nonempty
 destinations. Existing noncolliding dotfiles such as a fresh `.git` directory

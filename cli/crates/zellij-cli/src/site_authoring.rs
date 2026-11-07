@@ -66,36 +66,6 @@ fn valid_theme(theme: &str) -> Result<()> {
     }
     Ok(())
 }
-fn choose<R: BufRead, W: Write>(
-    prompt: &mut Prompt<R, W>,
-    label: &str,
-    choices: &[(&str, &str)],
-    default: &str,
-) -> Result<String> {
-    for (i, (name, description)) in choices.iter().enumerate() {
-        prompt.message(&format!("  {}. {name} — {description}", i + 1))?;
-    }
-    loop {
-        let Some(answer) = prompt.ask(label, Some(default))? else {
-            return Ok(default.into());
-        };
-        let answer = answer.trim();
-        if let Some((name, _)) = choices.iter().find(|(name, _)| *name == answer) {
-            return Ok((*name).into());
-        }
-        if let Some((name, _)) = answer
-            .parse::<usize>()
-            .ok()
-            .and_then(|n| n.checked_sub(1))
-            .and_then(|i| choices.get(i))
-        {
-            return Ok((*name).into());
-        }
-        prompt.problem(&Error::InvalidArgument(
-            "choose a name or number from the list".into(),
-        ))?;
-    }
-}
 fn plan<R: BufRead, W: Write>(
     options: &Options<'_>,
     default_name: &str,
@@ -137,7 +107,7 @@ fn plan<R: BufRead, W: Write>(
                 .iter()
                 .map(|t| (t.name.as_str(), t.description.as_str()))
                 .collect();
-            theme = choose(prompt, "Theme (name or number)", &themes, &theme)?;
+            theme = prompt.choose("Theme (name or number)", &themes, &theme)?;
         }
         if !minimal && !full {
             let choices: &[(&str, &str)] = if options.portable {
@@ -155,13 +125,12 @@ fn plan<R: BufRead, W: Write>(
                     ("full", "Catalogue with every section type and local media"),
                 ]
             };
-            let starter = choose(prompt, "Starter (name or number)", choices, "standard")?;
+            let starter = prompt.choose("Starter (name or number)", choices, "standard")?;
             minimal = starter == "minimal";
             full = starter == "full";
         }
         if !options.portable && !guide {
-            guide = choose(
-                prompt,
+            guide = prompt.choose(
                 "Include a guide?",
                 &[
                     ("no", "Landing content only"),
