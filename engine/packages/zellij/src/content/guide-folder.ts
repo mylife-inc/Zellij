@@ -245,5 +245,5 @@ function firstHeading(markdown: string): string | undefined {
  * either intentional or inside a code fence, and neither should be touched.
  */
 function stripLeadingH1(markdown: string): string {
-  return markdown.replace(/^\s*#\s+.+?(\n|$)/, '').replace(/^\n+/, '');
+  return markdown.replace(/^\s*#\s+.+?(?:\r\n?|\n|$)/, '').replace(/^(?:\r\n?|\n)+/, '');
 }

@@ -594,6 +594,7 @@ The original draft said assets are "served under the site's asset route" without
 ### 13.6 Guide search — FlexSearch + build-time index
 
 - A **build-time indexer** walks guide MDX, strips to searchable text (headings weighted), and emits a static JSON index to `public/_zellij/search-index.json`. Marketing pages are **excluded** (§7.3).
+- MDX body indexing excludes parsed Markdown code blocks and inline-code spans. Fence length/type, nested containers and unfinished fences follow the renderer's parser. Heading labels retain their rendered code text. Code ranges are masked without changing source offsets before sections are split, so CRLF/Unicode and headings inside components keep the correct anchor and passage. This does not change the separate native portable renderer's indexing policy.
 - The **⌘K modal** (client component, also opened by `nav.search`, §5.5) lazy-loads **FlexSearch** + the index on first open (kept out of the initial bundle and out of guide-page critical path). Index fetch URL is `basePath`-aware via `asset()`/`withBasePath`.
 - Chosen over Pagefind for full control of `basePath` correctness and exactly what gets indexed under a reverse proxy.
 

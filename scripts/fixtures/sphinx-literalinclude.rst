@@ -38,3 +38,10 @@ Selected excerpt
           :lines: 2-3
           :dedent:
           :language: text
+
+Search keeps the explanation around the example.
+
+.. code-block:: text
+
+   ```
+   fenceonlytoken

@@ -83,8 +83,13 @@ rather than merges, so a deleted asset does not linger in `public/`.
 **`search-index`** uses the same resolved guide pages as rendering, including
 sidebar and page route overrides. It removes the title heading exactly as the
 page layout does, then parses heading IDs with the renderer's slug plugin.
+This also applies to Windows (CRLF) and CR-only source line endings, so a title
+does not reappear in the body or change repeated-heading anchors.
 Search and the table of contents agree on formatted headings, repeated headings
-and code fences. This parses MDX syntax without evaluating authored JavaScript
+and code fences. Body text excludes Markdown code blocks and inline code using
+the same parser, including longer fences containing shorter fence examples.
+Section links remain tied to the original document positions. This parses MDX
+syntax without evaluating authored JavaScript
 and writes a static JSON index. The ⌘K modal fetches that file
 and loads FlexSearch on first open. Section pages are excluded by design.
 

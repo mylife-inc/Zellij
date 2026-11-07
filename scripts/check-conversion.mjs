@@ -414,7 +414,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const codes = [...html.matchAll(/<pre\b[^>]*>([\s\S]*?)<\/pre>/g)].map(match => match[1]
       .replace(/<[^>]*>/g, '').replace(/&quot;/g, '"').replace(/&#x27;|&#39;/g, "'")
       .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&'));
-    assert.equal(codes.length, 5);
+    assert.equal(codes.length, 6);
     assert.equal(codes[0].trimEnd(), literalCode.replace(/\r\n?/g, '\n').trimEnd());
     const alpha = 'literal_alpha = "Café 漢字"';
     const beta = 'literal_beta = "{not_executed()} <script>literal()</script>"';
@@ -422,12 +422,20 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert.equal(codes[2].trimEnd(), alpha);
     assert.equal(codes[3].trimEnd(), beta);
     assert.equal(codes[4].trimEnd(), `${alpha}\n${beta}`);
+    assert.equal(codes[5].trimEnd(), '```\nfenceonlytoken');
     assert(!html.includes('<script>literal()</script>'));
     assert(!html.includes('href="../missing.md"'));
   }
   assertLiteralIncludes(rendered.get('/guide/literalinclude'));
   const literalPage = site.guidePages.find(p => p.route === '/guide/literalinclude');
-  assert(indexGuidePage(literalPage, headingOptions).some(entry => entry.text.includes('explanatory prose remains searchable')));
+  const literalIndex = indexGuidePage(literalPage, headingOptions);
+  function assertLiteralSearch(entries) {
+    const passages = entries.filter(entry => entry.route.startsWith('/guide/literalinclude'));
+    assert(passages.some(entry => entry.text.includes('explanatory prose remains searchable')));
+    assert(passages.some(entry => entry.route.endsWith('#selected-excerpt') && entry.text.includes('Search keeps the explanation')));
+    assert(!passages.some(entry => /fenceonlytoken|literal.?alpha|literal.?beta|undefined-substitution/.test(entry.text)));
+  }
+  assertLiteralSearch(literalIndex);
   assert.deepEqual(extractToc(literalPage.body, headingOptions).map(h => h.id), ['selected-excerpt']);
   await assert.rejects(readFile(path.join(content, 'assets/imported/docs/snippets/Sample%20.py')), {code:'ENOENT'});
   const substitutionPage = site.guidePages.find(p => p.route === '/guide/substitutions');
@@ -470,6 +478,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
     assertSubstitutions(await readFile(path.join(output, 'guide/substitutions.html'), 'utf8'), '/products/docs');
     assertLiteralIncludes(await readFile(path.join(output, 'guide/literalinclude.html'), 'utf8'));
+    assertLiteralSearch(JSON.parse(await readFile(path.join(output, '_zellij/search-index.json'), 'utf8')));
     await assert.rejects(readFile(path.join(output, '_zellij/assets/imported/docs/snippets/Sample%20.py')), {code:'ENOENT'});
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
     for (const text of ['href="/products/docs/guide/setup/api-reference#stable-install"','href="/products/docs/guide/setup/api-reference?q=1#stable-install"',`src="/products/docs/_zellij/assets/imported/docs/media/logo.svg?v=${assetHash}"`,'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"','&lt;script&gt;literal_source()&lt;/script&gt;']) assert(home.includes(text),`Sphinx export missing ${text}`);

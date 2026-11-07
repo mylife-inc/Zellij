@@ -491,6 +491,17 @@ describe('guide folders', () => {
     ]);
   });
 
+  it.each(['\n', '\r\n', '\r'])('removes only the leading title with %j line endings', async (eol) => {
+    const body = ['## Detail', '', 'Paragraph.', '', '```md', '# Literal title', '```', ''].join(eol);
+    const site = await load({
+      'site.yaml': SITE,
+      'manual/_sidebar.yaml': '- intro\n',
+      'manual/intro.mdx': `${eol}# Intro${eol}${eol}${body}`,
+    });
+    expect(site.guidePages[0]?.title).toBe('Intro');
+    expect(site.guidePages[0]?.body).toBe(body);
+  });
+
   it('warns about a folder with no _sidebar.yaml instead of silently ignoring it', async () => {
     const { warnings } = await loadWithWarnings({
       'site.yaml': SITE,

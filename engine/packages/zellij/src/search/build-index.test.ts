@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { buildSearchIndex, indexGuidePage, mdxToText } from './build-index';
 import type { GuidePage } from '../content/types';
+import remarkMath from 'remark-math';
 
 function guide(body: string, overrides: Partial<GuidePage> = {}): GuidePage {
   return {
@@ -23,6 +24,52 @@ describe('mdxToText', () => {
 
   it('drops inline code but keeps surrounding prose', () => {
     expect(mdxToText('Run `acme login` to sign in.')).toBe('Run to sign in.');
+  });
+
+  it.each([
+    '````text\n```\nfenced_only_sentinel\n````',
+    '~~~~text\n~~~\nfenced_only_sentinel\n~~~~',
+    '`````text\n# literal heading\n````mdx\n[fenced_only_sentinel](../missing.md)\n````\n`````',
+    '```text\nfenced_only_sentinel\n`````',
+    '~~~text\nfenced_only_sentinel\n~~~~~',
+    '```text\n~~~\nfenced_only_sentinel\n~~~\n```',
+    '~~~text\n```\nfenced_only_sentinel\n```\n~~~',
+    '```text\n```not-a-closing-fence\nfenced_only_sentinel\n```',
+    '   ````text\n   ```\n   fenced_only_sentinel\n   ````',
+    '> ````text\n> ```\n> fenced_only_sentinel\n> ````',
+    '- ````text\n  ```\n  fenced_only_sentinel\n  ````',
+    '<Callout>\n\n````text\n```\nfenced_only_sentinel\n````\n\n</Callout>',
+  ])('drops the whole parsed code block: %s', (block) => {
+    expect(mdxToText(`Before\n\n${block}\n\nAfter`)).toBe('Before After');
+  });
+
+  it.each(['```text', '~~~~text'])('drops an unclosed fence through the end of the document: %s', (fence) => {
+    expect(mdxToText(`Before\n\n${fence}\nfenced_only_sentinel\n## Still code`)).toBe('Before');
+  });
+
+  it.each([
+    '`` inline ` sentinel ``',
+    '``` inline `` sentinel ```',
+    '`` inline\nsentinel ``',
+  ])('drops complete inline code spans: %s', (code) => {
+    expect(mdxToText(`Before ${code} After`)).toBe('Before After');
+  });
+
+  it('keeps unmatched and escaped backticks as prose', () => {
+    expect(mdxToText('Before `unmatched After')).toBe('Before `unmatched After');
+    expect(mdxToText('Before \\`escaped sentinel\\` After')).toContain('escaped sentinel');
+  });
+
+  it('does not treat backticks in a JSX attribute as Markdown code', () => {
+    expect(mdxToText('<Callout title="`">Keep this prose.</Callout>\n\nAfter `hidden` code.')).toBe('Keep this prose. After code.');
+  });
+
+  it('uses the configured parser extensions when identifying code', () => {
+    const source = 'Before $a `mathtoken` b$ after and `codetoken`.';
+    const text = mdxToText(source, { remarkPlugins: [remarkMath] });
+    expect(text).toContain('mathtoken');
+    expect(text).not.toContain('codetoken');
+    expect(indexGuidePage(guide(source), { remarkPlugins: [remarkMath] })[0]?.text).toBe(text);
   });
 
   it('strips JSX components while keeping their text', () => {
@@ -121,6 +168,39 @@ describe('indexGuidePage', () => {
     expect(entries[1]?.text).toContain('Unique detail.');
     expect(entries[1]?.text).not.toContain('Next passage.');
     expect(entries[2]?.route).toBe('/guide/test#detail-1');
+  });
+
+  it('retains section offsets with CRLF, Unicode and nested fenced examples', () => {
+    const source = [
+      '# Résumé 🚀', '', 'Before 🚀.', '', '````md', '```', 'hiddenintro', '````', '',
+      '## First', '', 'First prose.', '', '> ~~~~text', '> ~~~', '> hiddenquote', '> ~~~~', '',
+      '## Empty', '', '`````text', '```', 'hiddensection', '`````', '',
+      '## Last', '', 'Last prose.', '', '- ````text', '  ```', '  hiddenlist', '  ````', '',
+    ].join('\r\n');
+    expect(indexGuidePage(guide(source))).toEqual([
+      {id:'/guide/test', route:'/guide/test', page:'Test', title:'Test', text:'Résumé 🚀 Before 🚀.'},
+      {id:'/guide/test#first', route:'/guide/test#first', page:'Test', title:'First', text:'First prose.'},
+      {id:'/guide/test#last', route:'/guide/test#last', page:'Test', title:'Last', text:'Last prose.'},
+    ]);
+  });
+
+  it('parses complete MDX before splitting sections inside components', () => {
+    const source = [
+      '<Callout>', '', 'Introduction.', '', '## Nested', '',
+      'Nested prose.', '', '````md', '```', 'hiddennested', '````', '',
+      '</Callout>', '', '## Outside', '', 'Outside prose.',
+    ].join('\n');
+    expect(indexGuidePage(guide(source)).map(({route, text}) => ({route, text}))).toEqual([
+      {route:'/guide/test', text:'Introduction.'},
+      {route:'/guide/test#nested', text:'Nested prose.'},
+      {route:'/guide/test#outside', text:'Outside prose.'},
+    ]);
+  });
+
+  it('retains code in heading labels and never evaluates authored JavaScript', () => {
+    const source = 'export const value = (() => { throw new Error("must not execute"); })();\n\n## Use `zel`\n\nRead this prose.\n\n````text\n```\nhiddencode\n````';
+    const entries = indexGuidePage(guide(source));
+    expect(entries[1]).toMatchObject({route:'/guide/test#use-zel', title:'Use zel', text:'Read this prose.'});
   });
 });
 
