@@ -1017,11 +1017,14 @@ pub(crate) struct ShipArgs {
     pub(crate) dry_run: bool,
 }
 
-#[derive(clap::Args, Debug, PartialEq, Eq)]
+#[derive(clap::Args, Clone, Debug, PartialEq, Eq)]
 pub(crate) struct NewAppArgs {
     /// New or empty wrapper destination. Existing generated files are never replaced.
     #[arg(default_value = ".")]
     pub(crate) dir: String,
+    /// Prompt for wrapper settings not supplied by flags.
+    #[arg(long, short = 'i')]
+    pub(crate) interactive: bool,
     /// Create hosted starter content at <destination>/docs/zellij.
     #[arg(long, conflicts_with = "site_root")]
     pub(crate) with_docs: bool,
@@ -1037,8 +1040,8 @@ pub(crate) struct NewAppArgs {
     /// Dev/start port; defaults to the selected site's preview.port or 3000.
     #[arg(long, value_parser = clap::value_parser!(u16).range(1..))]
     pub(crate) port: Option<u16>,
-    /// Optional engine packages: maths, diagrams, or all (comma-separated).
-    #[arg(long, value_delimiter = ',', value_parser = ["maths", "diagrams", "all"])]
+    /// Optional engine packages: maths, diagrams, all, or none (comma-separated).
+    #[arg(long, value_delimiter = ',', value_parser = ["maths", "diagrams", "all", "none"])]
     pub(crate) features: Vec<String>,
 }
 

@@ -74,6 +74,34 @@ impl<R: BufRead, W: Write> Prompt<R, W> {
         writeln!(self.output, "{error}")?;
         Ok(())
     }
+    pub(crate) fn choose(
+        &mut self,
+        label: &str,
+        choices: &[(&str, &str)],
+        default: &str,
+    ) -> Result<String> {
+        for (i, (name, description)) in choices.iter().enumerate() {
+            self.message(&format!("  {}. {name} — {description}", i + 1))?;
+        }
+        loop {
+            let Some(answer) = self.ask(label, Some(default))? else {
+                return Ok(default.into());
+            };
+            let answer = answer.trim();
+            if let Some((name, _)) = choices.iter().find(|(name, _)| *name == answer) {
+                return Ok((*name).into());
+            }
+            if let Some((name, _)) = answer
+                .parse::<usize>()
+                .ok()
+                .and_then(|n| n.checked_sub(1))
+                .and_then(|i| choices.get(i))
+            {
+                return Ok((*name).into());
+            }
+            self.problem(&invalid("choose a name or number from the list"))?;
+        }
+    }
     fn kind(&mut self) -> Result<String> {
         let types = schema::section_types();
         for (i, kind) in types.iter().enumerate() {

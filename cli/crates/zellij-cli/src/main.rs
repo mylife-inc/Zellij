@@ -12,6 +12,7 @@ use zellij_core::site::SiteInput;
 use args::*;
 use camino::{Utf8Path, Utf8PathBuf};
 mod app;
+mod app_authoring;
 mod args;
 mod authoring;
 use serde_json::json;

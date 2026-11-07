@@ -25,6 +25,9 @@ let serverDone;
 const run = (file, args, cwd = app, extra = {}) => execFileSync(file, args, {
   cwd, env: { ...env, ...extra }, stdio: 'inherit', timeout: 600000,
 });
+const wizard = (args, input) => execFileSync(zel, args, {
+  cwd: root, env, input, stdio: ['pipe', 'inherit', 'inherit'], timeout: 30000,
+});
 // setup-node's Windows distribution ships npm alongside node.exe. Invoke its
 // JS entry directly so a .cmd wrapper never needs shell quoting of arguments.
 const npm = args => process.platform === 'win32'
@@ -67,8 +70,13 @@ try {
     run(zel, ['features', 'all', '--site-root', starter], root);
     assert.equal(JSON.parse(await readFile(path.join(app, 'package.json'), 'utf8')).dependencies['@shebka/zellij'], 'file:vendor/zellij');
   } else {
-    run(zel, ['new', 'app', app, '--config', 'docs/manual/selected.yaml', '--engine', engine, '--features', 'all'], root);
-    run(zel, ['na', starter, '--with-docs', '--engine', engine, '--features', 'all'], root);
+    wizard(['new', 'app', app, '-i', '--config', 'docs/manual/selected.yaml'], `${engine}\n\n\nall\n`);
+    wizard(['na', starter, '-i', '--engine', engine], 'starter\nWizard starter\n4321\nall\n');
+    const starterPackage = JSON.parse(await readFile(path.join(starter, 'package.json'), 'utf8'));
+    assert.equal(starterPackage.name, 'wizard-starter');
+    assert.equal(starterPackage.scripts.dev, 'zellij dev -- --port 4321');
+    assert.deepEqual(starterPackage.zellij.features, ['maths', 'diagrams']);
+    assert.match(await readFile(path.join(starter, 'docs/zellij/content/site.yaml'), 'utf8'), /Wizard starter/);
   }
   npm(['install', '--no-audit', '--no-fund']);
   assert(!(await lstat(path.join(app, 'node_modules/@shebka/zellij'))).isSymbolicLink(), 'install-links must copy the engine');
@@ -107,7 +115,7 @@ try {
   assert.equal((await fetch(`${origin}/manual`)).status, 404);
   assert.equal((await fetch(`${origin}/products/docs/missing`)).status, 404);
   assert.equal(await readFile(path.join(content, 'manual/index.mdx'), 'utf8'), original);
-  console.log(`${eject ? 'Ejected' : 'Native'} app: installed local engine, starter/external checks, production build, navigation, reload, assets and search passed.`);
+  console.log(`${eject ? 'Ejected' : 'Wizard-generated native'} app: installed local engine, starter/external checks, production build, navigation, reload, assets and search passed.`);
 } finally {
   if (server && server.exitCode === null && server.signalCode === null) {
     server.kill('SIGTERM');
