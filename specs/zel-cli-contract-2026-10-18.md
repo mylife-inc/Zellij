@@ -2088,3 +2088,38 @@ build-time transformation with no new browser code or package dependency.
 See the conversion reference for examples and the exact supported subset.
 References: [Docutils substitutions](https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html#substitution-definitions),
 [replacement text](https://docutils.sourceforge.io/docs/ref/rst/directives.html#replacement-text).
+
+
+### 2026-11-06 — Optional native site-creation wizard
+
+`new portable` / `init` and `new docs` / `nd` accept `--interactive` / `-i`.
+Existing noninteractive commands retain their defaults and never read answers.
+The positional destination still defaults to `docs/zellij`; its directory name
+is the default site name. Portable theme defaults to cupertino, hosted to paper.
+Explicit name/theme values skip those questions. Theme choices use the embedded
+engine catalogue, accepting exact names or displayed 1-based numbers.
+
+Portable starter choices are standard and minimal. Hosted choices are standard,
+minimal and full, followed by a separate guide choice (default no). `--minimal`
+or `--full` skips starter selection; `--guide` skips the guide question. Existing
+full/minimal conflicts and force behavior remain. Enter retains the displayed
+default; invalid answers reprompt. Invalid supplied names/themes fail without
+reading answers. Hosted creation now shares portable creation's validation of
+nonempty names without control characters and known built-in themes, avoiding
+generation of an invalid site through those flags.
+
+Prompts use stderr, including under quiet mode. Explicit interactive mode may
+read a pipe. EOF, :q or interruption while answering writes no site files. The
+root/common configuration path is checked before questions; the final scaffold
+preflights all destinations before writes and rechecks destination policy. Force
+never bypasses symlink containment or complete-plan checks, and cancellation
+with force still preserves existing files. Output uses the existing scaffold
+templates; native generation installs nothing and starts no server. Printed
+next-step commands use fixed relative paths even for unusual destination names.
+
+CI runs wizard regressions on Linux/macOS/Windows. The native portable browser
+fixture now builds both wizard starters and checks moved file navigation, local
+images, search and no-JavaScript behavior. The full hosted starter fixture checks
+wizard output against engine validation and exports all 26 routes in CI. Page
+and app wizards, arbitrary YAML editing and live-provider acceptance remain
+separate work. Published rc.1 does not include this feature.

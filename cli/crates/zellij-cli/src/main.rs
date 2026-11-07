@@ -34,6 +34,7 @@ mod preview;
 mod published_image;
 mod railway;
 mod s3;
+mod site_authoring;
 mod validation;
 mod vercel;
 mod watch;
@@ -233,21 +234,8 @@ fn main() {
         Command::Migrate(ref options) => imports::convert(options, true),
         Command::Ship(ref options) => imports::ship(options),
         Command::New(NewTarget::App(ref options)) => app::create(options),
-        Command::New(NewTarget::Portable(NewPortableArgs {
-            ref dir,
-            ref name,
-            ref theme,
-            minimal,
-        })) => new_portable(dir, name.as_deref(), theme, minimal),
-        Command::New(NewTarget::Docs(NewDocsArgs {
-            ref dir,
-            ref name,
-            ref theme,
-            guide,
-            full,
-            minimal,
-            force,
-        })) => new_docs(dir, name.as_deref(), theme, guide, minimal, full, force),
+        Command::New(NewTarget::Portable(ref options)) => site_authoring::portable(options),
+        Command::New(NewTarget::Docs(ref options)) => site_authoring::docs(options),
         Command::New(NewTarget::Section(ref options)) => authoring::run(options),
         Command::New(NewTarget::Page(NewPageArgs {
             ref name,
@@ -784,88 +772,6 @@ fn on_path(program: &str) -> bool {
 const TARGET: &str = env!("ZEL_TARGET");
 
 // ----------------------------------------------------------------- creating
-
-fn new_portable(
-    dir: &str,
-    name: Option<&str>,
-    theme: &str,
-    minimal: bool,
-) -> zellij_core::Result<()> {
-    let target = zellij_core::files::absolute_path(Utf8Path::new(dir))?;
-    let options = zellij_scaffold::PortableOptions {
-        name: name
-            .unwrap_or_else(|| target.file_name().unwrap_or("Documentation"))
-            .into(),
-        theme: theme.into(),
-        minimal,
-    };
-    let written = zellij_scaffold::portable(&options)?
-        .write(&target, false)
-        .map_err(|error| match error {
-            // This command has no overwrite flag. Keep the shared writer's
-            // protection, without suggesting new docs' --force option.
-            zellij_core::Error::NotEmpty { path } => zellij_core::Error::FileExists { path },
-            other => other,
-        })?;
-    zellij_core::statusln!("✓ {target}");
-    for path in written {
-        zellij_core::statusln!("  {path}");
-    }
-    // Commands use a fixed relative path so unusual directory names cannot
-    // turn a copied suggestion into invalid shell syntax or a different command.
-    zellij_core::statusln!("\n  From inside the created folder:");
-    zellij_core::statusln!("    zel check . --strict");
-    zellij_core::statusln!("    zel build .");
-    zellij_core::statusln!("    zel view . --watch");
-    Ok(())
-}
-
-fn new_docs(
-    dir: &str,
-    name: Option<&str>,
-    theme: &str,
-    guide: bool,
-    minimal: bool,
-    full: bool,
-    force: bool,
-) -> zellij_core::Result<()> {
-    let target = Utf8PathBuf::from(dir);
-
-    // A directory named `.` would take its name from wherever the shell
-    // happens to be, which is right about as often as it is baffling.
-    let name = name.map(str::to_owned).unwrap_or_else(|| {
-        target
-            .canonicalize_utf8()
-            .ok()
-            .as_deref()
-            .and_then(Utf8Path::file_name)
-            .or_else(|| target.file_name())
-            .unwrap_or("Docs")
-            .to_owned()
-    });
-
-    let options = zellij_scaffold::DocsOptions {
-        name,
-        theme: theme.to_owned(),
-        guide,
-        minimal,
-    };
-
-    let scaffold = if full {
-        zellij_scaffold::configured_full_docs(&options)?
-    } else {
-        zellij_scaffold::configured_docs(&options)
-    };
-    let written = scaffold.write(&target, force)?;
-
-    zellij_core::statusln!("✓ {target}");
-    for path in &written {
-        zellij_core::statusln!("  {path}");
-    }
-    zellij_core::statusln!("\n  Next: zel dev {target}");
-
-    Ok(())
-}
 
 fn new_project(
     name: &str,

@@ -79,13 +79,24 @@ impl Scaffold {
     /// their work. A directory holding only dotfiles — a fresh `git init` — is
     /// treated as empty, since refusing that helps nobody.
     pub fn write(&self, root: &Utf8Path, force: bool) -> Result<Vec<Utf8PathBuf>> {
+        self.preflight(root, force)?;
+        self.write_with_policy(root, force)
+    }
+
+    /// Check the root and every planned file without creating directories.
+    /// Interactive callers can detect destination errors before asking questions.
+    pub fn preflight(&self, root: &Utf8Path, force: bool) -> Result<()> {
         if !force && has_visible_entries(root)? {
             return Err(Error::NotEmpty {
                 path: root.to_owned(),
             });
         }
 
-        self.write_with_policy(root, force)
+        zellij_core::files::preflight(
+            root,
+            &self.entries().map(|(path, _)| path).collect::<Vec<_>>(),
+            force,
+        )
     }
 
     /// Add files to an existing content folder without replacing any file.

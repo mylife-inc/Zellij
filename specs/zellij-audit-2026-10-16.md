@@ -5376,3 +5376,25 @@ Evidence: `/private/tmp/zellij-substitutions-workspace-final.log`,
 `zellij-substitutions-typecheck-review.log`. Initial PR #95 CI `42348865898`
 on `1041870` does not validate this follow-up. Final-head hosted/native
 acceptance and merge remain pending. No local browser/container was run.
+
+
+## 2026-11-06 — Substitution merge and post-merge follow-up
+
+PR #95 merged as **`4dcb12c99dffd30d86f20fdeed9c609c465aa7f7`** after all
+16 checks passed on **`d9b47a0e0659aa2c4097dded139b7a1c03a1f8ec`** in
+[42349216986](https://github.com/mylife-inc/Zellij/actions/runs/42349216986),
+attempt 1. Tested/merged tree: `f1a0108156e95189cc86b5be30ac2759a2997a6a`.
+Hosted browser acceptance passed substitution text/markup, inline/standalone
+images, named/image navigation, literal code and exact native downloads, with
+no captured hydration errors. Sphinx cases passed 28 on Unix and 27 on Windows.
+All six native packages, both image architectures and combined manifests passed.
+Documentation retained all 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images. Local main matched the tested tree.
+
+Post-merge base-image run `42351594623`, job `128340710709`, built maths/amd64
+successfully but failed actions/upload-artifact during FinalizeArtifact with
+`ECONNRESET`. A targeted failed-job retry on unchanged `4dcb12c` passed all 13
+base-image jobs (attempt 2), including published-image acceptance. Main run
+`42351594650` has 15 passing jobs and CLI acceptance still running at this
+checkpoint. This was an artifact transport failure; no product fix or relaxed
+assertion was needed. Native rc.1 remains the latest published candidate.

@@ -32,12 +32,24 @@ fn output(path: &str) -> Result<(Utf8PathBuf, String)> {
     files::preflight(parent, &[Utf8Path::new(name)], false)?;
     Ok((parent.to_owned(), name.into()))
 }
-struct Prompt<R, W> {
+pub(crate) struct Prompt<R, W> {
     input: R,
     output: W,
+    cancellation: &'static str,
 }
 impl<R: BufRead, W: Write> Prompt<R, W> {
-    fn ask(&mut self, label: &str, default: Option<&str>) -> Result<Option<String>> {
+    pub(crate) fn new(input: R, output: W, cancellation: &'static str) -> Self {
+        Self {
+            input,
+            output,
+            cancellation,
+        }
+    }
+    pub(crate) fn message(&mut self, text: &str) -> Result<()> {
+        writeln!(self.output, "{text}")?;
+        Ok(())
+    }
+    pub(crate) fn ask(&mut self, label: &str, default: Option<&str>) -> Result<Option<String>> {
         write!(self.output, "{label}")?;
         if let Some(default) = default {
             write!(
@@ -50,19 +62,15 @@ impl<R: BufRead, W: Write> Prompt<R, W> {
         self.output.flush()?;
         let mut answer = String::new();
         if self.input.read_line(&mut answer)? == 0 {
-            return Err(invalid(
-                "section authoring cancelled at end of input; no section was written",
-            ));
+            return Err(invalid(format!("{} (end of input)", self.cancellation)));
         }
         let answer = answer.trim_end_matches(['\r', '\n']);
         if answer == ":q" {
-            return Err(invalid(
-                "section authoring cancelled; no section was written",
-            ));
+            return Err(invalid(self.cancellation));
         }
         Ok((!answer.is_empty()).then(|| answer.to_owned()))
     }
-    fn problem(&mut self, error: &Error) -> Result<()> {
+    pub(crate) fn problem(&mut self, error: &Error) -> Result<()> {
         writeln!(self.output, "{error}")?;
         Ok(())
     }
@@ -327,10 +335,11 @@ pub(crate) fn run(args: &NewSectionArgs) -> Result<()> {
     let (body, destination, kind) = prepare(
         args,
         interactive,
-        &mut Prompt {
-            input: stdin.lock(),
-            output: stderr.lock(),
-        },
+        &mut Prompt::new(
+            stdin.lock(),
+            stderr.lock(),
+            "section authoring cancelled; no section was written",
+        ),
     )?;
     if let Some(path) = destination {
         let (parent, name) = output(&path)?;
