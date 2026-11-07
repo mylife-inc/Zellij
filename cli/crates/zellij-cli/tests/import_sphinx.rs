@@ -1280,6 +1280,8 @@ fn literalinclude_rejects_unsafe_missing_excluded_and_nontext_files() {
         "snippets",
         ".hidden.py",
         "excluded.py",
+        "EXCLUDED.py",
+        "snippets/CODE.py",
         "_build/code.py",
         "templates/code.py",
         "binary.py",

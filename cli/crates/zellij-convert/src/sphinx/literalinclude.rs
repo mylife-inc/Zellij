@@ -1,7 +1,10 @@
 //! Local literal text only: no RST parsing, execution, network reads or asset copying.
 use super::{invalid, rst::Block};
 use camino::{Utf8Path, Utf8PathBuf};
-use std::{collections::BTreeMap, io::Read};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    io::Read,
+};
 use zellij_core::{Result, files::contained_path};
 
 const FILE_BYTES: usize = 8 * 1024 * 1024;
@@ -256,7 +259,7 @@ impl Spec {
 
 pub struct Resolver<'a> {
     root: &'a Utf8Path,
-    excluded: &'a [Utf8PathBuf],
+    files: &'a BTreeSet<Utf8PathBuf>,
     encoding: &'a str,
     cache: BTreeMap<Utf8PathBuf, String>,
     cached_bytes: usize,
@@ -264,10 +267,10 @@ pub struct Resolver<'a> {
 }
 
 impl<'a> Resolver<'a> {
-    pub fn new(root: &'a Utf8Path, excluded: &'a [Utf8PathBuf], encoding: &'a str) -> Self {
+    pub fn new(root: &'a Utf8Path, files: &'a BTreeSet<Utf8PathBuf>, encoding: &'a str) -> Self {
         Self {
             root,
-            excluded,
+            files,
             encoding,
             cache: BTreeMap::new(),
             cached_bytes: 0,
@@ -307,10 +310,10 @@ impl<'a> Resolver<'a> {
         let rel = Utf8PathBuf::from(parts.join("/"));
         if rel.as_str().is_empty()
             || parts.iter().any(|p| p.starts_with('.'))
-            || self.excluded.iter().any(|p| rel.starts_with(p))
+            || !self.files.contains(&rel)
         {
             return Err(invalid(
-                "literalinclude references a hidden or excluded path",
+                "literalinclude target is not an eligible source file; check its exact case, existence and exclusions",
             ));
         }
         Ok(rel)

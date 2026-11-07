@@ -443,7 +443,8 @@ inside a code block remains literal content.
 `literalinclude` imports local UTF-8 code/text files as fenced code. Paths are
 relative to the containing `.rst` file; a leading `/` means the selected Sphinx
 source folder. Filenames remain literal, including spaces, Unicode, `#` and
-`%20`. The file must stay inside that folder and must not be hidden, excluded,
+`%20`. Match the filename's exact case, including on macOS and Windows. The file
+must stay inside that folder and must not be hidden, excluded,
 symlinked, a directory, or a template/theme/build resource. Included source code
 is never executed or parsed as RST, and inclusion alone does not copy it as a
 downloadable asset. This also works inside supported lists, admonitions and

@@ -211,6 +211,7 @@ impl Converter for Sphinx {
         }
         let mut docs = BTreeMap::new();
         let mut assets = BTreeSet::new();
+        let mut literal_files = BTreeSet::new();
         let mut unmapped = Vec::new();
         for entry in walkdir::WalkDir::new(&root)
             .min_depth(1)
@@ -246,6 +247,7 @@ impl Converter for Sphinx {
                 }
                 continue;
             }
+            literal_files.insert(rel.clone());
             if rel.extension() == Some("rst") {
                 if rel.components().any(|p| p.as_str().starts_with('_'))
                     || matches!(rel.file_stem(), Some("genindex" | "modindex" | "search"))
@@ -301,7 +303,7 @@ impl Converter for Sphinx {
         let published: BTreeSet<_> = tree.pages().into_iter().cloned().collect();
         let mut includes = literalinclude::Resolver::new(
             &tree.root,
-            &excluded,
+            &literal_files,
             config::string(&config, "source_encoding")?.unwrap_or("utf-8-sig"),
         );
         for path in &published {
