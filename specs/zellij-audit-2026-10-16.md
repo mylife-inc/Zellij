@@ -5007,3 +5007,28 @@ serves that exact root while retaining prefix containment and adds an explicit
 root-response check before browser launch. No product parser or error assertion
 changed. Node syntax and diff checks passed locally; no local browser or Docker
 ran. The corrected final head requires a new complete CI run before merge.
+
+
+Sphinx table browser acceptance then exposed a product bug in run `42315268885`
+on `e910edb`: the common MDX link renderer passed copied download URLs through
+Next Link. Its page-data prefetch requested a nonexistent path such as
+`/_zellij/assets/imported/docs/notes.txt/__next._tree.txt`, producing HTTP 404.
+The table semantics, local image and document navigation assertions had already
+passed; the final no-browser-errors assertion caught the download prefetch.
+
+Fix **`ba8a68ecb9704823706967956c8962acc6adfeed`** renders URLs in the reserved
+`/_zellij/assets/` namespace as ordinary anchors with the site's basePath.
+Page links retain Next navigation; external/fragment handling and source query,
+fragment and encoded filename text are retained. This applies to all converters.
+Node-only regression checks cover root/prefixed sites and all six importer
+fixtures; the CI browser test now clicks the Notes link, requires a native
+navigation response and compares the exact bytes. It still rejects HTTP,
+console and runtime errors. The [Next Link documentation](https://nextjs.org/docs/app/api-reference/components/link#prefetch)
+confirms its production page-data prefetch behavior; the failure log establishes
+this reproduction.
+
+All 426 engine tests, workspace typechecks, Node-only conversion rendering/deep
+checks for all six importers, strict/deep docs (55 routes, 23 examples), script
+syntax and diff checks passed locally. Evidence:
+`/private/tmp/zellij-tables-{engine-tests,typecheck,asset-render}.log`.
+No local browser or Docker ran. Final-head CI remains required before merge.
