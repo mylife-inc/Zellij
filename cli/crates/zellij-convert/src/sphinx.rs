@@ -1,6 +1,7 @@
 //! Import declarative Sphinx/reStructuredText documentation without Python.
 mod config;
 mod lists;
+mod literalinclude;
 mod rst;
 mod substitutions;
 mod table_directives;
@@ -298,6 +299,16 @@ impl Converter for Sphinx {
             ..Default::default()
         };
         let published: BTreeSet<_> = tree.pages().into_iter().cloned().collect();
+        let mut includes = literalinclude::Resolver::new(
+            &tree.root,
+            &excluded,
+            config::string(&config, "source_encoding")?.unwrap_or("utf-8-sig"),
+        );
+        for path in &published {
+            includes
+                .resolve(path, &mut docs.get_mut(path).unwrap().blocks)
+                .map_err(|e| invalid(format!("{path}: {e}")))?;
+        }
         tree.orphans = docs
             .keys()
             .filter(|p| !published.contains(*p))

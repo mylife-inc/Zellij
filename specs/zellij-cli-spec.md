@@ -229,7 +229,7 @@ Formats, in the order they are worth doing:
 | MkDocs | `mkdocs.yml`, `nav:` is a tree | Easy — pure YAML |
 | VitePress | `.vitepress/config.*`, `sidebar` | Easy when JSON/YAML, harder when TS |
 | Docusaurus | `sidebars.js` + `docusaurus.config.js` | Hard — JavaScript, not data |
-| Sphinx | `conf.py` + `toctree` in reST | Hard — Python, and reST is not Markdown |
+| Sphinx | Literal `conf.py` + explicit `toctree` in reST | Conservative declarative subset implemented, including local UTF-8 `literalinclude` excerpts; Python/extensions, MyST and parsed includes remain unsupported |
 | Jekyll / Hugo | front-matter conventions, `_data` | Medium |
 | Plain Markdown | No config at all | Infer from folder shape, or fall back to the agent |
 

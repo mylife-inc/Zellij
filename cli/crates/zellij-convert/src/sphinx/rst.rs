@@ -20,6 +20,7 @@ pub enum Block {
         language: String,
         body: String,
     },
+    LiteralInclude(super::literalinclude::Spec),
     Image {
         target: String,
         alt: String,
@@ -425,6 +426,9 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                     (BTreeMap::new(), body)
                 };
                 match directive {
+                    "literalinclude" => out.push(Block::LiteralInclude(
+                        super::literalinclude::Spec::parse(arg, &opts, &body, language)?,
+                    )),
                     "table" | "list-table" | "csv-table" => {
                         if option_block && opts.is_empty() && !body.is_empty() {
                             return Err(invalid(
@@ -832,8 +836,13 @@ fn render(blocks: &[Block], context: &mut Expansion<'_>) -> Result<String> {
                 }
                 let fence = "`"
                     .repeat((body.split(|c| c != '`').map(str::len).max().unwrap_or(0) + 1).max(3));
-                out.push_str(&format!("\n{fence}{language}\n{body}\n{fence}\n\n"));
+                out.push_str(&format!("\n{fence}{language}\n{body}"));
+                if !body.ends_with('\n') {
+                    out.push('\n');
+                }
+                out.push_str(&format!("{fence}\n\n"));
             }
+            Block::LiteralInclude(_) => return Err(invalid("unresolved literalinclude")),
             Block::Image { target, alt } => out.push_str(&format!(
                 "\n!{}\n\n",
                 link(alt, &context.reference("asset", target)?)?

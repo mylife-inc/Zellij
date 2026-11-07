@@ -2212,3 +2212,28 @@ passes the same schema/cross-field checks before output. No existing YAML is edi
 no dependency/runtime is needed, and no file reference or expression is evaluated.
 The source is newer than published rc.1. This extends new-section authoring; it is
 not a general editor for existing YAML documents.
+
+
+## 2026-11-07 — Sphinx literal code inclusions
+
+The shared Sphinx converter accepts local `literalinclude` in published documents
+and supported nested lists, admonitions and table cells. It resolves paths relative
+to the authoring document, or from the selected source root for a leading slash.
+Files remain inside that root, use UTF-8, and obey hidden/excluded-path and
+symlink/junction checks. Source content is never executed, parsed as RST or added
+to downloadable assets solely because it was included.
+
+Supported options are language, UTF-8 encoding, tab-width 1–64, start/end marker
+filters, one-based line selections with open/closed ranges and ordered duplicates,
+and explicit/common-prefix dedenting. Filtering follows tab expansion, start,
+end, lines, dedent. Missing markers, invalid/out-of-range selections and dedents
+that remove non-whitespace fail before output, including dry-run/assets-skip.
+Source BOM behavior follows encoding; CRLF/CR normalize to LF. Controls other
+than tabs/newlines and Unicode line/paragraph separators are rejected.
+
+Bounds: 8 MiB per file, 32 MiB unique input, 32 MiB expanded content and 100,000
+explicitly selected lines. Unsupported options (including captions, line-number
+presentation, pyobject and diff) are rejected. Parsed `include`, RST fragments
+without document titles, extensions and MyST remain outside the supported subset.
+The conversion reference documents exact syntax and behavior. Browser/container
+acceptance runs only in GitHub CI; Node rendering checks run locally.

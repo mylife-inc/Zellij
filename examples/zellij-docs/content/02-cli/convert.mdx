@@ -440,6 +440,54 @@ blocks remain literal, including directive-looking examples and backticks.
 Separate directive options from content with a blank line; option-like text
 inside a code block remains literal content.
 
+`literalinclude` imports local UTF-8 code/text files as fenced code. Paths are
+relative to the containing `.rst` file; a leading `/` means the selected Sphinx
+source folder. Filenames remain literal, including spaces, Unicode, `#` and
+`%20`. The file must stay inside that folder and must not be hidden, excluded,
+symlinked, a directory, or a template/theme/build resource. Included source code
+is never executed or parsed as RST, and inclusion alone does not copy it as a
+downloadable asset. This also works inside supported lists, admonitions and
+table cells. Unlisted documents do not cause their referenced files to be read.
+
+```rst
+.. literalinclude:: examples/client.py
+   :language: python
+   :start-after: BEGIN EXAMPLE
+   :end-before: END EXAMPLE
+   :dedent: 4
+```
+
+Supported options:
+
+- `:language:` selects the code language, otherwise `highlight_language` applies
+  (or plain text when unset).
+- `:encoding:` accepts `utf-8` or `utf-8-sig`, otherwise `source_encoding` applies
+  (default `utf-8-sig`, which removes an initial BOM). LF, CRLF and CR line endings
+  become LF. Unsupported control characters and invalid UTF-8 fail.
+- `:tab-width:` expands tabs at column stops from 1 to 64; omitted tabs remain tabs.
+- `:start-at:` / `:start-after:` retain/remove the first matching marker line.
+  `:end-at:` / `:end-before:` retain/remove the first matching end line in the
+  remaining excerpt. Use at most one start and one end option. `end-before`
+  skips a match on the excerpt's first line, allowing the same opening/closing
+  marker. Markers are literal substrings and must exist.
+- `:lines:` selects one-based lines **after** marker filtering. Comma lists,
+  inclusive ranges and open ranges work: `1,3-5,8-` or `-3`. Authored order and
+  repeated lines are retained. Empty, zero, reversed and out-of-range selections
+  fail instead of silently dropping lines.
+- `:dedent: N` removes up to N leading spaces/tabs from each selected line;
+  removing non-whitespace fails. Empty `:dedent:` removes the common whitespace
+  prefix of nonblank lines. Dedenting happens after selection; tabs and spaces
+  are distinct unless `tab-width` expands them first.
+
+Each referenced file is limited to 8 MiB; unique input and total expanded text
+are each limited to 32 MiB per conversion. Explicit line selections are limited
+to 100,000 lines. Unsupported options such as `caption`, `name`, `linenos`,
+`emphasize-lines`, `pyobject`, `diff`, `prepend` and `append` fail before output.
+The directive requires a filename and has no content body. These checks also
+apply to `--dry-run` and `--assets skip`. Ordinary RST `include` remains
+unsupported; `.rst` files in the source inventory still need to be valid titled
+documents, so use a code extension or `.txt` for literal-only snippets.
+
 Lists support `*`, `+`, `-`, `•`, `‣` and `⁃` bullets, plus decimal numbering
 such as `1.`, `1)` and `(1)`. Alphabetic `a`–`z`/`A`–`Z` and canonical Roman
 `i`–`mmmcmxcix`/`I`–`MMMCMXCIX` sequences support the same three punctuation
@@ -619,7 +667,7 @@ asset paths, not Sphinx-generated `_images` or `_downloads` URLs. Asset skip and
 dry-run options retain their normal safety checks.
 
 This is a **conservative reStructuredText subset**, newer than published rc.1.
-MyST, autodoc/domain roles, custom extensions, `include`/`literalinclude`, raw
+MyST, autodoc/domain roles, custom extensions, parsed `include`, raw
 directives, spanning tables, unsupported substitution forms, field lists (including `:orphan:`), footnotes,
 definition/quote blocks, glob/numbered toctrees, extra directive
 options and custom/dirhtml builders require manual migration. Unsupported parsed
