@@ -352,6 +352,15 @@
   }
 }
 
+/* Undo Tailwind's list reset within its own layer. `revert-layer` keeps HTML
+ * type attributes (a/A/i/I) and native nested bullet styles; `revert` would
+ * discard the presentation attributes along with the author styles. */
+@layer base {
+  .zellij-prose :is(ul, ol) {
+    list-style-type: revert-layer;
+  }
+}
+
 /* Specificity must beat `.zellij-prose a`, or headings inherit link colour. */
 .zellij-prose .zellij-heading-anchor {
   color: inherit;

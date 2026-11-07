@@ -2045,7 +2045,9 @@ than published rc.1; native/hosted CI and release publication remain separate.
 The list parser now accepts lower/upper alphabetic and canonical Roman
 sequences in all three punctuation forms, with matching automatic enumerators.
 It emits native `<ol start="N" type="a|A|i|I">` attributes so generated content
-retains case and numbering style without custom CSS. Alphabetic values remain
+retains case and numbering style. The engine restores browser list markers
+inside prose by undoing Tailwind's reset in its base layer, preserving native
+HTML presentation attributes and nested bullets. Alphabetic values remain
 within 1–26 and Roman values within the browser counter range 1–3999; automatic
 overflow fails before output. Decimal bounds remain unchanged.
 
