@@ -5435,3 +5435,26 @@ wizard starters are built, moved and viewed offline with/without JavaScript,
 and a hosted wizard full starter exports all 26 routes. Final-head CI and merge
 are pending. No local Docker/browser/GUI or live provider mutation ran.
 Evidence: `/private/tmp/zellij-site-wizard-{focused-final,workspace,clippy,engine,docs}.log`.
+
+
+### 2026-11-07 — Windows installer harness desktop-startup correction
+
+Initial PR #96 CI `42353311383` on `306f16c` failed in Windows ARM package job
+`128345889969`. The Windows PowerShell installer checks passed; the subsequent
+`pwsh` invocation crashed with `Internal CLR error (0x80131506)` in
+`TaskbarJumpList.CreateElevatedEntry`, on its background desktop initialization
+thread. The failure was retained; the installer assertions were not relaxed.
+
+Source **`4df0d31`** starts only automated PowerShell child processes with Node's
+`windowsHide: true` in native package/installer fixtures. The PowerShell source
+checks startup visibility before its JumpList COM calls; libuv maps this option
+to `SW_HIDE`, so the correction targets that desktop-only path. The CLI and
+console/signal fixture launch behavior is unchanged. Both Windows shells still
+run the full checksum, malformed-archive, preservation, installed-binary and
+upgrade checks. There is no catch-and-ignore or automatic retry around assertions.
+
+Node syntax and diff checks pass. The 629-test Rust result remains valid for
+unchanged Rust code; final-head Windows/native and full CI must pass before
+merge. No local browser/container/GUI ran. References:
+[PowerShell JumpList guard](https://github.com/PowerShell/PowerShell/blob/master/src/Microsoft.PowerShell.ConsoleHost/WindowsTaskbarJumpList/TaskbarJumpList.cs),
+[libuv process startup](https://github.com/libuv/libuv/blob/v1.x/src/win/process.c).
