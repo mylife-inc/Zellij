@@ -693,9 +693,12 @@ pub(crate) struct NewPortableArgs {
     /// Site name. Defaults to the directory's name.
     #[arg(long)]
     pub(crate) name: Option<String>,
-    /// One of the themes reported by `zel list themes`.
-    #[arg(long, default_value = "cupertino")]
-    pub(crate) theme: String,
+    /// One of the themes reported by `zel list themes`; defaults to cupertino.
+    #[arg(long)]
+    pub(crate) theme: Option<String>,
+    /// Ask for the site name, theme and starter before writing.
+    #[arg(long, short = 'i')]
+    pub(crate) interactive: bool,
     /// Only zel.yaml and content/index.md, without the example guide or image.
     #[arg(long)]
     pub(crate) minimal: bool,
@@ -710,9 +713,13 @@ pub(crate) struct NewDocsArgs {
     #[arg(long)]
     pub(crate) name: Option<String>,
 
-    /// One of the fourteen — `zel list themes`.
-    #[arg(long, default_value = "paper")]
-    pub(crate) theme: String,
+    /// One of the themes reported by `zel list themes`; defaults to paper.
+    #[arg(long)]
+    pub(crate) theme: Option<String>,
+
+    /// Ask for the site name, theme, starter and optional guide before writing.
+    #[arg(long, short = 'i')]
+    pub(crate) interactive: bool,
 
     /// Also create a guide folder.
     #[arg(long)]

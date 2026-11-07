@@ -15,14 +15,18 @@ const zel = path.resolve(binary);
 const root = path.resolve(target);
 const nodeCli = path.join(repo, 'engine/packages/zellij/bin/zellij.mjs');
 const schema = JSON.parse(execFileSync(zel, ['context', '--json'], { encoding: 'utf8' }));
-const run = (command, args) => execFileSync(command, args, { stdio: 'pipe', timeout: mode ? 600000 : 30000 });
+const run = (command, args, input) => execFileSync(command, args, { input, stdio: 'pipe', timeout: mode ? 600000 : 30000 });
 const yaml = async file => YAML.parse(await readFile(file, 'utf8'));
-for (const guide of [false, true]) {
-  const site = path.join(root, guide ? 'Manual 日本' : 'docs/zellij');
-  run(zel, ['nd', site, '--full', '--name', 'Acme: "Docs" # 日本', ...(guide ? ['--guide', '--theme', 'cupertino'] : [])]);
+for (const [guide, interactive] of [[false, false], [true, false], [true, true]]) {
+  const site = path.join(root, interactive ? 'Wizard 日本' : guide ? 'Manual 日本' : 'docs/zellij');
+  if (interactive) run(zel, ['nd', site, '-i'], 'Acme: "Docs" # 日本\ncupertino\nfull\nyes\n');
+  else run(zel, ['nd', site, '--full', '--name', 'Acme: "Docs" # 日本', ...(guide ? ['--guide', '--theme', 'cupertino'] : [])]);
   const content = path.join(site, 'content');
   run(process.execPath, [nodeCli, 'check', content, '--strict', '--deep']);
   const pages = await yaml(path.join(content, 'pages.yaml'));
+  const settings = await yaml(path.join(content, 'site.yaml'));
+  assert.equal(settings.name, 'Acme: "Docs" # 日本');
+  assert.equal(settings.theme, guide ? 'cupertino' : 'paper');
   assert.equal(pages.length, schema.sectionTypes.length + 2);
   const catalogue = await yaml(path.join(content, 'sections/examples/catalogue.yaml'));
   const filenames = await readdir(path.join(content, 'sections/examples'));
@@ -39,7 +43,7 @@ for (const guide of [false, true]) {
     await readFile(path.join(content, `assets/section-example.${ext}`)),
     await readFile(path.join(repo, `cli/crates/zellij-scaffold/assets/section-example.${ext}`)),
   );
-  if (mode && guide) {
+  if (mode && interactive) {
     const output = path.join(root, 'exported');
     run(zel, ['check', site, '--strict', '--deep']);
     run(zel, ['build', site, '--out', output]);
@@ -54,7 +58,7 @@ for (const guide of [false, true]) {
       await readFile(path.join(output, `_zellij/assets/section-example.${ext}`)),
       await readFile(path.join(content, `assets/section-example.${ext}`)),
     );
-    console.log('Full starter exports all 26 routes, linked examples and exact local media.');
+    console.log('Full starter wizard exports all 26 routes, linked examples and exact local media.');
   }
 }
 console.log(`Full starter: ${schema.sectionTypes.length} section types, catalogue links, local media, Unicode metadata and guide variants pass strict/deep engine checks.`);

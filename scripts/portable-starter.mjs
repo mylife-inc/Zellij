@@ -12,7 +12,9 @@ export async function checkStarter({ binary, root, env, engine, browser }) {
     const output = path.join(source, 'site');
     const moved = path.join(root, `Moved starter café ${engine} ${minimal}`);
     const name = 'Acme: [Docs] <reference> & café 日本';
-    execFileSync(binary, ['new', 'portable', source, '--name', name, '--theme', 'forest', ...(minimal ? ['--minimal'] : [])], { env });
+    execFileSync(binary, ['init', source, '--interactive'], {
+      env, input: `${name}\nforest\n${minimal ? 'minimal' : 'standard'}\n`, stdio: 'pipe',
+    });
     const report = JSON.parse(execFileSync(binary, ['check', source, '--strict', '--json'], { env, encoding: 'utf8' }));
     assert.equal(report.ok, true);
     assert.deepEqual(report.diagnostics, []);
@@ -61,5 +63,5 @@ export async function checkStarter({ binary, root, env, engine, browser }) {
       } finally { await context.close(); }
     }
   }
-  console.log(`${engine}: generated full/minimal starters pass strict checks, moved file navigation, assets/search and no-JS acceptance.`);
+  console.log(`${engine}: wizard-generated full/minimal starters pass strict checks, moved file navigation, assets/search and no-JS acceptance.`);
 }

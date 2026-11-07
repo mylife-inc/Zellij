@@ -5376,3 +5376,118 @@ Evidence: `/private/tmp/zellij-substitutions-workspace-final.log`,
 `zellij-substitutions-typecheck-review.log`. Initial PR #95 CI `42348865898`
 on `1041870` does not validate this follow-up. Final-head hosted/native
 acceptance and merge remain pending. No local browser/container was run.
+
+
+## 2026-11-06 — Substitution merge and post-merge follow-up
+
+PR #95 merged as **`4dcb12c99dffd30d86f20fdeed9c609c465aa7f7`** after all
+16 checks passed on **`d9b47a0e0659aa2c4097dded139b7a1c03a1f8ec`** in
+[42349216986](https://github.com/mylife-inc/Zellij/actions/runs/42349216986),
+attempt 1. Tested/merged tree: `f1a0108156e95189cc86b5be30ac2759a2997a6a`.
+Hosted browser acceptance passed substitution text/markup, inline/standalone
+images, named/image navigation, literal code and exact native downloads, with
+no captured hydration errors. Sphinx cases passed 28 on Unix and 27 on Windows.
+All six native packages, both image architectures and combined manifests passed.
+Documentation retained all 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images. Local main matched the tested tree.
+
+Post-merge base-image run `42351594623`, job `128340710709`, built maths/amd64
+successfully but failed actions/upload-artifact during FinalizeArtifact with
+`ECONNRESET`. A targeted failed-job retry on unchanged `4dcb12c` passed all 13
+base-image jobs (attempt 2), including published-image acceptance. Main run
+`42351594650` has 15 passing jobs and CLI acceptance still running at this
+checkpoint. This was an artifact transport failure; no product fix or relaxed
+assertion was needed. Native rc.1 remains the latest published candidate.
+
+
+## 2026-11-06 — Native site-creation wizard
+
+Source **`b556b88`** adds opt-in `new portable` / `init -i` and `new docs` /
+`nd -i` creation. Native prompts choose name, embedded-catalogue theme, starter
+and a separate hosted guide. Explicit flags skip matching questions; ordinary
+commands retain their defaults and never prompt. Names/themes validate before
+writes, fixing hosted creation's acceptance of invalid values. The shared
+line-oriented prompt remains on stderr, including under quiet; EOF/:q cancels.
+
+A read-only scaffold preflight checks the root/common configuration before
+questions. The final plan checks every destination before writes; cancellation
+with force leaves old content intact. Portable output still has no overwrite
+flag. Existing templates generate the files, with no new dependency, client code,
+installer, network or runtime. Fixed relative next-step suggestions also avoid
+interpolating a destination path into a copied shell command. Docs, shortcuts,
+CLI status and contract describe exact defaults, scope and remaining page/app
+wizard work.
+
+All **629 Rust workspace tests pass** (5 existing hosted-provider cases ignored
+locally and selected in CI), including 8 site-wizard cases on Unix and all prior
+section/starter/alias tests. Tests cover every starter/guide combination, byte
+equivalence with flags, literal Unicode metadata, CRLF and numeric selections,
+invalid answers, quiet prompts, cancellation at every question, force preservation,
+symlink containment and native portable builds without tools on PATH. The initial
+new HTML assertion used `data-theme` instead of the established
+`data-zellij-theme`; corrected to the actual contract before final verification.
+
+Warnings-denied Clippy, formatting, workflow actionlint and script syntax pass.
+Node-only engine checks validate full ordinary/wizard starters with all 23
+section types and exact media; strict/deep project docs retain 55 routes and
+23 examples. CI extends the existing Linux/macOS/Windows fixtures: portable
+wizard starters are built, moved and viewed offline with/without JavaScript,
+and a hosted wizard full starter exports all 26 routes. Final-head CI and merge
+are pending. No local Docker/browser/GUI or live provider mutation ran.
+Evidence: `/private/tmp/zellij-site-wizard-{focused-final,workspace,clippy,engine,docs}.log`.
+
+
+### 2026-11-07 — Windows installer harness desktop-startup correction
+
+Initial PR #96 CI `42353311383` on `306f16c` failed in Windows ARM package job
+`128345889969`. The Windows PowerShell installer checks passed; the subsequent
+`pwsh` invocation crashed with `Internal CLR error (0x80131506)` in
+`TaskbarJumpList.CreateElevatedEntry`, on its background desktop initialization
+thread. The failure was retained; the installer assertions were not relaxed.
+
+Source **`4df0d31`** starts only automated PowerShell child processes with Node's
+`windowsHide: true` in native package/installer fixtures. The PowerShell source
+checks startup visibility before its JumpList COM calls; libuv maps this option
+to `SW_HIDE`, so the correction targets that desktop-only path. The CLI and
+console/signal fixture launch behavior is unchanged. Both Windows shells still
+run the full checksum, malformed-archive, preservation, installed-binary and
+upgrade checks. There is no catch-and-ignore or automatic retry around assertions.
+
+Node syntax and diff checks pass. The 629-test Rust result remains valid for
+unchanged Rust code; final-head Windows/native and full CI must pass before
+merge. No local browser/container/GUI ran. References:
+[PowerShell JumpList guard](https://github.com/PowerShell/PowerShell/blob/master/src/Microsoft.PowerShell.ConsoleHost/WindowsTaskbarJumpList/TaskbarJumpList.cs),
+[libuv process startup](https://github.com/libuv/libuv/blob/v1.x/src/win/process.c).
+
+
+### 2026-11-07 — Preserve hosted name compatibility in the site wizard
+
+PR #96 run `42353774620` on `05a412e` passed 15 jobs, including all six
+native packages. Windows ARM job `128347405063` passed both `powershell.exe`
+and `pwsh` installer/checksum/archive/upgrade checks after `4df0d31`; its
+console and signal assertions stayed unchanged. All three portable-platform
+jobs passed wizard-generated standard/minimal offline navigation, assets,
+search and no-JavaScript acceptance in Chromium and WebKit.
+
+The CLI job `128347404872` failed at the existing scaffold-name acceptance:
+new validation rejected a hosted `--name` containing newline/tab characters.
+Those names were already supported through escaped YAML, so treating them as
+invalid was a compatibility regression. Source **`65de2c8`** restores literal
+hosted name values, including with `-i` when the name flag skips its question.
+Interactive name answers and portable names still exclude control characters;
+all names must be nonempty, and themes must be in the embedded catalogue.
+The user reference and CLI contract now distinguish these cases. This corrects
+the broader name-validation claim in the initial wizard entry above.
+
+All 9 focused wizard tests pass, including the new literal-name/interactive
+regression. The unchanged Node-only scaffold acceptance passes all 40 Rust
+starters, 10 Node starters and 10 guide titles with exact metadata and rendered
+links. Strict/deep project documentation validation passes 55 routes and
+23 examples. Full Rust rerun and final-head hosted/native CI remain pending;
+the earlier run cannot validate this correction or the hosted wizard export.
+No local Docker/browser/GUI, native release or provider mutation ran.
+Evidence: `/private/tmp/zellij-site-wizard-compat-{focused,scaffolds,docs}.log`.
+
+PR #95's post-merge main run `42351594650` subsequently passed all 16 jobs on
+unchanged `4dcb12c`, so both its post-merge workflows are now green. Its base
+image workflow retained the previously recorded artifact-upload retry.

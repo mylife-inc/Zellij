@@ -49,7 +49,10 @@ const server = createServer((request, response) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
 function start(command, args, env = process.env, cwd) {
-  const child = spawn(command, args, { env, cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+  // Avoid PowerShell's desktop JumpList COM initialization in CI. Keep the
+  // console/signal fixtures' launch behavior unchanged.
+  const windowsHide = windows && ['powershell.exe', 'pwsh'].includes(command);
+  const child = spawn(command, args, { env, cwd, windowsHide, stdio: ['pipe', 'pipe', 'pipe'] });
   const state = { child, stdout: '', stderr: '', exit: undefined };
   active.add(state);
   child.stdout.on('data', bytes => state.stdout += bytes);
@@ -83,7 +86,7 @@ try {
   if (windows) {
     execFileSync('rustc', ['--edition=2024', 'scripts/fixtures/preview-console.rs', '-o', consoleExe]);
     const unsafeZip = path.join(temp, 'unsafe.zip');
-    execFileSync('pwsh', ['-NoProfile', '-File', 'scripts/package-windows.ps1', '-Binary', path.join(dist, archive), '-Archive', unsafeZip, '-EntryName', '../outside']);
+    execFileSync('pwsh', ['-NoProfile', '-File', 'scripts/package-windows.ps1', '-Binary', path.join(dist, archive), '-Archive', unsafeZip, '-EntryName', '../outside'], { windowsHide: true });
     badArchive = await readFile(unsafeZip);
   } else {
     const unsafeDir = path.join(temp, 'unsafe'); await mkdir(unsafeDir);
@@ -200,7 +203,7 @@ try {
   }
   assert.equal(await readFile(runtimeEnv.ZEL_FIXTURE_LOG, 'utf8'), runtimeEnv.ZELLIJ_IMAGE);
   const future = path.join(temp, windows ? 'next.zip' : 'next.tar.gz');
-  if (windows) execFileSync('pwsh', ['-NoProfile', '-File', 'scripts/package-windows.ps1', '-Binary', fixture, '-Archive', future]);
+  if (windows) execFileSync('pwsh', ['-NoProfile', '-File', 'scripts/package-windows.ps1', '-Binary', fixture, '-Archive', future], { windowsHide: true });
   else execFileSync('tar', ['-czf', future, '-C', fixtureDir, 'zel'], { env: { ...process.env, COPYFILE_DISABLE: '1' } });
   nextArchive = await readFile(future);
   const copyDir = path.join(temp, 'Separate installation'); await mkdir(copyDir);

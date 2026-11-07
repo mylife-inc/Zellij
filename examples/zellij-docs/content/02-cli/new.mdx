@@ -97,6 +97,7 @@ An existing Markdown folder can be built directly; scaffolding is optional.
 | `--name <text>` | Site name and home title | Destination folder's name |
 | `--theme <name>` | A theme from `zel list themes` | `cupertino` |
 | `--minimal` | Omit the example guide and image | off |
+| `--interactive` / `-i` | Choose missing settings in the site wizard | off |
 
 Names must be nonempty text without control characters. Names and theme values
 are validated before writing. Display names are quoted in metadata rather than
@@ -112,6 +113,45 @@ generate YAML/MDX and should not be used inside this Markdown starter.
 
 ---
 
+## Site creation wizard
+
+**Current source, newer than published rc.1**, supports interactive creation:
+
+```bash
+zel init -i                  # portable Markdown at docs/zellij
+zel nd -i                    # hosted YAML/MDX at docs/zellij
+zel nd docs/manual -i --name "Acme" --theme forest
+```
+
+The wizard asks for the site name, a theme, and a starter. Select a theme or
+starter by name or by its displayed number. Portable sites offer `standard`
+(home, guide and local image) or `minimal` (one Markdown page). Hosted sites
+offer `standard`, `minimal`, or `full` (all section examples), then ask whether
+to include a guide. The output folder is the command's positional argument,
+or `docs/zellij` when omitted; it is not another question.
+
+Enter keeps the displayed default: the destination's name, `cupertino` for
+portable or `paper` for hosted, the standard starter, and no extra hosted guide.
+Flags supply answers directly: `--name`, `--theme`, `--minimal`, `--full` and
+`--guide` retain their normal meanings and skip the corresponding questions.
+Unknown themes and empty names are rejected before writes. Interactive name
+answers and all portable names must also exclude control characters; invalid
+answers are requested again. Hosted `--name` values retain their literal text,
+including newlines and tabs, through escaped YAML, with or without `-i`.
+
+Prompts use stderr and remain visible with `--quiet`. Without `-i`, commands
+never prompt and retain their previous defaults. Explicit `-i` accepts a
+terminal or piped answers. `:q`, end of input, or Ctrl-C while answering cancels
+without creating site files. Files are written only after all answers validate;
+the destination root/configuration is checked before prompting and the complete
+file plan is checked before writing. A hosted `--force` permits its usual
+overwrites only after the questions are complete; cancelling still preserves
+existing files. Portable creation has no overwrite option.
+
+The wizard generates the same files as the equivalent flags and uses no Node,
+container, network, dependency installer or server. It covers whole-site
+creation; page and app wizards remain separate work.
+
 ## `zel new docs [dir]`
 
 Creates a versioned hosted site: `zel.yaml` selects the hosted renderer and
@@ -123,6 +163,7 @@ zel new docs
 zel new docs ./product-docs
 zel new docs --name "Acme" --theme cupertino --guide
 zel nd --full                  # all section examples at docs/zellij
+zel nd -i                      # choose site settings interactively
 ```
 
 Display names and guide titles are written as quoted YAML strings, so names
