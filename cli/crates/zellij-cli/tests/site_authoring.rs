@@ -203,6 +203,43 @@ fn explicit_values_skip_questions_and_quiet_retains_required_prompts() {
     );
 }
 #[test]
+fn hosted_literal_name_flags_remain_supported_with_and_without_the_wizard() {
+    let temp = tempfile::tempdir().unwrap();
+    let name = "line\nnext\r\ntab\tend\u{85}\u{2028}\u{2029}\u{7f}\u{80}\u{9f}";
+    for (target, interactive) in [("flags", false), ("wizard", true)] {
+        let mut args = vec![
+            "nd", target, "--name", name, "--theme", "paper", "--full", "--guide",
+        ];
+        if interactive {
+            args.push("-i");
+        }
+        run(temp.path(), &args, "", 0);
+        assert_eq!(
+            yaml(temp.path().join(target).join("content/site.yaml"))["name"],
+            name
+        );
+    }
+    assert_eq!(
+        tree(&temp.path().join("flags")),
+        tree(&temp.path().join("wizard"))
+    );
+    let out = run(
+        temp.path(),
+        &["nd", "answers", "-i"],
+        "bad\tname\nAcme\npaper\nminimal\nno\n",
+        0,
+    );
+    assert!(
+        String::from_utf8(out.stderr)
+            .unwrap()
+            .contains("without control characters")
+    );
+    assert_eq!(
+        yaml(temp.path().join("answers/content/site.yaml"))["name"],
+        "Acme"
+    );
+}
+#[test]
 fn invalid_answers_reprompt_and_numeric_choices_accept_crlf_and_cwd() {
     let temp = tempfile::tempdir().unwrap();
     fs::create_dir(temp.path().join("product")).unwrap();
@@ -269,11 +306,11 @@ fn cancellation_at_every_question_never_writes_a_site_or_overwrites_with_force()
 fn invalid_flags_and_destinations_fail_without_prompting_or_writes() {
     let temp = tempfile::tempdir().unwrap();
     for command in ["init", "nd"] {
-        for flags in [
-            vec!["--theme", "missing"],
-            vec!["--name", " "],
-            vec!["--name", "bad\nname"],
-        ] {
+        let mut invalid_flags = vec![vec!["--theme", "missing"], vec!["--name", " "]];
+        if command == "init" {
+            invalid_flags.push(vec!["--name", "bad\nname"]);
+        }
+        for flags in invalid_flags {
             let mut args = vec![command, "new", "-i"];
             args.extend(flags);
             let out = run(temp.path(), &args, "", 2);

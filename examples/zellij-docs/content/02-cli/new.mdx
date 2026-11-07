@@ -134,8 +134,10 @@ Enter keeps the displayed default: the destination's name, `cupertino` for
 portable or `paper` for hosted, the standard starter, and no extra hosted guide.
 Flags supply answers directly: `--name`, `--theme`, `--minimal`, `--full` and
 `--guide` retain their normal meanings and skip the corresponding questions.
-Unknown themes and empty or control-character names are rejected before writes,
-including when supplied noninteractively. Invalid answers are requested again.
+Unknown themes and empty names are rejected before writes. Interactive name
+answers and all portable names must also exclude control characters; invalid
+answers are requested again. Hosted `--name` values retain their literal text,
+including newlines and tabs, through escaped YAML, with or without `-i`.
 
 Prompts use stderr and remain visible with `--quiet`. Without `-i`, commands
 never prompt and retain their previous defaults. Explicit `-i` accepts a

@@ -45,10 +45,15 @@ pub(crate) fn docs(args: &NewDocsArgs) -> Result<()> {
         force: args.force,
     })
 }
-fn valid_name(name: &str) -> Result<()> {
-    if name.trim().is_empty() || name.chars().any(char::is_control) {
+fn valid_name(name: &str, single_line: bool) -> Result<()> {
+    if name.trim().is_empty() || (single_line && name.chars().any(char::is_control)) {
         return Err(Error::InvalidArgument(
-            "site name must be nonempty text without control characters".into(),
+            if single_line {
+                "site name must be nonempty text without control characters"
+            } else {
+                "site name must be nonempty text"
+            }
+            .into(),
         ));
     }
     Ok(())
@@ -106,7 +111,10 @@ fn plan<R: BufRead, W: Write>(
         })
         .to_owned();
     // Supplied invalid values fail before reading input, never silently replaced.
-    valid_name(&name)?;
+    // Hosted --name has always accepted literal multiline/control characters:
+    // its YAML writer escapes them. Preserve that contract, including when
+    // flags skip wizard questions. Portable names remain single-line text.
+    valid_name(&name, options.portable)?;
     valid_theme(&theme)?;
     let mut minimal = options.minimal;
     let mut full = options.full;
@@ -115,7 +123,7 @@ fn plan<R: BufRead, W: Write>(
         prompt.message("Press Enter to keep a displayed default; :q cancels. Values supplied by flags are retained.")?;
         if options.name.is_none() {
             while let Some(answer) = prompt.ask("Site name", Some(&name))? {
-                match valid_name(&answer) {
+                match valid_name(&answer, true) {
                     Ok(()) => {
                         name = answer;
                         break;

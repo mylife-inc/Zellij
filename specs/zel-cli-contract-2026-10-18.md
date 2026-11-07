@@ -2104,9 +2104,10 @@ minimal and full, followed by a separate guide choice (default no). `--minimal`
 or `--full` skips starter selection; `--guide` skips the guide question. Existing
 full/minimal conflicts and force behavior remain. Enter retains the displayed
 default; invalid answers reprompt. Invalid supplied names/themes fail without
-reading answers. Hosted creation now shares portable creation's validation of
-nonempty names without control characters and known built-in themes, avoiding
-generation of an invalid site through those flags.
+reading answers. Both modes require nonempty names and known built-in themes.
+Interactive name answers and portable names exclude control characters. Hosted
+`--name` retains its established literal-text/escaped-YAML contract, including
+newlines and tabs, even when the flag skips a wizard question.
 
 Prompts use stderr, including under quiet mode. Explicit interactive mode may
 read a pipe. EOF, :q or interruption while answering writes no site files. The
