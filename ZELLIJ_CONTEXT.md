@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-07**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-08**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -73,8 +73,11 @@ checks passed; both post-merge workflows passed. Complete JSON section values
 and optional-field removal merged in PR #99 as `6c01f4a`, after all 16 final-head
 checks passed; both post-merge workflows passed. Local Sphinx `literalinclude`
 excerpts merged in PR #100 as `9fb29c8`, after all 16 final-head checks passed;
-both post-merge workflows passed. Current work fixes MDX code leaking into search
-and duplicated guide titles/shifted anchors with CRLF source line endings.
+both post-merge workflows passed. PR #101 fixed MDX code leaking into search
+and duplicated guide titles/shifted anchors with CRLF line endings, merging as
+`cac41b7` after all 16 final-head checks passed; both post-merge workflows passed.
+Current work adds local-file Sphinx CSV tables and fixes multiline CSV header
+indentation. See the newest dated entry for verification and merge status.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -138,6 +141,16 @@ Formatting and validation watch merged in PR #37.
 Editable Next.js wrappers merged in PR #36, configured import/ship in PR #35,
 CI generation in PR #34 and Netlify delivery in PR #33. These capabilities are
 available in candidate `zellij-v0.2.0-rc.1`; the stable native release is still `zellij-v0.1.3`.
+
+The user requested graphify on 2026-11-08 and selected **cli/** after the full
+855-file corpus exceeded the skill's threshold. The local, git-ignored knowledge
+map is at `graphify-out/graph.json`, interactive view `graphify-out/graph.html`,
+and audit `graphify-out/GRAPH_REPORT.md`; `.graphify_root` records the CLI scope.
+Use `graphify query` from the repository root. It does not map engine/examples/specs
+outside `cli/`. Its integrity report flags dangling endpoints and collapsed
+relationships; inferred edges and minified Mermaid symbol matches require source
+verification. It is navigation assistance, not evidence of completeness or bugs.
+The graph report records unrepresented inputs and unavailable agent token counts.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -6760,3 +6773,55 @@ returns no results. No local container/browser/GUI was used. User guide, engine
 specification and durable context/status are updated. Final-head CI/merge remain
 pending; broad import/provider/release gaps remain as previously documented.
 Evidence: `/private/tmp/zellij-search-boundaries-{before,focused,engine-final,typecheck-all,build-final,sphinx,conversion,packaged-final,docs-final}.log`.
+
+
+### 2026-11-08 — Local Sphinx CSV table files
+
+`csv-table :file:` now imports local UTF-8 data through the same bounded reader
+as `literalinclude`, after navigation chooses published documents. Headers,
+stub columns, captions, nested cell markup, substitutions, links, images and
+searchable text survive. CSV source files are not copied unless explicitly
+linked; copy/skip/dry-run share the same input checks. UTF-8/BOM policy, CRLF/CR
+normalization and tab delimiters are documented in the conversion reference.
+Exact-case inventory lookup, containment, exclusions and symlink rejection apply.
+Files are limited to 8 MiB; both resource types share 32 MiB unique-input and
+expanded-text budgets, plus existing table dimensions and a 16-level nesting cap.
+No source Python/Docutils, remote CSV URL or authored code executes.
+
+Docutils assigns CSV cell source paths to the data file, while supplemental
+`:header:` rows retain the directive source. Nested CSV files follow those paths;
+Sphinx roles/images/downloads/literalinclude retain the original RST context.
+A regression also exposed loss of indentation inside multiline CSV header
+options; continuation indentation is now relative to the first-line value.
+References: [Docutils table implementation](https://github.com/docutils/docutils/blob/master/docutils/docutils/parsers/rst/directives/tables.py),
+[Sphinx CSV patch](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/patches.py),
+[asset collectors](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/collectors/asset.py),
+and [literal includes](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/code.py).
+
+The initial positive regression failed against the prior implementation. Local
+46 Sphinx CLI tests and 453 engine tests pass, along with all six Node import/render
+fixtures and strict/deep docs (55 routes, 23 examples). The first broader Rust
+run found an obsolete test expecting tab delimiters to fail; that expectation
+was removed after actual tab-delimited import passed. The final workspace run,
+final-head hosted/native CI and merge remain pending at this entry. No local
+Docker/browser/GUI, native release, live provider deployment or production
+migration ran. Remote CSV and broader Sphinx/domain/include fidelity remain out
+of scope, as do the pending live-provider/release tasks in the CLI status.
+
+Previous milestone closure: PR #101 merged as `cac41b71c9cfbc6767b5f718a0a163beb3b36d35`,
+with the identical tested tree `f44ae2e59657a33789f9e06def3c0ccc85106e7f`.
+All 16 checks passed on `7ce9419ce0aab665f32d20d6aa3e2a25bbe0c21c` in
+run `42418585801`. Both post-merge workflows passed: CI `42421313719` and base
+image `42421313696`. Native candidate rc.1 remains the newest published release.
+
+
+Local CSV implementation **`a7b32b017525626c8fc5c4ce26a037e6b2df57bf`**
+passes the final local workspace run: **673 Rust tests**, 0 failures, with 5
+hosted-export tests intentionally ignored locally and selected separately in CI.
+All 46 Sphinx CLI cases, 453 engine tests, warnings-denied workspace Clippy,
+formatting, six actual-CLI Node/rendering fixtures, strict/deep docs (55 routes /
+23 examples), script syntax and diff checks pass. Evidence is under
+`/private/tmp/zellij-local-csv-{workspace-final,focused-final,engine,clippy-final,render-final,docs-final}.log`.
+The multiline-header regression initially failed and passes after preserving
+relative option indentation. Final-head cross-platform/native/hosted CI and merge
+remain pending; these local results do not establish a bug-free or complete CLI.

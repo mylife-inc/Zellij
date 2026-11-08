@@ -117,3 +117,12 @@ List and CSV directives
    :quote: '
 
    Café│'漢字│quoted ''word'''
+
+File-backed table
+-----------------
+
+.. csv-table:: Local CSV matrix
+   :file: data/values%20.csv
+   :encoding: utf-8-sig
+   :header-rows: 1
+   :stub-columns: 1

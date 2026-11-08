@@ -2,6 +2,7 @@
 mod config;
 mod lists;
 mod literalinclude;
+mod resources;
 mod rst;
 mod substitutions;
 mod table_directives;
@@ -301,14 +302,14 @@ impl Converter for Sphinx {
             ..Default::default()
         };
         let published: BTreeSet<_> = tree.pages().into_iter().cloned().collect();
-        let mut includes = literalinclude::Resolver::new(
+        let mut includes = resources::Resolver::new(
             &tree.root,
             &literal_files,
             config::string(&config, "source_encoding")?.unwrap_or("utf-8-sig"),
         );
         for path in &published {
             includes
-                .resolve(path, &mut docs.get_mut(path).unwrap().blocks)
+                .resolve_document(path, docs.get_mut(path).unwrap())
                 .map_err(|e| invalid(format!("{path}: {e}")))?;
         }
         tree.orphans = docs
