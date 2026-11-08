@@ -1,0 +1,4 @@
+Item,Description
+External,"External CSV searchable **value** with :doc:`CSV details <details>` and :download:`CSV download <notes.txt>`."
+Image,".. image:: /media/logo.svg
+   :alt: CSV file logo"

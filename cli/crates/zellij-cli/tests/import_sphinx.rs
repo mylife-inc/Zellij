@@ -46,6 +46,16 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
     write(&s, "index.rst", source);
     write(
         &s,
+        "data/values%20.csv",
+        format!(
+            "\u{feff}{}",
+            include_str!("../../../../scripts/fixtures/sphinx-external-table.csv")
+                .replace("\r\n", "\n")
+                .replace('\n', "\r\n")
+        ),
+    );
+    write(
+        &s,
         "details.rst",
         ".. _install:\n\nInstallation\n============\n",
     );
@@ -54,13 +64,16 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
     let r = run(&s, &o, &["--layout", "site"], 0);
     let c = o.join("content");
     let body = read(&c, "01-guide/index.mdx");
-    assert_eq!(body.matches("<table>").count(), 8);
-    assert_eq!(body.matches("<thead>").count(), 4);
-    assert_eq!(body.matches("<th>").count(), 17);
-    assert_eq!(body.matches("<caption>").count(), 4);
-    assert_eq!(body.matches("<th scope=\"row\">").count(), 7);
+    assert_eq!(body.matches("<table>").count(), 9);
+    assert_eq!(body.matches("<thead>").count(), 5);
+    assert_eq!(body.matches("<th>").count(), 19);
+    assert_eq!(body.matches("<caption>").count(), 5);
+    assert_eq!(body.matches("<th scope=\"row\">").count(), 9);
     for expected in [
         "**Feature** matrix",
+        "External CSV searchable **value**",
+        "[CSV details](</guide/details>)",
+        "![CSV file logo](</_zellij/assets/imported/docs/media/logo.svg>)",
         "Café 漢字 e\u{301}",
         "[Details](</guide/details>)",
         "[Installation](</guide/details#install>)",
@@ -103,6 +116,7 @@ fn tables_preserve_cells_headers_blocks_unicode_references_and_assets() {
         "<svg>preserved image</svg>"
     );
     assert_eq!(read(&s, "index.rst"), source);
+    assert!(!c.join("assets/imported/docs/data/values%20.csv").exists());
     assert!(!report(&r).contains("HTML/JSX asset and link attributes"));
     let dry = t.path().join("dry");
     run(&s, &dry, &["--dry-run"], 0);
@@ -1395,4 +1409,287 @@ fn literalinclude_rejects_symlinked_files_and_directories() {
         assert!(!o.exists());
         assert!(!report(&result).contains("literal-private-sentinel"));
     }
+}
+
+#[test]
+fn local_csv_files_preserve_tables_references_and_encoding_without_copying_data() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n\n   nested/page\n   details\n",
+    );
+    write(&s, "details.rst", "Details\n=======\n");
+    write(
+        &s,
+        "nested/page.rst",
+        "Page\n====\n\n.. csv-table:: **Local** matrix\n   :file: ../data/Café%20.csv\n   :encoding: utf-8-sig\n   :header: Key,Value\n   :header-rows: 1\n   :stub-columns: 1\n\n.. note:: Nested\n\n   .. csv-table::\n      :file: /data/Café%20.csv\n",
+    );
+    let data = "\u{feff}Label,Description\r\nAlpha,**Searchable file cell**\r\nDocs,:doc:`/details`\r\nFile,:download:`../notes.txt`\r\n";
+    write(&s, "data/Café%20.csv", data);
+    write(&s, "data/Café .csv", "Wrong filename");
+    write(&s, "notes.txt", "CSV-linked download");
+    write(
+        &s,
+        "orphan.rst",
+        "Orphan\n======\n\n.. csv-table::\n   :file: absent.csv\n",
+    );
+    for (i, args) in [vec![], vec!["--assets", "skip"], vec!["--layout", "site"]]
+        .iter()
+        .enumerate()
+    {
+        let o = t.path().join(format!("out-{i}"));
+        run(&s, &o, args, 0);
+        let c = if i == 2 { o.join("content") } else { o };
+        let body = read(&c, "01-guide/nested/page.mdx");
+        assert_eq!(body.matches("<table>").count(), 2, "{body}");
+        assert!(
+            body.contains("**Local** matrix") && body.contains("**Searchable file cell**"),
+            "{body}"
+        );
+        assert!(body.contains("[Details](</guide/details>)"), "{body}");
+        assert!(
+            !body.contains('\u{feff}') && !body.contains("Wrong filename"),
+            "{body}"
+        );
+        assert!(!c.join("assets/imported/docs/data/Café%20.csv").exists());
+        if i != 1 {
+            assert_eq!(
+                read(&c, "assets/imported/docs/notes.txt"),
+                "CSV-linked download"
+            );
+        }
+    }
+    let dry = t.path().join("dry");
+    run(&s, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+    assert_eq!(read(&s, "data/Café%20.csv"), data);
+}
+
+#[test]
+fn local_csv_cells_parse_nested_resources_and_document_substitutions() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. |product| replace:: Zellij\n\n.. csv-table::\n   :file: data/outer.csv\n",
+    );
+    write(
+        &s,
+        "data/outer.csv",
+        "\".. csv-table::\n   :file: inner.csv\",\".. literalinclude:: snippets/example.py\"\n",
+    );
+    write(&s, "data/inner.csv", "|product|,nested table\n");
+    write(&s, "snippets/example.py", "literal code from CSV\n");
+    let o = t.path().join("o");
+    run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/index.mdx");
+    assert_eq!(body.matches("<table>").count(), 2, "{body}");
+    assert!(
+        body.contains("Zellij") && body.contains("```text\nliteral code from CSV\n```"),
+        "{body}"
+    );
+}
+
+#[test]
+fn local_csv_supports_tab_delimiters_and_explicit_bom_policy() {
+    for (i, (encoding, bom)) in [("utf-8-sig", false), ("utf-8", true)].iter().enumerate() {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(
+            &s,
+            "index.rst",
+            format!(
+                "Home\n====\n\n.. csv-table::\n   :file: data.tsv\n   :encoding: {encoding}\n   :delim: tab\n   :quote: '\n   :header-rows: 1\n"
+            ),
+        );
+        write(
+            &s,
+            "data.tsv",
+            "\u{feff}Key\tValue\rAlpha\t'quoted\tcell'\r",
+        );
+        let o = t.path().join(format!("o-{i}"));
+        run(&s, &o, &[], 0);
+        let body = read(&o, "01-guide/index.mdx");
+        assert_eq!(body.contains('\u{feff}'), *bom, "{body}");
+        assert!(body.contains("quoted\tcell"), "{body}");
+        assert_eq!(body.matches("<th>").count(), 2, "{body}");
+    }
+}
+
+#[test]
+fn invalid_local_csv_sources_fail_before_writes_in_every_import_mode() {
+    for (file, options, data) in [
+        ("../outside.csv", "", "value"),
+        ("https://example.invalid/data.csv", "", "value"),
+        ("//server/data.csv", "", "value"),
+        ("C:\\data.csv", "", "value"),
+        (".hidden.csv", "", "value"),
+        ("excluded/data.csv", "", "value"),
+        ("DATA.csv", "", "value"),
+        ("missing.csv", "", "value"),
+        ("data.csv", ":encoding: latin-1", "value"),
+        (
+            "data.csv",
+            ":url: https://example.invalid/data.csv",
+            "value",
+        ),
+        ("data.csv", ":header-rows: 1", "single row"),
+        ("data.csv", "", "\"unclosed"),
+        ("data.csv", "", ".. raw:: html"),
+        ("data.csv", "", "\0binary"),
+        ("data.csv", "", "\u{2028}unsupported"),
+        ("data.csv", "", ".. csv-table::\n   :file: data.csv"),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(
+            &s,
+            "conf.py",
+            "project='CSV'\nexclude_patterns=['excluded']\n",
+        );
+        for p in ["data.csv", ".hidden.csv", "excluded/data.csv"] {
+            write(&s, p, data);
+        }
+        write(t.path(), "outside.csv", "outside sentinel");
+        write(
+            &s,
+            "index.rst",
+            format!("Home\n====\n\n.. csv-table::\n   :file: {file}\n   {options}\n"),
+        );
+        for (i, args) in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]]
+            .iter()
+            .enumerate()
+        {
+            let o = t.path().join(format!("out-{i}"));
+            run(&s, &o, args, 2);
+            assert!(!o.exists());
+        }
+    }
+    for data in [vec![0xff, 0xfe], vec![b'x'; 8 * 1024 * 1024 + 1]] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(&s, "data.csv", data);
+        write(
+            &s,
+            "index.rst",
+            "Home\n====\n\n.. csv-table::\n   :file: data.csv\n",
+        );
+        let o = t.path().join("o");
+        run(&s, &o, &[], 2);
+        assert!(!o.exists());
+    }
+}
+
+#[test]
+fn local_csv_requires_one_data_source_and_preserves_output_on_failure() {
+    for directive in [
+        ".. csv-table::\n   :file:\n",
+        ".. csv-table::\n   :file: data.csv\n\n   inline,body\n",
+        ".. csv-table::\n   :file: data.csv\n   :file: other.csv\n",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(&s, "data.csv", "valid,data");
+        write(&s, "index.rst", format!("Home\n====\n\n{directive}"));
+        let o = t.path().join("o");
+        run(&s, &o, &[], 2);
+        assert!(!o.exists());
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn local_csv_rejects_symlink_sources() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(t.path(), "outside.csv", "outside,data");
+    std::os::unix::fs::symlink(t.path().join("outside.csv"), s.join("data.csv")).unwrap();
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. csv-table::\n   :file: data.csv\n",
+    );
+    let o = t.path().join("o");
+    run(&s, &o, &["--assets", "skip"], 2);
+    assert!(!o.exists());
+}
+
+#[test]
+fn recursive_csv_files_stop_at_the_shared_nesting_limit() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. csv-table::\n   :file: data.csv\n",
+    );
+    write(&s, "data.csv", "\".. csv-table::\n   :file: data.csv\"\n");
+    let o = t.path().join("o");
+    let r = run(&s, &o, &[], 2);
+    assert!(report(&r).contains("nesting exceeds 16"), "{}", report(&r));
+    assert!(!o.exists());
+}
+
+#[test]
+fn csv_and_literal_includes_share_the_total_expansion_budget() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(&s, "large.txt", "x".repeat(8 * 1024 * 1024));
+    let mut page = String::from("Home\n====\n");
+    for _ in 0..4 {
+        page.push_str("\n.. literalinclude:: large.txt\n");
+    }
+    page.push_str("\n.. csv-table::\n   :file: tiny.csv\n");
+    write(&s, "index.rst", page);
+    write(&s, "tiny.csv", "small,value\n");
+    let o = t.path().join("o");
+    let r = run(&s, &o, &[], 2);
+    assert!(
+        report(&r).contains("total expanded text exceeds 32 MiB"),
+        "{}",
+        report(&r)
+    );
+    assert!(!o.exists());
+}
+
+#[test]
+fn external_csv_headers_and_data_keep_distinct_nested_file_sources() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. csv-table::\n   :file: data/outer.csv\n   :header: \".. csv-table::\n               :file: header.csv\"\n",
+    );
+    write(&s, "header.csv", "HEADER source\n");
+    write(&s, "data/header.csv", "WRONG header source\n");
+    write(
+        &s,
+        "data/outer.csv",
+        "\".. csv-table::\n   :file: inner.csv\"\n",
+    );
+    write(&s, "data/inner.csv", "DATA source\n");
+    write(&s, "inner.csv", "WRONG data source\n");
+    let o = t.path().join("o");
+    run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/index.mdx");
+    assert_eq!(body.matches("<table>").count(), 3, "{body}");
+    assert!(
+        body.contains("HEADER source") && body.contains("DATA source"),
+        "{body}"
+    );
+    assert!(!body.contains("WRONG"), "{body}");
 }

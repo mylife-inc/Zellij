@@ -37,3 +37,7 @@ cli/.cargo-gnu/
 
 # Local production snapshots retained before hosting migrations.
 /backups/
+
+# Local graphify knowledge maps and extraction caches.
+/graphify-out/
+/cli/graphify-out/

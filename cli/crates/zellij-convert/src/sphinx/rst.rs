@@ -21,6 +21,7 @@ pub enum Block {
         body: String,
     },
     LiteralInclude(super::literalinclude::Spec),
+    CsvTable(super::table_directives::ExternalCsv),
     Image {
         target: String,
         alt: String,
@@ -139,6 +140,7 @@ fn options(body: &str, csv_header: bool) -> Result<(BTreeMap<String, String>, St
         if !value.is_empty() && !value.starts_with(char::is_whitespace) {
             break;
         }
+        let value_column = line.len() - value.trim_start().len();
         let mut value = value.trim().to_owned();
         i += 1;
         if lines
@@ -157,7 +159,20 @@ fn options(body: &str, csv_header: bool) -> Result<(BTreeMap<String, String>, St
                 .iter()
                 .take_while(|line| line.starts_with(' ') && !line.trim().is_empty())
                 .count();
-            let (continuation, _) = indented(&lines[i..end], 0);
+            // Keep indentation relative to the first-line value. Stripping
+            // the continuation's entire indent turns a nested directive's
+            // options into unrelated text inside a quoted header cell.
+            let indent = lines[i..end]
+                .iter()
+                .map(|line| line.len() - line.trim_start_matches(' ').len())
+                .min()
+                .unwrap()
+                .min(value_column);
+            let continuation = lines[i..end]
+                .iter()
+                .map(|line| &line[indent..])
+                .collect::<Vec<_>>()
+                .join("\n");
             value.push('\n');
             value.push_str(&continuation);
             i = end;
@@ -435,6 +450,16 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                                 "table content needs a blank line after the directive; multiline captions require manual migration",
                             ));
                         }
+                        if directive == "csv-table" && opts.contains_key("file") {
+                            out.push(Block::CsvTable(super::table_directives::ExternalCsv::new(
+                                opts,
+                                &body,
+                                (!arg.is_empty()).then(|| arg.into()),
+                                language,
+                                depth,
+                            )?));
+                            continue;
+                        }
                         let table = super::table_directives::parse(directive, &opts, &body)?;
                         out.push(table_block(
                             table,
@@ -582,7 +607,7 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
     Ok(out)
 }
 
-fn table_block(
+pub(super) fn table_block(
     table: super::tables::Table,
     caption: Option<String>,
     language: &str,
@@ -842,7 +867,9 @@ fn render(blocks: &[Block], context: &mut Expansion<'_>) -> Result<String> {
                 }
                 out.push_str(&format!("{fence}\n\n"));
             }
-            Block::LiteralInclude(_) => return Err(invalid("unresolved literalinclude")),
+            Block::LiteralInclude(_) | Block::CsvTable(_) => {
+                return Err(invalid("unresolved local resource"));
+            }
             Block::Image { target, alt } => out.push_str(&format!(
                 "\n!{}\n\n",
                 link(alt, &context.reference("asset", target)?)?

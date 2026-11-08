@@ -481,7 +481,7 @@ Supported options:
   are distinct unless `tab-width` expands them first.
 
 Each referenced file is limited to 8 MiB; unique input and total expanded text
-are each limited to 32 MiB per conversion. Explicit line selections are limited
+are each limited to 32 MiB per conversion, shared with local CSV tables. Explicit line selections are limited
 to 100,000 lines. Unsupported options such as `caption`, `name`, `linenos`,
 `emphasize-lines`, `pyobject`, `diff`, `prepend` and `append` fail before output.
 The directive requires a filename and has no content body. These checks also
@@ -584,7 +584,7 @@ captions/titles still need plain text. Anonymous substitution links, `unicode`,
 
 Rectangular **grid and simple tables** are supported, including tables without
 headers, multiple header rows, multiline cells and `.. table::` captions.
-`list-table` and in-document `csv-table` directives also support single-line captions,
+`list-table` and inline or local-file `csv-table` directives also support single-line captions,
 `header-rows` and `stub-columns` (left-hand row headings). Both default to zero.
 Keep at least one body row and one data column after those headings. List tables
 require a uniform two-level bullet list; CSV tables pad short rows with empty
@@ -627,11 +627,41 @@ body; indented continuation lines allow multiple supplemental header rows.
 Quoted cells may contain commas and line breaks, and doubled quotes retain a
 literal quote. CSV defaults to comma separators and double quotes, ignoring
 ASCII spaces at the start of a field. `:delim:` and `:quote:` accept distinct
-literal Unicode characters; `:delim: space` is also supported. The flag
+literal Unicode characters; `:delim: space` and `:delim: tab` are also supported. The flag
 `:keepspace:` retains leading spaces, which then follow the ordinary
 reStructuredText indentation rules inside the cell. Custom escape characters,
-character-code notation, tabs and external CSV `:file:`/`:url:`/`:encoding:`
-options require manual migration. No external CSV data is read or fetched.
+character-code notation and remote `:url:` data require manual migration.
+
+To read CSV data from a local file, use `:file:` with no inline table body:
+
+```rst
+.. csv-table:: Supported formats
+   :file: data/formats.csv
+   :encoding: utf-8-sig
+   :header-rows: 1
+   :stub-columns: 1
+```
+
+Paths are relative to the document; a leading `/` means the Sphinx source root.
+Names are literal (including `%20`) and must match exact case. Files must be
+eligible, nonhidden, nonexcluded regular files inside that root, without symlinks.
+`:encoding:` accepts `utf-8` or `utf-8-sig`; otherwise `source_encoding` applies
+(default `utf-8-sig`, removing a leading BOM). LF, CRLF and CR are normalized.
+Invalid UTF-8 and unsupported control characters fail before output.
+
+Cells support the same markup, substitutions, images, links and nested tables as
+inline CSV. A nested `csv-table :file:` in a data cell is relative to that CSV
+file; nested directives in supplemental `:header:` cells retain the containing
+directive's source directory. Sphinx document links, images, downloads and
+`literalinclude` paths keep the original RST document's context. Quoted cells
+may retain tabs; the delimiter itself can be selected with `:delim: tab`.
+
+CSV files are read only for published documents and are not copied as downloads
+unless explicitly linked. Copy, skip and dry-run modes enforce the same checks.
+CSV and literal includes share the 8 MiB per-file, 32 MiB unique-input and
+32 MiB expanded-text limits. Nested cells retain the shared depth limit below;
+recursive inclusions fail. No Python, Docutils, source code or remote URL is run
+or fetched. Local-file CSV support is newer than the published rc.1 candidate.
 
 Simple-table continuation lines have an empty first column; use an empty comment
 (`..`) in that column to start a new row whose first cell is empty. The final

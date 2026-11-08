@@ -310,6 +310,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
 `);
   await write('03-Café/index.rst', 'Café\n====\n\n:doc:`/02-Setup/APIReference`\n');
   await write('tables.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-tables.rst'), 'utf8'));
+  const externalCsv = await readFile(path.join(repo, 'scripts/fixtures/sphinx-external-table.csv'), 'utf8');
+  await write('data/values%20.csv', '\uFEFF' + externalCsv.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n'));
   await write('lists.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-lists.rst'), 'utf8'));
   await write('substitutions.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-substitutions.rst'), 'utf8'));
   await write('literalinclude.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-literalinclude.rst'), 'utf8'));
@@ -347,9 +349,9 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   assert.deepEqual(extractToc(page.body,headingOptions).map(h=>h.id), ['stable-install']);
   assert(indexGuidePage(page,headingOptions).some(e=>e.route===`${page.route}#stable-install` && e.text.includes('Searchable installation')));
   function assertTables(html, prefix) {
-    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 8);
-    assert.equal((html.match(/<thead(?:\s|>)/g) ?? []).length, 4, 'Headerless tables must not invent headers');
-    assert.equal((html.match(/<th(?:\s|>)/g) ?? []).length, 24, 'Column and row headings survive');
+    assert.equal((html.match(/<table(?:\s|>)/g) ?? []).length, 9);
+    assert.equal((html.match(/<thead(?:\s|>)/g) ?? []).length, 5, 'Headerless tables must not invent headers');
+    assert.equal((html.match(/<th(?:\s|>)/g) ?? []).length, 28, 'Column and row headings survive');
     assert(html.includes('<caption>') && html.includes('<strong>Feature</strong> matrix'));
     for (const text of ['Café 漢字 é', 'a|{b}', '&lt;script&gt;literal&lt;/script&gt;',
       'First paragraph.', 'Second paragraph.', 'First item', 'Second item',
@@ -359,17 +361,20 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
       'alt="Table logo"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg',
     ]) assert(html.includes(text), `Sphinx table missing ${text}`);
-    assert.equal((html.match(/<th scope="row"(?:\s|>)/g) ?? []).length, 7);
+    assert.equal((html.match(/<th scope="row"(?:\s|>)/g) ?? []).length, 9);
     for (const text of ['<strong>List</strong> matrix', 'List first paragraph.', 'List second paragraph',
       'Empty list row heading.', 'Quoted &quot;word&quot;, comma and <strong>bold</strong>.',
       'Second CSV paragraph.', 'Padded CSV row', '漢字│quoted &#x27;word&#x27;',
       `href="${prefix}/guide/details"`, 'href="/products/docs/_zellij/assets/imported/docs/notes.txt"',
       'alt="List logo"', '.. csv-table:: &lt;script&gt;{code}|literal&lt;/script&gt;',
-      ':header: literal field in code',
+      ':header: literal field in code', 'Local CSV matrix',
+      'External CSV searchable <strong>value</strong>', 'alt="CSV file logo"',
     ]) assert(html.includes(text), `Sphinx directive table missing ${text}`);
     assert(!html.includes('<script>literal</script>'));
   }
   assertTables(rendered.get('/guide/tables'), '');
+  assert(indexGuidePage(site.guidePages.find(p => p.route === '/guide/tables'), headingOptions).some(e => e.text.includes('External CSV searchable')));
+  await assert.rejects(readFile(path.join(content, 'assets/imported/docs/data/values%20.csv')), {code:'ENOENT'});
   function assertLists(html, prefix) {
     if (prefix) {
       // Hosted exports also contain navigation/sidebar lists. Count only the
@@ -494,5 +499,5 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const { checkImportedTables } = await import('./check-imported-tables.mjs');
     await checkImportedTables(output);
   }
-  console.log('sphinx: reStructuredText navigation, tables, nested lists, substitutions, literalinclude excerpts, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, inline/local CSV tables, nested lists, substitutions, literalinclude excerpts, references, literal code/HTML, search, headings and assets verified.');
 }

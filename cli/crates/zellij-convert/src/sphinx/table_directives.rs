@@ -1,4 +1,4 @@
-//! In-document table directives. No file/URL reads or source execution.
+//! Table syntax; local file data is supplied by the bounded resource resolver.
 use super::{invalid, tables::Table};
 use std::collections::BTreeMap;
 use zellij_core::Result;
@@ -13,7 +13,7 @@ fn count(opts: &Options, key: &str) -> Result<usize> {
     })
 }
 
-pub fn parse(kind: &str, opts: &Options, body: &str) -> Result<Table> {
+fn validate_options(kind: &str, opts: &Options) -> Result<()> {
     for (key, value) in opts {
         let supported = match key.as_str() {
             "widths" => value == "auto",
@@ -24,10 +24,15 @@ pub fn parse(kind: &str, opts: &Options, body: &str) -> Result<Table> {
         };
         if !supported {
             return Err(invalid(format!(
-                "unsupported {kind} option :{key}:; external CSV sources, custom presentation and escape rules require manual migration"
+                "unsupported {kind} option :{key}:; remote CSV sources, custom presentation and escape rules require manual migration"
             )));
         }
     }
+    Ok(())
+}
+
+pub fn parse(kind: &str, opts: &Options, body: &str) -> Result<Table> {
+    validate_options(kind, opts)?;
     if kind == "table" {
         let lines: Vec<_> = body.lines().collect();
         let (table, used) = super::tables::parse(&lines)?;
@@ -160,8 +165,8 @@ impl Dialect {
             let Some(text) = opts.get(key) else {
                 return Ok(default);
             };
-            if key == "delim" && text == "space" {
-                return Ok(' ');
+            if key == "delim" && matches!(text.as_str(), "space" | "tab") {
+                return Ok(if text == "tab" { '\t' } else { ' ' });
             }
             let mut chars = text.chars();
             let c = chars
@@ -169,7 +174,7 @@ impl Dialect {
                 .ok_or_else(|| invalid(format!(":{key}: needs one literal character")))?;
             if chars.next().is_some() || c.is_control() || c.is_whitespace() {
                 return Err(invalid(format!(
-                    ":{key}: needs one non-whitespace literal character (or :delim: space)"
+                    ":{key}: needs one non-whitespace literal character (or :delim: space/tab)"
                 )));
             }
             Ok(c)
@@ -260,6 +265,59 @@ fn csv(body: &str, dialect: &Dialect) -> Result<Vec<Vec<String>>> {
     Ok(rows)
 }
 
+#[derive(Debug)]
+pub struct ExternalCsv {
+    pub target: String,
+    pub encoding: Option<String>,
+    pub options: Options,
+    pub caption: Option<String>,
+    pub language: String,
+    pub depth: usize,
+}
+impl ExternalCsv {
+    pub fn new(
+        mut options: Options,
+        body: &str,
+        caption: Option<String>,
+        language: &str,
+        depth: usize,
+    ) -> Result<Self> {
+        let target = options.remove("file").unwrap();
+        if target.is_empty() || !body.trim().is_empty() {
+            return Err(invalid(
+                "csv-table :file: requires a filename and no inline body",
+            ));
+        }
+        let encoding = options.remove("encoding");
+        if encoding
+            .as_deref()
+            .is_some_and(|s| !matches!(s, "utf-8" | "utf-8-sig"))
+        {
+            return Err(invalid(
+                "csv-table file encoding must be utf-8 or utf-8-sig",
+            ));
+        }
+        validate_options("csv-table", &options)?;
+        count(&options, "header-rows")?;
+        count(&options, "stub-columns")?;
+        Dialect::new(&options)?;
+        Ok(Self {
+            target,
+            encoding,
+            options,
+            caption,
+            language: language.into(),
+            depth,
+        })
+    }
+}
+
+pub fn supplemental_rows(options: &Options) -> Result<usize> {
+    options.get("header").map_or(Ok(0), |header| {
+        csv(header, &Dialect::new(options)?).map(|rows| rows.len())
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -341,7 +399,6 @@ mod tests {
             vec![("file", "secret.csv")],
             vec![("url", "https://example.invalid")],
             vec![("escape", "\\")],
-            vec![("delim", "tab")],
             vec![("quote", ",")],
             vec![("keepspace", "true")],
         ] {
