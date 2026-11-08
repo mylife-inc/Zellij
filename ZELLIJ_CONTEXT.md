@@ -6813,3 +6813,15 @@ with the identical tested tree `f44ae2e59657a33789f9e06def3c0ccc85106e7f`.
 All 16 checks passed on `7ce9419ce0aab665f32d20d6aa3e2a25bbe0c21c` in
 run `42418585801`. Both post-merge workflows passed: CI `42421313719` and base
 image `42421313696`. Native candidate rc.1 remains the newest published release.
+
+
+Local CSV implementation **`a7b32b017525626c8fc5c4ce26a037e6b2df57bf`**
+passes the final local workspace run: **673 Rust tests**, 0 failures, with 5
+hosted-export tests intentionally ignored locally and selected separately in CI.
+All 46 Sphinx CLI cases, 453 engine tests, warnings-denied workspace Clippy,
+formatting, six actual-CLI Node/rendering fixtures, strict/deep docs (55 routes /
+23 examples), script syntax and diff checks pass. Evidence is under
+`/private/tmp/zellij-local-csv-{workspace-final,focused-final,engine,clippy-final,render-final,docs-final}.log`.
+The multiline-header regression initially failed and passes after preserving
+relative option indentation. Final-head cross-platform/native/hosted CI and merge
+remain pending; these local results do not establish a bug-free or complete CLI.
