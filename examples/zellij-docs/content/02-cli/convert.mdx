@@ -82,7 +82,8 @@ to be attached to makes it easier to act on.
 | `--out <path>` | Required. Where to write | — |
 | `--from <format>` | Force a format instead of detecting | detected |
 | `--layout content\|site` | Raw hosted content or a configured site | content |
-| `--assets copy\|skip` | Copy referenced assets or retain their original URLs without copying | copy |
+| `--assets copy\|link\|skip` | Copy files, link to a public base, or retain original URLs | copy |
+| `--asset-base-url <url>` | Existing HTTP(S) asset directory; required only with `--assets link` | — |
 | `--validate` | Validate the converted hosted content after writing | off |
 | `--dry-run` | Report the plan, write nothing | off |
 
@@ -883,6 +884,65 @@ Download links open the copied file through ordinary browser navigation, without
 requesting page data from the website router.
 The dry-run plan lists asset files too.
 
+### Link to existing public assets
+
+Use `--assets link` when the referenced assets already exist on an HTTP(S)
+server. Supply that directory with `--asset-base-url`:
+
+```bash
+zel cv ./old-docs --out ./manual --layout site \
+  --assets link --asset-base-url https://cdn.example.com/manual/
+```
+
+For an eligible source asset `media/logo.svg`, this emits
+`https://cdn.example.com/manual/media/logo.svg`. No asset file is copied or
+symlinked. The imported site can move or deploy independently of the source
+folder, while its images/downloads remain dependent on that public server.
+Copying remains the default and keeps those files in the imported site.
+
+The base is a directory prefix, with or without a trailing slash. It requires
+an absolute HTTP(S) URL and rejects credentials, queries, fragments, whitespace,
+backslashes, malformed escapes and dot segments. `--asset-base-url` is rejected
+with `copy` or `skip`. A missing base with `link` is an error before writes.
+
+Paths are relative to the asset root selected by the importer:
+
+| Source | Asset root |
+| --- | --- |
+| MkDocs | Configured Markdown documentation directory |
+| Docusaurus | Documentation directory for colocated files; `static/` for public files |
+| VitePress | Selected source directory for colocated files; its `public/` directory for public files |
+| Jekyll | Selected source directory, including eligible collection assets |
+| Hugo | Content directory for bundle resources; static directory for public files |
+| Sphinx | Selected source directory, respecting exclusions |
+
+The copy-only `imported/docs/`, `imported/static/` and `imported/public/`
+prefixes are not added. Two different files mapping to the same public URL
+cause an error before output is written. This mapping expects the existing
+server to retain these relative paths; it does not reproduce source-tool asset
+hashes, theme transforms or custom CDN layouts. For example, a Hugo bundle
+resource keeps its content-relative filename rather than adopting a page's
+custom permalink.
+
+Filenames are URL-encoded once, preserving literal percent signs and Unicode.
+Each reference retains its query and fragment. The site's deployment prefix
+(`basePath`) does not change these absolute asset URLs. Links between converted
+documents still become Zellij routes, and unrelated external links remain intact.
+
+The local target must still exist as an eligible regular file. Containment,
+exclusion and symlink checks apply in both normal and dry-run modes; missing or
+unpublished targets are reported rather than given invented public URLs. Link
+mode checks local paths without reading the asset bytes. Content inputs such as
+Sphinx CSV tables and `literalinclude` files are still read to build the pages.
+HTML/JSX attributes and other unsupported source syntax still need manual work.
+
+The conversion report lists each linked asset and its public URL, including in
+`--dry-run`. Conversion does not fetch the URLs or verify their availability;
+ensure the listed files exist on your asset server before publishing. These
+options also work with `migrate`/`mig` and `ship`. The absolute URLs are saved
+in the converted content, so subsequent `build` or `publish` commands need no
+asset-base flag. This feature is newer than the published rc.1 executable.
+
 ### Original website URLs
 
 Current source also rewrites root-relative Markdown URLs and absolute HTTP(S)
@@ -962,8 +1022,8 @@ files, and reports each omitted reference. Links between converted documents
 still become Zellij routes. The skipped asset URLs may not work from their new
 locations: supply the files and update their references before publishing.
 This policy also applies to `migrate`/`mig` and `ship`; it does not bypass path
-safety checks. `copy` and `skip` are the only supported policies; linking files
-back to the source tree is not supported. Dry runs report the same omissions.
+safety checks. Dry runs report the same omissions. For assets already hosted
+on an HTTP(S) server, use the public link policy below.
 
 Relative `..` segments in links may traverse within the docs root. A reference
 that escapes the allowed root, uses a symlink, or targets Git metadata is

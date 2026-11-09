@@ -429,7 +429,7 @@ impl Converter for Hugo {
             &mut conversion,
         )?;
         conversion.unmapped.extend(unmapped);
-        conversion.notes.push("Hugo was read as data. No Go templates, shortcodes, modules or themes were executed. Navigation is derived from Markdown sections and bundles: weight, date descending, then case-folded link title and source path; theme-specific ordering and locale collation require review. Only eligible referenced assets are copied. Source URL overrides map links to filename-derived Zellij routes; aliases do not generate redirects.".into());
+        conversion.notes.push("Hugo was read as data. No Go templates, shortcodes, modules or themes were executed. Navigation is derived from Markdown sections and bundles: weight, date descending, then case-folded link title and source path; theme-specific ordering and locale collation require review. Eligible referenced assets follow the selected import asset policy. Source URL overrides map links to filename-derived Zellij routes; aliases do not generate redirects.".into());
         Ok(conversion)
     }
 }

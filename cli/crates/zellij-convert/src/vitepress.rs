@@ -163,7 +163,7 @@ impl Converter for VitePress {
         if !root.is_dir() {
             return Err(invalid("srcDir must name an existing contained directory"));
         }
-        let mut notes = vec!["VitePress configuration was read as data; no JavaScript, imports, helpers or Vue code were executed. Theme components, top navigation, home-page front matter and custom Markdown presentation require manual migration. Hidden/underscore trees, node_modules and public are not scanned as documentation. Only referenced assets are copied.".into()];
+        let mut notes = vec!["VitePress configuration was read as data; no JavaScript, imports, helpers or Vue code were executed. Theme components, top navigation, home-page front matter and custom Markdown presentation require manual migration. Hidden/underscore trees, node_modules and public are not scanned as documentation. Eligible referenced assets follow the selected import asset policy.".into()];
         let mut unmapped = Vec::new();
         let all = inventory(&root, &mut unmapped)?;
         let mut tree = DocTree {

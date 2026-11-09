@@ -1,7 +1,8 @@
 // Import -> one build -> publication, using only a disposable loopback registry.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { chromium, expect } from '@playwright/test';
@@ -17,11 +18,27 @@ const docker = args => execFileSync('docker', args, { encoding: 'utf8', timeout:
 const run = args => execFileSync(zel, args, { cwd: root, env: { ...process.env, ZELLIJ_IMAGE: buildBase }, stdio: 'inherit', timeout: 600000 });
 const source = {
   'mkdocs.yml': 'site_name: Imported manual\nnav: [index.md, next.md]\n',
-  'docs/index.md': '# Imported manual\n\n[Next page](next.md#details)\n\n![Logo](logo.svg)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n',
+  'docs/index.md': '# Imported manual\n\n[Next page](next.md#details)\n\n![Logo](logo.svg)\n\n[Download](media/Q3%20Report.pdf?download=1#page=1)\n\n$x^2$\n\n```mermaid\ngraph TD; A-->B;\n```\n',
   'docs/next.md': '# Second page\n\n## Details\n\n[Home](index.md)\n',
+  'docs/media/Q3 Report.pdf': '%PDF-1.4 linked asset fixture\n',
   'docs/logo.svg': '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="9"/></svg>',
 };
+const assetRequests = [];
+const assetServer = createServer((req, res) => {
+  assetRequests.push(req.url);
+  const url = new URL(req.url, 'http://localhost');
+  const file = url.pathname === '/public%20assets/logo.svg' ? 'docs/logo.svg'
+    : url.pathname === '/public%20assets/media/Q3%20Report.pdf' ? 'docs/media/Q3 Report.pdf' : undefined;
+  if (!file) { res.writeHead(404).end(); return; }
+  res.setHeader('Content-Type', file.endsWith('.svg') ? 'image/svg+xml' : 'application/pdf');
+  res.end(source[file]);
+});
 try {
+  await new Promise((resolve, reject) => {
+    assetServer.once('error', reject);
+    assetServer.listen(0, '127.0.0.1', resolve);
+  });
+  const assetBase = `http://127.0.0.1:${assetServer.address().port}/public%20assets/`;
   // A custom builder consumes an ARG before rendering. The generated public
   // file proves the real builder received the exact value; no runtime ENV needed.
   await writeFile(path.join(root, 'build-argument-check.cjs'), `
@@ -48,7 +65,11 @@ fs.writeFileSync('/app/public/build-argument.json', JSON.stringify({label:proces
     const prefix = `/manual-${kind}`;
     const tag = `${registry}/acceptance/ship-${kind}:${suffix}`;
     images.push(tag);
-    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, ...(kind === 'static' ? ['--assets', 'copy'] : []), '--features', kind === 'static' ? 'all' : 'none', '--base-path', prefix, '--site-url', 'https://imported.example', '--no-check', '--build-arg', 'DOCS_BUILD_LABEL=old', '--build-arg', `DOCS_BUILD_LABEL=${buildLabel}`, '--build-arg', 'EMPTY=']);
+    run(['ship', 'source', '--out', `manual ${kind}`, '--image', kind, '--tag', tag, ...(kind === 'static' ? ['--assets', 'copy'] : ['--assets', 'link', '--asset-base-url', assetBase]), '--features', kind === 'static' ? 'all' : 'none', '--base-path', prefix, '--site-url', 'https://imported.example', '--no-check', '--build-arg', 'DOCS_BUILD_LABEL=old', '--build-arg', `DOCS_BUILD_LABEL=${buildLabel}`, '--build-arg', 'EMPTY=']);
+    if (kind === 'next') {
+      assert.deepEqual(assetRequests, [], 'Conversion and image builds must not fetch public assets');
+      await assert.rejects(stat(path.join(root, `manual ${kind}`, 'content/assets')), {code:'ENOENT'});
+    }
     pullPublishedImage(docker, tag);
     const name = `zel-ship-${kind}-${suffix}`;
     containers.push(name);
@@ -85,14 +106,26 @@ fs.writeFileSync('/app/public/build-argument.json', JSON.stringify({label:proces
         assert((await page.locator('article').innerText()).includes('$x^2$'));
       }
       const logo = page.locator('article img[alt="Logo"]');
-      assert(await logo.evaluate(img => img.complete && img.naturalWidth > 0));
+      await expect.poll(() => logo.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+      if (kind === 'next') {
+        await expect(logo).toHaveAttribute('src', `${assetBase}logo.svg`);
+        const download = page.locator('article').getByRole('link', {name:'Download', exact:true});
+        await expect(download).toHaveAttribute('href', `${assetBase}media/Q3%20Report.pdf?download=1#page=1`);
+        const response = await page.request.get(await download.getAttribute('href'));
+        assert.equal(response.status(), 200);
+        assert.equal(await response.text(), source['docs/media/Q3 Report.pdf']);
+        assert(assetRequests.includes('/public%20assets/logo.svg'));
+        assert(assetRequests.includes('/public%20assets/media/Q3%20Report.pdf?download=1'));
+      }
       await page.locator('article').getByRole('link', { name: 'Next page', exact: true }).click();
       await page.waitForURL(`${origin}/guide/next#details`);
       await page.reload();
       await page.getByRole('heading', { name: 'Second page', exact: true }).waitFor();
       assert.deepEqual(errors, []);
     } finally { await browser.close(); }
-    assert.equal(await (await fetch(`${origin}/_zellij/assets/imported/docs/logo.svg`)).text(), source['docs/logo.svg']);
+    const localAsset = await fetch(`${origin}/_zellij/assets/imported/docs/logo.svg`);
+    if (kind === 'next') assert.equal(localAsset.status, 404);
+    else assert.equal(await localAsset.text(), source['docs/logo.svg']);
     for (const url of ['/zel.yaml', '/site.yaml', '/docs/index.md']) assert.equal((await fetch(origin + url)).status, 404);
     for (const [relative, body] of Object.entries(source)) assert.equal(await readFile(path.join(root, 'source', relative), 'utf8'), body);
     const saved = await readFile(path.join(root, `manual ${kind}`, 'zel.yaml'), 'utf8');
@@ -101,6 +134,7 @@ fs.writeFileSync('/app/public/build-argument.json', JSON.stringify({label:proces
     console.log(`ship ${kind}: imported, published, pulled and verified navigation/assets; source unchanged.`);
   }
 } finally {
+  if (assetServer.listening) await new Promise((resolve, reject) => assetServer.close(error => error ? reject(error) : resolve()));
   for (const name of containers) { try { docker(['rm', '-f', name]); } catch { /* original failure */ } }
   for (const tag of images) { try { docker(['image', 'rm', tag]); } catch { /* failed build */ } }
   await rm(root, { recursive: true, force: true });

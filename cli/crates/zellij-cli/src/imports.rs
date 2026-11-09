@@ -1,7 +1,7 @@
 //! Prepare imports completely before writing; compose delivery without rebuilding.
 use crate::args::{ImportArgs, ImportAssets, ImportLayout, ShipArgs};
 use camino::{Utf8Path, Utf8PathBuf};
-use zellij_convert::{ConvertOptions, Unmapped};
+use zellij_convert::{AssetBaseUrl, AssetPolicy, ConvertOptions, LinkedAsset, Unmapped};
 use zellij_core::{
     Error, Result,
     delivery::{DeliveryPlan, ImageKind, ImagePublication, Provider},
@@ -16,6 +16,7 @@ struct Prepared {
     unmapped: Vec<Unmapped>,
     notes: Vec<String>,
     asset_count: usize,
+    linked_assets: Vec<LinkedAsset>,
     files: Vec<(Utf8PathBuf, Vec<u8>)>,
 }
 impl Prepared {
@@ -25,8 +26,24 @@ impl Prepared {
         from: Option<&str>,
         layout: ImportLayout,
         assets: ImportAssets,
+        asset_base_url: Option<&str>,
         config: &str,
     ) -> Result<Self> {
+        let assets = match (assets, asset_base_url) {
+            (ImportAssets::Copy, None) => AssetPolicy::Copy,
+            (ImportAssets::Skip, None) => AssetPolicy::Skip,
+            (ImportAssets::Link, Some(base)) => AssetPolicy::Link(AssetBaseUrl::parse(base)?),
+            (ImportAssets::Link, None) => {
+                return Err(Error::InvalidArgument(
+                    "--assets link requires --asset-base-url".into(),
+                ));
+            }
+            (_, Some(_)) => {
+                return Err(Error::InvalidArgument(
+                    "--asset-base-url requires --assets link".into(),
+                ));
+            }
+        };
         let source = Utf8Path::new(source);
         let out = Utf8Path::new(out);
         files::disjoint(source, out)?;
@@ -59,12 +76,7 @@ impl Prepared {
             }
         };
         zellij_core::statusln!("Converting {source} as {}", converter.label());
-        let conversion = converter.convert(
-            source,
-            &ConvertOptions {
-                copy_assets: assets == ImportAssets::Copy,
-            },
-        )?;
+        let conversion = converter.convert(source, &ConvertOptions { assets })?;
         let asset_count = conversion.assets.len();
         let mut files: Vec<_> = conversion
             .files
@@ -99,11 +111,26 @@ impl Prepared {
             unmapped: conversion.unmapped,
             notes: conversion.notes,
             asset_count,
+            linked_assets: conversion.linked_assets,
             files,
         })
     }
 
     fn report(&self) {
+        if !self.linked_assets.is_empty() {
+            zellij_core::reportln!(
+                "\n{} linked asset{}; public URLs were not fetched:",
+                self.linked_assets.len(),
+                if self.linked_assets.len() == 1 {
+                    ""
+                } else {
+                    "s"
+                }
+            );
+            for asset in &self.linked_assets {
+                zellij_core::reportln!("  {} -> {}", asset.source, asset.url);
+            }
+        }
         if !self.unmapped.is_empty() {
             zellij_core::reportln!(
                 "\n{} thing(s) could not be carried over:",
@@ -150,6 +177,7 @@ pub(crate) fn convert(options: &ImportArgs, validate: bool) -> Result<()> {
         options.from.as_deref(),
         options.layout,
         options.assets,
+        options.asset_base_url.as_deref(),
         SITE_CONFIG,
     )?;
     import.report();
@@ -281,6 +309,7 @@ pub(crate) fn ship(options: &ShipArgs) -> Result<()> {
         options.from.as_deref(),
         ImportLayout::Site,
         options.assets,
+        options.asset_base_url.as_deref(),
         &configuration(&plan),
     )?;
     import.report();

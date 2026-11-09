@@ -76,8 +76,10 @@ excerpts merged in PR #100 as `9fb29c8`, after all 16 final-head checks passed;
 both post-merge workflows passed. PR #101 fixed MDX code leaking into search
 and duplicated guide titles/shifted anchors with CRLF line endings, merging as
 `cac41b7` after all 16 final-head checks passed; both post-merge workflows passed.
-Current work adds local-file Sphinx CSV tables and fixes multiline CSV header
-indentation. See the newest dated entry for verification and merge status.
+PR #102 added local-file Sphinx CSV tables and fixed multiline CSV header
+indentation, merging as `245eacd` after all 16 final-head checks passed; both
+post-merge workflows passed. Current work implements public asset URL linking
+through convert/migrate/ship. See the latest entry for verification status.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -151,6 +153,13 @@ outside `cli/`. Its integrity report flags dangling endpoints and collapsed
 relationships; inferred edges and minified Mermaid symbol matches require source
 verification. It is navigation assistance, not evidence of completeness or bugs.
 The graph report records unrepresented inputs and unavailable agent token counts.
+Its recorded snapshot is `6d0b5c3`; public asset URL linking is newer and must
+be inspected in current source until the next graph refresh.
+
+**Graphify scope decision — 2026-11-08:** the user excludes the repository-root
+`examples/**` folder from the Graphify knowledge corpus. Apply this exclusion to
+discovery, extraction and context enrichment, including future repository-wide
+maps. The existing CLI-only graph already excludes that folder.
 
 This is the starting point for future Zellij conversations in this checkout.
 The companion [audit](specs/zellij-audit-2026-10-16.md) contains reproducible
@@ -6825,3 +6834,49 @@ formatting, six actual-CLI Node/rendering fixtures, strict/deep docs (55 routes 
 The multiline-header regression initially failed and passes after preserving
 relative option indentation. Final-head cross-platform/native/hosted CI and merge
 remain pending; these local results do not establish a bug-free or complete CLI.
+
+
+### 2026-11-08 — Public asset URL linking
+
+The user selected existing public HTTP(S) URLs for `--assets link`, with an
+explicit `--asset-base-url`; copying remains the default. Current source adds
+this policy to convert/cv, migrate/mig and ship through the shared converter.
+Eligible local asset paths become base-plus-root-relative URLs; copy-only
+namespace prefixes are omitted. Queries/fragments and encoded filenames survive;
+document links retain Zellij routing. No asset bytes are read/copied in link
+mode, no symlinks are created and no remote URLs are fetched. Distinct local
+files mapping to one public URL fail before writes. Missing/excluded resources
+retain the usual reports and containment checks. CSV/include content inputs
+remain readable independently of asset policy. Absolute URLs persist in content
+for subsequent build/publish commands; the public server remains required.
+
+The URL base must be HTTP(S), with a host and no credentials/query/fragment,
+whitespace, backslashes, malformed escapes or dot segments. It is required only
+for link mode; other policy/base combinations fail. Reports list linked files
+and public URLs, including in dry runs. The user reference documents source
+roots and the lack of source-tool hashed/CDN layout emulation. Native release
+rc.1 remains unchanged. Full validation and final-head CI/merge are pending.
+
+PR #102 closure: all 16 checks passed on `6d0b5c321d831606e383c14c127e20f579bdaca3`
+in run `42530352694`, attempt 1; merge `245eacd2bfde84492d3a337020d0a75e1784aeb0`
+has identical tree `56cf10ab6ce261ad070ccdc2f677e8e41abf20f1`. Both post-merge
+workflows passed: CI `42532456398` and Base image `42532456352`.
+
+
+Public asset linking implementation **`1b2e2e4fca5d6d46ea24708276e6636d9193a1a0`**
+passes all **681 Rust workspace tests** (5 real hosted-export cases intentionally
+selected only in CI). All 25 import/delivery integration tests pass, including
+all six importers, public/static asset roots, URL encoding/suffixes, invalid
+options, collisions, missing targets, symlinks and no asset-byte reads. The
+initial end-to-end test failed against the old CLI. One later test fixture
+needed a Markdown paragraph break before its reference definition; product
+behavior was unchanged by that fixture correction.
+
+Warnings-denied workspace Clippy, formatting, strict/deep docs (55 routes / 23
+examples), Node script syntax and diff checks pass. All six real CLI-to-engine
+Node fixtures verify copy and link policies with unchanged routes, remote URL
+rendering and no local asset copies. CI adds an actual linked static export and
+Next image browser/download acceptance through a separate loopback asset server.
+No local browser/container/GUI, live provider mutation or release publication
+ran. Evidence: `/private/tmp/zellij-public-assets-{before,focused-final,workspace,clippy,render,docs}.log`.
+Final-head GitHub CI and merge remain pending.

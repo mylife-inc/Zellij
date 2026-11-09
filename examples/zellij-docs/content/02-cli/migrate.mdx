@@ -13,7 +13,7 @@ zel mig ./old-docs --out ./manual --layout site
 ```
 
 This imports into `manual/zel.yaml` and `manual/content/`, then validates the new
-hosted site. The original source is unchanged. Both existing converters emit
+hosted site. The original source is unchanged. All current converters emit
 hosted content, so validation requires a running Docker, Podman or nerdctl
 runtime. Zellij reports missing tools without installing or starting them.
 
@@ -62,14 +62,19 @@ See [conversion limits](/cli/convert).
 | `--out <path>` | Required new or empty destination outside the source |
 | `--layout content\|site` | Legacy raw content (default) or configured site |
 | `--from <format>` | Force a converter instead of detecting |
-| `--assets copy\|skip` | Copy assets by default; skip retains original URLs and reports omissions |
+| `--assets copy\|link\|skip` | Copy by default, link to a public base, or skip and retain original URLs |
+| `--asset-base-url <url>` | Existing public asset directory; required only with `--assets link` |
 | `--validate` | Accepted for parity with `convert`; migration already validates |
 | `--dry-run` | In-memory conversion only; no writes or validation |
 
 The current source supports `--assets skip` for document-only imports. Asset
 references remain unchanged and may need manual repair; document links still
 convert normally. See [asset policy](/cli/convert#document-links-and-assets).
-The asset and optional validation flags are newer than the published rc.1 CLI.
+To use existing public assets, add `--assets link --asset-base-url
+https://cdn.example.com/manual/`. Migration saves the resulting absolute URLs
+in the converted content and copies no referenced assets. The report lists
+those URLs; validation does not test their remote availability. The asset and
+optional validation flags are newer than the published rc.1 CLI.
 
 ## See also
 

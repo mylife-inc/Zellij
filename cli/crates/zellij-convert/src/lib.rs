@@ -8,6 +8,9 @@
 //! A converter is registered by existing rather than by being listed anywhere,
 //! so adding one touches no file that is not about that format.
 
+mod assets;
+pub use assets::{AssetBaseUrl, AssetPolicy, LinkedAsset};
+
 pub mod docusaurus;
 pub mod emit;
 mod fences;
@@ -97,19 +100,14 @@ pub struct Unmapped {
 pub struct Conversion {
     pub files: Vec<OutputFile>,
     pub assets: Vec<OutputAsset>,
+    pub linked_assets: Vec<LinkedAsset>,
     pub unmapped: Vec<Unmapped>,
     pub notes: Vec<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct ConvertOptions {
-    pub copy_assets: bool,
-}
-
-impl Default for ConvertOptions {
-    fn default() -> Self {
-        Self { copy_assets: true }
-    }
+    pub assets: AssetPolicy,
 }
 
 pub trait Converter: Send + Sync {

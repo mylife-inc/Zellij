@@ -141,7 +141,8 @@ and compatible engine; candidate `0.2.0-rc.1` does not include them.
 | `<source>` | Required external documentation root |
 | `--out <path>` | Required new or empty configured site root |
 | `--from <format>` | Force the converter instead of detecting |
-| `--assets copy\|skip` | Copy referenced assets by default; skip retains original URLs and reports omissions |
+| `--assets copy\|link\|skip` | Copy by default, link to a public base, or skip and retain original URLs |
+| `--asset-base-url <url>` | Existing public asset directory; required only with `--assets link` |
 | `--kind <kind>` | Fly/Railway image kind: `static` (default) or `next`; distinct from registry-only `--image` |
 | `--provider <provider>` | Deploy using `netlify`, `cloudflare`, `vercel`, `github-pages`, `s3`, `fly` or `railway` |
 | `--image static\|next` | Publish this image kind; conflicts with `--provider` |
@@ -162,6 +163,21 @@ before the site can build or work correctly. Inspect the dry-run report or use
 is not saved in `zel.yaml`; later `zel publish` uses the files already imported.
 See [asset policy](/cli/convert#document-links-and-assets). The flag is newer than
 the published rc.1 CLI.
+
+## Keep assets on an existing server
+
+```bash
+zel ship ./old-docs --out ./manual --image next --tag ghcr.io/acme/manual:v1 \
+  --assets link --asset-base-url https://cdn.example.com/manual/
+```
+
+Link mode works with both image kinds and the supported deployment providers.
+It writes absolute asset URLs into the imported content and omits asset copies
+from the site/image. Later `zel publish ./manual` reuses those URLs without
+repeating the import flags. The public server must remain available to readers.
+`--base-path` changes the site's own URLs and leaves the external asset prefix
+intact. Dry runs list the generated public URLs; no URL availability check or
+asset upload is performed by conversion. See [URL mapping and limits](/cli/convert#link-to-existing-public-assets).
 
 ## Image build arguments
 
