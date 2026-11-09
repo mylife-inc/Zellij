@@ -5862,3 +5862,22 @@ PR #102 closure: all 16 checks passed on `6d0b5c321d831606e383c14c127e20f579bdac
 in run `42530352694`, attempt 1; merge `245eacd2bfde84492d3a337020d0a75e1784aeb0`
 has identical tree `56cf10ab6ce261ad070ccdc2f677e8e41abf20f1`. Both post-merge
 workflows passed: CI `42532456398` and Base image `42532456352`.
+
+
+Public asset linking implementation **`1b2e2e4fca5d6d46ea24708276e6636d9193a1a0`**
+passes all **681 Rust workspace tests** (5 real hosted-export cases intentionally
+selected only in CI). All 25 import/delivery integration tests pass, including
+all six importers, public/static asset roots, URL encoding/suffixes, invalid
+options, collisions, missing targets, symlinks and no asset-byte reads. The
+initial end-to-end test failed against the old CLI. One later test fixture
+needed a Markdown paragraph break before its reference definition; product
+behavior was unchanged by that fixture correction.
+
+Warnings-denied workspace Clippy, formatting, strict/deep docs (55 routes / 23
+examples), Node script syntax and diff checks pass. All six real CLI-to-engine
+Node fixtures verify copy and link policies with unchanged routes, remote URL
+rendering and no local asset copies. CI adds an actual linked static export and
+Next image browser/download acceptance through a separate loopback asset server.
+No local browser/container/GUI, live provider mutation or release publication
+ran. Evidence: `/private/tmp/zellij-public-assets-{before,focused-final,workspace,clippy,render,docs}.log`.
+Final-head GitHub CI and merge remain pending.
