@@ -2277,3 +2277,30 @@ with the identical tested tree `f44ae2e59657a33789f9e06def3c0ccc85106e7f`.
 All 16 checks passed on `7ce9419ce0aab665f32d20d6aa3e2a25bbe0c21c` in
 run `42418585801`. Both post-merge workflows passed: CI `42421313719` and base
 image `42421313696`. Native candidate rc.1 remains the newest published release.
+
+
+### 2026-11-08 — Public asset URL linking
+
+The user selected existing public HTTP(S) URLs for `--assets link`, with an
+explicit `--asset-base-url`; copying remains the default. Current source adds
+this policy to convert/cv, migrate/mig and ship through the shared converter.
+Eligible local asset paths become base-plus-root-relative URLs; copy-only
+namespace prefixes are omitted. Queries/fragments and encoded filenames survive;
+document links retain Zellij routing. No asset bytes are read/copied in link
+mode, no symlinks are created and no remote URLs are fetched. Distinct local
+files mapping to one public URL fail before writes. Missing/excluded resources
+retain the usual reports and containment checks. CSV/include content inputs
+remain readable independently of asset policy. Absolute URLs persist in content
+for subsequent build/publish commands; the public server remains required.
+
+The URL base must be HTTP(S), with a host and no credentials/query/fragment,
+whitespace, backslashes, malformed escapes or dot segments. It is required only
+for link mode; other policy/base combinations fail. Reports list linked files
+and public URLs, including in dry runs. The user reference documents source
+roots and the lack of source-tool hashed/CDN layout emulation. Native release
+rc.1 remains unchanged. Full validation and final-head CI/merge are pending.
+
+PR #102 closure: all 16 checks passed on `6d0b5c321d831606e383c14c127e20f579bdaca3`
+in run `42530352694`, attempt 1; merge `245eacd2bfde84492d3a337020d0a75e1784aeb0`
+has identical tree `56cf10ab6ce261ad070ccdc2f677e8e41abf20f1`. Both post-merge
+workflows passed: CI `42532456398` and Base image `42532456352`.

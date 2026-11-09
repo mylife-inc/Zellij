@@ -2,8 +2,8 @@
 //! Markdown offsets keep code examples and link labels out of the rewrite.
 
 use crate::{
-    Conversion, ConvertOptions, OutputAsset, Unmapped, emit::slug_for, material::demote_material,
-    model::DocTree,
+    AssetPolicy, Conversion, ConvertOptions, LinkedAsset, OutputAsset, Unmapped, emit::slug_for,
+    material::demote_material, model::DocTree,
 };
 use camino::{Utf8Path, Utf8PathBuf};
 use pulldown_cmark::{Event, LinkType, Options, Parser, Tag, TagEnd};
@@ -143,6 +143,7 @@ struct Resolver<'a> {
     options: &'a ConvertOptions,
     routes: BTreeMap<Utf8PathBuf, String>,
     assets: BTreeMap<Utf8PathBuf, Vec<u8>>,
+    linked_assets: BTreeMap<String, Utf8PathBuf>,
     unmapped: Vec<Unmapped>,
     fragments: bool,
 }
@@ -418,9 +419,28 @@ impl Resolver<'_> {
             );
             return Ok(url.to_owned());
         }
-        if !self.options.copy_assets {
-            self.report(source, url, "asset copying is disabled");
-            return Ok(url.to_owned());
+        match &self.options.assets {
+            AssetPolicy::Skip => {
+                self.report(source, url, "asset copying is disabled");
+                return Ok(url.to_owned());
+            }
+            AssetPolicy::Link(base) => {
+                let public = base.href(relative.as_str());
+                if let Some(previous) = self.linked_assets.get(&public) {
+                    if previous != &full {
+                        return Err(unsafe_path(
+                            &full,
+                            format!(
+                                "both {previous} and {full} map to the same public asset URL {public}; rename one asset or use --assets copy"
+                            ),
+                        ));
+                    }
+                } else {
+                    self.linked_assets.insert(public.clone(), full);
+                }
+                return Ok(format!("{public}{suffix}"));
+            }
+            AssetPolicy::Copy => {}
         }
         let destination = Utf8PathBuf::from(format!("assets/imported/{namespace}/{relative}"));
         if !self.assets.contains_key(&destination) {
@@ -557,6 +577,7 @@ pub(crate) fn rewrite(
         options,
         routes: BTreeMap::new(),
         assets: BTreeMap::new(),
+        linked_assets: BTreeMap::new(),
         unmapped: Vec::new(),
         fragments: false,
     };
@@ -613,6 +634,11 @@ pub(crate) fn rewrite(
         .assets
         .into_iter()
         .map(|(path, body)| OutputAsset { path, body })
+        .collect();
+    conversion.linked_assets = resolver
+        .linked_assets
+        .into_iter()
+        .map(|(url, source)| LinkedAsset { source, url })
         .collect();
     conversion.unmapped.extend(resolver.unmapped);
     if resolver.fragments {

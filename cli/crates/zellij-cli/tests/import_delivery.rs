@@ -29,6 +29,29 @@ fn tree(root: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
     result
 }
 fn fixture(root: &Path, format: &str) {
+    if format == "sphinx" {
+        write(
+            root,
+            "source/conf.py",
+            "project = 'Import'\nroot_doc = 'index'\n",
+        );
+        write(
+            root,
+            "source/index.rst",
+            "Import\n======\n\n.. toctree::\n\n   next\n\n:doc:`Next <next>`\n\n:download:`Download <media/report.pdf>`\n",
+        );
+        write(
+            root,
+            "source/next.rst",
+            "Next\n====\n\n:doc:`Home <index>`\n",
+        );
+        write(
+            root,
+            "source/media/report.pdf",
+            [0x25, 0x50, 0x44, 0x46, 0, 255],
+        );
+        return;
+    }
     if format == "mkdocs" {
         write(
             root,
@@ -272,7 +295,7 @@ fn import_controls_reject_unknown_asset_policies_and_unsafe_skipped_assets_befor
     let root = temp.path();
     fixture(root, "mkdocs");
     for name in ["convert", "cv", "migrate", "mig", "ship"] {
-        let mut args = vec![name, "source", "--out", "out", "--assets", "link"];
+        let mut args = vec![name, "source", "--out", "out", "--assets", "unknown"];
         if name == "ship" {
             args.extend(["--image", "static", "--tag", "example/docs:v1"]);
         }
@@ -1167,4 +1190,403 @@ fn railway_ship_validates_before_import_and_retains_import_on_credential_failure
     );
     assert!(!saved.contains("token") && !saved.contains("production"));
     assert_eq!(tree(&root.join("source")), original);
+}
+
+#[test]
+fn linked_assets_use_a_public_prefix_in_every_converter_without_copying_files() {
+    for format in [
+        "mkdocs",
+        "docusaurus",
+        "vitepress",
+        "jekyll",
+        "hugo",
+        "sphinx",
+    ] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        fixture(root, format);
+        let original = tree(&root.join("source"));
+        for (command, layout) in [("convert", "content"), ("cv", "site")] {
+            let result = run(
+                root,
+                &[
+                    command,
+                    "source",
+                    "--out",
+                    layout,
+                    "--layout",
+                    layout,
+                    "--assets",
+                    "link",
+                    "--asset-base-url",
+                    "https://cdn.example.test/manual",
+                ],
+                0,
+            );
+            let content = root
+                .join(layout)
+                .join(if layout == "site" { "content" } else { "" });
+            let page = fs::read_to_string(content.join("01-guide/index.mdx")).unwrap();
+            assert!(
+                page.contains("https://cdn.example.test/manual/media/report.pdf"),
+                "{format}: {page}"
+            );
+            assert!(page.contains("/guide/next"), "{page}");
+            assert!(!content.join("assets").exists());
+            let report = String::from_utf8_lossy(&result.stdout);
+            assert!(
+                report.contains("1 linked asset")
+                    && report.contains("https://cdn.example.test/manual/media/report.pdf"),
+                "{report}"
+            );
+            assert!(!report.contains("asset copying is disabled"), "{report}");
+        }
+        for command in ["migrate", "mig", "ship"] {
+            let mut args = vec![
+                command,
+                "source",
+                "--out",
+                "plan",
+                "--assets",
+                "link",
+                "--asset-base-url",
+                "https://cdn.example.test/manual/",
+                "--dry-run",
+            ];
+            if command == "ship" {
+                args.extend(["--image", "static", "--tag", "example/docs:v1"]);
+            }
+            let result = run(root, &args, 0);
+            assert!(
+                String::from_utf8_lossy(&result.stdout)
+                    .contains("https://cdn.example.test/manual/media/report.pdf")
+            );
+            assert!(!root.join("plan").exists());
+        }
+        assert_eq!(tree(&root.join("source")), original);
+    }
+}
+
+#[test]
+fn linked_assets_preserve_encoded_names_queries_fragments_and_external_links() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    write(root, "source/docs/media/café %20#.svg", "<svg/>");
+    write(
+        root,
+        "source/docs/next.md",
+        r#"# Next
+
+![Diagram](media/caf%C3%A9%20%2520%23.svg?v=2#part)
+[Again][asset]
+
+[asset]: media/caf%C3%A9%20%2520%23.svg?download=1#part "Caption"
+
+[External](https://other.example/logo.svg)
+
+```md
+![Example](media/caf%C3%A9%20%2520%23.svg)
+```
+"#,
+    );
+    let result = run(
+        root,
+        &[
+            "cv",
+            "source",
+            "--out",
+            "out",
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/base%20dir/日本/",
+        ],
+        0,
+    );
+    let page = fs::read_to_string(root.join("out/01-guide/next.mdx")).unwrap();
+    let prefix =
+        "https://cdn.example.test/base%20dir/%E6%97%A5%E6%9C%AC/media/caf%C3%A9%20%2520%23.svg";
+    assert!(page.contains(&format!("{prefix}?v=2#part")), "{page}");
+    assert!(
+        page.contains(&format!("{prefix}?download=1#part")),
+        "{page}"
+    );
+    assert!(
+        page.contains("[External](https://other.example/logo.svg)"),
+        "{page}"
+    );
+    assert!(
+        page.contains("![Example](media/caf%C3%A9%20%2520%23.svg)"),
+        "{page}"
+    );
+    assert!(String::from_utf8_lossy(&result.stdout).contains("2 linked assets"));
+    assert!(!root.join("out/assets").exists());
+}
+
+#[test]
+fn linked_assets_require_a_valid_explicit_base_and_reject_unused_base_options_before_writes() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    for command in ["convert", "cv", "migrate", "mig", "ship"] {
+        let mut args = vec![command, "source", "--out", "out"];
+        if command == "ship" {
+            args.extend(["--image", "static", "--tag", "example/docs:v1"]);
+        }
+        let mut missing = args.clone();
+        missing.extend(["--assets", "link"]);
+        let result = run(root, &missing, 2);
+        assert!(String::from_utf8_lossy(&result.stderr).contains("--asset-base-url"));
+        for policy in ["copy", "skip"] {
+            let mut unused = args.clone();
+            unused.extend([
+                "--assets",
+                policy,
+                "--asset-base-url",
+                "https://cdn.example.test",
+            ]);
+            let result = run(root, &unused, 2);
+            assert!(String::from_utf8_lossy(&result.stderr).contains("--assets link"));
+        }
+        for base in [
+            "",
+            "cdn.example.test",
+            "//cdn.example.test",
+            "https:cdn.example.test",
+            "file:///tmp/assets",
+            "ftp://cdn.example.test",
+            "https://user:password@cdn.example.test",
+            "https://@cdn.example.test",
+            "https://cdn.example.test/?signed=secret",
+            "https://cdn.example.test/#fragment",
+            "https://cdn.example.test/?",
+            "https://cdn.example.test/#",
+            " https://cdn.example.test/",
+            "https://cdn.example.test/line\nbreak",
+            "https://cdn.example.test/a\\b",
+            "https://cdn.example.test/%ZZ",
+            "https://cdn.example.test/a/../b",
+            "https://cdn.example.test/a/%2e%2e/b",
+        ] {
+            let mut invalid = args.clone();
+            invalid.extend(["--assets", "link", "--asset-base-url", base, "--dry-run"]);
+            run(root, &invalid, 2);
+            assert!(!root.join("out").exists());
+        }
+    }
+}
+
+#[test]
+fn linked_assets_keep_path_containment_and_reject_conflicting_source_roots() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "docusaurus");
+    write(root, "source/static/media/report.pdf", "a different asset");
+    write(
+        root,
+        "source/docs/next.md",
+        "# Next\n\n[Static](/media/report.pdf)\n",
+    );
+    for extra in [vec![], vec!["--dry-run"]] {
+        let mut args = vec![
+            "cv",
+            "source",
+            "--out",
+            "out",
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/",
+        ];
+        args.extend(extra);
+        let result = run(root, &args, 2);
+        assert!(
+            String::from_utf8_lossy(&result.stderr).contains("same public asset URL"),
+            "{result:?}"
+        );
+        assert!(!root.join("out").exists());
+    }
+    for href in ["../../private.txt", "../.git/config"] {
+        write(
+            root,
+            "source/docs/index.md",
+            format!("# Unsafe\n\n[File]({href})\n"),
+        );
+        run(
+            root,
+            &[
+                "cv",
+                "source",
+                "--out",
+                "out",
+                "--assets",
+                "link",
+                "--asset-base-url",
+                "https://cdn.example.test/",
+            ],
+            2,
+        );
+        assert!(!root.join("out").exists());
+    }
+}
+
+#[test]
+fn linked_public_and_static_assets_use_their_asset_root_without_namespace_prefixes() {
+    for format in ["docusaurus", "vitepress", "hugo"] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        fixture(root, format);
+        let folder = if format == "vitepress" {
+            "source/docs/public"
+        } else {
+            "source/static"
+        };
+        write(root, &format!("{folder}/logo.svg"), "<svg/>");
+        write(
+            root,
+            "source/docs/next.md",
+            "# Next\n\n![Logo](/logo.svg)\n",
+        );
+        run(
+            root,
+            &[
+                "cv",
+                "source",
+                "--out",
+                "out",
+                "--assets",
+                "link",
+                "--asset-base-url",
+                "http://cdn.example.test:8080/assets",
+            ],
+            0,
+        );
+        let page = fs::read_to_string(root.join("out/01-guide/next.mdx")).unwrap();
+        assert!(
+            page.contains("http://cdn.example.test:8080/assets/logo.svg"),
+            "{format}: {page}"
+        );
+        assert!(!root.join("out/assets").exists());
+    }
+}
+
+#[test]
+fn linked_assets_do_not_invent_urls_for_missing_files_or_unpublished_documents() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    write(
+        root,
+        "source/docs/next.md",
+        "# Next\n\n![Missing](missing.svg)\n\n[Unlisted](orphan.md)\n",
+    );
+    let result = run(
+        root,
+        &[
+            "cv",
+            "source",
+            "--out",
+            "out",
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/",
+        ],
+        0,
+    );
+    let page = fs::read_to_string(root.join("out/01-guide/next.mdx")).unwrap();
+    assert!(page.contains("![Missing](missing.svg)"), "{page}");
+    assert!(page.contains("[Unlisted](orphan.md)"), "{page}");
+    assert!(!page.contains("cdn.example.test"), "{page}");
+    let report = String::from_utf8_lossy(&result.stdout);
+    assert!(
+        report.contains("no converted document or regular asset file")
+            && report.contains("was not included"),
+        "{report}"
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn linked_assets_reject_symlinks_without_reading_regular_asset_bytes() {
+    use std::os::unix::fs::{PermissionsExt, symlink};
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    let asset = root.join("source/docs/media/report.pdf");
+    let permissions = fs::metadata(&asset).unwrap().permissions();
+    fs::set_permissions(&asset, fs::Permissions::from_mode(0o000)).unwrap();
+    let result = command(root)
+        .args([
+            "cv",
+            "source",
+            "--out",
+            "out",
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/",
+        ])
+        .output()
+        .unwrap();
+    fs::set_permissions(&asset, permissions).unwrap();
+    assert!(result.status.success(), "{result:?}");
+    assert!(!root.join("out/assets").exists());
+    fs::remove_file(&asset).unwrap();
+    write(root, "private.pdf", "private bytes");
+    symlink(root.join("private.pdf"), &asset).unwrap();
+    run(
+        root,
+        &[
+            "cv",
+            "source",
+            "--out",
+            "bad",
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/",
+        ],
+        2,
+    );
+    assert!(!root.join("bad").exists());
+}
+
+#[test]
+fn linked_ship_and_migration_retain_external_urls_if_runtime_is_missing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root, "mkdocs");
+    for command in ["migrate", "mig", "ship"] {
+        let mut args = vec![
+            command,
+            "source",
+            "--out",
+            command,
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/",
+        ];
+        if command == "ship" {
+            args.extend(["--image", "next", "--tag", "example/docs:v1"]);
+        } else {
+            args.extend(["--layout", "site"]);
+        }
+        let result = run(root, &args, 4);
+        assert!(String::from_utf8_lossy(&result.stderr).contains("Import completed"));
+        let content = root.join(command).join("content");
+        assert!(!content.join("assets").exists());
+        assert!(
+            fs::read_to_string(content.join("01-guide/index.mdx"))
+                .unwrap()
+                .contains("https://cdn.example.test/media/report.pdf")
+        );
+        assert!(
+            !fs::read_to_string(root.join(command).join("zel.yaml"))
+                .unwrap()
+                .contains("asset-base-url")
+        );
+    }
 }

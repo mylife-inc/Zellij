@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createRequire } from 'node:module';
@@ -46,6 +46,43 @@ const zel = path.resolve(binary);
 const asset = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" /></svg>\n';
 const assetHash = createHash('sha256').update(asset).digest('hex').slice(0, 8);
 const pdf = Buffer.from([0x25, 0x50, 0x44, 0x46, 0, 255, 254]);
+// Use the same source and real renderer for the link policy. These checks do
+// not fetch public assets; hosted browser acceptance supplies a separate server.
+async function checkLinkedAssets(format, source, copiedContent, copiedSite) {
+  const destination = path.join(root, `${format}-linked`);
+  const content = path.join(destination, 'content');
+  const base = 'https://cdn.example.test/Manual%20assets/';
+  execFileSync(zel, ['cv', source, '--out', destination, '--from', format, '--layout', 'site', '--assets', 'link', '--asset-base-url', base], {stdio:'inherit'});
+  await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
+  const site = await loadSite(new FolderContentSource({contentDir:content}));
+  assert.deepEqual([...site.routes].sort(), [...copiedSite.routes].sort());
+  assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
+  let html = '';
+  for (const page of site.guidePages) {
+    const rendered = await compileMDX({source:page.body, options:await mdxOptions(), components:mdxComponents(site)});
+    html += renderToStaticMarkup(rendered.content);
+  }
+  const assets = path.join(copiedContent, 'assets/imported');
+  const entries = await readdir(assets, {recursive:true, withFileTypes:true});
+  for (const entry of entries.filter(entry => entry.isFile())) {
+    // Drop the copy-only docs/static/public namespace, preserving subdirectories.
+    const relative = path.relative(assets, path.join(entry.parentPath, entry.name)).split(path.sep).slice(1).map(encodeURIComponent).join('/');
+    assert(html.includes(base + relative), `${format}: linked asset missing ${relative}`);
+  }
+  assert(!html.includes('/_zellij/assets/imported/'), `${format}: link mode emitted a copied asset URL`);
+  await assert.rejects(stat(path.join(content, 'assets')), {code:'ENOENT'});
+  if (mode === '--export' && format === 'mkdocs') {
+    const output = path.join(root, 'linked-site');
+    execFileSync(zel, ['build', destination, '--out', output], {stdio:'inherit'});
+    const exported = await readFile(path.join(output, 'guide.html'), 'utf8');
+    assert(exported.includes(`src="${base}media/logo.svg"`));
+    assert(exported.includes(`href="${base}media/Q3%20Report.pdf"`));
+    assert(exported.includes('href="/products/docs/guide/setup/api-reference?view=all#install"'));
+    await assert.rejects(stat(path.join(output, '_zellij/assets/imported')), {code:'ENOENT'});
+  }
+  console.log(`${format}: public asset URLs render without local copies or deployment-prefix changes.`);
+}
+
 for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
   const source = path.join(root, `${format}-source`);
   const destination = path.join(root, `${format}-content`);
@@ -241,6 +278,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
       assert.equal(await readFile(path.join(output, '_zellij/assets/imported/static/img/static.svg'), 'utf8'), asset);
     }
   }
+  await checkLinkedAssets(format, source, content, site);
   console.log(`${format}: converted routes, heading fragment, rendered URLs and asset bytes verified.`);
 }
 
@@ -499,5 +537,6 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const { checkImportedTables } = await import('./check-imported-tables.mjs');
     await checkImportedTables(output);
   }
+  await checkLinkedAssets('sphinx', source, content, site);
   console.log('sphinx: reStructuredText navigation, inline/local CSV tables, nested lists, substitutions, literalinclude excerpts, references, literal code/HTML, search, headings and assets verified.');
 }

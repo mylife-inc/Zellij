@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
 | CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance and the next native release remain pending. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets link` is not implemented. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy|link|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -848,3 +848,30 @@ formatting, six actual-CLI Node/rendering fixtures, strict/deep docs (55 routes 
 The multiline-header regression initially failed and passes after preserving
 relative option indentation. Final-head cross-platform/native/hosted CI and merge
 remain pending; these local results do not establish a bug-free or complete CLI.
+
+
+### 2026-11-08 — Public asset URL linking
+
+The user selected existing public HTTP(S) URLs for `--assets link`, with an
+explicit `--asset-base-url`; copying remains the default. Current source adds
+this policy to convert/cv, migrate/mig and ship through the shared converter.
+Eligible local asset paths become base-plus-root-relative URLs; copy-only
+namespace prefixes are omitted. Queries/fragments and encoded filenames survive;
+document links retain Zellij routing. No asset bytes are read/copied in link
+mode, no symlinks are created and no remote URLs are fetched. Distinct local
+files mapping to one public URL fail before writes. Missing/excluded resources
+retain the usual reports and containment checks. CSV/include content inputs
+remain readable independently of asset policy. Absolute URLs persist in content
+for subsequent build/publish commands; the public server remains required.
+
+The URL base must be HTTP(S), with a host and no credentials/query/fragment,
+whitespace, backslashes, malformed escapes or dot segments. It is required only
+for link mode; other policy/base combinations fail. Reports list linked files
+and public URLs, including in dry runs. The user reference documents source
+roots and the lack of source-tool hashed/CDN layout emulation. Native release
+rc.1 remains unchanged. Full validation and final-head CI/merge are pending.
+
+PR #102 closure: all 16 checks passed on `6d0b5c321d831606e383c14c127e20f579bdaca3`
+in run `42530352694`, attempt 1; merge `245eacd2bfde84492d3a337020d0a75e1784aeb0`
+has identical tree `56cf10ab6ce261ad070ccdc2f677e8e41abf20f1`. Both post-merge
+workflows passed: CI `42532456398` and Base image `42532456352`.

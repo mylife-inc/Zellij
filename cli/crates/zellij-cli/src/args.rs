@@ -956,6 +956,7 @@ pub(crate) enum ImportLayout {
 pub(crate) enum ImportAssets {
     Copy,
     Skip,
+    Link,
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]
@@ -970,9 +971,12 @@ pub(crate) struct ImportArgs {
     /// Site writes zel.yaml and content/; content preserves the legacy layout.
     #[arg(long, value_enum, default_value = "content")]
     pub(crate) layout: ImportLayout,
-    /// Copy referenced assets, or skip them and retain their original URLs.
+    /// Copy assets, link to an explicit public base URL, or skip and keep source URLs.
     #[arg(long, value_enum, default_value = "copy")]
     pub(crate) assets: ImportAssets,
+    /// Existing HTTP(S) asset directory; required only with --assets link.
+    #[arg(long, required_if_eq("assets", "link"))]
+    pub(crate) asset_base_url: Option<String>,
     /// Validate after writing; migrate always validates. Dry-run never validates.
     #[arg(long)]
     pub(crate) validate: bool,
@@ -997,9 +1001,12 @@ pub(crate) struct ShipArgs {
     pub(crate) out: String,
     #[arg(long)]
     pub(crate) from: Option<String>,
-    /// Copy referenced assets, or skip them and retain their original URLs.
+    /// Copy assets, link to an explicit public base URL, or skip and keep source URLs.
     #[arg(long, value_enum, default_value = "copy")]
     pub(crate) assets: ImportAssets,
+    /// Existing HTTP(S) asset directory; required only with --assets link.
+    #[arg(long, required_if_eq("assets", "link"))]
+    pub(crate) asset_base_url: Option<String>,
     /// Deploy through netlify, cloudflare, vercel, github-pages, s3, fly or railway.
     #[arg(long, required_unless_present = "image", conflicts_with = "image")]
     pub(crate) provider: Option<String>,

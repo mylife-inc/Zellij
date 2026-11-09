@@ -189,7 +189,7 @@ impl Converter for Jekyll {
             ));
         }
         let excludes = config::paths(&settings, "exclude")?;
-        let mut notes=vec!["Jekyll was read as data; no Ruby, Liquid, plugins or theme code was executed. Layouts, theme-provided configuration, generated pages, posts/drafts, Liquid expressions and custom Markdown presentation require manual migration. Only referenced eligible static assets are copied.".into()];
+        let mut notes=vec!["Jekyll was read as data; no Ruby, Liquid, plugins or theme code was executed. Layouts, theme-provided configuration, generated pages, posts/drafts, Liquid expressions and custom Markdown presentation require manual migration. Eligible referenced assets follow the selected import asset policy.".into()];
         let mut unmapped = Vec::new();
         let mut all = BTreeMap::new();
         let mut assets = BTreeSet::new();
