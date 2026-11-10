@@ -198,6 +198,19 @@ export async function checkImportedTables(output) {
     await page.getByText('No results for “fenceonlytoken”.', { exact: true }).waitFor();
     assert.equal(await page.getByRole('option').count(), 0);
     await page.keyboard.press('Escape');
+    await page.goto(`${origin}${prefix}/guide/includes`);
+    await page.getByRole('heading', {name:'Included manual', exact:true, level:1}).waitFor();
+    await page.getByRole('button', {name:/^Switch to (light|dark) theme$/}).waitFor();
+    assert.equal(await article.locator('h2#shared-section').innerText(), 'Reused section');
+    const includedLogo = article.getByRole('img', {name:'Included logo', exact:true}).first();
+    assert(await includedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
+    await article.getByRole('link', {name:'Included details', exact:true}).first().click();
+    await page.waitForURL(`${origin}${prefix}/guide/details`);
+    await page.getByRole('heading', {name:'Installation', exact:true, level:1}).waitFor();
+    await page.locator('[data-zellij-search-trigger]').click();
+    await query.fill('fragment searchable');
+    await page.getByRole('option').filter({hasText:'Reused section'}).click();
+    await page.waitForURL(`${origin}${prefix}/guide/includes#shared-section`);
     assert.deepEqual(errors, [], 'Imported tables, lists, literalinclude and navigation must not cause hydration or browser errors');
     console.log('Sphinx tables: browser hydration, semantic cells, nested lists, alphabetic/Roman numbering styles, substitutions, literal examples excluded from search, local image, document navigation and native asset navigation passed.');
   } finally {

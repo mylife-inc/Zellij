@@ -500,6 +500,61 @@ blocks remain literal, including directive-looking examples and backticks.
 Separate directive options from content with a blank line; option-like text
 inside a code block remains literal content.
 
+### Reusing document fragments
+
+Current source after `v0.2.0-rc.2` supports local parsed `include` directives.
+The included text joins the owning page: headings retain their hierarchy,
+labels and substitutions work across the include boundary, and supported links,
+images, lists, tables, admonitions and toctrees retain their normal behavior.
+Fragments do not need their own title and are not published as separate pages
+unless selected by a toctree. Only selected pages and their includes are parsed;
+unlisted `.rst` sources are reported without reading their dependencies.
+
+```rst
+.. include:: fragments/install.rst
+   :start-after: BEGIN INSTALL
+   :end-before: END INSTALL
+```
+
+Paths, including nested `include` paths, resolve beside the **owning page**;
+a leading `/` resolves from the selected source root. Images, downloads,
+`literalinclude` and document roles keep that same page context. CSV `:file:`
+paths instead resolve beside the file containing the directive, including a
+fragment or another CSV file. File names are literal and case-sensitive.
+
+The referenced file must be eligible under the same containment/exclusion rules
+as `literalinclude` below. Keep fragments inside the source folder and outside
+excluded, hidden, template and build trees; use `.inc`, `.txt` or unlisted `.rst`
+files. Unlike Sphinx, explicitly excluded fragments cannot be included here.
+Inclusion does not copy the original fragment as a downloadable asset.
+
+Supported parsed-include options:
+
+- `:encoding:` accepts `utf-8` or `utf-8-sig`; otherwise `source_encoding`
+  applies. Line endings normalize to LF.
+- `:start-line:` / `:end-line:` select a zero-based, end-exclusive slice.
+  Negative indexes count from the end. Bounds clamp to the available lines;
+  an empty or reversed slice inserts no text.
+- `:start-after:` / `:end-before:` select text after/before the first exact
+  marker in the remaining slice. Matching may occur within a line; it does
+  not discard the whole marker line as `literalinclude` does. Markers must be
+  nonempty and present. Line slicing precedes marker selection.
+- `:tab-width:` expands tabs at column stops from 1 to 64 (default 8).
+
+The directive requires one filename and no body. Repeated fragments are allowed;
+cyclic includes and duplicate labels/headings fail before output. A chain is
+limited to 32 active source files, with at most 10,000 include expansions per
+conversion. Includes share the 8 MiB file and 32 MiB input/expanded-text budgets
+with CSV tables and `literalinclude`. These checks also apply to dry runs and
+all asset policies. Directive-looking examples inside code or comments are never
+expanded. `:parser:`, `:literal:`, `:code:`, empty text markers, presentation options
+and standard `<...>` include libraries are unsupported; use `literalinclude`
+for code excerpts. No Python, parser plugin or network fetch is performed.
+See the [Docutils include reference](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment)
+for the upstream syntax.
+
+### Including code excerpts
+
 `literalinclude` imports local UTF-8 code/text files as fenced code. Paths are
 relative to the containing `.rst` file; a leading `/` means the selected Sphinx
 source folder. Filenames remain literal, including spaces, Unicode, `#` and
@@ -541,13 +596,12 @@ Supported options:
   are distinct unless `tab-width` expands them first.
 
 Each referenced file is limited to 8 MiB; unique input and total expanded text
-are each limited to 32 MiB per conversion, shared with local CSV tables. Explicit line selections are limited
+are each limited to 32 MiB per conversion, shared with local CSV tables and parsed includes. Explicit line selections are limited
 to 100,000 lines. Unsupported options such as `caption`, `name`, `linenos`,
 `emphasize-lines`, `pyobject`, `diff`, `prepend` and `append` fail before output.
 The directive requires a filename and has no content body. These checks also
-apply to `--dry-run` and `--assets skip`. Ordinary RST `include` remains
-unsupported; `.rst` files in the source inventory still need to be valid titled
-documents, so use a code extension or `.txt` for literal-only snippets.
+apply to `--dry-run` and `--assets skip`. A `.rst` file used only as a snippet
+does not need a title; pages selected by a toctree still require one.
 
 Lists support `*`, `+`, `-`, `•`, `‣` and `⁃` bullets, plus decimal numbering
 such as `1.`, `1)` and `(1)`. Alphabetic `a`–`z`/`A`–`Z` and canonical Roman
@@ -757,8 +811,9 @@ documents, configuration and script files are ineligible as downloads.
 asset paths, not Sphinx-generated `_images` or `_downloads` URLs. Asset skip and
 dry-run options retain their normal safety checks.
 
-This is a **conservative reStructuredText subset**, available in candidate `0.2.0-rc.2`.
-MyST, autodoc/domain roles, custom extensions, parsed `include`, raw
+This is a **conservative reStructuredText subset**. Candidate `0.2.0-rc.2` contains
+the earlier subset; parsed document includes require current source after rc.2.
+MyST, autodoc/domain roles, custom extensions, alternate include parsers, raw
 directives, spanning tables, unsupported substitution forms, field lists (including `:orphan:`), footnotes,
 definition/quote blocks, glob/numbered toctrees, extra directive
 options and custom/dirhtml builders require manual migration. Unsupported parsed
@@ -990,7 +1045,7 @@ The local target must still exist as an eligible regular file. Containment,
 exclusion and symlink checks apply in both normal and dry-run modes; missing or
 unpublished targets are reported rather than given invented public URLs. Link
 mode checks local paths without reading the asset bytes. Content inputs such as
-Sphinx CSV tables and `literalinclude` files are still read to build the pages.
+Sphinx CSV tables, parsed includes and `literalinclude` files are still read to build the pages.
 HTML/JSX attributes and other unsupported source syntax still need manual work.
 
 The conversion report lists each linked asset and its public URL, including in

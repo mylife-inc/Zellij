@@ -267,6 +267,7 @@ fn csv(body: &str, dialect: &Dialect) -> Result<Vec<Vec<String>>> {
 
 #[derive(Debug)]
 pub struct ExternalCsv {
+    pub source: camino::Utf8PathBuf,
     pub target: String,
     pub encoding: Option<String>,
     pub options: Options,
@@ -281,6 +282,7 @@ impl ExternalCsv {
         caption: Option<String>,
         language: &str,
         depth: usize,
+        source: camino::Utf8PathBuf,
     ) -> Result<Self> {
         let target = options.remove("file").unwrap();
         if target.is_empty() || !body.trim().is_empty() {
@@ -302,6 +304,7 @@ impl ExternalCsv {
         count(&options, "stub-columns")?;
         Dialect::new(&options)?;
         Ok(Self {
+            source,
             target,
             encoding,
             options,
