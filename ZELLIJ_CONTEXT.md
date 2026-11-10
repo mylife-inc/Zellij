@@ -95,6 +95,7 @@ delivery evidence for exact source, image digests, draft URLs and verification s
 Live Cloudflare/GitHub Pages portable and hosted acceptance and Railway
 static/Next acceptance passed on 2026-11-10. Four provider defects were fixed in
 PR #111, newer than rc.2; see the latest entry and live-provider evidence.
+Both post-merge workflows passed; all temporary acceptance resources are removed.
 Live Fly, AWS and Vercel account acceptance remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
@@ -7215,3 +7216,22 @@ reported hosting-comment hydration issue remain open. Post-merge CI
 `42903488658` and Base image `42903488649` are still running on `d1d03d4`
 at this audit refresh and must be checked separately; this record does not claim zero bugs or a complete
 implementation of every planned CLI capability.
+
+
+### 2026-11-10 — live-provider cleanup and post-merge verification completed
+
+The user deleted the empty disposable repository
+`mylife-inc/zellij-live-20261110-684141`; a fresh GitHub repository API lookup
+returns HTTP 404. This closes the prior delete_repo permission blocker. The
+earlier HTTP 403 remains recorded in the evidence as the initial deletion
+attempt. All temporary provider destinations, Actions secrets and exclusively
+tagged test image versions from this acceptance session are now removed.
+
+Both post-merge workflows for PR #111 merge
+`d1d03d4c75023689946318c08b4ecbcdce0c0a2a` passed: all 16 CI jobs in
+`42903488658` and all 13 Base image jobs in `42903488649`. These results close
+the pending checks in the preceding entry. PR #112 merged the initial live
+acceptance documentation as `a5daa5f4af44f063d82075e492369a5b37f1d446`.
+This update changes only context/status/evidence; published rc.2 is unchanged.
+Fly, Vercel, S3 and real GitLab/CircleCI runner acceptance, documented importer
+limitations and the reported Netlify hosting-comment hydration issue remain open.

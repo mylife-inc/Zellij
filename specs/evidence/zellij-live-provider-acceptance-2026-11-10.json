@@ -63,9 +63,11 @@
       "repository": "mylife-inc/zellij-live-20261110-684141",
       "branchDeleted": true,
       "websiteDeleted": true,
-      "repositoryDeleted": false,
+      "repositoryDeleted": true,
       "repositoryDeletionHttpStatus": 403,
-      "reason": "Current GitHub OAuth token lacks delete_repo scope; test Pages website is removed."
+      "reason": "Initial deletion returned HTTP 403 because the current GitHub OAuth token lacks delete_repo scope. The user subsequently deleted the empty repository; the GitHub repository API now returns HTTP 404.",
+      "repositoryDeletedBy": "user",
+      "repositoryAbsenceHttpStatus": 404
     },
     "temporarySecretsDeleted": true
   },
@@ -206,6 +208,8 @@
     "source": "d1d03d4c75023689946318c08b4ecbcdce0c0a2a",
     "ciRun": 42903488658,
     "baseImageRun": 42903488649,
-    "status": "in_progress at audit refresh"
+    "status": "passed",
+    "ciJobsPassed": 16,
+    "baseImageJobsPassed": 13
   }
 }
