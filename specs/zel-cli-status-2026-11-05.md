@@ -72,10 +72,13 @@ The newest published native candidate is **`v0.2.0-rc.2`**, from approved commit
 `54e636faf2162c36e50a91507f1f35be63a660d0`. All 29 Release jobs passed, including
 public downloads/installers for six native targets and four image variants on
 both Linux architectures. See the [release evidence](evidence/zellij-rc2-release-2026-11-09.json).
-The delivery fixtures now pin rc.2; their updated PR and live delivery checks
-remain separate from the release's package/image acceptance. Production Netlify
-migration remains pending the reported hosting-comment hydration issue. Passing
-tests do not establish zero bugs or completion of the whole design.
+PR #105 merged the rc.2 delivery pins and active documentation as `5677577`.
+All six installed-CLI manual delivery runs passed, including static/Next image
+publication and portable/hosted Netlify drafts. Both draft HTTP checks and both
+fresh-pull site-image checks passed; see the [delivery evidence](evidence/zellij-rc2-delivery-acceptance-2026-11-09.json).
+Production Netlify migration remains pending the reported hosting-comment
+hydration issue; HTTP fixture acceptance does not resolve it. Passing tests do
+not establish zero bugs or completion of the whole design.
 
 PR #74 merged as `74abf77a6592633288692a1af21fee9905f3ace6` after all 16
 checks passed on `5846c16c698aaa1212df6a42a89afe83c54aa877` in
@@ -896,3 +899,36 @@ Next image browser/download acceptance through a separate loopback asset server.
 No local browser/container/GUI, live provider mutation or release publication
 ran. Evidence: `/private/tmp/zellij-public-assets-{before,focused-final,workspace,clippy,render,docs}.log`.
 Final-head GitHub CI and merge remain pending.
+
+
+### 2026-11-09 — rc.2 installed-CLI delivery acceptance closure
+
+PR #105 merged as `5677577c75a4307cec5d4b0c7cd949f99aeb618a`, retaining tested
+tree `58d0ed02fd77c5b94ad3960669a9ce0630c179d1` from head
+`9fb6bbd32602856c0b75050335c53b912f2eea2c`. All 16 main PR checks passed in
+`42770299276`, and all six generated-workflow PR verification runs passed.
+The saved workflows now install published rc.2, use its hosted engine image,
+and publish only to the dedicated new rc.2 acceptance image tags or approved
+Netlify staging drafts. Active installation and command documentation was
+updated with the release.
+
+All six manual workflows passed on the merged source: portable `42773738576`,
+hosted `42773741515`, static image `42773744556`, Next image `42773747457`,
+Netlify portable draft `42773751667` and Netlify hosted draft `42773754795`.
+Both public draft URLs passed HTTP page, linked-asset and source-file isolation
+checks. Fresh runners pulled both newly published site images and passed HTTP
+acceptance in `42774184245`; the static and Next immutable image digests,
+draft URLs and job/source identities are retained in
+`specs/evidence/zellij-rc2-delivery-acceptance-2026-11-09.json`.
+
+Post-merge Base image `42773711571` passed; main CI `42773711512` was still
+running when this entry was prepared. The complete final-head PR suite and
+all manual acceptance runs above passed on the same source tree. This entry
+changes audit/status evidence only, without modifying that tested runtime,
+workflows, fixtures, authored site documentation or immutable release assets.
+
+Live acceptance for the other provider accounts and actual GitLab/CircleCI
+runners still needs suitable destinations. Advanced importer limits remain
+in the CLI status. The Netlify hosting-comment hydration issue remains open:
+HTTP fixture acceptance is not a browser hydration test or production migration.
+No local Docker/browser/GUI or production Netlify/domain change ran.

@@ -1,0 +1,363 @@
+{
+  "observed_at": "2026-11-09T23:22:06.132112-08:00",
+  "status": "rc.2 installed-CLI delivery, draft HTTP acceptance and fresh-pull site-image acceptance passed",
+  "release_tag": "v0.2.0-rc.2",
+  "release_commit": "54e636faf2162c36e50a91507f1f35be63a660d0",
+  "release_evidence": "zellij-rc2-release-2026-11-09.json",
+  "delivery_source": {
+    "commit": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+    "tree": "58d0ed02fd77c5b94ad3960669a9ce0630c179d1",
+    "pull_request": "https://github.com/mylife-inc/Zellij/pull/105",
+    "native_cli": "v0.2.0-rc.2",
+    "hosted_engine_image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2"
+  },
+  "pr_verification": {
+    "pr": 105,
+    "head": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+    "merge": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+    "tested_tree": "58d0ed02fd77c5b94ad3960669a9ce0630c179d1",
+    "runs": [
+      {
+        "id": 42770299276,
+        "name": "CI",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676260211,
+            "name": "Engine",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260400,
+            "name": "Portable docs (macos-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260403,
+            "name": "Portable docs (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260436,
+            "name": "Embedded schema is current",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260455,
+            "name": "CLI",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260514,
+            "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260529,
+            "name": "Showcase end to end",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260532,
+            "name": "Native images (arm64)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260610,
+            "name": "Native images (amd64)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260611,
+            "name": "Portable docs (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260699,
+            "name": "native-packages / Package and install (aarch64-apple-darwin)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260745,
+            "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260816,
+            "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260887,
+            "name": "native-packages / Package and install (x86_64-apple-darwin)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676260927,
+            "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129677336414,
+            "name": "Combined image manifests",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 42770299336,
+        "name": "Documentation (acceptance-netlify-portable.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676259911,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676261907,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 42770299531,
+        "name": "Documentation (acceptance-static.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676263668,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676265246,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 42770299313,
+        "name": "Documentation (acceptance-portable.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676260398,
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 42770299495,
+        "name": "Documentation (acceptance-hosted.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676263132,
+            "name": "verify",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 42770299573,
+        "name": "Documentation (acceptance-netlify-hosted.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676264120,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676265715,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "id": 42770299816,
+        "name": "Documentation (acceptance-next.yml)",
+        "head_sha": "9fb6bbd32602856c0b75050335c53b912f2eea2c",
+        "conclusion": "success",
+        "jobs": [
+          {
+            "id": 129676264938,
+            "name": "verify",
+            "conclusion": "success"
+          },
+          {
+            "id": 129676267018,
+            "name": "publish",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    ],
+    "observed_at": "2026-11-10T07:12:50.208492+00:00",
+    "manual_delivery": "success; see manual_delivery below"
+  },
+  "manual_delivery": {
+    "source_commit": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+    "started": "2026-11-10T07:13:03Z",
+    "runs": [
+      {
+        "case": "netlify-hosted",
+        "id": 42773754795,
+        "name": "Documentation (acceptance-netlify-hosted.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773754795",
+        "job_id": 129687358573,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:15:59Z",
+        "draft_url": "https://6af2c4a88ece8abf49ebb4f0--zel-stage.netlify.app",
+        "http_acceptance": "hosted: published pages, linked assets and source-file isolation passed at https://6af2c4a88ece8abf49ebb4f0--zel-stage.netlify.app/"
+      },
+      {
+        "case": "netlify-portable",
+        "id": 42773751667,
+        "name": "Documentation (acceptance-netlify-portable.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773751667",
+        "job_id": 129687347596,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:14:59Z",
+        "draft_url": "https://6af2c470b6e1ed06c6e0dd72--zel-stage.netlify.app",
+        "http_acceptance": "portable: published pages, linked assets and source-file isolation passed at https://6af2c470b6e1ed06c6e0dd72--zel-stage.netlify.app/"
+      },
+      {
+        "case": "next",
+        "id": 42773747457,
+        "name": "Documentation (acceptance-next.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773747457",
+        "job_id": 129687338686,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:15:57Z"
+      },
+      {
+        "case": "static",
+        "id": 42773744556,
+        "name": "Documentation (acceptance-static.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773744556",
+        "job_id": 129687327315,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:14:36Z"
+      },
+      {
+        "case": "hosted",
+        "id": 42773741515,
+        "name": "Documentation (acceptance-hosted.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773741515",
+        "job_id": 129687316448,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:16:00Z"
+      },
+      {
+        "case": "portable",
+        "id": 42773738576,
+        "name": "Documentation (acceptance-portable.yml)",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "status": "completed",
+        "conclusion": "success",
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773738576",
+        "job_id": 129687306364,
+        "run_attempt": 1,
+        "completed_at": "2026-11-10T07:14:46Z"
+      }
+    ],
+    "recorded_at": "2026-11-09T23:20:04.672505-08:00"
+  },
+  "fresh_site_image_acceptance": {
+    "id": 42774184245,
+    "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42774184245",
+    "jobs": [
+      {
+        "id": 129688723922,
+        "name": "inspect (static)",
+        "conclusion": "success",
+        "completed_at": "2026-11-10T07:17:06Z"
+      },
+      {
+        "id": 129688724210,
+        "name": "inspect (next)",
+        "conclusion": "success",
+        "completed_at": "2026-11-10T07:17:09Z"
+      }
+    ],
+    "runner": "ubuntu-latest (Linux x86_64)",
+    "images": [
+      {
+        "kind": "static",
+        "tag": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.2",
+        "digest": "sha256:eafc8f5cbbde2d269a38152a8e143bfbdcdb2fce63cdd0727247b05878b7069a",
+        "job_id": 129688723922
+      },
+      {
+        "kind": "next",
+        "tag": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.2",
+        "digest": "sha256:735f2b3a4c59ef280e48211e3188a5b12e41f66ae708eec0bbd03c3985bc2b7a",
+        "job_id": 129688724210
+      }
+    ]
+  },
+  "post_merge_workflows": [
+    {
+      "id": 42773711512,
+      "name": "CI",
+      "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+      "status": "in_progress",
+      "conclusion": null,
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773711512",
+      "run_attempt": 1
+    },
+    {
+      "id": 42773711571,
+      "name": "Base image",
+      "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773711571",
+      "run_attempt": 1
+    }
+  ],
+  "local_checks": {
+    "frozen_generated_workflows": 6,
+    "release_download_http_helper_tests": 33,
+    "strict_deep_documentation_routes": 55,
+    "strict_deep_documentation_examples": 23,
+    "local_browser_container_gui_run": false
+  },
+  "limits": [
+    "Netlify acceptance uses draft-only zel-stage fixture deployments; old production project and domain are unchanged.",
+    "The HTTP checks verify pages, linked assets and source-file isolation; they do not prove live browser hydration. The reported Netlify hosting-comment hydration issue remains open.",
+    "The two fresh site-image checks run on Linux x86_64. Separate release evidence covers all four engine image variants on native Linux x86_64 and ARM64, and six native package targets.",
+    "Live Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway account acceptance and actual GitLab/CircleCI runner acceptance remain pending.",
+    "Advanced importer fidelity and arbitrary existing-YAML editing remain outside the completed command scope; passing acceptance does not establish zero bugs."
+  ]
+}
