@@ -5916,3 +5916,40 @@ rejection explicitly required authorization for public prerelease tags/assets.
 Known live-provider, runner, importer and Netlify limits remain in the release
 notes and CLI status. The graph remains a pre-asset-link CLI snapshot and excludes
 root `examples/**` under the user's explicit graph scope.
+
+
+### 2026-11-09 — rc.2 publication and delivery acceptance refresh
+
+The user explicitly approved `v0.2.0-rc.2` from
+`54e636faf2162c36e50a91507f1f35be63a660d0`. Preparation PR #104 passed all 16
+checks on `cb9b863aa78eaeb7aa09026b5f9f33799601eead` in run `42762346632`;
+its merge retained tree `189c93d4edba6262abf15f06044b1178d14f8928`.
+Both post-merge workflows passed: CI `42765943453`, Base image `42765943694`.
+The standard release helper passed typechecking, schema drift, formatting,
+warnings-denied Clippy, 453 engine tests and 681 Rust tests. Five real hosted
+cases were intentionally selected in CI, not run locally. The approved tag
+was pushed without modifying the reviewed source.
+
+Release run **`42768544795` passed all 29 jobs**. Native archives/installers are
+published in `mylife-inc/Zellij` and `mylife-inc/releases`; all six native
+public-download/install jobs passed. All four engine variants are published
+for Linux AMD64 and ARM64; both native public-image jobs passed. Public archive
+checksums match across repositories, and attached installers match the tagged
+source. The source tag and public image digests are fixed in
+`specs/evidence/zellij-rc2-release-2026-11-09.json`. Production documentation and
+shared stable installer updates were skipped. The old rc.1 release and the
+historical rc.2 preparation/approval-rejection records are preserved.
+
+Current follow-up retargets six saved delivery fixtures and their generated
+GitHub workflows to rc.2, with dedicated new static/Next acceptance image tags.
+Active CLI/quickstart documentation now installs and describes rc.2; remaining
+provider, runner, importer and Netlify limitations stay explicit. All six
+workflows match actual CLI generation; strict/deep docs pass (55 routes and 23
+examples), and all 33 release/download/HTTP helper tests pass. This follow-up
+still needs final-head PR checks and manual delivery acceptance after merge;
+public package acceptance is not evidence of those separate delivery runs.
+
+No local container/browser/GUI, production Netlify deployment or domain change
+ran. Other provider secret/variable names are absent from this repository; the
+user has been asked for an existing non-secret live-test destination while the
+release and approved Netlify staging work continue.

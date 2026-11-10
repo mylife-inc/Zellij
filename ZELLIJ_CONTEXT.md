@@ -80,8 +80,10 @@ PR #102 added local-file Sphinx CSV tables and fixed multiline CSV header
 indentation, merging as `245eacd` after all 16 final-head checks passed; both
 post-merge workflows passed. Public asset URL linking merged in PR #103 as
 `fa0b206`, after all 16 final-head checks passed; both post-merge workflows
-passed. Current work refreshes the unpublished rc.2 candidate notes and release
-evidence. See the latest entry for verification status.
+passed. Candidate rc.2 is published from PR #104 merge `54e636f`; all 29 release
+jobs passed, including public package and image acceptance. Current work
+retargets generated delivery acceptance and active documentation to rc.2.
+See the latest entry for verification status.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -89,9 +91,9 @@ Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The old
 rc.2 proposal at `0fbf0a1` is superseded by the 2026-11-09 preparation; do not
-tag that old commit. Publication of the refreshed candidate still requires
-explicit approval of the reviewed merge commit. See the latest dated entries
-and the image measurement evidence.
+tag that old commit. The user explicitly approved the refreshed candidate,
+which is now published from `54e636f`. See the latest dated entries and the
+release/image measurement evidence.
 
 Latest content-preservation work: PR #55 merged as `f1ca1ff` after all 13 CI jobs passed in
 `41573372928` on final head `2794773`. Source fix `8370ec4` preserves 82 legacy
@@ -112,19 +114,19 @@ reproduction are in [the hydration diagnosis](specs/zellij-netlify-hydration-202
 Keep the old live site/domain intact. See the latest dated entry and
 specs/evidence/zellij-netlify-acceptance-2026-11-02.json.
 
-Candidate **0.2.0-rc.2 is prepared and merged** in PR #60 as `0fbf0a1` after
+Historical initial proposal (2026-11-02): candidate **0.2.0-rc.2 was prepared and merged** in PR #60 as `0fbf0a1` after
 all 13 checks passed in `41595462484` on `04653b0`; their source trees are
 identical. Browser acceptance PR #59 merged as `93dca08` after all 13 checks
-passed in `41594855467` on `97f9f9f`. Publication is awaiting explicit user
+passed in `41594855467` on `97f9f9f`. At that time, publication awaited explicit user
 approval: automatic approval review rejected the attempted release command
-before execution. No rc.2 tag or release exists. The proposed tag targets
+before execution. No rc.2 tag or release existed then. The old proposal targeted
 `0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469`; see the latest dated entry and
 specs/evidence/zellij-rc2-preparation-2026-11-02.json.
 Final local `zcheck` passed with serial Rust fixtures: 365 engine and 317
 Rust tests passed; the default parallel run hit independently reproduced local
 shell-startup delays. See the final validation entry for this limitation.
 
-Latest release: native **0.2.0-rc.1 is published** at tag commit `61881e8` (PR #50).
+Previous release: native **0.2.0-rc.1 was published** at tag commit `61881e8` (PR #50).
 All eight public-artifact acceptance jobs passed in run `41548199714` using
 corrected harness `29029e1`: six native platforms and both Linux image
 architectures. The original release run has two Windows downloader failures;
@@ -6919,3 +6921,40 @@ rejection explicitly required authorization for public prerelease tags/assets.
 Known live-provider, runner, importer and Netlify limits remain in the release
 notes and CLI status. The graph remains a pre-asset-link CLI snapshot and excludes
 root `examples/**` under the user's explicit graph scope.
+
+
+### 2026-11-09 — rc.2 publication and delivery acceptance refresh
+
+The user explicitly approved `v0.2.0-rc.2` from
+`54e636faf2162c36e50a91507f1f35be63a660d0`. Preparation PR #104 passed all 16
+checks on `cb9b863aa78eaeb7aa09026b5f9f33799601eead` in run `42762346632`;
+its merge retained tree `189c93d4edba6262abf15f06044b1178d14f8928`.
+Both post-merge workflows passed: CI `42765943453`, Base image `42765943694`.
+The standard release helper passed typechecking, schema drift, formatting,
+warnings-denied Clippy, 453 engine tests and 681 Rust tests. Five real hosted
+cases were intentionally selected in CI, not run locally. The approved tag
+was pushed without modifying the reviewed source.
+
+Release run **`42768544795` passed all 29 jobs**. Native archives/installers are
+published in `mylife-inc/Zellij` and `mylife-inc/releases`; all six native
+public-download/install jobs passed. All four engine variants are published
+for Linux AMD64 and ARM64; both native public-image jobs passed. Public archive
+checksums match across repositories, and attached installers match the tagged
+source. The source tag and public image digests are fixed in
+`specs/evidence/zellij-rc2-release-2026-11-09.json`. Production documentation and
+shared stable installer updates were skipped. The old rc.1 release and the
+historical rc.2 preparation/approval-rejection records are preserved.
+
+Current follow-up retargets six saved delivery fixtures and their generated
+GitHub workflows to rc.2, with dedicated new static/Next acceptance image tags.
+Active CLI/quickstart documentation now installs and describes rc.2; remaining
+provider, runner, importer and Netlify limitations stay explicit. All six
+workflows match actual CLI generation; strict/deep docs pass (55 routes and 23
+examples), and all 33 release/download/HTTP helper tests pass. This follow-up
+still needs final-head PR checks and manual delivery acceptance after merge;
+public package acceptance is not evidence of those separate delivery runs.
+
+No local container/browser/GUI, production Netlify deployment or domain change
+ran. Other provider secret/variable names are absent from this repository; the
+user has been asked for an existing non-secret live-test destination while the
+release and approved Netlify staging work continue.

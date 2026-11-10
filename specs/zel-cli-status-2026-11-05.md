@@ -13,7 +13,7 @@ dated audit and implementation history.
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
-| CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance and the next native release remain pending. |
+| CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance remains pending. Candidate `0.2.0-rc.2` includes all three generators. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
@@ -37,8 +37,7 @@ and the standard `defineConfig` wrapper without evaluation. They read `srcDir`,
 nested/multiple sidebars, page metadata, `base`/`cleanUrls` links and referenced
 source/public assets. Dynamic config, rewrites, locales, exclusion patterns and
 custom output/cache paths are rejected before writes. Vue, home layout and
-custom Markdown presentation remain manual migration tasks. VitePress is new in
-source; published rc.1 does not include it.
+custom Markdown presentation remain manual migration tasks. VitePress is included in candidate `0.2.0-rc.2`.
 
 Jekyll imports accept YAML configuration, front-matter Markdown pages, enabled
 documentation collections, literal scoped defaults and supported navigation
@@ -69,12 +68,14 @@ custom table presentation/escape options, global content transforms and
 custom builders still require manual migration. Unlisted documents are omitted
 and reported. The conversion reference specifies the exact accepted forms.
 
-The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
-is newer and has not been published as rc.2. The 2026-11-09 rc.2 preparation refresh supersedes the old publication proposal;
-its reviewed final commit still needs explicit publication approval. See the
-[release evidence](evidence/zellij-rc2-preparation-2026-11-09.json). Production Netlify
-migration also remains separate, pending the reported hosting-comment hydration
-issue. Passing tests do not establish zero bugs or completion of the whole design.
+The newest published native candidate is **`v0.2.0-rc.2`**, from approved commit
+`54e636faf2162c36e50a91507f1f35be63a660d0`. All 29 Release jobs passed, including
+public downloads/installers for six native targets and four image variants on
+both Linux architectures. See the [release evidence](evidence/zellij-rc2-release-2026-11-09.json).
+The delivery fixtures now pin rc.2; their updated PR and live delivery checks
+remain separate from the release's package/image acceptance. Production Netlify
+migration remains pending the reported hosting-comment hydration issue. Passing
+tests do not establish zero bugs or completion of the whole design.
 
 PR #74 merged as `74abf77a6592633288692a1af21fee9905f3ace6` after all 16
 checks passed on `5846c16c698aaa1212df6a42a89afe83c54aa877` in

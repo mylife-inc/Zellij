@@ -115,7 +115,7 @@ generate YAML/MDX and should not be used inside this Markdown starter.
 
 ## Site creation wizard
 
-**Current source, newer than published rc.1**, supports interactive creation:
+**Candidate 0.2.0-rc.2**, supports interactive creation:
 
 ```bash
 zel init -i                  # portable Markdown at docs/zellij
@@ -194,7 +194,7 @@ content/
 
 ### All section examples with `--full`
 
-**Current source, newer than published rc.1**, supports:
+**Candidate 0.2.0-rc.2**, supports:
 
 ```bash
 zel nd --full
@@ -274,7 +274,7 @@ wrote.
 
 ## `zel new app [dir]`
 
-Available in candidate `0.2.0-rc.1`; the public `zellij-v0.1.3` binary predates this
+Available in candidate `0.2.0-rc.2`; the public `zellij-v0.1.3` binary predates this
 command. `zel na` is its shortcut. It creates editable Next.js files without
 running Node, npm, Docker, a server or an installer.
 
@@ -308,7 +308,7 @@ wrapper command. For portable Markdown inside a Next image, use
 
 ### Choose wrapper settings interactively
 
-**Current source, newer than published rc.1**, supports an optional wizard:
+**Candidate 0.2.0-rc.2**, supports an optional wizard:
 
 ```bash
 zel na website -i
@@ -445,7 +445,7 @@ An output file is never overwritten, including a dangling symlink. There is no
 
 ### Interactive authoring
 
-**Current source, newer than published rc.1**, adds a native section wizard:
+**Candidate 0.2.0-rc.2**, adds a native section wizard:
 
 ```bash
 zel ns                         # starts the wizard in a terminal
@@ -524,7 +524,7 @@ counts cannot be changed independently. Conflicting flags fail before writing.
 
 ### Complete lists, objects and optional fields
 
-**Current source, newer than published rc.1**, accepts complete JSON values and
+**Candidate 0.2.0-rc.2**, accepts complete JSON values and
 optional-field removal when creating a section:
 
 ```bash
@@ -604,7 +604,7 @@ Without `--sections` it creates the page with a single hero.
 
 ### Choose a page interactively
 
-**Current source, newer than published rc.1**, supports the short form:
+**Candidate 0.2.0-rc.2**, supports the short form:
 
 ```bash
 zel np -i                         # ask for a name and ordered sections
@@ -722,7 +722,7 @@ exactly what [`zel ci init github --target image`](/cli/ci) writes.
 - [The content model](/guide/content-model) — what these files are, conceptually
 
 The generated project workflow selects the configured `<docs-dir>` root and
-watches both its configuration and content. Candidate `0.2.0-rc.1` pins its
+watches both its configuration and content. Candidate `0.2.0-rc.2` pins its
 own published version and matching engine image. Stable `0.1.3` is incompatible. The starter
 retains its Next-image GHCR publication intent; use saved settings and `zel ci`
 when choosing a static image or Netlify instead.
