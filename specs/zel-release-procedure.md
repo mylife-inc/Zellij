@@ -1,26 +1,34 @@
 # Zellij release channels and candidate procedure
 
 Implemented policy, November 2, 2026. This document does not announce a release.
-The source workspace is preparing 0.2.0-rc.2; 0.2.0-rc.1 remains published. Publication status must be checked
-in GitHub; a version change in source is not proof of an uploaded release.
+Candidate 0.2.0-rc.2 is published and its public package/image acceptance passed.
+Publication status must be checked in GitHub; a version change in source is not
+proof of an uploaded release.
 
-## Current rc.2 preparation
+## Current rc.2 publication
+
+The user approved publication from exact commit
+`54e636faf2162c36e50a91507f1f35be63a660d0`, the reviewed merge of PR #104.
+[Release run 42768544795](https://github.com/mylife-inc/Zellij/actions/runs/42768544795)
+passed all 29 jobs, including six native public-download/install checks and all
+four engine variants on native Linux AMD64/ARM64. Both release repositories
+contain matching archives; their installers match the tagged source. See the
+[release record](evidence/zellij-rc2-release-2026-11-09.json) for public checksums
+and immutable image digests. Production documentation and stable installer
+updates were skipped under the candidate policy.
 
 The [2026-11-09 preparation record](evidence/zellij-rc2-preparation-2026-11-09.json)
-supersedes the old proposed target `0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469`.
-The [2026-11-02 record](evidence/zellij-rc2-preparation-2026-11-02.json) remains
-historical evidence, including the earlier publication approval rejection.
-Neither record authorizes publication. Use the exact reviewed merge commit of
-the refreshed preparation PR only after its final-head checks pass and the user
-approves that commit and the public destinations. Never substitute a later
-moving `main` commit without reviewing its changes and verification.
+retains the pre-publication evidence. It superseded the old proposed target
+`0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469`; the [2026-11-02 record](evidence/zellij-rc2-preparation-2026-11-02.json)
+remains historical, including its earlier approval rejection. The user later
+explicitly authorized the refreshed candidate. Never move the published tag to
+a later commit or replace its assets to include further implementation work.
 
-The new record verifies source/lockfile versions, both generated release pages,
-prerelease gates and six downloaded CI archive checksums. These archives belong
-to the recorded implementation baseline. The tagged release rebuilds them;
-its public asset hashes must be collected separately after publication. A
-present `RELEASES_GITHUB_TOKEN` secret establishes only that it is configured,
-not that its current permissions have been exercised by a new publication.
+The six delivery fixtures are retargeted to rc.2 and regenerated with the CLI.
+Their PR verification and manual-main delivery runs need separate evidence;
+old rc.1 delivery outcomes do not establish rc.2 acceptance. Netlify tests use
+the existing approved staging site and draft previews. Production/domain
+migration and live acceptance on other providers remain separate tasks.
 
 ## Channels
 
@@ -76,8 +84,8 @@ for candidate acceptance. Source development can explicitly select
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The next candidate notes are specs/releases/v0.2.0-rc.2.md;
-this preparation does not mean the candidate has been published. The Published release acceptance workflow runs after
+in both release pages. The rc.2 notes are specs/releases/v0.2.0-rc.2.md;
+its publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
 installers, and exercises all six native targets. It also pulls and executes all

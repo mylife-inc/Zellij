@@ -87,7 +87,7 @@ documentation and temporary build contexts are excluded from the runtime image.
 Generate locally from a configured site:
 
 ```bash
-zel ci --zel-version 0.2.0-rc.1
+zel ci --zel-version 0.2.0-rc.2
 ```
 
 Save `publish.action: push`, choose `publish.image: static` or `next`, and set
@@ -97,10 +97,10 @@ GHCR uses the job's scoped token; other registries use configured repository
 secrets. Generation requires Git but no local container runtime.
 
 The generated workflow pins a compatible binary release and engine image.
-Candidate `0.2.0-rc.1` and its engine images are published; stable `0.1.3` is
+Candidate `0.2.0-rc.2` and its engine images are published; stable `0.1.3` is
 incompatible. Other selected versions must also be published before use. [`zel ci`](/cli/ci) describes all settings and explicit
 credential provisioning. The legacy GHCR Next-image preset remains available as
-`zel ci --target image --zel-version 0.2.0-rc.1`.
+`zel ci --target image --zel-version 0.2.0-rc.2`.
 
 ## Requirements
 

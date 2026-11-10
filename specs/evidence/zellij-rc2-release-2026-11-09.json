@@ -1,0 +1,526 @@
+{
+  "observed_on": "2026-11-09 America/Los_Angeles",
+  "status": "published; all native public-download and image acceptance jobs passed",
+  "tag": "v0.2.0-rc.2",
+  "tag_commit": "54e636faf2162c36e50a91507f1f35be63a660d0",
+  "source_tree": "189c93d4edba6262abf15f06044b1178d14f8928",
+  "authorization": "User explicitly approved publication of the prepared candidate in this chat.",
+  "preparation_pr": 104,
+  "preparation_run": 42762346632,
+  "source_post_merge_checks": {
+    "ci": 42765943453,
+    "base_image": 42765943694,
+    "conclusion": "success"
+  },
+  "release_run": {
+    "id": 42768544795,
+    "head_sha": "54e636faf2162c36e50a91507f1f35be63a660d0",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42768544795",
+    "run_attempt": 1
+  },
+  "release_jobs": [
+    {
+      "id": 129670675108,
+      "name": "Verify",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187112,
+      "name": "Documentation site",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187208,
+      "name": "Image maths \u00b7 amd64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187234,
+      "name": "Image maths \u00b7 arm64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187264,
+      "name": "Image none \u00b7 arm64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187269,
+      "name": "Image all \u00b7 arm64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187280,
+      "name": "Image diagrams \u00b7 arm64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187294,
+      "name": "Image diagrams \u00b7 amd64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187298,
+      "name": "Image none \u00b7 amd64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187334,
+      "name": "Image all \u00b7 amd64",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187354,
+      "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187355,
+      "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187356,
+      "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187358,
+      "name": "binaries / Package and install (x86_64-apple-darwin)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187466,
+      "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672187498,
+      "name": "binaries / Package and install (aarch64-apple-darwin)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672380938,
+      "name": "Publish image maths",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672380973,
+      "name": "Publish image none",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672381009,
+      "name": "Publish image diagrams",
+      "conclusion": "success"
+    },
+    {
+      "id": 129672381011,
+      "name": "Publish image all",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674174496,
+      "name": "Publish the release",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276162,
+      "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276185,
+      "name": "Verify published artifacts / Published images (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276190,
+      "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276191,
+      "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276195,
+      "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276197,
+      "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276220,
+      "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 129674276307,
+      "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+      "conclusion": "success"
+    }
+  ],
+  "publication_gates": {
+    "Deploy to Netlify": "skipped",
+    "Keep the installer current in the releases repository": "skipped"
+  },
+  "collector_note": "The first local collection attempt assumed bare SHA256SUMS filenames; the publisher uses ./ prefixes. Normalized that valid prefix and reran verification without changing release artifacts.",
+  "releases": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.2",
+      "id": 440021798,
+      "url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.2",
+      "published_at": "2026-11-10T06:36:39Z",
+      "prerelease": true,
+      "checksums": {
+        "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz": "4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4",
+        "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz": "1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d",
+        "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz": "a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d",
+        "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz": "2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2",
+        "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip": "fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6",
+        "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip": "7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3"
+      },
+      "installers_match_tagged_source": true,
+      "assets": [
+        {
+          "id": 730391534,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/install.ps1"
+        },
+        {
+          "id": 730391538,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/install.sh"
+        },
+        {
+          "id": 730391531,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:5799267fce668cbac14032e977e9ec413f7f24919c04e35f9668c0da4c68019f",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/SHA256SUMS"
+        },
+        {
+          "id": 730391537,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz",
+          "size": 6910134,
+          "digest": "sha256:4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 730391527,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:746799046ce722095ada5947968914a2f3aee68ba4163e1e933e9921f72bbb53",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 730391536,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip",
+          "size": 7250095,
+          "digest": "sha256:fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 730391530,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:cf63a3d523d3cd97a071da9bf1fe6fc5760a2b265068132f07e3f9bc7fe34d18",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 730391532,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7153328,
+          "digest": "sha256:1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 730391524,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:36574c170b173b46e73f76e17b67c493466bbfeb13045fc553cf36d0814ade92",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 730391528,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz",
+          "size": 7026256,
+          "digest": "sha256:a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 730391525,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1b314937c61bc115e31f512b5a7a6666b9132ca1d657aba2022dd8dbe31b053d",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 730391533,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip",
+          "size": 7403162,
+          "digest": "sha256:7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 730391526,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:9c5413150742223f0e3e8fc4df57e48ca7f0c93be7f4f853e9d3f4de4a309937",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 730391523,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7284700,
+          "digest": "sha256:2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 730391529,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:dfbd17c0638d684cd918cef6b705c52d41b00662b5e5e67ae139f668e4b57f55",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.2",
+      "id": 440021839,
+      "url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.2",
+      "published_at": "2026-11-10T06:36:43Z",
+      "prerelease": true,
+      "checksums": {
+        "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz": "4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4",
+        "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz": "1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d",
+        "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz": "a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d",
+        "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz": "2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2",
+        "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip": "fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6",
+        "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip": "7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3"
+      },
+      "installers_match_tagged_source": true,
+      "assets": [
+        {
+          "id": 730391670,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/install.ps1"
+        },
+        {
+          "id": 730391691,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/install.sh"
+        },
+        {
+          "id": 730391686,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:5799267fce668cbac14032e977e9ec413f7f24919c04e35f9668c0da4c68019f",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/SHA256SUMS"
+        },
+        {
+          "id": 730391687,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz",
+          "size": 6910134,
+          "digest": "sha256:4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 730391668,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:746799046ce722095ada5947968914a2f3aee68ba4163e1e933e9921f72bbb53",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 730391684,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip",
+          "size": 7250095,
+          "digest": "sha256:fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 730391678,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:cf63a3d523d3cd97a071da9bf1fe6fc5760a2b265068132f07e3f9bc7fe34d18",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 730391685,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7153328,
+          "digest": "sha256:1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 730391683,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:36574c170b173b46e73f76e17b67c493466bbfeb13045fc553cf36d0814ade92",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 730391682,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz",
+          "size": 7026256,
+          "digest": "sha256:a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 730391673,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1b314937c61bc115e31f512b5a7a6666b9132ca1d657aba2022dd8dbe31b053d",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 730391681,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip",
+          "size": 7403162,
+          "digest": "sha256:7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 730391662,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:9c5413150742223f0e3e8fc4df57e48ca7f0c93be7f4f853e9d3f4de4a309937",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 730391676,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7284700,
+          "digest": "sha256:2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 730391652,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:dfbd17c0638d684cd918cef6b705c52d41b00662b5e5e67ae139f668e4b57f55",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.2/zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256"
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2",
+      "digest": "sha256:968bb0396d7c72a33b4ea2358d6a58a20765da269f8d7a61a431d7b021d4f2d3",
+      "native_manifests": [
+        {
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          },
+          "digest": "sha256:29fcf2ffee3cfcada3af98a26064360916456975bd7eea1574c0e270e16d5217"
+        },
+        {
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "digest": "sha256:e31dceac94ecbe94e65419c3274c34e9cf140c4c30e41f18f27d072d635c29f3"
+        }
+      ]
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-maths",
+      "digest": "sha256:87c2c097da47bf1b59729501f362f3391e95095c1e9a8339cb0c37fa9dfd570d",
+      "native_manifests": [
+        {
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "digest": "sha256:d18747418306f3fd2a5db1d42cddb1b6f0c00be41923fbeadaefaca5d47317cd"
+        },
+        {
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          },
+          "digest": "sha256:0edb65f544f7eff55fed8659973c81015520c2bb7eb477fab37ddd113a1924ba"
+        }
+      ]
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-diagrams",
+      "digest": "sha256:13bf68dca47adca6ac07c7c8a8790db51eeccfd073d66cb9eacea85d0c5f01d9",
+      "native_manifests": [
+        {
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "digest": "sha256:60bb1ea5bc77b58f5dfa83fbe8502913b24b359ebc10b90592ff4b080b112060"
+        },
+        {
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          },
+          "digest": "sha256:bb99cb87f78241dfc5ee79156f1f2a5c983b92ae80dfd2f2aef6597aa9172bb6"
+        }
+      ]
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-all",
+      "digest": "sha256:3d042e09275f45e7a064a18ea55990c5175515f8337f26e55c83afc4471396bd",
+      "native_manifests": [
+        {
+          "platform": {
+            "architecture": "arm64",
+            "os": "linux"
+          },
+          "digest": "sha256:0be68cfba104328b8b8d9747fa9248901a2adb400e1c2f5443b10ec1591c96f5"
+        },
+        {
+          "platform": {
+            "architecture": "amd64",
+            "os": "linux"
+          },
+          "digest": "sha256:5cb0ed5d2530f250521a9314c0827d5fda03d3236fa3755c54791976a3ff9078"
+        }
+      ]
+    }
+  ],
+  "local_prepublication_checks": {
+    "engine_tests_passed": 453,
+    "rust_tests_passed": 681,
+    "rust_tests_failed": 0,
+    "hosted_tests_ignored_locally": 5,
+    "log_sha256": "8fcfd6c592c779c1696611745995381a175f8f214fbf52afe4a4f768d643b729"
+  },
+  "followup_validation": {
+    "release_download_http_tests_passed": 33,
+    "strict_deep_docs": "55 routes; 23 examples",
+    "frozen_delivery_workflows": "six regenerated through the current CLI; exact parity passed"
+  },
+  "delivery_acceptance": "Retargeted rc.2 workflows require their own PR acceptance and manual main runs. Rc.1 delivery results are not rc.2 acceptance.",
+  "remaining_limits": [
+    "Live Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway accounts not yet exercised.",
+    "Actual GitLab/CircleCI runner acceptance remains pending.",
+    "Advanced importer fidelity and arbitrary existing YAML editing remain incomplete.",
+    "Netlify hosting-comment hydration issue remains pending; production/domain migration was not performed."
+  ]
+}

@@ -16,8 +16,7 @@ The current CLI source supports `zel cv ./docs --out ./manual --layout site
 --validate` to convert and check in one step. Hosted validation needs a running
 container runtime; ordinary conversion does not. Referenced local assets are
 copied by default. `--assets skip` omits them and retains their original URLs for
-manual repair, while document links still convert. Both controls are newer than
-the published rc.1 CLI; see [conversion options](/cli/convert).
+manual repair, while document links still convert. Both controls are available in candidate `0.2.0-rc.2`; see [conversion options](/cli/convert).
 
 ## What is recognised
 
@@ -65,7 +64,7 @@ guesses are reported. Explicit Markdown file links and local asset copying keep
 their existing semantics. Computed, versioned and localized source routing still
 require review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
-These metadata improvements are newer than the published rc.1 executable.
+These metadata improvements are available in candidate `0.2.0-rc.2`.
 
 ## VitePress sites
 
@@ -80,7 +79,7 @@ File links, supported `base`/`cleanUrls` website links, and referenced source or
 `public/` assets are mapped. Vue components, home layout and custom Markdown
 presentation need manual work. Dynamic configuration and custom routing or
 exclusion settings fail before writes. See [VitePress import limits](/cli/convert#vitepress-imports)
-before converting. This converter is newer than the published rc.1 executable.
+before converting. This converter is available in candidate `0.2.0-rc.2`.
 
 ## Jekyll sites
 
@@ -95,7 +94,7 @@ Referenced static assets are copied while respecting exclusions, generated
 output and internal directories. Ruby, Liquid, plugins and themes are not run.
 Posts, dated collections, custom routing and theme-specific navigation need
 manual work. See [Jekyll import limits](/cli/convert#jekyll-imports). This
-converter is newer than the published rc.1 executable.
+converter is available in candidate `0.2.0-rc.2`.
 
 ## Hugo sites
 
@@ -110,7 +109,7 @@ Zellij index pages; source links keep working. Draft/publication settings contro
 which pages are imported, and eligible referenced content/static assets are
 copied. Go templates and shortcodes are not executed. Menus, cascades, modules,
 localization and custom routing require manual migration. See the full
-[Hugo import limits](/cli/convert#hugo-imports). This feature is newer than rc.1.
+[Hugo import limits](/cli/convert#hugo-imports). This feature is available in candidate `0.2.0-rc.2`.
 
 ## Sphinx sites
 
@@ -130,7 +129,7 @@ as autodoc, MyST, spanning tables, includes, global content transforms and dynam
 configuration require manual migration; conversion fails before writing output.
 Use a separate source copy when simplifying a project for import. Read the
 [Sphinx limits and examples](/cli/convert#sphinx-imports) first. This converter
-is newer than the published rc.1 executable.
+is available in candidate `0.2.0-rc.2`.
 
 ## What does not come across
 

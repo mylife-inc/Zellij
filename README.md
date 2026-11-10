@@ -67,12 +67,12 @@ Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
 with installation tests against actual release archives. Windows uses the
 PowerShell installer; Unix uses the shell installer. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
-versions, commands and limits. [Candidate 0.2.0-rc.1 is published](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1)
-for all six targets, with [public-artifact acceptance passing](https://github.com/mylife-inc/Zellij/actions/runs/41548199714).
-Use its pinned installation instructions. Stable remains `0.1.3`, which predates
-these workflows. See the [candidate notes](specs/releases/v0.2.0-rc.1.md).
-Source is preparing `0.2.0-rc.2`; its [release notes](specs/releases/v0.2.0-rc.2.md)
-describe the changes and remaining hosting issue. It is not yet published.
+versions, commands and limits. [Candidate 0.2.0-rc.2 is published](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.2)
+for all six targets, with [public package and image acceptance passing](https://github.com/mylife-inc/Zellij/actions/runs/42768544795).
+Use its pinned installation instructions and matching engine images. Stable
+remains `0.1.3`, which predates these workflows. The [candidate notes](specs/releases/v0.2.0-rc.2.md)
+cover the implemented commands and remaining provider/importer/hosting limits.
+See the [release evidence](specs/evidence/zellij-rc2-release-2026-11-09.json).
 
 Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
 candidate channels, pinned installation, and stable documentation publication.

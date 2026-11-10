@@ -6,10 +6,10 @@ description: Build and deploy static HTML or containerized documentation to an e
 <div id="the-provider-decides-the-artefact" className="zellij-legacy-anchor" />
 <div id="where-the-content-comes-from" className="zellij-legacy-anchor" />
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.1">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.2">
 `zel deploy netlify`, also `zel netlify`, builds and uploads static HTML from
 portable Markdown or hosted content. The downloaded `zellij-v0.1.3` binary
-predates these commands. Cloudflare Pages, Vercel, GitHub Pages, S3, Fly and Railway are available in current source; rc.1 does not include them.
+predates these commands. Cloudflare Pages, Vercel, GitHub Pages, S3, Fly and Railway are included in candidate `0.2.0-rc.2`.
 </Callout>
 
 ```bash title="terminal"
@@ -48,7 +48,7 @@ preview and production deployment need network access and valid credentials.
 ## Cloudflare Pages
 
 Current source adds `zel deploy cloudflare`, `zel cloudflare`, and the short
-alias `zel cf`. These commands are not in the published rc.1 binary.
+alias `zel cf`. These commands are included in candidate `0.2.0-rc.2`.
 
 ```bash
 zel cf --site manual --dry-run
@@ -116,7 +116,7 @@ protocol and generated exports; live Cloudflare account acceptance remains pendi
 ## Vercel
 
 Current source supports `zel deploy vercel`, `zel vercel`, and the short alias
-`zel vc`. These commands are newer than the published rc.1 binary.
+`zel vc`. These commands are available in candidate `0.2.0-rc.2`.
 
 ```bash
 zel vc --site prj_YOUR_PROJECT_ID --dry-run
@@ -177,8 +177,7 @@ live Vercel account acceptance remains pending.
 
 ## AWS S3
 
-Current source supports `zel deploy s3` and the shortcut `zel s3`. This is newer
-than the published rc.1 binary. The adapter uploads static HTML to an **existing
+Current source supports `zel deploy s3` and the shortcut `zel s3`. This is available in candidate `0.2.0-rc.2`. The adapter uploads static HTML to an **existing
 S3 website bucket**, optionally under a prefix. **There is no draft mode:
 `--prod` is required**, including for a dry-run plan.
 
@@ -280,7 +279,7 @@ account acceptance remains pending.
 ## GitHub Pages
 
 Current source supports `zel deploy github-pages`, `zel github-pages`, and the
-short alias `zel ghp`. These commands are newer than the published rc.1 binary.
+short alias `zel ghp`. These commands are available in candidate `0.2.0-rc.2`.
 This adapter publishes static files to an existing GitHub.com repository's
 `gh-pages` branch. **There is no draft mode: `--prod` is required**, including
 when printing a dry-run plan.
@@ -484,7 +483,7 @@ access are still checked before building; preparation and rendering still
 validate content. A failed build creates no remote deployment and retains the
 previous local output. Portable Netlify output rejects these three flags.
 Authored configuration remains unchanged. These flags require a current CLI
-and compatible engine; candidate `0.2.0-rc.1` does not include them.
+and compatible engine; candidate `0.2.0-rc.2` includes them.
 
 ## Options
 
@@ -530,8 +529,8 @@ reject it before credentials, building or remote requests. See
 Current source implements `zel fly` and `zel deploy fly` for **existing Fly apps**.
 It builds either the small static web-server image or the Next.js wrapper image,
 pushes it to the app's Fly registry repository, and updates existing Machines
-using the immutable image digest. This feature is newer than published rc.1;
-rc.2 has not been published. Live Fly account acceptance is still pending.
+using the immutable image digest. This feature is available in candidate `0.2.0-rc.2`;
+Live Fly account acceptance is still pending.
 
 ```bash
 zel fly --site manual --prod --dry-run
@@ -630,7 +629,7 @@ for an **existing image service in an explicit Railway environment**. It builds
 one static or Next.js image for `linux/amd64`, pushes it to your registry, changes
 the service's image source to that immutable digest, and waits for the returned
 deployment to reach `SUCCESS`. Live Railway account acceptance is pending; this
-adapter is newer than published rc.1, and rc.2 remains unpublished.
+adapter is available in candidate `0.2.0-rc.2`.
 
 ```yaml title="zel.yaml"
 version: 1
