@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-08**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-09**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -78,16 +78,20 @@ and duplicated guide titles/shifted anchors with CRLF line endings, merging as
 `cac41b7` after all 16 final-head checks passed; both post-merge workflows passed.
 PR #102 added local-file Sphinx CSV tables and fixed multiline CSV header
 indentation, merging as `245eacd` after all 16 final-head checks passed; both
-post-merge workflows passed. Current work implements public asset URL linking
-through convert/migrate/ship. See the latest entry for verification status.
+post-merge workflows passed. Public asset URL linking merged in PR #103 as
+`fa0b206`, after all 16 final-head checks passed; both post-merge workflows
+passed. Current work refreshes the unpublished rc.2 candidate notes and release
+evidence. See the latest entry for verification status.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
-for format/provider/advanced-option limits. The prior
-rc.2 release proposal awaits explicit publication approval and predates these
-changes. See the latest dated entries and the image measurement evidence.
+for format/provider/advanced-option limits. The old
+rc.2 proposal at `0fbf0a1` is superseded by the 2026-11-09 preparation; do not
+tag that old commit. Publication of the refreshed candidate still requires
+explicit approval of the reviewed merge commit. See the latest dated entries
+and the image measurement evidence.
 
 Latest content-preservation work: PR #55 merged as `f1ca1ff` after all 13 CI jobs passed in
 `41573372928` on final head `2794773`. Source fix `8370ec4` preserves 82 legacy
@@ -6880,3 +6884,38 @@ Next image browser/download acceptance through a separate loopback asset server.
 No local browser/container/GUI, live provider mutation or release publication
 ran. Evidence: `/private/tmp/zellij-public-assets-{before,focused-final,workspace,clippy,render,docs}.log`.
 Final-head GitHub CI and merge remain pending.
+
+
+### 2026-11-09 — Refreshed rc.2 preparation (unpublished)
+
+PR #103 merged public asset URL linking as
+`fa0b20683855df69b30d0dde1366c22fe0bf3e15`, with the identical tested tree
+`9c6250dd38090ae996e9542f0a65a99b20ac7a6c`. All 16 checks passed on final
+head `ff90234de9d80af75de991e7087e51515acad980` in run `42557158727`.
+Both post-merge workflows passed: CI `42560161757`, Base image `42560161729`.
+
+The candidate notes now cover source through PR #103, including all six
+importers, public asset URLs, expanded Sphinx support, provider adapters,
+GitLab/CircleCI generation, native wizards and recent bug fixes. The old rc.2
+target `0fbf0a1` is superseded; its 2026-11-02 evidence remains historical.
+Source and lockfile still agree on unpublished `0.2.0-rc.2`. Both candidate
+tags are absent, the shared release secret is present (permissions untested),
+and generated release pages pin installers and all four candidate image tags.
+No stable tags/shared installer files or production documentation are changed.
+
+The latest main run passed all 16 jobs, including installation of six native
+packages on their matching OS/architecture. All six downloaded artifact ZIP
+digests, contained package checksums and single-executable archive contracts
+were independently verified. These baseline CI packages are not public-release
+acceptance; release builds need their own final hashes. All 29 local release
+policy/download tests pass using fake publication commands and loopback fixtures.
+No local container, browser, live provider deployment or native publication ran.
+
+See `specs/evidence/zellij-rc2-preparation-2026-11-09.json` and the refreshed
+`specs/releases/v0.2.0-rc.2.md`. This documentation preparation still needs its
+own final-head CI. The exact resulting reviewed merge commit must be recorded
+in the PR closure and approved before publication; the earlier approval-review
+rejection explicitly required authorization for public prerelease tags/assets.
+Known live-provider, runner, importer and Netlify limits remain in the release
+notes and CLI status. The graph remains a pre-asset-link CLI snapshot and excludes
+root `examples/**` under the user's explicit graph scope.

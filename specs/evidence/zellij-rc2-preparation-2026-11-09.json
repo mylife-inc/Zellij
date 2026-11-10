@@ -1,0 +1,280 @@
+{
+  "observed_on": "2026-11-09 America/Los_Angeles",
+  "status": "release inputs and baseline artifacts verified; preparation PR final-head CI and publication approval pending",
+  "proposed_tag": "v0.2.0-rc.2",
+  "implementation_baseline": "fa0b20683855df69b30d0dde1366c22fe0bf3e15",
+  "implementation_tree": "9c6250dd38090ae996e9542f0a65a99b20ac7a6c",
+  "preparation_branch": "codex/rc2-candidate-refresh",
+  "proposed_tag_commit": null,
+  "target_policy": "Use the reviewed merge commit of this preparation PR only after final-head CI passes and explicit publication approval. The preparation commit cannot record its own final merge hash; retain the exact merge SHA and tested tree in the PR closure and user approval request.",
+  "supersedes": {
+    "record": "specs/evidence/zellij-rc2-preparation-2026-11-02.json",
+    "old_proposed_tag_commit": "0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469",
+    "reason": "The old target predates PRs 62 through 103; original evidence is preserved as dated history."
+  },
+  "baseline_ci": {
+    "id": 42560161757,
+    "head_sha": "fa0b20683855df69b30d0dde1366c22fe0bf3e15",
+    "head_branch": "main",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42560161757",
+    "run_attempt": 1
+  },
+  "baseline_ci_jobs": [
+    {
+      "id": 128974607708,
+      "name": "CLI",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607872,
+      "name": "Portable docs (macos-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607904,
+      "name": "Portable docs (windows-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607928,
+      "name": "Portable docs (ubuntu-latest)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607932,
+      "name": "Native images (amd64)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607944,
+      "name": "native-packages / Package and install (x86_64-apple-darwin)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607945,
+      "name": "Showcase end to end",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974607961,
+      "name": "Embedded schema is current",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608012,
+      "name": "Native images (arm64)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608046,
+      "name": "native-packages / Package and install (aarch64-apple-darwin)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608071,
+      "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608090,
+      "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608106,
+      "name": "Engine",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608130,
+      "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128974608232,
+      "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+      "conclusion": "success"
+    },
+    {
+      "id": 128975471223,
+      "name": "Combined image manifests",
+      "conclusion": "success"
+    }
+  ],
+  "baseline_base_image": {
+    "id": 42560161729,
+    "head_sha": "fa0b20683855df69b30d0dde1366c22fe0bf3e15",
+    "status": "completed",
+    "conclusion": "success",
+    "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42560161729",
+    "run_attempt": 1
+  },
+  "downloaded_baseline_archives": [
+    {
+      "id": 13649550381,
+      "name": "binary-x86_64-pc-windows-msvc",
+      "size_in_bytes": 7399263,
+      "digest": "sha256:4a5e358abe89981e4f042d5c4673794cdf1f703e6c2ed7ed021452e447450453",
+      "expired": false,
+      "target": "x86_64-pc-windows-msvc",
+      "archive": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip",
+      "archive_sha256": "89cc5a2fc96e650bb52d8913271f39de1cd29b68e5ad829c39d77f695ca8c19a",
+      "archive_size_bytes": 7403163,
+      "binary_size_bytes": 15690752,
+      "verified": "artifact digest, archive checksum and single native executable"
+    },
+    {
+      "id": 13649101976,
+      "name": "binary-aarch64-pc-windows-msvc",
+      "size_in_bytes": 7246760,
+      "digest": "sha256:065198e9cb4b576f5aaa68b39ea7fb77dfea22a5f0af17f84ba998f0851c55a0",
+      "expired": false,
+      "target": "aarch64-pc-windows-msvc",
+      "archive": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip",
+      "archive_sha256": "26311b0fdd21c7956a59c08232e27d436787a10d75f24bd514d89bef66b1a3f9",
+      "archive_size_bytes": 7250095,
+      "binary_size_bytes": 14565376,
+      "verified": "artifact digest, archive checksum and single native executable"
+    },
+    {
+      "id": 13649013511,
+      "name": "binary-x86_64-apple-darwin",
+      "size_in_bytes": 7020681,
+      "digest": "sha256:6a8f5eab8489e6c0d066b6873f1070d8fbbeda84026cf706062356f6b698d879",
+      "expired": false,
+      "target": "x86_64-apple-darwin",
+      "archive": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz",
+      "archive_sha256": "23ce4eec0d1e044da5637ea0ee6dd7bc89b9eb0e2ad13b1277962144fc4a2006",
+      "archive_size_bytes": 7026248,
+      "binary_size_bytes": 13771256,
+      "verified": "artifact digest, archive checksum and single native executable"
+    },
+    {
+      "id": 13648967957,
+      "name": "binary-x86_64-unknown-linux-gnu",
+      "size_in_bytes": 7270266,
+      "digest": "sha256:099e43f744bfe13f2777b859bed7f7f0ae51d5c1b801bfc04b5a647010160fb6",
+      "expired": false,
+      "target": "x86_64-unknown-linux-gnu",
+      "archive": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz",
+      "archive_sha256": "9ac011204cd1281ffd3d9fa7f79587b9e4f166bb8fbc1a68bc3ee266aa046761",
+      "archive_size_bytes": 7284666,
+      "binary_size_bytes": 15035776,
+      "verified": "artifact digest, archive checksum and single native executable"
+    },
+    {
+      "id": 13648594500,
+      "name": "binary-aarch64-unknown-linux-gnu",
+      "size_in_bytes": 7123629,
+      "digest": "sha256:0bb130498111d9eef865b46d7b512650a31db9eec620824c42456a6dc8f21725",
+      "expired": false,
+      "target": "aarch64-unknown-linux-gnu",
+      "archive": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz",
+      "archive_sha256": "99e1bd652a671d38a0b896af0a7f592e541a28626c695f7069c5a7bd06e8c31f",
+      "archive_size_bytes": 7153326,
+      "binary_size_bytes": 13781008,
+      "verified": "artifact digest, archive checksum and single native executable"
+    },
+    {
+      "id": 13648418984,
+      "name": "binary-aarch64-apple-darwin",
+      "size_in_bytes": 6904910,
+      "digest": "sha256:75f0504dce85f49744a34f4a0e017ea146726dea013e894d43b3530941a65df8",
+      "expired": false,
+      "target": "aarch64-apple-darwin",
+      "archive": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz",
+      "archive_sha256": "3ac43d474359778169c44d4930731cd26e010d7e4439681263987853cef1d6a7",
+      "archive_size_bytes": 6910132,
+      "binary_size_bytes": 12631056,
+      "verified": "artifact digest, archive checksum and single native executable"
+    }
+  ],
+  "artifact_scope": "These are CI artifacts for the baseline, not published rc.2 downloads. The tagged release rebuilds packages, so collect its own final archive hashes and public-download acceptance separately.",
+  "release_inputs": {
+    "workspace_version": "0.2.0-rc.2",
+    "lockfile_versions": {
+      "zellij-cli": "0.2.0-rc.2",
+      "zellij-convert": "0.2.0-rc.2",
+      "zellij-core": "0.2.0-rc.2",
+      "zellij-docs": "0.2.0-rc.2",
+      "zellij-engine": "0.2.0-rc.2",
+      "zellij-scaffold": "0.2.0-rc.2"
+    },
+    "candidate_policy": {
+      "version": "0.2.0-rc.2",
+      "series": "0.2",
+      "stable": "false",
+      "prerelease": "true"
+    },
+    "tag_absent_in_both_repositories": true,
+    "generated_pages": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.2",
+        "sha256": "f018f1bee498701ddc11cddd884db52170ec3f0f258c4c700fc71880f6dac22c"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.2",
+        "sha256": "41f912e7c4e3b53dc67163a68bd253b10dcdee8f233e4223f2c3d88d5850b86d"
+      }
+    ],
+    "image_tags": [
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-maths",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-diagrams",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-all"
+    ],
+    "release_input_sha256": {
+      "cli/Cargo.toml": "5d484bdb4fbe386647174b2ad3abe06a85712d6b79998965e821b4ca5dd1075f",
+      "cli/Cargo.lock": "ebc85226cc958665d4a42aa4261ea282d0f51847d4584dbeb2e2a14f3feb0b54",
+      "scripts/install.sh": "1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+      "scripts/install.ps1": "f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+      "scripts/package-native.mjs": "1e18caf2e6d3c2058daeea1e0e20585a7cd7760f68c4f3f4de4b9c7da59a47d5",
+      "scripts/package-windows.ps1": "8d73f72980f37e5ee8bd07653b06d132b02755f5a3285bb86b0cc3c9f24dd5d9",
+      "scripts/publish.sh": "84e88b08d641e925c098206c065193e2dd3401cef9ea93a7d7cbb693df1ddcd5",
+      "scripts/release-policy.mjs": "e6e6c549a37a4b27ff698a8df047773afc641c2ea83704370a20be56f413cdb3",
+      ".github/workflows/release.yml": "4df05c913a2e78692941fdd91ef24d7ee62edfd58a064f16faa1da262176a29e",
+      ".github/workflows/native-packages.yml": "d56e0d16eb047714b1c9e9a158b43936dbe30ff60d3b4076783b1107a770bb6d",
+      ".github/workflows/release-acceptance.yml": "4d6db387401e36ce17a49538d2f5ce1b6de4f3162e06beeb8c5bbabf9c7e8d8c",
+      "specs/releases/v0.2.0-rc.2.md": "de105e77a1b5b68ed383c99bcf32dfc90349ec9ab2a226a25d48532a97976b3c"
+    }
+  },
+  "local_validation": {
+    "release_policy_and_download_tests": {
+      "passed": 29,
+      "failed": 0
+    },
+    "local_container_or_browser_execution": false,
+    "checks": "Version consistency, candidate-only image tags, pinned installation URLs for both release destinations, artifact ZIP digests, native archive checksums and single-executable contents."
+  },
+  "publication": {
+    "performed": false,
+    "development_tag_absent": true,
+    "shared_tag_absent": true,
+    "shared_release_secret_present": true,
+    "shared_secret_permissions": "Not exercised by this read-only preparation; only secret-name presence checked.",
+    "destinations": [
+      "mylife-inc/Zellij v0.2.0-rc.2",
+      "mylife-inc/releases zellij-v0.2.0-rc.2",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-maths",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-diagrams",
+      "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2-all"
+    ],
+    "production_docs": false,
+    "stable_channels": false,
+    "public_download_acceptance": "pending publication",
+    "image_acceptance": "pending candidate publication on native Linux AMD64 and ARM64",
+    "released_delivery_acceptance": "pending publication; existing approved Netlify staging drafts remain available for this next step"
+  },
+  "known_limits": [
+    "Live Cloudflare, Vercel, GitHub Pages, AWS S3, Fly and Railway account acceptance remains pending.",
+    "Real GitLab/CircleCI runner acceptance remains pending.",
+    "Advanced importer fidelity and arbitrary existing YAML editing remain incomplete.",
+    "Netlify hosting-comment hydration issue remains open; no production migration is implied.",
+    "Passing tests do not prove zero undiscovered bugs."
+  ]
+}

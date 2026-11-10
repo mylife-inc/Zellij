@@ -70,8 +70,9 @@ custom builders still require manual migration. Unlisted documents are omitted
 and reported. The conversion reference specifies the exact accepted forms.
 
 The newest published native candidate remains **`v0.2.0-rc.1`**. Current source
-is newer and has not been published as rc.2. The old rc.2 publication proposal
-predates subsequent fixes and should not be used unchanged. Production Netlify
+is newer and has not been published as rc.2. The 2026-11-09 rc.2 preparation refresh supersedes the old publication proposal;
+its reviewed final commit still needs explicit publication approval. See the
+[release evidence](evidence/zellij-rc2-preparation-2026-11-09.json). Production Netlify
 migration also remains separate, pending the reported hosting-comment hydration
 issue. Passing tests do not establish zero bugs or completion of the whole design.
 
