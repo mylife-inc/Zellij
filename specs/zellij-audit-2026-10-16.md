@@ -6111,3 +6111,37 @@ and the preceding TOML work are merged source newer than the immutable rc.2
 release. Provider/runner live acceptance, advanced importer limitations and the
 Netlify hosting-comment hydration issue remain open. No local Docker/browser,
 production-domain change or new release publication ran.
+
+
+### 2026-11-10 — live provider acceptance and Cloudflare corrections
+
+Source `21fb99c` fixes two problems found using a disposable Cloudflare Pages
+project. Successful asset acknowledgement responses can omit `result`; only
+acknowledgement endpoints now accept that form, while data payloads and the
+success flag remain required. Portable exports without a top-level `404.html`
+were served with Cloudflare's SPA fallback, returning home HTML with status 200
+for nonexistent paths. The deployment's private staging directory now receives
+a fallback 404 page if needed, preserving existing regular 404 files and
+rejecting links/non-files. These fixes are newer than immutable rc.2.
+
+Both regressions failed before their fixes. Focused tests pass (16 Cloudflare
+cases; the real hosted case is selected in CI). Current-source portable
+Cloudflare and GitHub Pages live checks pass for nested pages, exact authored
+logo bytes, linked assets, source-file isolation and missing-page status.
+Hosted and Railway live tests are still in progress. The manual acceptance
+workflow now supports explicitly identified disposable provider destinations,
+retains evidence and deletes only exclusively owned test image versions.
+
+The user authorized test deployments and removal afterward. Cloudflare uses
+existing authorized Ziryab credentials without changing Ziryab. GitHub Pages
+uses a separate disposable repository; the initial temporary Pages setup on
+mylife-inc/Zellij was removed and absence verified. Railway has an isolated
+project/service, but creating its project token returned Not Authorized; a
+user-created environment token is needed for `zel rw`. Track cleanup and exact
+live results before claiming this milestone complete. No production domains
+or existing customer projects were modified.
+
+PR #110's main `4b782c6` post-merge workflows both passed: CI `42800161133` and
+Base image `42800161483`. Earlier runs `42799993837` and `42799993455` were
+superseded/cancelled, not successful. Full validation, final-head CI and merge
+for the new Cloudflare corrections remain pending at this entry.
