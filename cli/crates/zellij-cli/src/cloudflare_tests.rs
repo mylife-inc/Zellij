@@ -711,7 +711,16 @@ fn hosted_export_upload_preserves_prefix_assets_and_previous_output() {
             );
         }
     }
-    assert!(manifest.keys().all(|p| p.starts_with("/products/.docs/")));
+    // Cloudflare needs a root 404 even when authored output is mounted below
+    // a prefix. It is the only upload allowed outside that content mount.
+    assert!(
+        manifest
+            .keys()
+            .all(|p| p == "/404.html" || p.starts_with("/products/.docs/"))
+    );
+    let fallback = String::from_utf8_lossy(&assets[&manifest["/404.html"]]);
+    assert!(fallback.contains("Page not found") && !fallback.contains("Cloudflare acceptance"));
+    assert!(manifest.contains_key("/products/.docs/404.html"));
     assert!(manifest.keys().all(|p| !p.ends_with(".mdx")
         && !p.ends_with("site.yaml")
         && !p.contains(".zellij-output")));
@@ -841,5 +850,26 @@ fn fallback_not_found_page_does_not_follow_links() {
     assert_eq!(
         std::fs::read_to_string(root(&temp).join("keep.html")).unwrap(),
         "Authored data"
+    );
+}
+
+#[test]
+fn root_fallback_does_not_replace_a_prefixed_export_not_found_page() {
+    let temp = tempfile::tempdir().unwrap();
+    let export = root(&temp);
+    write(
+        export,
+        "products/.docs/404.html",
+        "<h1>Hosted export 404</h1>",
+    );
+    ensure_not_found_page(export).unwrap();
+    assert!(
+        std::fs::read_to_string(export.join("404.html"))
+            .unwrap()
+            .contains("Page not found")
+    );
+    assert_eq!(
+        std::fs::read_to_string(export.join("products/.docs/404.html")).unwrap(),
+        "<h1>Hosted export 404</h1>"
     );
 }
