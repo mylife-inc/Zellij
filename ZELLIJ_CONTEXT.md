@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-09**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-10**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -85,10 +85,10 @@ jobs passed, including public package and image acceptance. PR #105 merged
 rc.2 delivery pins and active documentation as `5677577`, after all 16 main
 PR checks and six generated-workflow verifications passed. All six manual
 rc.2 delivery runs, both Netlify draft HTTP checks and both fresh-pull site-image
-checks passed. Both post-merge workflows passed too. Current source adds Jekyll
-TOML configuration imports after rc.2; local regressions pass, with its own
-final-head CI still pending. See the latest entry and delivery evidence for
-exact source, image digests, draft URLs and verification status.
+checks passed. Both post-merge workflows passed too. Jekyll TOML configuration
+imports merged in PR #107 as `5563902` after all 16 final-head checks
+passed. This capability is newer than published rc.2. See the latest entry and
+delivery evidence for exact source, image digests, draft URLs and verification status.
 Live Railway, Fly, AWS, Cloudflare, Vercel and GitHub Pages account acceptance
 remains pending.
 See the latest dated entry for the current source and verification limits.
@@ -7033,3 +7033,24 @@ jobs in `42773711512` passed, as did Base image `42773711571`, both on
 `5677577c75a4307cec5d4b0c7cd949f99aeb618a`. The rc.2 delivery evidence now appends
 that closure while preserving the original in-progress snapshot. PR #106 merged
 the prior audit-only record as `1650e7d9318b311c72f857d216ca1815493108b7`.
+
+
+### 2026-11-10 — Jekyll TOML acceptance closure
+
+[PR #107](https://github.com/mylife-inc/Zellij/pull/107) merged as
+`55639024c75cc8e50e1b6a923f9f023a5c5edfb5` after all 16 checks passed on
+`db3aa01afb03a4e523cd6012cc6d6df811e30fec` in run `42778216082`,
+attempt 1. The merge retains tested tree
+`443cb5a2003d2aca3ddd9adfab6896746e984b63`. This includes all six native package
+checks, native Windows/macOS/Linux regressions, both Linux image architectures
+and real-engine export of both YAML and TOML Jekyll fixtures. Source implementation
+is `c9f1fbf7e67b6f87908bfd0db879bd61a2fb94e0`; local 684 Rust tests, Clippy,
+formatting, seven conversion/rendering fixtures and strict documentation checks
+passed. The new configuration format is merged source, newer than published rc.2.
+
+Automatic post-merge CI `42782791785` and Base image `42782792095` are not
+yet complete at this refresh. They remain separate from the successful PR
+checks; consult their current results before claiming they passed.
+This closure edits audit/status documents only. Published rc.2 assets and tags
+are unchanged. Other provider/runner acceptance, advanced importer limitations
+and the reported Netlify hosting-comment hydration issue remain open.
