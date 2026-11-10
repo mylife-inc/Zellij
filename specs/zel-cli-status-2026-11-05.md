@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
 | CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance remains pending. Candidate `0.2.0-rc.2` includes all three generators. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML/TOML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -39,11 +39,12 @@ source/public assets. Dynamic config, rewrites, locales, exclusion patterns and
 custom output/cache paths are rejected before writes. Vue, home layout and
 custom Markdown presentation remain manual migration tasks. VitePress is included in candidate `0.2.0-rc.2`.
 
-Jekyll imports accept YAML configuration, front-matter Markdown pages, enabled
+Jekyll imports accept YAML or TOML configuration, front-matter Markdown pages, enabled
 documentation collections, literal scoped defaults and supported navigation
 arrays. Links use source permalinks and deployment prefixes; eligible referenced
 static assets respect exclusions, internal data/templates and generated output.
-Liquid/Ruby/theme code is not executed. TOML, blog posts, dated collections,
+Liquid/Ruby/theme code is not executed. TOML support is source-only after rc.2.
+Blog posts, dated collections,
 globs, custom source routing and theme-specific navigation remain limited or
 unsupported. See the conversion reference for exact accepted forms.
 
@@ -932,3 +933,40 @@ runners still needs suitable destinations. Advanced importer limits remain
 in the CLI status. The Netlify hosting-comment hydration issue remains open:
 HTTP fixture acceptance is not a browser hydration test or production migration.
 No local Docker/browser/GUI or production Netlify/domain change ran.
+
+
+### 2026-11-09 — Jekyll TOML configuration imports
+
+Source `c9f1fbf7e67b6f87908bfd0db879bd61a2fb94e0` adds `_config.toml` to the Jekyll conversion
+path used by `convert`/`cv`, `migrate`/`mig` and `ship`. Exactly one YAML or TOML
+configuration is accepted; ambiguous files still require explicit consolidation
+in a source copy. TOML keys remain case-sensitive, tables and arrays retain
+structure, booleans/numbers retain their types, and date/time values become
+text rather than Serde's private datetime map. The existing settings/defaults,
+collection ordering, visibility, navigation, URL and asset validation applies.
+Configuration parsing is data-only, bounded to 64 levels, and does not execute
+Ruby, Liquid, plugins or source commands. Page front matter remains YAML; blog
+posts, dated collections and config merging remain outside the supported subset.
+
+The regression first failed against the previous TOML rejection. All 15 Jekyll
+integration tests now pass, covering metadata, routes, URLs/assets, nested
+defaults, ordering, case/type preservation, BOM/CRLF, ambiguity, invalid syntax
+and settings, symlinks, unchanged sources and dry runs. All **684 Rust workspace
+tests** pass; 5 real hosted cases are intentionally selected in CI only. The
+final focused parser run also checks the documented nesting boundary.
+Warnings-denied workspace Clippy, formatting, strict/deep documentation
+(55 routes / 23 examples), Node syntax and diff checks pass.
+
+The actual CLI-to-engine fixture now covers YAML and TOML Jekyll sites, alongside
+the five other importers, under copy and public-link asset policies. All seven
+Node rendering fixtures pass. CI will also export both Jekyll variants through
+the real engine image. Conversion reference and quickstart document TOML with
+an example and explicitly mark it as source-only after rc.2. Final-head PR CI
+and merge remain pending for this change. No local Docker/browser/GUI, provider
+deployment or new native publication ran; published rc.2 remains immutable.
+
+PR #105's previously pending post-merge checks are now closed: all 16 main CI
+jobs in `42773711512` passed, as did Base image `42773711571`, both on
+`5677577c75a4307cec5d4b0c7cd949f99aeb618a`. The rc.2 delivery evidence now appends
+that closure while preserving the original in-progress snapshot. PR #106 merged
+the prior audit-only record as `1650e7d9318b311c72f857d216ca1815493108b7`.

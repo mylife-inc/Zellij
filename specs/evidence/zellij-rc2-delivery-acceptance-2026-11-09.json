@@ -359,5 +359,175 @@
     "The two fresh site-image checks run on Linux x86_64. Separate release evidence covers all four engine image variants on native Linux x86_64 and ARM64, and six native package targets.",
     "Live Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway account acceptance and actual GitLab/CircleCI runner acceptance remain pending.",
     "Advanced importer fidelity and arbitrary existing-YAML editing remain outside the completed command scope; passing acceptance does not establish zero bugs."
-  ]
+  ],
+  "post_merge_closure": {
+    "observed_at": "2026-11-09T23:50:51.644279-08:00",
+    "workflows": [
+      {
+        "id": 42773711512,
+        "name": "CI",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773711512",
+        "jobs": [
+          {
+            "id": 129687210130,
+            "name": "Engine",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210279,
+            "name": "Native images (amd64)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210345,
+            "name": "Portable docs (macos-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210379,
+            "name": "Portable docs (windows-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210393,
+            "name": "Showcase end to end",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210402,
+            "name": "native-packages / Package and install (x86_64-apple-darwin)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210432,
+            "name": "Portable docs (ubuntu-latest)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210442,
+            "name": "CLI",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210471,
+            "name": "Embedded schema is current",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210584,
+            "name": "Native images (arm64)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210609,
+            "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210722,
+            "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210828,
+            "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210835,
+            "name": "native-packages / Package and install (aarch64-apple-darwin)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687210996,
+            "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688219409,
+            "name": "Combined image manifests",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "id": 42773711571,
+        "name": "Base image",
+        "head_sha": "5677577c75a4307cec5d4b0c7cd949f99aeb618a",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "html_url": "https://github.com/mylife-inc/Zellij/actions/runs/42773711571",
+        "jobs": [
+          {
+            "id": 129687213521,
+            "name": "diagrams \u00b7 amd64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213862,
+            "name": "all \u00b7 amd64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213868,
+            "name": "none \u00b7 arm64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213880,
+            "name": "maths \u00b7 arm64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213882,
+            "name": "none \u00b7 amd64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213913,
+            "name": "all \u00b7 arm64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687213918,
+            "name": "maths \u00b7 amd64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129687214183,
+            "name": "diagrams \u00b7 arm64",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688541025,
+            "name": "Publish all",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688541054,
+            "name": "Publish none",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688541086,
+            "name": "Publish diagrams",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688541092,
+            "name": "Publish maths",
+            "conclusion": "success"
+          },
+          {
+            "id": 129688704488,
+            "name": "The image can build a site",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  }
 }

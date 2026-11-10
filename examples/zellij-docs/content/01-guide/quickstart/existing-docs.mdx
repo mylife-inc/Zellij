@@ -13,7 +13,10 @@ so a conversion you dislike costs you the folder you delete.
 
 <Callout type="info" title="What runs today">
 The current source supports all six steps, including Netlify deployment.
-VitePress/Jekyll/Hugo/Sphinx imports and the newest conversion improvements are available in candidate `0.2.0-rc.2`; `zel list formats` shows what your binary supports.
+VitePress/Jekyll/Hugo/Sphinx imports are available in candidate `0.2.0-rc.2`.
+Jekyll TOML configuration requires current source after rc.2; the published
+rc.2 binary accepts YAML configuration. `zel list formats` shows what your
+binary supports.
 </Callout>
 
 <Steps>
@@ -47,9 +50,10 @@ zel list formats
 
 ```
 docusaurus     Docusaurus — sidebars.js and a docs folder
-jekyll         Jekyll — YAML configuration, Markdown pages and collections
-sphinx         Sphinx (declarative reStructuredText)
+hugo           Hugo — Markdown sections and page bundles
+jekyll         Jekyll — YAML/TOML configuration, Markdown pages and collections
 mkdocs         MkDocs — mkdocs.yml with a nav tree
+sphinx         Sphinx (declarative reStructuredText)
 vitepress      VitePress — declarative .vitepress/config and Markdown
 ```
 
@@ -234,7 +238,7 @@ production deployment.
 | MkDocs | `nav` tree, `site_name`, `site_description`, all pages | Theme, plugins, macros |
 | Docusaurus | Declarative `sidebars.js`, categories, nesting, all docs | `docusaurus.config.js` theming, React components in MDX |
 | VitePress | Literal config, declared sidebars, page metadata, Markdown links and referenced assets | Vue components, home layout, computed config and custom routing |
-| Jekyll | YAML config, Markdown pages, output collections, supported navigation/defaults, links and assets | Liquid, themes, plugins, blog posts and custom routing |
+| Jekyll | YAML config (TOML in source after rc.2), Markdown pages, output collections, supported navigation/defaults, links and assets | Liquid, themes, plugins, blog posts and custom routing |
 | Sphinx | Literal conf.py, .rst headings, explicit toctrees, nested lists, rectangular tables, text/image substitutions, common prose/code, references and assets | Python/extensions, MyST, spanning tables, includes, global content transforms and custom builders |
 | Loose Markdown | Nothing automatic — use the AI route | — |
 

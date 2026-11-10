@@ -36,14 +36,25 @@ fn page(body: &str) -> String {
 }
 
 #[test]
-fn yaml_sites_preserve_metadata_navigation_urls_assets_and_source_bytes() {
-    for (config, style) in [("_config.yml", "date"), ("_config.yaml", "pretty")] {
+fn configuration_formats_preserve_metadata_navigation_urls_assets_and_source_bytes() {
+    for (config, style) in [
+        ("_config.yml", "date"),
+        ("_config.yaml", "pretty"),
+        ("_config.toml", "pretty"),
+    ] {
         let t = tempfile::tempdir().unwrap();
         let source = t.path().join("source");
         let out = t.path().join("out");
         let config_body = format!(
             "title: 'A: manual'\ndescription: Site description\nsource: pages\nurl: https://old.example.test\nbaseurl: /manual\npermalink: {style}\ncollections:\n  reference:\n    output: true\n    permalink: /ref/:path/\n"
         );
+        let config_body = if config.ends_with(".toml") {
+            format!(
+                "\u{feff}title = 'A: manual'\r\ndescription = 'Site description'\r\nsource = 'pages'\r\nurl = 'https://old.example.test'\r\nbaseurl = '/manual'\r\npermalink = '{style}'\r\n[collections.reference]\r\noutput = true\r\npermalink = '/ref/:path/'\r\n"
+            )
+        } else {
+            config_body
+        };
         write(&source, config, &config_body);
         write(
             &source,
@@ -301,7 +312,7 @@ fn dry_run_and_ship_plans_do_not_write_or_invoke_runtimes() {
     let t = tempfile::tempdir().unwrap();
     let source = t.path().join("source");
     let out = t.path().join("out");
-    write(&source, "_config.yml", "title: Docs\n");
+    write(&source, "_config.toml", "title = 'Docs'\n");
     write(&source, "index.md", page("# Home"));
     run(&source, &out, &["--dry-run", "--validate"], 0);
     assert!(!out.exists());
@@ -336,6 +347,9 @@ fn ambiguous_detection_and_config_files_require_explicit_resolution() {
     assert!(report(&run(&source, &out, &[], 2)).contains("ambiguous source (jekyll, mkdocs)"));
     run(&source, &out, &["--from", "jekyll", "--dry-run"], 0);
     write(&source, "_config.yaml", "{}");
+    assert!(report(&run(&source, &out, &["--from", "jekyll"], 2)).contains("exactly one"));
+    fs::remove_file(source.join("_config.yaml")).unwrap();
+    write(&source, "_config.toml", "title = 'TOML'\n");
     assert!(report(&run(&source, &out, &["--from", "jekyll"], 2)).contains("exactly one"));
     assert!(!out.exists());
 }
@@ -372,10 +386,6 @@ fn unsafe_or_unsupported_configuration_fails_before_writing() {
         run(&source, &out, &[], 2);
         assert!(!out.exists(), "{config}");
     }
-    fs::remove_file(source.join("_config.yml")).unwrap();
-    write(&source, "_config.toml", "title = 'Docs'\n");
-    assert!(report(&run(&source, &out, &[], 2)).contains("TOML"));
-    assert!(!out.exists());
 }
 
 #[test]
@@ -503,6 +513,14 @@ fn linked_configuration_documents_and_assets_are_rejected() {
     .unwrap();
     run(&source, &out, &[], 2);
     fs::remove_file(source.join("_config.yml")).unwrap();
+    write(t.path(), "outside/config.toml", "title = 'Docs'\n");
+    symlink(
+        t.path().join("outside/config.toml"),
+        source.join("_config.toml"),
+    )
+    .unwrap();
+    run(&source, &out, &[], 2);
+    fs::remove_file(source.join("_config.toml")).unwrap();
     write(&source, "_config.yml", "{}");
     symlink(t.path().join("outside"), source.join("linked")).unwrap();
     run(&source, &out, &[], 2);
@@ -566,4 +584,114 @@ fn collection_permalink_tokens_must_match_whole_supported_placeholders() {
         run(&source, &out, &[], 2);
         assert!(!out.exists());
     }
+}
+
+#[test]
+fn toml_tables_and_arrays_preserve_defaults_order_visibility_and_authored_values() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    let config = r#"title = 'Café manual'
+description = """First line.
+Second line."""
+source = 'pages'
+exclude = ['private']
+[collections.reference]
+output = true
+order = ['z-last.md', 'a-first.md']
+[[defaults]]
+scope = { path = '', type = 'reference' }
+[defaults.values]
+title = 'Inherited title'
+description = 'Inherited description'
+published = true
+weight = 7
+ratio = 1.5
+updated = 2026-11-09T12:30:00Z
+Tags = ['one', 'two']
+[[defaults]]
+scope = { path = 'hidden', type = 'pages' }
+values = { published = false }
+"#;
+    write(&source, "_config.toml", config);
+    write(&source, "pages/index.md", page("# Home\n"));
+    write(&source, "pages/_reference/z-last.md", page("# Last\n"));
+    write(
+        &source,
+        "pages/_reference/a-first.md",
+        "---\ntitle: Authored title\ndescription: Authored description\n---\n# First\n",
+    );
+    write(&source, "pages/hidden/page.md", page("# Hidden\n"));
+    write(&source, "pages/private/page.md", page("# Private\n"));
+    run(&source, &out, &["--layout", "site"], 0);
+    let content = out.join("content");
+    let site: serde_yaml_ng::Value = serde_yaml_ng::from_str(&read(&content, "site.yaml")).unwrap();
+    assert_eq!(site["name"].as_str(), Some("Café manual"));
+    let nav: serde_yaml_ng::Value =
+        serde_yaml_ng::from_str(&read(&content, "01-guide/_sidebar.yaml")).unwrap();
+    assert_eq!(
+        nav["nav"][1]["items"][0].as_str(),
+        Some("_reference/z-last")
+    );
+    assert_eq!(
+        nav["nav"][1]["items"][1].as_str(),
+        Some("_reference/a-first")
+    );
+    let inherited = read(&content, "01-guide/_reference/z-last.mdx");
+    assert!(inherited.contains("title: \"Inherited title\""));
+    assert!(inherited.contains("description: \"Inherited description\""));
+    assert!(inherited.contains("2026-11-09T12:30:00Z"));
+    assert!(!inherited.contains("$__toml_private"));
+    let own = read(&content, "01-guide/_reference/a-first.mdx");
+    assert!(own.contains("title: \"Authored title\""));
+    assert!(own.contains("description: \"Authored description\""));
+    assert!(!content.join("01-guide/hidden/page.mdx").exists());
+    assert!(!content.join("01-guide/private/page.mdx").exists());
+    assert_eq!(read(&source, "_config.toml"), config);
+}
+
+#[test]
+fn malformed_or_unsupported_toml_fails_before_output() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    write(&source, "index.md", page("# Home\n"));
+    for config in [
+        "title = 'A'\ntitle = 'B'",
+        "title = { broken",
+        "title = ${ENV}",
+        "source = '../outside'",
+        "source = '/outside'",
+        "source = 42",
+        "destination = '.'",
+        "data_dir = '../private'",
+        "exclude = ['**/private.md']",
+        "include = ['secret.md']",
+        "collections.docs.output = 'yes'",
+        "collections.docs.sort_by = 'weight'",
+        "defaults = [{scope = {path = '**/*.md'}, values = {title = 'X'}}]",
+        "defaults = [{scope = {}, values = {published = 'false'}}]",
+        "permalink = '/:year/:title/'",
+        "plugins_dir = 'scripts'",
+    ] {
+        write(&source, "_config.toml", config);
+        run(&source, &out, &["--dry-run"], 2);
+        run(&source, &out, &[], 2);
+        assert!(!out.exists(), "{config}");
+        assert_eq!(read(&source, "_config.toml"), config);
+    }
+    // An inherited date still enters the existing explicit dated-collection
+    // diagnostic, rather than hiding in TOML's private datetime map.
+    write(&source, "_docs/page.md", page("# Page\n"));
+    write(
+        &source,
+        "_config.toml",
+        "collections.docs.output = true\n[[defaults]]\nscope = {type = 'docs'}\nvalues = {date = 2099-01-01}\n",
+    );
+    assert!(report(&run(&source, &out, &[], 2)).contains("dated collections"));
+    assert!(!out.exists());
+    // Empty TOML is a valid empty configuration, like an empty YAML config.
+    write(&source, "_config.toml", "# Empty config\n");
+    run(&source, &out, &[], 0);
+    assert!(out.join("01-guide/index.mdx").exists());
 }
