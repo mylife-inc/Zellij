@@ -1037,3 +1037,27 @@ The published `v0.2.0-rc.2` tag/assets remain immutable at `54e636f`.
 Live provider/runner acceptance, advanced importer limitations and the Netlify
 hosting-comment hydration issue remain open; passing tests do not establish
 zero bugs or completion of the entire CLI design.
+
+
+### 2026-11-10 — Jekyll collection sorting acceptance closure
+
+[PR #109](https://github.com/mylife-inc/Zellij/pull/109) merged as
+`47ceb61bbb77c19faf24b0ab08ac6f9069248050` after all 16 checks passed on
+`37a5bc4c4c5f9f3f69beb0b0f1053dc79df207e1` in run `42795255252`,
+attempt 1. The merge retains tested tree
+`78065d94d21333b3e363df05f3b5bd33596fff2e`. Source implementation is
+`a3c3663ceae66daf7a20f3d01c50def1390e5a66`. Native Windows/macOS/Linux regressions,
+all six native package checks, both Linux image architectures, browser checks
+and actual engine exports passed. The new collection fixture also verifies
+inherited numeric ranks, missing values and tie ordering in exported sidebar
+links. Local 691 Rust tests, warnings-denied Clippy, formatting, eight conversion
+fixtures and strict documentation checks passed.
+
+Automatic post-merge CI `42799993837` and Base image `42799993455` are not
+yet complete at this refresh. They remain separate from the successful PR
+checks; consult their current status before claiming they passed. This closure
+updates only audit/status documents. Collection sorting, stale-order handling
+and the preceding TOML work are merged source newer than the immutable rc.2
+release. Provider/runner live acceptance, advanced importer limitations and the
+Netlify hosting-comment hydration issue remain open. No local Docker/browser,
+production-domain change or new release publication ran.
