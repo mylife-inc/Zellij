@@ -286,7 +286,7 @@ fn fixture(mode: &'static str) -> Server {
             _ if *polls == 1 => "DEPLOYING",
             _ => "SUCCESS",
         };
-        json!({"data":{"deployment":{"id":NEW,"projectId":PROJECT,"environmentId":if mode == "wrong-receipt" { PROJECT } else { ENVIRONMENT },"serviceId":SERVICE,"status":status,"deploymentStopped":false}}}).into()
+        json!({"data":{"deployment":{"id":NEW,"projectId":PROJECT,"environmentId":if mode == "wrong-receipt" { PROJECT } else { ENVIRONMENT },"serviceId":SERVICE,"status":status,"deploymentStopped":if mode == "stopped" || *polls == 1 { json!(true) } else if mode == "unknown-stopped" { Value::Null } else { json!(false) }}}}).into()
     })
 }
 fn client(server: &Server) -> Client {
@@ -404,6 +404,8 @@ fn railway_rejects_failed_paused_foreign_or_superseded_receipts() {
         "sleeping",
         "unknown",
         "wrong-receipt",
+        "stopped",
+        "unknown-stopped",
         "old-receipt",
         "superseded",
     ] {

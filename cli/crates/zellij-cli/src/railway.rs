@@ -282,14 +282,22 @@ impl Client {
                     || receipt["projectId"] != self.project
                     || receipt["environmentId"] != self.environment
                     || receipt["serviceId"] != service
-                    || receipt["deploymentStopped"] != false
+                    || receipt["deploymentStopped"].as_bool().is_none()
                 {
                     return Err(failed(
-                        "Railway deployment identity does not match, or deployment stopped",
+                        "Railway deployment identity or instance state is invalid",
                     ));
                 }
                 match receipt["status"].as_str() {
                     Some("SUCCESS") => {
+                        // Instances can all be stopped while a new deployment
+                        // is queued/building. Require running instances only
+                        // when Railway reports a successful deployment.
+                        if receipt["deploymentStopped"] != false {
+                            return Err(failed(
+                                "Railway deployment succeeded but its instances stopped",
+                            ));
+                        }
                         let current = self.target(service, deadline)?;
                         if current["source"]["image"] != image
                             || config(&current, image) != expected

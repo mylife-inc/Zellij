@@ -699,7 +699,9 @@ and other deployments first. The adapter supports an environment with at most
 100 volume instances so it can verify a complete inventory. Current source
 checks the explicit staged patch without decrypting its variable values. This
 fix is newer than `0.2.0-rc.2`, whose nullable change-count check can reject an
-otherwise ready environment; use current source for Railway delivery.
+otherwise ready environment. Current source also waits while a new deployment
+has no running instances, requiring running instances when it reaches
+`SUCCESS`. Use current source for Railway delivery.
 
 Only the environment-scoped image source is patched. Other service settings,
 variables, domains, registry credentials and resources are retained; no project,

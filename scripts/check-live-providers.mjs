@@ -18,6 +18,11 @@ export function validateLiveTargets(value) {
   assert(url.protocol === 'https:' && /^[a-z0-9-]+\.up\.railway\.app$/.test(url.hostname) && !url.port && !url.username && !url.password && url.pathname === '/' && !url.search && !url.hash, 'Expected a Railway-generated test URL');
   return value;
 }
+export function canDeleteImageVersion(version, packageName, targets) {
+  const tags = version.metadata?.container?.tags;
+  return Array.isArray(tags) && tags.length > 0 && tags.every(tag =>
+    targets.some(target => target.package === packageName && target.tag === tag));
+}
 async function waitForHttp(url, renderer) {
   const deadline = Date.now() + 180_000;
   for (;;) {
@@ -38,10 +43,10 @@ async function main(binary, output) {
   assert(binary && output, 'Pass the current zel binary and an evidence output path');
   const targets = validateLiveTargets(JSON.parse(process.env.ZEL_LIVE_TARGETS));
   const selection = process.env.ZEL_LIVE_PROVIDERS ?? 'all';
-  assert(['all','static','railway'].includes(selection), 'Expected all, static or railway providers');
-  const required = selection === 'static' ? ['CLOUDFLARE_API_TOKEN','GITHUB_PAGES_TOKEN'] : selection === 'railway' ? ['RAILWAY_TOKEN','GITHUB_TOKEN'] : ['CLOUDFLARE_API_TOKEN','GITHUB_PAGES_TOKEN','RAILWAY_TOKEN','GITHUB_TOKEN'];
+  assert(['all','static','railway','cleanup'].includes(selection), 'Expected all, static, railway or cleanup providers');
+  const required = selection === 'cleanup' ? ['GITHUB_TOKEN'] : selection === 'static' ? ['CLOUDFLARE_API_TOKEN','GITHUB_PAGES_TOKEN'] : selection === 'railway' ? ['RAILWAY_TOKEN','GITHUB_TOKEN'] : ['CLOUDFLARE_API_TOKEN','GITHUB_PAGES_TOKEN','RAILWAY_TOKEN','GITHUB_TOKEN'];
   for (const name of required) assert(process.env[name], `Missing ${name}`);
-  if (selection !== 'railway') {
+  if (['all','static'].includes(selection)) {
     const repo = await github(`repos/${targets.github.repository}`,process.env.GITHUB_PAGES_TOKEN);
     assert(repo.id === targets.github.repositoryId && repo.description?.startsWith('Disposable Zellij CLI live acceptance fixture'), 'GitHub fixture identity changed');
   }
@@ -50,6 +55,11 @@ async function main(binary, output) {
   assert(/^\d+$/.test(run??''), 'Run live acceptance in GitHub Actions');
   const evidence = {session:targets.session,source:process.env.GITHUB_SHA,run,selection,startedAt:new Date().toISOString(),cases:[],imageCleanup:[]};
   const tags = [];
+  if (selection === 'cleanup') {
+    const cleanupRun = process.env.ZEL_LIVE_CLEANUP_RUN;
+    assert(/^\d+$/.test(cleanupRun??''), 'Cleanup requires the exact previous acceptance run ID');
+    for (const kind of ['static','next']) tags.push({package:`zellij/acceptance-${kind}`,tag:`live-${cleanupRun}-${kind}`});
+  }
   function zel(args, env = {}) {
     const result = spawnSync(binary,args,{env:{...process.env,NO_COLOR:'1',...env},encoding:'utf8',maxBuffer:32*1024*1024,timeout:20*60*1000});
     process.stdout.write(result.stdout??''); process.stderr.write(result.stderr??'');
@@ -62,7 +72,7 @@ async function main(binary, output) {
     await writeFile(output,JSON.stringify(evidence,null,2)+'\n');
   }
   try {
-    for (const renderer of selection === 'railway' ? [] : ['portable','hosted']) {
+    for (const renderer of ['all','static'].includes(selection) ? ['portable','hosted'] : []) {
       const config = `scripts/fixtures/release-delivery/${renderer}/${renderer}.yaml`;
       const cf = zel(['cf','--config',config,'--site',targets.cloudflare.project],{CLOUDFLARE_ACCOUNT_ID:targets.cloudflare.account});
       const url = cf.match(/https:\/\/[a-z0-9.-]+\.pages\.dev\/[^\s]*/)?.[0];
@@ -73,22 +83,25 @@ async function main(binary, output) {
       assert(commit,'GitHub Pages did not report the published commit');
       await record(`github-pages-${renderer}`,targets.github.url,renderer,{commit});
     }
-    for (const kind of selection === 'static' ? [] : ['static','next']) {
+    for (const kind of ['all','railway'].includes(selection) ? ['static','next'] : []) {
       const image = `ghcr.io/mylife-inc/zellij/acceptance-${kind}:live-${run}-${kind}`;
       tags.push({package:`zellij/acceptance-${kind}`,tag:`live-${run}-${kind}`});
       const stdout = zel(['rw','--config','scripts/fixtures/release-delivery/portable/portable.yaml','--site',targets.railway.service,'--kind',kind,'--tag',image,'--prod'],{RAILWAY_PROJECT_ID:targets.railway.project,RAILWAY_ENVIRONMENT_ID:targets.railway.environment});
       await record(`railway-${kind}`,targets.railway.url,'portable',{image,receipt:stdout.trim().split('\n').slice(-5)});
     }
   } finally {
-    // Remove only versions exclusively tagged by this run. Never delete a
-    // release image or a shared digest carrying any other tag.
-    for (const target of tags) {
+    // Defer deletion until the operator removes the disposable service.
+    // A failed CLI check may leave a rollout still pulling its image.
+    evidence.images = tags;
+    // Cleanup mode removes only exclusively tagged test versions, never a
+    // release image or a shared digest carrying another tag.
+    for (const target of selection === 'cleanup' ? tags : []) {
       try {
         const path = `users/mylife-inc/packages/container/${encodeURIComponent(target.package)}/versions`;
         const versions = await github(`${path}?per_page=100`,token);
         const matches = versions.filter(v => v.metadata?.container?.tags?.includes(target.tag));
         for (const version of matches) {
-          const owned = version.metadata.container.tags.every(tag => tags.some(t => t.package === target.package && t.tag === tag));
+          const owned = canDeleteImageVersion(version, target.package, tags);
           if (owned) await github(`${path}/${version.id}`,token,'DELETE');
           evidence.imageCleanup.push({package:target.package,version:version.id,tag:target.tag,status:owned?'deleted':'retained-shared-version'});
         }
@@ -97,5 +110,6 @@ async function main(binary, output) {
     evidence.finishedAt = new Date().toISOString();
     await writeFile(output,JSON.stringify(evidence,null,2)+'\n');
   }
+  assert(!evidence.imageCleanup.some(item => item.status === 'cleanup-failed'), 'Some test image cleanup failed; inspect the evidence');
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(...process.argv.slice(2));

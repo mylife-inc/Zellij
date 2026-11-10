@@ -9,10 +9,14 @@ on:
         options: [images, providers]
         default: images
       providers:
-        description: Provider group to test in providers mode
+        description: Provider group, or image cleanup after removing the test services
         type: choice
-        options: [all, static, railway]
+        options: [all, static, railway, cleanup]
         default: all
+      cleanup_run:
+        description: Exact previous acceptance run ID; cleanup only after removing its test services
+        type: string
+        default: ''
       live_targets:
         description: Non-secret JSON target identities for providers mode; never enter tokens here
         type: string
@@ -61,7 +65,9 @@ jobs:
         with:
           persist-credentials: false
       - uses: dtolnay/rust-toolchain@stable
+        if: ${{ inputs.providers != 'cleanup' }}
       - uses: Swatinem/rust-cache@v2
+        if: ${{ inputs.providers != 'cleanup' }}
         with:
           workspaces: cli
       - uses: actions/setup-node@v7
@@ -70,14 +76,17 @@ jobs:
       - name: Validate the disposable destination guard
         run: node --test scripts/check-live-providers.test.mjs
       - name: Build current zel
+        if: ${{ inputs.providers != 'cleanup' }}
         run: cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
       - uses: docker/login-action@v3
+        if: ${{ inputs.providers != 'cleanup' }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Exercise real provider deployments and HTTP acceptance
         env:
+          ZEL_LIVE_CLEANUP_RUN: ${{ inputs.cleanup_run }}
           ZEL_LIVE_PROVIDERS: ${{ inputs.providers }}
           ZEL_LIVE_TARGETS: ${{ inputs.live_targets }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.ZEL_LIVE_CLOUDFLARE_TOKEN }}
