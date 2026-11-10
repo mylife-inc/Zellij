@@ -4,6 +4,24 @@ Implemented policy, November 2, 2026. This document does not announce a release.
 The source workspace is preparing 0.2.0-rc.2; 0.2.0-rc.1 remains published. Publication status must be checked
 in GitHub; a version change in source is not proof of an uploaded release.
 
+## Current rc.2 preparation
+
+The [2026-11-09 preparation record](evidence/zellij-rc2-preparation-2026-11-09.json)
+supersedes the old proposed target `0fbf0a12c3cf7074c4620e2bb84cc5d8e5fd7469`.
+The [2026-11-02 record](evidence/zellij-rc2-preparation-2026-11-02.json) remains
+historical evidence, including the earlier publication approval rejection.
+Neither record authorizes publication. Use the exact reviewed merge commit of
+the refreshed preparation PR only after its final-head checks pass and the user
+approves that commit and the public destinations. Never substitute a later
+moving `main` commit without reviewing its changes and verification.
+
+The new record verifies source/lockfile versions, both generated release pages,
+prerelease gates and six downloaded CI archive checksums. These archives belong
+to the recorded implementation baseline. The tagged release rebuilds them;
+its public asset hashes must be collected separately after publication. A
+present `RELEASES_GITHUB_TOKEN` secret establishes only that it is configured,
+not that its current permissions have been exercised by a new publication.
+
 ## Channels
 
 | Build | Image tags, before feature suffix | GitHub release | Production docs and shared installer scripts |

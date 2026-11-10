@@ -5881,3 +5881,38 @@ Next image browser/download acceptance through a separate loopback asset server.
 No local browser/container/GUI, live provider mutation or release publication
 ran. Evidence: `/private/tmp/zellij-public-assets-{before,focused-final,workspace,clippy,render,docs}.log`.
 Final-head GitHub CI and merge remain pending.
+
+
+### 2026-11-09 — Refreshed rc.2 preparation (unpublished)
+
+PR #103 merged public asset URL linking as
+`fa0b20683855df69b30d0dde1366c22fe0bf3e15`, with the identical tested tree
+`9c6250dd38090ae996e9542f0a65a99b20ac7a6c`. All 16 checks passed on final
+head `ff90234de9d80af75de991e7087e51515acad980` in run `42557158727`.
+Both post-merge workflows passed: CI `42560161757`, Base image `42560161729`.
+
+The candidate notes now cover source through PR #103, including all six
+importers, public asset URLs, expanded Sphinx support, provider adapters,
+GitLab/CircleCI generation, native wizards and recent bug fixes. The old rc.2
+target `0fbf0a1` is superseded; its 2026-11-02 evidence remains historical.
+Source and lockfile still agree on unpublished `0.2.0-rc.2`. Both candidate
+tags are absent, the shared release secret is present (permissions untested),
+and generated release pages pin installers and all four candidate image tags.
+No stable tags/shared installer files or production documentation are changed.
+
+The latest main run passed all 16 jobs, including installation of six native
+packages on their matching OS/architecture. All six downloaded artifact ZIP
+digests, contained package checksums and single-executable archive contracts
+were independently verified. These baseline CI packages are not public-release
+acceptance; release builds need their own final hashes. All 29 local release
+policy/download tests pass using fake publication commands and loopback fixtures.
+No local container, browser, live provider deployment or native publication ran.
+
+See `specs/evidence/zellij-rc2-preparation-2026-11-09.json` and the refreshed
+`specs/releases/v0.2.0-rc.2.md`. This documentation preparation still needs its
+own final-head CI. The exact resulting reviewed merge commit must be recorded
+in the PR closure and approved before publication; the earlier approval-review
+rejection explicitly required authorization for public prerelease tags/assets.
+Known live-provider, runner, importer and Netlify limits remain in the release
+notes and CLI status. The graph remains a pre-asset-link CLI snapshot and excludes
+root `examples/**` under the user's explicit graph scope.
