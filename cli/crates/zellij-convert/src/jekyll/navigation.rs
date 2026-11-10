@@ -145,7 +145,7 @@ pub(super) fn read(
         notes.push("Navigation came from the explicit _data/navigation array (or main array). Unlisted Markdown pages are reported rather than added automatically. Linked groups place their page first.".into());
         return items(value, lookup, unmapped, 1);
     }
-    notes.push("No supported navigation data file was present. Navigation was derived from published Markdown pages in filename order, then enabled collections in name order. Collection order lists place their named pages first; other pages follow in filename order.".into());
+    notes.push("No supported navigation data file was present. Navigation was derived from published Markdown pages in filename order, then enabled collections in name order. Collection order lists take precedence, ignoring entries without a published page; otherwise sort_by uses supported metadata in ascending order, with missing values last and filename order for ties.".into());
     let mut result: Vec<_> = all
         .iter()
         .filter(|(_, p)| p.published && p.collection.is_none())
@@ -163,19 +163,24 @@ pub(super) fn read(
             .filter(|(_, p)| p.published && p.collection.as_deref() == Some(name))
             .map(|(p, _)| p.clone())
             .collect();
-        let listed: Vec<_> = collection
-            .order
-            .iter()
-            .map(|p| Utf8PathBuf::from(format!("_{name}/{p}")))
-            .collect();
-        for p in &listed {
-            if !all.contains_key(p) {
-                return Err(invalid(format!(
-                    "collection order references missing page {p}"
-                )));
+        if let Some(order) = &collection.order {
+            let listed: Vec<_> = order
+                .iter()
+                .map(|p| Utf8PathBuf::from(format!("_{name}/{p}")))
+                .collect();
+            for p in &listed {
+                if !pages.contains(p) {
+                    report(
+                        unmapped,
+                        p,
+                        "ignored collection order entry: no published Markdown page",
+                    );
+                }
             }
+            pages.sort_by_key(|p| listed.iter().position(|v| v == p).unwrap_or(usize::MAX));
+        } else if let Some(key) = &collection.sort_by {
+            super::sorting::sort(&mut pages, all, key)?;
         }
-        pages.sort_by_key(|p| listed.iter().position(|v| v == p).unwrap_or(usize::MAX));
         if !pages.is_empty() {
             result.push(Entry::Group {
                 label: name.clone(),

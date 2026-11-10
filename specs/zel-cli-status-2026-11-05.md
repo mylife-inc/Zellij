@@ -43,7 +43,10 @@ Jekyll imports accept YAML or TOML configuration, front-matter Markdown pages, e
 documentation collections, literal scoped defaults and supported navigation
 arrays. Links use source permalinks and deployment prefixes; eligible referenced
 static assets respect exclusions, internal data/templates and generated output.
-Liquid/Ruby/theme code is not executed. TOML support is source-only after rc.2.
+Liquid/Ruby/theme code is not executed. Derived collection navigation supports
+scalar `sort_by` after defaults; explicit order arrays take precedence and stale
+entries are ignored/reported. TOML and collection sorting are source-only after
+rc.2; see the latest dated entry for final-head verification and merge status.
 Blog posts, dated collections,
 globs, custom source routing and theme-specific navigation remain limited or
 unsupported. See the conversion reference for exact accepted forms.
@@ -991,3 +994,46 @@ checks; consult their current results before claiming they passed.
 This closure edits audit/status documents only. Published rc.2 assets and tags
 are unchanged. Other provider/runner acceptance, advanced importer limitations
 and the reported Netlify hosting-comment hydration issue remain open.
+
+
+### 2026-11-10 — Jekyll collection metadata sorting
+
+Source `a3c3663ceae66daf7a20f3d01c50def1390e5a66` adds collection `sort_by` to
+Jekyll imports in the shared convert/migrate/ship path. Derived navigation uses
+effective front matter after scoped defaults, sorting comparable numeric or
+text values ascending, with missing/null values last and source paths as ties.
+64-bit integers retain exact ordering against integers and finite floats.
+Literal, case-sensitive keys are not interpreted as nested paths. Generated
+slug/extension and ASCII-title fallbacks follow source basenames; non-ASCII
+generated titles need explicit metadata. Mixed families, nonfinite values,
+structured/boolean values, generated date/category/tag/excerpt fields and
+date/time-shaped values have explicit pre-write diagnostics and a numeric-rank
+or literal-order workaround. This remains a data-only subset of Jekyll sorting.
+
+The same change fixes explicit collection order lists: an array, even empty,
+takes precedence over sort_by. Missing or unpublished entries are skipped and
+reported rather than aborting conversion; unlisted pages retain filename order.
+Explicit navigation data remains authoritative. Source files are unchanged,
+and dry-run/error cases do not create output. User documentation covers these
+rules and marks the new capabilities as source-only after published rc.2.
+
+The new regression failed against the old sort_by rejection. All **691 Rust
+workspace tests** pass (5 real hosted cases remain intentionally selected only
+in CI), including **21 Jekyll integration tests** and exact numeric boundary
+checks. Workspace warnings-denied Clippy, formatting, Node syntax, diff checks
+and strict/deep documentation validation (55 routes / 23 examples) pass.
+All **eight CLI-to-engine fixtures** pass locally: the existing seven plus a
+TOML collection fixture asserting inherited ranks, ties, missing values and
+engine sidebar order. CI also exercises that fixture through real hosted export.
+Final-head CI and merge are pending for this milestone.
+
+PR #107's previously pending post-merge workflows are now verified successful:
+all 16 main CI jobs in `42782791785` and all 13 Base image jobs in `42782792095`
+passed. PR #108 merged its audit closure as
+`ea097410403b57c65b774d46e4d81ec2d0271c0b`. These earlier results do not stand
+in for this milestone's final-head checks. No local Docker/browser/GUI,
+provider deployment, production-domain change or new release publication ran.
+The published `v0.2.0-rc.2` tag/assets remain immutable at `54e636f`.
+Live provider/runner acceptance, advanced importer limitations and the Netlify
+hosting-comment hydration issue remain open; passing tests do not establish
+zero bugs or completion of the entire CLI design.
