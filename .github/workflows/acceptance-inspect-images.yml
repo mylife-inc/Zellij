@@ -1,7 +1,22 @@
-name: Inspect published acceptance images
+name: Inspect published images and live providers
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Published images, or live tests against operator-provisioned disposable sites
+        type: choice
+        options: [images, providers]
+        default: images
+      providers:
+        description: Provider group to test in providers mode
+        type: choice
+        options: [all, static, railway]
+        default: all
+      live_targets:
+        description: Non-secret JSON target identities for providers mode; never enter tokens here
+        type: string
+        default: '{}'
 
 permissions:
   contents: read
@@ -9,6 +24,7 @@ permissions:
 
 jobs:
   inspect:
+    if: ${{ inputs.mode != 'providers' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     strategy:
@@ -29,3 +45,51 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Pull the published image and check its HTTP behavior
         run: node scripts/check-delivery-images.mjs "${{ matrix.kind }}"
+
+  live-providers:
+    if: ${{ inputs.mode == 'providers' && github.repository == 'mylife-inc/Zellij' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    concurrency:
+      group: zellij-live-provider-acceptance
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Validate the disposable destination guard
+        run: node --test scripts/check-live-providers.test.mjs
+      - name: Build current zel
+        run: cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Exercise real provider deployments and HTTP acceptance
+        env:
+          ZEL_LIVE_PROVIDERS: ${{ inputs.providers }}
+          ZEL_LIVE_TARGETS: ${{ inputs.live_targets }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.ZEL_LIVE_CLOUDFLARE_TOKEN }}
+          GITHUB_PAGES_TOKEN: ${{ secrets.ZEL_LIVE_GITHUB_TOKEN }}
+          RAILWAY_TOKEN: ${{ secrets.ZEL_LIVE_RAILWAY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+        run: node scripts/check-live-providers.mjs cli/target/debug/zel "$RUNNER_TEMP/live-provider-evidence.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: live-provider-evidence
+          path: ${{ runner.temp }}/live-provider-evidence.json
+          if-no-files-found: error
+          retention-days: 7

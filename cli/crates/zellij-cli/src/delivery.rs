@@ -243,6 +243,7 @@ pub(crate) fn deploy_cloudflare(
         options,
         "Cloudflare Pages",
         |export, prefix| {
+            crate::cloudflare::ensure_not_found_page(export)?;
             let deployed = client.deploy(&target, export)?;
             zellij_core::statusln!(
                 "✓ Cloudflare Pages deployment {} is ready\n  {}",

@@ -239,7 +239,8 @@ fn deployment_server(production: bool, cache: bool) -> Server {
             return ok(Value::Null);
         }
         if request.path.ends_with("/upsert-hashes") {
-            return ok(Value::Null);
+            // The live Pages API acknowledges cache updates without a result.
+            return json!({"success": true}).into();
         }
         if request.path.ends_with("/deployments") {
             assert_eq!(request.method, "POST");
@@ -581,6 +582,10 @@ fn portable_build_delivery_preserves_previous_output_and_source() {
     let manifest: Value = serde_json::from_str(&field(&create.body, "manifest")).unwrap();
     assert!(manifest["/index.html"].is_string() && manifest["/next.html"].is_string());
     assert!(
+        manifest["/404.html"].is_string(),
+        "Cloudflare must not apply its SPA fallback"
+    );
+    assert!(
         manifest
             .as_object()
             .unwrap()
@@ -752,5 +757,89 @@ fn hosted_export_upload_preserves_prefix_assets_and_previous_output() {
         server.requests.lock().unwrap().len(),
         count + 1,
         "failed build must perform only project preflight"
+    );
+}
+
+#[test]
+fn acknowledgement_result_is_optional_but_success_and_data_payloads_are_required() {
+    for body in [
+        json!({"success": true}),
+        json!({"success": true, "result": null}),
+        json!({"success": true, "result": {}}),
+    ] {
+        let server = Server::new(move |_, _| body.clone().into());
+        let client = server.client();
+        assert!(
+            client
+                .json::<Option<Value>>(
+                    client.request(Method::POST, &["pages", "assets", "upload"]),
+                    "acknowledgement",
+                    Instant::now() + Duration::from_secs(5)
+                )
+                .is_ok()
+        );
+    }
+    for body in [
+        json!({}),
+        json!({"success": false}),
+        json!({"success": "true"}),
+    ] {
+        let server = Server::new(move |_, _| body.clone().into());
+        let client = server.client();
+        assert!(
+            client
+                .json::<Option<Value>>(
+                    client.request(Method::POST, &["pages", "assets", "upload"]),
+                    "acknowledgement",
+                    Instant::now() + Duration::from_secs(5)
+                )
+                .is_err()
+        );
+    }
+    let server = Server::new(|_, _| json!({"success": true}).into());
+    let client = server.client();
+    assert!(
+        client
+            .json::<Vec<String>>(
+                client.request(Method::POST, &["pages", "assets", "check-missing"]),
+                "asset lookup",
+                Instant::now() + Duration::from_secs(5)
+            )
+            .is_err()
+    );
+    assert!(client.check_project("manual", false).is_err());
+}
+
+#[test]
+fn fallback_not_found_page_is_added_once_without_replacing_authored_content() {
+    let temp = tempfile::tempdir().unwrap();
+    let export = root(&temp);
+    ensure_not_found_page(export).unwrap();
+    assert!(
+        std::fs::read_to_string(export.join("404.html"))
+            .unwrap()
+            .contains("Page not found")
+    );
+    write(export, "404.html", "<h1>Authored 404 page</h1>");
+    ensure_not_found_page(export).unwrap();
+    assert_eq!(
+        std::fs::read_to_string(export.join("404.html")).unwrap(),
+        "<h1>Authored 404 page</h1>"
+    );
+    std::fs::remove_file(export.join("404.html")).unwrap();
+    std::fs::create_dir(export.join("404.html")).unwrap();
+    assert!(ensure_not_found_page(export).is_err());
+}
+
+#[cfg(unix)]
+#[test]
+fn fallback_not_found_page_does_not_follow_links() {
+    let temp = tempfile::tempdir().unwrap();
+    write(root(&temp), "keep.html", "Authored data");
+    std::os::unix::fs::symlink("keep.html", root(&temp).join("404.html")).unwrap();
+    assert!(ensure_not_found_page(root(&temp)).is_err());
+    assert_eq!(
+        std::fs::read_to_string(root(&temp).join("keep.html")).unwrap(),
+        "Authored data"
     );
 }
