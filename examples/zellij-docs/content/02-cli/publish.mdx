@@ -186,7 +186,11 @@ or the destination exists.
 
 ## Remaining delivery work
 
-Live-account acceptance for the newer adapters remains pending. Fly supports existing configured web Machines; Railway supports existing image services.
+Live portable/hosted acceptance passed for Cloudflare Pages and GitHub Pages;
+static/Next image acceptance passed for Railway. The Cloudflare and Railway
+fixes require current source after `0.2.0-rc.2`. Live Vercel, S3 and Fly account
+acceptance remains pending. Fly supports existing configured web Machines;
+Railway supports existing image services.
 The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
 `zel ci [site]`, with local-only generation and explicit credential provisioning.

@@ -6145,3 +6145,58 @@ PR #110's main `4b782c6` post-merge workflows both passed: CI `42800161133` and
 Base image `42800161483`. Earlier runs `42799993837` and `42799993455` were
 superseded/cancelled, not successful. Full validation, final-head CI and merge
 for the new Cloudflare corrections remain pending at this entry.
+
+
+### 2026-11-10 — Cloudflare, GitHub Pages and Railway live acceptance closure
+
+[PR #111](https://github.com/mylife-inc/Zellij/pull/111) merged as
+`d1d03d4c75023689946318c08b4ecbcdce0c0a2a` after all 16 final-head checks passed on
+`98b5d0cd94c931fce30d6efffb3fe2be90c7baab` in run `42898053745`.
+Source `21fb99c` fixes Cloudflare success-only asset acknowledgements and adds
+an upload-only fallback 404 page. Source `2c3f794` replaces Railway's nullable
+change-count check with explicit empty staged-patch verification, without
+requesting decrypted patch variables. Source `a5ee146` allows all instances to
+be stopped during startup and requires running instances at SUCCESS. Scope,
+malformed-state, staged-change, configuration-drift and failure checks remain.
+Both Railway regressions were reproduced against the previous implementation.
+Source `98b5d0c` updates the hosted-prefix fixture to allow only the required
+root 404 outside the mount and verifies preservation of its prefixed 404; the
+previous assertion failed in CI `42895754326`. Runtime behavior is unchanged
+from the live-tested source.
+
+All **six live cases passed**: Cloudflare and GitHub Pages portable/hosted sites
+in `42891873828` (source `21fb99c`), plus Railway static/Next images in
+`42895763990` (source `a5ee146`). Checks fetched home/nested pages, exact authored
+logo bytes and linked assets, and required 404 responses for source and missing
+paths. Railway reported SUCCESS for the exact newly returned deployment IDs;
+HTTP checks then verified their public routes. These are current-source fixture
+checks, not a retest of the unchanged rc.2 binary or live browser hydration.
+Normal CI separately passed the browser and cross-platform acceptance suites.
+Local final-head verification: **695 Rust tests**, 5 hosted-only ignored cases,
+warnings-denied Clippy, formatting, seven Node delivery/cleanup checks, workflow
+lint and strict/deep documentation validation (55 routes / 23 examples).
+
+Cloudflare's project, GitHub Pages' publishing branch/site and the entire
+Railway project were removed. Public Cloudflare test hostnames no longer
+resolve; GitHub and Railway test URLs return 404. All three temporary Actions
+secrets were removed. Registry cleanup `42896298737` deleted the two exclusively
+tagged Railway test image versions after project deletion. An earlier failing
+harness had deleted an image while its deployment could still be starting;
+cleanup now runs as a separate explicit operation after service removal, and
+shared/release versions are protected. The empty disposable GitHub repository
+`mylife-inc/zellij-live-20261110-684141` remains: deleting it returned HTTP 403
+because the current OAuth token lacks delete_repo. Its website is removed.
+The original mylife-inc/Zellij Pages setup was also removed and absence verified.
+
+See [the evidence](evidence/zellij-live-provider-acceptance-2026-11-10.json)
+for source/run IDs, deployment receipts, immutable image digests and cleanup.
+The user supplied the Railway project token after API token creation returned
+Not Authorized; this credential blocker is resolved. The disposable project
+and its temporary GitHub secret are now deleted. Existing Ziryab projects, Netlify production/staging sites and
+custom domains were unchanged. Published rc.2 remains immutable; these four
+fixes require current source or a later release. Fly, Vercel, S3 and real
+GitLab/CircleCI runner acceptance, advanced importer limitations and Netlify's
+reported hosting-comment hydration issue remain open. Post-merge CI
+`42903488658` and Base image `42903488649` are still running on `d1d03d4`
+at this audit refresh and must be checked separately; this record does not claim zero bugs or a complete
+implementation of every planned CLI capability.
