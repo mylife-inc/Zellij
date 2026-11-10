@@ -12,7 +12,7 @@ use serde::Deserialize;
 use serde_json::{Value, json};
 use std::{
     collections::BTreeMap,
-    io::Read,
+    io::{Read, Write},
     time::{Duration, Instant},
 };
 use zellij_core::{Error, Result, delivery::Provider};
@@ -284,7 +284,7 @@ impl Client {
             }
             let encoded = STANDARD.encode(&data);
             if !batch.is_empty() && (bytes + encoded.len() > BATCH_BYTES || batch.len() == 1000) {
-                let _: Value = self.json(
+                let _: Option<Value> = self.json(
                     asset_request("upload").json(&batch),
                     "asset upload",
                     deadline,
@@ -296,13 +296,15 @@ impl Client {
             batch.push(json!({"key":hash,"value":encoded,"base64":true,"metadata":{"contentType":mime_guess::from_path(&asset.path).first_or_octet_stream().as_ref()}}));
         }
         if !batch.is_empty() {
-            let _: Value = self.json(
+            let _: Option<Value> = self.json(
                 asset_request("upload").json(&batch),
                 "asset upload",
                 deadline,
             )?;
         }
-        let _: Value = self.json(
+        // Acknowledgements may omit `result` (the live cache API does so).
+        // Data-bearing endpoints above and below still require their payload.
+        let _: Option<Value> = self.json(
             asset_request("upsert-hashes").json(&json!({"hashes": hashes})),
             "asset cache update",
             deadline,
@@ -377,6 +379,31 @@ impl Client {
         }
     }
 }
+// Cloudflare treats exports without a root 404.html as single-page apps and
+// returns index.html with HTTP 200 for missing pages. Only call this on the
+// private export staging directory; preserve generated/authored 404 pages.
+pub(crate) fn ensure_not_found_page(export: &Utf8Path) -> Result<()> {
+    let path = export.join("404.html");
+    match std::fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&path)
+    {
+        Ok(mut file) => {
+            file.write_all(b"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Page not found</title></head><body><h1>Page not found</h1><p>The requested page does not exist.</p></body></html>\n")?;
+            Ok(())
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+            let metadata = std::fs::symlink_metadata(&path)?;
+            if zellij_core::site::is_link(&metadata) || !metadata.is_file() {
+                return Err(failed("Cloudflare 404.html must be a regular file"));
+            }
+            Ok(())
+        }
+        Err(error) => Err(error.into()),
+    }
+}
+
 struct Asset {
     path: Utf8PathBuf,
 }

@@ -104,14 +104,21 @@ Unicode, spaces and literal percent signs retain their filenames.
 
 Cloudflare applies its [HTML route rules](https://developers.cloudflare.com/pages/configuration/serving-pages/),
 including redirects from `.html` URLs to clean routes. Downloaded portable output
-still supports direct-file navigation. No DNS or custom-domain changes are made.
+still supports direct-file navigation. Current source adds a fallback `404.html`
+to the temporary upload when the export has none, so missing URLs return HTTP
+404 instead of Cloudflare’s home-page fallback. An existing generated 404 page
+is preserved. This fix and support for Cloudflare’s success-only upload
+acknowledgements are newer than published `0.2.0-rc.2`; use a build from current
+source for Cloudflare delivery. No DNS or custom-domain changes are made.
 
 Credentials and project access are checked before a build. API redirects are
 refused, errors omit response bodies and tokens, and requests have bounded
 connection/request/deployment timeouts. Failed requests are not retried
 automatically. An uncertain create response may already have published; check
 the Cloudflare dashboard before repeating a command. Tests cover the upload
-protocol and generated exports; live Cloudflare account acceptance remains pending.
+protocol and generated exports. Current-source portable delivery has also passed
+live account checks for pages, linked assets and missing-page responses; hosted
+live acceptance is being recorded in the project’s dated CLI status.
 
 ## Vercel
 
@@ -689,7 +696,12 @@ The service must already use an image source, have a successful deployment,
 and have no mounted volumes, custom start/pre-deploy/cron commands, repository
 configuration file, or application sleeping. Resolve staged environment changes
 and other deployments first. The adapter supports an environment with at most
-100 volume instances so it can verify a complete inventory.
+100 volume instances so it can verify a complete inventory. Current source
+checks the explicit staged patch without decrypting its variable values. This
+fix is newer than `0.2.0-rc.2`, whose nullable change-count check can reject an
+otherwise ready environment. Current source also waits while a new deployment
+has no running instances, requiring running instances when it reaches
+`SUCCESS`. Use current source for Railway delivery.
 
 Only the environment-scoped image source is patched. Other service settings,
 variables, domains, registry credentials and resources are retained; no project,
