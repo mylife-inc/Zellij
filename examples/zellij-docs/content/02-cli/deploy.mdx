@@ -116,9 +116,9 @@ refused, errors omit response bodies and tokens, and requests have bounded
 connection/request/deployment timeouts. Failed requests are not retried
 automatically. An uncertain create response may already have published; check
 the Cloudflare dashboard before repeating a command. Tests cover the upload
-protocol and generated exports. Current-source portable delivery has also passed
-live account checks for pages, linked assets and missing-page responses; hosted
-live acceptance is being recorded in the project’s dated CLI status.
+protocol and generated exports. Current-source portable and hosted delivery
+passed live account checks for pages, linked assets and missing-page responses on 2026-11-10. The temporary
+test project was removed afterward.
 
 ## Vercel
 
@@ -367,8 +367,8 @@ per request and 15 seconds to connect. Mutations are paced and never retried
 automatically. A failure may leave uploaded Git objects, or a published commit
 whose Pages build is still running. Inspect **Settings → Pages** and the
 repository's Actions/build history before retrying; automatic rollback and
-resume are not implemented. Protocol and export tests are automated; live
-GitHub Pages account acceptance remains pending.
+resume are not implemented. Protocol and export tests are automated. Portable
+and hosted live account acceptance passed on 2026-11-10; the temporary Pages site was removed afterward.
 
 ## Save the choice
 
@@ -635,8 +635,10 @@ Current source supports `zel railway` (alias `rw`) and `zel deploy railway`
 for an **existing image service in an explicit Railway environment**. It builds
 one static or Next.js image for `linux/amd64`, pushes it to your registry, changes
 the service's image source to that immutable digest, and waits for the returned
-deployment to reach `SUCCESS`. Live Railway account acceptance is pending; this
-adapter is available in candidate `0.2.0-rc.2`.
+deployment to reach `SUCCESS`. Static and Next image deployment plus public
+HTTP acceptance passed on 2026-11-10; the temporary project was removed afterward.
+The adapter exists in `0.2.0-rc.2`, but the live-tested preflight/startup fixes
+described below require current source or a later release.
 
 ```yaml title="zel.yaml"
 version: 1

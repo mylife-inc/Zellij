@@ -474,7 +474,10 @@ tag. The generated workflow serializes GitHub runs on the same ref, but cannot
 lock other workflows, branches, dashboard edits or external deployers. Use one
 publisher per service and avoid concurrent changes. Generation is local and
 checks neither credentials nor release availability. Candidate `0.2.0-rc.2`
-includes this adapter; live Railway account acceptance remains pending.
+includes this adapter, but the live-tested staged-patch and startup fixes
+require current source or a later release. Static/Next live Railway acceptance
+passed on 2026-11-10. Generated workflow validation does not upgrade its pinned
+CLI version automatically.
 
 ## GitLab and CircleCI
 

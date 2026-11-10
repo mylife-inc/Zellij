@@ -1,0 +1,211 @@
+{
+  "date": "2026-11-10",
+  "source": "98b5d0cd94c931fce30d6efffb3fe2be90c7baab",
+  "pr": 111,
+  "liveAcceptance": {
+    "session": "zellij-live-20261110-684141",
+    "source": "21fb99ce48fbe2bf917bba90c1e916ea1be73e1b",
+    "run": "42891873828",
+    "selection": "static",
+    "startedAt": "2026-11-10T20:06:48.740Z",
+    "cases": [
+      {
+        "name": "cloudflare-portable",
+        "url": "https://021b286c.zellij-live-20261110-684141.pages.dev/",
+        "renderer": "portable",
+        "status": "passed"
+      },
+      {
+        "name": "github-pages-portable",
+        "url": "https://mylife-inc.github.io/zellij-live-20261110-684141/",
+        "renderer": "portable",
+        "status": "passed",
+        "commit": "b59409ac0651e921756e46e10842e730fc77f0f1"
+      },
+      {
+        "name": "cloudflare-hosted",
+        "url": "https://bc84a4d2.zellij-live-20261110-684141.pages.dev/",
+        "renderer": "hosted",
+        "status": "passed"
+      },
+      {
+        "name": "github-pages-hosted",
+        "url": "https://mylife-inc.github.io/zellij-live-20261110-684141/",
+        "renderer": "hosted",
+        "status": "passed",
+        "commit": "e7f0b6bdfd011fbaa27f5ccf34617f68ef56f2df"
+      }
+    ],
+    "imageCleanup": [],
+    "finishedAt": "2026-11-10T20:12:17.333Z"
+  },
+  "local": {
+    "rustPassed": 695,
+    "rustFailed": 0,
+    "rustIgnoredHostedCases": 5,
+    "clippy": "passed",
+    "format": "passed",
+    "nodeTests": 7,
+    "workflowLint": "passed",
+    "strictDeepDocs": {
+      "status": "passed",
+      "routes": 55,
+      "examples": 23
+    }
+  },
+  "cleanup": {
+    "cloudflareProject": {
+      "name": "zellij-live-20261110-684141",
+      "deleted": true,
+      "verifiedHttpStatus": 404
+    },
+    "githubPages": {
+      "repository": "mylife-inc/zellij-live-20261110-684141",
+      "branchDeleted": true,
+      "websiteDeleted": true,
+      "repositoryDeleted": false,
+      "repositoryDeletionHttpStatus": 403,
+      "reason": "Current GitHub OAuth token lacks delete_repo scope; test Pages website is removed."
+    },
+    "temporarySecretsDeleted": true
+  },
+  "railway": {
+    "project": "6b296214-c825-4b5f-a5e8-5c09e3cda243",
+    "environment": "462075ee-e12b-4001-bfd6-c2e9614f3de0",
+    "service": "57995a6c-633f-43c4-b279-deed891ce82b",
+    "url": "https://docs-acceptance.up.railway.app/",
+    "initialImage": "ghcr.io/mylife-inc/zellij/acceptance-static@sha256:eafc8f5cbbde2d269a38152a8e143bfbdcdb2fce63cdd0727247b05878b7069a",
+    "initialDeployment": "29326410-f498-4ba7-8862-1ff0fb3cd690",
+    "initialDeploymentStopped": true,
+    "cliLiveAcceptance": "passed static and next",
+    "projectTokenCreation": "Not Authorized",
+    "projectRetainedForTokenSetup": false,
+    "projectDeleted": true,
+    "temporaryGitHubSecretDeleted": true,
+    "recoveryDeployment": "d1bc61c5-3a85-4e2d-bc51-bb8901b5d881",
+    "projectScopedTokenDestinationDeleted": true
+  },
+  "limits": [
+    "Current-source fixtures, not a retest of the unchanged rc.2 binary.",
+    "Live provider checks cover HTTP behavior; browser acceptance runs independently in normal CI.",
+    "Fly, Vercel, S3 and GitLab/CircleCI runner acceptance remain pending."
+  ],
+  "railwayAcceptance": {
+    "session": "zellij-live-20261110-684141",
+    "source": "a5ee14603ce6591616dca60120fb1cc34cd3bb98",
+    "run": "42895763990",
+    "selection": "railway",
+    "startedAt": "2026-11-10T20:29:54.544Z",
+    "cases": [
+      {
+        "name": "railway-static",
+        "url": "https://docs-acceptance.up.railway.app/",
+        "renderer": "portable",
+        "status": "passed",
+        "image": "ghcr.io/mylife-inc/zellij/acceptance-static:live-42895763990-static",
+        "receipt": [
+          "a7c1fe34a2c7: Pushed",
+          "live-42895763990-static: digest: sha256:a556f67d272b75961f19c720b79e080fa685c7b69587120111c95d95c2801417 size: 855",
+          "\u2713 Railway deployment 289b0f80-c8dd-49cc-b757-a07b67ba5250 reached SUCCESS",
+          "  ghcr.io/mylife-inc/zellij/acceptance-static@sha256:a556f67d272b75961f19c720b79e080fa685c7b69587120111c95d95c2801417",
+          "  Service image source is pinned to this digest; public DNS/TLS and ongoing health were not verified"
+        ]
+      },
+      {
+        "name": "railway-next",
+        "url": "https://docs-acceptance.up.railway.app/",
+        "renderer": "portable",
+        "status": "passed",
+        "image": "ghcr.io/mylife-inc/zellij/acceptance-next:live-42895763990-next",
+        "receipt": [
+          "cb907fa93e83: Pushed",
+          "live-42895763990-next: digest: sha256:51a731500cb4a031a661606feda9836991e189b7c63e10929bb0cfd4505b4476 size: 856",
+          "\u2713 Railway deployment e982a608-ddd8-4bd3-b7b0-322b094da7f6 reached SUCCESS",
+          "  ghcr.io/mylife-inc/zellij/acceptance-next@sha256:51a731500cb4a031a661606feda9836991e189b7c63e10929bb0cfd4505b4476",
+          "  Service image source is pinned to this digest; public DNS/TLS and ongoing health were not verified"
+        ]
+      }
+    ],
+    "imageCleanup": [],
+    "images": [
+      {
+        "package": "zellij/acceptance-static",
+        "tag": "live-42895763990-static"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "tag": "live-42895763990-next"
+      }
+    ],
+    "finishedAt": "2026-11-10T20:31:53.135Z"
+  },
+  "imageCleanup": {
+    "session": "zellij-live-20261110-684141",
+    "source": "a5ee14603ce6591616dca60120fb1cc34cd3bb98",
+    "run": "42896298737",
+    "selection": "cleanup",
+    "startedAt": "2026-11-10T20:32:38.893Z",
+    "cases": [],
+    "imageCleanup": [
+      {
+        "package": "zellij/acceptance-static",
+        "version": 1538722027,
+        "tag": "live-42895763990-static",
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "version": 1538729313,
+        "tag": "live-42895763990-next",
+        "status": "deleted"
+      }
+    ],
+    "images": [
+      {
+        "package": "zellij/acceptance-static",
+        "tag": "live-42895763990-static"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "tag": "live-42895763990-next"
+      }
+    ],
+    "finishedAt": "2026-11-10T20:32:40.421Z"
+  },
+  "failedLiveRuns": [
+    {
+      "run": 42894220043,
+      "source": "d8e9fc21f02cd6654652a8eac35053746f477847",
+      "finding": "Nullable unmergedChangesCount rejected a clean environment; no image or deployment created.",
+      "fix": "2c3f7949e83e349712f13255b83b32484ce1bd33"
+    },
+    {
+      "run": 42894944008,
+      "source": "2c3f7949e83e349712f13255b83b32484ce1bd33",
+      "finding": "deploymentStopped can be true during DEPLOYING. The test harness also deleted the pushed image before confirming the remote deployment ended.",
+      "deployment": "42d34cda-581b-44e0-908b-705ebb0631a2",
+      "imageVersionDeleted": 1538693580,
+      "fix": "a5ee14603ce6591616dca60120fb1cc34cd3bb98"
+    }
+  ],
+  "ci": {
+    "run": 42898053745,
+    "head": "98b5d0cd94c931fce30d6efffb3fe2be90c7baab",
+    "status": "passed",
+    "jobsPassed": 16,
+    "testedTree": "680769e9459f19279b364a6727e8f74784ef5032"
+  },
+  "merge": "d1d03d4c75023689946318c08b4ecbcdce0c0a2a",
+  "ciFailure": {
+    "run": 42895754326,
+    "source": "a5ee14603ce6591616dca60120fb1cc34cd3bb98",
+    "finding": "Hosted Cloudflare prefix assertion had not accounted for the new root 404 fallback.",
+    "fix": "98b5d0cd94c931fce30d6efffb3fe2be90c7baab"
+  },
+  "postMerge": {
+    "source": "d1d03d4c75023689946318c08b4ecbcdce0c0a2a",
+    "ciRun": 42903488658,
+    "baseImageRun": 42903488649,
+    "status": "in_progress at audit refresh"
+  }
+}
