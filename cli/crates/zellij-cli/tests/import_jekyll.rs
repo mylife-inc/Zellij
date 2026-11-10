@@ -372,7 +372,9 @@ fn unsafe_or_unsupported_configuration_fails_before_writing() {
         "exclude: ['**/secret.md']",
         "include: [secret.md]",
         "collections_dir: other",
-        "collections: {docs: {output: true, sort_by: weight}}",
+        "collections: {docs: {output: true, sort_by: 42}}",
+        "collections: {docs: {output: true, sort_by: ''}}",
+        "collections: {docs: {output: true, order: [../outside.md]}}",
         "collections: {'../outside': {output: true}}",
         "collections: {docs: {output: yes}}",
         "defaults: [{scope: {path: '**/*.md'}, values: {title: X}}]",
@@ -668,7 +670,8 @@ fn malformed_or_unsupported_toml_fails_before_output() {
         "exclude = ['**/private.md']",
         "include = ['secret.md']",
         "collections.docs.output = 'yes'",
-        "collections.docs.sort_by = 'weight'",
+        "collections.docs.sort_by = 42",
+        "collections.docs.sort_by = ''",
         "defaults = [{scope = {path = '**/*.md'}, values = {title = 'X'}}]",
         "defaults = [{scope = {}, values = {published = 'false'}}]",
         "permalink = '/:year/:title/'",
@@ -694,4 +697,258 @@ fn malformed_or_unsupported_toml_fails_before_output() {
     write(&source, "_config.toml", "# Empty config\n");
     run(&source, &out, &[], 0);
     assert!(out.join("01-guide/index.mdx").exists());
+}
+
+fn collection_pages(out: &Path) -> Vec<String> {
+    let nav: serde_yaml_ng::Value =
+        serde_yaml_ng::from_str(&read(out, "01-guide/_sidebar.yaml")).unwrap();
+    nav["nav"][0]["items"]
+        .as_sequence()
+        .unwrap()
+        .iter()
+        .map(|item| item.as_str().unwrap().to_owned())
+        .collect()
+}
+
+#[test]
+fn collection_sort_by_uses_effective_numeric_values_then_paths_with_missing_last() {
+    for (file, config) in [
+        (
+            "_config.yml",
+            "collections: {lessons: {output: true, sort_by: weight}}\ndefaults: [{scope: {path: _lessons/inherited, type: lessons}, values: {weight: 1.5}}]\n",
+        ),
+        (
+            "_config.toml",
+            "[collections.lessons]\noutput = true\nsort_by = 'weight'\n[[defaults]]\nscope = {path = '_lessons/inherited', type = 'lessons'}\nvalues = {weight = 1.5}\n",
+        ),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("source");
+        let out = t.path().join("out");
+        write(&source, file, config);
+        for (name, metadata) in [
+            ("a-missing", ""),
+            ("b-null", "weight: null\n"),
+            ("c-large", "weight: 9007199254740993\n"),
+            ("d-smaller", "weight: 9007199254740992\n"),
+            ("e-tie", "weight: 2\n"),
+            ("f-tie", "weight: 2.0\n"),
+            ("inherited/first", ""),
+            ("inherited/override", "weight: -2\n"),
+            ("hidden", "published: false\nweight: [invalid]\n"),
+        ] {
+            write(
+                &source,
+                &format!("_lessons/{name}.md"),
+                format!("---\n{metadata}---\n# Lesson\n"),
+            );
+        }
+        run(&source, &out, &["--dry-run"], 0);
+        assert!(!out.exists());
+        run(&source, &out, &[], 0);
+        assert_eq!(
+            collection_pages(&out),
+            [
+                "_lessons/inherited/override",
+                "_lessons/inherited/first",
+                "_lessons/e-tie",
+                "_lessons/f-tie",
+                "_lessons/d-smaller",
+                "_lessons/c-large",
+                "_lessons/a-missing",
+                "_lessons/b-null",
+            ]
+        );
+        assert_eq!(read(&source, file), config);
+        assert!(read(&source, "_lessons/c-large.md").contains("9007199254740993"));
+    }
+}
+
+#[test]
+fn collection_order_skips_stale_entries_and_overrides_sort_by_even_when_empty() {
+    for order in ["[missing.md, hidden.md, z.md, z.md]", "[]"] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("source");
+        let out = t.path().join("out");
+        write(
+            &source,
+            "_config.yml",
+            format!(
+                "collections: {{lessons: {{output: true, order: {order}, sort_by: weight}}}}\n"
+            ),
+        );
+        write(
+            &source,
+            "_lessons/a.md",
+            "---\nweight: [not, comparable]\n---\n# A\n",
+        );
+        write(&source, "_lessons/z.md", page("# Z\n"));
+        write(
+            &source,
+            "_lessons/hidden.md",
+            "---\npublished: false\n---\n# Hidden\n",
+        );
+        let output = run(&source, &out, &[], 0);
+        let expected = if order == "[]" {
+            ["_lessons/a", "_lessons/z"]
+        } else {
+            ["_lessons/z", "_lessons/a"]
+        };
+        assert_eq!(collection_pages(&out), expected);
+        if order != "[]" {
+            assert!(report(&output).contains("missing.md"));
+            assert!(report(&output).contains("hidden.md"));
+            assert!(report(&output).contains("ignored collection order entry"));
+        }
+    }
+}
+
+#[test]
+fn collection_text_sort_is_case_sensitive_and_keys_are_literal() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    write(
+        &source,
+        "_config.yml",
+        "collections: {lessons: {output: true, sort_by: 'Lesson.Name'}}\n",
+    );
+    for (name, metadata) in [
+        ("a", "Lesson.Name: zebra"),
+        ("b", "Lesson.Name: Alpha"),
+        ("c", "Lesson.Name: Éclair"),
+        ("d", "Lesson.Name: '10'"),
+        ("e", "Lesson.Name: '2'"),
+        ("f", "lesson.name: Aardvark"),
+        ("g", "Lesson: {Name: Aardvark}"),
+    ] {
+        write(
+            &source,
+            &format!("_lessons/{name}.md"),
+            format!("---\n{metadata}\n---\n# Lesson\n"),
+        );
+    }
+    run(&source, &out, &[], 0);
+    assert_eq!(
+        collection_pages(&out),
+        [
+            "_lessons/d",
+            "_lessons/e",
+            "_lessons/b",
+            "_lessons/a",
+            "_lessons/c",
+            "_lessons/f",
+            "_lessons/g"
+        ]
+    );
+}
+
+#[test]
+fn collection_generated_title_slug_and_extension_sort_use_basename_fallbacks() {
+    for (key, expected) in [
+        (
+            "title",
+            ["_lessons/z", "_lessons/nested/Apple-PIE", "_lessons/banana"],
+        ),
+        (
+            "slug",
+            ["_lessons/nested/Apple-PIE", "_lessons/z", "_lessons/banana"],
+        ),
+        (
+            "ext",
+            ["_lessons/banana", "_lessons/nested/Apple-PIE", "_lessons/z"],
+        ),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("source");
+        let out = t.path().join("out");
+        write(
+            &source,
+            "_config.yml",
+            format!("collections: {{lessons: {{output: true, sort_by: {key}}}}}\n"),
+        );
+        write(
+            &source,
+            "_lessons/z.md",
+            "---\ntitle: Aardvark\nslug: Apricot\n---\n# Z\n",
+        );
+        write(&source, "_lessons/nested/Apple-PIE.md", page("# Pie\n"));
+        write(&source, "_lessons/banana.markdown", page("# Banana\n"));
+        run(&source, &out, &[], 0);
+        assert_eq!(collection_pages(&out), expected, "{key}");
+    }
+}
+
+#[test]
+fn collection_sort_rejects_ambiguous_values_before_writes() {
+    for (key, first, second, diagnostic) in [
+        ("weight", "2", "'3'", "mixes numbers and text"),
+        ("weight", "2", ".nan", "finite"),
+        ("weight", "2", ".inf", "finite"),
+        ("weight", "2", "[3]", "numbers, text or null"),
+        ("weight", "2", "{rank: 3}", "numbers, text or null"),
+        ("weight", "2", "true", "numbers, text or null"),
+        (
+            "weight",
+            "2026-11-10T12:00:00+01:00",
+            "2026-11-10T11:30:00Z",
+            "date/time-shaped",
+        ),
+        ("weight", "'2026-11-10'", "'2026-11-11'", "date/time-shaped"),
+        ("tags", "one", "two", "generated date, array and excerpt"),
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let source = t.path().join("source");
+        let out = t.path().join("out");
+        write(
+            &source,
+            "_config.yml",
+            format!("collections: {{lessons: {{output: true, sort_by: {key}}}}}\n"),
+        );
+        let body = format!("---\n{key}: {second}\n---\n# B\n");
+        write(
+            &source,
+            "_lessons/a.md",
+            format!("---\n{key}: {first}\n---\n# A\n"),
+        );
+        write(&source, "_lessons/b.md", &body);
+        for args in [&["--dry-run"][..], &[][..]] {
+            assert!(report(&run(&source, &out, args, 2)).contains(diagnostic));
+            assert!(!out.exists());
+            assert_eq!(read(&source, "_lessons/b.md"), body);
+        }
+        // Explicit navigation is authoritative and does not need comparable
+        // values for the derived collection ordering it replaces.
+        write(
+            &source,
+            "_data/navigation.yml",
+            "- url: /lessons/b.html\n- url: /lessons/a.html\n",
+        );
+        run(&source, &out, &[], 0);
+        let nav: serde_yaml_ng::Value =
+            serde_yaml_ng::from_str(&read(&out, "01-guide/_sidebar.yaml")).unwrap();
+        assert_eq!(nav["nav"][0].as_str(), Some("_lessons/b"));
+    }
+}
+
+#[test]
+fn collection_unicode_generated_title_needs_explicit_title_for_sorting() {
+    let t = tempfile::tempdir().unwrap();
+    let source = t.path().join("source");
+    let out = t.path().join("out");
+    write(
+        &source,
+        "_config.yml",
+        "collections: {lessons: {output: true, sort_by: title}}\n",
+    );
+    write(&source, "_lessons/éclair.md", page("# Pastry\n"));
+    assert!(report(&run(&source, &out, &[], 2)).contains("explicit title"));
+    assert!(!out.exists());
+    write(
+        &source,
+        "_lessons/éclair.md",
+        "---\ntitle: Éclair\n---\n# Pastry\n",
+    );
+    run(&source, &out, &[], 0);
+    assert_eq!(collection_pages(&out), ["_lessons/éclair"]);
 }

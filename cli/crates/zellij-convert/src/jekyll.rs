@@ -16,6 +16,7 @@ use walkdir::WalkDir;
 use zellij_core::{Result, files};
 mod config;
 mod navigation;
+mod sorting;
 mod urls;
 use config::{boolean, invalid, string};
 
@@ -27,7 +28,8 @@ struct Page {
 }
 struct Collection {
     output: bool,
-    order: Vec<Utf8PathBuf>,
+    order: Option<Vec<Utf8PathBuf>>,
+    sort_by: Option<String>,
     permalink: Option<String>,
 }
 fn configs(source: &Utf8Path) -> Vec<Utf8PathBuf> {
@@ -69,16 +71,29 @@ fn collections(config: &Value) -> Result<BTreeMap<String, Collection>> {
         if !settings.is_null() && !settings.is_mapping() {
             return Err(invalid("collection settings must be a mapping"));
         }
-        if settings.get("sort_by").is_some() {
-            return Err(invalid(
-                "collection sort_by requires manual migration; use a literal order list",
-            ));
-        }
+        let order = settings
+            .get("order")
+            .filter(|value| !value.is_null())
+            .map(|_| config::paths(&settings, "order"))
+            .transpose()?;
+        // Jekyll gives an explicit array precedence, including an empty array.
+        let sort_by = if order.is_some() {
+            None
+        } else {
+            let key = string(&settings, "sort_by")?;
+            if key.is_some_and(|key| key.trim().is_empty()) {
+                return Err(invalid(
+                    "collection sort_by must be a nonempty metadata key",
+                ));
+            }
+            key.map(str::to_owned)
+        };
         out.insert(
             name.to_owned(),
             Collection {
                 output: boolean(&settings, "output")?.unwrap_or(false),
-                order: config::paths(&settings, "order")?,
+                order,
+                sort_by,
                 permalink: string(&settings, "permalink")?.map(str::to_owned),
             },
         );

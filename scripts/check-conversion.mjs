@@ -298,6 +298,49 @@ values = {description = 'Inherited collection description'}
   console.log(`${variant}: converted routes, heading fragment, rendered URLs and asset bytes verified.`);
 }
 
+// Derived Jekyll collection ordering must survive the engine's sidebar loader
+// and real hosted export, not just serialization into _sidebar.yaml.
+{
+  const source = path.join(root, 'jekyll-sorting-source');
+  const destination = path.join(root, 'jekyll-sorting-content');
+  await mkdir(path.join(source, '_lessons'), {recursive:true});
+  await writeFile(path.join(source, '_config.toml'), `title = 'Ordered lessons'
+[collections.lessons]
+output = true
+sort_by = 'weight'
+[[defaults]]
+scope = {path = '_lessons/b-inherited.md', type = 'lessons'}
+values = {weight = 0.5}
+`);
+  for (const [name, metadata] of [
+    ['a-missing', ''], ['b-inherited', ''], ['c-tie', 'weight: 0.5'],
+    ['d-first', 'weight: -2'], ['e-null', 'weight: null'],
+  ]) {
+    await writeFile(path.join(source, '_lessons', `${name}.md`), `---\ntitle: ${name}\n${metadata}\n---\n# Lesson\n\nLesson body for ${name}.\n`);
+  }
+  execFileSync(zel, ['cv', source, '--out', destination, '--layout', 'site'], {stdio:'inherit'});
+  const content = path.join(destination, 'content');
+  const site = await loadSite(new FolderContentSource({contentDir:content}));
+  const expected = ['d-first', 'b-inherited', 'c-tie', 'a-missing', 'e-null'].map(name => `/guide/lessons/${name}`);
+  const group = site.guides[0].sidebar.find(node => node.kind === 'group' && node.label === 'lessons');
+  assert.deepEqual(group.children.map(node => node.route), expected);
+  assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
+  for (const page of site.guidePages) {
+    const rendered = await compileMDX({source:page.body, options:await mdxOptions(), components:mdxComponents(site)});
+    assert(renderToStaticMarkup(rendered.content).includes('Lesson'));
+  }
+  if (mode === '--export') {
+    const output = path.join(root, 'jekyll-sorting-site');
+    execFileSync(zel, ['build', destination, '--out', output], {stdio:'inherit'});
+    const html = await readFile(path.join(output, 'guide/lessons/d-first.html'), 'utf8');
+    const links = [...html.matchAll(/<a\b[^>]*>/g)]
+      .map(([tag]) => tag.includes('zellij-guide-sidebar-link') ? tag.match(/href="([^"]+)"/)?.[1] : null)
+      .filter(href => expected.includes(href));
+    assert.deepEqual(links.slice(0, expected.length), expected);
+  }
+  console.log('jekyll-sorting: inherited ranks, ties and missing values retain sidebar order.');
+}
+
 // Sphinx starts from reStructuredText, not from the Markdown fixtures above.
 {
   const source = path.join(root, 'sphinx-source');

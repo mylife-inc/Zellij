@@ -271,10 +271,42 @@ collections:
 This reads `_reference/overview.md`, `_reference/api.md` and other Markdown
 pages in that collection. `output: true` is required. With derived navigation,
 listed `order` entries come first, followed by remaining pages in filename
-order. Collection groups follow ordinary pages and are sorted by name.
+order. Entries without a published Markdown page are ignored and reported.
+Collection groups follow ordinary pages and are sorted by name.
 Collection URL patterns support `:collection`, `:path` and `:output_ext` only.
-Dated collection files and `sort_by` require manual migration; posts remain
-excluded even when their collection declares output.
+Dated collection files require manual migration; posts remain excluded even
+when their collection declares output.
+
+Current source after rc.2 also supports collection `sort_by`, following
+[Jekyll collection ordering](https://jekyllrb.com/docs/collections/#custom-sorting-of-documents).
+For example, replace the `order` setting above with `sort_by: weight` and give
+each page a numeric `weight` in its YAML front matter or scoped defaults:
+
+```yaml
+collections:
+  reference:
+    output: true
+    sort_by: weight
+```
+
+Values sort ascending; absent/null values follow, and ties use source filename
+order. Inherited defaults apply before sorting. A collection must use either
+finite numbers or text for its sort field; mixing the two is rejected before
+output. 64-bit integers retain their exact order; decimal/exponent values use
+floating point. Text uses case-sensitive
+lexical order, so text `'10'` comes before `'2'`. The key is literal and
+case-sensitive: `lesson.name` addresses that exact key, not a nested mapping.
+An explicit `order` array takes precedence over `sort_by`, including `order: []`
+(which keeps filename order). Explicit navigation data takes precedence over
+both collection ordering modes.
+
+Generated `slug` and `ext` values use the source basename when absent. Generated
+`title` sorting supports ASCII basenames; for non-ASCII names, supply an explicit
+title in front matter or defaults. Boolean, array, mapping, nonfinite numeric,
+generated `date`/`categories`/`tags`/`excerpt` and date/time-shaped sort values (including
+quoted dates) require a numeric rank or explicit `order` list. The importer does
+not guess timestamp types or timezone ordering. These sorting and stale-order
+fixes require current source after rc.2; published rc.2 has not been changed.
 
 ### Navigation data
 
