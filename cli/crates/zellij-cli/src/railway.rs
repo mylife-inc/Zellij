@@ -24,12 +24,15 @@ fn required(name: &str) -> Result<String> {
         .ok_or_else(|| Error::InvalidArgument(format!("set {name} before Railway deployment")))
 }
 
-// No deployment variables or credentials appear in this query's response.
+// Staged values are never decrypted or logged; only an empty patch is accepted.
 const TARGET: &str = r#"query ZelRailwayTarget($service: String!, $environment: String!) {
   projectToken { projectId environmentId }
   service(id: $service) { id projectId deletedAt }
-  environment(id: $environment) { id projectId deletedAt unmergedChangesCount
+  environment(id: $environment) { id projectId deletedAt
     volumeInstances(first: 100) { pageInfo { hasNextPage } edges { node { serviceId deletedAt } } }
+  }
+  environmentStagedChanges(environmentId: $environment) {
+    environmentId status patch(decryptVariables: false)
   }
   serviceInstance(serviceId: $service, environmentId: $environment) {
     id serviceId environmentId updatedAt source { image repo }
@@ -148,9 +151,16 @@ impl Client {
                 "Railway project token, service and environment must match RAILWAY_PROJECT_ID / RAILWAY_ENVIRONMENT_ID / the selected service",
             ));
         }
-        if data["environment"]["unmergedChangesCount"] != 0 {
+        // The nullable unmergedChangesCount alone cannot confirm that a
+        // staged patch is empty. Read the pending patch explicitly and fail closed
+        // unless Railway confirms an empty patch for this exact environment.
+        let staged = &data["environmentStagedChanges"];
+        if staged["environmentId"] != self.environment
+            || staged["status"] != "STAGED"
+            || staged["patch"] != json!({})
+        {
             return Err(failed(
-                "Railway environment has staged changes or their count is unavailable; resolve them before deployment",
+                "Railway environment has staged changes or their state is unavailable; resolve them before deployment",
             ));
         }
         let volumes = &data["environment"]["volumeInstances"];

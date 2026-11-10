@@ -177,7 +177,8 @@ fn image() -> String {
 fn target() -> Value {
     json!({"projectToken":{"projectId":PROJECT,"environmentId":ENVIRONMENT},
         "service":{"id":SERVICE,"projectId":PROJECT,"deletedAt":null},
-        "environment":{"id":ENVIRONMENT,"projectId":PROJECT,"deletedAt":null,"unmergedChangesCount":0,"volumeInstances":{"pageInfo":{"hasNextPage":false},"edges":[]}},
+        "environment":{"id":ENVIRONMENT,"projectId":PROJECT,"deletedAt":null,"unmergedChangesCount":null,"volumeInstances":{"pageInfo":{"hasNextPage":false},"edges":[]}},
+        "environmentStagedChanges":{"environmentId":ENVIRONMENT,"status":"STAGED","patch":{}},
         "serviceInstance":{"id":"instance-id","serviceId":SERVICE,"environmentId":ENVIRONMENT,"updatedAt":"2026-11-05T12:00:00Z","source":{"image":"ghcr.io/acme/docs:old","repo":null},"startCommand":null,"preDeployCommand":[],"cronSchedule":null,"railwayConfigFile":null,"healthcheckPath":"/","healthcheckTimeout":300,"sleepApplication":false,"numReplicas":2,"region":"us-west2","restartPolicyType":"ON_FAILURE","restartPolicyMaxRetries":10,"rootDirectory":null,"buildCommand":null,"dockerfilePath":null,"overlapSeconds":30,"drainingSeconds":20,"latestDeployment":{"id":OLD,"status":"SUCCESS"}}})
 }
 fn fixture(mode: &'static str) -> Server {
@@ -197,6 +198,8 @@ fn fixture(mode: &'static str) -> Server {
         let vars = &body["variables"];
         let mut state = state.lock().unwrap();
         if query == TARGET {
+            assert!(query.contains("patch(decryptVariables: false)"));
+            assert!(!query.contains("unmergedChangesCount"));
             assert_eq!(vars["service"], SERVICE);
             assert_eq!(vars["environment"], ENVIRONMENT);
             let mut reads = reads.lock().unwrap();
@@ -204,7 +207,24 @@ fn fixture(mode: &'static str) -> Server {
             let mut reply = state.clone();
             match mode {
                 "scope" => reply["projectToken"]["environmentId"] = json!(PROJECT),
-                "staged" => reply["environment"]["unmergedChangesCount"] = json!(1),
+                "staged" => {
+                    reply["environmentStagedChanges"]["patch"] = json!({"services":{"secret-service":{"variables":{"TOKEN":"must-never-appear"}}}})
+                }
+                "patch-missing" => {
+                    reply
+                        .as_object_mut()
+                        .unwrap()
+                        .remove("environmentStagedChanges");
+                }
+                "patch-null" => reply["environmentStagedChanges"]["patch"] = Value::Null,
+                "patch-array" => reply["environmentStagedChanges"]["patch"] = json!([]),
+                "patch-scope" => {
+                    reply["environmentStagedChanges"]["environmentId"] = json!(PROJECT)
+                }
+                "patch-state" => reply["environmentStagedChanges"]["status"] = json!("APPLYING"),
+                "patch-drift" if *reads > 1 => {
+                    reply["environmentStagedChanges"]["patch"] = json!({"services":{}})
+                }
                 "volumes" => {
                     reply["environment"]["volumeInstances"]["edges"] =
                         json!([{"node":{"serviceId":SERVICE,"deletedAt":null}}])
@@ -311,6 +331,11 @@ fn railway_preflight_rejects_unsupported_targets_before_building() {
     for mode in [
         "scope",
         "staged",
+        "patch-missing",
+        "patch-null",
+        "patch-array",
+        "patch-scope",
+        "patch-state",
         "volumes",
         "pagination",
         "git",
@@ -333,7 +358,7 @@ fn railway_preflight_rejects_unsupported_targets_before_building() {
 }
 #[test]
 fn railway_build_failure_or_target_drift_never_updates_source() {
-    for mode in ["success", "changed"] {
+    for mode in ["success", "changed", "patch-drift"] {
         let server = fixture(mode);
         let client = client(&server);
         let result = build_and_rollout(&client, SERVICE, REPOSITORY, || {
