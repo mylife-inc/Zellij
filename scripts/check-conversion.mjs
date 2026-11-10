@@ -48,8 +48,8 @@ const assetHash = createHash('sha256').update(asset).digest('hex').slice(0, 8);
 const pdf = Buffer.from([0x25, 0x50, 0x44, 0x46, 0, 255, 254]);
 // Use the same source and real renderer for the link policy. These checks do
 // not fetch public assets; hosted browser acceptance supplies a separate server.
-async function checkLinkedAssets(format, source, copiedContent, copiedSite) {
-  const destination = path.join(root, `${format}-linked`);
+async function checkLinkedAssets(format, source, copiedContent, copiedSite, variant = format) {
+  const destination = path.join(root, `${variant}-linked`);
   const content = path.join(destination, 'content');
   const base = 'https://cdn.example.test/Manual%20assets/';
   execFileSync(zel, ['cv', source, '--out', destination, '--from', format, '--layout', 'site', '--assets', 'link', '--asset-base-url', base], {stdio:'inherit'});
@@ -83,9 +83,10 @@ async function checkLinkedAssets(format, source, copiedContent, copiedSite) {
   console.log(`${format}: public asset URLs render without local copies or deployment-prefix changes.`);
 }
 
-for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
-  const source = path.join(root, `${format}-source`);
-  const destination = path.join(root, `${format}-content`);
+for (const variant of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'jekyll-toml', 'hugo']) {
+  const format = variant === 'jekyll-toml' ? 'jekyll' : variant;
+  const source = path.join(root, `${variant}-source`);
+  const destination = path.join(root, `${variant}-content`);
   const configured = format === 'docusaurus';
   const referenceRoute = configured ? '/guide/Public/API' : '/guide/setup/api-reference';
   const cafeRoute = configured ? '/guide/Café/Release Notes' : '/guide/cafe';
@@ -109,7 +110,20 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     await write('docs/public/static.svg', asset);
   }
   if (format === 'jekyll') {
-    await write('_config.yml', 'title: Converted docs\nsource: docs\nurl: https://legacy.example.test\nbaseurl: /manual\ncollections: {reference: {output: true}}\n');
+    if (variant === 'jekyll-toml') {
+      await write('_config.toml', `title = 'Converted docs'
+source = 'docs'
+url = 'https://legacy.example.test'
+baseurl = '/manual'
+[collections.reference]
+output = true
+[[defaults]]
+scope = {type = 'reference'}
+values = {description = 'Inherited collection description'}
+`);
+    } else {
+      await write('_config.yml', 'title: Converted docs\nsource: docs\nurl: https://legacy.example.test\nbaseurl: /manual\ncollections: {reference: {output: true}}\ndefaults: [{scope: {type: reference}, values: {description: Inherited collection description}}]\n');
+    }
     await write('docs/_data/navigation.yml', '- name: Welcome\n  link: /\n- name: API navigation\n  link: /02-Setup/APIReference.html\n- name: Café\n  link: /03-Café/\n- name: Extra reference\n  link: /reference/Extra.html\n');
     await write('docs/_reference/Extra.md', '---\ntitle: Extra reference\n---\n# Reference\n\n[Home](../index.md#welcome)\n\n![Chart](chart.svg)\n');
     await write('docs/_reference/chart.svg', asset);
@@ -209,6 +223,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
   assert(home.includes('href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"'));
   assert.deepEqual(await readFile(path.join(content, 'assets/imported/docs/media/Q3 Report.pdf')), pdf);
   if (format === 'jekyll') {
+    assert.equal(site.guidePages.find(page => page.route === '/guide/reference/extra').description, 'Inherited collection description');
     const extra = rendered.get('/guide/reference/extra');
     assert(extra.includes('href="/guide#welcome"'));
     assert(extra.includes('src="/products/docs/_zellij/assets/imported/docs/_reference/chart.svg"'));
@@ -219,7 +234,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     assert.equal(await readFile(path.join(content, 'assets/imported/public/static.svg'), 'utf8'), asset);
   }
   if (mode === '--export') {
-    const output = path.join(root, `${format}-site`);
+    const output = path.join(root, `${variant}-site`);
     execFileSync(zel, ['build', destination, '--out', output], { stdio: 'inherit' });
     const html = await readFile(path.join(output, 'guide.html'), 'utf8');
     for (const reference of [
@@ -266,6 +281,7 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
     if (format === 'jekyll') {
       const extra = await readFile(path.join(output, 'guide/reference/extra.html'), 'utf8');
       assert(extra.includes('<h1>Extra reference</h1>'));
+      assert(extra.includes('name="description" content="Inherited collection description"'));
       assert(extra.includes(`src="/products/docs/_zellij/assets/imported/docs/_reference/chart.svg?v=${assetHash}"`));
       assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/_reference/chart.svg'), 'utf8'), asset);
     }
@@ -278,8 +294,8 @@ for (const format of ['mkdocs', 'docusaurus', 'vitepress', 'jekyll', 'hugo']) {
       assert.equal(await readFile(path.join(output, '_zellij/assets/imported/static/img/static.svg'), 'utf8'), asset);
     }
   }
-  await checkLinkedAssets(format, source, content, site);
-  console.log(`${format}: converted routes, heading fragment, rendered URLs and asset bytes verified.`);
+  await checkLinkedAssets(format, source, content, site, variant);
+  console.log(`${variant}: converted routes, heading fragment, rendered URLs and asset bytes verified.`);
 }
 
 // Sphinx starts from reStructuredText, not from the Markdown fixtures above.

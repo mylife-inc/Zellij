@@ -40,6 +40,40 @@ pub(super) fn yaml(raw: &str) -> Result<Value> {
         .map_err(|e| invalid(format!("invalid YAML merge: {e}")))?;
     Ok(value)
 }
+pub(super) fn toml(raw: &str) -> Result<Value> {
+    // Keep Jekyll's case-sensitive keys and scalar types. Serde's generic
+    // representation of a TOML datetime is a private map, not its authored
+    // value; normalize dates/times explicitly before sharing YAML validators.
+    fn value(input: toml::Value, depth: usize) -> Result<Value> {
+        if depth > 64 {
+            return Err(invalid("TOML configuration nesting exceeds 64 levels"));
+        }
+        Ok(match input {
+            toml::Value::String(s) => Value::String(s),
+            toml::Value::Datetime(d) => Value::String(d.to_string()),
+            toml::Value::Integer(n) => Value::Number(n.into()),
+            toml::Value::Float(n) => Value::Number(n.into()),
+            toml::Value::Boolean(b) => Value::Bool(b),
+            toml::Value::Array(items) => Value::Sequence(
+                items
+                    .into_iter()
+                    .map(|v| value(v, depth + 1))
+                    .collect::<Result<_>>()?,
+            ),
+            toml::Value::Table(items) => Value::Mapping(
+                items
+                    .into_iter()
+                    .map(|(k, v)| Ok((Value::String(k), value(v, depth + 1)?)))
+                    .collect::<Result<_>>()?,
+            ),
+        })
+    }
+    let table = raw
+        .trim_start_matches('\u{feff}')
+        .parse::<toml::Table>()
+        .map_err(|e| invalid(format!("invalid TOML: {e}")))?;
+    value(toml::Value::Table(table), 0)
+}
 pub(super) fn path(value: &str) -> Result<Utf8PathBuf> {
     let path = value
         .strip_prefix("./")
@@ -176,6 +210,25 @@ fn merge(target: &mut Mapping, values: &Mapping, own: bool) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn toml_retains_types_case_and_plain_datetime_values() {
+        let v = toml("\u{feff}title = 'Lower'\r\nTitle = 'Upper'\r\ncount = 7\r\nratio = 1.5\r\nenabled = false\r\ndate = 2026-11-09\r\ntime = 12:30:00\r\nstamp = 2026-11-09T12:30:00-08:00\r\n[[defaults]]\r\nscope = {path = '', type = 'pages'}\r\nvalues = {title = 'Nested', tags = ['a', 'b']}\r\n").unwrap();
+        assert_eq!(v["title"].as_str(), Some("Lower"));
+        assert_eq!(v["Title"].as_str(), Some("Upper"));
+        assert_eq!(v["count"].as_i64(), Some(7));
+        assert_eq!(v["ratio"].as_f64(), Some(1.5));
+        assert_eq!(v["enabled"].as_bool(), Some(false));
+        assert_eq!(v["date"].as_str(), Some("2026-11-09"));
+        assert_eq!(v["time"].as_str(), Some("12:30:00"));
+        assert_eq!(v["stamp"].as_str(), Some("2026-11-09T12:30:00-08:00"));
+        assert_eq!(v["defaults"][0]["values"]["tags"][1].as_str(), Some("b"));
+        let v = toml("'<<' = {title = 'Literal'}\n").unwrap();
+        assert!(v.get("title").is_none());
+        assert_eq!(v["<<"]["title"].as_str(), Some("Literal"));
+        assert!(toml(&format!("{}leaf = true", "level.".repeat(63))).is_ok());
+        assert!(toml(&format!("{}leaf = true", "level.".repeat(64))).is_err());
+    }
+
     #[test]
     fn yaml_merges_are_inert_and_bad_merge_values_are_rejected() {
         let value=yaml("base: &defaults {published: false, title: Inherited}\nvalues: {<<: *defaults, title: Own}\n").unwrap();

@@ -101,7 +101,7 @@ fn website(config: &Value) -> Result<SourceUrls> {
 }
 fn supported(config: &Value) -> Result<()> {
     if !config.is_mapping() {
-        return Err(invalid("configuration must be a YAML mapping"));
+        return Err(invalid("configuration must be a mapping"));
     }
     for key in ["include", "languages", "locales", "permalinks"] {
         if config
@@ -142,7 +142,7 @@ impl Converter for Jekyll {
         "jekyll"
     }
     fn label(&self) -> &'static str {
-        "Jekyll — YAML configuration, Markdown pages and collections"
+        "Jekyll — YAML/TOML configuration, Markdown pages and collections"
     }
     fn detect(&self, source: &Utf8Path) -> Confidence {
         if configs(source).is_empty() {
@@ -155,18 +155,15 @@ impl Converter for Jekyll {
         let configs = configs(source);
         if configs.len() != 1 {
             return Err(invalid(
-                "expected exactly one _config.yml or _config.yaml; multiple configuration files require manual consolidation",
+                "expected exactly one _config.yml, _config.yaml or _config.toml; multiple configuration files require manual consolidation",
             ));
         }
-        if configs[0].extension() == Some("toml") {
-            return Err(invalid(
-                "TOML configuration is not supported yet; use a YAML source copy",
-            ));
-        }
-        let mut settings = config::yaml(&std::fs::read_to_string(files::contained_path(
-            source,
-            &configs[0],
-        )?)?)?;
+        let raw = std::fs::read_to_string(files::contained_path(source, &configs[0])?)?;
+        let mut settings = if configs[0].extension() == Some("toml") {
+            config::toml(&raw)?
+        } else {
+            config::yaml(&raw)?
+        };
         if settings.is_null() {
             settings = Value::Mapping(Mapping::new());
         }

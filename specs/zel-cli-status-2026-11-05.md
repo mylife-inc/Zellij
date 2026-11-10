@@ -14,7 +14,7 @@ dated audit and implementation history.
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
 | Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare, Vercel, GitHub Pages and S3 live-account acceptance is pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; live account acceptance is pending. |
 | CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance remains pending. Candidate `0.2.0-rc.2` includes all three generators. |
-| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
+| Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML/TOML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
 
 Dispatch now handles every command explicitly. Only already-normalized aliases
@@ -39,11 +39,12 @@ source/public assets. Dynamic config, rewrites, locales, exclusion patterns and
 custom output/cache paths are rejected before writes. Vue, home layout and
 custom Markdown presentation remain manual migration tasks. VitePress is included in candidate `0.2.0-rc.2`.
 
-Jekyll imports accept YAML configuration, front-matter Markdown pages, enabled
+Jekyll imports accept YAML or TOML configuration, front-matter Markdown pages, enabled
 documentation collections, literal scoped defaults and supported navigation
 arrays. Links use source permalinks and deployment prefixes; eligible referenced
 static assets respect exclusions, internal data/templates and generated output.
-Liquid/Ruby/theme code is not executed. TOML, blog posts, dated collections,
+Liquid/Ruby/theme code is not executed. TOML support is source-only after rc.2.
+Blog posts, dated collections,
 globs, custom source routing and theme-specific navigation remain limited or
 unsupported. See the conversion reference for exact accepted forms.
 

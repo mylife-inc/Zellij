@@ -127,7 +127,7 @@ zel list formats
 | MkDocs | `mkdocs.yml` | The `nav` tree, `site_name`, `site_description`, `docs_dir` |
 | Docusaurus | `sidebars.js`, `.ts`, `.cjs` or `.json` | Categories, doc entries, links and nesting — when declarative |
 | VitePress | `.vitepress/config.js`, `.ts`, `.mjs` or `.mts` | Literal config, `srcDir`, nested/multiple sidebars, Markdown links and referenced assets |
-| Jekyll | `_config.yml` or `_config.yaml` | Markdown pages, output collections, scoped defaults, navigation data, source URLs and eligible assets |
+| Jekyll | `_config.yml`, `_config.yaml` or `_config.toml` | Markdown pages, output collections, scoped defaults, navigation data, source URLs and eligible assets |
 | Hugo | `hugo.*` or legacy `config.*` in TOML, YAML or JSON | Markdown sections, page bundles, publication rules, source URLs and referenced resources |
 | Sphinx | `conf.py` | Literal configuration, `.rst` pages, explicit toctrees, supported reStructuredText, references and eligible assets |
 
@@ -210,10 +210,39 @@ zel cv ./jekyll-site --from jekyll --out ./manual --layout site --dry-run
 zel cv ./jekyll-site --from jekyll --out ./manual --layout site
 ```
 
-Pass the directory containing `_config.yml` or `_config.yaml`. Exactly one
-configuration file is accepted; `_config.toml` is detected but requires a YAML
-source copy before conversion. YAML aliases/merge keys are read as data; Ruby
-and Liquid are never executed. The source stays untouched.
+Pass the directory containing `_config.yml`, `_config.yaml` or `_config.toml`.
+Exactly one configuration file is accepted. When several exist, consolidate
+settings in a source copy before importing; the importer does not guess which
+Jekyll configuration or override sequence you intended. YAML aliases/merge keys
+and TOML tables/arrays are read as data; Ruby and Liquid are never executed.
+The source stays untouched.
+
+TOML configuration support is available in current source after `0.2.0-rc.2`;
+the published rc.2 binary still requires YAML. It supports the same settings
+and validation as YAML, with case-sensitive keys and typed booleans/numbers.
+Date/time values are retained as text in inherited metadata; dated collection
+pages still need manual migration. Page front matter remains YAML.
+For example, the following configuration declares a documentation collection
+and a default description for its pages:
+
+```toml title="_config.toml"
+title = "Product manual"
+source = "pages"
+baseurl = "/manual"
+
+[collections.reference]
+output = true
+order = ["overview.md", "api.md"]
+
+[[defaults]]
+scope = { path = "", type = "reference" }
+values = { description = "Product reference" }
+```
+
+TOML configuration nesting is limited to 64 levels. Invalid TOML, duplicate
+keys, ambiguous config files and unsupported settings fail before output is
+written, including in dry runs. See Jekyll's
+[configuration reference](https://jekyllrb.com/docs/configuration/).
 
 The importer reads `title`, `description`, a contained `source` directory,
 `url`, `baseurl`, literal `exclude` paths and scoped front matter defaults.
@@ -287,7 +316,7 @@ not copied as static assets. `--assets skip` retains asset URLs but still checks
 unsafe paths. Missing or excluded assets are reported.
 
 Liquid expressions, includes, layouts, plugins, theme-supplied configuration,
-HTML pages and custom Markdown features need manual migration. TOML/config
+HTML pages and custom Markdown features need manual migration. Config
 merging, glob exclusions or default scopes, forced `include` rules, custom
 collection roots, unsupported permalink placeholders and localization settings
 are rejected before output. Custom layout/include/plugin directory settings
