@@ -201,7 +201,9 @@ export async function checkImportedTables(output) {
     await page.goto(`${origin}${prefix}/guide/includes`);
     await page.getByRole('heading', {name:'Included manual', exact:true, level:1}).waitFor();
     await page.getByRole('button', {name:/^Switch to (light|dark) theme$/}).waitFor();
-    assert.equal(await article.locator('h2#shared-section').innerText(), 'Reused section');
+    const includeHeading = article.getByRole('heading', {name:'Reused section', exact:true, level:2});
+    await includeHeading.waitFor();
+    assert.equal(await includeHeading.getAttribute('id'), 'shared-section');
     const includedLogo = article.getByRole('img', {name:'Included logo', exact:true}).first();
     assert(await includedLogo.evaluate(image => image.complete && image.naturalWidth > 0));
     await article.getByRole('link', {name:'Included details', exact:true}).first().click();
