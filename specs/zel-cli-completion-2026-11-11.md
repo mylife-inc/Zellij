@@ -15,6 +15,12 @@ The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
 contract and remain a separate [expansion backlog](zellij-product-expansion-2026-11-11.md).
 The previous completion statement does not claim these new features are done.
+Independent company/product branding is now implemented by PR #131
+(`b4cc9ba`), with all 16 CI jobs passing on `7d7febbe`; see
+[branding evidence](evidence/zellij-company-branding-2026-11-11.json). The four
+active guides were updated. This increment and the hydration fix below are newer
+than rc.3 and await a later release. The template catalog, composer/new sections,
+book/PDF publishing and package-manager registration remain planned.
 
 The user requested continuing until completion. The working target is the
 [agreed command contract](zel-cli-contract-2026-10-18.md), including conservative
