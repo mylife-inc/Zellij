@@ -16,7 +16,11 @@ design; proposed commands below are not yet implemented or published.
 | 5 | Complete book publishing and PDF | Extend the book template into a publication model, dedicated print renderer and version-matched downloadable PDF. Validate technical, prose and multilingual books before calling this milestone complete. |
 
 Do not delay the next small CLI candidate until the entire expansion is done.
-Do not promise dates or a final stable-version number until each gate passes.
+The user reserves `1.0.0` for the completed agreed feature set with no known
+unresolved bugs and passing release/acceptance gates. Continue incrementing
+pre-1.0 versions for delivered additions; do not promise a completion date.
+The user's follow-up also requests removal of superseded pre-1.0 distributions
+after each successful replacement. See [the retention and migration policy](zellij-release-retention-2026-11-11.md).
 Update local reference docs and examples with each implemented increment. Public
 documentation should describe the corresponding released version, clearly
 marking newer source-only features. The existing production-content preservation
@@ -186,6 +190,10 @@ Generated site layout remains `my-docs/zel.yaml`, `my-docs/content/` and generat
 `my-docs/site/`. The enclosing folder can have any name. A manifest declares
 stable ID/version, title, preview, minimum engine/schema versions, renderer,
 optional features, supported outputs, editable variables and asset licenses.
+Book templates additionally declare their supported print renderer and provide
+coordinated web/print styles; include this contract in the template milestone
+even though full PDF execution arrives later. A template must not advertise
+working PDF output before its renderer and publication checks are implemented.
 
 Proposed canonical creation command and short entry point:
 
@@ -237,7 +245,9 @@ image/table breaking rules and linked PDF bookmarks. Share typography, color,
 ornaments and content with the web theme while adapting layout for pages.
 Screen motion/video become stable artwork or a labelled link in print.
 
-Proposed author commands:
+PDF is **opt-in**. A normal build produces the website without invoking or
+requiring any PDF toolchain. The author can request PDF for one build or enable
+it explicitly in project configuration. Proposed author commands:
 
 ```sh
 zel build my-book --pdf
@@ -245,23 +255,91 @@ zel export pdf my-book
 zel pdf my-book
 ```
 
-`pdf` aliases the export path. A build/CI job generates the PDF from the same
-content revision as the website and adds a one-click download link. A static
+`pdf` aliases the export path. An explicitly enabled build/CI job generates the
+PDF from the same content revision as the website and adds a one-click download
+link. A static
 website cannot invoke the author's local typesetter on a reader's machine;
 server-side on-demand generation is a separate optional later capability.
 This delivers a current downloadable book without requiring a server for
 every reader. Browser print remains a convenience, not the publication-quality
 export contract.
 
-Prototype a maintained paged-media renderer rather than invent pagination.
-[Vivliostyle CLI](https://docs.vivliostyle.org/publications/cli-en/en/cli/getting-started/)
-is a candidate because it accepts HTML/Markdown/publication inputs and provides
-PDF output with cover/contents tooling. Renderer choice remains open until
-math, footnotes, long tables, images, cross-references, RTL and font embedding
-are verified on representative books. Keep its large runtime optional and
-separate from the Rust binary and normal lightweight images. Use an explicit
-dependency check with actionable setup instructions; don't silently install
-Docker or a browser. A dedicated PDF image may be an optional alternative.
+If PDF is disabled, omit its download link. If requested PDF generation fails,
+fail the requested build and retain the previous complete output rather than
+publish a website linked to an absent, incomplete or stale book. Site and PDF
+must identify the same content revision. The standalone export command may
+generate a PDF without rebuilding or publishing the website.
+
+### LaTeX quality with template-controlled design
+
+The user explicitly requires a first-class LaTeX route for mathematical books,
+with a table of contents, index and the richer features of traditional book
+typesetting. The earlier open renderer choice is narrowed: prototype a LaTeX
+backend first for technical books; HTML paged media remains an optional later
+alternative for templates that benefit from it. These are design commitments,
+not features available in rc.3 or current source.
+
+Use one semantic book model for web and print: parts, chapters, headings,
+paragraphs, equations, theorem/lemma/proof environments, figures, tables,
+footnotes, citations, references, index entries and glossary terms. Preserve
+stable identifiers and resolve references before output. The web renderer
+uses that model with its theme; a print adapter generates LaTeX with the
+selected template. Do not attempt to translate arbitrary website CSS into TeX.
+
+The proposed implementation to prototype is a structured document adapter
+(potentially using [Pandoc](https://pandoc.org/MANUAL.html#creating-a-pdf))
+followed by generated `.tex`, **LuaLaTeX**, and an explicit build driver such
+as [latexmk](https://ctan.org/pkg/latexmk). Pandoc can emit LaTeX and supports
+LaTeX PDF engines and templates; it does not automatically supply the complete
+Zellij book semantics or every index/cross-reference requirement. Verify those
+in the adapter and driver. Keep conversion out of rendered Next.js HTML and
+never assume arbitrary MDX or section effects have a lossless TeX translation.
+
+The driver must complete the necessary passes for chapter/page references,
+table of contents, indexes, bibliographies and glossaries, invoking supported
+index/bibliography tools where needed. Missing labels, undefined citations,
+missing glyphs and significant layout overflow must produce actionable source
+diagnostics, not a success exit with a visibly broken book. Expose the generated
+`.tex` and build log for inspection and expert customization.
+
+Templates carry the visual complexity: cover/spine-ready artwork where
+supported, distinct part/chapter openings, section-title treatments, running
+headers/folios, theorem/example boxes, side notes, drop caps or ornaments,
+spacing and illustration placement. Provide simple choices and shared design
+tokens for text/heading/math fonts, colors, trim size and chapter style. A
+technical template can pair restrained mathematics/body text with expressive
+chapter typography; a novel can use a different visual hierarchy. Do not
+require authors to maintain a custom LaTeX preamble just to change these.
+
+Evaluate [fontspec](https://ctan.org/pkg/fontspec) for text fonts and
+[unicode-math](https://ctan.org/pkg/unicode-math) for compatible OpenType math
+fonts. Bundle or pin appropriately licensed fonts for reproducible output;
+test glyph coverage, math compatibility, font embedding and Arabic/RTL layouts
+rather than assuming a chosen font or engine makes every language work.
+
+Normal authors write Markdown and LaTeX-style math plus semantic book markup.
+Support a documented shared math/macro subset for web and print. Advanced raw
+TeX can be an explicit print-only extension with an authored web equivalent
+or a clear unsupported-content diagnostic; arbitrary packages/macros cannot
+silently disappear from the website. Custom local TeX templates are an expert
+extension. Downloaded templates must not execute arbitrary install hooks, and
+typesetting must not enable shell escape or fetch unpinned dependencies as a
+side effect of rendering content. TeX execution needs its own defined process
+and filesystem boundary; disabling shell escape alone is not a sandbox.
+
+Keep the TeX/PDF runtime optional and separate from the small Rust binary and
+normal images. When PDF is requested, check dependencies before replacing any
+output and explain how to install the supported toolchain or select a dedicated
+PDF container. Do not silently install Docker, a browser or a TeX distribution.
+Pin template/toolchain versions and support offline builds after explicit setup.
+
+Acceptance must include a substantial math book (numbered equations, proofs,
+cross-references, index and bibliography), a prose book, and a multilingual/RTL
+book. Check semantic correctness and text extraction as well as visual samples:
+cover, contents, chapter openings, dense equations, footnotes, tables and index.
+Confirm predictable page breaks, working bookmarks/links, complete embedded
+fonts, failed-build output preservation, opt-in behavior and the website's
+download link. A beautiful short demo alone does not establish book support.
 
 ## 5. Installation channels
 
@@ -280,8 +358,34 @@ winget install --id MyLifeInc.Zel --exact
 npm install -g @mylife-inc/zel
 ```
 
-Homebrew supports [direct installation from an owned tap](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap).
-Start with that and an owned Scoop bucket. WinGet requires manifest submission
+The user prefers **`brew install zel`**. This is the target short name, subject
+to checking formula-name collisions at publication time. On a fresh machine,
+no-setup installation by that name would require acceptance into Homebrew's
+main catalog. Its current [core requirements](https://docs.brew.sh/Acceptable-Formulae)
+include a stable release, an eligible open-source license and available source;
+do not promise this route while planning a potentially sealed source repository.
+
+Homebrew supports [direct installation from an owned tap](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap)
+using **three** components: `owner/tap/formula`. `brew install shebka/zel` is
+not the standard fully qualified formula syntax. If the intended GitHub owner
+is available and controlled, `brew install shebka/tap/zel` is the equivalent
+one-command form. Otherwise use the known `mylife-inc` owner; the user's brand
+preference does not establish control of a GitHub account called `shebka`.
+
+The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
+one-time tap setup and formula-specific trust. Illustrative commands for a
+future tap, **not currently published**:
+
+```sh
+brew tap mylife-inc/tap
+brew trust --formula mylife-inc/tap/zel
+brew install zel
+```
+
+For first-time users the fully qualified install is still fewer steps. Verify
+the supported Homebrew versions and their trust behavior in actual installation
+tests; do not invent a two-component alias or wrap/replace the user's `brew`.
+Start with the owned tap and Scoop bucket. WinGet requires manifest submission
 and validation in the [community repository](https://learn.microsoft.com/en-us/windows/package-manager/package/repository);
 publication timing is not entirely under our control. A scoped npm launcher is
 useful for JS users but must download the correct verified native artifact and
@@ -300,6 +404,9 @@ ownership during `zel upgrade`. Registry credentials are requested only at the
 point they are needed; keep them out of content/templates and chat. A current
 signed/checksummed release plus an install-method table is the public source of
 truth. Do not mark a channel done merely because a manifest was generated.
+Apply the user's pre-1.0 retention policy to channels we control; evaluate
+registry version-removal constraints before publishing previews to external
+catalogs. A channel that cannot support the requested cleanup may wait for 1.0.
 
 ## Current work and next handoff
 
@@ -315,8 +422,9 @@ published. The preceding in-progress snapshot remains in the PR history.
 
 The remaining rows are designed backlog, not completed features. The next
 delivery task is the small candidate containing branding and the hydration fix,
-with package-manager preparation alongside it. The next feature implementation
-is the template manifest/catalog and native creation path, followed by the
+with package-manager preparation and removal of old releases after updating
+their consumers. The next feature implementation is the template manifest/catalog
+and native creation path, followed by the
 composer/media-accordion and full book/PDF milestones. Local docs change with
 each implementation; public docs must keep an explicit release boundary.
 Live deployment-provider verification stays deferred as previously instructed.
