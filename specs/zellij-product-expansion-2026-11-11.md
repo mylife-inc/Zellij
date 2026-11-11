@@ -25,10 +25,11 @@ production cutover, package publication or release is performed by this design.
 
 ## 1. Two independent brand marks
 
-The existing implementation has one `brand.logo` and optional `brand.title`.
-The logo can leave for the owner website, but that consumes the product icon.
-Preserve that legacy configuration. Add an optional independent `brand.company`
-before it, so a product logo with no explicit `href` still goes home:
+At the baseline, navigation had one `brand.logo` and optional `brand.title`.
+The logo could leave for the owner website, consuming the product icon. PR #131
+preserves that legacy configuration and adds an optional independent
+`brand.company` before it, so a product logo with no explicit `href` still goes
+home. This is implemented in source, newer than published rc.3:
 
 ```yaml
 brand:
@@ -69,23 +70,29 @@ Current reference pages reviewed on 2026-11-11:
 [Apple home](https://www.apple.com/), [iPhone](https://www.apple.com/iphone/),
 [iPhone product detail](https://www.apple.com/iphone-18-pro/) and
 [MacBook Pro](https://www.apple.com/macbook-pro/).
-The retrieved content shows product highlights, product/color choices,
-comparison selectors and feature details. Browser preview failed to initialize
-because the configured writable root traverses the Codex-home symlink. Thus
-this is a content/source comparison, not a completed visual or scroll-motion
-audit. Exact motion timing and visual fidelity need later browser inspection.
+The local browser initially failed to initialize because the configured writable
+root traverses the Codex-home symlink. A separate hosted Chromium audit then
+loaded all four public pages successfully and captured 17 selected desktop/mobile
+views. A second run verified the iPhone media accordion switching its open item
+and companion image, and a feature card opening a rich-content dialog; three
+additional screenshots were inspected. See [the research record](evidence/zellij-apple-section-audit-2026-11-11.json)
+for exact runs, source commits, URLs, image hashes and retained local references.
+This establishes those rendered states and interactions, not exhaustive
+accessibility or precise scroll-animation timing.
 
 | Pattern | Existing capability | Useful next work |
 | --- | --- | --- |
 | Large product heroes and promotional tiles | `hero`, `hero-split`, `promo-grid`, `bento-grid` | Better ready-made compositions and original sample assets; no duplicate section type merely for spacing changes. |
 | Horizontal highlight cards | `card-carousel`, `gallery` | A feature-detail preset with accessible rich-content dialogs, beyond the existing image-only lightbox. |
+| Text accordion with a synchronized large illustration | `faq` and static split/media sections separately | A `media-accordion` preset: one selected disclosure controls the text and companion image, with keyboard operation and a sequential reading fallback. This is the first concrete additional section candidate. |
 | Product/color or specification choices | Static image/text sections and a static `matrix` | A media-selector primitive: named choices update image, caption and associated details, with keyboard and touch controls. |
 | A visual that stays while a story advances | `showcase`, `media-panel`, `ScrollStage` | Multi-step scroll story with synchronized media/text states, plus an ordinary sequential reading fallback. |
 | Large gradient typography | `titleGradient`, marked gradient text and `Reveal` | A reusable solid-to-gradient reveal tied to visibility/progress, as requested by the user. |
 | Product comparison | `matrix`, `pricing-table`, `stats-band` | Selectable comparison data where it improves an actual template; keep a useful static/print table. |
 
-The last two motion concepts are proposed Zellij treatments, not claims of
-verified animation on the currently inspected Apple pages. Use original content,
+The multi-step scroll story and solid-to-gradient heading are proposed Zellij
+treatments, not claims of verified animation on the inspected Apple pages.
+Use original content,
 illustrations and appropriately licensed assets. A template can reproduce a
 design pattern, but its quality also depends on typography, imagery and copy;
 it cannot guarantee pixel-identical results for arbitrary replacement content.
@@ -144,8 +151,9 @@ a second incompatible format.
 
 Prototype acceptance: recreate an existing hero, a split media section, a
 feature grid and the requested gradient heading using the same primitives.
-Then create `scroll-story`, `feature-explorer` and `media-selector` presets
-only where the prototype demonstrates an actual gap. Verify hydration, keyboard
+Then create `media-accordion`, `scroll-story`, `feature-explorer` and
+`media-selector` presets where the prototype demonstrates an actual gap.
+Verify hydration, keyboard
 operation, mobile layouts, reduced motion, forced colors, missing/disabled JS,
 and print fallbacks. Text must never disappear permanently awaiting an effect.
 Animations cannot be reproduced in PDF; print resolves to an authored stable
@@ -196,6 +204,10 @@ hosted interactive design in portable mode. Keep an explicit capability list
 for direct-file viewing, hosted web and PDF.
 
 Publish a catalog/archive per release with immutable revisions and checksums.
+Author templates in this source repository, but distribute their catalog and
+archives through the existing public `mylife-inc/releases` mirror. Default
+creation must keep working if the development repository is later sealed or
+retired; it must not depend on downloading a branch of this source repository.
 Resolve `id@version`, record the source revision in a lock/receipt file, and
 support cached/offline and local-directory templates. Extract into a new/empty
 destination atomically, protecting existing authored files. Validate archive
@@ -273,8 +285,13 @@ Start with that and an owned Scoop bucket. WinGet requires manifest submission
 and validation in the [community repository](https://learn.microsoft.com/en-us/windows/package-manager/package/repository);
 publication timing is not entirely under our control. A scoped npm launcher is
 useful for JS users but must download the correct verified native artifact and
-document its network/offline behavior. Evaluate Cargo, Debian/RPM, Nix and
-Chocolatey subsequently; no claim of universal registry availability is made.
+document its network/offline behavior. Evaluate Debian/RPM, Nix and Chocolatey
+subsequently; no claim of universal registry availability is made. Cargo registry
+publication uploads source packages, so defer it until the user explicitly
+settles how public source distribution fits the intended later sealing of this
+repository; see [Cargo publication](https://doc.rust-lang.org/cargo/reference/publishing.html).
+Keep binary package recipes pointed at the existing public release mirror as
+well, so installation survives a future source-repository transition.
 
 Generate manifests from one immutable release inventory/checksum source, then
 exercise install/upgrade/uninstall for each supported platform. Preserve stable
@@ -286,10 +303,20 @@ truth. Do not mark a channel done merely because a manifest was generated.
 
 ## Current work and next handoff
 
-The company-slot implementation is in progress in the current branch, including
-portable-to-hosted conversion, generated CLI schema, docs and regression tests.
-The remaining rows are designed backlog, not completed features. Once branding
-passes hosted acceptance, merge it and record the exact commit/run. The next
-implementation task is the template manifest/catalog and native creation path;
-distribution preparation can follow the next release without waiting for books.
+The company slot merged in [PR #131](https://github.com/mylife-inc/Zellij/pull/131)
+as `b4cc9baf0133cf477ea9d128f035a0554c70cad2`. All 16 jobs in
+[CI run 43088663509](https://github.com/mylife-inc/Zellij/actions/runs/43088663509)
+passed on `7d7febbef4af6254dc30a31df339ea00d65ec2b0`, with the merged tree
+unchanged. The increment includes portable-to-hosted conversion, generated CLI
+schema, four active documentation pages and regression tests. See
+[branding evidence](evidence/zellij-company-branding-2026-11-11.json). Duplicate
+merge-push workflows were skipped; no new release was cut or package channel
+published. The preceding in-progress snapshot remains in the PR history.
+
+The remaining rows are designed backlog, not completed features. The next
+delivery task is the small candidate containing branding and the hydration fix,
+with package-manager preparation alongside it. The next feature implementation
+is the template manifest/catalog and native creation path, followed by the
+composer/media-accordion and full book/PDF milestones. Local docs change with
+each implementation; public docs must keep an explicit release boundary.
 Live deployment-provider verification stays deferred as previously instructed.

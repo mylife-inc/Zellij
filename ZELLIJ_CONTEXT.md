@@ -27,8 +27,16 @@ New requirements (2026-11-11) extend the earlier completion target: independent
 company/product icons, an Apple-informed section audit and composable section
 format, a versioned template catalog including books/PDF, and package-manager
 distribution. See [the phased design and backlog](specs/zellij-product-expansion-2026-11-11.md).
-The company slot is being implemented first; the remaining features are planned,
-not included in the previous CLI-completion claim or published rc.3.
+The company slot is implemented in PR #131 (`b4cc9ba`), after all 16 CI
+jobs passed on `7d7febbe` with the merged tree unchanged. It supports portable
+and hosted sites, independent destinations/tab selection, hosted dark variants
+and portable-to-hosted conversion. See [branding evidence](specs/evidence/zellij-company-branding-2026-11-11.json).
+The Apple comparison now includes hosted visual and interaction checks; see
+[research evidence](specs/evidence/zellij-apple-section-audit-2026-11-11.json).
+The other expansion features remain planned. Company branding and the hydration
+fix are newer than rc.3; no new release or package-manager publication occurred
+in this increment. Templates must remain publicly downloadable if the source
+repository is later sealed, using the existing public release mirror.
 
 Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed

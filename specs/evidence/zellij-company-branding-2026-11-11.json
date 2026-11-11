@@ -1,0 +1,165 @@
+{
+  "observed_on": "2026-11-11",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/131",
+  "tested_pr_head": "7d7febbef4af6254dc30a31df339ea00d65ec2b0",
+  "implemented": [
+    "independent company and product navigation in hosted and portable output",
+    "company newTab false by default; true uses noopener noreferrer",
+    "independent hosted light/dark company images",
+    "portable company asset validation and relative paths after relocation",
+    "portable-to-hosted conversion including company-only branding without duplicated product-name links",
+    "embedded CLI schema and four active guide/reference updates"
+  ],
+  "local_validation": {
+    "engine_tests": 461,
+    "workspace_rust_passed": 722,
+    "workspace_rust_ignored": 5,
+    "additional_adapter_regression": "passed in final focused zellij-docs suite",
+    "checks": [
+      "engine build",
+      "workspace typechecks",
+      "warnings-denied Clippy",
+      "cargo fmt",
+      "Node syntax",
+      "deep/strict docs: 55 routes and 23 examples",
+      "git diff --check"
+    ]
+  },
+  "release_boundary": "Newer than v0.2.0-rc.3; no new release or installation-channel publication in this increment.",
+  "expansion_design": "specs/zellij-product-expansion-2026-11-11.md",
+  "apple_research": "https://github.com/mylife-inc/Zellij/actions/runs/43089449568",
+  "deferred": [
+    "remaining live deployment-provider verification",
+    "production documentation migration",
+    "template catalog and create command",
+    "composition primitives and new section presets",
+    "book/PDF publishing",
+    "package-manager distribution"
+  ],
+  "status": "implemented and merged; newer than published v0.2.0-rc.3",
+  "pr_ci": {
+    "run": 43088663509,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43088663509",
+    "status": "completed",
+    "conclusion": "success",
+    "attempt": 1,
+    "jobs": [
+      {
+        "id": 130759604751,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605119,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605160,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605215,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605317,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605336,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605407,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605427,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605632,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605671,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605740,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605770,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605791,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759605836,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130759606043,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130761143582,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "hosted_validation": {
+    "workspace_rust": {
+      "passed": 724,
+      "failed": 0,
+      "ignored": 5
+    },
+    "ignored_cases": "The five container/export acceptance tests ignored by the workspace suite each passed in their dedicated hosted steps.",
+    "engine_unit_tests": 461,
+    "showcase": {
+      "passed": 317,
+      "skipped": 124,
+      "skip_count_matches_baseline": true
+    },
+    "company_browser_checks": {
+      "hosted": [
+        "separate icons and destinations",
+        "1440/375/320-pixel layouts without horizontal overflow",
+        "independent light/dark company image",
+        "new-tab navigation intercepted by local test fixture",
+        "nested-page product logo returns to prefixed home"
+      ],
+      "portable": [
+        "company image loaded before product logo",
+        "safe new-tab attributes",
+        "direct-file navigation and relocation",
+        "no-JavaScript company image"
+      ],
+      "external_company_requests": false
+    },
+    "platforms": "Six native OS/architecture package jobs; portable acceptance on Windows, macOS and Linux; native AMD64/ARM64 images and combined manifests.",
+    "preservation": "55 documentation routes, original headings/images and compatibility mappings, plus controlled hydration mutation and negative controls passed."
+  },
+  "merge_commit": "b4cc9baf0133cf477ea9d128f035a0554c70cad2",
+  "tested_and_merged_tree": "db95b443c0a10210c281ec63a77add6545149f39",
+  "merge_push_workflows": "Intentionally skipped for the identical tested tree; no new main image publication or release.",
+  "apple_research_interaction": "https://github.com/mylife-inc/Zellij/actions/runs/43091524193"
+}

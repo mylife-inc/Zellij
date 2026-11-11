@@ -1,0 +1,167 @@
+{
+  "observed_on": "2026-11-11",
+  "workflow_run": "https://github.com/mylife-inc/Zellij/actions/runs/43089449568",
+  "research_commit": "698c309ac8b6c33bcd69a1df9c8d927ded18122c",
+  "method": "Hosted Chromium at 1440x1000; selected section scroll positions; additional 390x844 product screenshot. Public pages only; no accounts or purchases.",
+  "pages": [
+    {
+      "url": "https://www.apple.com/",
+      "status": 200,
+      "title": "Apple",
+      "snapshots": [
+        {
+          "screenshot": "home-0.png",
+          "y": 0,
+          "sha256": "2ba4b5bc9e4c6a63845c26f1bb464c421995ff6d139e1ba6f7cc5bc61c75030f"
+        },
+        {
+          "screenshot": "home-1.png",
+          "y": 2208,
+          "sha256": "6959c47aeed19e4d03c656eb1dc988cec672d687dc2452da0fc2e2d7a349fdd0"
+        },
+        {
+          "screenshot": "home-2.png",
+          "y": 3984,
+          "sha256": "d6a02a2835b75d3aab92c924c196b59574354b0c5bc928654c3fa9052af3324a"
+        }
+      ]
+    },
+    {
+      "url": "https://www.apple.com/iphone/",
+      "status": 200,
+      "title": "iPhone - Apple",
+      "snapshots": [
+        {
+          "screenshot": "iphone-0.png",
+          "y": 0,
+          "sha256": "87e0d374eb911ed6a3b0668e679dbe068a06bccd1da41f1f9f0dca8849f79c17"
+        },
+        {
+          "screenshot": "iphone-1.png",
+          "y": 1372,
+          "sha256": "2d0428745bc8d3a2283fbf1c71f45b432f2eaaf3ebe73552bb4c35549196b95c"
+        },
+        {
+          "screenshot": "iphone-2.png",
+          "y": 2384,
+          "sha256": "5b23326d04152b5f5988a6132b30f79ed91e605ab3107d49a1a6a4f70062ede8"
+        },
+        {
+          "screenshot": "iphone-3.png",
+          "y": 3340,
+          "sha256": "db764646d1b3dd43ba965daa3a2c8d5a2aaebff534ca92e563739751aa956d3b"
+        },
+        {
+          "screenshot": "iphone-4.png",
+          "y": 4232,
+          "sha256": "b72df2defb98711df3ba89c39df33dc6c6fd4487d7b2cca47158a88ea3c5db10"
+        },
+        {
+          "screenshot": "iphone-5.png",
+          "y": 5404,
+          "sha256": "ad49cff3896cf5fa338f984f71631699def39feb6ae7bb41ddc9462a65603768"
+        }
+      ]
+    },
+    {
+      "url": "https://www.apple.com/iphone-18-pro/",
+      "status": 200,
+      "title": "iPhone 18 Pro and iPhone 18 Pro Max - Apple",
+      "snapshots": [
+        {
+          "screenshot": "iphone-pro-0.png",
+          "y": 0,
+          "sha256": "263ec2613639f501417f7732d0dda26f670ca71d990aa42e6d71e9feed3463db"
+        },
+        {
+          "screenshot": "iphone-pro-1.png",
+          "y": 1000,
+          "sha256": "31103c32846778a65984fb73ef4353515f4f618c7e148b7ca61a3b27f72bcfc3"
+        },
+        {
+          "screenshot": "iphone-pro-2.png",
+          "y": 2080,
+          "sha256": "b86e91f153cc469344c748049630d6753408d4647a41a78e93e2f535426c6f83"
+        },
+        {
+          "screenshot": "iphone-pro-3.png",
+          "y": 3487,
+          "sha256": "86da6268c508d74d8444a2fe1e1003ad8dc1a51eea5cfc248cc754bcd9b5f9d5"
+        },
+        {
+          "screenshot": "iphone-pro-4.png",
+          "y": 4848,
+          "sha256": "fe1cc2f71d4a59adb3daf49cbeb2beeb4e5b2eef43715e0066682af9a2f8f7ad"
+        },
+        {
+          "screenshot": "iphone-pro-5.png",
+          "y": 9768,
+          "sha256": "79e2b631d7a26fb55ecabe36ddafbcb10b99b65e3ef15b3e634c7196c1242be2"
+        },
+        {
+          "screenshot": "iphone-pro-mobile.png",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "y": 0,
+          "sha256": "96354f42a670eee6c91e5b2f215ac658a8a8d1c088b75135885903d627db89f2"
+        }
+      ]
+    },
+    {
+      "url": "https://www.apple.com/macbook-pro/",
+      "status": 200,
+      "title": "MacBook Pro - Apple",
+      "snapshots": [
+        {
+          "screenshot": "macbook-0.png",
+          "y": 0,
+          "sha256": "1ed6e64075d7f5fc8c093043a5e1b59a5262548e99e73de0b96732d1181d2cc3"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    "Large alternating light/dark promotional tiles map to existing promo-grid and hero capabilities.",
+    "Rounded horizontal feature cards with detail affordances suggest extending card-carousel with rich disclosures.",
+    "The iPhone family page pairs a text accordion with a large companion image: a useful media-accordion preset.",
+    "The product page exposes a comparison selector and a media explorer with named controls; current static matrix/media sections lack those combined interactions.",
+    "The mobile product header uses compact branding and a separate bottom action region; do not assume desktop proportions simply shrink."
+  ],
+  "limitations": [
+    "Selected rendered states plus the accordion and one detail-dialog interaction were checked; this is not exhaustive interaction, accessibility or animation-timing verification.",
+    "The requested solid-to-gradient scroll heading was not established as an observed effect on these pages; it remains a user-requested Zellij effect.",
+    "Screenshots are research references, not assets for shipped templates.",
+    "Workflow artifacts expire after seven days; the locally retained screenshots are under the ignored backups directory recorded below."
+  ],
+  "local_screenshot_directory": "/Users/hamid/Dev/MyLife/Zellij/backups/apple-section-research-2026-11-11/",
+  "interaction_audit": {
+    "workflow_run": "https://github.com/mylife-inc/Zellij/actions/runs/43091524193",
+    "research_commit": "2e9613e8c268486ec6651bae26e0be8f480061a4",
+    "conclusion": "success",
+    "url": "https://www.apple.com/iphone/",
+    "method": "Hosted Chromium: activate public accordion and feature detail controls; inspect before/after screenshots and expanded state. No accounts or purchases.",
+    "verified": [
+      "Selecting iPhone and Apple Watch expands that item and collapses iPhone and Mac.",
+      "The visible explanatory text and companion image change together.",
+      "The Apple Trade In feature control opens a visible rich-content dialog over the page."
+    ],
+    "screenshots": [
+      {
+        "file": "feature-detail-open.png",
+        "sha256": "ea051debf79536f0f3c768b792b77d76b85a43c38ff01a620b776910f55cbfeb"
+      },
+      {
+        "file": "media-accordion-after.png",
+        "sha256": "600ebabec7cec0d50544802f1d9625a933268d8789d9f2b49711595f121d210e"
+      },
+      {
+        "file": "media-accordion-before.png",
+        "sha256": "8456430a52263d6a46044c7c6b4f929963d8b716bda1c2e9d7717e5274122af3"
+      }
+    ],
+    "local_directory": "/Users/hamid/Dev/MyLife/Zellij/backups/apple-section-research-2026-11-11/interactions"
+  },
+  "initial_browser_limit": "Local preview could not initialize because its configured writable root traverses a Codex-home symlink. The separate hosted browser runs supplied the visual and interaction evidence."
+}
