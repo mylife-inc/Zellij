@@ -97,8 +97,10 @@ static/Next acceptance passed on 2026-11-10. Four provider defects were fixed in
 PR #111, newer than rc.2; see the latest entry and live-provider evidence.
 Both post-merge workflows passed; all temporary acceptance resources are removed.
 Local parsed Sphinx includes merged in PR #114 as `ee866af` after all 16
-final-head checks passed. The exact final source passed 702 local Rust tests.
-Live Fly, AWS and Vercel account acceptance remains pending.
+final-head checks passed. The exact final source passed 702 local Rust tests; both post-merge workflows
+subsequently passed (16 CI jobs and 13 Base image jobs). A disposable Vercel
+acceptance workflow is prepared in `9c2510d`; account setup and live execution
+remain pending. Live Fly, AWS and Vercel account acceptance remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -7310,3 +7312,35 @@ remains unchanged. Existing include limits, pending live Fly/Vercel/S3 and
 GitLab/CircleCI runner acceptance, and the reported Netlify hosting-comment
 hydration issue remain open. No local Docker/browser/GUI or live provider
 deployment ran for this milestone.
+
+
+### 2026-11-10 — Vercel live acceptance preparation and Sphinx post-merge closure
+
+PR #114's previously pending post-merge workflows both passed on
+`ee866afd634cea5107941520c231bdc3fa6b270d`: CI `42930701772` passed 16 jobs and
+Base image `42930701756` passed 13. The Sphinx evidence retains the earlier
+queued/in-progress snapshot and now records this closure separately.
+
+The user authorized temporary accounts for remaining external verification.
+Browser control failed twice before opening a signup page. No account, paid
+plan or provider resource was created. Vercel team signup/token setup was
+requested as the first handoff; the other provider trials should begin when
+their tests are ready. Credentials belong in Actions secrets, never chat or
+committed files.
+
+Implementation `9c2510de1e2f3b720d60c9fe910ebe04b52e4d7e` adds a manual Vercel
+workflow that builds current zel, creates a new disposable project, runs four
+portable/hosted preview/production HTTP cases, then independently deletes the
+confirmed project and verifies API 404. Project name, ID and team are checked
+before deletion. Name collisions never modify existing projects; uncertain
+create outcomes retain a recovery journal and require inspection. Public
+previews apply only to the new fixture. The workflow does not delete accounts
+or teams. Forced runner loss/cancellation can still require manual cleanup.
+
+Validation passed 47 release/delivery helper tests, including 11 new lifecycle
+regressions, plus actionlint for both changed workflows and `git diff --check`.
+These are local simulated API/HTTP tests, not live Vercel acceptance. PR CI and
+live account execution are still pending at this refresh. Rust/engine behavior
+and published rc.2 are unchanged. Vercel/S3/Fly live tests, GitLab/CircleCI runner
+acceptance, advanced import limits and the Netlify hosting-comment hydration
+issue remain open. See [the external acceptance runbook](specs/zel-external-acceptance-2026-11-10.md).

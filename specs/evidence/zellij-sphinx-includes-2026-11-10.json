@@ -64,6 +64,24 @@
         "name": "CI",
         "status": "queued"
       }
-    ]
+    ],
+    "closure": {
+      "verifiedDate": "2026-11-10",
+      "status": "passed",
+      "runs": [
+        {
+          "run": 42930701772,
+          "name": "CI",
+          "source": "ee866afd634cea5107941520c231bdc3fa6b270d",
+          "jobsPassed": 16
+        },
+        {
+          "run": 42930701756,
+          "name": "Base image",
+          "source": "ee866afd634cea5107941520c231bdc3fa6b270d",
+          "jobsPassed": 13
+        }
+      ]
+    }
   }
 }
