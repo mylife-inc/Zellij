@@ -25,9 +25,9 @@ Every command in this lab runs.
 git switch -c docs/zellij
 ```
 
-Everything below writes new files beside the old ones. Nothing is deleted until
-you decide, and the branch means a conversion you dislike is
-`git switch main` away.
+Everything below writes new files beside the old ones. Keep the original while
+reviewing the conversion. A branch separates committed changes; untracked files
+can remain across branch switches, so inspect `git status` before switching.
 
 </Step>
 
@@ -40,17 +40,22 @@ zel detect docs
 If it names MkDocs, Docusaurus, VitePress, Jekyll, Hugo or Sphinx, [Lab 2, step 2](/guide/quickstart/existing-docs)
 is your next move — convert, then come back here at step 4.
 
-If it recognises nothing, that is the usual answer for documentation that grew
-inside a code repository. [Lab 2, step 3](/guide/quickstart/existing-docs) is
-the AI route: `zel context` writes the reference, an agent does the conversion,
-`zel check` holds it to account.
+Point detection at the source tool's configuration directory. For example, if
+`mkdocs.yml` is at the repository root, use `zel detect .` instead.
+
+If it recognises nothing, plain Markdown can be built directly with `zel build docs`
+or previewed with `zel view docs`. To migrate into hosted MDX and page sections,
+[Lab 2, step 3](/guide/quickstart/existing-docs) describes the AI-assisted route.
 
 Either way, write into a **new folder**:
 
 ```bash title="terminal"
-zel migrate docs --out docs-site
+zel migrate docs --out docs-site --layout site
 ```
 
+Use that command only when detection identified a supported source format;
+substitute its actual configuration directory for `docs`. The output is a
+configured hosted site with `zel.yaml` and `content/`. It performs
 `detect` → `convert` → `check`, stopping at the first failure. It does nothing
 the three commands cannot; it exists because forgetting to validate after a
 conversion is the mistake everybody makes once.
@@ -68,19 +73,15 @@ moving later means updating the pipeline and every relative link.
 
 | Layout | When |
 | --- | --- |
-| `docs/` at the root | One product, one set of docs. The default. |
-| `docs/external/` and `docs/internal/` | Public documentation and things that stay in the repository. Zellij only reads the folder you point it at. |
-| `packages/*/docs/` | A monorepo where each package publishes its own site. One pipeline per package, or one with a matrix. |
+| `docs/zellij/` | Conventional site root, containing `zel.yaml` and `content/`; found by bare commands from the repository root. |
+| `docs-site/` or `docs/external/` | Any name is valid; pass the site root explicitly. Other documentation and specs can remain separate. |
+| `packages/*/docs/zellij/` | A monorepo where each package publishes its own site. Generate a separately named pipeline per site. |
 
-Once you have chosen:
-
-```bash title="terminal"
-git rm -r --cached docs && rm -rf docs
-mv docs-site docs
-```
-
-Or keep both for a while — `zel` only reads the path you give it, so the old
-folder can sit there until you trust the new one.
+This lab keeps the new site at `docs-site/` so the source at `docs/` remains
+available for comparison. Inspect `git status --short` and the conversion
+report. If you later move the complete site root, update the explicit paths and
+regenerate its workflow. Do not replace the source folder before reviewing the
+rendered content and preserving its history/assets.
 
 </Step>
 
@@ -93,8 +94,8 @@ fail to build.
 </Callout>
 
 ```bash title="terminal"
-zel dev docs      # read a few pages
-zel build docs           # and prove it compiles
+zel dev docs-site --open   # read the pages, then stop with Ctrl-C
+zel build docs-site       # prove the imported MDX compiles
 ```
 
 </Step>
@@ -102,11 +103,11 @@ zel build docs           # and prove it compiles
 <Step title="Add the pipeline">
 
 ```bash title="terminal"
-zel ci init github --content docs --target image --zel-version 0.2.0-rc.2
+zel ci docs-site --target image --zel-version 0.2.0-rc.2
 ```
 
 <Callout type="tip" title="A separate workflow, not a step in yours">
-It writes `.github/workflows/docs.yml` scoped to `paths: ['docs/**']` and
+It writes `.github/workflows/docs.yml` scoped to `docs-site/**` and that workflow file, and
 leaves your existing pipelines alone — your test suite should not run because
 somebody fixed a typo, and your documentation should not wait for it.
 
@@ -161,7 +162,7 @@ to try something is not a real option.
 <Step title="Publish the new one somewhere temporary">
 
 ```bash title="terminal"
-zel deploy netlify docs --site-id your-existing-preview-site
+zel netlify docs-site --site your-existing-project-id
 ```
 
 Create the destination site first and export `NETLIFY_AUTH_TOKEN`. The native

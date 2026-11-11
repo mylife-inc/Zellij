@@ -9,13 +9,11 @@ then published.
 **Needs:** `zel`, and a container runtime from step 2 onward. Check with
 `zel doctor`.
 
-<Callout type="warning" title="What runs today">
-Steps 1 to 5 work now, and so does most of step 6. The one gap is
-`zel deploy`, which is still landing; step 6 says what to do instead.
-
-The whole loop works: create a folder, serve it, edit, validate, and build
-either a static site or a container image. The one thing missing is uploading
-it in a single command. [The reference](/cli) tracks the state of each.
+<Callout type="info" title="Use candidate 0.2.0-rc.2 or current source">
+The complete loop is implemented: create a site, preview edits, validate, build
+and deploy. This lab uses the hosted renderer and its container runtime. Native
+[portable Markdown sites](/cli/build) also work without a server or container.
+Provider access must be configured before the publication step.
 </Callout>
 
 <Steps>
@@ -23,19 +21,20 @@ it in a single command. [The reference](/cli) tracks the state of each.
 <Step title="Create a content folder">
 
 ```bash title="terminal"
-zel new docs my-docs
+zel new docs my-docs --guide
 ```
 
 ```
 ✓ my-docs
-  site.yaml
-  pages.yaml
-  sections/home/hero.yaml
-  sections/home/features.yaml
-  menu.yaml
-  01-guide/_sidebar.yaml
-  01-guide/index.mdx
-  assets/.gitkeep
+  zel.yaml
+  content/site.yaml
+  content/pages.yaml
+  content/sections/home/hero.yaml
+  content/sections/home/features.yaml
+  content/menu.yaml
+  content/01-guide/_sidebar.yaml
+  content/01-guide/index.mdx
+  content/assets/.gitkeep
 
   Next: zel dev my-docs
 ```
@@ -49,7 +48,7 @@ No `package.json`, no `node_modules`, nothing to install. This folder is
 **only** the words and the structure.
 
 <Callout type="info" title="Nothing ran but a file writer">
-`zel new docs` is native code. It wrote eight files and exited — **no container
+`zel new docs` is native code. It wrote the configuration and content files and exited — **no container
 started, no image pulled, no Docker needed**. If your `docker pull` is still
 going, it did not wait for it.
 
@@ -67,13 +66,14 @@ two commands have nothing in common except the folder they both care about.
 
 <Callout type="tip" title="What about the Next.js app?">
 There isn't one, and you do not need one. The application that renders your site
-lives inside the container image, so it is never in your repository and never
-something you upgrade.
+lives inside the container image. It does not need to be part of your repository;
+upgrading the engine image updates the rendering implementation.
 
 If you *do* want it on disk — because you deploy to Vercel, or you want your own
-React pages alongside — `zel new app my-site --with-docs` writes the wrapper
-*and* a `content/` folder inside it, already wired together. Everything below
-works the same; you run `npm run dev` instead of `zel dev`.
+React pages alongside — `zel eject my-docs --out my-site` extracts a wrapper and
+engine while referencing the existing content. Install its dependencies and run
+`npm run dev` there. [`zel new app`](/cli/new#zel-new-app-dir) is another option
+when you already have a built local engine package to select with `--engine`.
 </Callout>
 
 </Step>
@@ -81,40 +81,32 @@ works the same; you run `npm run dev` instead of `zel dev`.
 <Step title="Watch it while you write">
 
 ```bash title="terminal"
-zel dev my-docs
+zel dev my-docs --open
 ```
 
-<Callout type="warning" title="--open is not built yet">
-It is in the specification — it would open a browser at the URL — and `zel` will
-reject it today. Open `http://localhost:3000` yourself.
+<Callout type="info" title="Open after the server is ready">
+`--open` launches your browser after startup succeeds. Omit it to open the
+printed URL yourself. The default port is 3000; `--port` overrides it.
 </Callout>
 
-```
-  Engine   ghcr.io/mylife-inc/zellij-base:latest
-  Content  my-docs
-  Serving  http://localhost:3000
+The terminal reports the selected image, mounted content and serving URL.
+Edit files under `my-docs/content`; press Ctrl-C in the terminal to stop.
 
-  Edit anything under my-docs and reload. Ctrl-C to stop.
+It validates first, installs what the site needs, then serves. The first run
+may download the engine image and install dependencies into a named volume.
+Later runs reuse the image and dependency cache; timing depends on the machine
+and selected features.
 
-✓ /app/content
-  site        Acme · theme paper
-  pages       1
-  guides      1 (1 page) · /guide
-```
-
-It validates first, installs what the site needs, then serves. **The first run
-takes a couple of minutes** — it pulls a 237 MB image and installs Next.js into
-a named volume. Later runs reuse both and start in seconds.
-
-<Callout type="info" title="Reload rather than watch">
-Save a file and reload the page. There is no websocket pushing content changes
-at the browser yet: your folder lives outside the application, so Next never
-learns a YAML file moved. Reloading picks it up.
+<Callout type="info" title="Edits reload the browser">
+The engine watches content files, assets and guide routes. A valid change
+refreshes prepared content and reloads open pages. Invalid edits appear in the
+terminal while the last rendered page stays visible; correcting them resumes
+reloads. Restart after changing the deployment prefix or installed features.
 </Callout>
 
-**Leave this running.** Open `my-docs/sections/home/hero.yaml` in your editor:
+**Leave this running.** Open `my-docs/content/sections/home/hero.yaml` in your editor:
 
-```yaml title="my-docs/sections/home/hero.yaml"
+```yaml title="my-docs/content/sections/home/hero.yaml"
 type: hero
 headline: Your product, explained
 subhead: Change this line and watch the browser.
@@ -125,12 +117,12 @@ cta:
 Save. The browser updates before you get back to it.
 
 Now break something on purpose — change `type: hero` to `type: heroo` — and
-save. The terminal and the browser both say:
+save. The terminal reports the invalid section; the browser keeps the last valid
+page until you fix it. The diagnostic identifies the file and unknown type:
 
 ```
-my-docs/sections/home/hero.yaml
+my-docs/content/sections/home/hero.yaml
   unknown section type "heroo"
-  did you mean "hero"?
 ```
 
 That is the loop. You are never guessing whether a change was valid.
@@ -140,16 +132,29 @@ That is the loop. You are never guessing whether a change was valid.
 <Step title="Add a page">
 
 ```bash title="terminal"
-zel new page pricing --sections hero,pricing-table,faq
+zel new page pricing --sections hero,pricing-table,faq --site-root my-docs
 ```
 
-Three section files appear, and `pages.yaml` gains a route. The browser picks up
-`/pricing` without a restart.
+Three section files appear under `my-docs/content/sections/pricing`. The command
+prints an entry to add to `my-docs/content/pages.yaml`; it does not edit that
+authored file. Add the entry and replace its placeholder description:
+
+```yaml
+- name: pricing
+  title: Pricing
+  description: Choose a plan for your team.
+  sections:
+    - pricing/hero
+    - pricing/pricing-table
+    - pricing/faq
+```
+
+Once saved, the browser picks up `/pricing` without a restart.
 
 Not sure what a section type takes?
 
 ```bash title="terminal"
-zel list sections          # all nineteen
+zel list sections          # all 23 types
 zel explain pricing-table  # one of them, in full
 ```
 
@@ -164,17 +169,18 @@ your content, so it describes exactly what will be accepted.
 A landing page is sections. Documentation is Markdown.
 
 ```bash title="terminal"
-zel new guide docs --title "Documentation"
+zel new guide docs --title "Documentation" --site-root my-docs
 ```
 
 ```
-✓ 01-docs/_sidebar.yaml
-✓ 01-docs/index.mdx
+✓ 02-docs/_sidebar.yaml
+✓ 02-docs/index.mdx
 ```
 
-Add pages by creating files. `01-docs/install.mdx`:
+The starter already has `01-guide`, so this guide receives the next prefix.
+Add pages by creating files under `my-docs/content/02-docs`. For example:
 
-```mdx title="my-docs/01-docs/install.mdx"
+```mdx title="my-docs/content/02-docs/install.mdx"
 ---
 title: Installing
 description: Get it running in two minutes.
@@ -191,7 +197,7 @@ Anything that runs a container.
 
 Then list it in the sidebar:
 
-```yaml title="my-docs/01-docs/_sidebar.yaml"
+```yaml title="my-docs/content/02-docs/_sidebar.yaml"
 title: Documentation
 order: 1
 
@@ -208,17 +214,7 @@ It appears at `/docs/install`, in the sidebar, in the table of contents, and in
 <Step title="Validate before you ship">
 
 ```bash title="terminal"
-zel check my-docs
-```
-
-```
-✓ my-docs
-  site        Acme · theme paper
-  pages       1
-  guides      1 (1 page) · /guide
-  menu        Guide
-  home        /
-  routes      2
+zel check my-docs --deep --strict
 ```
 
 Every internal link is resolved, every section type checked, every sidebar entry
@@ -226,7 +222,7 @@ matched to a file that exists. It exits non-zero when something is wrong, so it
 works as a pre-commit hook.
 
 This runs the engine in a container with your folder mounted read-only, so it
-needs a container runtime — and about a second.
+needs a container runtime. Timing depends on the image and dependency cache.
 
 <Callout type="warning" title="If your folder is outside your home directory">
 Container runtimes only share part of your filesystem with the virtual machine
@@ -252,25 +248,22 @@ On Docker Desktop it is Settings → Resources → File sharing.
 
 <Step title="Ship it">
 
-<Callout type="warning" title="One half runs, one does not">
-**B works today** — `zel build` and `zel image` produce a static folder and a
-container image, and the image serves.
-
-**A is not finished**: `zel deploy netlify` exits with `not implemented yet`.
-Everything else in it is real and worth reading — the account, the project, the
-CNAME and the certificate are the same whichever tool uploads the folder. Until
-`deploy` lands, build with `zel build` and upload the `dist` folder with
-Netlify's own CLI: `netlify deploy --prod --dir dist`.
+<Callout type="info" title="Both delivery paths are available">
+`zel netlify` builds and uploads static HTML to an existing project.
+`zel image next` packages the site with a Next.js server; `zel image static`
+packages static HTML with an HTTP server. Choose the artifact your host needs.
 </Callout>
 
-Two ways, and they produce genuinely different things. Pick one.
+Choose one of these delivery paths.
 
 ## A · A static site on Netlify
 
-Free, fast, and nothing runs. Right for almost every documentation site.
+Static hosting serves the generated files. Use a Netlify plan suitable for your
+account and expected usage.
 
-**Get a Netlify account and its CLI.** The CLI is the only npm thing in this
-lab, and only because Netlify's upload protocol is theirs:
+**Create a Netlify account and project.** Use its dashboard to create the project
+and copy the Project ID. Zellij needs no Netlify CLI or Node.js for uploading.
+If you prefer Netlify's own administration tool, the optional alternative is:
 
 ```bash title="terminal"
 npm install -g netlify-cli
@@ -279,7 +272,7 @@ netlify login
 
 A browser opens; authorise it.
 
-**Create a project.**
+**Optional CLI project creation.**
 
 ```bash title="terminal"
 netlify sites:create --name my-docs
@@ -298,40 +291,37 @@ Netlify's UI calls it **Project ID** and its API calls it the site ID. Same
 value.
 </Callout>
 
-**Build and upload.**
+**Build and upload with Zellij.** Set `NETLIFY_AUTH_TOKEN` in your environment
+using a personal access token from the account that owns this project. Keep it
+out of shell history, documentation and Git. Set the non-secret project ID, then
+create a draft preview first:
 
 ```bash title="terminal"
-zel build my-docs --out dist
-netlify deploy --prod --dir dist
+export NETLIFY_SITE_ID=YOUR_PROJECT_ID
+zel netlify my-docs
+# After reviewing the returned draft URL:
+zel netlify my-docs --prod
 ```
 
-```
-✓ dist  (19 entries)
-
-Deploy path:    /Users/you/dist
-Website URL:    https://my-docs.netlify.app
-```
-
-<Callout type="info" title="No tokens needed for this">
-`netlify login` already stored your credentials and `netlify deploy` uses them,
-so nothing above needs an environment variable.
-
-You need them for **CI**, where nobody can open a browser to log in — and for
-that you have to get them out of Netlify and into your repository's secrets.
-That is the next section.
+<Callout type="info" title="Native upload and optional Netlify CLI">
+`zel` uses the supplied token and project ID; it does not read Netlify CLI's
+stored login. If using that CLI instead, `zel build my-docs --out dist` followed
+by `netlify deploy --prod --dir dist` remains a valid manual alternative and
+uses the login created by `netlify login`. CI requires explicitly stored secrets.
 </Callout>
 
 ### Getting the two values CI needs
 
-**The site ID.** `sites:create` printed it as **Project ID**; Netlify's API calls
+**The site ID.** The dashboard or `sites:create` shows it as **Project ID**; Netlify's API calls
 the same value the site ID. If you have lost it:
 
 ```bash title="terminal"
 netlify sites:list --json | jq -r '.[] | select(.name=="my-docs") | .site_id'
 ```
 
-**The auth token.** `netlify login` wrote one into netlify-cli's config, and you
-can read it back rather than making a second one:
+**The auth token.** Prefer a separately revocable personal access token from
+Netlify's user settings. If you already use Netlify CLI, its login configuration
+can contain a token; this optional legacy recipe reads it without printing it:
 
 ```bash title="terminal"
 # macOS
@@ -339,19 +329,18 @@ NETLIFY_CONFIG="$HOME/Library/Preferences/netlify/config.json"
 # Linux
 [ -f "$NETLIFY_CONFIG" ] || NETLIFY_CONFIG="$HOME/.config/netlify/config.json"
 
-export NETLIFY_SITE_ID=91774174-d4c2-41b5-aa4b-ac61eeadbf51
-export NETLIFY_AUTH_TOKEN=$(jq -r '.users[.userId].auth.token' "$NETLIFY_CONFIG")
+export NETLIFY_AUTH_TOKEN=$(jq -er '.users[.userId].auth.token | select(type == "string" and length > 0)' "$NETLIFY_CONFIG")
 ```
 
 Check it worked without printing the token:
 
 ```bash title="terminal"
-echo "${#NETLIFY_AUTH_TOKEN} characters"    # 40, starting nfc_
+test -n "$NETLIFY_AUTH_TOKEN" && echo "Netlify token is set"
 ```
 
-<Callout type="warning" title="The path is not ~/.netlify">
-netlify-cli stores its config where the operating system puts application
-preferences, not in your home directory:
+<Callout type="info" title="The CLI login file is outside the project">
+Netlify CLI's [documented configuration locations](https://docs.netlify.com/api-and-cli-guides/cli-guides/get-started-with-cli/#configjson-location)
+follow the operating system's application preferences:
 
 | | |
 | --- | --- |
@@ -365,8 +354,10 @@ empty string rather than an error, which then fails in CI as a 401 that looks
 like a permissions problem.
 </Callout>
 
-**A personal access token works too**, and is the better choice for a shared
-pipeline: **User settings → Applications → New access token**. It can be revoked
+**A personal access token is the preferred choice** for a shared
+pipeline: **User settings → Applications → Personal access tokens → New access token**.
+See [Netlify's user settings](https://docs.netlify.com/manage/accounts-and-billing/user-settings/).
+It can be revoked
 on its own without logging your laptop out, and it is not tied to your CLI
 session.
 
@@ -375,10 +366,10 @@ New repository secret**, as `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`. That is
 what [Lab 3](/guide/quickstart/new-project) and
 [Lab 4](/guide/quickstart/existing-repo) expect.
 
-Once [`zel deploy`](/cli/deploy) lands, those two commands become one:
+The long spelling of the native [deployment command](/cli/deploy) is:
 
 ```bash title="terminal"
-zel deploy netlify my-docs
+zel deploy netlify my-docs --prod
 ```
 
 ### A custom domain
@@ -409,7 +400,7 @@ Whatever that command prints is where the next step happens.
 | Points to | `my-docs.netlify.app` |
 | TTL | whatever it offers |
 
-Use the exact `*.netlify.app` hostname from `sites:create`. A CNAME to a
+Use the exact `*.netlify.app` hostname from the dashboard or `sites:create`. A CNAME to a
 hostname that does not exist fails silently.
 
 <Callout type="warning" title="Do not repoint your nameservers">
@@ -448,13 +439,8 @@ Right when you need image optimisation, or when the site has to live wherever
 your other services live.
 
 ```bash title="terminal"
-zel build my-docs --target image --tag my-docs:dev
+zel image next my-docs --tag my-docs:dev
 zel image run my-docs:dev
-```
-
-```
-✓ Built my-docs:dev — 148 MB
-✓ Serving http://localhost:3000
 ```
 
 That is a Node runtime serving your site on port 3000 — the same artefact you
@@ -495,7 +481,7 @@ dependency moved.
     Fourteen themes, one line in `site.yaml`.
   </Card>
   <Card title="Learn the sections" href="/sections" icon="layout-grid">
-    All nineteen, with rendered previews.
+    All 23 types, with rendered previews.
   </Card>
   <Card title="Publish on every push" href="/guide/quickstart/existing-repo" icon="git-branch">
     Put this folder in a repository and let CI do the deploying.
