@@ -99,9 +99,9 @@ Both post-merge workflows passed; all temporary acceptance resources are removed
 Local parsed Sphinx includes merged in PR #114 as `ee866af` after all 16
 final-head checks passed. The exact final source passed 702 local Rust tests; both post-merge workflows
 subsequently passed (16 CI jobs and 13 Base image jobs). A disposable Vercel
-acceptance workflow is prepared in `9c2510d`; review also found and fixed
-empty Vercel upload acknowledgements in `36028b4`, with 704 Rust tests passing.
-Final-head CI, account setup and live execution remain pending. Live Fly, AWS and Vercel account acceptance remains pending.
+acceptance workflow and the empty-upload acknowledgement fix merged in PR #116
+as `d1d5b70`, after 704 local Rust tests and all 16 final-head CI jobs passed.
+Account setup and live execution remain pending; published rc.2 lacks the fix. Live Fly, AWS and Vercel account acceptance remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -7369,3 +7369,33 @@ unchanged acceptance harness/workflows. Initial PR #116 CI `42937801644` on
 `03fe013` predates this adapter fix and does not validate it. Fresh final-head
 CI and live account acceptance remain pending. No account or provider resource
 was created, and published rc.2 remains unchanged. See [the evidence](specs/evidence/zellij-vercel-upload-2026-11-10.json).
+
+
+### 2026-11-10 — Vercel upload fix and acceptance workflow merged
+
+[PR #116](https://github.com/mylife-inc/Zellij/pull/116) merged as
+`d1d5b70cbea17014a37d59c12fa9f3f0408975b3` after all **16 final-head checks**
+passed on `306e39243690da9ae9011589a2e1cf078ab2cbd3` in run `42938805590`.
+The merge has the identical tested tree `0436ee28ce00e97e12034746c467714ddff61622`.
+This includes six native packages, Linux/macOS/Windows checks, both Linux image
+architectures, hosted Vercel export/upload acceptance and browser regressions.
+Local validation passed 704 Rust tests (5 hosted-only cases exercised in CI),
+47 helper tests, warnings-denied Clippy, formatting, strict/deep documentation
+and actionlint. Source `36028b4` fixes the reproduced empty-upload response bug.
+
+The manual disposable-project workflow is available on main. Actual Vercel
+account acceptance is still pending the temporary team/token handoff; none of
+its four live cases or cleanup has run. Browser control could not initialize,
+so no new provider account was created. Published rc.2 is unchanged and lacks
+this fix. Remaining external providers/runners and import limits stay open.
+Automatic post-merge CI `42942094151` and Base image `42942094126` were queued
+at closure; these are separate from the successful final-head checks. See the
+[Vercel evidence](specs/evidence/zellij-vercel-upload-2026-11-10.json) and [setup runbook](specs/zel-external-acceptance-2026-11-10.md).
+
+A read-only Netlify follow-up also confirmed that Node default fetch still
+receives the hosting annotation with its leading LF on `/`, `/cli/completions`
+and `/guide/quickstart/new-project`; Python urllib receives clean HTML for the
+same routes. All six responses returned 200 with no badge script. This matches
+the earlier client-dependent behavior and is **not** a new browser hydration
+pass. The migration blocker remains unresolved; no site/domain changed. See
+[the HTTP follow-up evidence](specs/evidence/zellij-netlify-html-followup-2026-11-10.json).
