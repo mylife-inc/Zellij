@@ -35,17 +35,16 @@
     "reason": "Predates the upload protocol fix; does not validate current source."
   },
   "live": {
-    "status": "pending account setup and execution",
-    "accountsCreated": 0,
+    "status": "not started; token verified but supplied team is Hobby, not Pro Trial",
     "projectsCreated": 0,
-    "signupBlocker": "Browser control failed twice during initialization; Vercel signup/token handoff requested.",
     "requiredCases": [
       "portable-preview",
       "hosted-preview",
       "portable-production",
       "hosted-production"
     ],
-    "requiredCleanup": "Delete the confirmed temporary project and verify API 404."
+    "requiredCleanup": "Delete the confirmed temporary project and verify API 404.",
+    "accountPreflight": "zellij-vercel-account-preflight-2026-11-10.json"
   },
   "references": [
     "https://vercel.com/docs/rest-api/deployments/upload-deployment-files",
@@ -75,6 +74,35 @@
         "name": "Base image",
         "status": "queued"
       }
-    ]
+    ],
+    "closure": {
+      "status": "passed",
+      "verifiedDate": "2026-11-10",
+      "runs": [
+        {
+          "run": 42942094151,
+          "name": "CI",
+          "jobsPassed": 16
+        },
+        {
+          "run": 42942094126,
+          "name": "Base image",
+          "jobsPassed": 13
+        }
+      ]
+    }
+  },
+  "livePreparationSnapshot": {
+    "status": "pending account setup and execution",
+    "accountsCreated": 0,
+    "projectsCreated": 0,
+    "signupBlocker": "Browser control failed twice during initialization; Vercel signup/token handoff requested.",
+    "requiredCases": [
+      "portable-preview",
+      "hosted-preview",
+      "portable-production",
+      "hosted-production"
+    ],
+    "requiredCleanup": "Delete the confirmed temporary project and verify API 404."
   }
 }

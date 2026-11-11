@@ -101,7 +101,10 @@ final-head checks passed. The exact final source passed 702 local Rust tests; bo
 subsequently passed (16 CI jobs and 13 Base image jobs). A disposable Vercel
 acceptance workflow and the empty-upload acknowledgement fix merged in PR #116
 as `d1d5b70`, after 704 local Rust tests and all 16 final-head CI jobs passed.
-Account setup and live execution remain pending; published rc.2 lacks the fix. Live Fly, AWS and Vercel account acceptance remains pending.
+Both post-merge workflows passed (16 CI and 13 Base image jobs). The Vercel
+token works, but the supplied team is Hobby with no trial; the requested Pro
+trial setup and live execution remain pending. Published rc.2 lacks the fix.
+Live Fly, AWS and Vercel account acceptance remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -7399,3 +7402,32 @@ same routes. All six responses returned 200 with no badge script. This matches
 the earlier client-dependent behavior and is **not** a new browser hydration
 pass. The migration blocker remains unresolved; no site/domain changed. See
 [the HTTP follow-up evidence](specs/evidence/zellij-netlify-html-followup-2026-11-10.json).
+
+
+### 2026-11-10 — Vercel token verified; Pro trial team still needed
+
+The user supplied the team slug `my-life-inc-s-projects` and confirmed saving
+`ZEL_LIVE_VERCEL_TOKEN`. Read-only Actions run `42964231875`, source `2876459`,
+resolved it to `team_JYk8MJycfmZ3sldE048ljr7Z` and verified token access. Vercel
+reported `billing.plan=hobby`, `billing.status=active`, and no trial. No test
+project or deployment was created. Credentials stayed inside Actions; only
+selected non-secret identity/plan fields were logged.
+
+The user was asked to create a temporary **Pro Trial** team without adding a
+payment method, replace that existing secret with a token scoped to the trial
+team, and send the new slug. This follows the agreed free-trial test setup and
+Vercel's restriction of Hobby to personal, non-commercial use. Do not silently
+enable a paid plan. Browser control was retried and still failed before opening
+a page; its diagnostic identifies the Codex session's symlinked writable root.
+No Codex security setting was changed.
+
+Temporary branch `codex/vercel-account-preflight` contains a read-only version
+of the existing dispatch workflow, solely to resolve the user-supplied slug.
+It is not merged and must not replace the normal acceptance workflow. It can
+resolve the replacement team's slug, then be removed after the account handoff
+is complete. Current main's tested Vercel workflow remains unchanged.
+
+PR #116's post-merge CI `42942094151` passed all 16 jobs, and Base image
+`42942094126` passed all 13 jobs on `d1d5b70`. This closes their earlier queued
+snapshot. Actual live Vercel cases remain unrun. See [account preflight](specs/evidence/zellij-vercel-account-preflight-2026-11-10.json)
+and [upload-fix verification](specs/evidence/zellij-vercel-upload-2026-11-10.json).
