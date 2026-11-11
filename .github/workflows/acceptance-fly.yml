@@ -1,0 +1,104 @@
+name: Fly disposable live acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: Dedicated trial organization slug; token belongs in ZEL_LIVE_FLY_TOKEN
+        required: true
+        type: string
+      region:
+        description: Region for the disposable web Machine
+        default: iad
+        required: true
+        type: string
+      trial_confirmed:
+        description: Confirm this organization has an active trial without a payment method
+        default: false
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  fly:
+    if: ${{ github.repository == 'mylife-inc/Zellij' && inputs.trial_confirmed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 55
+    concurrency:
+      group: zellij-live-fly-acceptance
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Verify disposable app lifecycle guards
+        run: node --test scripts/check-fly-live.test.mjs
+      - name: Build current zel
+        run: cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Warm image builds before starting trial compute
+        timeout-minutes: 15
+        env:
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+        run: |
+          cli/target/debug/zel si --config scripts/fixtures/release-delivery/portable/portable.yaml --tag zellij-fly-warm-static
+          cli/target/debug/zel ni --config scripts/fixtures/release-delivery/hosted/hosted.yaml --tag zellij-fly-warm-next
+      - name: Authenticate the Fly registry without command-line credentials
+        env:
+          FLY_API_TOKEN: ${{ secrets.ZEL_LIVE_FLY_TOKEN }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {spawnSync} from 'node:child_process';
+          import {tokenParts} from './scripts/check-fly-live.mjs';
+          const {raw} = tokenParts(process.env.FLY_API_TOKEN);
+          const result = spawnSync('docker',['login','registry.fly.io','--username','x','--password-stdin'], {input:raw+'\n',encoding:'utf8',timeout:30000});
+          assert.equal(result.status,0,'Fly registry login failed; provider output omitted');
+          JS
+      - name: Create one disposable app and healthy web Machine
+        id: create
+        timeout-minutes: 10
+        env:
+          FLY_API_TOKEN: ${{ secrets.ZEL_LIVE_FLY_TOKEN }}
+          FLY_ORG: ${{ inputs.organization }}
+          FLY_REGION: ${{ inputs.region }}
+          ZEL_FLY_TRIAL_CONFIRMED: ${{ inputs.trial_confirmed }}
+        run: node scripts/check-fly-live.mjs create "$RUNNER_TEMP/fly-live-evidence.json"
+      - name: Test portable static and hosted Next image deployments
+        timeout-minutes: 15
+        env:
+          FLY_API_TOKEN: ${{ secrets.ZEL_LIVE_FLY_TOKEN }}
+          FLY_ORG: ${{ inputs.organization }}
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+        run: node scripts/check-fly-live.mjs exercise "$RUNNER_TEMP/fly-live-evidence.json" cli/target/debug/zel
+      - name: Remove the confirmed temporary app and verify deletion
+        if: ${{ always() && steps.create.outcome != 'skipped' }}
+        timeout-minutes: 5
+        env:
+          FLY_API_TOKEN: ${{ secrets.ZEL_LIVE_FLY_TOKEN }}
+          FLY_ORG: ${{ inputs.organization }}
+        run: |
+          if [ -f "$RUNNER_TEMP/fly-live-evidence.json" ]; then
+            node scripts/check-fly-live.mjs cleanup "$RUNNER_TEMP/fly-live-evidence.json"
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: fly-live-evidence
+          path: ${{ runner.temp }}/fly-live-evidence.json
+          if-no-files-found: warn
+          retention-days: 14

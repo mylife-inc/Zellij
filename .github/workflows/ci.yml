@@ -87,7 +87,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/preview-client.test.mjs
+      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs scripts/check-delivery-http.test.mjs scripts/check-live-providers.test.mjs scripts/check-vercel-live.test.mjs scripts/check-fly-live.test.mjs scripts/preview-client.test.mjs
       - run: npm audit --audit-level=low
       - run: npm run typecheck
       - run: npm test
