@@ -22,14 +22,31 @@
     "actionlint": "passed"
   },
   "ci": {
-    "status": "pending"
+    "status": "passed",
+    "run": 42983924584,
+    "jobsPassed": 16,
+    "finalHead": "3d324906b451bd8fd0d1f97a24bc36526e517914",
+    "pr": 121,
+    "coverage": [
+      "Six native build/install targets",
+      "Linux/macOS/Windows portable browser checks, including macOS WebKit preview navigation",
+      "Both Linux image architectures and combined manifests",
+      "Hosted Sphinx exclusion fixture retains 13 routes without parsing excluded documents",
+      "Full CLI container/export/preview/deployment/ship regression suite"
+    ]
   },
   "priorPostMerge": {
     "run": 42970277215,
-    "initialFailures": "Two transient npm tarball 404s and one WebKit navigation pageError; targeted unchanged-source retry in progress.",
+    "initialFailures": "Two transient npm tarball 404s and one WebKit navigation pageError; failure details retained in the referenced evidence.",
     "baseImageRun": 42970277159,
     "baseImageJobsPassed": 13,
-    "reference": "zellij-sphinx-toctree-2026-11-10.json"
+    "reference": "zellij-sphinx-toctree-2026-11-10.json",
+    "retry": {
+      "status": "passed",
+      "attempt": 2,
+      "jobsPassed": 16,
+      "sourceUnchanged": true
+    }
   },
   "limits": [
     "Only default include_patterns remains supported",
@@ -42,5 +59,30 @@
     "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py",
     "https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event",
     "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
-  ]
+  ],
+  "merge": {
+    "commit": "48f95c96b672aefe7ba4ed3dd407d9748613009e",
+    "tree": "d2021f5c07d17b68e28cb66f88a9fe249d333c53",
+    "matchesTestedTree": true
+  },
+  "postMerge": {
+    "status": "passed",
+    "source": "48f95c96b672aefe7ba4ed3dd407d9748613009e",
+    "runs": [
+      {
+        "run": 42988073094,
+        "name": "Base image",
+        "status": "passed",
+        "jobsPassed": 13,
+        "attempt": 1
+      },
+      {
+        "run": 42988073228,
+        "name": "CI",
+        "status": "passed",
+        "jobsPassed": 16,
+        "attempt": 1
+      }
+    ]
+  }
 }
