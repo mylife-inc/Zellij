@@ -1,0 +1,88 @@
+name: S3 disposable live acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      account_id:
+        description: Dedicated AWS account ID; credentials belong in ZEL_LIVE_AWS_* secrets
+        required: true
+        type: string
+      account_confirmed:
+        description: Confirm this account permits a public test website and its request/storage costs
+        default: false
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  s3:
+    if: ${{ github.repository == 'mylife-inc/Zellij' && inputs.account_confirmed }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: zellij-live-s3-acceptance
+      cancel-in-progress: false
+    env:
+      S3_EXPECTED_BUCKET_OWNER: ${{ inputs.account_id }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Verify disposable bucket lifecycle guards
+        run: node --test scripts/check-s3-live.test.mjs
+      - name: Build current zel
+        run: cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Prepare hosted runtime and fixture administration tool
+        run: |
+          aws --version
+          docker pull ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+      - name: Create a uniquely named disposable website bucket
+        id: create
+        timeout-minutes: 5
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ZEL_LIVE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ZEL_LIVE_AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.ZEL_LIVE_AWS_SESSION_TOKEN }}
+          ZEL_S3_ACCOUNT_CONFIRMED: ${{ inputs.account_confirmed }}
+        run: node scripts/check-s3-live.mjs create "$RUNNER_TEMP/s3-live-evidence.json"
+      - name: Test portable and hosted first uploads and conditional replacements
+        timeout-minutes: 20
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ZEL_LIVE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ZEL_LIVE_AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.ZEL_LIVE_AWS_SESSION_TOKEN }}
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+        run: node scripts/check-s3-live.mjs exercise "$RUNNER_TEMP/s3-live-evidence.json" cli/target/debug/zel
+      - name: Remove confirmed fixture objects and bucket, and verify deletion
+        if: ${{ always() && steps.create.outcome != 'skipped' }}
+        timeout-minutes: 10
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.ZEL_LIVE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.ZEL_LIVE_AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.ZEL_LIVE_AWS_SESSION_TOKEN }}
+        run: |
+          if [ -f "$RUNNER_TEMP/s3-live-evidence.json" ]; then
+            node scripts/check-s3-live.mjs cleanup "$RUNNER_TEMP/s3-live-evidence.json"
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: s3-live-evidence
+          path: ${{ runner.temp }}/s3-live-evidence.json
+          if-no-files-found: warn
+          retention-days: 14

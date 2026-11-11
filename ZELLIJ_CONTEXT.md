@@ -3,6 +3,8 @@
 Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
+
 Current implementation: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.
@@ -7620,3 +7622,53 @@ source-generator/plugin/theme parity was asked about separately and is not
 assumed. The broader completion audit and external acceptance remain ongoing.
 Vercel live verification stays explicitly deferred, and there is no zero-bug
 claim or authorization for a new release/domain migration.
+
+
+### 2026-11-11 — Disposable Fly acceptance prepared
+
+Source `b6a78de7c212f52bf98167aa055952ca5651be67` adds a manual Fly
+acceptance workflow and a journaled lifecycle harness. It creates one isolated
+temporary app with shared IPv4 and a small web Machine, exercises real portable
+static and hosted Next deployments, checks public HTTP content, and verifies
+app deletion by API 404. Identity changes, name collisions and ambiguous creation
+fail explicitly; cleanup never guesses ownership. Images build before trial
+compute starts, and only the known fixture restarts between cases.
+
+All 10 lifecycle tests and all 60 helper tests pass; actionlint passes. PR CI
+and live Fly verification are pending. No account or remote resource was
+created. Browser initialization still fails on the symlinked Codex writable
+root, so the external acceptance runbook contains the necessary account-side
+steps. The token must be scoped to an eligible no-card trial organization and
+saved directly in Actions; no payment method is authorized. Vercel stays
+user-deferred. S3 and actual GitLab/CircleCI runner acceptance remain open.
+
+See [external acceptance](specs/zel-external-acceptance-2026-11-10.md) and
+[the completion gates](specs/zel-cli-completion-2026-11-11.md). The original
+command contract uses conservative, non-executing importers; extending source
+plugins/themes is separate from command-handler completion. The user's scope
+clarification is still pending; no completion or zero-bug claim is made.
+
+### 2026-11-11 — Sphinx merged; disposable S3 acceptance prepared
+
+[PR #123](https://github.com/mylife-inc/Zellij/pull/123) passed all 16 jobs in
+run `42998033906` at head `99d6449b03172f34c291d166afa41423d8fa91bb` and merged
+as `872db136bd7cf10e3722b9c05d180881a7e4d799`. The merged tree exactly matches
+the tested tree `f465fe23f4950675e734bfcae35ba6b499af8417`. Post-merge CI
+`43002975098` and Base image `43002974973` are pending. Earlier pending notes
+above are retained as dated snapshots; the inclusion evidence has the closure.
+
+Source `11232ba8756e696a729ef0ff5b11573f14203285` prepares a manual S3
+acceptance workflow and ten lifecycle tests. It creates one owned, tagged
+`us-east-2` fixture bucket, runs portable/hosted first and replacement uploads,
+checks public HTTP content and verifies bounded object/bucket cleanup. Existing
+bucket names, account-policy blocks, versioning/tag changes and uncertain
+creation fail explicitly. Account-wide settings remain read-only. AWS CLI is
+used only to administer the fixture; the product has no new runtime dependency.
+The restricted IAM policy and account/secret instructions are in the external
+acceptance runbook. No AWS signup or cloud operation occurred.
+
+All 70 helper tests and actionlint pass locally. Fly/S3 PR CI and both live
+checks remain pending, with actual GitLab/CircleCI runner acceptance still open.
+All registered command families have implementation handlers; supported import
+subsets remain explicit. No additional release or production-site migration is
+authorized or claimed complete.
