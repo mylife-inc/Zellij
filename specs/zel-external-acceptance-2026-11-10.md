@@ -103,3 +103,18 @@ Official signup references:
 [AWS Free Tier](https://aws.amazon.com/free/free-tier-faqs/),
 [GitLab verification](https://docs.gitlab.com/security/identity_verification/),
 [CircleCI signup](https://circleci.com/docs/guides/getting-started/first-steps/).
+
+
+## Account handoff result — 2026-11-10
+
+The token works. Read-only run `42964231875` resolved `my-life-inc-s-projects`
+to `team_JYk8MJycfmZ3sldE048ljr7Z`, but this team is on active Hobby with no
+trial. The user was asked to create a Pro Trial team, update the same secret
+with a token scoped to it, and send its slug. No projects/deployments were
+created. Browser control still cannot initialize in this Codex session.
+
+The temporary `codex/vercel-account-preflight` branch makes GET requests only.
+It can resolve the new slug without retrieving the token from Actions. Do not
+merge that operational branch into main; retain the tested lifecycle workflow
+on main and remove the operational branch after this handoff is complete.
+See [the account evidence](evidence/zellij-vercel-account-preflight-2026-11-10.json).
