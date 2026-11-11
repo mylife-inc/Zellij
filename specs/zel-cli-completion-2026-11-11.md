@@ -123,8 +123,10 @@ needed for the current release. See [the external runbook](zel-external-acceptan
   These limits are disclosed, not counted as implemented parity. Broader
   source-generator parity would require a separate scope decision.
 - **Full documentation hosting:** Netlify's inserted-comment hydration problem
-  has an engine remedy under hosted regression testing; see the
-  [hydration report](zellij-netlify-hydration-2026-11-02.md). Live verification
+  has a source fix in PR #129 (`360cb40`), with all 16 CI jobs passing and all
+  55 routes tolerating the controlled mutation. See the
+  [hydration report](zellij-netlify-hydration-2026-11-02.md). The fix is newer
+  than rc.3 and has not been published as a new artifact. Live verification
   still blocks production migration. Small CLI deployment-fixture success does
   not close it. Preserve the old production site and domain.
 - **Zero bugs:** passing regression and acceptance gates is evidence of tested
