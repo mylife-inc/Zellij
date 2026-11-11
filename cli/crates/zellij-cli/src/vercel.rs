@@ -190,8 +190,11 @@ impl Client {
         deadline: Instant,
     ) -> Result<T> {
         let bytes = self.send(request, stage, deadline)?;
+        Self::parse_json(&bytes, stage)
+    }
+    fn parse_json<T: serde::de::DeserializeOwned>(bytes: &[u8], stage: &str) -> Result<T> {
         // Do not expose response bodies (which can echo credentials/user data).
-        let value: Value = serde_json::from_slice(&bytes)
+        let value: Value = serde_json::from_slice(bytes)
             .map_err(|_| failed(format!("{stage}: invalid API response")))?;
         if value.get("error").is_some_and(|e| !e.is_null()) {
             return Err(failed(format!(
@@ -199,6 +202,16 @@ impl Client {
             )));
         }
         serde_json::from_value(value).map_err(|_| failed(format!("{stage}: invalid API response")))
+    }
+    fn acknowledge_upload(&self, request: RequestBuilder, deadline: Instant) -> Result<()> {
+        // POST /v2/files documents HTTP 200 with an empty body. Some responses
+        // include an object (eg. urls); validate those without requiring JSON
+        // for the empty acknowledgement. Identity/status endpoints stay strict.
+        let bytes = self.send(request, "asset upload", deadline)?;
+        if !bytes.is_empty() {
+            let _: serde_json::Map<String, Value> = Self::parse_json(&bytes, "asset upload")?;
+        }
+        Ok(())
     }
     pub fn check_project(&self, name: &str, production: bool) -> Result<Target> {
         Provider::Vercel.validate_site(name)?;
@@ -234,12 +247,11 @@ impl Client {
                     "generated export changed during upload; no deployment was created",
                 ));
             }
-            let _: Value = self.json(
+            self.acknowledge_upload(
                 self.request(Method::POST, &["v2", "files"])
                     .header("x-vercel-digest", sha)
                     .header(header::CONTENT_TYPE, "application/octet-stream")
                     .body(bytes),
-                "asset upload",
                 deadline,
             )?;
         }

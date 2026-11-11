@@ -1,0 +1,72 @@
+name: Vercel disposable live acceptance
+
+on:
+  workflow_dispatch:
+    inputs:
+      team_id:
+        description: Temporary Vercel team ID (team_…); the token belongs in ZEL_LIVE_VERCEL_TOKEN
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  vercel:
+    if: ${{ github.repository == 'mylife-inc/Zellij' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: zellij-live-vercel-acceptance
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Verify disposable project lifecycle guards
+        run: node --test scripts/check-vercel-live.test.mjs
+      - name: Build current zel
+        run: cargo build --manifest-path cli/Cargo.toml --locked -p zellij-cli
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create a disposable project with public previews
+        id: create
+        env:
+          VERCEL_TOKEN: ${{ secrets.ZEL_LIVE_VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ inputs.team_id }}
+        run: node scripts/check-vercel-live.mjs create "$RUNNER_TEMP/vercel-live-evidence.json"
+      - name: Test portable and hosted preview and production deployments
+        timeout-minutes: 25
+        env:
+          VERCEL_TOKEN: ${{ secrets.ZEL_LIVE_VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ inputs.team_id }}
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+        run: node scripts/check-vercel-live.mjs exercise "$RUNNER_TEMP/vercel-live-evidence.json" cli/target/debug/zel
+      - name: Remove the confirmed temporary project and verify deletion
+        if: ${{ always() && steps.create.outcome != 'skipped' }}
+        timeout-minutes: 5
+        env:
+          VERCEL_TOKEN: ${{ secrets.ZEL_LIVE_VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ inputs.team_id }}
+        run: |
+          if [ -f "$RUNNER_TEMP/vercel-live-evidence.json" ]; then
+            node scripts/check-vercel-live.mjs cleanup "$RUNNER_TEMP/vercel-live-evidence.json"
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: vercel-live-evidence
+          path: ${{ runner.temp }}/vercel-live-evidence.json
+          if-no-files-found: warn
+          retention-days: 14

@@ -6292,3 +6292,59 @@ remains unchanged. Existing include limits, pending live Fly/Vercel/S3 and
 GitLab/CircleCI runner acceptance, and the reported Netlify hosting-comment
 hydration issue remain open. No local Docker/browser/GUI or live provider
 deployment ran for this milestone.
+
+
+### 2026-11-10 — Vercel live acceptance preparation and Sphinx post-merge closure
+
+PR #114's previously pending post-merge workflows both passed on
+`ee866afd634cea5107941520c231bdc3fa6b270d`: CI `42930701772` passed 16 jobs and
+Base image `42930701756` passed 13. The Sphinx evidence retains the earlier
+queued/in-progress snapshot and now records this closure separately.
+
+The user authorized temporary accounts for remaining external verification.
+Browser control failed twice before opening a signup page. No account, paid
+plan or provider resource was created. Vercel team signup/token setup was
+requested as the first handoff; the other provider trials should begin when
+their tests are ready. Credentials belong in Actions secrets, never chat or
+committed files.
+
+Implementation `9c2510de1e2f3b720d60c9fe910ebe04b52e4d7e` adds a manual Vercel
+workflow that builds current zel, creates a new disposable project, runs four
+portable/hosted preview/production HTTP cases, then independently deletes the
+confirmed project and verifies API 404. Project name, ID and team are checked
+before deletion. Name collisions never modify existing projects; uncertain
+create outcomes retain a recovery journal and require inspection. Public
+previews apply only to the new fixture. The workflow does not delete accounts
+or teams. Forced runner loss/cancellation can still require manual cleanup.
+
+Validation passed 47 release/delivery helper tests, including 11 new lifecycle
+regressions, plus actionlint for both changed workflows and `git diff --check`.
+These are local simulated API/HTTP tests, not live Vercel acceptance. PR CI and
+live account execution are still pending at this refresh. Rust/engine behavior
+and published rc.2 are unchanged. Vercel/S3/Fly live tests, GitLab/CircleCI runner
+acceptance, advanced import limits and the Netlify hosting-comment hydration
+issue remain open. See [the external acceptance runbook](zel-external-acceptance-2026-11-10.md).
+
+
+### 2026-11-10 — Vercel empty-upload response defect fixed
+
+During external acceptance preparation, official Vercel documentation and its
+upload client confirmed that `POST /v2/files` succeeds with HTTP 200 and an empty
+body. The adapter incorrectly required JSON. Replacing the local fixture's
+upload response with an empty body reproduced `asset upload: invalid API
+response` before creating a deployment.
+
+Fix `36028b4a2a2a39a0bf914fc4be90947e3c02959f` accepts empty successful upload
+acknowledgements and JSON objects. Project preflight, deployment creation and
+status still require valid JSON; malformed/error/oversized upload responses,
+HTTP failures and redirects retain their failure behavior. Both the native and
+hosted export fixtures now exercise empty upload acknowledgements. The CLI
+reference and external acceptance runbook describe the fix as newer than rc.2.
+
+Verification passed **704 Rust tests**, with 5 hosted-only cases reserved for
+CI, warnings-denied Clippy, formatting and strict/deep documentation checks
+(55 routes / 23 examples). The 47 helper tests and actionlint passed for the
+unchanged acceptance harness/workflows. Initial PR #116 CI `42937801644` on
+`03fe013` predates this adapter fix and does not validate it. Fresh final-head
+CI and live account acceptance remain pending. No account or provider resource
+was created, and published rc.2 remains unchanged. See [the evidence](evidence/zellij-vercel-upload-2026-11-10.json).
