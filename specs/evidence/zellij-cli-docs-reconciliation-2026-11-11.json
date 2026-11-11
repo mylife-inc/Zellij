@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-11",
+  "implementation": "e3a78b458227c18d0d1ead147378833df3859b3b",
+  "scope": "Active CLI reference and quickstart corrections; historical audits retained",
+  "corrected": [
+    "Published rc.2 was still described as unpublished in CI sections",
+    "Implemented providers, new app, --open and browser reload were described as planned",
+    "Quickstart used the old flat layout and omitted custom site selectors",
+    "Page creation was incorrectly described as editing pages.yaml",
+    "Migration lab removed originals before rendering review and advertised docs/ as the default site root",
+    "Loose Markdown lacked the existing native portable path in migration advice",
+    "Wrapper extraction copied /app without its engine; documented zel eject/new app instead",
+    "Section counts and generic command-stub warnings were obsolete"
+  ],
+  "local": {
+    "nativeScaffolding": "new docs --guide, new page with explicit site root, and new guide with explicit site root executed in a disposable directory",
+    "strictDeepValidation": "passed",
+    "documentationRoutes": 55,
+    "sectionExamples": 23,
+    "changedPagesRendered": 14,
+    "publishedHeadingIdsPreserved": 89,
+    "renderer": "Actual engine MDX pipeline and React streaming SSR in Node; no local browser or container",
+    "diffCheck": "passed"
+  },
+  "ci": { "status": "pending" },
+  "limits": [
+    "Node MDX rendering does not replace Next/browser hydration acceptance; existing CI supplies that gate",
+    "A synchronous local SSR attempt could not handle async code blocks; streaming SSR passed every edited page",
+    "An attempted all-guide Node render reached unedited Next-dependent section previews; the successful check is scoped to the 14 edited pages",
+    "No provider account, live deployment, release publication or production-domain migration was performed"
+  ]
+}
