@@ -128,3 +128,72 @@ It can resolve the new slug without retrieving the token from Actions. Do not
 merge that operational branch into main; retain the tested lifecycle workflow
 on main and remove the operational branch after this handoff is complete.
 See [the account evidence](evidence/zellij-vercel-account-preflight-2026-11-10.json).
+
+
+## Fly: disposable acceptance prepared — 2026-11-11
+
+Source `b6a78de7c212f52bf98167aa055952ca5651be67` adds
+[the manual workflow](../.github/workflows/acceptance-fly.yml) and
+[lifecycle harness](../scripts/check-fly-live.mjs). Ten isolated lifecycle tests
+pass; the complete helper gate passes 60 tests and actionlint passes. This is
+preparation, **not live Fly acceptance**. Cross-platform PR CI is still pending.
+
+The workflow warms both image builds before starting trial compute. It creates
+one randomly named app in the explicitly selected organization, with an isolated
+private network, a shared IPv4 address and one shared-CPU/512-MiB web Machine.
+It copies the pinned rc.2 acceptance image into that app's registry for initial
+health, then runs the real current CLI for portable static and hosted Next
+deployments. Public HTTP checks cover pages, exact logo bytes, rendered assets,
+missing routes and source-file isolation. These are not browser hydration tests.
+
+Trial Machines currently stop after five minutes. The fixture is stopped and
+started before each case to reset its test window; the harness never restarts
+or retries a deployment midway. Prewarming reduces build time but does not
+guarantee a case fits the trial window. If the trial prevents acceptance, record
+that limit and settle the next step before using a paid plan.
+
+`always()` cleanup deletes only the app identified by its confirmed creation
+receipt, matching ID/name/organization, and polls until the API returns 404.
+The app deletion covers its Machine and assigned networking. Image digests are
+recorded; physical registry-blob garbage collection is provider-managed and is
+not independently verified. The account/organization is never deleted by this
+workflow. Name collisions cause no writes. An ambiguous app-creation outcome
+without a receipt requires manual inspection; no deletion by guessed name runs.
+Runner loss or forced cancellation can prevent cleanup: retain the journal and
+inspect only its recorded organization/app before any manual deletion.
+
+### One-time account prerequisite
+
+Browser automation was retried on 2026-11-11 but failed before opening any page
+because Codex's writable-root configuration traverses the `~/.codex` symlink.
+No account, token, subscription, app or Machine was created in that attempt.
+This is an environment failure, not an approval rejection.
+
+1. Open [Fly signup](https://fly.io/app/sign-up) with the intended GitHub identity.
+   Use an eligible no-card trial. If unavailable, stop before adding a payment
+   method; do not create extra identities to bypass trial eligibility.
+2. Note the trial organization's slug and confirm its trial is active without
+   a payment method. Use a dedicated test organization when available.
+3. Authenticate the official Fly CLI to that account, then create an expiring
+   organization-scoped token:
+
+   ```sh
+   fly tokens create org --org YOUR_ORG_SLUG --name zellij-cli-acceptance --expiry 24h
+   ```
+
+4. Save the token directly as `ZEL_LIVE_FLY_TOKEN` in
+   [Zellij Actions secrets](https://github.com/mylife-inc/Zellij/settings/secrets/actions).
+   Send only the organization slug and trial confirmation in chat. Never send
+   the token. App-scoped tokens cannot provision the disposable app.
+5. Dispatch the reviewed workflow with that organization, an available region
+   (default `iad`), and `trial_confirmed=true`. The workflow never accepts a token
+   as an input or writes it into evidence. No custom domains or existing apps
+   are changed.
+6. Record both cases and confirmed cleanup from `fly-live-evidence`; remove the
+   temporary Actions secret and revoke the token when testing finishes. Account
+   deletion, if requested, must first verify it holds only this test's data.
+
+References checked: [trial limits](https://fly.io/docs/about/free-trial/),
+[app creation and deletion](https://docs.fly.io/machines/api/apps-resource),
+[Machine configuration and lifecycle](https://docs.fly.io/machines/api/machines-resource),
+[organization tokens](https://fly.io/docs/security/tokens/).

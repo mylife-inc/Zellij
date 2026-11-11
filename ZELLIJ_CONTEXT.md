@@ -3,6 +3,8 @@
 Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
+
 Current implementation: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.
@@ -7620,3 +7622,28 @@ source-generator/plugin/theme parity was asked about separately and is not
 assumed. The broader completion audit and external acceptance remain ongoing.
 Vercel live verification stays explicitly deferred, and there is no zero-bug
 claim or authorization for a new release/domain migration.
+
+
+### 2026-11-11 — Disposable Fly acceptance prepared
+
+Source `b6a78de7c212f52bf98167aa055952ca5651be67` adds a manual Fly
+acceptance workflow and a journaled lifecycle harness. It creates one isolated
+temporary app with shared IPv4 and a small web Machine, exercises real portable
+static and hosted Next deployments, checks public HTTP content, and verifies
+app deletion by API 404. Identity changes, name collisions and ambiguous creation
+fail explicitly; cleanup never guesses ownership. Images build before trial
+compute starts, and only the known fixture restarts between cases.
+
+All 10 lifecycle tests and all 60 helper tests pass; actionlint passes. PR CI
+and live Fly verification are pending. No account or remote resource was
+created. Browser initialization still fails on the symlinked Codex writable
+root, so the external acceptance runbook contains the necessary account-side
+steps. The token must be scoped to an eligible no-card trial organization and
+saved directly in Actions; no payment method is authorized. Vercel stays
+user-deferred. S3 and actual GitLab/CircleCI runner acceptance remain open.
+
+See [external acceptance](specs/zel-external-acceptance-2026-11-10.md) and
+[the completion gates](specs/zel-cli-completion-2026-11-11.md). The original
+command contract uses conservative, non-executing importers; extending source
+plugins/themes is separate from command-handler completion. The user's scope
+clarification is still pending; no completion or zero-bug claim is made.
