@@ -42,13 +42,21 @@ export async function checkImportedTables(output) {
       errors.push(`Unexpected external request: ${route.request().url()}`);
       return route.abort();
     });
-    assert.equal((await page.goto(`${origin}${prefix}/guide/tables`)).status(), 200);
+    assert.equal((await page.goto(`${origin}${prefix}/guide/patterns`)).status(), 200);
     // A neutral SSR label changes after useEffect. Waiting for load alone
     // would also pass a page whose scripts never hydrate.
     try {
       await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
     } finally { assert.deepEqual(errors, []); }
     const article = page.locator('article');
+    assert.deepEqual(await article.locator('a').evaluateAll(links => links.map(link => link.getAttribute('href'))), [
+      `${prefix}/guide/glob/page2`, `${prefix}/guide/glob/page1`,
+    ]);
+    await article.getByRole('link', {name:'Second matched page', exact:true}).click();
+    await page.waitForURL(`${origin}${prefix}/guide/glob/page2`);
+    await page.getByRole('heading', {name:'Second matched page', exact:true, level:1}).waitFor();
+    assert.equal((await page.goto(`${origin}${prefix}/guide/tables`)).status(), 200);
+    await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor();
     assert.equal(await article.locator('table').count(), 9);
     assert.equal(await article.getByRole('columnheader').count(), 19);
     assert.equal(await article.locator('table').nth(2).locator('th').count(), 0);

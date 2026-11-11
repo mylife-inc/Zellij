@@ -47,6 +47,8 @@ pub enum Block {
 pub struct Toc {
     pub caption: Option<String>,
     pub hidden: bool,
+    pub glob: bool,
+    pub reversed: bool,
     pub entries: Vec<(Option<String>, String)>,
 }
 #[derive(Debug)]
@@ -546,9 +548,11 @@ impl Parser<'_, '_> {
                                     toc.caption = Some(value.clone());
                                 },
                                 "hidden" if value.is_empty() => toc.hidden = true,
+                                "glob" if value.is_empty() => toc.glob = true,
+                                "reversed" if value.is_empty() => toc.reversed = true,
                                 "titlesonly" | "includehidden" if value.is_empty() => {},
                                 "maxdepth" if value.parse::<u32>().is_ok() => doc.notes.push("toctree maxdepth is presentation-only; the full document hierarchy is imported".into()),
-                                _ => return Err(invalid(format!("unsupported toctree option :{key}: (globs, numbering and custom transforms require manual migration)"))),
+                                _ => return Err(invalid(format!("unsupported toctree option :{key}: (numbering and custom transforms require manual migration; flags take no value)"))),
                             }
                             }
                             for entry in body.lines().filter(|l| !l.is_empty()) {

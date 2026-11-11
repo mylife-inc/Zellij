@@ -476,7 +476,7 @@ explicitly in a source copy before importing. Local image/download names are
 literal filenames: a filename containing `%20` remains distinct from one
 containing a space. This differs from URL escaping in ordinary website links.
 
-Navigation starts at `root_doc` (default `index`) and follows explicit
+Navigation starts at `root_doc` (default `index`) and follows
 `.. toctree::` entries in order. Relative document names resolve beside the
 containing page; `/name` resolves from the source root. Explicit titles,
 captions, nested document trees and `self` are supported. Hidden toctrees still
@@ -487,6 +487,38 @@ Missing/excluded targets, cycles and ambiguous destination routes fail before
 writes. Unlisted pages are reported and not published; add them to the source
 toctree if they should be imported. This differs from Sphinx's ability to build
 unlisted/orphan documents.
+
+Current source after `v0.2.0-rc.2` also accepts `:glob:` and `:reversed:` on
+toctrees. Both are flags without a value. For example:
+
+```rst
+.. toctree::
+   :glob:
+   :reversed:
+
+   release-notes/*
+```
+
+Patterns match case-sensitive source document names **without `.rst`**.
+Matches are sorted by name within each pattern, in the order the patterns
+appear. `*` and `?` stay within one directory; `**` can cross directories.
+`**/page` still requires a directory before `page`. Character classes such as
+`[a-c]` and `[!a-c]` are supported. Relative patterns use the owning document's
+directory, including when a toctree comes from an included fragment; `/` starts
+at the source root. Earlier explicit entries and earlier pattern matches are
+removed from later patterns in that same toctree. `:reversed:` then reverses
+the whole resulting list, including explicit/external entries; it also works
+without `:glob:`. Hidden trees use the same order in navigation.
+
+Globs omit the owning page, excluded/hidden/internal sources and reserved
+generated pages. A pattern with no remaining matches is reported and adds no
+entries. Explicitly titled wildcard entries such as `Title <pages/*>` are not
+expanded. A matched fragment still needs a page title; untitled fragments
+belong in `include` directives. Existing path, cycle and destination checks
+still apply. Patterns are limited to 4096 UTF-8 bytes after path resolution,
+and an import accepts at most 10,000 expanded matches. This adds **toctree**
+globs; `exclude_patterns` still accepts only explicit paths, and automatic
+section numbering still requires manual migration.
 
 Supported reStructuredText includes underline/overline headings, paragraphs,
 emphasis, strong text, inline literals, nested bullet/numbered lists, indented

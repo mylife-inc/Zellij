@@ -660,7 +660,7 @@ fn unsupported_rst_fails_before_any_output_without_interpreting_literal_code() {
         ".. include:: ../secret",
         ".. raw:: html\n\n   <script>run()</script>",
         ".. automodule:: app",
-        ".. toctree::\n   :glob:\n\n   *",
+        ".. toctree::\n   :glob: true\n\n   *",
         ".. toctree::\n   :numbered:\n\n   self",
         ".. image:: logo.svg\n   :width: 20",
         ":orphan:",
@@ -682,6 +682,171 @@ fn unsupported_rst_fails_before_any_output_without_interpreting_literal_code() {
         run(&s, &o, &[], 2);
         assert!(!o.exists(), "{text}");
     }
+}
+
+#[test]
+fn toctree_globs_expand_in_order_without_repeating_explicit_or_overlapping_matches() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    basic(&s);
+    write(
+        &s,
+        "conf.py",
+        "project='Docs'\nexclude_patterns=['private']\n",
+    );
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n   :glob:\n   :reversed:\n   :caption: Chapters\n\n   First <guide/b.rst>\n   guide/[a-c]\n   guide/*\n   guide/**\n   absent*\n   self\n   Web <https://example.test/?q=*>\n",
+    );
+    for (file, title) in [
+        ("guide/a.rst", "Alpha"),
+        ("guide/b.rst", "Beta"),
+        ("guide/c.rst", "Charlie"),
+        ("guide/z.rst", "Zulu"),
+        ("guide/deep/d.rst", "Deep"),
+    ] {
+        write(&s, file, format!("{title}\n{}\n", "=".repeat(title.len())));
+    }
+    // Broad globs must not publish private/internal documents or the owner.
+    for file in [
+        "guide/.hidden.rst",
+        "guide/_internal.rst",
+        "guide/search.rst",
+        "private/page.rst",
+    ] {
+        write(&s, file, "not a standalone document");
+    }
+    let r = run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/index.mdx");
+    let mut previous = 0;
+    for text in [
+        "[Web](<https://example.test/?q=*>)",
+        "[Home](</guide>)",
+        "[Deep](</guide/guide/deep/d>)",
+        "[Zulu](</guide/guide/z>)",
+        "[Charlie](</guide/guide/c>)",
+        "[Alpha](</guide/guide/a>)",
+        "[First](</guide/guide/b>)",
+    ] {
+        let position = body.find(text).unwrap_or_else(|| panic!("{text}: {body}"));
+        assert!(position >= previous, "wrong order: {body}");
+        assert_eq!(body.matches(text).count(), 1, "duplicate: {body}");
+        previous = position;
+    }
+    let nav = read(&o, "01-guide/_sidebar.yaml");
+    let positions: Vec<_> = ["guide/deep/d", "guide/z", "guide/c", "guide/a", "guide/b"]
+        .map(|target| {
+            nav.find(target)
+                .unwrap_or_else(|| panic!("{target}: {nav}"))
+        })
+        .into();
+    assert!(positions.windows(2).all(|p| p[0] < p[1]), "{nav}");
+    assert!(report(&r).contains("absent*"));
+    assert!(report(&r).contains("matched no remaining documents"));
+    assert!(!o.join("01-guide/private").exists());
+    let dry = t.path().join("dry");
+    run(&s, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+}
+
+#[test]
+fn toctree_globs_in_includes_use_owner_paths_and_independent_hidden_trees() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    write(&s, "conf.py", "project='Docs'\nroot_doc='guide/index'\n");
+    write(
+        &s,
+        "guide/index.rst",
+        "Home\n====\n\n.. include:: /fragments/nav.inc\n",
+    );
+    write(
+        &s,
+        "fragments/nav.inc",
+        ".. toctree::\n   :glob:\n\n   p?\n   /other/[!b]*\n   absent*.rst\n\n.. toctree::\n   :glob:\n   :reversed:\n   :hidden:\n   :caption: Hidden choices\n\n   /hidden/*\n\n.. toctree::\n   :reversed:\n\n   /manual/a\n   /manual/b\n",
+    );
+    for file in [
+        "guide/p1.rst",
+        "guide/p2.rst",
+        "other/apple.rst",
+        "hidden/one.rst",
+        "hidden/two.rst",
+        "manual/a.rst",
+        "manual/b.rst",
+    ] {
+        write(&s, file, "Page\n====\n");
+    }
+    for file in ["fragments/p3.rst", "other/banana.rst", "guide/deep/p4.rst"] {
+        write(&s, file, "unlisted fragment");
+    }
+    let r = run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/guide/index.mdx");
+    let links: Vec<_> = body
+        .lines()
+        .filter(|line| line.starts_with("- ["))
+        .collect();
+    assert_eq!(
+        links,
+        [
+            "- [Page](</guide/guide/p1>)",
+            "- [Page](</guide/guide/p2>)",
+            "- [Page](</guide/other/apple>)",
+            "- [Page](</guide/manual/b>)",
+            "- [Page](</guide/manual/a>)"
+        ]
+    );
+    let nav = read(&o, "01-guide/_sidebar.yaml");
+    assert!(nav.find("hidden/two").unwrap() < nav.find("hidden/one").unwrap());
+    assert!(!body.contains("Hidden choices"));
+    assert!(report(&r).contains("absent*.rst"));
+    assert!(!o.join("01-guide/fragments/p3.mdx").exists());
+    assert!(!o.join("01-guide/other/banana.mdx").exists());
+}
+
+#[test]
+fn toctree_globs_preserve_containment_cycles_and_failure_before_writes() {
+    for target in [
+        "../*",
+        "/../../*",
+        "//outside/*",
+        "C:/*",
+        "guide\\*",
+        "[z-a]",
+        "Named <guide/*>",
+        "guide/*",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        basic(&s);
+        write(
+            &s,
+            "index.rst",
+            format!("Home\n====\n\n.. toctree::\n   :glob:\n\n   {target}\n"),
+        );
+        write(
+            &s,
+            "guide/page.rst",
+            "Page\n====\n\n.. toctree::\n   :glob:\n\n   /*\n",
+        );
+        run(&s, &o, &[], 2);
+        assert!(!o.exists(), "{target}");
+    }
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n   :glob:\n\n   *\n",
+    );
+    // Matching a titleless include fragment must fail, never drop content.
+    write(&s, "fragment.rst", "Only a paragraph.");
+    run(&s, &o, &[], 2);
+    assert!(!o.exists());
 }
 
 #[test]
