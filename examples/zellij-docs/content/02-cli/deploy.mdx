@@ -176,6 +176,9 @@ are also rejected. Unicode, spaces and literal percent filenames are preserved.
 
 This initial adapter accepts at most **15,000 static files and 100 MiB total**;
 Vercel account limits may be lower. Identical files share one SHA-1 upload.
+Current source accepts Vercel's documented empty successful upload acknowledgements
+as well as JSON objects; this compatibility fix is newer than `v0.2.0-rc.2`.
+Project and deployment responses still require valid identity/status JSON.
 Requests use bounded timeouts, refuse redirects and omit provider response bodies
 from diagnostics. Creation requests are never automatically retried. An uncertain
 response or timeout may leave a deployment running remotely; check the dashboard

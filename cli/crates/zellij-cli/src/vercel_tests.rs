@@ -19,14 +19,23 @@ struct Request {
 }
 struct Reply {
     status: u16,
-    body: Value,
+    body: String,
     redirect: Option<String>,
 }
 impl From<Value> for Reply {
     fn from(body: Value) -> Self {
         Self {
             status: 200,
-            body,
+            body: body.to_string(),
+            redirect: None,
+        }
+    }
+}
+impl Reply {
+    fn raw(body: &str) -> Self {
+        Self {
+            status: 200,
+            body: body.into(),
             redirect: None,
         }
     }
@@ -79,7 +88,7 @@ impl Server {
                 let index = record.lock().unwrap().len();
                 let reply = handler(&request, index);
                 record.lock().unwrap().push(request);
-                let body = reply.body.to_string();
+                let body = reply.body;
                 let location = reply
                     .redirect
                     .map(|v| format!("Location: {v}\r\n"))
@@ -209,7 +218,7 @@ fn deployment_server(production: bool) -> Server {
                 assert_eq!(r.headers["x-vercel-digest"], hash(&r.body));
                 assert_eq!(r.headers["content-length"], r.body.len().to_string());
                 assert_eq!(r.headers["content-type"], "application/octet-stream");
-                json!({"urls":[]}).into()
+                Reply::raw("")
             }
             ("POST", "/v13/deployments") => {
                 assert!(r.path.contains("prebuilt=1"));
@@ -324,7 +333,7 @@ fn errors_are_redacted_redirects_refused_and_creation_not_retried() {
     for status in [301, 401, 403, 404, 429, 500] {
         let server = Server::new(move |_, _| Reply {
             status,
-            body: json!({"error":"fixture-token PRIVATE"}),
+            body: json!({"error":"fixture-token PRIVATE"}).to_string(),
             redirect: Some("http://127.0.0.1:1/leak".into()),
         });
         let error = server
@@ -345,7 +354,7 @@ fn errors_are_redacted_redirects_refused_and_creation_not_retried() {
         } else {
             Reply {
                 status: 500,
-                body: json!({"error":"PRIVATE"}),
+                body: json!({"error":"PRIVATE"}).to_string(),
                 redirect: None,
             }
         }
@@ -540,7 +549,7 @@ fn portable_delivery_preserves_authored_files_and_previous_output() {
     assert_eq!(server.requests.lock().unwrap().len(), count + 1);
     let deny = Server::new(|_, _| Reply {
         status: 404,
-        body: json!({}),
+        body: json!({}).to_string(),
         redirect: None,
     });
     let e = crate::delivery::deploy_vercel(
@@ -721,4 +730,89 @@ fn upload_api_error_stops_before_creation_and_large_responses_are_bounded() {
             .to_string()
             .contains("exceeded 8 MiB")
     );
+}
+
+#[test]
+fn upload_acknowledgements_accept_empty_or_objects_and_reject_invalid_bodies() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(root(&tmp), "index.html", "Docs");
+    for body in ["", "{}", r#"{"urls":[]}"#] {
+        let server = Server::new(move |r, _| {
+            if r.path.starts_with("/v2/files?") {
+                Reply::raw(body)
+            } else {
+                ready(false).into()
+            }
+        });
+        server.client().deploy(&target(false), root(&tmp)).unwrap();
+        assert_eq!(server.requests.lock().unwrap().len(), 3);
+    }
+    for body in [
+        "PRIVATE fixture-token",
+        " ",
+        "null",
+        "[]",
+        r#""PRIVATE""#,
+        r#"{"error":{"message":"PRIVATE fixture-token"}}"#,
+    ] {
+        let server = Server::new(move |_, _| Reply::raw(body));
+        let error = server
+            .client()
+            .deploy(&target(false), root(&tmp))
+            .err()
+            .unwrap()
+            .to_string();
+        assert!(error.contains("asset upload"), "{error}");
+        assert!(!error.contains("PRIVATE") && !error.contains("fixture-token"));
+        assert_eq!(server.requests.lock().unwrap().len(), 1);
+    }
+    for status in [301, 401, 403, 429, 500] {
+        let server = Server::new(move |_, _| Reply {
+            status,
+            ..Reply::raw("")
+        });
+        assert!(server.client().deploy(&target(false), root(&tmp)).is_err());
+        assert_eq!(server.requests.lock().unwrap().len(), 1);
+    }
+    let server = Server::new(|_, _| Reply::raw(&"x".repeat(RESPONSE_LIMIT as usize + 1)));
+    let error = server
+        .client()
+        .deploy(&target(false), root(&tmp))
+        .err()
+        .unwrap()
+        .to_string();
+    assert!(error.contains("asset upload") && error.contains("exceeded 8 MiB"));
+}
+
+#[test]
+fn empty_project_creation_and_status_responses_still_fail() {
+    let tmp = tempfile::tempdir().unwrap();
+    write(root(&tmp), "index.html", "Docs");
+    for (method, path, stage) in [
+        ("GET", "/v9/projects/manual", "project preflight"),
+        ("POST", "/v13/deployments", "create deployment"),
+        ("GET", "/v13/deployments/dpl_123", "deployment status"),
+    ] {
+        let server = Server::new(move |r, _| {
+            let current = r.path.split('?').next().unwrap();
+            if (r.method == method && current == path) || current == "/v2/files" {
+                Reply::raw("")
+            } else if current == "/v9/projects/manual" {
+                project().into()
+            } else {
+                ready(false).into()
+            }
+        });
+        let client = server.client();
+        let error = client
+            .check_project("manual", false)
+            .and_then(|target| client.deploy(&target, root(&tmp)))
+            .err()
+            .unwrap()
+            .to_string();
+        assert!(
+            error.contains(stage) && error.contains("invalid API response"),
+            "{error}"
+        );
+    }
 }
