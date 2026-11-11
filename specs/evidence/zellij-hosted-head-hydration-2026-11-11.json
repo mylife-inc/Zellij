@@ -1,0 +1,168 @@
+{
+  "observed_on": "2026-11-11 America/Los_Angeles",
+  "status": "controlled hosting mutation fixed; live Netlify verification deferred",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/129",
+  "tested_pr_head": "938a8bdeeaac3cfc63b7c351278167de4b8d6914",
+  "prior_failure": {
+    "source": "v0.2.0-rc.3 preparation",
+    "run": 43013070798,
+    "job": 130497393738,
+    "observed": "The real documentation checker rejected an added head newline with React hydration error 418. The plain site passed."
+  },
+  "local_checks": {
+    "engine_unit_tests": 458,
+    "root_layout_cases": 5,
+    "passed": [
+      "engine build",
+      "workspace TypeScript checks",
+      "strict/deep documentation validation: 55 routes, 23 examples",
+      "Node syntax checks",
+      "actionlint",
+      "git diff --check"
+    ]
+  },
+  "browser_regressions": {
+    "full_documentation": {
+      "engine_job": 130706589338,
+      "original_routes": 46,
+      "added_routes": 9,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "unchanged_images": 29,
+      "accepted": [
+        "plain export",
+        "LF before viewport metadata",
+        "hosting annotation with CRLF before viewport metadata"
+      ],
+      "rejected": [
+        "changed body text causing hydration error 418",
+        "uncaught browser exception",
+        "console-only error"
+      ]
+    },
+    "preferences": {
+      "showcase_job": 130706589356,
+      "browsers": [
+        "Chromium",
+        "WebKit"
+      ],
+      "head_mutation": "LF + hosting comment + LF before viewport metadata",
+      "cases": [
+        "all four enabled/disabled theme-control combinations",
+        "stored theme and mode restoration before hydration scripts load",
+        "navigation and reload",
+        "invalid and unavailable storage",
+        "system mode changes"
+      ]
+    },
+    "showcase": {
+      "passed": 317,
+      "skipped": 124,
+      "skip_count_matches_rc3_baseline": true
+    }
+  },
+  "implementation": {
+    "stylesheet": "React-managed inline style with precedence and SHA-256 content-derived href",
+    "bootstrap": "synchronous inline script before visible body content",
+    "no_new_warning_suppression": true,
+    "no_dependency_patch_or_DOM_cleanup": true
+  },
+  "boundaries": [
+    "No live provider requests or deployments were made.",
+    "Production migration still requires a later live Netlify browser check.",
+    "Published v0.2.0-rc.3 artifacts remain immutable and do not include this fix.",
+    "The documented CLI command surface remains implemented; regression success is not proof of zero undiscovered bugs."
+  ],
+  "pr_ci": {
+    "run": 43073305403,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43073305403",
+    "jobs": [
+      {
+        "id": 130706589016,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589190,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589210,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589215,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589338,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589345,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589356,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589426,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589471,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589618,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589864,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589887,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589890,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706589951,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130706590008,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 130708253309,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      }
+    ],
+    "reruns": 0,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "merge_commit": "360cb4067869bb7e0ffe59834beaeec6fe2cf3b8",
+  "tested_and_merged_tree": "8055f29d9ca59c42b6104fd83c3c057d4a01a053",
+  "merge_push_workflows": "Intentionally skipped for the identical tested tree; no new main image publication or release."
+}

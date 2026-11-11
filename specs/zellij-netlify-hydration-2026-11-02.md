@@ -158,3 +158,30 @@ disabled controls, unavailable/invalid storage and system mode changes.
 Hosted browser results are pending. This controlled reproduction does not replace
 a later live Netlify browser check. The production project, staging deployment,
 account settings and domain are unchanged; production migration remains deferred.
+
+## Controlled reproduction fixed — 2026-11-11
+
+[PR #129](https://github.com/mylife-inc/Zellij/pull/129) merged as
+`360cb4067869bb7e0ffe59834beaeec6fe2cf3b8`, with tree
+`8055f29d9ca59c42b6104fd83c3c057d4a01a053` identical to tested head
+`938a8bdeeaac3cfc63b7c351278167de4b8d6914`. All 16 jobs in
+[CI run 43073305403](https://github.com/mylife-inc/Zellij/actions/runs/43073305403)
+passed on the first attempt. Duplicate merge-push workflows were deliberately
+skipped for that identical tree; no new image or release was published.
+
+The real preservation command passed the plain build and both head-mutation
+cases across all 55 routes. It retained 282 original heading IDs, 82
+compatibility mappings and 29 byte-identical authored images. All three
+negative controls failed as expected. Chromium and WebKit passed the annotated
+preference fixtures and development reload checks. Showcase acceptance had 317
+passes and the same 124 existing skips as the rc.3 baseline. Native packages,
+portable sites, generated static/Next images, imported sites and CLI export
+checks also passed. Locally, 458 engine tests, the build, workspace typechecks,
+strict/deep docs validation and static checks passed.
+
+This supersedes the pending controlled-remedy status above. It does not claim
+live Netlify acceptance: that check and production migration remain deferred.
+The fix is available in source and requires an updated engine plus a site
+rebuild; immutable rc.3 artifacts do not contain it. The original observations
+and failed baseline remain part of this report. See the
+[machine-readable evidence](evidence/zellij-hosted-head-hydration-2026-11-11.json).
