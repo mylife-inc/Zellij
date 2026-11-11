@@ -49,7 +49,7 @@ a complete site.
 | --- | --- | --- |
 | `name` | string | **required** |
 | `tagline` | string |  |
-| `brand` | object { logo, title } | default `{}` |
+| `brand` | object { company, logo, title } | default `{}` |
 | `theme` | `midnight` \| `paper` \| `terracotta` \| `mono` \| `aurora` \| `slate` \| `forest` \| `sunburst` \| `carbon` \| `porcelain` \| `cupertino` \| `studio` \| `iris` \| `meridian` | default `"paper"` |
 | `mode` | `light` \| `dark` \| `system` | default `"system"` |
 | `motion` | `none` \| `subtle` \| `expressive` | default `"subtle"` |
@@ -67,8 +67,19 @@ a complete site.
 
 | field | type | |
 | --- | --- | --- |
+| `company` | object { src, dark, alt, href, newTab } |  |
 | `logo` | object { src, dark, alt, href, height } |  |
 | `title` | string |  |
+
+**`brand.company`**
+
+| field | type | |
+| --- | --- | --- |
+| `src` | string | **required** |
+| `dark` | string |  |
+| `alt` | string | **required** |
+| `href` | string | **required** |
+| `newTab` | boolean | default `false` |
 
 **`brand.logo`**
 

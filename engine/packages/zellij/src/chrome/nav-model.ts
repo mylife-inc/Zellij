@@ -27,6 +27,7 @@ export interface NavItemModel {
 export interface BrandModel {
   /** Fallback wordmark and the accessible name when no logo image is set. */
   siteName: string;
+  company?: { src: string; dark?: string; alt: string; href: string; newTab: boolean };
   logo?: {
     src: string;
     dark?: string;

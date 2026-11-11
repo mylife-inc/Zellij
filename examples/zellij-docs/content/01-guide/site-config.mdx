@@ -35,6 +35,12 @@ siteUrl: https://acme.example.com
 
 ```yaml
 brand:
+  company:                       # optional owner mark, before the product
+    src: assets/company.svg
+    dark: assets/company-dark.svg # optional, independent of the product logo
+    alt: Company website
+    href: https://company.example
+    newTab: true                 # false (default) uses the current tab
   logo:
     src: assets/logo.svg
     dark: assets/logo-dark.svg   # swapped in dark mode
@@ -47,6 +53,13 @@ A single logo is left alone in both modes. Supply `dark:` and the two are
 swapped — but a logo that only reads on a light background, with no dark
 variant, will be shown on a dark one unchanged.
 </Callout>
+
+`brand.company` and `brand.logo` are independent links. The company mark sits
+at the far left and opens its required HTTP(S) website URL; the product logo
+still opens the documentation home when `logo.href` is omitted. The company
+link uses `noopener noreferrer` when `newTab` is enabled. A company mark also
+works without a product image: the site name remains the home link.
+This separate company slot is newer than `v0.2.0-rc.3`.
 
 ## Look and feel
 

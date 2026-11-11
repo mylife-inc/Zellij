@@ -30,7 +30,20 @@ pub struct Markdown {
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Brand {
-    pub logo: Logo,
+    pub logo: Option<Logo>,
+    pub company: Option<Company>,
+}
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Company {
+    #[serde(deserialize_with = "text")]
+    pub src: String,
+    #[serde(deserialize_with = "text")]
+    pub alt: String,
+    #[serde(deserialize_with = "text")]
+    pub href: String,
+    #[serde(default, rename = "newTab")]
+    pub new_tab: bool,
 }
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -141,35 +154,56 @@ impl Config {
             crate::validate_theme(theme).map_err(|e| invalid(e.to_string()))?;
         }
         if let Some(brand) = &config.brand {
-            nonempty(&brand.logo.alt, "brand.logo.alt")?;
-            if let Some(url) = &brand.logo.href {
-                external(url, "brand.logo.href")?;
+            if let Some(logo) = &brand.logo {
+                nonempty(&logo.alt, "brand.logo.alt")?;
+                if let Some(url) = &logo.href {
+                    external(url, "brand.logo.href")?;
+                }
+            }
+            if let Some(company) = &brand.company {
+                nonempty(&company.alt, "brand.company.alt")?;
+                external(&company.href, "brand.company.href")?;
             }
         }
         Ok(config)
     }
 
-    pub fn logo(&self, root: &Utf8Path) -> Result<Option<(Utf8PathBuf, Vec<u8>)>> {
+    pub fn logos(&self, root: &Utf8Path) -> Result<Vec<(Utf8PathBuf, Vec<u8>)>> {
         let Some(brand) = &self.brand else {
-            return Ok(None);
+            return Ok(vec![]);
         };
-        let relative = Utf8Path::new(&brand.logo.src);
-        let file = regular(root, relative)?;
-        if relative.as_str().split('/').any(crate::ignored_name)
-            || relative
-                .components()
-                .next()
-                .is_some_and(|p| p.as_str().eq_ignore_ascii_case("_zellij"))
-            || mime_guess::from_path(relative)
-                .first_or_octet_stream()
-                .type_()
-                != "image"
+        let mut assets = vec![];
+        for (field, source) in brand
+            .logo
+            .as_ref()
+            .map(|logo| ("brand.logo.src", &logo.src))
+            .into_iter()
+            .chain(
+                brand
+                    .company
+                    .as_ref()
+                    .map(|company| ("brand.company.src", &company.src)),
+            )
         {
-            return Err(invalid(
-                "brand.logo.src must name a local image outside hidden/generated paths",
-            ));
+            let relative = Utf8Path::new(source);
+            let file = regular(root, relative)?;
+            if relative.as_str().split('/').any(crate::ignored_name)
+                || relative
+                    .components()
+                    .next()
+                    .is_some_and(|p| p.as_str().eq_ignore_ascii_case("_zellij"))
+                || mime_guess::from_path(relative)
+                    .first_or_octet_stream()
+                    .type_()
+                    != "image"
+            {
+                return Err(invalid(format!(
+                    "{field} must name a local image outside hidden/generated paths"
+                )));
+            }
+            assets.push((relative.to_owned(), fs::read(file)?));
         }
-        Ok(Some((relative.to_owned(), fs::read(file)?)))
+        Ok(assets)
     }
 }
 

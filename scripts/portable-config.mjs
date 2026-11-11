@@ -12,7 +12,7 @@ export async function checkConfiguration({ binary, root, env, engine, browser })
   const moved = path.join(root, `Moved configured 日本 ${engine}`);
   const config = `name: Acme reference\ntheme: forest\nbrand:\n  logo:\n    src: brand/company & mark.svg\n    alt: Acme company\n    href: https://example.com/company\nnav:\n  - page: README.md\n    label: Overview\n  - label: Getting started\n    children:\n      - page: guide/Start Here.md\n        label: Installation\n      - label: Reference\n        children:\n          - page: guide/api.md\n            label: API reference\n  - label: Company website\n    href: https://example.com/company\n`;
   const files = {
-    'zel.yaml': config,
+    'zel.yaml': config.replace('brand:\n', "brand:\n  company: {src: 'brand/company & mark.svg', alt: Parent company, href: 'https://parent.example/', newTab: true}\n"),
     'README.md': '# Configured home\n',
     'guide/Start Here.md': '# Install the product\n',
     'guide/api.md': '# API details\n',
@@ -48,6 +48,11 @@ export async function checkConfiguration({ binary, root, env, engine, browser })
     await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
     await expect(page.locator('.brand-logo')).toHaveAttribute('href', 'https://example.com/company');
     await expect(page.locator('.brand-logo img')).toHaveAttribute('alt', 'Acme company');
+    await expect(page.locator('.company-logo')).toHaveAttribute('href', 'https://parent.example/');
+    await expect(page.locator('.company-logo')).toHaveAttribute('target', '_blank');
+    await expect(page.locator('.company-logo')).toHaveAttribute('rel', 'noopener noreferrer');
+    assert.equal(await page.locator('.company-logo img').evaluate(img => img.complete && img.naturalWidth), 80);
+    assert(await page.locator('.brand-group').evaluate(group => group.firstElementChild.classList.contains('company-logo')));
     assert.equal(await page.locator('.brand-logo img').evaluate(img => img.complete && img.naturalWidth), 80);
     const nav = page.getByRole('navigation', { name: 'Documentation', exact: true });
     await expect(nav.getByRole('link')).toHaveText(['Overview', 'Installation', 'API reference', 'Company website']);
@@ -101,6 +106,7 @@ export async function checkConfiguration({ binary, root, env, engine, browser })
     await page.getByRole('navigation', { name: 'Documentation', exact: true }).getByRole('link', { name: 'Installation', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Install the product' })).toBeVisible();
     assert.equal(await page.locator('.brand-logo img').evaluate(img => img.complete && img.naturalWidth), 80);
+    assert.equal(await page.locator('.company-logo img').evaluate(img => img.complete && img.naturalWidth), 80);
   } finally { await noJS.close(); }
   assert(requests.every(url => ['file:', 'data:'].includes(new URL(url).protocol)), 'Configured output has no HTTP dependency');
   for (const [relative, text] of Object.entries(files)) assert.equal(await readFile(path.join(source, relative), 'utf8'), text);

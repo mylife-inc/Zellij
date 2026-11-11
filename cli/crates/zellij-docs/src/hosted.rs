@@ -342,22 +342,41 @@ pub(super) fn emit(
     }
     let mut site = json!({"name":name, "theme":theme, "mode":"system", "home":"manual", "nav":{"search":true,"themeToggle":true}});
     if let Some(brand) = &config.brand {
+        site["brand"] = if brand.logo.is_some() {
+            json!({"title":name})
+        } else {
+            json!({})
+        };
         // Hosted branding expects a filesystem reference. A fixed safe name
         // avoids interpreting # or % in an authored image filename as URL syntax.
-        let source = Utf8Path::new(&brand.logo.src);
-        let logo_path = format!(
-            "assets/portable-brand.{}",
-            source.extension().unwrap_or("img").to_ascii_lowercase()
-        );
-        let bytes = assets
-            .get(source)
-            .ok_or_else(|| Error::InvalidArgument("missing validated branding asset".into()))?;
-        files.insert(logo_path.clone().into(), bytes.clone());
-        let mut logo = json!({"src":logo_path, "alt":brand.logo.alt});
-        if let Some(href) = &brand.logo.href {
-            logo["href"] = json!(href);
+        if let Some(product_logo) = &brand.logo {
+            let source = Utf8Path::new(&product_logo.src);
+            let logo_path = format!(
+                "assets/portable-brand.{}",
+                source.extension().unwrap_or("img").to_ascii_lowercase()
+            );
+            let bytes = assets
+                .get(source)
+                .ok_or_else(|| Error::InvalidArgument("missing validated branding asset".into()))?;
+            files.insert(logo_path.clone().into(), bytes.clone());
+            let mut logo = json!({"src":logo_path, "alt":product_logo.alt});
+            if let Some(href) = &product_logo.href {
+                logo["href"] = json!(href);
+            }
+            site["brand"]["logo"] = logo;
         }
-        site["brand"] = json!({"title":name, "logo":logo});
+        if let Some(company) = &brand.company {
+            let source = Utf8Path::new(&company.src);
+            let logo_path = format!(
+                "assets/portable-company.{}",
+                source.extension().unwrap_or("img").to_ascii_lowercase()
+            );
+            let bytes = assets
+                .get(source)
+                .ok_or_else(|| Error::InvalidArgument("missing validated company asset".into()))?;
+            files.insert(logo_path.clone().into(), bytes.clone());
+            site["brand"]["company"] = json!({"src":logo_path, "alt":company.alt, "href":company.href, "newTab":company.new_tab});
+        }
     }
     json_file(&mut files, "site.yaml".into(), site)?;
     json_file(

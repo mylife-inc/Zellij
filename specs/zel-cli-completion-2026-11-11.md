@@ -11,6 +11,11 @@ All 16 final-head CI checks and all 29 release jobs passed. See the
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
+The user subsequently requested new branding, composable sections, site/book
+templates, PDF publishing and installation channels. These extend the earlier
+contract and remain a separate [expansion backlog](zellij-product-expansion-2026-11-11.md).
+The previous completion statement does not claim these new features are done.
+
 The user requested continuing until completion. The working target is the
 [agreed command contract](zel-cli-contract-2026-10-18.md), including conservative
 declarative importers. The original design explicitly declines computed source

@@ -3,6 +3,28 @@ use serde_json::Value;
 use std::fs;
 
 #[test]
+fn company_without_a_product_image_preserves_one_product_name_home_link() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(tmp.path()).unwrap();
+    let source = root.join("source");
+    fs::create_dir(&source).unwrap();
+    fs::write(source.join("README.md"), "# Product\n").unwrap();
+    fs::write(source.join("owner.SVG"), "<svg/>").unwrap();
+    fs::write(source.join("zel.yaml"), "name: Product\nbrand:\n  company: {src: owner.SVG, alt: Owner, href: 'https://owner.example'}\n").unwrap();
+    let out = root.join("hosted");
+    zellij_docs::adapt_hosted(&source, &out).unwrap();
+    let site: Value = serde_json::from_slice(&fs::read(out.join("site.yaml")).unwrap()).unwrap();
+    assert_eq!(
+        site["brand"]["company"]["src"],
+        "assets/portable-company.svg"
+    );
+    assert_eq!(site["brand"]["company"]["newTab"], false);
+    assert!(site["brand"]["logo"].is_null());
+    assert!(site["brand"]["title"].is_null());
+    assert!(out.join("assets/portable-company.svg").is_file());
+}
+
+#[test]
 fn adapter_preserves_pages_settings_literal_text_and_references() {
     let tmp = tempfile::tempdir().unwrap();
     let root = Utf8Path::from_path(tmp.path()).unwrap();
@@ -19,6 +41,8 @@ fn adapter_preserves_pages_settings_literal_text_and_references() {
     fs::write(source.join("content/logo #1%.svg"), "<svg/>").unwrap();
     fs::write(source.join("content/report.pdf"), b"%PDF-1.4\0bytes").unwrap();
     fs::write(source.join("content/unused.txt"), "private").unwrap();
+    let settings = fs::read_to_string(source.join("zel.yaml")).unwrap().replace("brand:\n", "brand:\n  company: {src: 'logo #1%.svg', alt: Owner, href: 'https://owner.example', newTab: true}\n");
+    fs::write(source.join("zel.yaml"), settings).unwrap();
     let out = root.join("adapted");
     let report = zellij_docs::adapt_hosted(&source, &out).unwrap();
     assert_eq!(report.pages, 3);
@@ -28,6 +52,16 @@ fn adapter_preserves_pages_settings_literal_text_and_references() {
     let site = read("site.yaml");
     assert_eq!(site["theme"], "forest");
     assert_eq!(site["brand"]["logo"]["src"], "assets/portable-brand.svg");
+    assert_eq!(
+        site["brand"]["company"]["src"],
+        "assets/portable-company.svg"
+    );
+    assert_eq!(site["brand"]["company"]["href"], "https://owner.example");
+    assert_eq!(site["brand"]["company"]["newTab"], true);
+    assert_eq!(
+        fs::read(out.join("assets/portable-company.svg")).unwrap(),
+        b"<svg/>"
+    );
     let sidebar = read("manual/_sidebar.yaml");
     assert_eq!(sidebar["nav"][0]["label"], "Start");
     assert_eq!(

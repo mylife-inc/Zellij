@@ -9,4 +9,5 @@ dialog{width:min(42rem,calc(100vw - 2rem));max-height:80dvh;padding:1.5rem;borde
 @media print{.header,.sidebar,.toc,.controls,.paging,dialog,footer,.breadcrumbs,.skip{display:none!important}.layout{display:block}main{max-width:none;padding:0}body{background:white;color:black}article a{color:inherit}article pre{white-space:pre-wrap}article h2,article h3{break-after:avoid}article img{max-height:20cm;object-fit:contain}}
 
 .brand-group{display:flex;align-items:center;gap:.7rem;min-width:0}.brand-logo{display:inline-flex;flex:none}.brand-logo img{display:block;max-width:9rem;max-height:2rem;width:auto;height:auto}.nav-group{margin:.7rem 0}.nav-label{display:block;padding:.5rem .7rem;font-size:.8rem;font-weight:650;overflow-wrap:anywhere}.sidebar .nav-group>ul{padding-left:.8rem;border-left:1px solid var(--zellij-border);margin-left:.7rem}
+.company-logo{display:inline-flex;align-items:center;flex:none;padding-right:.7rem;border-right:1px solid var(--zellij-border)}.company-logo img{display:block;height:1.75rem;max-width:3rem;width:auto;object-fit:contain}
 @media(max-width:800px){.brand-group{flex:1 0 100%}.brand{min-width:0}}

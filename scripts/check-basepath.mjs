@@ -36,7 +36,7 @@ try {
     'src/app/sitemap.ts': "import { createZellijSitemap } from '@shebka/zellij';\nexport const dynamic = 'force-static';\nexport default createZellijSitemap({ contentDir: './docs' });\n",
     'src/app/robots.ts': "import { createZellijRobots } from '@shebka/zellij';\nexport const dynamic = 'force-static';\nexport default createZellijRobots({ contentDir: './docs' });\n",
     'src/app/icon.svg': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/></svg>',
-    'docs/site.yaml': `name: Prefix fixture\nbasePath: ${prefix}/\nhome: 01-guide\nsiteUrl: https://docs.example.com\nogImage: assets/og.png\nnav: { search: true, themeToggle: true }\n`,
+    'docs/site.yaml': `name: Prefix fixture\nbasePath: ${prefix}/\nhome: 01-guide\nsiteUrl: https://docs.example.com\nogImage: assets/og.png\nbrand:\n  company: { src: assets/og.png, dark: assets/og.png, alt: Company website, href: 'https://company.example/', newTab: true }\n  logo: { src: assets/og.png, alt: Product home }\nnav: { search: true, themeToggle: true }\n`,
     'docs/pages.yaml': '- name: media\n  title: Local video\n  sections: [local-video]\n',
     'docs/sections/local-video.yaml': 'type: video-embed\nheading: Local demo\nsrc: assets/demo.mp4\nposter: assets/og.png\n',
     'docs/01-guide/_sidebar.yaml': 'route: /manual\nnav: [intro, nested/detail]\n',
@@ -89,7 +89,7 @@ try {
       console.log(`${name}: page theme tokens/presentation, modes, shared chrome, overrides, navigation and JavaScript-disabled rendering passed.`);
       await checkAnalytics(browser, origin, prefix);
       console.log(`${name}: real Plausible pageviews, client navigation/history, disabled/ignored/local visits and blocked requests passed without transmitting analytics.`);
-      context = await browser.newContext();
+      context = await browser.newContext({ colorScheme: 'light' });
       await context.tracing.start({ screenshots: true, snapshots: true });
       const page = await context.newPage();
       const developmentRequests = [];
@@ -106,6 +106,36 @@ try {
       await page.goto(`${origin}${prefix}/`);
       await expect(page).toHaveURL(`${origin}${prefix}/manual/intro`);
       await expect(page.locator('h1')).toHaveText('Introduction');
+      await context.route('https://company.example/**', route => route.fulfill({ contentType: 'text/html', body: '<h1>Company fixture</h1>' }));
+      const company = page.getByRole('link', { name: 'Company website', exact: true });
+      const product = page.getByRole('link', { name: 'Product home', exact: true });
+      await expect(company).toHaveAttribute('target', '_blank');
+      await expect(company).toHaveAttribute('rel', 'noopener noreferrer');
+      for (const width of [1440, 375, 320]) {
+        await page.setViewportSize({ width, height: 900 });
+        await expect(company).toBeVisible();
+        await expect(product).toBeVisible();
+        const left = await company.boundingBox();
+        const right = await product.boundingBox();
+        assert(left && right && left.x < right.x && left.x + left.width <= right.x, 'Company precedes the independent product mark');
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Branding must not overflow');
+      }
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(company.locator('[data-variant="light"]')).toBeVisible();
+      await page.getByRole('button', { name: 'Switch to dark theme', exact: true }).click();
+      await expect(company.locator('[data-variant="dark"]')).toBeVisible();
+      await expect(company.locator('[data-variant="light"]')).toBeHidden();
+      await expect(product.locator('img')).toBeVisible();
+      const opened = context.waitForEvent('page');
+      await company.click();
+      const companyPage = await opened;
+      await companyPage.waitForLoadState();
+      await expect(companyPage.getByRole('heading')).toHaveText('Company fixture');
+      await expect(page).toHaveURL(`${origin}${prefix}/manual/intro`);
+      await companyPage.close();
+      await page.goto(`${origin}${prefix}/manual/nested/detail`);
+      await product.click();
+      await expect(page).toHaveURL(`${origin}${prefix}/manual/intro`);
       await checkFonts();
       for (const [level, title, id] of [[2, 'Find this section', 'find-this-section'], [3, 'API options', 'api-options'], [4, 'Nested details', 'nested-details']]) {
         const heading = page.getByRole('heading', { level, name: title, exact: true });
