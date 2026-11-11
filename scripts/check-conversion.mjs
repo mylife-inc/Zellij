@@ -349,7 +349,7 @@ values = {weight = 0.5}
     await mkdir(path.dirname(path.join(source, file)), { recursive: true });
     await writeFile(path.join(source, file), body);
   }
-  await write('conf.py', "project='Sphinx manual'\nversion='2.4'\nrelease='2.4.1'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\nexclude_patterns=['glob/draft*', '**/private*']\n");
+  await write('conf.py', "project='Sphinx manual'\nversion='2.4'\nrelease='2.4.1'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\ninclude_patterns=['*.rst','02-Setup/**','03-Café/**','glob/page?.rst','glob/draft*','glob/private/**']\nexclude_patterns=['glob/draft*', '**/private*']\n");
   await write('index.rst', `.. _welcome:
 
 Welcome
@@ -426,6 +426,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('glob/page2.rst', 'Second matched page\n===================\n\nSecond wildcard searchable content.\n');
   await write('glob/draft.rst', '.. unsupported:: PRIVATE_EXCLUSION_SENTINEL\n');
   await write('glob/private/deep/page.rst', '.. unsupported:: PRIVATE_EXCLUSION_SENTINEL\n');
+  await write('glob/not-selected.rst', '.. unsupported:: UNSELECTED_PAGE_SENTINEL\n');
 
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
@@ -454,6 +455,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   assertPatterns(rendered.get('/guide/patterns'), '');
   await assert.rejects(readFile(path.join(content, '01-guide/glob/draft.mdx')), {code:'ENOENT'});
   await assert.rejects(readFile(path.join(content, '01-guide/glob/private/deep/page.mdx')), {code:'ENOENT'});
+  await assert.rejects(readFile(path.join(content, '01-guide/glob/not-selected.mdx')), {code:'ENOENT'});
+  await assert.rejects(readFile(path.join(content, '01-guide/fragments/section.mdx')), {code:'ENOENT'});
   for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
   assert(!home.includes('<script>') && !home.includes('<h1'));
   assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));

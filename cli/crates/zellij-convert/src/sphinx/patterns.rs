@@ -1,4 +1,4 @@
-//! Shared Sphinx path matching for toctrees and source exclusions.
+//! Shared Sphinx path matching for toctrees and source selection.
 use super::invalid;
 use camino::Utf8Path;
 use regex::Regex;
@@ -66,9 +66,11 @@ pub(super) fn matcher(pattern: &str) -> Result<Regex> {
     Regex::new(&out).map_err(|_| invalid(format!("invalid glob {pattern:?}")))
 }
 
-pub(super) fn validate_exclusions(patterns: &[String]) -> Result<()> {
+pub(super) fn validate(setting: &str, patterns: &[String]) -> Result<()> {
     if patterns.len() > 1024 || patterns.iter().map(String::len).sum::<usize>() > 128 * 1024 {
-        return Err(invalid("exclude_patterns exceeds 1024 patterns or 128 KiB"));
+        return Err(invalid(format!(
+            "{setting} exceeds 1024 patterns or 128 KiB"
+        )));
     }
     for pattern in patterns {
         // Patterns select source-relative names; they are never filesystem
@@ -80,17 +82,17 @@ pub(super) fn validate_exclusions(patterns: &[String]) -> Result<()> {
             || pattern.split('/').any(|p| matches!(p, "" | "." | ".."))
         {
             return Err(invalid(format!(
-                "exclude_patterns requires source-relative slash-separated patterns without parent segments (at most 4096 bytes): {pattern:?}"
+                "{setting} requires source-relative slash-separated patterns without parent segments (at most 4096 bytes): {pattern:?}"
             )));
         }
     }
     Ok(())
 }
 
-pub(super) struct Exclusions(Vec<Regex>);
-impl Exclusions {
-    pub(super) fn new(patterns: &[String]) -> Result<Self> {
-        validate_exclusions(patterns)?;
+pub(super) struct SourcePatterns(Vec<Regex>);
+impl SourcePatterns {
+    pub(super) fn new(setting: &str, patterns: &[String]) -> Result<Self> {
+        validate(setting, patterns)?;
         patterns
             .iter()
             .map(|p| matcher(p))
@@ -98,7 +100,12 @@ impl Exclusions {
             .map(Self)
     }
 
-    pub(super) fn matches(&self, path: &Utf8Path) -> bool {
+    pub(super) fn includes(&self, path: &Utf8Path) -> bool {
+        let name: String = path.as_str().nfc().collect();
+        self.0.iter().any(|pattern| pattern.is_match(&name))
+    }
+
+    pub(super) fn excludes(&self, path: &Utf8Path) -> bool {
         if self.0.is_empty() {
             return false;
         }
@@ -143,12 +150,15 @@ mod tests {
 
     #[test]
     fn exclusions_match_source_names_and_directory_ancestors() {
-        let exclusions = Exclusions::new(&[
-            "draft?.rst".into(),
-            "**/private*".into(),
-            "Café.rst".into(),
-            "data/[!a-c]*".into(),
-        ])
+        let exclusions = SourcePatterns::new(
+            "exclude_patterns",
+            &[
+                "draft?.rst".into(),
+                "**/private*".into(),
+                "Café.rst".into(),
+                "data/[!a-c]*".into(),
+            ],
+        )
         .unwrap();
         for path in [
             "draft1.rst",
@@ -157,7 +167,7 @@ mod tests {
             "Cafe\u{301}.rst",
             "data/z.txt",
         ] {
-            assert!(exclusions.matches(Utf8Path::new(path)), "{path}");
+            assert!(exclusions.excludes(Utf8Path::new(path)), "{path}");
         }
         for path in [
             "draft12.rst",
@@ -166,19 +176,19 @@ mod tests {
             "Draft1.rst",
             "data/b.txt",
         ] {
-            assert!(!exclusions.matches(Utf8Path::new(path)), "{path}");
+            assert!(!exclusions.excludes(Utf8Path::new(path)), "{path}");
         }
         // Unlike the HTML builder's asset Matcher, source discovery does not
         // expand a leading **/ to match the source root as well.
-        let roots = Exclusions::new(&["**/draft.rst".into()]).unwrap();
-        assert!(!roots.matches(Utf8Path::new("draft.rst")));
-        assert!(roots.matches(Utf8Path::new("guide/draft.rst")));
+        let roots = SourcePatterns::new("exclude_patterns", &["**/draft.rst".into()]).unwrap();
+        assert!(!roots.excludes(Utf8Path::new("draft.rst")));
+        assert!(roots.excludes(Utf8Path::new("guide/draft.rst")));
     }
 
     #[test]
     fn exclusion_limits_and_invalid_patterns_are_rejected() {
-        assert!(Exclusions::new(&vec!["*".into(); 1025]).is_err());
-        assert!(Exclusions::new(&vec!["a".repeat(4096); 33]).is_err());
+        assert!(SourcePatterns::new("exclude_patterns", &vec!["*".into(); 1025]).is_err());
+        assert!(SourcePatterns::new("include_patterns", &vec!["a".repeat(4096); 33]).is_err());
         for pattern in [
             "",
             "../*",
@@ -190,7 +200,42 @@ mod tests {
             "a/./b",
             "[z-a]",
         ] {
-            assert!(Exclusions::new(&[pattern.into()]).is_err(), "{pattern}");
+            for setting in ["include_patterns", "exclude_patterns"] {
+                assert!(
+                    SourcePatterns::new(setting, &[pattern.into()]).is_err(),
+                    "{setting}: {pattern}"
+                );
+            }
         }
+    }
+
+    #[test]
+    fn inclusions_match_only_complete_filenames_and_preserve_empty_selection() {
+        let included = SourcePatterns::new(
+            "include_patterns",
+            &[
+                "directory".into(),
+                "Café.rst".into(),
+                "guide/*.rst".into(),
+                "literal%20.rst".into(),
+            ],
+        )
+        .unwrap();
+        assert!(included.includes(Utf8Path::new("Cafe\u{301}.rst")));
+        assert!(included.includes(Utf8Path::new("guide/page.rst")));
+        assert!(included.includes(Utf8Path::new("literal%20.rst")));
+        assert!(!included.includes(Utf8Path::new("directory/page.rst")));
+        assert!(!included.includes(Utf8Path::new("guide/deep/page.rst")));
+        assert!(!included.includes(Utf8Path::new("café.rst")));
+        assert!(
+            SourcePatterns::new("include_patterns", &["**".into()])
+                .unwrap()
+                .includes(Utf8Path::new("deep/page.rst"))
+        );
+        assert!(
+            !SourcePatterns::new("include_patterns", &[])
+                .unwrap()
+                .includes(Utf8Path::new("index.rst"))
+        );
     }
 }

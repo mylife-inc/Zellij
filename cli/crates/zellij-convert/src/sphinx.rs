@@ -196,7 +196,18 @@ impl Converter for Sphinx {
         config::validate(&config)?;
         let root = Utf8PathBuf::from_path_buf(std::fs::canonicalize(source)?)
             .map_err(|_| invalid("source path is not UTF-8"))?;
-        let patterns = patterns::Exclusions::new(&config::strings(&config, "exclude_patterns")?)?;
+        let excluded_patterns = patterns::SourcePatterns::new(
+            "exclude_patterns",
+            &config::strings(&config, "exclude_patterns")?,
+        )?;
+        let included_patterns = patterns::SourcePatterns::new(
+            "include_patterns",
+            &if config.get("include_patterns").is_some() {
+                config::strings(&config, "include_patterns")?
+            } else {
+                vec!["**".into()]
+            },
+        )?;
         let mut excluded = Vec::new();
         for key in [
             "templates_path",
@@ -219,6 +230,7 @@ impl Converter for Sphinx {
             contained_path(&root, path)?;
         }
         let mut document_files = BTreeSet::new();
+        let mut unselected_documents = BTreeSet::new();
         let mut assets = BTreeSet::new();
         let mut literal_files = BTreeSet::new();
         let mut unmapped = Vec::new();
@@ -245,7 +257,7 @@ impl Converter for Sphinx {
             if !entry.file_type().is_file() {
                 continue;
             }
-            if patterns.matches(&rel)
+            if excluded_patterns.excludes(&rel)
                 || excluded.iter().any(|p| rel.starts_with(p))
                 || rel.components().any(|p| p.as_str().starts_with('.'))
             {
@@ -259,7 +271,13 @@ impl Converter for Sphinx {
             }
             literal_files.insert(rel.clone());
             if rel.extension() == Some("rst") {
-                document_files.insert(rel);
+                // Inclusion patterns select standalone pages, not local files
+                // that selected pages may read through include/CSV/code directives.
+                if included_patterns.includes(&rel) {
+                    document_files.insert(rel);
+                } else {
+                    unselected_documents.insert(rel);
+                }
             } else if !matches!(
                 rel.extension().unwrap_or("").to_ascii_lowercase().as_str(),
                 "py" | "pyc"
@@ -306,7 +324,7 @@ impl Converter for Sphinx {
             }
             if !document_files.contains(&path) {
                 return Err(invalid(format!(
-                    "toctree document {path} is missing or excluded"
+                    "toctree document {path} is missing, excluded or not selected by include_patterns"
                 )));
             }
             if path.components().any(|p| p.as_str().starts_with('_'))
@@ -344,6 +362,15 @@ impl Converter for Sphinx {
             docs.insert(path, doc);
         }
         let included_files = includes.included_files;
+        unmapped.extend(
+            unselected_documents
+                .into_iter()
+                .filter(|p| !included_files.contains(p))
+                .map(|source| Unmapped {
+                    source,
+                    reason: "not selected by include_patterns; not imported".into(),
+                }),
+        );
         let nav = navigation(&main, None, &docs, &mut BTreeSet::new(), &mut 0)?;
         let mut tree = DocTree {
             root,

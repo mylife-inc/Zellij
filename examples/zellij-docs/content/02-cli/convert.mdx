@@ -467,7 +467,8 @@ duplicate assignments are rejected. `master_doc` is the older name for
 supported; `source_suffix` may be `'.rst'`, `['.rst']` or the dictionary above.
 `exclude_patterns` accepts relative file/directory paths and, in current source
 after `v0.2.0-rc.2`, glob patterns (see below).
-`include_patterns` must retain its default `['**']`. Unknown configuration that
+`include_patterns` also accepts source-selection globs in current source after
+rc.2; its default is `['**']`. Unknown configuration that
 could transform content is refused. Theme/presentation settings do not recreate
 the original theme.
 
@@ -552,9 +553,37 @@ existing rejection of symlinks or junctions beneath the source folder.
 Use at most 1024 patterns, 4096 UTF-8 bytes per pattern and 128 KiB in total.
 Absolute paths, drive prefixes, backslashes, control characters, parent/current
 directory segments and empty path segments are rejected. Exclusion patterns
-are matched as names, never opened as paths. `include_patterns` still accepts
-only its default `['**']`; template/theme/static directory settings still
-require explicit paths.
+are matched as names, never opened as paths. Template/theme/static directory
+settings still require explicit paths.
+
+### Selecting source pages
+
+Current source after rc.2 also supports `include_patterns`:
+
+```python
+include_patterns = ['index.rst', 'guide/**', 'reference/*.rst']
+exclude_patterns = ['guide/draft*']
+```
+
+When omitted, `include_patterns` defaults to `['**']`. An explicitly empty list
+selects no pages and therefore fails because the root document is not selected.
+Patterns match full source-relative filenames, including `.rst`, with the same
+case, Unicode NFC, separator and size rules as exclusions. Exclusions take
+precedence. Inclusion patterns match files only: use `guide/**` to select its
+subtree; `guide` alone does not select the directory's documents. A leading
+`**/` still requires a subdirectory, so include `index.rst` explicitly when needed.
+
+The root document and every explicit toctree target must be selected; otherwise
+conversion fails before writing output. Toctree globs see only selected pages.
+Unselected pages are reported without parsing or publishing their content.
+
+Page selection does not filter referenced images, downloads, CSV/code files or
+parsed include fragments. A selected page can still use these resources from
+elsewhere in the source folder. Fragments used by an `include` directive do not
+become standalone pages or produce unselected-page reports. Explicit exclusions
+and the existing containment, hidden/internal-source and asset-policy rules still
+apply to all resources. Inclusion patterns are not a way to remove sensitive
+resources from an import; use `exclude_patterns` for that purpose.
 
 Supported reStructuredText includes underline/overline headings, paragraphs,
 emphasis, strong text, inline literals, nested bullet/numbered lists, indented
