@@ -102,9 +102,11 @@ subsequently passed (16 CI jobs and 13 Base image jobs). A disposable Vercel
 acceptance workflow and the empty-upload acknowledgement fix merged in PR #116
 as `d1d5b70`, after 704 local Rust tests and all 16 final-head CI jobs passed.
 Both post-merge workflows passed (16 CI and 13 Base image jobs). The Vercel
-token works, but the supplied team is Hobby with no trial; the requested Pro
-trial setup and live execution remain pending. Published rc.2 lacks the fix.
-Live Fly, AWS and Vercel account acceptance remains pending.
+token worked, but the supplied team is Hobby with no trial. The user deferred
+Vercel live verification because trial signup required a payment method. The
+temporary Actions secret and remote lookup branch were removed; no Vercel test
+project was created. Published rc.2 lacks the fix. Live Fly and AWS account
+acceptance remains pending; Vercel is explicitly deferred, not verified.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -7431,3 +7433,42 @@ PR #116's post-merge CI `42942094151` passed all 16 jobs, and Base image
 `42942094126` passed all 13 jobs on `d1d5b70`. This closes their earlier queued
 snapshot. Actual live Vercel cases remain unrun. See [account preflight](specs/evidence/zellij-vercel-account-preflight-2026-11-10.json)
 and [upload-fix verification](specs/evidence/zellij-vercel-upload-2026-11-10.json).
+
+
+### 2026-11-10 — Sphinx wildcard navigation; Vercel deferred
+
+Implementation `703a367774fda2c4cfdb810a948185fcba687d31` adds Sphinx
+`toctree :glob:` and `:reversed:` across convert/migrate/shared ship conversion.
+The importer expands case-sensitive, suffixless document patterns once before
+page discovery, navigation and rendering. It preserves per-pattern sorted
+order, explicit-entry precedence, per-tree candidate sets, reverse order,
+hidden navigation and owning-document paths for included toctrees. `*`, `?`,
+`**`, character classes and negation follow Sphinx's matcher behavior. Empty
+matches are reported; existing exclusions, filename validation, containment,
+cycle and destination checks remain active. A 4096-byte resolved-pattern limit
+and shared 10,000-match budget bound expansion. No dependency or runtime-image
+size change is introduced.
+
+The original real-CLI regression failed on the unsupported `:glob:` option.
+All 56 Sphinx CLI integration tests now pass. Node-only actual-CLI/engine checks
+pass for all six importers; the Sphinx fixture now has 13 routes and verifies
+reversed inline/sidebar navigation. Strict/deep documentation checks pass for
+55 routes and 23 examples. GitHub CI also exercises the hosted HTML and browser
+navigation fixture. Full workspace/Clippy and remote CI results are recorded
+in [the evidence](specs/evidence/zellij-sphinx-toctree-2026-11-10.json).
+These capabilities are newer than published rc.2. `exclude_patterns` globs,
+automatic numbering, MyST/domains/extensions and broader format fidelity remain
+unfinished; this is not a zero-bug claim.
+
+The user explicitly deferred Vercel live verification because creating the
+trial team required a payment method. No Vercel project/deployment was created.
+The temporary `ZEL_LIVE_VERCEL_TOKEN` GitHub secret and remote
+`codex/vercel-account-preflight` branch were removed and their absence verified.
+This did not revoke the provider token or delete the user's account/team.
+The adapter and tested manual lifecycle workflow remain available. Fly/S3 and
+real GitLab/CircleCI acceptance remain pending, and the Netlify hydration
+blocker is unchanged. No further release publication or domain migration ran.
+
+Behavior references: [Sphinx toctree](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree),
+[directive implementation](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py),
+[pattern matcher](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py).

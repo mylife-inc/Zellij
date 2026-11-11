@@ -104,5 +104,14 @@
       "hosted-production"
     ],
     "requiredCleanup": "Delete the confirmed temporary project and verify API 404."
+  },
+  "liveDisposition": {
+    "date": "2026-11-10",
+    "status": "deferred by user",
+    "reason": "Free trial signup required a payment method.",
+    "casesRun": 0,
+    "temporaryGithubSecretRemoved": true,
+    "remoteLookupBranchRemoved": true,
+    "reference": "zellij-vercel-account-preflight-2026-11-10.json"
   }
 }

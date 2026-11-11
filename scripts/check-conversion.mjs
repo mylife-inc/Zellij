@@ -365,6 +365,7 @@ Welcome
    substitutions
    literalinclude
    includes
+   patterns
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -420,6 +421,9 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('body.inc', await readFile(path.join(repo, 'scripts/fixtures/sphinx-include-body.inc'), 'utf8'));
   await write('fragments/values.csv', 'Included CSV origin,correct\n');
   await write('values.csv', 'WRONG origin,wrong\n');
+  await write('patterns.rst', 'Pattern navigation\n==================\n\n.. toctree::\n   :glob:\n   :reversed:\n   :caption: Matched pages\n\n   glob/page?\n   glob/*\n');
+  await write('glob/page1.rst', 'First matched page\n==================\n\nFirst wildcard searchable content.\n');
+  await write('glob/page2.rst', 'Second matched page\n===================\n\nSecond wildcard searchable content.\n');
 
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
@@ -433,13 +437,19 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/includes', '/guide/lists', '/guide/literalinclude', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/glob/page1', '/guide/glob/page2', '/guide/includes', '/guide/lists', '/guide/literalinclude', '/guide/patterns', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
     rendered.set(page.route, renderToStaticMarkup(result.content));
   }
   const home = rendered.get('/guide');
+  function assertPatterns(html, prefix) {
+    if (prefix) html = html.match(/<article\b[^>]*>([\s\S]*?)<\/article>/)[1];
+    const links = [...html.matchAll(/<a\b[^>]*href="([^"]+)"/g)].map(m => m[1]);
+    assert.deepEqual(links, [`${prefix}/guide/glob/page2`, `${prefix}/guide/glob/page1`]);
+  }
+  assertPatterns(rendered.get('/guide/patterns'), '');
   for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
   assert(!home.includes('<script>') && !home.includes('<h1'));
   assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));
@@ -587,6 +597,13 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       {kind:'link',label:'Reusable content',route:'/guide/substitutions'},
       {kind:'link',label:'Referenced examples',route:'/guide/literalinclude'},
       {kind:'link',label:'Included manual',route:'/guide/includes'},
+      {kind:'group',label:'Pattern navigation',children:[
+        {kind:'link',label:'Pattern navigation',route:'/guide/patterns'},
+        {kind:'group',label:'Matched pages',children:[
+          {kind:'link',label:'Second matched page',route:'/guide/glob/page2'},
+          {kind:'link',label:'First matched page',route:'/guide/glob/page1'},
+        ]},
+      ]},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -599,6 +616,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     const home = await readFile(path.join(output,'guide.html'),'utf8');
     const reference = await readFile(path.join(output,'guide/setup/api-reference.html'),'utf8');
     const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');
+    assertPatterns(await readFile(path.join(output, 'guide/patterns.html'), 'utf8'), '/products/docs');
     assertTables(await readFile(path.join(output, 'guide/tables.html'), 'utf8'), '/products/docs');
     assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
     assertSubstitutions(await readFile(path.join(output, 'guide/substitutions.html'), 'utf8'), '/products/docs');

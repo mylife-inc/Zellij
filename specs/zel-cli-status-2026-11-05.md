@@ -12,7 +12,7 @@ dated audit and implementation history.
 | Inspection | `explain`, `list sections/themes/formats/targets`, `context`, `detect`, `doctor`, `version` | Doctor resolves site settings, skips runtime probes for portable sites, and offers JSON preflight reports. Content validation and provider credentials remain separate. |
 | Validation and local work | `check`, `fmt`, `watch`, `dev`, `build`, `serve`, `view` | Hosted operations need their documented runtime/engine prerequisites. JSON is supported per command, not universally. |
 | Images | `image static`, `next`, legacy `build`, `dockerfile`, `run`, `push`; shortcuts including `si` and `ni` | Linux amd64/arm64, including combined publication through publish/ship/CI. These commands require a container runtime. |
-| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare and GitHub Pages portable/hosted live acceptance passed on 2026-11-10; Vercel and S3 remain pending. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; static/Next live acceptance passed on 2026-11-10. Cloudflare/Railway live fixes require current source after rc.2. |
+| Delivery | `deploy`, `netlify`, `cloudflare` / `cf`, `vercel` / `vc`, `github-pages` / `ghp`, `s3`, `fly`, `railway` / `rw`, `publish`, `ship` | Netlify, Cloudflare Pages, Vercel, GitHub Pages and S3 static adapters plus image registry publication are implemented. Cloudflare and GitHub Pages portable/hosted live acceptance passed on 2026-11-10; S3 remains pending; Vercel live verification is deferred by the user because trial signup required a payment method. Fly supports existing configured web Machines with static/Next images; live account acceptance is pending. Railway supports existing image services with an explicit project/environment and registry image; static/Next live acceptance passed on 2026-11-10. Cloudflare/Railway live fixes require current source after rc.2. |
 | CI | `ci`, `ci init github\|gitlab\|circle`, `ci run` and legacy `ci publish` | All three generators are implemented in current source. Dispatch/provisioning remain GitHub-only; live GitLab/CircleCI runner acceptance remains pending. Candidate `0.2.0-rc.2` includes all three generators. |
 | Imports | `convert` / `cv`, `migrate` / `mig`; shared conversion in `ship` | MkDocs, Docusaurus, declarative VitePress, YAML/TOML Jekyll, declarative Hugo and a conservative Sphinx/reStructuredText subset. Full Sphinx/MyST/domain/extension fidelity remains incomplete. Plain Markdown is directly supported by the portable renderer. `--assets copy\|link\|skip` is implemented in current source; link requires `--asset-base-url` and retains assets on that existing HTTP(S) server. |
 | Maintenance | `pull`, `upgrade`, `eject`, `features`, `completions` | Supported operations have documented runtime, version and filesystem requirements; they do not imply automatic dependency installation. |
@@ -60,7 +60,7 @@ into editable hosted content. Menus, split configuration, modules, cascades,
 localization, custom date rules and complex routing remain outside this subset.
 Shortcodes and aliases are reported for manual work. See the conversion reference.
 
-Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
+Sphinx imports read literal `conf.py` assignments, traverse explicit/glob toctrees with optional reversed ordering
 and convert a conservative reStructuredText subset without Python or Docutils.
 Supported headings, labels, nested bullet/decimal/alphabetic/Roman lists, code, admonitions, images and rectangular
 grid/simple tables, list tables, inline/local-file CSV tables and document-local text/image
@@ -1357,3 +1357,42 @@ PR #116's post-merge CI `42942094151` passed all 16 jobs, and Base image
 `42942094126` passed all 13 jobs on `d1d5b70`. This closes their earlier queued
 snapshot. Actual live Vercel cases remain unrun. See [account preflight](evidence/zellij-vercel-account-preflight-2026-11-10.json)
 and [upload-fix verification](evidence/zellij-vercel-upload-2026-11-10.json).
+
+
+### 2026-11-10 — Sphinx wildcard navigation; Vercel deferred
+
+Implementation `703a367774fda2c4cfdb810a948185fcba687d31` adds Sphinx
+`toctree :glob:` and `:reversed:` across convert/migrate/shared ship conversion.
+The importer expands case-sensitive, suffixless document patterns once before
+page discovery, navigation and rendering. It preserves per-pattern sorted
+order, explicit-entry precedence, per-tree candidate sets, reverse order,
+hidden navigation and owning-document paths for included toctrees. `*`, `?`,
+`**`, character classes and negation follow Sphinx's matcher behavior. Empty
+matches are reported; existing exclusions, filename validation, containment,
+cycle and destination checks remain active. A 4096-byte resolved-pattern limit
+and shared 10,000-match budget bound expansion. No dependency or runtime-image
+size change is introduced.
+
+The original real-CLI regression failed on the unsupported `:glob:` option.
+All 56 Sphinx CLI integration tests now pass. Node-only actual-CLI/engine checks
+pass for all six importers; the Sphinx fixture now has 13 routes and verifies
+reversed inline/sidebar navigation. Strict/deep documentation checks pass for
+55 routes and 23 examples. GitHub CI also exercises the hosted HTML and browser
+navigation fixture. Full workspace/Clippy and remote CI results are recorded
+in [the evidence](evidence/zellij-sphinx-toctree-2026-11-10.json).
+These capabilities are newer than published rc.2. `exclude_patterns` globs,
+automatic numbering, MyST/domains/extensions and broader format fidelity remain
+unfinished; this is not a zero-bug claim.
+
+The user explicitly deferred Vercel live verification because creating the
+trial team required a payment method. No Vercel project/deployment was created.
+The temporary `ZEL_LIVE_VERCEL_TOKEN` GitHub secret and remote
+`codex/vercel-account-preflight` branch were removed and their absence verified.
+This did not revoke the provider token or delete the user's account/team.
+The adapter and tested manual lifecycle workflow remain available. Fly/S3 and
+real GitLab/CircleCI acceptance remain pending, and the Netlify hydration
+blocker is unchanged. No further release publication or domain migration ran.
+
+Behavior references: [Sphinx toctree](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree),
+[directive implementation](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py),
+[pattern matcher](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py).

@@ -8,6 +8,7 @@ mod rst;
 mod substitutions;
 mod table_directives;
 mod tables;
+mod toctree;
 
 use crate::{
     Confidence, Conversion, ConvertOptions, Converter, Unmapped,
@@ -33,9 +34,10 @@ fn output(path: &Utf8Path) -> Utf8PathBuf {
 fn external(target: &str) -> bool {
     target.starts_with("https://") || target.starts_with("http://")
 }
-fn document_path(source: &Utf8Path, target: &str) -> Result<Utf8PathBuf> {
+fn document_target(source: &Utf8Path, target: &str, glob: bool) -> Result<String> {
     if target.is_empty()
-        || target.contains(['\\', ':', '#', '?', '%', '*', '[', ']'])
+        || target.contains(['\\', ':', '#', '%'])
+        || (!glob && target.contains(['?', '*', '[', ']']))
         || target.starts_with("//")
     {
         return Err(invalid(format!("unsupported document target {target:?}")));
@@ -62,7 +64,10 @@ fn document_path(source: &Utf8Path, target: &str) -> Result<Utf8PathBuf> {
             _ => parts.push(part),
         }
     }
-    let path = parts.join("/");
+    Ok(parts.join("/"))
+}
+fn document_path(source: &Utf8Path, target: &str) -> Result<Utf8PathBuf> {
+    let path = document_target(source, target, false)?;
     let path = Utf8PathBuf::from(if path.ends_with(".rst") {
         path
     } else {
@@ -288,6 +293,7 @@ impl Converter for Sphinx {
         // are input to their owner, not independent pages needing a title.
         let mut docs = BTreeMap::new();
         let mut pending = vec![main.clone()];
+        let mut glob_budget = 10000;
         while let Some(path) = pending.pop() {
             if docs.contains_key(&path) {
                 continue;
@@ -314,6 +320,8 @@ impl Converter for Sphinx {
             .map_err(|e| invalid(format!("{path}: {e}")))?;
             includes
                 .resolve_document(&path, &mut doc)
+                .map_err(|e| invalid(format!("{path}: {e}")))?;
+            toctree::expand(&path, &mut doc, &document_files, &mut glob_budget)
                 .map_err(|e| invalid(format!("{path}: {e}")))?;
             for key in ["version", "release"] {
                 let value = config::string(&config, key)?.unwrap_or("");
@@ -457,7 +465,7 @@ impl Converter for Sphinx {
             &mut result,
         )?;
         result.unmapped.extend(unmapped);
-        result.notes.push("Sphinx was read without running Python, Docutils, extensions, templates or a source build. Imports follow the root document's explicit toctree (including hidden trees); unlisted documents are not published. HTML-builder .html URLs are mapped; dirhtml/custom builders, automatic toctree numbering, alternate heading anchors and theme presentation require review. Eligible referenced assets follow the selected import asset policy; html_static_path/html_extra_path are not copied wholesale. The original source is unchanged.".into());
+        result.notes.push("Sphinx was read without running Python, Docutils, extensions, templates or a source build. Imports follow the root document's toctree (including globs, reversed order and hidden trees); unlisted documents are not published. HTML-builder .html URLs are mapped; dirhtml/custom builders, automatic toctree numbering, alternate heading anchors and theme presentation require review. Eligible referenced assets follow the selected import asset policy; html_static_path/html_extra_path are not copied wholesale. The original source is unchanged.".into());
         Ok(result)
     }
 }

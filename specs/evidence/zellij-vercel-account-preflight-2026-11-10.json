@@ -16,7 +16,17 @@
   "secretName": "ZEL_LIVE_VERCEL_TOKEN",
   "secretVerified": true,
   "mutations": "None; only GET requests to team APIs. Token stayed in GitHub Actions.",
-  "liveDeploymentStatus": "Not started; awaiting the authorized free Pro trial team.",
-  "handoff": "User asked to create a temporary Pro Trial team without a payment method, replace the existing token secret with one scoped to that team, and send its slug. If trial is unavailable, settle the plan before paid usage.",
-  "reference": "https://vercel.com/docs/limits/fair-use-guidelines"
+  "liveDeploymentStatus": "Deferred by user: trial signup required a payment method. No live deployment case ran.",
+  "reference": "https://vercel.com/docs/limits/fair-use-guidelines",
+  "previousHandoff": "User asked to create a temporary Pro Trial team without a payment method, replace the existing token secret with one scoped to that team, and send its slug. If trial is unavailable, settle the plan before paid usage.",
+  "closure": {
+    "date": "2026-11-10",
+    "decision": "User asked to forget Vercel verification and continue other work.",
+    "githubSecretRemoved": true,
+    "remoteLookupBranchRemoved": true,
+    "verifiedBy": "Actions secret-name inventory and git ls-remote: token secret and operational branch both absent.",
+    "providerResourcesCreated": 0,
+    "providerTokenRevoked": false,
+    "accountTeamUnchanged": true
+  }
 }
