@@ -5,11 +5,21 @@ their disposable resources were removed. Vercel, AWS S3, Fly.io and actual
 GitLab/CircleCI runner execution remain unverified. Tests against simulated
 provider responses do not close this gap.
 
+**Current decision:** the user deferred Vercel verification after trial signup
+required a payment method. No live Vercel case ran and no test project was
+created. The temporary `ZEL_LIVE_VERCEL_TOKEN` Actions secret and remote
+`codex/vercel-account-preflight` branch were removed. This removes the GitHub
+copy of the credential; provider-side token revocation was not performed. The
+account/team and tested adapter/workflow remain unchanged. The Vercel setup
+steps below are retained for a future explicitly resumed test, not a current
+user handoff.
+
 The user authorized creating temporary accounts for these remaining tests.
 Account signup was attempted through browser control, but the browser tool
 failed during initialization twice before opening a page. No account, paid
-subscription or provider resource was created. The first requested handoff is
-Vercel signup and a team-scoped token in a GitHub Actions secret. Other provider
+subscription or provider resource was created. The initial requested handoff was
+Vercel signup and a team-scoped token in a GitHub Actions secret; it is now
+superseded by the user's deferral above. Other provider
 signups should follow when their tests are ready, so trials are not consumed
 while waiting for implementation or another provider.
 

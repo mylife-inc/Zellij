@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-10",
+  "implementation": "703a367774fda2c4cfdb810a948185fcba687d31",
+  "feature": "Sphinx toctree glob expansion and reversed navigation",
+  "baseline": "d169f7fd4b8b1c8947f70f911f4c7d3e230f49bb",
+  "regression": {
+    "before": "Real CLI fails before output on unsupported :glob:",
+    "after": "56 Sphinx CLI tests passed"
+  },
+  "local": {
+    "sphinxTestsPassed": 56,
+    "allSixImporterEngineChecks": "passed",
+    "sphinxFixtureRoutes": 13,
+    "docsStrictDeep": "passed: 55 routes, 23 examples",
+    "rustWorkspace": "pending",
+    "clippy": "pending"
+  },
+  "ci": {
+    "status": "pending"
+  },
+  "limits": [
+    "Toctree patterns only: configuration exclusion globs remain unsupported",
+    "No automatic numbering, MyST or domain/extension execution",
+    "4096-byte resolved patterns and 10000 total expanded matches",
+    "Source-only change after rc.2; no new release published"
+  ],
+  "vercelDecision": "User deferred live verification; temporary Actions secret and remote lookup branch removed; no provider project created.",
+  "references": [
+    "https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree",
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py",
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py"
+  ]
+}
