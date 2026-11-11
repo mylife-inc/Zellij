@@ -1,0 +1,25 @@
+name: Apple section research
+on:
+  push:
+    branches: [codex/apple-section-audit]
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium --only-shell
+      - run: node scripts/audit-apple.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: apple-section-research
+          path: apple-research/
+          retention-days: 7
