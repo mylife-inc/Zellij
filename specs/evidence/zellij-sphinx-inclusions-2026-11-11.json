@@ -17,7 +17,18 @@
     "docs": "strict/deep passed: 55 routes, 23 examples"
   },
   "ci": {
-    "status": "pending"
+    "status": "passed",
+    "run": 42998033906,
+    "jobsPassed": 16,
+    "testedHead": "99d6449b03172f34c291d166afa41423d8fa91bb",
+    "testedTree": "f465fe23f4950675e734bfcae35ba6b499af8417",
+    "merge": "872db136bd7cf10e3722b9c05d180881a7e4d799",
+    "mergedTreeMatches": true
+  },
+  "postMerge": {
+    "status": "pending",
+    "ciRun": 43002975098,
+    "baseImageRun": 43002974973
   },
   "limits": [
     "Declarative .rst source only; no Python or extension execution",

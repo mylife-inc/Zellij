@@ -33,18 +33,22 @@ Latest implementation: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
 tests passed (five hosted cases run in CI), including 64 Sphinx CLI cases.
 Clippy, formatting, all six real-CLI/engine conversion checks, and strict/deep
-docs checks passed. Cross-platform run `42998033906` is pending at this snapshot.
+docs checks passed. Cross-platform run `42998033906` passed all 16 jobs. PR #123
+merged as `872db136bd7cf10e3722b9c05d180881a7e4d799`; its tree matches the tested
+head (`f465fe23f4950675e734bfcae35ba6b499af8417`). Post-merge CI `43002975098`
+and Base image `43002974973` are pending at this snapshot.
 
 ## Remaining work in execution order
 
-1. Finish PR #123 CI, merge only the tested head, and close its post-merge checks.
+1. Close PR #123's post-merge checks; its exact tested head is already merged.
 2. Verify and merge the prepared Fly disposable acceptance workflow. Then use
    an eligible temporary trial organization, run static/Next live acceptance,
    inspect the evidence and confirm app cleanup. The lifecycle harness is
    locally tested; no live account success is claimed.
-3. Prepare and run S3 acceptance in an explicitly authorized disposable website
-   bucket. Confirm account eligibility/cost constraints before creating it;
-   verify portable/hosted content and complete object/bucket/credential cleanup.
+3. Verify and merge the prepared S3 acceptance workflow, then run it in an
+   explicitly authorized test account. Ten lifecycle tests pass locally; live
+   portable/hosted first and replacement uploads remain unverified. Confirm
+   account eligibility/cost constraints before provisioning, and verify cleanup.
 4. Run the actual generated GitLab and CircleCI workflows in temporary projects
    on eligible accounts/runners, inspect artifacts, and remove the test resources.
 5. Reconcile any failures and repeat only the affected checks. Refresh the

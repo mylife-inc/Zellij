@@ -197,3 +197,76 @@ References checked: [trial limits](https://fly.io/docs/about/free-trial/),
 [app creation and deletion](https://docs.fly.io/machines/api/apps-resource),
 [Machine configuration and lifecycle](https://docs.fly.io/machines/api/machines-resource),
 [organization tokens](https://fly.io/docs/security/tokens/).
+
+## S3: disposable acceptance prepared — 2026-11-11
+
+Source `11232ba8756e696a729ef0ff5b11573f14203285` adds the manual
+[S3 workflow](../.github/workflows/acceptance-s3.yml), which builds the current
+CLI and uses the pinned rc.2 engine for hosted rendering. The
+[lifecycle harness](../scripts/check-s3-live.mjs) has ten isolated regression
+tests; the combined helper gate passes 70 tests, and actionlint passes. This is
+preparation, **not live AWS acceptance**. No AWS account, credential or bucket
+has been created. PR CI and live execution remain pending.
+
+The test creates one random `zellij-live-YYYYMMDD-xxxxxxxxxxxx` general-purpose
+bucket in `us-east-2`, verifies the expected AWS account, and enables website
+hosting for that bucket. This region also avoids the legacy `us-east-1`
+CreateBucket behavior that can succeed against an existing owned bucket.
+An existing name is refused; only a confirmed creation receipt authorizes
+cleanup. The bucket carries the fixture name, Actions run and source commit as
+ownership tags. ACLs stay disabled, and public reads cover only the two fixture
+prefixes (`portable/` and `hosted/`). It never grants public writes or listing.
+
+Four real CLI cases cover each renderer's first upload and replacement upload,
+including AWS's actual conditional PUT and checksum behavior. Public HTTP
+checks verify pages, nested routes, exact logo bytes, linked assets, missing
+pages and source-file isolation. They do not replace browser hydration checks.
+The product still uses native signed requests: AWS CLI is only the fixture's
+administration tool on the GitHub runner, not a new `zel` dependency.
+
+Cleanup checks account, bucket region, ownership tags and unchanged versioning,
+then inventories at most 10,000 objects / 200 MiB under those two prefixes before
+deleting anything. It verifies each deletion batch, requires an empty bucket,
+deletes it and requires API 404. A confirmed but untagged bucket can be removed
+only when empty. Unexpected keys, changed tags/versioning or ambiguous creation
+require manual inspection. Cleanup runs independently after failures; a runner
+loss can still prevent it. Keep `s3-live-evidence` until deletion is confirmed.
+No AWS account, role or credential is deleted automatically.
+
+### Account handoff when the test window is ready
+
+1. Use an explicitly authorized temporary AWS account or suitable existing test
+   account. Confirm its current eligibility and any storage/request costs
+   before selecting a plan or entering payment details. No paid signup, card
+   addition or existing-account reconfiguration is implied by this runbook.
+2. Account-level public access must already permit a public bucket policy.
+   The harness reads those settings and stops if they block the website; it
+   never changes them. Do not weaken a shared account's settings for this test.
+   ACL restrictions may remain enabled. A dedicated account still requires an
+   explicit decision about its account-wide settings before changing them.
+3. Provision a temporary non-root identity restricted with
+   [the fixture policy](../scripts/fixtures/s3-live-iam-policy.json). It grants
+   account-policy inspection and creation/configuration/upload/cleanup only for
+   the `zellij-live-*` bucket namespace. Organization policies and permission
+   boundaries may further restrict it. Use a short-lived session when practical,
+   long enough for build, acceptance and cleanup; the adapter cannot refresh it.
+4. Save `ZEL_LIVE_AWS_ACCESS_KEY_ID`, `ZEL_LIVE_AWS_SECRET_ACCESS_KEY` and, for a
+   temporary session, `ZEL_LIVE_AWS_SESSION_TOKEN` directly in
+   [Actions secrets](https://github.com/mylife-inc/Zellij/settings/secrets/actions).
+   Remove a stale session-token secret when using a non-session key. Send only
+   the 12-digit account ID and eligibility/cost confirmation in chat.
+5. Dispatch the reviewed workflow with `account_id` and `account_confirmed=true`.
+   Credentials are environment-only, never inputs or journal fields. Stored
+   profiles, endpoint overrides and metadata fallback are disabled. The fixture
+   administrator makes no automatic retries after mutations.
+6. Record all four cases and verified bucket cleanup. Remove temporary GitHub
+   secrets and revoke the temporary credentials when acceptance is finished.
+   Confirm an account contains only disposable test data before closing it.
+
+Official references checked:
+[bucket creation](https://docs.aws.amazon.com/cli/latest/reference/s3api/create-bucket.html),
+[expected owner and existence](https://docs.aws.amazon.com/cli/latest/reference/s3api/head-bucket.html),
+[website access](https://docs.aws.amazon.com/AmazonS3/latest/userguide/WebsiteAccessPermissionsReqd.html),
+[bounded object listing](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects-v2.html),
+[per-object deletion receipts](https://docs.aws.amazon.com/cli/latest/reference/s3api/delete-objects.html),
+[versioning inspection](https://docs.aws.amazon.com/cli/latest/reference/s3api/get-bucket-versioning.html).
