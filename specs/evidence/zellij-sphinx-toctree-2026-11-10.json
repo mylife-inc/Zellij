@@ -53,17 +53,20 @@
     "matchesTestedTree": true
   },
   "postMerge": {
-    "status": "in progress; not a completed verification claim",
+    "status": "passed after a targeted unchanged-source retry of the three failed CI jobs",
     "runs": [
       {
         "run": 42970277159,
         "name": "Base image",
-        "status": "in_progress"
+        "status": "passed",
+        "jobsPassed": 13
       },
       {
         "run": 42970277215,
         "name": "CI",
-        "status": "queued"
+        "status": "passed",
+        "attempt": 2,
+        "jobsPassed": 16
       }
     ],
     "followup": {
@@ -94,9 +97,47 @@
             "traceArtifact": 13832909413
           }
         ],
-        "retry": "Only failed jobs retried after the public npm tarball returned HTTP 200; macOS passed on unchanged source, CLI/Windows remain in progress at this snapshot."
+        "retry": {
+          "status": "passed",
+          "attempt": 2,
+          "sourceUnchanged": true,
+          "totalJobsPassed": 16,
+          "retriedJobs": [
+            {
+              "job": 130395200248,
+              "name": "CLI",
+              "status": "passed"
+            },
+            {
+              "job": 130395200656,
+              "name": "Portable docs (macos-latest)",
+              "status": "passed"
+            },
+            {
+              "job": 130395200553,
+              "name": "Portable docs (windows-latest)",
+              "status": "passed"
+            }
+          ]
+        },
+        "retryInitialSnapshot": "Only failed jobs retried after the public npm tarball returned HTTP 200; macOS passed on unchanged source, CLI/Windows remain in progress at this snapshot."
       },
-      "previewFollowup": "50c1fe6ff7998b3d09c4bf18bd899a7a1788008a adds pagehide cancellation, back/forward-cache restoration and stale-response protection; new source still needs its own CI."
+      "previewFollowup": "50c1fe6ff7998b3d09c4bf18bd899a7a1788008a adds pagehide cancellation, back/forward-cache restoration and stale-response protection. All 16 new-source PR #121 checks passed in run 42983924584; see zellij-exclusions-preview-2026-11-11.json for merge and post-merge status."
+    },
+    "initialSnapshot": {
+      "status": "in progress; not a completed verification claim",
+      "runs": [
+        {
+          "run": 42970277159,
+          "name": "Base image",
+          "status": "in_progress"
+        },
+        {
+          "run": 42970277215,
+          "name": "CI",
+          "status": "queued"
+        }
+      ]
     }
   }
 }

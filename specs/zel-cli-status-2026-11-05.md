@@ -1462,3 +1462,34 @@ pending; see [the evidence](evidence/zellij-exclusions-preview-2026-11-11.json).
 Vercel remains explicitly user-deferred. Advanced importer limits, remaining
 external account verification and Netlify's hydration blocker remain open. No
 new native release or production-domain migration occurred.
+
+
+### 2026-11-11 — Exclusions and preview lifecycle merged
+
+PR #121 merged as `48f95c96b672aefe7ba4ed3dd407d9748613009e` after all
+16 checks passed in run `42983924584` on final head
+`3d324906b451bd8fd0d1f97a24bc36526e517914`. The merged tree is identical to
+the tested tree, `d2021f5c07d17b68e28cb66f88a9fe249d333c53`. In addition to
+715 local Rust tests and 50 Node helper tests, CI passed all six native
+packages, portable browsers on Linux/macOS/Windows, both Linux image
+architectures, hosted Sphinx exclusion acceptance and the full CLI suite.
+The macOS/WebKit preview checks passed with the new lifecycle fix.
+
+The preceding PR #119 post-merge runs are now closed: Base image
+`42970277159` passed all 13 jobs, and CI `42970277215` passed all 16 jobs
+after retrying only its three failed jobs on unchanged source. The initial
+npm tarball failures and WebKit navigation error remain recorded in the
+evidence; this supersedes the earlier pending snapshots.
+
+PR #121 automatic post-merge verification also passed, without retries:
+Base image `42988073094` passed all 13 jobs and CI `42988073228` passed
+all 16 jobs on merge `48f95c96b672aefe7ba4ed3dd407d9748613009e`. The new
+preview lifecycle passed macOS/WebKit acceptance both before and after merge.
+The evidence records these results separately from final-head PR verification.
+
+User documentation and the current CLI status are updated. Custom Sphinx
+`include_patterns`, automatic numbering, MyST/domains/extensions and the other
+documented advanced importer gaps remain open. Live Vercel verification remains
+user-deferred; Fly/S3 and real GitLab/CircleCI acceptance remain pending. The
+Netlify hydration blocker is unchanged. Published rc.2 and the production
+domain are unchanged; these new source capabilities are not yet released.
