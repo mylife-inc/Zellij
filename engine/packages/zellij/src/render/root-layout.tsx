@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { createHash } from 'node:crypto';
 import { loadZellijRuntime, type ZellijRuntimeOptions } from '../config/runtime';
 import { NavBar } from '../chrome/nav-bar';
 import { Footer } from '../chrome/footer';
@@ -20,6 +21,11 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
   return async function ZellijRootLayout({ children }: { children: ReactNode }) {
     const { site, developmentRevision } = await loadZellijRuntime(options);
     const { config } = site;
+    const themeCss = emitThemeCss(config);
+    // React's managed stylesheets are matched by resource identity, rather
+    // than a cursor through head children that a host may add whitespace to.
+    // Resource contents are immutable: changed CSS must receive a new href.
+    const themeHref = `zellij-theme-${createHash('sha256').update(themeCss).digest('hex')}`;
 
     return (
       <html
@@ -33,19 +39,20 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
         <head>
           {/* The active theme's tokens, or every theme when the picker is enabled. */}
           <style
-            id="zellij-theme"
-            dangerouslySetInnerHTML={{ __html: emitThemeCss(config) }}
-          />
+            href={themeHref}
+            precedence="zellij-theme"
+          >{themeCss}</style>
+        </head>
+        <body>
           {config.nav.themeToggle || config.nav.themeSwitcher ? (
-            // Restore only enabled preferences, before hydration/first paint.
+            // Run synchronously before visible body content, without relying
+            // on ordinary head-child matching during hydration.
             <script
               data-mode-toggle={config.nav.themeToggle ? 'true' : undefined}
               data-themes={config.nav.themeSwitcher ? THEME_NAMES.join(' ') : undefined}
               dangerouslySetInnerHTML={{ __html: themeInitScript }}
             />
           ) : null}
-        </head>
-        <body>
           <a className="zellij-skip-link" href="#content">
             Skip to content
           </a>

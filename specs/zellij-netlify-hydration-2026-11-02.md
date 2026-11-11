@@ -127,3 +127,34 @@ no badge script. This matches the original client-dependent behavior; it does
 not resolve the issue or constitute a new browser hydration test. Production
 migration remains pending. No deployment, configuration or domain was changed.
 See [the HTTP evidence](evidence/zellij-netlify-html-followup-2026-11-10.json).
+
+## Engine remedy under verification — 2026-11-11
+
+The user approved continuing with this issue while keeping live provider
+verification deferred. The root layout now emits theme CSS as a React-managed
+stylesheet (`href` and `precedence`), whose identity includes a SHA-256 digest
+of the CSS. React locates that resource independently of ordinary head-child
+hydration. Changed CSS receives a new identity because managed stylesheet
+contents are immutable. The synchronous preference bootstrap runs at the start
+of the body, before visible content, retaining early restoration without an
+ordinary script node in the head.
+
+This uses the documented [React stylesheet API](https://react.dev/reference/react-dom/components/style)
+and [inline script behavior](https://react.dev/reference/react-dom/components/script).
+It adds no warning suppression, DOM cleanup, dependency patch or export rewrite.
+The existing root-attribute suppression for restored visitor preferences is
+unchanged. Published `v0.2.0-rc.3` artifacts are unchanged; sites need an updated
+engine and a rebuild to receive the remedy.
+
+Five server-rendered root-layout cases cover stylesheet identity, CSS overrides
+and all four theme-control combinations. Hosted regressions run the actual
+preservation command against all 55 documentation routes after injecting either
+LF or a hosting comment surrounded by CRLF. A changed-body-text mismatch replaces
+the now-benign head-newline negative control; uncaught and console-only errors
+must still fail acceptance. Chromium and WebKit preference fixtures also receive
+the annotation while testing pre-hydration restoration, navigation/reload,
+disabled controls, unavailable/invalid storage and system mode changes.
+
+Hosted browser results are pending. This controlled reproduction does not replace
+a later live Netlify browser check. The production project, staging deployment,
+account settings and domain are unchanged; production migration remains deferred.

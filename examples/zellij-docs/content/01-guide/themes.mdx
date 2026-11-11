@@ -92,6 +92,12 @@ preferences are applied as the page loads. Disabled controls keep the configured
 choice. Unavailable storage leaves the configured defaults usable, and controls
 still work for the current page.
 
+The Next.js wrapper emits theme CSS in the document head and restores enabled
+preferences at the start of the body, before visible content and hydration.
+Current source also tolerates hosting annotations and surrounding whitespace
+inserted before the viewport metadata; this change is newer than `v0.2.0-rc.3`.
+It requires rebuilding the site with the updated engine.
+
 Code blocks follow the mode too — Shiki emits both palettes at build time and a
 CSS variable picks between them, so switching is instant and no highlighter
 runs in the browser.

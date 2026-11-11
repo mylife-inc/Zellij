@@ -113,7 +113,7 @@ jobs:
       - run: npx playwright install --with-deps chromium --only-shell
       - name: Published documentation routes, bookmarks, assets and search survive
         run: node scripts/check-docs-preservation.mjs
-      - name: Documentation acceptance rejects hydration and runtime errors
+      - name: Documentation tolerates head annotations and rejects hydration and runtime errors
         run: node --test scripts/check-docs-preservation.test.mjs
 
   # The guarantee that the CLI and the engine cannot disagree.
