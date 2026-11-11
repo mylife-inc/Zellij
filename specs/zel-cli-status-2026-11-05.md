@@ -1396,3 +1396,23 @@ blocker is unchanged. No further release publication or domain migration ran.
 Behavior references: [Sphinx toctree](https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree),
 [directive implementation](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py),
 [pattern matcher](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py).
+
+
+### 2026-11-10 — Sphinx wildcard navigation merged
+
+PR #119 merged as `206acc42b3e6bada11c046e6e5295005756bcbde` after all
+16 checks passed in run `42966645061` on final head
+`73c109f2ed89583522e6ade4f91a65017f571057`. The merged tree is identical to
+the tested tree, `bed4922f143d243170e7fd27202bcea6347f9b18`. Local validation
+passed 709 Rust tests (five hosted cases reserved for CI), warnings-denied
+Clippy, formatting, all six actual-CLI/engine import checks and strict/deep
+docs validation. CI passed all six native packages, portable browser checks
+on Linux/macOS/Windows, both image architectures, hosted wildcard navigation
+and the full container/deployment/preview/ship regression suite.
+
+The automatic post-merge runs are **not yet complete** at this snapshot:
+Base image `42970277159` is running and main CI `42970277215` is queued.
+Refresh them before claiming post-merge closure. The earlier entry's pending
+local/PR gates are now closed; the evidence records the exact results.
+Vercel remains user-deferred, and the documented import/external-verification
+limits and Netlify hydration blocker remain open. Published rc.2 is unchanged.

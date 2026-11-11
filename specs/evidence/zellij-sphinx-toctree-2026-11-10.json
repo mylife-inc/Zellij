@@ -12,11 +12,28 @@
     "allSixImporterEngineChecks": "passed",
     "sphinxFixtureRoutes": 13,
     "docsStrictDeep": "passed: 55 routes, 23 examples",
-    "rustWorkspace": "pending",
-    "clippy": "pending"
+    "rustWorkspace": {
+      "passed": 709,
+      "failed": 0,
+      "ignored": 5,
+      "note": "Hosted cases are selected in CI."
+    },
+    "clippy": "passed: workspace/all targets, warnings denied",
+    "formatting": "passed"
   },
   "ci": {
-    "status": "pending"
+    "status": "passed",
+    "run": 42966645061,
+    "jobsPassed": 16,
+    "finalHead": "73c109f2ed89583522e6ade4f91a65017f571057",
+    "pr": 119,
+    "coverage": [
+      "Six native build/install targets",
+      "Linux/macOS/Windows portable browser checks",
+      "Both Linux image architectures and combined manifests",
+      "Hosted Sphinx wildcard navigation order and browser link click",
+      "Full CLI container/export/preview/deployment/ship regression suite"
+    ]
   },
   "limits": [
     "Toctree patterns only: configuration exclusion globs remain unsupported",
@@ -29,5 +46,25 @@
     "https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-toctree",
     "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py",
     "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py"
-  ]
+  ],
+  "merge": {
+    "commit": "206acc42b3e6bada11c046e6e5295005756bcbde",
+    "tree": "bed4922f143d243170e7fd27202bcea6347f9b18",
+    "matchesTestedTree": true
+  },
+  "postMerge": {
+    "status": "in progress; not a completed verification claim",
+    "runs": [
+      {
+        "run": 42970277159,
+        "name": "Base image",
+        "status": "in_progress"
+      },
+      {
+        "run": 42970277215,
+        "name": "CI",
+        "status": "queued"
+      }
+    ]
+  }
 }
