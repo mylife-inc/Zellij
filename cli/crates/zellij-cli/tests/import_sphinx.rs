@@ -1368,11 +1368,10 @@ fn literalinclude_limits_bound_files_selection_and_repeated_expansion() {
 }
 
 #[test]
-fn literalinclude_requires_target_and_no_body_and_does_not_enable_parsed_includes() {
+fn literalinclude_requires_target_and_no_body() {
     for directive in [
         ".. literalinclude::",
         ".. literalinclude:: code.py\n\n   body",
-        ".. include:: code.py",
     ] {
         let t = tempfile::tempdir().unwrap();
         let s = t.path().join("s");
@@ -1692,4 +1691,272 @@ fn external_csv_headers_and_data_keep_distinct_nested_file_sources() {
         "{body}"
     );
     assert!(!body.contains("WRONG"), "{body}");
+}
+
+#[test]
+fn parsed_includes_share_headings_labels_substitutions_and_document_relative_paths() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n\n   guide/page\n",
+    );
+    write(
+        &s,
+        "guide/page.rst",
+        "Manual\n======\n\nBefore |product|.\n\n.. _included-section:\n\n.. include:: fragments/body.rst\n\nAfter\n-----\n\n:ref:`included-section` and |product|.\n",
+    );
+    write(
+        &s,
+        "guide/fragments/body.rst",
+        "Included section\n----------------\n\nIncluded searchable content.\n\n.. |product| replace:: **Product**\n\n.. include:: nested.inc\n\n.. image:: logo.svg\n   :alt: Included logo\n\n:doc:`/details` and :download:`notes.txt`.\n\n.. csv-table::\n   :file: values.csv\n\n.. toctree::\n\n   /details\n",
+    );
+    write(&s, "guide/nested.inc", "Nested from owning page.\n");
+    write(&s, "guide/fragments/nested.inc", "WRONG include base.\n");
+    write(
+        &s,
+        "guide/fragments/values.csv",
+        "Correct CSV source,value\n",
+    );
+    write(&s, "guide/values.csv", "WRONG CSV source,value\n");
+    write(&s, "guide/logo.svg", "<svg>correct bytes</svg>");
+    write(&s, "guide/notes.txt", "correct download");
+    write(
+        &s,
+        "details.rst",
+        "Details\n=======\n\n:ref:`included-section`\n",
+    );
+    let o = t.path().join("o");
+    run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/guide/page.mdx");
+    for text in [
+        "<h2 id=\"included-section\">Included section</h2>",
+        "<h2 id=\"after\">After</h2>",
+        "Before **Product**.",
+        "Nested from owning page.",
+        "Correct CSV source",
+        "[Details](</guide/details>)",
+        "[notes.txt](</_zellij/assets/imported/docs/guide/notes.txt>)",
+    ] {
+        assert!(body.contains(text), "{text}: {body}");
+    }
+    assert!(!body.contains("WRONG"), "{body}");
+    assert!(read(&o, "01-guide/details.mdx").contains("/guide/guide/page#included-section"));
+    assert_eq!(
+        read(&o, "assets/imported/docs/guide/logo.svg"),
+        "<svg>correct bytes</svg>"
+    );
+    assert!(!o.join("01-guide/guide/fragments/body.mdx").exists());
+    assert!(!o.join("assets/imported/docs/guide/nested.inc").exists());
+}
+
+#[test]
+fn parsed_includes_work_in_nested_blocks_but_code_and_comments_remain_literal() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(&s, "fragment.inc", "Included **body**.\n");
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. note::\n\n   .. include:: fragment.inc\n\n- Item\n\n  .. include:: fragment.inc\n\n.. list-table::\n\n   * - .. include:: fragment.inc\n\n.. csv-table::\n   :file: data/table.csv\n\n.. code-block:: rst\n\n   .. include:: missing.inc\n\nExample::\n\n   .. include:: missing.inc\n\n.. comment\n\n   .. include:: missing.inc\n",
+    );
+    write(
+        &s,
+        "data/table.csv",
+        "\".. include:: fragment.inc\"\n\".. include:: version.inc\"\n",
+    );
+    write(
+        &s,
+        "version.inc",
+        ".. |version| replace:: Included version\n\n|version|\n",
+    );
+    let o = t.path().join("o");
+    run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/index.mdx");
+    assert_eq!(body.matches("Included **body**.").count(), 4, "{body}");
+    assert!(body.contains("Included version"), "{body}");
+    assert_eq!(
+        body.matches(".. include:: missing.inc").count(),
+        2,
+        "{body}"
+    );
+}
+
+#[test]
+fn parsed_include_selection_uses_python_line_slices_then_literal_text_markers() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(
+        &s,
+        "excerpt.inc",
+        "\u{feff}discard\r\nnoise STARTSelected **text**END noise\r\ntail\r\n",
+    );
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. include:: /excerpt.inc\n   :start-line: -2\n   :end-line: -1\n   :start-after: START\n   :end-before: END\n   :encoding: utf-8-sig\n\n.. include:: excerpt.inc\n   :start-line: 100\n\n.. include:: tab.inc\n   :tab-width: 4\n",
+    );
+    write(&s, "tab.inc", ".. note::\n\n\tTabbed body.\n");
+    let o = t.path().join("o");
+    run(&s, &o, &[], 0);
+    let body = read(&o, "01-guide/index.mdx");
+    assert!(
+        body.contains("Selected **text**") && body.contains("Tabbed body."),
+        "{body}"
+    );
+    assert!(
+        !body.contains("discard") && !body.contains("noise") && !body.contains("tail"),
+        "{body}"
+    );
+}
+
+#[test]
+fn parsed_include_failures_preserve_output_in_all_asset_modes() {
+    for directive in [
+        ".. include::",
+        ".. include:: missing.inc",
+        ".. include:: ../secret",
+        ".. include:: https://example.test/remote",
+        ".. include:: <isonum.txt>",
+        ".. include:: private/hidden.inc",
+        ".. include:: .hidden.inc",
+        ".. include:: _build/output.inc",
+        ".. include:: fragment.inc\n\n   body",
+        ".. include:: fragment.inc\n   :parser: myst",
+        ".. include:: fragment.inc\n   :literal:",
+        ".. include:: fragment.inc\n   :start-line: nope",
+        ".. include:: fragment.inc\n   :tab-width: 0",
+        ".. include:: fragment.inc\n   :encoding: latin-1",
+        ".. include:: fragment.inc\n   :start-after: ABSENT",
+        ".. include:: fragment.inc\n   :end-before: ABSENT",
+        ".. include:: cycle.inc",
+        ".. include:: invalid.inc",
+        ".. include:: binary.inc",
+    ] {
+        for args in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]] {
+            let t = tempfile::tempdir().unwrap();
+            let s = t.path().join("s");
+            basic(&s);
+            write(&s, "conf.py", "exclude_patterns=['private']\n");
+            for name in [
+                "fragment.inc",
+                "private/hidden.inc",
+                ".hidden.inc",
+                "_build/output.inc",
+            ] {
+                write(&s, name, "ordinary text\n");
+            }
+            write(&s, "cycle.inc", ".. include:: cycle.inc\n");
+            write(
+                &s,
+                "invalid.inc",
+                ".. raw:: html\n\n   <script>bad()</script>\n",
+            );
+            write(&s, "binary.inc", [0xff, 0x00]);
+            write(&s, "index.rst", format!("Home\n====\n\n{directive}\n"));
+            let o = t.path().join("o");
+            let r = run(&s, &o, &args, 2);
+            assert!(!o.exists(), "{directive}: {}", report(&r));
+        }
+    }
+}
+
+#[test]
+fn parsed_include_cycles_depth_and_shared_resource_budget_are_bounded() {
+    for mode in ["cycle", "depth", "bytes"] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        let needle = match mode {
+            "cycle" => {
+                write(&s, "index.rst", "Home\n====\n\n.. include:: index.rst\n");
+                "cyclic include"
+            }
+            "depth" => {
+                for i in 0..35 {
+                    write(
+                        &s,
+                        &format!("part{i}.inc"),
+                        format!(".. include:: part{}.inc\n", i + 1),
+                    );
+                }
+                write(&s, "index.rst", "Home\n====\n\n.. include:: part0.inc\n");
+                "include nesting"
+            }
+            _ => {
+                write(
+                    &s,
+                    "large.inc",
+                    format!(".. ignored\n\n   {}", "x".repeat(8 * 1024 * 1024 - 20)),
+                );
+                write(
+                    &s,
+                    "index.rst",
+                    format!("Home\n====\n\n{}", ".. include:: large.inc\n\n".repeat(5)),
+                );
+                "total expanded text exceeds 32 MiB"
+            }
+        };
+        let o = t.path().join("o");
+        let r = run(&s, &o, &[], 2);
+        assert!(report(&r).contains(needle), "{mode}: {}", report(&r));
+        assert!(!o.exists());
+    }
+}
+
+#[test]
+fn parsed_includes_reject_heading_collisions_and_preserve_unlisted_fragments() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    basic(&s);
+    write(&s, "fragment.inc", ".. _duplicate:\n\nSection\n-------\n");
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. include:: fragment.inc\n\n.. include:: fragment.inc\n",
+    );
+    let o = t.path().join("o");
+    let r = run(&s, &o, &[], 2);
+    assert!(
+        report(&r).contains("duplicate heading identifier"),
+        "{}",
+        report(&r)
+    );
+    assert!(!o.exists());
+    // Orphan fragments need no standalone title and must not read resources.
+    basic(&s);
+    write(&s, "unlisted.rst", ".. include:: missing.inc\n");
+    run(&s, &o, &[], 0);
+    assert!(!o.join("01-guide/unlisted.mdx").exists());
+    assert_eq!(read(&s, "unlisted.rst"), ".. include:: missing.inc\n");
+}
+
+#[cfg(unix)]
+#[test]
+fn parsed_includes_reject_symlinked_files_and_directories() {
+    for directory in [false, true] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        basic(&s);
+        write(t.path(), "outside/fragment.inc", "private-include-sentinel");
+        let (from, to, target) = if directory {
+            ("outside", "linked", "linked/fragment.inc")
+        } else {
+            ("outside/fragment.inc", "linked.inc", "linked.inc")
+        };
+        std::os::unix::fs::symlink(t.path().join(from), s.join(to)).unwrap();
+        write(
+            &s,
+            "index.rst",
+            format!("Home\n====\n\n.. include:: {target}\n"),
+        );
+        let o = t.path().join("o");
+        let r = run(&s, &o, &[], 2);
+        assert!(!o.exists());
+        assert!(!report(&r).contains("private-include-sentinel"));
+    }
 }

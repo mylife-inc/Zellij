@@ -19,6 +19,8 @@ pub struct Resolver<'a> {
     cache: BTreeMap<Utf8PathBuf, String>,
     cached_bytes: usize,
     expanded_bytes: usize,
+    include_count: usize,
+    pub included_files: BTreeSet<Utf8PathBuf>,
 }
 
 impl<'a> Resolver<'a> {
@@ -30,6 +32,8 @@ impl<'a> Resolver<'a> {
             cache: BTreeMap::new(),
             cached_bytes: 0,
             expanded_bytes: 0,
+            include_count: 0,
+            included_files: BTreeSet::new(),
         }
     }
 
@@ -121,9 +125,26 @@ impl<'a> Resolver<'a> {
         Ok(())
     }
 
+    pub fn include(
+        &mut self,
+        source: &Utf8Path,
+        spec: &super::include::Spec,
+    ) -> Result<(Utf8PathBuf, String)> {
+        self.include_count += 1;
+        if self.include_count > 10000 {
+            return Err(invalid("include expansion exceeds 10000 directives"));
+        }
+        let path = self.path(source, &spec.target)?;
+        let encoding = spec.encoding.as_deref().unwrap_or(self.encoding);
+        let body = spec.excerpt(self.read(source, &spec.target)?, encoding)?;
+        self.charge(body.len())?;
+        self.included_files.insert(path.clone());
+        Ok((path, body))
+    }
+
     pub fn resolve_document(&mut self, source: &Utf8Path, doc: &mut Document) -> Result<()> {
         let mut blocks = std::mem::take(&mut doc.blocks);
-        self.resolve(source, source, &mut blocks, doc)?;
+        self.resolve(source, &mut blocks, doc)?;
         doc.blocks = blocks;
         Ok(())
     }
@@ -131,7 +152,6 @@ impl<'a> Resolver<'a> {
     fn resolve(
         &mut self,
         source: &Utf8Path,
-        csv_source: &Utf8Path,
         blocks: &mut [Block],
         doc: &mut Document,
     ) -> Result<()> {
@@ -148,8 +168,8 @@ impl<'a> Resolver<'a> {
                 }
                 Block::CsvTable(spec) => {
                     let encoding = spec.encoding.as_deref().unwrap_or(self.encoding);
-                    let csv_path = self.path(csv_source, &spec.target)?;
-                    let raw = self.read(csv_source, &spec.target)?;
+                    let csv_path = self.path(&spec.source, &spec.target)?;
+                    let raw = self.read(&spec.source, &spec.target)?;
                     let raw = if encoding == "utf-8-sig" {
                         raw.strip_prefix('\u{feff}').unwrap_or(raw)
                     } else {
@@ -157,42 +177,20 @@ impl<'a> Resolver<'a> {
                     };
                     let bytes = raw.len();
                     let table = super::table_directives::parse("csv-table", &spec.options, raw)?;
-                    let supplemental = super::table_directives::supplemental_rows(&spec.options)?;
                     self.charge(bytes)?;
-                    *block = rst::table_block(
-                        table,
-                        spec.caption.clone(),
-                        &spec.language,
-                        doc,
-                        spec.depth,
-                    )?;
-                    // Docutils uses the CSV file as the source of its cells, but
-                    // :header: cells retain the directive's original source.
-                    // Sphinx roles/images/literalinclude retain the RST document context.
-                    let Block::Table { rows, .. } = block else {
-                        unreachable!()
-                    };
-                    for (i, row) in rows.iter_mut().enumerate() {
-                        let cell_source = if i < supplemental {
-                            csv_source
-                        } else {
-                            &csv_path
-                        };
-                        for cell in row {
-                            self.resolve(source, cell_source, cell, doc)?;
-                        }
-                    }
+                    *block = rst::parse_external_table(table, spec, doc, source, &csv_path, self)?;
+                    self.resolve(source, std::slice::from_mut(block), doc)?;
                 }
-                Block::Note { body, .. } => self.resolve(source, csv_source, body, doc)?,
+                Block::Note { body, .. } => self.resolve(source, body, doc)?,
                 Block::List { items, .. } => {
                     for item in items {
-                        self.resolve(source, csv_source, item, doc)?;
+                        self.resolve(source, item, doc)?;
                     }
                 }
                 Block::Table { rows, .. } => {
                     for row in rows {
                         for cell in row {
-                            self.resolve(source, csv_source, cell, doc)?;
+                            self.resolve(source, cell, doc)?;
                         }
                     }
                 }

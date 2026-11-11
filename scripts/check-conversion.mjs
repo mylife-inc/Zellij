@@ -364,6 +364,7 @@ Welcome
    lists
    substitutions
    literalinclude
+   includes
 
 Read :doc:\`02-Setup/APIReference\` and :ref:\`stable-install\`.
 
@@ -414,6 +415,12 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('literalinclude.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-literalinclude.rst'), 'utf8'));
   const literalCode = await readFile(path.join(repo, 'scripts/fixtures/sphinx-literal-code.txt'), 'utf8');
   await write('snippets/Sample%20.py', literalCode);
+  await write('includes.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-includes.rst'), 'utf8'));
+  await write('fragments/section.rst', await readFile(path.join(repo, 'scripts/fixtures/sphinx-include-section.rst'), 'utf8'));
+  await write('body.inc', await readFile(path.join(repo, 'scripts/fixtures/sphinx-include-body.inc'), 'utf8'));
+  await write('fragments/values.csv', 'Included CSV origin,correct\n');
+  await write('values.csv', 'WRONG origin,wrong\n');
+
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
   await write('media/logo.svg', asset);
@@ -426,7 +433,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await writeFile(path.join(content, 'site.yaml'), '\nbasePath: /products/docs\n', {flag:'a'});
   const site = await loadSite(new FolderContentSource({contentDir:content}));
   assert.deepEqual(await deepCheck(site, content), {errors:[],warnings:[]});
-  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/lists', '/guide/literalinclude', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
+  assert.deepEqual([...site.routes].sort(), ['/', '/guide', '/guide/cafe', '/guide/details', '/guide/includes', '/guide/lists', '/guide/literalinclude', '/guide/setup/api-reference', '/guide/substitutions', '/guide/tables']);
   const rendered = new Map();
   for (const page of site.guidePages) {
     const result = await compileMDX({source:page.body,options:await mdxOptions(),components:mdxComponents(site)});
@@ -529,6 +536,21 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert(!html.includes('href="../missing.md"'));
   }
   assertLiteralIncludes(rendered.get('/guide/literalinclude'));
+  function assertParsedIncludes(html, prefix = '') {
+    for (const text of ['id="shared-section"', 'id="after-inclusion"', 'Included fragment searchable phrase',
+      '<strong>Shared product</strong>', 'Included CSV origin',
+      `href="${prefix}/guide/details"`, `href="${prefix}/guide/includes#shared-section"`,
+      '/products/docs/_zellij/assets/imported/docs/media/logo.svg']) assert(html.includes(text), `Parsed include missing ${text}`);
+    assert(!html.includes('WRONG origin'));
+    assert(html.replace(/<[^>]*>/g, '').includes('.. include:: missing-example.inc'));
+  }
+  assertParsedIncludes(rendered.get('/guide/includes'));
+  const includePage = site.guidePages.find(p => p.route === '/guide/includes');
+  assert.deepEqual(extractToc(includePage.body, headingOptions).map(h => h.id), ['shared-section', 'after-inclusion']);
+  assert(indexGuidePage(includePage, headingOptions).some(entry => entry.route.endsWith('#shared-section') && entry.text.includes('Included fragment searchable phrase')));
+  await assert.rejects(readFile(path.join(content, 'assets/imported/docs/body.inc')), {code:'ENOENT'});
+  await assert.rejects(readFile(path.join(content, '01-guide/fragments/section.mdx')), {code:'ENOENT'});
+
   const literalPage = site.guidePages.find(p => p.route === '/guide/literalinclude');
   const literalIndex = indexGuidePage(literalPage, headingOptions);
   function assertLiteralSearch(entries) {
@@ -564,6 +586,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
       {kind:'link',label:'Nested instructions',route:'/guide/lists'},
       {kind:'link',label:'Reusable content',route:'/guide/substitutions'},
       {kind:'link',label:'Referenced examples',route:'/guide/literalinclude'},
+      {kind:'link',label:'Included manual',route:'/guide/includes'},
     ]},
   ]);
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/logo.svg'),'utf8'),asset);
@@ -580,6 +603,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assertLists(await readFile(path.join(output, 'guide/lists.html'), 'utf8'), '/products/docs');
     assertSubstitutions(await readFile(path.join(output, 'guide/substitutions.html'), 'utf8'), '/products/docs');
     assertLiteralIncludes(await readFile(path.join(output, 'guide/literalinclude.html'), 'utf8'));
+    assertParsedIncludes(await readFile(path.join(output, 'guide/includes.html'), 'utf8'), '/products/docs');
     assertLiteralSearch(JSON.parse(await readFile(path.join(output, '_zellij/search-index.json'), 'utf8')));
     await assert.rejects(readFile(path.join(output, '_zellij/assets/imported/docs/snippets/Sample%20.py')), {code:'ENOENT'});
     assert.equal(await readFile(path.join(output, '_zellij/assets/imported/docs/notes.txt'), 'utf8'), 'Table download bytes.\n');
@@ -597,5 +621,5 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     await checkImportedTables(output);
   }
   await checkLinkedAssets('sphinx', source, content, site);
-  console.log('sphinx: reStructuredText navigation, inline/local CSV tables, nested lists, substitutions, literalinclude excerpts, references, literal code/HTML, search, headings and assets verified.');
+  console.log('sphinx: reStructuredText navigation, inline/local CSV tables, nested lists, substitutions, literalinclude excerpts, parsed includes, references, literal code/HTML, search, headings and assets verified.');
 }

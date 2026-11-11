@@ -64,10 +64,10 @@ Sphinx imports read literal `conf.py` assignments, traverse explicit toctrees
 and convert a conservative reStructuredText subset without Python or Docutils.
 Supported headings, labels, nested bullet/decimal/alphabetic/Roman lists, code, admonitions, images and rectangular
 grid/simple tables, list tables, inline/local-file CSV tables and document-local text/image
-substitutions and local UTF-8 `literalinclude` excerpts retain content;
+substitutions, local parsed `include` fragments and UTF-8 `literalinclude` excerpts retain content;
 document/section/download references and HTML-builder URLs map to
 hosted guide routes and eligible assets. Unknown executable configuration,
-extensions, MyST, API domains, parsed includes, spanning cells, remote CSV sources,
+extensions, MyST, API domains, alternate include parsers, spanning cells, remote CSV sources,
 custom table presentation/escape options, global content transforms and
 custom builders still require manual migration. Unlisted documents are omitted
 and reported. The conversion reference specifies the exact accepted forms.
@@ -1169,3 +1169,47 @@ acceptance documentation as `a5daa5f4af44f063d82075e492369a5b37f1d446`.
 This update changes only context/status/evidence; published rc.2 is unchanged.
 Fly, Vercel, S3 and real GitLab/CircleCI runner acceptance, documented importer
 limitations and the reported Netlify hosting-comment hydration issue remain open.
+
+
+### 2026-11-10 — local Sphinx document includes
+
+Source `3a19947a8b6dfb5a236e813468aca1feba04ee1e` adds parsed local RST `include` fragments through
+convert/cv, migrate and shared ship conversion. Included headings, explicit
+labels, links, images and substitutions join the owning document; supported
+toctrees and nested lists/admonitions/tables retain their existing behavior.
+Navigation-driven parsing permits untitled include-only `.rst` files without
+publishing them as pages. Unlisted source documents are reported but no longer
+parsed or used to read dependencies. Referenced fragments are not misreported
+as unconverted orphan pages.
+
+Includes use the same bounded resource reader as local CSV/literalinclude: exact
+case, containment, exclusions, hidden/internal-tree and symlink checks; UTF-8
+text only; 8 MiB per file and shared 32 MiB input/expanded budgets. Repeated
+fragments are allowed, while cyclic paths, chains over 32 active source files,
+more than 10,000 expansions and duplicate headings/labels fail before writes.
+Options support UTF-8/BOM policy, Python-style zero-based line slices, nonempty
+literal start-after/end-before markers and bounded tab expansion. Parser/code/
+literal/presentation options, standard include libraries and explicitly excluded
+fragments remain unsupported; code excerpts use literalinclude.
+
+The official Sphinx Include/relfn2path implementations and Docutils include
+reference were inspected. Sphinx include paths, document roles and assets stay
+relative to the owning page, including nested fragments; CSV file directives
+retain the actual containing fragment/cell source. Heading state is shared
+across includes, while nested block limits remain enforced. Configuration
+version/release substitutions now fill gaps after all declarations are parsed:
+a regression reproduced the previous default/CSV-included-declaration collision.
+No Python, Docutils, source extensions or remote source fetches are executed.
+
+Local validation: all 53 Sphinx CLI tests pass, including seven new include
+regressions; warnings-denied workspace Clippy, formatting, actual CLI-to-engine
+rendering fixtures and strict/deep docs (55 routes / 23 examples) pass. The
+initial broader workspace run passed 702 tests (5 hosted-only cases ignored);
+the exact final source is being rechecked after the substitution-order fix.
+GitHub final-head hosted/browser/native verification and merge remain pending.
+Browser coverage adds included-heading hydration, images, navigation and search;
+it runs only in CI, with no local Docker/browser/GUI. Published rc.2 is unchanged.
+
+References: [Sphinx include](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py),
+[document-relative paths](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/__init__.py),
+[Docutils include](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment).

@@ -1,5 +1,6 @@
 //! Import declarative Sphinx/reStructuredText documentation without Python.
 mod config;
+mod include;
 mod lists;
 mod literalinclude;
 mod resources;
@@ -210,7 +211,7 @@ impl Converter for Sphinx {
         for path in &excluded {
             contained_path(&root, path)?;
         }
-        let mut docs = BTreeMap::new();
+        let mut document_files = BTreeSet::new();
         let mut assets = BTreeSet::new();
         let mut literal_files = BTreeSet::new();
         let mut unmapped = Vec::new();
@@ -250,23 +251,7 @@ impl Converter for Sphinx {
             }
             literal_files.insert(rel.clone());
             if rel.extension() == Some("rst") {
-                if rel.components().any(|p| p.as_str().starts_with('_'))
-                    || matches!(rel.file_stem(), Some("genindex" | "modindex" | "search"))
-                {
-                    return Err(invalid(format!("reserved Sphinx document name {rel}")));
-                }
-                let mut doc = rst::parse(
-                    &std::fs::read_to_string(path)?,
-                    config::string(&config, "highlight_language")?.unwrap_or("text"),
-                )
-                .map_err(|e| invalid(format!("{rel}: {e}")))?;
-                for key in ["version", "release"] {
-                    let value = config::string(&config, key)?.unwrap_or("");
-                    doc.substitutions
-                        .entry(key.into())
-                        .or_insert(substitutions::literal(value)?);
-                }
-                docs.insert(rel, doc);
+                document_files.insert(rel);
             } else if !matches!(
                 rel.extension().unwrap_or("").to_ascii_lowercase().as_str(),
                 "py" | "pyc"
@@ -294,6 +279,60 @@ impl Converter for Sphinx {
             .or(config::string(&config, "master_doc")?)
             .unwrap_or("index");
         let main = document_path(Utf8Path::new("index.rst"), main)?;
+        let mut includes = resources::Resolver::new(
+            &root,
+            &literal_files,
+            config::string(&config, "source_encoding")?.unwrap_or("utf-8-sig"),
+        );
+        // Parse the toctree's documents on demand. Untitled include fragments
+        // are input to their owner, not independent pages needing a title.
+        let mut docs = BTreeMap::new();
+        let mut pending = vec![main.clone()];
+        while let Some(path) = pending.pop() {
+            if docs.contains_key(&path) {
+                continue;
+            }
+            if docs.len() >= 10000 {
+                return Err(invalid("toctree exceeds 10000 documents"));
+            }
+            if !document_files.contains(&path) {
+                return Err(invalid(format!(
+                    "toctree document {path} is missing or excluded"
+                )));
+            }
+            if path.components().any(|p| p.as_str().starts_with('_'))
+                || matches!(path.file_stem(), Some("genindex" | "modindex" | "search"))
+            {
+                return Err(invalid(format!("reserved Sphinx document name {path}")));
+            }
+            let mut doc = rst::parse(
+                &std::fs::read_to_string(contained_path(&root, &path)?)?,
+                config::string(&config, "highlight_language")?.unwrap_or("text"),
+                &path,
+                &mut includes,
+            )
+            .map_err(|e| invalid(format!("{path}: {e}")))?;
+            includes
+                .resolve_document(&path, &mut doc)
+                .map_err(|e| invalid(format!("{path}: {e}")))?;
+            for key in ["version", "release"] {
+                let value = config::string(&config, key)?.unwrap_or("");
+                doc.substitutions
+                    .entry(key.into())
+                    .or_insert(substitutions::literal(value)?);
+            }
+            for block in &doc.blocks {
+                if let rst::Block::Toc(toc) = block {
+                    for (_, target) in &toc.entries {
+                        if target != "self" && !external(target) {
+                            pending.push(document_path(&path, target)?);
+                        }
+                    }
+                }
+            }
+            docs.insert(path, doc);
+        }
+        let included_files = includes.included_files;
         let nav = navigation(&main, None, &docs, &mut BTreeSet::new(), &mut 0)?;
         let mut tree = DocTree {
             root,
@@ -302,22 +341,15 @@ impl Converter for Sphinx {
             ..Default::default()
         };
         let published: BTreeSet<_> = tree.pages().into_iter().cloned().collect();
-        let mut includes = resources::Resolver::new(
-            &tree.root,
-            &literal_files,
-            config::string(&config, "source_encoding")?.unwrap_or("utf-8-sig"),
-        );
-        for path in &published {
-            includes
-                .resolve_document(path, docs.get_mut(path).unwrap())
-                .map_err(|e| invalid(format!("{path}: {e}")))?;
-        }
-        tree.orphans = docs
-            .keys()
-            .filter(|p| !published.contains(*p))
+        tree.orphans = document_files
+            .iter()
+            .filter(|p| !published.contains(*p) && !included_files.contains(*p))
             .cloned()
             .collect();
-        tree.output_sources = docs.keys().map(|p| (p.clone(), output(p))).collect();
+        tree.output_sources = document_files
+            .iter()
+            .map(|p| (p.clone(), output(p)))
+            .collect();
         let mut labels = BTreeMap::new();
         for (path, doc) in &docs {
             for (label, (anchor, title)) in &doc.labels {
@@ -406,7 +438,7 @@ impl Converter for Sphinx {
             }
         }
         let mut website = SourceUrls::from_site_url(config::string(&config, "html_baseurl")?)?;
-        for path in docs.keys() {
+        for path in &document_files {
             let address = format!("/{}.html", path.as_str().strip_suffix(".rst").unwrap());
             let target = published.contains(path).then(|| route(&output(path)));
             website.add(&address, target.clone())?;

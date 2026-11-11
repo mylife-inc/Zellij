@@ -4,6 +4,7 @@ use super::{
     invalid,
     substitutions::{self, Definition, Expansion},
 };
+use camino::{Utf8Path, Utf8PathBuf};
 use std::collections::{BTreeMap, BTreeSet};
 use unicode_normalization::UnicodeNormalization;
 use zellij_core::Result;
@@ -201,7 +202,27 @@ pub fn target(text: &str) -> Result<(Option<String>, String)> {
         Ok((None, text.into()))
     }
 }
-pub fn parse(raw: &str, language: &str) -> Result<Document> {
+struct Parser<'a, 'b> {
+    language: &'a str,
+    // Sphinx roles/resources use the owning document, even inside includes.
+    source: &'a Utf8Path,
+    // Docutils CSV file directives use their actual fragment/cell source.
+    current: Utf8PathBuf,
+    resources: &'a mut super::resources::Resolver<'b>,
+    stack: Vec<Utf8PathBuf>,
+}
+#[derive(Default)]
+struct HeadingState {
+    styles: Vec<(char, bool)>,
+    used_ids: BTreeSet<String>,
+    pending_label: Option<String>,
+}
+pub fn parse(
+    raw: &str,
+    language: &str,
+    source: &Utf8Path,
+    resources: &mut super::resources::Resolver<'_>,
+) -> Result<Document> {
     if raw.contains('\t') {
         return Err(invalid(
             "tabs in reStructuredText are unsupported; expand them to spaces",
@@ -216,7 +237,14 @@ pub fn parse(raw: &str, language: &str) -> Result<Document> {
         notes: Vec::new(),
         substitutions: BTreeMap::new(),
     };
-    doc.blocks = blocks(raw, language, &mut doc, 0)?;
+    let mut parser = Parser {
+        language,
+        source,
+        current: source.into(),
+        resources,
+        stack: vec![source.into()],
+    };
+    doc.blocks = parser.blocks(raw, &mut doc, 0)?;
     if doc.title.is_empty() {
         return Err(invalid(
             "each imported .rst page must have a document title",
@@ -224,260 +252,295 @@ pub fn parse(raw: &str, language: &str) -> Result<Document> {
     }
     Ok(doc)
 }
-fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result<Vec<Block>> {
-    if depth > 16 {
-        return Err(invalid("table/admonition/list nesting exceeds 16"));
+impl Parser<'_, '_> {
+    fn blocks(&mut self, raw: &str, doc: &mut Document, depth: usize) -> Result<Vec<Block>> {
+        let mut state = HeadingState::default();
+        let out = self.blocks_inner(raw, doc, depth, &mut state)?;
+        if state.pending_label.is_some() {
+            return Err(invalid("label has no following heading"));
+        }
+        Ok(out)
     }
-    let lines: Vec<_> = raw.lines().collect();
-    let mut out = Vec::new();
-    let mut i = 0;
-    let mut styles = Vec::new();
-    let mut used_ids = BTreeSet::new();
-    let mut pending_label: Option<String> = None;
-    while i < lines.len() {
-        let line = lines[i].trim_end();
-        if line.is_empty() {
-            out.push(Block::Text(String::new()));
-            i += 1;
-            continue;
+    fn blocks_inner(
+        &mut self,
+        raw: &str,
+        doc: &mut Document,
+        depth: usize,
+        state: &mut HeadingState,
+    ) -> Result<Vec<Block>> {
+        let language = self.language;
+        if depth > 16 {
+            return Err(invalid("table/admonition/list nesting exceeds 16"));
         }
-        if super::tables::starts(line) {
-            if pending_label.is_some() || i > 0 && !lines[i - 1].trim().is_empty() {
-                return Err(invalid(
-                    "tables need a preceding blank line and cannot use section labels",
-                ));
+        let lines: Vec<_> = raw.lines().collect();
+        let mut out = Vec::new();
+        let mut i = 0;
+
+        while i < lines.len() {
+            let line = lines[i].trim_end();
+            if line.is_empty() {
+                out.push(Block::Text(String::new()));
+                i += 1;
+                continue;
             }
-            let (table, count) = super::tables::parse(&lines[i..])?;
-            out.push(table_block(table, None, language, doc, depth)?);
-            i += count;
-            continue;
-        }
-        let over = adornment(line).is_some()
-            && i + 2 < lines.len()
-            && adornment(lines[i + 2]) == adornment(line)
-            && !lines[i + 1].trim().is_empty();
-        let under =
-            i + 1 < lines.len() && adornment(lines[i + 1]).is_some() && !line.starts_with(' ');
-        if over || under {
-            if depth > 0 {
-                return Err(invalid(
-                    "headings inside tables/admonitions/lists require manual migration",
-                ));
-            }
-            let (text, marker, count) = if over {
-                (lines[i + 1], adornment(line).unwrap(), 3)
-            } else {
-                (line, adornment(lines[i + 1]).unwrap(), 2)
-            };
-            let underline = lines[i + count - 1];
-            if underline.chars().count() < text.chars().count() {
-                return Err(invalid("heading underline is shorter than its title"));
-            }
-            let style = (marker, over);
-            let level = if let Some(index) = styles.iter().position(|s| *s == style) {
-                index + 1
-            } else {
-                styles.push(style);
-                styles.len()
-            };
-            if level > 6 {
-                return Err(invalid("heading nesting exceeds six levels"));
-            }
-            let plain = plain_title(text)?;
-            let anchor = id(pending_label.as_deref().unwrap_or(&plain))?;
-            if !used_ids.insert(anchor.clone()) {
-                return Err(invalid(
-                    "duplicate heading identifier; add distinct explicit labels",
-                ));
-            }
-            if doc.title.is_empty() {
-                doc.title = plain.clone();
-            }
-            if let Some(label) = pending_label.take() {
-                if doc
-                    .labels
-                    .insert(name(&label), (anchor.clone(), plain.clone()))
-                    .is_some()
-                {
-                    return Err(invalid("duplicate section label"));
-                }
-            }
-            if doc
-                .links
-                .insert(name(&plain), format!("#{anchor}"))
-                .is_some()
-            {
-                return Err(invalid(
-                    "duplicate implicit heading reference; rename the section",
-                ));
-            }
-            out.push(Block::Heading {
-                level,
-                text: text.into(),
-                id: anchor,
-            });
-            i += count;
-            continue;
-        }
-        if let Some(rest) = line.strip_prefix(".. _") {
-            if depth > 0 {
-                return Err(invalid(
-                    "targets inside tables/admonitions require manual migration",
-                ));
-            }
-            let (label, href) = rest
-                .split_once(':')
-                .ok_or_else(|| invalid("invalid explicit hyperlink target"))?;
-            if label.is_empty() || label.contains('`') {
-                return Err(invalid("complex explicit target requires manual migration"));
-            }
-            if href.trim().is_empty() {
-                if pending_label.replace(label.into()).is_some() {
+            if super::tables::starts(line) {
+                if state.pending_label.is_some() || i > 0 && !lines[i - 1].trim().is_empty() {
                     return Err(invalid(
-                        "multiple labels on one section require manual migration",
+                        "tables need a preceding blank line and cannot use section labels",
                     ));
                 }
-            } else if doc.links.insert(name(label), href.trim().into()).is_some() {
-                return Err(invalid("duplicate named hyperlink"));
+                let (table, count) = super::tables::parse(&lines[i..])?;
+                out.push(self.table_block(table, None, doc, depth, None)?);
+                i += count;
+                continue;
             }
-            i += 1;
-            continue;
-        }
-        if pending_label.is_some() {
-            return Err(invalid(
-                "explicit labels are supported directly before section headings only",
-            ));
-        }
-        if super::lists::starts(&lines[i..])? {
-            if depth >= 16 {
-                return Err(invalid("table/admonition/list nesting exceeds 16"));
+            let over = adornment(line).is_some()
+                && i + 2 < lines.len()
+                && adornment(lines[i + 2]) == adornment(line)
+                && !lines[i + 1].trim().is_empty();
+            let under =
+                i + 1 < lines.len() && adornment(lines[i + 1]).is_some() && !line.starts_with(' ');
+            if over || under {
+                if depth > 0 {
+                    return Err(invalid(
+                        "headings inside tables/admonitions/lists require manual migration",
+                    ));
+                }
+                let (text, marker, count) = if over {
+                    (lines[i + 1], adornment(line).unwrap(), 3)
+                } else {
+                    (line, adornment(lines[i + 1]).unwrap(), 2)
+                };
+                let underline = lines[i + count - 1];
+                if underline.chars().count() < text.chars().count() {
+                    return Err(invalid("heading underline is shorter than its title"));
+                }
+                let style = (marker, over);
+                let level = if let Some(index) = state.styles.iter().position(|s| *s == style) {
+                    index + 1
+                } else {
+                    state.styles.push(style);
+                    state.styles.len()
+                };
+                if level > 6 {
+                    return Err(invalid("heading nesting exceeds six levels"));
+                }
+                let plain = plain_title(text)?;
+                let anchor = id(state.pending_label.as_deref().unwrap_or(&plain))?;
+                if !state.used_ids.insert(anchor.clone()) {
+                    return Err(invalid(
+                        "duplicate heading identifier; add distinct explicit labels",
+                    ));
+                }
+                if doc.title.is_empty() {
+                    doc.title = plain.clone();
+                }
+                if let Some(label) = state.pending_label.take() {
+                    if doc
+                        .labels
+                        .insert(name(&label), (anchor.clone(), plain.clone()))
+                        .is_some()
+                    {
+                        return Err(invalid("duplicate section label"));
+                    }
+                }
+                if doc
+                    .links
+                    .insert(name(&plain), format!("#{anchor}"))
+                    .is_some()
+                {
+                    return Err(invalid(
+                        "duplicate implicit heading reference; rename the section",
+                    ));
+                }
+                out.push(Block::Heading {
+                    level,
+                    text: text.into(),
+                    id: anchor,
+                });
+                i += count;
+                continue;
             }
-            if i > 0
-                && !lines[i - 1].trim().is_empty()
-                && !matches!(out.last(), Some(Block::List { .. }))
-            {
-                return Err(invalid("a list needs a preceding blank line"));
-            }
-            let (list, count) = super::lists::parse(&lines[i..])?;
-            let items = list
-                .items
-                .iter()
-                .map(|item| blocks(item, language, doc, depth + 1))
-                .collect::<Result<Vec<_>>>()?;
-            out.push(Block::List {
-                numbering: list.numbering,
-                items,
-            });
-            i += count;
-            continue;
-        }
-        if let Some(rest) = line.strip_prefix(".. |") {
-            let (key, rest) = rest
-                .split_once('|')
-                .ok_or_else(|| invalid("unclosed substitution definition"))?;
-            let key = substitutions::name(key)?;
-            if !rest.starts_with(char::is_whitespace) {
-                return Err(invalid(
-                    "substitution definition needs whitespace before its directive",
-                ));
-            }
-            let (directive, arg) = rest
-                .trim_start()
-                .split_once("::")
-                .ok_or_else(|| invalid("substitution definition needs an inline directive"))?;
-            let has_options = lines.get(i + 1).is_some_and(|l| !l.trim().is_empty());
-            let (body, next) = indented(&lines, i + 1);
-            let value = match directive {
-                "replace" => {
-                    if !arg.trim().is_empty() && !has_options && !body.is_empty() {
+            if let Some(rest) = line.strip_prefix(".. _") {
+                if depth > 0 {
+                    return Err(invalid(
+                        "targets inside tables/admonitions require manual migration",
+                    ));
+                }
+                let (label, href) = rest
+                    .split_once(':')
+                    .ok_or_else(|| invalid("invalid explicit hyperlink target"))?;
+                if label.is_empty() || label.contains('`') {
+                    return Err(invalid("complex explicit target requires manual migration"));
+                }
+                if href.trim().is_empty() {
+                    if state.pending_label.replace(label.into()).is_some() {
                         return Err(invalid(
-                            "replace accepts one paragraph; a blank line starts another paragraph",
+                            "multiple labels on one section require manual migration",
                         ));
                     }
-                    substitutions::replacement(arg.trim(), &body)?
+                } else if doc.links.insert(name(label), href.trim().into()).is_some() {
+                    return Err(invalid("duplicate named hyperlink"));
                 }
-                "image" => {
-                    let (opts, content) = if has_options {
-                        options(&body, false)?
+                i += 1;
+                continue;
+            }
+            if state.pending_label.is_some() && !line.starts_with(".. include::") {
+                return Err(invalid(
+                    "explicit labels are supported directly before section headings only",
+                ));
+            }
+            if super::lists::starts(&lines[i..])? {
+                if depth >= 16 {
+                    return Err(invalid("table/admonition/list nesting exceeds 16"));
+                }
+                if i > 0
+                    && !lines[i - 1].trim().is_empty()
+                    && !matches!(out.last(), Some(Block::List { .. }))
+                {
+                    return Err(invalid("a list needs a preceding blank line"));
+                }
+                let (list, count) = super::lists::parse(&lines[i..])?;
+                let items = list
+                    .items
+                    .iter()
+                    .map(|item| self.blocks(item, doc, depth + 1))
+                    .collect::<Result<Vec<_>>>()?;
+                out.push(Block::List {
+                    numbering: list.numbering,
+                    items,
+                });
+                i += count;
+                continue;
+            }
+            if let Some(rest) = line.strip_prefix(".. |") {
+                let (key, rest) = rest
+                    .split_once('|')
+                    .ok_or_else(|| invalid("unclosed substitution definition"))?;
+                let key = substitutions::name(key)?;
+                if !rest.starts_with(char::is_whitespace) {
+                    return Err(invalid(
+                        "substitution definition needs whitespace before its directive",
+                    ));
+                }
+                let (directive, arg) = rest
+                    .trim_start()
+                    .split_once("::")
+                    .ok_or_else(|| invalid("substitution definition needs an inline directive"))?;
+                let has_options = lines.get(i + 1).is_some_and(|l| !l.trim().is_empty());
+                let (body, next) = indented(&lines, i + 1);
+                let value = match directive {
+                    "replace" => {
+                        if !arg.trim().is_empty() && !has_options && !body.is_empty() {
+                            return Err(invalid(
+                                "replace accepts one paragraph; a blank line starts another paragraph",
+                            ));
+                        }
+                        substitutions::replacement(arg.trim(), &body)?
+                    }
+                    "image" => {
+                        let (opts, content) = if has_options {
+                            options(&body, false)?
+                        } else {
+                            (BTreeMap::new(), body)
+                        };
+                        if arg.trim().is_empty()
+                            || !content.is_empty()
+                            || opts
+                                .keys()
+                                .any(|key| !matches!(key.as_str(), "alt" | "target"))
+                            || opts.get("target").is_some_and(|value| value.is_empty())
+                        {
+                            return Err(invalid(
+                                "image substitutions accept a source and optional alt/target only",
+                            ));
+                        }
+                        Definition::Image {
+                            source: arg.trim().into(),
+                            alt: opts.get("alt").cloned().unwrap_or_else(|| key.clone()),
+                            target: opts.get("target").cloned(),
+                        }
+                    }
+                    _ => {
+                        return Err(invalid(
+                            "only replace/image substitution directives are supported; date, unicode, raw and extensions require manual migration",
+                        ));
+                    }
+                };
+                substitutions::insert(&mut doc.substitutions, key, value)?;
+                i = next;
+                continue;
+            }
+            if let Some(rest) = line.strip_prefix(".. ") {
+                let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
+                let (body, next) = indented(&lines, i + 1);
+                i = next;
+                if let Some((directive, arg)) = rest.split_once("::") {
+                    let arg = arg.trim();
+                    let (opts, body) = if option_block {
+                        options(&body, directive == "csv-table")?
                     } else {
                         (BTreeMap::new(), body)
                     };
-                    if arg.trim().is_empty()
-                        || !content.is_empty()
-                        || opts
-                            .keys()
-                            .any(|key| !matches!(key.as_str(), "alt" | "target"))
-                        || opts.get("target").is_some_and(|value| value.is_empty())
-                    {
-                        return Err(invalid(
-                            "image substitutions accept a source and optional alt/target only",
-                        ));
-                    }
-                    Definition::Image {
-                        source: arg.trim().into(),
-                        alt: opts.get("alt").cloned().unwrap_or_else(|| key.clone()),
-                        target: opts.get("target").cloned(),
-                    }
-                }
-                _ => {
-                    return Err(invalid(
-                        "only replace/image substitution directives are supported; date, unicode, raw and extensions require manual migration",
-                    ));
-                }
-            };
-            substitutions::insert(&mut doc.substitutions, key, value)?;
-            i = next;
-            continue;
-        }
-        if let Some(rest) = line.strip_prefix(".. ") {
-            let option_block = lines.get(i + 1).is_some_and(|line| !line.trim().is_empty());
-            let (body, next) = indented(&lines, i + 1);
-            i = next;
-            if let Some((directive, arg)) = rest.split_once("::") {
-                let arg = arg.trim();
-                let (opts, body) = if option_block {
-                    options(&body, directive == "csv-table")?
-                } else {
-                    (BTreeMap::new(), body)
-                };
-                match directive {
-                    "literalinclude" => out.push(Block::LiteralInclude(
-                        super::literalinclude::Spec::parse(arg, &opts, &body, language)?,
-                    )),
-                    "table" | "list-table" | "csv-table" => {
-                        if option_block && opts.is_empty() && !body.is_empty() {
-                            return Err(invalid(
-                                "table content needs a blank line after the directive; multiline captions require manual migration",
-                            ));
+                    match directive {
+                        "include" => {
+                            let spec = super::include::Spec::parse(arg, &opts, &body)?;
+                            let (path, body) = self.resources.include(self.source, &spec)?;
+                            if self.stack.contains(&path) {
+                                return Err(invalid(format!("cyclic include at {path}")));
+                            }
+                            if self.stack.len() >= 32 {
+                                return Err(invalid("include nesting exceeds 32 levels"));
+                            }
+                            self.stack.push(path.clone());
+                            let previous = std::mem::replace(&mut self.current, path.clone());
+                            let included = self
+                                .blocks_inner(&body, doc, depth, state)
+                                .map_err(|e| invalid(format!("included {path}: {e}")));
+                            self.current = previous;
+                            self.stack.pop();
+                            out.extend(included?);
                         }
-                        if directive == "csv-table" && opts.contains_key("file") {
-                            out.push(Block::CsvTable(super::table_directives::ExternalCsv::new(
-                                opts,
-                                &body,
+                        "literalinclude" => out.push(Block::LiteralInclude(
+                            super::literalinclude::Spec::parse(arg, &opts, &body, language)?,
+                        )),
+                        "table" | "list-table" | "csv-table" => {
+                            if option_block && opts.is_empty() && !body.is_empty() {
+                                return Err(invalid(
+                                    "table content needs a blank line after the directive; multiline captions require manual migration",
+                                ));
+                            }
+                            if directive == "csv-table" && opts.contains_key("file") {
+                                out.push(Block::CsvTable(
+                                    super::table_directives::ExternalCsv::new(
+                                        opts,
+                                        &body,
+                                        (!arg.is_empty()).then(|| arg.into()),
+                                        language,
+                                        depth,
+                                        self.current.clone(),
+                                    )?,
+                                ));
+                                continue;
+                            }
+                            let table = super::table_directives::parse(directive, &opts, &body)?;
+                            out.push(self.table_block(
+                                table,
                                 (!arg.is_empty()).then(|| arg.into()),
-                                language,
+                                doc,
                                 depth,
-                            )?));
-                            continue;
+                                None,
+                            )?);
                         }
-                        let table = super::table_directives::parse(directive, &opts, &body)?;
-                        out.push(table_block(
-                            table,
-                            (!arg.is_empty()).then(|| arg.into()),
-                            language,
-                            doc,
-                            depth,
-                        )?);
-                    }
-                    "toctree" => {
-                        if depth > 0 || !arg.is_empty() {
-                            return Err(invalid(
-                                "toctree must be at document level without an argument",
-                            ));
-                        }
-                        let mut toc = Toc::default();
-                        for (key, value) in &opts {
-                            match key.as_str() {
+                        "toctree" => {
+                            if depth > 0 || !arg.is_empty() {
+                                return Err(invalid(
+                                    "toctree must be at document level without an argument",
+                                ));
+                            }
+                            let mut toc = Toc::default();
+                            for (key, value) in &opts {
+                                match key.as_str() {
                                 "caption" if !value.is_empty() => {
                                     if value.contains('|') { return Err(invalid("toctree captions require plain text; expand substitutions manually")); }
                                     toc.caption = Some(value.clone());
@@ -487,158 +550,198 @@ fn blocks(raw: &str, language: &str, doc: &mut Document, depth: usize) -> Result
                                 "maxdepth" if value.parse::<u32>().is_ok() => doc.notes.push("toctree maxdepth is presentation-only; the full document hierarchy is imported".into()),
                                 _ => return Err(invalid(format!("unsupported toctree option :{key}: (globs, numbering and custom transforms require manual migration)"))),
                             }
-                        }
-                        for entry in body.lines().filter(|l| !l.is_empty()) {
-                            if entry.starts_with(char::is_whitespace) {
-                                return Err(invalid("toctree entries must have equal indentation"));
                             }
-                            let entry = target(entry)?;
-                            if entry.0.as_ref().is_some_and(|label| label.contains('|')) {
+                            for entry in body.lines().filter(|l| !l.is_empty()) {
+                                if entry.starts_with(char::is_whitespace) {
+                                    return Err(invalid(
+                                        "toctree entries must have equal indentation",
+                                    ));
+                                }
+                                let entry = target(entry)?;
+                                if entry.0.as_ref().is_some_and(|label| label.contains('|')) {
+                                    return Err(invalid(
+                                        "toctree titles require plain text; expand substitutions manually",
+                                    ));
+                                }
+                                toc.entries.push(entry);
+                            }
+                            out.push(Block::Toc(toc));
+                        }
+                        "code-block" | "code" | "sourcecode" => {
+                            if !opts.is_empty() {
+                                return Err(invalid("code-block options require manual migration"));
+                            }
+                            out.push(Block::Code {
+                                language: if arg.is_empty() { language } else { arg }.into(),
+                                body,
+                            });
+                        }
+                        "image" => {
+                            if arg.is_empty() || !body.is_empty() || opts.keys().any(|k| k != "alt")
+                            {
                                 return Err(invalid(
-                                    "toctree titles require plain text; expand substitutions manually",
+                                    "image accepts a target and optional :alt: only",
                                 ));
                             }
-                            toc.entries.push(entry);
+                            out.push(Block::Image {
+                                target: arg.into(),
+                                alt: opts.get("alt").cloned().unwrap_or_default(),
+                            });
                         }
-                        out.push(Block::Toc(toc));
-                    }
-                    "code-block" | "code" | "sourcecode" => {
-                        if !opts.is_empty() {
-                            return Err(invalid("code-block options require manual migration"));
+                        "note" | "warning" | "tip" | "important" | "caution" | "danger"
+                        | "attention" | "error" | "hint" | "admonition" => {
+                            if !opts.is_empty() {
+                                return Err(invalid("admonition options require manual migration"));
+                            }
+                            let (title, body) = if directive == "admonition" {
+                                (arg, body)
+                            } else {
+                                (directive, format!("{arg}\n\n{body}"))
+                            };
+                            let body = self.blocks(&body, doc, depth + 1)?;
+                            out.push(Block::Note {
+                                title: title.into(),
+                                body,
+                            });
                         }
-                        out.push(Block::Code {
-                            language: if arg.is_empty() { language } else { arg }.into(),
-                            body,
-                        });
-                    }
-                    "image" => {
-                        if arg.is_empty() || !body.is_empty() || opts.keys().any(|k| k != "alt") {
-                            return Err(invalid("image accepts a target and optional :alt: only"));
+                        _ => {
+                            return Err(invalid(format!(
+                                "unsupported reStructuredText directive {directive:?}; raw HTML, API generation and extensions are not executed"
+                            )));
                         }
-                        out.push(Block::Image {
-                            target: arg.into(),
-                            alt: opts.get("alt").cloned().unwrap_or_default(),
-                        });
                     }
-                    "note" | "warning" | "tip" | "important" | "caution" | "danger"
-                    | "attention" | "error" | "hint" | "admonition" => {
-                        if !opts.is_empty() {
-                            return Err(invalid("admonition options require manual migration"));
-                        }
-                        let (title, body) = if directive == "admonition" {
-                            (arg, body)
-                        } else {
-                            (directive, format!("{arg}\n\n{body}"))
-                        };
-                        let body = blocks(&body, language, doc, depth + 1)?;
-                        out.push(Block::Note {
-                            title: title.into(),
-                            body,
-                        });
+                } else {
+                    if rest.starts_with(['|', '[', '_']) {
+                        return Err(invalid(
+                            "substitutions, footnotes and anonymous targets require manual migration",
+                        ));
                     }
-                    _ => {
-                        return Err(invalid(format!(
-                            "unsupported reStructuredText directive {directive:?}; includes, raw HTML, API generation and extensions are not executed"
-                        )));
-                    }
+                    doc.notes.push(
+                        "reStructuredText comments were omitted from rendered content".into(),
+                    );
                 }
-            } else {
-                if rest.starts_with(['|', '[', '_']) {
+                continue;
+            }
+            if line == ".." {
+                let (_, next) = indented(&lines, i + 1);
+                i = next;
+                continue;
+            }
+            if line.ends_with("::") {
+                let (body, next) = indented(&lines, i + 1);
+                if body.is_empty() || next == i + 1 {
                     return Err(invalid(
-                        "substitutions, footnotes and anonymous targets require manual migration",
+                        "literal block marker must be followed by an indented block",
                     ));
                 }
-                doc.notes
-                    .push("reStructuredText comments were omitted from rendered content".into());
+                let prefix = line.strip_suffix("::").unwrap();
+                if !prefix.is_empty() {
+                    out.push(Block::Text(if prefix.ends_with(char::is_whitespace) {
+                        prefix.trim_end().into()
+                    } else {
+                        format!("{prefix}:")
+                    }));
+                }
+                out.push(Block::Code {
+                    language: language.into(),
+                    body,
+                });
+                i = next;
+                continue;
             }
-            continue;
-        }
-        if line == ".." {
-            let (_, next) = indented(&lines, i + 1);
-            i = next;
-            continue;
-        }
-        if line.ends_with("::") {
-            let (body, next) = indented(&lines, i + 1);
-            if body.is_empty() || next == i + 1 {
+            let trimmed = line.trim_start();
+            let indent = line.len() - trimmed.len();
+            if indent > 0 {
                 return Err(invalid(
-                    "literal block marker must be followed by an indented block",
+                    "indented quote/definition blocks require manual migration",
                 ));
             }
-            let prefix = line.strip_suffix("::").unwrap();
-            if !prefix.is_empty() {
-                out.push(Block::Text(if prefix.ends_with(char::is_whitespace) {
-                    prefix.trim_end().into()
-                } else {
-                    format!("{prefix}:")
-                }));
+            if (trimmed.starts_with(':') && !trimmed.contains(":`"))
+                || trimmed.starts_with(['+', '='])
+                || trimmed.starts_with("| ")
+                || trimmed == "|"
+                || trimmed.starts_with(">>>")
+                || adornment(trimmed).is_some()
+            {
+                return Err(invalid(
+                    "tables, fields, line blocks, transitions and doctests require manual migration",
+                ));
             }
-            out.push(Block::Code {
-                language: language.into(),
-                body,
-            });
-            i = next;
-            continue;
+            out.push(Block::Text(line.into()));
+            i += 1;
         }
-        let trimmed = line.trim_start();
-        let indent = line.len() - trimmed.len();
-        if indent > 0 {
-            return Err(invalid(
-                "indented quote/definition blocks require manual migration",
-            ));
-        }
-        if (trimmed.starts_with(':') && !trimmed.contains(":`"))
-            || trimmed.starts_with(['+', '='])
-            || trimmed.starts_with("| ")
-            || trimmed == "|"
-            || trimmed.starts_with(">>>")
-            || adornment(trimmed).is_some()
-        {
-            return Err(invalid(
-                "tables, fields, line blocks, transitions and doctests require manual migration",
-            ));
-        }
-        out.push(Block::Text(line.into()));
-        i += 1;
+        Ok(out)
     }
-    if pending_label.is_some() {
-        return Err(invalid("label has no following heading"));
+
+    fn table_block(
+        &mut self,
+        table: super::tables::Table,
+        caption: Option<String>,
+        doc: &mut Document,
+        depth: usize,
+        content_source: Option<(&Utf8Path, usize)>,
+    ) -> Result<Block> {
+        if depth >= 16 {
+            return Err(invalid("table/admonition/list nesting exceeds 16"));
+        }
+        let rows = table
+            .rows
+            .into_iter()
+            .enumerate()
+            .map(|(index, row)| {
+                let original = self.current.clone();
+                if let Some((path, supplemental)) = content_source
+                    && index >= supplemental
+                {
+                    self.current = path.into();
+                }
+                let result = row
+                    .into_iter()
+                    .map(|cell| {
+                        // RST's escaped-whitespace marker explicitly requests an empty cell.
+                        if cell.trim() == "\\" && cell.ends_with(' ') {
+                            Ok(Vec::new())
+                        } else {
+                            self.blocks(&cell, doc, depth + 1)
+                        }
+                    })
+                    .collect::<Result<Vec<_>>>();
+                self.current = original;
+                result
+            })
+            .collect::<Result<Vec<_>>>()?;
+        Ok(Block::Table {
+            caption,
+            headers: table.headers,
+            stubs: table.stubs,
+            rows,
+        })
     }
-    Ok(out)
 }
 
-pub(super) fn table_block(
+pub(super) fn parse_external_table(
     table: super::tables::Table,
-    caption: Option<String>,
-    language: &str,
+    spec: &super::table_directives::ExternalCsv,
     doc: &mut Document,
-    depth: usize,
+    source: &Utf8Path,
+    csv_path: &Utf8Path,
+    resources: &mut super::resources::Resolver<'_>,
 ) -> Result<Block> {
-    if depth >= 16 {
-        return Err(invalid("table/admonition/list nesting exceeds 16"));
-    }
-    let rows = table
-        .rows
-        .into_iter()
-        .map(|row| {
-            row.into_iter()
-                .map(|cell| {
-                    // RST's escaped-whitespace marker explicitly requests an empty cell.
-                    if cell.trim() == "\\" && cell.ends_with(' ') {
-                        Ok(Vec::new())
-                    } else {
-                        blocks(&cell, language, doc, depth + 1)
-                    }
-                })
-                .collect::<Result<Vec<_>>>()
-        })
-        .collect::<Result<Vec<_>>>()?;
-    Ok(Block::Table {
-        caption,
-        headers: table.headers,
-        stubs: table.stubs,
-        rows,
-    })
+    let supplemental = super::table_directives::supplemental_rows(&spec.options)?;
+    let mut parser = Parser {
+        language: &spec.language,
+        source,
+        current: spec.source.clone(),
+        resources,
+        stack: vec![source.into()],
+    };
+    parser.table_block(
+        table,
+        spec.caption.clone(),
+        doc,
+        spec.depth,
+        Some((csv_path, supplemental)),
+    )
 }
 
 pub fn escaped(text: &str) -> String {
