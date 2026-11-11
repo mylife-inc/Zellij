@@ -26,7 +26,10 @@
     },
     "release_version": "matches v0.2.0-rc.3",
     "both_repository_release_notes": "generated",
-    "diff_check": "passed"
+    "diff_check": "passed",
+    "command_help_paths": 80,
+    "frozen_delivery_workflows": "all six match generator; published rc.2 fixtures intentionally retained",
+    "external_ci_version_reproduction": "Generated GitLab/CircleCI AMD64/ARM64 jobs pin rc.3; old rc.2 fixture expectation fails. Fixture now reads and validates the tested binary version."
   },
   "publication": {
     "tag_commit": null,
@@ -40,5 +43,15 @@
     "User-deferred Vercel account acceptance",
     "Full production Netlify documentation/domain migration"
   ],
-  "account_operations": "No new accounts, secrets, deployment resources or live provider runs."
+  "account_operations": "No new accounts, secrets, deployment resources or live provider runs.",
+  "initial_ci": {
+    "run": 43012468073,
+    "head": "8629f06e04859b68f9c165c3cd526dc000590cf7",
+    "failed_jobs": [
+      "Native images (amd64)",
+      "Native images (arm64)"
+    ],
+    "cause": "Hardcoded rc.2 engine replacement in external CI replay fixture; image builds themselves succeeded.",
+    "resolution": "Read binary version JSON and validate it with releasePolicy before exact replacement. New final-head CI required."
+  }
 }
