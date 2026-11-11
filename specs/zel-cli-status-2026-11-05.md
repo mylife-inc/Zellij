@@ -1213,3 +1213,32 @@ it runs only in CI, with no local Docker/browser/GUI. Published rc.2 is unchange
 References: [Sphinx include](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/directives/other.py),
 [document-relative paths](https://github.com/sphinx-doc/sphinx/blob/master/sphinx/environment/__init__.py),
 [Docutils include](https://docutils.sourceforge.io/docs/ref/rst/directives.html#including-an-external-document-fragment).
+
+
+### 2026-11-10 — Sphinx include acceptance closure
+
+[PR #114](https://github.com/mylife-inc/Zellij/pull/114) merged as
+`ee866afd634cea5107941520c231bdc3fa6b270d` after all 16 checks passed on
+`8f360bb13f6428680925c05e76441fddc81616a4` in run `42925938421`.
+The merge retains tested tree `d5005a3ee4c22218ac5814e398667134bba85364`.
+Source `3a19947` implements parsed document fragments and resolves the
+configuration-default/substitution collision. Browser assertion follow-up
+`8f360bb` uses the accessible heading name and verifies its ID independently
+of the decorative anchor marker; superseded run `42925681071` was cancelled.
+
+Final-source local validation passed all **702 Rust tests** (5 hosted-only
+cases reserved for CI), including 53 Sphinx CLI cases, plus warnings-denied
+Clippy, formatting, actual CLI-to-engine rendering and strict/deep docs
+(55 routes / 23 examples). Final-head CI passed the six native package checks,
+Linux/macOS/Windows regressions, both image architectures and real hosted
+exports/browser tests. Included heading IDs, images, document navigation and
+search passed in the generated site under its deployment prefix.
+
+Automatic post-merge CI and Base image workflows are still running at this
+refresh; their exact IDs/statuses are in the
+[evidence](evidence/zellij-sphinx-includes-2026-11-10.json). They are separate from the successful PR checks.
+Parsed includes require current source or a later release; published rc.2
+remains unchanged. Existing include limits, pending live Fly/Vercel/S3 and
+GitLab/CircleCI runner acceptance, and the reported Netlify hosting-comment
+hydration issue remain open. No local Docker/browser/GUI or live provider
+deployment ran for this milestone.

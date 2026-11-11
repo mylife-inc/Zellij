@@ -1,0 +1,69 @@
+{
+  "date": "2026-11-10",
+  "implementation": "3a19947a8b6dfb5a236e813468aca1feba04ee1e",
+  "source": "8f360bb13f6428680925c05e76441fddc81616a4",
+  "pr": 114,
+  "local": {
+    "rustPassed": 702,
+    "rustFailed": 0,
+    "rustIgnoredHostedCases": 5,
+    "sphinxCliTests": 53,
+    "clippy": "passed",
+    "format": "passed",
+    "cliToEngineRendering": "passed",
+    "strictDeepDocs": {
+      "status": "passed",
+      "routes": 55,
+      "examples": 23
+    }
+  },
+  "regressions": [
+    "Parsed include fragments previously failed as unsupported before conversion.",
+    "Configuration version/release defaults collided with an authored definition inside a CSV-included fragment."
+  ],
+  "coverage": [
+    "Shared headings, labels, substitutions and included toctree navigation.",
+    "Owning-document resource paths and actual-source CSV paths.",
+    "Nested blocks, text and line selection, BOM/newlines/tab expansion.",
+    "Literal code/comments, source preservation and no fragment asset copies.",
+    "Cycles, depth/byte limits, excluded/hidden/internal/missing/remote/symlinked paths and unsupported syntax."
+  ],
+  "limits": [
+    "Conservative RST subset; alternate parser/code/literal/presentation options and standard include libraries are unsupported.",
+    "Explicitly excluded fragments remain ineligible under the existing import containment policy.",
+    "Current source only; immutable v0.2.0-rc.2 is unchanged."
+  ],
+  "ci": {
+    "run": 42925938421,
+    "head": "8f360bb13f6428680925c05e76441fddc81616a4",
+    "status": "passed",
+    "jobsPassed": 16,
+    "testedTree": "d5005a3ee4c22218ac5814e398667134bba85364"
+  },
+  "supersededCi": {
+    "run": 42925681071,
+    "head": "62d6d5fde07dcdf9ca7ba39a202ead0c33cf0667",
+    "status": "cancelled after browser-assertion refinement"
+  },
+  "merge": "ee866afd634cea5107941520c231bdc3fa6b270d",
+  "postMerge": {
+    "source": "ee866afd634cea5107941520c231bdc3fa6b270d",
+    "statusAtAuditRefresh": "in_progress",
+    "runs": [
+      {
+        "conclusion": "",
+        "databaseId": 42930701756,
+        "headSha": "ee866afd634cea5107941520c231bdc3fa6b270d",
+        "name": "Base image",
+        "status": "in_progress"
+      },
+      {
+        "conclusion": "",
+        "databaseId": 42930701772,
+        "headSha": "ee866afd634cea5107941520c231bdc3fa6b270d",
+        "name": "CI",
+        "status": "queued"
+      }
+    ]
+  }
+}
