@@ -99,8 +99,9 @@ Both post-merge workflows passed; all temporary acceptance resources are removed
 Local parsed Sphinx includes merged in PR #114 as `ee866af` after all 16
 final-head checks passed. The exact final source passed 702 local Rust tests; both post-merge workflows
 subsequently passed (16 CI jobs and 13 Base image jobs). A disposable Vercel
-acceptance workflow is prepared in `9c2510d`; account setup and live execution
-remain pending. Live Fly, AWS and Vercel account acceptance remains pending.
+acceptance workflow is prepared in `9c2510d`; review also found and fixed
+empty Vercel upload acknowledgements in `36028b4`, with 704 Rust tests passing.
+Final-head CI, account setup and live execution remain pending. Live Fly, AWS and Vercel account acceptance remains pending.
 See the latest dated entry for the current source and verification limits.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
@@ -7344,3 +7345,27 @@ live account execution are still pending at this refresh. Rust/engine behavior
 and published rc.2 are unchanged. Vercel/S3/Fly live tests, GitLab/CircleCI runner
 acceptance, advanced import limits and the Netlify hosting-comment hydration
 issue remain open. See [the external acceptance runbook](specs/zel-external-acceptance-2026-11-10.md).
+
+
+### 2026-11-10 — Vercel empty-upload response defect fixed
+
+During external acceptance preparation, official Vercel documentation and its
+upload client confirmed that `POST /v2/files` succeeds with HTTP 200 and an empty
+body. The adapter incorrectly required JSON. Replacing the local fixture's
+upload response with an empty body reproduced `asset upload: invalid API
+response` before creating a deployment.
+
+Fix `36028b4a2a2a39a0bf914fc4be90947e3c02959f` accepts empty successful upload
+acknowledgements and JSON objects. Project preflight, deployment creation and
+status still require valid JSON; malformed/error/oversized upload responses,
+HTTP failures and redirects retain their failure behavior. Both the native and
+hosted export fixtures now exercise empty upload acknowledgements. The CLI
+reference and external acceptance runbook describe the fix as newer than rc.2.
+
+Verification passed **704 Rust tests**, with 5 hosted-only cases reserved for
+CI, warnings-denied Clippy, formatting and strict/deep documentation checks
+(55 routes / 23 examples). The 47 helper tests and actionlint passed for the
+unchanged acceptance harness/workflows. Initial PR #116 CI `42937801644` on
+`03fe013` predates this adapter fix and does not validate it. Fresh final-head
+CI and live account acceptance remain pending. No account or provider resource
+was created, and published rc.2 remains unchanged. See [the evidence](specs/evidence/zellij-vercel-upload-2026-11-10.json).

@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-10",
+  "pr": 116,
+  "implementation": "36028b4a2a2a39a0bf914fc4be90947e3c02959f",
+  "harnessImplementation": "9c2510de1e2f3b720d60c9fe910ebe04b52e4d7e",
+  "defect": "The Vercel adapter rejected documented empty HTTP 200 file-upload acknowledgements before creating a deployment.",
+  "reproducedBeforeFix": true,
+  "local": {
+    "rustPassed": 704,
+    "rustFailed": 0,
+    "rustIgnoredHostedCases": 5,
+    "vercelFocusedPassed": 13,
+    "vercelFocusedIgnoredHostedCases": 1,
+    "releaseDeliveryHelperPassed": 47,
+    "newLifecycleTests": 11,
+    "clippy": "passed",
+    "format": "passed",
+    "actionlint": "passed",
+    "strictDeepDocs": {
+      "status": "passed",
+      "routes": 55,
+      "examples": 23
+    }
+  },
+  "ci": {
+    "status": "pending final-head verification"
+  },
+  "supersededCi": {
+    "run": 42937801644,
+    "head": "03fe013045c3451096c4656ff6b5e7e7c0fdac41",
+    "reason": "Predates the upload protocol fix; does not validate current source."
+  },
+  "live": {
+    "status": "pending account setup and execution",
+    "accountsCreated": 0,
+    "projectsCreated": 0,
+    "signupBlocker": "Browser control failed twice during initialization; Vercel signup/token handoff requested.",
+    "requiredCases": [
+      "portable-preview",
+      "hosted-preview",
+      "portable-production",
+      "hosted-production"
+    ],
+    "requiredCleanup": "Delete the confirmed temporary project and verify API 404."
+  },
+  "references": [
+    "https://vercel.com/docs/rest-api/deployments/upload-deployment-files",
+    "https://github.com/vercel/vercel/blob/main/packages/client/src/upload.ts"
+  ],
+  "limits": [
+    "Simulated API tests are not live Vercel acceptance.",
+    "Immutable published v0.2.0-rc.2 does not contain this fix.",
+    "Remaining S3/Fly account tests, GitLab/CircleCI runner acceptance, advanced imports and Netlify hydration issue remain open."
+  ]
+}

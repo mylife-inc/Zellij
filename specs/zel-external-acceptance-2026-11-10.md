@@ -13,6 +13,22 @@ Vercel signup and a team-scoped token in a GitHub Actions secret. Other provider
 signups should follow when their tests are ready, so trials are not consumed
 while waiting for implementation or another provider.
 
+## Protocol defect found while preparing acceptance
+
+Reviewing the official file-upload protocol found a concrete defect: `zel vc`
+required JSON after `POST /v2/files`, but Vercel documents HTTP 200 with an empty
+body. Changing the local HTTP fixture to that documented response reproduced
+`asset upload: invalid API response` before deployment creation.
+
+Fix `36028b4a2a2a39a0bf914fc4be90947e3c02959f` accepts empty successful asset
+acknowledgements and JSON objects, while retaining strict JSON for project,
+creation and deployment-status responses. Malformed/error acknowledgements,
+redirects, HTTP failures and oversized responses still fail before creation.
+The hosted-export fixture now uses the empty acknowledgement too. This fix is
+newer than published rc.2 and does not itself establish live account success.
+See the [upload API](https://vercel.com/docs/rest-api/deployments/upload-deployment-files)
+and [official upload client](https://github.com/vercel/vercel/blob/main/packages/client/src/upload.ts).
+
 ## Vercel: ready-to-run disposable project workflow
 
 Workflow: `.github/workflows/acceptance-vercel.yml`.
