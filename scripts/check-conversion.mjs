@@ -349,7 +349,7 @@ values = {weight = 0.5}
     await mkdir(path.dirname(path.join(source, file)), { recursive: true });
     await writeFile(path.join(source, file), body);
   }
-  await write('conf.py', "project='Sphinx manual'\nversion='2.4'\nrelease='2.4.1'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\n");
+  await write('conf.py', "project='Sphinx manual'\nversion='2.4'\nrelease='2.4.1'\nhtml_baseurl='https://legacy.example.test/manual/'\nextensions=[]\nexclude_patterns=['glob/draft*', '**/private*']\n");
   await write('index.rst', `.. _welcome:
 
 Welcome
@@ -421,9 +421,11 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   await write('body.inc', await readFile(path.join(repo, 'scripts/fixtures/sphinx-include-body.inc'), 'utf8'));
   await write('fragments/values.csv', 'Included CSV origin,correct\n');
   await write('values.csv', 'WRONG origin,wrong\n');
-  await write('patterns.rst', 'Pattern navigation\n==================\n\n.. toctree::\n   :glob:\n   :reversed:\n   :caption: Matched pages\n\n   glob/page?\n   glob/*\n');
+  await write('patterns.rst', 'Pattern navigation\n==================\n\n.. toctree::\n   :glob:\n   :reversed:\n   :caption: Matched pages\n\n   glob/page?\n   glob/**\n');
   await write('glob/page1.rst', 'First matched page\n==================\n\nFirst wildcard searchable content.\n');
   await write('glob/page2.rst', 'Second matched page\n===================\n\nSecond wildcard searchable content.\n');
+  await write('glob/draft.rst', '.. unsupported:: PRIVATE_EXCLUSION_SENTINEL\n');
+  await write('glob/private/deep/page.rst', '.. unsupported:: PRIVATE_EXCLUSION_SENTINEL\n');
 
   await write('details.rst', '.. _install:\n\nInstallation\n============\n');
   await write('notes.txt', 'Table download bytes.\n');
@@ -450,6 +452,8 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
     assert.deepEqual(links, [`${prefix}/guide/glob/page2`, `${prefix}/guide/glob/page1`]);
   }
   assertPatterns(rendered.get('/guide/patterns'), '');
+  await assert.rejects(readFile(path.join(content, '01-guide/glob/draft.mdx')), {code:'ENOENT'});
+  await assert.rejects(readFile(path.join(content, '01-guide/glob/private/deep/page.mdx')), {code:'ENOENT'});
   for (const text of ['href="/guide/setup/api-reference"', 'href="/guide/setup/api-reference#stable-install"', 'href="/guide/setup/api-reference?q=1#stable-install"', 'src="/products/docs/_zellij/assets/imported/docs/media/logo.svg"', 'href="/products/docs/_zellij/assets/imported/docs/media/Q3%20Report.pdf"', 'id="welcome"', '&lt;script&gt;literal_source()&lt;/script&gt;', '{literal_expression()}']) assert(home.includes(text), `Sphinx home missing ${text}: ${home}`);
   assert(!home.includes('<script>') && !home.includes('<h1'));
   assert(home.includes('<strong>&lt;strong&gt;literal role&lt;/strong&gt;</strong>'));

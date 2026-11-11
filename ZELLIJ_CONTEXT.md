@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-10**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 Current implementation: combined image publication and smaller runtimes merged
@@ -109,8 +109,9 @@ project was created. Published rc.2 lacks the fix. Live Fly and AWS account
 acceptance remains pending; Vercel is explicitly deferred, not verified.
 See the latest dated entry for the current source and verification limits.
 Sphinx wildcard/reversed navigation merged in PR #119 as `206acc4`, after
-709 local Rust tests and all 16 final-head CI checks passed. Automatic post-merge
-runs remain in progress at this refresh; see the latest evidence.
+709 local Rust tests and all 16 final-head CI checks passed. Its post-merge Base
+image passed; main CI hit transient npm downloads and a WebKit navigation error.
+A targeted unchanged-source retry is in progress; see the latest evidence.
 Every registered command family has a handler, but the full design
 remains incomplete; see [the current CLI status](specs/zel-cli-status-2026-11-05.md)
 for format/provider/advanced-option limits. The old
@@ -7495,3 +7496,48 @@ Refresh them before claiming post-merge closure. The earlier entry's pending
 local/PR gates are now closed; the evidence records the exact results.
 Vercel remains user-deferred, and the documented import/external-verification
 limits and Netlify hydration blocker remain open. Published rc.2 is unchanged.
+
+
+### 2026-11-11 — Source exclusion globs and preview navigation lifecycle
+
+Implementation `cabaa8fcab24e4fbcec5ab275c6b9ccb4ea14cc5` adds Sphinx
+`exclude_patterns` globs, reusing the toctree matcher. File extensions are part
+of matching; directory matches exclude descendants, including those discovered
+by a toctree glob. Source names match case-sensitively after NFC normalization.
+Sphinx source discovery requires a slash for leading `**/`; this differs from
+the HTML builder's asset-copy matcher. Patterns are never opened as paths.
+Limits are 1024 patterns, 4096 bytes each and 128 KiB combined. Existing
+containment, symlink/junction and hidden/internal rules remain intact.
+
+Excluded pages are reported and never published. Explicit excluded document or
+include/CSV/code targets fail before writes. Images/downloads retain the
+existing manual-repair report and original reference, without copied bytes or
+public-URL rewriting, for copy/link/skip alike. Configured theme/static/template
+directories still require explicit paths; only default `include_patterns` is
+supported. Hosted import acceptance retains 13 routes and proves unsupported
+excluded documents never reach parsing/export. User documentation is updated.
+
+The preceding PR's automatic post-merge CI initially failed: two fresh wrapper
+installs received npm HTTP 404 for `lucide-react-1.72.0.tgz`; the package now
+returns HTTP 200, so only failed jobs were retried without dependency changes.
+The macOS trace recorded a WebKit status-fetch error during navigation. Its
+unchanged-source retry passed; CLI/Windows are still running at this snapshot.
+Base image `42970277159` passed all 13 jobs. The earlier evidence retains both
+the failure and retry history; no post-merge all-green claim is made yet.
+
+Preview fix `50c1fe6ff7998b3d09c4bf18bd899a7a1788008a` cancels active status
+requests and timers on `pagehide`, resumes exactly one polling loop on a
+back/forward-cache `pageshow`, and discards responses from the previous page
+lifecycle. Two deterministic tests failed before the fix (no cancellation and
+stale-body reload); all three lifecycle tests pass after it. Existing browser
+acceptance still checks navigation, reload, recovery and runtime errors without
+suppressing WebKit errors. This is also newer than published rc.2.
+
+Local verification: **715 Rust tests passed**, five hosted cases reserved for
+CI; **60 Sphinx CLI cases** pass. Warnings-denied Clippy, formatting, all six
+actual-CLI/engine import checks, **50 Node helper tests**, actionlint and
+strict/deep docs validation (55 routes / 23 examples) passed. New-source CI is
+pending; see [the evidence](specs/evidence/zellij-exclusions-preview-2026-11-11.json).
+Vercel remains explicitly user-deferred. Advanced importer limits, remaining
+external account verification and Netlify's hydration blocker remain open. No
+new native release or production-domain migration occurred.

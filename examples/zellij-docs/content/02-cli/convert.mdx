@@ -465,7 +465,8 @@ are supported. Triple-quoted strings, string prefixes, computed values and
 duplicate assignments are rejected. `master_doc` is the older name for
 `root_doc`; when both exist they must agree. Only UTF-8 `.rst` input is
 supported; `source_suffix` may be `'.rst'`, `['.rst']` or the dictionary above.
-`exclude_patterns` accepts explicit relative file/directory paths, not globs.
+`exclude_patterns` accepts relative file/directory paths and, in current source
+after `v0.2.0-rc.2`, glob patterns (see below).
 `include_patterns` must retain its default `['**']`. Unknown configuration that
 could transform content is refused. Theme/presentation settings do not recreate
 the original theme.
@@ -516,9 +517,44 @@ entries. Explicitly titled wildcard entries such as `Title <pages/*>` are not
 expanded. A matched fragment still needs a page title; untitled fragments
 belong in `include` directives. Existing path, cycle and destination checks
 still apply. Patterns are limited to 4096 UTF-8 bytes after path resolution,
-and an import accepts at most 10,000 expanded matches. This adds **toctree**
-globs; `exclude_patterns` still accepts only explicit paths, and automatic
-section numbering still requires manual migration.
+and an import accepts at most 10,000 expanded matches. Automatic section
+numbering still requires manual migration.
+
+### Excluding source files
+
+`exclude_patterns` matches case-sensitive filenames relative to the selected
+Sphinx source folder, including their extensions. Use `/` on every OS:
+
+```python
+exclude_patterns = ['draft*.rst', 'guide/private*', '**/archive', 'media/*.bak']
+```
+
+These patterns exclude root-level draft documents, matching files/directories
+inside `guide`, nested `archive` directories and backup files in `media`.
+A directory match excludes its entire subtree. `*` and `?` do not cross `/`;
+`**` does, and bracket classes such as `[a-c]` and `[!a-c]` are supported.
+As in Sphinx **source discovery**, `**/draft.rst` requires a subdirectory;
+add `draft.rst` to exclude the root-level file too. Filenames are normalized to
+Unicode NFC for matching; their original spelling is retained in the import.
+
+Excluded documents are reported and never published, including through a
+toctree glob. Exclusions also apply to referenced images/downloads and local
+include, CSV and code resources, regardless of the asset policy. Explicit
+toctree entries and include/CSV/code directives targeting excluded files fail
+before output is written. Image/download references are reported for manual
+repair and left unchanged, without copying the asset or linking it to a public
+asset base URL. The importer
+uses this one source-relative policy for resources; it does not reproduce the
+HTML builder's separate copying of `html_static_path`/`html_extra_path` trees.
+Hidden/internal source rules still apply, and exclusions cannot bypass the
+existing rejection of symlinks or junctions beneath the source folder.
+
+Use at most 1024 patterns, 4096 UTF-8 bytes per pattern and 128 KiB in total.
+Absolute paths, drive prefixes, backslashes, control characters, parent/current
+directory segments and empty path segments are rejected. Exclusion patterns
+are matched as names, never opened as paths. `include_patterns` still accepts
+only its default `['**']`; template/theme/static directory settings still
+require explicit paths.
 
 Supported reStructuredText includes underline/overline headings, paragraphs,
 emphasis, strong text, inline literals, nested bullet/numbered lists, indented

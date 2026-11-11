@@ -301,8 +301,8 @@ pub fn validate(v: &Value) -> Result<()> {
     {
         return Err(invalid("root_doc and master_doc disagree"));
     }
+    super::patterns::validate_exclusions(&strings(v, "exclude_patterns")?)?;
     for key in [
-        "exclude_patterns",
         "templates_path",
         "html_static_path",
         "html_extra_path",
