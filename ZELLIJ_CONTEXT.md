@@ -5,9 +5,12 @@ Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
-The registered CLI command families are implemented. Completion remains gated
-on the live provider/runner checks and a release containing post-rc.2 fixes;
-the ledger above separates these from documented importer limits. Newer dated
+The documented CLI command families are implemented. On 2026-11-11 the user
+authorized a release containing the post-rc.2 fixes and moved live deployment
+provider verification to the end. Current work prepares **v0.2.0-rc.3**; ordinary
+package/regression checks still gate publication. Live provider/external-runner
+checks are follow-up work, not a prerequisite for this candidate. The ledger
+above separates these from documented importer limits. Newer dated
 entries below supersede the earlier pending snapshots without erasing them.
 
 Implementation history: combined image publication and smaller runtimes merged
@@ -7729,3 +7732,20 @@ Fly trial/token handoff and the AWS/GitLab/CircleCI account-availability questio
 remain unanswered. Vercel stays user-deferred. Importers retain their documented
 subsets; optional full source-tool parity was not assumed. Use the completion
 ledger for the remaining gates; passing checks is not a zero-bug proof.
+
+## 2026-11-11 — CLI release before remaining provider verification
+
+The user explicitly moved live deployment verification to the end and authorized
+finishing the CLI, cutting a release and updating docs. Current command dispatch
+and the reference cover all documented command families; no implementation
+stubs remain. The release target is **v0.2.0-rc.3**, including the changes since
+rc.2. Conservative importer boundaries remain explicit. Fly/S3 and actual
+GitLab/CircleCI acceptance are deferred follow-ups; Vercel remains user-deferred.
+No account setup or live provider run is needed for this release.
+
+The workspace/lockfile and active docs select rc.3. Release notes summarize
+Jekyll TOML/sorting, Sphinx includes/navigation/source patterns, provider response
+and Railway startup fixes, and preview page lifecycle recovery. The preparation
+record is [here](specs/evidence/zellij-rc3-preparation-2026-11-11.json). Normal
+CI, merge, publication and public-artifact checks remain pending at preparation.
+Do not treat this paragraph as evidence that assets are published.

@@ -1,16 +1,19 @@
 # CLI completion gates — 2026-11-11
 
-The CLI is **not yet fully verified for completion**. This page separates
-implemented command families, remaining acceptance work, and format boundaries.
+The **documented CLI command surface is implemented**. Live deployment-provider
+and external-runner acceptance remains incomplete. The user explicitly moved
+deployment verification to the end and authorized cutting a CLI release with
+updated documentation on 2026-11-11. This page separates implementation,
+release checks, deferred acceptance work, and format boundaries.
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
 The user requested continuing until completion. The working target is the
 [agreed command contract](zel-cli-contract-2026-10-18.md), including conservative
 declarative importers. The original design explicitly declines computed source
-configuration rather than executing another project's code. A scope question
-about full source-generator/plugin/theme parity is pending; that larger scope
-has not been assumed or silently marked complete.
+configuration rather than executing another project's code. Full arbitrary
+source-generator/plugin/theme parity is outside this release's documented
+contract; unsupported cases remain disclosed rather than marked complete.
 
 ## Implemented surface and verification
 
@@ -27,7 +30,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.2: all 29 release jobs, six native packages and image variants passed | Current fixes/features are newer than rc.2 and need a separately approved release after final verification. |
+| Distribution | Published rc.2: all 29 release jobs, six native packages and image variants passed | Rc.3 publication is authorized; release/package checks are required before closing this milestone. |
 
 Latest implementation: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
@@ -60,27 +63,31 @@ refreshed after the merge and remains `v0.2.0-rc.2`.
 
 ## Remaining work in execution order
 
-1. Use the merged Fly disposable acceptance workflow with
+1. Prepare and publish **v0.2.0-rc.3** with the complete current documented
+   implementation and updated references. Publication is authorized by the
+   user's latest instruction; no additional approval is needed for this
+   candidate. Require normal final-head CI, native packages/installers and
+   public artifact/image checks. Do not run live provider tests during this step.
+2. After the implementation/release milestone, use the merged Fly workflow with
    an eligible temporary trial organization, run static/Next live acceptance,
    inspect the evidence and confirm app cleanup. The lifecycle harness is
    locally tested; no live account success is claimed.
-2. Run the merged S3 acceptance workflow in an
+3. Run the merged S3 acceptance workflow in an
    explicitly authorized test account. Ten lifecycle tests pass locally; live
    portable/hosted first and replacement uploads remain unverified. Confirm
    account eligibility/cost constraints before provisioning, and verify cleanup.
-3. Run the actual generated GitLab and CircleCI workflows in temporary projects
+4. Run the actual generated GitLab and CircleCI workflows in temporary projects
    on eligible accounts/runners, including event gates and native image/manifest
    artifact handling, then remove the test resources. Four build-only fixture
    directories are prepared; their generation is not live runner acceptance.
-4. Reconcile any failures and repeat only the affected checks. Refresh the
+5. Reconcile any failures and repeat only the affected checks. Refresh the
    completion record, docs and current-source package/image acceptance.
-5. Prepare the next release from the verified source. Obtain publication approval
-   for that concrete release; approval for rc.2 does not publish another version.
 
 Browser automation currently fails during initialization because a Codex writable
 root traverses the `~/.codex` symlink. No provider signup occurred in the retry.
 Account-dependent acceptance therefore needs working browser access or the
-user's account-side setup. See [the external runbook](zel-external-acceptance-2026-11-10.md).
+user's account-side setup when that deferred phase starts. No account setup is
+needed for the current release. See [the external runbook](zel-external-acceptance-2026-11-10.md).
 
 ## Explicitly open or deferred scope
 
@@ -90,8 +97,8 @@ user's account-side setup. See [the external runbook](zel-external-acceptance-20
   Jekyll posts/dated collections/globs/theme-specific navigation; Hugo menus,
   split config/modules/locales/cascades; Sphinx numbering/MyST/domains/extensions
   and broader reStructuredText remain outside current supported subsets.
-  These limits are disclosed, not counted as implemented parity. The pending
-  scope answer determines whether further parity belongs to this completion goal.
+  These limits are disclosed, not counted as implemented parity. Broader
+  source-generator parity would require a separate scope decision.
 - **Full documentation hosting:** Netlify's inserted-comment hydration problem
   still blocks production migration. Small CLI deployment-fixture success does
   not close it. Preserve the old production site and domain.

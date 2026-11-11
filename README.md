@@ -34,7 +34,7 @@ the section reference and the config schema.
 ## Portable Markdown documentation
 
 The Rust `zel` binary also has a native Markdown workflow that needs no Docker,
-Node or network connection. With a current source build:
+Node or network connection. With the CLI candidate:
 
 ```bash
 zel new portable docs --name "My documentation"
@@ -48,7 +48,7 @@ for HTTP preview. The generated folder can be moved or shared intact, including
 its offline search and local fonts/assets. `--minimal` creates only a home page
 and `zel.yaml`; an existing Markdown folder needs no scaffolding.
 
-Native release packages may lag source. Check `zel new --help` for availability.
+The candidate packages include these commands. Check `zel new --help` for options.
 See the [portable contract](specs/zel-portable-docs.md) for supported Markdown,
 configuration, platform acceptance and remaining rendering limits.
 
@@ -67,12 +67,13 @@ Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
 with installation tests against actual release archives. Windows uses the
 PowerShell installer; Unix uses the shell installer. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
-versions, commands and limits. [Candidate 0.2.0-rc.2 is published](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.2)
-for all six targets, with [public package and image acceptance passing](https://github.com/mylife-inc/Zellij/actions/runs/42768544795).
+versions, commands and limits. [Candidate 0.2.0-rc.3](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.3)
+targets all six platforms; its release page includes pinned installers and checksums.
 Use its pinned installation instructions and matching engine images. Stable
-remains `0.1.3`, which predates these workflows. The [candidate notes](specs/releases/v0.2.0-rc.2.md)
+remains `0.1.3`, which predates these workflows. The [candidate notes](specs/releases/v0.2.0-rc.3.md)
 cover the implemented commands and remaining provider/importer/hosting limits.
-See the [release evidence](specs/evidence/zellij-rc2-release-2026-11-09.json).
+See the [completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification
+evidence and the deferred live provider/runner checks.
 
 Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
 candidate channels, pinned installation, and stable documentation publication.

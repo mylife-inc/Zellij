@@ -1,0 +1,44 @@
+{
+  "observed_on": "2026-11-11 America/Los_Angeles",
+  "status": "rc.3 prepared; final-head CI, merge, publication and public artifact acceptance pending",
+  "proposed_tag": "v0.2.0-rc.3",
+  "implementation_baseline": "ec92b00c8446e5c09999804ab3a9b256ad6eafa6",
+  "preparation_branch": "codex/cli-rc3-release",
+  "authorization": "User instructed: finish the CLI implementation, cut a CLI release and update docs; leave deployment-provider verification until the end.",
+  "scope": "All documented registered command families; documented declarative importer subsets. Arbitrary source-generator/plugin/theme parity is not claimed.",
+  "changes": [
+    "Workspace and six lockfile package versions become 0.2.0-rc.3; no dependency changes.",
+    "Current README, CLI reference and quickstart pins select rc.3.",
+    "Post-rc.2 importer/provider/preview fixes documented as included; stale unsupported Sphinx glob/include claims corrected.",
+    "Release notes and completion/context/runbook sequencing reflect deferred live acceptance."
+  ],
+  "local_checks": {
+    "workspace_check": "passed offline",
+    "rustfmt": "passed",
+    "helper_tests": {
+      "passed": 70,
+      "failed": 0
+    },
+    "strict_deep_docs": {
+      "passed": true,
+      "routes": 55,
+      "examples": 23
+    },
+    "release_version": "matches v0.2.0-rc.3",
+    "both_repository_release_notes": "generated",
+    "diff_check": "passed"
+  },
+  "publication": {
+    "tag_commit": null,
+    "pr": null,
+    "ci_run": null,
+    "release_run": null
+  },
+  "deferred": [
+    "Live Fly/S3 account acceptance",
+    "Actual GitLab/CircleCI runner acceptance",
+    "User-deferred Vercel account acceptance",
+    "Full production Netlify documentation/domain migration"
+  ],
+  "account_operations": "No new accounts, secrets, deployment resources or live provider runs."
+}

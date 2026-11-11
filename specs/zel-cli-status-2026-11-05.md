@@ -1,5 +1,11 @@
 # zel CLI implementation status — 2026-11-05
 
+**2026-11-11 release sequencing:** the user authorized publishing the current CLI
+with updated documentation before remaining live deployment verification.
+Rc.3 preparation now takes priority; live Fly/S3 and external-runner acceptance
+remain recorded follow-ups. See the [current completion ledger](zel-cli-completion-2026-11-11.md).
+Earlier status and acceptance snapshots below remain dated history.
+
 All registered command families have implementation handlers. CLI completion
 is **not yet fully verified**: live Fly/S3 and GitLab/CircleCI runner acceptance
 remain open, Vercel live verification is user-deferred, and changes after rc.2

@@ -16,7 +16,7 @@ The current CLI source supports `zel cv ./docs --out ./manual --layout site
 --validate` to convert and check in one step. Hosted validation needs a running
 container runtime; ordinary conversion does not. Referenced local assets are
 copied by default. `--assets skip` omits them and retains their original URLs for
-manual repair, while document links still convert. Both controls are available in candidate `0.2.0-rc.2`; see [conversion options](/cli/convert).
+manual repair, while document links still convert. Both controls are available in candidate `0.2.0-rc.3`; see [conversion options](/cli/convert).
 
 ## What is recognised
 
@@ -64,7 +64,7 @@ guesses are reported. Explicit Markdown file links and local asset copying keep
 their existing semantics. Computed, versioned and localized source routing still
 require review. See [the conversion reference](/cli/convert) for
 metadata precedence, compatibility rules, heading anchors and link handling.
-These metadata improvements are available in candidate `0.2.0-rc.2`.
+These metadata improvements are available in candidate `0.2.0-rc.3`.
 
 ## VitePress sites
 
@@ -79,7 +79,7 @@ File links, supported `base`/`cleanUrls` website links, and referenced source or
 `public/` assets are mapped. Vue components, home layout and custom Markdown
 presentation need manual work. Dynamic configuration and custom routing or
 exclusion settings fail before writes. See [VitePress import limits](/cli/convert#vitepress-imports)
-before converting. This converter is available in candidate `0.2.0-rc.2`.
+before converting. This converter is available in candidate `0.2.0-rc.3`.
 
 ## Jekyll sites
 
@@ -94,7 +94,7 @@ Referenced static assets are copied while respecting exclusions, generated
 output and internal directories. Ruby, Liquid, plugins and themes are not run.
 Posts, dated collections, custom routing and theme-specific navigation need
 manual work. See [Jekyll import limits](/cli/convert#jekyll-imports). This
-converter is available in candidate `0.2.0-rc.2`.
+converter is available in candidate `0.2.0-rc.3`.
 
 ## Hugo sites
 
@@ -109,7 +109,7 @@ Zellij index pages; source links keep working. Draft/publication settings contro
 which pages are imported, and eligible referenced content/static assets are
 copied. Go templates and shortcodes are not executed. Menus, cascades, modules,
 localization and custom routing require manual migration. See the full
-[Hugo import limits](/cli/convert#hugo-imports). This feature is available in candidate `0.2.0-rc.2`.
+[Hugo import limits](/cli/convert#hugo-imports). This feature is available in candidate `0.2.0-rc.3`.
 
 ## Sphinx sites
 
@@ -118,18 +118,19 @@ zel cv ./sphinx/source --from sphinx --out ./manual --layout site --dry-run
 zel cv ./sphinx/source --from sphinx --out ./manual --layout site
 ```
 
-The importer reads literal `conf.py` assignments and follows explicit toctrees
-from `root_doc`. It converts a documented reStructuredText subset: headings,
+The importer reads literal `conf.py` assignments, applies source-selection
+patterns and follows explicit/glob/reversed toctrees from `root_doc`. It
+converts local parsed includes and a documented reStructuredText subset: headings,
 paragraphs, nested bullet/numbered lists, rectangular tables, code blocks,
 admonitions, text/image substitutions and document/section references. Referenced eligible assets are copied and source links become Zellij
 guide links. Python, extensions and templates are not executed or installed.
 
 Unlisted documents are reported and not published. Unsupported constructs such
-as autodoc, MyST, spanning tables, includes, global content transforms and dynamic
+as autodoc, MyST, spanning tables, alternate include parsers, global content transforms and dynamic
 configuration require manual migration; conversion fails before writing output.
 Use a separate source copy when simplifying a project for import. Read the
 [Sphinx limits and examples](/cli/convert#sphinx-imports) first. This converter
-is available in candidate `0.2.0-rc.2`.
+is available in candidate `0.2.0-rc.3`.
 
 ## What does not come across
 

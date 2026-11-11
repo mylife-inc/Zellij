@@ -7,11 +7,11 @@ description: Update the native executable from a verified release archive.
 zel upgrade --check             # report latest stable; change no files
 zel upgrade                     # install latest stable if newer
 zel upgrade 0.2.0                # select an exact published release
-zel upgrade v0.2.0-rc.2          # explicitly select a prerelease
+zel upgrade v0.2.0-rc.3          # explicitly select a prerelease
 zel upgrade 0.2.0 --force        # reinstall the same version
 ```
 
-Candidate `0.2.0-rc.2` is published and includes this command. Stable `0.2.0`
+Candidate `0.2.0-rc.3` is published and includes this command. Stable `0.2.0`
 examples show syntax for a future release; stable is still `0.1.3`, which predates
 `upgrade`. Install the candidate using its [pinned installer instructions](/cli)
 when starting from that old binary. A candidate installation will not downgrade
@@ -69,7 +69,7 @@ for up to five seconds per permission, staged-archive removal or rename operatio
 Other errors fail immediately, and messages identify the failed operation.
 Cancellation remains available before replacement starts; commit and restoration
 finish without cancellation after the old executable has moved. These changes
-are included in candidate `0.2.0-rc.2`. Abrupt machine/storage failure during replacement is
+are included in candidate `0.2.0-rc.3`. Abrupt machine/storage failure during replacement is
 not a recoverable transaction guarantee.
 
 ## Asset mirrors
