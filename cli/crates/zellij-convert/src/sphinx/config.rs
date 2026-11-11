@@ -277,11 +277,6 @@ pub fn validate(v: &Value) -> Result<()> {
             "language-dependent processing (including localized image selection) requires manual migration; use a source copy with language = None and explicitly chosen resources",
         ));
     }
-    if v.get("include_patterns").is_some() && strings(v, "include_patterns")? != ["**"] {
-        return Err(invalid(
-            "only the default include_patterns = ['**'] is supported",
-        ));
-    }
     if string(v, "source_encoding")?.is_some_and(|s| !matches!(s, "utf-8" | "utf-8-sig")) {
         return Err(invalid("only UTF-8 Sphinx source is supported"));
     }
@@ -301,7 +296,9 @@ pub fn validate(v: &Value) -> Result<()> {
     {
         return Err(invalid("root_doc and master_doc disagree"));
     }
-    super::patterns::validate_exclusions(&strings(v, "exclude_patterns")?)?;
+    for key in ["include_patterns", "exclude_patterns"] {
+        super::patterns::validate(key, &strings(v, key)?)?;
+    }
     for key in [
         "templates_path",
         "html_static_path",

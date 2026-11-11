@@ -634,7 +634,6 @@ fn config_python_is_never_executed_and_unsupported_settings_fail_atomically() {
         "extensions=['sphinx.ext.autodoc']",
         "source_suffix={'.md':'markdown'}",
         "exclude_patterns=['../private/*']",
-        "include_patterns=[]",
         "rst_prolog='hidden'",
         "html_file_suffix='.htm'",
         "root_doc='a'\nmaster_doc='b'",
@@ -847,6 +846,159 @@ fn toctree_globs_preserve_containment_cycles_and_failure_before_writes() {
     write(&s, "fragment.rst", "Only a paragraph.");
     run(&s, &o, &[], 2);
     assert!(!o.exists());
+}
+
+#[test]
+fn inclusion_globs_select_pages_without_promoting_matching_directory_descendants() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    write(
+        &s,
+        "conf.py",
+        "include_patterns=['index.rst','guide/page?.rst','guide/[a-c].rst','Café.rst','directory']\nexclude_patterns=['guide/b.rst']\n",
+    );
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n   :glob:\n\n   **\n",
+    );
+    for path in ["guide/page1.rst", "guide/a.rst", "Café.rst"] {
+        write(&s, path, "Selected\n========\n");
+    }
+    let unselected = [
+        "guide/page10.rst",
+        "guide/deep/page1.rst",
+        "guide/other.rst",
+        "directory/page.rst",
+        "unrelated.rst",
+    ];
+    for path in unselected.into_iter().chain(["guide/b.rst"]) {
+        write(&s, path, ".. unsupported:: MUST_NOT_PARSE\n");
+    }
+    let result = run(&s, &o, &[], 0);
+    for path in ["guide/page1.mdx", "guide/a.mdx", "Café.mdx"] {
+        assert!(o.join("01-guide").join(path).exists(), "{path}");
+    }
+    for path in unselected {
+        assert!(
+            report(&result).contains(path),
+            "{path}: {}",
+            report(&result)
+        );
+    }
+    assert!(report(&result).contains("not selected by include_patterns"));
+    assert!(!o.join("01-guide/guide/b.mdx").exists());
+    assert!(!o.join("01-guide/directory").exists());
+}
+
+#[test]
+fn inclusion_patterns_retain_referenced_fragments_code_tables_and_assets() {
+    for args in [
+        vec![],
+        vec!["--assets", "skip"],
+        vec![
+            "--assets",
+            "link",
+            "--asset-base-url",
+            "https://cdn.example.test/manual/",
+        ],
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        write(&s, "conf.py", "include_patterns=['index.rst']\n");
+        write(
+            &s,
+            "index.rst",
+            "Home\n====\n\n.. include:: fragments/body.rst\n\n.. literalinclude:: code/example.py\n\n.. csv-table::\n   :file: data/table.csv\n\n.. image:: media/logo.svg\n\n:download:`media/notes.txt`\n",
+        );
+        write(&s, "fragments/body.rst", "Included **fragment**.\n");
+        write(&s, "code/example.py", "print('Included code')\n");
+        write(&s, "data/table.csv", "Included CSV,value\n");
+        write(&s, "media/logo.svg", "<svg>logo</svg>");
+        write(&s, "media/notes.txt", "download bytes");
+        let result = run(&s, &o, &args, 0);
+        let body = read(&o, "01-guide/index.mdx");
+        for expected in ["Included **fragment**", "Included code", "Included CSV"] {
+            assert!(body.contains(expected), "{expected}: {body}");
+        }
+        assert!(
+            !report(&result).contains("fragments/body.rst"),
+            "{}",
+            report(&result)
+        );
+        assert!(!o.join("01-guide/fragments").exists());
+        if args.contains(&"link") {
+            assert!(body.contains("https://cdn.example.test/manual/media/logo.svg"));
+            assert!(body.contains("https://cdn.example.test/manual/media/notes.txt"));
+        } else if args.contains(&"skip") {
+            assert!(body.contains("media/logo.svg") && body.contains("media/notes.txt"));
+        } else {
+            assert_eq!(
+                read(&o, "assets/imported/docs/media/notes.txt"),
+                "download bytes"
+            );
+        }
+        assert_eq!(o.join("assets").exists(), args.is_empty());
+        let dry = t.path().join("dry");
+        let mut dry_args = args.clone();
+        dry_args.push("--dry-run");
+        run(&s, &dry, &dry_args, 0);
+        assert!(!dry.exists());
+    }
+}
+
+#[test]
+fn inclusion_patterns_require_the_root_and_explicit_toctree_targets_before_writes() {
+    for (patterns, root_body) in [
+        ("[]", "Home\n====\n"),
+        ("['**/index.rst']", "Home\n====\n"),
+        ("['Index.rst']", "Home\n====\n"),
+        (
+            "['index.rst']",
+            "Home\n====\n\n.. toctree::\n\n   guide/page\n",
+        ),
+    ] {
+        for args in [vec![], vec!["--dry-run"], vec!["--assets", "skip"]] {
+            let t = tempfile::tempdir().unwrap();
+            let s = t.path().join("s");
+            let o = t.path().join("o");
+            write(&s, "conf.py", format!("include_patterns={patterns}\n"));
+            write(&s, "index.rst", root_body);
+            write(&s, "guide/page.rst", "Page\n====\n");
+            let result = run(&s, &o, &args, 2);
+            assert!(
+                report(&result).contains("toctree document"),
+                "{}",
+                report(&result)
+            );
+            assert!(!o.exists());
+        }
+    }
+}
+
+#[test]
+fn inclusion_patterns_validate_unused_patterns_and_preserve_explicit_exclusions() {
+    for config in [
+        "include_patterns=['index.rst','[z-a]']",
+        "include_patterns=['../*']",
+        "include_patterns=['/index.rst']",
+        "include_patterns=['index.rst']\nexclude_patterns=['fragments/*']",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        write(&s, "conf.py", config);
+        write(
+            &s,
+            "index.rst",
+            "Home\n====\n\n.. include:: fragments/body.rst\n",
+        );
+        write(&s, "fragments/body.rst", "PRIVATE_FRAGMENT\n");
+        run(&s, &o, &[], 2);
+        assert!(!o.exists());
+    }
 }
 
 #[test]

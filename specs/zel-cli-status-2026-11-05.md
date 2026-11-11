@@ -60,7 +60,7 @@ into editable hosted content. Menus, split configuration, modules, cascades,
 localization, custom date rules and complex routing remain outside this subset.
 Shortcodes and aliases are reported for manual work. See the conversion reference.
 
-Sphinx imports read literal `conf.py` assignments, apply source-relative exclusion
+Sphinx imports read literal `conf.py` assignments, apply source-relative inclusion/exclusion
 globs, and traverse explicit/glob toctrees with optional reversed ordering
 and convert a conservative reStructuredText subset without Python or Docutils.
 Supported headings, labels, nested bullet/decimal/alphabetic/Roman lists, code, admonitions, images and rectangular
@@ -1493,3 +1493,36 @@ documented advanced importer gaps remain open. Live Vercel verification remains
 user-deferred; Fly/S3 and real GitLab/CircleCI acceptance remain pending. The
 Netlify hydration blocker is unchanged. Published rc.2 and the production
 domain are unchanged; these new source capabilities are not yet released.
+
+
+### 2026-11-11 — Sphinx source inclusion patterns
+
+Implementation `47b3293b8effac68da8a97efa3ac1929f1191e57` supports custom
+`include_patterns` in literal Sphinx configuration. The default remains `['**']`;
+an empty list selects no documents. Patterns match complete relative filenames,
+not directory ancestors, with the existing NFC/case/separator semantics and
+per-setting limits. Exclusions take precedence. Root/explicit toctree targets
+must be selected before any output is written, and glob toctrees see only
+selected documents. Unselected pages are reported without parsing their content.
+
+Page selection is separate from the contained resource inventory. Selected pages
+retain local parsed includes, code/CSV resources and eligible images/downloads
+outside the selected page patterns. Used fragments neither become standalone
+pages nor produce unselected-page warnings. Explicit exclusions, hidden/internal
+rules, containment and copy/link/skip behavior still apply. No dependency or
+runtime image change is introduced. The hosted fixture retains 13 routes and
+verifies an unsupported unselected page is not parsed/exported.
+
+Three real-CLI regressions failed before the implementation. Local verification
+now passes **720 Rust workspace tests**, with five hosted cases reserved for CI,
+including **64 Sphinx CLI cases**. Warnings-denied Clippy, formatting, all six
+actual-CLI/engine import checks and strict/deep documentation validation
+(55 routes / 23 examples) pass. Cross-platform CI and merge are pending;
+see the inclusion evidence. This is newer than published rc.2.
+
+The user requested continuing until CLI completion. The working target remains
+the original command contract and supported declarative import formats; full
+source-generator/plugin/theme parity was asked about separately and is not
+assumed. The broader completion audit and external acceptance remain ongoing.
+Vercel live verification stays explicitly deferred, and there is no zero-bug
+claim or authorization for a new release/domain migration.

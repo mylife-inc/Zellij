@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-11",
+  "baseline": "0e8bbf391a70e8d9fce9bff8d45afca2c09ffd46",
+  "implementation": "47b3293b8effac68da8a97efa3ac1929f1191e57",
+  "feature": "Sphinx source inclusion patterns with independent resource retention",
+  "regression": {
+    "before": "Three new real-CLI cases fail on the default-only include_patterns restriction.",
+    "after": "64 Sphinx CLI cases pass, including selection, resource policies and atomic failure."
+  },
+  "local": {
+    "rustTestsPassed": 720,
+    "rustHostedIgnored": 5,
+    "clippy": "passed with warnings denied",
+    "formatting": "passed",
+    "allSixImporterEngineChecks": "passed",
+    "sphinxRoutes": 13,
+    "docs": "strict/deep passed: 55 routes, 23 examples"
+  },
+  "ci": {
+    "status": "pending"
+  },
+  "limits": [
+    "Declarative .rst source only; no Python or extension execution",
+    "No automatic numbering, MyST or full source-generator fidelity",
+    "No new native release; rc.2 remains unchanged"
+  ],
+  "references": [
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/project.py",
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py",
+    "https://www.sphinx-doc.org/en/master/usage/configuration.html#confval-include_patterns"
+  ]
+}
