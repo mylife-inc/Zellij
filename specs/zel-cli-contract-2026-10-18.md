@@ -2,8 +2,8 @@
 
 **2026-11-11 release sequencing:** the user authorized publishing the current CLI
 with updated documentation before remaining live deployment verification.
-Rc.3 preparation now takes priority; live Fly/S3 and external-runner acceptance
-remain recorded follow-ups. See the [current completion ledger](zel-cli-completion-2026-11-11.md).
+Rc.3 is now published with all 29 release/public-artifact checks passing;
+live Fly/S3 and external-runner acceptance remain deferred follow-ups. See the [current completion ledger](zel-cli-completion-2026-11-11.md).
 Earlier status and acceptance snapshots below remain dated history.
 
 Status: **configured sites, shortcuts, completions, static/Next images, registry

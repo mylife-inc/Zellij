@@ -1,12 +1,33 @@
 # Zellij release channels and candidate procedure
 
-Implemented policy, November 2, 2026. This document does not announce a release.
-Candidate 0.2.0-rc.3 is being prepared under the user's 2026-11-11 publication
-instruction. Remaining live provider/external-runner checks are deferred until
-after this release; normal regression and artifact checks still apply.
-Candidate 0.2.0-rc.2 is published and its public package/image acceptance passed.
+Implemented policy, November 2, 2026; publication status refreshed November 11.
+Candidate 0.2.0-rc.3 is published under the user's 2026-11-11 instruction.
+Remaining live provider/external-runner checks are deferred until after this
+release; normal regression and public artifact checks passed.
 Publication status must be checked in GitHub; a version change in source is not
 proof of an uploaded release.
+
+## Current rc.3 publication
+
+[PR #127](https://github.com/mylife-inc/Zellij/pull/127) merged as
+`58be9b1ab992424576572ee8e2ba736f134f727c` with the exact source tree tested by
+all 16 jobs in CI run `43013070798`. The release helper's local preflight passed
+720 Rust and 453 engine tests, typechecks, schema drift, formatting and Clippy.
+It created immutable tag `v0.2.0-rc.3` at that merge.
+
+Duplicate merge-push CI was skipped for the reviewed version/docs/fixture change.
+The Release workflow was then explicitly dispatched against the tag. Run
+[`43018433622`](https://github.com/mylife-inc/Zellij/actions/runs/43018433622)
+passed all 29 jobs without reruns. All six public package/install targets and
+all four engine variants on both Linux architectures passed. The development
+and shared release repositories have matching assets; candidate isolation
+skipped stable-installer updates and production docs deployment.
+
+See [the rc.3 release evidence](evidence/zellij-rc3-release-2026-11-11.json) for
+asset digests, immutable image manifests and exact verification boundaries.
+Live provider/external-runner acceptance remains deferred. Frozen rc.2 delivery
+fixtures can be retargeted when that phase resumes; they were not dispatched
+for rc.3.
 
 ## Previous rc.2 publication
 

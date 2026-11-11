@@ -7,9 +7,10 @@ For the current completion gates, use [the concise completion ledger](specs/zel-
 
 The documented CLI command families are implemented. On 2026-11-11 the user
 authorized a release containing the post-rc.2 fixes and moved live deployment
-provider verification to the end. Current work prepares **v0.2.0-rc.3**; ordinary
-package/regression checks still gate publication. Live provider/external-runner
-checks are follow-up work, not a prerequisite for this candidate. The ledger
+provider verification to the end. **v0.2.0-rc.3 is published** from `58be9b1`,
+with all 16 final-head CI checks and all 29 release/public-artifact jobs passing.
+See [the release evidence](specs/evidence/zellij-rc3-release-2026-11-11.json).
+Live provider/external-runner checks remain deferred follow-up work. The ledger
 above separates these from documented importer limits. Newer dated
 entries below supersede the earlier pending snapshots without erasing them.
 
@@ -7749,3 +7750,26 @@ and Railway startup fixes, and preview page lifecycle recovery. The preparation
 record is [here](specs/evidence/zellij-rc3-preparation-2026-11-11.json). Normal
 CI, merge, publication and public-artifact checks remain pending at preparation.
 Do not treat this paragraph as evidence that assets are published.
+
+### Rc.3 release closure — 2026-11-11
+
+PR #127 merged as `58be9b1ab992424576572ee8e2ba736f134f727c`; all 16 CI
+checks passed on `2b48747`, with an identical merged tree. The initial run
+found an rc.2 constant in the external-CI replay fixture; the fixing commit
+`2b48747` derives the expected pin from the actual binary. Both image
+architectures then passed. The original failed/cancelled run remains recorded.
+
+The release helper passed 720 Rust tests and 453 engine tests plus all local
+preflight gates before creating **v0.2.0-rc.3**. Release run `43018433622`,
+explicitly dispatched against that immutable tag after duplicate merge-push CI
+was skipped, passed all 29 jobs without reruns. Six native public installer
+targets and four engine variants on native Linux AMD64/ARM64 passed. Both
+release repositories carry matching sets of 15 assets. Stable installer
+updates and production docs deployment were skipped; the updated docs built.
+
+The implementation/release/docs milestone is complete within the documented
+command and importer contract. No new live provider checks, account setup or
+production cutover were performed. Fly/S3, actual GitLab/CircleCI and the
+user-deferred Vercel checks remain later work; frozen manual delivery fixtures
+still pin their previously verified rc.2. Exact assets/digests and verification
+are in [the rc.3 record](specs/evidence/zellij-rc3-release-2026-11-11.json).

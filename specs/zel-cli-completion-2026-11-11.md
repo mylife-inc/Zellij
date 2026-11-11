@@ -5,6 +5,9 @@ and external-runner acceptance remains incomplete. The user explicitly moved
 deployment verification to the end and authorized cutting a CLI release with
 updated documentation on 2026-11-11. This page separates implementation,
 release checks, deferred acceptance work, and format boundaries.
+**v0.2.0-rc.3 is published**, including all post-rc.2 implementation changes.
+All 16 final-head CI checks and all 29 release jobs passed. See the
+[release evidence](evidence/zellij-rc3-release-2026-11-11.json).
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
@@ -30,7 +33,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.2: all 29 release jobs, six native packages and image variants passed | Rc.3 publication is authorized; release/package checks are required before closing this milestone. |
+| Distribution | Published rc.3: all 29 release jobs; six native platforms and four engine variants on both Linux architectures passed | Live provider/external-runner acceptance remains deferred. |
 
 Latest implementation: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
@@ -59,28 +62,48 @@ run `43005542302`, including built-site browser preservation. It merged as
 `e11d852fc1e593859f350dd94d195925c25799e6` matching the tested head exactly.
 Duplicate merge-push builds were skipped for this documentation-only revision.
 Historical audits were not rewritten. The newest published candidate was
-refreshed after the merge and remains `v0.2.0-rc.2`.
+refreshed after PR #125's merge was `v0.2.0-rc.2`; the rc.3 release below supersedes it.
+
+## Release milestone complete
+
+[PR #127](https://github.com/mylife-inc/Zellij/pull/127) merged as
+`58be9b1ab992424576572ee8e2ba736f134f727c`, with tree
+`52c2bdce26f4b3dbcc50b715be46d27a8b5ce56b` identical to tested head
+`2b48747c15e813b26a98293a4474dbf8243bf281`. Run `43013070798` passed all 16
+checks. The first run exposed a hardcoded rc.2 reference in the external-CI
+replay fixture; `2b48747` makes it read the actual binary version. That original
+failed/cancelled run remains recorded in preparation evidence.
+
+The release helper passed 720 Rust tests, 453 engine tests, typechecks, schema
+drift, formatting and warnings-denied Clippy before tagging. Release run
+[`43018433622`](https://github.com/mylife-inc/Zellij/actions/runs/43018433622)
+passed all 29 jobs on its first attempt. Both public release repositories have
+matching sets of 15 assets. All six public native installs and all four engine
+variants on native Linux AMD64/ARM64 passed. Stable installer updates and
+production documentation deployment were skipped. The updated docs built.
+
+No remaining live provider or external-runner tests were run for this release.
+The six frozen delivery workflows retain their previous verified rc.2 pins;
+retarget them when live delivery acceptance resumes.
 
 ## Remaining work in execution order
 
-1. Prepare and publish **v0.2.0-rc.3** with the complete current documented
-   implementation and updated references. Publication is authorized by the
-   user's latest instruction; no additional approval is needed for this
-   candidate. Require normal final-head CI, native packages/installers and
-   public artifact/image checks. Do not run live provider tests during this step.
-2. After the implementation/release milestone, use the merged Fly workflow with
+The implementation/release/docs milestone is complete. The user deferred the
+following verification phase until the end; account setup is not required now.
+
+1. Use the merged Fly workflow with
    an eligible temporary trial organization, run static/Next live acceptance,
    inspect the evidence and confirm app cleanup. The lifecycle harness is
    locally tested; no live account success is claimed.
-3. Run the merged S3 acceptance workflow in an
+2. Run the merged S3 acceptance workflow in an
    explicitly authorized test account. Ten lifecycle tests pass locally; live
    portable/hosted first and replacement uploads remain unverified. Confirm
    account eligibility/cost constraints before provisioning, and verify cleanup.
-4. Run the actual generated GitLab and CircleCI workflows in temporary projects
+3. Run the actual generated GitLab and CircleCI workflows in temporary projects
    on eligible accounts/runners, including event gates and native image/manifest
    artifact handling, then remove the test resources. Four build-only fixture
    directories are prepared; their generation is not live runner acceptance.
-5. Reconcile any failures and repeat only the affected checks. Refresh the
+4. Reconcile any failures and repeat only the affected checks. Refresh the
    completion record, docs and current-source package/image acceptance.
 
 Browser automation currently fails during initialization because a Codex writable

@@ -1,6 +1,6 @@
 {
   "observed_on": "2026-11-11 America/Los_Angeles",
-  "status": "rc.3 prepared; final-head CI, merge, publication and public artifact acceptance pending",
+  "status": "merged and published; all 16 final-head CI and all 29 release/public-artifact jobs passed",
   "proposed_tag": "v0.2.0-rc.3",
   "implementation_baseline": "ec92b00c8446e5c09999804ab3a9b256ad6eafa6",
   "preparation_branch": "codex/cli-rc3-release",
@@ -29,13 +29,29 @@
     "diff_check": "passed",
     "command_help_paths": 80,
     "frozen_delivery_workflows": "all six match generator; published rc.2 fixtures intentionally retained",
-    "external_ci_version_reproduction": "Generated GitLab/CircleCI AMD64/ARM64 jobs pin rc.3; old rc.2 fixture expectation fails. Fixture now reads and validates the tested binary version."
+    "external_ci_version_reproduction": "Generated GitLab/CircleCI AMD64/ARM64 jobs pin rc.3; old rc.2 fixture expectation fails. Fixture now reads and validates the tested binary version.",
+    "release_helper_preflight": {
+      "command": "source scripts/app.sh; zrelease v0.2.0-rc.3",
+      "engine_passed": 453,
+      "rust_passed": 720,
+      "rust_failed": 0,
+      "hosted_ignored_locally": 5,
+      "typechecks": "passed",
+      "clippy": "passed with warnings denied",
+      "schema_drift": "none",
+      "log_sha256": "61df020606bec51df1241a00136ff821f33de8e9432c9d3fec12621faeaa231f"
+    }
   },
   "publication": {
-    "tag_commit": null,
-    "pr": null,
-    "ci_run": null,
-    "release_run": null
+    "tag_commit": "58be9b1ab992424576572ee8e2ba736f134f727c",
+    "tree": "52c2bdce26f4b3dbcc50b715be46d27a8b5ce56b",
+    "pr": 127,
+    "tested_head": "2b48747c15e813b26a98293a4474dbf8243bf281",
+    "ci_run": 43013070798,
+    "release_run": 43018433622,
+    "trigger": "workflow_dispatch against immutable v0.2.0-rc.3 tag; duplicate merge-push CI skipped after all 16 final-head checks passed",
+    "status": "published; public artifact acceptance passed",
+    "evidence": "specs/evidence/zellij-rc3-release-2026-11-11.json"
   },
   "deferred": [
     "Live Fly/S3 account acceptance",
@@ -52,6 +68,98 @@
       "Native images (arm64)"
     ],
     "cause": "Hardcoded rc.2 engine replacement in external CI replay fixture; image builds themselves succeeded.",
-    "resolution": "Read binary version JSON and validate it with releasePolicy before exact replacement. New final-head CI required."
+    "resolution": "Read binary version JSON and validate it with releasePolicy before exact replacement. New final-head CI required.",
+    "final_conclusion": "cancelled",
+    "resolution_commit": "2b48747c15e813b26a98293a4474dbf8243bf281"
+  },
+  "final_ci": {
+    "databaseId": 43013070798,
+    "headSha": "2b48747c15e813b26a98293a4474dbf8243bf281",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43013070798",
+    "attempt": 1,
+    "jobs": [
+      {
+        "databaseId": 130497393123,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393459,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393509,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393512,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393546,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393547,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393579,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393658,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393680,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393717,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393738,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393801,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393825,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393844,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130497393911,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "databaseId": 130498797092,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      }
+    ]
   }
 }
