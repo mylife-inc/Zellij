@@ -270,3 +270,50 @@ Official references checked:
 [bounded object listing](https://docs.aws.amazon.com/cli/latest/reference/s3api/list-objects-v2.html),
 [per-object deletion receipts](https://docs.aws.amazon.com/cli/latest/reference/s3api/delete-objects.html),
 [versioning inspection](https://docs.aws.amazon.com/cli/latest/reference/s3api/get-bucket-versioning.html).
+
+## GitLab/CircleCI: runner fixtures prepared — 2026-11-11
+
+Four credential-free directories were generated with the current `zel ci` and
+validated locally at `/private/tmp/zellij-runner-fixtures-20261111-eQ3BrY`:
+`gitlab-portable`, `gitlab-hosted`, `circle-portable` and `circle-hosted`.
+Each contains the matching `scripts/fixtures/release-delivery/<renderer>/content`
+under `docs/zellij/content`, a versioned `zel.yaml`, and the unmodified generated
+provider configuration. No remote project or pipeline was created.
+
+The configuration pins published `0.2.0-rc.2`, enables manual and pull-request
+events on `main`, and omits `publish`. Each generated file has only `zel_verify`,
+with strict/deep validation and one build; there is no registry login or provider
+deployment. This validates the current **generator's** integration with those
+runners using a released runtime. It does not establish that post-rc.2 fixes
+have shipped. Regenerate with the next approved release for matched acceptance.
+
+The temporary directories are convenience artifacts, not durable source. To
+recreate one, initialize a fresh disposable Git repository on `main`, copy the
+renderer fixture as above, and write:
+
+```yaml
+version: 1
+renderer: portable # or hosted
+ci:
+  system: gitlab   # or circle
+  branch: main
+  zel-version: 0.2.0-rc.2
+  triggers: [manual, pull_request]
+```
+
+Run `zel ci` from that repository; it writes `.gitlab-ci.yml` or
+`.circleci/config.yml`. Once account/runner access is confirmed, commit these
+files to an empty disposable project and run a manual pipeline on `main` plus
+its merge-request/pull-request verification path. Record project/run IDs,
+configuration hashes and actual job results. Publication credentials are not
+needed for these first cases.
+
+The next phase must still test native AMD64/ARM64 static/Next image publication
+and manifest receipt transfer on the real services, using a dedicated registry
+namespace and protected GitLab variables or a restricted CircleCI context.
+The existing GitHub replay validates their emitted shell scripts and manifests;
+it does not substitute for service-native event, artifact and credential handling.
+Remove temporary projects/repositories, image tags and credentials afterward;
+if a provider schedules deletion, record it as pending until absence is verified.
+Account names and eligibility are still awaiting the user because browser
+initialization remains unavailable. No signup, payment or remote setup occurred.

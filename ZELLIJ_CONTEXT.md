@@ -5,7 +5,12 @@ Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
-Current implementation: combined image publication and smaller runtimes merged
+The registered CLI command families are implemented. Completion remains gated
+on the live provider/runner checks and a release containing post-rc.2 fixes;
+the ledger above separates these from documented importer limits. Newer dated
+entries below supersede the earlier pending snapshots without erasing them.
+
+Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.
 Import heading anchors and literal code fences merged in PR #69 as `b1ff508`,
@@ -7691,3 +7696,36 @@ published heading IDs. No local browser/container ran; full Next/browser
 preservation acceptance remains a CI gate. See the docs reconciliation evidence.
 The Fly/S3 harness is in [PR #124](https://github.com/mylife-inc/Zellij/pull/124);
 its live runs still need account setup. No release or production migration ran.
+
+### 2026-11-11 — Verification closure; remaining work needs account access
+
+Sphinx inclusion PR #123 is fully closed: main CI `43002975098` passed all 16
+jobs and Base image `43002974973` passed all 13, without retries. The source
+merge is `872db136bd7cf10e3722b9c05d180881a7e4d799`.
+
+Fly/S3 acceptance PR #124 passed all 16 jobs in `43003339641` at `5230d48`,
+then merged as `af98abc356a09f964bf249b0830a62ded01613ed`. GitHub registered
+both manual workflows as active (Fly `414572067`, S3 `414572068`). No live run
+or cloud resource creation occurred. The helper gate passes 70 tests, including
+ten lifecycle cases per provider. See the Fly/S3 preparation evidence.
+
+Documentation PR #125 passed all 16 jobs in `43005542302` at `bf496d1`, including
+the built site's browser/route/bookmark/asset preservation checks, and merged
+as `6f8abd337afde39bed8f3fd38a29f9deb61a0a34`. Both PR merges were checked
+against their exact tested trees. Duplicate push builds were skipped for these
+test/workflow/docs-only changes; neither altered runtime code or dependencies.
+
+The newest published candidate is still `v0.2.0-rc.2`, refreshed after merging.
+No new version, release, account, paid plan or production-site migration was
+created. Four build-only GitLab/CircleCI fixture directories are prepared in
+`/private/tmp/zellij-runner-fixtures-20261111-eQ3BrY`; the external runbook has
+the durable regeneration recipe and the remaining image/manifest/event tests.
+
+All registered command families have handlers, and no unimplemented command
+branch was found in the final scan. Remaining `TODO` strings are editable
+scaffold placeholders. Live Fly/S3 and GitLab/CircleCI acceptance still need
+account-side access because browser initialization fails before signup. The
+Fly trial/token handoff and the AWS/GitLab/CircleCI account-availability question
+remain unanswered. Vercel stays user-deferred. Importers retain their documented
+subsets; optional full source-tool parity was not assumed. Use the completion
+ledger for the remaining gates; passing checks is not a zero-bug proof.

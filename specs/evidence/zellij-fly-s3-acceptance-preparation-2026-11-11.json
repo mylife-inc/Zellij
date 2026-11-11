@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-11",
+  "pullRequest": 124,
+  "flyImplementation": "b6a78de7c212f52bf98167aa055952ca5651be67",
+  "s3Implementation": "11232ba8756e696a729ef0ff5b11573f14203285",
+  "testedHead": "5230d48b1250c74fe740a8a7da663863bb21ce42",
+  "testedTree": "3650a8fb57df63500fd3c12566e77320391aaef2",
+  "merge": "af98abc356a09f964bf249b0830a62ded01613ed",
+  "mergedTreeMatches": true,
+  "ci": { "run": 43003339641, "jobsPassed": 16, "reruns": 0 },
+  "local": { "helperTestsPassed": 70, "flyLifecycleCases": 10, "s3LifecycleCases": 10, "actionlint": "passed", "diffCheck": "passed" },
+  "mergePushBuilds": "Skipped duplicate runs for test/workflow/documentation-only changes after all PR gates passed; exact merged tree verified",
+  "registeredWorkflows": [
+    { "id": 414572067, "path": ".github/workflows/acceptance-fly.yml", "state": "active", "liveRun": "not-started" },
+    { "id": 414572068, "path": ".github/workflows/acceptance-s3.yml", "state": "active", "liveRun": "not-started" }
+  ],
+  "remaining": [
+    "Fly: eligible trial organization and expiring org token; two real deployments and verified app cleanup",
+    "S3: authorized test account/credentials/public website eligibility; four real uploads and verified bucket cleanup",
+    "Actual GitLab/CircleCI runner, event, image publication and artifact transfer acceptance",
+    "An approved later release containing post-rc.2 changes"
+  ],
+  "remoteResourceMutations": "None; only GitHub source PR/merge operations and read-only workflow registration checks occurred",
+  "vercel": "User-deferred; no further signup or live test attempted",
+  "accounts": "Browser initialization failed before signup; account handoffs remain pending"
+}

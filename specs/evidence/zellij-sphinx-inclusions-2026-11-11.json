@@ -26,9 +26,11 @@
     "mergedTreeMatches": true
   },
   "postMerge": {
-    "status": "pending",
+    "status": "passed",
     "ciRun": 43002975098,
-    "baseImageRun": 43002974973
+    "ciJobsPassed": 16,
+    "baseImageRun": 43002974973,
+    "baseImageJobsPassed": 13
   },
   "limits": [
     "Declarative .rst source only; no Python or extension execution",
