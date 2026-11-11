@@ -36,35 +36,45 @@ Clippy, formatting, all six real-CLI/engine conversion checks, and strict/deep
 docs checks passed. Cross-platform run `42998033906` passed all 16 jobs. PR #123
 merged as `872db136bd7cf10e3722b9c05d180881a7e4d799`; its tree matches the tested
 head (`f465fe23f4950675e734bfcae35ba6b499af8417`). Post-merge CI `43002975098`
-and Base image `43002974973` are pending at this snapshot.
+passed all 16 jobs and Base image `43002974973` passed all 13 jobs, without reruns.
 
 The Fly/S3 acceptance harnesses are in
 [PR #124](https://github.com/mylife-inc/Zellij/pull/124), head `5230d48`, with all
-70 local helper tests passing. Run `43003339641` is pending. This preparation
-does not establish live provider success.
+70 local helper tests and all 16 jobs in run `43003339641` passing. It merged as
+`af98abc356a09f964bf249b0830a62ded01613ed` with the tested tree unchanged.
+Both manual workflows are registered and active on GitHub. Duplicate merge-push
+builds were skipped for these test/workflow/docs-only changes; no runtime code
+changed. This preparation does not establish live provider success.
 
 Active documentation was reconciled in `e3a78b4`: 14 guide/reference pages now
 use the configured layout, current commands and accurate release boundaries.
 Native scaffold examples, strict/deep checks (55 routes / 23 examples), and
 streaming MDX renders with all 89 existing heading IDs on edited pages pass.
-Next/browser CI and merge remain pending; historical audits were not rewritten.
+[PR #125](https://github.com/mylife-inc/Zellij/pull/125) passed all 16 jobs in
+run `43005542302`, including built-site browser preservation. It merged as
+`6f8abd337afde39bed8f3fd38a29f9deb61a0a34`, with tree
+`e11d852fc1e593859f350dd94d195925c25799e6` matching the tested head exactly.
+Duplicate merge-push builds were skipped for this documentation-only revision.
+Historical audits were not rewritten. The newest published candidate was
+refreshed after the merge and remains `v0.2.0-rc.2`.
 
 ## Remaining work in execution order
 
-1. Close PR #123's post-merge checks; its exact tested head is already merged.
-2. Verify and merge the prepared Fly disposable acceptance workflow. Then use
+1. Use the merged Fly disposable acceptance workflow with
    an eligible temporary trial organization, run static/Next live acceptance,
    inspect the evidence and confirm app cleanup. The lifecycle harness is
    locally tested; no live account success is claimed.
-3. Verify and merge the prepared S3 acceptance workflow, then run it in an
+2. Run the merged S3 acceptance workflow in an
    explicitly authorized test account. Ten lifecycle tests pass locally; live
    portable/hosted first and replacement uploads remain unverified. Confirm
    account eligibility/cost constraints before provisioning, and verify cleanup.
-4. Run the actual generated GitLab and CircleCI workflows in temporary projects
-   on eligible accounts/runners, inspect artifacts, and remove the test resources.
-5. Reconcile any failures and repeat only the affected checks. Refresh the
+3. Run the actual generated GitLab and CircleCI workflows in temporary projects
+   on eligible accounts/runners, including event gates and native image/manifest
+   artifact handling, then remove the test resources. Four build-only fixture
+   directories are prepared; their generation is not live runner acceptance.
+4. Reconcile any failures and repeat only the affected checks. Refresh the
    completion record, docs and current-source package/image acceptance.
-6. Prepare the next release from the verified source. Obtain publication approval
+5. Prepare the next release from the verified source. Obtain publication approval
    for that concrete release; approval for rc.2 does not publish another version.
 
 Browser automation currently fails during initialization because a Codex writable

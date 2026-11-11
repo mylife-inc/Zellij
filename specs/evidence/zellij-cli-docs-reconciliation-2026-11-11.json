@@ -22,7 +22,18 @@
     "renderer": "Actual engine MDX pipeline and React streaming SSR in Node; no local browser or container",
     "diffCheck": "passed"
   },
-  "ci": { "status": "pending" },
+  "ci": {
+    "status": "passed",
+    "run": 43005542302,
+    "jobsPassed": 16,
+    "reruns": 0,
+    "testedHead": "bf496d13c6c5c68267fb657729697c1350edeea7",
+    "testedTree": "e11d852fc1e593859f350dd94d195925c25799e6",
+    "merge": "6f8abd337afde39bed8f3fd38a29f9deb61a0a34",
+    "mergedTreeMatches": true,
+    "browserPreservation": "Built documentation, original routes/bookmarks/assets and browser hydration checks passed",
+    "mergePushBuilds": "Skipped duplicate runs for documentation-only changes after all PR gates passed; exact merged tree verified"
+  },
   "limits": [
     "Node MDX rendering does not replace Next/browser hydration acceptance; existing CI supplies that gate",
     "A synchronous local SSR attempt could not handle async code blocks; streaming SSR passed every edited page",
