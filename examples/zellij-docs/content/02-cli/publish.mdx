@@ -6,10 +6,10 @@ description: Build once and deliver using saved registry or Netlify settings.
 <div id="what-it-is" className="zellij-legacy-anchor" />
 <div id="why-it-exists" className="zellij-legacy-anchor" />
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.2">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.3">
 `zel publish`, also `zel pub`, builds and pushes a configured image. It supports
 portable Markdown and hosted content, with an explicit choice of static-server
-or Next.js image. These commands are available in candidate `0.2.0-rc.2`; stable `0.1.3` predates them.
+or Next.js image. These commands are available in candidate `0.2.0-rc.3`; stable `0.1.3` predates them.
 Saved Netlify deployment is also available; see below. Current source also supports Cloudflare Pages, Vercel, GitHub Pages, S3, Fly and Railway; see [deployment](/cli/deploy#cloudflare-pages).
 </Callout>
 
@@ -159,7 +159,7 @@ Portable static images and portable Netlify exports reject them before runtime,
 credential or remote checks. `--no-check` skips only content preflight;
 preparation, rendering, runtime and credential checks still apply. Failed builds
 never push an image or create a Netlify deployment. The flags require a current
-CLI and compatible engine; they are included in candidate `0.2.0-rc.2`.
+CLI and compatible engine; they are included in candidate `0.2.0-rc.3`.
 
 ## Options
 
@@ -188,8 +188,8 @@ or the destination exists.
 
 Live portable/hosted acceptance passed for Cloudflare Pages and GitHub Pages;
 static/Next image acceptance passed for Railway. The Cloudflare and Railway
-fixes require current source after `0.2.0-rc.2`. Live Vercel, S3 and Fly account
-acceptance remains pending. Fly supports existing configured web Machines;
+fixes are included in `0.2.0-rc.3`. Live Vercel, S3 and Fly account
+acceptance is deferred. Fly supports existing configured web Machines;
 Railway supports existing image services.
 The [`ship`](/cli/ship) composition imports and delivers a configured site.
 [Workflow generation](/cli/ci) now consumes saved publication settings through
@@ -227,7 +227,7 @@ Current source also accepts `publish.provider: cloudflare` with a Pages project
 name in `publish.site`. `pub --to cloudflare` can override static deployment
 intent; it still rejects a saved image-push plan. Supply Cloudflare credentials
 in the environment. An override never reuses another provider's destination.
-See [Cloudflare setup and limits](/cli/deploy#cloudflare-pages). This adapter is available in candidate `0.2.0-rc.2`.
+See [Cloudflare setup and limits](/cli/deploy#cloudflare-pages). This adapter is available in candidate `0.2.0-rc.3`.
 
 ## Vercel publication
 
@@ -236,7 +236,7 @@ use `zel pub`. `pub --to vercel --site prj_YOUR_PROJECT_ID` overrides static
 publication intent, while saved image-push plans still reject `--to`.
 Supply `VERCEL_TOKEN` and, for a team project, `VERCEL_TEAM_ID` in the environment.
 Previews are the default; production requires `--prod`. See
-[Vercel setup and limits](/cli/deploy#vercel). These forms are available in candidate `0.2.0-rc.2`.
+[Vercel setup and limits](/cli/deploy#vercel). These forms are available in candidate `0.2.0-rc.3`.
 
 ## GitHub Pages publication
 
@@ -246,7 +246,7 @@ a static destination without changing saved settings; saved image publication
 cannot be replaced this way. Dry runs also require `--prod` because Pages has no
 draft mode. This replaces the existing `gh-pages` root while retaining history,
 and waits for the matching commit's Pages build. See
-[setup, URL defaults and limits](/cli/deploy#github-pages). This provider is available in candidate `0.2.0-rc.2`.
+[setup, URL defaults and limits](/cli/deploy#github-pages). This provider is available in candidate `0.2.0-rc.3`.
 
 ## S3 publication
 
@@ -256,7 +256,7 @@ deployment provider, while saved image-push plans keep their existing conflict
 checks. S3 requires `--prod`, even for dry runs. Uploads replace matching keys
 individually and retain other keys; they are not atomic. Both renderers preserve
 local source and previous output. See [S3 setup and limits](/cli/deploy#aws-s3).
-This provider is available in candidate `0.2.0-rc.2`.
+This provider is available in candidate `0.2.0-rc.3`.
 
 
 ## Fly publication

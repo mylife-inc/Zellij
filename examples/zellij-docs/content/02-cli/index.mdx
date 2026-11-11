@@ -23,12 +23,11 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-[Candidate 0.2.0-rc.2](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.2)
+[Candidate 0.2.0-rc.3](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.3)
 is available for GNU/Linux, macOS and Windows on x64 and ARM64.
-See the [release workflow](https://github.com/mylife-inc/Zellij/actions/runs/42768544795)
-for public package and image acceptance.
-This reference covers candidate `0.2.0-rc.2` and identifies later source changes,
-including importer improvements and provider fixes. Stable `0.1.3` predates these workflows and
+The release page contains the pinned installers, package checksums and release notes.
+This reference covers candidate `0.2.0-rc.3`, including the Jekyll/Sphinx importer
+improvements and provider fixes since rc.2. Stable `0.1.3` predates these workflows and
 has no native Windows packages.
 
 The current source implements every registered command family. Imports cover
@@ -39,22 +38,23 @@ registries. Workflow generation supports GitHub Actions, GitLab and CircleCI;
 remote dispatch remains GitHub-only. Authoring includes interactive wizards and
 scriptable section values.
 
-Completion still requires live Fly/S3 and GitLab/CircleCI runner verification;
-Vercel live verification is deferred. Changes after rc.2 need a later release.
+The documented command surface is implemented. Live Fly/S3 and actual
+GitLab/CircleCI runner verification are deferred until after this release;
+Vercel live verification is also deferred. These are remaining acceptance tasks.
 See the [completion ledger](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-completion-2026-11-11.md)
 for current evidence. Command availability does not promise full source-tool
 plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.2 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.3/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.3 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.3 sh ./install.sh
 ```
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 For Windows, use the candidate release page's pinned PowerShell instructions.
-They download its attached `install.ps1` and select version `v0.2.0-rc.2` and
+They download its attached `install.ps1` and select version `v0.2.0-rc.3` and
 that release's asset directory. The installer supports
 Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
 checksum and executable version, and installs into
@@ -74,10 +74,10 @@ and select its asset directory. Unpinned stable installation does not select a
 candidate. For hosted/container operations, use the matching engine in this session:
 
 ```bash
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.3
 ```
 
-In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2'`.
+In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.3'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
 
 ## What it does
@@ -131,7 +131,7 @@ Image tags omit the version's leading `v`; candidates do not update `latest`.
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available** |
 
 <Callout type="info" title="Source and release versions">
-This table is available in candidate `0.2.0-rc.2`. A command's page records its
+This table is available in candidate `0.2.0-rc.3`. A command's page records its
 supported renderers, providers and options; availability does not imply every
 historical proposal is implemented. Stable `0.1.3` does not include the full table.
 </Callout>

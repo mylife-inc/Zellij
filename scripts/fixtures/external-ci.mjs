@@ -5,6 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import YAML from 'yaml';
+import { releasePolicy } from '../release-policy.mjs';
 
 const jobScript = (doc, system, job) => system === 'gitlab'
   ? doc[job].script[0]
@@ -17,6 +18,8 @@ async function execute(script, root, env) {
   execFileSync('bash', ['-c', script], { cwd: root, env: { ...process.env, ...env }, stdio: 'inherit', timeout: 600000 });
 }
 export async function externalNative({ root, zel, arch, registry, artifact, suffix, docker, images }) {
+  const reported = JSON.parse(execFileSync(zel, ['version', '--json'], { encoding: 'utf8' }));
+  const { version } = releasePolicy(`v${reported.cli.version}`);
   await writeFile(path.join(root, 'zel.yaml'), 'version: 1\nrenderer: portable\nimage: {name: registry.example/acceptance/external:final, platform: all}\npublish: {action: push, image: static}\n');
   for (const system of ['gitlab', 'circle']) {
     execFileSync(zel, ['ci', '--system', system, '--force'], { cwd: root, stdio: 'inherit' });
@@ -31,7 +34,7 @@ export async function externalNative({ root, zel, arch, registry, artifact, suff
     const end = script.indexOf('export SITE_ROOT=');
     assert(start > 0 && end > start);
     script = script.slice(0, start) + script.slice(end);
-    script = replaceOnce(script, "export ZELLIJ_IMAGE='ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2'", `export ZELLIJ_IMAGE='${process.env.ZELLIJ_IMAGE}'`);
+    script = replaceOnce(script, `export ZELLIJ_IMAGE='ghcr.io/mylife-inc/zellij-base:${version}'`, `export ZELLIJ_IMAGE='${process.env.ZELLIJ_IMAGE}'`);
     script = script.replaceAll('registry.example/acceptance/external', `${registry}/acceptance/external`);
     script = replaceOnce(script, "export ZEL_LOGIN_REGISTRY='registry.example'", `export ZEL_LOGIN_REGISTRY='${registry}'`);
     await execute(script, root, { PATH: `${path.dirname(zel)}:${process.env.PATH}`, CI_BUILDS_DIR: path.dirname(root), CI_PIPELINE_ID: suffix, CI_JOB_ID: system, CIRCLE_WORKFLOW_ID: suffix, CIRCLE_BUILD_NUM: system, REGISTRY_USERNAME: 'fixture', REGISTRY_PASSWORD: 'fixture' });

@@ -114,7 +114,7 @@ the full site. Use `zel check ./manual --deep` for MDX and local references, and
 `zel build ./manual` to compile. Successful validation does not guarantee complete
 source-tool fidelity; review the conversion report.
 
-`--validate` and `--assets` are available in candidate `0.2.0-rc.2`.
+`--validate` and `--assets` are available in candidate `0.2.0-rc.3`.
 
 ## What is recognised
 
@@ -201,7 +201,7 @@ Vue components, top navigation, home-page layout and custom Markdown features
 such as containers, includes and code imports require manual migration. Source
 text/metadata is retained, with conversion notes; these features are not turned
 into equivalent Zellij components. Inspect the report and build the result.
-This supported subset follows VitePress 1.x conventions and is available in candidate `0.2.0-rc.2`.
+This supported subset follows VitePress 1.x conventions and is available in candidate `0.2.0-rc.3`.
 
 ## Jekyll imports
 
@@ -217,8 +217,7 @@ Jekyll configuration or override sequence you intended. YAML aliases/merge keys
 and TOML tables/arrays are read as data; Ruby and Liquid are never executed.
 The source stays untouched.
 
-TOML configuration support is available in current source after `0.2.0-rc.2`;
-the published rc.2 binary still requires YAML. It supports the same settings
+TOML configuration support is included in `0.2.0-rc.3`. It supports the same settings
 and validation as YAML, with case-sensitive keys and typed booleans/numbers.
 Date/time values are retained as text in inherited metadata; dated collection
 pages still need manual migration. Page front matter remains YAML.
@@ -277,7 +276,7 @@ Collection URL patterns support `:collection`, `:path` and `:output_ext` only.
 Dated collection files require manual migration; posts remain excluded even
 when their collection declares output.
 
-Current source after rc.2 also supports collection `sort_by`, following
+Candidate `0.2.0-rc.3` also supports collection `sort_by`, following
 [Jekyll collection ordering](https://jekyllrb.com/docs/collections/#custom-sorting-of-documents).
 For example, replace the `order` setting above with `sort_by: weight` and give
 each page a numeric `weight` in its YAML front matter or scoped defaults:
@@ -306,7 +305,7 @@ title in front matter or defaults. Boolean, array, mapping, nonfinite numeric,
 generated `date`/`categories`/`tags`/`excerpt` and date/time-shaped sort values (including
 quoted dates) require a numeric rank or explicit `order` list. The importer does
 not guess timestamp types or timezone ordering. These sorting and stale-order
-fixes require current source after rc.2; published rc.2 has not been changed.
+fixes are included in `0.2.0-rc.3`.
 
 ### Navigation data
 
@@ -354,7 +353,7 @@ collection roots, unsupported permalink placeholders and localization settings
 are rejected before output. Custom layout/include/plugin directory settings
 also require a source copy using the documented defaults. This is a Jekyll 4.x
 documentation subset, not a theme or blog migration. Read the report and build
-the result before publishing. It is available in candidate `0.2.0-rc.2`.
+the result before publishing. It is available in candidate `0.2.0-rc.3`.
 
 ## Hugo imports
 
@@ -435,7 +434,7 @@ Split/environment configuration, modules/mounts, multilingual or versioned
 content, cascades, menus, content adapters, ignore patterns, alternate outputs,
 and unsupported content formats are outside this subset. Shortcodes remain
 literal text with a report. Read the report and build the result before
-publishing. Hugo support is available in candidate `0.2.0-rc.2`.
+publishing. Hugo support is available in candidate `0.2.0-rc.3`.
 
 ## Sphinx imports
 
@@ -465,10 +464,9 @@ are supported. Triple-quoted strings, string prefixes, computed values and
 duplicate assignments are rejected. `master_doc` is the older name for
 `root_doc`; when both exist they must agree. Only UTF-8 `.rst` input is
 supported; `source_suffix` may be `'.rst'`, `['.rst']` or the dictionary above.
-`exclude_patterns` accepts relative file/directory paths and, in current source
-after `v0.2.0-rc.2`, glob patterns (see below).
-`include_patterns` also accepts source-selection globs in current source after
-rc.2; its default is `['**']`. Unknown configuration that
+`exclude_patterns` accepts relative file/directory paths and glob patterns
+(see below). `include_patterns` also accepts source-selection globs; its default
+is `['**']`. Both glob settings are supported in `0.2.0-rc.3`. Unknown configuration that
 could transform content is refused. Theme/presentation settings do not recreate
 the original theme.
 
@@ -490,7 +488,7 @@ writes. Unlisted pages are reported and not published; add them to the source
 toctree if they should be imported. This differs from Sphinx's ability to build
 unlisted/orphan documents.
 
-Current source after `v0.2.0-rc.2` also accepts `:glob:` and `:reversed:` on
+Candidate `0.2.0-rc.3` also accepts `:glob:` and `:reversed:` on
 toctrees. Both are flags without a value. For example:
 
 ```rst
@@ -558,7 +556,7 @@ settings still require explicit paths.
 
 ### Selecting source pages
 
-Current source after rc.2 also supports `include_patterns`:
+Candidate `0.2.0-rc.3` also supports `include_patterns`:
 
 ```python
 include_patterns = ['index.rst', 'guide/**', 'reference/*.rst']
@@ -599,7 +597,7 @@ inside a code block remains literal content.
 
 ### Reusing document fragments
 
-Current source after `v0.2.0-rc.2` supports local parsed `include` directives.
+Candidate `0.2.0-rc.3` supports local parsed `include` directives.
 The included text joins the owning page: headings retain their hierarchy,
 labels and substitutions work across the include boundary, and supported links,
 images, lists, tables, admonitions and toctrees retain their normal behavior.
@@ -872,7 +870,7 @@ unless explicitly linked. Copy, skip and dry-run modes enforce the same checks.
 CSV and literal includes share the 8 MiB per-file, 32 MiB unique-input and
 32 MiB expanded-text limits. Nested cells retain the shared depth limit below;
 recursive inclusions fail. No Python, Docutils, source code or remote URL is run
-or fetched. Local-file CSV support is available in candidate `0.2.0-rc.2`.
+or fetched. Local-file CSV support is available in candidate `0.2.0-rc.3`.
 
 Simple-table continuation lines have an empty first column; use an empty comment
 (`..`) in that column to start a new row whose first cell is empty. The final
@@ -908,11 +906,11 @@ documents, configuration and script files are ineligible as downloads.
 asset paths, not Sphinx-generated `_images` or `_downloads` URLs. Asset skip and
 dry-run options retain their normal safety checks.
 
-This is a **conservative reStructuredText subset**. Candidate `0.2.0-rc.2` contains
-the earlier subset; parsed document includes require current source after rc.2.
+This is a **conservative reStructuredText subset**. Candidate `0.2.0-rc.3`
+includes the parsed document includes and navigation/source-selection patterns above.
 MyST, autodoc/domain roles, custom extensions, alternate include parsers, raw
 directives, spanning tables, unsupported substitution forms, field lists (including `:orphan:`), footnotes,
-definition/quote blocks, glob/numbered toctrees, extra directive
+definition/quote blocks, numbered toctrees, extra directive
 options and custom/dirhtml builders require manual migration. Unsupported parsed
 constructs fail with the source filename before output is created. No source
 build or dependency installation is attempted. See the upstream
@@ -982,7 +980,7 @@ to explicit slugs, adding a numeric suffix when necessary without moving files.
 
 Custom or versioned source routing, plugin routes and
 custom JavaScript number-prefix parsers still require review. These import
-improvements are included in candidate `0.2.0-rc.2`.
+improvements are included in candidate `0.2.0-rc.3`.
 
 ## Autogenerated Docusaurus sidebars
 
@@ -1072,7 +1070,7 @@ Source generated-index `image`, `keywords` and other unsupported link
 fields are reported for review. Source deployment prefixes are not reused as destination settings;
 inspect the new routes before publishing. The output is a plain link list, not Docusaurus
 cards or an embedded `DocCardList` component. Foreign sidebar links keep their
-existing report-only behavior. These category improvements are included in candidate `0.2.0-rc.2`.
+existing report-only behavior. These category improvements are included in candidate `0.2.0-rc.3`.
 
 ## Document links and assets
 
@@ -1150,7 +1148,7 @@ The conversion report lists each linked asset and its public URL, including in
 ensure the listed files exist on your asset server before publishing. These
 options also work with `migrate`/`mig` and `ship`. The absolute URLs are saved
 in the converted content, so subsequent `build` or `publish` commands need no
-asset-base flag. This feature is available in candidate `0.2.0-rc.2`.
+asset-base flag. This feature is available in candidate `0.2.0-rc.3`.
 
 ### Original website URLs
 
@@ -1211,7 +1209,7 @@ output is written. Computed JavaScript, custom presets/plugins, multiple docs
 instances, custom docs/static directories, localization, versioned sites and
 generated-category URLs without explicit slugs still need review. HTML/JSX
 attributes, relative website assets without a corresponding local file, and
-custom routing plugins are not newly interpreted. These improvements are available in candidate `0.2.0-rc.2`.
+custom routing plugins are not newly interpreted. These improvements are available in candidate `0.2.0-rc.3`.
 
 Source behavior follows the upstream [MkDocs URL settings](https://www.mkdocs.org/user-guide/configuration/#use_directory_urls)
 and [Docusaurus document URLs](https://docusaurus.io/docs/create-doc#doc-urls),

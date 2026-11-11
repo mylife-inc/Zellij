@@ -1,5 +1,11 @@
 # Remaining external acceptance — 2026-11-10
 
+**2026-11-11 release sequencing:** the user authorized publishing the current CLI
+with updated documentation before remaining live deployment verification.
+Rc.3 preparation now takes priority; live Fly/S3 and external-runner acceptance
+remain recorded follow-ups. See the [current completion ledger](zel-cli-completion-2026-11-11.md).
+Earlier status and acceptance snapshots below remain dated history.
+
 Cloudflare Pages, GitHub Pages and Railway already passed live acceptance and
 their disposable resources were removed. Vercel, AWS S3, Fly.io and actual
 GitLab/CircleCI runner execution remain unverified. Tests against simulated
