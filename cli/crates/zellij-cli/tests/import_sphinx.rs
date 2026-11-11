@@ -633,7 +633,7 @@ fn config_python_is_never_executed_and_unsupported_settings_fail_atomically() {
         "project = 'x'\nexec('anything')",
         "extensions=['sphinx.ext.autodoc']",
         "source_suffix={'.md':'markdown'}",
-        "exclude_patterns=['private/*']",
+        "exclude_patterns=['../private/*']",
         "include_patterns=[]",
         "rst_prolog='hidden'",
         "html_file_suffix='.htm'",
@@ -846,6 +846,157 @@ fn toctree_globs_preserve_containment_cycles_and_failure_before_writes() {
     // Matching a titleless include fragment must fail, never drop content.
     write(&s, "fragment.rst", "Only a paragraph.");
     run(&s, &o, &[], 2);
+    assert!(!o.exists());
+}
+
+#[test]
+fn exclusion_globs_filter_navigation_and_directory_descendants_without_parsing_them() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    write(
+        &s,
+        "conf.py",
+        "project='Docs'\nexclude_patterns=['draft*.rst','**/private*','guide/tmp?','guide/[ab].rst','literal%20','**/.git']\n",
+    );
+    write(
+        &s,
+        "index.rst",
+        "Home\n====\n\n.. toctree::\n   :glob:\n\n   **\n",
+    );
+    let hidden = [
+        "draft-one.rst",
+        "guide/private/file.rst",
+        "guide/private-other.rst",
+        "guide/tmp1/deep/page.rst",
+        "guide/a.rst",
+        "guide/b.rst",
+        "literal%20/page.rst",
+    ];
+    for path in hidden {
+        write(&s, path, ".. unsupported:: must not be parsed");
+    }
+    for path in [
+        "public.rst",
+        "guide/c.rst",
+        "guide/deep/draft-one.rst",
+        "private-root.rst",
+    ] {
+        write(&s, path, "Published\n=========\n");
+    }
+    let r = run(&s, &o, &[], 0);
+    for path in hidden {
+        assert!(report(&r).contains(path), "{path}: {}", report(&r));
+    }
+    for path in [
+        "public.mdx",
+        "guide/c.mdx",
+        "guide/deep/draft-one.mdx",
+        "private-root.mdx",
+    ] {
+        assert!(o.join("01-guide").join(path).is_file(), "{path}");
+    }
+    assert!(!o.join("01-guide/draft-one.mdx").exists());
+    assert!(!o.join("01-guide/guide/tmp1").exists());
+    let dry = t.path().join("dry");
+    run(&s, &dry, &["--dry-run"], 0);
+    assert!(!dry.exists());
+}
+
+#[test]
+fn exclusion_globs_keep_explicit_pages_assets_and_include_resources_out_of_imports() {
+    for body in [
+        ".. toctree::\n\n   private/page",
+        ".. image:: private/logo.svg",
+        ":download:`private/notes.txt`",
+        ".. include:: private/part.rst",
+        ".. literalinclude:: private/code.py",
+        ".. csv-table::\n   :file: private/data.csv",
+    ] {
+        for args in [
+            vec![],
+            vec!["--assets", "skip"],
+            vec![
+                "--assets",
+                "link",
+                "--asset-base-url",
+                "https://assets.example.test/docs/",
+            ],
+            vec!["--dry-run"],
+        ] {
+            let t = tempfile::tempdir().unwrap();
+            let s = t.path().join("s");
+            let o = t.path().join("o");
+            write(
+                &s,
+                "conf.py",
+                "project='Docs'\nexclude_patterns=['priv*']\n",
+            );
+            write(&s, "index.rst", format!("Home\n====\n\n{body}\n"));
+            for path in [
+                "private/page.rst",
+                "private/logo.svg",
+                "private/notes.txt",
+                "private/part.rst",
+                "private/code.py",
+                "private/data.csv",
+            ] {
+                write(&s, path, "PRIVATE_SENTINEL");
+            }
+            let asset = body.starts_with(".. image::") || body.starts_with(":download:");
+            let r = run(&s, &o, &args, if asset { 0 } else { 2 });
+            if asset {
+                assert!(report(&r).contains("unavailable Sphinx asset; not copied"));
+                if !args.contains(&"--dry-run") {
+                    let page = read(&o, "01-guide/index.mdx");
+                    assert!(page.contains("private/"));
+                    assert!(
+                        !page.contains("assets.example.test") && !page.contains("PRIVATE_SENTINEL")
+                    );
+                    assert!(!o.join("assets/imported/docs/private").exists());
+                }
+            }
+            if !asset || args.contains(&"--dry-run") {
+                assert!(!o.exists(), "{body}: {args:?}");
+            }
+        }
+    }
+}
+
+#[test]
+fn invalid_exclusion_globs_fail_before_output_even_when_they_match_nothing() {
+    for pattern in [
+        "",
+        "/private/*",
+        "a/../*",
+        "./draft*",
+        "C:/private/*",
+        "a//b",
+        "drafts/",
+        "[z-a]",
+    ] {
+        let t = tempfile::tempdir().unwrap();
+        let s = t.path().join("s");
+        let o = t.path().join("o");
+        basic(&s);
+        write(&s, "conf.py", format!("exclude_patterns=[{pattern:?}]\n"));
+        run(&s, &o, &[], 2);
+        assert!(!o.exists(), "{pattern}");
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn exclusion_globs_cannot_hide_symlinks() {
+    let t = tempfile::tempdir().unwrap();
+    let s = t.path().join("s");
+    let o = t.path().join("o");
+    basic(&s);
+    write(&s, "conf.py", "exclude_patterns=['private*']\n");
+    write(t.path(), "outside/secret.rst", "Private\n=======\n");
+    std::os::unix::fs::symlink(t.path().join("outside"), s.join("private-dir")).unwrap();
+    let r = run(&s, &o, &[], 2);
+    assert!(report(&r).contains("symbolic links"));
     assert!(!o.exists());
 }
 

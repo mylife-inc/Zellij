@@ -1,69 +1,8 @@
 //! Resolve navigation patterns once, before document discovery and rendering.
-use super::{document_path, document_target, external, invalid, rst};
+use super::{document_path, document_target, external, invalid, patterns::matcher, rst};
 use camino::{Utf8Path, Utf8PathBuf};
-use regex::Regex;
 use std::collections::BTreeSet;
 use zellij_core::Result;
-
-// Sphinx's patfilter semantics, not filesystem globbing: * and ? cannot
-// cross '/', ** can, and **/ still requires a slash. Names omit .rst.
-fn matcher(pattern: &str) -> Result<Regex> {
-    if pattern.len() > 4096 {
-        return Err(invalid("toctree glob exceeds 4096 bytes"));
-    }
-    let chars: Vec<_> = pattern.chars().collect();
-    let mut out = String::from(r"\A(?:");
-    let mut i = 0;
-    while i < chars.len() {
-        let c = chars[i];
-        i += 1;
-        match c {
-            '*' if chars.get(i) == Some(&'*') => {
-                i += 1;
-                out.push_str(".*");
-            }
-            '*' => out.push_str("[^/]*"),
-            '?' => out.push_str("[^/]"),
-            '[' => {
-                let start = i;
-                let negative = chars.get(i) == Some(&'!');
-                if negative {
-                    i += 1;
-                }
-                if chars.get(i) == Some(&']') {
-                    i += 1;
-                }
-                while i < chars.len() && chars[i] != ']' {
-                    i += 1;
-                }
-                if i == chars.len() {
-                    out.push_str(r"\[");
-                    i = start;
-                    continue;
-                }
-                out.push('[');
-                if negative {
-                    out.push_str("^/");
-                }
-                let contents = &chars[start + usize::from(negative)..i];
-                for (offset, c) in contents.iter().enumerate() {
-                    // Preserve ranges, but escape Rust regex class operators
-                    // and literal leading/trailing hyphens.
-                    if *c == '-' && offset > 0 && offset + 1 < contents.len() {
-                        out.push('-');
-                    } else {
-                        out.push_str(&regex::escape(&c.to_string()));
-                    }
-                }
-                out.push(']');
-                i += 1;
-            }
-            _ => out.push_str(&regex::escape(&c.to_string())),
-        }
-    }
-    out.push_str(r")\z");
-    Regex::new(&out).map_err(|_| invalid(format!("invalid toctree glob {pattern:?}")))
-}
 
 pub(super) fn expand(
     owner: &Utf8Path,
@@ -133,31 +72,6 @@ pub(super) fn expand(
 #[cfg(test)]
 mod tests {
     use super::*;
-    #[test]
-    fn sphinx_patterns_are_case_sensitive_and_separator_aware() {
-        for (pattern, yes, no) in [
-            ("guide/*", "guide/intro", "guide/deep/intro"),
-            ("guide/**", "guide/deep/intro", "Guide/intro"),
-            ("**/intro", "guide/intro", "intro"),
-            ("p?", "pé", "p/"),
-            ("[a-c]", "b", "d"),
-            ("[!a-c]", "z", "/"),
-            ("[^a]", "^", "b"),
-            ("[]a]", "]", "b"),
-            ("[-a]", "-", "b"),
-            ("[a-]", "-", "b"),
-            ("[a&&b]", "&", "c"),
-            ("[open", "[open", "o"),
-            ("a.b", "a.b", "axb"),
-        ] {
-            let regex = matcher(pattern).unwrap();
-            assert!(regex.is_match(yes), "{pattern}: {yes}");
-            assert!(!regex.is_match(no), "{pattern}: {no}");
-        }
-        assert!(matcher("[z-a]").is_err());
-        assert!(matcher(&"*".repeat(4097)).is_err());
-    }
-
     #[test]
     fn glob_expansion_has_a_shared_budget_and_per_tree_candidates() {
         let files = ["index.rst", "a.rst", "b.rst"]

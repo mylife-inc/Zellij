@@ -3,6 +3,7 @@ mod config;
 mod include;
 mod lists;
 mod literalinclude;
+mod patterns;
 mod resources;
 mod rst;
 mod substitutions;
@@ -195,7 +196,8 @@ impl Converter for Sphinx {
         config::validate(&config)?;
         let root = Utf8PathBuf::from_path_buf(std::fs::canonicalize(source)?)
             .map_err(|_| invalid("source path is not UTF-8"))?;
-        let mut excluded = config::strings(&config, "exclude_patterns")?;
+        let patterns = patterns::Exclusions::new(&config::strings(&config, "exclude_patterns")?)?;
+        let mut excluded = Vec::new();
         for key in [
             "templates_path",
             "html_theme_path",
@@ -243,7 +245,8 @@ impl Converter for Sphinx {
             if !entry.file_type().is_file() {
                 continue;
             }
-            if excluded.iter().any(|p| rel.starts_with(p))
+            if patterns.matches(&rel)
+                || excluded.iter().any(|p| rel.starts_with(p))
                 || rel.components().any(|p| p.as_str().starts_with('.'))
             {
                 if rel.extension() == Some("rst") {
