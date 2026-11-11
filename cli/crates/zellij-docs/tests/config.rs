@@ -45,6 +45,64 @@ nav:
 "#;
 
 #[test]
+fn company_and_product_marks_keep_their_destinations_after_relocation() {
+    for (product, new_tab) in [(true, true), (true, false), (false, false)] {
+        let (_temp, source, out) = fixture();
+        let logo = if product {
+            "  logo: {src: 'company logo.svg', alt: Product}\n"
+        } else {
+            ""
+        };
+        let config = format!(
+            "brand:\n{logo}  company: {{src: 'company logo.svg', alt: 'Company & Co', href: 'https://company.example/?a=1&b=2', newTab: {new_tab}}}\n"
+        );
+        fs::write(source.join("zel.yaml"), config).unwrap();
+        build(&source, &out, BuildOptions::default()).unwrap();
+        let html = fs::read_to_string(out.join("guide/a.html")).unwrap();
+        let company = html.find("class=\"company-logo\"").unwrap();
+        let home = html.find("class=\"brand\"").unwrap();
+        assert!(company < home);
+        assert!(html.contains("href=\"https://company.example/?a=1&amp;b=2\""));
+        assert!(html.contains("src=\"../company%20logo.svg\" alt=\"Company &amp; Co\""));
+        assert_eq!(
+            html.contains("target=\"_blank\" rel=\"noopener noreferrer\""),
+            new_tab
+        );
+        if product {
+            assert!(html.contains("class=\"brand-logo\" href=\"../index.html\""));
+            assert!(company < html.find("class=\"brand-logo\"").unwrap());
+        }
+        assert!(out.join("company logo.svg").is_file());
+    }
+}
+
+#[test]
+fn invalid_company_links_and_assets_fail_before_writing_the_site() {
+    for company in [
+        "{src: 'company logo.svg', alt: Company}",
+        "{src: 'company logo.svg', alt: Company, href: 'javascript:alert(1)'}",
+        "{src: 'company logo.svg', alt: Company, href: '/company'}",
+        "{src: '../company.svg', alt: Company, href: 'https://company.example'}",
+        "{src: 'missing.svg', alt: Company, href: 'https://company.example'}",
+        "{src: README.md, alt: Company, href: 'https://company.example'}",
+        "{src: 'company logo.svg', alt: '', href: 'https://company.example'}",
+        "{src: 'company logo.svg', alt: Company, href: 'https://company.example', newTab: 'yes'}",
+    ] {
+        let (_temp, source, out) = fixture();
+        fs::write(
+            source.join("zel.yaml"),
+            format!("brand: {{company: {company}}}\n"),
+        )
+        .unwrap();
+        assert!(
+            build(&source, &out, BuildOptions::default()).is_err(),
+            "{company}"
+        );
+        assert!(!out.exists());
+    }
+}
+
+#[test]
 fn configured_navigation_branding_and_paging_survive_nested_pages() {
     let (_temp, source, out) = fixture();
     fs::write(source.join("zel.yaml"), CONFIG).unwrap();

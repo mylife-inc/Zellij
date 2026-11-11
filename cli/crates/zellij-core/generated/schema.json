@@ -3211,6 +3211,37 @@
           "default": {},
           "type": "object",
           "properties": {
+            "company": {
+              "type": "object",
+              "properties": {
+                "src": {
+                  "type": "string",
+                  "minLength": 1,
+                  "zellijReference": "asset"
+                },
+                "dark": {
+                  "type": "string",
+                  "zellijReference": "asset"
+                },
+                "alt": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "href": {
+                  "type": "string",
+                  "zellijReference": "href"
+                },
+                "newTab": {
+                  "default": false,
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "src",
+                "alt",
+                "href"
+              ]
+            },
             "logo": {
               "type": "object",
               "properties": {

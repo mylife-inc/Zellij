@@ -429,15 +429,16 @@ fn compile(
     let presentation = page::Presentation {
         name,
         theme,
-        logo: config.brand.as_ref().map(|b| &b.logo),
+        logo: config.brand.as_ref().and_then(|b| b.logo.as_ref()),
+        company: config.brand.as_ref().and_then(|b| b.company.as_ref()),
     };
     let mut resolver = links::Resolver {
         root: &root,
         pages: &pages,
         assets: BTreeMap::new(),
     };
-    if let Some((path, bytes)) =
-        diagnostics.capture(config.logo(&root), Code::Configuration, Some(config_file))?
+    for (path, bytes) in
+        diagnostics.capture(config.logos(&root), Code::Configuration, Some(config_file))?
     {
         resolver.assets.insert(path, bytes);
     }

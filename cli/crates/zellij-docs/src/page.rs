@@ -1,6 +1,6 @@
 use crate::{
     Page,
-    config::{Logo, Navigation},
+    config::{Company, Logo, Navigation},
     links::{encode, href, prefix},
     markdown::escape,
 };
@@ -10,6 +10,7 @@ pub struct Presentation<'a> {
     pub name: &'a str,
     pub theme: &'a str,
     pub logo: Option<&'a Logo>,
+    pub company: Option<&'a Company>,
 }
 
 pub fn contents(current: &Page, pages: &[Page], navigation: &Navigation) -> String {
@@ -68,6 +69,22 @@ pub fn render(
     } else {
         (String::new(), String::new(), String::new())
     };
+    let company = presentation
+        .company
+        .map(|company| {
+            format!(
+                "<a class=\"company-logo\" href=\"{}\"{}><img src=\"{}\" alt=\"{}\"></a>",
+                escape(&company.href),
+                if company.new_tab {
+                    " target=\"_blank\" rel=\"noopener noreferrer\""
+                } else {
+                    ""
+                },
+                href(&current.output, camino::Utf8Path::new(&company.src)),
+                escape(&company.alt),
+            )
+        })
+        .unwrap_or_default();
     let logo = presentation
         .logo
         .map(|logo| {
@@ -173,7 +190,7 @@ pub fn render(
 {math_css}{mermaid_css}
 <script defer src="{prefix}_zellij/search.js"></script><script defer src="{prefix}_zellij/site.js"></script>{mermaid_script}</head>
 <body data-root="{prefix}"><a class="skip" href="#_zel-content">Skip to content</a>
-<header class="header"><div class="brand-group">{logo}<a class="brand" href="{prefix}index.html">{name}</a></div>
+<header class="header"><div class="brand-group">{company}{logo}<a class="brand" href="{prefix}index.html">{name}</a></div>
 <div class="controls" hidden><button id="_zel-menu" aria-expanded="false" aria-controls="_zel-sidebar">Contents</button>
 <button id="_zel-search-open">Search <kbd>⌘/Ctrl K</kbd></button><label class="sr-only" for="_zel-theme">Theme</label><select id="_zel-theme">{themes}</select>
 <label class="sr-only" for="_zel-mode">Appearance</label><select id="_zel-mode"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div></header>

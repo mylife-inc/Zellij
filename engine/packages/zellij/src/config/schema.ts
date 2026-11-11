@@ -69,6 +69,19 @@ export type SocialConfig = z.infer<typeof socialSchema>;
  * within this site. Omitted, the logo links to "/" and `title` is unnecessary.
  */
 export const brandSchema = z.object({
+  /** Separate owner mark, before the product's logo and home link. */
+  company: z.object({
+    src: assetReferenceSchema.min(1),
+    dark: assetReferenceSchema.optional(),
+    alt: z.string().trim().min(1),
+    href: hrefReferenceSchema.refine(value => {
+      try {
+        const url = new URL(value);
+        return /^https?:\/\//.test(value) && ['http:', 'https:'].includes(url.protocol) && !/[\s\u0000-\u001f\u007f-\u009f\\]/.test(value);
+      } catch { return false; }
+    }, 'must be an absolute http:// or https:// URL'),
+    newTab: z.boolean().default(false),
+  }).optional(),
   logo: z
     .object({
       src: assetReferenceSchema.min(1),

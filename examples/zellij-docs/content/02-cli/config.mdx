@@ -255,6 +255,30 @@ Use an image format supported by your target browsers, such as SVG, PNG or WebP.
 
 The logo appears at the left of the sticky header. Its optional `href` opens the
 company's absolute HTTP(S) website; without it, the logo links to the docs home.
+
+To show both an owner icon and a product icon, add `brand.company` (newer than
+`v0.2.0-rc.3`):
+
+```yaml title="zel.yaml"
+brand:
+  company:
+    src: assets/company.svg
+    alt: Company website
+    href: https://company.example
+    newTab: true
+  logo:
+    src: assets/product.svg
+    alt: Product documentation home
+```
+
+The company icon appears first, at the far left. Its `href` is required and
+must be an absolute HTTP(S) URL. `newTab` defaults to `false` (the current tab);
+`true` opens a separate tab with `noopener noreferrer`. The product logo still
+links to the documentation home when its own `href` is omitted. Either image
+can be omitted; the documentation name remains a home link. Both local image
+paths follow the containment rules above and keep working after moving the
+exported folder. The portable company object accepts `src`, `alt`, `href` and
+`newTab`; hosted `site.yaml` additionally supports a separate `dark` image.
 The site name beside it always links home. Search and theme controls remain on
 the right. No external request occurs merely from displaying the company link;
 visiting an external website requires connectivity.

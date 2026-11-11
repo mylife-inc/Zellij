@@ -23,6 +23,13 @@ Live Netlify verification and production migration remain deferred. This change
 is newer than published rc.3; the tested merge skipped duplicate push workflows
 and did not publish new artifacts.
 
+New requirements (2026-11-11) extend the earlier completion target: independent
+company/product icons, an Apple-informed section audit and composable section
+format, a versioned template catalog including books/PDF, and package-manager
+distribution. See [the phased design and backlog](specs/zellij-product-expansion-2026-11-11.md).
+The company slot is being implemented first; the remaining features are planned,
+not included in the previous CLI-completion claim or published rc.3.
+
 Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.

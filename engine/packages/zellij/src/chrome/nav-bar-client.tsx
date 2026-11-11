@@ -38,7 +38,7 @@ import type { BrandModel, NavItemModel, NavLeafModel, NavModel } from './nav-mod
  * which is not known until after hydration, and the logo would visibly swap.
  */
 function NavBrand({ brand }: { brand: BrandModel }) {
-  const { logo, title } = brand;
+  const { logo, title, company } = brand;
 
   /*
    * Set as the variable the stylesheet already falls back on, rather than as a
@@ -82,6 +82,23 @@ function NavBrand({ brand }: { brand: BrandModel }) {
       data-has-dark={logo?.dark ? 'true' : 'false'}
       style={sizing}
     >
+      {company ? (
+        <a
+          className="zellij-company"
+          href={company.href}
+          aria-label={company.alt}
+          target={company.newTab ? '_blank' : undefined}
+          rel={company.newTab ? 'noopener noreferrer' : undefined}
+          data-has-dark={company.dark ? 'true' : 'false'}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="zellij-company-image" data-variant="light" src={company.src} alt={company.alt} />
+          {company.dark ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="zellij-company-image" data-variant="dark" src={company.dark} alt="" aria-hidden="true" />
+          ) : null}
+        </a>
+      ) : null}
       {logo?.external ? (
         <a className="zellij-logo" href={logo.href} aria-label={logo.alt}>
           {mark}

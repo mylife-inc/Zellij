@@ -112,9 +112,14 @@ export function NavBar({ site }: { site: Site }) {
 function buildBrand(site: Site): BrandModel {
   const { name, brand, basePath } = site.config;
   const logo = brand.logo;
+  const company = brand.company ? {
+    ...brand.company,
+    src: assetHref(brand.company.src, basePath),
+    ...(brand.company.dark ? { dark: assetHref(brand.company.dark, basePath) } : {}),
+  } : undefined;
 
   if (!logo) {
-    return { siteName: name, ...(brand.title ? { title: { label: brand.title, href: '/' } } : {}) };
+    return { siteName: name, company, ...(brand.title ? { title: { label: brand.title, href: '/' } } : {}) };
   }
 
   const href = logo.href ?? '/';
@@ -122,6 +127,7 @@ function buildBrand(site: Site): BrandModel {
 
   return {
     siteName: name,
+    company,
     logo: {
       src: assetHref(logo.src, basePath),
       ...(logo.dark ? { dark: assetHref(logo.dark, basePath) } : {}),

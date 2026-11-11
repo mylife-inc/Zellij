@@ -91,6 +91,23 @@
   flex-shrink: 1;
 }
 
+.zellij-company {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding-inline-end: 0.5rem;
+  border-inline-end: 1px solid var(--zellij-border);
+}
+
+.zellij-company-image { display: block; height: 1.75rem; width: auto; max-width: 3rem; object-fit: contain; }
+.zellij-company[data-has-dark='true'] .zellij-company-image[data-variant='dark'] { display: none; }
+[data-zellij-mode='dark'] .zellij-company[data-has-dark='true'] .zellij-company-image[data-variant='light'] { display: none; }
+[data-zellij-mode='dark'] .zellij-company[data-has-dark='true'] .zellij-company-image[data-variant='dark'] { display: block; }
+@media (prefers-color-scheme: dark) {
+  [data-zellij-mode='system'] .zellij-company[data-has-dark='true'] .zellij-company-image[data-variant='light'] { display: none; }
+  [data-zellij-mode='system'] .zellij-company[data-has-dark='true'] .zellij-company-image[data-variant='dark'] { display: block; }
+}
+
 .zellij-logo-text,
 .zellij-brand-title {
   min-width: 0;
