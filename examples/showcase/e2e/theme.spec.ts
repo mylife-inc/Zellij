@@ -13,7 +13,7 @@ test.describe('theme tokens', () => {
   test('emits theme tokens into the document', async ({ page }) => {
     await page.goto('/');
 
-    const style = page.locator('style#zellij-theme');
+    const style = page.locator('head > style[data-precedence="zellij-theme"]');
     await expect(style).toHaveCount(1);
 
     const css = (await style.textContent()) ?? '';

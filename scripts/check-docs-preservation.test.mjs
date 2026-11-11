@@ -2,7 +2,7 @@
 // the built docs. No production requests or changes to the authored build.
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
-import { cp, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { test } from 'node:test';
@@ -15,9 +15,9 @@ const checker = path.join(repo, 'scripts/check-docs-preservation.mjs');
 
 for (const regression of [
   {
-    name: 'recoverable hydration errors from an added head newline',
-    marker: '<meta name="viewport"',
-    replacement: '\n<meta name="viewport"',
+    name: 'recoverable hydration errors from changed body text',
+    marker: '>Skip to content</a>',
+    replacement: '>Changed by the hosting fixture</a>',
     // React's reporting channel differs between browser integrations.
     kind: /console\.error|pageerror/,
     diagnostic: /Minified React error #418|Hydration failed/,
@@ -64,5 +64,35 @@ for (const regression of [
       assert(!error.stdout.includes('Preservation passed:'), 'Bad HTML must not report success');
       return true;
     });
+  });
+}
+
+// The old root layout fails these cases with React #418. Exercise the actual
+// preservation command on every exported route, with no live hosting requests.
+for (const [name, prefix] of [
+  ['head whitespace', '\n'],
+  ['hosting annotation and CRLF whitespace', '\r\n<!-- This site is hosted on Netlify. -->\r\n'],
+]) {
+  test(`preservation accepts ${name}`, { timeout: 120_000 }, async t => {
+    const temp = await mkdtemp(path.join(tmpdir(), 'zellij-head-acceptance-'));
+    t.after(() => rm(temp, { recursive: true, force: true }));
+    const output = path.join(temp, 'out');
+    await cp(path.join(repo, 'examples/zellij-docs/out'), output, { recursive: true });
+    let changed = 0;
+    const marker = '<meta name="viewport"';
+    for (const file of await readdir(output, { recursive: true })) {
+      if (!file.endsWith('.html')) continue;
+      const target = path.join(output, file);
+      const html = await readFile(target, 'utf8');
+      assert.equal(html.split(marker).length, 2, `${file}: expected one viewport insertion point`);
+      await writeFile(target, html.replace(marker, prefix + marker));
+      changed++;
+    }
+    assert(changed >= 55, 'Every documentation route must receive the hosting mutation');
+    const result = await run(process.execPath, [checker, output], {
+      cwd: repo, timeout: 90_000, maxBuffer: 4 * 1024 * 1024,
+    });
+    assert.match(result.stdout, /Preservation passed:/);
+    assert.equal(result.stderr, '');
   });
 }

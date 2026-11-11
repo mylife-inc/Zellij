@@ -14,6 +14,12 @@ Live provider/external-runner checks remain deferred follow-up work. The ledger
 above separates these from documented importer limits. Newer dated
 entries below supersede the earlier pending snapshots without erasing them.
 
+Current follow-up: a remedy for hosting-injected head whitespace is under
+verification. The engine uses React-managed theme CSS and restores preferences
+at the start of the body. See [the hydration report](specs/zellij-netlify-hydration-2026-11-02.md).
+Live provider verification and production migration remain deferred; this source
+change is newer than the published rc.3 artifacts.
+
 Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.

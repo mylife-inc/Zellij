@@ -21,11 +21,33 @@ export function themePreferenceFiles(prefix) {
 
 const combinations = [['both', true, true], ['toggle', true, false], ['switcher', false, true], ['neither', false, false]];
 
+// Exercise parser-time restoration with the same head mutation that previously
+// broke root hydration. This runs under Chromium and WebKit in hosted CI.
+async function annotateHead(context) {
+  await context.route('**/*', async route => {
+    if (route.request().resourceType() !== 'document') return route.fallback();
+    const response = await route.fetch();
+    const html = await response.text();
+    const marker = '<meta name="viewport"';
+    assert.equal(html.split(marker).length, 2, 'Expected one viewport insertion point');
+    await route.fulfill({ response, body: html.replace(marker, '\n<!-- Hosting annotation -->\n' + marker) });
+  });
+}
+
+function observeErrors(context) {
+  const errors = [];
+  context.on('page', page => {
+    page.on('pageerror', error => errors.push(error.message));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  });
+  return errors;
+}
+
 export async function checkThemePreferences(browser, origin, prefix) {
   for (const [name, toggle, switcher] of combinations) {
     const context = await browser.newContext();
-    const failures = [];
-    context.on('page', page => page.on('pageerror', error => failures.push(error.message)));
+    const failures = observeErrors(context);
+    await annotateHead(context);
     await context.addInitScript(() => {
       if (!['http:', 'https:'].includes(location.protocol)) return;
       if (!sessionStorage.getItem('preferences-seeded')) {
@@ -42,11 +64,11 @@ export async function checkThemePreferences(browser, origin, prefix) {
       const page = await context.newPage();
       await page.goto(`${origin}${prefix}/preferences/${name}`, { waitUntil: 'commit' });
       await expect(page.getByRole('heading', { name: 'Preference fixture' })).toBeVisible();
-      // The document's own head script must work before hydration arrives.
+      // The document's parser-executed bootstrap must work before hydration arrives.
       await expect(page.locator('html')).toHaveAttribute('data-zellij-mode', toggle ? 'dark' : 'light');
       await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', switcher ? 'forest' : 'cupertino');
       release();
-      await context.unrouteAll({ behavior: 'wait' });
+      await context.unroute(/\/_next\/.*\.js(?:\?|$)/, hold);
       await page.waitForLoadState('load');
       if (toggle) await page.getByRole('button', { name: 'Switch to light theme', exact: true }).click();
       if (switcher) {
@@ -70,6 +92,8 @@ export async function checkThemePreferences(browser, origin, prefix) {
 
   for (const blocked of [false, true]) {
     const context = await browser.newContext();
+    const errors = observeErrors(context);
+    await annotateHead(context);
     await context.addInitScript(blocked => {
       if (!['http:', 'https:'].includes(location.protocol)) return;
       if (blocked) {
@@ -81,7 +105,6 @@ export async function checkThemePreferences(browser, origin, prefix) {
     }, blocked);
     try {
       const page = await context.newPage();
-      const errors = []; page.on('pageerror', error => errors.push(error.message));
       await page.goto(`${origin}${prefix}/preferences/both`);
       await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'cupertino');
       await expect(page.locator('html')).toHaveAttribute('data-zellij-mode', 'light');
@@ -94,6 +117,8 @@ export async function checkThemePreferences(browser, origin, prefix) {
     } finally { await context.close(); }
   }
   const context = await browser.newContext({ colorScheme: 'dark' });
+  const errors = observeErrors(context);
+  await annotateHead(context);
   await context.addInitScript(() => {
     if (['http:', 'https:'].includes(location.protocol)) localStorage.setItem('zellij:mode', 'system');
   });
@@ -106,6 +131,7 @@ export async function checkThemePreferences(browser, origin, prefix) {
     await expect(toggle).toBeVisible();
     await toggle.click();
     await expect(page.locator('html')).toHaveAttribute('data-zellij-mode', 'dark');
+    assert.deepEqual(errors, []);
   } finally { await context.close(); }
 
 }
