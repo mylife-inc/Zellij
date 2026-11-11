@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-11",
+  "baseline": "5e47f0b",
+  "implementation": {
+    "exclusions": "cabaa8fcab24e4fbcec5ab275c6b9ccb4ea14cc5",
+    "previewLifecycle": "50c1fe6ff7998b3d09c4bf18bd899a7a1788008a"
+  },
+  "regressions": {
+    "exclusionsBefore": "Real CLI rejected exclude_patterns globs before output.",
+    "previewBefore": "Missing abort signal on pagehide; stale body triggered a reload after restoration.",
+    "after": "60 Sphinx CLI cases and all three preview lifecycle tests pass."
+  },
+  "local": {
+    "rustTestsPassed": 715,
+    "rustHostedIgnored": 5,
+    "clippy": "passed with warnings denied",
+    "formatting": "passed",
+    "nodeHelperTestsPassed": 50,
+    "allSixImporterEngineChecks": "passed",
+    "sphinxRoutes": 13,
+    "docs": "strict/deep passed: 55 routes, 23 examples",
+    "actionlint": "passed"
+  },
+  "ci": {
+    "status": "pending"
+  },
+  "priorPostMerge": {
+    "run": 42970277215,
+    "initialFailures": "Two transient npm tarball 404s and one WebKit navigation pageError; targeted unchanged-source retry in progress.",
+    "baseImageRun": 42970277159,
+    "baseImageJobsPassed": 13,
+    "reference": "zellij-sphinx-toctree-2026-11-10.json"
+  },
+  "limits": [
+    "Only default include_patterns remains supported",
+    "Template/theme/static paths remain literal; resource copying does not emulate the Sphinx HTML builder",
+    "Automatic numbering, MyST, domains and extensions remain unsupported",
+    "No new release; rc.2 is unchanged"
+  ],
+  "references": [
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/project.py",
+    "https://github.com/sphinx-doc/sphinx/blob/master/sphinx/util/matching.py",
+    "https://developer.mozilla.org/en-US/docs/Web/API/Window/pagehide_event",
+    "https://developer.mozilla.org/en-US/docs/Web/API/AbortController"
+  ]
+}

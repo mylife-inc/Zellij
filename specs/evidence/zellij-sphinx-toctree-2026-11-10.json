@@ -65,6 +65,38 @@
         "name": "CI",
         "status": "queued"
       }
-    ]
+    ],
+    "followup": {
+      "date": "2026-11-11",
+      "baseImage": {
+        "run": 42970277159,
+        "status": "passed",
+        "jobsPassed": 13
+      },
+      "mainCI": {
+        "run": 42970277215,
+        "initialStatus": "failed",
+        "failedJobs": [
+          {
+            "job": 130356905647,
+            "name": "CLI",
+            "reason": "Fresh hosted wrapper install received HTTP 404 for lucide-react-1.72.0.tgz."
+          },
+          {
+            "job": 130356906071,
+            "name": "Portable docs (windows-latest)",
+            "reason": "Fresh editable wrapper install received the same npm tarball HTTP 404."
+          },
+          {
+            "job": 130356905998,
+            "name": "Portable docs (macos-latest)",
+            "reason": "WebKit reported preview.json access-control pageError during navigation, not during server shutdown.",
+            "traceArtifact": 13832909413
+          }
+        ],
+        "retry": "Only failed jobs retried after the public npm tarball returned HTTP 200; macOS passed on unchanged source, CLI/Windows remain in progress at this snapshot."
+      },
+      "previewFollowup": "50c1fe6ff7998b3d09c4bf18bd899a7a1788008a adds pagehide cancellation, back/forward-cache restoration and stale-response protection; new source still needs its own CI."
+    }
   }
 }
