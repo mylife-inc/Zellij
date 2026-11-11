@@ -77,7 +77,7 @@ then use `zel ci --zel-version 0.2.0-rc.2 --force`.
 <Step title="Commit and push after the release is available">
 
 ```bash
-git init
+git init -b main
 git add .
 git commit -m "Add product and documentation starter"
 gh repo create acme --private --source=. --push

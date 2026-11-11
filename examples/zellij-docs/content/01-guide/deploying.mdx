@@ -82,9 +82,11 @@ requests, social-card images and sitemap URLs. CI checks a production build with
 home/guide redirects, nested links, optimized and ordinary images, fonts/scripts,
 search navigation and metadata under a nonempty prefix.
 
-This is HTTP deployment support. Directly opening an exported `index.html` with
-`file://` is a separate planned portable-output capability; today's export does
-not promise that behavior.
+This hosted export requires HTTP serving. For ordinary Markdown documentation,
+the native [portable renderer](/cli/build#portable-markdown) already builds
+a separate output that opens directly through `file://`, with navigation and
+search working without a server. Select `renderer: portable` in `zel.yaml`;
+hosted MDX/section sites retain their HTTP requirement.
 
 ## SEO
 

@@ -7672,3 +7672,22 @@ checks remain pending, with actual GitLab/CircleCI runner acceptance still open.
 All registered command families have implementation handlers; supported import
 subsets remain explicit. No additional release or production-site migration is
 authorized or claimed complete.
+
+### 2026-11-11 — Active CLI and quickstart documentation reconciled
+
+Source `e3a78b458227c18d0d1ead147378833df3859b3b` corrects 14 active reference
+and guide pages that still described implemented commands as planned, rc.2 as
+unpublished, flat content paths, unavailable browser opening/reload, automatic
+page registration, and the old section count. The migration lab now preserves
+the original through review, uses an explicit configured site and explains the
+portable path for loose Markdown. Wrapper guidance uses complete `eject` or
+`new app` flows instead of copying `/app` without its engine. Historical audit
+records remain intact, as do the deployment/DNS and optional Netlify CLI topics.
+
+The documented native scaffolding commands were executed in a disposable folder.
+Strict/deep checks pass for all 55 routes and 23 examples. All 14 changed MDX
+pages render with the actual engine and streaming React SSR, preserving 89
+published heading IDs. No local browser/container ran; full Next/browser
+preservation acceptance remains a CI gate. See the docs reconciliation evidence.
+The Fly/S3 harness is in [PR #124](https://github.com/mylife-inc/Zellij/pull/124);
+its live runs still need account setup. No release or production migration ran.

@@ -1,10 +1,12 @@
 # zel CLI implementation status — 2026-11-05
 
-All registered command families have implementation handlers. The full CLI
-design is **not complete**. Provider, format and advanced-option coverage must
-be assessed separately from the existence of a command. This is the current
-summary; the [original inventory](zel-cli-inventory-2026-10-17.md) retains the
-dated audit and implementation history.
+All registered command families have implementation handlers. CLI completion
+is **not yet fully verified**: live Fly/S3 and GitLab/CircleCI runner acceptance
+remain open, Vercel live verification is user-deferred, and changes after rc.2
+need a later release. Importer subsets and option limits are documented
+explicitly. Use the [completion ledger](zel-cli-completion-2026-11-11.md) for
+the current gates; the [original inventory](zel-cli-inventory-2026-10-17.md)
+retains the dated audit and implementation history.
 
 | Area | Implemented command forms | Remaining scope or limits |
 | --- | --- | --- |

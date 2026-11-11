@@ -38,6 +38,17 @@ merged as `872db136bd7cf10e3722b9c05d180881a7e4d799`; its tree matches the teste
 head (`f465fe23f4950675e734bfcae35ba6b499af8417`). Post-merge CI `43002975098`
 and Base image `43002974973` are pending at this snapshot.
 
+The Fly/S3 acceptance harnesses are in
+[PR #124](https://github.com/mylife-inc/Zellij/pull/124), head `5230d48`, with all
+70 local helper tests passing. Run `43003339641` is pending. This preparation
+does not establish live provider success.
+
+Active documentation was reconciled in `e3a78b4`: 14 guide/reference pages now
+use the configured layout, current commands and accurate release boundaries.
+Native scaffold examples, strict/deep checks (55 routes / 23 examples), and
+streaming MDX renders with all 89 existing heading IDs on edited pages pass.
+Next/browser CI and merge remain pending; historical audits were not rewritten.
+
 ## Remaining work in execution order
 
 1. Close PR #123's post-merge checks; its exact tested head is already merged.

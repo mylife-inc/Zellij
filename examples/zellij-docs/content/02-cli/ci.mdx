@@ -152,8 +152,9 @@ back to the same-named secret. Default delivery is a draft preview; set
 
 Current source accepts saved `publish.provider: cloudflare` or
 `zel ci --deploy cloudflare --site manual`. The generated workflow requires
-`0.2.0-rc.2` or later; generation does not verify release availability, and rc.2
-has not yet been published. Set repository secret `CLOUDFLARE_API_TOKEN` and
+`0.2.0-rc.2` or later; rc.2 is published, while the later Cloudflare authentication
+and deployment-receipt fixes require current source or a newer release.
+Generation does not verify release availability. Set repository secret `CLOUDFLARE_API_TOKEN` and
 repository variable `CLOUDFLARE_ACCOUNT_ID` (a same-named secret also works).
 
 Project precedence is `--site`, local `CLOUDFLARE_PAGES_PROJECT_NAME`, then
@@ -289,7 +290,7 @@ invocation settings reach both native builds, not the final manifest command.
 Save `image.platform: all` to use this default, or override it with a single
 architecture. Regeneration with the saved/default selection removes temporary
 overrides. This mode requires 0.2.0-rc.2 or later; generation does not confirm that
-the pinned release exists. Current rc.2 source has not yet been published.
+the pinned release exists. Candidate rc.2 and its matching engine images are published.
 
 ## Freeze hosted URL and preflight overrides
 

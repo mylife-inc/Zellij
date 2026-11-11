@@ -27,16 +27,23 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 is available for GNU/Linux, macOS and Windows on x64 and ARM64.
 See the [release workflow](https://github.com/mylife-inc/Zellij/actions/runs/42768544795)
 for public package and image acceptance.
-This reference covers candidate `0.2.0-rc.2`, including the new importers,
-provider adapters, authoring wizards and CI generators. Stable `0.1.3` predates these workflows and
+This reference covers candidate `0.2.0-rc.2` and identifies later source changes,
+including importer improvements and provider fixes. Stable `0.1.3` predates these workflows and
 has no native Windows packages.
 
-The current source implements every registered command family. The broader CLI
-design remains incomplete: imports cover MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx with documented
-limits, deployment supports Netlify, Cloudflare Pages, Vercel, GitHub Pages, S3, existing Fly web apps, Railway image services and image registries, and workflow generation
-supports GitHub Actions, GitLab and CircleCI; remote dispatch remains GitHub-only. Additional import formats, cloud providers,
-and advanced options remain planned. Native section authoring now includes an interactive wizard and scriptable field values. A working command does not imply that
-every provider or option from the original design has been implemented.
+The current source implements every registered command family. Imports cover
+MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx within their documented
+declarative subsets. Deployment supports Netlify, Cloudflare Pages, Vercel,
+GitHub Pages, S3, existing Fly web apps, Railway image services and image
+registries. Workflow generation supports GitHub Actions, GitLab and CircleCI;
+remote dispatch remains GitHub-only. Authoring includes interactive wizards and
+scriptable section values.
+
+Completion still requires live Fly/S3 and GitLab/CircleCI runner verification;
+Vercel live verification is deferred. Changes after rc.2 need a later release.
+See the [completion ledger](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-cli-completion-2026-11-11.md)
+for current evidence. Command availability does not promise full source-tool
+plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
 curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.2/install.sh -o install.sh

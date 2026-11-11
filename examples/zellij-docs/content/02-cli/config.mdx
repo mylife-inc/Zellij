@@ -1,6 +1,6 @@
 ---
 title: Configuration
-description: Configure portable Markdown with zel.yaml; distinguish hosted settings and planned CLI defaults.
+description: Configure site discovery, portable Markdown, hosted settings and shared CLI defaults with zel.yaml.
 ---
 
 <Callout type="tip" title="Available in source">
@@ -341,16 +341,20 @@ preview is the default; pass `--prod` explicitly for live publication. See
 [deployment](/cli/deploy) for behavior and limits. Bare `zel deploy` uses the same
 saved plan as `zel pub`. `--to netlify` cannot replace a saved image-push intent.
 
-## Planned CLI defaults
+<div id="planned-cli-defaults" className="zellij-legacy-anchor" />
+
+## Shared CLI defaults
 
 The site layout, build/preview settings, image publication, static delivery,
 and saved `ci` settings are implemented in source. See [`zel ci`](/cli/ci) for
 `system`, `branch`, `workflow`, `zel-version`, `triggers`, `tags`, `schedules` and
 `production`. CI settings require `version: 1`; they are shared by both renderers.
 `convert`/`migrate --layout site` create this layout; `ship` also saves the selected
-Netlify site or image publication settings, without credentials or production
-intent. Global `--cwd` and command-aware `--site-root` / `--config` selection are
-implemented. Shared [output controls](/cli/#output-controls) are also implemented. Additional delivery providers remain planned.
+provider destination or image publication settings, without credentials or
+production intent. Global `--cwd` and command-aware `--site-root` / `--config`
+selection are implemented. Shared [output controls](/cli/#output-controls) are
+also implemented. See [deployment](/cli/deploy) for all seven provider adapters
+and their supported destination types.
 
 [Shortcuts](/cli/shortcuts) for working commands and
 [shell completions](/cli/completions) are implemented in source. They use the

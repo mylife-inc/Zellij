@@ -101,7 +101,7 @@ not a conversion of anything.
 **Read those warnings.** They are the three things a conversion cannot do:
 
 - **A landing page.** Every one of these tools describes a documentation tree.
-  Zellij has that *and* marketing pages built from nineteen section types with
+  Zellij has that *and* marketing pages built from 23 section types with
   no equivalent in the source. You get a faithful guide folder and one hero to
   build on.
 - **Links out of the sidebar.** A sidebar holds pages; an external link belongs
@@ -126,9 +126,11 @@ Skip to step 4.
 
 <Step title="If nothing was recognised — the AI route">
 
-A folder of loose Markdown has no order, no grouping and no titles beyond the
-first heading. There is nothing to convert *from*, and inventing a structure
-would be a worse answer than saying so. `zel` says so, and points here.
+For loose Markdown, `zel build ./notes` and `zel view ./notes` use the portable
+renderer directly; no conversion or container is needed. Choose this route
+when a documentation site is enough. The steps below are for an editable hosted
+site with MDX components and landing-page sections, where an agent can help
+organize content without inventing source-tool configuration.
 
 **Write the reference.**
 
@@ -137,7 +139,7 @@ zel context zellij.md
 ```
 
 One self-contained file: the folder layout, the naming and routing rules, every
-field of every config file, all nineteen section types with their defaults and
+field of every config file, all 23 section types with their defaults and
 allowed values, the MDX components, and a worked example. It is generated from
 the engine's schemas, and CI fails if it falls behind them — so it is never the
 stale reference that makes an agent write confident, invalid YAML.
@@ -176,7 +178,7 @@ zel dev ./content --open
 Read a few pages. Converted prose usually needs three things:
 
 - **The landing page.** It has one placeholder hero. See
-  [Sections](/sections) for the other eighteen.
+  [Sections](/sections) for the other 22 types.
 - **The sidebar order.** Fine if it came from a `nav` tree; alphabetical if it
   came from a folder.
 - **Anything the report listed.** External links into `menu.yaml`, pages you
@@ -203,8 +205,9 @@ blocks alone. It is careful, not infallible. **A converted folder can pass
 zel build ./content
 ```
 
-If that succeeds, the conversion is sound. Now you can delete the original —
-and not before.
+A successful build proves the MDX compiles. Compare the rendered pages,
+navigation, links and assets with the original and resolve the conversion
+report before retiring it. Keep a recoverable copy of the source.
 
 </Step>
 
@@ -214,12 +217,11 @@ Same as [Lab 1, step 6](/guide/quickstart/from-scratch) — a static site on
 Netlify, or a container image. The shortest version of each:
 
 ```bash title="terminal"
-# a folder for a CDN
-zel build ./content --out dist
-netlify deploy --prod --dir dist
+# a draft on an existing Netlify project (requires environment credentials)
+zel netlify ./content --site YOUR_PROJECT_ID
 
 # or a container
-zel image build ./content --tag acme-docs:v1
+zel image next ./content --tag acme-docs:v1
 zel image run acme-docs:v1
 ```
 
@@ -249,7 +251,7 @@ converter; it is the part Zellij has that the source did not.
 
 <CardGrid>
   <Card title="Build the landing page" href="/sections" icon="layout-grid">
-    Nineteen section types, with previews.
+    23 section types, with previews.
   </Card>
   <Card title="Convert, in detail" href="/cli/convert" icon="terminal">
     Every option, and exactly what each converter reads.
