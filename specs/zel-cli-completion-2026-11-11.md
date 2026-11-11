@@ -21,6 +21,11 @@ Independent company/product branding is now implemented by PR #131
 active guides were updated. This increment and the hydration fix below are newer
 than rc.3 and await a later release. The template catalog, composer/new sections,
 book/PDF publishing and package-manager registration remain planned.
+The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
+backend, short Homebrew naming and removal of superseded pre-1.0 distributions.
+See the expansion design and [release retention policy](zellij-release-retention-2026-11-11.md).
+These decisions are recorded; PDF execution and retirement automation are not
+implemented by this documentation update.
 
 The user requested continuing until completion. The working target is the
 [agreed command contract](zel-cli-contract-2026-10-18.md), including conservative

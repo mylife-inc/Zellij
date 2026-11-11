@@ -38,6 +38,19 @@ fix are newer than rc.3; no new release or package-manager publication occurred
 in this increment. Templates must remain publicly downloadable if the source
 repository is later sealed, using the existing public release mirror.
 
+The user's follow-up on 2026-11-11 settles three expansion decisions:
+prefer the short Homebrew formula name `zel`; increment pre-1.0 releases and
+remove superseded Zellij distributions after the replacement and its consumers
+are verified; and generate book PDFs only when requested, with a first-class
+LaTeX route for mathematics, indexes and publication layout. Beautiful book
+templates must encapsulate the LaTeX styling so authors normally edit content
+and simple theme settings. See the updated expansion design and
+[pre-1.0 retention policy](specs/zellij-release-retention-2026-11-11.md).
+This is recorded intent, not implemented PDF/export or cleanup automation.
+No release was removed in this documentation update: six delivery workflows
+still pin rc.2 and default stable installation still depends on older artifacts.
+Update these consumers with the next verified release before pruning them.
+
 Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed
 layers shrank about 75%; Next images about 10% with the same fixture content.
