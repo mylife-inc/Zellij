@@ -23,7 +23,11 @@
     }
   },
   "ci": {
-    "status": "pending final-head verification"
+    "status": "passed",
+    "run": 42938805590,
+    "head": "306e39243690da9ae9011589a2e1cf078ab2cbd3",
+    "jobsPassed": 16,
+    "testedTree": "0436ee28ce00e97e12034746c467714ddff61622"
   },
   "supersededCi": {
     "run": 42937801644,
@@ -51,5 +55,26 @@
     "Simulated API tests are not live Vercel acceptance.",
     "Immutable published v0.2.0-rc.2 does not contain this fix.",
     "Remaining S3/Fly account tests, GitLab/CircleCI runner acceptance, advanced imports and Netlify hydration issue remain open."
-  ]
+  ],
+  "source": "306e39243690da9ae9011589a2e1cf078ab2cbd3",
+  "merge": "d1d5b70cbea17014a37d59c12fa9f3f0408975b3",
+  "postMerge": {
+    "source": "d1d5b70cbea17014a37d59c12fa9f3f0408975b3",
+    "runsAtClosure": [
+      {
+        "conclusion": "",
+        "databaseId": 42942094151,
+        "headSha": "d1d5b70cbea17014a37d59c12fa9f3f0408975b3",
+        "name": "CI",
+        "status": "queued"
+      },
+      {
+        "conclusion": "",
+        "databaseId": 42942094126,
+        "headSha": "d1d5b70cbea17014a37d59c12fa9f3f0408975b3",
+        "name": "Base image",
+        "status": "queued"
+      }
+    ]
+  }
 }

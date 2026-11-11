@@ -116,3 +116,14 @@ PR #59 merged as 93dca08 after all 13 checks passed on 97f9f9f in run
 hydration. All 55 clean pages passed, and real-checker regressions rejected the
 head newline, an uncaught exception and a console-only error. This supersedes
 the pending coverage work above; the actual Netlify injection remains unresolved.
+
+
+## Read-only follow-up — 2026-11-10
+
+Node default fetch still receives the hosting annotation and its leading LF on
+`/`, `/cli/completions` and `/guide/quickstart/new-project`. Python urllib
+receives clean HTML on those same routes. All six responses returned 200 and
+no badge script. This matches the original client-dependent behavior; it does
+not resolve the issue or constitute a new browser hydration test. Production
+migration remains pending. No deployment, configuration or domain was changed.
+See [the HTTP evidence](evidence/zellij-netlify-html-followup-2026-11-10.json).

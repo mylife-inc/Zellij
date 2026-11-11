@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-10",
+  "site": "https://zel-stage.netlify.app",
+  "routes": [
+    "/",
+    "/cli/completions",
+    "/guide/quickstart/new-project"
+  ],
+  "observations": [
+    {
+      "client": "Node default fetch",
+      "eachRouteHttpStatus": 200,
+      "netlifyCommentsPerRoute": 1,
+      "leadingNewlineBeforeComment": true,
+      "badgeScriptPresent": false
+    },
+    {
+      "client": "Python urllib",
+      "eachRouteHttpStatus": 200,
+      "netlifyCommentsPerRoute": 0,
+      "leadingNewlineBeforeComment": false,
+      "badgeScriptPresent": false
+    }
+  ],
+  "interpretation": "The previously diagnosed client-dependent HTML injection remains present. No new browser hydration check was performed.",
+  "mutations": "None; read-only HTTP requests.",
+  "productionMigration": "Still pending the hydration remedy and remote browser acceptance."
+}
