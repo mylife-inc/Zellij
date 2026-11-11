@@ -5,11 +5,27 @@
   const version = script.searchParams.get('version');
   const endpoint = new URL('preview.json', script);
   let notice;
+  let active = true;
+  let timer;
+  let request;
+  addEventListener('pagehide', () => {
+    active = false;
+    clearTimeout(timer);
+    request?.abort();
+  });
+  addEventListener('pageshow', event => {
+    if (event.persisted && !active) { active = true; poll(); }
+  });
   async function poll() {
+    if (!active) return;
+    const current = new AbortController();
+    request = current;
     try {
-      const response = await fetch(endpoint, { cache: 'no-store' });
+      const response = await fetch(endpoint, { cache: 'no-store', signal: current.signal });
+      if (!active || current.signal.aborted) return;
       if (response.ok) {
         const state = await response.json();
+        if (!active || current.signal.aborted) return;
         if (state.version !== version) { location.reload(); return; }
         if (state.error && !notice) {
           notice = document.createElement('div');
@@ -21,7 +37,8 @@
         } else if (!state.error && notice) { notice.remove(); notice = undefined; }
       }
     } catch { /* A stopped/restarting preview is retried without a reload loop. */ }
-    setTimeout(poll, 500);
+    finally { if (request === current) request = undefined; }
+    if (active && !current.signal.aborted) timer = setTimeout(poll, 500);
   }
   poll();
 })();
