@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
@@ -10,11 +10,29 @@ The company was originally called MyLife and was renamed because of domain-name
 availability. The user owns the existing GitHub account **`mylife-inc`** and
 explicitly accepts keeping that namespace for Zellij and Homebrew. The live
 installation command is **`brew install mylife-inc/tap/zel`**, selecting the
-current rc.4 preview. Use Shebka for company-facing branding and retain `mylife-inc`
+current rc.5 preview. Use Shebka for company-facing branding and retain `mylife-inc`
 for existing repository/distribution identifiers. A GitHub account rename or
 move to a `shebka` namespace is not needed for this plan.
 
-Current distribution: **v0.2.0-rc.4 is published** from PR #135 merge
+Current distribution: **v0.2.0-rc.5 is published** from PR #138 merge
+`a92c2e9f9d82abf5b75ea31bd825117cf86f9ec7`, with the same tree as tested head
+`3a9f80771b48ffae3f57e8fa3d8be870848db889`. All **20 final-head CI jobs** in
+`43180055105` and **29 release jobs** in `43185514003` passed. Source and public
+mirror each contain 20 identical assets, including the versioned template catalog
+and three archives. Homebrew commit `e0e8c31` passed all four native acceptance
+jobs in `43187271603`; public mirror installation docs are at `0ddf790`.
+See [rc.5 evidence](specs/evidence/zellij-rc5-release-2026-11-12.json).
+
+Consumer migration PR #139 (`7430844`) passed all six installed-CLI build checks
+without provider deployment. The Next image job passed on its sole unchanged-head
+retry after container discovery timed out; the original failure is recorded.
+Both replacement acceptance images, all 13 development-engine jobs and fresh-pull
+HTTP checks passed. Exactly two rc.4 release entries, 32 assets and two remote
+tags were retired; rc.5 and both CodeSeal releases retain their original asset
+identities/checksums. Preview upgrade lookup selects rc.5. See
+[native retirement evidence](specs/evidence/zellij-rc5-native-retirement-2026-11-12.json).
+
+Historical rc.4 distribution baseline (superseded by rc.5): **v0.2.0-rc.4 was published** from PR #135 merge
 `6d116b2ca6df8eb8d078f03978d2a49598b58de1`, with the same tree as tested head
 `6a2601c`. All **20 final-head CI jobs** and **29 release jobs** passed. The
 release includes company branding, the hydration fix, `zel upgrade --preview`,
@@ -39,21 +57,30 @@ source and audit history remain. The separate
 cleanup and its bounds. Image cleanup is still pending: both hosted attempts
 stopped before deleting anything with GitHub HTTP 404 on the first DELETE.
 The user was asked to confirm package-level Admin access for this repository.
-The reviewed 187-version plan and guard tests are ready; 3,152 untagged build-history
-versions outside the selected graphs are not part of that plan.
+The historical 187-version plan is now stale because rc.5 adds tags and moves
+development aliases. Do not retry deletion with that plan; refresh and review
+its graph after package access is resolved. Its 3,152 excluded untagged
+build-history versions remain outside the authorized cleanup scope.
 Do not reuse any retired version/tag.
 
-Current implementation branch: `codex/template-catalog` prepares **rc.5** with
-`zel create` / `zel new site` and `zel templates [show]`. `templates/` owns the
-bundled versioned catalog, separate from `examples/`. The CLI module
+The template milestone is merged and released in **rc.5**: `zel create` /
+`zel new site` and `zel templates [show]`. `templates/` owns the bundled versioned
+catalog, separate from `examples/`. The CLI module
 `cli/crates/zellij-cli/src/templates/` loads bundled/local/checksummed catalogs,
 validates and stages creation, records `.zel-template.json`, and supports an
 offline cache. `templates/README.md` is the format/limits contract. Initial
 starters: product-docs, product-studio and book-classic, all version 0.1.0.
-The release workflow packages identical template archives/catalogs for both
-release repositories; native acceptance covers bundled and public template use.
-Public rc.5 publication and hosted acceptance are still pending; rc.4 remains
-current. Book/PDF/LaTeX execution and technical/study editions are not implemented.
+Release archives/catalogs are identical across source and public mirror; public
+installed-binary acceptance covers both and offline cache reuse. Six hosted
+mobile/desktop previews were visually reviewed. Book/PDF/LaTeX execution and
+technical/study editions are not implemented.
+
+Review fixes: `c370987` rejects ancestor directory capitalization collisions;
+`6810aee` corrects six card bodies lost through wrong YAML keys and guards official
+templates against stripped fields; `3a9f807` aligns the standalone Docker recipe
+with the CLI version. General engine parsing still silently strips unknown
+section fields. Add actionable strict-check diagnostics before expanding the
+composer; the official-catalog guard does not fix arbitrary authored content.
 
 After the template milestone: composition/media-accordion and book/PDF
 publishing, plus technical/study book editions. Scoop,
@@ -90,7 +117,8 @@ and hosted sites, independent destinations/tab selection, hosted dark variants
 and portable-to-hosted conversion. See [branding evidence](specs/evidence/zellij-company-branding-2026-11-11.json).
 The Apple comparison now includes hosted visual and interaction checks; see
 [research evidence](specs/evidence/zellij-apple-section-audit-2026-11-11.json).
-The other expansion features remain planned. Company branding and the hydration
+Composition, full book/PDF publishing and additional package channels remain
+planned. Company branding and the hydration
 fix shipped in rc.4. No release or package-manager publication occurred in the
 earlier branding-only increment. Templates must remain publicly downloadable if
 the source repository is later sealed, using the existing public release mirror.

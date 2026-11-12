@@ -1534,3 +1534,20 @@ source-generator/plugin/theme parity was asked about separately and is not
 assumed. The broader completion audit and external acceptance remain ongoing.
 Vercel live verification stays explicitly deferred, and there is no zero-bug
 claim or authorization for a new release/domain migration.
+
+
+## 2026-11-12 — released templates and rc.5 distribution
+
+PR #138 (`a92c2e9`) adds `zel create`/`zel new site`, `zel templates [show]`,
+bundled/local/release catalogs, exact versions, checksums, offline reuse and
+creation receipts. Three starters ship: portable product docs, a hosted product
+page and classic book reading. PDF/LaTeX and richer book/composer features remain
+planned. All 20 final-head CI and 29 public-release jobs passed; six hosted
+mobile/desktop previews were reviewed. Homebrew passed all four native jobs.
+PR #139 (`7430844`) updates active guides and all six verified delivery pins.
+Two superseded rc.4 release entries, 32 assets and two remote tags were removed
+after consumer and image acceptance, preserving rc.5, CodeSeal and source history.
+See [the current ledger](zel-cli-completion-2026-11-11.md) and
+[release evidence](evidence/zellij-rc5-release-2026-11-12.json). Live provider and
+production docs/domain migration remain deferred; image cleanup requires a fresh
+reviewed graph after the pending package-permission issue is resolved.
