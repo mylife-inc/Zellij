@@ -66,6 +66,14 @@ explains the root language declaration independently of writing direction.
 Evidence and exact final-head outcomes will be recorded after verification.
 Failed attempts remain recorded rather than being replaced with later passes.
 
+First hosted run `43321606840` at `c14c4a9` found two fixture defects: Windows
+CRLF left an intended removed-chapter case unchanged, and the existing engine
+watch fixture's in-place YAML save briefly published a valid empty configuration
+before the intended invalid text. The chapter mutation now ignores line endings
+and asserts it changed its input. Watch fixtures stage outside the watched tree
+and atomically rename the complete intended edit. These are test-harness fixes;
+validation expectations and production watcher behavior remain unchanged.
+
 ## Next increments
 
 1. Opt-in build-time PDF with an explicit backend contract. Reuse this model for

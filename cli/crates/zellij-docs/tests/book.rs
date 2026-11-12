@@ -115,13 +115,17 @@ fn invalid_manifests_preserve_published_output() {
         original.replace("chapters/a-questions.md", "chapters/z-noticing.md"),
         original.replace("assets/cover.svg", "../cover.svg"),
         original.replace("assets/cover.svg", "notes.md"),
-        original.replace("    - {id: practice, source: practice.md}\n", ""),
+        original.replace("    - {id: practice, source: practice.md}", ""),
         original.replace("language: en", "language: 'en\" onload=\"alert(1)'"),
         format!("{original}\nnav: []\n"),
     ] {
-        fs::write(&settings, changed).unwrap();
+        assert_ne!(
+            changed, original,
+            "invalid fixture must actually change the manifest"
+        );
+        fs::write(&settings, &changed).unwrap();
         let report = check(&source, false);
-        assert!(!report.ok, "invalid book succeeded");
+        assert!(!report.ok, "invalid book succeeded: {changed}");
         assert!(report.book.is_none());
         assert!(build(&source, &out, BuildOptions::default()).is_err());
         assert_eq!(fs::read(out.join("_zellij/book.json")).unwrap(), before);
