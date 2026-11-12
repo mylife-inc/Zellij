@@ -133,6 +133,7 @@ fn paths_assets_and_metadata_fail_before_writes() {
     }
     for name in [
         "files/CONTENT/index.md",
+        "files/CONTENT/another.md",
         "files/content/index.md/child",
         "files/.zel-template.json",
         "files/.ZEL-TEMPLATE.JSON",

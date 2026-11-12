@@ -22,7 +22,7 @@ fn visit(root: &Path, dir: &Path, output: &mut String) {
                 .unwrap()
                 .to_str()
                 .unwrap()
-                .replace('\\', "/");
+                .replace(std::path::MAIN_SEPARATOR, "/");
             output.push_str(&format!(
                 "({name:?}, include_bytes!({:?})),\n",
                 path.to_str().unwrap()

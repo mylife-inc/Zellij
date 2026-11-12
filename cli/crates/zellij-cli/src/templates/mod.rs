@@ -66,8 +66,17 @@ impl Bundle {
         manifest.validate()?;
         let mut hash = Sha256::new();
         let mut names = BTreeSet::new();
+        let mut spellings = BTreeMap::new();
         for (name, bytes) in &entries {
             manifest::path(name)?;
+            // Directories must also have one spelling: Foo/a and foo/b would
+            // become two folders on Linux but merge on case-insensitive disks.
+            for component in Utf8Path::new(name).ancestors() {
+                let spelling = component.as_str();
+                if let Some(previous) = spellings.insert(spelling.to_lowercase(), spelling) {
+                    ensure(previous == spelling, "case-colliding template paths")?;
+                }
+            }
             ensure(
                 names.insert(name.to_lowercase()),
                 "case-colliding template paths",
