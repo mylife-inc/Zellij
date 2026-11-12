@@ -55,6 +55,7 @@ test('fails closed on new or moved tags and altered targets', () => {
     f => { f.inventory.packages[0].versions[5].tags = []; f.inventory.packages[0].versions[3].tags = ['0.2.0-rc.2']; },
     f => f.inventory.packages[0].versions[1].tags.push('protect-me'),
     f => { f.inventory.packages[0].versions[1].digest = digest(1000); },
+    f => { f.inventory.packages[0].versions[1].id = 1000; },
     f => f.inventory.packages[0].versions[4].tags.shift(),
   ]) { const f = fixture(), plan = buildPlan(f.inventory, f.graphs); mutate(f); assert.throws(() => validateLive(plan, f.inventory)); }
 });

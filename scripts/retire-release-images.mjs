@@ -81,6 +81,8 @@ export function validateLive(plan, inventory) {
       assert(!ids.has(target.id) && !digests.has(target.digest), 'Duplicate deletion'); ids.add(target.id); digests.add(target.digest);
       assert(!p.protectedDigests.includes(target.digest), 'A deletion targets a retained manifest');
       assert(target.tags.every(tag => p.retiredTags.includes(tag)), 'A deletion targets an unretired tag');
+      const sameDigest = current.versions.find(v => v.digest === target.digest);
+      assert(!sameDigest || sameDigest.id === target.id, 'Retired digest acquired a new version identity; replan');
       const v = current.versions.find(v => v.id === target.id);
       if (v) targetMatches(target, v); // Missing exact versions support safe resumption.
     }
@@ -110,12 +112,14 @@ async function graphFor(name, roots) {
 }
 function api(endpoint, method = 'GET', missing = false, paginated = false) {
   try {
-    const text = execFileSync('gh', ['api', '--method', method, endpoint, ...(paginated ? ['--paginate', '--slurp'] : [])], { env: { ...process.env, GH_DEBUG: '' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000, stdio: ['ignore', 'pipe', 'pipe'] });
+    const text = execFileSync('gh', ['api', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', '--method', method, endpoint, ...(paginated ? ['--paginate', '--slurp'] : [])], { env: { ...process.env, GH_DEBUG: '' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000, stdio: ['ignore', 'pipe', 'pipe'] });
     return text.trim() ? JSON.parse(text) : null;
   } catch (error) {
     const status = String(error.stderr ?? '').match(/HTTP (\d{3})/)?.[1];
     if (missing && status === '404') return null;
-    throw new Error(`${method} ${endpoint}: HTTP ${status ?? 'request failed'}`);
+    let message = '';
+    try { message = String(JSON.parse(String(error.stdout ?? '')).message ?? '').slice(0, 200); } catch {}
+    throw new Error(`${method} ${endpoint}: HTTP ${status ?? 'request failed'}${message ? ': ' + message : ''}`);
   }
 }
 const endpoint = name => { assert(packages.includes(name)); return `users/mylife-inc/packages/container/${encodeURIComponent(name)}/versions`; };
