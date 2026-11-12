@@ -1,15 +1,29 @@
-name: Read-only Zellij retirement inventory
+name: Zellij distribution inventory and retirement
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Read inventory, or execute the reviewed rc.4 image retirement plan
+        type: choice
+        options: [inventory, retire-images]
+        default: inventory
+      plan_sha256:
+        description: Exact SHA256 of the committed retirement plan (required for deletion)
+        type: string
+        default: ''
 
 permissions:
   contents: read
   packages: read
 
+concurrency:
+  group: zellij-distribution-retirement
+  cancel-in-progress: false
+
 jobs:
   inventory:
-    if: github.repository == 'mylife-inc/Zellij' && github.ref == 'refs/heads/main'
+    if: github.repository == 'mylife-inc/Zellij' && inputs.mode != 'retire-images'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -28,5 +42,34 @@ jobs:
         with:
           name: retirement-inventory
           path: ${{ runner.temp }}/retirement-inventory.json
+          if-no-files-found: error
+          retention-days: 7
+  retire-images:
+    if: github.repository == 'mylife-inc/Zellij' && startsWith(github.ref, 'refs/heads/') && inputs.mode == 'retire-images'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Check exact-scope deletion safeguards
+        run: node --test scripts/retire-release-images.test.mjs
+      - name: Retire reviewed old image versions and preserve current dependencies
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RETIRE_PLAN_SHA256: ${{ inputs.plan_sha256 }}
+        run: node scripts/retire-release-images.mjs apply specs/evidence/zellij-rc4-image-retirement-plan-2026-11-11.json "$RUNNER_TEMP/image-retirement.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: image-retirement
+          path: ${{ runner.temp }}/image-retirement.json
           if-no-files-found: error
           retention-days: 7
