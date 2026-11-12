@@ -1,0 +1,20 @@
+schema: 1
+id: product-studio
+version: 0.1.0
+title: Product studio
+description: An editorial product landing page and guide using existing Cupertino sections.
+minimum-cli: 0.2.0-rc.5
+minimum-engine: 0.2.0-rc.5
+renderer: hosted
+kind: site
+outputs: [web]
+variables:
+  title: Your next idea
+substitute:
+  - content/site.yaml
+  - content/pages.yaml
+  - content/sections/home/hero.yaml
+assets:
+  - path: content/assets/product.svg
+    license: LicenseRef-Zellij
+preview: content/assets/product.svg

@@ -430,3 +430,28 @@ manifest/catalog and native creation path, followed by the
 composer/media-accordion and full book/PDF milestones. Local docs change with
 each implementation; public docs must keep an explicit release boundary.
 Live deployment-provider verification stays deferred as previously instructed.
+
+
+## Template milestone in progress — rc.5 source
+
+The native template path is implemented on the `codex/template-catalog` branch:
+`zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
+local directories, immutable release archives and checksummed remote catalogs,
+exact version selection, offline cache and creation receipts. The source is
+`templates/` with the format documented in `templates/README.md`. No dependency
+installation or template hooks run during creation. Existing commands keep their
+semantics. Creation refuses nonempty destinations and the current working
+directory; run from its parent to populate an existing empty folder.
+
+The first catalog is deliberately small: `product-docs`, `product-studio` and
+`book-classic` at template version `0.1.0`. The product starter composes existing
+Cupertino sections; the book starter is a portable reading edition with no print
+renderer. Technical/study editions, richer reading controls, the composer/new
+sections and full PDF/LaTeX publishing remain planned. Catalogs require compatible
+CLI/engine versions; they do not execute source-framework import logic.
+
+Public release and hosted browser acceptance are pending. rc.4 remains the
+published install target until the rc.5 gates complete. Local docs include an
+explicit next-candidate boundary. Keep this paragraph current when the branch is
+merged or the candidate is published; do not infer publication from the source
+version bump.

@@ -1,0 +1,8 @@
+type: hero
+badge: An introduction
+headline: {{zel.title|yaml}}
+subhead: A little less friction. A lot more possibility.
+visual: assets/product.svg
+visualStyle: framed
+cta:
+  - {label: Explore the guide, href: /guide, style: primary}

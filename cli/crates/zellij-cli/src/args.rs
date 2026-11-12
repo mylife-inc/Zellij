@@ -34,6 +34,7 @@ macro_rules! shortcuts {
 
 shortcuts! {
     args {
+        Create(NewSiteArgs) => ("create", "new site", |a| Command::New(NewTarget::Site(a)));
         Init(NewPortableArgs) => ("init", "new portable", |a| Command::New(NewTarget::Portable(a)));
         App(NewAppArgs) => ("na", "new app", |a| Command::New(NewTarget::App(a)));
         Docs(NewDocsArgs) => ("nd", "new docs", |a| Command::New(NewTarget::Docs(a)));
@@ -279,6 +280,9 @@ pub(crate) enum Command {
     /// Create portable Markdown, hosted content, an app, a section, a page or a guide.
     #[command(subcommand)]
     New(NewTarget),
+
+    /// Browse templates, their renderer, variables and supported outputs.
+    Templates(TemplatesArgs),
 
     /// Show a section type's fields, defaults and allowed values.
     #[command(visible_alias = "ex")]
@@ -660,6 +664,8 @@ pub(crate) enum CiAction {
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
 pub(crate) enum NewTarget {
+    /// Create an editable site from a bundled, local or release-catalog template.
+    Site(NewSiteArgs),
     /// A native Markdown starter with zel.yaml; no Docker or Node required.
     Portable(NewPortableArgs),
     /// Generate an editable Next.js wrapper without installing dependencies.
@@ -687,6 +693,48 @@ pub(crate) enum ListTarget {
     Formats,
     /// Everything `build` can produce.
     Targets,
+}
+
+#[derive(clap::Args, Debug, Default, PartialEq, Eq)]
+pub(crate) struct TemplateSourceArgs {
+    /// HTTPS release catalog URL; omitted uses the catalog bundled in this binary.
+    #[arg(long, global = true)]
+    pub(crate) catalog: Option<String>,
+    /// Use bundled/local templates or previously cached remote files without networking.
+    #[arg(long, global = true)]
+    pub(crate) offline: bool,
+    /// Override the template cache directory.
+    #[arg(long, global = true)]
+    pub(crate) cache_dir: Option<String>,
+}
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct TemplatesArgs {
+    #[command(flatten)]
+    pub(crate) source: TemplateSourceArgs,
+    #[command(subcommand)]
+    pub(crate) action: Option<TemplateAction>,
+}
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum TemplateAction {
+    /// Show an ID[@version] or ./local-template's capabilities and editable variables.
+    Show { template: String },
+}
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct NewSiteArgs {
+    /// New or empty destination; arbitrary folder names are supported.
+    #[arg(default_value = "docs/zellij")]
+    pub(crate) dir: String,
+    /// Template ID[@version], or a local directory prefixed with ./ or an absolute path.
+    #[arg(long, short = 't', default_value = "product-docs")]
+    pub(crate) template: String,
+    /// Set the template's title variable.
+    #[arg(long)]
+    pub(crate) name: Option<String>,
+    /// Set a declared text variable, for example --set author="A. Writer". Repeatable.
+    #[arg(long = "set", value_name = "KEY=VALUE")]
+    pub(crate) set: Vec<String>,
+    #[command(flatten)]
+    pub(crate) source: TemplateSourceArgs,
 }
 
 #[derive(clap::Args, Debug, PartialEq, Eq)]

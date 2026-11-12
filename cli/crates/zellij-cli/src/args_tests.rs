@@ -39,6 +39,21 @@ type Case = (
 );
 const CASES: &[Case] = &[
     (
+        "create",
+        "new site",
+        &[],
+        &[
+            "manual",
+            "-t",
+            "book-classic@0.1.0",
+            "--name",
+            "A book",
+            "--set",
+            "author=Someone",
+            "--offline",
+        ],
+    ),
+    (
         "na",
         "new app",
         &[],

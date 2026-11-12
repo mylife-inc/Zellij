@@ -1,0 +1,10 @@
+version: 1
+renderer: portable
+name: {{zel.title|yaml}}
+theme: cupertino
+nav:
+  - {page: index.md, label: Overview}
+  - label: Handbook
+    children:
+      - {page: handbook/start.md, label: Getting started}
+      - {page: handbook/concepts.md, label: Concepts}

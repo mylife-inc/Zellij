@@ -4,6 +4,8 @@ import { execFileSync } from 'node:child_process';
 import { mkdtemp, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { existsSync } from 'node:fs';
+import { verifyPublishedTemplates } from './check-published-templates.mjs';
 import { downloadRelease } from './download-release.mjs';
 
 const [version = process.env.VERSION, target = process.env.TARGET,
@@ -20,6 +22,7 @@ delete env.GITHUB_TOKEN;
 delete env.GH_TOKEN;
 delete env.ZEL_INSECURE_SKIP_CHECKSUM;
 let previous;
+let previousTemplates;
 try {
   for (const source of sources) {
     const destination = path.join(root, source.name);
@@ -41,6 +44,11 @@ try {
     if (!previous) execFileSync(process.execPath, ['scripts/check-native-install.mjs', destination, destination], {
       env: { ...env, TARGET: target }, stdio: 'inherit', timeout: 600000,
     });
+    if (existsSync('templates/catalog.yaml')) {
+      const templates = await verifyPublishedTemplates(binary, result.base, path.join(root, `templates-${source.name}`));
+      if (previousTemplates) assert.deepEqual(templates, previousTemplates, 'Template archives/catalogs disagree between release repositories');
+      previousTemplates = templates;
+    }
     previous = result;
     console.log(`${source.repository}: published ${version} installed and verified for ${target}`);
   }

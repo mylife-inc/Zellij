@@ -13,6 +13,13 @@ const image = 'ghcr.io/mylife-inc/zellij-base';
 const workflow = name => yaml.load(readFileSync(path.join(root, `.github/workflows/${name}.yml`), 'utf8'));
 const step = (job, name) => job.steps.find(item => item.name === name);
 
+test('standalone site recipe selects the matching CLI release image', () => {
+  const version = readFileSync(path.join(root, 'cli/Cargo.toml'), 'utf8').match(/^version = "([^"]+)"/m)?.[1];
+  const selected = readFileSync(path.join(root, 'docker/site.Dockerfile'), 'utf8').match(/^ARG ZELLIJ_VERSION=(.+)$/m)?.[1];
+  assert(version, 'Missing native workspace version');
+  assert.equal(selected, version, 'Update the standalone recipe when bumping the CLI release');
+});
+
 // Every command boundary is replaced. These tests cannot reach Docker or GitHub.
 function fixture(t) {
   const dir = mkdtempSync(path.join(tmpdir(), 'zellij-release-test-'));

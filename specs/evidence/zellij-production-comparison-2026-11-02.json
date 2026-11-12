@@ -3,6 +3,7 @@
   "local_pages": 55,
   "missing_routes": [],
   "new_routes": [
+    "/cli/templates",
     "/cli/completions",
     "/cli/eject",
     "/cli/features",

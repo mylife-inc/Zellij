@@ -1,0 +1,9 @@
+name: {{zel.title|yaml}}
+tagline: A thoughtful place for your product.
+theme: cupertino
+mode: system
+motion: subtle
+home: home
+nav: {sticky: true, search: true, themeToggle: true}
+footer:
+  legal: Built with Zellij.

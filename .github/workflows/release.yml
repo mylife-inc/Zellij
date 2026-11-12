@@ -378,6 +378,14 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+      - name: Package immutable template catalog and archives
+        env:
+          VERSION: ${{ github.ref_name }}
+        run: |
+          mkdir "$RUNNER_TEMP/template-cli"
+          tar -xzf "artifacts/zel-${VERSION}-x86_64-unknown-linux-gnu.tar.gz" -C "$RUNNER_TEMP/template-cli"
+          node scripts/package-templates.mjs "$RUNNER_TEMP/template-cli/zel" "$VERSION" artifacts
+
       - name: Write pinned release installation instructions
         env:
           VERSION: ${{ github.ref_name }}

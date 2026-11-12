@@ -141,6 +141,15 @@ try {
   const details = JSON.parse((await run(executable, ['version', '--json'], env)).stdout);
   assert.equal(details.cli.version, version.slice(1)); assert.equal(details.cli.target, target);
   assert.equal(details.configuration_version, 1); assert.match(details.content_schema_sha256, /^[a-f0-9]{64}$/);
+  const templates = JSON.parse((await run(executable, ['templates', '--json', '--offline'], env)).stdout);
+  assert.equal(templates.templates.length, 3);
+  for (const template of templates.templates) {
+    const site = path.join(temp, 'templates', template.id);
+    await run(executable, ['create', site, '-t', `${template.id}@${template.version}`, '--offline'], env);
+    const receipt = JSON.parse(await readFile(path.join(site, '.zel-template.json'), 'utf8'));
+    assert.equal(receipt.template, template.id);
+    if (template.renderer === 'portable') await run(executable, ['build', site], env);
+  }
   const beforeUpgrade = await readFile(executable);
   const upgradeEnv = { ...env, GITHUB_TOKEN: 'fixture-not-a-credential', GH_TOKEN: 'fixture-not-a-credential' };
   delete upgradeEnv.ZEL_RELEASE_BASE_URL;

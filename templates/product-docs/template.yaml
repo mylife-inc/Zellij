@@ -1,0 +1,16 @@
+schema: 1
+id: product-docs
+version: 0.1.0
+title: Product documentation
+description: A portable handbook with clear navigation and offline search.
+minimum-cli: 0.2.0-rc.5
+minimum-engine: 0.2.0-rc.5
+renderer: portable
+kind: site
+outputs: [web, file]
+variables:
+  title: Your product
+substitute:
+  - zel.yaml
+  - content/index.md
+assets: []
