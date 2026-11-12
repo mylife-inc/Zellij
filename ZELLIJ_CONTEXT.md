@@ -7956,3 +7956,14 @@ from base text; Cupertino intentionally shares that foreground. Assertions now
 check the actual inverted foreground/background tokens. No theme was changed.
 Screenshot captures now write explicit PNG files for artifact retention. Fresh
 hosted acceptance is required; the failed/superseded run is not a passing gate.
+
+Composer visual review on `e701cb1` (run `43264032824`): all 335 showcase
+browser cases passed with 124 existing conditional skips and no retries; all
+new composition cases passed. Retained light/dark desktop and phone images
+exposed a reveal wrapper that prevented equal grid-card height, plus gradient
+paint missing glyph descenders at tight line-height. The follow-up gives reveal
+wrappers a stretching grid cell, keeps group content top-aligned, and adds paint
+room without changing line layout. Browser assertions now check card heights and
+heading alignment. Screenshots disable CSS transitions to avoid mid-theme-change
+captures. Documentation acceptance explicitly includes `/sections/compose` and
+its hydrated preview/source tabs. A new final-head run is required.

@@ -24,15 +24,27 @@ test('compositions retain source order, responsive layouts, links and images', a
   const entrance = page.locator('#composed-details [data-zellij-reveal]');
   await entrance.scrollIntoViewIfNeeded();
   await expect(entrance).toHaveAttribute('data-zellij-reveal', 'in');
+  if (!isMobile) {
+    const surfaces = cards.locator(':scope > .zellij-compose-group, :scope > .zellij-compose-reveal > .zellij-compose-group');
+    await expect(surfaces).toHaveCount(3);
+    await expect.poll(() => surfaces.evaluateAll(nodes => {
+      const heights = nodes.map(node => node.getBoundingClientRect().height);
+      return Math.max(...heights) - Math.min(...heights);
+    })).toBeLessThan(2);
+    await expect.poll(() => surfaces.evaluateAll(nodes => {
+      const tops = nodes.map(node => node.querySelector('.zellij-compose-heading')!.getBoundingClientRect().top);
+      return Math.max(...tops) - Math.min(...tops);
+    })).toBeLessThan(2);
+  }
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.evaluate(() => document.fonts.ready);
-  await page.screenshot({ path: info.outputPath('composition-light.png'), fullPage: true });
+  await page.screenshot({ path: info.outputPath('composition-light.png'), fullPage: true, animations: 'disabled' });
   await info.attach('composition-page', { path: info.outputPath('composition-light.png'), contentType: 'image/png' });
   const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await page.emulateMedia({ colorScheme: 'dark' });
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).not.toBe(light);
-  await page.screenshot({ path: info.outputPath('composition-dark.png'), fullPage: true });
+  await page.screenshot({ path: info.outputPath('composition-dark.png'), fullPage: true, animations: 'disabled' });
   await info.attach('composition-dark', { path: info.outputPath('composition-dark.png'), contentType: 'image/png' });
   expect(errors).toEqual([]);
 });

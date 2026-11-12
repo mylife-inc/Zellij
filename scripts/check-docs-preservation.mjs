@@ -11,6 +11,7 @@ import { chromium } from '@playwright/test';
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const output = path.resolve(process.argv[2] ?? path.join(repo, 'examples/zellij-docs/out'));
 const baseline = JSON.parse(await readFile(new URL('../specs/evidence/zellij-production-comparison-2026-11-02.json', import.meta.url)));
+const addedRoutes = [...new Set([...baseline.new_routes, '/sections/compose'])];
 const aliases = JSON.parse(await readFile(new URL('../specs/evidence/zellij-legacy-heading-aliases-2026-11-02.json', import.meta.url)));
 const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain' };
 const server = createServer(async (req, res) => {
@@ -67,7 +68,16 @@ try {
     for (const { id, count } of result) assert.equal(count, 1, `${entry.route}#${id}: expected one target`);
     headingCount += entry.heading_ids.length;
   }
-  for (const route of baseline.new_routes) await visit(route);
+  for (const route of addedRoutes) await visit(route);
+  await visit('/sections/compose');
+  const composition = page.locator('[data-example="compose"]');
+  await composition.getByRole('heading', { name: 'Clarity, composed.' }).waitFor();
+  assert.equal(await composition.locator('.zellij-gradient-reveal-paint').first().evaluate(element => getComputedStyle(element).opacity), '1');
+  await composition.getByRole('tab', { name: 'Source', exact: true }).click();
+  assert.match(await composition.getByRole('tabpanel').filter({ visible: true }).innerText(), /type: compose/);
+  await composition.getByRole('tab', { name: 'Preview', exact: true }).click();
+  await composition.getByRole('heading', { name: 'Clarity, composed.' }).waitFor();
+  assertNoErrors();
   for (const route of new Set(aliases.map(alias => alias.route))) {
     const entries = aliases.filter(alias => alias.route === route);
     await visit(route + '#' + encodeURIComponent(entries[0].legacy_id));
@@ -91,7 +101,7 @@ try {
   const fragment = new URL(page.url()).hash.slice(1);
   if (fragment) assert(await page.evaluate(id => Boolean(document.getElementById(id)), decodeURIComponent(fragment)), 'Search result fragment is missing');
   assertNoErrors();
-  console.log(`Preservation passed: ${baseline.pages.length} original routes, ${baseline.new_routes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images, current repository links and no captured browser errors after hydration.`);
+  console.log(`Preservation passed: ${baseline.pages.length} original routes, ${addedRoutes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images, current repository links and no captured browser errors after hydration.`);
 } finally {
   if (browser) await browser.close();
   server.closeAllConnections();

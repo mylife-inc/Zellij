@@ -4,7 +4,7 @@
 .zellij-section[data-zellij-section="compose"][data-zellij-background="gradient"] { --zellij-compose-fg: var(--zellij-inverted-fg); --zellij-compose-muted: var(--zellij-inverted-fg); }
 .zellij-section[data-zellij-section="compose"][data-zellij-background="accent"] { --zellij-compose-fg: var(--zellij-accent-fg); --zellij-compose-muted: var(--zellij-accent-fg); }
 .zellij-section[data-zellij-section="compose"] .zellij-compose-heading { color: var(--zellij-compose-fg); }
-.zellij-compose-group { color: var(--zellij-compose-fg); }
+.zellij-compose-group { color: var(--zellij-compose-fg); align-content: start; }
 .zellij-compose-action .zellij-button { max-width: 100%; height: auto; min-height: 2.25rem; padding-block: .5rem; white-space: normal; overflow-wrap: anywhere; }
 .zellij-compose-action .zellij-button[data-style="ghost"] { color: var(--zellij-compose-fg); }
 
@@ -41,9 +41,10 @@
 .zellij-compose-stat dt { color: var(--zellij-compose-muted); }
 .zellij-compose-stat dd { margin: 0; font-size: clamp(2rem, 5vw, 4rem); font-weight: 700; line-height: 1; letter-spacing: -.04em; }
 .zellij-compose-divider { margin: 0; width: 100%; border: 0; border-block-start: 1px solid var(--zellij-border); }
-.zellij-compose-reveal { min-width: 0; width: 100%; }
+.zellij-compose-reveal { display: grid; min-width: 0; width: 100%; }
 .zellij-gradient-reveal { display: inline-grid; position: relative; }
-.zellij-gradient-reveal > span { grid-area: 1 / 1; }
+/* Paint covers glyph descenders even with a compact display line-height. */
+.zellij-gradient-reveal > span { grid-area: 1 / 1; padding-block: .12em; margin-block: -.12em; }
 .zellij-gradient-reveal-paint { color: transparent; background-clip: text; -webkit-background-clip: text; opacity: var(--zellij-gradient-progress, 1); pointer-events: none; }
 @media (min-width: 760px) {
   .zellij-compose-layout[data-layout="grid"] { grid-template-columns: repeat(var(--zellij-compose-columns), minmax(0, 1fr)); }
