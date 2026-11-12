@@ -104,8 +104,8 @@ unchanged-source retry and all four Homebrew checks passed. Development engine
 run `43199867543` passed all 13 jobs on merge `3008a16`, publishing the four
 `main` feature variants for Linux amd64/arm64 and building a site from the image.
 These changes are not in published rc.5.
-The next source increment, `codex/composable-sections`, implements the first
-bounded composer (`type: compose`, version 1), pending hosted acceptance/merge.
+PR #143 (`ba5f0ad`) merges the first bounded composer (`type: compose`,
+version 1), with the same tree as tested head `6b10098`.
 A section has stack/grid/split layouts, heading/text/image/button/stat/divider
 nodes and groups; three nested groups and 128 nodes are enforced by shared
 engine/native constraints. Finite schema expansion is 14,701 compact JSON bytes,
@@ -116,9 +116,13 @@ exists. Gradient reveal keeps solid text beneath its decorative paint and
 provides no-JS, reduced-motion, forced-colour and print fallbacks.
 Local verification: 482 engine tests, workspace types, 14 native authoring tests,
 all 24 native-to-engine authoring cases and all full-starter variants pass. The
-Rust workspace passes 743 tests (five ignored); warnings-denied Clippy passes.
+Rust workspace passes 744 tests (five ignored); warnings-denied Clippy passes.
 Showcase adds an original hero/split/grid composition and SVG; docs add a source-
-after-rc.5 guide and preview. Browser/container verification remains pending.
+after-rc.5 guide and preview. All 20 final-head CI checks in `43265736975` pass;
+the two Apple Silicon jobs needed an unchanged-head retry after runner-capacity
+cancellation. The 335 showcase checks passed without browser retries, and six
+light/dark desktop/phone captures were visually reviewed. All 13 development
+engine jobs in `43274667686` pass. See [composer evidence](specs/evidence/zellij-compose-2026-11-12.json).
 Layers, embedded sections/video, arbitrary effect ranges and interactive presets
 are outside this first composer slice. Published rc.5 is unchanged.
 Next implementation: media-accordion and additional composition presets, then
@@ -7967,3 +7971,16 @@ room without changing line layout. Browser assertions now check card heights and
 heading alignment. Screenshots disable CSS transitions to avoid mid-theme-change
 captures. Documentation acceptance explicitly includes `/sections/compose` and
 its hydrated preview/source tabs. A new final-head run is required.
+
+Composer closure — 2026-11-12: PR #143 merged as `ba5f0ad`, matching tested
+`6b10098`. Reference selection was fixed in `f955784`, numeric-text formatting in
+`e701cb1`, and visual alignment/gradient paint in `6b10098`. All 20 checks and all
+13 development-image jobs pass. Documentation acceptance preserves 46 original
+routes, 282 heading IDs, 82 compatibility mappings and 29 byte-identical images;
+all 11 added routes also pass, including the new preview/source tabs. Published
+rc.5 and production documentation/domain remain unchanged. Earlier pending and
+failed checkpoints above are superseded, not erased.
+
+The user confirmed package-level Admin access on 2026-11-12. Image retirement
+can resume only with a refreshed rc.5 plan after the composer engine publication.
+The previous 187-version rc.4 plan remains historical and must not be executed.

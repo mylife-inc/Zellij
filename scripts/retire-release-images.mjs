@@ -1,4 +1,4 @@
-// Reviewed, exact-scope rc.4 image retirement. Unreferenced build history is not swept.
+// Reviewed, exact-scope rc.5 image retirement. Unreferenced build history is not swept.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -7,12 +7,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const packages = ['zellij-base', 'zellij/acceptance-static', 'zellij/acceptance-next'];
-const keepVersion = '0.2.0-rc.4';
+const keepVersion = '0.2.0-rc.5';
 const suffixes = ['', '-maths', '-diagrams', '-all'];
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
 const isRetired = (name, tag) => name === 'zellij-base'
-  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-3])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
-  : /^0\.2\.0-rc\.[1-3]$/.test(tag);
+  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-4])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
+  : /^0\.2\.0-rc\.[1-4]$/.test(tag);
 const sorted = values => [...values].sort();
 const requiredTags = name => name === 'zellij-base' ? [keepVersion, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
 
@@ -145,7 +145,13 @@ async function main(mode, input, output) {
   assert.equal(process.env.RETIRE_PLAN_SHA256, createHash('sha256').update(bytes).digest('hex'), 'Reviewed plan hash does not match');
   const report = { planSha256: process.env.RETIRE_PLAN_SHA256, sourceCommit: process.env.GITHUB_SHA, keepVersion, startedAt: new Date().toISOString(), complete: false, events: [] };
   try {
-    for (const [run, head] of [[43163531316, '6d116b2ca6df8eb8d078f03978d2a49598b58de1'], [43165485176, 'ea9d61be3308d3c00c67220297a39d676bdf6c8c'], [43166800052, 'ea9d61be3308d3c00c67220297a39d676bdf6c8c']]) {
+    for (const [run, head] of [
+      [43185514003, 'a92c2e9f9d82abf5b75ea31bd825117cf86f9ec7'],
+      [43188410970, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
+      [43188415736, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
+      [43188741083, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
+      [43274667686, 'ba5f0add1e1c3c756c002412cfeceaa859d2a395'],
+    ]) {
       const r = api(`repos/mylife-inc/Zellij/actions/runs/${run}`);
       assert(r.status === 'completed' && r.conclusion === 'success' && r.head_sha === head, 'Replacement acceptance gate changed');
     }

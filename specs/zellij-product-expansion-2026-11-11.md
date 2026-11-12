@@ -570,3 +570,22 @@ alternatives while collecting references, so a heading such as
 reproduces the false positive; reference traversal now skips object alternatives
 whose literal selectors disagree with the parsed value. The same text in a
 `text` node remains an actual checked link. Fresh hosted acceptance is required.
+
+## Composer acceptance and merge — 2026-11-12
+
+PR #143 merged as `ba5f0ad`, with the exact tree tested at `6b10098`. Local
+verification passed 482 engine tests and 744 Rust tests (five existing ignored),
+workspace types, Clippy and real schema/scaffold acceptance for all 24 types.
+All 20 final-head CI checks passed; two Apple Silicon jobs first failed to
+acquire runners and passed on the unchanged-head retry. The 335 showcase browser
+cases passed without retries. Six light/dark desktop/phone screenshots were
+reviewed; all 57 documentation routes and the new interactive guide preview pass.
+Development engine run `43274667686` passed all 13 jobs on the merge commit.
+
+Review fixed literal-heading reference scanning (`f955784`), formatter removal
+of numeric-text quotes (`e701cb1`), unequal reveal-card stretching and clipped
+gradient descenders (`6b10098`). Evidence preserves the initial failures and
+visual findings in [the composer record](evidence/zellij-compose-2026-11-12.json).
+This closes the bounded prototype acceptance above. Named/interactive presets
+and the remaining primitives stay open; next is the media accordion, followed by
+book/PDF work. Published rc.5 and the production site have not changed.

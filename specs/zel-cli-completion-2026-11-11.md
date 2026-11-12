@@ -51,7 +51,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 
 | Family | Current evidence | Outstanding gate or boundary |
 | --- | --- | --- |
-| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 23 section templates; configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
+| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 24 section templates in current source (23 in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
@@ -162,9 +162,10 @@ retarget them when live delivery acceptance resumes.
 Strict section-field diagnostics, recovered section headings and corrected native
 starter feature text merged in PR #141 (`3008a16`), with all 20 final-head checks
 passing. See [evidence](evidence/zellij-section-field-diagnostics-2026-11-12.json).
-Published rc.5 remains unchanged. The bounded composer v1 is implemented on
-`codex/composable-sections`, pending hosted acceptance and merge; it includes
-stack/grid/split layouts and gradient reveal. Next implement media-accordion and
+Published rc.5 remains unchanged. Bounded composer v1 merged in PR #143
+(`ba5f0ad`), with stack/grid/split layouts and gradient reveal. All 20 final-head
+checks, 335 showcase browser cases and 13 development-image jobs passed; six
+light/dark desktop/phone captures were reviewed. See [composer evidence](evidence/zellij-compose-2026-11-12.json). Next implement media-accordion and
 additional composition presets. Complete the book model,
 technical/study editions and opt-in PDF/LaTeX publishing, and add the remaining
 installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)

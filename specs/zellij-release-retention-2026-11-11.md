@@ -211,3 +211,18 @@ versioned artifacts from the public release mirror.
 
 This plan does not reopen live provider/account verification or production-site
 migration, which remain deferred under the earlier user instruction.
+
+## Refreshed image plan preparation — 2026-11-12
+
+The user confirmed package-level Admin access. Composer PR #143 merged, and all
+13 development-image jobs in `43274667686` passed before refreshing inventory.
+The retirement helper now retains rc.5/main variants and includes the retired
+rc.4 graphs; nine guard tests pass, including refusal of the stale rc.4 plan.
+Replacement gates use the verified rc.5 release, acceptance images, HTTP check
+and current development engine. All six saved delivery workflows still use rc.5.
+
+Read-only inventory `43275231189` found 3,457 base-image versions and 31 acceptance
+versions. Local manifest traversal timed out without producing a deletion plan.
+Inventory mode now also generates a read-only plan in the hosted workflow;
+execution still requires a committed exact plan and its matching SHA256. The old
+187-version manifest is historical. No image has been deleted in this retry yet.
