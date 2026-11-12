@@ -153,3 +153,9 @@ Current source provides `zel s3` for `zel deploy s3`. Use
 `zel s3 --site acme-docs/manual --prod`, or `zel s3 --prod` with a saved destination.
 Dry-run plans also require `--prod`: S3 uploads have no draft mode.
 See [setup and upload behavior](/cli/deploy#aws-s3).
+
+## Template creation (rc.5 source)
+
+`zel create [dir] -t <template>` is the short form of
+`zel new site [dir] --template <template>`. See [templates](/cli/templates);
+these additions are not included in the currently published rc.4 binary.

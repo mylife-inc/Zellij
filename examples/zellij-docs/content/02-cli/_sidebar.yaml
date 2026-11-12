@@ -10,6 +10,7 @@ nav:
   - label: Writing content
     items:
       - new
+      - templates
       - explain
       - list
       - context

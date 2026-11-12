@@ -1,0 +1,100 @@
+---
+title: zel templates and create
+description: Choose a versioned starter and create an editable documentation or book site.
+---
+
+<Callout type="info" title="Next candidate: 0.2.0-rc.5">
+These commands are implemented in source for rc.5. The currently published rc.4
+binary does not include them. Check the release page before installing a candidate.
+</Callout>
+
+## Choose a starter
+
+```sh
+zel templates
+zel templates show book-classic
+zel templates --json
+```
+
+| Template | Renderer | Direct-file viewing | Contents |
+| --- | --- | --- | --- |
+| `product-docs` | Portable | Yes | An overview and a short handbook. |
+| `product-studio` | Hosted | No | A Cupertino-themed product page with hero, bento and feature sections, plus a guide. |
+| `book-classic` | Portable | Yes | A title page, preface and ordered prose chapters. |
+
+The book starter is a web reading edition. PDF/LaTeX, indexes, bibliography,
+advanced book navigation and technical/study editions remain planned.
+
+## Create and edit
+
+```sh
+zel create my-docs -t product-docs
+zel create my-book -t book-classic --name "The long way home" --set author="A. Writer"
+zel new site my-product --template product-studio
+```
+
+`zel create` is the short form of `zel new site`. Both use the same implementation.
+Without a destination they create `docs/zellij`; without a template they select
+`product-docs`. Existing `init`, `new portable`, `new docs` and `new app` retain
+their previous behavior.
+
+```text
+my-book/
+  zel.yaml
+  content/
+    index.md
+    preface.md
+    chapters/
+  .zel-template.json
+```
+
+Edit the Markdown/YAML, then run `zel build my-book` to create `my-book/site/`.
+The parent folder can have any name. Portable output works when you double-click
+`site/index.html`. Hosted output requires an HTTP server; hosted builds use the
+matching container engine. Creating a template itself needs no Docker or Node.
+
+The destination must be new or completely empty, including hidden files. There
+is no overwrite option. Run from its parent when creating into an existing empty
+folder; the CLI refuses to replace its current working directory.
+
+`--name` sets the declared `title` variable. Repeat `--set key=value` for other
+variables shown by `zel templates show`. Unknown/duplicate variables are errors.
+The receipt records the template version and original file checksums; it never
+prevents edits or automatically overwrites a manuscript.
+
+## Versions and local templates
+
+```sh
+zel create my-book -t book-classic@0.1.0 --offline
+zel create my-docs -t ./my-custom-template --offline
+```
+
+A local template has `template.yaml` and `files/`, including
+`files/zel.yaml` and `files/content/`. Start by copying one of the catalog
+sources in the Zellij repository. See the
+[template format](https://github.com/mylife-inc/Zellij/blob/main/templates/README.md)
+for capabilities, safe text placeholders, asset licenses and limits.
+
+Creation checks paths, compatibility, substitutions and declared assets before
+publishing the staged folder. Portable content is checked strictly. Hosted
+creation checks YAML syntax; run `zel check --deep --strict` for full hosted
+schema and route validation. Template hooks are never executed.
+
+## Release catalogs and offline use
+
+The default catalog is bundled in the executable, so it needs no connection.
+Each release that includes this feature also attaches `templates-catalog.json`
+and checksummed template archives to the public release mirror. Select that
+release's catalog URL explicitly:
+
+```sh
+zel create my-docs -t product-docs --catalog <release-catalog-HTTPS-URL>
+zel create another-copy -t product-docs --catalog <same-catalog-URL> --offline
+```
+
+The second command reuses verified cached files with no network access. Both the
+catalog and selected archive must have been cached first. `--cache-dir <folder>`
+overrides the normal OS cache directory. `id@version` pins exactly; an unpinned ID
+selects the highest version in the chosen catalog. Unsupported versions fail
+without creating a site. Old release URLs can disappear under pre-1.0 retention;
+bundled, local and already cached copies continue to work.

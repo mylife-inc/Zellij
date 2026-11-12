@@ -37,6 +37,7 @@ mod published_image;
 mod railway;
 mod s3;
 mod site_authoring;
+mod templates;
 mod validation;
 mod vercel;
 mod watch;
@@ -60,10 +61,11 @@ fn main() {
                 | Command::Check { .. }
                 | Command::Doctor { .. }
                 | Command::Version
+                | Command::Templates(_)
         )
     {
         zellij_core::diagnosticln!(
-            "error: --json is supported only by context, list, explain, detect, version, doctor and check; no command was run"
+            "error: --json is supported only by context, list, explain, detect, version, doctor, check and templates; no command was run"
         );
         std::process::exit(2);
     }
@@ -235,6 +237,8 @@ fn main() {
         },
         Command::Migrate(ref options) => imports::convert(options, true),
         Command::Ship(ref options) => imports::ship(options),
+        Command::Templates(ref options) => templates::inspect(options, cli.json),
+        Command::New(NewTarget::Site(ref options)) => templates::create(options),
         Command::New(NewTarget::App(ref options)) => app::create(options),
         Command::New(NewTarget::Portable(ref options)) => site_authoring::portable(options),
         Command::New(NewTarget::Docs(ref options)) => site_authoring::docs(options),

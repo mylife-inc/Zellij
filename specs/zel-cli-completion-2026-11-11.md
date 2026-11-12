@@ -13,6 +13,14 @@ passed all four native acceptance jobs. See the
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
+The next source candidate, **rc.5**, implements the first template milestone:
+`zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
+local/release catalogs, exact versions, checksums, offline cache and receipts.
+See [the template contract](../templates/README.md). This is not yet a published
+release. Hosted/native acceptance and merge must finish before publication.
+The book starter is a reading edition; full PDF/LaTeX and other expansion work
+remain incomplete. The older expansion paragraphs below record the rc.4 baseline.
+
 The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
 contract and remain a separate [expansion backlog](zellij-product-expansion-2026-11-11.md).

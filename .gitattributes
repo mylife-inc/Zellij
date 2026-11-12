@@ -6,3 +6,5 @@ cli/crates/zellij-docs/assets/mermaid/mermaid.js -whitespace linguist-generated=
 # Published installers must match the tagged source byte-for-byte on every OS.
 scripts/install.sh text eol=lf
 scripts/install.ps1 text eol=lf
+# Template bundles and release archives must agree byte-for-byte across native OSes.
+templates/** text=auto eol=lf

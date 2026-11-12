@@ -43,8 +43,20 @@ The reviewed 187-version plan and guard tests are ready; 3,152 untagged build-hi
 versions outside the selected graphs are not part of that plan.
 Do not reuse any retired version/tag.
 
-Next feature work: the versioned template manifest/catalog and native creation
-path, followed by composition/media-accordion and book/PDF publishing. Scoop,
+Current implementation branch: `codex/template-catalog` prepares **rc.5** with
+`zel create` / `zel new site` and `zel templates [show]`. `templates/` owns the
+bundled versioned catalog, separate from `examples/`. The CLI module
+`cli/crates/zellij-cli/src/templates/` loads bundled/local/checksummed catalogs,
+validates and stages creation, records `.zel-template.json`, and supports an
+offline cache. `templates/README.md` is the format/limits contract. Initial
+starters: product-docs, product-studio and book-classic, all version 0.1.0.
+The release workflow packages identical template archives/catalogs for both
+release repositories; native acceptance covers bundled and public template use.
+Public rc.5 publication and hosted acceptance are still pending; rc.4 remains
+current. Book/PDF/LaTeX execution and technical/study editions are not implemented.
+
+After the template milestone: composition/media-accordion and book/PDF
+publishing, plus technical/study book editions. Scoop,
 WinGet and other package channels are not yet published. Live provider verification
 and production documentation/domain migration remain deferred. Local guides,
 release pages, shared installer docs and the tap are updated; this does not claim

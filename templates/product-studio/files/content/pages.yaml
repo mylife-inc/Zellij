@@ -1,0 +1,5 @@
+- name: home
+  title: {{zel.title|yaml}}
+  description: A considered introduction to your next product.
+  layout: landing
+  sections: [home/hero, home/details, home/features]

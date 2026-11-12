@@ -1,0 +1,11 @@
+version: 1
+renderer: portable
+name: {{zel.title|yaml}}
+theme: paper
+nav:
+  - {page: index.md, label: Title page}
+  - {page: preface.md, label: Preface}
+  - label: Part I
+    children:
+      - {page: chapters/01-beginning.md, label: The beginning}
+      - {page: chapters/02-path.md, label: The path ahead}

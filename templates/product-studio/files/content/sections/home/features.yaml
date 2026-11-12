@@ -1,0 +1,13 @@
+type: feature-grid
+heading: Everything starts with content.
+columns: 3
+items:
+  - title: Easy to author
+    description: Plain files you can read, review and keep under version control.
+    icon: file-text
+  - title: Made to explore
+    description: Search and clear navigation help your readers find their way.
+    icon: search
+  - title: Ready to grow
+    description: Add pages and sections as the product story develops.
+    icon: layers

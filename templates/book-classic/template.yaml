@@ -1,0 +1,18 @@
+schema: 1
+id: book-classic
+version: 0.1.0
+title: Classic reading edition
+description: A calm portable title page, preface and ordered prose chapters. PDF is not included.
+minimum-cli: 0.2.0-rc.5
+minimum-engine: 0.2.0-rc.5
+renderer: portable
+kind: book
+outputs: [web, file]
+print: unavailable
+variables:
+  title: A question worth following
+  author: Your name
+substitute:
+  - zel.yaml
+  - content/index.md
+assets: []

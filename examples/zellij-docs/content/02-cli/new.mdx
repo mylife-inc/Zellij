@@ -3,11 +3,13 @@ title: zel new
 description: Create portable documentation, hosted content, an editable Next.js app, pages, guides or sections.
 ---
 
+`site` selects a versioned template ([new in rc.5 source](/cli/templates)).
 `portable`, `docs` and `project` start a project; `page`, `guide` and `section`
 add to hosted content. `app` creates an editable Next.js wrapper.
 
 | | Creates | Default location | |
 | --- | --- | --- | --- |
+| `zel new site [dir]` / `zel create [dir]` | A versioned template | `./docs/zellij` | **rc.5 source** |
 | `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs/zellij` | **Available in source** |
 | `zel new docs [dir]` | Hosted YAML/MDX content | `./docs/zellij` | **Available** |
 | `zel new section <type>` | One section file | `--out`, or stdout | **Available** |
