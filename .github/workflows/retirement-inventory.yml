@@ -1,0 +1,32 @@
+name: Read-only Zellij retirement inventory
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  inventory:
+    if: github.repository == 'mylife-inc/Zellij' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: List exact Zellij release and image version identities
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/inspect-release-inventory.mjs "$RUNNER_TEMP/retirement-inventory.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: retirement-inventory
+          path: ${{ runner.temp }}/retirement-inventory.json
+          if-no-files-found: error
+          retention-days: 7

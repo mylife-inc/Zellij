@@ -10,7 +10,7 @@ defaults:
 env:
   SITE_CONFIG: ./scripts/fixtures/release-delivery/portable/next.yaml
   SITE_ROOT: ./scripts/fixtures/release-delivery/portable
-  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
 jobs:
   publish:
     if: ${{ (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
@@ -24,7 +24,7 @@ jobs:
         persist-credentials: false
     - env:
         ZEL_INSTALL_DIR: ${{ runner.temp }}/zel-bin
-        ZEL_VERSION: v0.2.0-rc.2
+        ZEL_VERSION: v0.2.0-rc.4
       name: Install pinned zel
       run: |
         set -eu
@@ -41,7 +41,7 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
     - env:
-        IMAGE_TAG: ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.2
+        IMAGE_TAG: ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.4
       name: Build once and publish
       run: zel publish --config "$SITE_CONFIG" --tag "$IMAGE_TAG"
     timeout-minutes: 30
@@ -54,7 +54,7 @@ jobs:
         persist-credentials: false
     - env:
         ZEL_INSTALL_DIR: ${{ runner.temp }}/zel-bin
-        ZEL_VERSION: v0.2.0-rc.2
+        ZEL_VERSION: v0.2.0-rc.4
       name: Install pinned zel
       run: |
         set -eu
