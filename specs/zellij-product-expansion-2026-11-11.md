@@ -628,3 +628,26 @@ The next major milestone is the shared book manifest and opt-in PDF/LaTeX
 pipeline described above, followed by technical/study editions. Further
 composition primitives and installation channels remain open. This closes the
 media/preset increment only; published rc.5 and production docs are unchanged.
+
+## Book publication model closure — 2026-11-12
+
+PR #149 (`72a8445`) merges the first book increment. Portable `zel.yaml` now
+accepts a versioned `book` manifest for metadata, covers, front matter, parts,
+ordered chapters and appendices. One resolved sequence drives validation,
+offline web reading, inspection and the Next-image adapter. Builds/check JSON
+share a content revision and publication record; language/direction declarations
+flow to the rendered HTML. All 20 final-head jobs in `43322268842` passed on
+`2b5cfec`, whose tree matches the merge. Cross-platform actual CLI and relocated
+file-browser checks, Next-image book acceptance, 756 Rust tests, 490 engine tests
+and the existing 356 showcase cases pass. See
+[the focused record](zellij-book-publication-2026-11-12.md) and
+[evidence](evidence/zellij-book-publication-2026-11-12.json).
+All 13 development-image jobs in `43328363366` passed on the merge, publishing
+four `main` variants for both Linux architectures and checking a site build/serve.
+
+This implements the web publication foundation, not the complete semantic print
+model outlined above. Next is the optional build-time PDF/LaTeX pipeline,
+including output ownership and failure preservation, followed by bibliography,
+index/cross-reference semantics and coordinated technical/study templates.
+Normal website builds must retain their current dependency-free portable path.
+Published rc.5 templates/binaries and production documentation remain unchanged.

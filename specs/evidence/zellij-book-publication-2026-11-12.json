@@ -1,0 +1,560 @@
+{
+  "date": "2026-11-12",
+  "status": "merged and development engine published",
+  "pr": 149,
+  "base_commit": "9ba53e36fabf0f1e8c81d96c4e16649b48a409fc",
+  "initial_source_head": "c14c4a91baddbb50244954f0dea6907d473d26c7",
+  "source_head": "2b5cfecd9a10e8fac9448089142e0a0f55f72b98",
+  "implemented": [
+    "Version 1 portable book manifest: metadata, local cover, title page, front matter, one-level parts, chapters and appendices",
+    "One resolved publication sequence drives check/build/view, contents, navigation and chapter/appendix markers",
+    "Complete manuscript validation rejects missing, repeated or unlisted sources before replacing existing output",
+    "Canonical publication JSON shared by check and export; content revision hashes original Markdown, manifest and referenced assets",
+    "Existing Next-image adaptation preserves book content and emits an explicit ID-to-hosted-route map",
+    "Declared HTML language/direction, logical portable inline edges and paper book presentation",
+    "Authoring guide documents constraints, unchanged rc.5 template migration and source-only availability"
+  ],
+  "merge": {
+    "headRefOid": "2b5cfecd9a10e8fac9448089142e0a0f55f72b98",
+    "mergeCommit": {
+      "oid": "72a84456e7a3192a64c4003020ee68598d893442"
+    },
+    "mergedAt": "2026-11-12T23:22:18Z",
+    "number": 149,
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/149",
+    "tree_matches_tested_head": true,
+    "tree": "cc1843e6b3ad12799c269bf693fa91a7bb339351"
+  },
+  "ci": {
+    "run_id": 43322268842,
+    "attempt": 1,
+    "headSha": "2b5cfecd9a10e8fac9448089142e0a0f55f72b98",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43322268842",
+    "jobs": [
+      {
+        "id": 131545905430,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905725,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905731,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905737,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905756,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905771,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905805,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905825,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905838,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905844,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905910,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545905938,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545906009,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545906243,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131545906292,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131547498243,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131550242021,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131550242033,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131550242037,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131550242082,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "hosted_validation": {
+    "rust": {
+      "suites": 56,
+      "passed": 756,
+      "failed": 0,
+      "ignored": 5,
+      "doctestSuites": 5,
+      "doctests": 0,
+      "ignored_note": "Five existing hosted-only cases run separately in CLI CI"
+    },
+    "engine_tests": 490,
+    "showcase": {
+      "passed": 356,
+      "conditional_skips": 124,
+      "retries": 0
+    },
+    "native_package_targets": 6,
+    "homebrew_targets": 4,
+    "book_native_and_browser_platforms": [
+      "Linux",
+      "macOS",
+      "Windows"
+    ],
+    "book_browsers": [
+      "Chromium",
+      "WebKit"
+    ],
+    "book_browser_checks": [
+      "Relocated file:// output with HTTP(S) requests blocked",
+      "Cover decoded",
+      "Keyboard search and reading-order navigation",
+      "Desktop/mobile horizontal overflow guards",
+      "RTL layout geometry",
+      "No-JavaScript reading"
+    ],
+    "next_image": "Real book image built and served; content, cover, metadata, route sidecar, navigation, search, reload and browser-error checks passed",
+    "docs": {
+      "compiled_routes": 59,
+      "validated_examples": 25,
+      "preservation_original_routes": 46,
+      "preservation_additional_routes": 12,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_errors": 0,
+      "note": "Preservation harness covers its explicit original/additional route list; compiled route count includes the new book guide."
+    }
+  },
+  "local_validation": {
+    "book_compiler_tests": 5,
+    "book_cli_tests": 1,
+    "root_layout_tests": 6,
+    "watcher_fixture_tests": 9,
+    "clippy": "workspace/all-targets, warnings denied, matched rustup toolchain passed",
+    "fmt": "cargo fmt --all --check passed",
+    "typecheck": "all workspaces passed",
+    "engine_build": "passed",
+    "schema_drift": "none (hosted verification also passed)",
+    "actionlint": "passed",
+    "node_syntax": "both changed acceptance scripts passed",
+    "docs_deep_strict": {
+      "routes": 59,
+      "examples": 25
+    },
+    "full_engine": "Two attempts each had four existing MDX/math timeouts; hosted full suite passed",
+    "full_rust": "Local workspace attempt stopped on existing fake-runtime timeout; hosted full workspace passed"
+  },
+  "local_verification_history": [
+    {
+      "kind": "local",
+      "description": "initial book revision test used nonexistent ink theme; corrected to cupertino",
+      "log": "/private/tmp/zellij-book-tests.log"
+    },
+    {
+      "kind": "local",
+      "description": "four existing MDX/math tests timed out in both full and two-worker runs under host compilation load",
+      "logs": [
+        "/private/tmp/zellij-book-engine-tests.log",
+        "/private/tmp/zellij-book-engine-retry.log"
+      ]
+    },
+    {
+      "kind": "local",
+      "description": "workspace run stopped at hosted_check when fake docker info timed out; no real runtime used",
+      "log": "/private/tmp/zellij-book-workspace.log"
+    },
+    {
+      "kind": "local",
+      "description": "system rustfmt and clippy could not load Homebrew LLVM z3 dylib; used matched rustup stable tools without modifying system installation",
+      "log": "/private/tmp/zellij-book-clippy.log"
+    }
+  ],
+  "superseded_runs": [
+    {
+      "id": 43321606840,
+      "head": "c14c4a91baddbb50244954f0dea6907d473d26c7",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "failures": [
+        {
+          "job": 131543394039,
+          "description": "Windows CRLF checkout meant LF-specific chapter removal left fixture unchanged"
+        },
+        {
+          "job": 131543394150,
+          "description": "In-place watcher YAML write briefly exposed valid empty configuration before intended invalid fixture"
+        }
+      ],
+      "fix_commit": "2b5cfecd9a10e8fac9448089142e0a0f55f72b98",
+      "fix": "Line-ending-independent chapter mutation with changed-input assertion; stage watcher fixture writes outside watched tree then atomically rename. No production watcher change or weakened validation."
+    }
+  ],
+  "visual_review": {
+    "linux": {
+      "artifact": 13990973365,
+      "source": "2b5cfecd9a10e8fac9448089142e0a0f55f72b98",
+      "count": 12,
+      "browsers": [
+        "chromium",
+        "webkit"
+      ],
+      "widths": [
+        1280,
+        390
+      ],
+      "states": [
+        "title page",
+        "chapter",
+        "RTL title page"
+      ],
+      "result": "Reviewed every capture: readable typography, visible cover, grouped navigation, chapter markers and previous/next links; no clipping or overlap observed. RTL fixture exercises geometry with English text, not Arabic/Hebrew font coverage.",
+      "captures": [
+        {
+          "file": "chromium-1280-chapter.png",
+          "width": 1280,
+          "height": 900,
+          "sha256": "cf0d2edfa566c3e162add44d47e689e31ac2d4a6f6808b8564059472c55169a2"
+        },
+        {
+          "file": "chromium-1280-rtl.png",
+          "width": 1280,
+          "height": 1589,
+          "sha256": "18bf09a3e2230606113f18fc825b833a91246da70ec801c8042021d680b6ca12"
+        },
+        {
+          "file": "chromium-1280-title.png",
+          "width": 1280,
+          "height": 1589,
+          "sha256": "978d0a1baf8953b6d9f075ff0021e2f8654d43559945d9f6e5567a3d3b4f6d4a"
+        },
+        {
+          "file": "chromium-390-chapter.png",
+          "width": 390,
+          "height": 992,
+          "sha256": "4ec583c89d03fc038f417a8f306ecefb1c3a83808de58e35d5354d4853fec81e"
+        },
+        {
+          "file": "chromium-390-rtl.png",
+          "width": 390,
+          "height": 1584,
+          "sha256": "8a6b36c24b13e9c036a23f777aa8b6c57dde22643b6cd1b2dc2cdac57b953d0e"
+        },
+        {
+          "file": "chromium-390-title.png",
+          "width": 390,
+          "height": 1584,
+          "sha256": "cc41eab087234658437757f8ac90b7a1ffd51b5eec54b2f62288559b95a4bfac"
+        },
+        {
+          "file": "webkit-1280-chapter.png",
+          "width": 1280,
+          "height": 900,
+          "sha256": "cfd95bae4e19cfa0846124ed4b4d0cb90235eadfe47a7a2ef2befaea3609f7dc"
+        },
+        {
+          "file": "webkit-1280-rtl.png",
+          "width": 1280,
+          "height": 1589,
+          "sha256": "e5a820469870a00e84cabb74f231d96e9d7cc8535ea5abe9c9bad61593083428"
+        },
+        {
+          "file": "webkit-1280-title.png",
+          "width": 1280,
+          "height": 1589,
+          "sha256": "d3fdb740e754826a05a4aa72aacf15f13dfccf6b130f45b5f11020911b6a253a"
+        },
+        {
+          "file": "webkit-390-chapter.png",
+          "width": 390,
+          "height": 996,
+          "sha256": "d9632e5b9a226880465186188d4b86b7ace1a19cffe70068fc04d9fb1874e261"
+        },
+        {
+          "file": "webkit-390-rtl.png",
+          "width": 390,
+          "height": 1588,
+          "sha256": "79791e79833f1aeb63b8eb188a3c4a8d48d88179b6324139e96b871f67f63898"
+        },
+        {
+          "file": "webkit-390-title.png",
+          "width": 390,
+          "height": 1588,
+          "sha256": "2b7d9d43aaefa1733fa13d287d342c26521d2743589b1ce67a750dc0db88bfb7"
+        }
+      ]
+    },
+    "windows": {
+      "artifact": 13992925269,
+      "files": [
+        "chromium-390-title.png",
+        "webkit-1280-chapter.png"
+      ],
+      "result": "Title/cover/navigation and chapter layout remain readable without clipping. Windows WebKit's serif heading appearance is lighter than the Linux capture; no pixel-identical typography claim.",
+      "sha256": {
+        "chromium-390-title.png": "68bca49c85c30ba30d3ae0e2ded790d617382e2bd6fd6758f30bc1223a064615",
+        "webkit-1280-chapter.png": "91e855382ca0c864a97ea5eac45107710d3e7cddea4406398d99cd447183e395"
+      }
+    },
+    "macos": "Automated browser acceptance passed; captures retained but not visually reviewed",
+    "artifacts": [
+      {
+        "id": 13992925269,
+        "name": "book-preview-windows-latest",
+        "size_in_bytes": 751459
+      },
+      {
+        "id": 13990973365,
+        "name": "book-preview-ubuntu-latest",
+        "size_in_bytes": 886365
+      },
+      {
+        "id": 13990498895,
+        "name": "book-preview-macos-latest",
+        "size_in_bytes": 1031841
+      }
+    ]
+  },
+  "development_engine": {
+    "run_id": 43328363366,
+    "headSha": "72a84456e7a3192a64c4003020ee68598d893442",
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366",
+    "tags": [
+      "main",
+      "main-maths",
+      "main-diagrams",
+      "main-all"
+    ],
+    "platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "databaseId": 131566494514,
+        "name": "maths \u00b7 amd64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494514"
+      },
+      {
+        "databaseId": 131566494658,
+        "name": "maths \u00b7 arm64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494658"
+      },
+      {
+        "databaseId": 131566494677,
+        "name": "diagrams \u00b7 arm64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494677"
+      },
+      {
+        "databaseId": 131566494820,
+        "name": "none \u00b7 arm64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494820"
+      },
+      {
+        "databaseId": 131566494870,
+        "name": "all \u00b7 amd64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494870"
+      },
+      {
+        "databaseId": 131566494878,
+        "name": "diagrams \u00b7 amd64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494878"
+      },
+      {
+        "databaseId": 131566494881,
+        "name": "none \u00b7 amd64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494881"
+      },
+      {
+        "databaseId": 131566494955,
+        "name": "all \u00b7 arm64",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131566494955"
+      },
+      {
+        "databaseId": 131567593057,
+        "name": "Publish diagrams",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131567593057"
+      },
+      {
+        "databaseId": 131567593061,
+        "name": "Publish all",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131567593061"
+      },
+      {
+        "databaseId": 131567593103,
+        "name": "Publish none",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131567593103"
+      },
+      {
+        "databaseId": 131567593181,
+        "name": "Publish maths",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131567593181"
+      },
+      {
+        "databaseId": 131567779192,
+        "name": "The image can build a site",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43328363366/job/131567779192"
+      }
+    ],
+    "published_manifests": {
+      "ghcr.io/mylife-inc/zellij-base:main-diagrams": {
+        "digest": "sha256:193f66593b7bdfab5c384b658cd262e787e85a41f8276f6c344346fa2bb9a581",
+        "platforms": {
+          "linux/arm64": "sha256:4a0050535c24955d49f054f1eef13175d137c9eb62719c347de051c7fdd076db",
+          "linux/amd64": "sha256:93949a43e9478a10761b1ae23d95be39db637ccbcf82a394018696c7ffe1d77c"
+        }
+      },
+      "ghcr.io/mylife-inc/zellij-base:main-all": {
+        "digest": "sha256:c31e11728d99f177d243cf5bd5cb1d38412c8be2e4d794755855db3ba77dc87d",
+        "platforms": {
+          "linux/arm64": "sha256:f2a37e1a74ed25c5db6377416adbbe182600887457c72124d59621b46c00aae1",
+          "linux/amd64": "sha256:fbf4d522cc1406ff76efa15bb63bd530f215cc1357814150d997f6672756b16e"
+        }
+      },
+      "ghcr.io/mylife-inc/zellij-base:main": {
+        "digest": "sha256:c994a163caac1bd09d89effe49ea4984b50c274a0bf43c7032f94bdb954207ba",
+        "platforms": {
+          "linux/amd64": "sha256:75a0dfe2863d137804556e82901d4770f96500f726655515a53959dad3a054c6",
+          "linux/arm64": "sha256:7b3fcabf0b67c05d5be80cb064f4e0c91e1898d2da1323bb2ed517b7697db353"
+        }
+      },
+      "ghcr.io/mylife-inc/zellij-base:main-maths": {
+        "digest": "sha256:f0574710bf6cc7f6ce3804955ce87723f13d7eeb46eafcd4a724fbb0752184d4",
+        "platforms": {
+          "linux/arm64": "sha256:451f3412b47c4f2d406f36927be5e910af6396c4b85eb7bbdef61a4c31093e0a",
+          "linux/amd64": "sha256:706af82e32e1b18216c2588d50cec0c52cfd93628ba7b229f0f29d8f6608dc74"
+        }
+      }
+    },
+    "smoke": "Published default image built and served a site on HTTP; job 131567779192 passed."
+  },
+  "boundaries": [
+    "No PDF/LaTeX process execution, PDF download, bibliography/index or technical/study editions implemented in this increment",
+    "Published rc.5 binaries/templates remain unchanged; source features need current CLI and a matching source engine for Next images",
+    "Language/direction declarations do not translate the UI or guarantee complete script/font coverage",
+    "No local Docker/browser/GUI acceptance; container/browser checks ran in hosted CI",
+    "Production documentation/domain and deferred live-provider verification unchanged"
+  ],
+  "native_release_published": false,
+  "production_documentation_deployed": false,
+  "log_hashes": {
+    "zellij-book-focused-final.log": "782c5e99aa4a4737303ec85b2fcf8c28efa32baced5d440ff445e82c8a74e497",
+    "zellij-book-cli-final.log": "5e64a6cedbec6bc20a8902204bafcdc9d570e8290c08fdce52f6f08e1d0e92b1",
+    "zellij-book-language-test.log": "3f30eacd5d11bbc157a51f04362fe0f50fa2b704dfd5dcf20dad0ea98417c82b",
+    "zellij-book-watch-fixture.log": "6bb05aafddd3a49c70ed4c5590efa7331b2517d7cc97676c1f36fd3cb5f5bfc0",
+    "zellij-book-clippy-final.log": "9e05e6706eff1d4251c4d17a24e0d3a5fb1122956805664065489756658068e0",
+    "zellij-book-typecheck.log": "e7079eeea85a546dcc90f331f0c2c82aefa1e4f72e3c8c9bd9ad255bdb28ff48",
+    "zellij-book-engine-build-final.log": "39aa1bb34c5fa00f6c7f7c802d21a2a3689086634a2f5ef37244ab730bf198a5",
+    "zellij-book-engine-tests.log": "fb50aa19f79d17e1a44bc702d3b246947fd42a690f3d8a91f6341826e0c5dda9",
+    "zellij-book-engine-retry.log": "27924b262e97d6564d345fe0301fd52917d6c89d2eb2e9d4e50c0aa3dc961225",
+    "zellij-book-workspace.log": "699cefa54a3cf985a9ccec6f68730c843d752ec4209b81d541718ae72bca8de7",
+    "zellij-book-docs-closure.log": "82be8c2c68719cc0cfa4468e37bba15665cf10c882a2c555fade863f947715ab"
+  }
+}

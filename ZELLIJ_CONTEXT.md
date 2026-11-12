@@ -3,14 +3,22 @@
 Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Book publication work is in progress on `codex/book-manifest` from `9ba53e3`.
-The versioned portable manifest now drives ordered front matter/parts/chapters/
-appendices, metadata, covers, a content revision and shared JSON inspection.
-The same model feeds the Next adapter. See
-[the book checkpoint](specs/zellij-book-publication-2026-11-12.md) and
-[authoring guide](examples/zellij-docs/content/02-cli/books.mdx). Final-head
-verification and merge are pending. PDF/LaTeX execution remains the next increment;
-no native release or production documentation/domain change has occurred.
+PR #149 (`72a8445`) merges the versioned book publication model, with the same
+tree as tested head `2b5cfec`. Its portable manifest drives ordered front matter,
+parts, chapters and appendices, metadata, covers, a content revision and shared
+JSON inspection; the same model feeds the Next adapter. All 20 final-head jobs
+in `43322268842` passed: 756 Rust tests (five existing ignored cases run separately),
+490 engine tests, 356 showcase cases (124 conditional skips), six native packages
+and four Homebrew targets. Actual book CLI and relocated-file Chromium/WebKit
+checks pass on Linux/macOS/Windows; the Next-image book checks pass. Twelve Linux
+and two Windows captures were visually reviewed. See
+[the book checkpoint](specs/zellij-book-publication-2026-11-12.md),
+[evidence](specs/evidence/zellij-book-publication-2026-11-12.json) and
+[authoring guide](examples/zellij-docs/content/02-cli/books.mdx). PDF/LaTeX execution
+remains the next increment. Published rc.5 and production documentation/domain
+are unchanged; the new book fields require current source.
+All 13 development-engine jobs in `43328363366` passed, publishing the four
+`main` variants for Linux amd64/arm64 and building/serving a site from the image.
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
@@ -93,8 +101,9 @@ offline cache. `templates/README.md` is the format/limits contract. Initial
 starters: product-docs, product-studio and book-classic, all version 0.1.0.
 Release archives/catalogs are identical across source and public mirror; public
 installed-binary acceptance covers both and offline cache reuse. Six hosted
-mobile/desktop previews were visually reviewed. Book/PDF/LaTeX execution and
-technical/study editions are not implemented.
+mobile/desktop previews were visually reviewed. The book publication model is
+now merged after rc.5 (PR #149 above); PDF/LaTeX execution and technical/study
+editions remain unimplemented. Released template archives remain immutable.
 
 Review fixes: `c370987` rejects ancestor directory capitalization collisions;
 `6810aee` corrects six card bodies lost through wrong YAML keys and guards official

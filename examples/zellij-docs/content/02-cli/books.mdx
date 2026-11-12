@@ -131,7 +131,9 @@ engine versions and feature settings.
 `zel ni my-book` adapts the book to the Next image renderer, preserving metadata,
 reading order, chapter markers and title-page content. Its public
 `/_zellij/assets/book.json` contains `publication` (the same portable record) and
-`routes` (entry IDs mapped to hosted routes). Its portable `href` fields are not
+`routes` (entry IDs mapped to hosted routes). Apply the deployment's configured
+`basePath` to both this URL and the mapped routes: the map contains unprefixed
+content routes, not complete deployment URLs. Its portable `href` fields are not
 hosted route declarations. Use a matching source engine for source-only features;
 rc.5's version-pinned engine predates this model. Native portable builds require
 no external renderer.
