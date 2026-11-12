@@ -112,7 +112,7 @@ async function graphFor(name, roots) {
 }
 function api(endpoint, method = 'GET', missing = false, paginated = false) {
   try {
-    const text = execFileSync('gh', ['api', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', '--method', method, endpoint, ...(paginated ? ['--paginate', '--slurp'] : [])], { env: { ...process.env, GH_DEBUG: '' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000, stdio: ['ignore', 'pipe', 'pipe'] });
+    const text = execFileSync('gh', ['api', '--hostname', 'github.com', '-H', 'Accept: application/vnd.github+json', '-H', 'X-GitHub-Api-Version: 2026-03-10', '--method', method, endpoint, ...(paginated ? ['--paginate', '--slurp'] : [])], { env: { ...process.env, GH_DEBUG: '' }, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 120000, stdio: ['ignore', 'pipe', 'pipe'] });
     return text.trim() ? JSON.parse(text) : null;
   } catch (error) {
     const status = String(error.stderr ?? '').match(/HTTP (\d{3})/)?.[1];
@@ -126,8 +126,39 @@ const endpoint = name => { assert(packages.includes(name)); return `users/mylife
 function liveInventory() {
   return { errors: [], packages: packages.map(name => ({ name, versions: api(`${endpoint(name)}?per_page=100`, 'GET', false, true).flat().map(v => ({ id: v.id, digest: v.name, tags: v.metadata?.container?.tags ?? [] })) })) };
 }
+export function validateExecution(mode, env, identity) {
+  if (mode === 'apply') {
+    assert.equal(env.GITHUB_ACTIONS, 'true', 'Workflow apply requires GitHub Actions');
+    assert.equal(env.GITHUB_REPOSITORY, 'mylife-inc/Zellij');
+    assert(env.GITHUB_REF?.startsWith('refs/heads/'), 'Use a reviewed branch');
+    assert(env.GH_TOKEN, 'Missing workflow token');
+  } else {
+    assert.equal(mode, 'apply-local');
+    assert.notEqual(env.GITHUB_ACTIONS, 'true', 'Owner fallback is local only');
+    assert.equal(identity?.login, 'mylife-inc', 'Owner fallback requires the mylife-inc login');
+    assert(Array.isArray(identity.scopes) && identity.scopes.includes('delete:packages') &&
+      identity.scopes.some(scope => ['read:packages', 'write:packages'].includes(scope)),
+    'Owner login requires read:packages and delete:packages; refresh gh authorization');
+  }
+}
+export function parseOwnerIdentity(raw) {
+  const normalized = raw.replaceAll('\r\n', '\n');
+  const end = normalized.indexOf('\n\n');
+  assert(end > 0, 'Missing authenticated API response headers');
+  const scopes = normalized.slice(0, end).match(/^x-oauth-scopes:[ \t]*([^\n]*)/im)?.[1]
+    .split(',').map(value => value.trim()).filter(Boolean) ?? [];
+  return { login: JSON.parse(normalized.slice(end + 2)).login, scopes };
+}
+function ownerIdentity() {
+  // Inspect identity and scope names, never read or print the credential itself.
+  const raw = execFileSync('gh', ['api', '--hostname', 'github.com', '--include', 'user'], {
+    env: { ...process.env, GH_DEBUG: '' }, encoding: 'utf8', timeout: 30000,
+    maxBuffer: 1024 * 1024, stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  return parseOwnerIdentity(raw);
+}
 async function main(mode, input, output) {
-  assert(['plan', 'apply'].includes(mode) && input && output && process.argv.length === 5, 'Usage: retire-release-images.mjs plan|apply input.json output.json');
+  assert(['plan', 'apply', 'apply-local'].includes(mode) && input && output && process.argv.length === 5, 'Usage: retire-release-images.mjs plan|apply|apply-local input.json output.json');
   const bytes = await readFile(input), data = JSON.parse(bytes);
   if (mode === 'plan') {
     assert.deepEqual(data.errors, []);
@@ -138,12 +169,20 @@ async function main(mode, input, output) {
     console.log(JSON.stringify(plan.packages.map(p => ({ name: p.name, delete: p.targets.length, protected: p.protectedDigests.length, unreferencedBuildHistoryRetained: p.retainedUnreferencedVersions })), null, 2));
     return;
   }
-  assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Apply only in the hosted workflow');
-  assert.equal(process.env.GITHUB_REPOSITORY, 'mylife-inc/Zellij');
-  assert(process.env.GITHUB_REF?.startsWith('refs/heads/'), 'Use a reviewed branch');
-  assert(process.env.GH_TOKEN, 'Missing workflow token');
+  const identity = mode === 'apply-local' ? ownerIdentity() : undefined;
+  validateExecution(mode, process.env, identity);
   assert.equal(process.env.RETIRE_PLAN_SHA256, createHash('sha256').update(bytes).digest('hex'), 'Reviewed plan hash does not match');
-  const report = { planSha256: process.env.RETIRE_PLAN_SHA256, sourceCommit: process.env.GITHUB_SHA, keepVersion, startedAt: new Date().toISOString(), complete: false, events: [] };
+  const sourceCommit = mode === 'apply' ? process.env.GITHUB_SHA : execFileSync('git', ['rev-parse', 'HEAD'], {
+    encoding: 'utf8', cwd: fileURLToPath(new URL('../', import.meta.url)),
+  }).trim();
+  const report = {
+    planSha256: process.env.RETIRE_PLAN_SHA256, sourceCommit,
+    execution: mode === 'apply' ? 'github-actions' : 'local-owner',
+    ...(identity ? { authenticatedOwner: identity.login } : {}),
+    keepVersion, startedAt: new Date().toISOString(), complete: false, events: [],
+  };
+  // Confirm the journal can be written before any remote mutation.
+  await writeFile(output, JSON.stringify(report, null, 2) + '\n');
   try {
     for (const [run, head] of [
       [43185514003, 'a92c2e9f9d82abf5b75ea31bd825117cf86f9ec7'],

@@ -1,6 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { packages, buildPlan, validateLive, targetMatches, closure } from './retire-release-images.mjs';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import { chmod, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { packages, buildPlan, validateLive, targetMatches, closure, validateExecution, parseOwnerIdentity } from './retire-release-images.mjs';
 const digest = n => 'sha256:' + n.toString(16).padStart(64, '0');
 function fixture() {
   let id = 1;
@@ -106,4 +112,70 @@ test('retires rc.1 through rc.4 while retaining rc.5 and every development varia
       assert(p.targets.some(t => t.tags.includes(`0.2.0-rc.${version}`)));
     }
   }
+});
+
+test('workflow execution keeps its repository, branch and token guards', () => {
+  const env = { GITHUB_ACTIONS: 'true', GITHUB_REPOSITORY: 'mylife-inc/Zellij', GITHUB_REF: 'refs/heads/main', GH_TOKEN: 'fixture' };
+  validateExecution('apply', env);
+  for (const patch of [{ GITHUB_ACTIONS: '' }, { GITHUB_REPOSITORY: 'other/repo' }, { GITHUB_REF: 'refs/tags/v1' }, { GH_TOKEN: '' }]) {
+    assert.throws(() => validateExecution('apply', { ...env, ...patch }));
+  }
+});
+test('owner fallback requires the named owner, package scopes and a local process', () => {
+  const identity = { login: 'mylife-inc', scopes: ['read:packages', 'delete:packages'] };
+  validateExecution('apply-local', {}, identity);
+  validateExecution('apply-local', {}, { ...identity, scopes: ['write:packages', 'delete:packages'] });
+  for (const value of [undefined, { login: 'mylife-inc' }, { ...identity, login: 'another-account' }, { ...identity, scopes: ['repo'] }, { ...identity, scopes: ['read:packages'] }, { ...identity, scopes: ['delete:packages'] }]) {
+    assert.throws(() => validateExecution('apply-local', {}, value));
+  }
+  assert.throws(() => validateExecution('apply-local', { GITHUB_ACTIONS: 'true' }, identity));
+  assert.throws(() => validateExecution('unknown', {}, identity));
+});
+test('owner preflight parses identity and scope metadata without any credential', () => {
+  for (const newline of ['\n', '\r\n']) {
+    const raw = ['HTTP/2.0 200 OK', 'X-Oauth-Scopes: repo, read:packages, delete:packages', '', '{"login":"mylife-inc"}'].join(newline);
+    assert.deepEqual(parseOwnerIdentity(raw), { login: 'mylife-inc', scopes: ['repo', 'read:packages', 'delete:packages'] });
+  }
+  assert.deepEqual(parseOwnerIdentity('HTTP/2.0 200 OK\n\n{"login":"mylife-inc"}').scopes, []);
+  assert.deepEqual(parseOwnerIdentity('HTTP/2.0 200 OK\nx-oauth-scopes: \nX-Other: read:packages, delete:packages\n\n{"login":"mylife-inc"}').scopes, []);
+  assert.throws(() => parseOwnerIdentity('{"login":"mylife-inc"}'));
+});
+test('local entrypoint enforces plan hash and journals a failed replacement gate before any deletion', async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), 'zellij-retire-guards-'));
+  try {
+    const fixture = '{}\n', input = path.join(directory, 'plan.json'), output = path.join(directory, 'report.json');
+    const calls = path.join(directory, 'calls.jsonl'), gh = path.join(directory, 'gh');
+    await writeFile(input, fixture);
+    await writeFile(gh, `#!/usr/bin/env node
+import { appendFileSync } from 'node:fs';
+const args = process.argv.slice(2);
+appendFileSync(process.env.RETIRE_FIXTURE_CALLS, JSON.stringify(args) + '\\n');
+if (args.at(-1) === 'user') {
+  process.stdout.write('HTTP/2.0 200 OK\\nX-Oauth-Scopes: read:packages, delete:packages\\n\\n{"login":"mylife-inc"}');
+} else {
+  process.stdout.write('{"status":"completed","conclusion":"failure"}');
+}
+`);
+    await chmod(gh, 0o700);
+    const env = { ...process.env, GITHUB_ACTIONS: '', PATH: `${directory}${path.delimiter}${process.env.PATH}`, RETIRE_FIXTURE_CALLS: calls };
+    const args = [fileURLToPath(new URL('./retire-release-images.mjs', import.meta.url)), 'apply-local', input, output];
+    const badHash = spawnSync(process.execPath, args, { env: { ...env, RETIRE_PLAN_SHA256: 'wrong' }, encoding: 'utf8' });
+    assert.equal(badHash.status, 1);
+    assert.match(badHash.stderr, /Reviewed plan hash does not match/);
+    await assert.rejects(readFile(output), { code: 'ENOENT' });
+    const failedGate = spawnSync(process.execPath, args, { env: { ...env, RETIRE_PLAN_SHA256: createHash('sha256').update(fixture).digest('hex') }, encoding: 'utf8' });
+    assert.equal(failedGate.status, 1);
+    const journal = JSON.parse(await readFile(output, 'utf8'));
+    assert.equal(journal.execution, 'local-owner');
+    assert.equal(journal.authenticatedOwner, 'mylife-inc');
+    assert.equal(journal.complete, false);
+    assert.deepEqual(journal.events, []);
+    assert.match(journal.error, /Replacement acceptance gate changed/);
+    const requests = (await readFile(calls, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
+    assert.equal(requests.length, 3);
+    for (const request of requests) {
+      assert(request.includes('--hostname') && request.includes('github.com'));
+      assert(!request.includes('DELETE'));
+    }
+  } finally { await rm(directory, { recursive: true, force: true }); }
 });
