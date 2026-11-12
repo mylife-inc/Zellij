@@ -493,3 +493,39 @@ hosted export acceptance now assert the actual heading and card copy. Focused
 verification passes 35 scaffold tests, four full-starter tests, nine site-authoring
 tests and all 40 native/ten Node starter and ten guide-title rendering fixtures.
 The failure is retained as evidence; a fresh final-head CI run is required.
+
+
+Final acceptance: PR #141 merged as `3008a164774460cf6a0c2f449ba793d1dab3e8c4` with the exact tree tested at
+`43295fcfb2135ba114be9de17a3a2b8fe417bd4b`. All 20 jobs in `43193011736` passed,
+including native packages, schema consistency, real CLI/container checks,
+full-starter export assertions, template and browser acceptance. Documentation
+preservation retains 46 original routes, 282 heading IDs and 29 unchanged image
+files, alongside ten added routes, with no captured browser errors. The earlier
+pending snapshots above are superseded by this result; the initial failure is
+retained in [the evidence](evidence/zellij-section-field-diagnostics-2026-11-12.json).
+Published rc.5 and production documentation/domain are unchanged. The next
+implementation milestone is the composer/media-accordion, followed by book/PDF.
+
+## Composer integration notes — 2026-11-12 review
+
+Before implementing `type: compose`, extend or deliberately bound the shared
+schema traversal. Current engine context/starter generation and reference
+collection walk inline objects, arrays and unions; they do not resolve JSON
+Schema `$ref`/`$defs`. The Rust schema/authoring walkers have the same boundary.
+A recursive composition schema must not silently omit nested asset/link checks,
+produce incomplete context, or create invalid starters. Choose an explicit
+reference-resolution contract with cycle/depth bounds (or a measured finite
+expansion), and verify the same authored tree through both engines before
+publishing a catalog entry. This is a prerequisite, not an implemented feature.
+
+Relevant integration points are `engine/packages/zellij/src/cli/context.ts`,
+`cli/section-templates.ts`, `content/reference-schema.ts` (the latter two under
+that same engine source root), `cli/crates/zellij-core/src/schema.rs`, and
+`cli/crates/zellij-scaffold/src/authoring.rs`.
+
+Heading ownership also needs an explicit decision: `SectionsPageView` currently
+asks whether a section *type* always provides an H1. A composer may contain an H1
+or only subordinate headings, so inspect the validated instance or expose an
+equivalent instance-aware contract. Preserve the fallback page heading and
+meaningful page-rail labels. The current search index intentionally indexes
+guides only; adding composition does not implicitly change that product rule.

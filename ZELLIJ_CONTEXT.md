@@ -79,7 +79,7 @@ Review fixes: `c370987` rejects ancestor directory capitalization collisions;
 `6810aee` corrects six card bodies lost through wrong YAML keys and guards official
 templates against stripped fields; `3a9f807` aligns the standalone Docker recipe
 with the CLI version. Published rc.5 still silently strips unknown section
-fields. The current `codex/section-field-diagnostics` increment addresses that
+fields. PR #141 (`3008a16`) addresses that
 in engine source: discarded fields warn in referenced YAML/Markdown sections,
 examples, legacy inline sections and page overrides; strict checks fail. Field
 paths include nested arrays, while diagnostic values stay private. Normal builds
@@ -90,14 +90,20 @@ renders `eyebrow` for feature-grid/steps-panel/FAQ and an inline-Markdown FAQ
 `subhead`, and quotes a comma-bearing hero label. Shared CLI schema and guides
 are updated. Local checks pass: 471 engine tests, 12 native authoring cases,
 23 schema authoring cases, all three site templates and all four authored sites.
-The first hosted run (`43192044415`, PR #141) also exposed four ignored fields
+The first hosted run (`43192044415`) also exposed four ignored fields
 in the older native starter: its feature heading used `title`, and three card
 bodies used `description`. The generator now emits `heading`/`body`. All 35
 scaffold tests, four full-starter tests and nine site-authoring tests pass; real
 engine/SSR acceptance verifies 40 native starter variants, ten Node starters,
 ten guide titles and the full/wizard catalog. Hosted export checks now assert
-the recovered feature text too. Final-head CI/merge remain pending; these changes
-are not in published rc.5.
+the recovered feature text too. All 20 final-head CI jobs in `43193011736` passed
+on `43295fc`; the merged tree is identical. Fixing commits are `1bb81e6` and
+`43295fc`. See [diagnostics evidence](specs/evidence/zellij-section-field-diagnostics-2026-11-12.json).
+The Apple Silicon packaging job first failed to acquire a hosted runner; the
+unchanged-source retry and all four Homebrew checks passed. Development engine
+run `43199867543` passed all 13 jobs on merge `3008a16`, publishing the four
+`main` feature variants for Linux amd64/arm64 and building a site from the image.
+These changes are not in published rc.5.
 Next implementation: composer/media-accordion, then the book/PDF milestones.
 
 After the template milestone: composition/media-accordion and book/PDF
