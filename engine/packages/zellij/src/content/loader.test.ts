@@ -645,14 +645,16 @@ describe('forward compatibility', () => {
     expect(warnings.join('\n')).toMatch(/unknown key "futureThing"/);
   });
 
-  it('passes unknown keys inside a section file through untouched', async () => {
-    const site = await load({
+  it('warns when unknown section keys are discarded while preserving ordinary loading', async () => {
+    const { site, warnings } = await loadWithWarnings({
       'site.yaml': SITE,
       'pages.yaml': ONE_PAGE,
       'sections/hero.yaml': 'type: hero\nheadline: Hello\nfutureField: 1\n',
     });
 
     expect(site.pages[0]?.sections[0]).toMatchObject({ headline: 'Hello' });
+    expect(site.pages[0]?.sections[0]).not.toHaveProperty('futureField');
+    expect(warnings).toEqual([expect.stringMatching(/sections\/hero.yaml.*ignored field.*futureField/)]);
   });
 });
 

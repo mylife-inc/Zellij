@@ -323,6 +323,15 @@ compatibility); an asset reference resolving outside `assets/`.
 declare — sections are extended more often than the top-level schema, and a
 newer content folder should still build on an older engine.
 
+**2026-11-12 implementation update:** this original silent-acceptance policy is
+superseded in engine source after rc.5. Discarded fields in referenced sections,
+examples and page-reference overrides now warn, including nested array/object
+paths. Normal builds continue; strict checks fail. Diagnostics compare authored
+and parsed keys after successful validation, so scalar coercions/defaults and
+retained extension fields do not warn. Intentionally removed fields in custom
+transforming schemas also warn. The warning contains field names, never their
+values. Unreferenced section files retain their unused-file warning.
+
 `zellij check [dir]` runs the full load and prints errors and warnings without
 building, so content authors get a fast loop that does not require Next.js. It
 runs from the package's bundled build rather than from source: Node's ESM

@@ -27,6 +27,7 @@ try {
       export { FolderContentSource } from './engine/packages/zellij/src/content/folder-source';
       export { loadSite } from './engine/packages/zellij/src/content/site';
       export { Hero } from './engine/packages/zellij/src/sections/components/hero';
+      export { FeatureGrid } from './engine/packages/zellij/src/sections/components/feature-grid';
     `, resolveDir: repo },
     bundle: true, packages: 'external', platform: 'node', format: 'esm', jsx: 'automatic', outfile: helper,
     plugins: [{ name: 'next-node-paths', setup(builder) {
@@ -37,7 +38,7 @@ try {
 } finally {
   await rm(cache, { recursive: true });
 }
-const { FolderContentSource, loadSite, Hero } = engine;
+const { FolderContentSource, loadSite, Hero, FeatureGrid } = engine;
 
 async function load(content, allowEmpty = false) {
   const warnings = [];
@@ -59,6 +60,14 @@ async function verify(content, name, guide) {
   const links = [...html.matchAll(/href="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(links, guide ? ['/guide'] : [], content);
   for (const link of links) assert(site.routes.has(link), `Broken starter link: ${link}`);
+  const features = site.pages[0].sections.find(section => section.type === 'feature-grid');
+  if (features) {
+    const rendered = renderToStaticMarkup(createElement(FeatureGrid, { section: features, site, defaultMotion: 'none' }));
+    for (const text of ['Why this folder is the whole site', 'YAML and Markdown. No framework to upgrade.',
+      'A broken link fails the build, not a reader.', '<code>zel list sections</code> to see them all.']) {
+      assert(rendered.includes(text), `Missing native starter feature copy: ${text}`);
+    }
+  }
 }
 
 const names = ['Acme: Docs', 'A # comment', '"quoted" \\ path', 'TRUE', 'Null', '42', 'العربية Café', 'line\nnext\r\ntab\tend', 'a\u0085b\u2028c\u2029d', 'a\u007fb\u0080c\u009fd\ufffee\uffff'];

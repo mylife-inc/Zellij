@@ -78,9 +78,27 @@ technical/study editions are not implemented.
 Review fixes: `c370987` rejects ancestor directory capitalization collisions;
 `6810aee` corrects six card bodies lost through wrong YAML keys and guards official
 templates against stripped fields; `3a9f807` aligns the standalone Docker recipe
-with the CLI version. General engine parsing still silently strips unknown
-section fields. Add actionable strict-check diagnostics before expanding the
-composer; the official-catalog guard does not fix arbitrary authored content.
+with the CLI version. Published rc.5 still silently strips unknown section
+fields. The current `codex/section-field-diagnostics` increment addresses that
+in engine source: discarded fields warn in referenced YAML/Markdown sections,
+examples, legacy inline sections and page overrides; strict checks fail. Field
+paths include nested arrays, while diagnostic values stay private. Normal builds
+continue, and defaults/coercions/retained extension fields remain accepted.
+
+The stronger check exposed 13 omissions in the CodeSeal example. Source now
+renders `eyebrow` for feature-grid/steps-panel/FAQ and an inline-Markdown FAQ
+`subhead`, and quotes a comma-bearing hero label. Shared CLI schema and guides
+are updated. Local checks pass: 471 engine tests, 12 native authoring cases,
+23 schema authoring cases, all three site templates and all four authored sites.
+The first hosted run (`43192044415`, PR #141) also exposed four ignored fields
+in the older native starter: its feature heading used `title`, and three card
+bodies used `description`. The generator now emits `heading`/`body`. All 35
+scaffold tests, four full-starter tests and nine site-authoring tests pass; real
+engine/SSR acceptance verifies 40 native starter variants, ten Node starters,
+ten guide titles and the full/wizard catalog. Hosted export checks now assert
+the recovered feature text too. Final-head CI/merge remain pending; these changes
+are not in published rc.5.
+Next implementation: composer/media-accordion, then the book/PDF milestones.
 
 After the template milestone: composition/media-accordion and book/PDF
 publishing, plus technical/study book editions. Scoop,

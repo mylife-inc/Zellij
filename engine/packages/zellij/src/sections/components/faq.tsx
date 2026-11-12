@@ -20,7 +20,11 @@ export function Faq({ section, defaultMotion }: SectionProps<FaqSection>) {
       motion={motion}
       className="zellij-faq"
     >
-      <SectionHeader {...(section.heading ? { heading: section.heading } : {})} motion={motion}
+      <SectionHeader
+        {...(section.eyebrow ? { eyebrow: section.eyebrow } : {})}
+        {...(section.heading ? { heading: section.heading } : {})}
+        {...(section.subhead ? { subhead: section.subhead } : {})}
+        motion={motion}
         {...(section.titleGradient ? { titleGradient: section.titleGradient } : {})}
       />
 

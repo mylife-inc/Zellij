@@ -205,3 +205,78 @@ it('does not claim component props are rendered anchors or custom component URLs
   expect(result.warnings.join('\n')).toContain('anchor #maybe');
   expect(result.ok).toBe(false);
 });
+
+it('warns about discarded section keys and fails strict checks without changing rendered defaults', async () => {
+  const contentDir = await fixture({
+    'site.yaml': 'name: Section diagnostics\n',
+    'pages.yaml': '- name: home\n  sections: [cards]\n',
+    'sections/cards.yaml': 'type: bento-grid\nitems:\n  - title: A card\n    description: This text used to disappear silently.\n    body: Visible text\n    future: {nested: hidden}\n  - title: Second card\n',
+  });
+  for (const strict of [false, true]) {
+    vi.mocked(console.log).mockClear();
+    const result = await check({ contentDir, strict, json: true });
+    expect(result.errors).toEqual([]);
+    expect(result.ok).toBe(!strict);
+    expect(result.warnings).toHaveLength(2);
+    expect(result.warnings.join('\n')).toContain('sections/cards.yaml');
+    expect(result.warnings.join('\n')).toContain('items[0].description');
+    expect(result.warnings.join('\n')).toContain('items[0].future');
+    expect(result.warnings.join('\n')).not.toContain('This text used to disappear');
+    expect(result.site?.pages[0]?.sections[0]).toMatchObject({ type: 'bento-grid', items: [{ title: 'A card', body: 'Visible text' }, { title: 'Second card' }] });
+    const report: JsonCheckReport = JSON.parse(vi.mocked(console.log).mock.calls[0]![0]);
+    expect(report.ok).toBe(!strict);
+    expect(report.diagnostics.every(d => d.severity === 'warning' && d.code === 'warning')).toBe(true);
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.warn).not.toHaveBeenCalled();
+    expect(console.error).not.toHaveBeenCalled();
+  }
+});
+
+it.each([false, true])('checks section-reference overrides before they are stripped (wrapped pages: %s)', async wrapped => {
+  const pages = [{ name: 'home', sections: [{ section: 'hero', paddding: 'loose', background: { gradient: ['red', 'blue'], direction: 'left' } }] }];
+  const contentDir = await fixture({ ...HOME, 'site.yaml': 'name: Overrides\n', 'pages.yaml': JSON.stringify(wrapped ? { pages } : pages) });
+  const result = await check({ contentDir, strict: true });
+  expect(result.ok).toBe(false);
+  expect(result.warnings).toHaveLength(2);
+  expect(result.warnings.join('\n')).toContain('pages.yaml');
+  expect(result.warnings.join('\n')).toContain('sections[0].paddding');
+  expect(result.warnings.join('\n')).toContain('sections[0].background.direction');
+});
+
+it('reports ignored Markdown frontmatter and example fields in fast checks', async () => {
+  const contentDir = await fixture({
+    'site.yaml': 'name: Prose\n',
+    'pages.yaml': '- name: home\n  sections: [intro]\n',
+    'sections/intro.mdx': '---\npaddding: loose\n---\n\n# Hello\n',
+    'examples/sample.yaml': 'type: hero\nheadline: Example\ncta: [{label: Read, href: /, newTba: true}]\n',
+  });
+  const result = await check({ contentDir, strict: true });
+  expect(result.ok).toBe(false);
+  expect(result.warnings).toHaveLength(2);
+  expect(result.warnings.join('\n')).toMatch(/sections\/intro.mdx.*paddding/);
+  expect(result.warnings.join('\n')).toMatch(/examples\/sample.yaml.*cta\[0\].newTba/);
+});
+
+it('reports ignored legacy inline section fields with their section index', async () => {
+  const contentDir = await fixture({
+    'marketing/index.yaml': 'title: Legacy\ndescription: Legacy page\nsections:\n  - type: hero\n    headline: Hello\n    subhed: Lost text\n',
+    'zellij.config.yaml': 'product: {name: Legacy}\ncontent: .\n',
+  });
+  const result = await check({ contentDir, cwd: contentDir, strict: true });
+  expect(result.ok).toBe(false);
+  expect(result.errors).toEqual([]);
+  expect(result.warnings.join('\n')).toMatch(/marketing\/index.yaml.*sections\[0\].*subhed/);
+});
+
+it('checks links in the newly retained FAQ introduction', async () => {
+  const contentDir = await fixture({
+    'site.yaml': 'name: FAQ\n',
+    'pages.yaml': '- name: home\n  sections: [faq]\n',
+    'sections/faq.yaml': 'type: faq\neyebrow: Questions\nsubhead: "[More answers](/missing)"\nitems: [{question: Why?, answer: Because.}]\n',
+  });
+  expect((await check({ contentDir, strict: true })).ok).toBe(true);
+  const result = await check({ contentDir, strict: true, deep: true });
+  expect(result.ok).toBe(false);
+  expect(result.warnings).toEqual([]);
+  expect(result.errors.join('\n')).toMatch(/sections\/faq.yaml.*subhead.*no page resolves/s);
+});

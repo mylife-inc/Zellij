@@ -11,6 +11,7 @@ import {
   pagesFileSchema,
   sectionFrontmatterSchema,
   validateSection,
+  warnIgnoredFields,
   type AuthoredMenuItem,
   type AuthoredPage,
 } from './model-schema';
@@ -179,6 +180,15 @@ export class FolderContentSource implements ContentSource {
     const result = pagesFileSchema.safeParse(parsed ?? []);
     if (!result.success) throw formatZodError(PAGES_FILE, result.error);
 
+    // Reference objects have already been normalized/stripped by pagesFileSchema.
+    // Diagnose their authored keys before merging only supported overrides.
+    const authoredPages = Array.isArray(parsed) ? parsed : (parsed as { pages: unknown[] } | null)?.pages;
+    result.data.forEach((page, index) => {
+      const refs = (authoredPages?.[index] as { sections?: unknown } | undefined)?.sections;
+      warnIgnoredFields(`${PAGES_FILE} › ${page.name}`, refs, page.sections,
+        (message) => this.warn(message), 'sections');
+    });
+
     const pages: SectionsPage[] = [];
     const errors: ZellijContentError[] = [];
     const used = new Set<string>();
@@ -236,7 +246,8 @@ export class FolderContentSource implements ContentSource {
       sectionSources.push(file.sourceFile);
       // Overrides are merged before validation so a type's own defaults apply
       // to the merged result rather than to the file's value alone.
-      return validateSection(`${where} › ${name}`, { ...file.raw, ...overrides });
+      return validateSection(`${file.sourceFile} (${where} › ${name})`, { ...file.raw, ...overrides },
+        (message) => this.warn(message));
     });
 
     return {
@@ -312,7 +323,7 @@ export class FolderContentSource implements ContentSource {
           name: sectionName(relFile),
           sourceFile: label,
           source,
-          section: validateSection(label, raw),
+          section: validateSection(label, raw, (message) => this.warn(message)),
         });
       } catch (err) {
         errors.push(

@@ -461,3 +461,35 @@ silently stripped. Official-template acceptance now detects this, but arbitrary
 user sections still need strict-check diagnostics before the composer expands.
 Local guides and public installer docs describe rc.5; the existing production
 documentation site and domain have not been redeployed.
+
+
+## Section diagnostics and recovered headings — 2026-11-12 source
+
+The post-rc.5 source increment reports discarded section keys instead of hiding
+misspellings. Ordinary checks/builds warn; strict checks fail. It covers referenced
+sections (YAML and Markdown front matter), examples, legacy inline sections and
+page-reference overrides, including nested arrays/objects. Values are omitted
+from warnings. Retained schema-extension fields, defaults and scalar coercions
+remain accepted; intentionally removed object keys in custom transforms warn.
+
+This exposed thirteen pre-existing omissions in the CodeSeal example. Eleven
+section eyebrows and an FAQ introduction are now connected to the existing
+shared header; a comma-bearing hero label is quoted correctly. Feature-grid,
+steps-panel and FAQ schemas accept eyebrow; FAQ accepts inline-Markdown subhead,
+including deep link validation. Native authoring metadata and active docs match.
+Two schema-to-render regressions reproduce the omissions before the fixes; five
+check regressions reproduce silent acceptance on the unmodified rc.5 baseline.
+Local verification passes 471 engine tests, 12 native authoring tests, all 23
+section-authoring cases, three site templates and deep/strict checks of four
+sites. Final hosted acceptance and merge remain pending. Published rc.5 is
+unchanged; no new release or provider/production-docs deployment is implied.
+
+
+The first hosted run (`43192044415`, PR #141) exposed four more ignored fields in
+the native starter shared by ordinary and full creation. Correct its feature-grid
+`title` to `heading` and three item `description` fields to `body`, preserving all
+text. The existing full-starter strict gate reproduced the failure; SSR and
+hosted export acceptance now assert the actual heading and card copy. Focused
+verification passes 35 scaffold tests, four full-starter tests, nine site-authoring
+tests and all 40 native/ten Node starter and ten guide-title rendering fixtures.
+The failure is retained as evidence; a fresh final-head CI run is required.

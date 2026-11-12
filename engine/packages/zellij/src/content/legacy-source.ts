@@ -290,7 +290,7 @@ export class LegacyContentSource implements ContentSource {
           ...(fm.data.theme ? { theme: fm.data.theme } : {}),
           ...(fm.data.motion ? { motion: fm.data.motion } : {}),
           ...(fm.data.navHighlight ? { navHighlight: fm.data.navHighlight } : {}),
-          sections: validateSections(label, fm.data.sections),
+          sections: validateSections(label, fm.data.sections, (message) => this.warn(message)),
         });
       } catch (err) {
         errors.push(

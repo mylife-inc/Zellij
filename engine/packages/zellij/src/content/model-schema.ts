@@ -176,11 +176,14 @@ export type GuideFrontmatter = z.infer<typeof guideFrontmatterSchema>;
  * Validates one section against its registered schema. An unknown `type` is a
  * build error listing every valid type (spec §5.3).
  *
- * Keys the type does not declare pass through untouched: sections gain fields
- * far more often than the top-level schema does, and a content folder written
- * for a newer engine should still build on an older one (design §11).
+ * Unknown fields are discarded by the registered schema. Report that loss as
+ * warnings, preserving ordinary builds while allowing strict checks to fail.
  */
-export function validateSection(where: string, raw: Record<string, unknown>): AnySection {
+export function validateSection(
+  where: string,
+  raw: Record<string, unknown>,
+  onWarning?: (message: string) => void,
+): AnySection {
   const type = raw['type'];
 
   if (typeof type !== 'string' || type.length === 0) {
@@ -198,6 +201,7 @@ export function validateSection(where: string, raw: Record<string, unknown>): An
 
   const result = definition.schema.safeParse(raw);
   if (!result.success) throw formatZodError(`${where} (${type})`, result.error);
+  warnIgnoredFields(where, raw, result.data, onWarning);
   return result.data as AnySection;
 }
 
@@ -209,13 +213,14 @@ export function validateSection(where: string, raw: Record<string, unknown>): An
 export function validateSections(
   file: string,
   rawSections: ReadonlyArray<Record<string, unknown>>,
+  onWarning?: (message: string) => void,
 ): AnySection[] {
   const out: AnySection[] = [];
   const problems: string[] = [];
 
   rawSections.forEach((raw, index) => {
     try {
-      out.push(validateSection(`${file} · sections[${index}]`, raw));
+      out.push(validateSection(`${file} · sections[${index}]`, raw, onWarning));
     } catch (err) {
       problems.push(`  · ${(err as Error).message.replace(/\n/g, '\n  ')}`);
     }
@@ -226,4 +231,39 @@ export function validateSections(
   }
 
   return out;
+}
+
+/**
+ * Compare authored and successfully parsed structures, including nested arrays.
+ * Only discarded keys warn: defaults and scalar coercions do not. Retained
+ * extension/catchall fields stay valid. Values are never included in diagnostics.
+ * Stop at the first discarded ancestor so one unknown object is one warning.
+ */
+export function warnIgnoredFields(
+  where: string,
+  raw: unknown,
+  parsed: unknown,
+  onWarning?: (message: string) => void,
+  prefix = '',
+): void {
+  if (!onWarning) return;
+  const ancestors = new Set<unknown>();
+  function walk(input: unknown, output: unknown, field: string): void {
+    if (input === output || !input || !output || typeof input !== 'object' || typeof output !== 'object') return;
+    if (ancestors.has(input)) return;
+    ancestors.add(input);
+    if (Array.isArray(input) && Array.isArray(output)) {
+      input.forEach((value, index) => walk(value, output[index], `${field}[${index}]`));
+    } else if (!Array.isArray(input) && !Array.isArray(output)) {
+      for (const [key, value] of Object.entries(input)) {
+        const location = /^[A-Za-z_][A-Za-z0-9_]*$/.test(key)
+          ? (field ? `${field}.${key}` : key) : `${field}[${JSON.stringify(key)}]`;
+        if (!Object.hasOwn(output, key)) {
+          onWarning!(`${where}: ignored field ${JSON.stringify(location)} (not retained by this schema; check the field name or engine version).`);
+        } else walk(value, (output as Record<string, unknown>)[key], location);
+      }
+    }
+    ancestors.delete(input);
+  }
+  walk(raw, parsed, prefix);
 }

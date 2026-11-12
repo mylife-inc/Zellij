@@ -120,6 +120,7 @@ export const heroSplitSchema = baseSectionSchema.extend({
 export const stepsPanelSchema = baseSectionSchema
   .extend({
     type: z.literal('steps-panel'),
+    eyebrow: z.string().optional(),
     heading: z.string().optional(),
     subhead: inlineReferenceSchema.optional(),
 
@@ -277,6 +278,7 @@ export const logoStripSchema = baseSectionSchema.extend({
 
 export const featureGridSchema = baseSectionSchema.extend({
   type: z.literal('feature-grid'),
+  eyebrow: z.string().optional(),
   heading: z.string().optional(),
   subhead: inlineReferenceSchema.optional(),
   columns: z.union([z.literal(2), z.literal(3), z.literal(4)]).default(3),
@@ -372,7 +374,9 @@ export const pricingTableSchema = baseSectionSchema.extend({
 
 export const faqSchema = baseSectionSchema.extend({
   type: z.literal('faq'),
+  eyebrow: z.string().optional(),
   heading: z.string().optional(),
+  subhead: inlineReferenceSchema.optional(),
   items: z
     .array(z.object({ question: z.string().min(1), answer: inlineReferenceSchema.min(1) }))
     .min(1),

@@ -123,17 +123,17 @@ fn hero_yaml(name: &str, with_guide: bool) -> String {
 }
 
 const FEATURES_YAML: &str = "type: feature-grid\n\
-title: Why this folder is the whole site\n\
+heading: Why this folder is the whole site\n\
 columns: 3\n\
 items:\n\
 \x20 - title: Text, not code\n\
-\x20   description: YAML and Markdown. No framework to upgrade.\n\
+\x20   body: YAML and Markdown. No framework to upgrade.\n\
 \x20   icon: file-text\n\
 \x20 - title: Checked before it ships\n\
-\x20   description: A broken link fails the build, not a reader.\n\
+\x20   body: A broken link fails the build, not a reader.\n\
 \x20   icon: shield-check\n\
 \x20 - title: Reusable section types\n\
-\x20   description: Run `zel list sections` to see them all.\n\
+\x20   body: Run `zel list sections` to see them all.\n\
 \x20   icon: layout-grid\n";
 
 pub(crate) fn guide_into(scaffold: &mut Scaffold, name: &str, title: &str, order: usize) {
