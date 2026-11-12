@@ -10,8 +10,8 @@ design; proposed commands remain planned unless explicitly marked implemented be
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
 | 1 | Separate company and product branding | Implemented and released in rc.4, including portable/hosted rendering, mobile layout, independent destinations/tab selection, dark variants and compatibility. |
-| 2 | Package-manager distribution | Homebrew is live and verified with rc.4. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
-| 3 | Template catalog and creation command | Next feature cycle. Establish a versioned format and create complete, editable sites with existing sections. First examples: product documentation, a product landing site, and a reading-oriented book site. |
+| 2 | Package-manager distribution | Homebrew is live and verified with rc.5. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
+| 3 | Template catalog and creation command | Released in rc.5: versioned bundled/local/release templates, guarded creation, offline cache and receipts. Product documentation, hosted product landing and classic reading-book starters are verified. Technical/study editions remain planned. |
 | 4 | Composition engine and additional Apple-inspired patterns | Build a bounded composition format, reusable presentation/effect primitives and named presets. Extend the product template using these; retain all existing section types and authored content. |
 | 5 | Complete book publishing and PDF | Extend the book template into a publication model, dedicated print renderer and version-matched downloadable PDF. Validate technical, prose and multilingual books before calling this milestone complete. |
 
@@ -175,15 +175,14 @@ Store authored templates in the main repository, independently of `examples/`:
 ```text
 templates/
   catalog.yaml
+  product-docs/
   product-studio/
     template.yaml
-    preview.webp
     files/
       zel.yaml
       content/
   book-classic/
-  book-technical/
-  book-study/
+  # planned: book-technical/, book-study/
 ```
 
 Generated site layout remains `my-docs/zel.yaml`, `my-docs/content/` and generated
@@ -195,7 +194,8 @@ coordinated web/print styles; include this contract in the template milestone
 even though full PDF execution arrives later. A template must not advertise
 working PDF output before its renderer and publication checks are implemented.
 
-Proposed canonical creation command and short entry point:
+The canonical creation command and short entry point shipped in rc.5
+(`book-technical` remains planned):
 
 ```sh
 zel new site my-docs --template product-studio
@@ -369,7 +369,7 @@ the user owns and will continue using the GitHub account **`mylife-inc`**.
 The agreed one-command form is **`brew install mylife-inc/tap/zel`**. Use Shebka
 for company-facing branding; retain the established GitHub/distribution
 namespace. No account rename or `shebka` tap owner is required. The public tap
-is published at `mylife-inc/homebrew-tap`, selecting the rc.4 preview.
+is published at `mylife-inc/homebrew-tap`, selecting the rc.5 preview.
 
 The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
 one-time tap setup and formula-specific trust. The qualified command above
@@ -425,16 +425,16 @@ Image retirement is prepared but awaits a package-access check. See
 [release evidence](evidence/zellij-rc4-release-2026-11-11.json) and
 [retention status](zellij-release-retention-2026-11-11.md). All 20 final-head CI
 jobs, 29 release jobs and four public Homebrew acceptance jobs passed. Other
-package channels remain planned. The next feature implementation is the template
-manifest/catalog and native creation path, followed by the
+package channels remain planned. At that milestone the next feature was the
+template manifest/catalog and native creation path (now released below), followed by the
 composer/media-accordion and full book/PDF milestones. Local docs change with
 each implementation; public docs must keep an explicit release boundary.
 Live deployment-provider verification stays deferred as previously instructed.
 
 
-## Template milestone in progress — rc.5 source
+## Template milestone released — rc.5, 2026-11-12
 
-The native template path is implemented on the `codex/template-catalog` branch:
+The native template path merged in PR #138 (`a92c2e9`) and is released in rc.5:
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local directories, immutable release archives and checksummed remote catalogs,
 exact version selection, offline cache and creation receipts. The source is
@@ -450,8 +450,14 @@ renderer. Technical/study editions, richer reading controls, the composer/new
 sections and full PDF/LaTeX publishing remain planned. Catalogs require compatible
 CLI/engine versions; they do not execute source-framework import logic.
 
-Public release and hosted browser acceptance are pending. rc.4 remains the
-published install target until the rc.5 gates complete. Local docs include an
-explicit next-candidate boundary. Keep this paragraph current when the branch is
-merged or the candidate is published; do not infer publication from the source
-version bump.
+All 20 final-head CI jobs and 29 release/public-artifact jobs passed. Six hosted
+previews were reviewed at desktop/mobile widths, including every authored product
+card body. Source and public mirror publish identical catalogs/archives; installed
+binaries verify bundled/downloaded/offline parity. Homebrew passed all four native
+checks. See [release evidence](evidence/zellij-rc5-release-2026-11-12.json).
+
+Review exposed a general authoring gap: unknown engine section fields can be
+silently stripped. Official-template acceptance now detects this, but arbitrary
+user sections still need strict-check diagnostics before the composer expands.
+Local guides and public installer docs describe rc.5; the existing production
+documentation site and domain have not been redeployed.

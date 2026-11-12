@@ -3,7 +3,7 @@
 These sites exercise complete GitHub workflows from the current CLI generator,
 using the **selected 0.2.0-rc.5 executable and exact engine image** at execution
 time. This candidate includes the current generators and multi-site queue fix.
-Run only after rc.4 publication succeeds. Previous rc.1/rc.2 verification
+Run only after rc.5 publication succeeds. Previous rc.1/rc.2 verification
 records remain evidence for those versions; retargeting does not rerun live delivery.
 
 | Workflow | PR behavior | Manual run on main |

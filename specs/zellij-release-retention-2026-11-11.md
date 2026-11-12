@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-The policy is followed by the actual rc.4 execution record. Completed native
+Refreshed 2026-11-12 with rc.5 execution; the rc.4 record remains historical. Completed native
 retirement and Homebrew publication are distinct from pending image cleanup.
 
 ## User decision
@@ -26,7 +26,33 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.4 execution status
+## Current rc.5 execution status — 2026-11-12
+
+rc.5 is published with 20 identical assets in each release repository, all 29
+release jobs and four public Homebrew jobs passing. PR #139 (`7430844`) updates
+all six saved delivery pins and active guides. All six installed-CLI build-only
+checks pass; one Next-image runtime-discovery timeout required an unchanged-head
+retry. Replacement static/Next images, all 13 development-image jobs and both
+fresh-runner HTTP checks pass. Public mirror docs are at `0ddf790`; both shared
+installers remain byte-identical to rc.5 source.
+
+The exact reviewed native plan removed only source release `442548169` and
+mirror release `442548207` (rc.4), their 32 assets and their two remote release
+tags. rc.5 source `442694651` and mirror `442694716` retain all 40 asset identities
+and digests; the two CodeSeal releases retain all 12. Preview upgrade lookup
+selects rc.5 after retirement. See
+[execution evidence](evidence/zellij-rc5-native-retirement-2026-11-12.json) and
+[release gates](evidence/zellij-rc5-release-2026-11-12.json). No source history was
+rewritten; historical rc.4 URLs below now refer to retired artifacts.
+
+**Image cleanup remains incomplete.** No deletion was retried for this milestone,
+and no package-access change was confirmed. The old 187-version rc.4 manifest is
+now stale: rc.5 added protected tags and the development aliases moved. The guard
+correctly refuses new/moved references. Regenerate and review the retained and
+retired graphs after package Admin access is resolved; do not run the old plan
+unchanged. Its excluded untagged build-history inventory is not a deletion list.
+
+## Historical rc.4 execution status
 
 The replacement is public in both repositories, with 16 matching assets and all
 29 release jobs passing. The owned Homebrew tap is live and passed all four
@@ -70,9 +96,9 @@ A package-level Admin role is required for workflow deletion, as described in
 The user was asked to inspect/grant that role to `mylife-inc/Zellij` for the three
 packages. Do not infer success from the existing write/publish capability.
 See [image retirement evidence](evidence/zellij-rc4-image-retirement-2026-11-11.json).
-After access is corrected, rerun the reviewed workflow on current main with
-`mode=retire-images` and the recorded plan hash; it rechecks live references and
-refuses drift. Replan if aliases moved. Verify current images again afterward.
+At that time the plan could be retried only with unchanged aliases. The rc.5
+update above now requires a new reviewed plan before any retry, because aliases
+and protected tags have changed. Verify current images again after cleanup.
 
 The plan deliberately does not sweep 3,152 untagged versions outside the selected
 old-release graphs. These are separate build-history cleanup work, not current
@@ -156,7 +182,7 @@ command is **`brew install mylife-inc/tap/zel`**. Retain that technical namespac
 while using Shebka as the company identity; no GitHub account migration is
 needed. This settles the earlier namespace question. The tap is now live at
 [mylife-inc/homebrew-tap](https://github.com/mylife-inc/homebrew-tap), selecting
-the explicitly documented rc.4 preview.
+the explicitly documented rc.5 preview.
 
 On a fresh machine, an owned tap gives a one-command installation such as
 `brew install mylife-inc/tap/zel`. After tap setup and the formula-specific
