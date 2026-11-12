@@ -1,13 +1,46 @@
 # Zellij release channels and candidate procedure
 
 Implemented policy, November 2, 2026; publication status refreshed November 11.
-Candidate 0.2.0-rc.3 is published under the user's 2026-11-11 instruction.
+Candidate 0.2.0-rc.4 is published under the user's 2026-11-11 instruction.
 Remaining live provider/external-runner checks are deferred until after this
 release; normal regression and public artifact checks passed.
 Publication status must be checked in GitHub; a version change in source is not
 proof of an uploaded release.
 
-## Current rc.3 publication
+## Current rc.4 publication
+
+PR #135 merged as `6d116b2ca6df8eb8d078f03978d2a49598b58de1` with the same tree
+as the 20-job final CI head `6a2601c` (run `43158764791`). The required local
+preflight passed 726 Rust and 461 engine tests, typechecks, schema drift,
+formatting and Clippy. Tag `v0.2.0-rc.4` points at that merge and is immutable.
+Release run `43163531316` passed all 29 jobs without reruns; both repositories
+have the same 16 assets, including the generated `zel.rb` formula.
+
+The public [Homebrew tap](https://github.com/mylife-inc/homebrew-tap) at `5abad25`
+passed all four actual-public-install acceptance jobs in `43164789683`.
+`brew install mylife-inc/tap/zel` currently selects the rc.4 preview. Homebrew
+owns subsequent upgrades; the installed CLI directs users to
+`brew upgrade mylife-inc/tap/zel` before making a network request.
+
+PR #136 (`ea9d61b`) retargeted six saved delivery workflows. All six build checks
+passed; provider publish jobs were deliberately skipped. Replacement acceptance
+images and development aliases were published and checked before cleanup.
+The shared repository's installer files/docs were explicitly migrated in
+`d83dd7d` as part of the authorized retirement. Their bytes match tagged rc.4
+source. This was a reviewed maintenance operation; automatic candidate
+publication still does not replace shared installer files.
+
+Nine older release records/assets/tags have been retired. Stable lookup now
+reports no stable Zellij release and suggests preview or exact-version selection;
+it never substitutes a candidate or CodeSeal. `zel upgrade --preview --check`
+resolves rc.4 without modifying the executable. See
+[release evidence](evidence/zellij-rc4-release-2026-11-11.json) and the
+[retention record](zellij-release-retention-2026-11-11.md). Old release links below
+are historical; their original artifacts need not remain downloadable.
+Production documentation was built but not deployed. Provider verification and
+the production-domain migration remain deferred.
+
+## Historical rc.3 publication
 
 [PR #127](https://github.com/mylife-inc/Zellij/pull/127) merged as
 `58be9b1ab992424576572ee8e2ba736f134f727c` with the exact source tree tested by
@@ -70,12 +103,12 @@ Branch workflow dispatches only publish when run against `main`.
 `scripts/release-policy.mjs` supplies version validation, image tags and pinned
 release notes to CI and the local publishing helpers. Release notes download the
 installer attached to that specific release and explicitly select its version
-and asset directory. Candidates cannot replace the shared installer's `main`
+and asset directory. Automatic candidate publication cannot replace the shared installer's `main`
 files, enable production documentation deployment or become GitHub's latest
 release. Both Unix and PowerShell instructions are generated from the same policy.
 
 This policy governs future publications. It does not retag existing images:
-older branch workflows already wrote `latest`. Use an exact matching image tag
+older branch workflows wrote `latest`, subsequently retired during rc.4 cleanup. Use an exact matching image tag
 for candidate acceptance. Source development can explicitly select
 `ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:main`; `main` remains mutable.
 
@@ -93,7 +126,7 @@ for candidate acceptance. Source development can explicitly select
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.3` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.4` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -108,7 +141,7 @@ for candidate acceptance. Source development can explicitly select
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The rc.3 notes are specs/releases/v0.2.0-rc.3.md;
+in both release pages. The rc.4 notes are specs/releases/v0.2.0-rc.4.md;
 the earlier rc.2 publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
@@ -125,10 +158,10 @@ failures and installer/source mismatches fail without retrying. The original
 0.2.0-rc.1 tag predates this download-recovery improvement; rerunning that tag's
 workflow still uses its original downloader. To verify an existing release with
 the latest acceptance code, select the Published release acceptance workflow on
-`main` and provide its published `version` tag, for example:
+`main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.1 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.4 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,

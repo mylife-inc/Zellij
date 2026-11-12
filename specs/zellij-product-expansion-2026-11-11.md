@@ -3,14 +3,14 @@
 Date: 2026-11-11. Source baseline: `3ca63ba` on `main`; latest published CLI:
 `v0.2.0-rc.3`. These are new requirements beyond the completed earlier CLI
 contract. This document records the user's intentions and a proposed staged
-design; proposed commands below are not yet implemented or published.
+design; proposed commands remain planned unless explicitly marked implemented below.
 
 ## Delivery order and release boundaries
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
-| 1 | Separate company and product branding | Implement now, in portable and hosted renderers. Include with the merged hydration fix in the next candidate, provisionally rc.4. Check mobile layout, direct-file relocation, destination/tab selection, dark variants and existing configurations. |
-| 2 | Package-manager distribution | Prepare alongside the next candidate. Start with an owned Homebrew tap and Scoop bucket; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
+| 1 | Separate company and product branding | Implemented and released in rc.4, including portable/hosted rendering, mobile layout, independent destinations/tab selection, dark variants and compatibility. |
+| 2 | Package-manager distribution | Homebrew is live and verified with rc.4. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
 | 3 | Template catalog and creation command | Next feature cycle. Establish a versioned format and create complete, editable sites with existing sections. First examples: product documentation, a product landing site, and a reading-oriented book site. |
 | 4 | Composition engine and additional Apple-inspired patterns | Build a bounded composition format, reusable presentation/effect primitives and named presets. Extend the product template using these; retain all existing section types and authored content. |
 | 5 | Complete book publishing and PDF | Extend the book template into a publication model, dedicated print renderer and version-matched downloadable PDF. Validate technical, prose and multilingual books before calling this milestone complete. |
@@ -33,7 +33,7 @@ At the baseline, navigation had one `brand.logo` and optional `brand.title`.
 The logo could leave for the owner website, consuming the product icon. PR #131
 preserves that legacy configuration and adds an optional independent
 `brand.company` before it, so a product logo with no explicit `href` still goes
-home. This is implemented in source, newer than published rc.3:
+home. This is implemented and included in published rc.4:
 
 ```yaml
 brand:
@@ -343,19 +343,16 @@ download link. A beautiful short demo alone does not establish book support.
 
 ## 5. Installation channels
 
-Six native OS/architecture packages and shell/PowerShell installers already
-exist. Package-manager registration and maintenance are new delivery work.
+Six native OS/architecture packages and shell/PowerShell installers exist.
+Homebrew is now published; other package-manager channels remain delivery work.
 
 The name `brew install zellij` is already used by the unrelated terminal
 multiplexer: [current Homebrew formula](https://formulae.brew.sh/formula/zellij).
 Keep our executable `zel`, use clearly qualified package identities, and check
-ownership/availability before registry publication. Proposed examples, not
-currently available commands:
+ownership/availability before registry publication. Homebrew is available now:
 
 ```sh
 brew install mylife-inc/tap/zel
-winget install --id MyLifeInc.Zel --exact
-npm install -g @mylife-inc/zel
 ```
 
 The user prefers **`brew install zel`**. This is the target short name, subject
@@ -371,12 +368,12 @@ namespace: **Shebka** is the company behind Zellij, formerly named MyLife, and
 the user owns and will continue using the GitHub account **`mylife-inc`**.
 The agreed one-command form is **`brew install mylife-inc/tap/zel`**. Use Shebka
 for company-facing branding; retain the established GitHub/distribution
-namespace. No account rename or `shebka` tap owner is required. The tap remains
-planned, not published.
+namespace. No account rename or `shebka` tap owner is required. The public tap
+is published at `mylife-inc/homebrew-tap`, selecting the rc.4 preview.
 
 The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
-one-time tap setup and formula-specific trust. Illustrative commands for a
-future tap, **not currently published**:
+one-time tap setup and formula-specific trust. The qualified command above
+is the tested installation path; the equivalent explicit setup is:
 
 ```sh
 brew tap mylife-inc/tap
@@ -422,11 +419,14 @@ schema, four active documentation pages and regression tests. See
 merge-push workflows were skipped; no new release was cut or package channel
 published. The preceding in-progress snapshot remains in the PR history.
 
-The remaining rows are designed backlog, not completed features. The next
-delivery task is the small candidate containing branding and the hydration fix,
-with package-manager preparation and removal of old releases after updating
-their consumers. The next feature implementation is the template manifest/catalog
-and native creation path, followed by the
+The later rc.4 milestone completed candidate publication, Homebrew and consumer
+migration, then retired nine superseded GitHub releases and their tags.
+Image retirement is prepared but awaits a package-access check. See
+[release evidence](evidence/zellij-rc4-release-2026-11-11.json) and
+[retention status](zellij-release-retention-2026-11-11.md). All 20 final-head CI
+jobs, 29 release jobs and four public Homebrew acceptance jobs passed. Other
+package channels remain planned. The next feature implementation is the template
+manifest/catalog and native creation path, followed by the
 composer/media-accordion and full book/PDF milestones. Local docs change with
 each implementation; public docs must keep an explicit release boundary.
 Live deployment-provider verification stays deferred as previously instructed.

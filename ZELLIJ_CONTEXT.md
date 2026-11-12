@@ -8,24 +8,51 @@ For the current completion gates, use [the concise completion ledger](specs/zel-
 Company identity confirmed by the user on 2026-11-11: **Shebka** makes Zellij.
 The company was originally called MyLife and was renamed because of domain-name
 availability. The user owns the existing GitHub account **`mylife-inc`** and
-explicitly accepts keeping that namespace for Zellij and Homebrew. The agreed
-future installation command is **`brew install mylife-inc/tap/zel`**; publication
-is still pending. Use Shebka for company-facing branding and retain `mylife-inc`
+explicitly accepts keeping that namespace for Zellij and Homebrew. The live
+installation command is **`brew install mylife-inc/tap/zel`**, selecting the
+current rc.4 preview. Use Shebka for company-facing branding and retain `mylife-inc`
 for existing repository/distribution identifiers. A GitHub account rename or
 move to a `shebka` namespace is not needed for this plan.
 
-Current work: **rc.4 preparation** adds `zel upgrade --preview`, a Homebrew
-ownership guard, default engine images matching the CLI version, and a generated
-four-target Homebrew formula with hosted install/revision-upgrade/uninstall
-acceptance. See [candidate notes](specs/releases/v0.2.0-rc.4.md). Local docs
-target rc.4, but publication and tap availability must be verified separately.
-Keep the six saved delivery workflows on their existing published version until
-rc.4 is downloadable; then retarget and verify them before retiring old assets.
-Template/composer/book work and live provider verification remain separate.
+Current distribution: **v0.2.0-rc.4 is published** from PR #135 merge
+`6d116b2ca6df8eb8d078f03978d2a49598b58de1`, with the same tree as tested head
+`6a2601c`. All **20 final-head CI jobs** and **29 release jobs** passed. The
+release includes company branding, the hydration fix, `zel upgrade --preview`,
+Homebrew ownership protection and default engine images matching the CLI version.
+The public [Homebrew tap](https://github.com/mylife-inc/homebrew-tap) is live at
+`5abad25`, with all four native Mac/Linux install, completion, ownership,
+portable-build, revision-upgrade and uninstall jobs passing. The source and
+public mirror have 16 identical release assets. See
+[rc.4 evidence](specs/evidence/zellij-rc4-release-2026-11-11.json).
+
+Delivery pins migrated in PR #136 (`ea9d61b`): all six installed-CLI build checks
+passed without deploying to providers. Replacement static/Next acceptance images,
+all four refreshed `main` engine variants and fresh-runner image HTTP checks pass.
+Shared installer files/docs now match tagged rc.4 source (`mylife-inc/releases`
+commit `d83dd7d`). Stable lookup remains explicit: with no stable release retained,
+it reports that none exists and directs users to preview/exact-version selection.
+
+Nine superseded GitHub releases, 113 assets and nine remote release tags were
+retired only after these gates passed. rc.4 and both CodeSeal releases are intact;
+source and audit history remain. The separate
+[retention record](specs/zellij-release-retention-2026-11-11.md) tracks exact image
+cleanup and its bounds. Image cleanup is still pending: both hosted attempts
+stopped before deleting anything with GitHub HTTP 404 on the first DELETE.
+The user was asked to confirm package-level Admin access for this repository.
+The reviewed 187-version plan and guard tests are ready; 3,152 untagged build-history
+versions outside the selected graphs are not part of that plan.
+Do not reuse any retired version/tag.
+
+Next feature work: the versioned template manifest/catalog and native creation
+path, followed by composition/media-accordion and book/PDF publishing. Scoop,
+WinGet and other package channels are not yet published. Live provider verification
+and production documentation/domain migration remain deferred. Local guides,
+release pages, shared installer docs and the tap are updated; this does not claim
+the existing production documentation site was redeployed.
 
 The documented CLI command families are implemented. On 2026-11-11 the user
 authorized a release containing the post-rc.2 fixes and moved live deployment
-provider verification to the end. **v0.2.0-rc.3 is published** from `58be9b1`,
+provider verification to the end. **v0.2.0-rc.3 was published** from `58be9b1`,
 with all 16 final-head CI checks and all 29 release/public-artifact jobs passing.
 See [the release evidence](specs/evidence/zellij-rc3-release-2026-11-11.json).
 Live provider/external-runner checks remain deferred follow-up work. The ledger
@@ -38,8 +65,8 @@ the reproduced LF/comment/CRLF mutations; Chromium/WebKit preference checks pass
 See [the hydration report](specs/zellij-netlify-hydration-2026-11-02.md) and
 [verification evidence](specs/evidence/zellij-hosted-head-hydration-2026-11-11.json).
 Live Netlify verification and production migration remain deferred. This change
-is newer than published rc.3; the tested merge skipped duplicate push workflows
-and did not publish new artifacts.
+was newer than rc.3 at its original merge and is now included in rc.4. The tested
+implementation merge skipped duplicate push workflows.
 
 New requirements (2026-11-11) extend the earlier completion target: independent
 company/product icons, an Apple-informed section audit and composable section
@@ -52,9 +79,9 @@ and portable-to-hosted conversion. See [branding evidence](specs/evidence/zellij
 The Apple comparison now includes hosted visual and interaction checks; see
 [research evidence](specs/evidence/zellij-apple-section-audit-2026-11-11.json).
 The other expansion features remain planned. Company branding and the hydration
-fix are newer than rc.3; no new release or package-manager publication occurred
-in this increment. Templates must remain publicly downloadable if the source
-repository is later sealed, using the existing public release mirror.
+fix shipped in rc.4. No release or package-manager publication occurred in the
+earlier branding-only increment. Templates must remain publicly downloadable if
+the source repository is later sealed, using the existing public release mirror.
 
 The user's follow-up on 2026-11-11 settles three expansion decisions:
 prefer the short Homebrew formula name `zel`; increment pre-1.0 releases and
@@ -64,10 +91,10 @@ LaTeX route for mathematics, indexes and publication layout. Beautiful book
 templates must encapsulate the LaTeX styling so authors normally edit content
 and simple theme settings. See the updated expansion design and
 [pre-1.0 retention policy](specs/zellij-release-retention-2026-11-11.md).
-This is recorded intent, not implemented PDF/export or cleanup automation.
-No release was removed in this documentation update: six delivery workflows
-still pin rc.2 and default stable installation still depends on older artifacts.
-Update these consumers with the next verified release before pruning them.
+PDF/export remains planned. The original decision-only update removed no
+releases: its six delivery workflows still pinned rc.2 and stable installation
+depended on older artifacts. The rc.4 milestone above migrated those consumers
+and executed scoped retirement; retain the original decision history.
 
 Implementation history: combined image publication and smaller runtimes merged
 in PR #68 as `e7b0d79`, after all 16 PR checks passed. Static image compressed

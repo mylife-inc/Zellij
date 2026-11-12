@@ -2,8 +2,8 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-It is a release policy and implementation backlog, not a claim that pruning
-automation or new package-manager channels already exist.
+The policy is followed by the actual rc.4 execution record. Completed native
+retirement and Homebrew publication are distinct from pending image cleanup.
 
 ## User decision
 
@@ -26,7 +26,61 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Observed inventory and dependencies
+## Current rc.4 execution status
+
+The replacement is public in both repositories, with 16 matching assets and all
+29 release jobs passing. The owned Homebrew tap is live and passed all four
+native install/completions/ownership/build/revision-upgrade/uninstall jobs.
+PR #136 (`ea9d61b`) migrated all six saved delivery workflows; their build checks
+passed without provider deployment. Static/Next acceptance images and refreshed
+`main` engine aliases passed publication and fresh-runner HTTP checks.
+
+The shared install scripts and docs migrated at `mylife-inc/releases` commit
+`d83dd7d`. Both installer files match tagged rc.4 bytes. Stable lookup still means
+stable; after retirement it reports no stable release and directs users to
+preview/exact-version selection. The actual `zel upgrade --preview --check`
+resolves rc.4 without changing the binary. See
+[release evidence](evidence/zellij-rc4-release-2026-11-11.json).
+
+**Native retirement is complete:** nine older Zellij release records, their
+113 assets and nine remote release tags were removed. Only rc.4 remains in the
+two Zellij release channels. Both CodeSeal releases and rc.4 asset identities
+were checked before and after and remain unchanged. The exact old inventories
+and execution journal are in
+[native retirement evidence](evidence/zellij-rc4-native-retirement-2026-11-11.json).
+Source history and dated audit evidence remain; old release URLs in those
+records are historical. Never reuse a deleted version or move the rc.4 tag.
+
+**Image retirement is prepared but incomplete.** The
+[reviewed manifest](evidence/zellij-rc4-image-retirement-plan-2026-11-11.json)
+selects 187 exact versions: 175 in `zellij-base`, six in `acceptance-static` and
+six in `acceptance-next`. It protects all rc.4/main tags and their 46 manifest
+dependencies, including shared children. Eight guard tests cover changed tags,
+recreated identities, missing retained graphs, unknown references, orphaned
+build history and safe resumption. The workflow requires the exact plan SHA256,
+checks replacement acceptance and current identities, and journals each deletion.
+It is specific to this reviewed rc.4 plan, not a general automatic retention job.
+
+Hosted attempts `43168090301` and `43168570526` passed the read/graph safeguards,
+but GitHub rejected the first DELETE with HTTP 404 (`Package not found.`).
+Both journals have zero deletion events. The endpoint/API version was checked
+against [GitHub's package API](https://docs.github.com/en/rest/packages/packages#delete-package-version-for-a-user).
+A package-level Admin role is required for workflow deletion, as described in
+[GitHub's deletion permissions](https://docs.github.com/en/packages/learn-github-packages/deleting-and-restoring-a-package).
+The user was asked to inspect/grant that role to `mylife-inc/Zellij` for the three
+packages. Do not infer success from the existing write/publish capability.
+See [image retirement evidence](evidence/zellij-rc4-image-retirement-2026-11-11.json).
+After access is corrected, rerun the reviewed workflow on current main with
+`mode=retire-images` and the recorded plan hash; it rechecks live references and
+refuses drift. Replan if aliases moved. Verify current images again afterward.
+
+The plan deliberately does not sweep 3,152 untagged versions outside the selected
+old-release graphs. These are separate build-history cleanup work, not current
+published release tags. Audit their reachability/retention before deleting them.
+Live deployment-provider verification and production docs/domain migration were
+not performed in this milestone.
+
+## Historical inventory and dependencies before rc.4
 
 Refreshed through GitHub on 2026-11-11 at source `df32e0e`:
 
@@ -100,7 +154,9 @@ is the company's current name, **MyLife** was its former name, and the existing
 GitHub account **`mylife-inc`** is owned by the user. The agreed installation
 command is **`brew install mylife-inc/tap/zel`**. Retain that technical namespace
 while using Shebka as the company identity; no GitHub account migration is
-needed. This settles the earlier namespace question; the tap is not yet live.
+needed. This settles the earlier namespace question. The tap is now live at
+[mylife-inc/homebrew-tap](https://github.com/mylife-inc/homebrew-tap), selecting
+the explicitly documented rc.4 preview.
 
 On a fresh machine, an owned tap gives a one-command installation such as
 `brew install mylife-inc/tap/zel`. After tap setup and the formula-specific
@@ -114,20 +170,18 @@ acceptance. Current [Homebrew core requirements](https://docs.brew.sh/Acceptable
 include a stable release, eligible open-source licensing and source availability;
 the user's potential later sealing of the source must be considered before
 promising this distribution path. An owned tap is the initial delivery route.
-The future formula must respect Homebrew-managed upgrades and use verified
+The published formula respects Homebrew-managed upgrades and uses verified
 versioned artifacts from the public release mirror.
 
-## Remaining implementation
+## Remaining work
 
-- Prepare the next candidate containing the already merged branding/hydration
-  changes and update the current installation/delivery references.
-- Implement and test explicit preview discovery/installation as needed to retire
-  the old stable distribution without silently changing stable semantics.
-- Create the owned tap/bucket and validate their install/upgrade/uninstall paths.
-- Implement exact-scope retirement inventory and cleanup, including safe repeated
-  execution, preservation of the replacement and protection of CodeSeal assets.
-- Perform the first retirement only after the replacement and dependent references
-  pass verification. Record exact before/after evidence with that release.
+- Complete the reviewed 187-version image retirement after package Admin access
+  is confirmed, then verify retained public images and record the result.
+- Separately review untagged build-history retention before any wider cleanup.
+- Add Scoop and other selected package-manager channels with native acceptance;
+  respect external registries' version-removal limits before publishing previews.
+- For the next release, repeat publish/verify/migrate/retire with a new concrete
+  inventory. Do not reuse the rc.4 plan against changed manifests or tags.
 
 This plan does not reopen live provider/account verification or production-site
 migration, which remain deferred under the earlier user instruction.

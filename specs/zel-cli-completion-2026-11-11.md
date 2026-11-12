@@ -5,9 +5,11 @@ and external-runner acceptance remains incomplete. The user explicitly moved
 deployment verification to the end and authorized cutting a CLI release with
 updated documentation on 2026-11-11. This page separates implementation,
 release checks, deferred acceptance work, and format boundaries.
-**v0.2.0-rc.3 is published**, including all post-rc.2 implementation changes.
-All 16 final-head CI checks and all 29 release jobs passed. See the
-[release evidence](evidence/zellij-rc3-release-2026-11-11.json).
+**v0.2.0-rc.4 is published**, including company branding, the hydration fix,
+preview upgrades, matching default engine images and Homebrew support. All 20
+final-head CI checks and all 29 release jobs passed. The public Homebrew tap also
+passed all four native acceptance jobs. See the
+[release evidence](evidence/zellij-rc4-release-2026-11-11.json).
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
@@ -18,14 +20,15 @@ The previous completion statement does not claim these new features are done.
 Independent company/product branding is now implemented by PR #131
 (`b4cc9ba`), with all 16 CI jobs passing on `7d7febbe`; see
 [branding evidence](evidence/zellij-company-branding-2026-11-11.json). The four
-active guides were updated. This increment and the hydration fix below are newer
-than rc.3 and await a later release. The template catalog, composer/new sections,
-book/PDF publishing and package-manager registration remain planned.
+active guides were updated. This increment and the hydration fix below shipped
+in rc.4. The template catalog, composer/new sections and book/PDF publishing
+remain planned. Homebrew is live; Scoop, WinGet and other new package-manager
+channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
 backend, short Homebrew naming and removal of superseded pre-1.0 distributions.
 See the expansion design and [release retention policy](zellij-release-retention-2026-11-11.md).
-These decisions are recorded; PDF execution and retirement automation are not
-implemented by this documentation update.
+PDF execution is not implemented. Scoped retirement followed rc.4 publication
+and consumer migration; see the retention record for the exact removal scope.
 
 The user requested continuing until completion. The working target is the
 [agreed command contract](zel-cli-contract-2026-10-18.md), including conservative
@@ -49,9 +52,9 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.3: all 29 release jobs; six native platforms and four engine variants on both Linux architectures passed | Live provider/external-runner acceptance remains deferred. |
+| Distribution | Published rc.4: all 29 release jobs; six native platforms and four engine variants on both Linux architectures; public Homebrew acceptance on four native targets | Other package channels and live provider/external-runner acceptance remain deferred. |
 
-Latest implementation: Sphinx inclusion patterns, source `47b3293`, in
+Earlier importer milestone: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
 tests passed (five hosted cases run in CI), including 64 Sphinx CLI cases.
 Clippy, formatting, all six real-CLI/engine conversion checks, and strict/deep
@@ -80,7 +83,28 @@ Duplicate merge-push builds were skipped for this documentation-only revision.
 Historical audits were not rewritten. The newest published candidate was
 refreshed after PR #125's merge was `v0.2.0-rc.2`; the rc.3 release below supersedes it.
 
-## Release milestone complete
+## Current rc.4 release and distribution milestone
+
+PR #135 merged as `6d116b2`, with the exact tree accepted by all 20 CI jobs in
+run `43158764791`. Local release preflight passed 726 Rust and 461 engine tests,
+typechecks, schema drift, formatting and Clippy. Public release run `43163531316`
+passed all 29 jobs. The Homebrew tap at `mylife-inc/homebrew-tap` passed all four
+jobs in `43164789683`, including actual public downloads and revision upgrades.
+
+PR #136 (`ea9d61b`) migrated all six saved delivery workflows to rc.4 and verified
+their build paths without publishing Netlify drafts or other provider sites.
+Static/Next image publication and fresh-runner HTTP checks passed. The four
+mutable development image aliases were refreshed before retiring older versions.
+Nine older release entries, 113 assets and nine remote tags were removed while
+preserving rc.4, CodeSeal and source/audit history. See
+[release evidence](evidence/zellij-rc4-release-2026-11-11.json) and
+[retention status](zellij-release-retention-2026-11-11.md).
+
+The next implementation milestone is the versioned template catalog and native
+creation flow. The wider product expansion remains incomplete; these successful
+checks do not establish the absence of undiscovered bugs.
+
+## Historical rc.3 release milestone
 
 [PR #127](https://github.com/mylife-inc/Zellij/pull/127) merged as
 `58be9b1ab992424576572ee8e2ba736f134f727c`, with tree
