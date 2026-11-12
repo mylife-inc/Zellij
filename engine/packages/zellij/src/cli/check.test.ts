@@ -297,3 +297,16 @@ it('checks nested composition references with source paths and strict diagnostic
   expect(errors).toContain('/missing-inline-target');
   expect(errors).toContain('sections/composition.yaml');
 });
+
+it('checks references for the selected composition node, not every union alternative', async () => {
+  const node = { type: 'heading', text: '[Literal title](/not-a-rendered-link)' };
+  const section = { type: 'compose', version: 1, label: 'Heading semantics', children: [node] };
+  const contentDir = await fixture({ 'site.yaml': 'name: Literal heading\n',
+    'pages.yaml': '- name: home\n  sections: [composition]\n', 'sections/composition.yaml': JSON.stringify(section) });
+  expect((await check({ contentDir, deep: true, strict: true })).ok).toBe(true);
+  node.type = 'text';
+  await writeFile(path.join(contentDir, 'sections/composition.yaml'), JSON.stringify(section));
+  const result = await check({ contentDir, deep: true, strict: true });
+  expect(result.ok).toBe(false);
+  expect(result.errors.join('\n')).toContain('/not-a-rendered-link');
+});

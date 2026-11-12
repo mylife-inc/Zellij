@@ -558,7 +558,15 @@ The showcase recreates a hero, split story and feature grid with the same type,
 original copy and an original SVG. Hosted browser tests cover responsive layout,
 images/links, gradient visibility, reduced motion, forced colours, print, missing
 observers and disabled JavaScript; screenshots are retained for visual review.
-Local checks pass 481 engine tests, workspace types, 14 native authoring tests,
+Local checks pass 482 engine tests, workspace types, 14 native authoring tests,
 all 24 authored section types through the real engine and full-starter generation.
 The Rust workspace passes 743 tests with five existing ignored cases; Clippy passes.
 Published rc.5 remains unchanged; CI, visual review and merge are pending.
+
+
+Composer review correction: the initial `328489b` source inspected all union
+alternatives while collecting references, so a heading such as
+`[Literal title](/not-a-link)` incorrectly failed deep checking. A regression
+reproduces the false positive; reference traversal now skips object alternatives
+whose literal selectors disagree with the parsed value. The same text in a
+`text` node remains an actual checked link. Fresh hosted acceptance is required.

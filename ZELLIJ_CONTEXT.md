@@ -114,7 +114,7 @@ now lists node/layout alternatives, and generated context expands array unions.
 Instance-aware H1 ownership preserves the fallback title when no composed H1
 exists. Gradient reveal keeps solid text beneath its decorative paint and
 provides no-JS, reduced-motion, forced-colour and print fallbacks.
-Local verification: 481 engine tests, workspace types, 14 native authoring tests,
+Local verification: 482 engine tests, workspace types, 14 native authoring tests,
 all 24 native-to-engine authoring cases and all full-starter variants pass. The
 Rust workspace passes 743 tests (five ignored); warnings-denied Clippy passes.
 Showcase adds an original hero/split/grid composition and SVG; docs add a source-
@@ -7937,3 +7937,11 @@ production cutover were performed. Fly/S3, actual GitLab/CircleCI and the
 user-deferred Vercel checks remain later work; frozen manual delivery fixtures
 still pin their previously verified rc.2. Exact assets/digests and verification
 are in [the rc.3 record](specs/evidence/zellij-rc3-release-2026-11-11.json).
+
+
+Composer review correction: the initial `328489b` source inspected all union
+alternatives while collecting references, so a heading such as
+`[Literal title](/not-a-link)` incorrectly failed deep checking. A regression
+reproduces the false positive; reference traversal now skips object alternatives
+whose literal selectors disagree with the parsed value. The same text in a
+`text` node remains an actual checked link. Fresh hosted acceptance is required.

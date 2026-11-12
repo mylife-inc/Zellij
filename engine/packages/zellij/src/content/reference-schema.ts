@@ -9,6 +9,7 @@ export const mdxReferenceSchema = z.string().meta({ zellijReference: 'mdx' });
 export type ReferenceKind = 'asset' | 'href' | 'inline' | 'mdx';
 export interface SchemaReference { kind: ReferenceKind; value: string; field: string }
 type Shape = {
+  const?: unknown;
   zellijReference?: ReferenceKind;
   properties?: Record<string, Shape>;
   items?: Shape;
@@ -22,6 +23,14 @@ export function schemaReferences(schema: z.ZodType, value: unknown): SchemaRefer
   const found = new Map<string, SchemaReference>();
   function walk(shape: Shape, input: unknown, field: string): void {
     if (input === undefined || input === null) return;
+    // Parsed discriminated objects carry their literal selector. Inspect only
+    // matching alternatives: a heading's plain `text` is not a text node's
+    // inline Markdown, even though both fields have the same name.
+    if (typeof input === 'object' && !Array.isArray(input) && shape.properties) {
+      const object = input as Record<string, unknown>;
+      if (Object.entries(shape.properties).some(([key, child]) =>
+        Object.hasOwn(child, 'const') && Object.hasOwn(object, key) && object[key] !== child.const)) return;
+    }
     if (shape.zellijReference && typeof input === 'string') {
       found.set(`${field}:${shape.zellijReference}`, { kind: shape.zellijReference, value: input, field });
     }
