@@ -104,6 +104,7 @@ Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
 | `button` | Required `label` and `href`; `style: primary | secondary | ghost` (default primary). External links use the existing new-tab behavior. |
 | `stat` | Required string `value` and `label`. Quote numeric YAML values. |
 | `divider` | A separator; no extra fields. |
+| `media-accordion` | Required `label` and 2–8 `items`; the same synchronized text/image component as [the concise section](/sections/media-accordion). Supports `mediaSide`, `ratio`, `fit` and `itemHeadingLevel`. |
 | `group` | Required `children`; optional layout and surface settings above. |
 
 Elements other than dividers also accept `effect: reveal`, which uses the site's
@@ -144,7 +145,25 @@ native authoring and engine checking enforce these bounds. Deep checks follow
 nested image paths, button links and inline Markdown; unknown fields warn and
 fail strict checks.
 
+## Named presets
+
+```bash
+zel presets                              # descriptions
+zel list presets --json                  # names, types and descriptions
+zel ns -p product-hero --out content/sections/intro.yaml
+zel ns compose --preset split-story --out content/sections/story.yaml
+```
+
+The bundled presets are `product-hero`, `split-story`, `feature-cards` and
+`media-accordion`. Each expands into an ordinary composition with editable
+content and layout. No preset reference remains in the generated file. They
+work offline and accept the same `--set`, `--set-json`, `--count`, `--unset`
+and `--interactive` editing options as other sections. Use `--out` when inferring
+the type with `-p`; an output positional argument requires the explicit type.
+Image paths are placeholders to replace before building. These section presets
+are distinct from the whole-site templates offered by `zel templates`.
+
 Version 1 covers these bounded layouts and elements. Layers, video, arbitrary
-embedded sections, selectable media, synchronized accordions, scroll stories,
+embedded sections, independent media selectors, scroll stories,
 and authored effect ranges are not implemented by this version. Existing
 sections such as `video-embed` can still be adjacent sections on the page.

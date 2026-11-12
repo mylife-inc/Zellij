@@ -50,6 +50,7 @@ shortcuts! {
     }
     unit {
         Sections => ("sections", "list sections", Command::List(ListTarget::Sections));
+        Presets => ("presets", "list presets", Command::List(ListTarget::Presets));
         Themes => ("themes", "list themes", Command::List(ListTarget::Themes));
         Formats => ("formats", "list formats", Command::List(ListTarget::Formats));
         Targets => ("targets", "list targets", Command::List(ListTarget::Targets));
@@ -685,6 +686,8 @@ pub(crate) enum NewTarget {
 
 #[derive(Subcommand, Debug, PartialEq, Eq)]
 pub(crate) enum ListTarget {
+    /// Named section compositions, ready to generate and edit offline.
+    Presets,
     /// Every section type.
     Sections,
     /// Every theme.
@@ -796,6 +799,9 @@ pub(crate) struct NewSectionArgs {
     /// Optional output filename; equivalent to --out.
     #[arg(conflicts_with = "out")]
     pub(crate) name: Option<String>,
+    /// Start with a named composition; infers the section type when omitted. See zel presets.
+    #[arg(long, short = 'p')]
+    pub(crate) preset: Option<String>,
     /// Ask for the section type, item counts and required content before writing.
     #[arg(long, short = 'i')]
     pub(crate) interactive: bool,

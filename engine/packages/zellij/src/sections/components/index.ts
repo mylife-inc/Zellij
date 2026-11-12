@@ -1,4 +1,5 @@
 import { Compose } from './compose';
+import { MediaAccordion } from './media-accordion';
 import type { ComponentType } from 'react';
 import type { SectionProps } from '../types';
 
@@ -32,6 +33,7 @@ import { Zigzag } from './zigzag';
  */
 export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never>>> = {
   compose: Compose as ComponentType<SectionProps<never>>,
+  'media-accordion': MediaAccordion as ComponentType<SectionProps<never>>,
   hero: Hero as ComponentType<SectionProps<never>>,
   'hero-split': HeroSplit as ComponentType<SectionProps<never>>,
   'logo-strip': LogoStrip as ComponentType<SectionProps<never>>,

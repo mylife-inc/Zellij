@@ -589,3 +589,23 @@ visual findings in [the composer record](evidence/zellij-compose-2026-11-12.json
 This closes the bounded prototype acceptance above. Named/interactive presets
 and the remaining primitives stay open; next is the media accordion, followed by
 book/PDF work. Published rc.5 and the production site have not changed.
+
+## Media accordion and presets — 2026-11-12 source checkpoint
+
+The next increment implements a reusable media-accordion node, also offered as
+a concise section, and four named compositions (product-hero, split-story,
+feature-cards and media-accordion). The engine validates each preset artifact
+before embedding it in Rust. `zel presets` lists them; `zel ns -p <name>` writes
+ordinary editable YAML offline, inferring its type. Existing flags, interactive
+editing and output ownership checks remain in force. This is distinct from the
+versioned whole-site template catalog.
+
+The component shares one bounded schema and renderer, uses the active container's
+width for its responsive split, and provides sequential server/no-JS/print output.
+All item images load eagerly to avoid blank selections or print-only lazy loads;
+authors should supply optimized media. The composer schema remains finite at
+18,357 compact JSON bytes. There is no additional dependency. Local/native
+checks and authored-site validation pass; final hosted acceptance, screenshots
+and merge are pending. See [the focused design and verification record](zellij-media-composition-2026-11-12.md).
+Remaining primitives, technical/study books, PDF/LaTeX and other installer
+channels are not implied complete. Published rc.5 and production docs are unchanged.

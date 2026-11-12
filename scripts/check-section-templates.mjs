@@ -53,6 +53,11 @@ const structured = parse(await readFile(structuredFile, 'utf8'));
 assert.deepEqual(structured.cta, [{ label: 'Read structured content', href: '#structured-demo' }]);
 assert.deepEqual(structured.background, { gradient: ['accent', 'surface'] });
 pages.push({ name: 'structured', title: 'Structured fields', sections: ['structured'] });
+for (const name of Object.keys(schema.sectionPresets)) {
+  const file = `preset-${name}`;
+  execFileSync(path.resolve(binary), ['ns', '-p', name, '--out', path.join(content, 'sections', `${file}.yaml`)], { stdio: 'pipe' });
+  pages.push({ name: file, title: `Preset ${name}`, sections: [file] });
+}
 await writeFile(path.join(content, 'site.yaml'), stringify({ name: 'Section templates', home: 'hero', motion: 'none' }));
 await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 // Media templates deliberately name replaceable authored assets. Supply real
@@ -60,4 +65,4 @@ await writeFile(path.join(content, 'pages.yaml'), stringify(pages));
 await copyFile(path.join(repo, 'examples/showcase/content/assets/logo.svg'), path.join(content, 'assets/replace-me.svg'));
 await copyFile(path.join(repo, 'scripts/fixtures/template.mp4'), path.join(content, 'assets/replace-me.mp4'));
 execFileSync(process.execPath, [path.join(repo, 'engine/packages/zellij/bin/zellij.mjs'), 'check', content], { stdio: 'inherit' });
-console.log(`Validated ${schema.sectionTypes.length} templates, a wizard page with all ordered section references and a structured-field page; authored registration stayed unchanged.`);
+console.log(`Validated ${schema.sectionTypes.length} templates, ${Object.keys(schema.sectionPresets).length} presets, a wizard page with all ordered section references and a structured-field page; authored registration stayed unchanged.`);

@@ -5,6 +5,7 @@ import type { MotionPreset } from '../../config/schema';
 import { CtaLink, InlineMarkdown, SectionImage, SectionShell, gradientTextProps } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { GradientReveal } from '../../motion/gradient-reveal';
+import { MediaAccordionContent } from './media-accordion';
 
 function layoutProps(layout?: ComposeLayout) {
   return { 'data-layout': layout?.kind ?? 'stack', 'data-align': layout?.align ?? 'start',
@@ -39,6 +40,7 @@ function Node({ node, basePath, motion, titleGradient }: {
     case 'button': content = <div className="zellij-compose-action"><CtaLink cta={node} /></div>; break;
     case 'stat': content = <dl className="zellij-compose-stat"><dt>{node.label}</dt><dd>{node.value}</dd></dl>; break;
     case 'divider': content = <hr className="zellij-compose-divider" />; break;
+    case 'media-accordion': content = <MediaAccordionContent node={node} basePath={basePath} motion={motion} />; break;
   }
   return node.type !== 'divider' && node.effect === 'reveal'
     ? <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal> : content;

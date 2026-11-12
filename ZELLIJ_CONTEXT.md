@@ -137,8 +137,15 @@ light/dark desktop/phone captures were visually reviewed. All 13 development
 engine jobs in `43274667686` pass. See [composer evidence](specs/evidence/zellij-compose-2026-11-12.json).
 Layers, embedded sections/video, arbitrary effect ranges and interactive presets
 are outside this first composer slice. Published rc.5 is unchanged.
-Next implementation: media-accordion and additional composition presets, then
-book/PDF milestones.
+The next source increment adds a shared media-accordion section/composition node
+and four offline named section presets. `zel presets` / `zel list presets`
+discovers them; `zel ns -p <name>` expands editable YAML and can infer the type.
+No runtime preset lookup or new dependency is introduced. The concise catalog
+now has 25 types, with bounded accordion items and sequential no-JS/print output.
+See [the implementation checkpoint](specs/zellij-media-composition-2026-11-12.md).
+Local native authoring and engine validation pass; final hosted checks, visual
+review and merge are pending. Published rc.5 is unchanged. Book/PDF milestones
+and remaining composition primitives follow this increment.
 
 After the template milestone: composition/media-accordion and book/PDF
 publishing, plus technical/study book editions. Scoop,

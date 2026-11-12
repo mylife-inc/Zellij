@@ -1,0 +1,48 @@
+.zellij-section[data-zellij-section="media-accordion"] { --zellij-compose-fg: var(--zellij-fg); --zellij-compose-muted: var(--zellij-muted); }
+.zellij-section[data-zellij-section="media-accordion"][data-zellij-background="inverted"],
+.zellij-section[data-zellij-section="media-accordion"][data-zellij-background="gradient"] { --zellij-compose-fg: var(--zellij-inverted-fg); --zellij-compose-muted: var(--zellij-inverted-fg); }
+.zellij-section[data-zellij-section="media-accordion"][data-zellij-background="accent"] { --zellij-compose-fg: var(--zellij-accent-fg); --zellij-compose-muted: var(--zellij-accent-fg); }
+.zellij-media-accordion { container-type: inline-size; width: 100%; min-width: 0; text-align: start; color: var(--zellij-compose-fg); }
+.zellij-media-accordion-layout { display: block; }
+.zellij-media-accordion-items { min-width: 0; }
+.zellij-media-accordion-item { border-block-start: 1px solid color-mix(in srgb, currentColor 24%, transparent); }
+.zellij-media-accordion-item:last-child { border-block-end: 1px solid color-mix(in srgb, currentColor 24%, transparent); }
+.zellij-media-accordion-heading { margin: 0; color: inherit; font-family: var(--zellij-font-heading); font-size: clamp(1.25rem, 2.2vw, 1.875rem); line-height: 1.2; letter-spacing: -.025em; }
+.zellij-media-accordion-heading > span { display: block; padding-block: 1.25rem; }
+.zellij-media-accordion-heading button { display: flex; align-items: center; justify-content: space-between; gap: 1.25rem; width: 100%; min-height: 3.5rem; padding: 1.25rem .125rem; color: inherit; font: inherit; letter-spacing: inherit; text-align: start; border: 0; border-radius: .2rem; background: none; cursor: pointer; }
+.zellij-media-accordion-heading button[aria-disabled="true"] { cursor: default; }
+.zellij-media-accordion-heading button:focus-visible { outline: 2px solid currentColor; outline-offset: .25rem; }
+.zellij-media-accordion-sign { flex: 0 0 1em; text-align: center; font-weight: 400; }
+.zellij-media-accordion-panel { padding-block-end: 1.5rem; }
+.zellij-media-accordion-body p { margin: 0 0 1.25rem; color: var(--zellij-compose-muted); font-size: 1rem; line-height: 1.65; }
+.zellij-media-accordion :is(p, button, figcaption) { overflow-wrap: anywhere; }
+.zellij-media-accordion-figure { margin: 0; min-width: 0; }
+.zellij-media-accordion-figure .zellij-media { border-radius: 1.5rem; background: color-mix(in srgb, currentColor 5%, transparent); }
+.zellij-media-accordion-figure[data-fit="contain"] img { object-fit: contain; }
+.zellij-media-accordion-figure[data-fit="cover"] img { object-fit: cover; }
+.zellij-media-accordion-figure figcaption { margin-block-start: .875rem; color: var(--zellij-compose-muted); font-size: .875rem; line-height: 1.5; }
+.zellij-media-accordion-companion { display: none; min-width: 0; }
+@container (min-width: 760px) {
+  .zellij-media-accordion-layout[data-ready="true"] { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+  .zellij-media-accordion-layout[data-ready="true"] .zellij-media-accordion-inline { display: none; }
+  .zellij-media-accordion-companion { display: block; }
+  .zellij-media-accordion-layout[data-media-side="start"] { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+  .zellij-media-accordion-layout[data-media-side="start"] .zellij-media-accordion-companion { grid-column: 1; grid-row: 1; }
+  .zellij-media-accordion-layout[data-media-side="start"] .zellij-media-accordion-items { grid-column: 2; grid-row: 1; }
+  .zellij-media-accordion-layout:not([data-motion="none"]) .zellij-media-accordion-companion { animation: zellij-media-appear .2s ease-out; }
+}
+@keyframes zellij-media-appear { from { opacity: .35; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .zellij-media-accordion-companion { animation: none !important; } }
+@media (forced-colors: active) {
+  .zellij-media-accordion { color: CanvasText; }
+  .zellij-media-accordion-item { border-color: CanvasText; }
+  .zellij-media-accordion-body p, .zellij-media-accordion-figure figcaption { color: CanvasText; }
+}
+@media print {
+  .zellij-media-accordion { --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
+  .zellij-media-accordion-layout { display: block !important; }
+  .zellij-media-accordion-panel[hidden], .zellij-media-accordion-inline { display: block !important; }
+  .zellij-media-accordion-companion, .zellij-media-accordion-sign { display: none !important; }
+  .zellij-media-accordion-item { break-inside: avoid; border-color: #777; }
+  .zellij-media-accordion-figure .zellij-media { max-width: 28rem; }
+}

@@ -1,0 +1,103 @@
+---
+title: Media accordion
+description: Pair selectable feature stories with synchronized illustrations, on their own or in a composition.
+---
+
+<Callout type="info" title="Source after v0.2.0-rc.5">
+The media accordion and section presets require a matching CLI and engine built
+from current source. Published rc.5 does not include them. These are hosted
+sections; the portable Markdown renderer does not render the section catalog.
+</Callout>
+
+Use a media accordion when each short explanation belongs with a different
+illustration. A wide container pairs the text with one large image. In a narrow
+container, the selected image follows its text. Each instance selects its first
+item initially and keeps its selection independent of other accordions.
+
+<SectionPreview example="media-accordion" />
+
+## Create one
+
+```bash
+zel ns media-accordion --out content/sections/details.yaml
+zel explain media-accordion
+```
+
+Add `details` to a page's `sections` list. Replace the placeholder media with
+your own files under `content/assets`:
+
+```yaml
+type: media-accordion
+label: Product details
+heading: A closer look.
+items:
+  - title: A clear starting point.
+    body: "Focus on **one useful detail**. [Read more](/guide)."
+    image: assets/first-detail.svg
+    alt: Describe the first illustration
+    caption: An optional caption.
+  - title: Room for the next idea.
+    body: Explain how the next detail helps your reader.
+    image: assets/second-detail.svg
+    alt: Describe the second illustration
+```
+
+## Fields
+
+| Field | Meaning | Default |
+| --- | --- | --- |
+| `label` | Required accessible group name; also usable as the page-rail label. | — |
+| `heading`, `eyebrow`, `subhead` | Optional section header; subhead supports inline Markdown. | — |
+| `items` | Two to eight stories, in reading order. | — |
+| `mediaSide` | `start` or `end`, for the companion image in a wide container. | `end` |
+| `ratio` | `landscape` (16:10), `square`, or `portrait` (3:4). | `landscape` |
+| `fit` | `contain` preserves the whole image; `cover` fills the frame and can crop it. | `contain` |
+| `itemHeadingLevel` | Item heading level 2–4; choose it to fit the surrounding outline. | `3` |
+
+Every item requires a plain-text `title`, inline-Markdown `body`, `image` asset
+reference and meaningful `alt`. `caption` is optional inline Markdown. Block
+MDX, video, autoplay and authored JavaScript are not supported by this component.
+The section also accepts the usual `id`, `background`, `padding`, `motion` and
+`titleGradient` fields. `titleGradient` affects the optional section heading.
+Item images load eagerly so selection and print do not depend on loading a
+previously hidden picture. Use optimized images; the eight-item limit bounds
+each instance's media count.
+
+## Compose it with other elements
+
+The same `media-accordion` is available as a [composition element](/sections/compose).
+Inside `children`, use `type`, `label`, `items`, `mediaSide`, `ratio`, `fit` and
+`itemHeadingLevel`; use a separate `heading` element for its heading. The element
+also accepts `effect: reveal`, like other composition elements.
+
+Start with the complete named composition:
+
+```bash
+zel presets
+zel ns -p media-accordion --out content/sections/details.yaml
+zel ns -p media-accordion --count children.1.items=2 \
+  --set 'children.1.items.0.title=Your first detail' \
+  --out content/sections/two-details.yaml
+zel check --deep --strict
+```
+
+Presets generate ordinary YAML that you can edit freely. They do not add a
+runtime preset reference or require a remote catalog. Use `zel templates` for
+whole-site starters; use `zel presets` for section compositions.
+
+## Keyboard, layout and fallbacks
+
+Enter or Space selects a heading. Tab visits controls and links normally;
+Up/Down and Home/End move focus between headings without changing selection.
+One item stays open after enhancement, so selecting its active heading does not
+collapse it. Selection never moves focus automatically or starts a timer.
+
+The side-by-side layout requires at least 760 pixels **inside the component's
+container**, so an accordion inside a narrow composition card stays stacked even
+on a desktop monitor. Layout changes preserve selection and reading order.
+
+Before JavaScript loads, or with JavaScript disabled, all stories and images
+appear in order with ordinary headings and working links. Print displays all
+stories and images in that same sequence. Reduced motion removes the brief
+image fade; forced-colour mode retains system-colour text, boundaries and focus
+indicators. Choosing `motion: none` also removes the fade.

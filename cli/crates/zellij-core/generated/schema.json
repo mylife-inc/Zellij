@@ -14,6 +14,7 @@
     "logo-strip",
     "markdown-prose",
     "matrix",
+    "media-accordion",
     "media-panel",
     "pricing-table",
     "promo-grid",
@@ -112,6 +113,7 @@
     "logo-strip": "type: logo-strip\nlogos:\n  - assets/replace-me.svg\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n",
     "markdown-prose": "type: markdown-prose\nbody: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
     "matrix": "type: matrix\ncolumns:\n  - label: TODO\n  - label: TODO\nrows:\n  - label: TODO\n    cells:\n      - TODO\n      - TODO\n  - label: TODO\n    cells:\n      - TODO\n      - TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# eyebrow: TODO\n# rowAxis: TODO\n# columnAxis: TODO\n# footnote: TODO\n",
+    "media-accordion": "type: media-accordion\nlabel: TODO\nitems:\n  - title: TODO\n    body: TODO\n    image: assets/replace-me.svg\n    alt: TODO\n  - title: TODO\n    body: TODO\n    image: assets/replace-me.svg\n    alt: TODO\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# start | end\n# mediaSide: end\n# landscape | square | portrait\n# ratio: landscape\n# contain | cover\n# fit: contain\n# itemHeadingLevel: 3\n# eyebrow: TODO\n# heading: TODO\n# subhead: TODO\n",
     "media-panel": "type: media-panel\nimage: assets/replace-me.svg\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Keep exactly one of: image, video.\n# Uncomment what you need.\n# heading: TODO\n# eyebrow: TODO\n# title: TODO\n# body: TODO\n# video: assets/replace-me.mp4\n# poster: assets/replace-me.svg\n# alt: \"\"\n# left | center | right\n# align: left\n# light | dark | auto\n# tone: auto\n# ultrawide | wide | square | portrait\n# ratio: wide\n# scrim: 0\n# cta:\n#   - label: TODO\n#     href: \"#\"\n# href: \"#\"\n",
     "pricing-table": "type: pricing-table\ntiers:\n  - name: TODO\n    price: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
     "promo-grid": "type: promo-grid\nitems:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# none | tight | normal\n# gap: normal\n",
@@ -123,6 +125,28 @@
     "timeline": "type: timeline\nitems:\n  - date: TODO\n    title: TODO\n  - date: TODO\n    title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
     "video-embed": "type: video-embed\nsrc: assets/replace-me.mp4\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# poster: assets/replace-me.svg\n# caption: TODO\n",
     "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
+  },
+  "sectionPresets": {
+    "product-hero": {
+      "sectionType": "compose",
+      "description": "A generous product introduction with a gradient title and call to action.",
+      "yaml": "# Composition preset: product-hero. Edit this file freely.\ntype: compose\nversion: 1\nlabel: Introduction\npadding: loose\nlayout:\n  kind: stack\n  align: center\n  gap: large\nchildren:\n  - type: heading\n    level: 1\n    scale: display\n    text: Make room for your next idea.\n    gradient:\n      colors:\n        - \"#b94c25\"\n        - \"#df9b55\"\n      effect: reveal\n  - type: text\n    size: lead\n    text: A clear introduction to what you make, who it helps, and why it matters.\n  - type: button\n    label: Explore the story\n    href: \"#\"\n"
+    },
+    "split-story": {
+      "sectionType": "compose",
+      "description": "An editorial image and a compact story, with a reversible split layout.",
+      "yaml": "# Composition preset: split-story. Edit this file freely.\ntype: compose\nversion: 1\nlabel: The story\nlayout:\n  kind: split\n  ratio: wide-start\n  align: center\n  gap: large\nchildren:\n  - type: image\n    image: assets/replace-me.svg\n    alt: Describe the story illustrated by your image\n    caption: Add context to the illustration.\n  - type: group\n    children:\n      - type: heading\n        text: Every detail has a reason.\n      - type: text\n        size: lead\n        text: Tell the story behind one thoughtful choice. Keep the focus on what it means for your reader.\n      - type: button\n        label: Read more\n        href: \"#\"\n        style: ghost\n\n# Replace the placeholder images with your own content/assets files before building.\n"
+    },
+    "feature-cards": {
+      "sectionType": "compose",
+      "description": "Three equal-height feature cards with theme-aware surfaces.",
+      "yaml": "# Composition preset: feature-cards. Edit this file freely.\ntype: compose\nversion: 1\nlabel: Details\nchildren:\n  - type: heading\n    text: Small details. Lasting differences.\n  - type: group\n    layout:\n      kind: grid\n      columns: 3\n      align: stretch\n    children:\n      - type: group\n        surface: tinted\n        padding: medium\n        radius: large\n        children:\n          - type: heading\n            level: 3\n            scale: subtitle\n            text: A clear beginning.\n          - type: text\n            text: Explain how your reader gets started.\n      - type: group\n        surface: tinted\n        padding: medium\n        radius: large\n        children:\n          - type: heading\n            level: 3\n            scale: subtitle\n            text: Room to grow.\n          - type: text\n            text: Describe how the experience adapts to new needs.\n      - type: group\n        surface: tinted\n        padding: medium\n        radius: large\n        children:\n          - type: heading\n            level: 3\n            scale: subtitle\n            text: Thoughtfully finished.\n          - type: text\n            text: Show the care behind one useful detail.\n"
+    },
+    "media-accordion": {
+      "sectionType": "compose",
+      "description": "Selectable feature stories with a synchronized illustration and sequential fallbacks.",
+      "yaml": "# Composition preset: media-accordion. Edit this file freely.\ntype: compose\nversion: 1\nlabel: A closer look\nchildren:\n  - type: heading\n    text: A closer look at the details.\n  - type: media-accordion\n    label: Explore the details\n    items:\n      - title: Start with the essentials.\n        body: Explain one useful feature in **plain language**.\n        image: assets/replace-me.svg\n        alt: Describe the first feature illustration\n      - title: Find a new perspective.\n        body: Give the reader another reason to explore.\n        image: assets/replace-me.svg\n        alt: Describe the second feature illustration\n      - title: Make it your own.\n        body: Show how this detail fits the reader’s needs.\n        image: assets/replace-me.svg\n        alt: Describe the third feature illustration\n\n# Replace the placeholder images with your own content/assets files before building.\n"
+    }
   },
   "sectionAuthoringRules": {
     "compose": {
@@ -1031,6 +1055,100 @@
                 "properties": {
                   "type": {
                     "type": "string",
+                    "const": "media-accordion"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "mediaSide": {
+                    "default": "end",
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "end"
+                    ]
+                  },
+                  "ratio": {
+                    "default": "landscape",
+                    "type": "string",
+                    "enum": [
+                      "landscape",
+                      "square",
+                      "portrait"
+                    ]
+                  },
+                  "fit": {
+                    "default": "contain",
+                    "type": "string",
+                    "enum": [
+                      "contain",
+                      "cover"
+                    ]
+                  },
+                  "itemHeadingLevel": {
+                    "default": 3,
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 4
+                  },
+                  "items": {
+                    "minItems": 2,
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "body": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "inline"
+                        },
+                        "image": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "alt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "caption": {
+                          "type": "string",
+                          "zellijReference": "inline"
+                        }
+                      },
+                      "required": [
+                        "title",
+                        "body",
+                        "image",
+                        "alt"
+                      ]
+                    }
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "label",
+                  "items"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
                     "const": "group"
                   },
                   "effect": {
@@ -1434,6 +1552,100 @@
                           },
                           "required": [
                             "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "media-accordion"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "mediaSide": {
+                              "default": "end",
+                              "type": "string",
+                              "enum": [
+                                "start",
+                                "end"
+                              ]
+                            },
+                            "ratio": {
+                              "default": "landscape",
+                              "type": "string",
+                              "enum": [
+                                "landscape",
+                                "square",
+                                "portrait"
+                              ]
+                            },
+                            "fit": {
+                              "default": "contain",
+                              "type": "string",
+                              "enum": [
+                                "contain",
+                                "cover"
+                              ]
+                            },
+                            "itemHeadingLevel": {
+                              "default": 3,
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 4
+                            },
+                            "items": {
+                              "minItems": 2,
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "body": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "inline"
+                                  },
+                                  "image": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "alt": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "caption": {
+                                    "type": "string",
+                                    "zellijReference": "inline"
+                                  }
+                                },
+                                "required": [
+                                  "title",
+                                  "body",
+                                  "image",
+                                  "alt"
+                                ]
+                              }
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "label",
+                            "items"
                           ]
                         },
                         {
@@ -1851,6 +2063,100 @@
                                     "properties": {
                                       "type": {
                                         "type": "string",
+                                        "const": "media-accordion"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "mediaSide": {
+                                        "default": "end",
+                                        "type": "string",
+                                        "enum": [
+                                          "start",
+                                          "end"
+                                        ]
+                                      },
+                                      "ratio": {
+                                        "default": "landscape",
+                                        "type": "string",
+                                        "enum": [
+                                          "landscape",
+                                          "square",
+                                          "portrait"
+                                        ]
+                                      },
+                                      "fit": {
+                                        "default": "contain",
+                                        "type": "string",
+                                        "enum": [
+                                          "contain",
+                                          "cover"
+                                        ]
+                                      },
+                                      "itemHeadingLevel": {
+                                        "default": 3,
+                                        "type": "integer",
+                                        "minimum": 2,
+                                        "maximum": 4
+                                      },
+                                      "items": {
+                                        "minItems": 2,
+                                        "maxItems": 8,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "title": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "body": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "inline"
+                                            },
+                                            "image": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "alt": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "caption": {
+                                              "type": "string",
+                                              "zellijReference": "inline"
+                                            }
+                                          },
+                                          "required": [
+                                            "title",
+                                            "body",
+                                            "image",
+                                            "alt"
+                                          ]
+                                        }
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "label",
+                                      "items"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
                                         "const": "group"
                                       },
                                       "effect": {
@@ -2254,6 +2560,100 @@
                                               },
                                               "required": [
                                                 "type"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "media-accordion"
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "mediaSide": {
+                                                  "default": "end",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "start",
+                                                    "end"
+                                                  ]
+                                                },
+                                                "ratio": {
+                                                  "default": "landscape",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "landscape",
+                                                    "square",
+                                                    "portrait"
+                                                  ]
+                                                },
+                                                "fit": {
+                                                  "default": "contain",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "contain",
+                                                    "cover"
+                                                  ]
+                                                },
+                                                "itemHeadingLevel": {
+                                                  "default": 3,
+                                                  "type": "integer",
+                                                  "minimum": 2,
+                                                  "maximum": 4
+                                                },
+                                                "items": {
+                                                  "minItems": 2,
+                                                  "maxItems": 8,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "title": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "body": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "inline"
+                                                      },
+                                                      "image": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "alt": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "caption": {
+                                                        "type": "string",
+                                                        "zellijReference": "inline"
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "title",
+                                                      "body",
+                                                      "image",
+                                                      "alt"
+                                                    ]
+                                                  }
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "label",
+                                                "items"
                                               ]
                                             }
                                           ]
@@ -3426,6 +3826,165 @@
         "type",
         "columns",
         "rows"
+      ]
+    },
+    "media-accordion": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "media-accordion"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "motion": {
+          "type": "string",
+          "enum": [
+            "none",
+            "subtle",
+            "expressive"
+          ]
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "default",
+                "tinted",
+                "inverted",
+                "accent",
+                "glow"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "gradient": {
+                  "minItems": 2,
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "gradient"
+              ]
+            }
+          ]
+        },
+        "padding": {
+          "type": "string",
+          "enum": [
+            "none",
+            "tight",
+            "normal",
+            "loose"
+          ]
+        },
+        "titleGradient": {
+          "minItems": 2,
+          "maxItems": 3,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "mediaSide": {
+          "default": "end",
+          "type": "string",
+          "enum": [
+            "start",
+            "end"
+          ]
+        },
+        "ratio": {
+          "default": "landscape",
+          "type": "string",
+          "enum": [
+            "landscape",
+            "square",
+            "portrait"
+          ]
+        },
+        "fit": {
+          "default": "contain",
+          "type": "string",
+          "enum": [
+            "contain",
+            "cover"
+          ]
+        },
+        "itemHeadingLevel": {
+          "default": 3,
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 4
+        },
+        "items": {
+          "minItems": 2,
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "body": {
+                "type": "string",
+                "minLength": 1,
+                "zellijReference": "inline"
+              },
+              "image": {
+                "type": "string",
+                "minLength": 1,
+                "zellijReference": "asset"
+              },
+              "alt": {
+                "type": "string",
+                "minLength": 1
+              },
+              "caption": {
+                "type": "string",
+                "zellijReference": "inline"
+              }
+            },
+            "required": [
+              "title",
+              "body",
+              "image",
+              "alt"
+            ]
+          }
+        },
+        "eyebrow": {
+          "type": "string"
+        },
+        "heading": {
+          "type": "string"
+        },
+        "subhead": {
+          "type": "string",
+          "zellijReference": "inline"
+        }
+      },
+      "required": [
+        "type",
+        "label",
+        "items"
       ]
     },
     "media-panel": {

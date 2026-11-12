@@ -1,6 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { z } from 'zod';
 import { buildSectionTemplates } from './section-templates';
+import { buildSectionPresets } from './section-presets';
 import { sectionAuthoringRules } from '../sections/authoring-rules';
 
 import { siteConfigSchema, THEME_NAMES } from '../config/schema';
@@ -151,6 +152,7 @@ const BASE_FIELDS = ['type', 'id', 'motion', 'background', 'padding', 'titleGrad
 
 function sectionReference(): string {
   const out: string[] = [];
+  const presets = Object.entries(buildSectionPresets());
 
   for (const type of registeredSectionTypes()) {
     const definition = getSection(type);
@@ -158,7 +160,10 @@ function sectionReference(): string {
 
     out.push(`### \`${type}\`\n`);
     out.push(fieldTable(toJson(definition.schema as z.ZodType), BASE_FIELDS));
-    if (type === 'compose') out.push('Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns) or split; mobile and print retain source order. `label` names the page rail. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths.\n');
+    if (type === 'compose') out.push('Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider, media-accordion and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns) or split; mobile and print retain source order. `label` names the page rail. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths.\n');
+    for (const [name, preset] of presets.filter(([, preset]) => preset.sectionType === type)) {
+      out.push(`Preset **${name}**: ${preset.description} Generate with \`zel ns -p ${name}\`; add \`--out section.yaml\` to save. Presets expand into editable YAML, with no runtime dependency on the catalog.\n`);
+    }
     out.push('');
   }
 
@@ -351,6 +356,7 @@ export function buildSchemaJson(): string {
         description: THEMES[name].description,
       })),
       sectionTemplates: buildSectionTemplates(),
+      sectionPresets: buildSectionPresets(),
       sectionAuthoringRules,
       sections,
       files: {

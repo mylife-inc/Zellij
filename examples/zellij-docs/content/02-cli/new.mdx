@@ -431,6 +431,16 @@ container workflow without maintaining a local wrapper.
 
 ## `zel new section [type] [file]`
 
+<Callout type="info" title="Section presets — source after rc.5">
+Current source adds `--preset` (`-p`) and `zel presets`. For example,
+`zel ns -p product-hero --out content/sections/intro.yaml` infers the composition
+type and writes editable YAML. The four offline presets are `product-hero`,
+`split-story`, `feature-cards` and `media-accordion`. They accept the editing
+options below; a mismatched explicit type is rejected. Use `--out` when omitting
+the type. Presets and the media-accordion section require a matching CLI and
+engine built from current source; published rc.5 does not contain them.
+</Callout>
+
 Writes a hosted section with required content and commented optional defaults.
 The short form is `zel ns`. With a type and no customization, the original
 engine-generated template is unchanged:

@@ -1,0 +1,25 @@
+type: compose
+version: 1
+id: composed-media
+label: A composition in detail
+background: tinted
+children:
+  - {type: heading, text: The same idea. A smaller space.}
+  - type: group
+    layout: {kind: grid, columns: 2, align: start, gap: large}
+    children:
+      - type: group
+        surface: inverted
+        padding: medium
+        radius: large
+        children:
+          - type: media-accordion
+            label: A compact composition
+            ratio: square
+            items:
+              - {title: A quiet beginning., body: Start with a single detail., image: assets/media-focus.svg, alt: A copper circle on a quiet page}
+              - {title: A wider perspective., body: Keep room for the next idea., image: assets/media-overview.svg, alt: Three shapes arranged on a wide page}
+      - type: group
+        children:
+          - {type: heading, level: 3, scale: subtitle, text: A component that belongs.}
+          - {type: text, size: lead, text: "The same interaction fits a narrow card, a wide section, or a story of your own. Each instance keeps its own selection."}
