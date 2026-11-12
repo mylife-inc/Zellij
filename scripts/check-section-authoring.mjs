@@ -19,7 +19,7 @@ try {
     export { buildSectionTemplates } from './engine/packages/zellij/src/cli/section-templates';
   `, resolveDir: root }, bundle: true, packages: 'external', platform: 'node', format: 'esm', outfile: helper });
   const { getSection, registeredSectionTypes, buildSectionTemplates } = await import(pathToFileURL(helper));
-  assert.equal(registeredSectionTypes().length, 23);
+  assert.equal(registeredSectionTypes().length, 24);
   const templates = buildSectionTemplates();
   const schema = JSON.parse(execFileSync(binary, ['context', '--json'], { encoding: 'utf8' }));
   const text = 'TRUE: \'quoted\' "double" \\ Unicode العربية 日本\nnext\r\nline\t\u0085\u2028\u2029\ufffe\uffff';
@@ -71,5 +71,5 @@ try {
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 23 authored section types, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 24 authored section types, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

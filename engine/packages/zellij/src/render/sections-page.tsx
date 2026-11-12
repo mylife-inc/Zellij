@@ -1,6 +1,6 @@
 import type { Site } from '../content/site';
 import type { SectionsPage } from '../content/types';
-import { pageHeadingSectionTypes } from '../sections/registry';
+import { sectionProvidesPageHeading } from '../sections/registry';
 import { SectionRenderer } from './section-renderer';
 import { emitPageThemeCss } from '../themes/emit';
 
@@ -23,8 +23,7 @@ export function SectionsPageView({ site, page }: { site: Site; page: SectionsPag
   // A page built entirely from sections that render no `<h1>` still needs one.
   // It is hidden rather than shown: on a page like a promo grid the tiles carry
   // the visual weight, and a second visible title would only compete with them.
-  const withHeading = pageHeadingSectionTypes();
-  const needsHeading = !page.sections.some((section) => withHeading.has(section.type));
+  const needsHeading = !page.sections.some(sectionProvidesPageHeading);
 
   const main = (
     <main
@@ -83,8 +82,8 @@ function PageRail({ page }: { page: SectionsPage }) {
 }
 
 /** Best available human label for a section, for rail and TOC use. */
-function sectionLabel(section: { heading?: string; headline?: string; type: string }): string {
-  return section.heading ?? section.headline ?? titleCase(section.type);
+function sectionLabel(section: { heading?: string; headline?: string; label?: string; type: string }): string {
+  return section.heading ?? section.headline ?? section.label ?? titleCase(section.type);
 }
 
 function titleCase(value: string): string {

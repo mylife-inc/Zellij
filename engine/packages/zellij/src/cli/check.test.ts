@@ -280,3 +280,33 @@ it('checks links in the newly retained FAQ introduction', async () => {
   expect(result.warnings).toEqual([]);
   expect(result.errors.join('\n')).toMatch(/sections\/faq.yaml.*subhead.*no page resolves/s);
 });
+
+it('checks nested composition references with source paths and strict diagnostics', async () => {
+  const section = { type: 'compose', version: 1, label: 'Composition', children: [{ type: 'group', children: [
+    { type: 'image', image: 'assets/missing.svg', alt: 'Missing' },
+    { type: 'button', label: 'Missing page', href: '/missing-compose-target' },
+    { type: 'text', text: 'See [missing](/missing-inline-target)' },
+  ] }] };
+  const contentDir = await fixture({ 'site.yaml': 'name: Compose check\n',
+    'pages.yaml': '- name: home\n  sections: [composition]\n', 'sections/composition.yaml': JSON.stringify(section) });
+  const result = await check({ contentDir, deep: true, strict: true });
+  expect(result.ok).toBe(false);
+  const errors = result.errors.join('\n');
+  expect(errors).toContain('assets/missing.svg');
+  expect(errors).toContain('/missing-compose-target');
+  expect(errors).toContain('/missing-inline-target');
+  expect(errors).toContain('sections/composition.yaml');
+});
+
+it('checks references for the selected composition node, not every union alternative', async () => {
+  const node = { type: 'heading', text: '[Literal title](/not-a-rendered-link)' };
+  const section = { type: 'compose', version: 1, label: 'Heading semantics', children: [node] };
+  const contentDir = await fixture({ 'site.yaml': 'name: Literal heading\n',
+    'pages.yaml': '- name: home\n  sections: [composition]\n', 'sections/composition.yaml': JSON.stringify(section) });
+  expect((await check({ contentDir, deep: true, strict: true })).ok).toBe(true);
+  node.type = 'text';
+  await writeFile(path.join(contentDir, 'sections/composition.yaml'), JSON.stringify(section));
+  const result = await check({ contentDir, deep: true, strict: true });
+  expect(result.ok).toBe(false);
+  expect(result.errors.join('\n')).toContain('/not-a-rendered-link');
+});

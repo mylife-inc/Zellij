@@ -4,6 +4,7 @@ description: Every section type, what it is for, and the fields it takes.
 
 nav:
   - index
+  - compose
   - label: By family
     items:
       - openers

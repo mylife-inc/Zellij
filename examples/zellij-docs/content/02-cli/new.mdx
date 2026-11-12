@@ -205,7 +205,7 @@ zel nd docs/manual --full --guide --name "Acme" --theme cupertino
 
 The full starter keeps the normal home page and adds an **Examples** menu item,
 a catalogue at `/examples`, and one page per section type, such as
-`/example-pricing-table`. All 23 section types have an editable YAML example
+`/example-pricing-table`. All registered section types have an editable YAML example
 under `content/sections/examples/`. Active fields contain sample content;
 optional fields remain commented examples. The catalogue links each example
 and names its source file.
@@ -262,7 +262,7 @@ theme: paper          # zel list themes — there are fourteen
 | `--theme <theme>` | One of the fourteen | `paper` |
 | `--guide` | Also create a guide folder | off |
 | `--minimal` | `site.yaml` and one page, nothing else | off |
-| `--full` | Home, examples catalogue, all 23 section examples and local media; conflicts with `--minimal` | off |
+| `--full` | Home, examples catalogue, all registered section examples and local media; conflicts with `--minimal` | off |
 | `--force` | Write into a directory that is not empty | off |
 
 Without `--force`, a non-empty target is an error rather than a merge. Merging

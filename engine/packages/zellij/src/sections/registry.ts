@@ -64,7 +64,7 @@ export interface SectionDefinition<TSchema extends z.ZodTypeAny = z.ZodTypeAny> 
    * top-level heading at all, which costs it both the document outline screen
    * readers navigate by and the heading search engines read as the page title.
    */
-  readonly providesPageHeading?: boolean;
+  readonly providesPageHeading?: boolean | ((section: Record<string, unknown>) => boolean);
 }
 
 const registry = new Map<string, SectionDefinition>();
@@ -80,7 +80,7 @@ export function getSection(type: string): SectionDefinition | undefined {
 /** Section types that render the page `<h1>` themselves. */
 export function pageHeadingSectionTypes(): Set<string> {
   return new Set(
-    [...registry.values()].filter((def) => def.providesPageHeading).map((def) => def.type),
+    [...registry.values()].filter((def) => def.providesPageHeading === true).map((def) => def.type),
   );
 }
 
@@ -90,4 +90,10 @@ export function registeredSectionTypes(): string[] {
 
 export function clearRegistry(): void {
   registry.clear();
+}
+
+/** Instance-aware heading ownership for content-dependent sections. */
+export function sectionProvidesPageHeading(section: { type: string } & Record<string, unknown>): boolean {
+  const rule = registry.get(section.type)?.providesPageHeading;
+  return typeof rule === 'function' ? rule(section) : rule === true;
 }

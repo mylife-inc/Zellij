@@ -1,0 +1,45 @@
+type: compose
+version: 1
+label: The thoughtful details
+id: composed-details
+layout: {kind: stack, gap: large}
+children:
+  - type: heading
+    text: The thoughtful details.
+    scale: title
+  - type: group
+    layout: {kind: grid, columns: 3, gap: medium, align: stretch}
+    children:
+      - type: group
+        effect: reveal
+        surface: tinted
+        padding: medium
+        radius: large
+        children:
+          - {type: stat, value: "01", label: Structure}
+          - {type: heading, text: A natural rhythm., level: 3, scale: subtitle}
+          - {type: text, text: "Stacks, grids and split layouts share the same building blocks."}
+      - type: group
+        surface: inverted
+        padding: medium
+        radius: large
+        children:
+          - {type: stat, value: "02", label: Expression}
+          - {type: heading, text: Your point of view., level: 3, scale: subtitle}
+          - {type: text, text: Type and colour follow your theme. Add a gentle reveal where it serves the story.}
+          - type: group
+            surface: tinted
+            padding: small
+            radius: medium
+            children:
+              - {type: text, text: A little contrast makes a difference., size: small}
+      - type: group
+        surface: tinted
+        padding: medium
+        radius: large
+        children:
+          - {type: stat, value: "03", label: Care}
+          - {type: heading, text: Every reader counts., level: 3, scale: subtitle}
+          - {type: text, text: "Source order stays meaningful on a phone, without scripts, and in print."}
+  - {type: divider}
+  - {type: text, text: "Made with the same **compose** section, from the opening thought to the smallest detail.", size: small, tone: muted}

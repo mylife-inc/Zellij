@@ -1,3 +1,4 @@
+import { Compose } from './compose';
 import type { ComponentType } from 'react';
 import type { SectionProps } from '../types';
 
@@ -30,6 +31,7 @@ import { Zigzag } from './zigzag';
  * content loader (a build-time module) never pulls React into its graph.
  */
 export const SECTION_COMPONENTS: Record<string, ComponentType<SectionProps<never>>> = {
+  compose: Compose as ComponentType<SectionProps<never>>,
   hero: Hero as ComponentType<SectionProps<never>>,
   'hero-split': HeroSplit as ComponentType<SectionProps<never>>,
   'logo-strip': LogoStrip as ComponentType<SectionProps<never>>,

@@ -4,9 +4,17 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { cp, mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { parse } from 'yaml';
 const zel = path.resolve(`cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
 const engine = path.resolve('engine/packages/zellij/bin/zellij.mjs');
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-format-corpus-'));
+const yamlValues = async content => {
+  const values = {};
+  for (const file of await readdir(content, { recursive: true })) {
+    if (/\.ya?ml$/.test(file)) values[file] = parse(await readFile(path.join(content, file), 'utf8'));
+  }
+  return values;
+};
 const preserved = async content => {
   const result = {};
   for (const file of await readdir(content, { recursive: true })) {
@@ -22,11 +30,13 @@ try {
     await cp(path.resolve('examples', name, 'content'), content, { recursive: true });
     await writeFile(path.join(site, 'zel.yaml'), 'version: 1\nrenderer: hosted\n');
     const before = await preserved(content);
+    const beforeYaml = await yamlValues(content);
     const initial = spawnSync(zel, ['fmt', site, '--check'], { encoding: 'utf8' });
     assert([0, 1].includes(initial.status), initial.stderr);
     execFileSync(zel, ['fmt', site], { stdio: 'inherit' });
     execFileSync(zel, ['fmt', site, '--check'], { stdio: 'inherit' });
     assert.deepEqual(await preserved(content), before);
+    assert.deepEqual(await yamlValues(content), beforeYaml, "Formatting preserves the engine YAML parser’s scalar types");
     execFileSync(process.execPath, [engine, 'check', content, '--deep', '--strict'], { stdio: 'inherit' });
   }
   console.log('Formatter: actual authored sites remain valid, idempotent, and preserve Markdown/media.');

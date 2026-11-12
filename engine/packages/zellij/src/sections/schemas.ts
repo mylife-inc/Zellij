@@ -1,3 +1,4 @@
+import { composeSchema, composeHasPageHeading, type ComposeSection } from './compose-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { z } from 'zod';
 import { backgroundSchema, baseSectionSchema, registerSection } from './registry';
@@ -619,6 +620,7 @@ export const promoGridSchema = baseSectionSchema.extend({
 
 /** Registration order is the order shown in "valid types" build errors. */
 const ALL = [
+  { type: 'compose', schema: composeSchema, providesPageHeading: composeHasPageHeading },
   { type: 'hero', schema: heroSchema, providesPageHeading: true },
   { type: 'hero-split', schema: heroSplitSchema, providesPageHeading: true },
   { type: 'logo-strip', schema: logoStripSchema },
@@ -676,6 +678,7 @@ export type GallerySection = z.infer<typeof gallerySchema>;
 export type PromoGridSection = z.infer<typeof promoGridSchema>;
 
 export type AnySection =
+  | ComposeSection
   | HeroSection
   | HeroSplitSection
   | LogoStripSection
@@ -699,3 +702,6 @@ export type AnySection =
   | TeamGridSection
   | GallerySection
   | PromoGridSection;
+
+export { composeSchema } from './compose-schema';
+export type { ComposeSection, ComposeNode, ComposeLayout } from './compose-schema';

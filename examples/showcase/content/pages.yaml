@@ -38,3 +38,9 @@
     - pro/faq
     - pro/footnotes
     - pro/cta
+
+- name: compose
+  title: Clarity, composed
+  description: A hero, split story and feature grid made with one composition vocabulary.
+  layout: stack
+  sections: [compose/hero, compose/story, compose/details]

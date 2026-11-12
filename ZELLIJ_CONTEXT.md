@@ -104,7 +104,25 @@ unchanged-source retry and all four Homebrew checks passed. Development engine
 run `43199867543` passed all 13 jobs on merge `3008a16`, publishing the four
 `main` feature variants for Linux amd64/arm64 and building a site from the image.
 These changes are not in published rc.5.
-Next implementation: composer/media-accordion, then the book/PDF milestones.
+The next source increment, `codex/composable-sections`, implements the first
+bounded composer (`type: compose`, version 1), pending hosted acceptance/merge.
+A section has stack/grid/split layouts, heading/text/image/button/stat/divider
+nodes and groups; three nested groups and 128 nodes are enforced by shared
+engine/native constraints. Finite schema expansion is 14,701 compact JSON bytes,
+with no recursive references or additional dependency. Plain `zel explain`
+now lists node/layout alternatives, and generated context expands array unions.
+Instance-aware H1 ownership preserves the fallback title when no composed H1
+exists. Gradient reveal keeps solid text beneath its decorative paint and
+provides no-JS, reduced-motion, forced-colour and print fallbacks.
+Local verification: 482 engine tests, workspace types, 14 native authoring tests,
+all 24 native-to-engine authoring cases and all full-starter variants pass. The
+Rust workspace passes 743 tests (five ignored); warnings-denied Clippy passes.
+Showcase adds an original hero/split/grid composition and SVG; docs add a source-
+after-rc.5 guide and preview. Browser/container verification remains pending.
+Layers, embedded sections/video, arbitrary effect ranges and interactive presets
+are outside this first composer slice. Published rc.5 is unchanged.
+Next implementation: media-accordion and additional composition presets, then
+book/PDF milestones.
 
 After the template milestone: composition/media-accordion and book/PDF
 publishing, plus technical/study book editions. Scoop,
@@ -7919,3 +7937,33 @@ production cutover were performed. Fly/S3, actual GitLab/CircleCI and the
 user-deferred Vercel checks remain later work; frozen manual delivery fixtures
 still pin their previously verified rc.2. Exact assets/digests and verification
 are in [the rc.3 record](specs/evidence/zellij-rc3-release-2026-11-11.json).
+
+
+Composer review correction: the initial `328489b` source inspected all union
+alternatives while collecting references, so a heading such as
+`[Literal title](/not-a-link)` incorrectly failed deep checking. A regression
+reproduces the false positive; reference traversal now skips object alternatives
+whose literal selectors disagree with the parsed value. The same text in a
+`text` node remains an actual checked link. Fresh hosted acceptance is required.
+
+Composer review, 2026-11-12: hosted run `43262466867` exposed a formatter
+interoperability bug: `zel fmt` removed quotes from `"01"`, accepted as a string
+by the Rust parser but a number by the engine parser. A native regression fails
+on `f955784`; the fix keeps numeric-looking strings quoted, and corpus acceptance
+now compares all YAML values using the engine parser before/after formatting.
+The same run's three new surface assertions assumed dark inverted text differs
+from base text; Cupertino intentionally shares that foreground. Assertions now
+check the actual inverted foreground/background tokens. No theme was changed.
+Screenshot captures now write explicit PNG files for artifact retention. Fresh
+hosted acceptance is required; the failed/superseded run is not a passing gate.
+
+Composer visual review on `e701cb1` (run `43264032824`): all 335 showcase
+browser cases passed with 124 existing conditional skips and no retries; all
+new composition cases passed. Retained light/dark desktop and phone images
+exposed a reveal wrapper that prevented equal grid-card height, plus gradient
+paint missing glyph descenders at tight line-height. The follow-up gives reveal
+wrappers a stretching grid cell, keeps group content top-aligned, and adds paint
+room without changing line layout. Browser assertions now check card heights and
+heading alignment. Screenshots disable CSS transitions to avoid mid-theme-change
+captures. Documentation acceptance explicitly includes `/sections/compose` and
+its hydrated preview/source tabs. A new final-head run is required.

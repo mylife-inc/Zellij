@@ -529,3 +529,44 @@ or only subordinate headings, so inspect the validated instance or expose an
 equivalent instance-aware contract. Preserve the fallback page heading and
 meaningful page-rail labels. The current search index intentionally indexes
 guides only; adding composition does not implicitly change that product rule.
+
+
+## Bounded composer v1 — 2026-11-12 implementation checkpoint
+
+The reference-resolution prerequisite above is settled for the first slice by
+finite schema expansion: one group branch per level, three nested groups, and
+14,701 bytes of compact exported JSON. There are no `$ref`/`$defs`; the existing
+engine and Rust traversals consume the same nested definitions. Total node and
+primary-heading limits live in exported authoring rules. Native `explain` names
+every top-level node/layout alternative, generated context expands array unions,
+and complete JSON edits plus scalar refinements author nested structures.
+
+Implemented: stack/grid/split; heading, inline-Markdown text, image/caption,
+button, stat, divider and group; surface/padding/radius, theme-aware typography,
+entrance reveal and heading gradient reveal. The latter blends between 15% and
+65% visibility, with readable solid text beneath it. Shared section gradients
+supply heading fallbacks. Layouts collapse below 760px without changing DOM
+order. Instance-aware registry heading ownership avoids a duplicate fallback H1.
+
+This is not the entire proposed universal section. Layers, sticky stages, block
+Markdown, video/icon/embedded-section nodes, authored effect ranges, named
+composition presets and interactive media-accordion/selector/story/explorer
+patterns remain follow-ups. Existing adjacent sections remain available.
+No book/PDF or portable section renderer is implied.
+
+The showcase recreates a hero, split story and feature grid with the same type,
+original copy and an original SVG. Hosted browser tests cover responsive layout,
+images/links, gradient visibility, reduced motion, forced colours, print, missing
+observers and disabled JavaScript; screenshots are retained for visual review.
+Local checks pass 482 engine tests, workspace types, 14 native authoring tests,
+all 24 authored section types through the real engine and full-starter generation.
+The Rust workspace passes 743 tests with five existing ignored cases; Clippy passes.
+Published rc.5 remains unchanged; CI, visual review and merge are pending.
+
+
+Composer review correction: the initial `328489b` source inspected all union
+alternatives while collecting references, so a heading such as
+`[Literal title](/not-a-link)` incorrectly failed deep checking. A regression
+reproduces the false positive; reference traversal now skips object alternatives
+whose literal selectors disagree with the parsed value. The same text in a
+`text` node remains an actual checked link. Fresh hosted acceptance is required.

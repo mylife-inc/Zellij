@@ -162,8 +162,10 @@ retarget them when live delivery acceptance resumes.
 Strict section-field diagnostics, recovered section headings and corrected native
 starter feature text merged in PR #141 (`3008a16`), with all 20 final-head checks
 passing. See [evidence](evidence/zellij-section-field-diagnostics-2026-11-12.json).
-Published rc.5 remains unchanged. Next
-implement the bounded composer/media-accordion and reusable visual effects. Complete the book model,
+Published rc.5 remains unchanged. The bounded composer v1 is implemented on
+`codex/composable-sections`, pending hosted acceptance and merge; it includes
+stack/grid/split layouts and gradient reveal. Next implement media-accordion and
+additional composition presets. Complete the book model,
 technical/study editions and opt-in PDF/LaTeX publishing, and add the remaining
 installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.
