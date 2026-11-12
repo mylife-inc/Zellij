@@ -297,6 +297,18 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - name: Site templates export and render on desktop and mobile
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: site-template-previews
+          path: ${{ runner.temp }}/site-template-exports/*.png
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Converted documents retain routes, assets and hydrated tables
         env:
           ZELLIJ_IMAGE: zellij-ci
@@ -438,18 +450,6 @@ jobs:
         env:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-full-starter.mjs cli/target/debug/zel "$RUNNER_TEMP/full-starter-export" --build
-
-      - name: Site templates export and render on desktop and mobile
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: site-template-previews
-          path: ${{ runner.temp }}/site-template-exports/*.png
-          if-no-files-found: ignore
-          retention-days: 7
 
       - name: Static exports preserve the previous site on failure
         env:
