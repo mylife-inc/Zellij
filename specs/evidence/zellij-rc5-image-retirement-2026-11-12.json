@@ -1,6 +1,6 @@
 {
   "recordedOn": "2026-11-12",
-  "status": "blocked-before-first-deletion",
+  "status": "complete",
   "scope": "Only reviewed obsolete release image versions; no unreferenced build-history sweep",
   "userConfirmedPackageAdmin": true,
   "plan": {
@@ -74,7 +74,7 @@
   },
   "ownerFallback": {
     "mode": "apply-local",
-    "status": "prepared-not-executed",
+    "status": "executed-complete",
     "requiredLogin": "mylife-inc",
     "requiredScopes": [
       "read:packages",
@@ -96,15 +96,222 @@
       "Post-deletion inventory and retained manifest closure"
     ],
     "doesNotReadOrPrintCredential": true,
-    "userActionPending": "Refresh existing gh login with read:packages and delete:packages; no token is needed in chat or repository secrets",
-    "entrypointRegression": "Fake API verifies a wrong plan hash and a failed replacement run both prevent DELETE, with an incomplete zero-event journal for the latter"
+    "entrypointRegression": "Fake API verifies a wrong plan hash and a failed replacement run both prevent DELETE, with an incomplete zero-event journal for the latter",
+    "fixingCommit": "637f2eee407ce22880bf307c94ea8baaf020e852",
+    "testedHead": "27e62c726b1c602614067fa662bd0dd8f4d9ca18",
+    "mergeTreeMatchesTestedHead": true,
+    "userActionAtPreparation": "Refresh existing gh login with read:packages and delete:packages; no token is needed in chat or repository secrets",
+    "credentialRefreshConfirmed": true,
+    "observedScopesAfterRefresh": [
+      "delete:packages",
+      "gist",
+      "read:org",
+      "read:packages",
+      "repo"
+    ],
+    "hostedReadOnlyVerification": {
+      "runId": 43278582061,
+      "conclusion": "success",
+      "headSha": "27e62c726b1c602614067fa662bd0dd8f4d9ca18",
+      "jobs": [
+        {
+          "completedAt": "2026-11-12T18:20:42Z",
+          "conclusion": "success",
+          "databaseId": 131393514560,
+          "name": "inventory",
+          "startedAt": "2026-11-12T18:19:19Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/Zellij/actions/runs/43278582061/job/131393514560"
+        },
+        {
+          "completedAt": "2026-11-12T18:19:16Z",
+          "conclusion": "skipped",
+          "databaseId": 131393517771,
+          "name": "retire-images",
+          "startedAt": "2026-11-12T18:19:17Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/Zellij/actions/runs/43278582061/job/131393517771"
+        }
+      ],
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43278582061",
+      "guardTestsPassed": 13,
+      "planPackagesIdenticalToReviewedPlan": true,
+      "artifact": {
+        "id": 13970803562,
+        "name": "retirement-inventory",
+        "digest": "sha256:07d30855ec264c3d71459b9e55db36704631701b3b7ab32fa6fab44da6038e67"
+      }
+    }
   },
-  "deletions": 0,
-  "postCleanupPublicHttpVerification": "not-run-cleanup-did-not-occur",
+  "deletions": 213,
+  "postCleanupPublicHttpVerification": {
+    "runId": 43281136218,
+    "conclusion": "success",
+    "headSha": "637f2eee407ce22880bf307c94ea8baaf020e852",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T18:34:18Z",
+        "conclusion": "success",
+        "databaseId": 131402378392,
+        "name": "inspect (next)",
+        "startedAt": "2026-11-12T18:33:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281136218/job/131402378392"
+      },
+      {
+        "completedAt": "2026-11-12T18:34:05Z",
+        "conclusion": "success",
+        "databaseId": 131402379034,
+        "name": "inspect (static)",
+        "startedAt": "2026-11-12T18:33:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281136218/job/131402379034"
+      },
+      {
+        "completedAt": "2026-11-12T18:33:54Z",
+        "conclusion": "skipped",
+        "databaseId": 131402380484,
+        "name": "live-providers",
+        "startedAt": "2026-11-12T18:33:54Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281136218/job/131402380484"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281136218",
+    "verifiedImages": [
+      {
+        "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.5",
+        "digest": "sha256:7bd5cadae750ef32aa9f554e944475a47b679a8feb1e83a151040c0f0e8114c5"
+      },
+      {
+        "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.5",
+        "digest": "sha256:6d7faee23004dab9c003a2734cfbd0bdb22ca4cb3b1e7992599c064e08283dde"
+      }
+    ]
+  },
   "limitations": [
-    "Workflow token still receives HTTP 404 after the user-confirmed Admin grant; underlying GitHub cause is unproven",
-    "Successful local owner deletion has not been established",
+    "Workflow-token DELETE still returned HTTP 404 after the confirmed Admin grant; owner-authenticated execution completed instead",
     "Native rc.5 release and Homebrew are unchanged",
+    "Unreferenced build-history versions were intentionally excluded",
     "Live deployment providers and production docs/domain migration remain deferred"
-  ]
+  ],
+  "ownerAttempts": [
+    {
+      "journal": "specs/evidence/zellij-rc5-image-retirement-owner-attempt1-2026-11-12.json",
+      "sha256": "fc6d84b1e923af29295fb5ea4a5aa236cddc84c8a3e7c91379f4ddf361fe5cfa",
+      "sourceCommit": "637f2eee407ce22880bf307c94ea8baaf020e852",
+      "complete": false,
+      "deleted": 67,
+      "alreadyAbsent": 0,
+      "startedAt": "2026-11-12T18:22:20.994Z",
+      "finishedAt": null,
+      "error": "GET users/mylife-inc/packages/container/zellij-base/versions/1491194585: HTTP 401: Bad credentials"
+    },
+    {
+      "journal": "specs/evidence/zellij-rc5-image-retirement-owner-attempt2-2026-11-12.json",
+      "sha256": "b6db5f224787821c1894d1238ac6250359285147ccae2c3bb027d55f13f08edd",
+      "sourceCommit": "637f2eee407ce22880bf307c94ea8baaf020e852",
+      "complete": true,
+      "deleted": 146,
+      "alreadyAbsent": 67,
+      "startedAt": "2026-11-12T18:26:18.718Z",
+      "finishedAt": "2026-11-12T18:33:27.166Z",
+      "error": null
+    }
+  ],
+  "resumption": {
+    "firstAttemptStoppedOn": "HTTP 401 from a per-version GET after 67 successful deletions",
+    "identityAndRequiredScopesStillValid": true,
+    "sameGetSucceededBeforeResume": true,
+    "allGatesRechecked": true,
+    "plannedVersionsRemovedExactlyOnceAcrossJournals": 213,
+    "causeOfIsolated401": "unproven; no credential refresh or helper change was needed before the successful resume"
+  },
+  "postCleanupInventory": {
+    "runId": 43281128886,
+    "conclusion": "success",
+    "headSha": "637f2eee407ce22880bf307c94ea8baaf020e852",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T18:34:41Z",
+        "conclusion": "success",
+        "databaseId": 131402359580,
+        "name": "inventory",
+        "startedAt": "2026-11-12T18:33:54Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281128886/job/131402359580"
+      },
+      {
+        "completedAt": "2026-11-12T18:33:52Z",
+        "conclusion": "skipped",
+        "databaseId": 131402363387,
+        "name": "retire-images",
+        "startedAt": "2026-11-12T18:33:53Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281128886/job/131402363387"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43281128886",
+    "guardTestsPassed": 13,
+    "artifact": {
+      "id": 13973365601,
+      "name": "retirement-inventory",
+      "digest": "sha256:aaadd624d30a3cedd2e5b7e32e89544bc3e3f383c75165143bb1c2522539d5eb"
+    },
+    "remainingRetirementTargets": 0,
+    "remainingRetiredTags": 0,
+    "exactlyPlannedVersionIdentitiesRemoved": true,
+    "retainedTagsAndDependenciesMatchReviewedPlan": true,
+    "packages": [
+      {
+        "package": "zellij-base",
+        "before": 3457,
+        "after": 3262,
+        "removed": 195,
+        "protectedDependencies": 40,
+        "excludedBuildHistory": 3222
+      },
+      {
+        "package": "zellij/acceptance-static",
+        "before": 16,
+        "after": 7,
+        "removed": 9,
+        "protectedDependencies": 3,
+        "excludedBuildHistory": 4
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "before": 15,
+        "after": 6,
+        "removed": 9,
+        "protectedDependencies": 3,
+        "excludedBuildHistory": 3
+      }
+    ],
+    "retirement-inventory.jsonSha256": "196568c9137a78f278550b026e5ac2a802b6aaa43d4e0867b8734d70c394e6a3",
+    "image-retirement-plan.jsonSha256": "bf68558ebb7a580a9e665acbef7ff5cab1ba9fe49c8be3d728a6037c69c9d880"
+  },
+  "releasePreservation": {
+    "sourceRc5AssetsUnchanged": 20,
+    "mirrorRc5AssetsUnchanged": 20,
+    "codeSealAssetsUnchanged": 12,
+    "comparedFields": [
+      "release ID",
+      "tag",
+      "asset ID",
+      "name",
+      "size",
+      "digest"
+    ],
+    "sharedReleaseIds": [
+      442694716,
+      369569503,
+      368834845
+    ],
+    "sharedReleaseInventorySha256": "2703dd22a630b4fbec7e54405f9c3d2bcdb972909874cd639214ab0f385664fb",
+    "nativeDistributionBaseline": "specs/evidence/zellij-rc5-native-retirement-2026-11-12.json"
+  }
 }
