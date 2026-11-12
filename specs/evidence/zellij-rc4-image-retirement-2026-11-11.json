@@ -31,5 +31,12 @@
     }
   ],
   "required_followup": "Confirm Admin role for mylife-inc/Zellij in Manage Actions access on the three image packages, then rerun reviewed plan and verify retained images. Read/write capability alone does not establish delete permission.",
-  "retained_unreferenced_build_history_versions": 3152
+  "retained_unreferenced_build_history_versions": 3152,
+  "post_attempt_inventory": {
+    "run_id": 43169224159,
+    "conclusion": "success",
+    "sourceCommit": "a63aea717439888f82769258cb04d2cf24dfbc61",
+    "observedAt": "2026-11-12T06:35:51.619Z",
+    "all_package_version_identities_and_tags_unchanged": true
+  }
 }
