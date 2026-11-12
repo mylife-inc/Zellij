@@ -273,8 +273,18 @@ fn prepare<R: BufRead, W: Write>(
     if let Some(path) = &destination {
         output(path)?;
     }
+    let preset_kind = args
+        .preset
+        .as_ref()
+        .map(|name| {
+            zellij_core::schema::section_preset(name)
+                .and_then(|preset| preset["sectionType"].as_str())
+                .ok_or_else(|| invalid(format!("unknown section preset {name:?}; run zel presets")))
+        })
+        .transpose()?;
     let kind = match &args.section_type {
         Some(kind) => kind.clone(),
+        None if preset_kind.is_some() => preset_kind.unwrap().to_owned(),
         None if interactive => prompt.kind()?,
         None => {
             return Err(invalid(
@@ -282,7 +292,10 @@ fn prepare<R: BufRead, W: Write>(
             ));
         }
     };
-    let mut section = Section::new(&kind)?;
+    let mut section = match &args.preset {
+        Some(name) => Section::from_preset(&kind, name)?,
+        None => Section::new(&kind)?,
+    };
     if kind != "pricing-table" && args.highlight.is_some() {
         return Err(invalid("--highlight requires pricing-table"));
     }
@@ -400,7 +413,10 @@ pub(crate) fn run(args: &NewSectionArgs) -> Result<()> {
     let stdin = io::stdin();
     let stderr = io::stderr();
     let interactive = args.interactive
-        || (args.section_type.is_none() && stdin.is_terminal() && stderr.is_terminal());
+        || (args.section_type.is_none()
+            && args.preset.is_none()
+            && stdin.is_terminal()
+            && stderr.is_terminal());
     let (body, destination, kind) = prepare(
         args,
         interactive,

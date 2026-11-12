@@ -20,6 +20,11 @@ the feature history. Refresh CI and account state before relying on this snapsho
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 are available in rc.5. See [the template contract](../templates/README.md).
+Current source work adds `zel presets` / `zel list presets` and `zel ns --preset`
+(`-p`) for four offline section compositions, plus a media-accordion section and
+composition node. This expands the source catalog to 25 section types. Hosted
+acceptance and merge are pending; these additions are not in published rc.5.
+See [the implementation checkpoint](zellij-media-composition-2026-11-12.md).
 The book starter is a reading website; full PDF/LaTeX and other expansion work
 remain incomplete. The older milestones below retain their dated evidence.
 

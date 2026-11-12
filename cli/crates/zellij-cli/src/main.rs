@@ -85,6 +85,7 @@ fn main() {
         Command::List(ListTarget::Formats) => list_formats(cli.json),
         Command::List(ListTarget::Targets) => list_targets(cli.json),
         Command::List(ListTarget::Sections) => list_sections(cli.json),
+        Command::List(ListTarget::Presets) => list_presets(cli.json),
         Command::List(ListTarget::Themes) => list_themes(cli.json),
         Command::Explain { ref section_type } => explain(section_type, cli.json),
         Command::Context { ref file } => write_context(file.as_deref(), cli.json),
@@ -982,6 +983,26 @@ fn list_sections(as_json: bool) -> zellij_core::Result<()> {
     Ok(())
 }
 
+fn list_presets(as_json: bool) -> zellij_core::Result<()> {
+    let presets: Vec<_> = zellij_core::schema::section_presets().iter().map(|(name, p)| {
+        json!({"name": name, "sectionType": p["sectionType"], "description": p["description"]})
+    }).collect();
+    if as_json {
+        return print_json(&json!({"presets": presets}));
+    }
+    for preset in presets {
+        zellij_core::reportln!(
+            "{:<18} {}",
+            preset["name"].as_str().unwrap(),
+            preset["description"].as_str().unwrap()
+        );
+    }
+    zellij_core::reportln!(
+        "\nzel ns -p <name> --out section.yaml — generate an editable composition"
+    );
+    Ok(())
+}
+
 fn list_themes(as_json: bool) -> zellij_core::Result<()> {
     let themes = zellij_core::schema::themes();
     if as_json {
@@ -1015,6 +1036,15 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
         fields.into_iter().partition(|field| field.required);
 
     zellij_core::reportln!("{section_type}\n");
+    for (name, preset) in schema::section_presets()
+        .iter()
+        .filter(|(_, p)| p["sectionType"] == section_type)
+    {
+        zellij_core::reportln!(
+            "Preset {name}: {} (zel ns -p {name})",
+            preset["description"].as_str().unwrap()
+        );
+    }
 
     if !required.is_empty() {
         zellij_core::reportln!("Required");

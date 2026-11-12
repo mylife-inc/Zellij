@@ -1,4 +1,5 @@
 import { composeSchema, composeHasPageHeading, type ComposeSection } from './compose-schema';
+import { mediaAccordionSchema, type MediaAccordionSection } from './media-accordion-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { z } from 'zod';
 import { backgroundSchema, baseSectionSchema, registerSection } from './registry';
@@ -621,6 +622,7 @@ export const promoGridSchema = baseSectionSchema.extend({
 /** Registration order is the order shown in "valid types" build errors. */
 const ALL = [
   { type: 'compose', schema: composeSchema, providesPageHeading: composeHasPageHeading },
+  { type: 'media-accordion', schema: mediaAccordionSchema },
   { type: 'hero', schema: heroSchema, providesPageHeading: true },
   { type: 'hero-split', schema: heroSplitSchema, providesPageHeading: true },
   { type: 'logo-strip', schema: logoStripSchema },
@@ -678,6 +680,7 @@ export type GallerySection = z.infer<typeof gallerySchema>;
 export type PromoGridSection = z.infer<typeof promoGridSchema>;
 
 export type AnySection =
+  | MediaAccordionSection
   | ComposeSection
   | HeroSection
   | HeroSplitSection
@@ -704,4 +707,6 @@ export type AnySection =
   | PromoGridSection;
 
 export { composeSchema } from './compose-schema';
+export { mediaAccordionSchema } from './media-accordion-schema';
+export type { MediaAccordionSection, MediaAccordionNode } from './media-accordion-schema';
 export type { ComposeSection, ComposeNode, ComposeLayout } from './compose-schema';

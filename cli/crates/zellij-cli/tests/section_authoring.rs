@@ -608,3 +608,117 @@ fn composition_explain_names_every_node_and_layout_variant() {
     let value: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(value["properties"]["children"]["maxItems"], 24);
 }
+
+#[test]
+fn named_presets_are_listed_and_generated_offline_as_editable_yaml() {
+    let temp = tempfile::tempdir().unwrap();
+    let catalog = run(temp.path(), &["presets", "--json"], "", 0);
+    assert_eq!(
+        catalog.stdout,
+        run(temp.path(), &["list", "presets", "--json"], "", 0).stdout
+    );
+    let value: Value = serde_json::from_slice(&catalog.stdout).unwrap();
+    assert_eq!(value["presets"].as_array().unwrap().len(), 4);
+    let context: Value =
+        serde_json::from_slice(&run(temp.path(), &["context", "--json"], "", 0).stdout).unwrap();
+    for preset in value["presets"].as_array().unwrap() {
+        let name = preset["name"].as_str().unwrap();
+        let inferred = run(temp.path(), &["ns", "-p", name], "", 0);
+        let explicit = run(
+            temp.path(),
+            &["new", "section", "compose", "--preset", name],
+            "",
+            0,
+        );
+        assert_eq!(inferred.stdout, explicit.stdout);
+        let interactive = run(
+            temp.path(),
+            &["ns", "-p", name, "--interactive"],
+            &"\n".repeat(512),
+            0,
+        );
+        assert_eq!(inferred.stdout, interactive.stdout);
+        assert_eq!(
+            String::from_utf8(inferred.stdout.clone()).unwrap(),
+            context["sectionPresets"][name]["yaml"].as_str().unwrap()
+        );
+        assert_eq!(yaml(&inferred)["type"], "compose");
+        assert!(yaml(&inferred).get("preset").is_none());
+    }
+    assert_eq!(fs::read_dir(temp.path()).unwrap().count(), 0);
+}
+
+#[test]
+fn preset_edits_keep_nested_types_and_apply_normal_output_ownership_rules() {
+    let temp = tempfile::tempdir().unwrap();
+    let output = run(
+        temp.path(),
+        &["ns", "-p", "product-hero", "--set", "children.0.text=01"],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&output)["children"][0]["text"], "01");
+    let output = run(
+        temp.path(),
+        &[
+            "ns",
+            "-p",
+            "media-accordion",
+            "--count",
+            "children.1.items=2",
+            "--set",
+            "children.1.items.0.title=My own detail",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&output)["children"][1]["items"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
+    assert_eq!(
+        yaml(&output)["children"][1]["items"][0]["title"],
+        "My own detail"
+    );
+    let args = ["ns", "-p", "split-story", "--out", "story.yaml"];
+    run(temp.path(), &args, "", 0);
+    let original = fs::read(temp.path().join("story.yaml")).unwrap();
+    run(temp.path(), &args, "", 2);
+    assert_eq!(fs::read(temp.path().join("story.yaml")).unwrap(), original);
+}
+
+#[test]
+fn invalid_presets_and_accordion_sizes_fail_before_prompting_or_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    for options in [
+        vec!["-p", "unknown"],
+        vec!["hero", "-p", "product-hero"],
+        vec!["-p", "media-accordion", "--count", "children.1.items=9"],
+        vec!["media-accordion", "--count", "items=1"],
+        vec!["media-accordion", "--set", "itemHeadingLevel=1"],
+    ] {
+        let mut args = vec!["ns", "-i", "--out", "missing/section.yaml"];
+        args.extend(options);
+        let output = run(temp.path(), &args, "", 2);
+        assert!(output.stdout.is_empty());
+        assert!(
+            !String::from_utf8(output.stderr)
+                .unwrap()
+                .contains("Press Enter")
+        );
+        assert!(!temp.path().join("missing").exists());
+    }
+    let output = run(
+        temp.path(),
+        &["ns", "media-accordion", "--count", "items=8"],
+        "",
+        0,
+    );
+    assert_eq!(yaml(&output)["items"].as_array().unwrap().len(), 8);
+    let explain = run(temp.path(), &["explain", "compose"], "", 0);
+    let text = String::from_utf8(explain.stdout).unwrap();
+    assert!(text.contains("media-accordion") && text.contains("zel ns -p product-hero"));
+}

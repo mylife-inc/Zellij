@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { baseSectionSchema } from './registry';
 import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema } from '../content/reference-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
+import { mediaAccordionNodeSchema } from './media-accordion-schema';
 
 const spacing = z.enum(['none', 'small', 'medium', 'large']);
 const alignment = z.enum(['start', 'center', 'end', 'stretch']);
@@ -31,6 +32,7 @@ const leaves = [
     style: z.enum(['primary', 'secondary', 'ghost']).default('primary') }),
   z.object({ type: z.literal('stat'), ...common, value: z.string().min(1), label: z.string().min(1) }),
   z.object({ type: z.literal('divider') }),
+  mediaAccordionNodeSchema.extend(common),
 ] as const;
 const leafSchema = z.union(leaves);
 export type ComposeLeaf = z.infer<typeof leafSchema>;

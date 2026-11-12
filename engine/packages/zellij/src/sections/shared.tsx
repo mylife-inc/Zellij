@@ -243,6 +243,7 @@ export function SectionImage({
   ratio = '16 / 10',
   priority = false,
   sizes = '(max-width: 900px) 100vw, 60vw',
+  loading,
   className,
 }: {
   src: string;
@@ -251,6 +252,7 @@ export function SectionImage({
   ratio?: string;
   priority?: boolean;
   sizes?: string;
+  loading?: 'eager' | 'lazy';
   className?: string;
 }) {
   return (
@@ -264,6 +266,7 @@ export function SectionImage({
         fill
         sizes={sizes}
         priority={priority}
+        loading={loading}
       />
     </div>
   );

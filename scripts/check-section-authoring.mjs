@@ -19,9 +19,19 @@ try {
     export { buildSectionTemplates } from './engine/packages/zellij/src/cli/section-templates';
   `, resolveDir: root }, bundle: true, packages: 'external', platform: 'node', format: 'esm', outfile: helper });
   const { getSection, registeredSectionTypes, buildSectionTemplates } = await import(pathToFileURL(helper));
-  assert.equal(registeredSectionTypes().length, 24);
+  assert.equal(registeredSectionTypes().length, 25);
   const templates = buildSectionTemplates();
   const schema = JSON.parse(execFileSync(binary, ['context', '--json'], { encoding: 'utf8' }));
+  const presetList = JSON.parse(execFileSync(binary, ['presets', '--json'], { encoding: 'utf8' })).presets;
+  assert.deepEqual(presetList.map(p => p.name).sort(), Object.keys(schema.sectionPresets).sort());
+  for (const [name, preset] of Object.entries(schema.sectionPresets)) {
+    const original = execFileSync(binary, ['ns', '-p', name], { encoding: 'utf8' });
+    assert.equal(original, preset.yaml);
+    const edited = execFileSync(binary, ['ns', '-p', name, '--set', 'label=Edited preset 日本'], { encoding: 'utf8' });
+    const value = YAML.parse(edited);
+    assert.equal(value.label, 'Edited preset 日本');
+    getSection(preset.sectionType).schema.parse(value);
+  }
   const text = 'TRUE: \'quoted\' "double" \\ Unicode العربية 日本\nnext\r\nline\t\u0085\u2028\u2029\ufffe\uffff';
   const execute = (kind, args) => execFileSync(binary, ['ns', kind, ...args], { encoding: 'utf8', timeout: 10000 });
   const fields = (value, prefix = '') => Object.entries(value).flatMap(([key, entry]) => {
@@ -71,5 +81,5 @@ try {
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 24 authored section types, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 25 authored section types and four editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

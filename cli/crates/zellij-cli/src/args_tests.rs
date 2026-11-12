@@ -145,6 +145,7 @@ const CASES: &[Case] = &[
     ),
     ("ex", "explain", &["hero"], &["prose"]),
     ("sections", "list sections", &[], &[]),
+    ("presets", "list presets", &[], &[]),
     ("themes", "list themes", &[], &[]),
     ("formats", "list formats", &[], &[]),
     ("targets", "list targets", &[], &[]),

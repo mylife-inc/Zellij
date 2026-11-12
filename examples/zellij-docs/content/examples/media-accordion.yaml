@@ -1,0 +1,22 @@
+type: media-accordion
+id: media-details
+label: Fieldnotes details
+eyebrow: DESIGNED AROUND YOUR ATTENTION
+heading: Make space for what matters.
+subhead: Three small choices. One calmer reading experience.
+items:
+  - title: Find your focus.
+    body: "A clear page, a generous margin, and **one idea at a time**. Let the work hold your attention."
+    image: assets/media-focus.svg
+    alt: A single copper circle centered on a cream page
+    caption: "01 / A place to begin."
+  - title: Make room for ideas.
+    body: "Keep the context close. Open a new perspective without losing the thread of the story."
+    image: assets/media-layers.svg
+    alt: An open notebook with text on the left and a green illustration on the right
+    caption: "02 / [Read the design notes](/guide)."
+  - title: Keep the whole picture.
+    body: "Step back and see how the pieces belong together. Continue with your own story."
+    image: assets/media-overview.svg
+    alt: A wide page arranging a circle, triangle and square in three columns
+    caption: "03 / An idea in context."

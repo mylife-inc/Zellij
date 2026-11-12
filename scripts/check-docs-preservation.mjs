@@ -11,7 +11,7 @@ import { chromium } from '@playwright/test';
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const output = path.resolve(process.argv[2] ?? path.join(repo, 'examples/zellij-docs/out'));
 const baseline = JSON.parse(await readFile(new URL('../specs/evidence/zellij-production-comparison-2026-11-02.json', import.meta.url)));
-const addedRoutes = [...new Set([...baseline.new_routes, '/sections/compose'])];
+const addedRoutes = [...new Set([...baseline.new_routes, '/sections/compose', '/sections/media-accordion'])];
 const aliases = JSON.parse(await readFile(new URL('../specs/evidence/zellij-legacy-heading-aliases-2026-11-02.json', import.meta.url)));
 const mime = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.txt': 'text/plain' };
 const server = createServer(async (req, res) => {
@@ -77,6 +77,15 @@ try {
   assert.match(await composition.getByRole('tabpanel').filter({ visible: true }).innerText(), /type: compose/);
   await composition.getByRole('tab', { name: 'Preview', exact: true }).click();
   await composition.getByRole('heading', { name: 'Clarity, composed.' }).waitFor();
+  assertNoErrors();
+  await visit('/sections/media-accordion');
+  const accordion = page.locator('[data-example="media-accordion"]');
+  await accordion.getByRole('button', { name: 'Make room for ideas.', exact: true }).click();
+  await accordion.getByRole('img', { name: 'An open notebook with text on the left and a green illustration on the right', exact: true }).waitFor();
+  await accordion.getByRole('tab', { name: 'Source', exact: true }).click();
+  assert.match(await accordion.getByRole('tabpanel').filter({ visible: true }).innerText(), /type: media-accordion/);
+  await accordion.getByRole('tab', { name: 'Preview', exact: true }).click();
+  await accordion.getByRole('button', { name: 'Find your focus.', exact: true }).waitFor();
   assertNoErrors();
   for (const route of new Set(aliases.map(alias => alias.route))) {
     const entries = aliases.filter(alias => alias.route === route);

@@ -44,3 +44,9 @@
   description: A hero, split story and feature grid made with one composition vocabulary.
   layout: stack
   sections: [compose/hero, compose/story, compose/details]
+
+- name: media-accordion
+  title: Fieldnotes — a study in clarity
+  description: A synchronized media accordion and an independent composed variation.
+  layout: stack
+  sections: [media-accordion/intro, media-accordion/details, media-accordion/composed]

@@ -1,0 +1,8 @@
+type: compose
+version: 1
+label: Fieldnotes
+padding: loose
+children:
+  - {type: text, text: FIELDNOTES / A STUDY IN CLARITY, size: small, tone: muted}
+  - {type: heading, level: 1, scale: display, text: A little less noise.}
+  - {type: text, size: lead, text: A considered space for the things you want to understand.}

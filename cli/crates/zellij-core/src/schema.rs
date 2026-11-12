@@ -103,6 +103,17 @@ pub fn section_template(section_type: &str) -> Option<&'static str> {
     SCHEMA.get("sectionTemplates")?.get(section_type)?.as_str()
 }
 
+/// Engine-validated named compositions, bundled for offline authoring.
+pub fn section_presets() -> &'static serde_json::Map<String, Value> {
+    SCHEMA["sectionPresets"]
+        .as_object()
+        .expect("embedded section preset catalog")
+}
+
+pub fn section_preset(name: &str) -> Option<&'static Value> {
+    section_presets().get(name)
+}
+
 /// The fields of a section type, shared ones excluded.
 pub fn fields_of(section_type: &str) -> Option<Vec<Field>> {
     let schema = SCHEMA.get("sections")?.get(section_type)?;

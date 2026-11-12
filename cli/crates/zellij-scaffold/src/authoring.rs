@@ -299,6 +299,7 @@ fn target<'a>(
 pub struct Section {
     section_type: String,
     value: Value,
+    template: &'static str,
 }
 impl Section {
     pub fn new(section_type: &str) -> Result<Self> {
@@ -313,7 +314,24 @@ impl Section {
         let section = Self {
             section_type: section_type.into(),
             value,
+            template: schema::section_template(section_type).unwrap(),
         };
+        section.validate()?;
+        Ok(section)
+    }
+    pub fn from_preset(section_type: &str, name: &str) -> Result<Self> {
+        let preset = schema::section_preset(name)
+            .ok_or_else(|| invalid(format!("unknown section preset {name:?}; run zel presets")))?;
+        if preset["sectionType"] != section_type {
+            return Err(invalid(format!(
+                "preset {name:?} requires section type {}",
+                preset["sectionType"]
+            )));
+        }
+        let mut section = Self::new(section_type)?;
+        section.template = preset["yaml"].as_str().expect("embedded preset YAML");
+        section.value = serde_yaml_ng::from_str(section.template)
+            .map_err(|e| invalid(format!("invalid embedded preset: {e}")))?;
         section.validate()?;
         Ok(section)
     }
@@ -574,7 +592,7 @@ impl Section {
     pub fn render(&self) -> Result<String> {
         self.validate()?;
         // Leave the original artifact byte-for-byte intact if it is unchanged.
-        let template = schema::section_template(&self.section_type).unwrap();
+        let template = self.template;
         let original: Value = serde_yaml_ng::from_str(template).unwrap();
         if original == self.value {
             return Ok(template.into());
