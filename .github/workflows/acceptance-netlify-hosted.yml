@@ -10,7 +10,7 @@ defaults:
 env:
   SITE_CONFIG: ./scripts/fixtures/release-delivery/hosted/netlify-hosted.yaml
   SITE_ROOT: ./scripts/fixtures/release-delivery/hosted
-  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.2
+  ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
 jobs:
   publish:
     if: ${{ (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') }}
@@ -23,7 +23,7 @@ jobs:
         persist-credentials: false
     - env:
         ZEL_INSTALL_DIR: ${{ runner.temp }}/zel-bin
-        ZEL_VERSION: v0.2.0-rc.2
+        ZEL_VERSION: v0.2.0-rc.4
       name: Install pinned zel
       run: |
         set -eu
@@ -48,7 +48,7 @@ jobs:
         persist-credentials: false
     - env:
         ZEL_INSTALL_DIR: ${{ runner.temp }}/zel-bin
-        ZEL_VERSION: v0.2.0-rc.2
+        ZEL_VERSION: v0.2.0-rc.4
       name: Install pinned zel
       run: |
         set -eu

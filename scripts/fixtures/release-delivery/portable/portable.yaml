@@ -4,6 +4,6 @@ name: Candidate delivery acceptance
 ci:
   branch: main
   workflow: acceptance-portable.yml
-  zel-version: 0.2.0-rc.2
+  zel-version: 0.2.0-rc.4
   triggers: [pull_request, manual]
   production: false
