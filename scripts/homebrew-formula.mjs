@@ -67,7 +67,7 @@ ${asset('x86_64-unknown-linux-gnu', 6)}
 
   test do
     assert_equal "zel #{version}\\n", shell_output("#{bin}/zel --version")
-    assert_match "brew upgrade mylife-inc/tap/zel", shell_output("#{bin}/zel upgrade --preview", 1)
+    assert_match "brew upgrade mylife-inc/tap/zel", shell_output("#{bin}/zel upgrade --preview 2>&1", 1)
     system bin/"zel", "new", "portable", "manual", "--name", "Homebrew acceptance"
     system bin/"zel", "build", "manual"
     assert_path_exists testpath/"manual/site/index.html"
