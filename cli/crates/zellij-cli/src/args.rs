@@ -539,6 +539,9 @@ pub(crate) struct UpgradeArgs {
     /// Exact release, e.g. 0.2.0 or v0.2.0-rc.1. Otherwise use latest stable.
     #[arg(value_name = "VERSION")]
     pub(crate) version: Option<String>,
+    /// Include published prereleases when discovering the newest version.
+    #[arg(long, conflicts_with_all = ["version", "release_base_url"])]
+    pub(crate) preview: bool,
     /// Report the available version without downloading or replacing the binary.
     #[arg(long)]
     pub(crate) check: bool,

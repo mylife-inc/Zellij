@@ -65,7 +65,7 @@ jobs:
           node scripts/package-native.mjs "$VERSION" --check-version
           node scripts/release-policy.mjs outputs "$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
-      - run: node --test scripts/release-policy.test.mjs scripts/download-release.test.mjs
+      - run: node --test scripts/homebrew-formula.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs
       - run: npm run typecheck
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
@@ -382,6 +382,7 @@ jobs:
         env:
           VERSION: ${{ github.ref_name }}
         run: |
+          node scripts/homebrew-formula.mjs "$VERSION" artifacts/SHA256SUMS > artifacts/zel.rb
           node scripts/release-policy.mjs notes "$VERSION" "$GITHUB_REPOSITORY" '' "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/release-notes.md"
           node scripts/release-policy.mjs notes "$VERSION" "$RELEASES_REPO" zellij "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/shared-release-notes.md"
 

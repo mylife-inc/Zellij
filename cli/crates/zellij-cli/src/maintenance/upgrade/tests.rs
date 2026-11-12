@@ -12,7 +12,14 @@ fn release_selection_uses_only_our_stable_semantic_versions() {
         {"tag_name":"zellij-v4.0.0+metadata", "draft":false, "prerelease":false}
     ]))
     .unwrap();
-    assert_eq!(stable(&releases), Some(Version::new(0, 10, 0)));
+    assert_eq!(
+        select_release(&releases, false),
+        Some(Version::new(0, 10, 0))
+    );
+    assert_eq!(
+        select_release(&releases, true),
+        Some(parse_version("3.0.0-rc.1").unwrap())
+    );
     for invalid in [
         "latest",
         "../0.2.0",
@@ -27,6 +34,48 @@ fn release_selection_uses_only_our_stable_semantic_versions() {
         parse_version("v0.2.0-rc.1").unwrap().to_string(),
         "0.2.0-rc.1"
     );
+}
+
+#[test]
+fn preview_selection_orders_semver_and_ignores_other_products_drafts_and_build_metadata() {
+    let releases: Vec<Release> = serde_json::from_value(serde_json::json!([
+        {"tag_name":"codeseal-v99.0.0", "draft":false, "prerelease":false},
+        {"tag_name":"zellij-v0.2.0-rc.2", "draft":false, "prerelease":true},
+        {"tag_name":"zellij-v0.2.0-rc.10", "draft":false, "prerelease":true},
+        {"tag_name":"zellij-v0.3.0-rc.1", "draft":true, "prerelease":true},
+        {"tag_name":"zellij-v0.4.0+local", "draft":false, "prerelease":false}
+    ]))
+    .unwrap();
+    assert_eq!(
+        select_release(&releases, true),
+        Some(parse_version("0.2.0-rc.10").unwrap())
+    );
+    assert_eq!(select_release(&releases, false), None);
+}
+
+#[test]
+fn managed_installations_refuse_self_upgrade_without_touching_the_binary() {
+    let root = tempfile::tempdir().unwrap();
+    let bin = root.path().join("bin");
+    fs::create_dir(&bin).unwrap();
+    let executable = bin.join("zel");
+    fs::write(&executable, b"installed executable").unwrap();
+    check_package_manager(&executable).unwrap();
+    let share = root.path().join("share/zel");
+    fs::create_dir_all(&share).unwrap();
+    for marker in [b"homebrew\n".as_slice(), b"unknown\n", &[b'x'; 128]] {
+        fs::write(share.join("installation-manager"), marker).unwrap();
+        let message = check_package_manager(&executable).unwrap_err().to_string();
+        assert!(
+            message.contains(if marker == b"homebrew\n" {
+                "brew upgrade mylife-inc/tap/zel"
+            } else {
+                "package manager"
+            }),
+            "{message}"
+        );
+        assert_eq!(fs::read(&executable).unwrap(), b"installed executable");
+    }
 }
 
 #[test]

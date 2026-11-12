@@ -8,7 +8,7 @@ hosted content and packages it with NGINX. `zel image next` (shortcut `zel ni`)
 packages either renderer in a Next.js application image. `zel image build`
 retains its existing hosted-content behavior and default tag.
 
-These image commands are available in candidate `0.2.0-rc.3`. Select its matching
+These image commands are available in candidate `0.2.0-rc.4`. Select its matching
 engine image as shown in [installation](/cli). Run `zel image --help` to check
 your installed version.
 
@@ -163,7 +163,7 @@ Local builds accept `linux/amd64` and `linux/arm64`. These describe the containe
 not the OS running `zel`: native Windows and macOS CLIs also build Linux images.
 Other operating systems and architecture abbreviations are rejected before a build.
 
-Candidate `0.2.0-rc.3` supports `all` for registry publication. With saved publication settings:
+Candidate `0.2.0-rc.4` supports `all` for registry publication. With saved publication settings:
 
 ```bash
 zel pub --platform all
@@ -228,7 +228,7 @@ image you built with an override. Delivery and CI generation also accept
 
 ## Image build arguments
 
-Candidate `0.2.0-rc.3` accepts repeatable `--build-arg
+Candidate `0.2.0-rc.4` accepts repeatable `--build-arg
 NAME=VALUE` flags on `si`, `ni`, `image static`, `image next`, legacy `image build`
 and `build --target image`:
 

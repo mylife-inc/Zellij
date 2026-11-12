@@ -1,0 +1,32 @@
+name: Homebrew acceptance
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Homebrew (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-15-intel, ubuntu-latest, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+        with:
+          stable: true
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: binary-*
+          merge-multiple: true
+          path: dist
+      - name: Install, upgrade and uninstall the native formula
+        run: node scripts/check-homebrew.mjs

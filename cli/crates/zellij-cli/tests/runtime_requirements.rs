@@ -421,7 +421,10 @@ fn doctor_uses_a_working_alternative_without_starting_services_or_pulling_images
     );
     assert_eq!(
         fs::read_to_string(root.join("podman-calls")).unwrap(),
-        "info\n--version\nimage inspect ghcr.io/mylife-inc/zellij-base:latest\n"
+        format!(
+            "info\n--version\nimage inspect ghcr.io/mylife-inc/zellij-base:{}\n",
+            env!("CARGO_PKG_VERSION")
+        )
     );
 }
 

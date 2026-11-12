@@ -5,15 +5,15 @@ description: Download or refresh the engine image before a hosted operation.
 
 ```bash
 zel pull
-zel pull --image ghcr.io/mylife-inc/zellij-base:latest
+zel pull --image ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
 ```
 
 The selected image is `--image`, then `ZELLIJ_IMAGE`, then the default
-`ghcr.io/mylife-inc/zellij-base:latest`. An override applies only to this pull;
+`ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4`. An override applies only to this pull;
 set `ZELLIJ_IMAGE` for subsequent builds to use the same image. Tags and
-`repository@sha256:<64 hexadecimal digits>` references are accepted. The existing
-default `latest` is mutable; use a compatible published tag or digest when
-reproducibility matters.
+`repository@sha256:<64 hexadecimal digits>` references are accepted. The default
+image matches the installed CLI version (rc.4+); use a compatible tag or digest
+when reproducibility matters.
 
 The release pipeline reserves `latest` and version-series aliases for stable
 releases. Candidates publish exact version tags, without a leading `v`, including
@@ -32,4 +32,4 @@ Hosted app dependencies can still require network access at build time. Portable
 Markdown commands do not need this image. See [`zel upgrade`](/cli/upgrade) to
 update the executable and [`zel doctor`](/cli/doctor) for container diagnostics.
 
-Available in candidate `0.2.0-rc.3`; public `zellij-v0.1.3` predates it.
+Available in candidate `0.2.0-rc.4`; public `zellij-v0.1.3` predates it.

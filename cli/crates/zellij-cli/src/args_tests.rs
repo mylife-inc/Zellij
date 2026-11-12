@@ -6,6 +6,29 @@ fn parse(args: &[&str]) -> Result<Cli, clap::Error> {
     Cli::parse_tokens(std::iter::once("zel").chain(args.iter().copied()))
 }
 
+#[test]
+fn upgrade_preview_is_explicit_and_conflicts_with_an_exact_version() {
+    let cli = parse(&["upgrade", "--preview", "--check"]).unwrap();
+    assert!(matches!(
+        cli.command,
+        Command::Upgrade(UpgradeArgs {
+            preview: true,
+            check: true,
+            ..
+        })
+    ));
+    assert!(parse(&["upgrade", "v0.2.0-rc.4", "--preview"]).is_err());
+    assert!(
+        parse(&[
+            "upgrade",
+            "--preview",
+            "--release-base-url",
+            "https://example.com"
+        ])
+        .is_err()
+    );
+}
+
 // Cover every registered shortcut with required-only and fully specified args.
 // None of these parser tests invokes a runtime, browser, registry or workflow.
 type Case = (

@@ -14,6 +14,15 @@ is still pending. Use Shebka for company-facing branding and retain `mylife-inc`
 for existing repository/distribution identifiers. A GitHub account rename or
 move to a `shebka` namespace is not needed for this plan.
 
+Current work: **rc.4 preparation** adds `zel upgrade --preview`, a Homebrew
+ownership guard, default engine images matching the CLI version, and a generated
+four-target Homebrew formula with hosted install/revision-upgrade/uninstall
+acceptance. See [candidate notes](specs/releases/v0.2.0-rc.4.md). Local docs
+target rc.4, but publication and tap availability must be verified separately.
+Keep the six saved delivery workflows on their existing published version until
+rc.4 is downloadable; then retarget and verify them before retiring old assets.
+Template/composer/book work and live provider verification remain separate.
+
 The documented CLI command families are implemented. On 2026-11-11 the user
 authorized a release containing the post-rc.2 fixes and moved live deployment
 provider verification to the end. **v0.2.0-rc.3 is published** from `58be9b1`,
