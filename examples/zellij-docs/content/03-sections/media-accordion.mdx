@@ -59,6 +59,9 @@ reference and meaningful `alt`. `caption` is optional inline Markdown. Block
 MDX, video, autoplay and authored JavaScript are not supported by this component.
 The section also accepts the usual `id`, `background`, `padding`, `motion` and
 `titleGradient` fields. `titleGradient` affects the optional section heading.
+Captions stay with the selected text in a wide layout and follow the inline
+image in a narrow layout. Caption links remain the same focusable elements
+when the layout changes.
 Item images load eagerly so selection and print do not depend on loading a
 previously hidden picture. Use optimized images; the eight-item limit bounds
 each instance's media count.

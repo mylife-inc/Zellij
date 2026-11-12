@@ -9,6 +9,10 @@ test('media selection stays synchronized and fits wide and narrow containers', a
   page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
   await page.goto('/media-accordion');
   await expect(page.locator('main h1')).toHaveCount(1);
+  const header = page.locator('[data-zellij-section="media-accordion"] [data-zellij-reveal]');
+  await header.scrollIntoViewIfNeeded();
+  await expect(header).toHaveAttribute('data-zellij-reveal', 'in');
+  await expect(header).toHaveCSS('opacity', '1');
   const wide = page.getByRole('group', { name: 'Fieldnotes details', exact: true });
   const compact = page.getByRole('group', { name: 'A compact composition', exact: true });
   await expect(wide.getByRole('button', { name: 'Find your focus.', exact: true })).toHaveAttribute('aria-expanded', 'true');
@@ -87,7 +91,9 @@ test('reduced motion and forced colors retain readable controls without animatio
   await expect(root.locator('.zellij-media-accordion-companion')).toHaveCSS('animation-name', 'none');
   await page.emulateMedia({ forcedColors: 'active' });
   const button = root.getByRole('button').first();
-  await button.focus();
+  await root.getByRole('button').nth(1).focus();
+  await page.keyboard.press('Home');
+  await expect(button).toBeFocused();
   await expect(button).toHaveCSS('outline-style', 'solid');
   await expect(root.locator('.zellij-media-accordion-item').first()).toHaveCSS('border-top-style', 'solid');
   await expect(root.getByRole('img', { name: secondAlt, exact: true })).toBeVisible();
@@ -97,10 +103,14 @@ test('resizing changes presentation without resetting selection', async ({ page 
   await page.goto('/media-accordion');
   const root = page.getByRole('group', { name: 'Fieldnotes details', exact: true });
   await root.getByRole('button', { name: 'Make room for ideas.', exact: true }).click();
+  const captionLink = root.getByRole('link', { name: 'Read the design notes', exact: true });
+  await expect(captionLink).toHaveCount(1);
+  await captionLink.focus();
   for (const width of [650, 1280, 390]) {
     await page.setViewportSize({ width, height: 900 });
     await expect(root.getByRole('button', { name: 'Make room for ideas.', exact: true })).toHaveAttribute('aria-expanded', 'true');
     await expect(root.getByRole('img', { name: secondAlt, exact: true })).toBeVisible();
+    await expect(captionLink).toBeFocused();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   }
 });

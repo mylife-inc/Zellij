@@ -14,7 +14,7 @@ items:
     body: "Keep the context close. Open a new perspective without losing the thread of the story."
     image: assets/media-layers.svg
     alt: An open notebook with text on the left and a green illustration on the right
-    caption: "02 / The details, together."
+    caption: "02 / [Read the design notes](/guide)."
   - title: Keep the whole picture.
     body: "Step back and see how the pieces belong together. Continue with your own story."
     image: assets/media-overview.svg

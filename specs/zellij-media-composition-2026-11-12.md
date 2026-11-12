@@ -35,6 +35,8 @@ The desktop companion changes with selection; narrow containers place each
 image after its text. A CSS container query at 760px handles nested cards without
 assuming a desktop viewport implies a wide component. Start/end placement does
 not change reading order. No new dependency is introduced.
+Caption content has one DOM instance beside the selected text (below the inline
+image in a narrow container), so resizing cannot hide a focused caption link.
 
 Headers follow the [WAI accordion pattern](https://www.w3.org/WAI/ARIA/apg/patterns/accordion/):
 native buttons in headings, unique per-instance control/panel IDs, expanded
@@ -64,3 +66,20 @@ all four presets. Current-source docs add a working preview and reference guide.
 
 No local browser/Docker, live deployment provider, production documentation/domain
 migration or release publication is part of this implementation checkpoint.
+
+First hosted run `43305489541` on `11ec16a`: 350 showcase cases passed, 124
+existing conditional cases skipped, and six new cases failed across the three
+browser projects. Print retained only the two selected panels because Tailwind's
+important `[hidden]` rule in the base cascade layer outranked the unlayered print
+override. The correction places the hidden-panel print override in that same
+base layer. The other three failures expected a keyboard outline after pointer
+interaction followed by programmatic focus; the test now uses the supported Home
+key and asserts actual keyboard focus before checking the outline. A separate
+review keeps captions in one DOM instance and tests linked-caption focus across
+resizing. Final-head hosted verification is required; this is not a passing gate.
+
+Local verification history: one concurrent full engine run timed out in four
+existing MDX tests; a lower-concurrency rerun is pending. The Rust workspace's
+unit/integration suites passed, but Homebrew rustdoc aborted on a missing z3
+dynamic library before doctests. The doctests are being rerun with rustup's
+rustdoc, without modifying product code or the host's package installation.

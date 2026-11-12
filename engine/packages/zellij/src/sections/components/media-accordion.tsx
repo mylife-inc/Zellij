@@ -13,8 +13,8 @@ export function MediaAccordionContent({ node, basePath, motion }: {
       media: <figure className="zellij-media-accordion-figure" data-fit={node.fit}>
         <SectionImage src={item.image} alt={item.alt} basePath={basePath} loading="eager"
           ratio={{ landscape: '16 / 10', square: '1', portrait: '3 / 4' }[node.ratio]} />
-        {item.caption ? <figcaption><InlineMarkdown text={item.caption} /></figcaption> : null}
       </figure>,
+      caption: item.caption ? <InlineMarkdown text={item.caption} /> : undefined,
     }))} />;
 }
 

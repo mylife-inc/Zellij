@@ -6,7 +6,7 @@ import type { MotionPreset } from '../../config/schema';
 /** Server-rendered sequential content is the baseline. Hydration adds selection;
  * CSS alone restores every panel and image in print, including hidden panels. */
 export function MediaAccordionControl({ label, items, mediaSide, headingLevel, motion }: {
-  label: string; items: { title: string; body: ReactNode; media: ReactNode }[];
+  label: string; items: { title: string; body: ReactNode; media: ReactNode; caption?: ReactNode }[];
   mediaSide: 'start' | 'end'; headingLevel: number; motion: MotionPreset;
 }) {
   const id = useId();
@@ -38,6 +38,7 @@ export function MediaAccordionControl({ label, items, mediaSide, headingLevel, m
             <div id={panelId} className="zellij-media-accordion-panel" hidden={!expanded}>
               <div className="zellij-media-accordion-body">{item.body}</div>
               <div className="zellij-media-accordion-inline">{item.media}</div>
+              {item.caption ? <p className="zellij-media-accordion-caption">{item.caption}</p> : null}
             </div>
           </div>;
         })}

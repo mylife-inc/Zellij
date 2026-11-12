@@ -15,12 +15,12 @@
 .zellij-media-accordion-sign { flex: 0 0 1em; text-align: center; font-weight: 400; }
 .zellij-media-accordion-panel { padding-block-end: 1.5rem; }
 .zellij-media-accordion-body p { margin: 0 0 1.25rem; color: var(--zellij-compose-muted); font-size: 1rem; line-height: 1.65; }
-.zellij-media-accordion :is(p, button, figcaption) { overflow-wrap: anywhere; }
+.zellij-media-accordion :is(p, button) { overflow-wrap: anywhere; }
 .zellij-media-accordion-figure { margin: 0; min-width: 0; }
 .zellij-media-accordion-figure .zellij-media { border-radius: 1.5rem; background: color-mix(in srgb, currentColor 5%, transparent); }
 .zellij-media-accordion-figure[data-fit="contain"] img { object-fit: contain; }
 .zellij-media-accordion-figure[data-fit="cover"] img { object-fit: cover; }
-.zellij-media-accordion-figure figcaption { margin-block-start: .875rem; color: var(--zellij-compose-muted); font-size: .875rem; line-height: 1.5; }
+.zellij-media-accordion-caption { margin: .875rem 0 0; color: var(--zellij-compose-muted); font-size: .875rem; line-height: 1.5; }
 .zellij-media-accordion-companion { display: none; min-width: 0; }
 @container (min-width: 760px) {
   .zellij-media-accordion-layout[data-ready="true"] { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
@@ -36,12 +36,19 @@
 @media (forced-colors: active) {
   .zellij-media-accordion { color: CanvasText; }
   .zellij-media-accordion-item { border-color: CanvasText; }
-  .zellij-media-accordion-body p, .zellij-media-accordion-figure figcaption { color: CanvasText; }
+  .zellij-media-accordion-body p, .zellij-media-accordion-caption { color: CanvasText; }
+}
+/* Important declarations reverse cascade-layer priority. Match Tailwind's base
+ * layer so its important [hidden] reset cannot suppress printable stories. */
+@layer base {
+  @media print {
+    .zellij-media-accordion-panel[hidden] { display: block !important; }
+  }
 }
 @media print {
   .zellij-media-accordion { --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-media-accordion-layout { display: block !important; }
-  .zellij-media-accordion-panel[hidden], .zellij-media-accordion-inline { display: block !important; }
+  .zellij-media-accordion-inline { display: block !important; }
   .zellij-media-accordion-companion, .zellij-media-accordion-sign { display: none !important; }
   .zellij-media-accordion-item { break-inside: avoid; border-color: #777; }
   .zellij-media-accordion-figure .zellij-media { max-width: 28rem; }
