@@ -308,13 +308,14 @@ fn tree(page: &Page, pages: &[Page], events: &[Event<'_>], mermaid: bool) -> Res
 
 pub(super) fn emit(
     config: &Config,
-    name: &str,
-    theme: &str,
+    presentation: &crate::page::Presentation<'_>,
     pages: &[Page],
     navigation: &Navigation,
     rewritten: &[Vec<Event<'_>>],
     assets: &BTreeMap<Utf8PathBuf, Vec<u8>>,
 ) -> Result<BTreeMap<Utf8PathBuf, Vec<u8>>> {
+    let name = presentation.name;
+    let theme = presentation.theme;
     for page in pages {
         if page
             .output
@@ -341,6 +342,21 @@ pub(super) fn emit(
         Ok(())
     }
     let mut site = json!({"name":name, "theme":theme, "mode":"system", "home":"manual", "nav":{"search":true,"themeToggle":true}});
+    if let Some(book) = presentation.book {
+        site["language"] = json!(book.manifest.language);
+        site["direction"] = json!(book.manifest.direction);
+        // The sidecar retains portable relative hrefs; adapted routes are supplied separately.
+        let routes: Vec<_> = book
+            .entries
+            .iter()
+            .map(|entry| json!({"id":entry.id,"route":route(&pages[entry.index])}))
+            .collect();
+        json_file(
+            &mut files,
+            "assets/book.json".into(),
+            json!({"publication":book,"routes":routes}),
+        )?;
+    }
     if let Some(brand) = &config.brand {
         site["brand"] = if brand.logo.is_some() {
             json!({"title":name})
@@ -396,16 +412,66 @@ pub(super) fn emit(
                 ),
             );
         }
+        if let Some(book) = presentation.book {
+            let children = body["children"].as_array_mut().unwrap();
+            let entry = book.entry(index);
+            if let Some(number) = &entry.number {
+                children.insert(
+                    0,
+                    element(
+                        "p",
+                        json!({"className":["book-number"]}),
+                        vec![text(&format!(
+                            "{} {number}",
+                            if entry.kind == "appendix" {
+                                "Appendix"
+                            } else {
+                                "Chapter"
+                            }
+                        ))],
+                    ),
+                );
+            }
+            if page.source.as_str().is_empty() {
+                if let Some(subtitle) = &book.manifest.subtitle {
+                    children.push(element("p", json!({}), vec![text(&subtitle.0)]));
+                }
+                children.push(element(
+                    "p",
+                    json!({}),
+                    vec![text(
+                        &book
+                            .manifest
+                            .authors
+                            .iter()
+                            .map(|a| a.0.as_str())
+                            .collect::<Vec<_>>()
+                            .join(" · "),
+                    )],
+                ));
+                if let Some(cover) = &book.manifest.cover {
+                    children.push(element("img", json!({"src":format!("/_zellij/assets/portable/{}", links::encode(&cover.image)), "alt":cover.alt}), vec![]));
+                }
+            }
+        }
         if page.source.as_str().is_empty() {
             body["children"].as_array_mut().unwrap().push(element(
                 "p",
                 json!({}),
-                vec![text("Explore the documentation.")],
+                vec![text(if presentation.book.is_some() {
+                    "Contents"
+                } else {
+                    "Explore the documentation."
+                })],
             ));
-            body["children"]
-                .as_array_mut()
-                .unwrap()
-                .push(contents(&navigation.items, pages));
+            body["children"].as_array_mut().unwrap().push(contents(
+                if presentation.book.is_some() {
+                    &navigation.items[1..]
+                } else {
+                    &navigation.items
+                },
+                pages,
+            ));
         }
         json_file(
             &mut files,

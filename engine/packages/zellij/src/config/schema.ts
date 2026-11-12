@@ -194,6 +194,9 @@ export const overridesSchema = z
  * folder — including one just cloned from a repo — is enough on its own.
  */
 export const siteConfigSchema = z.object({
+  /** Content language syntax; this does not translate the interface or select fonts. */
+  language: z.string().max(63).regex(/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*(?![\s\S])/).default('en'),
+  direction: z.enum(['ltr', 'rtl']).default('ltr'),
   name: z.string().min(1),
   tagline: z.string().optional(),
   brand: brandSchema.prefault({}),

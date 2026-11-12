@@ -43,7 +43,26 @@ async function browserChecks(origin, prefix, portable) {
     page.on('pageerror',err=>errors.push(err.message));
     page.on('response',res=>{if(res.status()>=400) errors.push(`${res.status()} ${res.url()}`);});
     await page.goto(`${origin}${prefix}/`);
-    if (portable) {
+    if (portable === 'book') {
+      await page.getByRole('heading', { name: 'An atlas of quiet ideas', exact: true }).waitFor();
+      assert.equal(await page.locator('html').getAttribute('lang'), 'en');
+      assert.equal(await page.locator('html').getAttribute('dir'), 'ltr');
+      const cover = page.locator('article img');
+      assert(await cover.evaluate(img => img.complete && img.naturalWidth > 0));
+      const record = await (await fetch(`${origin}/_zellij/assets/book.json`)).json();
+      assert.equal(record.publication.entries[3].id, 'questions');
+      assert.equal(record.routes[0].route, '/');
+      const sidebar = page.locator('.zellij-guide-sidebar');
+      await sidebar.getByRole('link', { name: '1. The art of noticing', exact: true }).click();
+      await page.getByRole('heading', { name: 'The art of noticing', exact: true }).waitFor();
+      assert((await page.locator('article').innerText()).includes('Chapter 1'));
+      await sidebar.getByRole('link', { name: '2. Better questions', exact: true }).click();
+      await page.getByRole('heading', { name: 'A question worth keeping', exact: true }).waitFor();
+      await page.reload();
+      await page.getByRole('heading', { name: 'A question worth keeping', exact: true }).waitFor();
+      const search = await (await fetch(`${origin}/_zellij/search-index.json`)).json();
+      assert(search.some(e => e.text.includes('observatory')));
+    } else if (portable) {
       await page.getByRole('heading',{name:'Authored title',exact:true}).waitFor();
       assert.equal(await page.locator('html').getAttribute('data-zellij-theme'),'forest');
       assert.equal(await page.getByRole('link',{name:'Company',exact:true}).getAttribute('href'),'https://company.example');
@@ -85,7 +104,7 @@ async function browserChecks(origin, prefix, portable) {
   } finally { await browser.close(); }
 }
 async function container(tag, prefix, portable, publicOrigin) {
-  const name = `zel-next-${portable?'portable':'hosted'}-${suffix}`;
+  const name = `zel-next-${portable === 'book' ? 'book' : portable ? 'portable' : 'hosted'}-${suffix}`;
   containers.push(name);
   docker(['run','-d','--name',name,'-p','127.0.0.1::3000',tag]);
   const info = JSON.parse(docker(['inspect',name]))[0];
@@ -153,6 +172,10 @@ try {
     run(['image','next','hosted','--tag',hosted,'--features','all','--base-path','/products/.docs','--site-url','https://next.example','--no-check']);
     assert.equal(await readFile(path.join(root,'hosted/content/site.yaml'),'utf8'),hostedSettings);
     await container(hosted,'/products/.docs',false,'https://next.example');
+    await cp(path.join(repo, 'scripts/fixtures/book'), path.join(root, 'book'), { recursive: true });
+    const book = `zellij-next-book:${suffix}`; images.push(book);
+    run(['image', 'next', 'book', '--tag', book, '--features', 'none']);
+    await container(book, '', 'book');
   }
   assert.equal(await readFile(path.join(root,'docs/zellij/site/index.html'),'utf8'),'previous output');
   assert.equal(await readFile(path.join(root,'docs/zellij/content/index.md'),'utf8'),original);

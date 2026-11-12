@@ -7,6 +7,7 @@ use crate::{
 use pulldown_cmark::HeadingLevel;
 
 pub struct Presentation<'a> {
+    pub book: Option<&'a crate::Publication>,
     pub name: &'a str,
     pub theme: &'a str,
     pub logo: Option<&'a Logo>,
@@ -180,11 +181,49 @@ pub fn render(
             )
         })
         .collect();
+    let language = presentation
+        .book
+        .map_or("en", |b| b.manifest.language.as_str());
+    let direction = presentation
+        .book
+        .map_or("ltr", |b| b.manifest.direction.as_str());
+    let (metadata, marker, identity) = presentation
+        .book
+        .map(|book| {
+            let entry = book.entry(index);
+            let metadata = book
+                .manifest
+                .authors
+                .iter()
+                .map(|a| format!("<meta name=\"author\" content=\"{}\">", escape(&a.0)))
+                .collect::<String>()
+                + &format!(
+                    "<meta name=\"zellij-book-revision\" content=\"{}\">",
+                    book.revision
+                );
+            let marker = entry
+                .number
+                .as_ref()
+                .map(|n| {
+                    format!(
+                        "<p class=\"book-number\">{} {}</p>",
+                        if entry.kind == "appendix" {
+                            "Appendix"
+                        } else {
+                            "Chapter"
+                        },
+                        escape(n)
+                    )
+                })
+                .unwrap_or_default();
+            (metadata, marker, format!(" data-book-id=\"{}\"", entry.id))
+        })
+        .unwrap_or_default();
     format!(
         r##"<!doctype html>
-<html lang="en" class="zellij-fonts" data-zellij-theme="{theme}" data-zellij-mode="system">
+<html lang="{language}" dir="{direction}" class="zellij-fonts" data-zellij-theme="{theme}" data-zellij-mode="system">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{title} · {name}</title><meta name="description" content="{description}">
+{metadata}<title>{title} · {name}</title><meta name="description" content="{description}">
 <link rel="stylesheet" href="{prefix}_zellij/fonts/fonts.css">
 <link rel="stylesheet" href="{prefix}_zellij/themes.css"><link rel="stylesheet" href="{prefix}_zellij/style.css">{mindmap_css}
 {math_css}{mermaid_css}
@@ -195,7 +234,7 @@ pub fn render(
 <button id="_zel-search-open">Search <kbd>⌘/Ctrl K</kbd></button><label class="sr-only" for="_zel-theme">Theme</label><select id="_zel-theme">{themes}</select>
 <label class="sr-only" for="_zel-mode">Appearance</label><select id="_zel-mode"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div></header>
 <div class="layout"><aside class="sidebar" id="_zel-sidebar"><nav aria-label="Documentation"><p class="eyebrow">Contents</p><ul>{nav}</ul></nav></aside>
-<main id="_zel-content" tabindex="-1"><nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs}</nav>{toc}<article>{heading}{body}</article><nav class="paging" aria-label="Previous and next">{paging}</nav>
+<main id="_zel-content" tabindex="-1"><nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs}</nav>{toc}<article{identity}>{marker}{heading}{body}</article><nav class="paging" aria-label="Previous and next">{paging}</nav>
 <footer>Built with Zellij · <a href="{prefix}_zellij/fonts/licenses.txt">Font licenses</a>{math_license}{mermaid_license}</footer></main></div>
 <dialog id="_zel-search" aria-labelledby="_zel-search-title"><form method="dialog"><button class="close" aria-label="Close search">Close</button></form><label id="_zel-search-title" for="_zel-query">Search documentation</label><input id="_zel-query" type="search" autocomplete="off" placeholder="Search pages and headings…"><p id="_zel-status" role="status" aria-live="polite">Type to search.</p><ul id="_zel-results"></ul></dialog>
 </body></html>

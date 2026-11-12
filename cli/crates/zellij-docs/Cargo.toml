@@ -13,6 +13,7 @@ zellij-core.workspace = true
 camino.workspace = true
 serde.workspace = true
 serde_json.workspace = true
+sha2 = "0.10"
 serde_yaml_ng.workspace = true
 walkdir.workspace = true
 pulldown-cmark = { version = "0.13", default-features = false, features = ["html"] }

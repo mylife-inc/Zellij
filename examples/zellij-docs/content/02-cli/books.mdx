@@ -1,0 +1,149 @@
+---
+title: Books and reading order
+description: Define a book once, validate its complete manuscript, and build an offline reading website.
+---
+
+<Callout type="info" title="Available in source after rc.5">
+The versioned book manifest is available in source. Published rc.5 binaries do
+not accept it. PDF/LaTeX export, indexes, bibliography, technical/study templates
+and a one-click PDF download remain planned.
+</Callout>
+
+## One manuscript, one reading order
+
+Put a `book` block in a portable site's `zel.yaml`. Keep Markdown and assets in
+`content/`; build output stays in its sibling `site/` folder. The site folder
+can have any name. Existing commands remain short:
+
+```sh
+zel check my-book --strict
+zel check my-book --json
+zel build my-book
+zel view my-book
+```
+
+From inside `my-book`, omit the path. From a product repository, bare commands
+also recognize `docs/zellij/zel.yaml`. `view` builds, starts the local server,
+and opens the browser with its existing options. You can also double-click
+`site/index.html`; no server is required to read the complete portable book.
+
+```yaml title="my-book/zel.yaml"
+version: 1
+renderer: portable
+book:
+  version: 1
+  title: The art of noticing
+  subtitle: A field guide to attention
+  authors: [Mira Vale]
+  language: en
+  direction: ltr
+  cover:
+    image: assets/cover.svg
+    alt: Concentric circles on an ivory book cover
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - id: attention
+      title: Part I · Attention
+      chapters:
+        - {id: noticing, source: chapters/noticing.md}
+        - {id: questions, source: chapters/questions.md, title: Better questions}
+    - {id: practice, source: practice.md}
+  appendices:
+    - {id: field-notes, source: notes.md}
+```
+
+The `book` version is the integer `1`, independent of the outer site version.
+Title and one to sixteen author names are required. Subtitle, cover, front
+matter and appendices are optional. A part contains a nonempty list of chapters;
+parts cannot nest. There must be at least one chapter. The limit is 1,024 listed
+reading entries, plus the automatic title page.
+
+Every part and reading entry has a unique ID, starting with a lowercase ASCII
+letter and containing at most 64 lowercase letters, digits, hyphens or
+underscores. `title-page` is reserved. IDs identify entries in the publication
+record; web URLs continue to follow source filenames. Renaming an ID does not
+rename its URL, and renaming a file changes its URL.
+
+## Title page, chapters and appendices
+
+The root home document (`index.md`, or `README.md` when no index exists) becomes
+the title page automatically. Do not list it in the manifest. If you omit it,
+Zellij creates a title page with the book title, subtitle, authors, cover and
+contents. If you author a home document, its body remains yours: include your
+own cover and credits there. The manifest's metadata and cover are still
+validated and exported.
+
+Front matter is unnumbered. Chapters are numbered continuously across parts;
+appendices use A, B, … Z, AA, and so on. Sidebar, contents and previous/next links
+follow the manifest, independent of alphabetical filenames or Markdown `order`.
+An entry's optional `title` changes its navigation/publication label; it does
+not rewrite the Markdown heading or body.
+
+All discovered Markdown must be listed, apart from the automatic title page.
+Unlisted chapters fail validation; keep drafts outside `content/`. Sources are
+literal paths relative to `content/`, including their `.md` or `.markdown`
+extension. They must exist and cannot escape that directory. Repeated IDs or
+sources, missing chapters, `nav` together with `book`, unknown book fields,
+unsafe assets and output collisions fail before replacing the last export.
+There is no separate book-specific overwrite mode.
+
+The paper theme is the book default. Set ordinary `theme` or use `--theme` to
+choose another theme. A separate site `name` controls the header; without one,
+the book title is used. Existing company/product branding, Markdown features,
+local fonts, search and offline navigation continue to work.
+
+## Language and direction
+
+`language` defaults to `en`; `direction` defaults to `ltr` and can be `rtl`.
+These set the HTML content language and writing direction, including in adapted
+Next images. Portable layout uses logical inline edges. They do not translate
+interface labels such as “Chapter” and “Search”, select additional font packs,
+or promise complete typesetting support for every language. Verify the glyphs
+needed by your manuscript; the bundled fonts do not cover every script.
+
+The supported language syntax is 2–8 ASCII letters, optionally followed by
+hyphen-separated 1–8 character alphanumeric subtags, with at most 63 characters
+in total (for example `en`, `fr-CA`, `zh-Hans`). Validation checks this syntax,
+not the IANA language registry. Hosted `content/site.yaml` also accepts these
+`language` and `direction` fields independently of a book manifest.
+
+## Inspect the publication
+
+On successful compilation, `zel check --json` includes a `book` object. Builds
+write the same object to `site/_zellij/book.json`. Non-book and failed compilation
+reports omit this optional field. Existing report fields and exit codes remain
+unchanged; strict warning failures may still contain a compiled book.
+
+The record contains `schema_version: 1`, the normalized manifest, a `revision`,
+and ordered `entries`. Each entry records its `id`, `kind`, optional `number`
+and part ID, title, source and encoded root-relative HTML `href`. The automatic
+title page has a null source when synthesized. The complete manifest retains
+part titles and the cover description.
+
+The `sha256:` revision identifies the canonical manifest, ordered original
+Markdown bytes and referenced local assets, including branding. Moving the
+source/output, reformatting equivalent YAML, or changing a theme/name override
+does not change it. Editing metadata, Markdown or an included asset does. It is
+a content identity, not a signature or a guarantee of identical layout across
+engine versions and feature settings.
+
+`zel ni my-book` adapts the book to the Next image renderer, preserving metadata,
+reading order, chapter markers and title-page content. Its public
+`/_zellij/assets/book.json` contains `publication` (the same portable record) and
+`routes` (entry IDs mapped to hosted routes). Its portable `href` fields are not
+hosted route declarations. Use a matching source engine for source-only features;
+rc.5's version-pinned engine predates this model. Native portable builds require
+no external renderer.
+
+## Start from the existing book template
+
+`zel create my-book -t book-classic` still creates the versioned 0.1.0 starter
+shipped in rc.5. Its files are unchanged. To opt into the new model using a
+source build, replace its `nav` block with a `book` manifest listing its preface
+and chapter files; leave its authored `index.md` unlisted. Future template
+versions will add richer publishing presets without changing an existing
+version's archive.
+
+This milestone establishes the shared publication model for future build-time
+PDF/LaTeX backends. It does not run a TeX toolchain or generate a PDF today.

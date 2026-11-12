@@ -47,6 +47,8 @@ a complete site.
 
 | field | type | |
 | --- | --- | --- |
+| `language` | string | default `"en"` |
+| `direction` | `ltr` \| `rtl` | default `"ltr"` |
 | `name` | string | **required** |
 | `tagline` | string |  |
 | `brand` | object { company, logo, title } | default `{}` |

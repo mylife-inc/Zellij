@@ -61,6 +61,13 @@ sibling `<folder>-site`. Use an explicit `.` for an unconfigured current folder.
 Existing files are never moved into the new layout automatically. For hosted
 legacy roots, explicit `.` retains the old content-discovery order.
 
+## Book manuscripts
+
+Source builds after rc.5 accept an optional [versioned book manifest](/cli/books)
+in portable `zel.yaml`. It owns the reading order instead of `nav` and supplies
+title, authors, language, cover, parts and chapters. Existing documentation
+without `book` keeps its navigation behavior.
+
 ## Working directory and site selection
 
 ```bash

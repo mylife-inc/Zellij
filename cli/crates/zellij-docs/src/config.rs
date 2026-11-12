@@ -18,6 +18,7 @@ pub struct Config {
     pub markdown: Markdown,
     pub brand: Option<Brand>,
     pub nav: Option<Vec<Entry>>,
+    pub book: Option<zellij_core::book::Manifest>,
 }
 #[derive(Default, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -124,7 +125,7 @@ pub fn present(root: &Utf8Path) -> bool {
     // path and report its error, rather than silently choosing another target.
     zellij_core::site::present(root)
 }
-fn regular(root: &Utf8Path, relative: &Utf8Path) -> Result<Utf8PathBuf> {
+pub(crate) fn regular(root: &Utf8Path, relative: &Utf8Path) -> Result<Utf8PathBuf> {
     crate::portable_path(relative)?;
     let path = files::contained_path(root, relative)?;
     let mut component = root.to_owned();
@@ -147,6 +148,14 @@ impl Config {
     pub fn load(value: serde_yaml_ng::Value) -> Result<Self> {
         let config: Self = serde_yaml_ng::from_value(value)
             .map_err(|e| invalid(format!("invalid configuration: {e}")))?;
+        if let Some(book) = &config.book {
+            book.validate()?;
+            if config.nav.is_some() {
+                return Err(invalid(
+                    "book and nav cannot both define the reading order; remove nav",
+                ));
+            }
+        }
         if let Some(name) = &config.name {
             nonempty(name, "name")?;
         }
@@ -317,7 +326,7 @@ impl Navigation {
     pub fn render(&self, current: &Page, pages: &[Page]) -> String {
         self.render_items(&self.items, current, pages)
     }
-    fn render_items(&self, items: &[Item], current: &Page, pages: &[Page]) -> String {
+    pub(crate) fn render_items(&self, items: &[Item], current: &Page, pages: &[Page]) -> String {
         items
             .iter()
             .map(|item| match item {

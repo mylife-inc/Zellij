@@ -55,3 +55,12 @@ it.each([[true, true], [true, false], [false, true], [false, false]])(
     }
   },
 );
+
+it('declares the configured content language and direction on the root', async () => {
+  expect(await render({ name: 'Book' })).toContain('lang="en" dir="ltr"');
+  expect(await render({ name: 'Book', language: 'ar', direction: 'rtl' })).toContain('lang="ar" dir="rtl"');
+  for (const language of ['en--US', 'x', 'en\n', 'en" onload="x', 'a'.repeat(64)]) {
+    expect(siteConfigSchema.safeParse({ name: 'Book', language }).success).toBe(false);
+  }
+  expect(siteConfigSchema.safeParse({ name: 'Book', direction: 'auto' }).success).toBe(false);
+});

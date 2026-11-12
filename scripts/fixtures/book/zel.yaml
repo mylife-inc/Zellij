@@ -1,0 +1,23 @@
+version: 1
+renderer: portable
+book:
+  version: 1
+  title: An atlas of quiet ideas
+  subtitle: Notes on seeing, learning, and making
+  authors: [Mira Vale]
+  language: en
+  direction: ltr
+  cover:
+    image: assets/cover.svg
+    alt: Three concentric circles in blue and gold on an ivory book cover
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - id: attention
+      title: Part I · Attention
+      chapters:
+        - {id: noticing, source: chapters/z-noticing.md}
+        - {id: questions, source: chapters/a-questions.md, title: Better questions}
+    - {id: practice, source: practice.md}
+  appendices:
+    - {id: field-notes, source: notes.md}

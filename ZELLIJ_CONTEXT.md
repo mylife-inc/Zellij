@@ -3,6 +3,15 @@
 Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Book publication work is in progress on `codex/book-manifest` from `9ba53e3`.
+The versioned portable manifest now drives ordered front matter/parts/chapters/
+appendices, metadata, covers, a content revision and shared JSON inspection.
+The same model feeds the Next adapter. See
+[the book checkpoint](specs/zellij-book-publication-2026-11-12.md) and
+[authoring guide](examples/zellij-docs/content/02-cli/books.mdx). Final-head
+verification and merge are pending. PDF/LaTeX execution remains the next increment;
+no native release or production documentation/domain change has occurred.
+
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
 Company identity confirmed by the user on 2026-11-11: **Shebka** makes Zellij.

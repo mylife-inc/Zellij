@@ -43,6 +43,10 @@ It checks image/download paths, heading and footnote fragments, and portable
 output filename collisions. Hidden paths and `node_modules` cannot supply
 published assets. Configured branding and navigation use the same checks as build.
 
+Source builds after rc.5 also validate [book manifests](/cli/books), including
+complete chapter coverage, unique IDs/sources and cover assets. Successful
+compilation adds an optional `book` object to JSON reports.
+
 No output directory or temporary files are created, and existing exports are
 untouched. Shell redirection in the JSON example writes the report separately.
 The checker does not test output ownership, permissions, available disk space,
