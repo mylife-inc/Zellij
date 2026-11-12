@@ -9,11 +9,12 @@ zel upgrade                     # install latest stable if newer
 zel upgrade --preview --check   # include previews; change no files (rc.4+)
 zel upgrade --preview           # install newest stable or preview (rc.4+)
 zel upgrade 0.2.0                # select an exact published release
-zel upgrade v0.2.0-rc.4          # explicitly select a prerelease
+zel upgrade v0.2.0-rc.5          # explicitly select a prerelease
 zel upgrade 0.2.0 --force        # reinstall the same version
 ```
 
-Candidate `0.2.0-rc.4` adds preview discovery and package-manager protection.
+Preview discovery and package-manager protection were introduced in
+`0.2.0-rc.4` and remain included in the current candidate.
 Stable `0.2.0` examples show syntax for a future release. During pre-1.0
 development, use the current candidate's [pinned installer instructions](/cli)
 or select `--preview`. The stable channel never silently selects a preview and
@@ -81,7 +82,7 @@ for up to five seconds per permission, staged-archive removal or rename operatio
 Other errors fail immediately, and messages identify the failed operation.
 Cancellation remains available before replacement starts; commit and restoration
 finish without cancellation after the old executable has moved. These changes
-are included in candidate `0.2.0-rc.4`. Abrupt machine/storage failure during replacement is
+are included in candidate `0.2.0-rc.5`. Abrupt machine/storage failure during replacement is
 not a recoverable transaction guarantee.
 
 ## Asset mirrors

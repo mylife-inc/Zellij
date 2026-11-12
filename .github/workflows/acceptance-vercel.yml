@@ -51,7 +51,7 @@ jobs:
         env:
           VERCEL_TOKEN: ${{ secrets.ZEL_LIVE_VERCEL_TOKEN }}
           VERCEL_TEAM_ID: ${{ inputs.team_id }}
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
         run: node scripts/check-vercel-live.mjs exercise "$RUNNER_TEMP/vercel-live-evidence.json" cli/target/debug/zel
       - name: Remove the confirmed temporary project and verify deletion
         if: ${{ always() && steps.create.outcome != 'skipped' }}
