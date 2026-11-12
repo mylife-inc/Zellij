@@ -29,8 +29,14 @@ All 13 development-image jobs pass, publishing all four variants on both Linux a
 These additions are not in published rc.5. See
 [the implementation record](zellij-media-composition-2026-11-12.md) and
 [verification evidence](evidence/zellij-media-composition-2026-11-12.json).
-The book starter is a reading website; full PDF/LaTeX and other expansion work
-remain incomplete. The older milestones below retain their dated evidence.
+PR #149 (`72a8445`) adds a versioned book manifest, complete reading order,
+metadata/cover, shared publication JSON and content revision, language/direction,
+and Next adaptation. All 20 final-head jobs pass, including 756 Rust and 490
+engine tests, cross-platform book browser checks and a real Next-image book.
+All 13 development-image jobs in `43328363366` pass on the merged source.
+See [book evidence](evidence/zellij-book-publication-2026-11-12.json).
+The released book starter remains a reading website; PDF/LaTeX and other expansion
+work remain incomplete. The older milestones below retain their dated evidence.
 
 The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
@@ -42,7 +48,8 @@ Independent company/product branding is now implemented by PR #131
 active guides were updated. This increment and the hydration fix below shipped
 in rc.4. The first template catalog shipped in rc.5; bounded composer v1 is merged
 in source after rc.5, together with media-accordion and the first four composition
-presets. Further composition primitives and book/PDF publishing remain planned.
+presets. The first book publication model is merged after rc.5; further composition
+primitives and PDF/LaTeX publishing remain planned.
 Homebrew is live; Scoop, WinGet and other new package-manager
 channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
@@ -183,10 +190,10 @@ checks, 335 showcase browser cases and 13 development-image jobs passed; six
 light/dark desktop/phone captures were reviewed. See [composer evidence](evidence/zellij-compose-2026-11-12.json). Media-accordion and four composition presets subsequently merged in PR #147
 (`2373c5e`), with all 20 CI and 13 development-image jobs passing; see
 [media evidence](evidence/zellij-media-composition-2026-11-12.json).
-The [book publication model](zellij-book-publication-2026-11-12.md) is now in
-progress on `codex/book-manifest`; final-head verification and merge are pending.
-Complete the book model,
-technical/study editions and opt-in PDF/LaTeX publishing, and add the remaining
+The [book publication model](zellij-book-publication-2026-11-12.md) merged in
+PR #149 (`72a8445`), with all 20 final-head jobs passing on the identical tree.
+Next implement opt-in build-time PDF/LaTeX against this shared publication model,
+then technical/study editions and the remaining
 installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.
 

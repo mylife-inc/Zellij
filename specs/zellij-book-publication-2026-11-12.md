@@ -63,8 +63,33 @@ explains the root language declaration independently of writing direction.
   reading, covers and captures. The existing Next-image acceptance also builds
   and serves the same complete book and checks its routes/sidecar/search.
 
-Evidence and exact final-head outcomes will be recorded after verification.
-Failed attempts remain recorded rather than being replaced with later passes.
+PR #149 merged as `72a84456e7a3192a64c4003020ee68598d893442`, with tree
+`cc1843e6b3ad12799c269bf693fa91a7bb339351` identical to tested head
+`2b5cfecd9a10e8fac9448089142e0a0f55f72b98`. All 20 jobs in
+[`43322268842`](https://github.com/mylife-inc/Zellij/actions/runs/43322268842)
+passed: 756 Rust tests (five existing ignored cases run separately), 490 engine
+tests, 356 showcase cases (124 existing conditional skips), all six native
+packages and all four Homebrew targets. Book CLI and relocated-file browser
+acceptance passed on Linux/macOS/Windows; the real Next-image book checks passed.
+All 12 Linux desktop/mobile Chromium/WebKit title/chapter/RTL captures and two
+Windows captures were visually reviewed. No clipping or overlap was observed;
+Windows WebKit serif headings appeared lighter than Linux. Typography is not
+claimed to be pixel-identical across platforms.
+
+All 13 development-engine jobs in
+[`43328363366`](https://github.com/mylife-inc/Zellij/actions/runs/43328363366)
+passed on merge `72a8445`. Four `main` variants were published for Linux
+amd64/arm64, and the published default image built and served a site. Native
+rc.5 release assets and production documentation/domain remain unchanged.
+
+Local focused book, layout and watcher tests, workspace Clippy with warnings
+denied, formatting, engine build, typechecks and strict/deep documentation checks
+passed. Two broad local engine runs hit four existing MDX/math timeouts under
+heavy host compilation load; the broad Rust run stopped at an existing fake-
+runtime timeout. The complete hosted runs passed. The host Homebrew Rust toolchain
+could not load its LLVM/z3 dependency; matched rustup tools passed without
+changing host packages. Failed attempts remain recorded in
+[the evidence](evidence/zellij-book-publication-2026-11-12.json).
 
 First hosted run `43321606840` at `c14c4a9` found two fixture defects: Windows
 CRLF left an intended removed-chapter case unchanged, and the existing engine
