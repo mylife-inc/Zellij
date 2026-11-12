@@ -10,6 +10,10 @@ template milestone, company branding, the hydration fix, preview upgrades,
 matching engine images and Homebrew support. All 20 final-head CI checks, all
 29 release jobs and all four public Homebrew acceptance jobs passed. See
 [rc.5 release evidence](evidence/zellij-rc5-release-2026-11-12.json).
+Scoped retirement is also complete: 213 obsolete image versions were removed,
+with current image graphs and all rc.5/CodeSeal release assets preserved.
+Fresh hosted inventory and both image HTTP checks pass; see
+[retirement evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 

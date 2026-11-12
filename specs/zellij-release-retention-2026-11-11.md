@@ -2,8 +2,8 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-12 with rc.5 execution; the rc.4 record remains historical. Completed native
-retirement and Homebrew publication are distinct from pending image cleanup.
+Refreshed 2026-11-12 with completed rc.5 native/image retirement and Homebrew
+publication. The rc.4 record and failed image attempts remain historical.
 
 ## User decision
 
@@ -45,11 +45,14 @@ selects rc.5 after retirement. See
 [release gates](evidence/zellij-rc5-release-2026-11-12.json). No source history was
 rewritten; historical rc.4 URLs below now refer to retired artifacts.
 
-**Image cleanup remains incomplete, with zero deletions.** The user confirmed
-package-level Admin access on 2026-11-12. The refreshed 213-version plan passed
-its read/graph gates, but execution `43276711406` still returned HTTP 404 on the
-first DELETE. The owner-login fallback below is prepared; its credential scopes
-are awaiting a user refresh. See [execution evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
+**Scoped image cleanup is complete.** The owner's refreshed login removed
+exactly 213 versions under the reviewed plan: 195 base, nine static and nine Next.
+All 46 current manifest dependencies remain intact. Fresh hosted inventory
+`43281128886` confirms zero retired tags/targets and preserves every excluded
+build-history version. Both fresh-pull HTTP jobs in `43281136218` pass. All
+40 rc.5 release assets and 12 CodeSeal assets retain their original identities
+and checksums. The execution record below retains the failed workflow attempt
+and the safely resumed owner attempt. See [execution evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
 The old 187-version rc.4 manifest is stale: rc.5 added protected tags and the
 development aliases moved. The guard correctly refuses new/moved references.
 Do not run the old plan unchanged. Its excluded untagged build-history inventory
@@ -204,9 +207,6 @@ versioned artifacts from the public release mirror.
 
 ## Remaining work
 
-- Execute the reviewed rc.5 image plan after the owner's package scopes are
-  available, then verify retained public images and record the result. Regenerate
-  the plan if a retained alias moves; do not relax that guard.
 - Separately review untagged build-history retention before any wider cleanup.
 - Add Scoop and other selected package-manager channels with native acceptance;
   respect external registries' version-removal limits before publishing previews.
@@ -242,7 +242,9 @@ current main variants, and rc.5 static/Next acceptance images. Exact SHA256:
 Nine guard tests, workflow lint and validation against the downloaded inventory
 pass. Execution and post-cleanup HTTP verification remain pending at this checkpoint.
 
-## Owner-login fallback after the Admin grant — 2026-11-12
+## Owner-login fallback preparation after the Admin grant — 2026-11-12
+
+This preparation checkpoint precedes the completed execution recorded below.
 
 PR #144 merged the refreshed plan and gates as `4383ae7`. Hosted execution
 `43276711406` passed nine guard tests and replacement/inventory/graph preflight,
@@ -273,3 +275,34 @@ refresh, verify the identity/scopes, merged source, unchanged plan hash and
 absence of concurrent publishers. Run the exact reviewed plan with `apply-local`,
 then obtain a fresh hosted inventory and current-image HTTP checks. Record the
 result before claiming completion; a prepared fallback is not successful cleanup.
+
+## Completed owner execution and verification — 2026-11-12
+
+PR #145 merged as `637f2ee` with the exact tree of tested head `27e62c7`.
+All 13 guard tests passed locally and in hosted read-only run `43278582061`.
+Its fresh plan matched every reviewed target, retained reference and protected
+manifest. The user then refreshed the existing `mylife-inc` login with package
+read/delete scopes. There were no concurrent publication workflows.
+
+The first owner attempt deleted 67 base-image versions and stopped when a
+per-version GET returned HTTP 401. The login and required scopes remained valid;
+the same GET immediately succeeded. Its cause is unproven. The second attempt
+used unchanged source and the same plan checksum, revalidated every acceptance
+and inventory/graph gate, recorded the 67 already-absent identities and deleted
+the remaining 146 versions. The two journals together contain exactly the 213
+planned deletions, each once, with no extra identity. The final journal is complete.
+
+Hosted inventory `43281128886` confirms the exact difference: base versions
+3,457 → 3,262, static 16 → 7 and Next 15 → 6. The new plan has zero retired tags
+and zero remaining targets. All 46 retained manifest dependencies and all 3,229
+excluded build-history versions match the original plan. Both retained acceptance
+images passed fresh pulls, health checks and HTTP acceptance in `43281136218`;
+the provider job was skipped. Release asset comparisons preserve all 40 rc.5
+assets and all 12 CodeSeal assets. No native release or Homebrew update was needed.
+
+The [consolidated evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json)
+links both owner execution journals and records workflow IDs, artifact hashes,
+retained image digests, inventory counts and the earlier failed receipts.
+Future releases require a newly reviewed plan; do not reuse this completed plan
+after mutable tags change. Provider acceptance and production docs migration
+remain deferred.
