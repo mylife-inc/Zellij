@@ -1,0 +1,1428 @@
+{
+  "observed_on": "2026-11-11 America/Los_Angeles",
+  "status": "published and public Homebrew tap verified; named GitHub release retirement complete; image retirement recorded separately",
+  "tag": "v0.2.0-rc.4",
+  "preparation_pr": 135,
+  "tested_pr_head": "6a2601cc1c2fc417e4bff129c712fbe4ec8ded75",
+  "authorization": "User approved continued implementation, incremental CLI releases, the owned mylife-inc/tap/zel Homebrew channel and scoped retirement of superseded pre-1.0 Zellij distributions.",
+  "prior_ci_attempts": [
+    {
+      "run_id": 43157659547,
+      "head": "c1b07976bfb2b5386352657672036f355c268bd7",
+      "conclusion": "cancelled after fixing a Homebrew formula test failure",
+      "finding": "The CLI correctly wrote its package-ownership error to stderr; Homebrew shell_output captured stdout only. The formula test now redirects stderr for this expected error.",
+      "fix": "1b3ad448a0cc9be8432c871db29ec00ac063f829",
+      "failed_jobs": [
+        {
+          "id": 130983045410,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)"
+        },
+        {
+          "id": 130983045430,
+          "name": "homebrew / Homebrew (macos-15)"
+        },
+        {
+          "id": 130983045465,
+          "name": "homebrew / Homebrew (macos-15-intel)"
+        },
+        {
+          "id": 130983045477,
+          "name": "homebrew / Homebrew (ubuntu-latest)"
+        }
+      ]
+    },
+    {
+      "run_id": 43158368107,
+      "head": "1b3ad448a0cc9be8432c871db29ec00ac063f829",
+      "conclusion": "superseded",
+      "reason": "Final image-default references in five guides and the standalone Dockerfile were reconciled before publication."
+    }
+  ],
+  "local_validation": {
+    "rust_passed": 726,
+    "rust_ignored_hosted_cases": 5,
+    "clippy": "passed with -D warnings",
+    "format": "passed",
+    "release_formula_download_helpers": 32,
+    "docs": {
+      "routes": 55,
+      "examples": 23,
+      "strict_deep": "passed"
+    },
+    "workflow_lint": "passed",
+    "generated_delivery_consistency": "passed on rc.4 pins before consumer merge"
+  },
+  "additional_regression": "The local suite exposed the preview/mirror argument-conflict interaction. The CLI explicitly rejects --preview with --release-base-url, which requires an exact version.",
+  "known_ci_results": {
+    "engine_tests_passed": 461,
+    "showcase_tests_passed": 317,
+    "showcase_conditional_skips": 124,
+    "documentation_preservation": {
+      "original_routes": 46,
+      "additional_routes": 9,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "captured_browser_errors": 0
+    },
+    "homebrew": "all four native install/completions/ownership/build/revision-upgrade/uninstall jobs passed"
+  },
+  "release_run": {
+    "attempt": 1,
+    "conclusion": "success",
+    "headSha": "6d116b2ca6df8eb8d078f03978d2a49598b58de1",
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T05:48:39Z",
+        "conclusion": "success",
+        "databaseId": 130999998684,
+        "name": "Verify",
+        "startedAt": "2026-11-12T05:45:51Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/130999998684"
+      },
+      {
+        "completedAt": "2026-11-12T05:49:55Z",
+        "conclusion": "success",
+        "databaseId": 131000969386,
+        "name": "Documentation site",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969386"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:59Z",
+        "conclusion": "success",
+        "databaseId": 131000969504,
+        "name": "Image diagrams \u00b7 amd64",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969504"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:40Z",
+        "conclusion": "success",
+        "databaseId": 131000969530,
+        "name": "Image diagrams \u00b7 arm64",
+        "startedAt": "2026-11-12T05:48:43Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969530"
+      },
+      {
+        "completedAt": "2026-11-12T05:51:10Z",
+        "conclusion": "success",
+        "databaseId": 131000969545,
+        "name": "Image maths \u00b7 arm64",
+        "startedAt": "2026-11-12T05:48:43Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969545"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:42Z",
+        "conclusion": "success",
+        "databaseId": 131000969578,
+        "name": "Image none \u00b7 amd64",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969578"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:40Z",
+        "conclusion": "success",
+        "databaseId": 131000969609,
+        "name": "Image all \u00b7 amd64",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969609"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:11Z",
+        "conclusion": "success",
+        "databaseId": 131000969627,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:48:43Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969627"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:14Z",
+        "conclusion": "success",
+        "databaseId": 131000969629,
+        "name": "Image all \u00b7 arm64",
+        "startedAt": "2026-11-12T05:48:43Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969629"
+      },
+      {
+        "completedAt": "2026-11-12T05:52:55Z",
+        "conclusion": "success",
+        "databaseId": 131000969643,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969643"
+      },
+      {
+        "completedAt": "2026-11-12T05:52:20Z",
+        "conclusion": "success",
+        "databaseId": 131000969648,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969648"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:08Z",
+        "conclusion": "success",
+        "databaseId": 131000969672,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969672"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:12Z",
+        "conclusion": "success",
+        "databaseId": 131000969693,
+        "name": "Image none \u00b7 arm64",
+        "startedAt": "2026-11-12T05:48:43Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969693"
+      },
+      {
+        "completedAt": "2026-11-12T05:53:53Z",
+        "conclusion": "success",
+        "databaseId": 131000969714,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969714"
+      },
+      {
+        "completedAt": "2026-11-12T05:50:50Z",
+        "conclusion": "success",
+        "databaseId": 131000969725,
+        "name": "Image maths \u00b7 amd64",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969725"
+      },
+      {
+        "completedAt": "2026-11-12T05:51:23Z",
+        "conclusion": "success",
+        "databaseId": 131000969733,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "startedAt": "2026-11-12T05:48:41Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131000969733"
+      },
+      {
+        "completedAt": "2026-11-12T05:51:34Z",
+        "conclusion": "success",
+        "databaseId": 131001859605,
+        "name": "Publish image maths",
+        "startedAt": "2026-11-12T05:51:13Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131001859605"
+      },
+      {
+        "completedAt": "2026-11-12T05:51:56Z",
+        "conclusion": "success",
+        "databaseId": 131001859646,
+        "name": "Publish image all",
+        "startedAt": "2026-11-12T05:51:13Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131001859646"
+      },
+      {
+        "completedAt": "2026-11-12T05:52:32Z",
+        "conclusion": "success",
+        "databaseId": 131001859661,
+        "name": "Publish image none",
+        "startedAt": "2026-11-12T05:51:13Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131001859661"
+      },
+      {
+        "completedAt": "2026-11-12T05:51:32Z",
+        "conclusion": "success",
+        "databaseId": 131001859702,
+        "name": "Publish image diagrams",
+        "startedAt": "2026-11-12T05:51:12Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131001859702"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:14Z",
+        "conclusion": "success",
+        "databaseId": 131002795166,
+        "name": "Publish the release",
+        "startedAt": "2026-11-12T05:53:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002795166"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:34Z",
+        "conclusion": "success",
+        "databaseId": 131002912721,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "startedAt": "2026-11-12T05:54:18Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912721"
+      },
+      {
+        "completedAt": "2026-11-12T05:55:39Z",
+        "conclusion": "success",
+        "databaseId": 131002912727,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "startedAt": "2026-11-12T05:54:19Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912727"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:57Z",
+        "conclusion": "success",
+        "databaseId": 131002912730,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:54:18Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912730"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:43Z",
+        "conclusion": "success",
+        "databaseId": 131002912731,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:54:16Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912731"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:37Z",
+        "conclusion": "success",
+        "databaseId": 131002912762,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "startedAt": "2026-11-12T05:54:16Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912762"
+      },
+      {
+        "completedAt": "2026-11-12T05:55:35Z",
+        "conclusion": "success",
+        "databaseId": 131002912773,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:54:16Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912773"
+      },
+      {
+        "completedAt": "2026-11-12T05:55:53Z",
+        "conclusion": "success",
+        "databaseId": 131002912779,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:54:16Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912779"
+      },
+      {
+        "completedAt": "2026-11-12T05:54:53Z",
+        "conclusion": "success",
+        "databaseId": 131002912874,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "startedAt": "2026-11-12T05:54:17Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43163531316/job/131002912874"
+      }
+    ]
+  },
+  "boundaries": [
+    "Template catalog, composable sections and LaTeX/PDF books remain planned.",
+    "Homebrew is live; Scoop, WinGet and other new package-manager channels remain planned.",
+    "Live deployment-provider and external-runner checks remain deferred; delivery retargeting does not replace older live evidence.",
+    "Production documentation was built, not deployed. The existing site/domain was preserved.",
+    "Release and image retirement scope/results are recorded separately; source/audit history is retained.",
+    "No guarantee of zero undiscovered bugs follows from passing checks."
+  ],
+  "source_commit": "6d116b2ca6df8eb8d078f03978d2a49598b58de1",
+  "source_tree": "d55723f10496b675f9887eca9e5d58e9625b29c0",
+  "final_ci": {
+    "attempt": 1,
+    "conclusion": "success",
+    "headSha": "6a2601cc1c2fc417e4bff129c712fbe4ec8ded75",
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T05:05:38Z",
+        "conclusion": "success",
+        "databaseId": 130985354790,
+        "name": "Embedded schema is current",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985354790"
+      },
+      {
+        "completedAt": "2026-11-12T05:06:34Z",
+        "conclusion": "success",
+        "databaseId": 130985354992,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:04:58Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985354992"
+      },
+      {
+        "completedAt": "2026-11-12T05:07:45Z",
+        "conclusion": "success",
+        "databaseId": 130985355005,
+        "name": "Native images (arm64)",
+        "startedAt": "2026-11-12T05:04:58Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355005"
+      },
+      {
+        "completedAt": "2026-11-12T05:16:19Z",
+        "conclusion": "success",
+        "databaseId": 130985355025,
+        "name": "Portable docs (macos-latest)",
+        "startedAt": "2026-11-12T05:04:57Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355025"
+      },
+      {
+        "completedAt": "2026-11-12T05:12:28Z",
+        "conclusion": "success",
+        "databaseId": 130985355027,
+        "name": "Portable docs (ubuntu-latest)",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355027"
+      },
+      {
+        "completedAt": "2026-11-12T05:06:32Z",
+        "conclusion": "success",
+        "databaseId": 130985355053,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355053"
+      },
+      {
+        "completedAt": "2026-11-12T05:06:39Z",
+        "conclusion": "success",
+        "databaseId": 130985355073,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355073"
+      },
+      {
+        "completedAt": "2026-11-12T05:09:21Z",
+        "conclusion": "success",
+        "databaseId": 130985355100,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355100"
+      },
+      {
+        "completedAt": "2026-11-12T05:39:05Z",
+        "conclusion": "success",
+        "databaseId": 130985355120,
+        "name": "CLI",
+        "startedAt": "2026-11-12T05:04:55Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355120"
+      },
+      {
+        "completedAt": "2026-11-12T05:10:35Z",
+        "conclusion": "success",
+        "databaseId": 130985355132,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355132"
+      },
+      {
+        "completedAt": "2026-11-12T05:09:22Z",
+        "conclusion": "success",
+        "databaseId": 130985355155,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "startedAt": "2026-11-12T05:04:57Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355155"
+      },
+      {
+        "completedAt": "2026-11-12T05:07:48Z",
+        "conclusion": "success",
+        "databaseId": 130985355165,
+        "name": "Engine",
+        "startedAt": "2026-11-12T05:04:56Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355165"
+      },
+      {
+        "completedAt": "2026-11-12T05:07:23Z",
+        "conclusion": "success",
+        "databaseId": 130985355237,
+        "name": "Native images (amd64)",
+        "startedAt": "2026-11-12T05:04:55Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355237"
+      },
+      {
+        "completedAt": "2026-11-12T05:23:08Z",
+        "conclusion": "success",
+        "databaseId": 130985355399,
+        "name": "Portable docs (windows-latest)",
+        "startedAt": "2026-11-12T05:04:57Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355399"
+      },
+      {
+        "completedAt": "2026-11-12T05:10:40Z",
+        "conclusion": "success",
+        "databaseId": 130985355518,
+        "name": "Showcase end to end",
+        "startedAt": "2026-11-12T05:04:55Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130985355518"
+      },
+      {
+        "completedAt": "2026-11-12T05:08:21Z",
+        "conclusion": "success",
+        "databaseId": 130986373113,
+        "name": "Combined image manifests",
+        "startedAt": "2026-11-12T05:07:47Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130986373113"
+      },
+      {
+        "completedAt": "2026-11-12T05:12:22Z",
+        "conclusion": "success",
+        "databaseId": 130987381194,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "startedAt": "2026-11-12T05:10:37Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130987381194"
+      },
+      {
+        "completedAt": "2026-11-12T05:11:45Z",
+        "conclusion": "success",
+        "databaseId": 130987381227,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "startedAt": "2026-11-12T05:10:37Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130987381227"
+      },
+      {
+        "completedAt": "2026-11-12T05:11:35Z",
+        "conclusion": "success",
+        "databaseId": 130987381238,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "startedAt": "2026-11-12T05:10:40Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130987381238"
+      },
+      {
+        "completedAt": "2026-11-12T05:11:19Z",
+        "conclusion": "success",
+        "databaseId": 130987381342,
+        "name": "homebrew / Homebrew (macos-15)",
+        "startedAt": "2026-11-12T05:10:37Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43158764791/job/130987381342"
+      }
+    ]
+  },
+  "local_release_preflight": {
+    "rust_passed": 726,
+    "rust_ignored": 5,
+    "engine_passed": 461,
+    "typechecks": "passed",
+    "clippy": "passed with -D warnings",
+    "format": "passed",
+    "schema_drift": "passed"
+  },
+  "homebrew": {
+    "repository": "mylife-inc/homebrew-tap",
+    "commit": "5abad25ffb34d62f1fd9c8e72843359e140d8e56",
+    "command": "brew install mylife-inc/tap/zel",
+    "channel": "preview",
+    "public_acceptance": {
+      "attempt": 1,
+      "conclusion": "success",
+      "headSha": "5abad25ffb34d62f1fd9c8e72843359e140d8e56",
+      "status": "completed",
+      "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43164789683",
+      "jobs": [
+        {
+          "completedAt": "2026-11-12T05:59:04Z",
+          "conclusion": "success",
+          "databaseId": 131004015736,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "startedAt": "2026-11-12T05:57:28Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43164789683/job/131004015736"
+        },
+        {
+          "completedAt": "2026-11-12T05:58:08Z",
+          "conclusion": "success",
+          "databaseId": 131004015907,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "startedAt": "2026-11-12T05:57:27Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43164789683/job/131004015907"
+        },
+        {
+          "completedAt": "2026-11-12T05:58:17Z",
+          "conclusion": "success",
+          "databaseId": 131004015937,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "startedAt": "2026-11-12T05:57:29Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43164789683/job/131004015937"
+        },
+        {
+          "completedAt": "2026-11-12T05:58:24Z",
+          "conclusion": "success",
+          "databaseId": 131004015982,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "startedAt": "2026-11-12T05:57:27Z",
+          "status": "completed",
+          "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43164789683/job/131004015982"
+        }
+      ]
+    }
+  },
+  "consumers": {
+    "pr": 136,
+    "commit": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+    "build_only_runs": [
+      {
+        "name": "portable",
+        "id": 43164591942,
+        "jobs": [
+          {
+            "id": 131003374536,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "hosted",
+        "id": 43164595902,
+        "jobs": [
+          {
+            "id": 131003386610,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "name": "static",
+        "id": 43164598724,
+        "jobs": [
+          {
+            "id": 131003396206,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131003397496,
+            "name": "publish",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "name": "next",
+        "id": 43164601375,
+        "jobs": [
+          {
+            "id": 131003406312,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131003407676,
+            "name": "publish",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "name": "netlify-portable",
+        "id": 43164605190,
+        "jobs": [
+          {
+            "id": 131003417886,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131003419122,
+            "name": "publish",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      },
+      {
+        "name": "netlify-hosted",
+        "id": 43164608354,
+        "jobs": [
+          {
+            "id": 131003426876,
+            "name": "verify",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "id": 131003428446,
+            "name": "publish",
+            "status": "completed",
+            "conclusion": "skipped"
+          }
+        ]
+      }
+    ],
+    "image_runs": {
+      "static_publication": {
+        "attempt": 1,
+        "conclusion": "success",
+        "headSha": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165217168",
+        "jobs": [
+          {
+            "completedAt": "2026-11-12T06:01:37Z",
+            "conclusion": "success",
+            "databaseId": 131005388255,
+            "name": "publish",
+            "startedAt": "2026-11-12T06:01:21Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165217168/job/131005388255"
+          },
+          {
+            "completedAt": "2026-11-12T06:01:19Z",
+            "conclusion": "skipped",
+            "databaseId": 131005389978,
+            "name": "verify",
+            "startedAt": "2026-11-12T06:01:19Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165217168/job/131005389978"
+          }
+        ]
+      },
+      "next_publication": {
+        "attempt": 1,
+        "conclusion": "success",
+        "headSha": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165220542",
+        "jobs": [
+          {
+            "completedAt": "2026-11-12T06:02:31Z",
+            "conclusion": "success",
+            "databaseId": 131005398334,
+            "name": "publish",
+            "startedAt": "2026-11-12T06:01:22Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165220542/job/131005398334"
+          },
+          {
+            "completedAt": "2026-11-12T06:01:21Z",
+            "conclusion": "skipped",
+            "databaseId": 131005399975,
+            "name": "verify",
+            "startedAt": "2026-11-12T06:01:21Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165220542/job/131005399975"
+          }
+        ]
+      },
+      "development_images": {
+        "attempt": 1,
+        "conclusion": "success",
+        "headSha": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176",
+        "jobs": [
+          {
+            "completedAt": "2026-11-12T06:05:21Z",
+            "conclusion": "success",
+            "databaseId": 131006268565,
+            "name": "none \u00b7 arm64",
+            "startedAt": "2026-11-12T06:03:47Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268565"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:31Z",
+            "conclusion": "success",
+            "databaseId": 131006268707,
+            "name": "all \u00b7 arm64",
+            "startedAt": "2026-11-12T06:03:47Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268707"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:31Z",
+            "conclusion": "success",
+            "databaseId": 131006268771,
+            "name": "maths \u00b7 arm64",
+            "startedAt": "2026-11-12T06:03:49Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268771"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:29Z",
+            "conclusion": "success",
+            "databaseId": 131006268785,
+            "name": "diagrams \u00b7 arm64",
+            "startedAt": "2026-11-12T06:03:47Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268785"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:45Z",
+            "conclusion": "success",
+            "databaseId": 131006268801,
+            "name": "maths \u00b7 amd64",
+            "startedAt": "2026-11-12T06:03:45Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268801"
+          },
+          {
+            "completedAt": "2026-11-12T06:06:02Z",
+            "conclusion": "success",
+            "databaseId": 131006268808,
+            "name": "all \u00b7 amd64",
+            "startedAt": "2026-11-12T06:03:45Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268808"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:30Z",
+            "conclusion": "success",
+            "databaseId": 131006268813,
+            "name": "none \u00b7 amd64",
+            "startedAt": "2026-11-12T06:03:45Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268813"
+          },
+          {
+            "completedAt": "2026-11-12T06:05:19Z",
+            "conclusion": "success",
+            "databaseId": 131006268851,
+            "name": "diagrams \u00b7 amd64",
+            "startedAt": "2026-11-12T06:03:45Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131006268851"
+          },
+          {
+            "completedAt": "2026-11-12T06:06:26Z",
+            "conclusion": "success",
+            "databaseId": 131007132190,
+            "name": "Publish maths",
+            "startedAt": "2026-11-12T06:06:04Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131007132190"
+          },
+          {
+            "completedAt": "2026-11-12T06:06:26Z",
+            "conclusion": "success",
+            "databaseId": 131007132206,
+            "name": "Publish none",
+            "startedAt": "2026-11-12T06:06:04Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131007132206"
+          },
+          {
+            "completedAt": "2026-11-12T06:06:26Z",
+            "conclusion": "success",
+            "databaseId": 131007132253,
+            "name": "Publish all",
+            "startedAt": "2026-11-12T06:06:04Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131007132253"
+          },
+          {
+            "completedAt": "2026-11-12T06:06:21Z",
+            "conclusion": "success",
+            "databaseId": 131007132343,
+            "name": "Publish diagrams",
+            "startedAt": "2026-11-12T06:06:04Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131007132343"
+          },
+          {
+            "completedAt": "2026-11-12T06:07:33Z",
+            "conclusion": "success",
+            "databaseId": 131007281195,
+            "name": "The image can build a site",
+            "startedAt": "2026-11-12T06:06:28Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43165485176/job/131007281195"
+          }
+        ]
+      },
+      "fresh_image_http": {
+        "attempt": 1,
+        "conclusion": "success",
+        "headSha": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43166800052",
+        "jobs": [
+          {
+            "completedAt": "2026-11-12T06:15:16Z",
+            "conclusion": "success",
+            "databaseId": 131010463735,
+            "name": "inspect (static)",
+            "startedAt": "2026-11-12T06:15:05Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43166800052/job/131010463735"
+          },
+          {
+            "completedAt": "2026-11-12T06:15:19Z",
+            "conclusion": "success",
+            "databaseId": 131010463991,
+            "name": "inspect (next)",
+            "startedAt": "2026-11-12T06:15:05Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43166800052/job/131010463991"
+          },
+          {
+            "completedAt": "2026-11-12T06:15:03Z",
+            "conclusion": "skipped",
+            "databaseId": 131010466226,
+            "name": "live-providers",
+            "startedAt": "2026-11-12T06:15:04Z",
+            "status": "completed",
+            "url": "https://github.com/mylife-inc/Zellij/actions/runs/43166800052/job/131010466226"
+          }
+        ]
+      }
+    },
+    "provider_deployments": "not performed"
+  },
+  "shared_installers": {
+    "commit": "d83dd7d7d23be488d6d8aa6c6bab025a600c5b4c",
+    "verified_raw_files": [
+      {
+        "name": "install.sh",
+        "url": "https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.sh",
+        "sha256": "1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+        "matchesTaggedSource": true
+      },
+      {
+        "name": "install.ps1",
+        "url": "https://raw.githubusercontent.com/mylife-inc/releases/main/zellij/install.ps1",
+        "sha256": "f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+        "matchesTaggedSource": true
+      }
+    ],
+    "automatic_candidate_update_policy": "unchanged; these files and public docs were explicitly migrated before retiring the last old stable release"
+  },
+  "public_releases": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 442548169,
+      "tag_name": "v0.2.0-rc.4",
+      "html_url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.4",
+      "published_at": "2026-11-12T05:54:04Z",
+      "prerelease": true,
+      "draft": false,
+      "assets": [
+        {
+          "id": 738265419,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.ps1"
+        },
+        {
+          "id": 738265414,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.sh"
+        },
+        {
+          "id": 738265422,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:013c441a89ced178ffac424769d20332900211776cad93524a1d07485f5b730a",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/SHA256SUMS"
+        },
+        {
+          "id": 738265415,
+          "name": "zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz",
+          "size": 6937081,
+          "digest": "sha256:fc1ef44b81683685fa8a4770f6f6241af5165c25ded22542fb4eb607070e2ee0",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 738265410,
+          "name": "zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:80a6b4aa183c53315bd6dfdd8f82a7acdf38be1159466cfd00497bfaf303c249",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 738265413,
+          "name": "zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip",
+          "size": 7281095,
+          "digest": "sha256:d30ed374e4ac5f31c7b1be82e13706081462d2b22a8f68cc5e98a38ed8205e18",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 738265407,
+          "name": "zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:ed41d15c30de4c7ef12802375b9ef958251f61c5388d598ca1403589a0ebb3fc",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 738265412,
+          "name": "zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7185060,
+          "digest": "sha256:50f0b99fcc76691bcc2d81116e0ac19e94a7387be1195ffd0276d9f74c8b7168",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 738265408,
+          "name": "zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:e1d0402910b93dc2895ba9e5e947dfea536ce67a7d4f04990667652c8d9cd3e8",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 738265405,
+          "name": "zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz",
+          "size": 7060300,
+          "digest": "sha256:d82e63655e6dbfde74e3a23768d8446c6e889458154c649c66579799257f69e3",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 738265406,
+          "name": "zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:4d990bd287e507a5518cc406e953c45b388866b2b30644b558b00e375095c11c",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 738265421,
+          "name": "zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip",
+          "size": 7439035,
+          "digest": "sha256:ce6a82c7774a7303a609dfe3789e44cf1444ead11cc352c627e67a8664f614e1",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 738265403,
+          "name": "zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:b145ebd9b1876cd7731d46b253bc6b5805899119198bdd25afb73858e8933463",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 738265411,
+          "name": "zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7316894,
+          "digest": "sha256:e94665d0a6ececa78931ebf79a89bb9878665ea21fbc0bd4dbbb94c2421d8e74",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 738265404,
+          "name": "zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:43fcacdb558f451620b676ade50422c657b88fdeb8f533b84e5e933d5606bdab",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 738265416,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:8697c36d85e57f4008beb6487c602106684874b659a9af751c885408f2c2ab70",
+          "browser_download_url": "https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/zel.rb"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 442548207,
+      "tag_name": "zellij-v0.2.0-rc.4",
+      "html_url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.4",
+      "published_at": "2026-11-12T05:54:09Z",
+      "prerelease": true,
+      "draft": false,
+      "assets": [
+        {
+          "id": 738265544,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/install.ps1"
+        },
+        {
+          "id": 738265548,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/install.sh"
+        },
+        {
+          "id": 738265558,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:013c441a89ced178ffac424769d20332900211776cad93524a1d07485f5b730a",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/SHA256SUMS"
+        },
+        {
+          "id": 738265549,
+          "name": "zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz",
+          "size": 6937081,
+          "digest": "sha256:fc1ef44b81683685fa8a4770f6f6241af5165c25ded22542fb4eb607070e2ee0",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 738265538,
+          "name": "zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:80a6b4aa183c53315bd6dfdd8f82a7acdf38be1159466cfd00497bfaf303c249",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 738265546,
+          "name": "zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip",
+          "size": 7281095,
+          "digest": "sha256:d30ed374e4ac5f31c7b1be82e13706081462d2b22a8f68cc5e98a38ed8205e18",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 738265541,
+          "name": "zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:ed41d15c30de4c7ef12802375b9ef958251f61c5388d598ca1403589a0ebb3fc",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 738265556,
+          "name": "zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7185060,
+          "digest": "sha256:50f0b99fcc76691bcc2d81116e0ac19e94a7387be1195ffd0276d9f74c8b7168",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 738265540,
+          "name": "zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:e1d0402910b93dc2895ba9e5e947dfea536ce67a7d4f04990667652c8d9cd3e8",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-aarch64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 738265545,
+          "name": "zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz",
+          "size": 7060300,
+          "digest": "sha256:d82e63655e6dbfde74e3a23768d8446c6e889458154c649c66579799257f69e3",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz"
+        },
+        {
+          "id": 738265547,
+          "name": "zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:4d990bd287e507a5518cc406e953c45b388866b2b30644b558b00e375095c11c",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-apple-darwin.tar.gz.sha256"
+        },
+        {
+          "id": 738265550,
+          "name": "zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip",
+          "size": 7439035,
+          "digest": "sha256:ce6a82c7774a7303a609dfe3789e44cf1444ead11cc352c627e67a8664f614e1",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip"
+        },
+        {
+          "id": 738265542,
+          "name": "zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:b145ebd9b1876cd7731d46b253bc6b5805899119198bdd25afb73858e8933463",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-pc-windows-msvc.zip.sha256"
+        },
+        {
+          "id": 738265551,
+          "name": "zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7316894,
+          "digest": "sha256:e94665d0a6ececa78931ebf79a89bb9878665ea21fbc0bd4dbbb94c2421d8e74",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz"
+        },
+        {
+          "id": 738265539,
+          "name": "zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:43fcacdb558f451620b676ade50422c657b88fdeb8f533b84e5e933d5606bdab",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel-v0.2.0-rc.4-x86_64-unknown-linux-gnu.tar.gz.sha256"
+        },
+        {
+          "id": 738265543,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:8697c36d85e57f4008beb6487c602106684874b659a9af751c885408f2c2ab70",
+          "browser_download_url": "https://github.com/mylife-inc/releases/releases/download/zellij-v0.2.0-rc.4/zel.rb"
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4",
+      "digest": "sha256:bab7f54049655a79cc593e12c26fc40904d2a6750874fdcb624ab1e5b88756e6",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:d0f1912c2ec49b094fafacac3f38dbc252c7f445ca889c333510d7cbff206d7f",
+            "size": 1622,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:b8e3c302718bf524e1d7cd0887107c6513be9bc919bc694dfb2819b755f8cd93",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:d0f1912c2ec49b094fafacac3f38dbc252c7f445ca889c333510d7cbff206d7f",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:5722633052dabfc214b4ea8674d25888dd2c1140c4f1312a70332e5ec8880871",
+            "size": 1622,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:60f5a5fd4cdc1c036fbe227636e19e4a309f9caf5c452356cbb2fd7d1dfcd466",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:5722633052dabfc214b4ea8674d25888dd2c1140c4f1312a70332e5ec8880871",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4-maths",
+      "digest": "sha256:c497d07bd066dbadeb177d1b1ab18974c7fe474c8149ec4b2b311ba1746afbef",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:7bb60aaa53cf5e979e9f768ffc027f4718d928c0716491969e33534a52a32c4d",
+            "size": 1622,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:c71f9670a975328b0225a6394ebc46d9cfd9af66fba437dcf2dafe33161d58ba",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:7bb60aaa53cf5e979e9f768ffc027f4718d928c0716491969e33534a52a32c4d",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:6c219731683844192b36176d6d34b8aa8c988cdbee75d2096a08574a369b08d0",
+            "size": 1622,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:0128e7422bf1f72ead8e95a113a4869af468623376a8d9927cd671f3d55dec67",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:6c219731683844192b36176d6d34b8aa8c988cdbee75d2096a08574a369b08d0",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4-diagrams",
+      "digest": "sha256:daf2929977e8ae062b54b9876063d42f7411b49c35898db23ca59c9fa413658f",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:73506b1d8052e1282c9dc32a5606832157c13083bcff82e196c2e93d43c18f66",
+            "size": 1622,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:f81a4500b8f4b3d7500dbc929c975f2b36386aecf1387916811d252ae0ca52a6",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:73506b1d8052e1282c9dc32a5606832157c13083bcff82e196c2e93d43c18f66",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:0061e423cfd32b9f0ce8941fde00e3728bd502cb8092dd5b20adcc11d9d8edf1",
+            "size": 1622,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:06947e10378b3eb403b8b7cb554cfcb0c8acfc6bf8db58b4f4dcba0e28ee3322",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:0061e423cfd32b9f0ce8941fde00e3728bd502cb8092dd5b20adcc11d9d8edf1",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "image": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4-all",
+      "digest": "sha256:785f05c0d0a9f1a85b33375e315fe0671fc91b11832d998b8ecfc0dd2b7f9bc5",
+      "manifest": {
+        "schemaVersion": 2,
+        "mediaType": "application/vnd.oci.image.index.v1+json",
+        "manifests": [
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:b26337c4c8a16268782a581ac215ffcfa38e9c3136818ac9db5cced2737354be",
+            "size": 1622,
+            "platform": {
+              "architecture": "arm64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:537ff0400b8e2d84ed8c87be8fdbc3008423211ec210b720868a7e486da6ebf4",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:b26337c4c8a16268782a581ac215ffcfa38e9c3136818ac9db5cced2737354be",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:9cbea510dd89a4bd8e6e166102f1c0cdd5ed4393cb47bd7c6174a019d59b01bc",
+            "size": 1622,
+            "platform": {
+              "architecture": "amd64",
+              "os": "linux"
+            }
+          },
+          {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:47985e2f67819e0ccb6451b3940a89f5f00d38e78b0ab919356466a0d5587e82",
+            "size": 838,
+            "annotations": {
+              "vnd.docker.reference.digest": "sha256:9cbea510dd89a4bd8e6e166102f1c0cdd5ed4393cb47bd7c6174a019d59b01bc",
+              "vnd.docker.reference.type": "attestation-manifest"
+            },
+            "platform": {
+              "architecture": "unknown",
+              "os": "unknown"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "post_retirement_channel_checks": {
+    "binaryUnchanged": true,
+    "checks": [
+      {
+        "args": [
+          "upgrade",
+          "--preview",
+          "--check"
+        ],
+        "exitCode": 0,
+        "stdout": "Installed zel 0.2.0-rc.4; selected release 0.2.0-rc.4 (x86_64-apple-darwin)\nAlready current; no files changed.\n",
+        "stderr": ""
+      },
+      {
+        "args": [
+          "upgrade",
+          "--check"
+        ],
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": "error: CLI upgrade failed: no stable Zellij release found; use --preview or specify an exact version\n"
+      }
+    ]
+  }
+}

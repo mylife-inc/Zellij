@@ -1,0 +1,887 @@
+{
+  "observed_on": "2026-11-11 America/Los_Angeles",
+  "status": "complete",
+  "replacement": "v0.2.0-rc.4",
+  "retired_release_inventory": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 441658365,
+      "tag": "v0.2.0-rc.3",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 735434351,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 735434360,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 735434357,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:090cea0f0085bb7209a82ccdcfb69e6c96434b68a86d4f7ecc5f4e9a4054dfd8"
+        },
+        {
+          "id": 735434359,
+          "name": "zel-v0.2.0-rc.3-aarch64-apple-darwin.tar.gz",
+          "size": 6934323,
+          "digest": "sha256:78ac3f19a02b03383b2ce06c1837b5eb9de534332a7bee162b19243f94e2e5e2"
+        },
+        {
+          "id": 735434350,
+          "name": "zel-v0.2.0-rc.3-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:422e4bae3b64aead369bb81a880ece9f88c42538a6217287da3b6f846b1568d1"
+        },
+        {
+          "id": 735434362,
+          "name": "zel-v0.2.0-rc.3-aarch64-pc-windows-msvc.zip",
+          "size": 7275316,
+          "digest": "sha256:aead624a0c12761895a6e9b940d2801062eacedd119011dc90c0b7fd6a457b96"
+        },
+        {
+          "id": 735434356,
+          "name": "zel-v0.2.0-rc.3-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:02d4ff007db2474969ed69d7ad705a1c7a7b13a5b23f80daee5309635a03f44a"
+        },
+        {
+          "id": 735434364,
+          "name": "zel-v0.2.0-rc.3-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7179187,
+          "digest": "sha256:76af514c5be388d956ec625840cb5e2722094114497f789457ce87d99edd5b46"
+        },
+        {
+          "id": 735434348,
+          "name": "zel-v0.2.0-rc.3-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:c3821f1bf7e2a07fbc4e857aa1a253748d92fe77958151191013ea8bf2694e2d"
+        },
+        {
+          "id": 735434354,
+          "name": "zel-v0.2.0-rc.3-x86_64-apple-darwin.tar.gz",
+          "size": 7053194,
+          "digest": "sha256:82cf657729da2600ea558da822ccfa3d0803ca062cc635857aeacae12b9a9877"
+        },
+        {
+          "id": 735434347,
+          "name": "zel-v0.2.0-rc.3-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1850234b613918235e2e69d525672046d01e409a154e79d6dec0726435b9ef95"
+        },
+        {
+          "id": 735434358,
+          "name": "zel-v0.2.0-rc.3-x86_64-pc-windows-msvc.zip",
+          "size": 7432519,
+          "digest": "sha256:542194f335d51e8386a45d91c3bfb022a01f4f83336a81c51eb3b38a7c455746"
+        },
+        {
+          "id": 735434352,
+          "name": "zel-v0.2.0-rc.3-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:582b5ba80ce8605cb7f5e71f9341b6f4b68c68c3aa8ae6dc9f517f7e9dea310d"
+        },
+        {
+          "id": 735434353,
+          "name": "zel-v0.2.0-rc.3-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7312818,
+          "digest": "sha256:052b2d73e4449d415ee202f972c4b11c810f8d7992cfd74ebf5129ca77a8e80c"
+        },
+        {
+          "id": 735434346,
+          "name": "zel-v0.2.0-rc.3-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:a7e5b3ed4dcf8a4735e3284fc527e56da4527efe9629ed908d87abee759734c2"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 440021798,
+      "tag": "v0.2.0-rc.2",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 730391534,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 730391538,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 730391531,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:5799267fce668cbac14032e977e9ec413f7f24919c04e35f9668c0da4c68019f"
+        },
+        {
+          "id": 730391537,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz",
+          "size": 6910134,
+          "digest": "sha256:4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4"
+        },
+        {
+          "id": 730391527,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:746799046ce722095ada5947968914a2f3aee68ba4163e1e933e9921f72bbb53"
+        },
+        {
+          "id": 730391536,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip",
+          "size": 7250095,
+          "digest": "sha256:fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6"
+        },
+        {
+          "id": 730391530,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:cf63a3d523d3cd97a071da9bf1fe6fc5760a2b265068132f07e3f9bc7fe34d18"
+        },
+        {
+          "id": 730391532,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7153328,
+          "digest": "sha256:1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d"
+        },
+        {
+          "id": 730391524,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:36574c170b173b46e73f76e17b67c493466bbfeb13045fc553cf36d0814ade92"
+        },
+        {
+          "id": 730391528,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz",
+          "size": 7026256,
+          "digest": "sha256:a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d"
+        },
+        {
+          "id": 730391525,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1b314937c61bc115e31f512b5a7a6666b9132ca1d657aba2022dd8dbe31b053d"
+        },
+        {
+          "id": 730391533,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip",
+          "size": 7403162,
+          "digest": "sha256:7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3"
+        },
+        {
+          "id": 730391526,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:9c5413150742223f0e3e8fc4df57e48ca7f0c93be7f4f853e9d3f4de4a309937"
+        },
+        {
+          "id": 730391523,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7284700,
+          "digest": "sha256:2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2"
+        },
+        {
+          "id": 730391529,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:dfbd17c0638d684cd918cef6b705c52d41b00662b5e5e67ae139f668e4b57f55"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "id": 432086814,
+      "tag": "v0.2.0-rc.1",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 703567848,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 703567858,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 703567851,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:e30ddd9d338e9b1f5a54151374eef8ae4793c74c66b6e308d32daca357ba1a78"
+        },
+        {
+          "id": 703567862,
+          "name": "zel-v0.2.0-rc.1-aarch64-apple-darwin.tar.gz",
+          "size": 6253399,
+          "digest": "sha256:d4a5de570967fe2953cab42984a37e778c79e7397d62f9e99d9f9273eafa3f89"
+        },
+        {
+          "id": 703567854,
+          "name": "zel-v0.2.0-rc.1-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:629c4954caf1ffc72504373b701844d8531e4e47eab973a096c83c5ab7972635"
+        },
+        {
+          "id": 703567859,
+          "name": "zel-v0.2.0-rc.1-aarch64-pc-windows-msvc.zip",
+          "size": 6513040,
+          "digest": "sha256:41cb39795b80fef58c039bc6da4eaf2f4b197e9350612facd34a1fc13c3fa253"
+        },
+        {
+          "id": 703567861,
+          "name": "zel-v0.2.0-rc.1-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:8cd89dd24ee4673dcdf8d521c1b581f1b821923ec1827e494ddf42706125c102"
+        },
+        {
+          "id": 703567852,
+          "name": "zel-v0.2.0-rc.1-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 6457358,
+          "digest": "sha256:819f4f563271214cfa7feb463935aa0a8bf8e264e25c5284da00f25439361e63"
+        },
+        {
+          "id": 703567855,
+          "name": "zel-v0.2.0-rc.1-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:f639b83ea9ff88f372cb1b15459edf518e7925f582157cee3f362818a7826da2"
+        },
+        {
+          "id": 703567850,
+          "name": "zel-v0.2.0-rc.1-x86_64-apple-darwin.tar.gz",
+          "size": 6331623,
+          "digest": "sha256:aeb2708689a0a72b9b620ac43595382566344608c69abf5dd3ef7f65fd031ee4"
+        },
+        {
+          "id": 703567844,
+          "name": "zel-v0.2.0-rc.1-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:d16c034c14a4f7725c26dd13f9f164c2aca098fdeee42bcee585adf53b6e7f3b"
+        },
+        {
+          "id": 703567847,
+          "name": "zel-v0.2.0-rc.1-x86_64-pc-windows-msvc.zip",
+          "size": 6640415,
+          "digest": "sha256:955d71df7b66eb1a2f3d46d9ff1e3775a970d8a4d2d43512ea24142d290623a9"
+        },
+        {
+          "id": 703567856,
+          "name": "zel-v0.2.0-rc.1-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:91606f473a59c5bc25713fe727bfd0b73a1b1669cf8a816cd3b38b3d2f54b781"
+        },
+        {
+          "id": 703567860,
+          "name": "zel-v0.2.0-rc.1-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 6552312,
+          "digest": "sha256:61a5c45de70d85039c6e56f1e80b027c7806f795f7278fdf735e97f728eeed6f"
+        },
+        {
+          "id": 703567841,
+          "name": "zel-v0.2.0-rc.1-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:4fcbf791e13a3d810c46c9c29db6a47d18fdfab3f6d8a8883963a1c6a4f7711a"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 369596170,
+      "tag": "zellij-v0.1.3",
+      "draft": false,
+      "prerelease": false,
+      "assets": [
+        {
+          "id": 512242085,
+          "name": "install.sh",
+          "size": 10385,
+          "digest": "sha256:2d168c52f10853b3cd2ff3fe5265adc818009a312ff923a43a8e2eed93ba153d"
+        },
+        {
+          "id": 512242084,
+          "name": "SHA256SUMS",
+          "size": 436,
+          "digest": "sha256:f9435092f90337d8fe148c261d0230e4d00eded86da9e92d57caf2a2e018812a"
+        },
+        {
+          "id": 512242074,
+          "name": "zel-v0.1.3-aarch64-apple-darwin.tar.gz",
+          "size": 498629,
+          "digest": "sha256:37f844c736621941404962dbb400d3ab7eb7c114394d6ffd0b8af3179f5f722c"
+        },
+        {
+          "id": 512242076,
+          "name": "zel-v0.1.3-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 105,
+          "digest": "sha256:2a6d08ec80dda365203eea2e35fe8faf512747e5f5b57e959e09fb2fcd2ee78f"
+        },
+        {
+          "id": 512242073,
+          "name": "zel-v0.1.3-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 535894,
+          "digest": "sha256:827126eac75dd5bbe53756f1048f963ab2281d7e7026de394e5941cc9025affc"
+        },
+        {
+          "id": 512242080,
+          "name": "zel-v0.1.3-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:f5c7d55bc7e9bcd024895997e09aca140347b449511d303f8707ad582d29ac54"
+        },
+        {
+          "id": 512242075,
+          "name": "zel-v0.1.3-x86_64-apple-darwin.tar.gz",
+          "size": 517443,
+          "digest": "sha256:bd94dab208e6d7e4944bc8f6e4f5fccce79b09353cc29351615c5adb90882343"
+        },
+        {
+          "id": 512242081,
+          "name": "zel-v0.1.3-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 104,
+          "digest": "sha256:22ba79ca09678564454e3ad5308313bac77b5ffac55d67caf2c24c560ac83a5a"
+        },
+        {
+          "id": 512242077,
+          "name": "zel-v0.1.3-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 549042,
+          "digest": "sha256:568bacf1fd71eb2d194de48189fd457f9f3ee86a4fe4e1f19ecd1dbe574a6b48"
+        },
+        {
+          "id": 512242083,
+          "name": "zel-v0.1.3-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:6f38859c771b531b9da699f6c6e03f75c5cc9ad1b7593e18e6ce9435184ed091"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 369570641,
+      "tag": "zellij-v0.1.2",
+      "draft": false,
+      "prerelease": false,
+      "assets": [
+        {
+          "id": 512170263,
+          "name": "install.sh",
+          "size": 10385,
+          "digest": "sha256:2d168c52f10853b3cd2ff3fe5265adc818009a312ff923a43a8e2eed93ba153d"
+        },
+        {
+          "id": 512170265,
+          "name": "SHA256SUMS",
+          "size": 436,
+          "digest": "sha256:8d8456fccdfb016d4e867fde67efe68d38c3c79fcc55e215e9432c25b4773749"
+        },
+        {
+          "id": 512170254,
+          "name": "zel-v0.1.2-aarch64-apple-darwin.tar.gz",
+          "size": 498641,
+          "digest": "sha256:45368022c76649e5a60bd90f4646738310f417f2d725d7842df00925271a0480"
+        },
+        {
+          "id": 512170250,
+          "name": "zel-v0.1.2-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 105,
+          "digest": "sha256:282ec2bf6b22fd972689dd5d9934497aa53ef3c4fd4166d5c2d4a6b19edcae6d"
+        },
+        {
+          "id": 512170249,
+          "name": "zel-v0.1.2-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 535893,
+          "digest": "sha256:a629bb48647fd96efa281eef11b14c81aa83c80b46c6456404ebaf5571a5aa96"
+        },
+        {
+          "id": 512170258,
+          "name": "zel-v0.1.2-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:ecb6cd439ef9daa74680da8c6de9a5e65a0f1df8ad36cfc65bbaea68bfbccb88"
+        },
+        {
+          "id": 512170251,
+          "name": "zel-v0.1.2-x86_64-apple-darwin.tar.gz",
+          "size": 517501,
+          "digest": "sha256:fdc5ee40517f2f14df885091977cc7d73fa8fbadb914e6ece19670ce41cbc7e9"
+        },
+        {
+          "id": 512170259,
+          "name": "zel-v0.1.2-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 104,
+          "digest": "sha256:a9cd6a7518b4e16e88fb17792e3482cdf76e77e508e1b60fbe13ed96f4bc8e4b"
+        },
+        {
+          "id": 512170248,
+          "name": "zel-v0.1.2-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 549154,
+          "digest": "sha256:52f07b213665ac57159f98801f111b1d77b75de741bbda512faac3a3b1f1cd76"
+        },
+        {
+          "id": 512170261,
+          "name": "zel-v0.1.2-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:4521b5665724e6d2a029d35eed6cdede4950a8b5d681999165f144fa4e94a2a9"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 441658431,
+      "tag": "zellij-v0.2.0-rc.3",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 735434584,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 735434598,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 735434602,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:090cea0f0085bb7209a82ccdcfb69e6c96434b68a86d4f7ecc5f4e9a4054dfd8"
+        },
+        {
+          "id": 735434593,
+          "name": "zel-v0.2.0-rc.3-aarch64-apple-darwin.tar.gz",
+          "size": 6934323,
+          "digest": "sha256:78ac3f19a02b03383b2ce06c1837b5eb9de534332a7bee162b19243f94e2e5e2"
+        },
+        {
+          "id": 735434575,
+          "name": "zel-v0.2.0-rc.3-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:422e4bae3b64aead369bb81a880ece9f88c42538a6217287da3b6f846b1568d1"
+        },
+        {
+          "id": 735434592,
+          "name": "zel-v0.2.0-rc.3-aarch64-pc-windows-msvc.zip",
+          "size": 7275316,
+          "digest": "sha256:aead624a0c12761895a6e9b940d2801062eacedd119011dc90c0b7fd6a457b96"
+        },
+        {
+          "id": 735434578,
+          "name": "zel-v0.2.0-rc.3-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:02d4ff007db2474969ed69d7ad705a1c7a7b13a5b23f80daee5309635a03f44a"
+        },
+        {
+          "id": 735434582,
+          "name": "zel-v0.2.0-rc.3-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7179187,
+          "digest": "sha256:76af514c5be388d956ec625840cb5e2722094114497f789457ce87d99edd5b46"
+        },
+        {
+          "id": 735434576,
+          "name": "zel-v0.2.0-rc.3-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:c3821f1bf7e2a07fbc4e857aa1a253748d92fe77958151191013ea8bf2694e2d"
+        },
+        {
+          "id": 735434589,
+          "name": "zel-v0.2.0-rc.3-x86_64-apple-darwin.tar.gz",
+          "size": 7053194,
+          "digest": "sha256:82cf657729da2600ea558da822ccfa3d0803ca062cc635857aeacae12b9a9877"
+        },
+        {
+          "id": 735434580,
+          "name": "zel-v0.2.0-rc.3-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1850234b613918235e2e69d525672046d01e409a154e79d6dec0726435b9ef95"
+        },
+        {
+          "id": 735434591,
+          "name": "zel-v0.2.0-rc.3-x86_64-pc-windows-msvc.zip",
+          "size": 7432519,
+          "digest": "sha256:542194f335d51e8386a45d91c3bfb022a01f4f83336a81c51eb3b38a7c455746"
+        },
+        {
+          "id": 735434574,
+          "name": "zel-v0.2.0-rc.3-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:582b5ba80ce8605cb7f5e71f9341b6f4b68c68c3aa8ae6dc9f517f7e9dea310d"
+        },
+        {
+          "id": 735434588,
+          "name": "zel-v0.2.0-rc.3-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7312818,
+          "digest": "sha256:052b2d73e4449d415ee202f972c4b11c810f8d7992cfd74ebf5129ca77a8e80c"
+        },
+        {
+          "id": 735434585,
+          "name": "zel-v0.2.0-rc.3-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:a7e5b3ed4dcf8a4735e3284fc527e56da4527efe9629ed908d87abee759734c2"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 440021839,
+      "tag": "zellij-v0.2.0-rc.2",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 730391670,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 730391691,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 730391686,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:5799267fce668cbac14032e977e9ec413f7f24919c04e35f9668c0da4c68019f"
+        },
+        {
+          "id": 730391687,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz",
+          "size": 6910134,
+          "digest": "sha256:4e26cbb2a99dd31540f1f1cdc2c6e67c361856e5906b3e37f9b6a6c600b61de4"
+        },
+        {
+          "id": 730391668,
+          "name": "zel-v0.2.0-rc.2-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:746799046ce722095ada5947968914a2f3aee68ba4163e1e933e9921f72bbb53"
+        },
+        {
+          "id": 730391684,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip",
+          "size": 7250095,
+          "digest": "sha256:fed1f1a2f599a6d1511e0ec89a982535136c65eaf06fef7e2b96a94c17dc33c6"
+        },
+        {
+          "id": 730391678,
+          "name": "zel-v0.2.0-rc.2-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:cf63a3d523d3cd97a071da9bf1fe6fc5760a2b265068132f07e3f9bc7fe34d18"
+        },
+        {
+          "id": 730391685,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7153328,
+          "digest": "sha256:1e5998ca13055ece8af62991c82fff7cc7ed92320921717d6af4aad3f9fa8b3d"
+        },
+        {
+          "id": 730391683,
+          "name": "zel-v0.2.0-rc.2-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:36574c170b173b46e73f76e17b67c493466bbfeb13045fc553cf36d0814ade92"
+        },
+        {
+          "id": 730391682,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz",
+          "size": 7026256,
+          "digest": "sha256:a5c3a4e10aa69a8803354bb699896efb7f5815d0edd613ffefacd5d60e93118d"
+        },
+        {
+          "id": 730391673,
+          "name": "zel-v0.2.0-rc.2-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:1b314937c61bc115e31f512b5a7a6666b9132ca1d657aba2022dd8dbe31b053d"
+        },
+        {
+          "id": 730391681,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip",
+          "size": 7403162,
+          "digest": "sha256:7e584bb5553fb487f96373b64a0776ffc95a9eb1d7193bb8bbbbf6f12c998af3"
+        },
+        {
+          "id": 730391662,
+          "name": "zel-v0.2.0-rc.2-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:9c5413150742223f0e3e8fc4df57e48ca7f0c93be7f4f853e9d3f4de4a309937"
+        },
+        {
+          "id": 730391676,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7284700,
+          "digest": "sha256:2c9fec3e7ee13b002cc85b271f8b2c99c5c6271bf67fd6868f390f666896d3a2"
+        },
+        {
+          "id": 730391652,
+          "name": "zel-v0.2.0-rc.2-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:dfbd17c0638d684cd918cef6b705c52d41b00662b5e5e67ae139f668e4b57f55"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 432086878,
+      "tag": "zellij-v0.2.0-rc.1",
+      "draft": false,
+      "prerelease": true,
+      "assets": [
+        {
+          "id": 703568032,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 703568045,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 703568039,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:e30ddd9d338e9b1f5a54151374eef8ae4793c74c66b6e308d32daca357ba1a78"
+        },
+        {
+          "id": 703568043,
+          "name": "zel-v0.2.0-rc.1-aarch64-apple-darwin.tar.gz",
+          "size": 6253399,
+          "digest": "sha256:d4a5de570967fe2953cab42984a37e778c79e7397d62f9e99d9f9273eafa3f89"
+        },
+        {
+          "id": 703568026,
+          "name": "zel-v0.2.0-rc.1-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:629c4954caf1ffc72504373b701844d8531e4e47eab973a096c83c5ab7972635"
+        },
+        {
+          "id": 703568042,
+          "name": "zel-v0.2.0-rc.1-aarch64-pc-windows-msvc.zip",
+          "size": 6513040,
+          "digest": "sha256:41cb39795b80fef58c039bc6da4eaf2f4b197e9350612facd34a1fc13c3fa253"
+        },
+        {
+          "id": 703568029,
+          "name": "zel-v0.2.0-rc.1-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:8cd89dd24ee4673dcdf8d521c1b581f1b821923ec1827e494ddf42706125c102"
+        },
+        {
+          "id": 703568040,
+          "name": "zel-v0.2.0-rc.1-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 6457358,
+          "digest": "sha256:819f4f563271214cfa7feb463935aa0a8bf8e264e25c5284da00f25439361e63"
+        },
+        {
+          "id": 703568031,
+          "name": "zel-v0.2.0-rc.1-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:f639b83ea9ff88f372cb1b15459edf518e7925f582157cee3f362818a7826da2"
+        },
+        {
+          "id": 703568033,
+          "name": "zel-v0.2.0-rc.1-x86_64-apple-darwin.tar.gz",
+          "size": 6331623,
+          "digest": "sha256:aeb2708689a0a72b9b620ac43595382566344608c69abf5dd3ef7f65fd031ee4"
+        },
+        {
+          "id": 703568025,
+          "name": "zel-v0.2.0-rc.1-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:d16c034c14a4f7725c26dd13f9f164c2aca098fdeee42bcee585adf53b6e7f3b"
+        },
+        {
+          "id": 703568036,
+          "name": "zel-v0.2.0-rc.1-x86_64-pc-windows-msvc.zip",
+          "size": 6640415,
+          "digest": "sha256:955d71df7b66eb1a2f3d46d9ff1e3775a970d8a4d2d43512ea24142d290623a9"
+        },
+        {
+          "id": 703568027,
+          "name": "zel-v0.2.0-rc.1-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:91606f473a59c5bc25713fe727bfd0b73a1b1669cf8a816cd3b38b3d2f54b781"
+        },
+        {
+          "id": 703568034,
+          "name": "zel-v0.2.0-rc.1-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 6552312,
+          "digest": "sha256:61a5c45de70d85039c6e56f1e80b027c7806f795f7278fdf735e97f728eeed6f"
+        },
+        {
+          "id": 703568028,
+          "name": "zel-v0.2.0-rc.1-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:4fcbf791e13a3d810c46c9c29db6a47d18fdfab3f6d8a8883963a1c6a4f7711a"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "id": 368936897,
+      "tag": "zellij-v0.1.0",
+      "draft": false,
+      "prerelease": false,
+      "assets": [
+        {
+          "id": 510866193,
+          "name": "SHA256SUMS",
+          "size": 217,
+          "digest": "sha256:58e251e33d0ee76b39325019dc27278b2dd13343d2c6a2519aba32c83a9bcc28"
+        },
+        {
+          "id": 510866192,
+          "name": "zel-v0.1.0-x86_64-apple-darwin.tar.gz",
+          "size": 522918,
+          "digest": "sha256:6b9040ff311edfde525a59fc17d327348d9989e6c33e72d5721e102a5d270fb6"
+        },
+        {
+          "id": 510866194,
+          "name": "zel-v0.1.0-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 556916,
+          "digest": "sha256:dd73667832f2fc8e0953f43b168526fd8263950c892202cef633cec34f9b4741"
+        }
+      ]
+    }
+  ],
+  "protected_products": [
+    "codeseal"
+  ],
+  "result": {
+    "replacement": "v0.2.0-rc.4",
+    "source_main": "ea9d61be3308d3c00c67220297a39d676bdf6c8c",
+    "startedAt": "2026-11-12T06:08:59.771933+00:00",
+    "events": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.3",
+        "release_id": 441658365,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.3",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.2",
+        "release_id": 440021798,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.2",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.1",
+        "release_id": 432086814,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/Zellij",
+        "tag": "v0.2.0-rc.1",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.3",
+        "release_id": 369596170,
+        "action": "deleted-release",
+        "assets": 10
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.3",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.2",
+        "release_id": 369570641,
+        "action": "deleted-release",
+        "assets": 10
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.2",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.3",
+        "release_id": 441658431,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.3",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.2",
+        "release_id": 440021839,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.2",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.1",
+        "release_id": 432086878,
+        "action": "deleted-release",
+        "assets": 15
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.2.0-rc.1",
+        "action": "deleted-tag"
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.0",
+        "release_id": 368936897,
+        "action": "deleted-release",
+        "assets": 3
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "tag": "zellij-v0.1.0",
+        "action": "deleted-tag"
+      }
+    ],
+    "complete": true,
+    "finishedAt": "2026-11-12T06:09:42.898085+00:00"
+  },
+  "scope": "Nine superseded Zellij GitHub releases, their 113 assets and nine remote tags. CodeSeal, rc.4 release identities/assets and source/audit history preserved."
+}
