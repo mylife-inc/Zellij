@@ -45,13 +45,15 @@ selects rc.5 after retirement. See
 [release gates](evidence/zellij-rc5-release-2026-11-12.json). No source history was
 rewritten; historical rc.4 URLs below now refer to retired artifacts.
 
-**Image cleanup remains incomplete.** The user confirmed package-level Admin
-access on 2026-11-12; a refreshed 213-version plan is ready after the composer
-engine publication. The old 187-version rc.4 manifest is stale: rc.5 added
-protected tags and the development aliases moved. The guard
-correctly refuses new/moved references. Regenerate and review the retained and
-retired graphs after package Admin access is resolved; do not run the old plan
-unchanged. Its excluded untagged build-history inventory is not a deletion list.
+**Image cleanup remains incomplete, with zero deletions.** The user confirmed
+package-level Admin access on 2026-11-12. The refreshed 213-version plan passed
+its read/graph gates, but execution `43276711406` still returned HTTP 404 on the
+first DELETE. The owner-login fallback below is prepared; its credential scopes
+are awaiting a user refresh. See [execution evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
+The old 187-version rc.4 manifest is stale: rc.5 added protected tags and the
+development aliases moved. The guard correctly refuses new/moved references.
+Do not run the old plan unchanged. Its excluded untagged build-history inventory
+is not a deletion list.
 
 ## Historical rc.4 execution status
 
@@ -202,8 +204,9 @@ versioned artifacts from the public release mirror.
 
 ## Remaining work
 
-- Generate and review the rc.5 image retirement plan after the confirmed package
-  Admin change, execute it, then verify retained public images and record the result.
+- Execute the reviewed rc.5 image plan after the owner's package scopes are
+  available, then verify retained public images and record the result. Regenerate
+  the plan if a retained alias moves; do not relax that guard.
 - Separately review untagged build-history retention before any wider cleanup.
 - Add Scoop and other selected package-manager channels with native acceptance;
   respect external registries' version-removal limits before publishing previews.
@@ -238,3 +241,35 @@ current main variants, and rc.5 static/Next acceptance images. Exact SHA256:
 `26a5c1c3d7fb002950bea73779d01bf8d024e5ce677afa9ee38a6f818e043a57`.
 Nine guard tests, workflow lint and validation against the downloaded inventory
 pass. Execution and post-cleanup HTTP verification remain pending at this checkpoint.
+
+## Owner-login fallback after the Admin grant — 2026-11-12
+
+PR #144 merged the refreshed plan and gates as `4383ae7`. Hosted execution
+`43276711406` passed nine guard tests and replacement/inventory/graph preflight,
+then GitHub returned `Package not found` (HTTP 404) for the first DELETE,
+`zellij-base` version `1547715033`. Its journal contains zero deletion events.
+The confirmed Admin grant did not resolve the workflow-token failure; the
+underlying GitHub cause is not established. The original failed receipts remain.
+
+The helper now exposes `apply-local` for the authenticated `mylife-inc` owner.
+It requires package read and delete scopes and refuses use inside GitHub Actions.
+The API host is fixed to `github.com`. It inspects identity and scope names without
+reading or printing the credential. The hosted `apply` path retains its repository,
+branch and workflow-token restrictions. Both modes share the exact plan hash,
+replacement acceptance, full inventory, retained graph, per-version identity,
+journal and post-deletion checks. The journal is initialized before mutations.
+All 13 local guard tests pass. No owner-authenticated apply has run yet.
+
+The existing local login is `mylife-inc` with `gist`, `read:org` and `repo` scopes.
+The user was asked to authorize the missing package scopes with:
+
+```sh
+gh auth refresh --hostname github.com --scopes read:packages,delete:packages
+```
+
+This follows [GitHub's package permission requirements](https://docs.github.com/en/packages/learn-github-packages/about-permissions-for-github-packages).
+Do not copy the owner's credential into repository secrets or chat. After the
+refresh, verify the identity/scopes, merged source, unchanged plan hash and
+absence of concurrent publishers. Run the exact reviewed plan with `apply-local`,
+then obtain a fresh hosted inventory and current-image HTTP checks. Record the
+result before claiming completion; a prepared fallback is not successful cleanup.

@@ -27,8 +27,9 @@ Independent company/product branding is now implemented by PR #131
 (`b4cc9ba`), with all 16 CI jobs passing on `7d7febbe`; see
 [branding evidence](evidence/zellij-company-branding-2026-11-11.json). The four
 active guides were updated. This increment and the hydration fix below shipped
-in rc.4. The first template catalog shipped in rc.5; composer/new sections and
-book/PDF publishing remain planned. Homebrew is live; Scoop, WinGet and other new package-manager
+in rc.4. The first template catalog shipped in rc.5; bounded composer v1 is merged
+in source after rc.5. Media-accordion, further composition presets and book/PDF
+publishing remain planned. Homebrew is live; Scoop, WinGet and other new package-manager
 channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
 backend, short Homebrew naming and removal of superseded pre-1.0 distributions.

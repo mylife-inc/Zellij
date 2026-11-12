@@ -54,11 +54,18 @@ Nine superseded GitHub releases, 113 assets and nine remote release tags were
 retired only after these gates passed. rc.4 and both CodeSeal releases are intact;
 source and audit history remain. The separate
 [retention record](specs/zellij-release-retention-2026-11-11.md) tracks exact image
-cleanup and its bounds. Image cleanup is still pending: both hosted attempts
-stopped before deleting anything with GitHub HTTP 404 on the first DELETE.
-The user confirmed package-level Admin access on 2026-11-12. The reviewed rc.5
-plan selects 213 obsolete versions and protects 46 current manifest dependencies
-after composer engine publication; execution is pending. The historical
+cleanup and its bounds. Image cleanup is still pending: the two historical rc.4
+attempts and refreshed rc.5 attempt `43276711406` stopped with GitHub HTTP 404
+on the first DELETE. Every journal has zero deletion events, including the retry
+after the user's confirmed package-level Admin grant on 2026-11-12.
+The reviewed rc.5 plan selects 213 obsolete versions, protects 46 current manifest
+dependencies and excludes 3,229 unreferenced build-history versions after composer
+engine publication. An explicit local owner-login fallback preserves every
+checksum, identity and dependency gate; 13 guard tests pass. The existing
+`mylife-inc` GitHub login lacks package read/delete scopes, and the user was asked
+to refresh those permissions. Local execution and post-cleanup verification are
+pending. See [image retirement evidence](specs/evidence/zellij-rc5-image-retirement-2026-11-12.json).
+The historical
 187-version rc.4 plan is stale and must not be executed. Its 3,152 excluded untagged
 build-history versions remain outside the authorized cleanup scope.
 Do not reuse any retired version/tag.

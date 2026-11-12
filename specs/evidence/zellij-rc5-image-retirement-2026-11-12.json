@@ -1,0 +1,110 @@
+{
+  "recordedOn": "2026-11-12",
+  "status": "blocked-before-first-deletion",
+  "scope": "Only reviewed obsolete release image versions; no unreferenced build-history sweep",
+  "userConfirmedPackageAdmin": true,
+  "plan": {
+    "path": "specs/evidence/zellij-rc5-image-retirement-plan-2026-11-12.json",
+    "sha256": "26a5c1c3d7fb002950bea73779d01bf8d024e5ce677afa9ee38a6f818e043a57",
+    "keepVersion": "0.2.0-rc.5",
+    "inventorySourceCommit": "beed177ff5f7de1e3dac0fa04dcb06a8828aa1ff",
+    "packages": [
+      {
+        "name": "zellij-base",
+        "targets": 195,
+        "protectedDependencies": 40,
+        "unreferencedBuildHistoryExcluded": 3222
+      },
+      {
+        "name": "zellij/acceptance-static",
+        "targets": 9,
+        "protectedDependencies": 3,
+        "unreferencedBuildHistoryExcluded": 4
+      },
+      {
+        "name": "zellij/acceptance-next",
+        "targets": 9,
+        "protectedDependencies": 3,
+        "unreferencedBuildHistoryExcluded": 3
+      }
+    ]
+  },
+  "hostedAttempt": {
+    "runId": 43276711406,
+    "attempt": 1,
+    "conclusion": "failure",
+    "headSha": "4383ae7ef88401922e46c822a4034e6a3c22b429",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T18:09:20Z",
+        "conclusion": "failure",
+        "databaseId": 131386931319,
+        "name": "retire-images",
+        "startedAt": "2026-11-12T18:08:30Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43276711406/job/131386931319"
+      },
+      {
+        "completedAt": "2026-11-12T18:08:28Z",
+        "conclusion": "skipped",
+        "databaseId": 131386934279,
+        "name": "inventory",
+        "startedAt": "2026-11-12T18:08:28Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43276711406/job/131386934279"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43276711406",
+    "guardTestsPassed": 9,
+    "journal": {
+      "planSha256": "26a5c1c3d7fb002950bea73779d01bf8d024e5ce677afa9ee38a6f818e043a57",
+      "sourceCommit": "4383ae7ef88401922e46c822a4034e6a3c22b429",
+      "keepVersion": "0.2.0-rc.5",
+      "startedAt": "2026-11-12T18:08:40.982Z",
+      "complete": false,
+      "events": [],
+      "error": "DELETE users/mylife-inc/packages/container/zellij-base/versions/1547715033: HTTP 404: Package not found."
+    },
+    "artifact": {
+      "id": 13971516265,
+      "name": "image-retirement",
+      "digest": "sha256:5011104993af6da5cda509cfbd184c9109e5275138b10da6e96a13c227691343"
+    }
+  },
+  "ownerFallback": {
+    "mode": "apply-local",
+    "status": "prepared-not-executed",
+    "requiredLogin": "mylife-inc",
+    "requiredScopes": [
+      "read:packages",
+      "delete:packages"
+    ],
+    "observedLoginBeforeRefresh": "mylife-inc",
+    "observedScopesBeforeRefresh": [
+      "gist",
+      "read:org",
+      "repo"
+    ],
+    "localGuardTestsPassed": 13,
+    "sharedGates": [
+      "Exact plan SHA256",
+      "Verified replacement acceptance commits and successful runs",
+      "Full live inventory and retained manifest closure",
+      "Exact package, version ID, digest and complete tag set before deletion",
+      "Journal writable before mutations; record each result",
+      "Post-deletion inventory and retained manifest closure"
+    ],
+    "doesNotReadOrPrintCredential": true,
+    "userActionPending": "Refresh existing gh login with read:packages and delete:packages; no token is needed in chat or repository secrets",
+    "entrypointRegression": "Fake API verifies a wrong plan hash and a failed replacement run both prevent DELETE, with an incomplete zero-event journal for the latter"
+  },
+  "deletions": 0,
+  "postCleanupPublicHttpVerification": "not-run-cleanup-did-not-occur",
+  "limitations": [
+    "Workflow token still receives HTTP 404 after the user-confirmed Admin grant; underlying GitHub cause is unproven",
+    "Successful local owner deletion has not been established",
+    "Native rc.5 release and Homebrew are unchanged",
+    "Live deployment providers and production docs/domain migration remain deferred"
+  ]
+}
