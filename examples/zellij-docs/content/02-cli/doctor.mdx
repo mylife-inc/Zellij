@@ -131,11 +131,12 @@ image and whether inspection found it locally.
 A failed inspection is reported as not pulled; a timeout or an unavailable
 inspection is reported as unknown. This check never pulls an image.
 
-The default is `ghcr.io/mylife-inc/zellij-base:latest`. Override it when your
+The default tag matches the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4`
+for this release. Override it when your
 organisation mirrors the image internally:
 
 ```bash title="terminal"
-ZELLIJ_IMAGE=registry.internal/zellij-base:0.1.0 zel doctor
+ZELLIJ_IMAGE=registry.internal/zellij-base:0.2.0-rc.4 zel doctor
 ```
 
 The first container operation may download an absent image. Hosted builds also

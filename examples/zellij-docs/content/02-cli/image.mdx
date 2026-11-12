@@ -376,8 +376,8 @@ Markdown, use `zel ni`, which owns the temporary adaptation and image build.
 
 ## The base image
 
-`ZELLIJ_IMAGE` overrides the hosted builder image (default
-`ghcr.io/mylife-inc/zellij-base:latest`) for both Next and hosted-static builds.
+`ZELLIJ_IMAGE` overrides the hosted builder image (the default tag matches
+the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4` in this release) for both Next and hosted-static builds.
 It also supplies the Next wrapper for adapted portable Markdown. It has no
 effect on native static compilation or the static NGINX runtime. Portable Next
 images require a builder that supports the current CLI's generated documents;
