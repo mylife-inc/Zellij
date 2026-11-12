@@ -27,11 +27,13 @@ test('compositions retain source order, responsive layouts, links and images', a
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
   await page.evaluate(() => document.fonts.ready);
-  await info.attach('composition-page', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  await page.screenshot({ path: info.outputPath('composition-light.png'), fullPage: true });
+  await info.attach('composition-page', { path: info.outputPath('composition-light.png'), contentType: 'image/png' });
   const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
   await page.emulateMedia({ colorScheme: 'dark' });
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).not.toBe(light);
-  await info.attach('composition-dark', { body: await page.screenshot({ fullPage: true }), contentType: 'image/png' });
+  await page.screenshot({ path: info.outputPath('composition-dark.png'), fullPage: true });
+  await info.attach('composition-dark', { path: info.outputPath('composition-dark.png'), contentType: 'image/png' });
   expect(errors).toEqual([]);
 });
 
@@ -91,7 +93,20 @@ test('nested surfaces retain their own foreground in light, dark and print', asy
     await page.emulateMedia({ colorScheme });
     const foreground = await page.evaluate(() => getComputedStyle(document.body).color);
     await expect(inner).toHaveCSS('color', foreground);
-    await expect.poll(() => inverse.evaluate(element => getComputedStyle(element).color)).not.toBe(foreground);
+    // Some themes intentionally use the same foreground for both dark surfaces.
+    // Verify the selected palette, rather than assuming inversion changes text.
+    const palette = await inverse.evaluate(element => {
+      const probe = document.createElement('span');
+      probe.style.color = 'var(--zellij-inverted-fg)';
+      probe.style.backgroundColor = 'var(--zellij-inverted-bg)';
+      element.append(probe);
+      const style = getComputedStyle(probe);
+      const result = { foreground: style.color, background: style.backgroundColor };
+      probe.remove();
+      return result;
+    });
+    await expect(inverse).toHaveCSS('color', palette.foreground);
+    await expect(inverse).toHaveCSS('background-color', palette.background);
     await expect(inverse.locator('.zellij-compose-heading')).toHaveCSS('color', await inverse.evaluate(element => getComputedStyle(element).color));
   }
   await page.locator('#composed-details').evaluate(element => element.setAttribute('data-zellij-background', 'inverted'));

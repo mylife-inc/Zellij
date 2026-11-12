@@ -34,6 +34,11 @@ fn scalar(value: &Value) -> Option<String> {
                 && parse(&flow).ok().as_ref() == Some(&expected)
                 && parse(s).ok().as_ref() == Some(value)
                 && !s.contains('#')
+                // serde_yaml_ng accepts leading-zero decimals as strings;
+                // the engine's YAML core schema reads them as numbers. Keep
+                // numeric-looking text quoted for both consumers.
+                && !s.trim_start_matches(['+', '-', '.'])
+                    .starts_with(|c: char| c.is_ascii_digit())
             {
                 Some(s.clone())
             } else {
@@ -325,6 +330,15 @@ mod tests {
         assert_eq!(format(&output).unwrap(), output);
         let flow = format("{ padding: large, headline: Hello, type: hero }\n").unwrap();
         assert!(flow.starts_with("type: hero\nheadline: Hello\n"), "{flow}");
+    }
+    #[test]
+    fn numeric_looking_strings_stay_quoted_across_yaml_parsers() {
+        for value in ["01", "00", "-01", "+01", "0.0", ".5", "1e3", "0x10", "0o10"] {
+            let input = format!("value: \"{value}\"\n");
+            let output = format(&input).unwrap();
+            assert!(output.contains(&format!("\"{value}\"")), "{output}");
+            assert_eq!(format(&output).unwrap(), output);
+        }
     }
     #[test]
     fn comments_anchors_literals_and_scalar_types_survive() {

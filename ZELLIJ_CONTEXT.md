@@ -7945,3 +7945,14 @@ alternatives while collecting references, so a heading such as
 reproduces the false positive; reference traversal now skips object alternatives
 whose literal selectors disagree with the parsed value. The same text in a
 `text` node remains an actual checked link. Fresh hosted acceptance is required.
+
+Composer review, 2026-11-12: hosted run `43262466867` exposed a formatter
+interoperability bug: `zel fmt` removed quotes from `"01"`, accepted as a string
+by the Rust parser but a number by the engine parser. A native regression fails
+on `f955784`; the fix keeps numeric-looking strings quoted, and corpus acceptance
+now compares all YAML values using the engine parser before/after formatting.
+The same run's three new surface assertions assumed dark inverted text differs
+from base text; Cupertino intentionally shares that foreground. Assertions now
+check the actual inverted foreground/background tokens. No theme was changed.
+Screenshot captures now write explicit PNG files for artifact retention. Fresh
+hosted acceptance is required; the failed/superseded run is not a passing gate.

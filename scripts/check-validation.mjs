@@ -100,6 +100,18 @@ try {
   checkJson(['--strict'], false, fields);
   await writeFile(path.join(content, 'sections/hero.yaml'), hero);
   await writeFile(path.join(content, 'pages.yaml'), files['pages.yaml']);
+  const composed = { type: 'compose', version: 1, label: 'Nested references', children: [{ type: 'group', children: [
+    { type: 'heading', text: '[Literal heading](/not-a-rendered-link)' },
+    { type: 'image', image: 'assets/café.svg', alt: 'A circle' },
+    { type: 'text', text: 'Read [the introduction](/manual/intro#start-here)' },
+  ] }] };
+  await writeFile(path.join(content, 'sections/hero.yaml'), JSON.stringify(composed));
+  checkJson(['--deep', '--strict'], true);
+  composed.children[0].children[0].type = 'text';
+  composed.children[0].children[1].image = 'assets/missing-composed.svg';
+  await writeFile(path.join(content, 'sections/hero.yaml'), JSON.stringify(composed));
+  checkJson(['--deep', '--strict'], false, [/not-a-rendered-link/, /missing-composed.svg/]);
+  await writeFile(path.join(content, 'sections/hero.yaml'), hero);
   await writeFile(path.join(content, 'site.yaml'), 'name: [\n');
   checkJson([], false, [/content/]);
   await writeFile(path.join(content, 'site.yaml'), site);
