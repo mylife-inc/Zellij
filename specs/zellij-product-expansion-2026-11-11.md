@@ -366,11 +366,13 @@ include a stable release, an eligible open-source license and available source;
 do not promise this route while planning a potentially sealed source repository.
 
 Homebrew supports [direct installation from an owned tap](https://docs.brew.sh/How-to-Create-and-Maintain-a-Tap)
-using **three** components: `owner/tap/formula`. `brew install shebka/zel` is
-not the standard fully qualified formula syntax. If the intended GitHub owner
-is available and controlled, `brew install shebka/tap/zel` is the equivalent
-one-command form. Otherwise use the known `mylife-inc` owner; the user's brand
-preference does not establish control of a GitHub account called `shebka`.
+using **three** components: `owner/tap/formula`. The user has now settled the
+namespace: **Shebka** is the company behind Zellij, formerly named MyLife, and
+the user owns and will continue using the GitHub account **`mylife-inc`**.
+The agreed one-command form is **`brew install mylife-inc/tap/zel`**. Use Shebka
+for company-facing branding; retain the established GitHub/distribution
+namespace. No account rename or `shebka` tap owner is required. The tap remains
+planned, not published.
 
 The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
 one-time tap setup and formula-specific trust. Illustrative commands for a

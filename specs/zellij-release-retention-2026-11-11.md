@@ -95,10 +95,12 @@ retention model. Do not promise erasure from the entire Internet.
 ## Homebrew naming
 
 The desired formula name is `zel`. The fully qualified tap form has three
-components: `owner/tap/formula`. Thus the proposed `shebka/zel` two-part name
-is not the ordinary installation syntax; `shebka/tap/zel` would be valid if we
-control that GitHub namespace and publish a matching tap. At present the known
-owner is `mylife-inc`; no ownership of `shebka` has been established.
+components: `owner/tap/formula`. The user subsequently confirmed that **Shebka**
+is the company's current name, **MyLife** was its former name, and the existing
+GitHub account **`mylife-inc`** is owned by the user. The agreed installation
+command is **`brew install mylife-inc/tap/zel`**. Retain that technical namespace
+while using Shebka as the company identity; no GitHub account migration is
+needed. This settles the earlier namespace question; the tap is not yet live.
 
 On a fresh machine, an owned tap gives a one-command installation such as
 `brew install mylife-inc/tap/zel`. After tap setup and the formula-specific
