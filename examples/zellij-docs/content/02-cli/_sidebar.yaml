@@ -11,6 +11,7 @@ nav:
     items:
       - new
       - templates
+      - books
       - explain
       - list
       - context

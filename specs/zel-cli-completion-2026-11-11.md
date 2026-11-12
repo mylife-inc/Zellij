@@ -180,8 +180,12 @@ passing. See [evidence](evidence/zellij-section-field-diagnostics-2026-11-12.jso
 Published rc.5 remains unchanged. Bounded composer v1 merged in PR #143
 (`ba5f0ad`), with stack/grid/split layouts and gradient reveal. All 20 final-head
 checks, 335 showcase browser cases and 13 development-image jobs passed; six
-light/dark desktop/phone captures were reviewed. See [composer evidence](evidence/zellij-compose-2026-11-12.json). Next implement media-accordion and
-additional composition presets. Complete the book model,
+light/dark desktop/phone captures were reviewed. See [composer evidence](evidence/zellij-compose-2026-11-12.json). Media-accordion and four composition presets subsequently merged in PR #147
+(`2373c5e`), with all 20 CI and 13 development-image jobs passing; see
+[media evidence](evidence/zellij-media-composition-2026-11-12.json).
+The [book publication model](zellij-book-publication-2026-11-12.md) is now in
+progress on `codex/book-manifest`; final-head verification and merge are pending.
+Complete the book model,
 technical/study editions and opt-in PDF/LaTeX publishing, and add the remaining
 installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.

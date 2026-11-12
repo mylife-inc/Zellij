@@ -6,6 +6,8 @@ use serde_json::json;
 use std::{collections::BTreeMap, fs};
 use zellij_core::{Error, Result, files, output::StaticOutput, site::SiteInput};
 
+mod book;
+pub use book::{Publication, ReadingEntry};
 mod config;
 mod diagnostics;
 use diagnostics::Diagnostics;
@@ -69,6 +71,7 @@ struct Page {
     source: Utf8PathBuf,
     output: Utf8PathBuf,
     markdown: markdown::Markdown,
+    original: String,
 }
 
 // Filesystem paths become URL paths at this boundary. On Unix a backslash is
@@ -205,6 +208,7 @@ pub fn check(source: impl Into<SiteInput>, strict: bool) -> CheckReport {
         false,
     );
     let pages = compiled.as_ref().ok().map(|site| site.pages);
+    let book = compiled.as_ref().ok().and_then(|site| site.book.clone());
     let exit_code = match compiled {
         Ok(_) if strict && !diagnostics.items.is_empty() => 3,
         Ok(_) => 0,
@@ -218,12 +222,14 @@ pub fn check(source: impl Into<SiteInput>, strict: bool) -> CheckReport {
         strict,
         ok: exit_code == 0,
         pages,
+        book,
         diagnostics: diagnostics.items,
         exit_code,
     }
 }
 
 struct CompiledSite {
+    book: Option<Publication>,
     root: Utf8PathBuf,
     files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     pages: usize,
@@ -324,11 +330,16 @@ fn compile(
     let name = options
         .name
         .or(config.name.as_deref())
+        .or(config.book.as_ref().map(|book| book.title.as_str()))
         .unwrap_or_else(|| selected.file_name().unwrap_or("Documentation"));
     let theme = options
         .theme
         .or(config.theme.as_deref())
-        .unwrap_or("cupertino");
+        .unwrap_or(if config.book.is_some() {
+            "paper"
+        } else {
+            "cupertino"
+        });
     diagnostics.capture(
         validate_theme(theme),
         Code::Configuration,
@@ -345,6 +356,7 @@ fn compile(
     let mut pages = Vec::new();
     let mut first_error = None;
     for source in &sources {
+        let mut original = String::new();
         let stem = source.file_stem().unwrap();
         let directory = source.parent().unwrap();
         let index = stem.eq_ignore_ascii_case("index")
@@ -372,6 +384,9 @@ fn compile(
                 Some(source),
             )
             .and_then(|text| {
+                if config.book.is_some() {
+                    original = text.clone();
+                }
                 diagnostics.capture(
                     markdown::parse(
                         &text,
@@ -398,6 +413,7 @@ fn compile(
             source: source.clone(),
             output,
             markdown,
+            original,
         });
     }
     if let Some(error) = first_error.take() {
@@ -406,9 +422,18 @@ fn compile(
     if !pages.iter().any(|p| p.output == "index.html") {
         pages.push(Page {
             source: "".into(),
+            original: String::new(),
             output: "index.html".into(),
             markdown: diagnostics.capture(
-                markdown::parse("", name, false, false),
+                markdown::parse(
+                    "",
+                    config
+                        .book
+                        .as_ref()
+                        .map_or(name, |book| book.title.as_str()),
+                    false,
+                    false,
+                ),
                 Code::Rendering,
                 None,
             )?,
@@ -421,17 +446,15 @@ fn compile(
             &b.output,
         ))
     });
-    let navigation = diagnostics.capture(
-        config::Navigation::resolve(&config, &pages),
+    let (navigation, mut publication) = diagnostics.capture(
+        if let Some(manifest) = &config.book {
+            book::resolve(manifest, &pages).map(|(nav, book)| (nav, Some(book)))
+        } else {
+            config::Navigation::resolve(&config, &pages).map(|nav| (nav, None))
+        },
         Code::Configuration,
         Some(config_file),
     )?;
-    let presentation = page::Presentation {
-        name,
-        theme,
-        logo: config.brand.as_ref().and_then(|b| b.logo.as_ref()),
-        company: config.brand.as_ref().and_then(|b| b.company.as_ref()),
-    };
     let mut resolver = links::Resolver {
         root: &root,
         pages: &pages,
@@ -439,6 +462,15 @@ fn compile(
     };
     for (path, bytes) in
         diagnostics.capture(config.logos(&root), Code::Configuration, Some(config_file))?
+    {
+        resolver.assets.insert(path, bytes);
+    }
+    if let Some(manifest) = &config.book
+        && let Some((path, bytes)) = diagnostics.capture(
+            book::cover(manifest, &root),
+            Code::Configuration,
+            Some(config_file),
+        )?
     {
         resolver.assets.insert(path, bytes);
     }
@@ -467,11 +499,24 @@ fn compile(
     if let Some(error) = first_error {
         return Err(error);
     }
+    if let Some(book) = &mut publication {
+        diagnostics.capture(
+            book.finish(&pages, &resolver.assets),
+            Code::Rendering,
+            Some(config_file),
+        )?;
+    }
+    let presentation = page::Presentation {
+        name,
+        theme,
+        logo: config.brand.as_ref().and_then(|b| b.logo.as_ref()),
+        company: config.brand.as_ref().and_then(|b| b.company.as_ref()),
+        book: publication.as_ref(),
+    };
     let hosted_files = if hosted {
         Some(hosted::emit(
             &config,
-            name,
-            theme,
+            &presentation,
             &pages,
             &navigation,
             &rewritten,
@@ -491,6 +536,13 @@ fn compile(
         pulldown_cmark::html::push_html(&mut body, highlighted.into_iter());
         if page.source.as_str().is_empty() {
             body = page::contents(page, &pages, &navigation);
+            if let Some(book) = &publication {
+                body = format!(
+                    "{}<h2>Contents</h2><ul class=\"document-list\">{}</ul>",
+                    book.introduction(),
+                    navigation.render_items(&navigation.items[1..], page, &pages)
+                );
+            }
         }
         let html = page::render(&presentation, page, index, &pages, &navigation, &body);
         if files
@@ -573,6 +625,12 @@ fn compile(
         "_zellij/search.js".into(),
         format!("window.ZELLIJ_SEARCH={data};\n").into_bytes(),
     );
+    if let Some(book) = &publication {
+        files.insert(
+            "_zellij/book.json".into(),
+            serde_json::to_vec_pretty(book).map_err(|e| Error::Io(std::io::Error::other(e)))?,
+        );
+    }
     // Check case-only ancestor conflicts too: A/x and a/y collide on Windows
     // even though their complete paths differ. Every failure precedes publish.
     let mut names = BTreeMap::new();
@@ -603,6 +661,7 @@ fn compile(
         }
     }
     Ok(CompiledSite {
+        book: publication,
         root,
         files: hosted_files.unwrap_or(files),
         pages: pages.len(),

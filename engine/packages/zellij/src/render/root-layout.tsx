@@ -29,7 +29,8 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
 
     return (
       <html
-        lang="en"
+        lang={config.language}
+        dir={config.direction}
         className={fontVariables}
         data-zellij-theme={config.theme}
         data-zellij-mode={config.mode}

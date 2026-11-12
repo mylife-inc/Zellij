@@ -38,11 +38,19 @@ it('omits container identity in ordinary wrapper development', async () => {
 });
 async function fixture(inAppRoot = false) {
   const appRoot = await mkdtemp(path.join(tmpdir(), 'zellij-watch-'));
-  roots.push(appRoot);
+  const saves = await mkdtemp(path.join(tmpdir(), 'zellij-watch-saves-'));
+  roots.push(appRoot, saves);
+  let save = 0;
   const content = inAppRoot ? appRoot : path.join(appRoot, 'external café');
   const put = async (file: string, text: string) => {
     await mkdir(path.dirname(path.join(content, file)), { recursive: true });
-    await writeFile(path.join(content, file), text);
+    // Publish the intended edit atomically. In-place writeFile first truncates
+    // YAML to an empty (valid) config; a busy runner can observe that unrelated
+    // intermediate state for two polling intervals and publish its defaults.
+    // Stage outside the watched tree, including the app-root fixture.
+    const staged = path.join(saves, String(save++));
+    await writeFile(staged, text);
+    await rename(staged, path.join(content, file));
   };
   await put('site.yaml', 'name: Watch\nhome: 01-guide\n');
   await put('01-guide/_sidebar.yaml', 'route: /manual\nnav: [index]\n');

@@ -54,6 +54,8 @@ pub struct CheckReport {
     pub ok: bool,
     /// Generated HTML page count, including a synthetic home, on compilation success.
     pub pages: Option<usize>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub book: Option<crate::Publication>,
     pub diagnostics: Vec<Diagnostic>,
     #[serde(skip)]
     pub exit_code: i32,
