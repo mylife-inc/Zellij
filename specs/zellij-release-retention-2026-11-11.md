@@ -45,9 +45,10 @@ selects rc.5 after retirement. See
 [release gates](evidence/zellij-rc5-release-2026-11-12.json). No source history was
 rewritten; historical rc.4 URLs below now refer to retired artifacts.
 
-**Image cleanup remains incomplete.** No deletion was retried for this milestone,
-and no package-access change was confirmed. The old 187-version rc.4 manifest is
-now stale: rc.5 added protected tags and the development aliases moved. The guard
+**Image cleanup remains incomplete.** The user confirmed package-level Admin
+access on 2026-11-12; a refreshed 213-version plan is ready after the composer
+engine publication. The old 187-version rc.4 manifest is stale: rc.5 added
+protected tags and the development aliases moved. The guard
 correctly refuses new/moved references. Regenerate and review the retained and
 retired graphs after package Admin access is resolved; do not run the old plan
 unchanged. Its excluded untagged build-history inventory is not a deletion list.
@@ -201,8 +202,8 @@ versioned artifacts from the public release mirror.
 
 ## Remaining work
 
-- Complete the reviewed 187-version image retirement after package Admin access
-  is confirmed, then verify retained public images and record the result.
+- Generate and review the rc.5 image retirement plan after the confirmed package
+  Admin change, execute it, then verify retained public images and record the result.
 - Separately review untagged build-history retention before any wider cleanup.
 - Add Scoop and other selected package-manager channels with native acceptance;
   respect external registries' version-removal limits before publishing previews.
@@ -226,3 +227,14 @@ versions. Local manifest traversal timed out without producing a deletion plan.
 Inventory mode now also generates a read-only plan in the hosted workflow;
 execution still requires a committed exact plan and its matching SHA256. The old
 187-version manifest is historical. No image has been deleted in this retry yet.
+
+Hosted planning `43276113201` passed on `beed177`. The
+[rc.5 plan](evidence/zellij-rc5-image-retirement-plan-2026-11-12.json) selects
+213 exact versions: 195 base, nine static and nine Next. All 187 earlier targets
+retain their identities; the additional 26 are rc.4 roots and exclusive children.
+It protects 46 current manifest dependencies and excludes 3,229 unreferenced
+build-history versions. Retained tags are the four rc.5 engine variants, four
+current main variants, and rc.5 static/Next acceptance images. Exact SHA256:
+`26a5c1c3d7fb002950bea73779d01bf8d024e5ce677afa9ee38a6f818e043a57`.
+Nine guard tests, workflow lint and validation against the downloaded inventory
+pass. Execution and post-cleanup HTTP verification remain pending at this checkpoint.

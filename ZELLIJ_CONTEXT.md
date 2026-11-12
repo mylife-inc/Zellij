@@ -56,10 +56,10 @@ source and audit history remain. The separate
 [retention record](specs/zellij-release-retention-2026-11-11.md) tracks exact image
 cleanup and its bounds. Image cleanup is still pending: both hosted attempts
 stopped before deleting anything with GitHub HTTP 404 on the first DELETE.
-The user was asked to confirm package-level Admin access for this repository.
-The historical 187-version plan is now stale because rc.5 adds tags and moves
-development aliases. Do not retry deletion with that plan; refresh and review
-its graph after package access is resolved. Its 3,152 excluded untagged
+The user confirmed package-level Admin access on 2026-11-12. The reviewed rc.5
+plan selects 213 obsolete versions and protects 46 current manifest dependencies
+after composer engine publication; execution is pending. The historical
+187-version rc.4 plan is stale and must not be executed. Its 3,152 excluded untagged
 build-history versions remain outside the authorized cleanup scope.
 Do not reuse any retired version/tag.
 
