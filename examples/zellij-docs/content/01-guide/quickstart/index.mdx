@@ -117,7 +117,7 @@ The first hosted command waits for its engine image to download if it is missing
 You can pull the matching candidate image ahead of time:
 
 ```bash title="terminal"
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
 docker pull "$ZELLIJ_IMAGE" &
 ```
 
@@ -127,7 +127,7 @@ It is a public image — no login, no account. By the time you have installed
 ## Install `zel`
 
 `zel` is the Zellij CLI: a single native binary, with no runtime of its own.
-Use published [candidate 0.2.0-rc.4](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.4)
+Use published [candidate 0.2.0-rc.5](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.5)
 for this guide. Stable `0.1.3` predates these workflows. The candidate's six native
 packages and both Linux image architectures passed
 [public-artifact acceptance](https://github.com/mylife-inc/Zellij/actions/runs/41548199714).
@@ -136,8 +136,8 @@ packages and both Linux image architectures passed
 <Tab title="macOS and Linux">
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.4 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.5 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5 sh ./install.sh
 ```
 
 Works on **Apple Silicon and Intel Macs**, and on Linux **x86-64 and arm64** —
@@ -147,8 +147,8 @@ includes native Windows x64 and ARM64 archives.
 To select another installation directory, reuse the downloaded installer:
 
 ```bash title="terminal"
-ZEL_VERSION=v0.2.0-rc.4 \
-ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4 \
+ZEL_VERSION=v0.2.0-rc.5 \
+ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5 \
 ZEL_INSTALL_DIR="$HOME/.local/bin" sh ./install.sh
 ```
 
@@ -158,12 +158,12 @@ PATH.
 </Tab>
 <Tab title="Windows">
 
-Candidate 0.2.0-rc.4 supports native Windows x64 and ARM64. In PowerShell:
+Candidate 0.2.0-rc.5 supports native Windows x64 and ARM64. In PowerShell:
 
 ```powershell
-Invoke-WebRequest https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.ps1 -OutFile install.ps1
-.\install.ps1 -Version v0.2.0-rc.4 -ReleaseBaseUrl https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4
-$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4'
+Invoke-WebRequest https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.ps1 -OutFile install.ps1
+.\install.ps1 -Version v0.2.0-rc.5 -ReleaseBaseUrl https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5
+$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5'
 ```
 
 `-InstallDir` selects a directory;
@@ -185,8 +185,8 @@ selected directory. It preserves the existing executable if validation fails and
 does not edit your PATH. The default user locations need no administrator rights.
 
 You can read the attached
-[install.sh](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.sh)
-or [install.ps1](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.ps1)
+[install.sh](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.sh)
+or [install.ps1](https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.ps1)
 before running it.
 </Callout>
 
@@ -197,7 +197,7 @@ zel --version
 zel doctor
 ```
 
-`zel --version` should report `zel 0.2.0-rc.4`. `zel doctor` checks container
+`zel --version` should report `zel 0.2.0-rc.5`. `zel doctor` checks container
 runtime availability for hosted commands and reports the selected engine image.
 Portable commands do not require a successful Docker check. If a hosted runtime
 is missing, see [`zel doctor`](/cli/doctor) for setup and endpoint diagnostics.

@@ -23,11 +23,11 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-[Candidate 0.2.0-rc.4](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.4)
+[Candidate 0.2.0-rc.5](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.5)
 targets GNU/Linux, macOS and Windows on x64 and ARM64. Check the release page
 for publication status, pinned installers, package checksums and release notes.
-This reference covers candidate `0.2.0-rc.4`, including separate company branding,
-preview upgrades and matching default engine versions. Pre-1.0 installation uses
+This reference covers candidate `0.2.0-rc.5`, including separate company branding,
+preview upgrades, versioned templates and matching default engine versions. Pre-1.0 installation uses
 explicit candidates; obsolete distributions are retired after their replacements
 are verified.
 
@@ -67,15 +67,15 @@ for current evidence. Command availability does not promise full source-tool
 plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.4 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.4 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.5 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5 sh ./install.sh
 ```
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 For Windows, use the candidate release page's pinned PowerShell instructions.
-They download its attached `install.ps1` and select version `v0.2.0-rc.4` and
+They download its attached `install.ps1` and select version `v0.2.0-rc.5` and
 that release's asset directory. The installer supports
 Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
 checksum and executable version, and installs into
@@ -98,10 +98,10 @@ The default hosted/container engine now matches the CLI version. To explicitly
 select an engine for this session:
 
 ```bash
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
 ```
 
-In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.4'`.
+In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
 
 ## What it does
@@ -123,13 +123,15 @@ Image tags omit the version's leading `v`; candidates do not update `latest`.
   </Card>
 </CardGrid>
 
-Template catalog browsing and `zel create` are implemented for the next
-rc.5 candidate; see [templates](/cli/templates) for the explicit release boundary.
+Candidate rc.5 includes template browsing and `zel create`. See
+[templates](/cli/templates) for offline starters, exact revisions and local catalogs.
 
 ## The whole surface
 
 | Command | | Status |
 | --- | --- | --- |
+| [`zel templates [show]`](/cli/templates) | Browse bundled, local or release templates | **Available** |
+| [`zel create [dir]`](/cli/templates) | Create an editable site from a versioned template; shortcut for `zel new site` | **Available** |
 | [`zel new`](/cli/new) | Portable Markdown, hosted content, a section, a page, a guide, a project or editable app | **Available** |
 | [`zel explain`](/cli/explain) | What a section type takes | **Available** |
 | [`zel list`](/cli/list) | Section types, themes, formats, targets | **Available** |
@@ -158,7 +160,7 @@ rc.5 candidate; see [templates](/cli/templates) for the explicit release boundar
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available** |
 
 <Callout type="info" title="Source and release versions">
-This table is available in candidate `0.2.0-rc.4`. A command's page records its
+This table is available in candidate `0.2.0-rc.5`. A command's page records its
 supported renderers, providers and options; availability does not imply every
 historical proposal is implemented. Stable `0.1.3` does not include the full table.
 </Callout>

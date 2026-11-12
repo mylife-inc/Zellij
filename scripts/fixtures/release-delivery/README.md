@@ -1,7 +1,7 @@
 # Generated delivery acceptance
 
 These sites exercise complete GitHub workflows from the current CLI generator,
-using the **selected 0.2.0-rc.4 executable and exact engine image** at execution
+using the **selected 0.2.0-rc.5 executable and exact engine image** at execution
 time. This candidate includes the current generators and multi-site queue fix.
 Run only after rc.4 publication succeeds. Previous rc.1/rc.2 verification
 records remain evidence for those versions; retargeting does not rerun live delivery.
@@ -10,8 +10,8 @@ records remain evidence for those versions; retargeting does not rerun live deli
 | --- | --- | --- |
 | acceptance-portable.yml | Native validation and portable build | Same |
 | acceptance-hosted.yml | Hosted validation and static export | Same |
-| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.4 |
-| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.4 |
+| acceptance-static.yml | Build portable static image | Publish ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.5 |
+| acceptance-next.yml | Build portable Next.js image | Publish ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.5 |
 | acceptance-netlify-portable.yml | Native validation and portable build | Create a Netlify draft preview |
 | acceptance-netlify-hosted.yml | Hosted validation and static export | Create a Netlify draft preview |
 

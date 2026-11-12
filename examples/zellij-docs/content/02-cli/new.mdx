@@ -3,19 +3,19 @@ title: zel new
 description: Create portable documentation, hosted content, an editable Next.js app, pages, guides or sections.
 ---
 
-`site` selects a versioned template ([new in rc.5 source](/cli/templates)).
+`site` selects a versioned template ([new in rc.5](/cli/templates)).
 `portable`, `docs` and `project` start a project; `page`, `guide` and `section`
 add to hosted content. `app` creates an editable Next.js wrapper.
 
 | | Creates | Default location | |
 | --- | --- | --- | --- |
-| `zel new site [dir]` / `zel create [dir]` | A versioned template | `./docs/zellij` | **rc.5 source** |
-| `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs/zellij` | **Available in source** |
+| `zel new site [dir]` / `zel create [dir]` | A versioned template | `./docs/zellij` | **Available in rc.5** |
+| `zel new portable [dir]` | Markdown and `zel.yaml`, built natively | `./docs/zellij` | **Available** |
 | `zel new docs [dir]` | Hosted YAML/MDX content | `./docs/zellij` | **Available** |
 | `zel new section <type>` | One section file | `--out`, or stdout | **Available** |
 | `zel new page <name>` | One page, and the section files it references | inside the content folder | **Available** |
 | `zel new guide <name>` | A guide folder with a sidebar and an index | inside the content folder | **Available** |
-| `zel new app [dir]` / `zel na [dir]` | An editable Next.js wrapper | `.` | **Available in source** |
+| `zel new app [dir]` / `zel na [dir]` | An editable Next.js wrapper | `.` | **Available** |
 | `zel new project <name>` | A repository with docs and product as siblings | `./<name>` | **Available** |
 
 The available ones are pure Rust with the schema compiled in — **no container
@@ -67,8 +67,7 @@ links. A generated path cannot escape its content root or write Git metadata.
 ## `zel new portable [dir]`
 
 Creates Markdown and native configuration, ready for strict checking, building
-and previewing. This command is available in source; older released binaries
-may not have it. Check `zel new --help` before using an installed release.
+and previewing. This command is included in the current candidate.
 
 ```bash title="terminal"
 zel new portable --name "Acme documentation" --theme forest
@@ -118,7 +117,7 @@ generate YAML/MDX and should not be used inside this Markdown starter.
 
 ## Site creation wizard
 
-**Candidate 0.2.0-rc.4**, supports interactive creation:
+**Candidate 0.2.0-rc.5**, supports interactive creation:
 
 ```bash
 zel init -i                  # portable Markdown at docs/zellij
@@ -197,7 +196,7 @@ content/
 
 ### All section examples with `--full`
 
-**Candidate 0.2.0-rc.4**, supports:
+**Candidate 0.2.0-rc.5**, supports:
 
 ```bash
 zel nd --full
@@ -277,7 +276,7 @@ wrote.
 
 ## `zel new app [dir]`
 
-Available in candidate `0.2.0-rc.4`; the public `zellij-v0.1.3` binary predates this
+Available in candidate `0.2.0-rc.5`; the public `zellij-v0.1.3` binary predates this
 command. `zel na` is its shortcut. It creates editable Next.js files without
 running Node, npm, Docker, a server or an installer.
 
@@ -311,7 +310,7 @@ wrapper command. For portable Markdown inside a Next image, use
 
 ### Choose wrapper settings interactively
 
-**Candidate 0.2.0-rc.4**, supports an optional wizard:
+**Candidate 0.2.0-rc.5**, supports an optional wizard:
 
 ```bash
 zel na website -i
@@ -448,7 +447,7 @@ An output file is never overwritten, including a dangling symlink. There is no
 
 ### Interactive authoring
 
-**Candidate 0.2.0-rc.4**, adds a native section wizard:
+**Candidate 0.2.0-rc.5** supports a native section wizard:
 
 ```bash
 zel ns                         # starts the wizard in a terminal
@@ -527,7 +526,7 @@ counts cannot be changed independently. Conflicting flags fail before writing.
 
 ### Complete lists, objects and optional fields
 
-**Candidate 0.2.0-rc.4**, accepts complete JSON values and
+**Candidate 0.2.0-rc.5**, accepts complete JSON values and
 optional-field removal when creating a section:
 
 ```bash
@@ -607,7 +606,7 @@ Without `--sections` it creates the page with a single hero.
 
 ### Choose a page interactively
 
-**Candidate 0.2.0-rc.4**, supports the short form:
+**Candidate 0.2.0-rc.5**, supports the short form:
 
 ```bash
 zel np -i                         # ask for a name and ordered sections
@@ -725,7 +724,7 @@ exactly what [`zel ci init github --target image`](/cli/ci) writes.
 - [The content model](/guide/content-model) — what these files are, conceptually
 
 The generated project workflow selects the configured `<docs-dir>` root and
-watches both its configuration and content. Candidate `0.2.0-rc.4` pins its
+watches both its configuration and content. Candidate `0.2.0-rc.5` pins its
 own published version and matching engine image. Stable `0.1.3` is incompatible. The starter
 retains its Next-image GHCR publication intent; use saved settings and `zel ci`
 when choosing a static image or Netlify instead.
