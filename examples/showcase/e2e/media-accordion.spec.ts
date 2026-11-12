@@ -63,7 +63,9 @@ test('keyboard headers expose independent panel identities and preserve focus', 
   const references = await page.locator('.zellij-media-accordion button').evaluateAll(nodes => nodes.map(node => ({ id: node.id, panel: node.getAttribute('aria-controls')! })));
   expect(new Set(references.flatMap(ref => [ref.id, ref.panel])).size).toBe(references.length * 2);
   for (const reference of references) await expect(page.locator(`[id="${reference.panel}"]`)).toHaveCount(1);
-  await root.getByRole('link', { name: 'Continue to the guide' }).focus();
+  const guideLink = root.getByRole('link', { name: 'Continue to the guide' });
+  await expect(guideLink).toHaveCSS('text-decoration-line', 'underline');
+  await guideLink.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/\/guide$/);
 });
@@ -105,6 +107,7 @@ test('resizing changes presentation without resetting selection', async ({ page 
   await root.getByRole('button', { name: 'Make room for ideas.', exact: true }).click();
   const captionLink = root.getByRole('link', { name: 'Read the design notes', exact: true });
   await expect(captionLink).toHaveCount(1);
+  await expect(captionLink).toHaveCSS('text-decoration-line', 'underline');
   await captionLink.focus();
   for (const width of [650, 1280, 390]) {
     await page.setViewportSize({ width, height: 900 });

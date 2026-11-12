@@ -83,3 +83,14 @@ existing MDX tests; a lower-concurrency rerun is pending. The Rust workspace's
 unit/integration suites passed, but Homebrew rustdoc aborted on a missing z3
 dynamic library before doctests. The doctests are being rerun with rustup's
 rustdoc, without modifying product code or the host's package installation.
+
+Run `43307234808` on `0dac1d3` passed all 356 showcase browser cases (124 existing
+conditional skips, no retries), including print and caption-focus corrections.
+All six light/dark desktop and phone captures were reviewed. They exposed body
+and caption links that inherited ordinary text styling without a persistent
+visual cue. The follow-up underlines those inline links and asserts that cue in
+keyboard/caption browser cases. A final-head run is required after this change.
+The lower-worker engine run passes all 489 tests. Rust doctests pass with a
+matched rustup compiler/doc pair in an isolated build directory; mixing only the
+rustdoc replacement with Homebrew-built metadata failed and remains recorded.
+All 17 native authoring cases pass with the matched toolchain.
