@@ -1,0 +1,26 @@
+type: compose
+version: 1
+label: A new perspective
+id: composed-story
+background: tinted
+layout: {kind: split, ratio: wide-start, gap: large, align: center}
+children:
+  - type: image
+    image: assets/compose-study.svg
+    alt: Three folded sheets arranged around a copper circle
+    ratio: square
+    caption: One vocabulary. A different point of view.
+  - type: group
+    layout: {kind: stack, gap: medium}
+    children:
+      - type: heading
+        text: A new perspective.
+        scale: title
+        gradient: {colors: ["#ad4e2e", "#b9832d"], effect: reveal}
+      - type: text
+        text: Start with **what matters**. Place an image beside a thought, give it room to breathe, then lead the reader onwards.
+        size: lead
+      - type: button
+        label: See the details
+        href: "#composed-details"
+        style: ghost

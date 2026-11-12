@@ -1041,8 +1041,9 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
     // existence without saying what may go in it — which is exactly enough to
     // write something plausible that the build rejects.
     for field in required.iter().chain(optional.iter()).filter(|f| f.nested) {
-        if let Some(inner) = schema::nested_fields(section_type, &field.name) {
-            zellij_core::reportln!("Each entry in `{}`", field.name);
+        for (variant, inner) in schema::nested_variants(section_type, &field.name) {
+            let suffix = variant.map(|name| format!(" ({name})")).unwrap_or_default();
+            zellij_core::reportln!("Each entry in `{}`{suffix}", field.name);
             for nested in inner {
                 let default = nested
                     .default
@@ -1064,6 +1065,15 @@ fn explain(section_type: &str, as_json: bool) -> zellij_core::Result<()> {
     zellij_core::reportln!(
         "Every section also takes: id, background, padding, motion, titleGradient."
     );
+    if let Some(rule) =
+        schema::authoring_rules(section_type).and_then(|rules| rules.get("boundedTree"))
+    {
+        zellij_core::reportln!(
+            "Tree limits: {} nodes, {} level-1 heading(s). Full nested schemas: `zel explain {section_type} --json`.",
+            rule["maxNodes"],
+            rule["maxPrimaryHeadings"]
+        );
+    }
     zellij_core::reportln!("\nWrite one with `zel new section {section_type}`.");
     Ok(())
 }

@@ -11,7 +11,7 @@ app, no configuration beyond the files described here.
 ## Rules that matter more than the details
 
 1. **Never invent a field or a section type.** Anything absent from this
-   document will fail the build. The valid section types are listed below and
+   document may be rejected or discarded; strict checks detect ignored fields. The valid section types are listed below and
    that list is complete.
 2. **A section file holds its own text.** Pages reference sections by name and
    may override presentation, never content.
@@ -200,14 +200,25 @@ the parent a full-width panel.
 | `wide` | boolean |  |
 | `items` | list of object { name, items } \| object { name, page, url, description, icon, newTab } (min 1) |  |
 
-**`items`**
+**`items (option 1)`**
 
 | field | type | |
 | --- | --- | --- |
 | `name` | string | **required** |
 | `items` | list of object { name, page, url, description, icon, newTab } (min 1) | **required** |
 
-**`items.items`**
+**`items (option 1).items`**
+
+| field | type | |
+| --- | --- | --- |
+| `name` | string | **required** |
+| `page` | string |  |
+| `url` | string |  |
+| `description` | string |  |
+| `icon` | string |  |
+| `newTab` | boolean |  |
+
+**`items (option 2)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -306,7 +317,7 @@ lists everything.
 
 ## Section types
 
-There are 23. Every section also accepts the shared fields `id` (URL anchor), `background`, `padding`, `motion` and `titleGradient`.
+There are 24. Every section also accepts the shared fields `id` (URL anchor), `background`, `padding`, `motion` and `titleGradient`.
 
 ### `bento-grid`
 
@@ -385,6 +396,217 @@ There are 23. Every section also accepts the shared fields `id` (URL anchor), `b
 | --- | --- | --- |
 | `title` | string |  |
 | `body` | string | **required** |
+
+
+### `compose`
+
+| field | type | |
+| --- | --- | --- |
+| `version` | `1` | **required** |
+| `label` | string | **required** |
+| `layout` | object { kind, gap, align } \| object { kind, columns, gap, align } \| object { kind, ratio, gap, align } |  |
+| `children` | list of object { type, effect, text, level, scale, weight, gradient } \| object { type, effect, text, size, tone } \| object { type, effect, image, alt, ratio, caption } \| object { type, effect, label, href, style } \| object { type, effect, value, label } \| object { type } \| object { type, effect, layout, surface, padding, radius, children } (min 1, max 24) | **required** |
+
+**`layout (option 1)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"stack"` | **required** |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`layout (option 2)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"grid"` | **required** |
+| `columns` | integer | default `3` |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`layout (option 3)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"split"` | **required** |
+| `ratio` | `equal` \| `wide-start` \| `wide-end` | default `"equal"` |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`children (option 1)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"heading"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `text` | string | **required** |
+| `level` | integer | default `2` |
+| `scale` | `display` \| `title` \| `subtitle` | default `"title"` |
+| `weight` | `regular` \| `semibold` \| `bold` | default `"bold"` |
+| `gradient` | object { colors, effect } |  |
+
+**`children (option 1).gradient`**
+
+| field | type | |
+| --- | --- | --- |
+| `colors` | list of `fg` \| `muted` \| `accent` \| `accent-fg` \| `inverted-fg` \| string (min 2, max 3) | **required** |
+| `effect` | `none` \| `reveal` | default `"none"` |
+
+**`children (option 2)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"text"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `text` | string | **required** |
+| `size` | `small` \| `body` \| `lead` | default `"body"` |
+| `tone` | `normal` \| `muted` | default `"normal"` |
+
+**`children (option 3)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"image"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `image` | string | **required** |
+| `alt` | string | **required** |
+| `ratio` | `landscape` \| `square` \| `portrait` | default `"landscape"` |
+| `caption` | string |  |
+
+**`children (option 4)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"button"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `label` | string | **required** |
+| `href` | string | **required** |
+| `style` | `primary` \| `secondary` \| `ghost` | default `"primary"` |
+
+**`children (option 5)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"stat"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `value` | string | **required** |
+| `label` | string | **required** |
+
+**`children (option 6)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"divider"` | **required** |
+
+**`children (option 7)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"group"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `layout` | object { kind, gap, align } \| object { kind, columns, gap, align } \| object { kind, ratio, gap, align } |  |
+| `surface` | `plain` \| `tinted` \| `inverted` \| `accent` | default `"plain"` |
+| `padding` | `none` \| `small` \| `medium` \| `large` | default `"none"` |
+| `radius` | `none` \| `medium` \| `large` | default `"none"` |
+| `children` | list of object { type, effect, text, level, scale, weight, gradient } \| object { type, effect, text, size, tone } \| object { type, effect, image, alt, ratio, caption } \| object { type, effect, label, href, style } \| object { type, effect, value, label } \| object { type } \| object { type, effect, layout, surface, padding, radius, children } (min 1, max 24) | **required** |
+
+**`children (option 7).layout (option 1)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"stack"` | **required** |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`children (option 7).layout (option 2)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"grid"` | **required** |
+| `columns` | integer | default `3` |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`children (option 7).layout (option 3)`**
+
+| field | type | |
+| --- | --- | --- |
+| `kind` | `"split"` | **required** |
+| `ratio` | `equal` \| `wide-start` \| `wide-end` | default `"equal"` |
+| `gap` | `none` \| `small` \| `medium` \| `large` |  |
+| `align` | `start` \| `center` \| `end` \| `stretch` |  |
+
+**`children (option 7).children (option 1)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"heading"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `text` | string | **required** |
+| `level` | integer | default `2` |
+| `scale` | `display` \| `title` \| `subtitle` | default `"title"` |
+| `weight` | `regular` \| `semibold` \| `bold` | default `"bold"` |
+| `gradient` | object { colors, effect } |  |
+
+**`children (option 7).children (option 2)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"text"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `text` | string | **required** |
+| `size` | `small` \| `body` \| `lead` | default `"body"` |
+| `tone` | `normal` \| `muted` | default `"normal"` |
+
+**`children (option 7).children (option 3)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"image"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `image` | string | **required** |
+| `alt` | string | **required** |
+| `ratio` | `landscape` \| `square` \| `portrait` | default `"landscape"` |
+| `caption` | string |  |
+
+**`children (option 7).children (option 4)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"button"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `label` | string | **required** |
+| `href` | string | **required** |
+| `style` | `primary` \| `secondary` \| `ghost` | default `"primary"` |
+
+**`children (option 7).children (option 5)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"stat"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `value` | string | **required** |
+| `label` | string | **required** |
+
+**`children (option 7).children (option 6)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"divider"` | **required** |
+
+**`children (option 7).children (option 7)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"group"` | **required** |
+| `effect` | `none` \| `reveal` |  |
+| `layout` | object { kind, gap, align } \| object { kind, columns, gap, align } \| object { kind, ratio, gap, align } |  |
+| `surface` | `plain` \| `tinted` \| `inverted` \| `accent` | default `"plain"` |
+| `padding` | `none` \| `small` \| `medium` \| `large` | default `"none"` |
+| `radius` | `none` \| `medium` \| `large` | default `"none"` |
+| `children` | list of object { type, effect, text, level, scale, weight, gradient } \| object { type, effect, text, size, tone } \| object { type, effect, image, alt, ratio, caption } \| object { type, effect, label, href, style } \| object { type, effect, value, label } \| object { type } \| object { type, effect, layout, surface, padding, radius, children } (min 1, max 24) | **required** |
+
+Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns) or split; mobile and print retain source order. `label` names the page rail. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths.
 
 
 ### `cta-banner`

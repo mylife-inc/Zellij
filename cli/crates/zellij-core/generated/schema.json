@@ -4,6 +4,7 @@
     "bento-grid",
     "card-carousel",
     "code-cards",
+    "compose",
     "cta-banner",
     "faq",
     "feature-grid",
@@ -101,6 +102,7 @@
     "bento-grid": "type: bento-grid\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
     "card-carousel": "type: card-carousel\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# link:\n#   label: TODO\n#   href: \"#\"\n# narrow | medium | wide\n# cardWidth: medium\n",
     "code-cards": "type: code-cards\ncards:\n  - title: TODO\n    code:\n      body: TODO\n  - title: TODO\n    code:\n      body: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# eyebrow: TODO\n# footnote: TODO\n",
+    "compose": "type: compose\nversion: 1\nlabel: TODO\nchildren:\n  - type: heading\n    text: TODO\n\n# Uncomment what you need.\n# layout:\n#   kind: stack\n",
     "cta-banner": "type: cta-banner\nheadline: TODO\n\n# Uncomment what you need.\n# body: TODO\n# command: TODO\n# cta:\n#   label: TODO\n#   href: \"#\"\n",
     "faq": "type: faq\nitems:\n  - question: TODO\n    answer: TODO\n\n# Uncomment what you need.\n# eyebrow: TODO\n# heading: TODO\n# subhead: TODO\n",
     "feature-grid": "type: feature-grid\nitems:\n  - title: TODO\n\n# Uncomment what you need.\n# eyebrow: TODO\n# heading: TODO\n# subhead: TODO\n# columns: 3\n",
@@ -123,6 +125,13 @@
     "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
   },
   "sectionAuthoringRules": {
+    "compose": {
+      "boundedTree": {
+        "children": "children",
+        "maxNodes": 128,
+        "maxPrimaryHeadings": 1
+      }
+    },
     "hero-split": {
       "exactlyOne": [
         "visual",
@@ -571,6 +580,1718 @@
       "required": [
         "type",
         "cards"
+      ]
+    },
+    "compose": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "compose"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "motion": {
+          "type": "string",
+          "enum": [
+            "none",
+            "subtle",
+            "expressive"
+          ]
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "default",
+                "tinted",
+                "inverted",
+                "accent",
+                "glow"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "gradient": {
+                  "minItems": 2,
+                  "maxItems": 3,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              },
+              "required": [
+                "gradient"
+              ]
+            }
+          ]
+        },
+        "padding": {
+          "type": "string",
+          "enum": [
+            "none",
+            "tight",
+            "normal",
+            "loose"
+          ]
+        },
+        "titleGradient": {
+          "minItems": 2,
+          "maxItems": 3,
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "version": {
+          "type": "number",
+          "const": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "layout": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "const": "stack"
+                },
+                "gap": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "small",
+                    "medium",
+                    "large"
+                  ]
+                },
+                "align": {
+                  "type": "string",
+                  "enum": [
+                    "start",
+                    "center",
+                    "end",
+                    "stretch"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "const": "grid"
+                },
+                "columns": {
+                  "default": 3,
+                  "type": "integer",
+                  "minimum": 2,
+                  "maximum": 4
+                },
+                "gap": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "small",
+                    "medium",
+                    "large"
+                  ]
+                },
+                "align": {
+                  "type": "string",
+                  "enum": [
+                    "start",
+                    "center",
+                    "end",
+                    "stretch"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "const": "split"
+                },
+                "ratio": {
+                  "default": "equal",
+                  "type": "string",
+                  "enum": [
+                    "equal",
+                    "wide-start",
+                    "wide-end"
+                  ]
+                },
+                "gap": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "small",
+                    "medium",
+                    "large"
+                  ]
+                },
+                "align": {
+                  "type": "string",
+                  "enum": [
+                    "start",
+                    "center",
+                    "end",
+                    "stretch"
+                  ]
+                }
+              },
+              "required": [
+                "kind"
+              ]
+            }
+          ]
+        },
+        "children": {
+          "minItems": 1,
+          "maxItems": 24,
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "heading"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "level": {
+                    "default": 2,
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 4
+                  },
+                  "scale": {
+                    "default": "title",
+                    "type": "string",
+                    "enum": [
+                      "display",
+                      "title",
+                      "subtitle"
+                    ]
+                  },
+                  "weight": {
+                    "default": "bold",
+                    "type": "string",
+                    "enum": [
+                      "regular",
+                      "semibold",
+                      "bold"
+                    ]
+                  },
+                  "gradient": {
+                    "type": "object",
+                    "properties": {
+                      "colors": {
+                        "minItems": 2,
+                        "maxItems": 3,
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string",
+                              "enum": [
+                                "fg",
+                                "muted",
+                                "accent",
+                                "accent-fg",
+                                "inverted-fg"
+                              ]
+                            },
+                            {
+                              "type": "string",
+                              "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                            }
+                          ]
+                        }
+                      },
+                      "effect": {
+                        "default": "none",
+                        "type": "string",
+                        "enum": [
+                          "none",
+                          "reveal"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "colors"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "text"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "text"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "inline"
+                  },
+                  "size": {
+                    "default": "body",
+                    "type": "string",
+                    "enum": [
+                      "small",
+                      "body",
+                      "lead"
+                    ]
+                  },
+                  "tone": {
+                    "default": "normal",
+                    "type": "string",
+                    "enum": [
+                      "normal",
+                      "muted"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "text"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "image"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "image": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "asset"
+                  },
+                  "alt": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "ratio": {
+                    "default": "landscape",
+                    "type": "string",
+                    "enum": [
+                      "landscape",
+                      "square",
+                      "portrait"
+                    ]
+                  },
+                  "caption": {
+                    "type": "string",
+                    "zellijReference": "inline"
+                  }
+                },
+                "required": [
+                  "type",
+                  "image",
+                  "alt"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "button"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "href": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "href"
+                  },
+                  "style": {
+                    "default": "primary",
+                    "type": "string",
+                    "enum": [
+                      "primary",
+                      "secondary",
+                      "ghost"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "label",
+                  "href"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "stat"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "value",
+                  "label"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "divider"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "group"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "layout": {
+                    "anyOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "const": "stack"
+                          },
+                          "gap": {
+                            "type": "string",
+                            "enum": [
+                              "none",
+                              "small",
+                              "medium",
+                              "large"
+                            ]
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "center",
+                              "end",
+                              "stretch"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "const": "grid"
+                          },
+                          "columns": {
+                            "default": 3,
+                            "type": "integer",
+                            "minimum": 2,
+                            "maximum": 4
+                          },
+                          "gap": {
+                            "type": "string",
+                            "enum": [
+                              "none",
+                              "small",
+                              "medium",
+                              "large"
+                            ]
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "center",
+                              "end",
+                              "stretch"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "const": "split"
+                          },
+                          "ratio": {
+                            "default": "equal",
+                            "type": "string",
+                            "enum": [
+                              "equal",
+                              "wide-start",
+                              "wide-end"
+                            ]
+                          },
+                          "gap": {
+                            "type": "string",
+                            "enum": [
+                              "none",
+                              "small",
+                              "medium",
+                              "large"
+                            ]
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "center",
+                              "end",
+                              "stretch"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind"
+                        ]
+                      }
+                    ]
+                  },
+                  "surface": {
+                    "default": "plain",
+                    "type": "string",
+                    "enum": [
+                      "plain",
+                      "tinted",
+                      "inverted",
+                      "accent"
+                    ]
+                  },
+                  "padding": {
+                    "default": "none",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "small",
+                      "medium",
+                      "large"
+                    ]
+                  },
+                  "radius": {
+                    "default": "none",
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "medium",
+                      "large"
+                    ]
+                  },
+                  "children": {
+                    "minItems": 1,
+                    "maxItems": 24,
+                    "type": "array",
+                    "items": {
+                      "anyOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "heading"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "text": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "level": {
+                              "default": 2,
+                              "type": "integer",
+                              "minimum": 1,
+                              "maximum": 4
+                            },
+                            "scale": {
+                              "default": "title",
+                              "type": "string",
+                              "enum": [
+                                "display",
+                                "title",
+                                "subtitle"
+                              ]
+                            },
+                            "weight": {
+                              "default": "bold",
+                              "type": "string",
+                              "enum": [
+                                "regular",
+                                "semibold",
+                                "bold"
+                              ]
+                            },
+                            "gradient": {
+                              "type": "object",
+                              "properties": {
+                                "colors": {
+                                  "minItems": 2,
+                                  "maxItems": 3,
+                                  "type": "array",
+                                  "items": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string",
+                                        "enum": [
+                                          "fg",
+                                          "muted",
+                                          "accent",
+                                          "accent-fg",
+                                          "inverted-fg"
+                                        ]
+                                      },
+                                      {
+                                        "type": "string",
+                                        "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "effect": {
+                                  "default": "none",
+                                  "type": "string",
+                                  "enum": [
+                                    "none",
+                                    "reveal"
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "colors"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "text"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "text"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "text": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "inline"
+                            },
+                            "size": {
+                              "default": "body",
+                              "type": "string",
+                              "enum": [
+                                "small",
+                                "body",
+                                "lead"
+                              ]
+                            },
+                            "tone": {
+                              "default": "normal",
+                              "type": "string",
+                              "enum": [
+                                "normal",
+                                "muted"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "text"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "image"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "image": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "asset"
+                            },
+                            "alt": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "ratio": {
+                              "default": "landscape",
+                              "type": "string",
+                              "enum": [
+                                "landscape",
+                                "square",
+                                "portrait"
+                              ]
+                            },
+                            "caption": {
+                              "type": "string",
+                              "zellijReference": "inline"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "image",
+                            "alt"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "button"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "href": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "href"
+                            },
+                            "style": {
+                              "default": "primary",
+                              "type": "string",
+                              "enum": [
+                                "primary",
+                                "secondary",
+                                "ghost"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "label",
+                            "href"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "stat"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "value": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "value",
+                            "label"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "divider"
+                            }
+                          },
+                          "required": [
+                            "type"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "group"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "layout": {
+                              "anyOf": [
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
+                                      "const": "stack"
+                                    },
+                                    "gap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "small",
+                                        "medium",
+                                        "large"
+                                      ]
+                                    },
+                                    "align": {
+                                      "type": "string",
+                                      "enum": [
+                                        "start",
+                                        "center",
+                                        "end",
+                                        "stretch"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "kind"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
+                                      "const": "grid"
+                                    },
+                                    "columns": {
+                                      "default": 3,
+                                      "type": "integer",
+                                      "minimum": 2,
+                                      "maximum": 4
+                                    },
+                                    "gap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "small",
+                                        "medium",
+                                        "large"
+                                      ]
+                                    },
+                                    "align": {
+                                      "type": "string",
+                                      "enum": [
+                                        "start",
+                                        "center",
+                                        "end",
+                                        "stretch"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "kind"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
+                                      "const": "split"
+                                    },
+                                    "ratio": {
+                                      "default": "equal",
+                                      "type": "string",
+                                      "enum": [
+                                        "equal",
+                                        "wide-start",
+                                        "wide-end"
+                                      ]
+                                    },
+                                    "gap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "small",
+                                        "medium",
+                                        "large"
+                                      ]
+                                    },
+                                    "align": {
+                                      "type": "string",
+                                      "enum": [
+                                        "start",
+                                        "center",
+                                        "end",
+                                        "stretch"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "kind"
+                                  ]
+                                }
+                              ]
+                            },
+                            "surface": {
+                              "default": "plain",
+                              "type": "string",
+                              "enum": [
+                                "plain",
+                                "tinted",
+                                "inverted",
+                                "accent"
+                              ]
+                            },
+                            "padding": {
+                              "default": "none",
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "small",
+                                "medium",
+                                "large"
+                              ]
+                            },
+                            "radius": {
+                              "default": "none",
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "medium",
+                                "large"
+                              ]
+                            },
+                            "children": {
+                              "minItems": 1,
+                              "maxItems": 24,
+                              "type": "array",
+                              "items": {
+                                "anyOf": [
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "heading"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "text": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "level": {
+                                        "default": 2,
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 4
+                                      },
+                                      "scale": {
+                                        "default": "title",
+                                        "type": "string",
+                                        "enum": [
+                                          "display",
+                                          "title",
+                                          "subtitle"
+                                        ]
+                                      },
+                                      "weight": {
+                                        "default": "bold",
+                                        "type": "string",
+                                        "enum": [
+                                          "regular",
+                                          "semibold",
+                                          "bold"
+                                        ]
+                                      },
+                                      "gradient": {
+                                        "type": "object",
+                                        "properties": {
+                                          "colors": {
+                                            "minItems": 2,
+                                            "maxItems": 3,
+                                            "type": "array",
+                                            "items": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "fg",
+                                                    "muted",
+                                                    "accent",
+                                                    "accent-fg",
+                                                    "inverted-fg"
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "string",
+                                                  "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                                }
+                                              ]
+                                            }
+                                          },
+                                          "effect": {
+                                            "default": "none",
+                                            "type": "string",
+                                            "enum": [
+                                              "none",
+                                              "reveal"
+                                            ]
+                                          }
+                                        },
+                                        "required": [
+                                          "colors"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "text"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "text"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "text": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "inline"
+                                      },
+                                      "size": {
+                                        "default": "body",
+                                        "type": "string",
+                                        "enum": [
+                                          "small",
+                                          "body",
+                                          "lead"
+                                        ]
+                                      },
+                                      "tone": {
+                                        "default": "normal",
+                                        "type": "string",
+                                        "enum": [
+                                          "normal",
+                                          "muted"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "text"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "image"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "image": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "asset"
+                                      },
+                                      "alt": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "ratio": {
+                                        "default": "landscape",
+                                        "type": "string",
+                                        "enum": [
+                                          "landscape",
+                                          "square",
+                                          "portrait"
+                                        ]
+                                      },
+                                      "caption": {
+                                        "type": "string",
+                                        "zellijReference": "inline"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "image",
+                                      "alt"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "button"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "href": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "href"
+                                      },
+                                      "style": {
+                                        "default": "primary",
+                                        "type": "string",
+                                        "enum": [
+                                          "primary",
+                                          "secondary",
+                                          "ghost"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "label",
+                                      "href"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "stat"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "value": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "value",
+                                      "label"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "divider"
+                                      }
+                                    },
+                                    "required": [
+                                      "type"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "group"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "layout": {
+                                        "anyOf": [
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "const": "stack"
+                                              },
+                                              "gap": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "none",
+                                                  "small",
+                                                  "medium",
+                                                  "large"
+                                                ]
+                                              },
+                                              "align": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "start",
+                                                  "center",
+                                                  "end",
+                                                  "stretch"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "kind"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "const": "grid"
+                                              },
+                                              "columns": {
+                                                "default": 3,
+                                                "type": "integer",
+                                                "minimum": 2,
+                                                "maximum": 4
+                                              },
+                                              "gap": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "none",
+                                                  "small",
+                                                  "medium",
+                                                  "large"
+                                                ]
+                                              },
+                                              "align": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "start",
+                                                  "center",
+                                                  "end",
+                                                  "stretch"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "kind"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
+                                                "const": "split"
+                                              },
+                                              "ratio": {
+                                                "default": "equal",
+                                                "type": "string",
+                                                "enum": [
+                                                  "equal",
+                                                  "wide-start",
+                                                  "wide-end"
+                                                ]
+                                              },
+                                              "gap": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "none",
+                                                  "small",
+                                                  "medium",
+                                                  "large"
+                                                ]
+                                              },
+                                              "align": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "start",
+                                                  "center",
+                                                  "end",
+                                                  "stretch"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "kind"
+                                            ]
+                                          }
+                                        ]
+                                      },
+                                      "surface": {
+                                        "default": "plain",
+                                        "type": "string",
+                                        "enum": [
+                                          "plain",
+                                          "tinted",
+                                          "inverted",
+                                          "accent"
+                                        ]
+                                      },
+                                      "padding": {
+                                        "default": "none",
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "small",
+                                          "medium",
+                                          "large"
+                                        ]
+                                      },
+                                      "radius": {
+                                        "default": "none",
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "medium",
+                                          "large"
+                                        ]
+                                      },
+                                      "children": {
+                                        "minItems": 1,
+                                        "maxItems": 24,
+                                        "type": "array",
+                                        "items": {
+                                          "anyOf": [
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "heading"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "text": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "level": {
+                                                  "default": 2,
+                                                  "type": "integer",
+                                                  "minimum": 1,
+                                                  "maximum": 4
+                                                },
+                                                "scale": {
+                                                  "default": "title",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "display",
+                                                    "title",
+                                                    "subtitle"
+                                                  ]
+                                                },
+                                                "weight": {
+                                                  "default": "bold",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "regular",
+                                                    "semibold",
+                                                    "bold"
+                                                  ]
+                                                },
+                                                "gradient": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "colors": {
+                                                      "minItems": 2,
+                                                      "maxItems": 3,
+                                                      "type": "array",
+                                                      "items": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "fg",
+                                                              "muted",
+                                                              "accent",
+                                                              "accent-fg",
+                                                              "inverted-fg"
+                                                            ]
+                                                          },
+                                                          {
+                                                            "type": "string",
+                                                            "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$"
+                                                          }
+                                                        ]
+                                                      }
+                                                    },
+                                                    "effect": {
+                                                      "default": "none",
+                                                      "type": "string",
+                                                      "enum": [
+                                                        "none",
+                                                        "reveal"
+                                                      ]
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "colors"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "text"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "text"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "text": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "inline"
+                                                },
+                                                "size": {
+                                                  "default": "body",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "small",
+                                                    "body",
+                                                    "lead"
+                                                  ]
+                                                },
+                                                "tone": {
+                                                  "default": "normal",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "normal",
+                                                    "muted"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "text"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "image"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "image": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "asset"
+                                                },
+                                                "alt": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "ratio": {
+                                                  "default": "landscape",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "landscape",
+                                                    "square",
+                                                    "portrait"
+                                                  ]
+                                                },
+                                                "caption": {
+                                                  "type": "string",
+                                                  "zellijReference": "inline"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "image",
+                                                "alt"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "button"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "href": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "href"
+                                                },
+                                                "style": {
+                                                  "default": "primary",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "primary",
+                                                    "secondary",
+                                                    "ghost"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "label",
+                                                "href"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "stat"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "value": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "value",
+                                                "label"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "divider"
+                                                }
+                                              },
+                                              "required": [
+                                                "type"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "children"
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "children"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "children"
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "type",
+        "version",
+        "label",
+        "children"
       ]
     },
     "cta-banner": {

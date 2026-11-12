@@ -1,0 +1,150 @@
+---
+title: Compose a section
+description: Build a hero, split story or grid from a bounded tree of reusable elements.
+---
+
+<Callout type="info" title="Source after v0.2.0-rc.5">
+`compose` is implemented in newer source. The published rc.5 CLI and its pinned
+engine do not include it. Use a matching CLI and engine built from current
+source until the next release. This section is for the hosted engine; portable
+Markdown output does not render the hosted section catalog.
+</Callout>
+
+`compose` gives you layout and content building blocks without writing React or
+CSS. The existing sections remain shorter choices for common designs. Start with:
+
+```bash
+zel new section compose --out content/sections/intro.yaml
+# Short alias:
+zel ns compose --out content/sections/intro.yaml
+```
+
+Replace the generated content with a composition and reference `intro` in
+`pages.yaml`, just like any other section:
+
+```yaml
+type: compose
+version: 1
+label: Introduction
+id: introduction
+layout: {kind: stack, align: center, gap: large}
+children:
+  - type: heading
+    text: Make room for a beautiful idea.
+    level: 1
+    scale: display
+    gradient:
+      colors: ["#ad4e2e", "#b9832d"]
+      effect: reveal
+  - type: text
+    text: "A clear structure, **thoughtful details**, and room to breathe."
+    size: lead
+  - type: button
+    label: Read the guide
+    href: /guide
+```
+
+`label` names the section in a page's side rail; it is not an extra visible
+heading. `id`, `background`, `padding`, `motion` and `titleGradient` retain their
+shared meanings. `titleGradient` supplies a fallback gradient for headings;
+a heading's own `gradient.colors` takes precedence. A composition containing a
+level-1 heading supplies the page heading. Otherwise the page retains its usual
+accessible fallback heading.
+
+<SectionPreview example="compose" />
+
+## Layout and groups
+
+A root or group accepts `layout` with `kind: stack`, `grid` or `split`. Omitted
+layout means a stack. All preserve source reading order and collapse to a single
+column below 760 pixels.
+
+| Field | Values | Default |
+| --- | --- | --- |
+| `gap` | `none`, `small`, `medium`, `large` | `medium` |
+| `align` | `start`, `center`, `end`, `stretch` | `start` |
+| `columns` (grid only) | 2–4 | 3 |
+| `ratio` (split only) | `equal`, `wide-start`, `wide-end` | `equal` |
+
+Alignment controls text alignment and cross-axis alignment within cells; it does
+not reorder the children. A split creates two columns on wider screens; put one
+group in each column when it should contain several elements.
+
+```yaml
+- type: group
+  layout: {kind: grid, columns: 2, gap: medium, align: stretch}
+  children:
+    - type: group
+      surface: tinted
+      padding: medium
+      radius: large
+      children:
+        - {type: heading, text: A clear starting point, level: 3, scale: subtitle}
+        - {type: text, text: Explain the first idea here.}
+    - type: group
+      surface: tinted
+      padding: medium
+      radius: large
+      children:
+        - {type: heading, text: Room to grow, level: 3, scale: subtitle}
+        - {type: text, text: Explain the second idea here.}
+```
+
+Groups accept `surface: plain | tinted | inverted | accent`,
+`padding: none | small | medium | large`, and `radius: none | medium | large`.
+Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
+
+## Elements
+
+| Type | Content and options |
+| --- | --- |
+| `heading` | Required `text`; `level` 1–4 (default 2); `scale: display | title | subtitle` (default title); `weight: regular | semibold | bold` (default bold). |
+| `text` | Required `text`, supporting the same inline Markdown as FAQ answers; `size: small | body | lead` and `tone: normal | muted`. Defaults: body, normal. Block Markdown/MDX is not supported here. |
+| `image` | Required `image` asset path and meaningful `alt`; optional inline-Markdown `caption`; `ratio: landscape | square | portrait` (default landscape). |
+| `button` | Required `label` and `href`; `style: primary | secondary | ghost` (default primary). External links use the existing new-tab behavior. |
+| `stat` | Required string `value` and `label`. Quote numeric YAML values. |
+| `divider` | A separator; no extra fields. |
+| `group` | Required `children`; optional layout and surface settings above. |
+
+Elements other than dividers also accept `effect: reveal`, which uses the site's
+existing entrance motion. Omit it for an ordinary element. The site's `motion:
+none` and the reader's reduced-motion preference take precedence.
+
+## Gradient reveal
+
+A heading may use `gradient: {colors: [accent, fg], effect: reveal}`. Supply two
+or three colours: palette tokens `fg`, `muted`, `accent`, `accent-fg`,
+`inverted-fg`, or a quoted 3-, 6-, or 8-digit hexadecimal colour. Choose colours
+with sufficient contrast against the surrounding surface.
+
+The gradient blends over solid text as the heading becomes visible, between
+15% and 65% visibility. It reverses when the heading leaves view. Omit the effect
+(or use `effect: none`) for a static gradient. The text stays readable without
+JavaScript or an intersection observer; reduced motion shows the finished
+heading. Forced colours and print use solid text. Print preserves authored
+reading order and does not reproduce animation.
+
+## Authoring and checking
+
+Use complete JSON values to choose node/layout variants, then refine scalar
+fields. This avoids changing a node type while leaving incompatible fields:
+
+```bash
+zel ns compose --set label=Overview \
+  --set-json 'children=[{"type":"group","children":[{"type":"heading","text":"Hello","level":1}]}]' \
+  --set children.0.children.0.text="Hello, world" \
+  --out content/sections/overview.yaml
+zel explain compose
+zel check --deep --strict
+```
+
+A root or group contains 1–24 children. Up to three groups may nest along a path,
+with at most 128 elements and one level-1 heading in each composition. Both
+native authoring and engine checking enforce these bounds. Deep checks follow
+nested image paths, button links and inline Markdown; unknown fields warn and
+fail strict checks.
+
+Version 1 covers these bounded layouts and elements. Layers, video, arbitrary
+embedded sections, selectable media, synchronized accordions, scroll stories,
+and authored effect ranges are not implemented by this version. Existing
+sections such as `video-embed` can still be adjacent sections on the page.

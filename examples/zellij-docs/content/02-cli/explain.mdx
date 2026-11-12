@@ -127,7 +127,7 @@ schema rather than a description of one.
 
 Stdout contains only the selected section's JSON Schema, including shared and
 nested fields. An unknown type returns exit code 2 with a message on stderr
-and empty stdout. [`zel context --json`](/cli/context) emits all 23 schemas,
+and empty stdout. [`zel context --json`](/cli/context) emits all registered schemas,
 validated YAML templates, content-file schemas and theme metadata together.
 
 ## Why not just read the website
@@ -141,7 +141,7 @@ when you want to see what a section looks like before choosing it.
 
 ## See also
 
-- [`zel list sections`](/cli/list) — all 23, with field counts
+- [`zel list sections`](/cli/list) — the catalog, with field counts
 - [`zel new section`](/cli/new#zel-new-section-type) — a file from the same schema
 - [`zel context`](/cli/context) — the whole model in one file, for an AI agent
 - [The section reference](/sections) — the same information, rendered

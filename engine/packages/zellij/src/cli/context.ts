@@ -122,7 +122,8 @@ function fieldTable(
         field.default !== undefined ? `default \`${JSON.stringify(field.default)}\`` : '';
       const notes = [flag, fallback].filter(Boolean).join(', ');
 
-      const variants = field.anyOf ?? field.oneOf ?? [];
+      const branch = field.type === 'array' ? field.items : field;
+      const variants = branch?.anyOf ?? branch?.oneOf ?? [];
       if (variants.length > 1 && variants.every(option => option.type === 'object') && depth < 2) {
         variants.forEach((option, index) => nested.push([`${name} (option ${index + 1})`, option]));
       } else {
@@ -157,6 +158,7 @@ function sectionReference(): string {
 
     out.push(`### \`${type}\`\n`);
     out.push(fieldTable(toJson(definition.schema as z.ZodType), BASE_FIELDS));
+    if (type === 'compose') out.push('Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns) or split; mobile and print retain source order. `label` names the page rail. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths.\n');
     out.push('');
   }
 
@@ -176,7 +178,7 @@ app, no configuration beyond the files described here.
 ## Rules that matter more than the details
 
 1. **Never invent a field or a section type.** Anything absent from this
-   document will fail the build. The valid section types are listed below and
+   document may be rejected or discarded; strict checks detect ignored fields. The valid section types are listed below and
    that list is complete.
 2. **A section file holds its own text.** Pages reference sections by name and
    may override presentation, never content.

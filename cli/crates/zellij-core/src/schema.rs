@@ -145,6 +145,43 @@ pub fn nested_fields(section_type: &str, field: &str) -> Option<Vec<Field>> {
     Some(fields_from(inner, false))
 }
 
+/// Keep discriminated object alternatives visible in `zel explain`.
+pub fn nested_variants(section_type: &str, field: &str) -> Vec<(Option<String>, Vec<Field>)> {
+    let Some(property) = section_schema(section_type)
+        .and_then(|section| section.get("properties"))
+        .and_then(|properties| properties.get(field))
+    else {
+        return Vec::new();
+    };
+    let shape = property.get("items").unwrap_or(property);
+    if let Some(options) = shape
+        .get("anyOf")
+        .or_else(|| shape.get("oneOf"))
+        .and_then(Value::as_array)
+        .filter(|options| {
+            options
+                .iter()
+                .all(|option| option.get("properties").is_some())
+        })
+    {
+        return options
+            .iter()
+            .enumerate()
+            .map(|(index, option)| {
+                let name = ["type", "kind"]
+                    .iter()
+                    .find_map(|key| option["properties"][key]["const"].as_str())
+                    .map(str::to_owned)
+                    .unwrap_or_else(|| format!("option {}", index + 1));
+                (Some(name), fields_from(option, false))
+            })
+            .collect();
+    }
+    nested_fields(section_type, field)
+        .map(|fields| vec![(None, fields)])
+        .unwrap_or_default()
+}
+
 /// The object schema behind a field, looking through lists and unions.
 pub fn object_behind(field: &Value) -> Option<&Value> {
     if field.get("properties").is_some() {

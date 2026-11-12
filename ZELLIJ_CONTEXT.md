@@ -104,7 +104,25 @@ unchanged-source retry and all four Homebrew checks passed. Development engine
 run `43199867543` passed all 13 jobs on merge `3008a16`, publishing the four
 `main` feature variants for Linux amd64/arm64 and building a site from the image.
 These changes are not in published rc.5.
-Next implementation: composer/media-accordion, then the book/PDF milestones.
+The next source increment, `codex/composable-sections`, implements the first
+bounded composer (`type: compose`, version 1), pending hosted acceptance/merge.
+A section has stack/grid/split layouts, heading/text/image/button/stat/divider
+nodes and groups; three nested groups and 128 nodes are enforced by shared
+engine/native constraints. Finite schema expansion is 14,701 compact JSON bytes,
+with no recursive references or additional dependency. Plain `zel explain`
+now lists node/layout alternatives, and generated context expands array unions.
+Instance-aware H1 ownership preserves the fallback title when no composed H1
+exists. Gradient reveal keeps solid text beneath its decorative paint and
+provides no-JS, reduced-motion, forced-colour and print fallbacks.
+Local verification: 481 engine tests, workspace types, 14 native authoring tests,
+all 24 native-to-engine authoring cases and all full-starter variants pass. The
+Rust workspace passes 743 tests (five ignored); warnings-denied Clippy passes.
+Showcase adds an original hero/split/grid composition and SVG; docs add a source-
+after-rc.5 guide and preview. Browser/container verification remains pending.
+Layers, embedded sections/video, arbitrary effect ranges and interactive presets
+are outside this first composer slice. Published rc.5 is unchanged.
+Next implementation: media-accordion and additional composition presets, then
+book/PDF milestones.
 
 After the template milestone: composition/media-accordion and book/PDF
 publishing, plus technical/study book editions. Scoop,

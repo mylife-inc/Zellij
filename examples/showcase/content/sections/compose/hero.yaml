@@ -1,0 +1,22 @@
+type: compose
+version: 1
+label: Clarity, composed
+id: composed-hero
+layout: {kind: stack, align: center, gap: large}
+children:
+  - type: text
+    text: SHEBKA / THE COMPOSITION STUDIO
+    size: small
+    tone: muted
+  - type: heading
+    text: Clarity, composed.
+    level: 1
+    scale: display
+    gradient: {colors: ["#ad4e2e", "#b9832d"], effect: reveal}
+  - type: text
+    text: Give every idea its own space. Build a page from a few thoughtful pieces, and make it unmistakably yours.
+    size: lead
+  - type: button
+    label: Explore the composition
+    href: "#composed-story"
+    style: secondary

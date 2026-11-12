@@ -529,3 +529,82 @@ fn existing_and_dangling_output_links_are_not_replaced() {
             .is_symlink()
     );
 }
+
+#[test]
+fn composition_authors_nested_variants_and_enforces_tree_limits_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let nodes = serde_json::json!([{ "type":"group", "layout":{"kind":"split"}, "children":[
+        {"type":"heading", "level":1, "text":"Original"},
+        {"type":"image", "image":"assets/diagram.svg", "alt":"A diagram"}
+    ]}]);
+    let assignment = format!("children={nodes}");
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "compose",
+            "--set-json",
+            &assignment,
+            "--set",
+            "children.0.children.0.text=Updated 日本",
+            "--set",
+            "children.0.children.1.alt=Updated diagram",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&out)["children"][0]["children"][0]["text"],
+        "Updated 日本"
+    );
+    assert_eq!(
+        yaml(&out)["children"][0]["children"][1]["alt"],
+        "Updated diagram"
+    );
+    let text = serde_json::json!({"type":"text", "text":"Readable"});
+    let group = |children: Vec<Value>| serde_json::json!({"type":"group", "children":children});
+    let deep = group(vec![group(vec![group(vec![group(vec![text.clone()])])])]);
+    let large = vec![group(vec![text.clone(); 18]); 7]; // 133 nodes
+    let headings = serde_json::json!([{"type":"heading","text":"A","level":1},
+        {"type":"group","children":[{"type":"heading","text":"B","level":1}]}]);
+    for value in [
+        serde_json::json!([deep]),
+        serde_json::json!(large),
+        headings,
+    ] {
+        let assignment = format!("children={value}");
+        run(
+            temp.path(),
+            &[
+                "ns",
+                "compose",
+                "--set-json",
+                &assignment,
+                "--out",
+                "blocked.yaml",
+            ],
+            "",
+            2,
+        );
+        assert!(!temp.path().join("blocked.yaml").exists());
+    }
+}
+
+#[test]
+fn composition_explain_names_every_node_and_layout_variant() {
+    let temp = tempfile::tempdir().unwrap();
+    let output = run(temp.path(), &["explain", "compose"], "", 0);
+    let text = String::from_utf8(output.stdout).unwrap();
+    for name in [
+        "heading", "text", "image", "button", "stat", "divider", "group",
+    ] {
+        assert!(text.contains(&format!("`children` ({name})")), "{text}");
+    }
+    for name in ["stack", "grid", "split"] {
+        assert!(text.contains(&format!("`layout` ({name})")), "{text}");
+    }
+    assert!(text.contains("128 nodes"));
+    let output = run(temp.path(), &["explain", "compose", "--json"], "", 0);
+    let value: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(value["properties"]["children"]["maxItems"], 24);
+}

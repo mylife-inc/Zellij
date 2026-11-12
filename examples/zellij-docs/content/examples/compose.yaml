@@ -1,0 +1,16 @@
+type: compose
+version: 1
+label: A composed introduction
+layout: {kind: stack, align: center, gap: medium}
+children:
+  - type: heading
+    text: Clarity, composed.
+    scale: display
+    gradient: {colors: ["#ad4e2e", "#b9832d"], effect: reveal}
+  - type: text
+    text: "Give every idea its own space. Start with **a clear thought**, then lead your reader onwards."
+    size: lead
+  - type: button
+    label: Read the guide
+    href: /guide
+    style: secondary

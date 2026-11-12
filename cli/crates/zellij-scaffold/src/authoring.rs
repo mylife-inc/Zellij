@@ -525,6 +525,29 @@ impl Section {
                     ));
                 }
             }
+            if let Some(rule) = rules.get("boundedTree") {
+                let children = rule["children"].as_str().unwrap();
+                let mut pending: Vec<&Value> =
+                    self.value[children].as_array().unwrap().iter().collect();
+                let mut count = 0;
+                let mut headings = 0;
+                while let Some(node) = pending.pop() {
+                    count += 1;
+                    if node["type"] == "heading" && node["level"] == 1 {
+                        headings += 1;
+                    }
+                    if count > rule["maxNodes"].as_u64().unwrap()
+                        || headings > rule["maxPrimaryHeadings"].as_u64().unwrap()
+                    {
+                        return Err(invalid(
+                            "composition exceeds its node or level-1 heading limit",
+                        ));
+                    }
+                    if let Some(nested) = node[children].as_array() {
+                        pending.extend(nested);
+                    }
+                }
+            }
             if let Some(rule) = rules.get("alignedRows") {
                 let count = self.value[rule["columns"].as_str().unwrap()]
                     .as_array()
