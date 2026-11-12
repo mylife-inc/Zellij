@@ -159,8 +159,9 @@ retarget them when live delivery acceptance resumes.
 
 ## Remaining work in execution order
 
-Next implement strict diagnostics for unknown section fields, then the bounded
-composer/media-accordion and reusable visual effects. Complete the book model,
+Strict section-field diagnostics and recovered section headings are implemented
+on `codex/section-field-diagnostics`, pending final hosted checks/merge. Next
+implement the bounded composer/media-accordion and reusable visual effects. Complete the book model,
 technical/study editions and opt-in PDF/LaTeX publishing, and add the remaining
 installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.

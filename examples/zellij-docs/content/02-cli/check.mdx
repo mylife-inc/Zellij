@@ -190,12 +190,25 @@ An **unknown value for a known key fails**, naming the key and listing what it
 accepts. `theme: cupertno` is a typo, not forward compatibility, and treating it
 as one would render the wrong theme silently.
 
-<Callout type="tip" title="Unknown keys inside a section file are accepted silently">
-Sections gain fields far more often than the top-level schema does, so a folder
-written for a newer engine still builds. The cost is that a typo in a section
-file is not reported — which is one more reason to read what `check` says about
-files no page references.
+<Callout type="tip" title="Ignored section-field warnings — source after rc.5">
+Newer engine source warns when a section field is discarded, including nested
+card/CTA fields, Markdown section front matter, section examples, legacy inline
+sections and page-reference overrides. For example, `items[0].description` in a
+bento card warns because that card uses `body`. The warning names the source file
+and field path, without printing its value. Normal checks/builds continue;
+`--strict` makes the check fail. This fast check does not require `--deep`.
+Published rc.5 still accepts these fields silently; use an updated engine to
+receive the diagnostics.
 </Callout>
+
+These warnings run after the section schema validates. Defaults, numeric text
+conversion and extension fields retained by a custom schema do not warn. An
+unknown object produces one warning for that object, rather than one for every
+nested value. Invalid required fields still produce errors. Unreferenced section
+files retain their existing unused-file warning and are not fully validated.
+An intentionally discarded field in a custom transforming schema also warns;
+strict authors should remove unused inputs or retain them in the schema output.
+
 
 ### Hosted deep checks
 

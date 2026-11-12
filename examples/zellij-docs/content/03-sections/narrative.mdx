@@ -61,6 +61,9 @@ they are working toward.
 
 <SectionPreview example="steps-panel" />
 
+Engine source after rc.5 adds `eyebrow`, a short plain-text label above the
+heading. Published rc.5 does not render this field.
+
 The numbers are drawn from the list's own counter and never authored. Writing
 `01`, `02` into the titles works right up until a step is inserted in the
 middle, and a screen reader would read every number twice.
@@ -107,6 +110,10 @@ you want `timeline`.
 An accordion of question and answer pairs.
 
 <SectionPreview example="faq" />
+
+Engine source after rc.5 adds an optional plain-text `eyebrow` above the heading
+and an optional `subhead` below it. The subhead supports inline Markdown,
+including links checked by `--deep`. Published rc.5 does not render these fields.
 
 Built on `<details>`, so it expands and collapses with no JavaScript at all and
 is keyboard operable for free. Answers accept inline markdown.

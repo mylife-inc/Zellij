@@ -28,6 +28,7 @@ export function StepsPanel({ section, site, defaultMotion }: SectionProps<StepsP
       className="zellij-steps-panel"
     >
       <SectionHeader
+        {...(section.eyebrow ? { eyebrow: section.eyebrow } : {})}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
         motion={motion}

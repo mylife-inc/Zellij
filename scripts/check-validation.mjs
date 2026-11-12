@@ -90,6 +90,16 @@ try {
   check(['--strict'], false, [/unknown key/, /Strict check failed/]);
   checkJson([], true, [/unknown key/]);
   checkJson(['--strict'], false, [/unknown key/]);
+  await writeFile(path.join(content, 'site.yaml'), site);
+  await writeFile(path.join(content, 'sections/hero.yaml'), hero.replace('href: /manual/intro#start-here', 'href: /manual/intro#start-here, styel: ghost') + 'subhed: Omitted copy\n');
+  await writeFile(path.join(content, 'pages.yaml'), '- name: home\n  sections: [{section: hero, paddding: loose}]\n');
+  const fields = [/ignored field/, /sections\/hero.yaml/, /subhed/, /cta\[0\].styel/, /pages.yaml/, /sections\[0\].paddding/];
+  check([], true, fields);
+  check(['--strict'], false, [...fields, /Strict check failed/]);
+  checkJson([], true, fields);
+  checkJson(['--strict'], false, fields);
+  await writeFile(path.join(content, 'sections/hero.yaml'), hero);
+  await writeFile(path.join(content, 'pages.yaml'), files['pages.yaml']);
   await writeFile(path.join(content, 'site.yaml'), 'name: [\n');
   checkJson([], false, [/content/]);
   await writeFile(path.join(content, 'site.yaml'), site);

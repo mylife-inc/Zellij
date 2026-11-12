@@ -409,7 +409,9 @@ There are 23. Every section also accepts the shared fields `id` (URL anchor), `b
 
 | field | type | |
 | --- | --- | --- |
+| `eyebrow` | string |  |
 | `heading` | string |  |
+| `subhead` | string |  |
 | `items` | list of object { question, answer } (min 1) | **required** |
 
 **`items`**
@@ -424,6 +426,7 @@ There are 23. Every section also accepts the shared fields `id` (URL anchor), `b
 
 | field | type | |
 | --- | --- | --- |
+| `eyebrow` | string |  |
 | `heading` | string |  |
 | `subhead` | string |  |
 | `columns` | `2` \| `3` \| `4` | default `3` |
@@ -691,6 +694,7 @@ There are 23. Every section also accepts the shared fields `id` (URL anchor), `b
 
 | field | type | |
 | --- | --- | --- |
+| `eyebrow` | string |  |
 | `heading` | string |  |
 | `subhead` | string |  |
 | `steps` | list of object { title, body } (min 2, max 12) | **required** |

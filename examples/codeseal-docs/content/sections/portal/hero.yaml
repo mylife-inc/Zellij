@@ -13,7 +13,7 @@ cta:
 highlights:
   - { icon: server, label: Yours to host }
   - { icon: clock, label: Sixty-second credentials }
-  - { icon: file-text, label: Audited, exportable }
+  - { icon: file-text, label: "Audited, exportable" }
 media: right
 terminal:
   title: terminal
