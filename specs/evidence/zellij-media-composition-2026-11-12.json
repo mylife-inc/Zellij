@@ -1,0 +1,475 @@
+{
+  "date": "2026-11-12",
+  "status": "merged and development engine published",
+  "pr": 147,
+  "base_commit": "cc199f3b0fe9a6c8f3f46b76f9b498d5773551a8",
+  "initial_source_head": "11ec16a652f9ce90a3d525bc9d9fc2cd5bed8ea9",
+  "source_head": "d8c6b7c3a1ec9e9ff1d28560ee6e7a417b82f6ea",
+  "run_id": 43308742913,
+  "implemented": [
+    "One bounded media-accordion schema/renderer shared by concise section and compose node; 2\u20138 image stories",
+    "Container-responsive placement, keyboard navigation, independent state, sequential no-JS/print output, motion and forced-colour fallbacks",
+    "Four offline editable YAML presets: product-hero, split-story, feature-cards, media-accordion",
+    "zel presets / zel list presets and zel ns -p / --preset with type inference, existing editing/wizard and overwrite guards",
+    "Shared schema/context/explanation/completions and deep/strict asset, link and unknown-field checks",
+    "Original SVG showcase, new documentation guide and hydrated source/preview example"
+  ],
+  "review_fixes": [
+    {
+      "problem": "Tailwind base-layer important hidden rule defeated unlayered print override",
+      "reproduced_on": "11ec16a",
+      "fix_commit": "0dac1d3",
+      "verification": "All three hosted print regressions pass on 0dac1d3 in 43307234808."
+    },
+    {
+      "problem": "Duplicated linked captions could lose focus when container changes layout",
+      "basis": "Code-review risk; not a captured red/green reproduction",
+      "fix_commit": "0dac1d3",
+      "verification": "One caption DOM instance; all three hosted responsive focus cases pass on 0dac1d3."
+    },
+    {
+      "problem": "Focus test assumed programmatic focus after pointer input implies focus-visible",
+      "fix_commit": "0dac1d3",
+      "verification": "Home keyboard navigation selects focus modality before outline assertion; no focus styling weakened"
+    },
+    {
+      "problem": "Mobile WebKit screenshot skipped a not-yet-visited scroll-revealed section header",
+      "fix_commit": "0dac1d3",
+      "verification": "Scroll to the header and assert revealed attribute and full opacity before capturing"
+    },
+    {
+      "problem": "Body/caption links lacked a persistent visual cue",
+      "basis": "Observed in six hosted captures and confirmed in CSS",
+      "fix_commit": "d8c6b7c",
+      "verification": "Persistent underlines; all three projects pass body/caption underline assertions on d8c6b7c; all six captures visually reviewed."
+    }
+  ],
+  "local_validation": {
+    "engine_tests": 489,
+    "rust_unit_integration_tests": 747,
+    "rust_ignored": 5,
+    "rust_unit_integration_suites": 49,
+    "native_authoring_types": 25,
+    "section_presets": 4,
+    "schema_compact_bytes": 18357,
+    "new_dependencies": 0,
+    "typecheck": "all workspaces passed",
+    "build": "engine package passed",
+    "schema_drift": "none",
+    "clippy": "workspace/all-targets with warnings denied passed",
+    "actionlint": "passed",
+    "diff_check": "passed",
+    "native_authoring_tests": 17,
+    "rust_doctest_suites": 5,
+    "rust_doctests": "passed with matched rustup toolchain; zero executable doctests",
+    "authored_sites": {
+      "showcase": 9,
+      "zellij-docs": 58,
+      "payos": 12,
+      "codeseal-docs": 21
+    },
+    "documentation_examples": 25
+  },
+  "local_verification_history": [
+    "Concurrent engine run: four existing MDX cases exceeded 30s; contention suspected, not proven. Final 489 tests pass with maxWorkers=2, without test-timeout or product changes.",
+    "Rust unit/integration suites all passed; Homebrew rustdoc could not load z3. Replacing only rustdoc then rejected compiler metadata (1.97.1 vs 1.99.0). All five doctest suites and 17 native authoring cases pass with matched rustup tools in an isolated target directory, without changing host packages."
+  ],
+  "superseded_runs": [
+    {
+      "id": 43305489541,
+      "head": "11ec16a652f9ce90a3d525bc9d9fc2cd5bed8ea9",
+      "status": "cancelled by subsequent correcting push",
+      "showcase": {
+        "passed": 350,
+        "failed": 6,
+        "conditional_skips": 124,
+        "failures": "Print hidden panels and incorrect focus-visible test across three projects"
+      },
+      "visual_artifact_id": 13984007092,
+      "visual_review": "All six light/dark desktop/mobile Chromium/mobile WebKit views inspected; caption placement changed and header capture corrected afterward."
+    },
+    {
+      "id": 43307234808,
+      "head": "0dac1d377a1a3396d3f75c130b35ed2e4a56572f",
+      "status": "cancelled by subsequent correcting push",
+      "showcase": {
+        "passed": 356,
+        "conditional_skips": 124,
+        "retries": 0,
+        "development_reload": "Chromium and WebKit passed"
+      },
+      "visual_artifact_id": 13985400263,
+      "visual_review": "All six desktop/mobile Chromium/mobile WebKit light/dark views reviewed; inline-link cue corrected afterward."
+    }
+  ],
+  "log_hashes": {
+    "zellij-media-development-smoke.log": "a5f3d813af567ecc3ed4c0cf20d6be5aa2c9e3412dda1a4a977567447ec3ff29",
+    "zellij-media-final-engine-hosted.log": "ca0c91529488eb310a1494a57c30fadf53c2d3aa1d3bb2533ee0c27db53ab6c0",
+    "zellij-media-engine-tests.log": "3a1b1b2bdcc07b1b1461ebf34d785bac3ec7fb2eea49d67d67034d409aae17a4",
+    "zellij-media-reviewed-showcase-browser.log": "62fc0759708130aab7ec058e800b44d94cbf42ceda21aaa1dc33eb0739304997",
+    "zellij-media-focused-tests.log": "123d330163b2aaf3c4e4b77236d1e3fc6e4a4b4161e57f5b6479a78d214161ac",
+    "zellij-media-link-types.log": "a172b5eddca5574c464b4bb866d45915d58866253b60c3c8a13c542af96dcf2a",
+    "zellij-media-schema-final.log": "580b442881cf892365fc88cd6c904da14277ff02962accc6434d6ef33b293794",
+    "zellij-media-docs-check.log": "d3463e192fb58e7953f0d7fefc366b1fd5bb1739613c7fce361f9cbbe6253958",
+    "zellij-media-reviewed-engine-hosted.log": "bdaaeeebb9b576a8330b751591c135fc3071f29dd103b72069a81d2af7695075",
+    "zellij-media-engine-build.log": "b833b51ce259bb2e96e249412678cf2f219df0be3875f3dafc9c668c5ef2ac3b",
+    "zellij-media-final-showcase-types.log": "a172b5eddca5574c464b4bb866d45915d58866253b60c3c8a13c542af96dcf2a",
+    "zellij-media-first-showcase.log": "278502389b4f3e0bdf58cafa81b297b3477bca852e7856d5b4cf5edb0d2506f6",
+    "zellij-media-final-engine-types.log": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018",
+    "zellij-media-final-build.log": "b04517cd4022c75cbb570eab4ec26fc94b3a07833b054c2fcbef2bbe8373414c",
+    "zellij-media-final-types.log": "b8843e77c519afe3468eab1a5027b2d96e927fa5af53abf0becfe00590f37af9",
+    "zellij-media-final-native-authoring.log": "f10888b2ad0d530a189cb3a8aa5007aea984d70cdf122a25d22934363e9ef970",
+    "zellij-media-rust-workspace.log": "6a208229572aac68a81bceaa292652dd3e6db0885746f46518d907db601e19a0",
+    "zellij-media-final-showcase-check.log": "581e904a1a7308b048427e332b44cce81a6caed7b1e0c2fc0f869261f6ee01a1",
+    "zellij-media-template-corpus.log": "eea0ec6a162a5a8743531f1403e4f17ccd0c78b5ed73b894d018516b497d5ae8",
+    "zellij-media-types.log": "e7079eeea85a546dcc90f331f0c2c82aefa1e4f72e3c8c9bd9ad255bdb28ff48",
+    "zellij-media-native-authoring.log": "3a265cc0ae9b0c43b55a840f6ae804bcb41e72b31069e7623a2bce5f66d00eac",
+    "zellij-media-native-engine.log": "c8cdd41d87ee77367f4ab76235b21c2da2648663474417b86cc16e89407aa1f6",
+    "zellij-media-rust-doc-matched-toolchain.log": "8e322b5ae74a931e7d0968930b404536cb30af9eea7390fbe0ae98fcb01ff610",
+    "zellij-media-codeseal-check.log": "8a810818e47a3e1568fe0087d22e47f7fe157335b565196510b860b3888a8aca",
+    "zellij-media-final-docs-check.log": "d3463e192fb58e7953f0d7fefc366b1fd5bb1739613c7fce361f9cbbe6253958",
+    "zellij-media-rust-doc-rustup.log": "c3476cecba72f5236fb9cf3d805a12936620b6246cdf1f26088aee9a973127bc",
+    "zellij-media-payos-check.log": "502dd25568f90bf01714a125cee62e752e5e0f15d60066b672448d218966a309",
+    "zellij-media-showcase-check.log": "581e904a1a7308b048427e332b44cce81a6caed7b1e0c2fc0f869261f6ee01a1",
+    "zellij-media-engine-tests-limited-workers.log": "ce6e0440963ece3ff42580ddff2174ea7a4fd3c73995f049514b25bb09e30181",
+    "zellij-media-engine-tests-concurrent-timeouts.log": "3a1b1b2bdcc07b1b1461ebf34d785bac3ec7fb2eea49d67d67034d409aae17a4",
+    "zellij-media-final-showcase-browser.log": "d81ab45707bc1f856ac19d6b23b2c97c95a1861f304772c22bcc31c5c5410be0",
+    "zellij-media-final-cli-hosted.log": "f8f7e9446a6fb9d1d130af8acbfffe3c96e636435cc0362bfc3405b3764dc8b2",
+    "zellij-media-clippy.log": "39bd252329a247bf6bfa8ba75cb3d69988094004f969773b009d2b2c2edf5310"
+  },
+  "boundaries": [
+    "No local browser, GUI or Docker acceptance; hosted CI owns those checks",
+    "Published native v0.2.0-rc.5 and production documentation/domain unchanged",
+    "Layers, embedded sections/video and other advanced composition primitives remain planned",
+    "Book/PDF/LaTeX, technical/study book editions and additional package channels remain planned",
+    "Live provider verification remains deferred by the user"
+  ],
+  "reviewed_visual_hashes": {
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile/media-accordion-light.png": "5fe1b46677169d2dc570b3a3ab514edfcdfda36f8d0c6d30ab5758f68dc02523",
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile/media-accordion-dark.png": "43f155b0bff2e2a3ab9a5d930b1bcbf195701b6c8d3186261cbcdeec5a4c5413",
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-desktop/media-accordion-light.png": "6039b7015d9c7b78183b8b7ff231585cb6abdce3bf462f0547c9f94c6421ead2",
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-desktop/media-accordion-dark.png": "9d73743350034e7b7a36b161b7aaaeac0b1d39f1dc3aa2e0d27e9ab95b99b6a7",
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile-safari/media-accordion-light.png": "9e8315544938e5baecedbb91bfff93b2552a0b1f26e0a8adced9a290214f3607",
+    "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile-safari/media-accordion-dark.png": "bef2dcc83ac392bc1f6870c4ad6685da63868b6e2d7156275fc2c82040121be9"
+  },
+  "visual_review": {
+    "head": "d8c6b7c3a1ec9e9ff1d28560ee6e7a417b82f6ea",
+    "artifact_id": 13984274705,
+    "reviewed": [
+      "desktop light",
+      "desktop dark",
+      "mobile Chromium light",
+      "mobile Chromium dark",
+      "mobile WebKit light",
+      "mobile WebKit dark"
+    ],
+    "result": "Readable headings and persistent inline link cues; selected imagery, responsive placement, captions, nested surface contrast and layout inspected. Original-resolution phone crops confirm text is not clipped; the reduced overview image had a scaling artifact.",
+    "files": {
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile/media-accordion-light.png": "ba19ab08098a396ee064435d4140bdc852a5fdd65431a33cd08385a8007ebb8b",
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile/media-accordion-dark.png": "096e7827fac849ccda6bc21d51e1e8d588a768cf5b708d728016b834a9c7eec5",
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-desktop/media-accordion-light.png": "81ed9d5e7e926e1da9a2ffc15a332c62e7773f8e8d33758f1f635f5b774dbd60",
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-desktop/media-accordion-dark.png": "f90ad649d8e75361719d9a31c79eb34c5f53d3a18cea3704f206a6d22146aa9f",
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile-safari/media-accordion-light.png": "4777ab877bf1875b4bd31edb579388778747e8af4c657a6415cc1776eb7dd3e3",
+      "media-accordion-media-sele-bd009--wide-and-narrow-containers-mobile-safari/media-accordion-dark.png": "b5f5812456a1413e379464882c80f39c9d85762324be8f0f0f8c21554125e0c9"
+    }
+  },
+  "showcase": {
+    "passed": 356,
+    "conditional_skips": 124,
+    "retries": 0,
+    "new_cases": 21,
+    "development_reload": "Chromium and WebKit passed",
+    "base_path_acceptance": "Chromium and WebKit passed"
+  },
+  "ci": {
+    "attempt": 1,
+    "conclusion": "success",
+    "headSha": "d8c6b7c3a1ec9e9ff1d28560ee6e7a417b82f6ea",
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43308742913",
+    "jobs": [
+      {
+        "id": 131498996917,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997260,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997297,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997319,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997467,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997529,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997569,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997633,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997662,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997682,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997752,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997875,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997900,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498997938,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131498998043,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131500722311,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131502451437,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131502451445,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131502451460,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 131502451501,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "merge": {
+    "headRefOid": "d8c6b7c3a1ec9e9ff1d28560ee6e7a417b82f6ea",
+    "mergeCommit": {
+      "oid": "2373c5ec35572aa3a2357e9192741e3c3391faba"
+    },
+    "mergedAt": "2026-11-12T21:44:26Z",
+    "number": 147,
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/147",
+    "tree_matches_tested_head": true,
+    "tree": "a595e00f472a13da572169150ec02f8d29d4a62b"
+  },
+  "development_engine": {
+    "attempt": 1,
+    "conclusion": "success",
+    "headSha": "2373c5ec35572aa3a2357e9192741e3c3391faba",
+    "jobs": [
+      {
+        "completedAt": "2026-11-12T21:46:33Z",
+        "conclusion": "success",
+        "databaseId": 131514419983,
+        "name": "none \u00b7 arm64",
+        "startedAt": "2026-11-12T21:44:38Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514419983"
+      },
+      {
+        "completedAt": "2026-11-12T21:48:02Z",
+        "conclusion": "success",
+        "databaseId": 131514420406,
+        "name": "diagrams \u00b7 amd64",
+        "startedAt": "2026-11-12T21:44:35Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420406"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:41Z",
+        "conclusion": "success",
+        "databaseId": 131514420441,
+        "name": "diagrams \u00b7 arm64",
+        "startedAt": "2026-11-12T21:44:37Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420441"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:27Z",
+        "conclusion": "success",
+        "databaseId": 131514420496,
+        "name": "maths \u00b7 arm64",
+        "startedAt": "2026-11-12T21:44:37Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420496"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:19Z",
+        "conclusion": "success",
+        "databaseId": 131514420511,
+        "name": "all \u00b7 amd64",
+        "startedAt": "2026-11-12T21:44:35Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420511"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:56Z",
+        "conclusion": "success",
+        "databaseId": 131514420542,
+        "name": "maths \u00b7 amd64",
+        "startedAt": "2026-11-12T21:44:35Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420542"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:42Z",
+        "conclusion": "success",
+        "databaseId": 131514420563,
+        "name": "all \u00b7 arm64",
+        "startedAt": "2026-11-12T21:44:38Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420563"
+      },
+      {
+        "completedAt": "2026-11-12T21:46:48Z",
+        "conclusion": "success",
+        "databaseId": 131514420573,
+        "name": "none \u00b7 amd64",
+        "startedAt": "2026-11-12T21:44:35Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131514420573"
+      },
+      {
+        "completedAt": "2026-11-12T21:48:26Z",
+        "conclusion": "success",
+        "databaseId": 131516379695,
+        "name": "Publish maths",
+        "startedAt": "2026-11-12T21:48:05Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131516379695"
+      },
+      {
+        "completedAt": "2026-11-12T21:48:28Z",
+        "conclusion": "success",
+        "databaseId": 131516379735,
+        "name": "Publish all",
+        "startedAt": "2026-11-12T21:48:04Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131516379735"
+      },
+      {
+        "completedAt": "2026-11-12T21:48:28Z",
+        "conclusion": "success",
+        "databaseId": 131516379748,
+        "name": "Publish none",
+        "startedAt": "2026-11-12T21:48:05Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131516379748"
+      },
+      {
+        "completedAt": "2026-11-12T21:48:22Z",
+        "conclusion": "success",
+        "databaseId": 131516379765,
+        "name": "Publish diagrams",
+        "startedAt": "2026-11-12T21:48:04Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131516379765"
+      },
+      {
+        "completedAt": "2026-11-12T21:49:35Z",
+        "conclusion": "success",
+        "databaseId": 131516631351,
+        "name": "The image can build a site",
+        "startedAt": "2026-11-12T21:48:31Z",
+        "status": "completed",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720/job/131516631351"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43313219720",
+    "run_id": 43313219720,
+    "tags": [
+      "main",
+      "main-maths",
+      "main-diagrams",
+      "main-all"
+    ],
+    "platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ]
+  },
+  "documentation_preservation": {
+    "original_routes": 46,
+    "added_routes": 12,
+    "total_routes": 58,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "browser_errors": 0,
+    "new_guide": "/sections/media-accordion: hydrated preview and Source/Preview tab interactions passed",
+    "hosting_mutations": "LF and comment/CRLF accepted on all routes; body mutations, uncaught exceptions and console-only errors rejected"
+  },
+  "native_release_published": false,
+  "production_documentation_deployed": false
+}

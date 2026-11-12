@@ -20,11 +20,15 @@ the feature history. Refresh CI and account state before relying on this snapsho
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 are available in rc.5. See [the template contract](../templates/README.md).
-Current source work adds `zel presets` / `zel list presets` and `zel ns --preset`
+PR #147 (`2373c5e`) adds `zel presets` / `zel list presets` and `zel ns --preset`
 (`-p`) for four offline section compositions, plus a media-accordion section and
-composition node. This expands the source catalog to 25 section types. Hosted
-acceptance and merge are pending; these additions are not in published rc.5.
-See [the implementation checkpoint](zellij-media-composition-2026-11-12.md).
+composition node. This expands the source catalog to 25 section types. All 20
+final-head CI checks pass; the merged tree matches tested `d8c6b7c`. All 356
+showcase cases pass without retries and six light/dark captures were reviewed.
+All 13 development-image jobs pass, publishing all four variants on both Linux architectures.
+These additions are not in published rc.5. See
+[the implementation record](zellij-media-composition-2026-11-12.md) and
+[verification evidence](evidence/zellij-media-composition-2026-11-12.json).
 The book starter is a reading website; full PDF/LaTeX and other expansion work
 remain incomplete. The older milestones below retain their dated evidence.
 
@@ -37,8 +41,9 @@ Independent company/product branding is now implemented by PR #131
 [branding evidence](evidence/zellij-company-branding-2026-11-11.json). The four
 active guides were updated. This increment and the hydration fix below shipped
 in rc.4. The first template catalog shipped in rc.5; bounded composer v1 is merged
-in source after rc.5. Media-accordion, further composition presets and book/PDF
-publishing remain planned. Homebrew is live; Scoop, WinGet and other new package-manager
+in source after rc.5, together with media-accordion and the first four composition
+presets. Further composition primitives and book/PDF publishing remain planned.
+Homebrew is live; Scoop, WinGet and other new package-manager
 channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
 backend, short Homebrew naming and removal of superseded pre-1.0 distributions.
@@ -61,7 +66,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 
 | Family | Current evidence | Outstanding gate or boundary |
 | --- | --- | --- |
-| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 24 section templates in current source (23 in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
+| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in current source (23 types in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |

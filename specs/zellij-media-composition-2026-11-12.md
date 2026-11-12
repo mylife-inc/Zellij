@@ -94,3 +94,29 @@ The lower-worker engine run passes all 489 tests. Rust doctests pass with a
 matched rustup compiler/doc pair in an isolated build directory; mixing only the
 rustdoc replacement with Homebrew-built metadata failed and remains recorded.
 All 17 native authoring cases pass with the matched toolchain.
+
+## Merged acceptance — 2026-11-12
+
+PR #147 merged as `2373c5e`, with exactly the tree tested at `d8c6b7c`.
+All 20 final-head jobs in `43308742913` passed without job reruns. All 356
+showcase cases passed without retries (124 existing conditional skips), including
+21 new cases across desktop Chromium, mobile Chromium and mobile WebKit. Six
+final light/dark captures were reviewed at full resolution where needed.
+The full export corpus renders all 25 section types and all four native presets.
+
+Documentation acceptance preserves 46 original routes, 282 heading IDs, 82
+compatibility mappings and 29 byte-identical images; all 12 added routes also
+pass. The new guide's source/preview tabs and selected media render correctly.
+Local gates pass 489 engine tests, workspace types/build, schema drift checks,
+warnings-denied Clippy, 747 Rust unit/integration cases (five existing ignored),
+matched-toolchain doctests and 17 native authoring cases. The previous failed or
+superseded checkpoints above remain historical; they are not passing gates.
+
+All 13 development-engine jobs in `43313219720` pass on the merge. The four
+`main` feature variants are published for Linux amd64/arm64; the published image
+also builds a site successfully.
+The [machine-readable evidence](evidence/zellij-media-composition-2026-11-12.json)
+records exact source/merge identities, logs, captures and run results. Published
+native rc.5 and the production documentation/domain are unchanged. Remaining
+composer primitives, book/PDF/LaTeX, technical/study editions and additional
+installation channels remain follow-up work.

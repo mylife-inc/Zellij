@@ -609,3 +609,22 @@ checks and authored-site validation pass; final hosted acceptance, screenshots
 and merge are pending. See [the focused design and verification record](zellij-media-composition-2026-11-12.md).
 Remaining primitives, technical/study books, PDF/LaTeX and other installer
 channels are not implied complete. Published rc.5 and production docs are unchanged.
+
+## Media accordion and presets closure — 2026-11-12
+
+PR #147 (`2373c5e`) merges the increment above with the same tree as tested
+`d8c6b7c`. All 20 final-head checks in `43308742913` pass. All 356 showcase
+browser cases pass without retries; six desktop/phone light/dark captures were
+reviewed. `0dac1d3` corrects the print cascade and responsive caption focus;
+`d8c6b7c` makes inline links visibly discoverable. Native-to-engine validation
+and hosted export cover 25 types and four presets. Documentation preservation
+retains all original routes, heading IDs, compatibility mappings and images.
+All 13 development-engine jobs in `43313219720` pass, publishing the four
+`main` variants on Linux amd64/arm64 and building a site from the published image.
+See [the focused record](zellij-media-composition-2026-11-12.md) and
+[evidence](evidence/zellij-media-composition-2026-11-12.json).
+
+The next major milestone is the shared book manifest and opt-in PDF/LaTeX
+pipeline described above, followed by technical/study editions. Further
+composition primitives and installation channels remain open. This closes the
+media/preset increment only; published rc.5 and production docs are unchanged.
