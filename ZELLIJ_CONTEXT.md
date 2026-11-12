@@ -5,6 +5,15 @@ Last refreshed: **2026-11-11**. Initial review baseline: local `main` at
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
+Company identity confirmed by the user on 2026-11-11: **Shebka** makes Zellij.
+The company was originally called MyLife and was renamed because of domain-name
+availability. The user owns the existing GitHub account **`mylife-inc`** and
+explicitly accepts keeping that namespace for Zellij and Homebrew. The agreed
+future installation command is **`brew install mylife-inc/tap/zel`**; publication
+is still pending. Use Shebka for company-facing branding and retain `mylife-inc`
+for existing repository/distribution identifiers. A GitHub account rename or
+move to a `shebka` namespace is not needed for this plan.
+
 The documented CLI command families are implemented. On 2026-11-11 the user
 authorized a release containing the post-rc.2 fixes and moved live deployment
 provider verification to the end. **v0.2.0-rc.3 is published** from `58be9b1`,
