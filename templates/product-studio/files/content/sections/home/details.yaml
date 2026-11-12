@@ -3,8 +3,9 @@ heading: Designed around the details.
 subhead: Give every important idea its own space.
 items:
   - title: A clear first impression
-    description: Lead with the difference your product makes in someone's day.
+    span: wide
+    body: Lead with the difference your product makes in someone's day.
   - title: Room for the whole story
-    description: Pair the overview with thoughtful documentation that answers the next question.
+    body: Pair the overview with thoughtful documentation that answers the next question.
   - title: Yours to make
-    description: Edit the text, replace the artwork and choose a theme that feels like your product.
+    body: Edit the text, replace the artwork and choose a theme that feels like your product.

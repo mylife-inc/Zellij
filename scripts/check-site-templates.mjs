@@ -2,7 +2,9 @@
 import assert from 'node:assert/strict';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, readdir, rm } from 'node:fs/promises';
+import { build } from 'esbuild';
+import YAML from 'yaml';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { packageTemplates } from './package-templates.mjs';
@@ -25,6 +27,28 @@ const assets=await packageTemplates(zel,`v${info.cli.version}`,path.join(root,'r
 const again=await packageTemplates(zel,`v${info.cli.version}`,path.join(root,'release-again'));
 assert.deepEqual(assets,again,'Template archives must be byte-reproducible');
 const catalog=JSON.parse(await readFile(path.join(root,'release/templates-catalog.json'),'utf8'));
+// The engine accepts extra YAML keys for compatibility. Starter acceptance
+// must also detect authored values that its schemas would silently discard.
+const helpers=await mkdtemp(path.join(repo,'node_modules/.template-schemas-'));
+let getSection;
+try {
+  const helper=path.join(helpers,'schema.mjs');
+  await build({stdin:{contents:`
+    import { registerBuiltinSections } from './engine/packages/zellij/src/sections/schemas';
+    registerBuiltinSections();
+    export { getSection } from './engine/packages/zellij/src/sections/registry';
+  `,resolveDir:repo},bundle:true,packages:'external',platform:'node',format:'esm',outfile:helper});
+  ({getSection}=await import(pathToFileURL(helper)));
+}finally{await rm(helpers,{recursive:true,force:true});}
+function retained(authored,parsed,location){
+  if(authored&&typeof authored==='object'){
+    assert(parsed&&typeof parsed==='object',`Lost template content: ${location}`);
+    for(const [key,value] of Object.entries(authored)){
+      assert(Object.hasOwn(parsed,key),`Unknown template field: ${location}.${key}`);
+      retained(value,parsed[key],`${location}.${key}`);
+    }
+  }else assert.deepEqual(parsed,authored,`Changed template content: ${location}`);
+}
 const requests=[];
 const server=createServer(async(req,res)=>{
   try {
@@ -54,6 +78,13 @@ for(const {manifest} of catalog.templates){
   if(manifest.renderer==='portable'){
     await run(zel,['check',site,'--strict']);await run(zel,['build',site]);
   }else{
+    const sections=path.join(site,'content/sections');
+    for(const file of await readdir(sections,{recursive:true})){
+      if(!/\.ya?ml$/.test(file))continue;
+      const authored=YAML.parse(await readFile(path.join(sections,file),'utf8'));
+      const parsed=getSection(authored.type).schema.parse(authored);
+      retained(authored,parsed,`${manifest.id}/${file}`);
+    }
     await run(process.execPath,[path.join(repo,'engine/packages/zellij/bin/zellij.mjs'),'check',path.join(site,'content'),'--strict','--deep']);
     if(flags.includes('--build'))await run(zel,['build',site]);
   }
@@ -81,6 +112,15 @@ if(flags.includes('--browser')){
           page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
           await page.goto(url,{waitUntil:'networkidle'});assert(await page.locator('h1').count());
           assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1),'Template overflows viewport');
+          if(manifest.id==='product-studio'){
+            for(const name of ['details','features']){
+              const section=YAML.parse(await readFile(path.join(root,'offline',manifest.id,`content/sections/home/${name}.yaml`),'utf8'));
+              for(const item of section.items){
+                assert(item.body,'Every introductory card needs its authored explanation');
+                assert(await page.getByText(item.body,{exact:true}).isVisible(),item.body);
+              }
+            }
+          }
           assert.deepEqual(errors,[]);await page.screenshot({path:path.join(root,`${manifest.id}-${width}.png`),fullPage:true});
           await page.close();
         }
