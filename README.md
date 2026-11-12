@@ -20,7 +20,7 @@ Zellij/
 
 ## The engine
 
-[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 19
+[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 23
 section types, 14 themes, a documentation renderer, ⌘K search, and a build that
 refuses to ship broken content.
 

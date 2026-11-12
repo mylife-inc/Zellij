@@ -23,8 +23,9 @@ pub use check_report::{HostedCheckReport, HostedDiagnostic, Severity};
 pub use container::ContainerEngine;
 pub use runtime::Runtime;
 
-/// The public image a site is built from.
-pub const DEFAULT_IMAGE: &str = "ghcr.io/mylife-inc/zellij-base:latest";
+/// Match the native CLI release; previews must never depend on an older stable image.
+pub const DEFAULT_IMAGE: &str =
+    concat!("ghcr.io/mylife-inc/zellij-base:", env!("CARGO_PKG_VERSION"));
 
 /// Resolve the image name without requiring or contacting a container runtime.
 pub fn configured_image(image: Option<&str>) -> String {

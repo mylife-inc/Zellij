@@ -5,7 +5,7 @@ description: Generate GitHub Actions, GitLab or CircleCI configuration from save
 
 <Callout type="info" title="Compatible published candidate">
 The generator requires **0.2.0 or later, including release candidates**.
-Published candidate `0.2.0-rc.3` supplies its own version as the default pin, so
+Published candidate `0.2.0-rc.4` supplies its own version as the default pin, so
 `zel ci` is enough when site settings are saved. Stable `0.1.3` cannot run these
 workflows. To select another version, set `ci.zel-version` or `--zel-version`;
 its native assets and matching engine images must exist before the workflow runs.
@@ -23,7 +23,7 @@ zel ci
 zel ci docs/manual
 zel ci --system gitlab
 zel ci --system circle
-zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.3
+zel ci init github --site-root docs/manual --zel-version 0.2.0-rc.4
 ```
 
 The first form selects `./zel.yaml`, then `docs/zellij/zel.yaml`, using the usual
@@ -64,7 +64,7 @@ ci:
   system: github
   branch: main
   workflow: docs.yml
-  zel-version: 0.2.0-rc.3
+  zel-version: 0.2.0-rc.4
   triggers: [pull_request, push, manual]
   production: false
 ```
@@ -72,7 +72,7 @@ ci:
 Then `zel ci` is enough to generate the workflow; use `--force` to replace it.
 Regenerate after changing CI or publication settings so the workflow reflects
 the selected artifacts, triggers and destinations. `--zel-version` overrides
-the saved pin. Candidate 0.2.0-rc.3 supplies its own published version as the
+the saved pin. Candidate 0.2.0-rc.4 supplies its own published version as the
 fallback pin. Versions are exact, optionally prefixed with `v`, and may include
 release-candidate suffixes. `latest` and versions before 0.2.0 are rejected.
 The installer is downloaded from that exact release; it verifies the binary's
@@ -89,14 +89,14 @@ For multiple GitHub workflows in one repository, choose a different `ci.workflow
 for each site. Current source shows that filename in the display name and derives
 the concurrency group from it, so separate sites have independent queues. The
 earlier `0.2.0-rc.1` generator used one shared display name/group;
-candidate `0.2.0-rc.3` includes this fix. Regenerate existing workflows with the corrected CLI
+candidate `0.2.0-rc.4` includes this fix. Regenerate existing workflows with the corrected CLI
 and `--force` after reviewing local customizations.
 
 Optional tag patterns and UTC schedules are independent additional triggers:
 
 ```yaml
 ci:
-  zel-version: 0.2.0-rc.3
+  zel-version: 0.2.0-rc.4
   branch: main
   triggers: [pull_request, push, manual]
   tags: ['docs-v*']
@@ -152,7 +152,7 @@ back to the same-named secret. Default delivery is a draft preview; set
 
 Current source accepts saved `publish.provider: cloudflare` or
 `zel ci --deploy cloudflare --site manual`. The generated workflow requires
-`0.2.0-rc.3` or later to include the Cloudflare upload-acknowledgement and
+`0.2.0-rc.4` or later to include the Cloudflare upload-acknowledgement and
 missing-page fixes.
 Generation does not verify release availability. Set repository secret `CLOUDFLARE_API_TOKEN` and
 repository variable `CLOUDFLARE_ACCOUNT_ID` (a same-named secret also works).
@@ -198,9 +198,9 @@ old generator's automatic-provisioning behavior at the new CLI version boundary.
 an explicit legacy raw-content folder. These overrides remain available:
 
 ```bash
-zel ci init github --content content --target static --zel-version 0.2.0-rc.3
-zel ci init github --content content --target image --zel-version 0.2.0-rc.3
-zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.3
+zel ci init github --content content --target static --zel-version 0.2.0-rc.4
+zel ci init github --content content --target image --zel-version 0.2.0-rc.4
+zel ci init github --content content --deploy netlify --zel-version 0.2.0-rc.4
 ```
 
 `--target static` generates validation and HTML builds with no publication.
@@ -226,7 +226,7 @@ without dispatching anything. That exit is not evidence of a GitHub run.
 
 `--json` is unsupported for generation and dispatch and fails before work.
 Dispatch and credential provisioning remain GitHub-only. Automatic release
-publication is separate from CI generation. GitLab/CircleCI generation is available in candidate `0.2.0-rc.3`;
+publication is separate from CI generation. GitLab/CircleCI generation is available in candidate `0.2.0-rc.4`;
 actual GitLab/CircleCI runner acceptance remains pending.
 
 
@@ -250,8 +250,8 @@ of the pinned engine image. To publish both architectures under one tag, use
 ## Freeze rendering features
 
 ```bash title="terminal"
-zel ci --features all --zel-version 0.2.0-rc.3
-zel ci --features none --zel-version 0.2.0-rc.3 --force
+zel ci --features all --zel-version 0.2.0-rc.4
+zel ci --features none --zel-version 0.2.0-rc.4 --force
 ```
 
 Generation accepts the same complete selection as build/delivery: `maths`,
@@ -289,13 +289,13 @@ invocation settings reach both native builds, not the final manifest command.
 
 Save `image.platform: all` to use this default, or override it with a single
 architecture. Regeneration with the saved/default selection removes temporary
-overrides. This mode requires 0.2.0-rc.3 or later; generation does not confirm that
+overrides. This mode requires 0.2.0-rc.4 or later; generation does not confirm that
 the pinned release exists. Use the matching versioned engine image.
 
 ## Freeze hosted URL and preflight overrides
 
 ```bash
-zel ci docs/hosted --base-path /manual --site-url https://docs.example.com --zel-version 0.2.0-rc.3
+zel ci docs/hosted --base-path /manual --site-url https://docs.example.com --zel-version 0.2.0-rc.4
 zel ci docs/hosted --base-path / --no-check --force
 ```
 
@@ -313,7 +313,7 @@ continues validating authored content before the overridden build.
 
 URL values are serialized as environment data and expanded as quoted arguments.
 GitHub expression syntax in these values is rejected rather than evaluated.
-The flags require a pinned CLI version of `0.2.0-rc.3` or later and its matching
+The flags require a pinned CLI version of `0.2.0-rc.4` or later and its matching
 engine; generation rejects older pins before writing a workflow. Generation
 does not verify release availability or publish a release. `ci run` dispatches
 an existing workflow and does not accept these generation flags.
@@ -321,7 +321,7 @@ an existing workflow and does not accept these generation flags.
 ## Freeze image build arguments
 
 ```bash
-zel ci --build-arg NODE_OPTIONS=--max-old-space-size=4096 --zel-version 0.2.0-rc.3
+zel ci --build-arg NODE_OPTIONS=--max-old-space-size=4096 --zel-version 0.2.0-rc.4
 ```
 
 For image workflows, current source accepts the same repeatable explicit
@@ -335,7 +335,7 @@ them using quoted shell arguments. GitHub expressions in values are rejected.
 Values are visible in the generated workflow, so do not use secrets. These are
 workflow settings, not saved `zel.yaml` fields; regenerate without the flags to
 remove them. Static HTML/Netlify workflows reject them before writing, and
-`ci run` does not accept generation options. Pins older than `0.2.0-rc.3` are
+`ci run` does not accept generation options. Pins older than `0.2.0-rc.4` are
 rejected; the chosen release still needs to be published before execution.
 
 ## See also
@@ -365,7 +365,7 @@ create a Vercel project or provision either ID. See [setup and limits](/cli/depl
 Use saved `publish.provider: github-pages` or:
 
 ```bash
-zel ci --deploy github-pages --site acme/manual --prod --zel-version 0.2.0-rc.3
+zel ci --deploy github-pages --site acme/manual --prod --zel-version 0.2.0-rc.4
 ```
 
 Pages branch publishing has no preview mode, so generation requires `--prod` or
@@ -373,7 +373,7 @@ saved `ci.production: true`. The source branch must differ from `gh-pages`.
 Prepare the existing Pages site and dedicated publishing branch as described in
 [GitHub Pages setup](/cli/deploy#github-pages). The generated workflow requires
 a compatible rc.2 or later release; it does not verify availability.
-Candidate `0.2.0-rc.3` and its matching engine images are published.
+Candidate `0.2.0-rc.4` and its matching engine images are published.
 
 Set repository secret `GITHUB_PAGES_TOKEN` to a dedicated token with Contents
 and Pages write permission on the destination. The built-in `GITHUB_TOKEN` is
@@ -393,11 +393,11 @@ ordinary verification builds still use authored or explicit build settings.
 Use saved `publish.provider: s3` or:
 
 ```bash
-zel ci --deploy s3 --site acme-docs/manual --prod --zel-version 0.2.0-rc.3
+zel ci --deploy s3 --site acme-docs/manual --prod --zel-version 0.2.0-rc.4
 ```
 
 Generation requires `--prod` or `ci.production: true` before writing the workflow.
-Candidate `0.2.0-rc.3` includes S3 support.
+Candidate `0.2.0-rc.4` includes S3 support.
 Prepare the [S3 website bucket](/cli/deploy#aws-s3) first.
 Set repository secrets `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and, for
 temporary credentials, `AWS_SESSION_TOKEN`. Set repository variables `AWS_REGION`
@@ -425,7 +425,7 @@ provisioned by this option.
 ## Fly workflows
 
 ```bash
-zel ci --deploy fly --site manual --kind next --prod --zel-version 0.2.0-rc.3
+zel ci --deploy fly --site manual --kind next --prod --zel-version 0.2.0-rc.4
 ```
 
 Saved `publish.provider: fly` and `publish.image` also work. `--kind` overrides
@@ -445,7 +445,7 @@ feature/build overrides are retained. Production intent is required, either as
 `--prod` or `ci.production: true`. See [existing-app requirements](/cli/deploy#fly).
 
 Generation requires a pinned CLI version of rc.2 or later but does not publish
-or verify it. Candidate `0.2.0-rc.3` includes Fly deployment; live Fly account
+or verify it. Candidate `0.2.0-rc.4` includes Fly deployment; live Fly account
 acceptance remains pending.
 
 
@@ -454,7 +454,7 @@ acceptance remains pending.
 Save Railway delivery settings and `image.name`, then run:
 
 ```bash title="terminal"
-zel ci --deploy railway --kind next --prod --zel-version 0.2.0-rc.3
+zel ci --deploy railway --kind next --prod --zel-version 0.2.0-rc.4
 ```
 
 The workflow uses the saved service UUID, or `RAILWAY_SERVICE_ID` from repository
@@ -474,7 +474,7 @@ public or configure supported private registry credentials on the service.
 tag. The generated workflow serializes GitHub runs on the same ref, but cannot
 lock other workflows, branches, dashboard edits or external deployers. Use one
 publisher per service and avoid concurrent changes. Generation is local and
-checks neither credentials nor release availability. Candidate `0.2.0-rc.3`
+checks neither credentials nor release availability. Candidate `0.2.0-rc.4`
 includes this adapter and the live-tested staged-patch and startup fixes.
 Static/Next live Railway acceptance
 passed on 2026-11-10. Generated workflow validation does not upgrade its pinned
@@ -482,7 +482,7 @@ CLI version automatically.
 
 ## GitLab and CircleCI
 
-Candidate `0.2.0-rc.3` includes both generators. Generation remains local: no runner,
+Candidate `0.2.0-rc.4` includes both generators. Generation remains local: no runner,
 project, credential, schedule or registry is created.
 
 ```bash

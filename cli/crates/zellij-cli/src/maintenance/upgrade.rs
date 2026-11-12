@@ -148,17 +148,19 @@ struct Release {
     prerelease: bool,
 }
 
-fn stable(releases: &[Release]) -> Option<Version> {
+fn select_release(releases: &[Release], preview: bool) -> Option<Version> {
     releases
         .iter()
-        .filter(|r| !r.draft && !r.prerelease)
-        .filter_map(|r| r.tag_name.strip_prefix("zellij-v"))
-        .filter_map(|tag| Version::parse(tag).ok())
-        .filter(|v| v.pre.is_empty() && v.build.is_empty())
+        .filter(|r| !r.draft)
+        .filter_map(|r| {
+            let version = Version::parse(r.tag_name.strip_prefix("zellij-v")?).ok()?;
+            (version.build.is_empty() && (preview || (!r.prerelease && version.pre.is_empty())))
+                .then_some(version)
+        })
         .max()
 }
 
-fn latest(stop: &AtomicBool) -> Result<Version> {
+fn latest(stop: &AtomicBool, preview: bool) -> Result<Version> {
     let base = Url::parse(RELEASES).expect("release API URL");
     let http = client(&base, false)?;
     let mut newest = None;
@@ -190,10 +192,14 @@ fn latest(stop: &AtomicBool) -> Result<Version> {
         copy_limited(response, &mut bytes, METADATA_LIMIT, stop)?;
         let releases: Vec<Release> = serde_json::from_slice(&bytes)
             .map_err(|_| failed("invalid GitHub release metadata"))?;
-        newest = newest.max(stable(&releases));
+        newest = newest.max(select_release(&releases, preview));
         if releases.len() < 100 {
             return newest.ok_or_else(|| {
-                failed("no stable Zellij release found; specify a version to select a prerelease")
+                failed(if preview {
+                    "no published Zellij release found; specify an exact version"
+                } else {
+                    "no stable Zellij release found; use --preview or specify an exact version"
+                })
             });
         }
     }
@@ -381,7 +387,40 @@ fn retry_file_change<T>(
     }
 }
 
+fn check_package_manager(executable: &Path) -> Result<()> {
+    let Some(bin) = executable
+        .parent()
+        .filter(|p| p.file_name().is_some_and(|n| n == "bin"))
+    else {
+        return Ok(());
+    };
+    let Some(prefix) = bin.parent() else {
+        return Ok(());
+    };
+    let marker = prefix.join("share/zel/installation-manager");
+    let mut file = match File::open(marker) {
+        Ok(file) => file,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(error) => {
+            return Err(failed(format!(
+                "could not inspect installation ownership: {error}"
+            )));
+        }
+    };
+    let mut bytes = Vec::new();
+    std::io::Read::by_ref(&mut file)
+        .take(65)
+        .read_to_end(&mut bytes)?;
+    Err(failed(if bytes == b"homebrew\n" {
+        "Homebrew manages this installation; use `brew upgrade mylife-inc/tap/zel`."
+    } else {
+        "This installation has a package-manager marker; upgrade it with its package manager."
+    }))
+}
+
 pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
+    let executable = std::env::current_exe()?.canonicalize()?;
+    check_package_manager(&executable)?;
     archive::supported(crate::TARGET)?;
     let requested = options.version.as_deref().map(parse_version).transpose()?;
     let mirror = options
@@ -395,7 +434,7 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
         .map_err(|error| failed(format!("could not install cancellation handler: {error}")))?;
     let selected = match requested {
         Some(version) => version,
-        None => latest(&stop)?,
+        None => latest(&stop, options.preview)?,
     };
     let current = parse_version(env!("CARGO_PKG_VERSION"))?;
     zellij_core::reportln!(
@@ -424,7 +463,6 @@ pub(crate) fn run(options: &UpgradeArgs) -> Result<()> {
     }
     cancelled(&stop)?;
 
-    let executable = std::env::current_exe()?.canonicalize()?;
     let _lock = installation_lock(&executable)?;
     // This process may have started before another updater replaced its path.
     // Comparing only against the compiled version could then install a release

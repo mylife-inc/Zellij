@@ -3,7 +3,7 @@ title: zel build
 description: Build portable Markdown documentation, a hosted Zellij website, or a container image.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.3">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.4">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. The existing `static` and `image` targets use the container
 engine. Use `zel list targets` to inspect the available outputs and prerequisites.
@@ -82,7 +82,7 @@ then by output path. Add [portable configuration](/cli/config#portable-markdown)
 in `zel.yaml` for nested navigation, explicit labels/order, site name/theme, and
 separate company and product logos. The company link can open in the current
 tab or a new one; the product logo defaults to the documentation home.
-The separate company slot is newer than `v0.2.0-rc.3`.
+The separate company slot is introduced in `v0.2.0-rc.4`.
 The sidebar and previous/next links follow that navigation.
 MkDocs, hosted Zellij YAML, Docusaurus, VitePress, Jekyll, Hugo and Sphinx navigation formats are not read by
 this target.

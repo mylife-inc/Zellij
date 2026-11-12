@@ -21,7 +21,8 @@
 # The base image, overridable so it can be pulled from a mirror, or pointed at
 # a locally built one while working on the image itself.
 ARG ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base
-ARG ZELLIJ_VERSION=latest
+# Pin the published preview; update with the CLI release, or override explicitly.
+ARG ZELLIJ_VERSION=0.2.0-rc.4
 ARG CONTENT=content
 
 # Optional engine features: maths, diagrams, all, or empty for neither.
