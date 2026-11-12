@@ -483,3 +483,13 @@ Local verification passes 471 engine tests, 12 native authoring tests, all 23
 section-authoring cases, three site templates and deep/strict checks of four
 sites. Final hosted acceptance and merge remain pending. Published rc.5 is
 unchanged; no new release or provider/production-docs deployment is implied.
+
+
+The first hosted run (`43192044415`, PR #141) exposed four more ignored fields in
+the native starter shared by ordinary and full creation. Correct its feature-grid
+`title` to `heading` and three item `description` fields to `body`, preserving all
+text. The existing full-starter strict gate reproduced the failure; SSR and
+hosted export acceptance now assert the actual heading and card copy. Focused
+verification passes 35 scaffold tests, four full-starter tests, nine site-authoring
+tests and all 40 native/ten Node starter and ten guide-title rendering fixtures.
+The failure is retained as evidence; a fresh final-head CI run is required.

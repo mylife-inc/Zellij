@@ -52,6 +52,11 @@ for (const [guide, interactive] of [[false, false], [true, false], [true, true]]
       assert.match(html, /<!DOCTYPE html>/i);
       if (name.startsWith('example-')) assert(html.includes(`data-zellij-section="${name.slice(8)}"`), name);
     }
+    const homeHtml = await readFile(path.join(output, 'index.html'), 'utf8');
+    for (const text of ['Why this folder is the whole site', 'YAML and Markdown. No framework to upgrade.',
+      'A broken link fails the build, not a reader.', '<code>zel list sections</code> to see them all.']) {
+      assert(homeHtml.includes(text), `Export lost native starter feature copy: ${text}`);
+    }
     const catalogueHtml = await readFile(path.join(output, 'examples.html'), 'utf8');
     for (const type of schema.sectionTypes) assert(catalogueHtml.includes(`href="/example-${type}"`));
     for (const ext of ['svg', 'mp4']) assert.deepEqual(

@@ -90,7 +90,14 @@ renders `eyebrow` for feature-grid/steps-panel/FAQ and an inline-Markdown FAQ
 `subhead`, and quotes a comma-bearing hero label. Shared CLI schema and guides
 are updated. Local checks pass: 471 engine tests, 12 native authoring cases,
 23 schema authoring cases, all three site templates and all four authored sites.
-Final hosted CI and merge are pending; these changes are not in published rc.5.
+The first hosted run (`43192044415`, PR #141) also exposed four ignored fields
+in the older native starter: its feature heading used `title`, and three card
+bodies used `description`. The generator now emits `heading`/`body`. All 35
+scaffold tests, four full-starter tests and nine site-authoring tests pass; real
+engine/SSR acceptance verifies 40 native starter variants, ten Node starters,
+ten guide titles and the full/wizard catalog. Hosted export checks now assert
+the recovered feature text too. Final-head CI/merge remain pending; these changes
+are not in published rc.5.
 Next implementation: composer/media-accordion, then the book/PDF milestones.
 
 After the template milestone: composition/media-accordion and book/PDF
