@@ -1,0 +1,12 @@
+name: Public Windows Scoop probe
+on:
+  push:
+    branches: [codex/scoop-public-probe]
+permissions:
+  contents: read
+jobs:
+  scoop:
+    uses: ./.github/workflows/scoop.yml
+    with:
+      version: v0.2.0-rc.6
+      public_bucket: false
