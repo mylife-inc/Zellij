@@ -130,11 +130,17 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const pathname = usePathname() || '/';
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [resizeFocus, setResizeFocus] = useState<'mobile' | 'desktop' | null>(null);
   const menuBarRef = useRef<HTMLUListElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const measureRef = useRef<HTMLUListElement>(null);
   const focusAfterResize = useRef<number | 'more' | null>(null);
+  const lastNavigationFocus = useRef<HTMLElement | null>(null);
+  const closeDrawer = useCallback(() => setDrawerOpen(false), []);
+  const inNavigation = useCallback((element: Element | null) => Boolean(
+    element && (headerRef.current?.contains(element) || element.closest('.zellij-drawer-root')),
+  ), []);
 
   const isLanding = model.landingRoutes.includes(pathname);
   const transparentEligible = model.transparentOverHero && isLanding;
@@ -278,28 +284,66 @@ export function NavBarClient({ model }: { model: NavModel }) {
   }, [visibleCount]);
 
   useEffect(() => {
+    // CSS can hide a focused control before the media-query event is delivered.
+    // Retain only that focus loss, not an intentional blur or move into content.
+    const focused = (event: FocusEvent) => {
+      lastNavigationFocus.current = event.target instanceof HTMLElement && inNavigation(event.target)
+        ? event.target : null;
+    };
+    const blurred = (event: FocusEvent) => {
+      if (event.target === lastNavigationFocus.current &&
+          (event.relatedTarget || lastNavigationFocus.current?.getClientRects().length)) {
+        lastNavigationFocus.current = null;
+      }
+    };
+    const pointerDown = (event: PointerEvent) => {
+      if (!(event.target instanceof Element) || !inNavigation(event.target)) lastNavigationFocus.current = null;
+    };
+    document.addEventListener('focusin', focused, true);
+    document.addEventListener('focusout', blurred, true);
+    document.addEventListener('pointerdown', pointerDown, true);
+    return () => {
+      document.removeEventListener('focusin', focused, true);
+      document.removeEventListener('focusout', blurred, true);
+      document.removeEventListener('pointerdown', pointerDown, true);
+    };
+  }, [inNavigation]);
+
+  useEffect(() => {
     const media = window.matchMedia('(max-width: 900px)');
-    let frame = 0;
     const changed = () => {
       const focused = document.activeElement;
-      const restore = focused && (headerRef.current?.contains(focused) || focused.closest('.zellij-drawer-root'));
+      const previous = lastNavigationFocus.current;
+      const hiddenFocus = focused === document.body && previous?.isConnected && !previous.getClientRects().length;
+      const restore = drawerOpen || inNavigation(focused) || hiddenFocus;
+      focusAfterResize.current = null;
       closeMenu();
       cancelSwitch();
-      setDrawerOpen(false);
-      cancelAnimationFrame(frame);
-      if (restore) frame = requestAnimationFrame(() => {
-        const target = media.matches
-          ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
-          : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
-        target?.focus();
-      });
+      closeDrawer();
+      setResizeFocus(restore ? (media.matches ? 'mobile' : 'desktop') : null);
     };
     media.addEventListener('change', changed);
-    return () => {
-      cancelAnimationFrame(frame);
-      media.removeEventListener('change', changed);
-    };
-  }, [closeMenu, cancelSwitch]);
+    return () => media.removeEventListener('change', changed);
+  }, [closeMenu, cancelSwitch, closeDrawer, drawerOpen, inNavigation]);
+
+  useEffect(() => {
+    if (resizeFocus === null) return;
+    if (drawerOpen) { setResizeFocus(null); return; }
+    // Run after closing panels has committed and their focus traps have cleaned
+    // up. A later breakpoint or deliberate focus move supersedes this request.
+    const frame = requestAnimationFrame(() => {
+      const mobile = window.matchMedia('(max-width: 900px)').matches;
+      const active = document.activeElement;
+      if (mobile === (resizeFocus === 'mobile') && (active === document.body || inNavigation(active))) {
+        const target = mobile
+          ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
+          : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
+        target?.focus({ preventScroll: true });
+      }
+      setResizeFocus(current => current === resizeFocus ? null : current);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [resizeFocus, drawerOpen, visibleCount, inNavigation]);
 
   /*
    * Dismissal is scoped to the header, not the menu bar list. The theme picker
@@ -558,7 +602,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
 
       <MobileDrawer
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={closeDrawer}
         items={model.items}
         cta={model.cta}
         isActive={isActive}

@@ -99,4 +99,66 @@ test.describe('measured overflow', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     await expect(page.locator('.zellij-nav-list [data-zellij-navitem]').first()).toBeFocused();
   });
+
+  test('preserves a focused drawer link while the header reacts to scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/');
+    const header = page.locator('.zellij-header');
+    await expect(header).toHaveAttribute('data-solid', 'false');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeFocused();
+    const link = drawer.getByRole('link').first();
+    await link.focus();
+    await expect(link).toBeFocused();
+    // A programmatic scroll can update the header even while body scroll is
+    // locked. Changing header state must not restart the open drawer's trap.
+    await page.evaluate(() => window.scrollTo({ top: 400, behavior: 'instant' }));
+    await expect(header).toHaveAttribute('data-solid', 'true');
+    await expect(drawer).toBeVisible();
+    await expect(link).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(drawer).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+  });
+
+  test('moves keyboard focus between visible controls across reciprocal resizes', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    // The load event can precede header hydration, especially in WebKit.
+    await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
+    const first = page.locator('.zellij-nav-list [data-zellij-navitem]').first();
+    await first.focus();
+    await expect(first).toBeFocused();
+    for (let cycle = 0; cycle < 3; cycle++) {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(first).toBeFocused();
+    }
+  });
+
+  test('does not take focus from document content on a breakpoint change', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/guide');
+    await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
+    const link = page.locator('main a[href]').first();
+    await link.focus();
+    for (const width of [390, 1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(link).toBeFocused();
+    }
+  });
+
+  test('keeps the final breakpoint in charge during rapid drawer resizes', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeVisible();
+    for (const width of [1280, 390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
+    await expect(drawer).toHaveCount(0);
+    await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+  });
 });

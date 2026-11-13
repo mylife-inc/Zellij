@@ -1,0 +1,236 @@
+{
+  "date": "2026-11-13",
+  "baseline": {
+    "run_id": 43517554663,
+    "head": "f1404ce563be02317c409024adaaa9d8587be503",
+    "job_id": 132203279074,
+    "retries": 0,
+    "repetitions": 4,
+    "workers": 4,
+    "passed": 579,
+    "failed": 1,
+    "conditional_skips": 64,
+    "focus_events_sha256": "f300916451f8554a116645f9ac917781f6724b494adcf48496eb23b4abc08679",
+    "events": [
+      {
+        "at": 579.8999999999651,
+        "event": "focusin",
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "target": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "width": 390,
+        "drawer": false
+      },
+      {
+        "at": 591.0999999999767,
+        "event": "focus-call-before",
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "target": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "stack": "Error\n    at HTMLElement.focus (<anonymous>:25:41)\n    at http://127.0.0.1:4317/_next/static/chunks/3j8cdyodqyb6z.js:1:1800\n    at iE (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:113831)\n    at uS (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138939)\n    at uw (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138601)\n    at uS (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138984)\n    at uw (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138601)\n    at uS (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138919)\n    at uw (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138601)\n    at uS (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138984)",
+        "width": 390,
+        "drawer": true
+      },
+      {
+        "at": 591.2999999999884,
+        "event": "focusout",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "width": 390,
+        "drawer": true
+      },
+      {
+        "at": 591.7999999999884,
+        "event": "focusin",
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "target": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "width": 390,
+        "drawer": true
+      },
+      {
+        "at": 592,
+        "event": "focus-call-after",
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "target": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "width": 390,
+        "drawer": true
+      },
+      {
+        "at": 657.2999999999884,
+        "event": "focusout",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy"
+        },
+        "width": 1280,
+        "drawer": true
+      },
+      {
+        "at": 688.8999999999651,
+        "event": "media-before-react",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": null,
+        "width": 1280,
+        "drawer": true
+      },
+      {
+        "at": 703.3999999999651,
+        "event": "focus-call-before",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "stack": "Error\n    at HTMLElement.focus (<anonymous>:25:41)\n    at http://127.0.0.1:4317/_next/static/chunks/3j8cdyodqyb6z.js:1:2400\n    at ix (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:114073)\n    at uC (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142596)\n    at uP (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142506)\n    at uC (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142642)\n    at uP (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142506)\n    at uC (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142576)\n    at uP (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142506)\n    at uC (http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:142642)",
+        "width": 1280,
+        "drawer": false
+      },
+      {
+        "at": 703.8999999999651,
+        "event": "focus-call-after",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": ""
+        },
+        "width": 1280,
+        "drawer": false
+      },
+      {
+        "at": 704.1999999999534,
+        "event": "media-frame-1",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": null,
+        "width": 1280,
+        "drawer": false
+      },
+      {
+        "at": 752.0999999999767,
+        "event": "media-frame-2",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen"
+        },
+        "target": null,
+        "width": 1280,
+        "drawer": false
+      }
+    ]
+  },
+  "drawer_update_baseline": {
+    "run_id": 43517974674,
+    "head": "7673d9755c75eb9bf8e19c8d73aceda49188f4d4",
+    "job_id": 132204709340,
+    "retries": 0,
+    "repetitions": 8,
+    "passed": 56,
+    "failed": 8,
+    "failure": "All eight drawer-link focus assertions fail after scroll makes the header solid."
+  },
+  "isolated_baseline": {
+    "run_id": 43516946486,
+    "passed": 80,
+    "retries": 0,
+    "interpretation": "Did not reproduce; passing isolated repetitions were insufficient to close the original finding."
+  },
+  "initial_candidate": {
+    "run_id": 43519255372,
+    "head": "302cf86193fceed00d2f43f6a31138584caf57ba",
+    "passed": 250,
+    "failed": 2,
+    "retries": 0,
+    "repetitions": 12,
+    "failure": "Two desktop WebKit first-resize cases started before header initialization; both trace snapshots have data-measured=false before the initial resize. Test readiness corrected in 6078d82; source unchanged."
+  },
+  "local": {
+    "engine_tests": 490,
+    "engine_typecheck": "passed",
+    "showcase_typecheck": "passed",
+    "engine_build": "passed",
+    "workflow_lint": "passed",
+    "strict_deep_docs": "59 routes, 25 examples passed"
+  },
+  "acceptance": "pending"
+}
