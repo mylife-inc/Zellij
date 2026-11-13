@@ -22,6 +22,14 @@ current image graphs and CodeSeal; see
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
+Post-release source fix: PR #158 (`dd0f620`, tested at `bd0ae9b`) explicitly
+selects/preflights Docker in generated container CI while preserving native
+portable jobs. All 23 CI jobs and six consumer checks pass. The public rc.6
+generator is unchanged; the source update awaits the next release. One desktop
+header-resize focus assertion passed only on its automatic retry and remains a
+separate follow-up. See [verification evidence](evidence/zellij-ci-runtime-selection-2026-11-13.json)
+and [the focus investigation](zellij-header-resize-focus-2026-11-13.md).
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).
