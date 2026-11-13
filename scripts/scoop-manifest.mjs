@@ -30,7 +30,7 @@ export function scoopManifest(tag, checksums) {
     },
     extract_to: 'bin',
     bin: 'bin\\zel.exe',
-    post_install: [
+    pre_install: [
       "$share = New-Item -ItemType Directory -Force (Join-Path $dir 'share\\zel')",
       // Exact LF bytes, with no Windows PowerShell 5.1 UTF-8 BOM.
       '[System.IO.File]::WriteAllText((Join-Path $share.FullName \'installation-manager\'), "scoop`n", [System.Text.UTF8Encoding]::new($false))',
