@@ -1781,6 +1781,13 @@ mod external_scripts {
         fs::set_permissions(path, fs::Permissions::from_mode(0o755)).unwrap();
     }
     fn fixture(root: &Path) {
+        // Only fake clients run locally. Verify the emitted GNU timeout contract
+        // without requiring coreutils or a container daemon on the test host.
+        executable(
+            root,
+            "timeout",
+            "#!/bin/sh\n[ \"$1\" = --kill-after=5s ] && [ \"$2\" = 60s ] || exit 91\nprintf 'preflight context=<%s> host=<%s>\\n' \"${DOCKER_CONTEXT:-}\" \"${DOCKER_HOST:-}\" >> \"$FIXTURE_ROOT/trace\"\nif [ -n \"${FAIL_PREFLIGHT:-}\" ]; then exit \"$FAIL_PREFLIGHT\"; fi\nshift 2\nexec \"$@\"\n",
+        );
         executable(
             root,
             "curl",
@@ -1885,7 +1892,11 @@ mod external_scripts {
                 .unwrap();
             assert!(verify.status.success(), "{verify:?}");
             let trace = fs::read_to_string(root.join("trace")).unwrap();
-            assert!(!trace.contains("docker") && !trace.contains("<push>"));
+            assert!(
+                trace.contains("docker <info>")
+                    && !trace.contains("<login>")
+                    && !trace.contains("<push>")
+            );
             assert!(trace.contains("<./docs/Team's $manual>"));
             assert!(trace.contains("<LABEL=Team's $HOME; $(touch PWNED)>"));
             fs::remove_file(root.join("trace")).unwrap();
@@ -1916,6 +1927,83 @@ mod external_scripts {
                     .to_string_lossy()
                     .starts_with("zel-ci.")
             }));
+        }
+    }
+
+    #[test]
+    fn runtime_preflight_failure_stops_generated_jobs_before_build_or_publication() {
+        for system in ["github", "gitlab", "circle"] {
+            let temp = tempfile::tempdir().unwrap();
+            let root = temp.path();
+            repo(root);
+            fixture(root);
+            site(
+                root,
+                "docs/zellij",
+                "ci: {zel-version: 0.2.0-rc.6}\nimage: {name: 'ghcr.io/acme/manual:v1', platform: all}\npublish: {action: push, image: static}\n",
+            );
+            run(root, &["ci", "--system", system], 0);
+            let path = match system {
+                "github" => ".github/workflows/docs.yml",
+                "gitlab" => ".gitlab-ci.yml",
+                _ => ".circleci/config.yml",
+            };
+            let doc: Value =
+                serde_yaml_ng::from_slice(&fs::read(root.join(path)).unwrap()).unwrap();
+            let jobs = if system == "gitlab" {
+                &doc
+            } else {
+                &doc["jobs"]
+            };
+            for (name, value) in jobs.as_object().unwrap() {
+                if system == "gitlab" && !name.starts_with("zel_") {
+                    continue;
+                }
+                let script = if system == "github" {
+                    // Installation/checkout are independent setup; execute the
+                    // preflight and all subsequent shell commands in order.
+                    value["steps"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .filter(|s| s["name"] != "Install pinned zel")
+                        .filter_map(|s| s["run"].as_str())
+                        .collect::<Vec<_>>()
+                        .join("\n")
+                } else {
+                    job(&doc, system, name).to_owned()
+                };
+                for failure in ["1", "124", "137", "127"] {
+                    let mut cmd = shell(root, &script);
+                    if system == "github" {
+                        cmd.env(
+                            "DOCKER_CONTEXT",
+                            value["env"]["DOCKER_CONTEXT"].as_str().unwrap(),
+                        );
+                    } else if system == "gitlab" {
+                        for (key, val) in value["variables"].as_object().unwrap() {
+                            cmd.env(key, val.as_str().unwrap());
+                        }
+                    }
+                    let output = cmd.env("FAIL_PREFLIGHT", failure).output().unwrap();
+                    assert_eq!(output.status.code(), Some(1), "{system}/{name}: {output:?}");
+                    assert!(
+                        String::from_utf8_lossy(&output.stderr)
+                            .contains("configured Docker runtime is unavailable")
+                    );
+                    let trace = fs::read_to_string(root.join("trace")).unwrap();
+                    assert_eq!(
+                        trace,
+                        if system == "gitlab" {
+                            "preflight context=<> host=<tcp://docker:2376>\n"
+                        } else {
+                            "preflight context=<default> host=<>\n"
+                        }
+                    );
+                    assert!(!root.join("password").exists());
+                    fs::remove_file(root.join("trace")).unwrap();
+                }
+            }
         }
     }
     #[test]

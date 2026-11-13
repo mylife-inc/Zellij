@@ -2,7 +2,7 @@
 
 First implementation follow-up after rc.6 distribution: deterministic runtime
 selection in generated container CI. `cli/crates/zellij-scaffold/src/pipeline.rs`
-currently generates hosted GitHub jobs without selecting Docker, even where
+at rc.6 generates hosted GitHub jobs without selecting Docker, even where
 registry login and combined-manifest steps already call Docker directly.
 `pipeline/external.rs` owns the other generators; retain GitLab's explicit
 service endpoint and review CircleCI's machine-runtime selection separately.
@@ -18,6 +18,17 @@ Next consumer 43497959746 failed before building when all discovery probes timed
 out, then passed one unchanged-head retry. Historical rc.5 consumer verification
 also recorded a discovery timeout. Treat this as an open reliability issue,
 not as a bug proven resolved by rerunning.
+
+Implementation underway on `codex/ci-runtime-selection`: one shared runtime
+requirement covers hosted rendering, enabled PDF and image delivery. GitHub
+jobs and CircleCI machine scripts select the default Docker context; GitLab
+retains its TLS service endpoint. All container jobs, including the combined
+manifest job, check Docker with a 60-second timeout and five-second kill grace
+before validation/build/login. Portable HTML and disabled PDF remain native.
+The generated GitHub acceptance workflows are refreshed while retaining the
+public rc.6 execution pin. Tests cover selection, disabled PDF, `--no-check`,
+both architectures, manifests and fail-closed shell execution. Hosted results
+and the fixing commit will be recorded after verification. rc.6 is unchanged.
 
 Next distribution feature: Scoop ownership protection before publishing an
 owned bucket. `cli/crates/zellij-cli/src/maintenance/upgrade.rs` currently checks

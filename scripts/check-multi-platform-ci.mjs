@@ -81,9 +81,14 @@ try {
       await write('zel.yaml', `version: 1\nrenderer: portable\nimage: {name: registry.example/acceptance/${kind}:final, platform: all}\npublish: {action: push, image: ${kind}}\n`);
       run(['ci', '--force', '--features', 'none', '--build-arg', 'LABEL=literal 日本語']);
       const workflow = YAML.parse(await readFile(path.join(root, '.github/workflows/docs.yml'), 'utf8'));
-      const step = workflow.jobs[`publish_${mode}`].steps.at(-1);
+      const job = workflow.jobs[`publish_${mode}`];
+      const step = job.steps.at(-1);
       const output = path.join(root, `output-${kind}`);
-      const env = { ...workflow.env, ...step.env, IMAGE_REPOSITORY: `${registry}/acceptance/${kind}`, GITHUB_RUN_ID: suffix, GITHUB_RUN_ATTEMPT: '1', GITHUB_OUTPUT: output, PATH: `${path.dirname(zel)}:${process.env.PATH}`, ZELLIJ_IMAGE: process.env.ZELLIJ_IMAGE };
+      const env = { ...workflow.env, ...job.env, ...step.env, IMAGE_REPOSITORY: `${registry}/acceptance/${kind}`, GITHUB_RUN_ID: suffix, GITHUB_RUN_ATTEMPT: '1', GITHUB_OUTPUT: output, PATH: `${path.dirname(zel)}:${process.env.PATH}`, ZELLIJ_IMAGE: process.env.ZELLIJ_IMAGE };
+      assert.equal(env.DOCKER_CONTEXT, 'default');
+      const preflight = job.steps.find(step => step.name === 'Check the configured Docker runtime');
+      assert(preflight, 'Native publication needs its generated runtime preflight');
+      await script(preflight, env);
       await script(step, env);
       const digest = (await readFile(output, 'utf8')).trim().slice('image='.length);
       assert.match(digest, /@sha256:[a-f0-9]{64}$/);
@@ -137,8 +142,14 @@ try {
         platformDigests[arch] = manifest.manifests?.find(m => m.platform.os === 'linux' && m.platform.architecture === arch)?.digest ?? digest;
       }
       const workflow = JSON.parse(await readFile(path.join(artifact, 'amd64', `${kind}.workflow.json`), 'utf8'));
-      const step = workflow.jobs.publish.steps.at(-1);
-      await script(step, { ...step.env, IMAGE_TAG: `${registry}/acceptance/${kind}:final`, AMD64_IMAGE: digests.amd64, ARM64_IMAGE: digests.arm64 });
+      const job = workflow.jobs.publish;
+      const step = job.steps.at(-1);
+      const env = { ...job.env, ...step.env, IMAGE_TAG: `${registry}/acceptance/${kind}:final`, AMD64_IMAGE: digests.amd64, ARM64_IMAGE: digests.arm64 };
+      assert.equal(env.DOCKER_CONTEXT, 'default');
+      const preflight = job.steps.find(step => step.name === 'Check the configured Docker runtime');
+      assert(preflight, 'Manifest publication needs its generated runtime preflight');
+      await script(preflight, env);
+      await script(step, env);
       if (kind === 'static') await externalManifest({ root, registry, artifact, digests });
       const index = await (await fetch(`http://${registry}/v2/acceptance/${kind}/manifests/final`, { headers: { Accept: 'application/vnd.oci.image.index.v1+json, application/vnd.docker.distribution.manifest.list.v2+json' } })).json();
       const platforms = index.manifests.filter(m => m.platform.os === 'linux');

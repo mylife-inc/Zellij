@@ -1,7 +1,7 @@
 //! GitLab and CircleCI use the same validated commands, with service-native
 //! event gates and credential boundaries. Generation never contacts either CI.
 use super::*;
-use zellij_core::{ci::System, site::Renderer};
+use zellij_core::ci::System;
 
 fn quote(value: &str) -> Result<String> {
     literal(value)?;
@@ -27,11 +27,6 @@ fn image(publish: &Publish) -> Option<ImageKind> {
         Publish::LegacyImage => Some(ImageKind::Next),
         _ => None,
     }
-}
-fn docker(options: &CiOptions) -> bool {
-    options.pdf == Some(true)
-        || options.renderer == Renderer::Hosted
-        || image(&options.publish).is_some()
 }
 fn architectures(options: &CiOptions) -> Vec<&'static str> {
     match options.platform {
@@ -178,6 +173,15 @@ fn install_script(
     manifest: bool,
 ) -> Result<String> {
     let mut script = String::from("set -eu\numask 077\n");
+    if requires_docker(options) || manifest {
+        if system == System::Circle {
+            // The generated machine executor provides Docker on the same VM.
+            export(&mut script, "DOCKER_CONTEXT", "default")?;
+        }
+        // GitLab already selects its TLS DinD service through DOCKER_HOST.
+        // Do not replace that endpoint with the machine executor's context.
+        script.push_str(DOCKER_PREFLIGHT);
+    }
     let temp = if system == System::Gitlab {
         "${CI_BUILDS_DIR:?GitLab shared builds directory is required}"
     } else {
@@ -401,7 +405,7 @@ pub fn gitlab(options: &CiOptions) -> Result<String> {
     let make = |task: Task, arch: &str| -> Result<Value> {
         let publish = !matches!(task, Task::Verify);
         let manifest = matches!(task, Task::Manifest);
-        let use_docker = docker(options) || manifest;
+        let use_docker = requires_docker(options) || manifest;
         let mut job = json!({
             "stage":if manifest { "publish" } else { "build" }, "image":"ubuntu:24.04",
             "tags":[format!("saas-linux-small-{arch}")], "timeout":"30 minutes",
@@ -523,6 +527,7 @@ pub fn circle(options: &CiOptions) -> Result<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use zellij_core::site::Renderer;
     fn options(publish: Publish) -> CiOptions {
         CiOptions {
             renderer: Renderer::Portable,

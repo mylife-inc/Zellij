@@ -48,6 +48,19 @@ writes `.gitlab-ci.yml`, and CircleCI writes `.circleci/config.yml`. Paths in th
 files require `--force`; symlinks and junctions in the destination are rejected.
 Generation requires Git, but no Docker, Node, cloud login or credentials.
 
+Current source (after rc.6) explicitly selects Docker in generated GitHub and
+CircleCI container jobs, including hosted rendering, enabled book PDFs, static
+or Next images, and combined-image publication. These jobs use
+`DOCKER_CONTEXT=default`; GitLab retains its TLS service endpoint in
+`DOCKER_HOST`. A bounded `docker info` check runs before validation, building or
+registry login. It allows 60 seconds, then up to five seconds for termination;
+failure stops the job instead of trying another runtime or image store.
+Portable web-only jobs, including books with PDF disabled, need no runtime
+check. This generator update is not included in the published rc.6 binary;
+regenerate with the updated CLI when available, keeping your desired compatible
+release pin. Custom runner setups must adapt the endpoint and preflight together.
+See [Docker contexts](https://docs.docker.com/engine/manage-resources/contexts/).
+
 ## Saved settings
 
 Add CI settings to a versioned `zel.yaml`:
