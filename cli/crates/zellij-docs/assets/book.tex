@@ -1,0 +1,20 @@
+% Zellij classic print template v1. Authored text is escaped by the adapter.
+\documentclass[11pt,a5paper,oneside,openany]{memoir}
+\usepackage{fontspec,unicode-math,microtype,graphicx,longtable,booktabs,xcolor,soul}
+\usepackage{hyperref,bookmark}
+\setmainfont{Latin Modern Roman}
+\setsansfont{Latin Modern Sans}
+\setmonofont{Latin Modern Mono}
+\setmathfont{Latin Modern Math}
+\definecolor{zelaccent}{HTML}{264D46}
+\setlrmarginsandblock{20mm}{18mm}{*}
+\setulmarginsandblock{20mm}{22mm}{*}
+\checkandfixthelayout
+\chapterstyle{section}
+\renewcommand{\chaptitlefont}{\Huge\bfseries\color{zelaccent}}
+\setsecheadstyle{\Large\bfseries\color{zelaccent}}
+\pagestyle{headings}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\setlength{\emergencystretch}{2em}
+\hypersetup{colorlinks=true,linkcolor=zelaccent,urlcolor=zelaccent,bookmarksopen=true}

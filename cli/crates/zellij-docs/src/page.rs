@@ -7,6 +7,7 @@ use crate::{
 use pulldown_cmark::HeadingLevel;
 
 pub struct Presentation<'a> {
+    pub pdf: bool,
     pub book: Option<&'a crate::Publication>,
     pub name: &'a str,
     pub theme: &'a str,
@@ -219,6 +220,13 @@ pub fn render(
             (metadata, marker, format!(" data-book-id=\"{}\"", entry.id))
         })
         .unwrap_or_default();
+    let download = if presentation.pdf {
+        format!(
+            "<p><a href=\"{prefix}_zellij/pdf/book.pdf\" download>Download the complete book (PDF)</a></p>"
+        )
+    } else {
+        String::new()
+    };
     format!(
         r##"<!doctype html>
 <html lang="{language}" dir="{direction}" class="zellij-fonts" data-zellij-theme="{theme}" data-zellij-mode="system">
@@ -234,7 +242,7 @@ pub fn render(
 <button id="_zel-search-open">Search <kbd>⌘/Ctrl K</kbd></button><label class="sr-only" for="_zel-theme">Theme</label><select id="_zel-theme">{themes}</select>
 <label class="sr-only" for="_zel-mode">Appearance</label><select id="_zel-mode"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></div></header>
 <div class="layout"><aside class="sidebar" id="_zel-sidebar"><nav aria-label="Documentation"><p class="eyebrow">Contents</p><ul>{nav}</ul></nav></aside>
-<main id="_zel-content" tabindex="-1"><nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs}</nav>{toc}<article{identity}>{marker}{heading}{body}</article><nav class="paging" aria-label="Previous and next">{paging}</nav>
+<main id="_zel-content" tabindex="-1"><nav class="breadcrumbs" aria-label="Breadcrumb">{crumbs}</nav>{download}{toc}<article{identity}>{marker}{heading}{body}</article><nav class="paging" aria-label="Previous and next">{paging}</nav>
 <footer>Built with Zellij · <a href="{prefix}_zellij/fonts/licenses.txt">Font licenses</a>{math_license}{mermaid_license}</footer></main></div>
 <dialog id="_zel-search" aria-labelledby="_zel-search-title"><form method="dialog"><button class="close" aria-label="Close search">Close</button></form><label id="_zel-search-title" for="_zel-query">Search documentation</label><input id="_zel-query" type="search" autocomplete="off" placeholder="Search pages and headings…"><p id="_zel-status" role="status" aria-live="polite">Type to search.</p><ul id="_zel-results"></ul></dialog>
 </body></html>

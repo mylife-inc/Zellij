@@ -48,6 +48,9 @@ pub enum Error {
     #[error("the site build failed — see the output above")]
     BuildFailed,
 
+    #[error("PDF export failed: {0}")]
+    PdfFailed(String),
+
     #[error(
         "container image {operation} failed — check the runtime output above, registry address and credentials"
     )]
@@ -74,6 +77,7 @@ impl Error {
             | Error::FileExists { .. } => 2,
             Error::ContentInvalid
             | Error::BuildFailed
+            | Error::PdfFailed(_)
             | Error::ImageOperationFailed { .. }
             | Error::DeploymentFailed(_) => 3,
             Error::UpgradeFailed(_) => 1,
