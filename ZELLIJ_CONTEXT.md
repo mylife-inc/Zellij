@@ -3,8 +3,8 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current follow-up: `codex/ci-runtime-selection` fixes generated container CI
-selection after the recorded rc.6 discovery failures. A shared requirement
+PR #158 (`dd0f620`) fixes generated container CI selection after the recorded
+rc.6 discovery failures; its tree matches tested head `bd0ae9b`. A shared requirement
 covers hosted rendering, enabled PDF, static/Next images and multi-architecture
 publication. GitHub/CircleCI select the default Docker context; GitLab preserves
 its TLS service endpoint. All container jobs preflight Docker with a bounded
@@ -12,9 +12,19 @@ its TLS service endpoint. All container jobs preflight Docker with a bounded
 HTML and disabled PDF need no runtime. Local checks pass 37 scaffold and 31 CLI
 workflow tests, formatting, warnings-denied workspace Clippy, six generated
 workflow comparisons, Actionlint and strict/deep documentation validation.
-Hosted acceptance and the fixing commit are pending. Updated source-generated
-consumer workflows still execute the public rc.6 CLI; the released binary/tag
-are unchanged. See [the follow-up record](specs/zellij-post-rc6-followups-2026-11-13.md).
+All 23 jobs in CI `43508089027` and six generated consumer workflows pass at
+that head, without workflow reruns. Hosted verification includes 774 Rust tests
+(five hosted-only cases run separately), 490 engine tests, both native image
+architectures and combined manifests, three PDF runtime jobs, six native
+packages and four Homebrew checks. Source-generated consumer workflows execute
+public rc.6; the released binary/tag are unchanged. See
+[verification evidence](specs/evidence/zellij-ci-runtime-selection-2026-11-13.json).
+
+Showcase reports 355 passed, one flaky and 124 conditional skips: the desktop
+header-resize focus assertion failed once and passed its automatic retry. This
+is separate from the generator fix and remains unresolved. The trace and
+investigation leads are preserved in [the focus follow-up](specs/zellij-header-resize-focus-2026-11-13.md).
+Investigate that finding next, then resume Scoop packaging and richer books.
 
 PR #155 (`668e8fa`) merges book-classic 0.2.0 and rc.6 preparation, with the
 same tree as tested head `70ca564`. All 23 final-head CI jobs in `43484785719`
@@ -36,8 +46,8 @@ See [rc.6 evidence](specs/evidence/zellij-rc6-release-2026-11-13.json).
 PR #156 (`8eb117a`) merges the current guides and consumer pins, with the exact
 tree tested at `f767260`. All 23 CI jobs and six delivery build checks pass.
 The Next consumer required one unchanged-head retry after runtime probes timed
-out before building. Generated container CI should explicitly select its runtime;
-this remains an open reliability issue. All 13 development-image jobs in
+out before building. This prompted the runtime-selection fix in PR #158 above;
+the original probe delays remain unexplained. All 13 development-image jobs in
 `43498926083` pass at the released source; the docs follow-up changes no runtime
 inputs. Replacement static/Next publications and fresh-pull HTTP checks pass.
 rc.5 retirement is complete: two releases, 40 assets, two remote tags and 26
@@ -45,8 +55,8 @@ obsolete image versions removed. All 46 current manifest nodes, 3,321 excluded
 build-history versions and CodeSeal releases are intact. Fresh hosted inventory
 `43505203415` and both HTTP checks in `43505207912` pass. See
 [retirement evidence](specs/evidence/zellij-rc6-image-retirement-2026-11-13.json).
-Do not reuse completed plans after tags move. The next implementation priorities
-are [runtime-selection reliability, package channels and richer book publishing](specs/zellij-post-rc6-followups-2026-11-13.md).
+Do not reuse completed plans after tags move. See the
+[runtime-selection resolution and next priorities](specs/zellij-post-rc6-followups-2026-11-13.md).
 See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
 
 PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and

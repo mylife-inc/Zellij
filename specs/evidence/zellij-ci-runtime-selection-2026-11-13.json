@@ -1,0 +1,258 @@
+{
+  "date": "2026-11-13",
+  "source_commit": "bd0ae9b687805e5cfebf936cd72cae90dc9f58e0",
+  "pull_request": 158,
+  "local": {
+    "scaffold_tests": 37,
+    "cli_workflow_tests": 31,
+    "clippy": "workspace/all-targets warnings denied passed",
+    "format": "passed",
+    "actionlint": "passed",
+    "generated_workflows": 6,
+    "docs": {
+      "strict_deep": "passed",
+      "routes": 59,
+      "examples": 25
+    }
+  },
+  "ci": {
+    "run_id": 43508089027,
+    "conclusion": "success",
+    "attempt": 1,
+    "jobs": [
+      {
+        "id": 132170883470,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883473,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883510,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883528,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883532,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883557,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883633,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883707,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883755,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883771,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883805,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883853,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883860,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883948,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170883976,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170884011,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170884021,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132170884027,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132172674016,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132175486134,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132175486135,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132175486159,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132175486459,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "consumers": [
+    {
+      "name": "portable",
+      "run_id": 43508233702,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    },
+    {
+      "name": "hosted",
+      "run_id": 43508089071,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    },
+    {
+      "name": "static",
+      "run_id": 43508089074,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    },
+    {
+      "name": "next",
+      "run_id": 43508088940,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    },
+    {
+      "name": "netlify-portable",
+      "run_id": 43508238561,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    },
+    {
+      "name": "netlify-hosted",
+      "run_id": 43508088965,
+      "conclusion": "success",
+      "published_cli": "v0.2.0-rc.6",
+      "publication": "not run"
+    }
+  ],
+  "deferred": [
+    "Service-native GitLab/CircleCI acceptance",
+    "Live deployment-provider verification",
+    "Production documentation/domain migration",
+    "New CLI release containing this generator update"
+  ],
+  "prior_failures": [
+    {
+      "run_id": 43497959746,
+      "job_id": 132135968456,
+      "issue": "Discovery probes timed out before building; unchanged retry passed. Underlying daemon delay not established."
+    },
+    {
+      "run_id": 43492620884,
+      "job_id": 132127218691,
+      "issue": "Unconfigured rootless Podman selected during public PDF acceptance; CPU controller unavailable. Cause of Docker fallback not recorded."
+    }
+  ],
+  "hosted_observations": {
+    "engine_tests": 490,
+    "docs_preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "captured_browser_errors": 0
+    },
+    "native_images": {
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "publication": "native and combined scripts passed against hosted loopback registry",
+      "external_scripts": "GitLab/CircleCI scripts replayed on GitHub runners; actual external CI not tested"
+    },
+    "pdf": {
+      "runtimes": [
+        "Docker amd64",
+        "Docker arm64",
+        "rootless Podman amd64"
+      ],
+      "conclusion": "success"
+    },
+    "showcase": {
+      "passed": 355,
+      "flaky": 1,
+      "skipped": 124,
+      "flaky_test": "header-layout.spec.ts:92 — closes a mobile drawer and releases scroll lock when resized to desktop",
+      "failure": "Desktop first navigation item was inactive after resize; expect.toBeFocused timed out at 5 seconds.",
+      "job_id": 132170883473,
+      "retry": "Playwright automatic retry #1 passed; no workflow rerun",
+      "status": "Separate unresolved focus-restoration issue; not fixed by the CI generator change",
+      "trace_sha256": "f2236975900541884795538ff99dc105f22c306f60df71d9b1ef6607931a1d64"
+    },
+    "rust_workspace": {
+      "passed": 774,
+      "failed": 0,
+      "ignored": 5,
+      "suites": 58,
+      "ignored_cases": "Five hosted-only tests run separately in the same successful CLI job"
+    }
+  },
+  "merge_commit": "dd0f62070b87a9edc63fb41e1f92c32436571e8b",
+  "merge_tree_matches_tested_tree": true,
+  "published_release": {
+    "version": "v0.2.0-rc.6",
+    "tag_commit": "668e8faa47a7d4a435c71f63a51b903838a12f48",
+    "changed": false
+  },
+  "considerations": [
+    "Docker daemon probe delays remain unexplained; this fix prevents fallback to a different runtime/image store, not every possible daemon failure.",
+    "The one flaky header-focus test remains open; passing its retry is not a fix."
+  ]
+}
