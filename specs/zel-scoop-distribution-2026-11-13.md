@@ -23,7 +23,8 @@ Existing immutable releases are not retrofitted with new assets.
 
 ## Acceptance contract
 
-`.github/workflows/scoop.yml` runs on native Windows x64 and ARM64. CI consumes
+`.github/workflows/scoop.yml` runs on native Windows x64 and ARM64 under both
+Windows PowerShell 5.1 and PowerShell 7 (four combinations). CI consumes
 the current native-package artifacts; manual dispatch can consume a verified
 public version and optionally the actual public bucket. The official Scoop
 v0.6.0 source is pinned at `e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f`. Its

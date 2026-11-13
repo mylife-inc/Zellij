@@ -14,6 +14,8 @@ const pin = 'e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f'; // Scoop v0.6.0
 const dist = path.resolve(process.argv[2] || 'dist');
 const source = path.resolve(process.argv[3]);
 const target = process.env.TARGET;
+const scoopShell = process.env.ZEL_SCOOP_SHELL || 'pwsh';
+assert(['powershell.exe', 'pwsh'].includes(scoopShell));
 assert(['x86_64-pc-windows-msvc', 'aarch64-pc-windows-msvc'].includes(target));
 const version = process.env.ZEL_SCOOP_PUBLIC_VERSION?.replace(/^v/, '') ||
   (await readFile('cli/Cargo.toml', 'utf8')).match(/^version = "([^"]+)"/m)?.[1];
@@ -45,8 +47,8 @@ async function run(command, args, { code = 0, cwd = temp, log = true, ...options
     child.on('close', actual => actual === code ? resolve(output) : reject(new Error(`${command} ${args.join(' ')} exited ${actual}, expected ${code}\n${output}`)));
   });
 }
-const scoop = args => run('pwsh', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args]);
-const failedScoop = args => run('pwsh', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args], { code: 1 });
+const scoop = args => run(scoopShell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args]);
+const failedScoop = args => run(scoopShell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args], { code: 1 });
 const server = createServer((request, response) => {
   const name = new URL(request.url, 'http://localhost').pathname.slice(1);
   const bytes = downloads.get(name);
@@ -144,7 +146,7 @@ try {
     await assertUninstalled();
     await scoop(['bucket', 'rm', 'mylife-inc']);
   }
-  console.log(`${target}: Scoop shim, native architecture, ownership guard, portable build, checksum-failure preservation, package-revision update and uninstall passed.`);
+  console.log(`${target}/${scoopShell}: Scoop shim, native architecture, ownership guard, portable build, checksum-failure preservation, package-revision update and uninstall passed.`);
 } finally {
   server.closeAllConnections();
   await new Promise(resolve => server.close(resolve));

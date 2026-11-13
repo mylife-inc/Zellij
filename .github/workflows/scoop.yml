@@ -23,15 +23,16 @@ permissions:
   contents: read
 jobs:
   install:
-    name: Scoop (${{ matrix.target }})
-    runs-on: ${{ matrix.os }}
+    name: Scoop (${{ matrix.platform.target }}, ${{ matrix.shell }})
+    runs-on: ${{ matrix.platform.os }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        include:
+        platform:
           - { os: windows-2022, target: x86_64-pc-windows-msvc }
           - { os: windows-11-arm, target: aarch64-pc-windows-msvc }
+        shell: [powershell.exe, pwsh]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -58,7 +59,8 @@ jobs:
         run: node scripts/fetch-scoop-release.mjs "$env:VERSION" dist
       - name: Install, reject invalid updates, update and uninstall through Scoop
         env:
-          TARGET: ${{ matrix.target }}
+          TARGET: ${{ matrix.platform.target }}
+          ZEL_SCOOP_SHELL: ${{ matrix.shell }}
           ZEL_SCOOP_PUBLIC_VERSION: ${{ inputs.version }}
           ZEL_SCOOP_PUBLIC_BUCKET: ${{ inputs.public_bucket || false }}
         run: node scripts/check-scoop.mjs dist .scoop-source
