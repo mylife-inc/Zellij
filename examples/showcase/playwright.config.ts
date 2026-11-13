@@ -27,9 +27,11 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+    // Resizing and focus restoration also need a desktop WebKit keyboard run.
+    { name: 'desktop-safari', testMatch: /header-layout\.spec\.ts/, use: { ...devices['Desktop Safari'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
     /*
-     * Both projects above are Chromium, so until this one existed the engine
+     * The desktop/mobile projects use Chromium; before this project the engine
      * had never been tested in the browser most of its mobile visitors use.
      * Three layout bugs reached a phone through that gap — a drawer trapped in
      * the header's containing block, a search overlay trapped the same way, and
