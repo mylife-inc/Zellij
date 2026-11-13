@@ -5,28 +5,30 @@ and external-runner acceptance remains incomplete. The user explicitly moved
 deployment verification to the end and authorized cutting a CLI release with
 updated documentation on 2026-11-11. This page separates implementation,
 release checks, deferred acceptance work, and format boundaries.
-Refreshed 2026-11-12: **v0.2.0-rc.5 is published**, including the versioned
-template milestone, company branding, the hydration fix, preview upgrades,
-matching engine images and Homebrew support. All 20 final-head CI checks, all
-29 release jobs and all four public Homebrew acceptance jobs passed. See
-[rc.5 release evidence](evidence/zellij-rc5-release-2026-11-12.json).
-Scoped retirement is also complete: 213 obsolete image versions were removed,
-with current image graphs and all rc.5/CodeSeal release assets preserved.
-Fresh hosted inventory and both image HTTP checks pass; see
+Refreshed 2026-11-13: **v0.2.0-rc.6 is published** from PR #155
+(`668e8fa`), including composition/presets, the shared book model, optional
+LuaLaTeX PDFs, configured preview/static delivery and book-classic 0.2.0.
+All 23 source CI jobs passed. Source and mirror have 20 byte-identical assets;
+the actual standalone rc.5-to-rc.6 upgrade passed. All eight public acceptance
+jobs and all four public Homebrew install/upgrade/uninstall checks pass. See
+[rc.6 release evidence](evidence/zellij-rc6-release-2026-11-13.json).
+The rc.5 distribution remains retained until its consumer replacement gates pass.
+Earlier scoped retirement removed 213 obsolete image versions while preserving
+current image graphs and CodeSeal; see
 [retirement evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
 It supplements the [current status](zel-cli-status-2026-11-05.md), which retains
 the feature history. Refresh CI and account state before relying on this snapshot.
 
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
-are available in rc.5. See [the template contract](../templates/README.md).
+were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).
 PR #147 (`2373c5e`) adds `zel presets` / `zel list presets` and `zel ns --preset`
 (`-p`) for four offline section compositions, plus a media-accordion section and
 composition node. This expands the source catalog to 25 section types. All 20
 final-head CI checks pass; the merged tree matches tested `d8c6b7c`. All 356
 showcase cases pass without retries and six light/dark captures were reviewed.
 All 13 development-image jobs pass, publishing all four variants on both Linux architectures.
-These additions are not in published rc.5. See
+These additions are included in rc.6. See
 [the implementation record](zellij-media-composition-2026-11-12.md) and
 [verification evidence](evidence/zellij-media-composition-2026-11-12.json).
 PR #149 (`72a8445`) adds a versioned book manifest, complete reading order,
@@ -47,9 +49,11 @@ settings, preview/watch, static delivery/images and compatible CI generation.
 All 23 final-head jobs in `43376564097` pass without reruns; 767 local Rust
 tests pass. Nine real PDFs and 66 captures pass across three Linux runtimes.
 See [configuration/delivery evidence](evidence/zellij-pdf-configuration-2026-11-12.json).
-The released rc.5 book starter is still a reading website. The new source print
-adapter remains English/LTR; advanced publishing semantics and other expansion
-work remain incomplete. Older milestones retain their dated evidence.
+PR #155 versions book-classic at 0.2.0 with the shared manuscript and optional
+PDF. Twelve source PDFs and 87 page captures pass across three configured
+Linux runtimes; the seven-page starter was visually reviewed. The print adapter
+remains English/LTR; advanced publishing semantics and other expansion work
+remain incomplete. Older milestones retain their dated evidence.
 
 The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
@@ -59,11 +63,10 @@ Independent company/product branding is now implemented by PR #131
 (`b4cc9ba`), with all 16 CI jobs passing on `7d7febbe`; see
 [branding evidence](evidence/zellij-company-branding-2026-11-11.json). The four
 active guides were updated. This increment and the hydration fix below shipped
-in rc.4. The first template catalog shipped in rc.5; bounded composer v1 is merged
-in source after rc.5, together with media-accordion and the first four composition
-presets. The first book publication model is merged after rc.5; further composition
-primitives and full book publishing remain planned. The first optional PDF/LaTeX
-pipeline is now merged in source after rc.5.
+in rc.4. The first template catalog shipped in rc.5. Bounded composer v1,
+media-accordion, the first four composition presets, the book publication model
+and optional PDF/LaTeX pipeline ship in rc.6. Further composition primitives
+and advanced book publishing remain planned.
 Homebrew is live; Scoop, WinGet and other new package-manager
 channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
@@ -88,15 +91,15 @@ compilation. A handler's existence alone does not prove every real-provider case
 
 | Family | Current evidence | Outstanding gate or boundary |
 | --- | --- | --- |
-| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in current source (23 types in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
+| Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in rc.6; configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
-| Book publication and PDF (source after rc.5) | Shared publication snapshot, direct LaTeX adapter, saved settings, atomic web/PDF builds and previews, static delivery/images, standalone export and native compatibility checks; three real PDF runtime jobs and 66 reviewed/matched captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, bibliography/index and technical/study templates remain open. |
+| Book publication and PDF (rc.6) | Shared publication snapshot, direct LaTeX adapter, saved settings, atomic web/PDF builds and previews, static delivery/images, standalone export and native compatibility checks; three real PDF runtime jobs and 87 reviewed/matched captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, bibliography/index and technical/study templates remain open. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.5: all 29 release jobs; six native platforms and four engine variants on both Linux architectures; public Homebrew acceptance on four native targets | Other package channels and live provider/external-runner acceptance remain deferred. |
+| Distribution | Published rc.6 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs and four public Homebrew jobs pass | Other package channels and live provider/external-runner acceptance remain deferred. |
 
 Earlier importer milestone: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
@@ -127,7 +130,7 @@ Duplicate merge-push builds were skipped for this documentation-only revision.
 Historical audits were not rewritten. The newest published candidate was
 refreshed after PR #125's merge was `v0.2.0-rc.2`; the rc.3 release below supersedes it.
 
-## Current rc.5 template and distribution milestone
+## Historical rc.5 template and distribution milestone
 
 PR #138 merged as `a92c2e9`, with the exact tree accepted by all 20 jobs in
 `43180055105`. Local preflight passed 741 Rust tests (five hosted-only cases run
@@ -149,8 +152,8 @@ retired while preserving all rc.5 and CodeSeal assets and source/audit history.
 Review fixed ancestor path case collisions (`c370987`), missing product-card text
 (`6810aee`) and a stale standalone image default (`3a9f807`). The catalog now
 detects silently dropped YAML fields; general strict authoring diagnostics still
-need that protection. Book-classic is a reading website, with PDF/LaTeX and the
-composer remaining planned. See [rc.5 evidence](evidence/zellij-rc5-release-2026-11-12.json).
+need that protection. At that milestone, book-classic was a reading website, with PDF/LaTeX and the
+composer still planned; rc.6 implements their first versions. See [rc.5 evidence](evidence/zellij-rc5-release-2026-11-12.json).
 
 ## Historical rc.4 release and distribution milestone
 
@@ -200,7 +203,7 @@ retarget them when live delivery acceptance resumes.
 Strict section-field diagnostics, recovered section headings and corrected native
 starter feature text merged in PR #141 (`3008a16`), with all 20 final-head checks
 passing. See [evidence](evidence/zellij-section-field-diagnostics-2026-11-12.json).
-Published rc.5 remains unchanged. Bounded composer v1 merged in PR #143
+The historical rc.5 artifact remains unchanged. Bounded composer v1 merged in PR #143
 (`ba5f0ad`), with stack/grid/split layouts and gradient reveal. All 20 final-head
 checks, 335 showcase browser cases and 13 development-image jobs passed; six
 light/dark desktop/phone captures were reviewed. See [composer evidence](evidence/zellij-compose-2026-11-12.json). Media-accordion and four composition presets subsequently merged in PR #147
@@ -209,10 +212,13 @@ light/dark desktop/phone captures were reviewed. See [composer evidence](evidenc
 The [book publication model](zellij-book-publication-2026-11-12.md) merged in
 PR #149 (`72a8445`), with all 20 final-head jobs passing on the identical tree.
 Optional PDF/LaTeX and configuration/preview/static delivery subsequently merged
-in PRs #151 and #153. Next, version the book starter around the shared publication
-model and optional print settings, then prepare rc.6 and its documentation.
-Advanced print semantics, technical/study editions and the remaining installation
-channels follow. The [expansion design](zellij-product-expansion-2026-11-11.md)
+in PRs #151 and #153. PR #155 versions the book starter around the shared
+publication model and optional print settings, and publishes rc.6. Public
+acceptance and Homebrew migration pass. Finish source-docs/consumer review and
+replacement image checks before retiring rc.5. Advanced print semantics, technical/study editions and the remaining
+installation channels follow. The first additional package channel is an owned
+Scoop bucket, preceded by CLI protection against overwriting Scoop-managed
+installations. Package availability alone does not establish safe upgrades. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.
 
 The original implementation/release/docs contract is complete. The user deferred

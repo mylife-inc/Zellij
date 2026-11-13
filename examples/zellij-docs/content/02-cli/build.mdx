@@ -3,7 +3,7 @@ title: zel build
 description: Build portable Markdown documentation, a hosted Zellij website, or a container image.
 ---
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.5">
+<Callout type="tip" title="Available in candidate 0.2.0-rc.6">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. The existing `static` and `image` targets use the container
 engine. Use `zel list targets` to inspect the available outputs and prerequisites.
@@ -69,9 +69,9 @@ local images, bundled fonts, syntax highlighting, and all 14 Zellij themes work
 without an HTTP server. Content and ordinary navigation remain available with
 JavaScript disabled; search and theme controls need JavaScript.
 
-Source builds after rc.5 can build a [book manuscript](/cli/books) with the same
+Candidate rc.6 can build a [book manuscript](/cli/books) with the same
 command. Its manifest defines front matter, parts, chapters and appendices; the
-export includes a publication record. Optional [PDF publishing](/cli/books#optional-pdf-export-current-source) is also available in current source.
+export includes a publication record. Optional [PDF publishing](/cli/books#optional-pdf-export-current-source) is also available in rc.6.
 
 ### Pages, navigation, and titles
 
@@ -398,7 +398,7 @@ or start a local container runtime.
 
 ## Image build arguments
 
-For `build --target image` (also `b --target image`), current source accepts
+For `build --target image` (also `b --target image`), candidate rc.6 accepts
 repeatable `--build-arg NAME=VALUE`. Static-folder and portable HTML builds reject
 it before output or runtime work. Prefer `zel ni --build-arg
 NODE_OPTIONS=--max-old-space-size=4096` for the short image form. See
@@ -411,9 +411,9 @@ reserved names, generated Dockerfiles and limitations.
 - [Container images](/cli/image)
 - [Netlify deployment](/cli/deploy)
 
-For a portable book in current source, `zel build --pdf` also generates a
+For a portable book, `zel build --pdf` also generates a
 LuaLaTeX PDF and download links before publishing either output. Saved
 `pdf.enabled: true` selects this for ordinary builds; `--no-pdf` requests a web-only
 build. `--pdf` and `--no-pdf` apply to the portable target. See
 [book PDF export](/cli/books#optional-pdf-export-current-source) for prerequisites
-and the first print template’s supported subset. Published rc.5 does not include it.
+and the first print template’s supported subset.

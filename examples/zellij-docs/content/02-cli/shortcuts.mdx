@@ -3,7 +3,7 @@ title: Shortcuts
 description: Short command names with the same arguments and behavior as their full forms.
 ---
 
-These shortcuts are available in candidate `0.2.0-rc.5`;
+These shortcuts are available in candidate `0.2.0-rc.6`;
 stable `0.1.3` predates them. Run `zel --help` to see what
 your installed binary supports.
 
@@ -39,7 +39,7 @@ port and optional features. See the [app wizard](/cli/new#choose-wrapper-setting
 Current source also supports `zel nd --full` for a complete section example site,
 `zel ns -i` for guided section authoring, and
 `zel ns hero --set 'headline=Hello'` for scripts. See [section authoring](/cli/new#interactive-authoring).
-These additions are included in candidate `0.2.0-rc.5`.
+These additions are included in candidate `0.2.0-rc.6`.
 
 ## Available names
 
@@ -81,7 +81,7 @@ the same. Command names in help and usage messages reflect the form requested.
 `zel ci publish`, remains accepted with the same `--workflow` and `--ref` options.
 See [CI](/cli/ci) for generation and dispatch behavior.
 
-Current source after rc.5 also adds `zel pdf` as the shortcut for
+Candidate rc.6 includes `zel pdf` as the shortcut for
 `zel export pdf`, including native `--check`. See [book PDF export](/cli/books#optional-pdf-export-current-source).
 
 ## Finding options
@@ -133,7 +133,7 @@ Current source adds `zel cf [site] --site manual` as the short form of
 `zel deploy cloudflare [site] --site manual`. `zel cloudflare` is also accepted.
 With a saved Cloudflare destination, `zel pub` needs no provider or project
 argument. Preview is the default; production requires `--prod`. See
-[setup and limits](/cli/deploy#cloudflare-pages). These forms are available in candidate `0.2.0-rc.5`.
+[setup and limits](/cli/deploy#cloudflare-pages). These forms are available in candidate `0.2.0-rc.6`.
 
 ## Vercel shortcut
 
@@ -141,7 +141,7 @@ argument. Preview is the default; production requires `--prod`. See
 `zel deploy vercel [site] --site prj_YOUR_PROJECT_ID`. `zel vercel` also works.
 With a saved Vercel destination, `zel pub` needs no provider or project argument.
 Previews are the default; `--prod` is explicit. See [setup](/cli/deploy#vercel).
-These forms are available in candidate `0.2.0-rc.5`.
+These forms are available in candidate `0.2.0-rc.6`.
 
 ## GitHub Pages shortcut
 
@@ -161,4 +161,4 @@ See [setup and upload behavior](/cli/deploy#aws-s3).
 
 `zel create [dir] -t <template>` is the short form of
 `zel new site [dir] --template <template>`. See [templates](/cli/templates);
-these additions are included in candidate `0.2.0-rc.5`.
+these additions are included in candidate `0.2.0-rc.6`.

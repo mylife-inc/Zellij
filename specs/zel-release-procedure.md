@@ -1,12 +1,17 @@
 # Zellij release channels and candidate procedure
 
 Implemented policy, November 2, 2026; publication status refreshed November 13.
-Candidate 0.2.0-rc.5 is published. The rc.6 book/composition/PDF candidate is in
-preparation; its source version is not publication evidence. See
-[the preparation record](zellij-rc6-preparation-2026-11-13.md) and
-[rc.5 release evidence](evidence/zellij-rc5-release-2026-11-12.json).
-Remaining live provider/external-runner checks are deferred until after this
-release; normal regression and public artifact checks passed.
+Candidate **0.2.0-rc.6 is published and publicly verified**. Both repositories
+have 20 identical assets. All eight jobs in public acceptance `43496517451`
+pass, using harness `3d26a96` against immutable source/tag `668e8fa`. The original
+release run's Linux ARM64 PDF failure remains recorded: it selected unconfigured
+rootless Podman; the new harness selects/preflights the hosted Docker endpoint.
+All four Homebrew jobs in `43497080249` pass for tap commit `1555b7d`.
+See [the release evidence](evidence/zellij-rc6-release-2026-11-13.json) and
+[preparation history](zellij-rc6-preparation-2026-11-13.md).
+Remaining live provider/external-runner checks and the production-domain
+migration remain deferred. rc.5 stays available until replacement consumer
+checks and scoped retirement pass.
 Publication status must be checked in GitHub; a version change in source is not
 proof of an uploaded release.
 
@@ -21,7 +26,7 @@ have the same 16 assets, including the generated `zel.rb` formula.
 
 The public [Homebrew tap](https://github.com/mylife-inc/homebrew-tap) at `5abad25`
 passed all four actual-public-install acceptance jobs in `43164789683`.
-`brew install mylife-inc/tap/zel` currently selects the rc.4 preview. Homebrew
+`brew install mylife-inc/tap/zel` selected the rc.4 preview at that milestone. Homebrew
 owns subsequent upgrades; the installed CLI directs users to
 `brew upgrade mylife-inc/tap/zel` before making a network request.
 
@@ -164,7 +169,7 @@ the latest acceptance code, select the Published release acceptance workflow on
 `main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.5 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.6 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,
@@ -172,7 +177,10 @@ installer byte comparisons and the native acceptance suite use that tagged sourc
 only the download/acceptance driver comes from the selected workflow revision.
 On native Linux, print-capable catalogs additionally run the tagged PDF
 acceptance driver with the installed public binary, retaining PDF captures and
-receipts. Older reading-only releases skip this check. Template packaging checks
+receipts. Those hosted checks explicitly select and preflight Docker's default
+context, matching the dedicated Docker PDF jobs. Preinstalled rootless runtimes
+are not assumed to have delegated resource controllers; dedicated Podman jobs
+provision their own rootless session. Older reading-only releases skip this check. Template packaging checks
 known archive hashes in `templates/published.json`; record new hashes only after
 public verification, and never rewrite a previously published identity.
 This performs public reads and temporary local installs on the runners. It does

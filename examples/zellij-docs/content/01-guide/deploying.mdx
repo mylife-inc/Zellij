@@ -124,8 +124,7 @@ that keep it there are structural, not tuning:
 Bump the dependency. Nothing was generated into your repository, so there is
 nothing to re-merge — all the rendering logic is in the package.
 
-Unknown keys in `site.yaml` warn rather than fail. Engine source after rc.5 also
-warns about discarded section fields, including nested keys; published rc.5 still
-accepts those fields silently. Ordinary builds continue for forward compatibility,
+Unknown keys in `site.yaml` warn rather than fail. The rc.6 engine also
+warns about discarded section fields, including nested keys. Ordinary builds continue for forward compatibility,
 but `check --strict` fails on warnings. Use [strict checks](/cli/check) before
 deploying so misspelled settings or unsupported newer fields are visible.

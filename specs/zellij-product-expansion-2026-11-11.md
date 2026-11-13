@@ -10,7 +10,7 @@ design; proposed commands remain planned unless explicitly marked implemented be
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
 | 1 | Separate company and product branding | Implemented and released in rc.4, including portable/hosted rendering, mobile layout, independent destinations/tab selection, dark variants and compatibility. |
-| 2 | Package-manager distribution | Homebrew is live and verified with rc.5. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
+| 2 | Package-manager distribution | Homebrew is live and verified with rc.6. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
 | 3 | Template catalog and creation command | Released in rc.5: versioned bundled/local/release templates, guarded creation, offline cache and receipts. Product documentation, hosted product landing and classic reading-book starters are verified. Technical/study editions remain planned. |
 | 4 | Composition engine and additional Apple-inspired patterns | Build a bounded composition format, reusable presentation/effect primitives and named presets. Extend the product template using these; retain all existing section types and authored content. |
 | 5 | Complete book publishing and PDF | Extend the book template into a publication model, dedicated print renderer and version-matched downloadable PDF. Validate technical, prose and multilingual books before calling this milestone complete. |
@@ -369,7 +369,7 @@ the user owns and will continue using the GitHub account **`mylife-inc`**.
 The agreed one-command form is **`brew install mylife-inc/tap/zel`**. Use Shebka
 for company-facing branding; retain the established GitHub/distribution
 namespace. No account rename or `shebka` tap owner is required. The public tap
-is published at `mylife-inc/homebrew-tap`, selecting the rc.5 preview.
+is published at `mylife-inc/homebrew-tap`, selecting the rc.6 preview.
 
 The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
 one-time tap setup and formula-specific trust. The qualified command above
@@ -701,3 +701,26 @@ template archives. Next-image PDFs, advanced numbered equations/theorems,
 bibliography/index/glossary, multilingual/RTL and technical/study/custom templates
 remain open. Published rc.5, production docs/domain and deferred live providers
 are unchanged.
+
+
+## Book starter and rc.6 source closure — 2026-11-13
+
+PR #155 (`668e8fa`) versions book-classic at 0.2.0 with the shared book manifest,
+cover, preface, part, chapters and appendix. Native web builds remain the default;
+PDF is an explicit option or saved setting. Catalogs now declare LuaLaTeX
+capability, which creation validates without launching a runtime. Product
+archives remain unchanged; explicit gzip compression and a published-hash ledger
+prevent accidentally changing a released template's bytes.
+
+All 23 final-head CI jobs pass, including an unchanged-head retry after a hosted
+macOS ARM64 capacity cancellation. Twelve PDFs, 87 matched page captures and
+eight matched web previews pass. Release preflight passed 770 Rust and 490
+engine tests. rc.6 is published from the immutable merge/tag. Public acceptance
+`43496517451` passes all eight jobs after correcting explicit runtime selection
+in the acceptance harness; the original Linux ARM64 failure remains recorded.
+All 58 public PDF page captures match reviewed pixels. Homebrew `1555b7d` passes
+four native public jobs; shared installer docs are updated at `7cb742c`. See
+[release evidence](evidence/zellij-rc6-release-2026-11-13.json).
+Advanced book numbering/references, bibliography/index/glossary, multilingual/RTL,
+Next-image PDFs, technical/study/custom templates and other installation channels
+remain open. Live provider work and the production domain remain deferred.

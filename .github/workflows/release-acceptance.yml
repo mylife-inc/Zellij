@@ -56,6 +56,11 @@ jobs:
       - name: Install PDF inspection tools on native Linux runners
         if: contains(matrix.target, 'linux')
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
+      - name: Check the hosted Docker endpoint for PDF acceptance
+        if: contains(matrix.target, 'linux')
+        env:
+          DOCKER_CONTEXT: default
+        run: timeout 60 docker info
       - name: Validate published version
         run: >-
           node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
@@ -67,6 +72,10 @@ jobs:
           persist-credentials: false
       - name: Install public downloads and exercise the released binary
         working-directory: release-source
+        # Select the provisioned runtime explicitly, as in pdf-acceptance.yml.
+        # A preinstalled rootless Podman may lack delegated resource controllers.
+        env:
+          DOCKER_CONTEXT: ${{ contains(matrix.target, 'linux') && 'default' || '' }}
         run: node ../scripts/check-published-release.mjs
       - uses: actions/upload-artifact@v7
         if: always() && contains(matrix.target, 'linux')

@@ -13,13 +13,13 @@
     "name": "static",
     "config": "portable/static.yaml",
     "workflow": "acceptance-static.yml",
-    "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.5"
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-static:0.2.0-rc.6"
   },
   {
     "name": "next",
     "config": "portable/next.yaml",
     "workflow": "acceptance-next.yml",
-    "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.5"
+    "image": "ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.6"
   },
   {
     "name": "netlify-portable",

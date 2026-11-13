@@ -2,13 +2,13 @@ version: 1
 renderer: portable
 name: Candidate delivery acceptance
 image:
-  name: ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.5
+  name: ghcr.io/mylife-inc/zellij/acceptance-next:0.2.0-rc.6
 publish:
   action: push
   image: next
 ci:
   branch: main
   workflow: acceptance-next.yml
-  zel-version: 0.2.0-rc.5
+  zel-version: 0.2.0-rc.6
   triggers: [pull_request, manual]
   production: false
