@@ -1,6 +1,6 @@
 {
   "observed_on": "2026-11-13 America/Los_Angeles",
-  "status": "published and publicly verified; Homebrew and mirror documentation updated; source docs/consumer migration under review",
+  "status": "complete: published, publicly verified, Homebrew and docs updated, consumers migrated and scoped rc.5 retirement verified",
   "candidate": "v0.2.0-rc.6",
   "pr": 155,
   "source_head": "70ca56442322b108310845d2755449b67b7df831",
@@ -10148,12 +10148,51 @@
     "formula": "byte-identical to the generated zel.rb attached to both public releases"
   },
   "mirror_docs_commit": "7cb742c115e86996fb4fbe36baf67bfba78860d2",
-  "retention": "rc.5 releases/tags/images retained pending all replacement consumer gates; CodeSeal unchanged",
+  "retention": "Two superseded rc.5 release entries, 40 assets, two remote tags and 26 old image versions retired. rc.6/CodeSeal asset identities and current/excluded image inventories preserved. Fresh hosted inventory 43505203415 and HTTP checks 43505207912 pass.",
   "publication_docs_validation": {
     "strict_deep_routes": 59,
     "examples": 25,
     "template_packages_match_public": true,
     "book_0_2_0_hash_recorded": true,
-    "source_pr": "pending"
-  }
+    "source_pr": 156,
+    "source_head": "f767260f6c6a96d3be0d4490b0217229213fea72",
+    "merge": "8eb117ae4e3f7f944242d4cc536a883e0deec8b0",
+    "matches_tested_tree": true,
+    "ci_run": 43497959313,
+    "ci_jobs_passed": 23,
+    "delivery_builds_passed": 6,
+    "publication_jobs_skipped": 4,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0
+  },
+  "consumer_retry": {
+    "run": 43497959746,
+    "first_failed_job": 132135968456,
+    "retry_job": 132137448821,
+    "head": "f767260f6c6a96d3be0d4490b0217229213fea72",
+    "finding": "Docker, Podman and fallback socket info probes timed out before any Next build. One unchanged-head retry passed. Deterministic runtime selection in generated container CI remains an open reliability issue."
+  },
+  "publication_ci_initial_attempt": {
+    "run": 43497829080,
+    "head": "103670fdc859403b5836f68bbe2ccbef76f9a657",
+    "event": "Superseded by final f767260 after deferred provider image pins were also migrated to rc.6; previous CI automatically cancelled by workflow concurrency."
+  },
+  "replacement_images": {
+    "static": 43503689558,
+    "next": 43503694530,
+    "fresh_http": 43503982549,
+    "head": "8eb117ae4e3f7f944242d4cc536a883e0deec8b0",
+    "conclusion": "success"
+  },
+  "development_images": {
+    "run": 43498926083,
+    "head": "668e8faa47a7d4a435c71f63a51b903838a12f48",
+    "jobs_passed": 13,
+    "runtime_inputs_match_publication_merge": true
+  },
+  "remaining_reliability_issue": "Generated container CI still relies on automatic runtime discovery; the Next consumer needed one unchanged-head retry. See zellij-post-rc6-followups-2026-11-13.md."
 }

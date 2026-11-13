@@ -10,8 +10,9 @@ All four Homebrew jobs in `43497080249` pass for tap commit `1555b7d`.
 See [the release evidence](evidence/zellij-rc6-release-2026-11-13.json) and
 [preparation history](zellij-rc6-preparation-2026-11-13.md).
 Remaining live provider/external-runner checks and the production-domain
-migration remain deferred. rc.5 stays available until replacement consumer
-checks and scoped retirement pass.
+migration remain deferred. Replacement consumer/image checks and scoped rc.5
+retirement are complete; only rc.6 remains in the two Zellij release channels.
+See [retirement evidence](evidence/zellij-rc6-image-retirement-2026-11-13.json).
 Publication status must be checked in GitHub; a version change in source is not
 proof of an uploaded release.
 

@@ -2,8 +2,8 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-12 with completed rc.5 native/image retirement and Homebrew
-publication. The rc.4 record and failed image attempts remain historical.
+Refreshed 2026-11-13 with rc.6 publication, native retirement and the reviewed
+26-version image retirement. Earlier records and failed attempts remain historical.
 
 ## User decision
 
@@ -26,7 +26,46 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.5 execution status — 2026-11-12
+## Current rc.6 execution status — 2026-11-13
+
+rc.6 is public in both repositories with 20 byte-identical assets, all eight
+public acceptance jobs passing, and four public Homebrew checks passing.
+PR #156 (`8eb117a`) merges active docs and consumer pins on the exact tree tested
+at `f767260`: all 23 CI and six delivery build checks pass. The Next consumer
+needed one unchanged-head retry after runtime discovery timed out before its
+build; explicit runtime selection in generated container CI remains open.
+No live providers were deployed. The original public PDF runtime failure and
+its acceptance-harness correction remain in the release evidence.
+
+Static and Next replacements passed `43503689558` and `43503694530`; both fresh
+pull/HTTP checks in `43503982549` pass. All 13 refreshed development-image jobs
+in `43498926083` pass on released source `668e8fa`; PR #156 changes none of its
+runtime inputs. The shared installation guide is at `7cb742c`, and Homebrew is
+at `1555b7d`. The actual standalone rc.5-to-rc.6 upgrade passed.
+
+**Native retirement is complete:** exact source release `442694651` and mirror
+release `442694716`, their 40 assets and two rc.5 remote tags were removed after
+13 replacement gates and a read-only preflight passed. Seven focused guard tests
+include refusing changed assets/tags, moved branches, failed gates and a draft
+replacement. All rc.6 and CodeSeal release assets/tag identities remain intact.
+See [native retirement evidence](evidence/zellij-rc6-native-retirement-2026-11-13.json).
+
+**Image retirement is complete:** hosted inventory `43504106766` passes its
+13 safeguard tests and builds a new exact plan at `8caf3c1`. It selects 26
+versions: 20 base, three static and three Next. All 46 retained manifest nodes
+and 3,321 excluded unreferenced build-history versions are protected. The plan
+hash is `9d6d1b9e4241cb574d2524d56bc53979cef7d77fc10916e3ea07fe8960328cc8`.
+The owner fallback executed exactly this [rc.6 plan](evidence/zellij-rc6-image-retirement-plan-2026-11-13.json)
+at `a59b4fe`, recording 26 deletions with no failed or partial attempt. Fresh
+hosted inventory `43505203415` confirms zero retired tags/targets and exact
+preservation of every excluded version identity, digest and tag set. Both
+fresh-pull HTTP checks in `43505207912` pass. Only rc.6 remains in the two
+Zellij release channels. The native upgrade check selects rc.6 without changes.
+See [execution and post-verification evidence](evidence/zellij-rc6-image-retirement-2026-11-13.json).
+Do not reuse this completed plan after mutable tags move; broader untagged
+history and live provider/production-domain work remain outside this cleanup.
+
+## Historical rc.5 execution status — 2026-11-12
 
 rc.5 is published with 20 identical assets in each release repository, all 29
 release jobs and four public Homebrew jobs passing. PR #139 (`7430844`) updates

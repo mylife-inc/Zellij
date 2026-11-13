@@ -1,4 +1,4 @@
-// Reviewed, exact-scope rc.5 image retirement. Unreferenced build history is not swept.
+// Reviewed, exact-scope rc.6 image retirement. Unreferenced build history is not swept.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -7,12 +7,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const packages = ['zellij-base', 'zellij/acceptance-static', 'zellij/acceptance-next'];
-const keepVersion = '0.2.0-rc.5';
+const keepVersion = '0.2.0-rc.6';
 const suffixes = ['', '-maths', '-diagrams', '-all'];
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
 const isRetired = (name, tag) => name === 'zellij-base'
-  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-4])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
-  : /^0\.2\.0-rc\.[1-4]$/.test(tag);
+  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-5])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
+  : /^0\.2\.0-rc\.[1-5]$/.test(tag);
 const sorted = values => [...values].sort();
 const requiredTags = name => name === 'zellij-base' ? [keepVersion, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
 
@@ -184,14 +184,19 @@ async function main(mode, input, output) {
   // Confirm the journal can be written before any remote mutation.
   await writeFile(output, JSON.stringify(report, null, 2) + '\n');
   try {
-    for (const [run, head] of [
-      [43185514003, 'a92c2e9f9d82abf5b75ea31bd825117cf86f9ec7'],
-      [43188410970, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
-      [43188415736, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
-      [43188741083, '7430844bca1d1eed278261ec33ac47696f5af7ac'],
-      [43274667686, 'ba5f0add1e1c3c756c002412cfeceaa859d2a395'],
+    // Exact successful rc.6 source, public, Homebrew, consumer and image gates.
+    for (const [repository, run, head] of [
+      ['mylife-inc/Zellij', 43497959313, 'f767260f6c6a96d3be0d4490b0217229213fea72'],
+      ['mylife-inc/Zellij', 43496517451, '3d26a96529a731905c6f16d8b5829fc82499697c'],
+      ['mylife-inc/homebrew-tap', 43497080249, '1555b7d718cfef224287172d6605009f00362881'],
+      ...[43497959672, 43497959351, 43497959272, 43497959430, 43497959746, 43497959399]
+        .map(run => ['mylife-inc/Zellij', run, 'f767260f6c6a96d3be0d4490b0217229213fea72']),
+      ['mylife-inc/Zellij', 43498926083, '668e8faa47a7d4a435c71f63a51b903838a12f48'],
+      ['mylife-inc/Zellij', 43503689558, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
+      ['mylife-inc/Zellij', 43503694530, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
+      ['mylife-inc/Zellij', 43503982549, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
     ]) {
-      const r = api(`repos/mylife-inc/Zellij/actions/runs/${run}`);
+      const r = api(`repos/${repository}/actions/runs/${run}`);
       assert(r.status === 'completed' && r.conclusion === 'success' && r.head_sha === head, 'Replacement acceptance gate changed');
     }
     validateLive(data, liveInventory());

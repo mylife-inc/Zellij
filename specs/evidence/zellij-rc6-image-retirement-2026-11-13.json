@@ -1,0 +1,715 @@
+{
+  "observed_on": "2026-11-13",
+  "status": "complete",
+  "plan_sha256": "9d6d1b9e4241cb574d2524d56bc53979cef7d77fc10916e3ea07fe8960328cc8",
+  "policy_commit": "8caf3c1",
+  "execution_commit": "a59b4fe9e907e83d75c119c3e71c73fdc65767d0",
+  "plan_workflow": {
+    "conclusion": "success",
+    "databaseId": 43504106766,
+    "headSha": "8caf3c1cc46a89fd9c35535ccf482818512da699",
+    "jobs": [
+      {
+        "completedAt": "2026-11-13T20:43:03Z",
+        "conclusion": "skipped",
+        "databaseId": 132157155321,
+        "name": "retire-images",
+        "startedAt": "2026-11-13T20:43:03Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43504106766/job/132157155321"
+      },
+      {
+        "completedAt": "2026-11-13T20:44:00Z",
+        "conclusion": "success",
+        "databaseId": 132157155675,
+        "name": "inventory",
+        "startedAt": "2026-11-13T20:43:05Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-13T20:43:07Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-13T20:43:06Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:09Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-13T20:43:07Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:11Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-13T20:43:09Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:12Z",
+            "conclusion": "success",
+            "name": "Check exact-scope deletion safeguards",
+            "number": 4,
+            "startedAt": "2026-11-13T20:43:11Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:48Z",
+            "conclusion": "success",
+            "name": "List exact Zellij release and image version identities",
+            "number": 5,
+            "startedAt": "2026-11-13T20:43:12Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:55Z",
+            "conclusion": "success",
+            "name": "Generate a read-only retained and retired manifest plan",
+            "number": 6,
+            "startedAt": "2026-11-13T20:43:48Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:57Z",
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v7",
+            "number": 7,
+            "startedAt": "2026-11-13T20:43:55Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:57Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 13,
+            "startedAt": "2026-11-13T20:43:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:57Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 14,
+            "startedAt": "2026-11-13T20:43:57Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:43:57Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-11-13T20:43:57Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43504106766/job/132157155675"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43504106766"
+  },
+  "post_inventory_workflow": {
+    "conclusion": "success",
+    "databaseId": 43505203415,
+    "headSha": "a59b4fe9e907e83d75c119c3e71c73fdc65767d0",
+    "jobs": [
+      {
+        "completedAt": "2026-11-13T20:51:00Z",
+        "conclusion": "success",
+        "databaseId": 132160941242,
+        "name": "inventory",
+        "startedAt": "2026-11-13T20:50:20Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-13T20:50:21Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-13T20:50:20Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:23Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-13T20:50:21Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:24Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-13T20:50:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:24Z",
+            "conclusion": "success",
+            "name": "Check exact-scope deletion safeguards",
+            "number": 4,
+            "startedAt": "2026-11-13T20:50:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:54Z",
+            "conclusion": "success",
+            "name": "List exact Zellij release and image version identities",
+            "number": 5,
+            "startedAt": "2026-11-13T20:50:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:56Z",
+            "conclusion": "success",
+            "name": "Generate a read-only retained and retired manifest plan",
+            "number": 6,
+            "startedAt": "2026-11-13T20:50:54Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:58Z",
+            "conclusion": "success",
+            "name": "Run actions/upload-artifact@v7",
+            "number": 7,
+            "startedAt": "2026-11-13T20:50:56Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:58Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 13,
+            "startedAt": "2026-11-13T20:50:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:58Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 14,
+            "startedAt": "2026-11-13T20:50:58Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:58Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 15,
+            "startedAt": "2026-11-13T20:50:58Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505203415/job/132160941242"
+      },
+      {
+        "completedAt": "2026-11-13T20:50:18Z",
+        "conclusion": "skipped",
+        "databaseId": 132160943633,
+        "name": "retire-images",
+        "startedAt": "2026-11-13T20:50:19Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505203415/job/132160943633"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505203415"
+  },
+  "post_http_workflow": {
+    "conclusion": "success",
+    "databaseId": 43505207912,
+    "headSha": "8eb117ae4e3f7f944242d4cc536a883e0deec8b0",
+    "jobs": [
+      {
+        "completedAt": "2026-11-13T20:50:37Z",
+        "conclusion": "success",
+        "databaseId": 132160956434,
+        "name": "inspect (next)",
+        "startedAt": "2026-11-13T20:50:22Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-13T20:50:24Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-13T20:50:22Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:26Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-13T20:50:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:26Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-13T20:50:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:27Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-13T20:50:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:35Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-13T20:50:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:35Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-13T20:50:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:35Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-13T20:50:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:35Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-13T20:50:35Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:35Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-13T20:50:35Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505207912/job/132160956434"
+      },
+      {
+        "completedAt": "2026-11-13T20:50:34Z",
+        "conclusion": "success",
+        "databaseId": 132160956878,
+        "name": "inspect (static)",
+        "startedAt": "2026-11-13T20:50:22Z",
+        "status": "completed",
+        "steps": [
+          {
+            "completedAt": "2026-11-13T20:50:24Z",
+            "conclusion": "success",
+            "name": "Set up job",
+            "number": 1,
+            "startedAt": "2026-11-13T20:50:23Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:26Z",
+            "conclusion": "success",
+            "name": "Run actions/checkout@v7",
+            "number": 2,
+            "startedAt": "2026-11-13T20:50:24Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:27Z",
+            "conclusion": "success",
+            "name": "Run actions/setup-node@v7",
+            "number": 3,
+            "startedAt": "2026-11-13T20:50:26Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:28Z",
+            "conclusion": "success",
+            "name": "Run docker/login-action@v3",
+            "number": 4,
+            "startedAt": "2026-11-13T20:50:27Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:31Z",
+            "conclusion": "success",
+            "name": "Pull the published image and check its HTTP behavior",
+            "number": 5,
+            "startedAt": "2026-11-13T20:50:28Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:31Z",
+            "conclusion": "success",
+            "name": "Post Run docker/login-action@v3",
+            "number": 8,
+            "startedAt": "2026-11-13T20:50:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:31Z",
+            "conclusion": "success",
+            "name": "Post Run actions/setup-node@v7",
+            "number": 9,
+            "startedAt": "2026-11-13T20:50:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:31Z",
+            "conclusion": "success",
+            "name": "Post Run actions/checkout@v7",
+            "number": 10,
+            "startedAt": "2026-11-13T20:50:31Z",
+            "status": "completed"
+          },
+          {
+            "completedAt": "2026-11-13T20:50:31Z",
+            "conclusion": "success",
+            "name": "Complete job",
+            "number": 11,
+            "startedAt": "2026-11-13T20:50:31Z",
+            "status": "completed"
+          }
+        ],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505207912/job/132160956878"
+      },
+      {
+        "completedAt": "2026-11-13T20:50:20Z",
+        "conclusion": "skipped",
+        "databaseId": 132160958456,
+        "name": "live-providers",
+        "startedAt": "2026-11-13T20:50:20Z",
+        "status": "completed",
+        "steps": [],
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505207912/job/132160958456"
+      }
+    ],
+    "status": "completed",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43505207912"
+  },
+  "packages": [
+    {
+      "package": "zellij-base",
+      "removed": 20,
+      "remaining": 3354,
+      "protected": 40,
+      "excluded_history": 3314
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "removed": 3,
+      "remaining": 7,
+      "protected": 3,
+      "excluded_history": 4
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "removed": 3,
+      "remaining": 6,
+      "protected": 3,
+      "excluded_history": 3
+    }
+  ],
+  "exact_excluded_inventory_preserved": true,
+  "remaining_zellij_releases": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "versions": [
+        {
+          "id": 444666045,
+          "tag": "v0.2.0-rc.6",
+          "draft": false,
+          "prerelease": true,
+          "assets": [
+            {
+              "id": 744953251,
+              "name": "install.ps1",
+              "size": 7031,
+              "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+            },
+            {
+              "id": 744953252,
+              "name": "install.sh",
+              "size": 13204,
+              "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+            },
+            {
+              "id": 744953261,
+              "name": "SHA256SUMS",
+              "size": 679,
+              "digest": "sha256:aea8f85b2789f1633d7f50302a0bf58b2c336689b0c4d7c8d07adbc714ce35dc"
+            },
+            {
+              "id": 744953257,
+              "name": "template-book-classic-0.2.0.tar.gz",
+              "size": 4394,
+              "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+            },
+            {
+              "id": 744953258,
+              "name": "template-product-docs-0.1.0.tar.gz",
+              "size": 1297,
+              "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+            },
+            {
+              "id": 744953256,
+              "name": "template-product-studio-0.1.0.tar.gz",
+              "size": 2454,
+              "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+            },
+            {
+              "id": 744953259,
+              "name": "templates-catalog.json",
+              "size": 2939,
+              "digest": "sha256:44bb05562893f870b6a6d832bde5d5be307be5fac0fb8be2b23959e7a8101d2a"
+            },
+            {
+              "id": 744953249,
+              "name": "zel-v0.2.0-rc.6-aarch64-apple-darwin.tar.gz",
+              "size": 7103425,
+              "digest": "sha256:5d01e10fcbecdde442370d7a0ce34ff6b069a7df44abbdca5d6fde5f514c51f7"
+            },
+            {
+              "id": 744953264,
+              "name": "zel-v0.2.0-rc.6-aarch64-apple-darwin.tar.gz.sha256",
+              "size": 110,
+              "digest": "sha256:79f76366af970a8ded6de5b29ba85b61ac0cbf09c22f30481c0fcec7be1733d4"
+            },
+            {
+              "id": 744953250,
+              "name": "zel-v0.2.0-rc.6-aarch64-pc-windows-msvc.zip",
+              "size": 7477142,
+              "digest": "sha256:77ba02b82a55ae385b6b18a35de84caadc97d01394f7ea111ee2e66aedbd6012"
+            },
+            {
+              "id": 744953263,
+              "name": "zel-v0.2.0-rc.6-aarch64-pc-windows-msvc.zip.sha256",
+              "size": 110,
+              "digest": "sha256:b809fe3af53ff0b15a4df45723b546dfaec8bed403e3ef3de53f7b202395aff4"
+            },
+            {
+              "id": 744953262,
+              "name": "zel-v0.2.0-rc.6-aarch64-unknown-linux-gnu.tar.gz",
+              "size": 7362985,
+              "digest": "sha256:50d34993b5ce150fde122caac8c35c2bb01e64a4831cf43de6ac106f93e1cfe2"
+            },
+            {
+              "id": 744953243,
+              "name": "zel-v0.2.0-rc.6-aarch64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 115,
+              "digest": "sha256:f7fe3514cbde77f02f208b14a332ec072edf5091f624f15987b6121a2157387e"
+            },
+            {
+              "id": 744953247,
+              "name": "zel-v0.2.0-rc.6-x86_64-apple-darwin.tar.gz",
+              "size": 7226544,
+              "digest": "sha256:71ba5f94099573c007040921ad1336641e7b3528571b0df681b0487f3860656a"
+            },
+            {
+              "id": 744953242,
+              "name": "zel-v0.2.0-rc.6-x86_64-apple-darwin.tar.gz.sha256",
+              "size": 109,
+              "digest": "sha256:a4070ee9f8c6c2b1fd9c836fd63018a7ab61f0a42b91c2c452f2598bf3d52fa1"
+            },
+            {
+              "id": 744953245,
+              "name": "zel-v0.2.0-rc.6-x86_64-pc-windows-msvc.zip",
+              "size": 7642218,
+              "digest": "sha256:9e06829a172efbdcc3e33393d3c0ff90e19f9c1f449091aed710d4e428620ceb"
+            },
+            {
+              "id": 744953244,
+              "name": "zel-v0.2.0-rc.6-x86_64-pc-windows-msvc.zip.sha256",
+              "size": 109,
+              "digest": "sha256:41c537b3345326b18a0ffd903c9c63cc6ebb2744832794dd61d559bd93256e01"
+            },
+            {
+              "id": 744953253,
+              "name": "zel-v0.2.0-rc.6-x86_64-unknown-linux-gnu.tar.gz",
+              "size": 7500499,
+              "digest": "sha256:36ef1d6a2b562b739c77099f29adf0bce7ea110627073d3c83ec64b8d2039a83"
+            },
+            {
+              "id": 744953246,
+              "name": "zel-v0.2.0-rc.6-x86_64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 114,
+              "digest": "sha256:305dc4fcd190d7a80353297604992579796bff489c3ec37ba00f36c27ecc0348"
+            },
+            {
+              "id": 744953260,
+              "name": "zel.rb",
+              "size": 2310,
+              "digest": "sha256:5520f2b8c997dbb4d045c6d052f5b77280e58fa7d5918fe66feb6256c5931a2d"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "versions": [
+        {
+          "id": 444666110,
+          "tag": "zellij-v0.2.0-rc.6",
+          "draft": false,
+          "prerelease": true,
+          "assets": [
+            {
+              "id": 744953415,
+              "name": "install.ps1",
+              "size": 7031,
+              "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+            },
+            {
+              "id": 744953421,
+              "name": "install.sh",
+              "size": 13204,
+              "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+            },
+            {
+              "id": 744953412,
+              "name": "SHA256SUMS",
+              "size": 679,
+              "digest": "sha256:aea8f85b2789f1633d7f50302a0bf58b2c336689b0c4d7c8d07adbc714ce35dc"
+            },
+            {
+              "id": 744953427,
+              "name": "template-book-classic-0.2.0.tar.gz",
+              "size": 4394,
+              "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+            },
+            {
+              "id": 744953416,
+              "name": "template-product-docs-0.1.0.tar.gz",
+              "size": 1297,
+              "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+            },
+            {
+              "id": 744953418,
+              "name": "template-product-studio-0.1.0.tar.gz",
+              "size": 2454,
+              "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+            },
+            {
+              "id": 744953422,
+              "name": "templates-catalog.json",
+              "size": 2939,
+              "digest": "sha256:44bb05562893f870b6a6d832bde5d5be307be5fac0fb8be2b23959e7a8101d2a"
+            },
+            {
+              "id": 744953413,
+              "name": "zel-v0.2.0-rc.6-aarch64-apple-darwin.tar.gz",
+              "size": 7103425,
+              "digest": "sha256:5d01e10fcbecdde442370d7a0ce34ff6b069a7df44abbdca5d6fde5f514c51f7"
+            },
+            {
+              "id": 744953409,
+              "name": "zel-v0.2.0-rc.6-aarch64-apple-darwin.tar.gz.sha256",
+              "size": 110,
+              "digest": "sha256:79f76366af970a8ded6de5b29ba85b61ac0cbf09c22f30481c0fcec7be1733d4"
+            },
+            {
+              "id": 744953424,
+              "name": "zel-v0.2.0-rc.6-aarch64-pc-windows-msvc.zip",
+              "size": 7477142,
+              "digest": "sha256:77ba02b82a55ae385b6b18a35de84caadc97d01394f7ea111ee2e66aedbd6012"
+            },
+            {
+              "id": 744953407,
+              "name": "zel-v0.2.0-rc.6-aarch64-pc-windows-msvc.zip.sha256",
+              "size": 110,
+              "digest": "sha256:b809fe3af53ff0b15a4df45723b546dfaec8bed403e3ef3de53f7b202395aff4"
+            },
+            {
+              "id": 744953411,
+              "name": "zel-v0.2.0-rc.6-aarch64-unknown-linux-gnu.tar.gz",
+              "size": 7362985,
+              "digest": "sha256:50d34993b5ce150fde122caac8c35c2bb01e64a4831cf43de6ac106f93e1cfe2"
+            },
+            {
+              "id": 744953425,
+              "name": "zel-v0.2.0-rc.6-aarch64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 115,
+              "digest": "sha256:f7fe3514cbde77f02f208b14a332ec072edf5091f624f15987b6121a2157387e"
+            },
+            {
+              "id": 744953414,
+              "name": "zel-v0.2.0-rc.6-x86_64-apple-darwin.tar.gz",
+              "size": 7226544,
+              "digest": "sha256:71ba5f94099573c007040921ad1336641e7b3528571b0df681b0487f3860656a"
+            },
+            {
+              "id": 744953406,
+              "name": "zel-v0.2.0-rc.6-x86_64-apple-darwin.tar.gz.sha256",
+              "size": 109,
+              "digest": "sha256:a4070ee9f8c6c2b1fd9c836fd63018a7ab61f0a42b91c2c452f2598bf3d52fa1"
+            },
+            {
+              "id": 744953426,
+              "name": "zel-v0.2.0-rc.6-x86_64-pc-windows-msvc.zip",
+              "size": 7642218,
+              "digest": "sha256:9e06829a172efbdcc3e33393d3c0ff90e19f9c1f449091aed710d4e428620ceb"
+            },
+            {
+              "id": 744953408,
+              "name": "zel-v0.2.0-rc.6-x86_64-pc-windows-msvc.zip.sha256",
+              "size": 109,
+              "digest": "sha256:41c537b3345326b18a0ffd903c9c63cc6ebb2744832794dd61d559bd93256e01"
+            },
+            {
+              "id": 744953420,
+              "name": "zel-v0.2.0-rc.6-x86_64-unknown-linux-gnu.tar.gz",
+              "size": 7500499,
+              "digest": "sha256:36ef1d6a2b562b739c77099f29adf0bce7ea110627073d3c83ec64b8d2039a83"
+            },
+            {
+              "id": 744953404,
+              "name": "zel-v0.2.0-rc.6-x86_64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 114,
+              "digest": "sha256:305dc4fcd190d7a80353297604992579796bff489c3ec37ba00f36c27ecc0348"
+            },
+            {
+              "id": 744953423,
+              "name": "zel.rb",
+              "size": 2310,
+              "digest": "sha256:5520f2b8c997dbb4d045c6d052f5b77280e58fa7d5918fe66feb6256c5931a2d"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "inventory_sha256": {
+    "before": "505db5f011964473e77f5ba36a97bae00d6f4b21173b0327e6e4514ec15468d2",
+    "after": "969656c07d68a152f813a75e6b14ec7b275902b5b641cd562ba3e659e09128ed"
+  },
+  "execution_file": "zellij-rc6-image-retirement-execution-2026-11-13.json",
+  "native_retirement_file": "zellij-rc6-native-retirement-2026-11-13.json",
+  "boundaries": [
+    "No broader untagged build-history sweep.",
+    "No live provider deployments or production-domain migration.",
+    "Original failures and audit history remain."
+  ]
+}

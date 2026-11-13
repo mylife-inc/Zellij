@@ -20,8 +20,20 @@ pixel-identical to the reviewed source layouts. Homebrew `1555b7d` passes all
 four public install/upgrade/uninstall jobs in `43497080249`; mirror installation
 docs are at `7cb742c`. The actual standalone rc.5-to-rc.6 upgrade passed.
 See [rc.6 evidence](specs/evidence/zellij-rc6-release-2026-11-13.json).
-Source documentation/consumer migration is under review. Keep rc.5 until all
-replacement gates pass; do not reuse the old rc.5 image-retirement plan.
+PR #156 (`8eb117a`) merges the current guides and consumer pins, with the exact
+tree tested at `f767260`. All 23 CI jobs and six delivery build checks pass.
+The Next consumer required one unchanged-head retry after runtime probes timed
+out before building. Generated container CI should explicitly select its runtime;
+this remains an open reliability issue. All 13 development-image jobs in
+`43498926083` pass at the released source; the docs follow-up changes no runtime
+inputs. Replacement static/Next publications and fresh-pull HTTP checks pass.
+rc.5 retirement is complete: two releases, 40 assets, two remote tags and 26
+obsolete image versions removed. All 46 current manifest nodes, 3,321 excluded
+build-history versions and CodeSeal releases are intact. Fresh hosted inventory
+`43505203415` and both HTTP checks in `43505207912` pass. See
+[retirement evidence](specs/evidence/zellij-rc6-image-retirement-2026-11-13.json).
+Do not reuse completed plans after tags move. The next implementation priorities
+are [runtime-selection reliability, package channels and richer book publishing](specs/zellij-post-rc6-followups-2026-11-13.md).
 See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
 
 PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and
