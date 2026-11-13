@@ -29,7 +29,6 @@ try {
   assert.equal(starterReceipt.pdf_sha256,createHash('sha256').update(readFileSync(starterPdf)).digest('hex'));
   assert.deepEqual(starterRecord.entries.map(e=>e.id),['title-page','preface','beginning','path','notes']);
   const starterText=execFileSync('pdftotext',['-layout',starterPdf,'-'],{encoding:'utf8'});
-  for(const term of ['A question worth following','Your name','Contents','Preface','First steps','The beginning','The path ahead','Notes for the journey']) assert(starterText.includes(term),term);
   execFileSync('qpdf',['--check',starterPdf]);
   const starterCapture=path.join(artifacts,'starter');
   cpSync(starterPrint,starterCapture,{recursive:true});
@@ -39,6 +38,9 @@ try {
   writeFileSync(path.join(starterCapture,'text.txt'),starterText);
   const starterPages=Number(starterInfo.match(/Pages:\s+(\d+)/)[1]);
   for(let n=1;n<=starterPages;n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',starterPdf,path.join(starterCapture,`page-${n}`)]);
+  assert.match(starterInfo,/Title:\s+A question worth following/);
+  const starterWords=starterText.replace(/\s+/g,' ');
+  for(const term of ['A question worth following','Your name','Contents','Preface','First steps','The beginning','The path ahead','Notes for the journey']) assert(starterWords.includes(term),`${term}\n${starterText}`);
   cpSync('scripts/fixtures/pdf-book',site,{recursive:true});
   run(['pdf',site,'--check']);
   const config=readFileSync(path.join(site,'zel.yaml'),'utf8');

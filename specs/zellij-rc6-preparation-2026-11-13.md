@@ -52,7 +52,11 @@ name, retaining its immutable-tag working-directory check after artifact upload
 was added. All 33 release helper checks now pass, as do syntax/actionlint and
 final deterministic local/bundled/catalog/offline template acceptance. The
 existing product archives match rc.5 byte-for-byte under explicit gzip level 9.
-Hosted acceptance remains pending.
+The first hosted run `43482576387` produced the starter PDF, but all three
+PDF jobs failed its exact title-text assertion. The new title wraps at the
+paper width; acceptance now normalizes layout whitespace and separately checks
+the exact metadata title. Starter artifacts are saved before this text check
+so any further failure remains inspectable. Final hosted acceptance is pending.
 
 ## Release gates and remaining scope
 
