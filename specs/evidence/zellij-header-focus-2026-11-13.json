@@ -232,5 +232,231 @@
     "workflow_lint": "passed",
     "strict_deep_docs": "59 routes, 25 examples passed"
   },
-  "acceptance": "pending"
+  "acceptance": "passed",
+  "source_commit": "17be3af6b8b94866574824d4a23037cc8a4587b5",
+  "fixing_merge": "dece6c9cde379eb6edf4548d8bde5d64dbc3ef1a",
+  "pull_request": 160,
+  "stress": {
+    "run_id": 43520294777,
+    "head": "6078d8256e2e2bd5d8d1cd70dcce8774bf516bd1",
+    "job_id": 132212564288,
+    "attempt": 1,
+    "retries": 0,
+    "workers": 4,
+    "targeted": {
+      "repetitions": 12,
+      "passed": 252
+    },
+    "full_desktop": {
+      "repetitions": 4,
+      "passed": 636,
+      "conditional_skips": 64
+    },
+    "source_equivalence": "Engine source, permanent header tests and Playwright configuration match the PR head exactly."
+  },
+  "ci": {
+    "run_id": 43520478220,
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132213164762,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165064,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165074,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165078,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165112,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165150,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165174,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165245,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165287,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165308,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165317,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165333,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165379,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165436,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165454,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165535,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165578,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132213165608,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132214710843,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132217147573,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132217147605,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132217147849,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132217148097,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      }
+    ],
+    "showcase": {
+      "passed": 370,
+      "conditional_skips": 132,
+      "flaky": 0
+    },
+    "workspace_rust_tests": 774
+  },
+  "development_images": {
+    "run_id": 43524812741,
+    "source_commit": "dece6c9cde379eb6edf4548d8bde5d64dbc3ef1a",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132227815574,
+        "name": "none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227815882,
+        "name": "diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227815932,
+        "name": "all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227816025,
+        "name": "diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227816045,
+        "name": "maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227816056,
+        "name": "none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227816093,
+        "name": "maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132227816354,
+        "name": "all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132229386773,
+        "name": "Publish all",
+        "conclusion": "success"
+      },
+      {
+        "id": 132229386815,
+        "name": "Publish none",
+        "conclusion": "success"
+      },
+      {
+        "id": 132229386855,
+        "name": "Publish diagrams",
+        "conclusion": "success"
+      },
+      {
+        "id": 132229386902,
+        "name": "Publish maths",
+        "conclusion": "success"
+      },
+      {
+        "id": 132229652369,
+        "name": "The image can build a site",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "public_release": {
+    "tag": "v0.2.0-rc.6",
+    "tag_object": "26f2adad84783d03cedd8eb74784bd72b085f5a8",
+    "state": "unchanged; source fixes await the next candidate"
+  }
 }

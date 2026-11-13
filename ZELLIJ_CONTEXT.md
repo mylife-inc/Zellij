@@ -3,6 +3,22 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+PR #160 (`dece6c9`) fixes two reproduced header-focus defects; its tree
+matches tested head `17be3af`. Focus lost when breakpoint CSS hides navigation
+is restored after panel closure commits, and header updates preserve the focused
+drawer link through a stable close callback. New tests cover reciprocal/rapid
+resizes, content focus and drawer scrolling; desktop WebKit now runs header
+coverage in regular CI. Local 490-test/typecheck/build/doc checks pass. Hosted
+no-retry stress passes 252 targeted and 636 full-workload cases (64 conditional
+skips). All 23 CI jobs in `43520478220` pass without workflow reruns, including
+370 showcase cases (132 conditional skips, no flaky cases), six native packages
+and four Homebrew targets. All 13 development-image jobs in `43524812741`
+pass on the merged source. The original failures and the corrected test-readiness
+gap remain in [the focus record](specs/zellij-header-resize-focus-2026-11-13.md)
+and [evidence](specs/evidence/zellij-header-focus-2026-11-13.json). Public rc.6 is
+unchanged. Next: Scoop ownership guidance, native Windows lifecycle acceptance
+and an owned bucket, then richer books and the next release candidate.
+
 PR #158 (`dd0f620`) fixes generated container CI selection after the recorded
 rc.6 discovery failures; its tree matches tested head `bd0ae9b`. A shared requirement
 covers hosted rendering, enabled PDF, static/Next images and multi-architecture
@@ -20,16 +36,9 @@ packages and four Homebrew checks. Source-generated consumer workflows execute
 public rc.6; the released binary/tag are unchanged. See
 [verification evidence](specs/evidence/zellij-ci-runtime-selection-2026-11-13.json).
 
-Showcase reports 355 passed, one flaky and 124 conditional skips: the desktop
-header-resize focus assertion failed once and passed its automatic retry. This
-is separate from the generator fix. Hosted diagnostics have now reproduced
-CSS removing drawer focus before the media-query event, plus a second defect
-where header updates restart the open drawer focus trap. The source implements
-restoration after panel closure and a stable drawer callback, with reciprocal/rapid
-resize, content-focus and scroll regressions plus desktop WebKit coverage. Local
-490-test/typecheck/build/doc checks pass; hosted acceptance is pending. The
-original traces and subsequent failures remain in [the focus record](specs/zellij-header-resize-focus-2026-11-13.md).
-Finish that acceptance before resuming Scoop packaging and richer books.
+The same generator CI recorded 355 showcase passes, one flaky header-resize
+focus assertion and 124 conditional skips. PR #160 subsequently reproduces and
+resolves that finding, as recorded above; the original failure remains preserved.
 
 PR #155 (`668e8fa`) merges book-classic 0.2.0 and rc.6 preparation, with the
 same tree as tested head `70ca564`. All 23 final-head CI jobs in `43484785719`

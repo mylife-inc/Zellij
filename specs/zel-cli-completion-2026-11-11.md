@@ -25,9 +25,12 @@ the feature history. Refresh CI and account state before relying on this snapsho
 Post-release source fix: PR #158 (`dd0f620`, tested at `bd0ae9b`) explicitly
 selects/preflights Docker in generated container CI while preserving native
 portable jobs. All 23 CI jobs and six consumer checks pass. The public rc.6
-generator is unchanged; the source update awaits the next release. One desktop
-header-resize focus assertion passed only on its automatic retry and remains a
-separate follow-up. See [verification evidence](evidence/zellij-ci-runtime-selection-2026-11-13.json)
+generator is unchanged; the source update awaits the next release. The desktop
+header-resize failure is reproduced and resolved by PR #160 (`dece6c9`),
+which also fixes drawer-link focus resets during header updates. No-retry stress
+passes 252 targeted and 636 full-workload cases; all 23 CI jobs and all 13
+development-image jobs pass. These header fixes also await the next candidate.
+See [verification evidence](evidence/zellij-ci-runtime-selection-2026-11-13.json)
 and [the focus investigation](zellij-header-resize-focus-2026-11-13.md).
 
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,

@@ -1,5 +1,9 @@
 # Header resize focus follow-up — 2026-11-13
 
+Status: **resolved by PR #160 (`dece6c9`)**, with the same tree as tested
+head `17be3af`. The dated discovery and unsuccessful experiments below remain
+part of the record.
+
 CI run 43508089027 at bd0ae9b687805e5cfebf936cd72cae90dc9f58e0, job
 132170883473, recorded one flaky desktop case in
 `examples/showcase/e2e/header-layout.spec.ts:92`. Opening the mobile drawer at
@@ -28,7 +32,6 @@ focus, rapid reciprocal resizes and preservation of focus outside navigation.
 Do not weaken the focus assertion or mark the issue resolved because a rerun
 passes. All browser acceptance must remain hosted; local trace inspection is
 permitted. Address before Scoop packaging, then resume the expansion backlog.
-
 
 ## Reproduction and implementation
 
@@ -65,8 +68,28 @@ run IDs and captured event order. All browser acceptance ran on hosted runners.
 Source implementation first committed at `302cf86`; regression readiness
 corrected at `6078d82`. Local verification passes 490 engine tests, engine and
 showcase typechecks, engine build, workflow lint and strict/deep documentation
-checks (59 routes, 25 authored examples). Hosted acceptance is pending; the
-initial candidate stress run passed 250 cases and failed two WebKit first-resize
-cases before the header had initialized (`data-measured=false` in both traces).
+checks (59 routes, 25 authored examples). The initial candidate stress run
+passed 250 cases and failed two WebKit first-resize cases before the header
+had initialized (`data-measured=false` in both traces).
 The test now waits for measured navigation and asserts initial focus before
 resizing; source code is unchanged. These failures are retained in the evidence.
+
+## Final verification
+
+Hosted diagnostic run `43520294777` at `6078d82` passes all 252 targeted cases
+(12 repetitions in Chromium/WebKit), then 636 cases in four repetitions of the
+full desktop workload (64 conditional skips). Both use four workers and zero
+retries. Its engine source, permanent tests and browser configuration exactly
+match final PR head `17be3af`. All 23 jobs in CI `43520478220` pass on that head,
+without workflow reruns; showcase reports 370 passed, 132 conditional skips
+and no flaky cases. Engine tests, docs preservation, six native packages, four
+Homebrew targets, both native image architectures, combined manifests, three PDF
+runtime jobs and Linux/macOS/Windows portable acceptance all pass.
+
+PR #160 merged as `dece6c9cde379eb6edf4548d8bde5d64dbc3ef1a` with the tested
+tree unchanged. All 13 development-image jobs in `43524812741` pass at that merge, publishing all four `main`
+variants on Linux amd64/arm64 and building/serving from the published image.
+The menu guide and durable context are updated. Public rc.6 remains unchanged;
+these source fixes will be included in the next candidate. This resolves the
+two reproduced focus defects, not a claim that every product bug is eliminated.
+See [structured evidence](evidence/zellij-header-focus-2026-11-13.json).
