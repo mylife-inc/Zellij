@@ -35,8 +35,16 @@ and Next adaptation. All 20 final-head jobs pass, including 756 Rust and 490
 engine tests, cross-platform book browser checks and a real Next-image book.
 All 13 development-image jobs in `43328363366` pass on the merged source.
 See [book evidence](evidence/zellij-book-publication-2026-11-12.json).
-The released book starter remains a reading website; PDF/LaTeX and other expansion
-work remain incomplete. The older milestones below retain their dated evidence.
+PR #151 (`c609251`) adds optional `build --pdf`, `export pdf` / `pdf` and native
+`pdf --check`. Web and PDF share a revision and publish atomically; standalone
+export preserves the website. All 23 final-head CI jobs pass, with 762 local
+Rust tests and actual Docker amd64/arm64 plus rootless Podman PDF acceptance.
+The single unchanged Engine retry followed a legacy-bookmark viewport timeout;
+that first failure remains recorded. All 24 final page captures match the eight
+visually reviewed pages. See [PDF evidence](evidence/zellij-book-pdf-2026-11-12.json).
+The released rc.5 book starter is still a reading website. The new source print
+adapter is English/LTR A5; configuration, advanced publishing semantics and
+other expansion work remain incomplete. Older milestones retain their dated evidence.
 
 The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
@@ -49,13 +57,15 @@ active guides were updated. This increment and the hydration fix below shipped
 in rc.4. The first template catalog shipped in rc.5; bounded composer v1 is merged
 in source after rc.5, together with media-accordion and the first four composition
 presets. The first book publication model is merged after rc.5; further composition
-primitives and PDF/LaTeX publishing remain planned.
+primitives and full book publishing remain planned. The first optional PDF/LaTeX
+pipeline is now merged in source after rc.5.
 Homebrew is live; Scoop, WinGet and other new package-manager
 channels remain planned.
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
 backend, short Homebrew naming and removal of superseded pre-1.0 distributions.
 See the expansion design and [release retention policy](zellij-release-retention-2026-11-11.md).
-PDF execution is not implemented. Scoped retirement followed rc.4 publication
+The first PDF execution path is implemented; richer print formats remain open.
+Scoped retirement followed rc.4 publication
 and consumer migration; see the retention record for the exact removal scope.
 
 The user requested continuing until completion. The working target is the
@@ -76,6 +86,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in current source (23 types in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
+| Book publication and PDF (source after rc.5) | Shared publication snapshot, direct LaTeX adapter, atomic web/PDF builds, standalone export, native compatibility checks; three real PDF runtime jobs and reviewed captures | First English/LTR A5 template; opt-in external Linux runtime; configuration, multilingual print, bibliography/index and technical/study templates remain open. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |

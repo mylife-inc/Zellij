@@ -15,17 +15,37 @@ and two Windows captures were visually reviewed. See
 [the book checkpoint](specs/zellij-book-publication-2026-11-12.md),
 [evidence](specs/evidence/zellij-book-publication-2026-11-12.json) and
 [authoring guide](examples/zellij-docs/content/02-cli/books.mdx). PDF/LaTeX execution
-remains the next increment. Published rc.5 and production documentation/domain
+was still pending at this book-model milestone; its first pipeline closure follows below. Published rc.5 and production documentation/domain
 are unchanged; the new book fields require current source.
 All 13 development-engine jobs in `43328363366` passed, publishing the four
 `main` variants for Linux amd64/arm64 and building/serving a site from the image.
 
-PDF work is in progress on `codex/book-pdf` from `6f26ea7`: a native
-Markdown-to-LaTeX adapter, `zel build --pdf`, `zel export pdf` / `zel pdf`,
-and isolated optional LuaLaTeX execution. This first slice is English/LTR A5;
-automatic configuration, multilingual print, index/bibliography and richer
-book templates remain open. See [the PDF checkpoint](specs/zellij-book-pdf-2026-11-12.md).
-Final-head hosted PDF verification and merge are pending.
+PR #151 (`c609251`) merges the first optional PDF pipeline, with the same tree
+as tested head `de92de2`. `zel build --pdf` publishes web/PDF/download links
+atomically; `zel export pdf` / `zel pdf` exports separately, and `pdf --check`
+checks compatibility natively. `cli/crates/zellij-docs/src/pdf.rs` owns the direct
+Markdown-event adapter; `cli/crates/zellij-cli/src/pdf.rs` owns isolated execution.
+The optional digest-pinned LuaLaTeX image does not enlarge normal website images.
+
+All 23 final-head jobs in `43358560394` passed, including actual Docker PDF
+execution on Linux amd64/arm64 and rootless Podman on Linux amd64. All 24 final
+captures match eight visually reviewed pages; sample PDFs are 51,193 bytes with 13
+embedded fonts. Local verification passes 762 Rust tests (five existing hosted
+cases run in CI), Clippy and strict/deep docs checks. All 490 engine and 356
+showcase tests, six native packages and four Homebrew targets pass. The Engine
+job needed one unchanged retry after a legacy-bookmark viewport timeout; its
+cause is not established, and the original failure is retained. Rootless mapping,
+heading placement and an unrelated watcher-fixture race were fixed before merge.
+See [the PDF checkpoint](specs/zellij-book-pdf-2026-11-12.md),
+[evidence](specs/evidence/zellij-book-pdf-2026-11-12.json) and
+[guide](examples/zellij-docs/content/02-cli/books.mdx).
+
+This first print template is English/LTR A5. Configuration-driven PDFs,
+PDF-aware preview/delivery, multilingual print, bibliography/index/glossary,
+numbered equation/theorem semantics and richer book templates remain open.
+Published rc.5 and production documentation/domain are unchanged. No development
+engine refresh was needed: Node runtime inputs are unchanged (one test fixture
+changed); the optional PDF toolchain is separate.
 
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
@@ -109,8 +129,8 @@ starters: product-docs, product-studio and book-classic, all version 0.1.0.
 Release archives/catalogs are identical across source and public mirror; public
 installed-binary acceptance covers both and offline cache reuse. Six hosted
 mobile/desktop previews were visually reviewed. The book publication model is
-now merged after rc.5 (PR #149 above); PDF/LaTeX execution and technical/study
-editions remain unimplemented. Released template archives remain immutable.
+now merged after rc.5 (PR #149 above), followed by the first optional PDF/LaTeX
+pipeline (PR #151). Technical/study editions and richer print semantics remain open. Released template archives remain immutable.
 
 Review fixes: `c370987` rejects ancestor directory capitalization collisions;
 `6810aee` corrects six card bodies lost through wrong YAML keys and guards official
@@ -229,7 +249,7 @@ LaTeX route for mathematics, indexes and publication layout. Beautiful book
 templates must encapsulate the LaTeX styling so authors normally edit content
 and simple theme settings. See the updated expansion design and
 [pre-1.0 retention policy](specs/zellij-release-retention-2026-11-11.md).
-PDF/export remains planned. The original decision-only update removed no
+At that decision-only update, PDF/export remained planned. That update removed no
 releases: its six delivery workflows still pinned rc.2 and stable installation
 depended on older artifacts. The rc.4 milestone above migrated those consumers
 and executed scoped retirement; retain the original decision history.

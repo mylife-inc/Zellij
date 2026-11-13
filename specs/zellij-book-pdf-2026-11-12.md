@@ -95,3 +95,40 @@ missing root, yielding two legitimate callbacks. The fixture now waits for the
 specific missing-root state, verifies unchanged search/revision, verifies no
 repeated errors for that unchanged state, and retains recovery/close checks.
 Production watcher behavior is unchanged; this is not a relaxed retry policy.
+
+
+## Verified closure
+
+PR #151 merged as `c6092514f9fd390d60f6b3c9b0f1c6e4d1dbb286`. Tree
+`aaaa18cc6701b755f80e8810adc13c46dabc5257` matches tested head
+`de92de27a786e2dd080a8a76c1bcc893662b2233` exactly. All 23 final-head jobs in
+`43358560394` passed. The three PDF jobs passed on their first attempt at this
+head. The Engine job passed on its single unchanged retry: its initial 490
+unit tests passed, but one hosting-comment/CRLF browser case timed out waiting
+for a legacy bookmark to enter the viewport. The original job `131666463750`
+and successful retry `131679984838` are retained; the timeout's cause is not
+established. No assertion or timeout was loosened for that retry.
+
+All 24 final page captures (Docker amd64/arm64 and rootless Podman amd64) match
+the eight visually reviewed pages byte-for-byte. The complete A5 PDF is eight
+pages and 51,193 bytes, with all 13 fonts embedded and Unicode-mapped. Metadata,
+text, bookmarks/internal links, qpdf structure, revision/checksum receipts,
+actual overflow rejection, prior-output preservation, standalone export and
+plain rebuild cleanup pass. The PDF is untagged; no PDF/UA claim is made.
+
+Local checks pass: 762 Rust tests (five hosted-only cases run in CI), Clippy
+with warnings denied, formatting, workflow syntax, JavaScript syntax and
+strict/deep docs validation (59 routes, 25 examples). The nine watcher cases
+also passed ten consecutive local runs. Two preliminary root-level npx calls
+could not resolve the workspace's Vitest executable; the correct workspace
+npm invocation supplied those results. Hosted checks include 490 engine tests,
+356 showcase cases (124 conditional skips), six native packages, four Homebrew
+targets and the complete existing CLI/container/browser acceptance suite.
+
+Detailed artifacts, hashes, failed attempts, fixing commits and boundaries are
+in [the evidence record](evidence/zellij-book-pdf-2026-11-12.json). Native rc.5,
+public template archives and production docs are unchanged. Duplicate merge
+workflows were skipped after the exact tree passed. No development-engine
+publication was needed because Node runtime inputs are unchanged; the watcher
+change affects its test fixture only. Configuration-driven PDF builds and the
+remaining print expansion are still open.

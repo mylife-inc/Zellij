@@ -1,0 +1,501 @@
+{
+  "date": "2026-11-12",
+  "status": "merged; optional book PDF pipeline verified",
+  "pr": 151,
+  "base_commit": "6f26ea7019a3efaa0832b4432e21a78ee7995e06",
+  "tested_head": "de92de27a786e2dd080a8a76c1bcc893662b2233",
+  "tested_tree": "aaaa18cc6701b755f80e8810adc13c46dabc5257",
+  "fixes": [
+    {
+      "commit": "6444fb15902ab4270344c8d284e72258039bacde",
+      "result": "Direct Markdown-event adapter, optional CLI execution, atomic web/PDF output and acceptance foundation"
+    },
+    {
+      "commit": "c8dbd2cd319a5259358150179942dbe78c7b80a1",
+      "result": "Standard book class avoids unavailable memoir dependency; corrected title/footnote targets, table widths and flat-source output"
+    },
+    {
+      "commit": "ff47712931c9442d7a4424dfde4579ff4c52dfad",
+      "result": "Kept headings with following content; guaranteed overflow fixture; cancellation/deadline checks and complete page captures"
+    },
+    {
+      "commit": "bc517e1b531b0078f38789e2c62ffade5f7f9973",
+      "result": "Rootless Docker/Podman/nerdctl identity mapping, fully qualified toolchain name and real rootless Podman acceptance"
+    },
+    {
+      "commit": "de92de27a786e2dd080a8a76c1bcc893662b2233",
+      "result": "Watcher fixture waits for completed preparation and stable missing-root state while asserting preservation, no repeated errors and recovery"
+    }
+  ],
+  "failed_attempts": [
+    {
+      "run": 43353600220,
+      "head": "6444fb15902ab4270344c8d284e72258039bacde",
+      "pdf_jobs": [
+        131650235960,
+        131650235957
+      ],
+      "result": "Both PDF jobs failed: memoir class requires unavailable xpatch.sty. Superseded run cancelled after fix; no larger image or runtime package installation added."
+    },
+    {
+      "run": 43354162015,
+      "head": "c8dbd2cd319a5259358150179942dbe78c7b80a1",
+      "pdf_jobs": [
+        131652182954,
+        131652183068
+      ],
+      "result": "Both jobs produced valid PDFs; overflow fixture unexpectedly hyphenated and did not fail. Corrected to unbreakable monospace token without weakening product guard. Captures exposed orphaned heading, also fixed."
+    },
+    {
+      "scope": "local",
+      "result": "Initial unit assertion assumed an internal page index; corrected to verify actual target. First filtered CLI invocation ran zero tests; complete binary suite rerun. Clippy style/argument-count findings and one ambiguous Result type were fixed before final checks."
+    },
+    {
+      "run": 43355088979,
+      "head": "ff47712931c9442d7a4424dfde4579ff4c52dfad",
+      "result": "21 of 22 jobs, including both PDF jobs, passed before superseding; CLI job cancelled. Final code review found rootless UID mismatch outside this test matrix."
+    },
+    {
+      "run": 43357699459,
+      "head": "bc517e1b531b0078f38789e2c62ffade5f7f9973",
+      "result": "All three PDF jobs passed. Engine unit job 131663684047 failed on an existing watcher fixture assuming exactly one error callback. Fixed in de92de2; remaining run superseded."
+    },
+    {
+      "run": 43358560394,
+      "attempt": 1,
+      "job": 131666463750,
+      "result": "All 490 engine unit tests, including fixed watcher, passed. Later hosting-comment/CRLF preservation case timed out after 30 seconds waiting for a legacy bookmark to enter viewport (check-docs-preservation.mjs:93). Main preservation and other head mutation case passed. One unchanged job retry passed all engine/preservation checks (job 131679984838). Cause of the original viewport timeout was not established."
+    },
+    {
+      "scope": "local test invocation",
+      "result": "Two direct root-level npx vitest invocations could not resolve the workspace executable. Correct npm workspace invocation passed all nine cases; ten repetitions also passed."
+    }
+  ],
+  "local": {
+    "rust_tests": 762,
+    "failed": 0,
+    "ignored": 5,
+    "ignored_reason": "Existing container-only cases run explicitly in hosted CI",
+    "clippy": "cargo clippy --locked --workspace --all-targets -- -D warnings passed",
+    "format": "cargo fmt --all --check passed",
+    "workflow_syntax": "actionlint passed",
+    "javascript": "node --check scripts/check-pdf.mjs passed",
+    "docs": "strict/deep check: 59 routes, 25 validated examples",
+    "no_local_container_or_browser": true,
+    "log_sha256": {
+      "zellij-pdf-rootless-workspace.log": "4854f8887d55fc48fdcf2084e09af16dcea5d3f4f31668a4c031fd239b13d002",
+      "zellij-pdf-rootless-clippy.log": "67fb297f5e26f024fea4437ec5c6b82afef5c2f08b4810eddea1d75f55188d3d",
+      "zellij-pdf-rootless-docs.log": "82be8c2c68719cc0cfa4468e37bba15665cf10c882a2c555fade863f947715ab",
+      "zellij-pdf-watcher-corrected.log": "07f5e33a62f3e2bd3c21f984d08d3d2c1a8d21a306f60a084046354564cd45fc",
+      "zellij-pdf-watcher-repeat.log": "9d4594777bf7ac149c7ecc9826c2fedd40e802b605d4c54740b38b00057a6abb"
+    },
+    "watcher_repetitions": {
+      "runs": 10,
+      "tests_each": 9,
+      "failures": 0
+    },
+    "closure_docs_sha256": "82be8c2c68719cc0cfa4468e37bba15665cf10c882a2c555fade863f947715ab"
+  },
+  "ci": {
+    "run": 43358560394,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394",
+    "attempt": 2,
+    "status": "completed",
+    "pdf_platforms": [
+      "linux/amd64",
+      "linux/arm64"
+    ],
+    "engine_tests": 490,
+    "showcase": {
+      "passed": 356,
+      "skipped": 124
+    },
+    "docs_preservation": {
+      "original_routes": 46,
+      "added_routes": 12,
+      "heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29
+    },
+    "expected_jobs": 23,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 131679984838,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679984838"
+      },
+      {
+        "id": 131679986297,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679986297"
+      },
+      {
+        "id": 131679986526,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679986526"
+      },
+      {
+        "id": 131679987063,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679987063"
+      },
+      {
+        "id": 131679987359,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679987359"
+      },
+      {
+        "id": 131679987562,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679987562"
+      },
+      {
+        "id": 131679987905,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679987905"
+      },
+      {
+        "id": 131679988305,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679988305"
+      },
+      {
+        "id": 131679988434,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679988434"
+      },
+      {
+        "id": 131679988892,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679988892"
+      },
+      {
+        "id": 131679988915,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131679988915"
+      },
+      {
+        "id": 131680017779,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680017779"
+      },
+      {
+        "id": 131680018193,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680018193"
+      },
+      {
+        "id": 131680018387,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680018387"
+      },
+      {
+        "id": 131680018725,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680018725"
+      },
+      {
+        "id": 131680021910,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680021910"
+      },
+      {
+        "id": 131680026854,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680026854"
+      },
+      {
+        "id": 131680031674,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680031674"
+      },
+      {
+        "id": 131680031821,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680031821"
+      },
+      {
+        "id": 131680040235,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680040235"
+      },
+      {
+        "id": 131680040320,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680040320"
+      },
+      {
+        "id": 131680042452,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680042452"
+      },
+      {
+        "id": 131680044540,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43358560394/job/131680044540"
+      }
+    ],
+    "retry": {
+      "original_job": 131666463750,
+      "retry_job": 131679984838,
+      "source_unchanged": true,
+      "result": "All 490 engine tests, documentation preservation and all five browser-regression cases passed. One original legacy-bookmark viewport timeout remains recorded; its cause was not established."
+    }
+  },
+  "pdf": {
+    "artifacts": [
+      {
+        "id": 14007142101,
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "size_in_bytes": 370886,
+        "digest": "sha256:6375fe1b4f756b72746d91b246692e4bbf7c4933ce1020408552463b3535710c"
+      },
+      {
+        "id": 14007027384,
+        "name": "book-pdf-ubuntu-latest-docker",
+        "size_in_bytes": 370881,
+        "digest": "sha256:4e390f11e8c27c1f400488f08fea6b6dabcaf2646b65fcdbf5dbf411ecaf228a"
+      },
+      {
+        "id": 14006488819,
+        "name": "book-pdf-ubuntu-latest-podman",
+        "size_in_bytes": 370883,
+        "digest": "sha256:0408a45472ac8aea83216b63cf7f4d1a78a68a8c943e063fabbf9e389d207e4a"
+      }
+    ],
+    "visual_review": "All eight pages visually reviewed from preliminary AMD64 render. All 24 final-head captures (Docker AMD64/ARM64 and rootless Podman AMD64) match those reviewed images byte-for-byte. Cover, contents, preface, part opener, equations/repeated footnote, table, code and appendix artwork remain readable; corrected heading stays with its table.",
+    "format": "A5, eight pages, PDF 1.7; no JavaScript; untagged (no PDF/UA claim)",
+    "acceptance": "Actual CLI build/check/standalone export; revision and PDF checksum; text, metadata, qpdf structure, internal links/bookmarks; overflow failure preserves previous site/PDF; plain rebuild removes PDF and links.",
+    "platform_results": {
+      "docker-amd64": {
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "15b9b75f8a2a3b60718297b15deb5cfcb7003dbd3d1b5051fa59d62567fea32a",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_bytes": 51193,
+        "pages": 8,
+        "embedded_font_count": 13,
+        "captures": [
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ]
+      },
+      "docker-arm64": {
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "874b779dd7ac6f45411dda1937775618fbf8ea6036c0acde2021a7b55386e783",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_bytes": 51193,
+        "pages": 8,
+        "embedded_font_count": 13,
+        "captures": [
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ]
+      },
+      "podman-amd64": {
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "bf006bb0c2901b7d090bfa079aad6d86a989abe240e32ea9181edd9fca278b59",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_bytes": 51193,
+        "pages": 8,
+        "embedded_font_count": 13,
+        "captures": [
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ]
+      }
+    }
+  },
+  "boundaries": [
+    "First English/LTR A5 classic template only; local PNG/JPEG images and bounded existing math subset",
+    "Configuration-driven PDF builds and PDF-aware preview/delivery remain open",
+    "Multilingual/RTL print, bibliography/index/glossary, semantic numbered equations/theorems and custom/technical/study templates remain open",
+    "No native release, template archive changes or production documentation/domain deployment; rc.5 remains published",
+    "Live provider verification remains deferred",
+    "Actual PDF execution covered rootful Docker on Linux AMD64/ARM64 and rootless Podman on Linux AMD64; rootless Docker/nerdctl have mapping protocol tests, not live execution in this increment."
+  ],
+  "development_engine": {
+    "republished": false,
+    "reason": "No engine runtime, Docker recipe or dependency changes; one engine watcher test fixture changed. Final CI rebuilds both architecture images; no changed functional engine payload requires publishing main images."
+  },
+  "merge_commit": "c6092514f9fd390d60f6b3c9b0f1c6e4d1dbb286",
+  "merge_tree": "aaaa18cc6701b755f80e8810adc13c46dabc5257",
+  "merge_tree_matches_tested_head": true,
+  "native_release_published": false,
+  "production_documentation_deployed": false
+}
