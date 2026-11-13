@@ -161,11 +161,11 @@ And the warnings, which do not stop a build:
 | A folder with content but no `_sidebar.yaml` | Warning — the folder is skipped |
 | An unknown key in `site.yaml` | Warning — forward compatibility |
 
-<Callout type="tip" title="Section-field diagnostics — source after rc.5">
-Newer engine source reports discarded section fields with their file and nested
+<Callout type="tip" title="Section-field diagnostics — included in rc.6">
+The rc.6 engine reports discarded section fields with their file and nested
 field path. Ordinary builds continue, while `check --strict` fails on the
 warnings. This also covers section examples and page-reference overrides.
-Published rc.5 still accepts those fields silently. See
+See
 [hosted checks](/cli/check#errors-and-warnings) for the supported behavior.
 </Callout>
 

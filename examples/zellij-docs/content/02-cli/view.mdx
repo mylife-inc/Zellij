@@ -109,7 +109,7 @@ scanned, so large asset trees cost more to watch; this is not an incremental
 compiler. Output must remain outside the source folder.
 
 Reloading requires JavaScript and the running HTTP preview. The reload client
-in `v0.2.0-rc.5` cancels pending status requests and timers
+in `v0.2.0-rc.6` cancels pending status requests and timers
 when leaving a page, and resumes polling when the browser restores that page
 from its back/forward cache. A response from before navigation cannot trigger
 a stale reload or overwrite the restored page's status.
@@ -158,7 +158,9 @@ config or restart preview. Port/output settings are fixed until restart.
 fields in `content/site.yaml`. To serve a retained hosted export later, use
 `zel serve --base-path /your/prefix` when its `basePath` is nonempty.
 
-## Book PDF previews (source after rc.5)
+<div id="book-pdf-previews-source-after-rc5" className="zellij-legacy-anchor" />
+
+## Book PDF previews
 
 Portable book previews honor `pdf.enabled` in `zel.yaml`. `--pdf` or `--no-pdf`
 overrides it for the complete preview session. In watch mode, website, PDF and

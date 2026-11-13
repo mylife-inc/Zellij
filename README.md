@@ -63,19 +63,25 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-Current-source packaging covers x64 and ARM64 on GNU/Linux, macOS and Windows,
-with installation tests against actual release archives. Windows uses the
-PowerShell installer; Unix uses the shell installer. See the
+[Candidate 0.2.0-rc.6](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.6)
+provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
+pinned shell/PowerShell installers and checksums. Homebrew installation is
+`brew install mylife-inc/tap/zel`. Use the release's matching engine images for
+hosted sites; web-only portable builds need no container runtime. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
-versions, commands and limits. [Candidate 0.2.0-rc.3 is published](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.3)
-for all six platforms, with pinned installers and checksums. All 29
-[release and public-artifact checks](https://github.com/mylife-inc/Zellij/actions/runs/43018433622) passed.
-Use its pinned installation instructions and matching engine images. Stable
-remains `0.1.3`, which predates these workflows. The [candidate notes](specs/releases/v0.2.0-rc.3.md)
-cover the implemented commands and remaining provider/importer/hosting limits.
-See the [release evidence](specs/evidence/zellij-rc3-release-2026-11-11.json) and
-[completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification
-details and the deferred live provider/runner checks.
+versions, commands and limits.
+
+`zel create my-book -t book-classic` creates a complete manuscript with a cover,
+preface, part, chapters and appendix. `zel build my-book --pdf` optionally adds
+a LuaLaTeX PDF and download link using a supported Linux container runtime.
+PDF is off by default. The classic print design supports English/LTR books;
+advanced technical and multilingual publishing remain planned.
+
+The [candidate notes](specs/releases/v0.2.0-rc.6.md) cover templates, composition
+presets, book/PDF publishing and remaining limits. See the
+[release evidence](specs/evidence/zellij-rc6-release-2026-11-13.json) and
+[completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification and
+deferred provider/runner checks. This is a preview, not a stable 1.0 release.
 
 Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
 candidate channels, pinned installation, and stable documentation publication.

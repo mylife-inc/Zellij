@@ -23,18 +23,17 @@ There is a well-known terminal multiplexer called Zellij whose binary is
 
 ## Installing
 
-[Candidate 0.2.0-rc.5](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.5)
+[Candidate 0.2.0-rc.6](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.6)
 targets GNU/Linux, macOS and Windows on x64 and ARM64. Check the release page
 for publication status, pinned installers, package checksums and release notes.
-This reference covers candidate `0.2.0-rc.5`, including separate company branding,
+This reference covers candidate `0.2.0-rc.6`, including separate company branding,
 preview upgrades, versioned templates and matching default engine versions. Pre-1.0 installation uses
 explicit candidates; obsolete distributions are retired after their replacements
 are verified.
 
-The rc.6 candidate source additionally includes composition presets, book
-publication, optional PDF build/preview/delivery and book-classic 0.2.0.
-These additions require rc.6 or later; the published rc.5 installer below does
-not include them. Release preparation is separate from publication.
+Candidate rc.6 also includes composition presets, book publication, optional
+PDF build/preview/delivery and book-classic 0.2.0. The installers below select
+this release and its matching engine images.
 
 ### Homebrew on macOS and Linux
 
@@ -50,13 +49,14 @@ brew uninstall zel
 The tap README identifies its currently published version. Until 1.0, the formula
 clearly labels development previews. It installs Bash, Zsh and Fish completions
 and verifies archive checksums. No Node or container runtime is installed for
-portable documentation. Hosted commands require a supported container runtime.
+portable web-only documentation. Hosted commands and optional PDF typesetting
+require a supported container runtime.
 Use Homebrew to update a Homebrew installation; `zel upgrade` detects its
 ownership marker and prints the correct command without changing any files.
 
 ### Native archives and installers
 
-The current source implements every registered command family. Imports cover
+Candidate rc.6 implements every registered command family. Imports cover
 MkDocs, Docusaurus, VitePress, Jekyll, Hugo and Sphinx within their documented
 declarative subsets. Deployment supports Netlify, Cloudflare Pages, Vercel,
 GitHub Pages, S3, existing Fly web apps, Railway image services and image
@@ -72,15 +72,15 @@ for current evidence. Command availability does not promise full source-tool
 plugin/theme compatibility or support for an unlisted provider.
 
 ```bash title="terminal"
-curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5/install.sh -o install.sh
-ZEL_VERSION=v0.2.0-rc.5 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.5 sh ./install.sh
+curl -fsSL https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.6/install.sh -o install.sh
+ZEL_VERSION=v0.2.0-rc.6 ZEL_RELEASE_BASE_URL=https://github.com/mylife-inc/Zellij/releases/download/v0.2.0-rc.6 sh ./install.sh
 ```
 
 Or download the archive for your platform, verify it against its `.sha256`, and
 put `zel` on your PATH. See [the Quickstart](/guide/quickstart) for the detail.
 
 For Windows, use the candidate release page's pinned PowerShell instructions.
-They download its attached `install.ps1` and select version `v0.2.0-rc.5` and
+They download its attached `install.ps1` and select version `v0.2.0-rc.6` and
 that release's asset directory. The installer supports
 Windows PowerShell 5.1 and PowerShell 7, selects x64 or ARM64, verifies the
 checksum and executable version, and installs into
@@ -92,7 +92,7 @@ for the default user location.
 Both candidate installers preserve an existing executable if validation
 fails. The Windows installer requires a native Windows archive; a Linux archive
 is used only inside WSL. Native portable `build`, `check`, `dev`, `serve` and `view`
-need no container runtime.
+need no container runtime for web-only output.
 
 The standalone installers require an explicit candidate version. Follow the candidate release
 page's pinned instructions: they download the installer attached to that release
@@ -103,10 +103,10 @@ The default hosted/container engine now matches the CLI version. To explicitly
 select an engine for this session:
 
 ```bash
-export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+export ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
 ```
 
-In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5'`.
+In PowerShell, use `$env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6'`.
 Image tags omit the version's leading `v`; candidates do not update `latest`.
 
 ## What it does
@@ -128,7 +128,7 @@ Image tags omit the version's leading `v`; candidates do not update `latest`.
   </Card>
 </CardGrid>
 
-Candidate rc.5 includes template browsing and `zel create`. See
+Candidate rc.6 includes template browsing and `zel create`. See
 [templates](/cli/templates) for offline starters, exact revisions and local catalogs.
 
 ## The whole surface
@@ -151,7 +151,7 @@ Candidate rc.5 includes template browsing and `zel create`. See
 | [`zel serve`](/cli/serve) | Preview an existing export over local HTTP | **Available** |
 | [`zel view`](/cli/view) | Build portable or hosted content, serve it, and open a browser | **Available** |
 | [`zel build`](/cli/build) | Portable Markdown, a hosted site, or a container image | **Available** |
-| [`zel export pdf`](/cli/books#optional-pdf-export-current-source) | Standalone book PDF; shortcut `zel pdf`; `build --pdf` publishes web and PDF together | **Source after rc.5** |
+| [`zel export pdf`](/cli/books#optional-pdf-export-current-source) | Standalone book PDF; shortcut `zel pdf`; `build --pdf` publishes web and PDF together | **Available** |
 | [`zel deploy`](/cli/deploy) | Deploy static HTML to Netlify, Cloudflare Pages, Vercel, GitHub Pages or S3, or images to existing Fly apps or Railway services; shortcuts `netlify` / `cf` / `vc` / `ghp` / `s3` / `fly` / `rw` | **Available** |
 | [`zel image`](/cli/image) | Static-site and Next.js images; run and push | **Available** |
 | [`zel ci`](/cli/ci) | Write a pipeline that does all of it on push | **Available** |
@@ -166,8 +166,7 @@ Candidate rc.5 includes template browsing and `zel create`. See
 | [`zel completions`](/cli/completions) | Generate shell completion scripts; shortcut `comp` | **Available** |
 
 <Callout type="info" title="Source and release versions">
-Rows marked **Available** are included in candidate `0.2.0-rc.5`; the PDF row
-requires current source. A command's page records its
+Rows marked **Available** are included in candidate `0.2.0-rc.6`. A command's page records its
 supported renderers, providers and options; availability does not imply every
 historical proposal is implemented. Stable `0.1.3` does not include the full table.
 </Callout>

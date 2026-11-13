@@ -67,14 +67,14 @@ See [conversion limits](/cli/convert).
 | `--validate` | Accepted for parity with `convert`; migration already validates |
 | `--dry-run` | In-memory conversion only; no writes or validation |
 
-The current source supports `--assets skip` for document-only imports. Asset
+Candidate rc.6 supports `--assets skip` for document-only imports. Asset
 references remain unchanged and may need manual repair; document links still
 convert normally. See [asset policy](/cli/convert#document-links-and-assets).
 To use existing public assets, add `--assets link --asset-base-url
 https://cdn.example.com/manual/`. Migration saves the resulting absolute URLs
 in the converted content and copies no referenced assets. The report lists
 those URLs; validation does not test their remote availability. The asset and
-optional validation flags are available in candidate `0.2.0-rc.5`.
+optional validation flags are available in candidate `0.2.0-rc.6`.
 
 ## See also
 

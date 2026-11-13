@@ -75,3 +75,56 @@ No live provider verification or production-domain migration is part of this
 increment. Multilingual/RTL print, bibliography/index/glossary, numbered
 equation/theorem semantics, richer templates and additional package-manager
 channels remain open.
+
+## Merged source and publication gate
+
+PR #155 merged as `668e8faa47a7d4a435c71f63a51b903838a12f48`, with the same tree
+as tested `70ca56442322b108310845d2755449b67b7df831`. All 23 jobs in `43484785719`
+pass. The first Apple Silicon package attempt was cancelled before a runner was
+assigned; GitHub explicitly reported macOS ARM64 capacity constraints. Its
+unchanged-head retry and all four dependent Homebrew checks pass. The first
+retry request was rejected because the workflow was still running, so the
+specific job was retried after all other checks completed. No product fix was
+needed for this infrastructure event.
+
+All 12 final-head PDFs have valid checksums, shared content revisions and embedded
+fonts. Their 87 page captures and all eight template browser captures match the
+visually reviewed baseline. Hosted acceptance passed 490 engine tests, 356
+showcase cases (124 conditional skips), all six native packages, original docs
+route/heading/image preservation and portable Linux/macOS/Windows checks.
+
+The release helper passed 770 Rust tests (five existing hosted-only cases), 490
+engine tests, typechecks, schema drift, formatting and warnings-denied Clippy.
+It pushed immutable tag `v0.2.0-rc.6` at the merge. Release workflow `43492620884`
+was explicitly dispatched because the reviewed merge skipped duplicate push CI.
+Its publication/public-download acceptance is pending; a tag alone is not a
+verified public release.
+
+
+## Public release closure — 2026-11-13
+
+rc.6 is published from the unchanged merge/tag. Both release repositories have
+20 byte-identical assets, checked against API digests, SHA256SUMS and the template
+catalog. Product template archives remain byte-identical to rc.5; the newly
+published book-classic 0.2.0 hash is now recorded in the immutable archive ledger.
+The real public standalone rc.5-to-rc.6 upgrade passed in an isolated directory.
+
+Release packaging needed one controlled retry after the Apple Silicon job waited
+unassigned; all completed build jobs had passed. Publication then succeeded.
+The original release run finished with 28 successful jobs and one PDF acceptance
+failure: Linux ARM64 selected preinstalled rootless Podman, which lacked the CPU
+cgroup controller. The Docker-discovery fallback cause was not recorded. No
+release asset or tag was changed. Harness `3d26a96` selects/preflights the hosted
+Docker endpoint explicitly, as the dedicated Docker PDF jobs already do.
+All eight public jobs in `43496517451` now pass against the published rc.6 tag.
+All eight public PDFs have matching extracted text, valid receipts/revisions and
+embedded fonts. Their 58 page captures are pixel-identical to the reviewed source
+layouts; binary PDF timestamps and PNG encodings differ across runs/platforms.
+
+Homebrew commit `1555b7d` contains the exact attached formula and passes all four
+public native install/upgrade/uninstall jobs in `43497080249`. Shared installer
+docs are updated at `7cb742c`; installer files remain byte-identical to the tag.
+The source documentation and six saved delivery workflows are retargeted in the
+publication follow-up. Its CI, consumer images and scoped retirement remain
+separate gates. No old distributions or CodeSeal assets were removed here.
+See [release evidence](evidence/zellij-rc6-release-2026-11-13.json).

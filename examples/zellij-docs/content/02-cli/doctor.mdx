@@ -5,8 +5,8 @@ description: Diagnose selected site settings and required container tooling.
 
 <div id="what-it-is-for" className="zellij-legacy-anchor" />
 
-<Callout type="tip" title="Available in candidate 0.2.0-rc.5">
-Site-aware diagnostics and JSON reports are included in candidate `0.2.0-rc.5`. Deployment credentials and
+<Callout type="tip" title="Available in candidate 0.2.0-rc.6">
+Site-aware diagnostics and JSON reports are included in candidate `0.2.0-rc.6`. Deployment credentials and
 remote services are not checked.
 </Callout>
 
@@ -50,7 +50,7 @@ not write configuration, generate output, pull images or start services.
 | Operation | Container runtime required? |
 | --- | --- |
 | Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |
-| Portable book PDF generation (source after rc.5) | Yes; `--pdf` or saved `pdf.enabled: true` opts in |
+| Portable book PDF generation (rc.6+) | Yes; `--pdf` or saved `pdf.enabled: true` opts in |
 | Implemented scaffolding, `explain`, `list`, `context`, `detect`, `convert` | No |
 | `publish --dry-run` | No; resolves a saved plan without validation or credential checks |
 | `publish` / `pub` with image push | Yes; builds and pushes the configured image |
@@ -132,12 +132,12 @@ image and whether inspection found it locally.
 A failed inspection is reported as not pulled; a timeout or an unavailable
 inspection is reported as unknown. This check never pulls an image.
 
-The default tag matches the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5`
+The default tag matches the CLI version: `ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6`
 for this release. Override it when your
 organisation mirrors the image internally:
 
 ```bash title="terminal"
-ZELLIJ_IMAGE=registry.internal/zellij-base:0.2.0-rc.5 zel doctor
+ZELLIJ_IMAGE=registry.internal/zellij-base:0.2.0-rc.6 zel doctor
 ```
 
 The first container operation may download an absent image. Hosted builds also
@@ -178,7 +178,7 @@ report starts and keep the CLI's ordinary stderr diagnostics.
 
 ## Housekeeping
 
-These commands are available in candidate `0.2.0-rc.5`. Stable `0.1.3` predates
+These commands are available in candidate `0.2.0-rc.6`. Stable `0.1.3` predates
 them; use the candidate's [pinned installation instructions](/cli).
 
 | Command | Purpose |
@@ -200,7 +200,9 @@ replacing the executable. `zel --version` retains its compact binary version.
 - [`zel check`](/cli/check)
 - [`zel image`](/cli/image)
 
-## PDF preflight (source after rc.5)
+<div id="pdf-preflight-source-after-rc5" className="zellij-legacy-anchor" />
+
+## PDF preflight
 
 When a portable book explicitly sets `pdf.enabled: true`, `doctor` checks its
 print settings and the selected runtime's user mapping. It reports the pinned

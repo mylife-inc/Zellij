@@ -1,12 +1,11 @@
 ---
 title: Books and reading order
-description: Define a book once, validate its complete manuscript, and build an offline reading website.
+description: Define a book once, validate its manuscript, and build an offline reading website with an optional LuaLaTeX PDF.
 ---
 
-<Callout type="info" title="Included in the rc.6 candidate source">
-The rc.6 source includes the versioned book manifest, `book-classic@0.2.0`
-and optional LuaLaTeX PDFs. Published rc.5 binaries do not accept these features;
-check release availability before installing a new candidate. Advanced
+<Callout type="info" title="Included in candidate 0.2.0-rc.6">
+Candidate rc.6 includes the versioned book manifest, `book-classic@0.2.0`
+and optional LuaLaTeX PDFs on all six native platforms. Advanced
 indexes, bibliography, multilingual print and technical/study templates remain planned.
 </Callout>
 
@@ -135,9 +134,8 @@ reading order, chapter markers and title-page content. Its public
 `routes` (entry IDs mapped to hosted routes). Apply the deployment's configured
 `basePath` to both this URL and the mapped routes: the map contains unprefixed
 content routes, not complete deployment URLs. Its portable `href` fields are not
-hosted route declarations. Use a matching source engine for source-only features;
-rc.5's version-pinned engine predates this model. Native portable builds require
-no external renderer.
+hosted route declarations. Use the matching rc.6 engine image or later. Native
+portable web builds require no external renderer.
 
 ## Start from the existing book template
 
@@ -153,7 +151,7 @@ zel build my-book --pdf
 Book-classic 0.2.0 creates a ready-to-edit manifest, preface, part, two chapters,
 appendix and original PNG cover. The title page and table of contents are
 generated from the manifest. PDF is off by default; the last command explicitly
-uses the optional LaTeX container runtime. Edit `book` and `pdf` settings in
+uses the optional LuaLaTeX toolchain in a supported container runtime. Edit `book` and `pdf` settings in
 `zel.yaml`, then replace the sample prose and cover under `content/`.
 
 The earlier 0.1.0 starter shipped with rc.5 remains immutable. To migrate an
@@ -162,9 +160,11 @@ manifest listing its preface and chapter files; leave its authored `index.md`
 unlisted. Creating a new template never overwrites an existing manuscript.
 
 The shared publication model also supplies the optional build-time PDF adapter
-described below. Published rc.5 does not include it.
+described below.
 
-## Optional PDF export (current source)
+<div id="optional-pdf-export-current-source" className="zellij-legacy-anchor" />
+
+## Optional PDF export
 
 The first print adapter produces an English/LTR book through LuaLaTeX, with A5 as the default paper size:
 
@@ -240,10 +240,9 @@ Generated GitHub, GitLab and CircleCI jobs inherit the saved PDF settings.
 GitHub and CircleCI use their existing Linux machine runners; GitLab enables its
 Docker service and shared build directory even for a portable PDF build. Runner
 setup must allow the CLI and runtime to bind the same temporary paths.
-Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**. This is a
-minimum compatibility version, not a claim that rc.6 has been published. Source
-users can generate the workflow with `--zel-version 0.2.0-rc.6`, then run it only
-after that release exists. Current published rc.5 cannot run these commands.
+Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**.
+Generate the workflow with `--zel-version 0.2.0-rc.6` to select this published
+candidate. Earlier binaries do not support these settings.
 
 ### Toolchain and failure behavior
 
@@ -255,6 +254,15 @@ multi-platform digest and supplies LuaLaTeX and Latin Modern fonts.
 The adapter emits TeX directly; it does not ask Pandoc to reinterpret Markdown.
 This optional image adds no TeX dependencies to the CLI or normal website images.
 First use may download it; subsequent builds can use the cached image offline.
+
+Rootless runtimes must also support the CPU, memory and process limits used by
+the PDF container. A successful `podman info` alone does not establish this:
+missing delegated cgroup controllers can still prevent typesetting. See
+[Podman's resource-limit requirements](https://docs.podman.io/en/stable/markdown/podman-run.1.html#cpus-number).
+If several runtimes are installed, select the configured endpoint explicitly
+(for example, `DOCKER_CONTEXT=default zel build my-book --pdf` for the default
+Docker context). Zellij preserves the previous output if the runtime rejects
+the PDF container; it does not silently remove its resource limits.
 
 Typesetting runs with network disabled, a read-only container root, dropped
 capabilities, no privilege escalation, resource limits and shell escape disabled.

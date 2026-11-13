@@ -9,7 +9,7 @@ code in `product/`. The documentation folder contains `zel.yaml`, authored
 allowed with `--docs-dir`.
 
 <Callout type="warning" title="Compatible release required for CI">
-With candidate `0.2.0-rc.5`, the generated workflow pins that published release
+With candidate `0.2.0-rc.6`, the generated workflow pins that published release
 and its matching engine image. Stable `0.1.3` cannot run the configured-site
 commands. Generation does not publish a release or provision credentials.
 </Callout>
@@ -66,12 +66,12 @@ publish and do not receive deployment credentials.
 To regenerate this legacy image-publication preset after initializing Git:
 
 ```bash
-zel ci --target image --zel-version 0.2.0-rc.5 --force
+zel ci --target image --zel-version 0.2.0-rc.6 --force
 ```
 
 For an explicit static or Next artifact and a fixed registry destination, add
 saved `image` and `publish` settings as described in [publication](/cli/publish),
-then use `zel ci --zel-version 0.2.0-rc.5 --force`.
+then use `zel ci --zel-version 0.2.0-rc.6 --force`.
 
 </Step>
 <Step title="Commit and push after the release is available">
@@ -117,7 +117,7 @@ publish:
   provider: netlify
   site: your-existing-site-id
 ci:
-  zel-version: 0.2.0-rc.5
+  zel-version: 0.2.0-rc.6
   production: false
 ```
 

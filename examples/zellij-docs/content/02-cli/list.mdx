@@ -21,8 +21,7 @@ you have.
 
 ## Why it exists
 
-The published rc.5 catalog has 23 section types and fourteen themes; newer
-source adds [`compose`](/sections/compose) and [`media-accordion`](/sections/media-accordion). Nobody holds that in
+The rc.6 catalog has 25 section types and fourteen themes, including [`compose`](/sections/compose) and [`media-accordion`](/sections/media-accordion). Nobody holds that in
 their head, and the failure it prevents is specific: writing a plausible
 section type that the build rejects, or picking a theme name that does not
 exist and finding out four minutes into a build.
@@ -34,10 +33,10 @@ binary in your hand may not be it.
 
 ## `zel list sections`
 
-Current source also has `zel list presets` (short form: `zel presets`), listing
+Candidate rc.6 also has `zel list presets` (short form: `zel presets`), listing
 the four offline section compositions. `--json` returns a `presets` array of
 `name`, `sectionType` and `description`. Generate one with `zel ns -p <name>`.
-This is newer than published rc.5; see [composition presets](/sections/compose#named-presets).
+See [composition presets](/sections/compose#named-presets).
 
 ```
 bento-grid       3 fields, 1 required

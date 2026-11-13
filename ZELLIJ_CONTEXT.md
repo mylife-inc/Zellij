@@ -3,10 +3,26 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current work: `codex/book-starter-rc6` versions book-classic at 0.2.0, with a
-shared book manifest and optional PDF, validates template print declarations,
-and prepares the rc.6 candidate. Verification/publication is pending; rc.5
-remains published. See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
+PR #155 (`668e8fa`) merges book-classic 0.2.0 and rc.6 preparation, with the
+same tree as tested head `70ca564`. All 23 final-head CI jobs in `43484785719`
+pass. GitHub cancelled the first unassigned Apple Silicon runner for capacity;
+its unchanged-head retry and all four Homebrew checks pass. Local release
+preflight passed 770 Rust tests, 490 engine tests, typechecks, schema drift,
+formatting and Clippy. Twelve PDFs and all 87 page captures pass, with all eight
+mobile/desktop template captures matching visual review. The immutable rc.6 tag
+points at this merge. Release workflow `43492620884` published rc.6 to both
+repositories with 20 byte-identical assets. Public Linux ARM64 PDF acceptance
+selected unconfigured rootless Podman and failed its CPU resource controller;
+`3d26a96` explicitly selects/preflights hosted Docker. Separate public acceptance
+`43496517451` passes all eight jobs against the unchanged release. All eight
+public PDFs have matching text and embedded fonts; all 58 page captures are
+pixel-identical to the reviewed source layouts. Homebrew `1555b7d` passes all
+four public install/upgrade/uninstall jobs in `43497080249`; mirror installation
+docs are at `7cb742c`. The actual standalone rc.5-to-rc.6 upgrade passed.
+See [rc.6 evidence](specs/evidence/zellij-rc6-release-2026-11-13.json).
+Source documentation/consumer migration is under review. Keep rc.5 until all
+replacement gates pass; do not reuse the old rc.5 image-retirement plan.
+See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
 
 PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and
 static delivery/images, with the same tree as tested head `ecfbfba`. All 23 jobs
@@ -17,8 +33,8 @@ nine valid PDFs; all 66 captures match the reviewed A5/A4/Letter layouts.
 Configured PDF static images are about 7.2 MB amd64 / 14.0 MB arm64 uncompressed,
 without LaTeX/Node/Rust. See [the checkpoint](specs/zellij-pdf-configuration-2026-11-12.md)
 and [evidence](specs/evidence/zellij-pdf-configuration-2026-11-12.json).
-Published rc.5 remains unchanged. Next: version the book starter around the new
-publication model and optional PDF settings, then prepare rc.6 and its docs.
+At this configuration milestone rc.5 remained published. PR #155 subsequently
+versioned the starter and published rc.6; see the current status above.
 
 PR #149 (`72a8445`) merges the versioned book publication model, with the same
 tree as tested head `2b5cfec`. Its portable manifest drives ordered front matter,
@@ -32,8 +48,8 @@ and two Windows captures were visually reviewed. See
 [the book checkpoint](specs/zellij-book-publication-2026-11-12.md),
 [evidence](specs/evidence/zellij-book-publication-2026-11-12.json) and
 [authoring guide](examples/zellij-docs/content/02-cli/books.mdx). PDF/LaTeX execution
-was still pending at this book-model milestone; its first pipeline closure follows below. Published rc.5 and production documentation/domain
-are unchanged; the new book fields require current source.
+was still pending at this book-model milestone; its first pipeline closure follows below. At that milestone rc.5 and the production domain were unchanged; these book
+fields subsequently shipped in rc.6.
 All 13 development-engine jobs in `43328363366` passed, publishing the four
 `main` variants for Linux amd64/arm64 and building/serving a site from the image.
 
@@ -62,7 +78,7 @@ and PDF-aware preview/delivery were still open. PR #153 closes those two gaps
 and adds A4/Letter and 10/11/12pt settings. Multilingual print,
 bibliography/index/glossary, numbered equation/theorem semantics and richer book
 templates remain open.
-Published rc.5 and production documentation/domain are unchanged. No development
+At that PDF milestone rc.5 and the production domain were unchanged. No development
 engine refresh was needed: Node runtime inputs are unchanged (one test fixture
 changed); the optional PDF toolchain is separate.
 
@@ -73,11 +89,11 @@ The company was originally called MyLife and was renamed because of domain-name
 availability. The user owns the existing GitHub account **`mylife-inc`** and
 explicitly accepts keeping that namespace for Zellij and Homebrew. The live
 installation command is **`brew install mylife-inc/tap/zel`**, selecting the
-current rc.5 preview. Use Shebka for company-facing branding and retain `mylife-inc`
+current rc.6 preview. Use Shebka for company-facing branding and retain `mylife-inc`
 for existing repository/distribution identifiers. A GitHub account rename or
 move to a `shebka` namespace is not needed for this plan.
 
-Current distribution: **v0.2.0-rc.5 is published** from PR #138 merge
+Historical rc.5 distribution baseline: **v0.2.0-rc.5 was published** from PR #138 merge
 `a92c2e9f9d82abf5b75ea31bd825117cf86f9ec7`, with the same tree as tested head
 `3a9f80771b48ffae3f57e8fa3d8be870848db889`. All **20 final-head CI jobs** in
 `43180055105` and **29 release jobs** in `43185514003` passed. Source and public
@@ -92,7 +108,7 @@ retry after container discovery timed out; the original failure is recorded.
 Both replacement acceptance images, all 13 development-engine jobs and fresh-pull
 HTTP checks passed. Exactly two rc.4 release entries, 32 assets and two remote
 tags were retired; rc.5 and both CodeSeal releases retain their original asset
-identities/checksums. Preview upgrade lookup selects rc.5. See
+identities/checksums. Preview upgrade lookup then selected rc.5. See
 [native retirement evidence](specs/evidence/zellij-rc5-native-retirement-2026-11-12.json).
 
 Historical rc.4 distribution baseline (superseded by rc.5): **v0.2.0-rc.4 was published** from PR #135 merge
@@ -148,15 +164,15 @@ starters: product-docs, product-studio and book-classic, all version 0.1.0.
 Release archives/catalogs are identical across source and public mirror; public
 installed-binary acceptance covers both and offline cache reuse. Six hosted
 mobile/desktop previews were visually reviewed. The book publication model is
-now merged after rc.5 (PR #149 above), followed by the first optional PDF/LaTeX
-pipeline (PR #151). Technical/study editions and richer print semantics remain open. Released template archives remain immutable.
+included in rc.6 (PR #149 above), followed by the first optional PDF/LaTeX
+pipeline (PR #151) and book-classic 0.2.0 (PR #155). Technical/study editions and richer print semantics remain open. Released template archives remain immutable.
 
 Review fixes: `c370987` rejects ancestor directory capitalization collisions;
 `6810aee` corrects six card bodies lost through wrong YAML keys and guards official
 templates against stripped fields; `3a9f807` aligns the standalone Docker recipe
-with the CLI version. Published rc.5 still silently strips unknown section
-fields. PR #141 (`3008a16`) addresses that
-in engine source: discarded fields warn in referenced YAML/Markdown sections,
+with the CLI version. Historical rc.5 silently strips unknown section
+fields. PR #141 (`3008a16`), included in rc.6, addresses that
+in the engine: discarded fields warn in referenced YAML/Markdown sections,
 examples, legacy inline sections and page overrides; strict checks fail. Field
 paths include nested arrays, while diagnostic values stay private. Normal builds
 continue, and defaults/coercions/retained extension fields remain accepted.
