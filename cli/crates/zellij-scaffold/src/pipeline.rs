@@ -50,6 +50,8 @@ pub enum Publish {
 #[derive(Debug, Clone)]
 pub struct CiOptions {
     pub renderer: zellij_core::site::Renderer,
+    /// None: no PDF configuration; Some(false): settings require a compatible CLI but no runtime.
+    pub pdf: Option<bool>,
     pub site_root: String,
     pub config: Option<String>,
     pub settings: Settings,
@@ -135,6 +137,35 @@ struct Prepared {
     selector: &'static str,
 }
 fn prepare(options: &CiOptions) -> Result<Prepared> {
+    if options.pdf.is_some() {
+        if options.pdf == Some(true)
+            && (options.renderer != zellij_core::site::Renderer::Portable
+                || matches!(
+                    options.publish,
+                    Publish::Image {
+                        kind: ImageKind::Next,
+                        ..
+                    } | Publish::Fly {
+                        kind: ImageKind::Next,
+                        ..
+                    } | Publish::Railway {
+                        kind: ImageKind::Next,
+                        ..
+                    } | Publish::LegacyImage
+                ))
+        {
+            return Err(invalid(
+                "PDF-enabled CI requires a portable site and static output/image",
+            ));
+        }
+        if !semver::Version::parse(options.version.trim_start_matches('v'))
+            .is_ok_and(|v| v >= semver::Version::parse("0.2.0-rc.6").unwrap())
+        {
+            return Err(invalid(
+                "PDF configuration requires CLI 0.2.0-rc.6 or later; pin ci.zel-version or --zel-version. Generation does not verify that the release has been published.",
+            ));
+        }
+    }
     let CiOptions {
         site_root,
         config,
@@ -610,6 +641,7 @@ mod tests {
     fn options(publish: Publish) -> CiOptions {
         CiOptions {
             renderer: zellij_core::site::Renderer::Hosted,
+            pdf: None,
             site_root: "docs/Team's [manual] 日本".into(),
             config: None,
             settings: Settings::default(),

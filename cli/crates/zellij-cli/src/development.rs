@@ -19,6 +19,7 @@ pub fn run(
     open: bool,
     browser: Option<&str>,
     features: Option<Features>,
+    pdf: Option<bool>,
 ) -> Result<()> {
     let dir = crate::select_site(dir)?;
     let site = zellij_core::site::Site::load(&dir)?;
@@ -36,8 +37,14 @@ pub fn run(
                 no_open: !open && browser.is_none(),
                 browser,
                 watch: true,
+                pdf,
             },
         );
+    }
+    if pdf == Some(true) {
+        return Err(Error::InvalidArgument(
+            "--pdf requires a portable book".into(),
+        ));
     }
     if port == 0 {
         return Err(Error::InvalidArgument("hosted dev requires --port 1–65535; use view --watch --port 0 for an automatically selected static preview port".into()));

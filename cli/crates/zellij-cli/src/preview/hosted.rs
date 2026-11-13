@@ -58,6 +58,11 @@ fn prepare(
 }
 
 pub(super) fn view(site: Site, options: ViewOptions<'_>) -> Result<()> {
+    if options.pdf == Some(true) {
+        return Err(Error::InvalidArgument(
+            "--pdf requires a portable book".into(),
+        ));
+    }
     if options.name.is_some() || options.theme.is_some() {
         return Err(Error::InvalidArgument("--name and --theme apply only to portable previews; configure hosted sites in content/site.yaml".into()));
     }

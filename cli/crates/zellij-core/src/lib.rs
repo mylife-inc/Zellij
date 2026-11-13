@@ -14,6 +14,7 @@ pub mod features;
 pub mod files;
 pub mod network;
 pub mod output;
+pub mod pdf;
 pub mod process;
 pub mod project;
 pub mod reporting;

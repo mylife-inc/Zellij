@@ -12,6 +12,7 @@ use zellij_core::{Error, Result, files, output::StaticOutput, site::SiteInput};
 pub struct Source {
     pub files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     pub revision: String,
+    pub settings: zellij_core::pdf::Settings,
 }
 pub struct Prepared {
     stage: StaticOutput,
@@ -365,7 +366,9 @@ pub(crate) fn compose(
     pages: &[Page],
     rewritten: &[Vec<Event<'static>>],
     assets: &BTreeMap<Utf8PathBuf, Vec<u8>>,
+    settings: &zellij_core::pdf::Settings,
 ) -> Result<Source> {
+    settings.validate()?;
     let m = &book.manifest;
     if m.direction.as_str() != "ltr"
         || !m
@@ -386,7 +389,9 @@ pub(crate) fn compose(
         images: BTreeMap::new(),
         notes: BTreeSet::new(),
     };
-    let mut out = include_str!("../assets/book.tex").to_owned();
+    let mut out = include_str!("../assets/book.tex")
+        .replace("@PAPER@", settings.paper.latex())
+        .replace("@FONT_SIZE@", &settings.font_size.to_string());
     out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n",tex(&m.title),tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")),book.revision,tex(&m.title)));
     if book.entries[0].source.is_none() {
         out.push_str(&format!(
@@ -524,5 +529,6 @@ pub(crate) fn compose(
     Ok(Source {
         files: w.files,
         revision: book.revision.clone(),
+        settings: settings.clone(),
     })
 }

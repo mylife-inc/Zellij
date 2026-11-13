@@ -624,3 +624,12 @@ Local tests execute generated scripts with fake tools. GitHub-hosted acceptance
 replays their image publication and manifest commands against a disposable
 registry on native Linux architectures. Live runs on actual GitLab and CircleCI
 projects remain a separate acceptance step; account access is needed for those.
+
+## Book PDF delivery (source after rc.5)
+
+Portable books with `pdf.enabled: true` generate the website and matching PDF
+before static deployment or static-image packaging. This opt-in requires the
+optional LaTeX container runtime; PDF failure stops delivery. Generated CI
+requires a compatible release pin and, for GitLab, a shared Docker build directory.
+See [static book publication and CI](/cli/books#static-publication-and-ci) for
+supported output kinds, release requirements and configuration.

@@ -109,7 +109,16 @@ fn main() {
             host,
             open,
             ref browser,
-        } => development::run(dir.as_ref(), port, host, open, browser.as_deref(), features),
+            pdf,
+        } => development::run(
+            dir.as_ref(),
+            port,
+            host,
+            open,
+            browser.as_deref(),
+            features,
+            pdf.selected(),
+        ),
         Command::Fmt { ref dir, check } => formatting::run(dir.as_ref(), check),
         Command::Watch {
             ref dir,
@@ -131,6 +140,7 @@ fn main() {
             no_open,
             ref browser,
             watch,
+            pdf,
         } => preview::view(
             dir.as_ref(),
             preview::ViewOptions {
@@ -143,6 +153,7 @@ fn main() {
                 no_open,
                 browser: browser.as_deref(),
                 watch,
+                pdf: pdf.selected(),
             },
         ),
         Command::Export { ref format } => match format {
@@ -171,7 +182,7 @@ fn main() {
             },
             platform,
             hosted_options: &overrides.options(features),
-            pdf,
+            pdf: pdf.selected(),
         }),
         Command::Image { ref action } => match action {
             ImageAction::Static(SiteImageArgs {
@@ -387,7 +398,7 @@ struct BuildInvocation<'a> {
     options: zellij_docs::BuildOptions<'a>,
     platform: Option<zellij_core::delivery::ImagePlatform>,
     hosted_options: &'a zellij_engine::BuildOptions,
-    pdf: bool,
+    pdf: Option<bool>,
 }
 fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     let BuildInvocation {
@@ -406,9 +417,9 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
         Some(target) => target,
         None => default_target(dir)?,
     };
-    if pdf && target != "portable" {
+    if target != "portable" && (pdf.is_some() || zellij_core::site::Site::load(dir)?.pdf.enabled) {
         return Err(zellij_core::Error::InvalidArgument(
-            "--pdf requires a portable book; hosted PDF export is not implemented".into(),
+            "PDF settings and --pdf/--no-pdf require --target portable; use image static for PDF packaging, or disable pdf.enabled for web-only Next images".into(),
         ));
     }
     if target != "portable" && (options.name.is_some() || options.theme.is_some()) {
@@ -428,11 +439,7 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     match target {
         "portable" => {
             images::require_native_options(hosted_options)?;
-            let output = if pdf {
-                pdf::build(dir, out, options)?
-            } else {
-                build_portable(dir, out, options)?
-            };
+            let output = pdf::build(dir, out, options, pdf)?;
             zellij_core::statusln!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
                 output.join("index.html")
@@ -452,24 +459,6 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
             "unknown build target {target:?}; run zel list targets"
         ))),
     }
-}
-
-fn build_portable(
-    dir: &SiteInput,
-    out: Option<&str>,
-    options: zellij_docs::BuildOptions<'_>,
-) -> zellij_core::Result<Utf8PathBuf> {
-    let source = dir;
-    let output = out
-        .map(Utf8PathBuf::from)
-        .map(Ok)
-        .unwrap_or_else(|| zellij_docs::default_output(source))?;
-    let report = zellij_docs::build(source, &output, options)?;
-    for warning in report.warnings {
-        zellij_core::diagnosticln!("warning: {warning}");
-    }
-    zellij_core::statusln!("✓ {output}  ({} HTML pages)", report.pages);
-    Ok(output)
 }
 
 fn build(

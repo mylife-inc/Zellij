@@ -349,6 +349,8 @@ pub(crate) enum Command {
         /// Override this session: maths, diagrams, maths,diagrams, all, or none.
         #[arg(long)]
         features: Option<Features>,
+        #[command(flatten)]
+        pdf: PdfSelection,
     },
 
     /// Build the site.
@@ -357,9 +359,8 @@ pub(crate) enum Command {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
 
-        /// Also generate a LaTeX PDF for a portable book (requires a container runtime).
-        #[arg(long)]
-        pdf: bool,
+        #[command(flatten)]
+        pdf: PdfSelection,
 
         /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
         #[arg(long)]
@@ -492,6 +493,8 @@ pub(crate) enum Command {
         /// Rebuild on source edits and reload the HTTP preview after success.
         #[arg(long)]
         watch: bool,
+        #[command(flatten)]
+        pdf: PdfSelection,
     },
 
     /// Canonical formatting for the YAML.
@@ -1253,4 +1256,26 @@ pub(crate) struct PdfArgs {
     /// Owned output directory (default: pdf/ beside zel.yaml).
     #[arg(long)]
     pub out: Option<String>,
+}
+
+/// Explicit CLI choice overrides configuration; absence preserves its default.
+#[derive(clap::Args, Debug, Default, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct PdfSelection {
+    /// Generate the portable book PDF (requires a container runtime).
+    #[arg(long, conflicts_with = "no_pdf")]
+    pub pdf: bool,
+    /// Build only the website, overriding pdf.enabled for this command/session.
+    #[arg(long)]
+    pub no_pdf: bool,
+}
+impl PdfSelection {
+    pub fn selected(self) -> Option<bool> {
+        if self.pdf {
+            Some(true)
+        } else if self.no_pdf {
+            Some(false)
+        } else {
+            None
+        }
+    }
 }

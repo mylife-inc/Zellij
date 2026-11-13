@@ -30,7 +30,7 @@ fn fixture(root: &Path) {
         root.join("bin/docker"),
         r#"#!/bin/sh
 case "$1" in
-  info) exit 0;;
+  info) if [ "$2" = --format ]; then echo '[]'; fi; exit 0;;
   --version) echo 'fixture docker'; exit 0;;
   build)
     printf '%s\n' "$@" > arguments
@@ -612,6 +612,68 @@ fn hosted_dev_selects_features_before_startup_and_isolates_dependency_caches() {
         fs::read_to_string(root.join("docs/zellij/content/site.yaml")).unwrap(),
         "name: Hosted\n"
     );
+    assert_eq!(
+        fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
+        "previous"
+    );
+}
+
+#[test]
+fn configured_pdf_is_packaged_without_the_toolchain_and_failed_print_stops_image_build() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    fixture(root);
+    let runtime = fs::read_to_string(root.join("bin/docker"))
+        .unwrap()
+        .replace(
+            "  *) exit 99;;",
+            r#"  rm) exit 0;;
+  run)
+    echo typeset >> pdf-runs
+    for arg in "$@"; do case "$arg" in *:/out) out=${arg%:/out};; esac; done
+    printf '%%PDF-1.7\nfixture\n%%%%EOF\n' > "$out/book.pdf"
+    echo clean > "$out/book.log"
+    exit "${FAKE_PDF_EXIT:-0}";;
+  *) exit 99;;"#,
+        );
+    fs::write(root.join("bin/docker"), runtime).unwrap();
+    fs::remove_dir_all(root.join("docs/zellij/content")).unwrap();
+    fs::create_dir_all(root.join("docs/zellij/content")).unwrap();
+    fs::write(
+        root.join("docs/zellij/content/chapter.md"),
+        "# Chapter\n\nBody.\n",
+    )
+    .unwrap();
+    fs::write(root.join("docs/zellij/zel.yaml"), "version: 1\nrenderer: portable\npdf: {enabled: true}\nbook: {version: 1, title: Book, authors: [Author], chapters: [{id: chapter, source: chapter.md}]}\n").unwrap();
+    let result = command(root).args(["si"]).output().unwrap();
+    assert!(result.status.success(), "{result:?}");
+    let files = fs::read_to_string(root.join("context-files")).unwrap();
+    for path in [
+        "_zellij/pdf/book.pdf",
+        "_zellij/pdf/pdf.json",
+        "_zellij/book.json",
+    ] {
+        assert!(files.contains(path), "{files}");
+    }
+    assert!(
+        fs::read_to_string(root.join("captured.html"))
+            .unwrap()
+            .contains("_zellij/pdf/book.pdf")
+    );
+    let recipe = fs::read_to_string(root.join("recipe")).unwrap();
+    assert!(!recipe.contains("latex"));
+    assert_eq!(
+        fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
+        "previous"
+    );
+    fs::remove_file(root.join("arguments")).unwrap();
+    let result = command(root)
+        .env("FAKE_PDF_EXIT", "1")
+        .args(["si"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(3), "{result:?}");
+    assert!(!root.join("arguments").exists());
     assert_eq!(
         fs::read_to_string(root.join("docs/zellij/site/index.html")).unwrap(),
         "previous"

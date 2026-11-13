@@ -52,36 +52,96 @@ pub(crate) fn standalone(args: &crate::args::PdfArgs) -> Result<()> {
                 Ok(site.root.with_file_name(format!("{name}-pdf")))
             }
         })?;
-    run(
+    let stop = crate::preview::signals()?;
+    let prepared = zellij_docs::pdf::prepare(
         &source,
         &output,
         zellij_docs::BuildOptions::default(),
         false,
     )?;
+    let report = typeset(prepared, &stop)?.publish()?;
+    for warning in report.warnings {
+        zellij_core::diagnosticln!("warning: {warning}");
+    }
+    zellij_core::statusln!("✓ {output} (PDF)");
     Ok(())
+}
+
+/// Preparing and publishing are separate so previews can use the revision lock
+/// and discard a completed PDF if inputs changed during typesetting.
+pub(crate) enum PreparedSite {
+    Web(zellij_docs::PreparedBuild),
+    Pdf(zellij_docs::pdf::Prepared),
+}
+impl PreparedSite {
+    pub(crate) fn publish(self) -> Result<zellij_docs::BuildReport> {
+        match self {
+            Self::Web(build) => build.publish(),
+            Self::Pdf(build) => build.publish(),
+        }
+    }
+}
+pub(crate) fn prepare_site(
+    source: &SiteInput,
+    output: &Utf8Path,
+    options: zellij_docs::BuildOptions<'_>,
+    pdf: Option<bool>,
+    stop: &AtomicBool,
+) -> Result<PreparedSite> {
+    let configured = Site::load(source)?.configured;
+    let before = zellij_docs::watch::Snapshot::site(source, configured)?;
+    let site = Site::load(source)?;
+    let prepared = if pdf.unwrap_or(site.pdf.enabled) {
+        let prepared = zellij_docs::pdf::prepare(source, output, options, true)?;
+        typeset(prepared, stop).map(PreparedSite::Pdf)
+    } else {
+        zellij_docs::prepare(source, output, options).map(PreparedSite::Web)
+    }?;
+    if zellij_docs::watch::Snapshot::site(source, configured)? != before {
+        return Err(Error::InvalidArgument("content changed during the build; retry after saving (watch mode retries automatically)".into()));
+    }
+    Ok(prepared)
 }
 pub(crate) fn build(
     source: &SiteInput,
     out: Option<&str>,
     options: zellij_docs::BuildOptions<'_>,
+    pdf: Option<bool>,
 ) -> Result<Utf8PathBuf> {
     let output = out
         .map(Utf8PathBuf::from)
         .map(Ok)
         .unwrap_or_else(|| zellij_docs::default_output(source))?;
-    run(source, &output, options, true)?;
+    let report = build_to(source, &output, options, pdf)?;
+    for warning in report.warnings {
+        zellij_core::diagnosticln!("warning: {warning}");
+    }
+    zellij_core::statusln!("✓ {output} ({} HTML pages)", report.pages);
     Ok(output)
 }
-fn run(
+pub(crate) fn build_to(
     source: &SiteInput,
     output: &Utf8Path,
     options: zellij_docs::BuildOptions<'_>,
-    with_site: bool,
-) -> Result<()> {
-    let prepared = zellij_docs::pdf::prepare(source, output, options, with_site)?;
-    // Validate all content and ownership before contacting a runtime.
-    let runtime=zellij_engine::runtime::detect().map_err(|e| Error::NoEngine { reason: format!("PDF requires a running Docker, Podman or nerdctl Linux runtime. {e}\nOrdinary `zel build` remains native. No runtime was installed or started.") })?;
+    pdf: Option<bool>,
+) -> Result<zellij_docs::BuildReport> {
     let stop = crate::preview::signals()?;
+    let prepared = prepare_site(source, output, options, pdf, &stop)?;
+    if stop.load(Ordering::Acquire) {
+        return Err(failed("cancelled"));
+    }
+    prepared.publish()
+}
+
+fn typeset(
+    prepared: zellij_docs::pdf::Prepared,
+    stop: &AtomicBool,
+) -> Result<zellij_docs::pdf::Prepared> {
+    // Validate all content and ownership before contacting a runtime.
+    if stop.load(Ordering::Acquire) {
+        return Err(failed("cancelled"));
+    }
+    let runtime=zellij_engine::runtime::detect().map_err(|e| Error::NoEngine { reason: format!("PDF requires a running Docker, Podman or nerdctl Linux runtime. {e}\nUse `zel build --no-pdf` for a native web-only build. No runtime was installed or started.") })?;
     let rootless = runtime.rootless()?;
     let temp = tempfile::Builder::new()
         .prefix("zel-pdf-input-")
@@ -171,7 +231,7 @@ fn run(
     zellij_core::statusln!(
         "  PDF: LuaLaTeX in the pinned optional toolchain (first use may download its image)"
     );
-    let result = execute(&mut command, &stop, Duration::from_secs(600));
+    let result = execute(&mut command, stop, Duration::from_secs(600));
     let cleaned = guard.remove();
     result?;
     cleaned?;
@@ -227,7 +287,7 @@ fn run(
     )?;
     fs::write(prepared.destination.join("book.pdf"), &pdf)?;
     fs::write(prepared.destination.join("build.log"), log)?;
-    let receipt = serde_json::json!({"schema_version":1,"backend":"lualatex","template":"classic-v1","toolchain_image":IMAGE,"revision":prepared.source.revision,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
+    let receipt = serde_json::json!({"schema_version":1,"backend":"lualatex","template":"classic-v1","toolchain_image":IMAGE,"revision":prepared.source.revision,"settings":prepared.source.settings,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
     fs::write(
         prepared.destination.join("pdf.json"),
         serde_json::to_vec_pretty(&receipt).map_err(|e| failed(e.to_string()))?,
@@ -235,20 +295,9 @@ fn run(
     if stop.load(Ordering::Acquire) {
         return Err(failed("cancelled"));
     }
-    let report = prepared.publish()?;
-    for warning in report.warnings {
-        zellij_core::diagnosticln!("warning: {warning}");
-    }
-    zellij_core::statusln!(
-        "✓ {output} (PDF{})",
-        if with_site {
-            " and reading website"
-        } else {
-            ""
-        }
-    );
-    Ok(())
+    Ok(prepared)
 }
+
 fn regular(path: &Utf8Path, limit: u64) -> Result<Vec<u8>> {
     let meta = fs::symlink_metadata(path)?;
     if !meta.is_file() || meta.file_type().is_symlink() || meta.len() > limit {

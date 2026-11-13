@@ -35,7 +35,7 @@ the project ID with `--site-id`, the compatible `--site` spelling,
 `acme-docs.netlify.app` also works; a bare display name is not a domain.
 
 `zel` uses Netlify's HTTPS API directly. It requires no Netlify CLI or Node.js,
-and portable rendering requires no container runtime. Hosted content still
+and portable web-only rendering requires no container runtime. Opt-in book PDF generation requires its separate LaTeX runtime. Hosted content still
 requires a usable [Docker, Podman or nerdctl runtime](/cli/doctor) for its build.
 Nothing is installed or started automatically. `zel` does not create a provider
 project, run login, read another CLI's stored login, or load `netlify.toml`.
@@ -335,7 +335,7 @@ choice and credentials are never saved in this publication block. An explicit
 provider change does not reuse another provider's destination.
 
 Repository, Pages configuration and branch access are checked before building.
-Portable output needs no Node.js or container runtime. Hosted output retains
+Portable web-only output needs no Node.js or container runtime. Opt-in book PDFs require the LaTeX runtime. Hosted output retains
 its container requirement. Both build once into temporary output and preserve
 source files and previous local output.
 
@@ -727,3 +727,12 @@ independently attest the running container's digest.
 See Railway's [API authentication](https://docs.railway.com/integrations/api),
 [service API](https://docs.railway.com/integrations/api/manage-services), and
 [startup healthchecks](https://docs.railway.com/deployments/healthchecks).
+
+## Book PDF delivery (source after rc.5)
+
+Portable books with `pdf.enabled: true` generate the website and matching PDF
+before static deployment or static-image packaging. This opt-in requires the
+optional LaTeX container runtime; PDF failure stops delivery. Generated CI
+requires a compatible release pin and, for GitLab, a shared Docker build directory.
+See [static book publication and CI](/cli/books#static-publication-and-ci) for
+supported output kinds, release requirements and configuration.

@@ -29,7 +29,9 @@ fn image(publish: &Publish) -> Option<ImageKind> {
     }
 }
 fn docker(options: &CiOptions) -> bool {
-    options.renderer == Renderer::Hosted || image(&options.publish).is_some()
+    options.pdf == Some(true)
+        || options.renderer == Renderer::Hosted
+        || image(&options.publish).is_some()
 }
 fn architectures(options: &CiOptions) -> Vec<&'static str> {
     match options.platform {
@@ -524,6 +526,7 @@ mod tests {
     fn options(publish: Publish) -> CiOptions {
         CiOptions {
             renderer: Renderer::Portable,
+            pdf: None,
             site_root: "docs/Team's $manual 日本".into(),
             config: None,
             settings: Settings::default(),

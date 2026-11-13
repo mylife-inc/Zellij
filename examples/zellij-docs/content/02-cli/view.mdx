@@ -6,7 +6,7 @@ description: Build portable or hosted content, serve the static site locally, an
 <Callout type="tip" title="Available in source">
 `view` / `v` builds portable Markdown natively or hosted YAML/MDX through the
 container engine, then serves the export with the native HTTP server. Portable
-previews need no Docker or Node. A default browser opens unless you pass `--no-open`.
+web-only previews need no Docker or Node. Optional book PDFs require a container runtime. A default browser opens unless you pass `--no-open`.
 Native release packages may lag the source version.
 </Callout>
 
@@ -157,3 +157,11 @@ config or restart preview. Port/output settings are fixed until restart.
 `--name` and `--theme` are refused for hosted previews. Set hosted presentation
 fields in `content/site.yaml`. To serve a retained hosted export later, use
 `zel serve --base-path /your/prefix` when its `basePath` is nonempty.
+
+## Book PDF previews (source after rc.5)
+
+Portable book previews honor `pdf.enabled` in `zel.yaml`. `--pdf` or `--no-pdf`
+overrides it for the complete preview session. In watch mode, website, PDF and
+its download links publish together; failure retains the last successful export.
+Content edited during typesetting is retried before publication. Use `--no-pdf`
+for faster web-only authoring. See [book print settings](/cli/books#saved-print-settings-and-previews).

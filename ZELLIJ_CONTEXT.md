@@ -3,6 +3,11 @@
 Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Current work: `codex/pdf-configuration-delivery` extends the optional PDF path
+with saved paper/font/enablement settings, preview/watch, static delivery/images,
+and compatible CI/runtime preflight. See [the checkpoint](specs/zellij-pdf-configuration-2026-11-12.md).
+Validation and merge are pending; published rc.5 remains unchanged.
+
 PR #149 (`72a8445`) merges the versioned book publication model, with the same
 tree as tested head `2b5cfec`. Its portable manifest drives ordered front matter,
 parts, chapters and appendices, metadata, covers, a content revision and shared

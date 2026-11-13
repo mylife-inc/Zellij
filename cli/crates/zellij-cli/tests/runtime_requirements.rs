@@ -104,7 +104,7 @@ fn portable_doctor_discovers_site_without_runtime_or_filesystem_writes() {
     assert!(human.status.success());
     assert!(
         String::from_utf8_lossy(&human.stdout)
-            .contains("not required for portable sites; not probed")
+            .contains("not required for portable web-only sites; not probed")
     );
 }
 

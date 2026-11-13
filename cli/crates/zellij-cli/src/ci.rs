@@ -238,6 +238,7 @@ pub(crate) fn generate(
     let path = Utf8PathBuf::from(system.path(&settings.workflow));
     let options = CiOptions {
         renderer: site.renderer,
+        pdf: site.pdf_configured.then_some(site.pdf.enabled),
         config: if site.input.explicit_config() {
             Some(
                 site.config_path

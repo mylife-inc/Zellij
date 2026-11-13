@@ -101,6 +101,8 @@ pub struct Site {
     pub image: Option<crate::delivery::ImageSettings>,
     pub publish: Option<crate::delivery::PublishSettings>,
     pub ci: crate::ci::Settings,
+    pub pdf: crate::pdf::Settings,
+    pub pdf_configured: bool,
     /// Remaining portable presentation settings, validated by the renderer.
     pub portable: Value,
 }
@@ -202,6 +204,8 @@ impl Site {
         let mut image = None;
         let mut publish = None;
         let mut ci = crate::ci::Settings::default();
+        let mut pdf = crate::pdf::Settings::default();
+        let mut pdf_configured = false;
         let (content, renderer, output) = if configured {
             let settings = settings.as_mut().unwrap();
             if settings.remove("version").and_then(|v| v.as_u64()) != Some(1) {
@@ -270,6 +274,22 @@ impl Site {
                 ci = parse(&config, value)?;
                 ci.validate()?;
             }
+            if let Some(value) = settings.remove("pdf") {
+                pdf_configured = true;
+                if !value.is_mapping() {
+                    return Err(invalid(&config, "pdf must be a settings mapping"));
+                }
+                pdf = parse(&config, value)?;
+                pdf.validate()?;
+                if renderer != Renderer::Portable
+                    || !settings.get("book").is_some_and(Value::is_mapping)
+                {
+                    return Err(invalid(
+                        &config,
+                        "pdf settings require renderer: portable and a book manifest",
+                    ));
+                }
+            }
             if renderer == Renderer::Hosted && !settings.is_empty() {
                 return Err(invalid(
                     &config,
@@ -279,13 +299,15 @@ impl Site {
             (content, renderer, output)
         } else {
             if settings.as_ref().is_some_and(|s| {
-                ["renderer", "build", "preview", "image", "publish", "ci"]
-                    .iter()
-                    .any(|k| s.contains_key(*k))
+                [
+                    "renderer", "build", "preview", "image", "publish", "ci", "pdf",
+                ]
+                .iter()
+                .any(|k| s.contains_key(*k))
             }) {
                 return Err(invalid(
                     &config,
-                    "renderer/build/preview/image/publish/ci require version: 1 and the content/ layout",
+                    "renderer/build/preview/image/publish/ci/pdf require version: 1 and the content/ layout",
                 ));
             }
             let renderer = if settings.is_some() {
@@ -321,6 +343,8 @@ impl Site {
             image,
             publish,
             ci,
+            pdf,
+            pdf_configured,
             portable: Value::Mapping(settings.unwrap_or_default()),
         })
     }

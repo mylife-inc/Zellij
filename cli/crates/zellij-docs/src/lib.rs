@@ -526,6 +526,7 @@ fn compile(
             &pages,
             &rewritten,
             &resolver.assets,
+            &site.pdf,
         )?)
     } else {
         None
