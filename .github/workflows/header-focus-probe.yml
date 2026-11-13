@@ -1,0 +1,30 @@
+name: Header focus diagnostic
+on:
+  push:
+    branches: [codex/header-focus-probe]
+permissions:
+  contents: read
+jobs:
+  focus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npm run build --workspace @shebka/zellij-showcase
+      - run: npx playwright install --with-deps chromium
+        working-directory: examples/showcase
+      - name: Repeat the unchanged resize scenario without retries
+        run: npx playwright test e2e/header-focus-probe.spec.ts --project desktop --retries 0 --repeat-each 80 --workers 4
+        working-directory: examples/showcase
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: header-focus-diagnostic
+          path: examples/showcase/test-results/
+          retention-days: 7
