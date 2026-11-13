@@ -48,7 +48,10 @@ injected only in the new case. Those failed attempts are retained in the local
 verification logs. The broader suite then found repeated Ctrl-C handler installation
 in sequential provider tests. Cancellation now installs one process handler with
 weak owners for active operations, retaining interruption after a PDF build
-finishes and execution continues into upload/packaging. Final results and hosted evidence will be appended.
+finishes and execution continues into upload/packaging. A subprocess regression
+confirms Ctrl-C during subsequent image packaging exits 130. A later full pass
+found an exact human-message assertion needing the new "portable web-only"
+wording; its runtime-not-probed assertions remain unchanged. Final results and hosted evidence will be appended.
 
 The first focused preview test passed failure retention, stale-build rejection,
 recovery, configuration toggles, HTTP PDF retrieval and cancellation during a
