@@ -323,3 +323,18 @@ impl Drop for Container<'_> {
         }
     }
 }
+
+#[cfg(all(test, unix))]
+mod tests {
+    use super::*;
+    #[test]
+    fn deadline_stops_and_reaps_an_unresponsive_tool() {
+        let error = execute(
+            Command::new("/bin/sh").args(["-c", "while :; do :; done"]),
+            &AtomicBool::new(false),
+            Duration::from_millis(100),
+        )
+        .unwrap_err();
+        assert!(error.to_string().contains("exceeded"));
+    }
+}

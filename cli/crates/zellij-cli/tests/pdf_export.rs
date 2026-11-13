@@ -71,6 +71,7 @@ case "$1" in
   [ -n "$out" ] || exit 90
   printf '%%PDF-1.7\nfixture\n%%%%EOF\n' > "$out/book.pdf"
   printf '%s' "${PDF_LOG:-clean typesetting}" > "$out/book.log"
+  if [ "${PDF_WAIT:-0}" = 1 ]; then echo waiting > waiting; while :; do :; done; fi
   exit "${PDF_EXIT:-0}";;
  *) exit 99;;
 esac
@@ -136,6 +137,53 @@ esac
             .lines()
             .count(),
         5
+    );
+    // Cancel our own fixture child only after its runtime invocation starts.
+    let mut child = command(root)
+        .env_remove("CONTAINER_HOST")
+        .env_remove("DOCKER_CONTEXT")
+        .env_remove("CONTAINER_CONNECTION")
+        .env_remove("CONTAINERD_ADDRESS")
+        .env_remove("CONTAINERD_NAMESPACE")
+        .env("PDF_WAIT", "1")
+        .args(["build", "--pdf"])
+        .stdout(std::process::Stdio::null())
+        .stderr(std::process::Stdio::null())
+        .spawn()
+        .unwrap();
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while !root.join("waiting").exists() {
+        assert!(
+            std::time::Instant::now() < deadline,
+            "runtime never started"
+        );
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    }
+    assert!(
+        Command::new("/bin/kill")
+            .args(["-INT", &child.id().to_string()])
+            .status()
+            .unwrap()
+            .success()
+    );
+    let status = loop {
+        if let Some(status) = child.try_wait().unwrap() {
+            break status;
+        }
+        assert!(
+            std::time::Instant::now() < deadline,
+            "cancelled child did not exit"
+        );
+        std::thread::sleep(std::time::Duration::from_millis(20));
+    };
+    assert_eq!(status.code(), Some(3));
+    assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
+    assert_eq!(
+        fs::read_to_string(root.join("cleanup"))
+            .unwrap()
+            .lines()
+            .count(),
+        6
     );
     assert!(
         command(root)

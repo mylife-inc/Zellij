@@ -224,7 +224,7 @@ impl Writer<'_> {
                         _ => "subsubsection",
                     };
                     out.push_str(&format!(
-                        "\\hypertarget{{{}}}{{}}\\{command}*{{",
+                        "\\zelheadingroom\\hypertarget{{{}}}{{}}\\{command}*{{",
                         label(page, id.as_deref().unwrap_or(""))
                     ));
                 }

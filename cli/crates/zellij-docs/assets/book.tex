@@ -21,6 +21,11 @@
   \interlinepenalty\@M{\Huge\bfseries\color{zelaccent}#1\par}\nobreak
   \vskip14pt{\color{zelaccent}\hrule height 0.6pt}\vskip24pt}}
 \makeatother
+% Keep a heading with enough following content, including a longtable header.
+% Uses only the TeX page builder; no extra runtime package is required.
+\newcommand{\zelheadingroom}{\par\begingroup
+  \dimen0=\pagegoal\advance\dimen0 by -\pagetotal
+  \ifdim\dimen0<9\baselineskip\newpage\fi\endgroup}
 \pagestyle{headings}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}

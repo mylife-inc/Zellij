@@ -60,3 +60,14 @@ Review also corrected synthetic title/footnote link targets, unreferenced
 footnote handling, six-column width accounting and flat-source output placement.
 A local compile caught an ambiguous Result type in that placement fix; it is
 explicitly typed. These failed attempts remain part of the record.
+
+Second hosted attempt `43354162015` at `c8dbd2c` generated valid PDFs on both
+architectures, passing text/metadata/font/link/structure checks and uploading
+page captures. Its intentional-overflow fixture used a repeated English word
+that TeX could hyphenate, so the expected failure did not occur. The fixture now
+uses an unbreakable monospace token; the overflow guard is unchanged. Native
+cancellation and deadline regressions also verify cleanup and old-output retention.
+
+Visual review also caught a section heading orphaned above its table. The classic
+template now reserves space for a heading and following content; hosted acceptance
+asserts that the table heading and first rows share a page and captures every page.
