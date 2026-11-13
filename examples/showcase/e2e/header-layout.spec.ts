@@ -121,4 +121,40 @@ test.describe('measured overflow', () => {
     await expect(drawer).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
   });
+
+  test('moves keyboard focus between visible controls across reciprocal resizes', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/');
+    const first = page.locator('.zellij-nav-list [data-zellij-navitem]').first();
+    await first.focus();
+    for (let cycle = 0; cycle < 3; cycle++) {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(first).toBeFocused();
+    }
+  });
+
+  test('does not take focus from document content on a breakpoint change', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto('/guide');
+    const link = page.locator('main a[href]').first();
+    await link.focus();
+    for (const width of [390, 1280, 390]) {
+      await page.setViewportSize({ width, height: 900 });
+      await expect(link).toBeFocused();
+    }
+  });
+
+  test('keeps the final breakpoint in charge during rapid drawer resizes', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeVisible();
+    for (const width of [1280, 390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
+    await expect(drawer).toHaveCount(0);
+    await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+  });
 });

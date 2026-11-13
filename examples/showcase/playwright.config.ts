@@ -27,6 +27,8 @@ export default defineConfig({
   },
   projects: [
     { name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+    // Resizing and focus restoration also need a desktop WebKit keyboard run.
+    { name: 'desktop-safari', testMatch: /header-layout\.spec\.ts/, use: { ...devices['Desktop Safari'] } },
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
     /*
      * Both projects above are Chromium, so until this one existed the engine
