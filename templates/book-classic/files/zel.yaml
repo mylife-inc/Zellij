@@ -2,10 +2,25 @@ version: 1
 renderer: portable
 name: {{zel.title|yaml}}
 theme: paper
-nav:
-  - {page: index.md, label: Title page}
-  - {page: preface.md, label: Preface}
-  - label: Part I
-    children:
-      - {page: chapters/01-beginning.md, label: The beginning}
-      - {page: chapters/02-path.md, label: The path ahead}
+book:
+  version: 1
+  title: {{zel.title|yaml}}
+  subtitle: Notes on finding your own way
+  authors: [{{zel.author|yaml}}]
+  language: en
+  direction: ltr
+  cover: {image: assets/wave.png, alt: A wave drawn as a continuous curve}
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - id: first-steps
+      title: First steps
+      chapters:
+        - {id: beginning, source: chapters/01-beginning.md}
+        - {id: path, source: chapters/02-path.md}
+  appendices:
+    - {id: notes, source: notes.md}
+pdf:
+  enabled: false
+  paper: a5
+  font-size: 11

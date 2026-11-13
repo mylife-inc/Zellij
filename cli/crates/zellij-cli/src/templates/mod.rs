@@ -242,8 +242,14 @@ pub(crate) fn inspect(args: &TemplatesArgs, json: bool) -> Result<()> {
                 for (key, default) in m.variables {
                     zellij_core::statusln!("  --set {key}={default}");
                 }
-                if m.print.is_some() {
-                    zellij_core::statusln!("  Print/PDF: unavailable in this template revision");
+                match m.print {
+                    Some(manifest::Print::Lualatex) => zellij_core::statusln!(
+                        "  Print/PDF: optional LuaLaTeX; use `zel build --pdf` (Linux container runtime required)"
+                    ),
+                    Some(manifest::Print::Unavailable) => {
+                        zellij_core::statusln!("  Print/PDF: unavailable in this template revision")
+                    }
+                    None => {}
                 }
                 for a in m.assets {
                     zellij_core::statusln!("  Asset: {} ({})", a.path, a.license);

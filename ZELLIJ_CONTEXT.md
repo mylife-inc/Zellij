@@ -1,7 +1,12 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+Current work: `codex/book-starter-rc6` versions book-classic at 0.2.0, with a
+shared book manifest and optional PDF, validates template print declarations,
+and prepares the rc.6 candidate. Verification/publication is pending; rc.5
+remains published. See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
 
 PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and
 static delivery/images, with the same tree as tested head `ecfbfba`. All 23 jobs

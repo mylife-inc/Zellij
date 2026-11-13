@@ -12,7 +12,7 @@ const sha = b => createHash('sha256').update(b).digest('hex');
 const python = String.raw`
 import sys, json, io, gzip, tarfile, pathlib
 request=json.load(sys.stdin); root=pathlib.Path(request['root']); output=io.BytesIO()
-with gzip.GzipFile(fileobj=output,mode='wb',filename='',mtime=0) as compressed:
+with gzip.GzipFile(fileobj=output,mode='wb',filename='',mtime=0,compresslevel=9) as compressed:
  with tarfile.open(fileobj=compressed,mode='w',format=tarfile.USTAR_FORMAT) as archive:
   for name in request['files']:
    data=(root/name).read_bytes(); info=tarfile.TarInfo(name)
@@ -36,6 +36,14 @@ export async function packageTemplates(binary, tag, destination) {
   assert.equal(invoke(['--version']).trim(), `zel ${version}`, 'Template packager needs the matching CLI build');
   const catalog = JSON.parse(invoke(['templates','--json','--offline']));
   assert.equal(catalog.schema_version,1); assert(catalog.templates.length > 0);
+  const published = JSON.parse(await readFile(path.join(repo,'templates/published.json'),'utf8'));
+  assert.equal(published.schema,1);
+  const immutable = new Map(published.templates.map(t=>{
+    assert(/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(t.id) && /^[a-f0-9]{64}$/.test(t.sha256));
+    releasePolicy(`v${t.version}`);
+    return [`${t.id}@${t.version}`,t.sha256];
+  }));
+  assert.equal(immutable.size,published.templates.length,'Duplicate published template identity');
   const temp = await mkdtemp(path.join(tmpdir(),'zel-template-package-'));
   const assets = new Map(), templates = [];
   try {
@@ -48,6 +56,8 @@ export async function packageTemplates(binary, tag, destination) {
       assert.equal(receipts[0].source_sha256,receipts[1].source_sha256,'Rebuild the CLI: authored template bytes differ from its bundled copy');
       const archive = execFileSync(process.platform==='win32'?'python':'python3',['-X','utf8','-c',python],{input:JSON.stringify({root:source,files:await files(source)}),maxBuffer:16*1024*1024,timeout:30000});
       const name = `template-${manifest.id}-${manifest.version}.tar.gz`;
+      const expected = immutable.get(`${manifest.id}@${manifest.version}`);
+      if(expected) assert.equal(sha(archive),expected,`${name} differs from its published bytes; restore the archive encoding or use a new template version`);
       assets.set(name,archive); templates.push({manifest,archive:{url:name,sha256:sha(archive)}});
     }
     assets.set('templates-catalog.json',Buffer.from(JSON.stringify({schema:1,release:tag,templates},null,2)+'\n'));

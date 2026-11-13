@@ -15,6 +15,30 @@ const waitFor = async (condition, label) => {
   while(!await condition()) { assert(Date.now()<end,`Timed out: ${label}`); await new Promise(r=>setTimeout(r,200)); }
 };
 try {
+  // Exercise the bundled book users actually create, as well as the richer
+  // adapter fixture below. Captures/receipts are retained for visual review.
+  const starter=path.join(root,'classic');
+  run(['create',starter,'-t','book-classic@0.2.0','--offline']);
+  run(['pdf',starter,'--check']);
+  run(['build',starter,'--pdf']);
+  const starterPrint=path.join(starter,'site/_zellij/pdf');
+  const starterPdf=path.join(starterPrint,'book.pdf');
+  const starterRecord=JSON.parse(readFileSync(path.join(starter,'site/_zellij/book.json')));
+  const starterReceipt=JSON.parse(readFileSync(path.join(starterPrint,'pdf.json')));
+  assert.equal(starterReceipt.revision,starterRecord.revision);
+  assert.equal(starterReceipt.pdf_sha256,createHash('sha256').update(readFileSync(starterPdf)).digest('hex'));
+  assert.deepEqual(starterRecord.entries.map(e=>e.id),['title-page','preface','beginning','path','notes']);
+  const starterText=execFileSync('pdftotext',['-layout',starterPdf,'-'],{encoding:'utf8'});
+  for(const term of ['A question worth following','Your name','Contents','Preface','First steps','The beginning','The path ahead','Notes for the journey']) assert(starterText.includes(term),term);
+  execFileSync('qpdf',['--check',starterPdf]);
+  const starterCapture=path.join(artifacts,'starter');
+  cpSync(starterPrint,starterCapture,{recursive:true});
+  const starterInfo=execFileSync('pdfinfo',[starterPdf],{encoding:'utf8'});
+  writeFileSync(path.join(starterCapture,'pdfinfo.txt'),starterInfo);
+  writeFileSync(path.join(starterCapture,'fonts.txt'),execFileSync('pdffonts',[starterPdf],{encoding:'utf8'}));
+  writeFileSync(path.join(starterCapture,'text.txt'),starterText);
+  const starterPages=Number(starterInfo.match(/Pages:\s+(\d+)/)[1]);
+  for(let n=1;n<=starterPages;n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',starterPdf,path.join(starterCapture,`page-${n}`)]);
   cpSync('scripts/fixtures/pdf-book',site,{recursive:true});
   run(['pdf',site,'--check']);
   const config=readFileSync(path.join(site,'zel.yaml'),'utf8');

@@ -48,6 +48,14 @@ try {
       const templates = await verifyPublishedTemplates(binary, result.base, path.join(root, `templates-${source.name}`));
       if (previousTemplates) assert.deepEqual(templates, previousTemplates, 'Template archives/catalogs disagree between release repositories');
       previousTemplates = templates;
+      // Run the tagged acceptance driver against the public installed binary.
+      // Older reading-only catalogs remain verifiable with the newer workflow.
+      if (!previous && env.ZEL_PDF_ACCEPTANCE === 'true' && existsSync('scripts/check-pdf.mjs')) {
+        const catalog = JSON.parse(execFileSync(binary, ['templates', '--json', '--offline'], { env, encoding: 'utf8', timeout: 10000 }));
+        if (catalog.templates.some(template => template.print === 'lualatex')) {
+          execFileSync(process.execPath, ['scripts/check-pdf.mjs', binary], { env, stdio: 'inherit', timeout: 600000 });
+        }
+      }
     }
     previous = result;
     console.log(`${source.repository}: published ${version} installed and verified for ${target}`);

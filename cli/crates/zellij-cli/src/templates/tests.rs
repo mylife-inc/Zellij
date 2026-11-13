@@ -6,6 +6,69 @@ fn bundle() -> Bundle {
         .find(|b| b.manifest.id == "product-docs")
         .unwrap()
 }
+fn book_bundle() -> Bundle {
+    bundled()
+        .unwrap()
+        .into_iter()
+        .find(|b| b.manifest.id == "book-classic")
+        .unwrap()
+}
+
+#[test]
+fn print_capability_requires_a_compatible_portable_book_and_pdf_output() {
+    for case in 0..5 {
+        let mut b = book_bundle();
+        match case {
+            0 => b.manifest.renderer = Renderer::Hosted,
+            1 => b.manifest.kind = manifest::Kind::Site,
+            2 => b.manifest.outputs.retain(|o| *o != manifest::Output::Pdf),
+            3 => b.manifest.print = Some(manifest::Print::Unavailable),
+            _ => b.manifest.minimum_cli = "0.2.0-rc.5".into(),
+        }
+        assert!(b.manifest.validate().is_err(), "case {case}");
+    }
+    let mut legacy = book_bundle().manifest;
+    legacy.version = "0.1.0".into();
+    legacy.minimum_cli = "0.2.0-rc.5".into();
+    legacy.minimum_engine = "0.2.0-rc.5".into();
+    legacy.print = Some(manifest::Print::Unavailable);
+    legacy.outputs.retain(|o| *o != manifest::Output::Pdf);
+    legacy.validate().unwrap();
+}
+
+#[test]
+fn false_print_declarations_fail_before_publishing_a_template() {
+    let t = tempfile::tempdir().unwrap();
+    let out = root(&t).join("book");
+    let mut no_book = book_bundle();
+    no_book.entries.insert(
+        "files/zel.yaml".into(),
+        b"version: 1\nrenderer: portable\n".to_vec(),
+    );
+    assert!(install::create(no_book, &out, None, &[]).is_err());
+    assert!(!out.exists());
+    let mut invalid_print = book_bundle();
+    invalid_print.entries.insert(
+        "files/content/notes.md".into(),
+        b"# Notes\n\n<div>Unsupported print content</div>\n".to_vec(),
+    );
+    assert!(install::create(invalid_print, &out, None, &[]).is_err());
+    assert!(!out.exists());
+    let mut undisclosed = book_bundle();
+    undisclosed.manifest.print = Some(manifest::Print::Unavailable);
+    undisclosed
+        .manifest
+        .outputs
+        .retain(|o| *o != manifest::Output::Pdf);
+    let settings = String::from_utf8(undisclosed.entries["files/zel.yaml"].clone())
+        .unwrap()
+        .replace("enabled: false", "enabled: true");
+    undisclosed
+        .entries
+        .insert("files/zel.yaml".into(), settings.into_bytes());
+    assert!(install::create(undisclosed, &out, None, &[]).is_err());
+    assert!(!out.exists());
+}
 fn root(temp: &tempfile::TempDir) -> &Utf8Path {
     Utf8Path::from_path(temp.path()).unwrap()
 }

@@ -122,6 +122,20 @@ if(flags.includes('--browser')){
             }
           }
           assert.deepEqual(errors,[]);await page.screenshot({path:path.join(root,`${manifest.id}-${width}.png`),fullPage:true});
+          if(manifest.print==='lualatex'){
+            assert.equal(await page.locator('.book-authors').textContent(),manifest.variables.author);
+            assert(await page.locator('.book-cover').evaluate(img=>img.complete&&img.naturalWidth>0));
+            await page.locator('a[rel=next]').click();
+            assert.equal(await page.locator('article').getAttribute('data-book-id'),'preface');
+            await page.locator('a[rel=next]').click();
+            assert.equal(await page.locator('.book-number').textContent(),'Chapter 1');
+            await page.screenshot({path:path.join(root,`${manifest.id}-${width}-chapter.png`),fullPage:true});
+            await page.locator('a[rel=next]').click();
+            assert.equal(await page.locator('.book-number').textContent(),'Chapter 2');
+            await page.locator('a[rel=next]').click();
+            assert.equal(await page.locator('.book-number').textContent(),'Appendix A');
+            assert.deepEqual(errors,[]);
+          }
           await page.close();
         }
       }finally{if(host)await new Promise(resolve=>host.close(resolve));}

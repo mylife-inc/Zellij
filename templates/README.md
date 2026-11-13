@@ -3,7 +3,10 @@
 This is the authored source for the catalog bundled in `zel` and attached to
 CLI releases. It is independent of `examples/`. Version 1 contains three starters:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page)
-and `book-classic` (portable reading edition; no PDF yet).
+and `book-classic` (portable book publication with optional LuaLaTeX PDF).
+The product starters remain at template version 0.1.0. Book-classic 0.2.0
+requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
+the bundled catalog; previously published 0.1.0 archives remain immutable.
 
 Each catalog directory has `template.yaml` and `files/`. Files under `files/`
 become the created site. Its layout must use `zel.yaml`, `content/` and generated
@@ -14,9 +17,15 @@ become the created site. Its layout must use `zel.yaml`, `content/` and generate
 A manifest declares `schema: 1`, a lowercase ID, an exact semantic `version`,
 title/description, minimum CLI and engine versions, renderer (`portable` or
 `hosted`), kind (`site` or `book`), and outputs (`web`, optionally `file` for
-portable sites). Books must explicitly declare `print: unavailable` until a
-print renderer is implemented. These starters are not complete book-publication
-models, and neither browser print nor a PDF download is promised.
+portable sites and `pdf` for print books). Books must explicitly declare
+`print: unavailable` or `print: lualatex`. The latter requires a portable book,
+`pdf` in outputs and minimum CLI rc.6 or later. Creation checks the expanded
+manuscript against the native PDF adapter without running a toolchain. Enabled
+PDF settings must be disclosed by the manifest; a false print declaration fails
+before the destination is published. This capability does not enable PDF
+automatically or promise successful typesetting of arbitrary subsequent edits.
+The classic adapter remains English/LTR; its optional Linux toolchain runs only
+when PDF is requested.
 
 `variables` maps names to default single-line text. `substitute` lists the exact
 files eligible for expansion. Use `{{zel.title|yaml}}` for a complete YAML scalar
@@ -85,3 +94,6 @@ normally. No template hooks run, and no automatic update rewrites a site or book
 Review custom hosted MDX as executable content before a later hosted build.
 Release retirement can remove older catalogs; bundled/local/cached copies continue
 to work. Never reuse an already published template version for different bytes.
+`published.json` records previously published archive hashes. Packaging uses an
+explicit gzip level and refuses different bytes for a known ID/version; record
+new hashes only after public release verification, without rewriting old entries.

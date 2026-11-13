@@ -120,7 +120,7 @@ test('published acceptance validates version input and checks the immutable tag 
     assert.equal(source.with.path, 'release-source');
     assert.equal(source.with['persist-credentials'], false);
     assert.ok(job.steps.indexOf(validate) < job.steps.indexOf(source));
-    const run = job.steps.at(-1);
+    const run = job.steps.find(step => /check-published-(release|images)\.mjs/.test(step.run ?? ''));
     assert.equal(run['working-directory'], source.with.path);
     assert.match(run.run, /^node \.\.\/scripts\/check-published-(?:release|images)\.mjs$/);
   }
