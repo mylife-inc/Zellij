@@ -12,7 +12,10 @@ All 23 source CI jobs passed. Source and mirror have 20 byte-identical assets;
 the actual standalone rc.5-to-rc.6 upgrade passed. All eight public acceptance
 jobs and all four public Homebrew install/upgrade/uninstall checks pass. See
 [rc.6 release evidence](evidence/zellij-rc6-release-2026-11-13.json).
-The rc.5 distribution remains retained until its consumer replacement gates pass.
+rc.5 retirement is complete after consumer replacement: two releases, 40 assets,
+two remote tags and 26 obsolete image versions removed. Current images and
+CodeSeal remain intact; fresh inventory and HTTP checks pass. See
+[rc.6 retirement evidence](evidence/zellij-rc6-image-retirement-2026-11-13.json).
 Earlier scoped retirement removed 213 obsolete image versions while preserving
 current image graphs and CodeSeal; see
 [retirement evidence](evidence/zellij-rc5-image-retirement-2026-11-12.json).
@@ -215,8 +218,8 @@ Optional PDF/LaTeX and configuration/preview/static delivery subsequently merged
 in PRs #151 and #153. PR #155 versions the book starter around the shared
 publication model and optional print settings, and publishes rc.6. Public
 acceptance and Homebrew migration pass. PR #156 (`8eb117a`) merges docs and
-consumer pins after all 23 CI and six delivery build jobs pass. Finish replacement
-image checks before retiring rc.5. Generated hosted/container CI still needs
+consumer pins after all 23 CI and six delivery build jobs pass. Replacement
+image checks and scoped rc.5 retirement are complete. Generated hosted/container CI still needs
 explicit runtime selection: its Next consumer passed only after one unchanged-head
 retry when Docker/Podman discovery timed out. Fix this reliability issue first. Advanced print semantics, technical/study editions and the remaining
 installation channels follow. The first additional package channel is an owned

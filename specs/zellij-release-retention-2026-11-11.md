@@ -3,7 +3,7 @@
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
 Refreshed 2026-11-13 with rc.6 publication, native retirement and the reviewed
-26-version image plan. Earlier records and failed attempts remain historical.
+26-version image retirement. Earlier records and failed attempts remain historical.
 
 ## User decision
 
@@ -50,14 +50,20 @@ include refusing changed assets/tags, moved branches, failed gates and a draft
 replacement. All rc.6 and CodeSeal release assets/tag identities remain intact.
 See [native retirement evidence](evidence/zellij-rc6-native-retirement-2026-11-13.json).
 
-**Image retirement is prepared:** hosted inventory `43504106766` passes its
+**Image retirement is complete:** hosted inventory `43504106766` passes its
 13 safeguard tests and builds a new exact plan at `8caf3c1`. It selects 26
 versions: 20 base, three static and three Next. All 46 retained manifest nodes
 and 3,321 excluded unreferenced build-history versions are protected. The plan
 hash is `9d6d1b9e4241cb574d2524d56bc53979cef7d77fc10916e3ea07fe8960328cc8`.
-Apply only this [rc.6 plan](evidence/zellij-rc6-image-retirement-plan-2026-11-13.json)
-with the updated helper and unchanged references, then verify inventory and
-fresh image HTTP checks again. Do not reuse earlier plans.
+The owner fallback executed exactly this [rc.6 plan](evidence/zellij-rc6-image-retirement-plan-2026-11-13.json)
+at `a59b4fe`, recording 26 deletions with no failed or partial attempt. Fresh
+hosted inventory `43505203415` confirms zero retired tags/targets and exact
+preservation of every excluded version identity, digest and tag set. Both
+fresh-pull HTTP checks in `43505207912` pass. Only rc.6 remains in the two
+Zellij release channels. The native upgrade check selects rc.6 without changes.
+See [execution and post-verification evidence](evidence/zellij-rc6-image-retirement-2026-11-13.json).
+Do not reuse this completed plan after mutable tags move; broader untagged
+history and live provider/production-domain work remain outside this cleanup.
 
 ## Historical rc.5 execution status — 2026-11-12
 

@@ -1,6 +1,6 @@
 {
   "observed_on": "2026-11-13 America/Los_Angeles",
-  "status": "published and publicly verified; Homebrew, mirror docs and source documentation/consumer migration complete; replacement image verification and retirement pending",
+  "status": "complete: published, publicly verified, Homebrew and docs updated, consumers migrated and scoped rc.5 retirement verified",
   "candidate": "v0.2.0-rc.6",
   "pr": 155,
   "source_head": "70ca56442322b108310845d2755449b67b7df831",
@@ -10148,7 +10148,7 @@
     "formula": "byte-identical to the generated zel.rb attached to both public releases"
   },
   "mirror_docs_commit": "7cb742c115e86996fb4fbe36baf67bfba78860d2",
-  "retention": "rc.5 native releases/assets/tags retired under exact reviewed plan; rc.6 and CodeSeal unchanged. Image plan selects 26 obsolete versions; execution and post-checks pending.",
+  "retention": "Two superseded rc.5 release entries, 40 assets, two remote tags and 26 old image versions retired. rc.6/CodeSeal asset identities and current/excluded image inventories preserved. Fresh hosted inventory 43505203415 and HTTP checks 43505207912 pass.",
   "publication_docs_validation": {
     "strict_deep_routes": 59,
     "examples": 25,
@@ -10193,5 +10193,6 @@
     "head": "668e8faa47a7d4a435c71f63a51b903838a12f48",
     "jobs_passed": 13,
     "runtime_inputs_match_publication_merge": true
-  }
+  },
+  "remaining_reliability_issue": "Generated container CI still relies on automatic runtime discovery; the Next consumer needed one unchanged-head retry. See zellij-post-rc6-followups-2026-11-13.md."
 }

@@ -1,8 +1,8 @@
 # Book starter and rc.6 preparation — 2026-11-13
 
-Base: `22335b742fce426105eae81f7b4104d7145e2f6f`. Current work is on
-`codex/book-starter-rc6`. Published rc.5 remains unchanged; version changes in
-source are not publication evidence.
+Preparation base: `22335b742fce426105eae81f7b4104d7145e2f6f`, initially on
+`codex/book-starter-rc6`. rc.5 remained published during preparation. The dated
+closure entries below record subsequent rc.6 publication and retirement.
 
 ## Implementation
 
@@ -128,3 +128,20 @@ The source documentation and six saved delivery workflows are retargeted in the
 publication follow-up. Its CI, consumer images and scoped retirement remain
 separate gates. No old distributions or CodeSeal assets were removed here.
 See [release evidence](evidence/zellij-rc6-release-2026-11-13.json).
+
+
+## Documentation, consumers and retirement closed
+
+PR #156 (`8eb117a`) merges the exact tree tested at `f767260`, with all 23 CI
+jobs and all six generated delivery build checks passing. The Next consumer
+needed one unchanged-head retry after runtime-discovery timeouts; this remains
+an explicit reliability follow-up. Browser preservation passes all 46 original
+and 13 added routes, 282 original headings, 82 compatibility mappings and 29
+byte-identical images without captured browser errors.
+
+Both replacement image publications, all 13 development-image jobs and fresh
+HTTP checks pass. The scoped cleanup removed two rc.5 releases, 40 assets, two
+remote tags and 26 obsolete image versions. rc.6, CodeSeal, all current image
+nodes and excluded history remain intact. Post-cleanup inventory and HTTP checks
+pass. See [retirement evidence](evidence/zellij-rc6-image-retirement-2026-11-13.json)
+and [implementation follow-ups](zellij-post-rc6-followups-2026-11-13.md).

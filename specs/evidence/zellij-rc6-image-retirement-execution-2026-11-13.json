@@ -1,0 +1,206 @@
+{
+  "planSha256": "9d6d1b9e4241cb574d2524d56bc53979cef7d77fc10916e3ea07fe8960328cc8",
+  "sourceCommit": "a59b4fe9e907e83d75c119c3e71c73fdc65767d0",
+  "execution": "local-owner",
+  "authenticatedOwner": "mylife-inc",
+  "keepVersion": "0.2.0-rc.6",
+  "startedAt": "2026-11-13T20:47:03.627Z",
+  "complete": true,
+  "events": [
+    {
+      "package": "zellij-base",
+      "id": 1548538790,
+      "digest": "sha256:8254cc45ab6099061cc4b46e107123d5fdeb3317557205dd6594aae71a504bae",
+      "tags": [
+        "0.2.0-rc.5-maths"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548538737,
+      "digest": "sha256:d52d53ec12636d9a20c36086595447c1e9508a38a44b6b266d29aabde0fd88cb",
+      "tags": [
+        "0.2.0-rc.5-all"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548538664,
+      "digest": "sha256:f7f89045fe0d23ce1014a2bc7df0b24e48273c193eae610eb3ae44bb9bd6b4da",
+      "tags": [
+        "0.2.0-rc.5"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548538167,
+      "digest": "sha256:da78e66873cd4b4bea01eb06211e68c36b0e13970c2d21a1ba51768f67d25a18",
+      "tags": [
+        "0.2.0-rc.5-diagrams"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528980,
+      "digest": "sha256:fc3e1b45bc5c3e6051de41fece418a9eba76766b9385e9d9029a275bcbd0c375",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528922,
+      "digest": "sha256:f0317f81e11eb49c926bca7e191ef7a046bd9a9437842e04d7e0d56d61156daf",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528829,
+      "digest": "sha256:47964ddd6611a7cf504ba007101dc9604730cc6b9dbc14142c059756f582a023",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528710,
+      "digest": "sha256:731fe3e19d82128f14978e53d1b37d25638163a9e1ce2b836dca358e84965a9e",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528703,
+      "digest": "sha256:be2d29741eeedc36f8dd425e47037f706cabfdf4d905ce129cc74cdd0d2069c1",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528606,
+      "digest": "sha256:335fedb8aa5a29a418c41632f4789c952bc0159d3d932ad6f748ff122cd3a064",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548528604,
+      "digest": "sha256:4ef378fa784718f3cdcba1386615b64e5a21ea9ec44b76f7db7e687bdb33c420",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1548527667,
+      "digest": "sha256:6e9ccceaa9981fa96784f06bebf3d6e1f98eb51f11a717fbd2bf5283d601ba08",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760605,
+      "digest": "sha256:01f53c363cd992cabd0157b043d18efe16fe5056be0d9e363fc3c47c390dc9c2",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760324,
+      "digest": "sha256:756e51c3320d8bee2dfb2753c3482cc2eeec749d5b90c105e10e6a35e0dad5d7",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760285,
+      "digest": "sha256:2e0fe04c4e323f1c9e19080cda87401b1a4ac38bdf084f678c1446a70fae4476",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760258,
+      "digest": "sha256:5763b3b7ae44f0dfc5a29e0b78cf4576d65e65123723398d708b13a77aaced57",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760218,
+      "digest": "sha256:d7857c983ed6819a36ea51def4fdff847c0303971f04558d5a4b12a44a2151e1",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547760050,
+      "digest": "sha256:b9e29afa30ab22463d67b652a9ea384e2a60b4e346261955a1ce7f52197a5225",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547759752,
+      "digest": "sha256:4d124b5ccefb312dfc59ab31d2751bf0fdf39f4445cc3539cb005aaa4e43b1b9",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1547759531,
+      "digest": "sha256:9c369d9e1098308a47c53d4b6e88e2efbb8fc4223d524c241f62c63ec98ed27f",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1548624727,
+      "digest": "sha256:7bd5cadae750ef32aa9f554e944475a47b679a8feb1e83a151040c0f0e8114c5",
+      "tags": [
+        "0.2.0-rc.5"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1548624667,
+      "digest": "sha256:b6b01ff4b4e9e0d230b46cdf105f07ff04f6bd3d4f7d5f1e5d0ac5f3047156b8",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1548624666,
+      "digest": "sha256:7a561bd261cb1f715a2016e4d79f18aa738af79d1860208d128a786fff0d8eed",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1548630016,
+      "digest": "sha256:6d7faee23004dab9c003a2734cfbd0bdb22ca4cb3b1e7992599c064e08283dde",
+      "tags": [
+        "0.2.0-rc.5"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1548629976,
+      "digest": "sha256:d3a963568d842778192e9bd8916b2c4579553d98536dd3429f45227b3665809d",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1548629967,
+      "digest": "sha256:9a25184b86da9bcc06b818bb2bfc6e8ab74e9f12427ec3ea7d827c6f1d746180",
+      "tags": [],
+      "status": "deleted"
+    }
+  ],
+  "finishedAt": "2026-11-13T20:49:11.632Z"
+}

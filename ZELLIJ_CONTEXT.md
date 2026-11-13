@@ -26,8 +26,14 @@ The Next consumer required one unchanged-head retry after runtime probes timed
 out before building. Generated container CI should explicitly select its runtime;
 this remains an open reliability issue. All 13 development-image jobs in
 `43498926083` pass at the released source; the docs follow-up changes no runtime
-inputs. Replacement acceptance images and rc.5 retirement are in progress;
-do not reuse the old rc.5 image-retirement plan.
+inputs. Replacement static/Next publications and fresh-pull HTTP checks pass.
+rc.5 retirement is complete: two releases, 40 assets, two remote tags and 26
+obsolete image versions removed. All 46 current manifest nodes, 3,321 excluded
+build-history versions and CodeSeal releases are intact. Fresh hosted inventory
+`43505203415` and both HTTP checks in `43505207912` pass. See
+[retirement evidence](specs/evidence/zellij-rc6-image-retirement-2026-11-13.json).
+Do not reuse completed plans after tags move. The next implementation priorities
+are [runtime-selection reliability, package channels and richer book publishing](specs/zellij-post-rc6-followups-2026-11-13.md).
 See [the preparation record](specs/zellij-rc6-preparation-2026-11-13.md).
 
 PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and
