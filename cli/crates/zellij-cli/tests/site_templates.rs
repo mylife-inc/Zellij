@@ -4,6 +4,11 @@ fn run(root: &Path, args: &[&str], code: i32) -> std::process::Output {
         .current_dir(root)
         .args(args)
         .env("PATH", root.join("no-tools"))
+        // Windows executable lookup can still reach installed runtimes despite
+        // a replaced child PATH. Conflicting selectors stop discovery before
+        // any runtime probe, just as in the native PDF integration fixture.
+        .env("DOCKER_HOST", "unix:///fixture.sock")
+        .env("CONTAINER_HOST", "unix:///fixture-other.sock")
         .output()
         .unwrap();
     assert_eq!(out.status.code(), Some(code), "{args:?}: {out:?}");
@@ -156,7 +161,15 @@ fn book_starter_has_shared_publication_and_opt_in_print_without_tools() {
     assert!(root.join("book/site/assets/wave.png").is_file());
     let home = fs::read(root.join("book/site/index.html")).unwrap();
     let failure = run(root, &["build", "book", "--pdf"], 4);
-    assert!(String::from_utf8_lossy(&failure.stderr).contains("PDF requires a running"));
+    let diagnostic = String::from_utf8_lossy(&failure.stderr);
+    assert!(
+        diagnostic.contains("PDF requires a running"),
+        "{diagnostic}"
+    );
+    assert!(
+        diagnostic.contains("select multiple runtimes"),
+        "{diagnostic}"
+    );
     assert_eq!(fs::read(root.join("book/site/index.html")).unwrap(), home);
     run(root, &["build", "book", "--no-pdf"], 0);
 }

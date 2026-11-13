@@ -56,7 +56,14 @@ The first hosted run `43482576387` produced the starter PDF, but all three
 PDF jobs failed its exact title-text assertion. The new title wraps at the
 paper width; acceptance now normalizes layout whitespace and separately checks
 the exact metadata title. Starter artifacts are saved before this text check
-so any further failure remains inspectable. Final hosted acceptance is pending.
+so any further failure remains inspectable. The next run `43483044136` passed
+all three PDF jobs; 12 PDFs and 87 page captures have been checked, including
+visual review of every starter page. Its Windows starter test failed because
+replacing the child PATH alone did not guarantee the expected no-runtime
+diagnostic. Like the existing PDF fixture, the starter fixture now sets
+conflicting runtime selectors to stop discovery before any runtime probe, and
+asserts that specific dependency failure and previous-output preservation.
+Final hosted acceptance is pending.
 
 ## Release gates and remaining scope
 
