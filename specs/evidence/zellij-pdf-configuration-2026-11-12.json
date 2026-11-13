@@ -1,0 +1,876 @@
+{
+  "date": "2026-11-12",
+  "status": "merged; PDF configuration, preview and static delivery verified",
+  "pr": 153,
+  "base_commit": "3b42b03e8bdb0cf03e824d0a5469009915fb12ec",
+  "commits": [
+    {
+      "commit": "528b4c264c6370d7d225db25809ed8561a578d9d",
+      "result": "Saved PDF settings, shared atomic build/preview/static delivery, runtime preflight and compatible generated CI"
+    },
+    {
+      "commit": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d",
+      "result": "Updated stale doctor wording assertion while retaining runtime-not-probed checks; recorded failed attempt"
+    }
+  ],
+  "failed_attempts": [
+    {
+      "scope": "local",
+      "result": "Mechanical parse/argument mistakes, serde null-to-default settings, a shared fake-runtime handler shadowing hosted tests, repeated Ctrl-C registration and stale doctor wording assertions were found and fixed before the final complete pass. See checkpoint for history."
+    },
+    {
+      "run": 43376193640,
+      "head": "528b4c264c6370d7d225db25809ed8561a578d9d",
+      "failed_jobs": [
+        131723141145,
+        131723141325,
+        131723141333
+      ],
+      "result": "CLI/Linux/macOS jobs failed the same stale exact doctor wording assertion. All three actual PDF jobs passed. Superseded run cancelled after ecfbfba corrected the assertion; no runtime-not-probed checks removed."
+    }
+  ],
+  "local": {
+    "rust_passed": 767,
+    "rust_failed": 0,
+    "rust_ignored": 5,
+    "ignored_note": "Existing hosted-only cases execute separately in CI.",
+    "format": "passed",
+    "clippy_warnings_denied": "passed",
+    "docs": {
+      "strict_deep": "passed",
+      "routes": 59,
+      "examples": 25
+    },
+    "acceptance_script_syntax": "passed",
+    "actionlint": "passed",
+    "post_pdf_packaging_sigint": {
+      "exit_code": 130,
+      "fixture_only": true
+    },
+    "local_containers_browsers_gui_used": false
+  },
+  "ci": {
+    "run": 43376564097,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097",
+    "tested_head": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d",
+    "conclusion": "success",
+    "attempt": 1,
+    "all_jobs_passed": true,
+    "jobs": [
+      {
+        "id": 131724449388,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449388"
+      },
+      {
+        "id": 131724449626,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449626"
+      },
+      {
+        "id": 131724449741,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449741"
+      },
+      {
+        "id": 131724449746,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449746"
+      },
+      {
+        "id": 131724449791,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449791"
+      },
+      {
+        "id": 131724449811,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449811"
+      },
+      {
+        "id": 131724449841,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449841"
+      },
+      {
+        "id": 131724449844,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449844"
+      },
+      {
+        "id": 131724449870,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449870"
+      },
+      {
+        "id": 131724449892,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449892"
+      },
+      {
+        "id": 131724449943,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449943"
+      },
+      {
+        "id": 131724449949,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449949"
+      },
+      {
+        "id": 131724449961,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449961"
+      },
+      {
+        "id": 131724449968,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449968"
+      },
+      {
+        "id": 131724449992,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724449992"
+      },
+      {
+        "id": 131724450154,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724450154"
+      },
+      {
+        "id": 131724450191,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724450191"
+      },
+      {
+        "id": 131724450198,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131724450198"
+      },
+      {
+        "id": 131725582974,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131725582974"
+      },
+      {
+        "id": 131727505907,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131727505907"
+      },
+      {
+        "id": 131727505941,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131727505941"
+      },
+      {
+        "id": 131727505988,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131727505988"
+      },
+      {
+        "id": 131727505993,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success",
+        "url": "https://github.com/mylife-inc/Zellij/actions/runs/43376564097/job/131727505993"
+      }
+    ],
+    "engine_tests": 490,
+    "showcase_passed": 356,
+    "showcase_conditional_skips": 124,
+    "native_packages": 6,
+    "homebrew_targets": 4,
+    "docs_preservation": {
+      "original_routes": 46,
+      "added_routes": 12,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_errors": 0
+    }
+  },
+  "pdf": {
+    "visual_review": "A4/12pt and Letter/10pt: all fourteen pages viewed. No clipping or overlap; contents, headings, math, table, footnote, code and appendix readable. Eight A5 captures match prior reviewed baseline.",
+    "platform_results": {
+      "book-pdf-ubuntu-24.04-arm-docker": {
+        "formats": {
+          "a5": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "5f9b816a223ffcbd830ca051d2955e8c2404373264413fa1b748918f0716cea1",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": true,
+                "font-size": 11,
+                "paper": "a5"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51193,
+            "pages": 8,
+            "page_size_points": [
+              419.528,
+              595.276
+            ],
+            "embedded_font_count": 13,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "a4": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "0a07d3e97f81c376fc9da6abc15f69bf859a3319a3136e55568b2791412202ed",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 12,
+                "paper": "a4"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 46302,
+            "pages": 7,
+            "page_size_points": [
+              595.276,
+              841.89
+            ],
+            "embedded_font_count": 12,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "letter": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "d218f03a7d6dfa45a6b0fa57504d5504eda2c62a587aff47384e06d31b69a03d",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 10,
+                "paper": "letter"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51208,
+            "pages": 7,
+            "page_size_points": [
+              612.0,
+              792.0
+            ],
+            "embedded_font_count": 14,
+            "all_fonts_embedded_subset_unicode": true
+          }
+        },
+        "preview": {
+          "initial": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "rebuilt": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+          "pdfMatchesWeb": true
+        },
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ],
+        "static_image": {
+          "architecture": "arm64",
+          "bytes": 14040817,
+          "pdfBytes": 51237,
+          "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+          "user": "nginx",
+          "latexAbsent": true
+        }
+      },
+      "book-pdf-ubuntu-latest-docker": {
+        "formats": {
+          "a5": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "1bd617b9df59bf687bc6899735143d5ee59ba0fbcf10d0d46328e25398cdd33e",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": true,
+                "font-size": 11,
+                "paper": "a5"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51193,
+            "pages": 8,
+            "page_size_points": [
+              419.528,
+              595.276
+            ],
+            "embedded_font_count": 13,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "a4": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "cbf5d509e1a0b151daf90df7d04f006011775c3e6f902edc0b7a5f5f1aa71418",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 12,
+                "paper": "a4"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 46302,
+            "pages": 7,
+            "page_size_points": [
+              595.276,
+              841.89
+            ],
+            "embedded_font_count": 12,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "letter": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "d605a0d6d150dc629aa1db86ee21e518b064f3bc3e4d29858cc3b925510fb8de",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 10,
+                "paper": "letter"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51208,
+            "pages": 7,
+            "page_size_points": [
+              612.0,
+              792.0
+            ],
+            "embedded_font_count": 14,
+            "all_fonts_embedded_subset_unicode": true
+          }
+        },
+        "preview": {
+          "initial": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "rebuilt": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+          "pdfMatchesWeb": true
+        },
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ],
+        "static_image": {
+          "architecture": "amd64",
+          "bytes": 7241042,
+          "pdfBytes": 51237,
+          "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+          "user": "nginx",
+          "latexAbsent": true
+        }
+      },
+      "book-pdf-ubuntu-latest-podman": {
+        "formats": {
+          "a5": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "4c309904bcdea648c7fda51740cd98216ec2bdb75a03eae10d66f6a729b90841",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": true,
+                "font-size": 11,
+                "paper": "a5"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51193,
+            "pages": 8,
+            "page_size_points": [
+              419.528,
+              595.276
+            ],
+            "embedded_font_count": 13,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "a4": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "4e597a93b11caf33280b0f076d0b1bc61fef5383cdd9feb2f37cd3c23cfb048b",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 12,
+                "paper": "a4"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 46302,
+            "pages": 7,
+            "page_size_points": [
+              595.276,
+              841.89
+            ],
+            "embedded_font_count": 12,
+            "all_fonts_embedded_subset_unicode": true
+          },
+          "letter": {
+            "receipt": {
+              "backend": "lualatex",
+              "pdf_sha256": "08104ead7528915424438254ad7032f5c3d53599f51a7f93dea3f7444e594e61",
+              "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+              "schema_version": 1,
+              "settings": {
+                "enabled": false,
+                "font-size": 10,
+                "paper": "letter"
+              },
+              "template": "classic-v1",
+              "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+            },
+            "pdf_bytes": 51208,
+            "pages": 7,
+            "page_size_points": [
+              612.0,
+              792.0
+            ],
+            "embedded_font_count": 14,
+            "all_fonts_embedded_subset_unicode": true
+          }
+        },
+        "preview": {
+          "initial": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "rebuilt": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+          "pdfMatchesWeb": true
+        },
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+            "matches_reviewed_page": true
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c",
+            "matches_reviewed_page": true
+          }
+        ]
+      }
+    },
+    "pdf_count": 9,
+    "captures_matching_review": 66,
+    "artifacts": [
+      {
+        "id": 14015296154,
+        "name": "book-pdf-ubuntu-latest-docker",
+        "size_in_bytes": 925945,
+        "digest": "sha256:7448b9cb5fdf943c8c29d2f33b68d70070c3d88dc17cc9c05c0cd5fc1072c3b2",
+        "source": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d"
+      },
+      {
+        "id": 14014827479,
+        "name": "book-pdf-ubuntu-latest-podman",
+        "size_in_bytes": 925657,
+        "digest": "sha256:56cf666d090ac92cf50ed52e5eaa96fa7553adad89ed0eebf8c03296156cbc52",
+        "source": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d"
+      },
+      {
+        "id": 14014342692,
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "size_in_bytes": 925941,
+        "digest": "sha256:2d64fb8e5b2cb5e8bc8a6b4ad6c483835c17ec3fa86422e25b02fbaa58aceedf",
+        "source": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d"
+      }
+    ],
+    "static_image_size_note": "Docker image-inspect uncompressed size, not compressed download bytes. LaTeX, Node and Cargo are absent from the final static runtime."
+  },
+  "boundaries": [
+    "English/LTR classic print; A5/A4/Letter and 10/11/12pt only; no custom template or arbitrary TeX input",
+    "PDF generation remains optional and needs the separate Linux container toolchain; web-only builds and PDF compatibility checks are native",
+    "Static provider protocol acceptance is not new live provider verification; deferred providers remain deferred",
+    "PDF-enabled Next images are rejected explicitly; disable PDF settings for web-only Next output",
+    "Multilingual/RTL print, bibliography/index/glossary, semantic numbered equations/theorems and custom/technical/study templates remain open",
+    "Generated workflows with any explicit PDF field require rc.6 or later; the compatibility floor does not imply publication",
+    "Actual PDF runtimes: rootful Docker Linux amd64/arm64 and rootless Podman Linux amd64. Rootless Docker/nerdctl retain protocol checks without new real execution.",
+    "PDFs are not claimed byte-reproducible; visual page hashes match across the three final runtimes",
+    "Untagged PDFs: no PDF/UA claim"
+  ],
+  "development_engine": {
+    "republished": false,
+    "reason": "Node engine runtime, Docker recipes and dependencies are unchanged; the optional PDF toolchain remains separate."
+  },
+  "native_release_published": false,
+  "published_version": "v0.2.0-rc.5",
+  "production_documentation_deployed": false,
+  "tested_head": "ecfbfba8e6390680f481052cbcc3fc3a08d7379d",
+  "tested_tree": "dd123904ffa8191d55f4b9faa168788081ce1f30",
+  "merge_commit": "71b97e4a40ca8954df71cbf81d621620169f8c6f",
+  "merge_tree": "dd123904ffa8191d55f4b9faa168788081ce1f30",
+  "merge_tree_matches_tested_head": true
+}

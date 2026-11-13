@@ -42,9 +42,14 @@ Rust tests and actual Docker amd64/arm64 plus rootless Podman PDF acceptance.
 The single unchanged Engine retry followed a legacy-bookmark viewport timeout;
 that first failure remains recorded. All 24 final page captures match the eight
 visually reviewed pages. See [PDF evidence](evidence/zellij-book-pdf-2026-11-12.json).
+PR #153 (`71b97e4`) adds saved PDF enablement, A5/A4/Letter and 10/11/12pt
+settings, preview/watch, static delivery/images and compatible CI generation.
+All 23 final-head jobs in `43376564097` pass without reruns; 767 local Rust
+tests pass. Nine real PDFs and 66 captures pass across three Linux runtimes.
+See [configuration/delivery evidence](evidence/zellij-pdf-configuration-2026-11-12.json).
 The released rc.5 book starter is still a reading website. The new source print
-adapter is English/LTR A5; configuration, advanced publishing semantics and
-other expansion work remain incomplete. Older milestones retain their dated evidence.
+adapter remains English/LTR; advanced publishing semantics and other expansion
+work remain incomplete. Older milestones retain their dated evidence.
 
 The user subsequently requested new branding, composable sections, site/book
 templates, PDF publishing and installation channels. These extend the earlier
@@ -86,7 +91,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in current source (23 types in rc.5); configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
-| Book publication and PDF (source after rc.5) | Shared publication snapshot, direct LaTeX adapter, atomic web/PDF builds, standalone export, native compatibility checks; three real PDF runtime jobs and reviewed captures | First English/LTR A5 template; opt-in external Linux runtime; configuration, multilingual print, bibliography/index and technical/study templates remain open. |
+| Book publication and PDF (source after rc.5) | Shared publication snapshot, direct LaTeX adapter, saved settings, atomic web/PDF builds and previews, static delivery/images, standalone export and native compatibility checks; three real PDF runtime jobs and 66 reviewed/matched captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, bibliography/index and technical/study templates remain open. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
@@ -203,9 +208,11 @@ light/dark desktop/phone captures were reviewed. See [composer evidence](evidenc
 [media evidence](evidence/zellij-media-composition-2026-11-12.json).
 The [book publication model](zellij-book-publication-2026-11-12.md) merged in
 PR #149 (`72a8445`), with all 20 final-head jobs passing on the identical tree.
-Next implement opt-in build-time PDF/LaTeX against this shared publication model,
-then technical/study editions and the remaining
-installation channels. The [expansion design](zellij-product-expansion-2026-11-11.md)
+Optional PDF/LaTeX and configuration/preview/static delivery subsequently merged
+in PRs #151 and #153. Next, version the book starter around the shared publication
+model and optional print settings, then prepare rc.6 and its documentation.
+Advanced print semantics, technical/study editions and the remaining installation
+channels follow. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.
 
 The original implementation/release/docs contract is complete. The user deferred

@@ -677,3 +677,27 @@ then shared numbered equations/theorems, bibliography/index/glossary,
 multilingual/RTL and technical/study/custom print templates. Published rc.5,
 its template archives, production documentation/domain and deferred live
 provider verification remain unchanged. No Node runtime image refresh was needed.
+
+
+## PDF configuration and delivery closure — 2026-11-12
+
+PR #153 (`71b97e4`) closes saved PDF settings, preview/watch and static
+delivery/image integration on the shared publication model. The opt-in config
+supports A5/A4/Letter and 10/11/12pt; invocation/session flags override enablement.
+Atomic publication, change detection and cancellation keep web/PDF revisions
+together. Generated CI enforces a compatible rc.6-or-later pin, without implying
+that rc.6 is published. The optional LaTeX toolchain stays outside static images.
+
+All 23 final-head jobs in `43376564097` pass without reruns; 767 local Rust tests,
+490 engine tests and 356 showcase cases pass. Nine valid PDFs across Docker
+amd64/arm64 and rootless Podman have 66 page captures matching reviewed layouts.
+Actual preview/watch and nonroot static-image HTTP PDF checks pass. See
+[the checkpoint](zellij-pdf-configuration-2026-11-12.md) and
+[evidence](evidence/zellij-pdf-configuration-2026-11-12.json).
+
+Next is a new book-starter version using the publication model and optional PDF
+settings, followed by rc.6 preparation and updated docs. Do not mutate released
+template archives. Next-image PDFs, advanced numbered equations/theorems,
+bibliography/index/glossary, multilingual/RTL and technical/study/custom templates
+remain open. Published rc.5, production docs/domain and deferred live providers
+are unchanged.
