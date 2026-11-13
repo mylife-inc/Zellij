@@ -3,6 +3,12 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Scoop distribution implementation is now prepared: a checksum-pinned manifest
+generator, explicit managed-upgrade guidance, native x64/ARM64 Windows lifecycle
+workflow, and a release publication gate/manifest artifact. Hosted acceptance
+and the owned bucket are pending; rc.6 remains unchanged. See
+[the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md).
+
 PR #160 (`dece6c9`) fixes two reproduced header-focus defects; its tree
 matches tested head `17be3af`. Focus lost when breakpoint CSS hides navigation
 is restored after panel closure commits, and header updates preserve the focused

@@ -63,12 +63,19 @@ fn managed_installations_refuse_self_upgrade_without_touching_the_binary() {
     check_package_manager(&executable).unwrap();
     let share = root.path().join("share/zel");
     fs::create_dir_all(&share).unwrap();
-    for marker in [b"homebrew\n".as_slice(), b"unknown\n", &[b'x'; 128]] {
+    for marker in [
+        b"homebrew\n".as_slice(),
+        b"scoop\n",
+        b"unknown\n",
+        &[b'x'; 128],
+    ] {
         fs::write(share.join("installation-manager"), marker).unwrap();
         let message = check_package_manager(&executable).unwrap_err().to_string();
         assert!(
             message.contains(if marker == b"homebrew\n" {
                 "brew upgrade mylife-inc/tap/zel"
+            } else if marker == b"scoop\n" {
+                "scoop update zel"
             } else {
                 "package manager"
             }),
