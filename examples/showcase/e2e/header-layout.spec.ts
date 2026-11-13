@@ -99,4 +99,26 @@ test.describe('measured overflow', () => {
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     await expect(page.locator('.zellij-nav-list [data-zellij-navitem]').first()).toBeFocused();
   });
+
+  test('preserves a focused drawer link while the header reacts to scrolling', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 900 });
+    await page.goto('/');
+    const header = page.locator('.zellij-header');
+    await expect(header).toHaveAttribute('data-solid', 'false');
+    await page.getByRole('button', { name: 'Open navigation' }).click();
+    const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+    await expect(drawer).toBeFocused();
+    const link = drawer.getByRole('link').first();
+    await link.focus();
+    await expect(link).toBeFocused();
+    // A programmatic scroll can update the header even while body scroll is
+    // locked. Changing header state must not restart the open drawer's trap.
+    await page.evaluate(() => window.scrollTo({ top: 400, behavior: 'instant' }));
+    await expect(header).toHaveAttribute('data-solid', 'true');
+    await expect(drawer).toBeVisible();
+    await expect(link).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(drawer).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+  });
 });

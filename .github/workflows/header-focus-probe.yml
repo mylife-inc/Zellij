@@ -19,8 +19,8 @@ jobs:
       - run: npm run build --workspace @shebka/zellij-showcase
       - run: npx playwright install --with-deps chromium
         working-directory: examples/showcase
-      - name: Exercise resize alongside the desktop suite without retries
-        run: npx playwright test --project desktop --retries 0 --repeat-each 4 --workers 4
+      - name: Exercise resize and open-drawer updates without retries
+        run: npx playwright test e2e/header-layout.spec.ts e2e/header-focus-probe.spec.ts --project desktop --retries 0 --repeat-each 8 --workers 4
         working-directory: examples/showcase
       - uses: actions/upload-artifact@v7
         if: always()
