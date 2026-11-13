@@ -122,14 +122,28 @@ it('keeps previous output through invalid edits and recovers without restarting'
 it('handles whole-directory removal/recreation and stops all updates on close', async () => {
   const f = await fixture();
   const watcher = await f.start();
+  const initialRevision = await f.json('dev-revision.json');
   await rm(path.join(f.content, 'assets'), { recursive: true });
-  await expect.poll(() => f.json('asset-manifest.json')).toEqual({});
+  await expect.poll(() => f.json('dev-revision.json')).not.toEqual(initialRevision);
+  expect(await f.json('asset-manifest.json')).toEqual({});
   await expect(readFile(path.join(f.output, 'assets/logo.svg'))).rejects.toMatchObject({ code: 'ENOENT' });
+  const removedRevision = await f.json('dev-revision.json');
   await f.put('assets/logo.svg', '<svg>recreated</svg>');
-  await expect.poll(async () => Object.keys(await f.json('asset-manifest.json'))).toEqual(['logo.svg']);
+  await expect.poll(() => f.json('dev-revision.json')).not.toEqual(removedRevision);
+  expect(Object.keys(await f.json('asset-manifest.json'))).toEqual(['logo.svg']);
   const displaced = `${f.content}-saved`;
+  const previousSearch = await f.search();
+  const previousRevision = await f.json('dev-revision.json');
   await rename(f.content, displaced);
-  await expect.poll(() => f.errors.length).toBe(1);
+  // A scan already in flight may first report ENOENT for a child. Wait for
+  // the stable missing-root state, not a platform-dependent callback count.
+  await expect.poll(() => f.errors.some((error) => error instanceof Error
+    && error.message.includes(`No content directory at ${f.content}`))).toBe(true);
+  expect(await f.search()).toBe(previousSearch);
+  expect(await f.json('dev-revision.json')).toEqual(previousRevision);
+  const errors = f.errors.length;
+  await delay(100);
+  expect(f.errors).toHaveLength(errors); // unchanged invalid state is not retried
   await rename(displaced, f.content);
   await f.put('01-guide/index.mdx', '# Returned\n\nThe root returned.\n');
   await expect.poll(f.search).toContain('The root returned');

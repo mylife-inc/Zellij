@@ -87,3 +87,11 @@ Mapping references:
 - https://docs.podman.io/en/latest/markdown/podman-info.1.html
 - https://docs.docker.com/reference/api/engine/version-history/
 - https://github.com/containerd/nerdctl/blob/main/pkg/cmd/system/info.go
+
+Run `43357699459` at `bc517e1` passed all three real PDF jobs, including rootless
+Podman. Its engine suite exposed an existing whole-directory watcher fixture
+race: an in-flight scan may report a child ENOENT before preparation reports the
+missing root, yielding two legitimate callbacks. The fixture now waits for the
+specific missing-root state, verifies unchanged search/revision, verifies no
+repeated errors for that unchanged state, and retains recovery/close checks.
+Production watcher behavior is unchanged; this is not a relaxed retry policy.
