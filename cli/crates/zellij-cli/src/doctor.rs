@@ -81,7 +81,16 @@ fn inspect(input: Option<&SiteInput>, report: &mut Value) -> Result<()> {
         });
         if portable {
             zellij_docs::validate_settings(site.portable)?;
-            report["runtime"] = json!({ "status": "not_required" });
+            report["site"]["pdf"] = json!(site.pdf);
+            if !site.pdf.enabled {
+                report["runtime"] = json!({ "status": "not_required" });
+                return Ok(());
+            }
+            report["runtime"] = json!({ "status": "unavailable" });
+            let runtime = zellij_engine::runtime::detect()?;
+            report["runtime"] = json!({ "status": "available", "program": runtime.program,
+                "version": runtime.version, "endpoint": runtime.endpoint(), "rootless": runtime.rootless()? });
+            report["image"] = json!({ "reference": crate::pdf::IMAGE, "status": "not_checked" });
             return Ok(());
         }
     }
@@ -133,7 +142,7 @@ fn human(report: &Value) {
     let runtime = &report["runtime"];
     match runtime["status"].as_str() {
         Some("not_required") => {
-            zellij_core::reportln!("  · not required for portable sites; not probed")
+            zellij_core::reportln!("  · not required for portable web-only sites; not probed")
         }
         Some("available") => {
             zellij_core::reportln!(
@@ -145,6 +154,7 @@ fn human(report: &Value) {
             let state = match report["image"]["status"].as_str() {
                 Some("local") => "local",
                 Some("not_pulled") => "not pulled — the first build will fetch it",
+                Some("not_checked") => "not inspected — optional PDF toolchain",
                 _ => "unknown — image inspection unavailable or timed out",
             };
             zellij_core::reportln!(

@@ -75,6 +75,7 @@ fn image(
     options: &BuildOptions,
 ) -> Result<()> {
     let (site, content) = selection(dir)?;
+    require_pdf_kind(&site, kind)?;
     if kind == BuildKind::Static && site.renderer == Renderer::Portable {
         require_native_options(options)?;
     }
@@ -94,6 +95,13 @@ fn image(
     Ok(())
 }
 
+pub(crate) fn require_pdf_kind(site: &Site, kind: BuildKind) -> Result<()> {
+    if site.pdf.enabled && kind == BuildKind::Next {
+        return Err(zellij_core::Error::InvalidArgument("PDF-enabled books require a static image; Next-image PDF delivery is not supported. Select image static or disable pdf.enabled.".into()));
+    }
+    Ok(())
+}
+
 /// One build operation shared by local packaging and saved publication. The
 /// caller resolves intent and probes the runtime once, before temporary writes.
 pub(crate) fn build_image(
@@ -105,6 +113,7 @@ pub(crate) fn build_image(
     platform: Option<ImagePlatform>,
     options: &BuildOptions,
 ) -> Result<()> {
+    require_pdf_kind(site, kind)?;
     let features = options.features;
     if let Some(platform) = platform {
         zellij_core::statusln!("  Platform {platform}");
@@ -118,13 +127,14 @@ pub(crate) fn build_image(
                     zellij_core::Error::InvalidArgument("temporary directory is not UTF-8".into())
                 })?
                 .join("site");
-            let report = zellij_docs::build(
+            let report = crate::pdf::build_to(
                 &site.input,
                 &export,
                 zellij_docs::BuildOptions {
                     features,
                     ..Default::default()
                 },
+                None,
             )?;
             for warning in report.warnings {
                 zellij_core::diagnosticln!("warning: {warning}");

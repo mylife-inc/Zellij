@@ -31,7 +31,7 @@ configuration file and uses its parent as the site root. These share the
 [global selection rules](/cli/config). Explicit paths also support legacy hosted
 content, legacy flat portable configurations, and raw Markdown folders.
 
-A **portable** site does not need a container runtime: doctor skips every runtime
+A **portable web-only** site does not need a container runtime: doctor skips every runtime
 probe, even when container endpoint variables are set. For a **hosted** site it
 checks the runtime as described below. Without a configuration or explicit path,
 legacy hosted content can still be discovered. If no site is found, doctor
@@ -49,7 +49,8 @@ not write configuration, generate output, pull images or start services.
 
 | Operation | Container runtime required? |
 | --- | --- |
-| Portable `build`, `check`, `view` and static-file `serve` | No |
+| Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |
+| Portable book PDF generation (source after rc.5) | Yes; `--pdf` or saved `pdf.enabled: true` opts in |
 | Implemented scaffolding, `explain`, `list`, `context`, `detect`, `convert` | No |
 | `publish --dry-run` | No; resolves a saved plan without validation or credential checks |
 | `publish` / `pub` with image push | Yes; builds and pushes the configured image |
@@ -198,3 +199,11 @@ replacing the executable. `zel --version` retains its compact binary version.
 - [Configuration](/cli/config)
 - [`zel check`](/cli/check)
 - [`zel image`](/cli/image)
+
+## PDF preflight (source after rc.5)
+
+When a portable book explicitly sets `pdf.enabled: true`, `doctor` checks its
+print settings and the selected runtime's user mapping. It reports the pinned
+PDF toolchain image without inspecting, pulling or running it. JSON adds the
+resolved `site.pdf` settings. `zel pdf --check` separately validates manuscript
+compatibility without a runtime; actual typesetting is needed to verify layout.

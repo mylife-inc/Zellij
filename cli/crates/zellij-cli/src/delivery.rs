@@ -39,6 +39,12 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
+    match plan {
+        DeliveryPlan::Push(ImagePublication { kind, .. })
+        | DeliveryPlan::Fly { kind, .. }
+        | DeliveryPlan::Railway { kind, .. } => crate::images::require_pdf_kind(site, *kind)?,
+        _ => {}
+    }
     if !matches!(
         plan,
         DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. } | DeliveryPlan::Railway { .. }
@@ -71,6 +77,9 @@ pub(crate) fn describe(plan: &DeliveryPlan, site: &Site, content: &Utf8Path) {
         site.root,
         site.renderer
     );
+    if site.pdf.enabled {
+        zellij_core::reportln!("  PDF      enabled (optional LuaLaTeX container required)");
+    }
     describe_destination(plan);
 }
 
@@ -365,13 +374,14 @@ fn build_and_deploy(
         match engine {
             Some(engine) => engine.build_for_deployment_with_options(content, &export, options),
             None => {
-                let report = zellij_docs::build(
+                let report = crate::pdf::build_to(
                     &site.input,
                     &export,
                     zellij_docs::BuildOptions {
                         features: options.features,
                         ..Default::default()
                     },
+                    None,
                 )?;
                 for warning in report.warnings {
                     zellij_core::diagnosticln!("warning: {warning}");

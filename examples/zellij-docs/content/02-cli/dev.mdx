@@ -150,3 +150,11 @@ Older wrappers using `next dev` should switch to that script or run
 - [`zel watch`](/cli/watch) — repeated validation without a build or server
 - [`zel serve`](/cli/serve) — serve an existing export
 - [`zel build`](/cli/build) — create a static export
+
+## Book PDFs (source after rc.5)
+
+Portable `dev` honors the book's `pdf.enabled` setting and accepts `--pdf` /
+`--no-pdf` as session overrides. PDF generation needs the optional container
+toolchain and can slow each rebuild; `zel dev --no-pdf` keeps web-only authoring
+native. Website and PDF publish together after a successful build. See
+[book print settings](/cli/books#saved-print-settings-and-previews).

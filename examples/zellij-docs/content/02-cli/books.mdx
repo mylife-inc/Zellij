@@ -152,7 +152,7 @@ described below. Published rc.5 does not include it.
 
 ## Optional PDF export (current source)
 
-The first print adapter produces an English/LTR A5 book through LuaLaTeX:
+The first print adapter produces an English/LTR book through LuaLaTeX, with A5 as the default paper size:
 
 ```sh
 zel pdf my-book --check          # Native compatibility check; no files or runtime
@@ -164,19 +164,72 @@ zel export pdf my-book --out printed-book
 The same conventional site discovery and global `--cwd`, `--site-root` and
 `--config` selectors apply. `--out` names an output **directory**, protected by
 Zellij's existing output ownership rules. Standalone export leaves the website
-alone. A normal build never invokes the PDF toolchain; rebuilding without `--pdf`
-removes any previous PDF and its download links together. PDF generation is
-currently requested through these commands; automatic configuration-driven
-export and PDF-aware preview/deployment commands remain planned.
+alone. PDF generation is off by default. Set `pdf.enabled: true` to include it
+in ordinary portable builds, or select it for one invocation with `--pdf`.
+`--no-pdf` overrides the saved choice and removes a previous PDF and its download
+links together. The two flags cannot be combined.
 
 `build --pdf` places the verified PDF at `site/_zellij/pdf/book.pdf` and adds a
 relative download link to every reading page. The link also works with a relocated
 `file://` website. Its directory includes generated `book.tex`, copied print
 images, `build.log`, `publication.json` and `pdf.json`. These are public export
 artifacts. The receipt identifies the manuscript revision, PDF SHA-256, template
-and exact toolchain image. The website's publication record and PDF receipt use
+print settings and exact toolchain image. The website's publication record and PDF receipt use
 the same source snapshot. The hash does not promise byte-identical PDFs between
 builds: PDF timestamps and toolchain details can differ.
+
+### Saved print settings and previews
+
+The following top-level block belongs in a versioned portable book's `zel.yaml`:
+
+```yaml
+pdf:
+  enabled: true
+  paper: a5
+  font-size: 11
+```
+
+`enabled` defaults to `false`, `paper` to `a5`, and `font-size` to `11`.
+Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
+(points). Settings are validated even when PDF is disabled. Unknown keys,
+unsupported values, null settings, hosted sites and missing book manifests fail
+validation. The classic template still controls margins, fonts and chapter styling;
+custom templates and RTL print remain future work. Standalone `zel pdf` explicitly
+requests export regardless of `enabled`, using the same paper and font settings.
+
+```sh
+zel build my-book                 # Uses pdf.enabled
+zel build my-book --no-pdf        # Web only for this invocation
+zel view my-book --watch          # Rebuilds configured web and PDF together
+zel view my-book --watch --no-pdf  # Faster web-only authoring session
+zel dev my-book --pdf             # Watches with PDF enabled for this session
+```
+
+Preview overrides last for the whole session. Without an override, changing
+`pdf.enabled` takes effect on the next rebuild. A failed PDF build preserves the
+last complete website and PDF. Changes made during typesetting discard that
+outdated build; watch mode retries the new content. Ctrl-C cancels the typesetter
+and cleans up its container. `serve` only serves the existing export and never
+runs a PDF toolchain.
+
+### Static publication and CI
+
+Static deployment commands and `zel si` / `zel image static` honor `pdf.enabled`.
+They generate the matching PDF before upload or image packaging; typesetting
+failure prevents delivery. The generated static image contains the export and
+HTTP server, without the LaTeX toolchain. PDF-enabled Next image delivery is not
+implemented: select a static image, or explicitly disable PDF in the configuration
+for a web-only Next image. Deployment dry runs report the PDF requirement without
+checking credentials or starting a runtime.
+
+Generated GitHub, GitLab and CircleCI jobs inherit the saved PDF settings.
+GitHub and CircleCI use their existing Linux machine runners; GitLab enables its
+Docker service and shared build directory even for a portable PDF build. Runner
+setup must allow the CLI and runtime to bind the same temporary paths.
+Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**. This is a
+minimum compatibility version, not a claim that rc.6 has been published. Source
+users can generate the workflow with `--zel-version 0.2.0-rc.6`, then run it only
+after that release exists. Current published rc.5 cannot run these commands.
 
 ### Toolchain and failure behavior
 

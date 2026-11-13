@@ -71,7 +71,7 @@ JavaScript disabled; search and theme controls need JavaScript.
 
 Source builds after rc.5 can build a [book manuscript](/cli/books) with the same
 command. Its manifest defines front matter, parts, chapters and appendices; the
-export includes a publication record. PDF/LaTeX generation remains planned.
+export includes a publication record. Optional [PDF publishing](/cli/books#optional-pdf-export-current-source) is also available in current source.
 
 ### Pages, navigation, and titles
 
@@ -412,6 +412,8 @@ reserved names, generated Dockerfiles and limitations.
 - [Netlify deployment](/cli/deploy)
 
 For a portable book in current source, `zel build --pdf` also generates a
-LuaLaTeX PDF and download links before publishing either output. See
+LuaLaTeX PDF and download links before publishing either output. Saved
+`pdf.enabled: true` selects this for ordinary builds; `--no-pdf` requests a web-only
+build. `--pdf` and `--no-pdf` apply to the portable target. See
 [book PDF export](/cli/books#optional-pdf-export-current-source) for prerequisites
 and the first print template’s supported subset. Published rc.5 does not include it.

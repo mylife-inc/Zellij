@@ -1978,3 +1978,49 @@ mod external_scripts {
         }
     }
 }
+
+#[test]
+fn pdf_ci_requires_a_compatible_release_and_a_bind_capable_runtime() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "book: {version: 1, title: Manual, authors: [Author], chapters: [{id: next, source: next.md}]}\npdf: {enabled: true}\n",
+    );
+    let old = run(root, &["ci", "--zel-version", "0.2.0-rc.5"], 2);
+    assert!(String::from_utf8_lossy(&old.stderr).contains("0.2.0-rc.6"));
+    assert!(!root.join(".github/workflows/docs.yml").exists());
+    for system in ["github", "gitlab", "circle"] {
+        run(
+            root,
+            &["ci", "--system", system, "--zel-version", "0.2.0-rc.6"],
+            0,
+        );
+    }
+    let github = workflow(root);
+    assert_eq!(github["jobs"]["verify"]["runs-on"], "ubuntu-latest");
+    let gitlab = fs::read_to_string(root.join(".gitlab-ci.yml")).unwrap();
+    assert!(gitlab.contains("docker:29.9.3-dind") && gitlab.contains("CI_BUILDS_DIR"));
+    let circle = fs::read_to_string(root.join(".circleci/config.yml")).unwrap();
+    assert!(circle.contains("machine:") && circle.contains("zel build"));
+    let previous = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+    let next = run(
+        root,
+        &[
+            "ci",
+            "--target",
+            "image",
+            "--zel-version",
+            "0.2.0-rc.6",
+            "--force",
+        ],
+        2,
+    );
+    assert!(String::from_utf8_lossy(&next.stderr).contains("static output/image"));
+    assert_eq!(
+        previous,
+        fs::read(root.join(".github/workflows/docs.yml")).unwrap()
+    );
+}
