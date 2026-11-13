@@ -34,6 +34,7 @@ macro_rules! shortcuts {
 
 shortcuts! {
     args {
+        Pdf(PdfArgs) => ("pdf", "export pdf", |a| Command::Export { format: ExportFormat::Pdf(a) });
         Create(NewSiteArgs) => ("create", "new site", |a| Command::New(NewTarget::Site(a)));
         Init(NewPortableArgs) => ("init", "new portable", |a| Command::New(NewTarget::Portable(a)));
         App(NewAppArgs) => ("na", "new app", |a| Command::New(NewTarget::App(a)));
@@ -356,6 +357,10 @@ pub(crate) enum Command {
         /// Site root or explicit legacy content folder; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
         dir: Option<SiteInput>,
 
+        /// Also generate a LaTeX PDF for a portable book (requires a container runtime).
+        #[arg(long)]
+        pdf: bool,
+
         /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
         #[arg(long)]
         target: Option<String>,
@@ -383,6 +388,12 @@ pub(crate) enum Command {
         /// Portable theme: overrides zel.yaml, then defaults to cupertino; see `zel list themes`.
         #[arg(long)]
         theme: Option<String>,
+    },
+
+    /// Export a publication in another format.
+    Export {
+        #[command(subcommand)]
+        format: ExportFormat,
     },
 
     /// Build and deploy static HTML or an image; omitted provider uses saved publication.
@@ -1160,6 +1171,9 @@ impl Command {
             | Self::View { dir, .. }
             | Self::Fmt { dir, .. }
             | Self::Watch { dir, .. } => dir,
+            Self::Export {
+                format: ExportFormat::Pdf(options),
+            } => &mut options.dir,
             Self::Publish(options) | Self::Deploy { options, .. } => &mut options.dir,
             Self::New(NewTarget::Page(options)) => &mut options.dir,
             Self::New(NewTarget::Guide(options)) => &mut options.dir,
@@ -1222,4 +1236,21 @@ impl Command {
         *slot = Some(root);
         Ok(())
     }
+}
+
+#[derive(Subcommand, Debug, PartialEq, Eq)]
+pub(crate) enum ExportFormat {
+    /// Export a portable book through the isolated LuaLaTeX toolchain.
+    Pdf(PdfArgs),
+}
+#[derive(clap::Args, Debug, PartialEq, Eq)]
+pub(crate) struct PdfArgs {
+    /// Site root; defaults to ./zel.yaml or ./docs/zellij/zel.yaml.
+    pub dir: Option<SiteInput>,
+    /// Validate print compatibility without writing output or contacting a runtime.
+    #[arg(long, conflicts_with = "out")]
+    pub check: bool,
+    /// Owned output directory (default: pdf/ beside zel.yaml).
+    #[arg(long)]
+    pub out: Option<String>,
 }

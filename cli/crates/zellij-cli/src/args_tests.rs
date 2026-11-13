@@ -38,6 +38,7 @@ type Case = (
     &'static [&'static str],
 );
 const CASES: &[Case] = &[
+    ("pdf", "export pdf", &[], &["book", "--out", "printed"]),
     (
         "create",
         "new site",

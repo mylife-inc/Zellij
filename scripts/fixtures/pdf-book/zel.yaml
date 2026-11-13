@@ -1,0 +1,19 @@
+version: 1
+renderer: portable
+markdown: {math: true}
+book:
+  version: 1
+  title: A small atlas of proofs
+  subtitle: Ideas, carefully connected
+  authors: [Mira Vale]
+  cover: {image: assets/wave.png, alt: An original sine-wave illustration}
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - id: foundations
+      title: Foundations
+      chapters:
+        - {id: principles, source: principles.md}
+        - {id: practice, source: practice.md}
+  appendices:
+    - {id: reference, source: reference.md}

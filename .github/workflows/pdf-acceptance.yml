@@ -1,0 +1,50 @@
+name: Book PDF acceptance
+on:
+  workflow_call:
+  workflow_dispatch:
+jobs:
+  pdf:
+    name: LuaLaTeX (${{ matrix.runner }}, ${{ matrix.runtime }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { runner: ubuntu-latest, runtime: docker }
+          - { runner: ubuntu-24.04-arm, runtime: docker }
+          - { runner: ubuntu-latest, runtime: podman }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
+      - name: Start the hosted rootless Podman test socket
+        if: matrix.runtime == 'podman'
+        run: |
+          sudo apt-get install -y --no-install-recommends podman
+          sudo loginctl enable-linger "$(id -un)"
+          sudo systemctl start "user@$(id -u).service"
+          XDG_RUNTIME_DIR="/run/user/$(id -u)"
+          export XDG_RUNTIME_DIR
+          export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+          systemctl --user start podman.socket
+          test "$(podman info --format '{{.Host.Security.Rootless}}')" = true
+          printf 'XDG_RUNTIME_DIR=%s\nDBUS_SESSION_BUS_ADDRESS=%s\nCONTAINER_HOST=unix://%s/podman/podman.sock\n' "$XDG_RUNTIME_DIR" "$DBUS_SESSION_BUS_ADDRESS" "$XDG_RUNTIME_DIR" >> "$GITHUB_ENV"
+      - name: Generate and inspect a complete PDF book
+        env:
+          DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
+        run: node scripts/check-pdf.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: book-pdf-${{ matrix.runner }}-${{ matrix.runtime }}
+          path: test-results/pdf
+          if-no-files-found: warn

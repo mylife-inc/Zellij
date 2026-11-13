@@ -5,8 +5,8 @@ description: Define a book once, validate its complete manuscript, and build an 
 
 <Callout type="info" title="Available in source after rc.5">
 The versioned book manifest is available in source. Published rc.5 binaries do
-not accept it. PDF/LaTeX export, indexes, bibliography, technical/study templates
-and a one-click PDF download remain planned.
+not accept it. Current source also includes an opt-in LuaLaTeX PDF adapter;
+indexes, bibliography, multilingual print and technical/study templates remain planned.
 </Callout>
 
 ## One manuscript, one reading order
@@ -147,5 +147,81 @@ and chapter files; leave its authored `index.md` unlisted. Future template
 versions will add richer publishing presets without changing an existing
 version's archive.
 
-This milestone establishes the shared publication model for future build-time
-PDF/LaTeX backends. It does not run a TeX toolchain or generate a PDF today.
+The shared publication model also supplies the optional build-time PDF adapter
+described below. Published rc.5 does not include it.
+
+## Optional PDF export (current source)
+
+The first print adapter produces an English/LTR A5 book through LuaLaTeX:
+
+```sh
+zel pdf my-book --check          # Native compatibility check; no files or runtime
+zel build my-book --pdf          # Website and PDF, published together
+zel pdf my-book                  # PDF only, in my-book/pdf/
+zel export pdf my-book --out printed-book
+```
+
+The same conventional site discovery and global `--cwd`, `--site-root` and
+`--config` selectors apply. `--out` names an output **directory**, protected by
+Zellij's existing output ownership rules. Standalone export leaves the website
+alone. A normal build never invokes the PDF toolchain; rebuilding without `--pdf`
+removes any previous PDF and its download links together. PDF generation is
+currently requested through these commands; automatic configuration-driven
+export and PDF-aware preview/deployment commands remain planned.
+
+`build --pdf` places the verified PDF at `site/_zellij/pdf/book.pdf` and adds a
+relative download link to every reading page. The link also works with a relocated
+`file://` website. Its directory includes generated `book.tex`, copied print
+images, `build.log`, `publication.json` and `pdf.json`. These are public export
+artifacts. The receipt identifies the manuscript revision, PDF SHA-256, template
+and exact toolchain image. The website's publication record and PDF receipt use
+the same source snapshot. The hash does not promise byte-identical PDFs between
+builds: PDF timestamps and toolchain details can differ.
+
+### Toolchain and failure behavior
+
+A running Docker, Podman or nerdctl **Linux** runtime is required only when
+actually generating a PDF. Missing or conflicting runtimes produce an actionable
+error; Zellij does not install or start one. The separate official
+[Pandoc LaTeX Ubuntu image](https://github.com/pandoc/dockerfiles) is pinned by
+multi-platform digest and supplies LuaLaTeX and Latin Modern fonts.
+The adapter emits TeX directly; it does not ask Pandoc to reinterpret Markdown.
+This optional image adds no TeX dependencies to the CLI or normal website images.
+First use may download it; subsequent builds can use the cached image offline.
+
+Typesetting runs with network disabled, a read-only container root, dropped
+capabilities, no privilege escalation, resource limits and shell escape disabled.
+Only staged print inputs and a disposable output directory are mounted. The
+source project, credentials and container socket are not mounted. A bounded runtime
+query selects the correct user identity for rootful or rootless containers;
+unknown mappings fail before typesetting. The per-container user namespace is
+explicit so custom runtime defaults cannot silently remap the staged files. Runtime calls
+are bounded; cancellation and timeout remove the named container. Remote runtimes
+must support the same shared local bind paths as other Zellij container commands.
+
+Three LuaLaTeX passes resolve contents and references. Missing glyphs, unresolved
+references, significant layout overflow, nonzero exits and invalid/missing PDFs
+fail publication. The last complete output is retained. `pdf --check` checks the
+adapter's content contract; only actual typesetting can establish layout, fonts
+and successful PDF generation.
+
+### First print template and current boundaries
+
+The classic print template provides a title page, optional cover, paginated
+contents, parts, chapters, appendices, running headings, page numbers and PDF
+bookmarks. The adapter supports ordinary paragraphs, emphasis, lists, code,
+quotes, footnotes, tables of up to six columns, the existing validated math
+subset, local PNG/JPEG images and links between book pages/headings. Code and
+ordinary text are escaped; authored HTML remains literal. Repeated footnote
+references share their number; unreferenced definitions are rejected. The printed cover is followed by contents and
+any authored home document; its body remains part of the publication.
+
+This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
+GIF, remote images, diagram fences, attachment links and URL queries are rejected
+for print with an explanation; ordinary web builds retain their existing support.
+Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
+Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
+trim sizes, multilingual/RTL print, bibliography, index, glossary and semantic
+cross-chapter equation/theorem numbering remain future increments. Mathematical
+expressions use the web renderer's supported subset, except explicit equation
+labels, tags and references, which await the shared numbered-equation model.

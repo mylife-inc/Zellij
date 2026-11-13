@@ -19,6 +19,7 @@ mod math;
 mod mermaid;
 mod mindmap;
 mod page;
+pub mod pdf;
 pub mod server;
 pub mod watch;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
@@ -206,6 +207,7 @@ pub fn check(source: impl Into<SiteInput>, strict: bool) -> CheckReport {
         &mut diagnostics,
         None,
         false,
+        false,
     );
     let pages = compiled.as_ref().ok().map(|site| site.pages);
     let book = compiled.as_ref().ok().and_then(|site| site.book.clone());
@@ -234,6 +236,7 @@ struct CompiledSite {
     files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     pages: usize,
     features: Vec<&'static str>,
+    pdf: Option<pdf::Source>,
 }
 
 pub fn prepare(
@@ -252,7 +255,7 @@ pub(crate) fn prepare_layout(
 ) -> Result<PreparedBuild> {
     let source = source.into();
     let mut diagnostics = Diagnostics::new(source.root());
-    let compiled = compile(&source, options, &mut diagnostics, configured, false)?;
+    let compiled = compile(&source, options, &mut diagnostics, configured, false, false)?;
     let stage = StaticOutput::prepare(&compiled.root, output)?;
     let writes: Vec<_> = compiled
         .files
@@ -275,6 +278,7 @@ fn compile(
     diagnostics: &mut Diagnostics,
     configured: Option<bool>,
     hosted: bool,
+    print: bool,
 ) -> Result<CompiledSite> {
     let selected = diagnostics.capture(
         source.root().canonicalize_utf8().map_err(Error::from),
@@ -507,11 +511,24 @@ fn compile(
         )?;
     }
     let presentation = page::Presentation {
+        pdf: print,
         name,
         theme,
         logo: config.brand.as_ref().and_then(|b| b.logo.as_ref()),
         company: config.brand.as_ref().and_then(|b| b.company.as_ref()),
         book: publication.as_ref(),
+    };
+    let pdf = if print {
+        Some(pdf::compose(
+            publication.as_ref().ok_or_else(|| {
+                Error::InvalidArgument("PDF export requires a portable book manifest".into())
+            })?,
+            &pages,
+            &rewritten,
+            &resolver.assets,
+        )?)
+    } else {
+        None
     };
     let hosted_files = if hosted {
         Some(hosted::emit(
@@ -661,6 +678,7 @@ fn compile(
         }
     }
     Ok(CompiledSite {
+        pdf,
         book: publication,
         root,
         files: hosted_files.unwrap_or(files),
@@ -696,7 +714,7 @@ pub fn adapt_hosted_with_options(
 ) -> Result<HostedReport> {
     let source = source.into();
     let mut diagnostics = Diagnostics::new(source.root());
-    let compiled = compile(&source, options, &mut diagnostics, None, true)?;
+    let compiled = compile(&source, options, &mut diagnostics, None, true, false)?;
     files::disjoint(&compiled.root, output)?;
     files::empty_directory(output)?;
     let writes: Vec<_> = compiled

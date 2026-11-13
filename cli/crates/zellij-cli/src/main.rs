@@ -32,6 +32,7 @@ mod imports;
 mod maintenance;
 mod netlify;
 mod page_authoring;
+mod pdf;
 mod preview;
 mod published_image;
 mod railway;
@@ -144,7 +145,11 @@ fn main() {
                 watch,
             },
         ),
+        Command::Export { ref format } => match format {
+            args::ExportFormat::Pdf(options) => pdf::standalone(options),
+        },
         Command::Build {
+            pdf,
             ref dir,
             ref target,
             ref out,
@@ -154,19 +159,20 @@ fn main() {
             ref name,
             ref theme,
             ref overrides,
-        } => build_dispatch(
-            dir.as_ref(),
-            target.as_deref(),
-            out.as_deref(),
-            tag.as_deref(),
-            zellij_docs::BuildOptions {
+        } => build_dispatch(BuildInvocation {
+            dir: dir.as_ref(),
+            target: target.as_deref(),
+            out: out.as_deref(),
+            tag: tag.as_deref(),
+            options: zellij_docs::BuildOptions {
                 name: name.as_deref(),
                 theme: theme.as_deref(),
                 features,
             },
             platform,
-            &overrides.options(features),
-        ),
+            hosted_options: &overrides.options(features),
+            pdf,
+        }),
         Command::Image { ref action } => match action {
             ImageAction::Static(SiteImageArgs {
                 dir,
@@ -373,21 +379,38 @@ fn default_target(dir: &SiteInput) -> zellij_core::Result<&'static str> {
     })
 }
 
-fn build_dispatch(
-    dir: Option<&SiteInput>,
-    target: Option<&str>,
-    out: Option<&str>,
-    tag: Option<&str>,
-    options: zellij_docs::BuildOptions<'_>,
+struct BuildInvocation<'a> {
+    dir: Option<&'a SiteInput>,
+    target: Option<&'a str>,
+    out: Option<&'a str>,
+    tag: Option<&'a str>,
+    options: zellij_docs::BuildOptions<'a>,
     platform: Option<zellij_core::delivery::ImagePlatform>,
-    hosted_options: &zellij_engine::BuildOptions,
-) -> zellij_core::Result<()> {
+    hosted_options: &'a zellij_engine::BuildOptions,
+    pdf: bool,
+}
+fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
+    let BuildInvocation {
+        dir,
+        target,
+        out,
+        tag,
+        options,
+        platform,
+        hosted_options,
+        pdf,
+    } = request;
     let selected = select_site(dir)?;
     let dir = &selected;
     let target = match target {
         Some(target) => target,
         None => default_target(dir)?,
     };
+    if pdf && target != "portable" {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--pdf requires a portable book; hosted PDF export is not implemented".into(),
+        ));
+    }
     if target != "portable" && (options.name.is_some() || options.theme.is_some()) {
         return Err(zellij_core::Error::InvalidArgument(
             "--name and --theme apply only to portable builds; configure hosted sites in site.yaml"
@@ -405,7 +428,11 @@ fn build_dispatch(
     match target {
         "portable" => {
             images::require_native_options(hosted_options)?;
-            let output = build_portable(dir, out, options)?;
+            let output = if pdf {
+                pdf::build(dir, out, options)?
+            } else {
+                build_portable(dir, out, options)?
+            };
             zellij_core::statusln!(
                 "  Open {} directly in your browser, or serve the folder over HTTP.",
                 output.join("index.html")

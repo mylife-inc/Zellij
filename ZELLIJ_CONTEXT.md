@@ -20,6 +20,13 @@ are unchanged; the new book fields require current source.
 All 13 development-engine jobs in `43328363366` passed, publishing the four
 `main` variants for Linux amd64/arm64 and building/serving a site from the image.
 
+PDF work is in progress on `codex/book-pdf` from `6f26ea7`: a native
+Markdown-to-LaTeX adapter, `zel build --pdf`, `zel export pdf` / `zel pdf`,
+and isolated optional LuaLaTeX execution. This first slice is English/LTR A5;
+automatic configuration, multilingual print, index/bibliography and richer
+book templates remain open. See [the PDF checkpoint](specs/zellij-book-pdf-2026-11-12.md).
+Final-head hosted PDF verification and merge are pending.
+
 For the current completion gates, use [the concise completion ledger](specs/zel-cli-completion-2026-11-11.md).
 
 Company identity confirmed by the user on 2026-11-11: **Shebka** makes Zellij.
