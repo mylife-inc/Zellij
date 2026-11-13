@@ -214,8 +214,11 @@ PR #149 (`72a8445`), with all 20 final-head jobs passing on the identical tree.
 Optional PDF/LaTeX and configuration/preview/static delivery subsequently merged
 in PRs #151 and #153. PR #155 versions the book starter around the shared
 publication model and optional print settings, and publishes rc.6. Public
-acceptance and Homebrew migration pass. Finish source-docs/consumer review and
-replacement image checks before retiring rc.5. Advanced print semantics, technical/study editions and the remaining
+acceptance and Homebrew migration pass. PR #156 (`8eb117a`) merges docs and
+consumer pins after all 23 CI and six delivery build jobs pass. Finish replacement
+image checks before retiring rc.5. Generated hosted/container CI still needs
+explicit runtime selection: its Next consumer passed only after one unchanged-head
+retry when Docker/Podman discovery timed out. Fix this reliability issue first. Advanced print semantics, technical/study editions and the remaining
 installation channels follow. The first additional package channel is an owned
 Scoop bucket, preceded by CLI protection against overwriting Scoop-managed
 installations. Package availability alone does not establish safe upgrades. The [expansion design](zellij-product-expansion-2026-11-11.md)
