@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { mkdirSync, writeFileSync } from 'node:fs';
 
 test('records focus while an open mobile drawer changes to desktop', async ({ page }, testInfo) => {
   await page.addInitScript(() => {
@@ -36,6 +37,8 @@ test('records focus while an open mobile drawer changes to desktop', async ({ pa
     await expect(page.locator('.zellij-nav-list [data-zellij-navitem]').first()).toBeFocused();
   } finally {
     const entries = await page.evaluate(() => (window as any).__focusProbe);
+    mkdirSync('focus-probe-results', { recursive: true });
+    writeFileSync(`focus-probe-results/${testInfo.repeatEachIndex}-${testInfo.workerIndex}.json`, JSON.stringify(entries, null, 2));
     await testInfo.attach('focus-events', { body: JSON.stringify(entries, null, 2), contentType: 'application/json' });
   }
 });
