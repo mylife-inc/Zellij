@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: Read inventory and plan, or execute the reviewed rc.5 image retirement plan
+        description: Read inventory and plan, or execute the reviewed rc.6 image retirement plan
         type: choice
         options: [inventory, retire-images]
         default: inventory
@@ -71,7 +71,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RETIRE_PLAN_SHA256: ${{ inputs.plan_sha256 }}
-        run: node scripts/retire-release-images.mjs apply specs/evidence/zellij-rc5-image-retirement-plan-2026-11-12.json "$RUNNER_TEMP/image-retirement.json"
+        run: node scripts/retire-release-images.mjs apply specs/evidence/zellij-rc6-image-retirement-plan-2026-11-13.json "$RUNNER_TEMP/image-retirement.json"
       - uses: actions/upload-artifact@v7
         if: always()
         with:
