@@ -651,3 +651,29 @@ including output ownership and failure preservation, followed by bibliography,
 index/cross-reference semantics and coordinated technical/study templates.
 Normal website builds must retain their current dependency-free portable path.
 Published rc.5 templates/binaries and production documentation remain unchanged.
+
+
+## First PDF pipeline closure — 2026-11-12
+
+PR #151 (`c609251`) merges optional build-time PDF generation and standalone
+export from the same resolved manuscript as the reading website. The direct
+Markdown-event adapter emits escaped LaTeX; the separately pinned optional
+LuaLaTeX image supplies the runtime. Normal builds remain native. Atomic output
+replacement keeps web/PDF revisions and download links together; failed builds,
+cancellation and timeout retain the previous output. Native `pdf --check`
+validates the adapter without a container or writes.
+
+All 23 final-head jobs in `43358560394` pass on `de92de2`, with the merge tree
+unchanged. Actual typesetting passes on Docker amd64/arm64 and rootless Podman
+amd64; all 24 captures match the eight reviewed pages. Local Rust verification
+passes 762 tests. The original legacy-bookmark viewport timeout and its one
+successful unchanged Engine retry remain recorded, with cause undetermined.
+See [the checkpoint](zellij-book-pdf-2026-11-12.md) and
+[evidence](evidence/zellij-book-pdf-2026-11-12.json).
+
+This closes the first English/LTR A5 print pipeline, not the complete publishing
+milestone. Next are explicit configuration and PDF-aware preview/delivery,
+then shared numbered equations/theorems, bibliography/index/glossary,
+multilingual/RTL and technical/study/custom print templates. Published rc.5,
+its template archives, production documentation/domain and deferred live
+provider verification remain unchanged. No Node runtime image refresh was needed.
