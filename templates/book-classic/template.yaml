@@ -1,18 +1,19 @@
 schema: 1
 id: book-classic
-version: 0.1.0
-title: Classic reading edition
-description: A calm portable title page, preface and ordered prose chapters. PDF is not included.
-minimum-cli: 0.2.0-rc.5
-minimum-engine: 0.2.0-rc.5
+version: 0.2.0
+title: Classic book edition
+description: A complete portable manuscript with a cover, preface, part, chapters and appendix; optional LuaLaTeX PDF.
+minimum-cli: 0.2.0-rc.6
+minimum-engine: 0.2.0-rc.6
 renderer: portable
 kind: book
-outputs: [web, file]
-print: unavailable
+outputs: [web, file, pdf]
+print: lualatex
 variables:
   title: A question worth following
   author: Your name
 substitute:
   - zel.yaml
-  - content/index.md
-assets: []
+assets:
+  - {path: content/assets/wave.png, license: LicenseRef-Zellij}
+preview: content/assets/wave.png

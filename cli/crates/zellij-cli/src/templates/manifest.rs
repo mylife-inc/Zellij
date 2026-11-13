@@ -14,7 +14,7 @@ pub(super) struct Manifest {
     pub renderer: Renderer,
     pub kind: Kind,
     pub outputs: Vec<Output>,
-    /// Books explicitly disclose that print is unavailable in this revision.
+    /// Declared print capability; creation never runs the optional toolchain.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub print: Option<Print>,
     pub variables: BTreeMap<String, String>,
@@ -41,11 +41,13 @@ pub(super) enum Kind {
 pub(super) enum Output {
     Web,
     File,
+    Pdf,
 }
 #[derive(Clone, Copy, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "lowercase")]
 pub(super) enum Print {
     Unavailable,
+    Lualatex,
 }
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
@@ -124,6 +126,18 @@ impl Manifest {
             self.kind != Kind::Book || self.print.is_some(),
             "book templates must declare print capability",
         )?;
+        let pdf = self.print == Some(Print::Lualatex);
+        ensure(
+            self.outputs.contains(&Output::Pdf) == pdf
+                && (!pdf || (self.kind == Kind::Book && self.renderer == Renderer::Portable)),
+            "PDF output requires a portable book with print: lualatex",
+        )?;
+        if pdf {
+            ensure(
+                version(&self.minimum_cli)? >= version("0.2.0-rc.6")?,
+                "LuaLaTeX templates require minimum-cli: 0.2.0-rc.6 or later",
+            )?;
+        }
         ensure(
             self.variables.len() <= 32 && self.variables.contains_key("title"),
             "templates need a title variable and at most 32 variables",

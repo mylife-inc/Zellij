@@ -3,9 +3,10 @@ title: Books and reading order
 description: Define a book once, validate its complete manuscript, and build an offline reading website.
 ---
 
-<Callout type="info" title="Available in source after rc.5">
-The versioned book manifest is available in source. Published rc.5 binaries do
-not accept it. Current source also includes an opt-in LuaLaTeX PDF adapter;
+<Callout type="info" title="Included in the rc.6 candidate source">
+The rc.6 source includes the versioned book manifest, `book-classic@0.2.0`
+and optional LuaLaTeX PDFs. Published rc.5 binaries do not accept these features;
+check release availability before installing a new candidate. Advanced
 indexes, bibliography, multilingual print and technical/study templates remain planned.
 </Callout>
 
@@ -140,12 +141,25 @@ no external renderer.
 
 ## Start from the existing book template
 
-`zel create my-book -t book-classic` still creates the versioned 0.1.0 starter
-shipped in rc.5. Its files are unchanged. To opt into the new model using a
-source build, replace its `nav` block with a `book` manifest listing its preface
-and chapter files; leave its authored `index.md` unlisted. Future template
-versions will add richer publishing presets without changing an existing
-version's archive.
+With rc.6 or later:
+
+```sh
+zel create my-book -t book-classic --name "A question worth following" --set author="A. Writer"
+zel build my-book
+zel pdf my-book --check
+zel build my-book --pdf
+```
+
+Book-classic 0.2.0 creates a ready-to-edit manifest, preface, part, two chapters,
+appendix and original PNG cover. The title page and table of contents are
+generated from the manifest. PDF is off by default; the last command explicitly
+uses the optional LaTeX container runtime. Edit `book` and `pdf` settings in
+`zel.yaml`, then replace the sample prose and cover under `content/`.
+
+The earlier 0.1.0 starter shipped with rc.5 remains immutable. To migrate an
+existing copy, use a compatible CLI and replace its `nav` block with a `book`
+manifest listing its preface and chapter files; leave its authored `index.md`
+unlisted. Creating a new template never overwrites an existing manuscript.
 
 The shared publication model also supplies the optional build-time PDF adapter
 described below. Published rc.5 does not include it.

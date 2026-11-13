@@ -28,7 +28,7 @@ jobs:
   native:
     name: Published install (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -44,6 +44,7 @@ jobs:
       TARGET: ${{ matrix.target }}
       RELEASE_REPOSITORY: ${{ github.repository }}
       SHARED_RELEASE: ${{ inputs.shared }}
+      ZEL_PDF_ACCEPTANCE: ${{ contains(matrix.target, 'linux') && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -52,6 +53,9 @@ jobs:
         with:
           node-version: 24
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install PDF inspection tools on native Linux runners
+        if: contains(matrix.target, 'linux')
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
       - name: Validate published version
         run: >-
           node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
@@ -64,6 +68,12 @@ jobs:
       - name: Install public downloads and exercise the released binary
         working-directory: release-source
         run: node ../scripts/check-published-release.mjs
+      - uses: actions/upload-artifact@v7
+        if: always() && contains(matrix.target, 'linux')
+        with:
+          name: published-book-pdf-${{ matrix.target }}
+          path: release-source/test-results/pdf
+          if-no-files-found: ignore
 
   images:
     name: Published images (${{ matrix.os }})

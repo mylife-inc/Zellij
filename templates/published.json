@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "templates": [
+    {"id": "product-docs", "version": "0.1.0", "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"},
+    {"id": "product-studio", "version": "0.1.0", "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"},
+    {"id": "book-classic", "version": "0.1.0", "sha256": "5961e7221e5837c5f4f9b8cfcbc25f2cb1ca2067e81c0a76b0feb83c489e3b8e"}
+  ]
+}

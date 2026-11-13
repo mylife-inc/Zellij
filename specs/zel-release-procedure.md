@@ -1,13 +1,16 @@
 # Zellij release channels and candidate procedure
 
-Implemented policy, November 2, 2026; publication status refreshed November 11.
-Candidate 0.2.0-rc.4 is published under the user's 2026-11-11 instruction.
+Implemented policy, November 2, 2026; publication status refreshed November 13.
+Candidate 0.2.0-rc.5 is published. The rc.6 book/composition/PDF candidate is in
+preparation; its source version is not publication evidence. See
+[the preparation record](zellij-rc6-preparation-2026-11-13.md) and
+[rc.5 release evidence](evidence/zellij-rc5-release-2026-11-12.json).
 Remaining live provider/external-runner checks are deferred until after this
 release; normal regression and public artifact checks passed.
 Publication status must be checked in GitHub; a version change in source is not
 proof of an uploaded release.
 
-## Current rc.4 publication
+## Historical rc.4 publication
 
 PR #135 merged as `6d116b2ca6df8eb8d078f03978d2a49598b58de1` with the same tree
 as the 20-job final CI head `6a2601c` (run `43158764791`). The required local
@@ -126,7 +129,7 @@ for candidate acceptance. Source development can explicitly select
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.4` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.6` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -141,7 +144,7 @@ for candidate acceptance. Source development can explicitly select
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The rc.4 notes are specs/releases/v0.2.0-rc.4.md;
+in both release pages. The rc.6 notes are specs/releases/v0.2.0-rc.6.md;
 the earlier rc.2 publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
@@ -161,12 +164,17 @@ the latest acceptance code, select the Published release acceptance workflow on
 `main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.4 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.5 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,
 installer byte comparisons and the native acceptance suite use that tagged source;
 only the download/acceptance driver comes from the selected workflow revision.
+On native Linux, print-capable catalogs additionally run the tagged PDF
+acceptance driver with the installed public binary, retaining PDF captures and
+receipts. Older reading-only releases skip this check. Template packaging checks
+known archive hashes in `templates/published.json`; record new hashes only after
+public verification, and never rewrite a previously published identity.
 This performs public reads and temporary local installs on the runners. It does
 not rebuild, republish or move a release tag. Record both the source tag and the
 acceptance workflow revision when reporting this verification.

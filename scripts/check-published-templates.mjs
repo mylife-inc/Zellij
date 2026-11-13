@@ -17,6 +17,14 @@ export async function verifyPublishedTemplates(binary, base, root) {
       ...(kind==='bundled'?['--offline']:kind==='offline'?[...options,'--offline']:options)]);
     const receipts=await Promise.all(['bundled','published','offline'].map(async kind=>JSON.parse(await readFile(path.join(root,kind,template.id,'.zel-template.json'),'utf8'))));
     assert.deepEqual(receipts[0].files,receipts[1].files);assert.deepEqual(receipts[1].files,receipts[2].files);
+    if(template.print==='lualatex'){
+      const site=path.join(root,'offline',template.id);
+      run(['pdf',site,'--check']);
+      run(['build',site,'--no-pdf']);
+      const publication=JSON.parse(await readFile(path.join(site,'site/_zellij/book.json'),'utf8'));
+      assert(publication.entries.length>=3,'Published print template has an actual manuscript');
+      assert.equal(publication.manifest.title,template.variables.title);
+    }
     records.push({template:template.id,version:template.version,archive_sha256:receipts[1].source_sha256,files:receipts[1].files});
   }
   return records;

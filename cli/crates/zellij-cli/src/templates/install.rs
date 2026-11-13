@@ -162,6 +162,15 @@ pub(super) fn create(
             && site.output == root.join("site"),
         "zel.yaml must match the manifest renderer and use content/ and site/ siblings",
     )?;
+    ensure(
+        !site.pdf.enabled || bundle.manifest.print == Some(manifest::Print::Lualatex),
+        "enabled PDF settings require print: lualatex in the template manifest",
+    )?;
+    if bundle.manifest.print == Some(manifest::Print::Lualatex) {
+        // Verify the declaration against the expanded manuscript, without running
+        // a container or claiming successful typesetting for arbitrary user edits.
+        zellij_docs::pdf::check(&site.input)?;
+    }
     if expected == zellij_core::site::Renderer::Portable {
         let report = zellij_docs::check(root, true);
         ensure(

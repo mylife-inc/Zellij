@@ -3,9 +3,11 @@ title: zel templates and create
 description: Choose a versioned starter and create an editable documentation or book site.
 ---
 
-<Callout type="info" title="Available in candidate 0.2.0-rc.5">
-These commands are available in [candidate 0.2.0-rc.5](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.5).
-They are bundled in the native binary on all six supported platforms.
+<Callout type="info" title="Book starter update for candidate 0.2.0-rc.6">
+Template commands are available in the published rc.5 candidate. The rc.6 source
+adds `book-classic@0.2.0`, with a shared book manifest and optional LuaLaTeX PDF.
+Check the release page before selecting a new candidate; a source version is not
+proof that its binaries have been published. Templates are bundled on all six native platforms.
 </Callout>
 
 ## Choose a starter
@@ -20,12 +22,16 @@ zel templates --json
 | --- | --- | --- | --- |
 | `product-docs` | Portable | Yes | An overview and a short handbook. |
 | `product-studio` | Hosted | No | A Cupertino-themed product page with hero, bento and feature sections, plus a guide. |
-| `book-classic` | Portable | Yes | A title page, preface and ordered prose chapters. |
+| `book-classic` | Portable | Yes | Generated title page and contents, cover, preface, part, two chapters and appendix; optional PDF. |
 
-The book starter is a web reading edition. Source builds after rc.5 also support
-an opt-in [book manifest](/cli/books) for complete reading order and publication
-metadata. PDF/LaTeX, indexes, bibliography and technical/study editions remain
-planned; the released starter archive is unchanged.
+Book-classic 0.2.0 requires CLI/engine rc.6 or later. Its [book manifest](/cli/books)
+drives reading order, metadata and both web and print. PDF is disabled by default:
+normal creation, checks and web builds need no container runtime. Enable PDF
+with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
+checks print compatibility natively. Actual typesetting requires the optional
+LuaLaTeX Linux container runtime. The classic print design supports English/LTR;
+indexes, bibliography, multilingual print and technical/study editions remain planned.
+Previously published book-classic 0.1.0 archives remain unchanged.
 
 ## Create and edit
 
@@ -44,9 +50,10 @@ their previous behavior.
 my-book/
   zel.yaml
   content/
-    index.md
     preface.md
     chapters/
+    notes.md
+    assets/wave.png
   .zel-template.json
 ```
 
@@ -67,7 +74,7 @@ prevents edits or automatically overwrites a manuscript.
 ## Versions and local templates
 
 ```sh
-zel create my-book -t book-classic@0.1.0 --offline
+zel create my-book -t book-classic@0.2.0 --offline
 zel create my-docs -t ./my-custom-template --offline
 ```
 
@@ -78,7 +85,9 @@ sources in the Zellij repository. See the
 for capabilities, safe text placeholders, asset licenses and limits.
 
 Creation checks paths, compatibility, substitutions and declared assets before
-publishing the staged folder. Portable content is checked strictly. Hosted
+publishing the staged folder. Portable content is checked strictly. Templates
+declaring `print: lualatex` also pass the native PDF compatibility check without
+typesetting; an unsupported print declaration leaves the destination untouched. Hosted
 creation checks YAML syntax; run `zel check --deep --strict` for full hosted
 schema and route validation. Template hooks are never executed.
 

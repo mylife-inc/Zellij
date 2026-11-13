@@ -10,4 +10,4 @@ into sections that give the reader a natural place to pause.
 
 ---
 
-[Next: The path ahead](02-path.md) · [Contents](../index.md#contents)
+[Next: The path ahead](02-path.md)
