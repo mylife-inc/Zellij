@@ -108,6 +108,13 @@ test('published acceptance validates version input and checks the immutable tag 
   const acceptance = workflow('release-acceptance');
   assert.equal(acceptance.on.workflow_dispatch.inputs.version.type, 'string');
   assert.deepEqual(acceptance.permissions, { contents: 'read' });
+  const native = acceptance.jobs.native;
+  const runtime = step(native, 'Check the hosted Docker endpoint for PDF acceptance');
+  const install = step(native, 'Install public downloads and exercise the released binary');
+  assert.equal(runtime.if, "contains(matrix.target, 'linux')");
+  assert.equal(runtime.env.DOCKER_CONTEXT, 'default');
+  assert.equal(install.env.DOCKER_CONTEXT, "${{ contains(matrix.target, 'linux') && 'default' || '' }}");
+  assert.ok(native.steps.indexOf(runtime) < native.steps.indexOf(install));
   for (const job of Object.values(acceptance.jobs)) {
     const validate = step(job, 'Validate published version');
     for (const version of ['v0.2.0-rc.1', 'v0.2.0']) f.shell(validate.run, { env: { ...f.env, VERSION: version } });
