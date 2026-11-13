@@ -17,7 +17,7 @@ use zellij_engine::Runtime;
 
 // Official Pandoc Ubuntu variant includes LuaLaTeX and Latin Modern.
 // Multi-platform index verified 2026-11-12; keep optional and separate from engine images.
-pub(crate) const IMAGE: &str = "pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44";
+pub(crate) const IMAGE: &str = "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44";
 const SCRIPT: &str = r#"set -eu
 for pass in 1 2 3; do
   lualatex -no-shell-escape -interaction=nonstopmode -halt-on-error -file-line-error -output-directory=/out book.tex > /out/console.log 2>&1 || { cat /out/console.log; exit 1; }
@@ -82,6 +82,7 @@ fn run(
     // Validate all content and ownership before contacting a runtime.
     let runtime=zellij_engine::runtime::detect().map_err(|e| Error::NoEngine { reason: format!("PDF requires a running Docker, Podman or nerdctl Linux runtime. {e}\nOrdinary `zel build` remains native. No runtime was installed or started.") })?;
     let stop = crate::preview::signals()?;
+    let rootless = runtime.rootless()?;
     let temp = tempfile::Builder::new()
         .prefix("zel-pdf-input-")
         .tempdir()?;
@@ -115,6 +116,8 @@ fn run(
         "--network",
         "none",
         "--read-only",
+        "--userns",
+        "host",
         "--cap-drop",
         "ALL",
         "--security-opt",
@@ -152,14 +155,18 @@ fn run(
         "--volume",
         &mount(&prepared.destination, "/out", false)?,
     ]);
-    #[cfg(unix)]
-    {
-        use std::os::unix::fs::MetadataExt;
-        let meta = fs::metadata(&prepared.destination)?;
-        command.args(["--user", &format!("{}:{}", meta.uid(), meta.gid())]);
+    if rootless {
+        command.args(["--user", "0:0"]);
+    } else {
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt;
+            let meta = fs::metadata(&prepared.destination)?;
+            command.args(["--user", &format!("{}:{}", meta.uid(), meta.gid())]);
+        }
+        #[cfg(windows)]
+        command.args(["--user", "1000:1000"]);
     }
-    #[cfg(windows)]
-    command.args(["--user", "1000:1000"]);
     command.args([IMAGE, "-c", SCRIPT]);
     zellij_core::statusln!(
         "  PDF: LuaLaTeX in the pinned optional toolchain (first use may download its image)"

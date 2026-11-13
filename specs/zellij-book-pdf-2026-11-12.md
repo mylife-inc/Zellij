@@ -71,3 +71,19 @@ cancellation and deadline regressions also verify cleanup and old-output retenti
 Visual review also caught a section heading orphaned above its table. The classic
 template now reserves space for a heading and following content; hosted acceptance
 asserts that the table heading and first rows share a page and captures every page.
+
+Final review after run `43355088979` found that passing the host UID directly
+fails with rootless runtime mappings. Runtime metadata now identifies rootless
+Docker/Podman/nerdctl within a bounded query; unknown responses fail before the
+container starts. Explicit `userns=host` uses the runtime's outer namespace:
+UID/GID 0 maps to the caller for rootless runtimes, while rootful Unix runtimes
+retain the staged directory owner's IDs. No capabilities are restored. The
+image name is fully qualified for noninteractive Podman pulls. Hosted acceptance
+now also exercises actual rootless Podman; the previous two-architecture artifacts
+remain preliminary until the new final head passes.
+
+Mapping references:
+- https://docs.podman.io/en/stable/markdown/podman-run.1.html#userns-mode
+- https://docs.podman.io/en/latest/markdown/podman-info.1.html
+- https://docs.docker.com/reference/api/engine/version-history/
+- https://github.com/containerd/nerdctl/blob/main/pkg/cmd/system/info.go

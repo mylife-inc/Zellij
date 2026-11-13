@@ -61,7 +61,8 @@ fn container_contract_receipt_cleanup_and_failure_preservation() {
         root.join("bin/docker"),
         r#"#!/bin/sh
 case "$1" in
- info|--version) exit 0;;
+ info) if [ "$2" = --format ]; then printf '%s\n' "${PDF_INFO:-[]}"; fi; exit 0;;
+ --version) exit 0;;
  rm) echo cleaned >> cleanup; exit 0;;
  run)
   printf '%s\n' "$@" > arguments
@@ -185,6 +186,42 @@ esac
             .count(),
         6
     );
+    // Each supported rootless runtime maps the caller to container UID/GID 0.
+    // Explicit userns=host prevents custom per-container remapping of bind mounts.
+    for (program, selector, info) in [
+        ("docker", "DOCKER_HOST", r#"["name=rootless"]"#),
+        ("podman", "CONTAINER_HOST", "true"),
+        ("nerdctl", "CONTAINERD_ADDRESS", r#"["name=rootless"]"#),
+    ] {
+        if program != "docker" {
+            fs::copy(root.join("bin/docker"), root.join("bin").join(program)).unwrap();
+        }
+        let result = command(root)
+            .env_remove("DOCKER_HOST")
+            .env_remove("CONTAINER_HOST")
+            .env_remove("DOCKER_CONTEXT")
+            .env_remove("CONTAINER_CONNECTION")
+            .env_remove("CONTAINERD_ADDRESS")
+            .env_remove("CONTAINERD_NAMESPACE")
+            .env(selector, "unix:///fixture.sock")
+            .env("PDF_INFO", info)
+            .args(["--quiet", "--no-color", "pdf"])
+            .output()
+            .unwrap();
+        assert!(result.status.success(), "{program}: {result:?}");
+        let argv = fs::read_to_string(root.join("arguments")).unwrap();
+        assert!(argv.contains("--user\n0:0\n"));
+        assert!(argv.contains("--userns\nhost\n"));
+    }
+    let result = command(root)
+        .env_remove("CONTAINER_HOST")
+        .env("PDF_INFO", "unknown")
+        .args(["build", "--pdf"])
+        .output()
+        .unwrap();
+    assert_eq!(result.status.code(), Some(4));
+    assert!(String::from_utf8_lossy(&result.stderr).contains("user mapping"));
+    assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
     assert!(
         command(root)
             .arg("build")

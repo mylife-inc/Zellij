@@ -37,6 +37,25 @@ impl Runtime {
         command
     }
 
+    /// PDF bind mounts must use the caller's identity inside the runtime's
+    /// outer namespace. Rootless daemons map that identity to container root.
+    pub fn rootless(&self) -> Result<bool> {
+        let podman = self.program == "podman";
+        let format = if podman {
+            "{{json .Host.Security.Rootless}}"
+        } else {
+            "{{json .SecurityOptions}}"
+        };
+        let value = probe_output(
+            self.command().args(["info", "--format", format]),
+            METADATA_TIMEOUT,
+        )
+        .and_then(|text| parse_rootless(&text, podman));
+        value.ok_or_else(|| Error::NoEngine {
+            reason: "PDF could not determine the runtime's user mapping from `info --format`; check the selected runtime and retry. No output was replaced.".into(),
+        })
+    }
+
     /// Explicit endpoint values can contain credentials. Report their variable
     /// names instead of printing the values in diagnostics.
     pub fn endpoint(&self) -> String {
@@ -53,6 +72,19 @@ impl Runtime {
             }
         }
         "default context".to_owned()
+    }
+}
+
+fn parse_rootless(text: &str, podman: bool) -> Option<bool> {
+    if podman {
+        serde_json::from_str::<bool>(text).ok()
+    } else {
+        let options: Vec<String> = serde_json::from_str(text).ok()?;
+        Some(
+            options
+                .iter()
+                .any(|s| s.split(',').any(|s| s == "name=rootless")),
+        )
     }
 }
 
@@ -399,6 +431,22 @@ mod tests {
                     .to_string()
                     .contains("no other runtime or local socket was substituted")
             );
+        }
+    }
+
+    #[test]
+    fn rootless_metadata_requires_a_known_runtime_shape() {
+        assert_eq!(parse_rootless("true", true), Some(true));
+        assert_eq!(parse_rootless("false", true), Some(false));
+        assert_eq!(
+            parse_rootless(r#"["name=seccomp,profile=default","name=rootless"]"#, false),
+            Some(true)
+        );
+        assert_eq!(parse_rootless(r#"["name=userns"]"#, false), Some(false));
+        assert_eq!(parse_rootless("[]", false), Some(false));
+        for value in ["", "null", "{}", "garbage", "[true]"] {
+            assert_eq!(parse_rootless(value, false), None);
+            assert_eq!(parse_rootless(value, true), None);
         }
     }
 

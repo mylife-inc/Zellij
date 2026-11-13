@@ -192,7 +192,10 @@ First use may download it; subsequent builds can use the cached image offline.
 Typesetting runs with network disabled, a read-only container root, dropped
 capabilities, no privilege escalation, resource limits and shell escape disabled.
 Only staged print inputs and a disposable output directory are mounted. The
-source project, credentials and container socket are not mounted. Runtime calls
+source project, credentials and container socket are not mounted. A bounded runtime
+query selects the correct user identity for rootful or rootless containers;
+unknown mappings fail before typesetting. The per-container user namespace is
+explicit so custom runtime defaults cannot silently remap the staged files. Runtime calls
 are bounded; cancellation and timeout remove the named container. Remote runtimes
 must support the same shared local bind paths as other Zellij container commands.
 
