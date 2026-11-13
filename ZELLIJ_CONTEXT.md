@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Current follow-up: `codex/ci-runtime-selection` fixes generated container CI
+selection after the recorded rc.6 discovery failures. A shared requirement
+covers hosted rendering, enabled PDF, static/Next images and multi-architecture
+publication. GitHub/CircleCI select the default Docker context; GitLab preserves
+its TLS service endpoint. All container jobs preflight Docker with a bounded
+60-second check and five-second termination grace before build/login; portable
+HTML and disabled PDF need no runtime. Local checks pass 37 scaffold and 31 CLI
+workflow tests, formatting, warnings-denied workspace Clippy, six generated
+workflow comparisons, Actionlint and strict/deep documentation validation.
+Hosted acceptance and the fixing commit are pending. Updated source-generated
+consumer workflows still execute the public rc.6 CLI; the released binary/tag
+are unchanged. See [the follow-up record](specs/zellij-post-rc6-followups-2026-11-13.md).
+
 PR #155 (`668e8fa`) merges book-classic 0.2.0 and rc.6 preparation, with the
 same tree as tested head `70ca564`. All 23 final-head CI jobs in `43484785719`
 pass. GitHub cancelled the first unassigned Apple Silicon runner for capacity;

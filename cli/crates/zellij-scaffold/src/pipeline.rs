@@ -63,6 +63,26 @@ pub struct CiOptions {
     pub build_args: Vec<zellij_core::build_args::BuildArg>,
 }
 
+fn requires_docker(options: &CiOptions) -> bool {
+    options.pdf == Some(true)
+        || options.renderer == zellij_core::site::Renderer::Hosted
+        || matches!(
+            options.publish,
+            Publish::Image { .. }
+                | Publish::LegacyImage
+                | Publish::Fly { .. }
+                | Publish::Railway { .. }
+        )
+}
+
+// These generators target Linux runners with GNU coreutils. Bound both the
+// initial wait and termination; never switch image stores when Docker fails.
+const DOCKER_PREFLIGHT: &str = "timeout --kill-after=5s 60s docker info || { echo 'The configured Docker runtime is unavailable. Check the runner daemon and endpoint; no alternate runtime was selected.' >&2; exit 1; }\n";
+
+fn docker_preflight_step() -> Value {
+    json!({"name":"Check the configured Docker runtime", "run":DOCKER_PREFLIGHT})
+}
+
 fn invalid(message: &str) -> Error {
     Error::InvalidArgument(format!("ci: {message}"))
 }
@@ -529,6 +549,19 @@ pub fn github(options: &CiOptions) -> Result<String> {
             &format!("{features_flag}{override_flags}"),
         )?;
     }
+    if requires_docker(options) {
+        for job in jobs.as_object_mut().unwrap().values_mut() {
+            job["env"]["DOCKER_CONTEXT"] = json!("default");
+            let steps = job["steps"].as_array_mut().unwrap();
+            // Keep checkout/install first, but preflight before the first zel
+            // command or registry login. Manifest jobs have neither setup step.
+            let index = steps
+                .iter()
+                .position(|step| step["name"] == "Install pinned zel")
+                .map_or(0, |index| index + 1);
+            steps.insert(index, docker_preflight_step());
+        }
+    }
     // GitHub group names are case-insensitive. Hash the case-sensitive filename
     // so even Manual.yml and manual.yml have distinct, bounded-length keys.
     let workflow_key = format!("{:x}", Sha256::digest(settings.workflow.as_bytes()));
@@ -671,6 +704,132 @@ mod tests {
     }
     fn parse(options: &CiOptions) -> Value {
         serde_yaml_ng::from_str(&github(options).unwrap()).unwrap()
+    }
+    #[test]
+    fn generated_jobs_select_and_preflight_only_required_docker_runtimes() {
+        use zellij_core::site::Renderer;
+        for renderer in [Renderer::Portable, Renderer::Hosted] {
+            for pdf in [None, Some(false), Some(true)] {
+                for publish in [
+                    Publish::Nothing,
+                    Publish::Netlify { site_id: None },
+                    Publish::Image {
+                        kind: ImageKind::Static,
+                        tag: "ghcr.io/acme/docs:v1".into(),
+                    },
+                    Publish::Image {
+                        kind: ImageKind::Next,
+                        tag: "ghcr.io/acme/docs:v1".into(),
+                    },
+                    Publish::Fly {
+                        app: None,
+                        kind: ImageKind::Static,
+                    },
+                    Publish::Railway {
+                        service: None,
+                        kind: ImageKind::Next,
+                        tag: "ghcr.io/acme/docs:v1".into(),
+                    },
+                ] {
+                    let image = matches!(
+                        publish,
+                        Publish::Image { .. } | Publish::Fly { .. } | Publish::Railway { .. }
+                    );
+                    let mut opts = options(publish);
+                    opts.renderer = renderer;
+                    opts.pdf = pdf;
+                    opts.version = "0.2.0-rc.6".into();
+                    opts.settings.production = true;
+                    // The compatibility validation deliberately rejects these.
+                    if pdf == Some(true)
+                        && (renderer == Renderer::Hosted
+                            || matches!(
+                                opts.publish,
+                                Publish::Image {
+                                    kind: ImageKind::Next,
+                                    ..
+                                } | Publish::Railway {
+                                    kind: ImageKind::Next,
+                                    ..
+                                }
+                            ))
+                    {
+                        assert!(github(&opts).is_err());
+                        continue;
+                    }
+                    let expected = renderer == Renderer::Hosted || pdf == Some(true) || image;
+                    // Also cover --no-check: preflight must still run.
+                    for no_check in [false, true] {
+                        opts.overrides.no_check = no_check;
+                        let doc = parse(&opts);
+                        for job in doc["jobs"].as_object().unwrap().values() {
+                            assert_eq!(
+                                job["env"]["DOCKER_CONTEXT"],
+                                if expected {
+                                    json!("default")
+                                } else {
+                                    Value::Null
+                                }
+                            );
+                            let steps = job["steps"].as_array().unwrap();
+                            let preflights: Vec<_> = steps
+                                .iter()
+                                .enumerate()
+                                .filter(|(_, s)| s["run"] == DOCKER_PREFLIGHT)
+                                .collect();
+                            assert_eq!(preflights.len(), usize::from(expected));
+                            if expected {
+                                assert!(steps[..preflights[0].0].iter().all(|s| {
+                                    !s["run"].as_str().is_some_and(|s| {
+                                        s.contains("zel check")
+                                            || s.contains("zel build")
+                                            || s.contains("zel image")
+                                    }) && s["uses"] != "docker/login-action@v3"
+                                }));
+                            }
+                        }
+                        for generate in [gitlab, circle] {
+                            let generated = generate(&opts).unwrap();
+                            assert_eq!(generated.contains(DOCKER_PREFLIGHT.trim()), expected);
+                            assert_eq!(
+                                generated.contains("DOCKER_CONTEXT"),
+                                expected && !generated.contains("stages:")
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn combined_jobs_share_docker_selection_including_manifest_publication() {
+        for publish in [
+            Publish::LegacyImage,
+            Publish::Image {
+                kind: ImageKind::Static,
+                tag: "ghcr.io/acme/docs:v1".into(),
+            },
+        ] {
+            let mut opts = options(publish);
+            opts.version = "0.2.0-rc.6".into();
+            opts.platform = Some(ImagePlatform::All);
+            let doc = parse(&opts);
+            assert_eq!(doc["jobs"].as_object().unwrap().len(), 4);
+            for job in doc["jobs"].as_object().unwrap().values() {
+                assert_eq!(job["env"]["DOCKER_CONTEXT"], "default");
+                assert_eq!(
+                    job["steps"]
+                        .as_array()
+                        .unwrap()
+                        .iter()
+                        .filter(|s| s["run"] == DOCKER_PREFLIGHT)
+                        .count(),
+                    1
+                );
+            }
+            assert_eq!(doc["jobs"]["publish"]["steps"][0]["run"], DOCKER_PREFLIGHT);
+        }
     }
     #[test]
     fn default_and_delivery_workflows_build_once_with_scoped_credentials() {

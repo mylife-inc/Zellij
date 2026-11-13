@@ -13,6 +13,8 @@ env:
   ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
 jobs:
   verify:
+    env:
+      DOCKER_CONTEXT: default
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v7
@@ -28,6 +30,9 @@ jobs:
         curl --fail --silent --show-error --location "$base/install.sh" --output "$RUNNER_TEMP/zel-install.sh" || { echo 'The pinned zel release must be published before this workflow can run.' >&2; exit 1; }
         sh "$RUNNER_TEMP/zel-install.sh"
         printf '%s\n' "$ZEL_INSTALL_DIR" >> "$GITHUB_PATH"
+    - name: Check the configured Docker runtime
+      run: |
+        timeout --kill-after=5s 60s docker info || { echo 'The configured Docker runtime is unavailable. Check the runner daemon and endpoint; no alternate runtime was selected.' >&2; exit 1; }
     - name: Validate documentation
       run: zel check --config "$SITE_CONFIG" --strict --deep
     - name: Build without publishing
