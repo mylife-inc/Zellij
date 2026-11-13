@@ -125,8 +125,11 @@ test.describe('measured overflow', () => {
   test('moves keyboard focus between visible controls across reciprocal resizes', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/');
+    // The load event can precede header hydration, especially in WebKit.
+    await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
     const first = page.locator('.zellij-nav-list [data-zellij-navitem]').first();
     await first.focus();
+    await expect(first).toBeFocused();
     for (let cycle = 0; cycle < 3; cycle++) {
       await page.setViewportSize({ width: 390, height: 900 });
       await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
@@ -138,6 +141,7 @@ test.describe('measured overflow', () => {
   test('does not take focus from document content on a breakpoint change', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto('/guide');
+    await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
     const link = page.locator('main a[href]').first();
     await link.focus();
     for (const width of [390, 1280, 390]) {
