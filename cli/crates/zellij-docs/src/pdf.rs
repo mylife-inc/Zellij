@@ -257,7 +257,8 @@ impl Writer<'_> {
                     if let Some(n) = start
                         && *n > 1
                     {
-                        let counter = ["enumi", "enumii", "enumiii", "enumiv"][lists.len()];
+                        let counter = ["enumi", "enumii", "enumiii", "enumiv"]
+                            [lists.iter().filter(|name| **name == "enumerate").count()];
                         out.push_str(&format!("\\setcounter{{{counter}}}{{{}}}\n", n - 1));
                     }
                     lists.push(name);
@@ -286,8 +287,24 @@ impl Writer<'_> {
                 }
                 Event::Code(s) => out.push_str(&format!("\\texttt{{{}}}", tex(s))),
                 Event::Text(s) => out.push_str(&tex(s)),
-                Event::InlineMath(s) => out.push_str(&format!("\\({s}\\)")),
-                Event::DisplayMath(s) => out.push_str(&format!("\\[{s}\\]\n")),
+                Event::InlineMath(s) | Event::DisplayMath(s) => {
+                    for command in s.split('\\').skip(1).map(|part| {
+                        part.chars()
+                            .take_while(char::is_ascii_alphabetic)
+                            .collect::<String>()
+                    }) {
+                        if ["label", "ref", "eqref", "tag"].contains(&command.as_str()) {
+                            return Err(invalid(
+                                "numbered math labels/references need the planned shared equation model; use unnumbered expressions in this print template",
+                            ));
+                        }
+                    }
+                    if matches!(&events[i], Event::DisplayMath(_)) {
+                        out.push_str(&format!("\\[{s}\\]\n"));
+                    } else {
+                        out.push_str(&format!("\\({s}\\)"));
+                    }
+                }
                 Event::SoftBreak => out.push(' '),
                 Event::HardBreak => out.push_str("\\newline\n"),
                 Event::Rule => out.push_str("\\par\\noindent\\rule{\\linewidth}{0.4pt}\\par\n"),
@@ -302,7 +319,8 @@ impl Writer<'_> {
                     let anchor = format!("fn{}", label(page, id));
                     if self.notes.insert((page, id.to_string())) {
                         out.push_str(&format!(
-                            "\\footnote{{\\label{{{anchor}}}{}}}",
+                            "\\footnote{{\\hypertarget{{{}}}{{}}\\label{{{anchor}}}{}}}",
+                            label(page, id),
                             self.body(page, note, footnotes, true)?
                         ));
                     } else {
@@ -313,10 +331,11 @@ impl Writer<'_> {
                     if alignments.is_empty() || alignments.len() > 6 {
                         return Err(invalid("print tables support one to six columns"));
                     }
-                    let width = 0.86 / alignments.len() as f64;
+                    let count = alignments.len();
                     out.push_str(&format!(
                         "\\begin{{longtable}}{{{}}}\\toprule\n",
-                        format!("p{{{width:.4}\\linewidth}}").repeat(alignments.len())
+                        format!("p{{\\dimexpr\\linewidth/{count}-2\\tabcolsep\\relax}}")
+                            .repeat(count)
                     ));
                 }
                 Event::Start(Tag::TableHead | Tag::TableRow) => cell = 0,
@@ -368,11 +387,15 @@ pub(crate) fn compose(
         notes: BTreeSet::new(),
     };
     let mut out = include_str!("../assets/book.tex").to_owned();
-    out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n\\begin{{titlingpage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n",tex(&m.title),tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")),book.revision,tex(&m.title)));
+    out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n",tex(&m.title),tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")),book.revision,tex(&m.title)));
     if book.entries[0].source.is_none() {
         out.push_str(&format!(
             "\\hypertarget{{{}}}{{}}\n",
             label(book.entries[0].index, "")
+        ));
+        out.push_str(&format!(
+            "\\hypertarget{{{}}}{{}}\n",
+            label(book.entries[0].index, "_zel-title")
         ));
     }
     if let Some(s) = &m.subtitle {
@@ -386,7 +409,7 @@ pub(crate) fn compose(
         out.push_str(&format!("\\vfill\\includegraphics[width=0.65\\linewidth,height=0.45\\textheight,keepaspectratio]{{{name}}}\\par\n"));
     }
     out.push_str(&format!(
-        "\\vfill{{\\large {}\\par}}\\end{{titlingpage}}\n\\tableofcontents*\n",
+        "\\vfill{{\\large {}\\par}}\\end{{titlepage}}\n\\tableofcontents\n",
         tex(&m
             .authors
             .iter()
@@ -437,6 +460,12 @@ pub(crate) fn compose(
             "\\hypertarget{{{}}}{{}}\n",
             label(entry.index, "")
         ));
+        if !page.markdown.has_h1 {
+            out.push_str(&format!(
+                "\\hypertarget{{{}}}{{}}\n",
+                label(entry.index, "_zel-title")
+            ));
+        }
         let mut events = rewritten[entry.index].clone();
         // The first authored H1 supplies the chapter title. Preserve its link target.
         if entry.kind != "title-page"
@@ -476,6 +505,14 @@ pub(crate) fn compose(
             }
         }
         out.push_str(&w.body(entry.index, &events, &notes, false)?);
+        for id in notes.keys() {
+            if !w.notes.contains(&(entry.index, id.clone())) {
+                return Err(invalid(format!(
+                    "{}: footnote {id:?} has no footnote reference; add [^{id}] or remove its definition",
+                    page.source
+                )));
+            }
+        }
         out.push_str("\n\\clearpage\n");
     }
     out.push_str("\\end{document}\n");

@@ -15,7 +15,7 @@ use zellij_core::{
 };
 use zellij_engine::Runtime;
 
-// Official Pandoc Ubuntu variant includes memoir, LuaLaTeX and Latin Modern.
+// Official Pandoc Ubuntu variant includes LuaLaTeX and Latin Modern.
 // Multi-platform index verified 2026-11-12; keep optional and separate from engine images.
 pub(crate) const IMAGE: &str = "pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44";
 const SCRIPT: &str = r#"set -eu
@@ -40,7 +40,18 @@ pub(crate) fn standalone(args: &crate::args::PdfArgs) -> Result<()> {
         .out
         .as_ref()
         .map(Utf8PathBuf::from)
-        .unwrap_or_else(|| site.root.join("pdf"));
+        .map(Ok::<_, Error>)
+        .unwrap_or_else(|| {
+            if site.configured {
+                Ok(site.root.join("pdf"))
+            } else {
+                let name = site
+                    .root
+                    .file_name()
+                    .ok_or_else(|| failed("specify --out for a filesystem root"))?;
+                Ok(site.root.with_file_name(format!("{name}-pdf")))
+            }
+        })?;
     run(
         &source,
         &output,

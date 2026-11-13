@@ -17,7 +17,7 @@ $$
 \sum_{k=1}^{n} k = \frac{n(n+1)}{2}.
 $$
 
-This is a **structural** argument, not just a numerical observation.[^proof]
+This is a **structural** argument, not just a numerical observation.[^proof] The same note applies here too.[^proof]
 
 [^proof]: A proof establishes every case allowed by its assumptions.
 

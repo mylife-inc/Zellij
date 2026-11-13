@@ -1,18 +1,26 @@
 % Zellij classic print template v1. Authored text is escaped by the adapter.
-\documentclass[11pt,a5paper,oneside,openany]{memoir}
+\documentclass[11pt,a5paper,oneside,openany]{book}
 \usepackage{fontspec,unicode-math,microtype,graphicx,longtable,booktabs,xcolor,soul}
+\usepackage[a5paper,left=20mm,right=18mm,top=20mm,bottom=22mm,headheight=14pt]{geometry}
 \usepackage{hyperref,bookmark}
 \setmainfont{Latin Modern Roman}
 \setsansfont{Latin Modern Sans}
 \setmonofont{Latin Modern Mono}
 \setmathfont{Latin Modern Math}
 \definecolor{zelaccent}{HTML}{264D46}
-\setlrmarginsandblock{20mm}{18mm}{*}
-\setulmarginsandblock{20mm}{22mm}{*}
-\checkandfixthelayout
-\chapterstyle{section}
-\renewcommand{\chaptitlefont}{\Huge\bfseries\color{zelaccent}}
-\setsecheadstyle{\Large\bfseries\color{zelaccent}}
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{18pt}{\parindent\z@\raggedright\normalfont
+  \ifnum\c@secnumdepth>\m@ne\if@mainmatter
+    {\large\sffamily\color{zelaccent}\@chapapp\space\thechapter\par}\vskip12pt
+  \fi\fi
+  \interlinepenalty\@M{\Huge\bfseries\color{zelaccent}#1\par}\nobreak
+  \vskip14pt{\color{zelaccent}\hrule height 0.6pt}\vskip24pt}}
+\def\@makeschapterhead#1{%
+  \vspace*{18pt}{\parindent\z@\raggedright\normalfont
+  \interlinepenalty\@M{\Huge\bfseries\color{zelaccent}#1\par}\nobreak
+  \vskip14pt{\color{zelaccent}\hrule height 0.6pt}\vskip24pt}}
+\makeatother
 \pagestyle{headings}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}

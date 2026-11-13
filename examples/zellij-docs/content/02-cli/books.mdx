@@ -184,7 +184,7 @@ A running Docker, Podman or nerdctl **Linux** runtime is required only when
 actually generating a PDF. Missing or conflicting runtimes produce an actionable
 error; Zellij does not install or start one. The separate official
 [Pandoc LaTeX Ubuntu image](https://github.com/pandoc/dockerfiles) is pinned by
-multi-platform digest and supplies LuaLaTeX, memoir and Latin Modern fonts.
+multi-platform digest and supplies LuaLaTeX and Latin Modern fonts.
 The adapter emits TeX directly; it does not ask Pandoc to reinterpret Markdown.
 This optional image adds no TeX dependencies to the CLI or normal website images.
 First use may download it; subsequent builds can use the cached image offline.
@@ -210,7 +210,7 @@ bookmarks. The adapter supports ordinary paragraphs, emphasis, lists, code,
 quotes, footnotes, tables of up to six columns, the existing validated math
 subset, local PNG/JPEG images and links between book pages/headings. Code and
 ordinary text are escaped; authored HTML remains literal. Repeated footnote
-references share their number. The printed cover is followed by contents and
+references share their number; unreferenced definitions are rejected. The printed cover is followed by contents and
 any authored home document; its body remains part of the publication.
 
 This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
@@ -220,4 +220,5 @@ Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
 trim sizes, multilingual/RTL print, bibliography, index, glossary and semantic
 cross-chapter equation/theorem numbering remain future increments. Mathematical
-expressions retain the web renderer's existing supported subset.
+expressions use the web renderer's supported subset, except explicit equation
+labels, tags and references, which await the shared numbered-equation model.

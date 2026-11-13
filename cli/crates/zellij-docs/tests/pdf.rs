@@ -28,7 +28,7 @@ fn print_uses_validated_content_order_links_math_and_escaped_text() {
     assert!(tex.contains("Text \\& proofs"));
     assert!(tex.find("\\chapter{First}").unwrap() < tex.find("\\chapter{Second}").unwrap());
     assert!(tex.contains("\\(x^2\\)"));
-    assert!(tex.contains("\\footnote{\\label{"));
+    assert!(tex.contains("\\footnote{\\hypertarget{"));
     assert!(tex.contains("Footnote body."));
     assert!(tex.contains("\\begin{longtable}"));
     let target = tex
@@ -78,4 +78,43 @@ fn unsupported_print_features_and_failed_export_preserve_web_output() {
         );
         assert_eq!(before, fs::read(root.join("site/first.html")).unwrap());
     }
+}
+
+#[test]
+fn generated_headings_and_repeated_footnotes_keep_resolvable_print_targets() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    fs::write(root.join("content/first.md"),"---\ntitle: No authored heading\n---\n[Home](index.html#_zel-title).\n\nA note[^n] and the same note[^n]. [Its text](#n).\n\n[^n]: Unique footnote body.\n\n| A | B | C | D | E | F |\n|---|---|---|---|---|---|\n| a | b | c | d | e | f |\n").unwrap();
+    fs::write(
+        root.join("content/second.md"),
+        "# Second\n\n[First](first.md#_zel-title).\n",
+    )
+    .unwrap();
+    let prepared = pdf::prepare(
+        &SiteInput::from(root),
+        &root.join("printed"),
+        BuildOptions::default(),
+        false,
+    )
+    .unwrap();
+    let tex = String::from_utf8(prepared.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
+    assert_eq!(tex.matches("Unique footnote body.").count(), 1);
+    assert!(tex.contains("\\textsuperscript{\\ref{"));
+    for part in tex.split("\\hyperlink{").skip(1) {
+        let target = part.split('}').next().unwrap();
+        assert!(
+            tex.contains(&format!("\\hypertarget{{{target}}}")),
+            "unresolved target {target}"
+        );
+    }
+    assert!(tex.contains("\\linewidth/6-2\\tabcolsep"));
+    fs::write(
+        root.join("content/first.md"),
+        "# First\n\n[^n]: Never referenced.\n",
+    )
+    .unwrap();
+    fs::write(root.join("content/second.md"), "# Second\n").unwrap();
+    let error = pdf::check(&SiteInput::from(root)).unwrap_err().to_string();
+    assert!(error.contains("has no footnote reference"), "{error}");
 }

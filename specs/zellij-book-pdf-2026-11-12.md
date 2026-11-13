@@ -3,7 +3,7 @@
 Base: `6f26ea7`. This increment extends PR #149's publication snapshot with a
 bounded direct Markdown-event-to-LaTeX adapter and optional isolated execution.
 No Pandoc Markdown reparse occurs. The official `pandoc/latex:3.11-ubuntu` image
-supplies LuaLaTeX/memoir/fonts and is pinned to multi-platform index
+supplies LuaLaTeX/fonts and is pinned to multi-platform index
 `sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44`.
 Its amd64 and arm64 entries were verified from the registry before implementation.
 
@@ -51,3 +51,12 @@ multilingual/RTL fonts and layouts, bibliography/index/glossary, richer equation
 and theorem references, custom/technical/study templates and new distribution
 channels. Production documentation/domain, native rc.5 and live provider
 verification remain unchanged.
+
+First hosted attempt `43353600220` at `6444fb1` failed on both native PDF
+architectures: the pinned upstream image includes memoir but lacks its required
+`xpatch.sty`. The print template now uses the standard book class plus its own
+small chapter treatment, without a larger image or runtime package installation.
+Review also corrected synthetic title/footnote link targets, unreferenced
+footnote handling, six-column width accounting and flat-source output placement.
+A local compile caught an ambiguous Result type in that placement fix; it is
+explicitly typed. These failed attempts remain part of the record.
