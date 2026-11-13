@@ -53,7 +53,7 @@ jobs:
       - name: Warm image builds before starting trial compute
         timeout-minutes: 15
         env:
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
         run: |
           cli/target/debug/zel si --config scripts/fixtures/release-delivery/portable/portable.yaml --tag zellij-fly-warm-static
           cli/target/debug/zel ni --config scripts/fixtures/release-delivery/hosted/hosted.yaml --tag zellij-fly-warm-next
@@ -83,7 +83,7 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.ZEL_LIVE_FLY_TOKEN }}
           FLY_ORG: ${{ inputs.organization }}
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
         run: node scripts/check-fly-live.mjs exercise "$RUNNER_TEMP/fly-live-evidence.json" cli/target/debug/zel
       - name: Remove the confirmed temporary app and verify deletion
         if: ${{ always() && steps.create.outcome != 'skipped' }}

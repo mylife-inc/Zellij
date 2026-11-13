@@ -50,7 +50,7 @@ jobs:
       - name: Prepare hosted runtime and fixture administration tool
         run: |
           aws --version
-          docker pull ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+          docker pull ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
       - name: Create a uniquely named disposable website bucket
         id: create
         timeout-minutes: 5
@@ -66,7 +66,7 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.ZEL_LIVE_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.ZEL_LIVE_AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.ZEL_LIVE_AWS_SESSION_TOKEN }}
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
         run: node scripts/check-s3-live.mjs exercise "$RUNNER_TEMP/s3-live-evidence.json" cli/target/debug/zel
       - name: Remove confirmed fixture objects and bucket, and verify deletion
         if: ${{ always() && steps.create.outcome != 'skipped' }}

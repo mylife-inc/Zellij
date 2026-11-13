@@ -93,7 +93,7 @@ jobs:
           GITHUB_PAGES_TOKEN: ${{ secrets.ZEL_LIVE_GITHUB_TOKEN }}
           RAILWAY_TOKEN: ${{ secrets.ZEL_LIVE_RAILWAY_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.5
+          ZELLIJ_IMAGE: ghcr.io/mylife-inc/zellij-base:0.2.0-rc.6
         run: node scripts/check-live-providers.mjs cli/target/debug/zel "$RUNNER_TEMP/live-provider-evidence.json"
       - uses: actions/upload-artifact@v7
         if: always()
