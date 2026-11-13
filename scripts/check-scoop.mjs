@@ -6,6 +6,7 @@ import { createServer } from 'node:http';
 import { cp, mkdir, mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { scoopManifest } from './scoop-manifest.mjs';
 
 assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Scoop acceptance requires a disposable hosted runner');
@@ -47,8 +48,10 @@ async function run(command, args, { code = 0, cwd = temp, log = true, ...options
     child.on('close', actual => actual === code ? resolve(output) : reject(new Error(`${command} ${args.join(' ')} exited ${actual}, expected ${code}\n${output}`)));
   });
 }
-const scoop = args => run(scoopShell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args]);
-const failedScoop = args => run(scoopShell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', path.join(core, 'bin/scoop.ps1'), ...args], { code: 1 });
+// Like Scoop's normal PowerShell shim, propagate the nested command's exit code.
+const psLiteral = value => `'${value.replaceAll("'", "''")}'`;
+const scoop = (args, options) => run(scoopShell, ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass',
+  '-Command', `& ${[path.join(core, 'bin/scoop.ps1'), ...args].map(psLiteral).join(' ')}; exit $LASTEXITCODE`], options);
 const server = createServer((request, response) => {
   const name = new URL(request.url, 'http://localhost').pathname.slice(1);
   const bytes = downloads.get(name);
@@ -103,6 +106,7 @@ async function assertUninstalled() {
 try {
   assert.equal((await run('git', ['-C', source, 'rev-parse', 'HEAD'], { log: false })).trim(), pin);
   await cp(source, core, { recursive: true });
+  for (const directory of ['shims', 'buckets']) await mkdir(path.join(scoopRoot, directory), { recursive: true });
   // Scoop supports this portable config layout. Core is pinned; no host profile or PATH edits.
   await writeFile(path.join(scoopRoot, 'config.json'), JSON.stringify({
     last_update: new Date().toISOString(), hold_update_until: new Date(Date.now() + 86400000).toISOString(),
@@ -111,7 +115,8 @@ try {
   await mkdir(path.dirname(recipe), { recursive: true });
   await run('git', ['init', '--quiet', '--initial-branch=main', bucket], { log: false });
   await commitRecipe(localManifest);
-  await scoop(['bucket', 'add', 'acceptance', bucket]);
+  await scoop(['bucket', 'add', 'acceptance', pathToFileURL(bucket).href]);
+  assert.deepEqual(JSON.parse(await readFile(path.join(scoopRoot, 'buckets/acceptance/bucket/zel.json'), 'utf8')), localManifest);
   await scoop(['install', 'acceptance/zel']);
   const guidance = process.env.ZEL_SCOOP_PUBLIC_VERSION && version === '0.2.0-rc.6' ? 'package manager' : 'scoop update zel';
   const initial = await verify(version, guidance);
@@ -122,7 +127,7 @@ try {
   for (const asset of Object.values(updated.architecture)) asset.hash = '0'.repeat(64);
   await commitRecipe(updated);
   await scoop(['update']); // Sync the actual local Git bucket; held Core remains pinned.
-  const rejected = await failedScoop(['update', 'zel']);
+  const rejected = await scoop(['update', 'zel'], { code: 1 });
   assert.match(rejected, /hash check failed|hash mismatch/i);
   assert.deepEqual(await readFile(initial.executable), initial.bytes, 'Bad checksum replaced the installed binary');
   await verify(version, guidance);

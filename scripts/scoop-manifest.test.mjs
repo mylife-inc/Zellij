@@ -19,9 +19,9 @@ test('Scoop pins both native Windows archives and preserves managed installation
   }
   assert.equal(result.extract_to, 'bin');
   assert.equal(result.bin, 'bin\\zel.exe');
-  assert.match(result.post_install.join('\n'), /share\\zel/);
-  assert.match(result.post_install.join('\n'), /installation-manager.*"scoop`n"/);
-  assert.match(result.post_install.join('\n'), /UTF8Encoding\]::new\(\$false\)/);
+  assert.match(result.pre_install.join('\n'), /share\\zel/);
+  assert.match(result.pre_install.join('\n'), /installation-manager.*"scoop`n"/);
+  assert.match(result.pre_install.join('\n'), /UTF8Encoding\]::new\(\$false\)/);
   assert(result.notes.includes('Update with: scoop update zel'));
   assert.match(result.notes.join('\n'), /development preview 0\.2\.0-rc\.6/);
   assert(!('autoupdate' in result)); // The owned bucket only adopts reviewed releases.

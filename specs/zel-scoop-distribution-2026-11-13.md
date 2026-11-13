@@ -6,8 +6,9 @@ bucket publication are pending. Public rc.6 and its assets remain unchanged.
 `scripts/scoop-manifest.mjs` generates a manifest from one exact release's
 checksums. It selects x64/ARM64 Windows ZIPs from the shared release repository,
 uses Scoop's executable shim, and extracts the executable into `bin/zel.exe`.
-The post-install hook writes exact UTF-8/no-BOM `scoop\n` bytes to
-`share/zel/installation-manager`. This reuses the ownership guard in rc.6.
+The pre-install hook writes exact UTF-8/no-BOM `scoop\n` bytes to
+`share/zel/installation-manager`. It runs after extraction and before publishing the executable shim, reusing
+the ownership guard in rc.6.
 The source CLI now gives `scoop update zel` guidance; published rc.6 already
 refuses the same operation with its generic package-manager message. That
 message improvement will ship in the next candidate. Neither self-upgrade path
@@ -51,3 +52,8 @@ public bucket identity here before describing installation as available.
 References: [Scoop manifest contract](https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests),
 [portable config bootstrap](https://github.com/ScoopInstaller/Scoop/blob/e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f/lib/core.ps1),
 and [Scoop update handling](https://github.com/ScoopInstaller/Scoop/blob/e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f/libexec/scoop-update.ps1).
+
+The first public-archive probe (`43530387032`) exposed harness bootstrap errors:
+Scoop requires a Git URL rather than a raw Windows path, and its portable root
+needs the shim/bucket directories. The corrected harness uses a file URL and
+propagates nested Scoop command exit codes as its standard PowerShell shim does.
