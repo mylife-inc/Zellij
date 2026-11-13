@@ -3,10 +3,17 @@
 Last refreshed: **2026-11-12**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Current work: `codex/pdf-configuration-delivery` extends the optional PDF path
-with saved paper/font/enablement settings, preview/watch, static delivery/images,
-and compatible CI/runtime preflight. See [the checkpoint](specs/zellij-pdf-configuration-2026-11-12.md).
-Validation and merge are pending; published rc.5 remains unchanged.
+PR #153 (`71b97e4`) merges saved PDF settings, PDF-aware preview/watch and
+static delivery/images, with the same tree as tested head `ecfbfba`. All 23 jobs
+in `43376564097` pass without reruns: 767 local Rust tests, 490 engine tests,
+356 showcase cases (124 conditional skips), six native packages and four
+Homebrew targets. Real Docker amd64/arm64 and rootless Podman checks produced
+nine valid PDFs; all 66 captures match the reviewed A5/A4/Letter layouts.
+Configured PDF static images are about 7.2 MB amd64 / 14.0 MB arm64 uncompressed,
+without LaTeX/Node/Rust. See [the checkpoint](specs/zellij-pdf-configuration-2026-11-12.md)
+and [evidence](specs/evidence/zellij-pdf-configuration-2026-11-12.json).
+Published rc.5 remains unchanged. Next: version the book starter around the new
+publication model and optional PDF settings, then prepare rc.6 and its docs.
 
 PR #149 (`72a8445`) merges the versioned book publication model, with the same
 tree as tested head `2b5cfec`. Its portable manifest drives ordered front matter,
@@ -45,9 +52,11 @@ See [the PDF checkpoint](specs/zellij-book-pdf-2026-11-12.md),
 [evidence](specs/evidence/zellij-book-pdf-2026-11-12.json) and
 [guide](examples/zellij-docs/content/02-cli/books.mdx).
 
-This first print template is English/LTR A5. Configuration-driven PDFs,
-PDF-aware preview/delivery, multilingual print, bibliography/index/glossary,
-numbered equation/theorem semantics and richer book templates remain open.
+At the first PDF milestone, print was English/LTR A5 and saved configuration
+and PDF-aware preview/delivery were still open. PR #153 closes those two gaps
+and adds A4/Letter and 10/11/12pt settings. Multilingual print,
+bibliography/index/glossary, numbered equation/theorem semantics and richer book
+templates remain open.
 Published rc.5 and production documentation/domain are unchanged. No development
 engine refresh was needed: Node runtime inputs are unchanged (one test fixture
 changed); the optional PDF toolchain is separate.
