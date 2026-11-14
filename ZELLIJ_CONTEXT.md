@@ -3,6 +3,14 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Rapid-focus follow-up is in progress: diagnostic `43537359369` reproduces the
+original Chromium failure eight times without retries (112 passes). The traces
+show focus lost while a hamburger is hidden, followed by the handler seeing it
+visible again and dropping restoration. The proposed fix remembers that loss at
+blur time and retains pending restoration through later resizes while respecting
+new user focus/pointer choices. Local 490-test/typecheck/build/doc checks pass;
+hosted regression gates are pending. See [the implementation record](specs/zellij-rapid-focus-restoration-2026-11-13.md).
+
 Scoop is published in the owned [`mylife-inc/scoop-bucket`](https://github.com/mylife-inc/scoop-bucket)
 at `ca62345`, installing immutable rc.6 on native Windows x64/ARM64. All four
 public lifecycle jobs in `43532235784` pass under Windows PowerShell 5.1 and
