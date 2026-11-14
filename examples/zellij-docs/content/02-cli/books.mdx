@@ -93,6 +93,59 @@ choose another theme. A separate site `name` controls the header; without one,
 the book title is used. Existing company/product branding, Markdown features,
 local fonts, search and offline navigation continue to work.
 
+## Numbered equations and cross-references (current source)
+
+<Callout type="info" title="After rc.6">
+Shared equation numbering is implemented in current source and awaits the next
+CLI candidate. Use a matching engine build for Next images. Published rc.6
+continues to support its earlier unnumbered print-math subset.
+</Callout>
+
+Enable `markdown: {math: true}` beside the `book` block in `zel.yaml`. Label a
+display expression with one top-level LaTeX-style `\label`:
+
+```md
+$$E=mc^2\label{eq:energy}$$
+
+See Equation $\eqref{eq:energy}$.
+```
+
+The first labelled equation in chapter 2 is `(2.1)`. Unlabelled math remains
+unnumbered and does not consume a number. Chapters use their manifest order,
+appendices use `A.1`, `B.1`, etc.; front-matter entries use `F1.1`, `F2.1`, etc.
+An authored title page uses `T.1`. Each entry restarts its equation counter.
+For a multi-line equation with one number, use `aligned` or `gathered` inside
+one display expression, then put its label outside that environment.
+
+`$\eqref{eq:energy}$` becomes a link displaying `(2.1)`; `$\ref{eq:energy}$`
+displays `2.1`. References can point forward, backward or to another chapter,
+including from a footnote. Put each reference in its own inline expression in
+prose, not inside a heading, another link or a larger mathematical expression.
+The same resolved numbers and targets serve native HTML, adapted Next images
+and the optional LuaLaTeX PDF. Website reference links also work after moving
+an export and opening it with `file://`, with JavaScript disabled.
+
+Labels are unique across the book, case-sensitive, start with an ASCII letter,
+and contain at most 128 ASCII letters, digits, `:`, `.`, `_` or `-`. The anchor
+`_zel-eq-eq:energy` follows the label rather than its number. Inserting an earlier
+equation renumbers it without changing its anchor. A Markdown link can use
+custom text, for example `[Energy relation](chapter.md#_zel-eq-eq:energy)`.
+Renaming the label or source file changes its target.
+
+Duplicate/missing labels, empty labelled math and unsupported placements fail
+`zel check` and publication before replacing existing output. Book authors use
+labels instead of manual `\tag`, `\notag`, `\nonumber` or `equation`/`align`
+numbering environments. This first shared syntax assigns one number per labelled
+display expression; per-row numbering, references within larger math, custom
+tags and theorem numbering remain future increments. Non-book expression-local
+math behavior is unchanged.
+
+When equations exist, the publication record adds `equations` to schema version
+1. Each item supplies `id`, `number`, reading-entry ID in `entry`, `source`,
+`anchor` and encoded root-relative `href`. This field is omitted for books with
+no labelled equations. The Next sidecar keeps those portable hrefs; its `routes`
+map supplies hosted entry paths, and deployment base paths apply as usual.
+
 ## Language and direction
 
 `language` defaults to `en`; `direction` defaults to `ltr` and can be `rtl`.
@@ -297,6 +350,6 @@ for print with an explanation; ordinary web builds retain their existing support
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
 trim sizes, multilingual/RTL print, bibliography, index, glossary and semantic
-cross-chapter equation/theorem numbering remain future increments. Mathematical
-expressions use the web renderer's supported subset, except explicit equation
-labels, tags and references, which await the shared numbered-equation model.
+theorem numbering remain future increments. Current source adds the shared
+equation labels and references described above; rc.6 does not include them.
+Mathematical expressions otherwise use the web renderer's supported subset.

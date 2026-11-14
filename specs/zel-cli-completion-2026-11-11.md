@@ -52,6 +52,13 @@ investigation. Product runtime and rc.6 are unchanged. Resume shared equation
 numbering/references and further book publishing; keep the findings visible
 when assessing the next release.
 
+Current source adds a shared registry for labelled book equations, chapter and
+appendix numbers, stable anchors and forward/backward references in portable
+HTML, adapted Next and PDF. The source-only guide documents the exact syntax
+and boundaries; [the equation record](zellij-book-equations-2026-11-13.md) tracks
+acceptance. Hosted validation is pending at this checkpoint. This does not
+complete theorem semantics or the remaining advanced publishing backlog.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

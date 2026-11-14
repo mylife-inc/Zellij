@@ -2,6 +2,7 @@
 // hosted-prefix Next servers and publication to a loopback registry.
 // --local uses an isolated wrapper and no daemon.
 import assert from 'node:assert/strict';
+import { checkEquations } from './check-equations.mjs';
 import { execFileSync, spawn } from 'node:child_process';
 import { chmod, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -43,7 +44,11 @@ async function browserChecks(origin, prefix, portable) {
     page.on('pageerror',err=>errors.push(err.message));
     page.on('response',res=>{if(res.status()>=400) errors.push(`${res.status()} ${res.url()}`);});
     await page.goto(`${origin}${prefix}/`);
-    if (portable === 'book') {
+    if (portable === 'equations') {
+      const record = await (await fetch(`${origin}${prefix}/_zellij/assets/book.json`)).json();
+      assert.deepEqual(record.publication.equations.map(e => e.number), ['F1.1','1.1','1.2','2.1','A.1']);
+      await checkEquations(page, `${origin}${prefix}/`, path.join(repo, 'test-results/next-equations'), 'next');
+    } else if (portable === 'book') {
       await page.getByRole('heading', { name: 'An atlas of quiet ideas', exact: true }).waitFor();
       assert.equal(await page.locator('html').getAttribute('lang'), 'en');
       assert.equal(await page.locator('html').getAttribute('dir'), 'ltr');
@@ -104,7 +109,7 @@ async function browserChecks(origin, prefix, portable) {
   } finally { await browser.close(); }
 }
 async function container(tag, prefix, portable, publicOrigin) {
-  const name = `zel-next-${portable === 'book' ? 'book' : portable ? 'portable' : 'hosted'}-${suffix}`;
+  const name = `zel-next-${typeof portable === 'string' ? portable : portable ? 'portable' : 'hosted'}-${suffix}`;
   containers.push(name);
   docker(['run','-d','--name',name,'-p','127.0.0.1::3000',tag]);
   const info = JSON.parse(docker(['inspect',name]))[0];
@@ -176,6 +181,10 @@ try {
     const book = `zellij-next-book:${suffix}`; images.push(book);
     run(['image', 'next', 'book', '--tag', book, '--features', 'none']);
     await container(book, '', 'book');
+    await cp(path.join(repo, 'scripts/fixtures/equations'), path.join(root, 'equations'), { recursive: true });
+    const equations = `zellij-next-equations:${suffix}`; images.push(equations);
+    run(['image', 'next', 'equations', '--tag', equations, '--features', 'maths', '--base-path', '/books/equations']);
+    await container(equations, '/books/equations', 'equations');
   }
   assert.equal(await readFile(path.join(root,'docs/zellij/site/index.html'),'utf8'),'previous output');
   assert.equal(await readFile(path.join(root,'docs/zellij/content/index.md'),'utf8'),original);

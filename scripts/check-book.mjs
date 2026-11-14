@@ -1,5 +1,6 @@
 // Hosted CI only: a complete book must remain usable after moving its export.
 import assert from 'node:assert/strict';
+import { checkEquations } from './check-equations.mjs';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdtemp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -21,6 +22,11 @@ try {
   const settings = await readFile(path.join(source, 'zel.yaml'), 'utf8');
   await writeFile(path.join(source, 'zel.yaml'), settings.replace('direction: ltr', 'direction: rtl'));
   execFileSync(binary, ['build', source], { env, stdio: 'pipe' });
+  const technical = path.join(temp, 'technical');
+  await cp('scripts/fixtures/equations', technical, { recursive: true });
+  execFileSync(binary, ['build', technical], { env, stdio: 'pipe' });
+  const relocated = path.join(temp, 'Relocated equations 日本');
+  await rename(path.join(technical, 'site'), relocated);
   await mkdir(captures, { recursive: true });
   for (const [engine, launcher] of Object.entries({ chromium, webkit })) {
     const browser = await launcher.launch();
@@ -68,6 +74,13 @@ try {
         await page.screenshot({ path: path.join(captures, `${engine}-${width}-rtl.png`), fullPage: true });
         assert.deepEqual(errors, []); assert.deepEqual(requests, []);
         await context.close();
+      }
+      for (const javaScriptEnabled of [true, false]) {
+        const equations = await browser.newContext({ javaScriptEnabled, offline: engine !== 'webkit' });
+        await equations.route(/^https?:/, route => route.abort());
+        const equationPage = await equations.newPage();
+        await checkEquations(equationPage, pathToFileURL(relocated + path.sep).href, captures, `${engine}-equations-${javaScriptEnabled}`);
+        await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });
       await context.route(/^https?:/, route => route.abort());

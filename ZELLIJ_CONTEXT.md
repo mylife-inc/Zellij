@@ -29,9 +29,13 @@ rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
 message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
 and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
 
-**Next priority:** shared numbered equations and references across web/PDF,
-then further book semantics, richer book templates and remaining installation
-channels. The bounded investigation of the separate WebKit overflow and docs
+Shared numbered equations and references now have a source implementation in
+the native book registry, portable/Next adapters and PDF writer. The new
+`\label` / standalone inline `\eqref` / `\ref` contract and verification state
+are in [the equation record](specs/zellij-book-equations-2026-11-13.md).
+**Next priority:** finish its hosted browser/PDF acceptance, then continue book
+semantics, richer book templates and remaining installation channels.
+The bounded investigation of the separate WebKit overflow and docs
 hydration timings passes 120 overflow repetitions and 40 full documentation
 annotation checks without retries in `43547198588`. Neither failure reproduced;
 both remain unexplained. Source `f70e942` adds bounded failure-only browser

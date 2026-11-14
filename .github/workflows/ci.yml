@@ -448,6 +448,14 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         run: node scripts/check-next-images.mjs cli/target/debug/zel
 
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: next-equation-previews
+          path: test-results/next-equations/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Reclaim container build cache before imported images
         run: docker builder prune --all --force
 

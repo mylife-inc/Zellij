@@ -12,6 +12,8 @@ mod config;
 mod diagnostics;
 use diagnostics::Diagnostics;
 pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
+mod equations;
+pub use equations::Equation;
 mod hosted;
 mod links;
 mod markdown;
@@ -459,9 +461,13 @@ fn compile(
         Code::Configuration,
         Some(config_file),
     )?;
+    if let Some(book) = &mut publication {
+        diagnostics.capture(equations::resolve(book, &pages), Code::Reference, None)?;
+    }
     let mut resolver = links::Resolver {
         root: &root,
         pages: &pages,
+        book: publication.as_ref(),
         assets: BTreeMap::new(),
     };
     for (path, bytes) in
@@ -498,14 +504,18 @@ fn compile(
                 }
             }
         }
+        if let Some(book) = &publication {
+            events = equations::references(events, book, page, &pages)?;
+        }
         rewritten.push(events);
     }
     if let Some(error) = first_error {
         return Err(error);
     }
+    let assets = resolver.assets;
     if let Some(book) = &mut publication {
         diagnostics.capture(
-            book.finish(&pages, &resolver.assets),
+            book.finish(&pages, &assets),
             Code::Rendering,
             Some(config_file),
         )?;
@@ -525,7 +535,7 @@ fn compile(
             })?,
             &pages,
             &rewritten,
-            &resolver.assets,
+            &assets,
             &site.pdf,
         )?)
     } else {
@@ -538,7 +548,7 @@ fn compile(
             &pages,
             &navigation,
             &rewritten,
-            &resolver.assets,
+            &assets,
         )?)
     } else {
         None
@@ -547,7 +557,7 @@ fn compile(
     for ((index, page), events) in pages.iter().enumerate().zip(rewritten) {
         let mut body = String::new();
         let highlighted = diagnostics.capture(
-            markdown::highlight(events, config.markdown.mermaid),
+            markdown::highlight(events, config.markdown.mermaid, publication.as_ref()),
             Code::Rendering,
             Some(&page.source),
         )?;
@@ -577,7 +587,7 @@ fn compile(
             );
         }
     }
-    for (path, bytes) in resolver.assets {
+    for (path, bytes) in assets {
         if files.insert(path.clone(), bytes).is_some() {
             return diagnostics.capture(
                 Err(files::unsafe_path(

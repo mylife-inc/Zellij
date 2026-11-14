@@ -7,6 +7,12 @@ design; proposed commands remain planned unless explicitly marked implemented be
 
 ## Delivery order and release boundaries
 
+Current source increment (2026-11-13): shared labelled equations and standalone
+inline references are implemented across native HTML, adapted Next and PDF.
+See [the contract and acceptance record](zellij-book-equations-2026-11-13.md).
+Hosted acceptance is pending; per-row numbering, references within larger math,
+theorems and the remaining advanced publishing work are not marked complete.
+
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
 | 1 | Separate company and product branding | Implemented and released in rc.4, including portable/hosted rendering, mobile layout, independent destinations/tab selection, dark variants and compatibility. |
