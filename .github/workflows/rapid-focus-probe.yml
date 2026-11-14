@@ -1,7 +1,7 @@
-name: Rapid header focus diagnostic
+name: Delayed-frame baseline control
 on:
   push:
-    branches: [codex/rapid-focus-probe]
+    branches: [codex/rapid-frame-baseline]
 permissions:
   contents: read
 jobs:
@@ -21,15 +21,6 @@ jobs:
         working-directory: examples/showcase
       - name: Exercise delayed restoration and deliberate focus without retries
         run: npx playwright test e2e/header-layout.spec.ts --grep 'before queued frames run' --project desktop --project desktop-safari --retries 0 --repeat-each 4 --workers 4
-        working-directory: examples/showcase
-      - name: Capture original Chromium ordering without retries
-        run: npx playwright test e2e/rapid-raw-probe.spec.ts --project desktop --retries 0 --repeat-each 120 --workers 4
-        working-directory: examples/showcase
-      - name: Exercise resize and open-drawer updates without retries
-        run: npx playwright test e2e/header-layout.spec.ts --project desktop --project desktop-safari --retries 0 --repeat-each 12 --workers 4
-        working-directory: examples/showcase
-      - name: Repeat full desktop workload without retries
-        run: npx playwright test --project desktop --project desktop-safari --retries 0 --repeat-each 4 --workers 4
         working-directory: examples/showcase
       - uses: actions/upload-artifact@v7
         if: always()

@@ -130,15 +130,13 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const pathname = usePathname() || '/';
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [resizeRevision, setResizeRevision] = useState(0);
+  const [resizeFocus, setResizeFocus] = useState<'mobile' | 'desktop' | null>(null);
   const menuBarRef = useRef<HTMLUListElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const measureRef = useRef<HTMLUListElement>(null);
   const focusAfterResize = useRef<number | 'more' | null>(null);
   const lastNavigationFocus = useRef<HTMLElement | null>(null);
-  const lostNavigationFocus = useRef(false);
-  const pendingResizeFocus = useRef(false);
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
   const inNavigation = useCallback((element: Element | null) => Boolean(
     element && (headerRef.current?.contains(element) || element.closest('.zellij-drawer-root')),
@@ -286,28 +284,20 @@ export function NavBarClient({ model }: { model: NavModel }) {
   }, [visibleCount]);
 
   useEffect(() => {
-    // Remember why focus left at blur time: a briefly hidden control can be
-    // visible again (or removed) by the time a queued resize event arrives.
+    // CSS can hide a focused control before the media-query event is delivered.
+    // Retain only that focus loss, not an intentional blur or move into content.
     const focused = (event: FocusEvent) => {
       lastNavigationFocus.current = event.target instanceof HTMLElement && inNavigation(event.target)
         ? event.target : null;
-      lostNavigationFocus.current = false;
-      // A new focus destination, including a visible navigation control, wins
-      // over restoration that has not run yet.
-      pendingResizeFocus.current = false;
     };
     const blurred = (event: FocusEvent) => {
-      const previous = lastNavigationFocus.current;
-      if (!previous || event.target !== previous) return;
-      lostNavigationFocus.current = !event.relatedTarget && previous.getClientRects().length === 0;
-      if (!lostNavigationFocus.current) lastNavigationFocus.current = null;
+      if (event.target === lastNavigationFocus.current &&
+          (event.relatedTarget || lastNavigationFocus.current?.getClientRects().length)) {
+        lastNavigationFocus.current = null;
+      }
     };
     const pointerDown = (event: PointerEvent) => {
-      if (!(event.target instanceof Element) || !inNavigation(event.target)) {
-        lastNavigationFocus.current = null;
-        lostNavigationFocus.current = false;
-        pendingResizeFocus.current = false;
-      }
+      if (!(event.target instanceof Element) || !inNavigation(event.target)) lastNavigationFocus.current = null;
     };
     document.addEventListener('focusin', focused, true);
     document.addEventListener('focusout', blurred, true);
@@ -323,36 +313,37 @@ export function NavBarClient({ model }: { model: NavModel }) {
     const media = window.matchMedia('(max-width: 900px)');
     const changed = () => {
       const focused = document.activeElement;
-      pendingResizeFocus.current = drawerOpen || inNavigation(focused) ||
-        (focused === document.body && (lostNavigationFocus.current || pendingResizeFocus.current));
+      const previous = lastNavigationFocus.current;
+      const hiddenFocus = focused === document.body && previous?.isConnected && !previous.getClientRects().length;
+      const restore = drawerOpen || inNavigation(focused) || hiddenFocus;
       focusAfterResize.current = null;
       closeMenu();
       cancelSwitch();
       closeDrawer();
-      setResizeRevision(revision => revision + 1);
+      setResizeFocus(restore ? (media.matches ? 'mobile' : 'desktop') : null);
     };
     media.addEventListener('change', changed);
     return () => media.removeEventListener('change', changed);
   }, [closeMenu, cancelSwitch, closeDrawer, drawerOpen, inNavigation]);
 
   useEffect(() => {
-    if (!pendingResizeFocus.current || drawerOpen) return;
-    // Close panels and let their traps clean up first. A single pending intent
-    // survives intervening resizes; the eventual frame uses the current width.
+    if (resizeFocus === null) return;
+    if (drawerOpen) { setResizeFocus(null); return; }
+    // Run after closing panels has committed and their focus traps have cleaned
+    // up. A later breakpoint or deliberate focus move supersedes this request.
     const frame = requestAnimationFrame(() => {
-      if (!pendingResizeFocus.current) return;
-      pendingResizeFocus.current = false;
-      const active = document.activeElement;
-      const hiddenNavigation = inNavigation(active) && active?.getClientRects().length === 0;
-      if (active !== document.body && !hiddenNavigation) return;
       const mobile = window.matchMedia('(max-width: 900px)').matches;
-      const target = mobile
-        ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
-        : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
-      target?.focus({ preventScroll: true });
+      const active = document.activeElement;
+      if (mobile === (resizeFocus === 'mobile') && (active === document.body || inNavigation(active))) {
+        const target = mobile
+          ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
+          : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
+        target?.focus({ preventScroll: true });
+      }
+      setResizeFocus(current => current === resizeFocus ? null : current);
     });
     return () => cancelAnimationFrame(frame);
-  }, [resizeRevision, drawerOpen, visibleCount, inNavigation]);
+  }, [resizeFocus, drawerOpen, visibleCount, inNavigation]);
 
   /*
    * Dismissal is scoped to the header, not the menu bar list. The theme picker
