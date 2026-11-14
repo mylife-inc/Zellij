@@ -1,4 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
+
+test.afterEach(async ({ page }, info) => {
+  if (info.status === info.expectedStatus) return;
+  await info.attach('header-failure-state', {
+    body: JSON.stringify(await browserFailureState(page), null, 2),
+    contentType: 'application/json',
+  });
+});
 
 test('branding and controls sit at opposite viewport edges without overlap', async ({ page }) => {
   await page.goto('/');

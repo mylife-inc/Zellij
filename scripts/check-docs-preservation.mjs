@@ -3,10 +3,11 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
+import { browserFailureState } from './browser-failure-state.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
 const output = path.resolve(process.argv[2] ?? path.join(repo, 'examples/zellij-docs/out'));
@@ -32,6 +33,10 @@ const server = createServer(async (req, res) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
+let page;
+const errors = [];
+const pendingRequests = new Map();
+const failedRequests = [];
 try {
   for (const asset of baseline.authored_assets) {
     const bytes = await readFile(path.join(output, asset.path));
@@ -40,8 +45,15 @@ try {
   browser = await chromium.launch();
   const context = await browser.newContext();
   await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
-  const page = await context.newPage();
-  const errors = [];
+  page = await context.newPage();
+  if (process.env.ZELLIJ_BROWSER_DIAGNOSTICS) {
+    page.on('request', request => pendingRequests.set(request, { url: request.url(), type: request.resourceType() }));
+    page.on('requestfinished', request => pendingRequests.delete(request));
+    page.on('requestfailed', request => {
+      if (failedRequests.length < 100) failedRequests.push({ ...pendingRequests.get(request), failure: request.failure() });
+      pendingRequests.delete(request);
+    });
+  }
   page.on('pageerror', error => errors.push({ kind: 'pageerror', url: page.url(), message: error.message }));
   // React reports recoverable hydration failures through console.error, not
   // necessarily pageerror. A page can recover and still fail acceptance.
@@ -113,6 +125,21 @@ try {
   if (fragment) assert(await page.evaluate(id => Boolean(document.getElementById(id)), decodeURIComponent(fragment)), 'Search result fragment is missing');
   assertNoErrors();
   console.log(`Preservation passed: ${baseline.pages.length} original routes, ${addedRoutes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images, current repository links and no captured browser errors after hydration.`);
+} catch (error) {
+  const directory = process.env.ZELLIJ_BROWSER_DIAGNOSTICS;
+  if (directory && page) {
+    try {
+      const state = await browserFailureState(page);
+      await mkdir(directory, { recursive: true });
+      await writeFile(path.join(directory, `docs-failure-state-${Date.now()}-${process.pid}.json`), JSON.stringify({
+        error: String(error), stack: error.stack, browserErrors: errors,
+        pendingRequests: [...pendingRequests.values()].slice(0, 100), failedRequests, state,
+      }, null, 2));
+    } catch (captureError) {
+      console.error(`Browser diagnostic capture failed: ${captureError}`);
+    }
+  }
+  throw error;
 } finally {
   if (browser) await browser.close();
   server.closeAllConnections();
