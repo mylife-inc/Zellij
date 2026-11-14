@@ -18,8 +18,8 @@ lifecycle checks and all four actual rc.6-to-rc.7 upgrade checks pass for
 each channel. The upgrade checks verify both installed CLI versions and
 portable builds; they use actual HTTPS release archives. See
 [release evidence](specs/evidence/zellij-rc7-release-2026-11-14.json).
-Documentation/consumer migration and scoped rc.6 retirement are tracked
-separately; production hosting and deferred live provider checks are unchanged.
+Documentation/consumer migration and scoped rc.6 retirement are complete.
+Production hosting and deferred live provider checks are unchanged.
 
 PR #176's documentation and consumer update passes all 27 CI jobs in
 `43648322918` and all six generated consumer build checks at `fb2767c`.
@@ -28,6 +28,15 @@ Preservation retains the original routes, headings, mappings and image bytes;
 refreshed development-image jobs in `43649847900` pass at released source
 `f3d55f6`, whose engine/image inputs are unchanged by this documentation update.
 The final records-only update changes no runtime, active guide or workflow inputs.
+
+PR #176 merges as `eae65fb`, matching reviewed tree `e3f7014`. Replacement
+static/Next publications `43651607322`/`43651609913` and both fresh-pull HTTP
+checks in `43651756802` pass. Scoped rc.6 retirement is complete after 16 exact
+replacement gates: two releases, 40 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,517 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
+and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
+the two Zellij release channels. See [retirement evidence](specs/evidence/zellij-rc7-image-retirement-2026-11-14.json).
 
 **Next implementation priority:** richer technical/study book editions, then
 remaining print and installation work. Unexplained browser timing findings stay
@@ -44,8 +53,8 @@ helper passes 796 Rust tests (five hosted-only cases ignored), 490 engine tests,
 typechecks, schema consistency, formatting and warnings-denied Clippy, then tags
 that merge as immutable `v0.2.0-rc.7`. Release `43646140679` later passes all 33 jobs, as recorded above. Its first
 manual dispatch follows exact-head checks confirming the `[skip ci]` tag push
-created no workflow run. Consumer migration remains pending;
-rc.6 stays available until replacement gates pass. See
+created no workflow run. Consumer migration and scoped retirement subsequently
+completed after the replacement gates passed, as recorded above. See
 [the preparation record](specs/zellij-rc7-preparation-2026-11-14.md).
 
 PR #173 (`efb14f7`, matching reviewed tree `f2e5535`) merges shared glossary and

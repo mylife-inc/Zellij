@@ -1,0 +1,206 @@
+{
+  "planSha256": "90578d8ce61f33caa41be88494aca4c89fb1317a7c4d4fb50451a1e612519b8d",
+  "sourceCommit": "2babaf7319a2decca7c4b53b472c2db370263b81",
+  "execution": "local-owner",
+  "authenticatedOwner": "mylife-inc",
+  "keepVersion": "0.2.0-rc.7",
+  "startedAt": "2026-11-14T23:15:07.837Z",
+  "complete": true,
+  "events": [
+    {
+      "package": "zellij-base",
+      "id": 1559930866,
+      "digest": "sha256:5ae6d3049734afe9fd8d1c2af88d71cbafac9e6647cb8ed89302fc31daeaea19",
+      "tags": [
+        "0.2.0-rc.6-maths"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559929811,
+      "digest": "sha256:33a78c370abf35ddd4d34b9f03e250201290b2068e927e13f7cf9653f6805633",
+      "tags": [
+        "0.2.0-rc.6-diagrams"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559929335,
+      "digest": "sha256:10e7b884b7747b37e5163c7091f95f440204fabc58b255737f596493342b8e1a",
+      "tags": [
+        "0.2.0-rc.6-all"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559929073,
+      "digest": "sha256:7e4d2d9ed64fbec7971e255beed8472355d9cd249bf23020b0977e971bcd6133",
+      "tags": [
+        "0.2.0-rc.6"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559921430,
+      "digest": "sha256:37420bc73e273d85bf686aa4676f7d3bd8ead786b086ac8965bbd233ca5320ca",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559921340,
+      "digest": "sha256:160c6c711e32cf7bb9ed91759542132a495afa96fff893ace3d2ff991468aeb6",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919922,
+      "digest": "sha256:ccc88fc320de1bc49b2de55bf66a434020cdb26a1b5186100abc4a8a0425af86",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919874,
+      "digest": "sha256:1498e5b125aaf9e7edd6d73d3b59d332c90619d4ae42a0432495825238eae352",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919856,
+      "digest": "sha256:e01723a55b07843039aee551d8c803fc566a6db6e4eb8b332d909e1b487492d8",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919821,
+      "digest": "sha256:a9b28403e1512839d9ca5af8f4ec0ceb0475297c0bfc7642efa9b3d10da520c5",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919790,
+      "digest": "sha256:e032876ddaa040bd276558694558725330651d0e9aedfb44acd5cee457c0a822",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919766,
+      "digest": "sha256:131b27bd9604771a83f80999dbe931d06ac719d4dc889753a85e3a7065e6a4a2",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919754,
+      "digest": "sha256:2abdf8f13d8c35890c0b2b4423fa238433605650bce3f9f23408dd3f9ab2b56d",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919667,
+      "digest": "sha256:f12f3b40e4223c9f55416100ec208f3c2314048e13b1f6d9f9894e5bf5510658",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919660,
+      "digest": "sha256:bfabe0c89703910c5cdb2c488237e430eb6f50f459329ce67d59bc63f2b4061c",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919582,
+      "digest": "sha256:f770da8e4ba0bf7ae9b8ca5cb3ad0dd6e97bf2ff89beeb1f2b772fbac6d96eba",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919497,
+      "digest": "sha256:1a65686ae16107e643cdd1b83f789660ff9c7ddd7d6d9743da20cb696fb9bc9f",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919392,
+      "digest": "sha256:71c6fb3e988696f654da6986fe9845c0588af629ef6476bc70d6ceb4f889a2d3",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919198,
+      "digest": "sha256:4cedc4b64b5f17f6094de54b41dffb5628c795f2a22f361f990f809997be3b17",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij-base",
+      "id": 1559919121,
+      "digest": "sha256:cfb49bb90251186594110fd61a2332364cec6b29a5b2098424576b10938b6f0e",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1560262828,
+      "digest": "sha256:8c12661e86e6c02aff8e164a975b4e8a4f29cfbc03bf8674bf1f9bdd9b6916a7",
+      "tags": [
+        "0.2.0-rc.6"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1560262779,
+      "digest": "sha256:16a911a438ccd7ec5a344863d282f8acda6a7d34a94d036ca945a6418ec78d1a",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-static",
+      "id": 1560262778,
+      "digest": "sha256:5e89eca79b1308471a18033416e6f5e98178a1169a07c538160dad61c6f33ac3",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1560267413,
+      "digest": "sha256:d825def78ec8f6b786dbbcea0b95613aa5d409182a76860e661fa3ec8ee7a607",
+      "tags": [
+        "0.2.0-rc.6"
+      ],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1560267353,
+      "digest": "sha256:75bff6d5c2eba0663f60a7fa3a11dc3b5968f128818ac6311a985793677792af",
+      "tags": [],
+      "status": "deleted"
+    },
+    {
+      "package": "zellij/acceptance-next",
+      "id": 1560267296,
+      "digest": "sha256:347cf2f4f6bee074a06a4dda1bb36073a85046b5fe4f55ebb26b09f4c1e0e8db",
+      "tags": [],
+      "status": "deleted"
+    }
+  ],
+  "finishedAt": "2026-11-14T23:17:15.814Z"
+}

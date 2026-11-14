@@ -15,8 +15,17 @@ lifecycle checks and all four actual rc.6-to-rc.7 upgrade checks pass for
 each channel. The upgrade checks verify both installed CLI versions and
 portable builds; they use actual HTTPS release archives. See
 [release evidence](evidence/zellij-rc7-release-2026-11-14.json).
-Documentation/consumer migration and scoped rc.6 retirement are tracked
-separately; production hosting and deferred live provider checks are unchanged.
+Documentation/consumer migration and scoped rc.6 retirement are complete.
+Production hosting and deferred live provider checks are unchanged.
+
+PR #176 merges as `eae65fb`, matching reviewed tree `e3f7014`. Replacement
+static/Next publications `43651607322`/`43651609913` and both fresh-pull HTTP
+checks in `43651756802` pass. Scoped rc.6 retirement is complete after 16 exact
+replacement gates: two releases, 40 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,517 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
+and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc7-image-retirement-2026-11-14.json).
 
 ## Earlier release and implementation milestones
 

@@ -1,4 +1,4 @@
-// Reviewed, exact-scope rc.6 image retirement. Unreferenced build history is not swept.
+// Reviewed, exact-scope rc.7 image retirement. Unreferenced build history is not swept.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
@@ -7,12 +7,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const packages = ['zellij-base', 'zellij/acceptance-static', 'zellij/acceptance-next'];
-const keepVersion = '0.2.0-rc.6';
+const keepVersion = '0.2.0-rc.7';
 const suffixes = ['', '-maths', '-diagrams', '-all'];
 const digestPattern = /^sha256:[a-f0-9]{64}$/;
 const isRetired = (name, tag) => name === 'zellij-base'
-  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-5])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
-  : /^0\.2\.0-rc\.[1-5]$/.test(tag);
+  ? /^(?:(?:0\.1\.0-rc\.[2-6]|0\.1\.3|0\.2\.0-rc\.[1-6])(?:-(?:maths|diagrams|all))?|latest(?:-(?:maths|diagrams|all))?)$/.test(tag)
+  : /^0\.2\.0-rc\.[1-6]$/.test(tag);
 const sorted = values => [...values].sort();
 const requiredTags = name => name === 'zellij-base' ? [keepVersion, 'main'].flatMap(v => suffixes.map(s => v + s)) : [keepVersion];
 
@@ -184,17 +184,24 @@ async function main(mode, input, output) {
   // Confirm the journal can be written before any remote mutation.
   await writeFile(output, JSON.stringify(report, null, 2) + '\n');
   try {
-    // Exact successful rc.6 source, public, Homebrew, consumer and image gates.
+    // Exact rc.7 source, public, managed upgrade, consumer and image gates.
     for (const [repository, run, head] of [
-      ['mylife-inc/Zellij', 43497959313, 'f767260f6c6a96d3be0d4490b0217229213fea72'],
-      ['mylife-inc/Zellij', 43496517451, '3d26a96529a731905c6f16d8b5829fc82499697c'],
-      ['mylife-inc/homebrew-tap', 43497080249, '1555b7d718cfef224287172d6605009f00362881'],
-      ...[43497959672, 43497959351, 43497959272, 43497959430, 43497959746, 43497959399]
-        .map(run => ['mylife-inc/Zellij', run, 'f767260f6c6a96d3be0d4490b0217229213fea72']),
-      ['mylife-inc/Zellij', 43498926083, '668e8faa47a7d4a435c71f63a51b903838a12f48'],
-      ['mylife-inc/Zellij', 43503689558, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
-      ['mylife-inc/Zellij', 43503694530, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
-      ['mylife-inc/Zellij', 43503982549, '8eb117ae4e3f7f944242d4cc536a883e0deec8b0'],
+      ['mylife-inc/Zellij', 43648322918, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43646140679, 'f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0'],
+      ['mylife-inc/homebrew-tap', 43647941511, 'ebdcc19c5ce4dd7c9f7d09743b7d7cea36c95984'],
+      ['mylife-inc/homebrew-tap', 43648144263, 'ebdcc19c5ce4dd7c9f7d09743b7d7cea36c95984'],
+      ['mylife-inc/scoop-bucket', 43647962901, '0d57926250942696f7de04d2329262ac292ca982'],
+      ['mylife-inc/scoop-bucket', 43648717666, '0d57926250942696f7de04d2329262ac292ca982'],
+      ['mylife-inc/Zellij', 43648322906, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43648322923, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43648322899, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43648322877, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43648322875, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43648322910, 'fb2767c28e6039a7aea1d760f8f84a562dd3516f'],
+      ['mylife-inc/Zellij', 43649847900, 'f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0'],
+      ['mylife-inc/Zellij', 43651607322, 'eae65fbb82fb3c83f2d2520f7c76d0c6c20ab18d'],
+      ['mylife-inc/Zellij', 43651609913, 'eae65fbb82fb3c83f2d2520f7c76d0c6c20ab18d'],
+      ['mylife-inc/Zellij', 43651756802, 'eae65fbb82fb3c83f2d2520f7c76d0c6c20ab18d']
     ]) {
       const r = api(`repos/${repository}/actions/runs/${run}`);
       assert(r.status === 'completed' && r.conclusion === 'success' && r.head_sha === head, 'Replacement acceptance gate changed');

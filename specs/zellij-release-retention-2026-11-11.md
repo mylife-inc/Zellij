@@ -2,8 +2,8 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-13 with rc.6 publication, native retirement and the reviewed
-26-version image retirement. Earlier records and failed attempts remain historical.
+Refreshed 2026-11-14 with verified rc.7 replacement and scoped rc.6 retirement.
+Earlier records and failed attempts remain historical.
 
 ## User decision
 
@@ -26,7 +26,28 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.6 execution status — 2026-11-13
+## Current rc.7 execution status — 2026-11-14
+
+PR #176 merges as `eae65fb`, matching reviewed tree `e3f7014`. Replacement
+static/Next publications `43651607322`/`43651609913` and both fresh-pull HTTP
+checks in `43651756802` pass. Scoped rc.6 retirement is complete after 16 exact
+replacement gates: two releases, 40 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,517 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
+and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc7-image-retirement-2026-11-14.json).
+
+Both release repositories have 21 matching rc.7 assets. Six native public
+installs, both Linux image checks, 16 public PDFs/128 page captures, both
+managed channels and all actual rc.6-to-rc.7 upgrades pass. The three template
+archives retain their original bytes. Image policy `6b19b24` and committed plan
+`2babaf7` pass 13 safeguards; the native executor passes seven guard cases and
+its live read-only preflight before deletion. Owner execution completes without
+a failed deletion attempt. The post-cleanup inventory matches every retained
+version ID, digest and tag; no unreferenced build-history sweep is performed.
+Do not reuse these completed plans after tags or branch state change.
+
+## Previous rc.6 execution status — 2026-11-13
 
 rc.6 is public in both repositories with 20 byte-identical assets, all eight
 public acceptance jobs passing, and four public Homebrew checks passing.
