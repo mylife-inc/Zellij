@@ -35,3 +35,17 @@ hosted CI. Live providers and production-domain migration remain deferred.
 Unexplained browser timing findings, multilingual print, BibTeX/custom styles,
 richer book editions and remaining package channels retain their existing
 status. Preparation is not publication, and passing tests do not prove zero bugs.
+
+## Source acceptance
+
+All 27 jobs in [CI `43642650594`](https://github.com/mylife-inc/Zellij/actions/runs/43642650594)
+pass at source `81315063f9ef2f7550fddd85c245db0fc521bb28` without workflow
+reruns. The six native packages, four Homebrew and four Scoop combinations,
+offline browsers, prefixed Next, native images, engine and showcase checks pass.
+All 24 PDFs/192 page captures match the previously reviewed glossary/index
+source layouts byte-for-byte. Local helper checks pass 37 cases, including the
+reproduced and fixed Scoop publication gate; formatting, Actionlint and committed
+version checks pass. The [source evidence](evidence/zellij-rc7-preparation-2026-11-14.json)
+retains all job IDs and capture hashes. The final record-only update changes
+context and preparation evidence, with no runtime, workflow or test differences.
+The normal local release preflight still precedes tagging after merge.

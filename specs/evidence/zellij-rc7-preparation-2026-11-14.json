@@ -1,0 +1,1059 @@
+{
+  "date": "2026-11-14",
+  "status": "source accepted; release pending",
+  "candidate": "v0.2.0-rc.7",
+  "baseline": "474fc8f97edf28a3692cf3ee92a91559047e3d91",
+  "source_head": "81315063f9ef2f7550fddd85c245db0fc521bb28",
+  "pr": 175,
+  "source_ci": {
+    "run_id": 43642650594,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43642650594",
+    "attempt": 1,
+    "head": "81315063f9ef2f7550fddd85c245db0fc521bb28",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132593390993,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391014,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391048,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391065,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391071,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391074,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391090,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391121,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391132,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391144,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391145,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391164,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391169,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391175,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391183,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391190,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391206,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132593391216,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132594283321,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465057,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465105,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465115,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465116,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465117,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465123,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465133,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132595465152,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "local_preparation": {
+    "helper_tests": 37,
+    "actionlint": true,
+    "formatting": true,
+    "native_version_consistency": true,
+    "dependency_audit_vulnerabilities": 0
+  },
+  "release_gate_fix": {
+    "before": "Publication was allowed despite a failed Scoop dependency.",
+    "regression": "Evaluates the actual workflow condition against success, failure, cancelled and skipped required dependency outcomes.",
+    "failure_log_sha256": "2c4ec75b78e372b3356f61b4478c7521dd38635001df2f1fc301d43d59a1fab3",
+    "passing_log_sha256": "183528b9e2078a180161cf5d58cbbd679b1d3045a067b357ed9d446c4d4ad7c0",
+    "commit": "81315063f9ef2f7550fddd85c245db0fc521bb28"
+  },
+  "pdf": {
+    "baseline": "glossary/index source CI 43587957194",
+    "run": 43642650594,
+    "pdf_count": 24,
+    "captures": 192,
+    "baseline_captures": 192,
+    "changed_captures": [],
+    "captures_and_receipts": [
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-1.png",
+        "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-2.png",
+        "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-3.png",
+        "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-4.png",
+        "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-5.png",
+        "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-6.png",
+        "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/page-7.png",
+        "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/a4/pdf.json",
+        "sha256": "70b6e442c24284c277ad49c943e6f319890dd8be3ec48f62e913b62107df1489"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-2.png",
+        "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-3.png",
+        "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-6.png",
+        "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-7.png",
+        "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/page-9.png",
+        "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/bibliography/pdf.json",
+        "sha256": "5dfd8ffdc9ede8456435c119c53f9bdc3f7b0d9a58963c74711399364972bc0b"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-1.png",
+        "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-2.png",
+        "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-3.png",
+        "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-4.png",
+        "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-5.png",
+        "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/page-6.png",
+        "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/equations/pdf.json",
+        "sha256": "6053600f289f472059fb6c7c08a127a8970d4bdeb947525ddc91393c0257d845"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-1.png",
+        "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-2.png",
+        "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-3.png",
+        "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-4.png",
+        "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-5.png",
+        "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-6.png",
+        "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/page-7.png",
+        "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/letter/pdf.json",
+        "sha256": "b260a82de62e9b371024a7ed2afd613be5de4a0cc8f02ab8ff3bf2b8faf1033b"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-1.png",
+        "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-2.png",
+        "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-3.png",
+        "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-4.png",
+        "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-5.png",
+        "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-6.png",
+        "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-7.png",
+        "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/page-8.png",
+        "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/publication/pdf.json",
+        "sha256": "c70e9da7be20e9b921340b1b13460a34fe508be8a452eba8db96bec32b725cc5"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-1.png",
+        "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-2.png",
+        "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-3.png",
+        "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-4.png",
+        "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-5.png",
+        "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-6.png",
+        "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/page-7.png",
+        "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/starter/pdf.json",
+        "sha256": "5513e005dc497d3b7328321bee11a2300547a2a2af3a8cfebddd01572b335969"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-2.png",
+        "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-3.png",
+        "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-6.png",
+        "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-7.png",
+        "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/statements/pdf.json",
+        "sha256": "26cdfa9c29954ba2e4d7b3105d5967d6576b87a99b3645cce7d2aaeb56872dde"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-10.png",
+        "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-11.png",
+        "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-12.png",
+        "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-2.png",
+        "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-3.png",
+        "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-4.png",
+        "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-6.png",
+        "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-7.png",
+        "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-8.png",
+        "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/page-9.png",
+        "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      {
+        "file": "book-pdf-ubuntu-24.04-arm-docker/terms/pdf.json",
+        "sha256": "37fc48372a434920683ed657a93e79af1169f35482afe225ee993c1a01095404"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-1.png",
+        "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-2.png",
+        "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-3.png",
+        "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-4.png",
+        "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-5.png",
+        "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-6.png",
+        "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/page-7.png",
+        "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/a4/pdf.json",
+        "sha256": "fa45cecc170d09204946230ea6986c3952348b215315be168c438fee747a9d6f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-2.png",
+        "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-3.png",
+        "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-6.png",
+        "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-7.png",
+        "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/page-9.png",
+        "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/bibliography/pdf.json",
+        "sha256": "8871b51c07f5e598fe86a42357039554d7e53ddbb9f8e89f27d9bfd14e108a15"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-1.png",
+        "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-2.png",
+        "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-3.png",
+        "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-4.png",
+        "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-5.png",
+        "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/page-6.png",
+        "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/equations/pdf.json",
+        "sha256": "1509a4ae66f48e72b9fe4462117724e00b1defe6f568facf7142f0c438efa6ad"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-1.png",
+        "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-2.png",
+        "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-3.png",
+        "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-4.png",
+        "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-5.png",
+        "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-6.png",
+        "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/page-7.png",
+        "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/letter/pdf.json",
+        "sha256": "9bb5b721b3e037105da81ab2e3f79316cd4d3af3670d13171e4ccead4c1b8e54"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-1.png",
+        "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-2.png",
+        "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-3.png",
+        "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-4.png",
+        "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-5.png",
+        "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-6.png",
+        "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-7.png",
+        "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/page-8.png",
+        "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/publication/pdf.json",
+        "sha256": "d7d5fbb51b626abfdf17c4393ba9626adb24337fca8a743842f602f63a42c518"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-1.png",
+        "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-2.png",
+        "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-3.png",
+        "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-4.png",
+        "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-5.png",
+        "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-6.png",
+        "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/page-7.png",
+        "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/starter/pdf.json",
+        "sha256": "0dc70260239f9524e40232bcc6bf038a404622830788e29569375467410a3543"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-2.png",
+        "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-3.png",
+        "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-6.png",
+        "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-7.png",
+        "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/statements/pdf.json",
+        "sha256": "66f50122a80b0b845dc72c5cb4a8f24ff1852f8febef4f2b066fabede07cc379"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-10.png",
+        "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-11.png",
+        "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-12.png",
+        "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-2.png",
+        "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-3.png",
+        "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-4.png",
+        "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-6.png",
+        "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-7.png",
+        "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-8.png",
+        "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/page-9.png",
+        "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-docker/terms/pdf.json",
+        "sha256": "3a09a93091e75b260952d7edd1fa2cb7dbe1a2e44cdd1c05f3cbb3a7fee03321"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-1.png",
+        "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-2.png",
+        "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-3.png",
+        "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-4.png",
+        "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-5.png",
+        "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-6.png",
+        "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/page-7.png",
+        "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/a4/pdf.json",
+        "sha256": "992cc2a43968ee92150728b9991f6a28d437e07bba3a65f8304f83ca95d07950"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-2.png",
+        "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-3.png",
+        "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-6.png",
+        "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-7.png",
+        "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/page-9.png",
+        "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/bibliography/pdf.json",
+        "sha256": "da9989e7e0dac66e8a0afce0a49f4f5b7f9b88ca196b8762174fd9ca995d5a23"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-1.png",
+        "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-2.png",
+        "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-3.png",
+        "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-4.png",
+        "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-5.png",
+        "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/page-6.png",
+        "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/equations/pdf.json",
+        "sha256": "508b4312a7e754f34ea31ef10d8aa7a116e6b6979f9173c6929377a7fa973230"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-1.png",
+        "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-2.png",
+        "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-3.png",
+        "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-4.png",
+        "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-5.png",
+        "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-6.png",
+        "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/page-7.png",
+        "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/letter/pdf.json",
+        "sha256": "6c7bfbbe83e80f39a70cc7b9a6e60d6e941ddb592637ecd1896fa9b2c6585fb6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-1.png",
+        "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-2.png",
+        "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-3.png",
+        "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-4.png",
+        "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-5.png",
+        "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-6.png",
+        "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-7.png",
+        "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/page-8.png",
+        "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/publication/pdf.json",
+        "sha256": "34d07a89f3ae4ef2bdc8799a76a1d641fc6e91a4334169368e8dba7b1cb56fc0"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-1.png",
+        "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-2.png",
+        "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-3.png",
+        "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-4.png",
+        "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-5.png",
+        "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-6.png",
+        "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/page-7.png",
+        "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/starter/pdf.json",
+        "sha256": "3ecb6cabc288d1b42a451abe3b5af780984cc1013fabc4d65be720fefb6c7952"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-2.png",
+        "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-3.png",
+        "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-4.png",
+        "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-6.png",
+        "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-7.png",
+        "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/page-8.png",
+        "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/statements/pdf.json",
+        "sha256": "4bd77612f8dafd07226b2f077f285701bfd0824a9199f53b47bb015fb9af193d"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-1.png",
+        "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-10.png",
+        "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-11.png",
+        "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-12.png",
+        "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-2.png",
+        "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-3.png",
+        "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-4.png",
+        "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-5.png",
+        "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-6.png",
+        "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-7.png",
+        "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-8.png",
+        "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/page-9.png",
+        "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      {
+        "file": "book-pdf-ubuntu-latest-podman/terms/pdf.json",
+        "sha256": "4f5cbf8c00cbf16c24249c389bd1861dbd79ba00dcded21243702bdd4c87dbf6"
+      }
+    ]
+  },
+  "limits": [
+    "Public release, package-manager updates, consumer migration and retirement are separate gates.",
+    "Existing unexplained browser timing findings remain open.",
+    "Live providers and production-domain migration remain deferred.",
+    "No zero-bug claim."
+  ],
+  "existing_product": {
+    "engine_tests": 490,
+    "engine_helper_tests": 95,
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "showcase_retries": 0,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "preservation_browser_regressions": 6
+  }
+}
