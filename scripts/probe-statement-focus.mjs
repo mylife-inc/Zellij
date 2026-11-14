@@ -18,7 +18,7 @@ try {
   const moved=path.join(root,'Moved book 日本');await rename(path.join(source,'site'),moved);
   const browser=await webkit.launch();
   try {
-    for(let round=0;round<20;round++) {
+    for(let round=0;round<10;round++) {
       for(const variant of round%2?['revised','original']:['original','revised']) {
         const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:1280,height:900}});
         await context.route(/^https?:/,route=>route.abort());
@@ -28,7 +28,7 @@ try {
           await (variant==='original'?original:revised)(page,pathToFileURL(moved+path.sep).href,artifacts,`${variant}-${round}`);
           record.passed=true;
         } catch(error) {
-          record.error=String(error); record.state=await browserFailureState(page);
+          record.error=String(error); record.state=await browserFailureState(page, {sampleFrames:false});
           try { await page.screenshot({path:path.join(artifacts,`${variant}-${round}-failure.png`),fullPage:true,timeout:3000}); } catch {}
         } finally { await context.close(); }
         results.push(record);

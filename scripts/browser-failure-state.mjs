@@ -1,12 +1,16 @@
 // Capture only after an assertion fails. No observers, frame loops or polling
 // are installed on the passing path, and capture must never replace the error.
 
-/** @param {import('@playwright/test').Page} page */
-export async function browserFailureState(page) {
+/**
+ * @param {import('@playwright/test').Page} page
+ * @param {{ sampleFrames?: boolean }} options Disable frame sampling for pages
+ * with JavaScript disabled: native DOM evaluation works, page timers do not.
+ */
+export async function browserFailureState(page, { sampleFrames = true } = {}) {
   let timer;
   try {
     return await Promise.race([
-      page.evaluate(async () => {
+      page.evaluate(async ({ sampleFrames }) => {
         const describe = element => element && ({
           tag: element.tagName, id: element.id, class: String(element.className),
           role: element.getAttribute('role'), label: element.getAttribute('aria-label'),
@@ -44,6 +48,7 @@ export async function browserFailureState(page) {
           };
         };
         const before = read();
+        if (!sampleFrames) return { before, after: read(), frameTimes: [], sampledFrames: false };
         const frames = [];
         let active = true;
         let handle = requestAnimationFrame(time => {
@@ -55,7 +60,7 @@ export async function browserFailureState(page) {
         active = false;
         cancelAnimationFrame(handle);
         return { before, after: read(), frameTimes: frames };
-      }),
+      }, { sampleFrames }),
       new Promise(resolve => { timer = setTimeout(() => resolve({ captureError: 'Browser state capture exceeded 1500 ms' }), 1500); }),
     ]);
   } catch (error) {
