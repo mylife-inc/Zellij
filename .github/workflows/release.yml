@@ -331,12 +331,12 @@ jobs:
     # and that is most of why five releases in a row left
     # `raw.githubusercontent.com/…/install.sh` returning 404.
     #
-    # `always()` keeps the ordering and drops the gate, then the two conditions
-    # put back the gates that are real: no release without the binaries it
-    # attaches, and none if the documentation stopped building. A broken image
+    # `always()` keeps the ordering and drops the image gate. Verification,
+    # binaries, documentation and Scoop lifecycle checks must all succeed.
+    # Failed, cancelled or skipped Scoop checks prevent publication. A broken image
     # variant is visible on its own job and does not deserve to withhold the
     # thing people actually run.
-    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' }}
+    if: ${{ always() && needs.verify.result == 'success' && needs.binaries.result == 'success' && needs.docs.result == 'success' && needs.scoop.result == 'success' }}
 
     runs-on: ubuntu-latest
 
