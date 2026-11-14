@@ -57,3 +57,8 @@ The first public-archive probe (`43530387032`) exposed harness bootstrap errors:
 Scoop requires a Git URL rather than a raw Windows path, and its portable root
 needs the shim/bucket directories. The corrected harness uses a file URL and
 propagates nested Scoop command exit codes as its standard PowerShell shim does.
+
+The second probe (`43531108782`) reached native installation, ownership refusal
+and portable builds. Update then exposed Scoop's assumption that its default
+`main` bucket exists. The disposable Git fixture now uses that required bucket
+name instead of omitting it; no community bucket contents are modified.

@@ -115,9 +115,11 @@ try {
   await mkdir(path.dirname(recipe), { recursive: true });
   await run('git', ['init', '--quiet', '--initial-branch=main', bucket], { log: false });
   await commitRecipe(localManifest);
-  await scoop(['bucket', 'add', 'acceptance', pathToFileURL(bucket).href]);
-  assert.deepEqual(JSON.parse(await readFile(path.join(scoopRoot, 'buckets/acceptance/bucket/zel.json'), 'utf8')), localManifest);
-  await scoop(['install', 'acceptance/zel']);
+  // Scoop's update command expects the default main bucket to exist. This
+  // disposable Git fixture occupies that slot without using the community bucket.
+  await scoop(['bucket', 'add', 'main', pathToFileURL(bucket).href]);
+  assert.deepEqual(JSON.parse(await readFile(path.join(scoopRoot, 'buckets/main/bucket/zel.json'), 'utf8')), localManifest);
+  await scoop(['install', 'main/zel']);
   const guidance = process.env.ZEL_SCOOP_PUBLIC_VERSION && version === '0.2.0-rc.6' ? 'package manager' : 'scoop update zel';
   const initial = await verify(version, guidance);
 
@@ -139,7 +141,7 @@ try {
   await verify(updated.version, guidance);
   await scoop(['uninstall', 'zel']);
   await assertUninstalled();
-  await scoop(['bucket', 'rm', 'acceptance']);
+  await scoop(['bucket', 'rm', 'main']);
 
   if (process.env.ZEL_SCOOP_PUBLIC_BUCKET === 'true') {
     await scoop(['bucket', 'add', 'mylife-inc', 'https://github.com/mylife-inc/scoop-bucket']);
