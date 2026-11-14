@@ -177,21 +177,27 @@ test.describe('measured overflow', () => {
       });
     });
   });
+    let assertionsPassed = false;
     try {
       await page.setViewportSize({ width: 390, height: 900 });
       await page.goto('/');
       await page.getByRole('button', { name: 'Open navigation' }).click();
       const drawer = page.getByRole('dialog', { name: 'Site navigation' });
       await expect(drawer).toBeVisible();
-      for (const width of [1280, 390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
+      // A browser may coalesce transient widths without dispatching a desktop
+      // media-query change. Establish that first transition before the burst.
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(drawer).toHaveCount(0);
+      for (const width of [390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
       await expect(drawer).toHaveCount(0);
       await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
       await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+      assertionsPassed = true;
     } finally {
       const entries = await page.evaluate(() => (window as any).__focusProbe);
       mkdirSync('focus-probe-results', { recursive: true });
       const result = { project: testInfo.project.name, repetition: testInfo.repeatEachIndex,
-        status: testInfo.status, events: entries };
+        assertionsPassed, events: entries };
       writeFileSync(`focus-probe-results/${testInfo.project.name}-${testInfo.repeatEachIndex}-${testInfo.workerIndex}.json`, JSON.stringify(result, null, 2));
       await testInfo.attach('focus-events', { body: JSON.stringify(result, null, 2), contentType: 'application/json' });
     }
