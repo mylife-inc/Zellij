@@ -1,0 +1,71 @@
+name: Browser timing investigation
+on:
+  push:
+    branches: [codex/browser-timing-probe]
+permissions:
+  contents: read
+jobs:
+  overflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npm run build --workspace @shebka/zellij-showcase
+      - run: npx playwright install --with-deps webkit
+        working-directory: examples/showcase
+      - name: Repeat the original overflow scenario without retries
+        working-directory: examples/showcase
+        run: npx playwright test e2e/header-layout.spec.ts --grep 'moves trailing links' --project desktop-safari --repeat-each 120 --workers 4 --retries 0
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: overflow-timing
+          path: |
+            examples/showcase/test-results/
+            examples/showcase/timing-results/
+          retention-days: 14
+  hydration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - name: Build the actual documentation export
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: |
+          node ../../engine/packages/zellij/bin/zellij.mjs prepare
+          node ../../node_modules/next/dist/bin/next build --webpack
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Repeat annotation acceptance without retries
+        run: |
+          mkdir -p timing-results
+          failed=0
+          for iteration in $(seq 1 20); do
+            if node --test --test-name-pattern='preservation accepts' scripts/check-docs-preservation.test.mjs > "timing-results/hydration-${iteration}.log" 2>&1; then
+              echo "Iteration ${iteration}: passed"
+            else
+              cat "timing-results/hydration-${iteration}.log"
+              failed=$((failed + 1))
+            fi
+          done
+          echo "Failed iterations: ${failed}/20"
+          test "$failed" = 0
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: hydration-timing
+          path: timing-results/
+          retention-days: 14

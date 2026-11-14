@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
-import { readFile } from 'node:fs/promises';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '@playwright/test';
@@ -32,15 +32,23 @@ const server = createServer(async (req, res) => {
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
 const origin = `http://127.0.0.1:${server.address().port}`;
 let browser;
+let context;
+let page;
+const requests = new Map();
+const failedRequests = [];
 try {
   for (const asset of baseline.authored_assets) {
     const bytes = await readFile(path.join(output, asset.path));
     assert.equal(createHash('sha256').update(bytes).digest('hex'), asset.sha256, `Published asset changed: ${asset.path}`);
   }
   browser = await chromium.launch();
-  const context = await browser.newContext();
+  context = await browser.newContext();
+  await context.tracing.start({ screenshots: true, snapshots: true });
   await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
-  const page = await context.newPage();
+  page = await context.newPage();
+  page.on('request', request => requests.set(request, { url: request.url(), type: request.resourceType() }));
+  page.on('requestfinished', request => requests.delete(request));
+  page.on('requestfailed', request => { failedRequests.push({ ...requests.get(request), failure: request.failure() }); requests.delete(request); });
   const errors = [];
   page.on('pageerror', error => errors.push({ kind: 'pageerror', url: page.url(), message: error.message }));
   // React reports recoverable hydration failures through console.error, not
@@ -113,6 +121,30 @@ try {
   if (fragment) assert(await page.evaluate(id => Boolean(document.getElementById(id)), decodeURIComponent(fragment)), 'Search result fragment is missing');
   assertNoErrors();
   console.log(`Preservation passed: ${baseline.pages.length} original routes, ${addedRoutes.length} added routes, ${headingCount} original heading IDs, ${aliases.length} compatibility mappings, ${baseline.authored_assets.length} byte-identical images, current repository links and no captured browser errors after hydration.`);
+} catch (error) {
+  const directory = path.join(repo, 'timing-results');
+  await mkdir(directory, { recursive: true });
+  const id = `${Date.now()}-${process.pid}`;
+  let state;
+  try {
+    state = await page.evaluate(async () => {
+      const initial = {
+        at: performance.now(), url: location.href, ready: document.readyState,
+        visibility: document.visibilityState, focus: document.hasFocus(),
+        width: innerWidth, height: innerHeight, scrollY,
+        header: document.querySelector('.zellij-header')?.outerHTML,
+        buttons: [...document.querySelectorAll('button')].map(el => ({ label: el.getAttribute('aria-label'), text: el.textContent?.slice(0, 80), rects: el.getClientRects().length })),
+        resources: performance.getEntriesByType('resource').map(entry => ({ name: entry.name, start: entry.startTime, duration: entry.duration })),
+      };
+      let frameAt = null;
+      requestAnimationFrame(() => { frameAt = performance.now(); });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { ...initial, frameAt, timerAt: performance.now() };
+    });
+  } catch (captureError) { state = { captureError: String(captureError) }; }
+  await writeFile(path.join(directory, `hydration-${id}.json`), JSON.stringify({ error: String(error), stack: error.stack, state, pendingRequests: [...requests.values()], failedRequests }, null, 2));
+  await context?.tracing.stop({ path: path.join(directory, `hydration-${id}.zip`) });
+  throw error;
 } finally {
   if (browser) await browser.close();
   server.closeAllConnections();

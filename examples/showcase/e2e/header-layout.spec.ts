@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import './timing-observations';
 
 test('branding and controls sit at opposite viewport edges without overlap', async ({ page }) => {
   await page.goto('/');
