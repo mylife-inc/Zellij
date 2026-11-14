@@ -310,6 +310,110 @@ complete website/PDF. Bibliography details are exposed in the optional
 `bibliography` field of publication schema version 1; books without this setting
 omit that field and keep their existing revision behavior.
 
+## Glossary and index
+
+<Callout type="info">
+These features are implemented in current source and await the next CLI
+candidate. Public rc.6 does not yet include them.
+</Callout>
+
+Enable either catalog, or both, inside the existing book manifest:
+
+```yaml
+book:
+  # Keep the existing title, authors and chapters.
+  glossary: {source: glossary.json, title: Glossary}
+  index: {source: index.json, title: Index}
+```
+
+Both sources are local JSON files relative to `content/`. The optional titles
+default to `Glossary` and `Index`. A glossary catalog contains definitions:
+
+```json
+[
+  {
+    "id": "energy",
+    "term": "Energy",
+    "definition": "The capacity to do work.",
+    "see-also": ["sum"]
+  },
+  {"id": "sum", "term": "Finite sum", "definition": "A finite addition.", "sort": "sum"}
+]
+```
+
+An index catalog describes subjects and optional subentries:
+
+```json
+[
+  {"id": "mechanics", "term": "Mechanics", "see-also": ["sum"]},
+  {"id": "energy", "term": "Energy", "parent": "mechanics"},
+  {"id": "sum", "term": "Finite sums", "sort": "sums"}
+]
+```
+
+Mark occurrences with ordinary Markdown link syntax:
+
+```md
+Read the [energy](glossary:energy) definition.
+This passage discusses [energy](index:energy).
+A note can also refer to a [finite sum](glossary:sum).
+```
+
+The link's label stays as written; its destination becomes a real relative HTML
+link or PDF link. Code examples stay literal. Use plain text or inline code in
+term labels; rich formatting, images, headings and empty labels are rejected.
+The `glossary:` and `index:` forms require a book and their corresponding catalog.
+They accept exactly an ID, without a URL query or fragment.
+
+`id` is case-sensitive: 1–128 ASCII letters, digits, colons, dots, underscores or
+hyphens, starting with a letter, digit or underscore. Each catalog has its own
+ID namespace. `term` is the displayed name (at most 512 bytes). Glossary entries
+require `definition` (at most 16,384 bytes); index entries do not take it.
+Definitions and other catalog text are plain data, with no Markdown, HTML or TeX
+execution. All text must be nonempty and contain no control characters.
+
+`sort` optionally supplies a 512-byte sorting key. Entries sort by the lowercase
+key, then exact ID; the default key is `term`. This is deterministic Unicode
+ordering, not locale-aware dictionary collation. Index `parent` identifies a
+different top-level entry in the same catalog; one subentry level is supported.
+Children follow their parent in sorted order. Glossary entries do not take a
+parent. `see-also` lists up to 32 distinct other IDs in the same catalog; it
+creates links and does not register a manuscript occurrence.
+
+The glossary and index follow the appendices and any bibliography in navigation,
+search and PDF contents. Their routes are `glossary.html` and `book-index.html`;
+`index.html` remains the book's home page. These routes and the reading IDs
+`glossary`/`index` are reserved while enabled. Every catalog entry is included,
+even when unused; an unused entry says “No occurrences.”
+
+Web entries link back to each marked occurrence, with its chapter title and
+occurrence number. PDF entries show linked page references, combining repeated
+mentions on the same page into one page reference. Footnotes are visited at their
+first call site, independently of where their definitions appear in Markdown.
+The existing PDF rule rejecting unreferenced footnotes still applies.
+
+Term anchors are `_zel-glossary-ID` and `_zel-index-ID`. Occurrence anchors use
+`_zel-use-KIND-ID-N` within their source page, where `N` counts that term's markers
+in source order on that page. Adding a different term does not renumber these
+anchors; inserting another occurrence of the same term can. Normal custom links
+can use these anchors too. Markdown reference-link IDs beginning `_zel-use-`
+are reserved for generated occurrence identity.
+
+Catalogs are limited to 8 MiB and 10,000 entries each, and a book supports up to
+100,000 marked occurrences. Files must remain inside `content/` and outside
+hidden/generated paths; symlinks and junctions are rejected. Catalogs are not
+published as assets unless explicitly linked. Their bytes contribute to the
+publication revision, so editing a definition or sorting key invalidates an old
+PDF. `zel check --json` and `_zellij/book.json` expose resolved collections in
+optional `terms`, including stable links and occurrence records. Books without
+these settings omit the new fields and retain their previous revision behavior.
+
+No new CLI command, browser script, MakeIndex, glossary tool or PDF container
+package is required. Unknown fields, undefined IDs, duplicate IDs, subentry
+cycles and route collisions fail validation before replacing output. Deeper
+index hierarchies, automatic indexing, page-range compression, localized
+collation and rich glossary definitions remain separate extensions.
+
 ## Language and direction
 
 `language` defaults to `en`; `direction` defaults to `ltr` and can be `rtl`.
@@ -514,7 +618,7 @@ GIF, remote images, diagram fences, attachment links and internal-link URL queri
 are rejected for print with an explanation; ordinary web builds retain their existing support.
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
-trim sizes, multilingual/RTL print, index and glossary remain future increments.
-Current source adds shared equations, statement blocks, numeric bibliography
+trim sizes and multilingual/RTL print remain future increments.
+Current source adds glossary/index backmatter, shared equations, statement blocks, numeric bibliography
 and citations as described above; rc.6 does not include them.
 Mathematical expressions otherwise use the web renderer's supported subset.

@@ -208,7 +208,10 @@ impl Resolver<'_> {
                     target.output == crate::bibliography::OUTPUT
                         && b.references.iter().any(|r| r.anchor == id)
                 });
-            if !ids.contains(id) && !equation && !statement && !reference {
+            let term = self
+                .book
+                .is_some_and(|b| crate::terms::has_anchor(b, target, id));
+            if !ids.contains(id) && !equation && !statement && !reference && !term {
                 return Err(fail(&format!(
                     "missing heading/footnote/equation/statement #{id} in {}",
                     target.source

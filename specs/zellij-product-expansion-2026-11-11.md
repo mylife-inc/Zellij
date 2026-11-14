@@ -24,7 +24,12 @@ all 27 jobs in `43578754363` passing. Twenty-one PDFs/156 captures pass and all
 129 prior layouts remain unchanged; offline browsers on three OS families and
 prefixed Next pass. See the [bibliography contract](zellij-book-bibliography-2026-11-14.md)
 for the bounded CSL-JSON format and evidence. BibTeX/custom styles remain open.
-Index/glossary follows; public rc.6 is unchanged.
+Glossary/index is implemented in PR #173, with all 27 jobs in `43587957194`
+passing at `1b9a24f`. Twenty-four PDFs/192 captures pass, preserving all 156 prior
+layouts. See the [terms contract](zellij-book-terms-2026-11-14.md) for the bounded
+catalog/markup format, page references and evidence. Prepare the next CLI candidate
+with these accumulated additions before extending technical/study book templates.
+Public rc.6 and production hosting remain unchanged by this source increment.
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |

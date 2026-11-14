@@ -1,0 +1,21 @@
+[
+  {
+    "id": "energy",
+    "term": "Energy",
+    "definition": "The capacity to do work. A shared term in this manuscript.",
+    "see-also": [
+      "sum"
+    ]
+  },
+  {
+    "id": "sum",
+    "term": "Finite sum",
+    "definition": "The result of adding a finite collection of terms.",
+    "sort": "sum"
+  },
+  {
+    "id": "unused",
+    "term": "Unreferenced term",
+    "definition": "A definition remains available even before it is used."
+  }
+]

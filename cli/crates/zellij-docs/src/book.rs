@@ -31,6 +31,8 @@ pub struct Publication {
     pub statements: Vec<crate::statements::Statement>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bibliography: Option<crate::bibliography::Bibliography>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub terms: Vec<crate::terms::TermCollection>,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ReadingEntry {
@@ -186,6 +188,33 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
             label: title,
         });
     }
+    for (kind, enabled, output) in [
+        ("glossary", manifest.glossary.is_some(), "glossary.html"),
+        ("index", manifest.index.is_some(), "book-index.html"),
+    ] {
+        if enabled {
+            let index = pages
+                .iter()
+                .position(|p| p.output == output)
+                .expect("prepared term page");
+            builder.seen.insert(index);
+            let title = pages[index].markdown.title.clone();
+            builder.entries.push(ReadingEntry {
+                id: kind.into(),
+                kind,
+                number: None,
+                part: None,
+                title: title.clone(),
+                source: None,
+                href: output.into(),
+                index,
+            });
+            items.push(Item::Page {
+                index,
+                label: title,
+            });
+        }
+    }
     let omitted: Vec<_> = pages
         .iter()
         .enumerate()
@@ -224,6 +253,7 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
             equations: vec![],
             statements: vec![],
             bibliography: None,
+            terms: vec![],
         },
     ))
 }
@@ -275,6 +305,9 @@ impl Publication {
         }
         if let Some(bib) = &self.bibliography {
             add(&mut hash, &bib.original);
+        }
+        for collection in &self.terms {
+            add(&mut hash, &collection.original);
         }
         for (path, bytes) in assets {
             add(&mut hash, path.as_str().as_bytes());

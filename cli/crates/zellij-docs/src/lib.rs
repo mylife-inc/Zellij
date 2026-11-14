@@ -6,6 +6,8 @@ use serde_json::json;
 use std::{collections::BTreeMap, fs};
 use zellij_core::{Error, Result, files, output::StaticOutput, site::SiteInput};
 
+mod terms;
+pub use terms::{Term, TermCollection, TermOccurrence};
 mod bibliography;
 pub use bibliography::{Bibliography, Reference};
 mod book;
@@ -462,6 +464,11 @@ fn compile(
         Code::Configuration,
         Some(config_file),
     )?;
+    let terms = diagnostics.capture(
+        terms::prepare(config.book.as_ref(), &root, &mut pages),
+        Code::Configuration,
+        Some(config_file),
+    )?;
     let (navigation, mut publication) = diagnostics.capture(
         if let Some(manifest) = &config.book {
             book::resolve(manifest, &pages).map(|(nav, book)| (nav, Some(book)))
@@ -473,6 +480,8 @@ fn compile(
     )?;
     if let Some(book) = &mut publication {
         book.bibliography = bibliography;
+        book.terms = terms;
+        diagnostics.capture(terms::resolve(book, &pages), Code::Reference, None)?;
         diagnostics.capture(bibliography::resolve(book, &pages), Code::Reference, None)?;
         diagnostics.capture(equations::resolve(book, &pages), Code::Reference, None)?;
         diagnostics.capture(statements::resolve(book, &pages), Code::Reference, None)?;
@@ -511,7 +520,9 @@ fn compile(
                 Event::Start(Tag::Image { dest_url, .. }) => (dest_url, true),
                 _ => continue,
             };
-            if publication.is_some() && url.starts_with(bibliography::SCHEME) {
+            if publication.is_some()
+                && (url.starts_with(bibliography::SCHEME) || terms::target(url).is_some())
+            {
                 continue;
             }
             match diagnostics.capture(
@@ -528,6 +539,7 @@ fn compile(
         if let Some(book) = &publication {
             events = equations::references(events, book, page, &pages)?;
             events = bibliography::references(events, book, page)?;
+            events = terms::references(events, book, page);
         }
         rewritten.push(events);
     }
@@ -540,6 +552,8 @@ fn compile(
             page.markdown.text =
                 if page.output == bibliography::OUTPUT && book.bibliography.is_some() {
                     bibliography::search(book)
+                } else if let Some(collection) = terms::collection_for_page(book, page) {
+                    terms::search(collection)
                 } else {
                     statements::text(events, book)?
                 };
@@ -608,6 +622,12 @@ fn compile(
             && book.entry(index).kind == "bibliography"
         {
             body = bibliography::html(book);
+        }
+        if let Some(collection) = publication
+            .as_ref()
+            .and_then(|b| terms::collection_for_page(b, page))
+        {
+            body = terms::html(collection);
         }
         let html = page::render(&presentation, page, index, &pages, &navigation, &body);
         if files

@@ -19,11 +19,22 @@ pub struct Manifest {
     pub cover: Option<Cover>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bibliography: Option<Bibliography>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub glossary: Option<TermCatalog>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub index: Option<TermCatalog>,
     #[serde(default)]
     pub front_matter: Vec<Chapter>,
     pub chapters: Vec<Entry>,
     #[serde(default)]
     pub appendices: Vec<Chapter>,
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields, rename_all = "kebab-case")]
+pub struct TermCatalog {
+    #[serde(deserialize_with = "text")]
+    pub source: String,
+    pub title: Option<Text>,
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields, rename_all = "kebab-case")]
@@ -139,6 +150,17 @@ impl Manifest {
                 ));
             }
             ids.insert("bibliography".into());
+        }
+        for (kind, catalog) in [("glossary", &self.glossary), ("index", &self.index)] {
+            if let Some(catalog) = catalog {
+                files::relative_path(Utf8Path::new(&catalog.source))?;
+                if !catalog.source.ends_with(".json") {
+                    return Err(invalid(format!(
+                        "{kind}.source must name a local .json catalog within content/"
+                    )));
+                }
+                ids.insert(kind.into());
+            }
         }
         let mut sources = BTreeSet::new();
         fn id(ids: &mut BTreeSet<String>, value: &str) -> Result<()> {

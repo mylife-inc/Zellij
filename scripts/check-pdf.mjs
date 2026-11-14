@@ -89,6 +89,29 @@ try {
   writeFileSync(path.join(bibCapture,'pdfinfo.txt'),bibInfo);
   writeFileSync(path.join(bibCapture,'fonts.txt'),execFileSync('pdffonts',[bibPdf],{encoding:'utf8'}));
   for(let n=1;n<=Number(bibInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',bibPdf,path.join(bibCapture,`page-${n}`)]);
+  const terms=path.join(root,'terms');
+  cpSync('scripts/fixtures/terms',terms,{recursive:true});
+  run(['build',terms,'--pdf']);
+  const termsPrint=path.join(terms,'site/_zellij/pdf');
+  const termsPdf=path.join(termsPrint,'book.pdf');
+  const termsBook=JSON.parse(readFileSync(path.join(terms,'site/_zellij/book.json')));
+  const termsReceipt=JSON.parse(readFileSync(path.join(termsPrint,'pdf.json')));
+  assert.equal(termsReceipt.revision,termsBook.revision);
+  assert.equal(termsReceipt.pdf_sha256,createHash('sha256').update(readFileSync(termsPdf)).digest('hex'));
+  assert.deepEqual(termsBook.terms.map(c=>c.kind),['glossary','index']);
+  const termsText=execFileSync('pdftotext',['-layout',termsPdf,'-'],{encoding:'utf8'});
+  const termsWords=termsText.replace(/\s+/g,' ');
+  for(const word of ['Glossary','Index','The capacity to do work','Mechanics','See also:','No occurrences.','Pages:']) assert(termsWords.includes(word),`${word}\n${termsText}`);
+  assert(!termsText.includes('??'), 'PDF term page references resolve');
+  for(const m of termsWords.matchAll(/Pages: ([ivxlcdm\d]+(?:, [ivxlcdm\d]+)*)/g)) {const pages=m[1].split(', ');assert.equal(pages.length,new Set(pages).size,'Repeated mentions on one page are deduplicated');}
+  execFileSync('qpdf',['--check',termsPdf]);
+  const termsObjects=JSON.stringify(JSON.parse(execFileSync('qpdf',['--json',termsPdf],{encoding:'utf8',maxBuffer:8*1024*1024})));
+  for(const c of termsBook.terms) for(const term of c.terms) for(const target of [term,...term.occurrences]) assert(termsObjects.includes(Buffer.from(target.anchor).toString('hex')),`Missing term destination ${target.anchor}`);
+  const termsCapture=path.join(artifacts,'terms');cpSync(termsPrint,termsCapture,{recursive:true});
+  writeFileSync(path.join(termsCapture,'text.txt'),termsText);
+  const termsInfo=execFileSync('pdfinfo',[termsPdf],{encoding:'utf8'});writeFileSync(path.join(termsCapture,'pdfinfo.txt'),termsInfo);
+  writeFileSync(path.join(termsCapture,'fonts.txt'),execFileSync('pdffonts',[termsPdf],{encoding:'utf8'}));
+  for(let n=1;n<=Number(termsInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',termsPdf,path.join(termsCapture,`page-${n}`)]);
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');

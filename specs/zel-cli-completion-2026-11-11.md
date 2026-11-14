@@ -88,6 +88,16 @@ internal-link URL queries and passes strict/deep validation separately.
 BibTeX import and arbitrary citation styles remain outside this increment;
 index/glossary is next. Public rc.6 and production hosting remain unchanged.
 
+PR #173 implements glossary/index catalogs and marked occurrences across
+portable HTML, adapted Next and PDF. All 27 jobs in `43587957194` pass at
+`1b9a24f`, including 24 PDFs/192 captures with all 156 prior layouts unchanged,
+three-platform offline browsers, prefixed Next and native installer lifecycles.
+Local verification passes 796 Rust and 490 engine tests, with 86 final native
+docs tests. The [terms contract](zellij-book-terms-2026-11-14.md) and
+[evidence](evidence/zellij-book-terms-2026-11-14.json) retain exact checks and limits.
+The next delivery milestone is a new CLI candidate for the accumulated additions;
+public rc.6 and production hosting remain unchanged by this source increment.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

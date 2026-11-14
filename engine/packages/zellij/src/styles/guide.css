@@ -1174,3 +1174,6 @@ a.zellij-card:hover {
 @media print{.zellij-statement-head{break-after:avoid}.zellij-statement-qed{break-before:avoid}}
 
 .zellij-bibliography{list-style:none;padding:0}.zellij-bibliography>li{margin:1.25rem 0;scroll-margin-top:6rem;overflow-wrap:anywhere}.zellij-bibliography>li p{padding-inline-start:2rem;text-indent:-2rem}
+
+/* Shared glossary and subject-index backmatter. */
+.zellij-terms{list-style:none!important;padding-left:0!important}.zellij-terms>li{margin:1.5em 0;overflow-wrap:anywhere}.zellij-terms .zellij-term-child{margin-left:1.5em}.zellij-terms .zellij-term-name{margin-bottom:.25em}.zellij-term-occurrences{font-size:.9em}

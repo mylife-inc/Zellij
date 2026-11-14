@@ -3,6 +3,22 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+PR #173 implements shared glossary and subject-index catalogs, marked occurrences,
+web backlinks and deduplicated PDF page references. All 27 jobs in `43587957194`
+pass at `1b9a24f`; local verification passes 796 Rust and 490 engine tests, with
+86 native docs tests after the final renderer edits. Twenty-four PDFs/192 page
+captures pass, all 156 previous captures are unchanged, and the 12 new manuscript
+pages match across runtimes. All 52 new web captures are retained; representative
+native and Next layouts are visually reviewed. A bounded native check also passes
+10,000 catalog terms with 2,000 occurrences. See [the contract](specs/zellij-book-terms-2026-11-14.md)
+and [evidence](specs/evidence/zellij-book-terms-2026-11-14.json).
+The final context/evidence update changes no runtime, test or workflow inputs.
+Merge and development-image publication are pending; public rc.6 is unchanged.
+**Next priority:** prepare the next CLI candidate with the accumulated book and
+installation fixes, then richer technical/study book editions and the remaining
+print and installation work. Deeper index hierarchies, automatic indexing,
+localized collation and rich definitions remain extensions.
+
 PR #171 (`e58133b`, matching reviewed tree `11b3c55`) merges numeric bibliography
 and citations from local CSL-JSON, with one registry for portable HTML, adapted
 Next and PDF. All 27 jobs in `43578754363` pass at `d9e22cc`; local verification
@@ -19,8 +35,8 @@ All 13 development-image jobs in `43581129613` pass at the merge, publishing all
 four `main` variants on amd64/arm64 and building/serving a site from the published
 default image. The final record-only follow-up changes no runtime, test or
 workflow inputs. Public rc.6 is unchanged.
-**Next priority:** index/glossary, followed by richer book editions and the
-remaining print and installation work. The separate unresolved browser timings
+At that bibliography milestone, index/glossary was next; PR #173 above
+implements its documented first scope. The separate unresolved browser timings
 and deferred provider verification retain their existing status.
 
 PR #169 (`cd79114`, matching reviewed tree `5ab8acf`) merges shared book
