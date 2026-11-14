@@ -1,0 +1,93 @@
+name: Browser failure evidence acceptance
+on:
+  push:
+    branches: [codex/browser-evidence-verify]
+permissions:
+  contents: read
+jobs:
+  header:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npm run typecheck --workspace @shebka/zellij-showcase
+      - run: npm run build --workspace @shebka/zellij-showcase
+      - run: npx playwright install --with-deps chromium webkit
+        working-directory: examples/showcase
+      - name: Verify deliberately failed assertions retain browser state
+        working-directory: examples/showcase
+        run: |
+          set +e
+          npx playwright test e2e/header-layout.spec.ts --grep 'diagnostic fixture' --project desktop --project desktop-safari --retries 0
+          status=$?
+          set -e
+          test "$status" = 1
+          python3 - <<'PY'
+          import json, pathlib, shutil
+          files=list(pathlib.Path('test-results').rglob('header-failure-state*.json'))
+          assert len(files)==2, files
+          destination=pathlib.Path('probe-evidence')
+          destination.mkdir()
+          for file in files:
+              value=json.loads(file.read_text())
+              assert 'captureError' not in value, value
+              assert value['before']['navigation']['measured']=='true', value
+              assert value['before']['url'].startswith('http://127.0.0.1:'), value
+              assert value['after']['at']>=value['before']['at']
+              shutil.copyfile(file, destination/(file.parent.parent.name+'.json'))
+          print('Both real failed-browser assertions retained complete state.')
+          PY
+      - name: Run the ordinary showcase suite without retries
+        working-directory: examples/showcase
+        run: npx playwright test --grep-invert 'diagnostic fixture' --retries 0
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: header-failure-evidence
+          path: |
+            examples/showcase/probe-evidence/
+            examples/showcase/test-results/**/attachments/*failure-state*.json
+            examples/showcase/test-results/**/trace.zip
+            examples/showcase/test-results/**/error-context.md
+          retention-days: 14
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node --test scripts/browser-failure-state.test.mjs
+      - run: npm run build --workspace @shebka/zellij
+      - name: Build the actual documentation export
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: |
+          node ../../engine/packages/zellij/bin/zellij.mjs prepare
+          node ../../node_modules/next/dist/bin/next build --webpack
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Validate content preservation
+        env:
+          ZELLIJ_BROWSER_DIAGNOSTICS: ${{ runner.temp }}/zellij-browser-diagnostics
+        run: node scripts/check-docs-preservation.mjs
+      - name: Verify real runtime and missing-hydration failure evidence
+        env:
+          ZELLIJ_BROWSER_DIAGNOSTICS: ${{ runner.temp }}/zellij-browser-diagnostics
+        run: node --test scripts/check-docs-preservation.test.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: documentation-failure-evidence
+          path: ${{ runner.temp }}/zellij-browser-diagnostics/
+          if-no-files-found: ignore
+          retention-days: 14

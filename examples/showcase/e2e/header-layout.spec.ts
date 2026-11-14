@@ -260,3 +260,10 @@ test.describe('measured overflow', () => {
   }
 
 });
+
+// Diagnostic branch only: an actual failed assertion must retain its evidence.
+test('diagnostic fixture intentionally fails after hydration', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
+  expect('diagnostic fixture').toBe('intentional failure');
+});
