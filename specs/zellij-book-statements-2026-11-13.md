@@ -130,3 +130,26 @@ waited for an in-page timer, which cannot run with JavaScript disabled; those
 four state captures time out and are retained. Failure capture now has a bounded
 no-frame mode that returns native DOM/focus state without page timers. The new
 helper selects that mode; other existing callers retain frame sampling.
+
+The no-frame follow-up `43566630220` at probe source `048008e` repeats ten
+attempts per variant without retries. Original readiness fails 2/10; revised
+readiness passes 10/10. Both captured failures have the document focused, fonts
+loaded, the theorem fragment in the URL and `BODY` as the active element after
+the timeout. These snapshots are after the failure, not a trace of the exact
+focus transition. Across the two bounded runs, original readiness fails 6/30
+and revised readiness passes 30/30 on the same product output. This is evidence
+for the test-readiness correction, not a product-script focus fix.
+
+Final-source PDF jobs at `6b76504` in `43566612273` pass on all three runtimes:
+18 PDFs and 129 captures. The 105 earlier layouts are byte-identical PNGs; all
+24 new statement captures match the eight reviewed pages across runtimes.
+The final home-page capture has its own page, no inherited contents header and
+correct roman folio. Other source gates are still running at this checkpoint.
+
+Run `43566612273` then exposes the same missing navigation-readiness precondition
+in the older equation helper on Linux (job `132361846213`): the `Equation 1.1`
+self-link is inactive after the return from another document. The helper now
+uses the same URL/load/font/target readiness before focus and the bounded
+no-script failure capture. Both helpers capture full-page layouts from the top
+only after their keyboard assertions. Product code is unchanged by this
+follow-up; the final combined-source CI must pass before merge.
