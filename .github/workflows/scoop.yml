@@ -8,17 +8,24 @@ on:
       public_bucket:
         type: boolean
         default: false
+      upgrade_from:
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       version:
         description: Published candidate to install through Scoop
         required: true
-        default: v0.2.0-rc.6
+        default: v0.2.0-rc.7
         type: string
       public_bucket:
         description: Also install from the published mylife-inc bucket
         default: false
         type: boolean
+      upgrade_from:
+        description: Optional still-published previous version for an actual CLI upgrade
+        default: ''
+        type: string
 permissions:
   contents: read
 jobs:
@@ -63,4 +70,5 @@ jobs:
           ZEL_SCOOP_SHELL: ${{ matrix.shell }}
           ZEL_SCOOP_PUBLIC_VERSION: ${{ inputs.version }}
           ZEL_SCOOP_PUBLIC_BUCKET: ${{ inputs.public_bucket || false }}
+          ZEL_SCOOP_UPGRADE_FROM: ${{ inputs.upgrade_from }}
         run: node scripts/check-scoop.mjs dist .scoop-source

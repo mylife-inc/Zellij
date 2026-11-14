@@ -8,6 +8,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { scoopManifest } from './scoop-manifest.mjs';
+import { downloadRelease } from './download-release.mjs';
+import { releasePolicy } from './release-policy.mjs';
 
 assert.equal(process.env.GITHUB_ACTIONS, 'true', 'Scoop acceptance requires a disposable hosted runner');
 assert.equal(process.platform, 'win32', 'Scoop acceptance requires native Windows');
@@ -22,6 +24,10 @@ const version = process.env.ZEL_SCOOP_PUBLIC_VERSION?.replace(/^v/, '') ||
   (await readFile('cli/Cargo.toml', 'utf8')).match(/^version = "([^"]+)"/m)?.[1];
 assert(version);
 const tag = `v${version}`;
+const previousTag = process.env.ZEL_SCOOP_UPGRADE_FROM || '';
+const previousVersion = previousTag ? releasePolicy(previousTag).version : '';
+assert(!previousTag || previousTag !== tag, 'Upgrade acceptance requires two distinct releases');
+assert(!previousTag || process.env.ZEL_SCOOP_PUBLIC_VERSION, 'Upgrade acceptance requires a published destination version');
 const sums = (await Promise.all((await readdir(dist)).filter(n => n.endsWith('.sha256')).sort().map(n => readFile(path.join(dist, n), 'utf8')))).join('');
 const manifest = scoopManifest(tag, sums);
 const downloads = new Map();
@@ -69,7 +75,7 @@ for (const asset of Object.values(localManifest.architecture)) asset.url = `${or
 const bucket = path.join(temp, 'bucket source');
 const recipe = path.join(bucket, 'bucket/zel.json');
 let builds = 0;
-async function verify(packageVersion, manager = 'scoop update zel') {
+async function verify(packageVersion, manager = 'scoop update zel', binaryVersion = version) {
   const current = path.join(scoopRoot, 'apps/zel/current');
   assert.equal(path.basename(await realpath(current)), packageVersion);
   const executable = path.join(current, 'bin/zel.exe');
@@ -79,10 +85,10 @@ async function verify(packageVersion, manager = 'scoop update zel') {
   assert.equal(bytes.readUInt16LE(pe + 4), target.startsWith('aarch64') ? 0xaa64 : 0x8664);
   assert.equal(await readFile(path.join(current, 'share/zel/installation-manager'), 'utf8'), 'scoop\n');
   const shim = path.join(scoopRoot, 'shims/zel.exe');
-  assert.equal((await run(shim, ['--version'])).trim(), `zel ${version}`);
+  assert.equal((await run(shim, ['--version'])).trim(), `zel ${binaryVersion}`);
   // Both normal Windows shells must reach the installed shim through PATH.
   for (const shell of ['powershell.exe', 'pwsh']) {
-    assert.equal((await run(shell, ['-NoProfile', '-NonInteractive', '-Command', 'zel --version'])).trim(), `zel ${version}`);
+    assert.equal((await run(shell, ['-NoProfile', '-NonInteractive', '-Command', 'zel --version'])).trim(), `zel ${binaryVersion}`);
   }
   for (const args of [['--check'], ['--preview'], [version, '--force'], [version, '--release-base-url', origin]]) {
     const result = await run(shim, ['upgrade', ...args], { code: 1 });
@@ -149,6 +155,29 @@ try {
   await scoop(['uninstall', 'zel']);
   await assertUninstalled();
   await scoop(['bucket', 'rm', 'main']);
+
+  if (previousTag) {
+    // Opt-in while both releases remain public. Use real HTTPS archives and
+    // an isolated Git bucket to exercise the package manager's actual update.
+    const installers = Object.fromEntries(await Promise.all(['install.sh', 'install.ps1'].map(async name =>
+      [name, await readFile(path.join('scripts', name))])));
+    const previous = await downloadRelease({ version: previousTag, target,
+      repository: 'mylife-inc/releases', scope: 'zellij',
+      destination: path.join(temp, 'previous-release'), installers });
+    const previousManifest = scoopManifest(previousTag, previous.contents.SHA256SUMS.toString());
+    await commitRecipe(previousManifest);
+    await scoop(['bucket', 'add', 'main', pathToFileURL(bucket).href]);
+    await scoop(['install', 'main/zel']);
+    await verify(previousVersion, previousVersion === '0.2.0-rc.6' ? 'package manager' : 'scoop update zel', previousVersion);
+    await commitRecipe(manifest);
+    await scoop(['update']);
+    await scoop(['update', 'zel']);
+    await verify(version, guidance);
+    await scoop(['uninstall', 'zel']);
+    await assertUninstalled();
+    await scoop(['bucket', 'rm', 'main']);
+    console.log(`Verified actual CLI upgrade: ${previousVersion} to ${version}`);
+  }
 
   if (process.env.ZEL_SCOOP_PUBLIC_BUCKET === 'true') {
     await scoop(['bucket', 'add', 'mylife-inc', 'https://github.com/mylife-inc/scoop-bucket']);
