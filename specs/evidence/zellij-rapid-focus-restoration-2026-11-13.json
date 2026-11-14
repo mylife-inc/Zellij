@@ -963,5 +963,96 @@
     "passed": 16,
     "failed": 8,
     "failure": "All four navigation-restoration repetitions fail in Chromium and all four in WebKit; content/pointer preservation cases pass."
+  },
+  "first_fixed_probe": {
+    "run_id": 43538892591,
+    "job_id": 132274518924,
+    "head": "c650cd91d5402ab8c8c2f80cab53bf1d23a92e3d",
+    "passed": 24,
+    "failed": 8,
+    "retries": 0,
+    "cause": "All eight pointer cases clicked the screen-reader-only h1 at x=-0.5, outside the viewport. No pointer event reached content. Navigation, content-focus and brand-focus restoration cases all passed. Permanent test now clicks visible non-focusable paragraph and asserts pointerdown delivery before releasing held frames. No additional engine change.",
+    "traces": [
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop",
+        "trace_sha256": "cea22e45f0fab8b2d790549f3c008fd23fc80060d502b8c6d1f36f5e351297d8",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-repeat1",
+        "trace_sha256": "939215086069664b6f9828b805c00d7e6f77b695426f69762c701badaa93c520",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-repeat2",
+        "trace_sha256": "b80774db2ca17651af392df8f989aad31c3817c57c6548af0a2466848528047e",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-repeat3",
+        "trace_sha256": "52e0373c1dfc8a62496be2511159e1b1d673fb39de5dbd588d984d624b88f3cf",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-safari",
+        "trace_sha256": "769c4c0a5ff334f7ca8ebd759fbaceb1db234ae449af499d614031cc4490b29c",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-safari-repeat1",
+        "trace_sha256": "808e24ea8a2229a4d0aba1edcf87f841c04821b49e6e705ac7afba59fbbda84f",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-safari-repeat2",
+        "trace_sha256": "54a1b75c6908d06c3538bc208f2926119a6d02a10643acad18308e06d06515ee",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-4408e-es-before-queued-frames-run-desktop-safari-repeat3",
+        "trace_sha256": "468323a1c135206cdf376bdeb8688fe6e0b03af2c323ea0ff077e65660e2ea82",
+        "clicks": [
+          {
+            "x": -0.5,
+            "y": 88.5
+          }
+        ]
+      }
+    ]
   }
 }

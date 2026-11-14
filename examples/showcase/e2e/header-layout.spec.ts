@@ -219,9 +219,17 @@ test.describe('measured overflow', () => {
         await brand.focus();
         await expect(brand).toBeFocused();
       } else if (destination === 'pointer') {
-        const heading = await page.locator('main h1').boundingBox();
-        expect(heading).not.toBeNull();
-        await page.mouse.click(heading!.x + heading!.width / 2, heading!.y + heading!.height / 2);
+        // The page h1 is screen-reader-only. Click visible, non-focusable
+        // content and prove the real pointer event arrived before releasing.
+        const paragraph = page.locator('main').getByText('Lumen 3 Pro', { exact: true });
+        await expect(paragraph).toBeInViewport();
+        await paragraph.evaluate(element => element.addEventListener('pointerdown', () => {
+          element.setAttribute('data-pointer-received', 'true');
+        }, { once: true }));
+        const bounds = await paragraph.boundingBox();
+        expect(bounds).not.toBeNull();
+        await page.mouse.click(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+        await expect(paragraph).toHaveAttribute('data-pointer-received', 'true');
       }
       await page.evaluate(() =>
         (window as unknown as { delayedFocusFrames: { release(): Promise<void> } }).delayedFocusFrames.release());

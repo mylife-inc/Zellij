@@ -57,3 +57,12 @@ Local checks pass 490 engine tests, engine/showcase typechecks, engine build and
 strict/deep guide validation (59 routes, 25 examples). All browser and container
 acceptance remains on disposable hosted runners. Record final source and stress
 results before calling the issue resolved or merging the implementation.
+
+The first fixed probe (`43538892591`, `c650cd9`) passes all 24 navigation,
+content-focus and brand-focus cases. Its eight pointer cases fail because the
+test clicked the screen-reader-only h1 at x=-0.5, outside the viewport, in both
+browsers. This did not exercise pointer cancellation. All eight click coordinates
+and trace hashes are retained in the evidence. The corrected test clicks a
+visible non-focusable paragraph and asserts receipt of its real pointer event
+before releasing callbacks. No further engine change was required by this
+finding; hosted validation of the corrected test remains pending.
