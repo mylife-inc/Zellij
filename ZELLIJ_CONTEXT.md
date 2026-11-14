@@ -3,10 +3,10 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-PR #171 implements numeric bibliography and citations from local CSL-JSON, with
-one registry for portable HTML, adapted Next and PDF. All 27 jobs in
-`43578754363` pass at `d9e22cc`; local verification passes 789 Rust and 490 engine
-tests. Twenty-one PDFs/156 page captures pass, with all 129 prior layouts
+PR #171 (`e58133b`, matching reviewed tree `11b3c55`) merges numeric bibliography
+and citations from local CSL-JSON, with one registry for portable HTML, adapted
+Next and PDF. All 27 jobs in `43578754363` pass at `d9e22cc`; local verification
+passes 789 Rust and 490 engine tests. Twenty-one PDFs/156 page captures pass, with all 129 prior layouts
 unchanged. All 26 new browser captures are retained; desktop/mobile Next and
 native Linux/macOS/Windows samples are visually reviewed. The documented format
 supports numeric citations, locators, footnotes, DOI/URL links and uncited entries;
@@ -15,7 +15,10 @@ change is required. See [the contract](specs/zellij-book-bibliography-2026-11-14
 and [evidence](specs/evidence/zellij-book-bibliography-2026-11-14.json).
 The final documentation/evidence update changes no runtime, test or workflow
 inputs; its public-guide URL wording passes strict/deep validation separately.
-Merge and development-image publication are pending. Public rc.6 is unchanged.
+All 13 development-image jobs in `43581129613` pass at the merge, publishing all
+four `main` variants on amd64/arm64 and building/serving a site from the published
+default image. The final record-only follow-up changes no runtime, test or
+workflow inputs. Public rc.6 is unchanged.
 **Next priority:** index/glossary, followed by richer book editions and the
 remaining print and installation work. The separate unresolved browser timings
 and deferred provider verification retain their existing status.

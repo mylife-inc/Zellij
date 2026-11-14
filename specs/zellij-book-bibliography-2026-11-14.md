@@ -3,7 +3,7 @@
 Source baseline: `6d2696a` on `main`. Public rc.6 and production hosting remain
 unchanged. Implementation and source acceptance are complete at `d9e22cc`
 in PR #171. All 27 final-source CI jobs pass; merge and development-image
-publication are recorded separately after completion.
+publication are complete and recorded below.
 
 ## Contract and scope
 
@@ -150,3 +150,20 @@ Index/glossary is the next implementation priority. BibTeX/custom CSL, broader
 print support, richer book editions, remaining installation channels and the
 separate unresolved browser timings stay open. No new public CLI candidate or
 production deployment is performed by this increment.
+
+## Merge and development-image publication
+
+PR #171 merges as `e58133bceee500849376cdd17d969069a0399388`. Its tree
+`43368f80d05accd4838f61927fc379ee0189012f` matches reviewed head `11b3c55`.
+Only the six documentation/evidence paths described above differ from tested
+source `d9e22cc`; runtime, test and workflow inputs are unchanged.
+
+All 13 jobs in [development-image run `43581129613`](https://github.com/mylife-inc/Zellij/actions/runs/43581129613)
+pass at that merge without reruns. Eight native builds feed four manifests
+(`main`, `main-maths`, `main-diagrams`, `main-all`) on Linux amd64/arm64. The
+published default image builds and serves a site. The JSON evidence retains
+all job IDs and the observed manifest digests/architectures.
+
+This final record-only follow-up changes context, this contract and evidence;
+it does not repeat product CI or image publication. Public rc.6 and production
+hosting remain unchanged. Index/glossary remains the next implementation task.
