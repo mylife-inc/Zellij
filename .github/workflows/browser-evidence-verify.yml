@@ -30,7 +30,7 @@ jobs:
           test "$status" = 1
           python3 - <<'PY'
           import json, pathlib, shutil
-          files=list(pathlib.Path('test-results').rglob('header-failure-state*.json'))
+          files=list(pathlib.Path('test-results').rglob('header-failure-state.json'))
           assert len(files)==2, files
           destination=pathlib.Path('probe-evidence')
           destination.mkdir()
@@ -40,7 +40,7 @@ jobs:
               assert value['before']['navigation']['measured']=='true', value
               assert value['before']['url'].startswith('http://127.0.0.1:'), value
               assert value['after']['at']>=value['before']['at']
-              shutil.copyfile(file, destination/(file.parent.parent.name+'.json'))
+              shutil.copyfile(file, destination/(file.parent.name+'.json'))
           print('Both real failed-browser assertions retained complete state.')
           PY
       - name: Run the ordinary showcase suite without retries
@@ -52,7 +52,7 @@ jobs:
           name: header-failure-evidence
           path: |
             examples/showcase/probe-evidence/
-            examples/showcase/test-results/**/attachments/*failure-state*.json
+            examples/showcase/test-results/**/header-failure-state.json
             examples/showcase/test-results/**/trace.zip
             examples/showcase/test-results/**/error-context.md
           retention-days: 14
