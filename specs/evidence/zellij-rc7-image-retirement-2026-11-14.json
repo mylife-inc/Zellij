@@ -1,0 +1,388 @@
+{
+  "observed_on": "2026-11-14",
+  "status": "complete",
+  "plan_sha256": "90578d8ce61f33caa41be88494aca4c89fb1317a7c4d4fb50451a1e612519b8d",
+  "policy_commit": "6b19b2427e8ea90fefb38a1a2ef75af8dec7248c",
+  "execution_commit": "2babaf7319a2decca7c4b53b472c2db370263b81",
+  "workflows": {
+    "plan": {
+      "run_id": 43651842365,
+      "head": "6b19b2427e8ea90fefb38a1a2ef75af8dec7248c",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132621828069,
+          "name": "inventory",
+          "conclusion": "success"
+        },
+        {
+          "id": 132621829670,
+          "name": "retire-images",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "post_inventory": {
+      "run_id": 43652529198,
+      "head": "2babaf7319a2decca7c4b53b472c2db370263b81",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132623939969,
+          "name": "inventory",
+          "conclusion": "success"
+        },
+        {
+          "id": 132623941625,
+          "name": "retire-images",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "post_http": {
+      "run_id": 43652531820,
+      "head": "eae65fbb82fb3c83f2d2520f7c76d0c6c20ab18d",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132623946579,
+          "name": "inspect (static)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132623946857,
+          "name": "inspect (next)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132623948128,
+          "name": "live-providers",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "packages": [
+    {
+      "name": "zellij-base",
+      "deleted": 20,
+      "retained_versions": 3542,
+      "protected_manifest_nodes": 32,
+      "excluded_build_history_preserved": 3510,
+      "exact_retained_ids_digests_tags_unchanged": true
+    },
+    {
+      "name": "zellij/acceptance-static",
+      "deleted": 3,
+      "retained_versions": 7,
+      "protected_manifest_nodes": 3,
+      "excluded_build_history_preserved": 4,
+      "exact_retained_ids_digests_tags_unchanged": true
+    },
+    {
+      "name": "zellij/acceptance-next",
+      "deleted": 3,
+      "retained_versions": 6,
+      "protected_manifest_nodes": 3,
+      "excluded_build_history_preserved": 3,
+      "exact_retained_ids_digests_tags_unchanged": true
+    }
+  ],
+  "exact_excluded_inventory_preserved": true,
+  "remaining_zellij_releases": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "versions": [
+        {
+          "id": 445629701,
+          "tag": "v0.2.0-rc.7",
+          "draft": false,
+          "prerelease": true,
+          "assets": [
+            {
+              "id": 748954783,
+              "name": "install.ps1",
+              "size": 7031,
+              "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+            },
+            {
+              "id": 748954788,
+              "name": "install.sh",
+              "size": 13204,
+              "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+            },
+            {
+              "id": 748954774,
+              "name": "SHA256SUMS",
+              "size": 679,
+              "digest": "sha256:3ba0eeeab6743e75124710eb0b502d234ee5ec87669e0c862327469341b2fc19"
+            },
+            {
+              "id": 748954780,
+              "name": "template-book-classic-0.2.0.tar.gz",
+              "size": 4394,
+              "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+            },
+            {
+              "id": 748954784,
+              "name": "template-product-docs-0.1.0.tar.gz",
+              "size": 1297,
+              "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+            },
+            {
+              "id": 748954772,
+              "name": "template-product-studio-0.1.0.tar.gz",
+              "size": 2454,
+              "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+            },
+            {
+              "id": 748954789,
+              "name": "templates-catalog.json",
+              "size": 2939,
+              "digest": "sha256:82c4664207c1d1d5ddc91e634bb2129d1e6199487e26e0307573cb6895f69a80"
+            },
+            {
+              "id": 748954790,
+              "name": "zel-v0.2.0-rc.7-aarch64-apple-darwin.tar.gz",
+              "size": 7218795,
+              "digest": "sha256:88d7f2f7859fca65927220d74bfa16dc2f5f3c542ee8c2d3eeafdc3ad7c3fa19"
+            },
+            {
+              "id": 748954771,
+              "name": "zel-v0.2.0-rc.7-aarch64-apple-darwin.tar.gz.sha256",
+              "size": 110,
+              "digest": "sha256:195db2cd6d54f1e3b8b94b41321c82c0c5501932a21b5b3688b6cbe5aaa5dbcf"
+            },
+            {
+              "id": 748954787,
+              "name": "zel-v0.2.0-rc.7-aarch64-pc-windows-msvc.zip",
+              "size": 7603982,
+              "digest": "sha256:23ea1c3d7bcea432502eeb0b89ec34df775fba3ff2d00f22b55ecbee20269ec9"
+            },
+            {
+              "id": 748954767,
+              "name": "zel-v0.2.0-rc.7-aarch64-pc-windows-msvc.zip.sha256",
+              "size": 110,
+              "digest": "sha256:5d0a9dd104533993c804a25d8ab8388ce7d396e1aa4a8e39e42b33541632ff58"
+            },
+            {
+              "id": 748954779,
+              "name": "zel-v0.2.0-rc.7-aarch64-unknown-linux-gnu.tar.gz",
+              "size": 7477260,
+              "digest": "sha256:bc8d58b38190ca8daa4d37d92d313acc314c8a77c6276e3e31d12acff498107d"
+            },
+            {
+              "id": 748954775,
+              "name": "zel-v0.2.0-rc.7-aarch64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 115,
+              "digest": "sha256:35bcc249af478e71b0b8928fa2c93546832742eb3529cc6c86e1b000b519b869"
+            },
+            {
+              "id": 748954773,
+              "name": "zel-v0.2.0-rc.7-x86_64-apple-darwin.tar.gz",
+              "size": 7345909,
+              "digest": "sha256:58fc98f02d0eccf17d1169403274415e3e065d31c90a747dd570cadac933ed09"
+            },
+            {
+              "id": 748954778,
+              "name": "zel-v0.2.0-rc.7-x86_64-apple-darwin.tar.gz.sha256",
+              "size": 109,
+              "digest": "sha256:bcf344fddbd6abc523334f795490746e6c74bcbcbf1be7b1ada3ce54746741c3"
+            },
+            {
+              "id": 748954777,
+              "name": "zel-v0.2.0-rc.7-x86_64-pc-windows-msvc.zip",
+              "size": 7770406,
+              "digest": "sha256:4214eb20d26fdcb06ce4abe331bd35264b98db8d60e231665ba87c233c70ab5a"
+            },
+            {
+              "id": 748954769,
+              "name": "zel-v0.2.0-rc.7-x86_64-pc-windows-msvc.zip.sha256",
+              "size": 109,
+              "digest": "sha256:829a342ff03565d94e3c5a5718f8f681439e0076cf778f0c6e4417afdac52fa6"
+            },
+            {
+              "id": 748954786,
+              "name": "zel-v0.2.0-rc.7-x86_64-unknown-linux-gnu.tar.gz",
+              "size": 7622050,
+              "digest": "sha256:eac0d5239a2ad68b6cb6e013b79f18c984e8ceed1551bdfc5878a4c4412bc16e"
+            },
+            {
+              "id": 748954781,
+              "name": "zel-v0.2.0-rc.7-x86_64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 114,
+              "digest": "sha256:d85c082a2cfc5cf920f2075b722aada7d583f843ad2a4ac061dbb995f5f42a6b"
+            },
+            {
+              "id": 748954768,
+              "name": "zel.json",
+              "size": 1446,
+              "digest": "sha256:a14212f6108e4db549ff8ab342936c26e4ec328fab365d1d0dd0ea020c4a45a5"
+            },
+            {
+              "id": 748954776,
+              "name": "zel.rb",
+              "size": 2310,
+              "digest": "sha256:c6db073192c6dbda86bc2280ba2e45d86557f251c0830e2ed29b67c06aa944a7"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "versions": [
+        {
+          "id": 445629727,
+          "tag": "zellij-v0.2.0-rc.7",
+          "draft": false,
+          "prerelease": true,
+          "assets": [
+            {
+              "id": 748954917,
+              "name": "install.ps1",
+              "size": 7031,
+              "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+            },
+            {
+              "id": 748954914,
+              "name": "install.sh",
+              "size": 13204,
+              "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+            },
+            {
+              "id": 748954921,
+              "name": "SHA256SUMS",
+              "size": 679,
+              "digest": "sha256:3ba0eeeab6743e75124710eb0b502d234ee5ec87669e0c862327469341b2fc19"
+            },
+            {
+              "id": 748954920,
+              "name": "template-book-classic-0.2.0.tar.gz",
+              "size": 4394,
+              "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+            },
+            {
+              "id": 748954928,
+              "name": "template-product-docs-0.1.0.tar.gz",
+              "size": 1297,
+              "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+            },
+            {
+              "id": 748954911,
+              "name": "template-product-studio-0.1.0.tar.gz",
+              "size": 2454,
+              "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+            },
+            {
+              "id": 748954932,
+              "name": "templates-catalog.json",
+              "size": 2939,
+              "digest": "sha256:82c4664207c1d1d5ddc91e634bb2129d1e6199487e26e0307573cb6895f69a80"
+            },
+            {
+              "id": 748954924,
+              "name": "zel-v0.2.0-rc.7-aarch64-apple-darwin.tar.gz",
+              "size": 7218795,
+              "digest": "sha256:88d7f2f7859fca65927220d74bfa16dc2f5f3c542ee8c2d3eeafdc3ad7c3fa19"
+            },
+            {
+              "id": 748954923,
+              "name": "zel-v0.2.0-rc.7-aarch64-apple-darwin.tar.gz.sha256",
+              "size": 110,
+              "digest": "sha256:195db2cd6d54f1e3b8b94b41321c82c0c5501932a21b5b3688b6cbe5aaa5dbcf"
+            },
+            {
+              "id": 748954922,
+              "name": "zel-v0.2.0-rc.7-aarch64-pc-windows-msvc.zip",
+              "size": 7603982,
+              "digest": "sha256:23ea1c3d7bcea432502eeb0b89ec34df775fba3ff2d00f22b55ecbee20269ec9"
+            },
+            {
+              "id": 748954916,
+              "name": "zel-v0.2.0-rc.7-aarch64-pc-windows-msvc.zip.sha256",
+              "size": 110,
+              "digest": "sha256:5d0a9dd104533993c804a25d8ab8388ce7d396e1aa4a8e39e42b33541632ff58"
+            },
+            {
+              "id": 748954918,
+              "name": "zel-v0.2.0-rc.7-aarch64-unknown-linux-gnu.tar.gz",
+              "size": 7477260,
+              "digest": "sha256:bc8d58b38190ca8daa4d37d92d313acc314c8a77c6276e3e31d12acff498107d"
+            },
+            {
+              "id": 748954931,
+              "name": "zel-v0.2.0-rc.7-aarch64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 115,
+              "digest": "sha256:35bcc249af478e71b0b8928fa2c93546832742eb3529cc6c86e1b000b519b869"
+            },
+            {
+              "id": 748954927,
+              "name": "zel-v0.2.0-rc.7-x86_64-apple-darwin.tar.gz",
+              "size": 7345909,
+              "digest": "sha256:58fc98f02d0eccf17d1169403274415e3e065d31c90a747dd570cadac933ed09"
+            },
+            {
+              "id": 748954908,
+              "name": "zel-v0.2.0-rc.7-x86_64-apple-darwin.tar.gz.sha256",
+              "size": 109,
+              "digest": "sha256:bcf344fddbd6abc523334f795490746e6c74bcbcbf1be7b1ada3ce54746741c3"
+            },
+            {
+              "id": 748954915,
+              "name": "zel-v0.2.0-rc.7-x86_64-pc-windows-msvc.zip",
+              "size": 7770406,
+              "digest": "sha256:4214eb20d26fdcb06ce4abe331bd35264b98db8d60e231665ba87c233c70ab5a"
+            },
+            {
+              "id": 748954913,
+              "name": "zel-v0.2.0-rc.7-x86_64-pc-windows-msvc.zip.sha256",
+              "size": 109,
+              "digest": "sha256:829a342ff03565d94e3c5a5718f8f681439e0076cf778f0c6e4417afdac52fa6"
+            },
+            {
+              "id": 748954929,
+              "name": "zel-v0.2.0-rc.7-x86_64-unknown-linux-gnu.tar.gz",
+              "size": 7622050,
+              "digest": "sha256:eac0d5239a2ad68b6cb6e013b79f18c984e8ceed1551bdfc5878a4c4412bc16e"
+            },
+            {
+              "id": 748954919,
+              "name": "zel-v0.2.0-rc.7-x86_64-unknown-linux-gnu.tar.gz.sha256",
+              "size": 114,
+              "digest": "sha256:d85c082a2cfc5cf920f2075b722aada7d583f843ad2a4ac061dbb995f5f42a6b"
+            },
+            {
+              "id": 748954912,
+              "name": "zel.json",
+              "size": 1446,
+              "digest": "sha256:a14212f6108e4db549ff8ab342936c26e4ec328fab365d1d0dd0ea020c4a45a5"
+            },
+            {
+              "id": 748954925,
+              "name": "zel.rb",
+              "size": 2310,
+              "digest": "sha256:c6db073192c6dbda86bc2280ba2e45d86557f251c0830e2ed29b67c06aa944a7"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "protected_rc7_and_codeseal_release_tag_identities": "rechecked unchanged after all cleanup",
+  "inventory_sha256": {
+    "before": "b8312b7069646fe2f2de0df10be36bdfb70b59776cab33830040665b2534bf6b",
+    "after": "d8aa98c417489c6f834accb46107cc2ec1d9da9e36294b63255854829c9e1cc7"
+  },
+  "execution_file": "zellij-rc7-image-retirement-execution-2026-11-14.json",
+  "native_retirement_file": "zellij-rc7-native-retirement-2026-11-14.json",
+  "standalone_after_retirement": "rc.7 --preview --check selects rc.7 and reports already current; no files changed",
+  "boundaries": [
+    "No untagged build-history sweep.",
+    "No provider deployment or production-domain migration.",
+    "Original failures and audit history remain."
+  ]
+}

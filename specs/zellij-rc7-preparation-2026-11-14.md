@@ -83,8 +83,8 @@ lifecycle checks and all four actual rc.6-to-rc.7 upgrade checks pass for
 each channel. The upgrade checks verify both installed CLI versions and
 portable builds; they use actual HTTPS release archives. See
 [release evidence](evidence/zellij-rc7-release-2026-11-14.json).
-Documentation/consumer migration and scoped rc.6 retirement are tracked
-separately; production hosting and deferred live provider checks are unchanged.
+Documentation/consumer migration and scoped rc.6 retirement are complete.
+Production hosting and deferred live provider checks are unchanged.
 
 All 13 development-image jobs in `43649847900` pass at released source
 `f3d55f6`, publishing all four `main` variants on amd64/arm64 and building/serving
@@ -102,3 +102,18 @@ Both owned package channels pass four public lifecycle and four actual
 rc.6-to-rc.7 upgrade checks. The final records-only update touches context and
 specs/evidence, with no runtime, active guide, fixture, test or workflow changes.
 Replacement static/Next publication and scoped rc.6 retirement follow the merge.
+
+## Consumer publication and retirement
+
+PR #176 merges as `eae65fb`, matching reviewed tree `e3f7014`. Replacement
+static/Next publications `43651607322`/`43651609913` and both fresh-pull HTTP
+checks in `43651756802` pass. Scoped rc.6 retirement is complete after 16 exact
+replacement gates: two releases, 40 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,517 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
+and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc7-image-retirement-2026-11-14.json).
+
+Thirteen image safeguards and seven native-release guard cases pass. Owner
+execution uses the reviewed plan hashes; no broader package, repository or
+build-history deletion occurs. The final record updates no runtime inputs.
