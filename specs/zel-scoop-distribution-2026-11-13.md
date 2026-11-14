@@ -62,3 +62,10 @@ The second probe (`43531108782`) reached native installation, ownership refusal
 and portable builds. Update then exposed Scoop's assumption that its default
 `main` bucket exists. The disposable Git fixture now uses that required bucket
 name instead of omitting it; no community bucket contents are modified.
+
+Probe `43531304912` passes both PowerShell 7 lifecycle jobs. Windows PowerShell
+5.1 inherits incompatible module paths through the Actions PowerShell 7 → Node
+launcher. Following [Microsoft's documented guidance](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_psmodulepath?view=powershell-7.6),
+the harness removes `PSModulePath` only from child-process environments and
+checks each shell version and `Get-FileHash` before installing. The host
+environment and profiles remain unchanged.
