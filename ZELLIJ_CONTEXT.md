@@ -29,7 +29,8 @@ rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
 message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
 and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
 
-Shared book equations are verified at `09fd2cc` in PR #167. One registry in
+PR #167 (`fe0f82c`, matching reviewed tree `168c903`) merges shared book
+equations verified at `09fd2cc`. One registry in
 `cli/crates/zellij-docs/src/equations.rs` supplies chapter/appendix numbers,
 stable anchors and standalone `\eqref`/`\ref` links to native HTML, adapted
 Next and PDF. All 27 final-source jobs in `43557146014` pass, including offline
@@ -40,6 +41,9 @@ all 87 prior layouts remain unchanged. Local validation passes 778 Rust and
 fixed colon-in-fragment/query adapter defect and the fixed TeX token-boundary
 defect. See [the contract and verification](specs/zellij-book-equations-2026-11-13.md)
 and [evidence](specs/evidence/zellij-book-equations-2026-11-13.json).
+All 13 development-image jobs in `43560554366` pass at the merge, publishing
+all four `main` variants for amd64/arm64 and building/serving a site from the
+published image. The final evidence follow-up changes only context and records.
 **Next priority:** shared theorem/lemma/proof semantics, then bibliography,
 index/glossary, richer book templates and remaining installation channels.
 These equation additions await the next candidate; public rc.6 is unchanged.
