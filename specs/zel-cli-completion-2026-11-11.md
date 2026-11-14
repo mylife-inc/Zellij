@@ -81,8 +81,9 @@ in rc.4. The first template catalog shipped in rc.5. Bounded composer v1,
 media-accordion, the first four composition presets, the book publication model
 and optional PDF/LaTeX pipeline ship in rc.6. Further composition primitives
 and advanced book publishing remain planned.
-Homebrew is live; Scoop, WinGet and other new package-manager
-channels remain planned.
+Homebrew and the owned Scoop bucket are live. Scoop installs verified rc.6 on
+native Windows x64/ARM64, with four public lifecycle jobs passing. WinGet and
+other package channels remain planned. See [Scoop evidence](evidence/zellij-scoop-distribution-2026-11-13.json).
 The user's follow-up specifies opt-in build-time PDFs with a first-class LaTeX
 backend, short Homebrew naming and removal of superseded pre-1.0 distributions.
 See the expansion design and [release retention policy](zellij-release-retention-2026-11-11.md).
@@ -113,7 +114,7 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.6 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs and four public Homebrew jobs pass | Other package channels and live provider/external-runner acceptance remain deferred. |
+| Distribution | Published rc.6 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs, four public Homebrew jobs and four public Scoop lifecycle jobs pass | WinGet and other package channels and live provider/external-runner acceptance remain deferred. |
 
 Earlier importer milestone: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust
@@ -230,12 +231,19 @@ in PRs #151 and #153. PR #155 versions the book starter around the shared
 publication model and optional print settings, and publishes rc.6. Public
 acceptance and Homebrew migration pass. PR #156 (`8eb117a`) merges docs and
 consumer pins after all 23 CI and six delivery build jobs pass. Replacement
-image checks and scoped rc.5 retirement are complete. Generated hosted/container CI still needs
-explicit runtime selection: its Next consumer passed only after one unchanged-head
-retry when Docker/Podman discovery timed out. Fix this reliability issue first. Advanced print semantics, technical/study editions and the remaining
-installation channels follow. The first additional package channel is an owned
-Scoop bucket, preceded by CLI protection against overwriting Scoop-managed
-installations. Package availability alone does not establish safe upgrades. The [expansion design](zellij-product-expansion-2026-11-11.md)
+image checks and scoped rc.5 retirement are complete. Generated hosted/container
+CI selection was fixed by PR #158 (`dd0f620`),
+with all source and generated-consumer checks passing. PR #160 (`dece6c9`)
+resolved the two reproduced header-focus defects. A new rapid-resize assertion
+failed once in source run `43531633137` and passed on retry; that separate finding
+remains open and takes priority before the next candidate.
+
+The owned Scoop bucket now publishes rc.6 with deliberate ownership protection;
+all four public lifecycle combinations pass. PR #162 (`fd5f07a`, matching tested
+`7788140`) adds explicit Scoop
+upgrade guidance and release gating; all 27 CI jobs pass with the recorded
+header assertion retry. Advanced print semantics, technical/study
+editions and the remaining installation channels follow. The [expansion design](zellij-product-expansion-2026-11-11.md)
 tracks these separate feature milestones.
 
 The original implementation/release/docs contract is complete. The user deferred

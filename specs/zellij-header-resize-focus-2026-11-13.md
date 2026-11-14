@@ -2,7 +2,8 @@
 
 Status: **resolved by PR #160 (`dece6c9`)**, with the same tree as tested
 head `17be3af`. The dated discovery and unsuccessful experiments below remain
-part of the record.
+part of the record. A new rapid-resize assertion failed once in run `43531633137`
+and remains open; see the final section below.
 
 CI run 43508089027 at bd0ae9b687805e5cfebf936cd72cae90dc9f58e0, job
 132170883473, recorded one flaky desktop case in
@@ -93,3 +94,51 @@ The menu guide and durable context are updated. Public rc.6 remains unchanged;
 these source fixes will be included in the next candidate. This resolves the
 two reproduced focus defects, not a claim that every product bug is eliminated.
 See [structured evidence](evidence/zellij-header-focus-2026-11-13.json).
+
+
+## New rapid-resize finding during Scoop acceptance
+
+Run `43531633137`, job `132250636619`, at Scoop source `7788140` records a
+first-attempt failure in the desktop rapid-drawer-resize case at
+`examples/showcase/e2e/header-layout.spec.ts:162`. The final mobile hamburger
+remained inactive after widths 1280 → 390 → 1280 → 390. The drawer was closed
+and body scroll lock released. Its automatic retry passed; totals are 369
+passed, one flaky and 132 conditional skips. **This finding remains open.**
+The earlier fixes and their no-retry verification above remain part of the
+history; they do not establish that this newly observed case is resolved.
+
+Scoop PR #162 changes no engine or browser-test code. Retained trace:
+`/private/tmp/zellij-scoop-focus-failure/header-layout-measured-ove-9e6df-during-rapid-drawer-resizes-desktop/trace.zip`,
+SHA-256 `e20f3e9416396ca0631b89ec4a5817a4754c80152b597e9477d042a8eb028741`.
+The hosted `playwright-failure-details` artifact retains the original evidence.
+
+Next: reproduce with retries disabled and instrument pending restoration,
+focus events, drawer removal and media-query changes. A possible race is that
+another breakpoint arrives after the drawer's focused node is disconnected but
+before pending focus restoration runs; the current handler can then clear the
+request. This is an inspection lead, not an established cause. Preserve the
+behavioral assertion and check focus deliberately moved into content. Prioritize
+this finding before cutting the next candidate; browser acceptance stays hosted.
+
+
+A hosted no-retry diagnostic at `c0a2bed` (run `43533726998`) passes 239 targeted
+cases and fails one WebKit rapid-resize case at the drawer-closure assertion.
+Its captured events show only final-width 390 resize events after the drawer
+opens, with no desktop media-query change. This exposes a test precondition:
+WebKit may coalesce intermediate widths, so the test cannot assume it observed
+a desktop transition. The diagnostic at `9f24261` first waits for closure at the
+initial desktop width, then keeps the remaining rapid burst and final focus
+assertion. This does **not** establish the cause or resolution of the original
+Chromium focus failure. See [the retained events and outcome](evidence/zellij-rapid-focus-discovery-2026-11-13.json).
+The original event JSON's `testInfo.status` was captured before finalization;
+the Playwright failure, not that premature field, determines the result.
+
+
+The revised diagnostic run `43534470738` at `9f24261` passes 240 targeted
+Chromium/WebKit cases and 632 cases from four full-desktop repetitions (64
+conditional skips), with retries disabled. The diagnostic changes only the test
+precondition and instrumentation; engine code is unchanged, and neither the
+probe workflow nor its test changes are merged with Scoop. These passes confirm
+that the clarified scenario is viable, not that the original Chromium failure
+has been explained. Continue investigating its pending restoration/event ordering
+before claiming that finding resolved.

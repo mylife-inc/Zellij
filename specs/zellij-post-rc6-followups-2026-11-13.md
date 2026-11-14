@@ -1,5 +1,16 @@
 # Implementation follow-ups after rc.6 — 2026-11-13
 
+Current priority: investigate the **new rapid-resize header-focus failure** in
+run `43531633137` before cutting the next candidate. Its automatic retry passed;
+the trace and unresolved status are retained in the
+[focus record](zellij-header-resize-focus-2026-11-13.md). Scoop's owned bucket is
+now published at `ca62345`, with all four public Windows lifecycle jobs passing
+in `43532235784`. PR #162 (`fd5f07a`, tested `7788140`) adds exact upgrade
+guidance and release gating; all 27 source CI jobs pass with the recorded
+browser retry. See [the Scoop contract](zel-scoop-distribution-2026-11-13.md).
+
+The earlier investigation and planned sequence below are retained as history.
+
 First implementation follow-up after rc.6 distribution: deterministic runtime
 selection in generated container CI. `cli/crates/zellij-scaffold/src/pipeline.rs`
 at rc.6 generates hosted GitHub jobs without selecting Docker, even where

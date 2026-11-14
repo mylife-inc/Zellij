@@ -66,7 +66,16 @@ are reported in the browser, while native checks validate input limits.
 [Candidate 0.2.0-rc.6](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.6)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
-`brew install mylife-inc/tap/zel`. Use the release's matching engine images for
+`brew install mylife-inc/tap/zel`. Windows users can install through the owned
+[Scoop bucket](https://github.com/mylife-inc/scoop-bucket):
+
+```powershell
+scoop bucket add mylife-inc https://github.com/mylife-inc/scoop-bucket
+scoop install mylife-inc/zel
+```
+
+Use `scoop update; scoop update zel` for that installation; `zel upgrade` preserves
+package-manager ownership. Use the release's matching engine images for
 hosted sites; web-only portable builds need no container runtime. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
 versions, commands and limits.

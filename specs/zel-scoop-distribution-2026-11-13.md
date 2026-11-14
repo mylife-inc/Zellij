@@ -1,7 +1,10 @@
 # Scoop distribution — 2026-11-13
 
-Status: source implementation; hosted Windows lifecycle acceptance and public
-bucket publication are pending. Public rc.6 and its assets remain unchanged.
+Status: the public bucket is published and all four public lifecycle jobs pass.
+PR #162 merges the implementation as `fd5f07a`, with a tree identical to tested
+head `7788140`. All 27 CI jobs in `43531633137` pass without workflow reruns;
+the unrelated automatic browser retry remains recorded below.
+Public rc.6 and its assets remain unchanged.
 
 `scripts/scoop-manifest.mjs` generates a manifest from one exact release's
 checksums. It selects x64/ARM64 Windows ZIPs from the shared release repository,
@@ -14,7 +17,7 @@ refuses the same operation with its generic package-manager message. That
 message improvement will ship in the next candidate. Neither self-upgrade path
 replaces a managed binary, including `--force` or a custom download base.
 
-The owned bucket will be `mylife-inc/scoop-bucket`. Its manifest is updated only
+The owned bucket is [`mylife-inc/scoop-bucket`](https://github.com/mylife-inc/scoop-bucket). Its manifest is updated only
 from verified release checksums; no automatic upstream version discovery or
 unreviewed download URL is added. Preview status and the matching engine image
 are explicit in package notes. The package does not install Node or a container
@@ -45,9 +48,10 @@ Public-bucket acceptance additionally installs from the actual HTTPS bucket
 and release URLs, then uninstalls. Real rc.6-to-next-candidate acceptance remains
 part of the next release's verification.
 
-Local verification: manifest tests, targeted upgrade tests, workspace Clippy,
-formatting, JavaScript syntax and Actionlint. Record actual hosted results and
-public bucket identity here before describing installation as available.
+Local verification passes 36 release-helper tests (three Scoop tests), nine
+targeted upgrade tests, workspace warnings-denied Clippy, formatting, JavaScript
+syntax and Actionlint. Strict/deep documentation checks pass 59 routes and
+25 authored examples.
 
 References: [Scoop manifest contract](https://github.com/ScoopInstaller/Scoop/wiki/App-Manifests),
 [portable config bootstrap](https://github.com/ScoopInstaller/Scoop/blob/e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f/lib/core.ps1),
@@ -69,3 +73,33 @@ launcher. Following [Microsoft's documented guidance](https://learn.microsoft.co
 the harness removes `PSModulePath` only from child-process environments and
 checks each shell version and `Get-FileHash` before installing. The host
 environment and profiles remain unchanged.
+
+
+## Published package verification
+
+Public bucket commit `ca62345d918777b5d66c9954610af60116edcb76` publishes immutable
+rc.6 archives with the ownership marker. All four public-bucket jobs in
+[`43532235784`](https://github.com/mylife-inc/scoop-bucket/actions/runs/43532235784)
+pass without workflow reruns, including actual HTTPS bucket/release installation.
+The bucket pins acceptance tooling `7788140`. Public-archive probe `43531544959`
+also passes all four jobs, after the retained harness failures above.
+
+Tested runners are Windows Server 2022 x64 (`windows-2022`) and Windows 11 ARM64
+(`windows-11-arm`), each under Windows PowerShell 5.1 and PowerShell 7. These are
+specific tested environments, not a claim about every Windows version. The
+source-built CLI's four Scoop jobs in `43531633137` also pass, including its
+specific `scoop update zel` message. No local Windows installation was performed.
+
+```powershell
+scoop bucket add mylife-inc https://github.com/mylife-inc/scoop-bucket
+scoop install mylife-inc/zel
+scoop update
+scoop update zel
+scoop uninstall zel
+```
+
+The recorded [evidence](evidence/zellij-scoop-distribution-2026-11-13.json)
+includes exact pins, checks and limitations. Source CI also observed an unrelated
+rapid-resize header-focus assertion that failed once and passed its automatic
+retry. That finding remains [open](zellij-header-resize-focus-2026-11-13.md);
+package acceptance does not establish zero product bugs.

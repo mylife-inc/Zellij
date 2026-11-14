@@ -54,6 +54,29 @@ require a supported container runtime.
 Use Homebrew to update a Homebrew installation; `zel upgrade` detects its
 ownership marker and prints the correct command without changing any files.
 
+### Scoop on Windows
+
+After installing [Scoop](https://scoop.sh/), use the owned
+[Shebka bucket](https://github.com/mylife-inc/scoop-bucket):
+
+```powershell
+scoop bucket add mylife-inc https://github.com/mylife-inc/scoop-bucket
+scoop install mylife-inc/zel
+scoop update
+scoop update zel
+```
+
+The bucket publishes candidate `0.2.0-rc.6` for native x64 and ARM64, with
+checksum-pinned archives. It uses Scoop's command shim and does not install
+Node, a container runtime or a shell profile. Portable web-only builds need
+none of those dependencies. Remove the package with `scoop uninstall zel`.
+
+Use Scoop for updates. `zel upgrade`, including `--force`, refuses to replace a
+Scoop-managed executable. rc.6 prints generic package-manager guidance; the
+next CLI candidate adds the exact `scoop update zel` command to that message.
+See the [Scoop verification record](https://github.com/mylife-inc/Zellij/blob/main/specs/zel-scoop-distribution-2026-11-13.md)
+for the tested Windows versions, shells and update boundaries.
+
 ### Native archives and installers
 
 Candidate rc.6 implements every registered command family. Imports cover

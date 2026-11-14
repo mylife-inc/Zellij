@@ -121,6 +121,26 @@ older branch workflows wrote `latest`, subsequently retired during rc.4 cleanup.
 for candidate acceptance. Source development can explicitly select
 `ZELLIJ_IMAGE=ghcr.io/mylife-inc/zellij-base:main`; `main` remains mutable.
 
+## Managed Windows distribution
+
+The owned [Scoop bucket](https://github.com/mylife-inc/scoop-bucket) publishes
+rc.6 for native Windows x64/ARM64. All four public acceptance jobs in
+`43532235784` pass at bucket commit `ca62345`. The release pipeline now gates publication on
+four Scoop lifecycle jobs (both CPU architectures under Windows PowerShell 5.1
+and PowerShell 7) and generates `zel.json` from `SHA256SUMS`. This additional
+manifest applies to future tags; immutable rc.6 retains its existing 20 assets.
+
+For each new candidate, update the owned bucket from the verified release's
+manifest, update its README/CI version and pin the matching acceptance tooling.
+Require all four public-bucket jobs to pass before retiring the previous release.
+The checks include real HTTPS installation, marker bytes, managed self-upgrade
+refusal, portable builds, checksum-failure preservation, a fixture package update
+and uninstall. Also verify an actual old-to-new CLI update when publishing a new
+candidate; a fixture package revision alone does not establish that migration.
+See [the Scoop contract](zel-scoop-distribution-2026-11-13.md) for evidence and
+`gh workflow run scoop.yml --ref main -f version=v0.2.0-rc.6 -f public_bucket=true`
+for manual acceptance (substitute the current published version).
+
 ## Prepare a candidate
 
 1. Merge the reviewed changes with all CI jobs passing on the final commit,
