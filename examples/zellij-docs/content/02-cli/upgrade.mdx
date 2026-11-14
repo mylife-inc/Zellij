@@ -38,6 +38,11 @@ Homebrew installations are managed by Homebrew. All `zel upgrade` invocations
 detect the ownership marker before network access and direct you to
 `brew upgrade mylife-inc/tap/zel`; they do not replace a binary in its Cellar.
 
+Scoop-managed installations use `scoop update zel`. The ownership marker also
+blocks `zel upgrade --force` and custom release URLs. Candidate rc.6 reports a
+generic package-manager message; the next candidate adds the exact Scoop
+command. Use the package manager for both checking and installing updates.
+
 `--check` reports the selected version without downloading an archive or changing
 files. With an explicit version argument it only compares versions; it does not
 verify that the requested release or its platform assets exist. An already

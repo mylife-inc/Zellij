@@ -413,6 +413,8 @@ fn check_package_manager(executable: &Path) -> Result<()> {
         .read_to_end(&mut bytes)?;
     Err(failed(if bytes == b"homebrew\n" {
         "Homebrew manages this installation; use `brew upgrade mylife-inc/tap/zel`."
+    } else if bytes == b"scoop\n" {
+        "Scoop manages this installation; use `scoop update zel`."
     } else {
         "This installation has a package-manager marker; upgrade it with its package manager."
     }))

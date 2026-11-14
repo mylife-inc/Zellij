@@ -1,0 +1,66 @@
+name: Scoop acceptance
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        default: ''
+      public_bucket:
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published candidate to install through Scoop
+        required: true
+        default: v0.2.0-rc.6
+        type: string
+      public_bucket:
+        description: Also install from the published mylife-inc bucket
+        default: false
+        type: boolean
+permissions:
+  contents: read
+jobs:
+  install:
+    name: Scoop (${{ matrix.platform.target }}, ${{ matrix.shell }})
+    runs-on: ${{ matrix.platform.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - { os: windows-2022, target: x86_64-pc-windows-msvc }
+          - { os: windows-11-arm, target: aarch64-pc-windows-msvc }
+        shell: [powershell.exe, pwsh]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v7
+        with:
+          repository: ScoopInstaller/Scoop
+          ref: e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f # v0.6.0
+          path: .scoop-source
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v8
+        if: inputs.version == ''
+        with:
+          pattern: binary-*-pc-windows-msvc
+          merge-multiple: true
+          path: dist
+      - name: Download verified public Windows packages
+        if: inputs.version != ''
+        env:
+          VERSION: ${{ inputs.version }}
+        run: node scripts/fetch-scoop-release.mjs "$env:VERSION" dist
+      - name: Install, reject invalid updates, update and uninstall through Scoop
+        env:
+          TARGET: ${{ matrix.platform.target }}
+          ZEL_SCOOP_SHELL: ${{ matrix.shell }}
+          ZEL_SCOOP_PUBLIC_VERSION: ${{ inputs.version }}
+          ZEL_SCOOP_PUBLIC_BUCKET: ${{ inputs.public_bucket || false }}
+        run: node scripts/check-scoop.mjs dist .scoop-source

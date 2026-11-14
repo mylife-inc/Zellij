@@ -65,7 +65,7 @@ jobs:
           node scripts/package-native.mjs "$VERSION" --check-version
           node scripts/release-policy.mjs outputs "$VERSION" >> "$GITHUB_OUTPUT"
       - run: npm ci
-      - run: node --test scripts/homebrew-formula.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs
+      - run: node --test scripts/homebrew-formula.test.mjs scripts/scoop-manifest.test.mjs scripts/release-policy.test.mjs scripts/download-release.test.mjs
       - run: npm run typecheck
       - run: npm test
       - run: npm run build --workspace @shebka/zellij
@@ -239,6 +239,12 @@ jobs:
     with:
       version: ${{ github.ref_name }}
 
+  scoop:
+    needs: binaries
+    uses: ./.github/workflows/scoop.yml
+    permissions:
+      contents: read
+
   # --------------------------------------------------------------------- docs
   docs:
     name: Documentation site
@@ -312,7 +318,7 @@ jobs:
   # ------------------------------------------------------------------ publish
   publish:
     name: Publish the release
-    needs: [verify, manifests, binaries, docs]
+    needs: [verify, manifests, binaries, docs, scoop]
     outputs:
       shared: ${{ steps.destinations.outputs.shared }}
 
@@ -391,6 +397,7 @@ jobs:
           VERSION: ${{ github.ref_name }}
         run: |
           node scripts/homebrew-formula.mjs "$VERSION" artifacts/SHA256SUMS > artifacts/zel.rb
+          node scripts/scoop-manifest.mjs "$VERSION" artifacts/SHA256SUMS > artifacts/zel.json
           node scripts/release-policy.mjs notes "$VERSION" "$GITHUB_REPOSITORY" '' "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/release-notes.md"
           node scripts/release-policy.mjs notes "$VERSION" "$RELEASES_REPO" zellij "$REGISTRY/$IMAGE" > "$RUNNER_TEMP/shared-release-notes.md"
 
