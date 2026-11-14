@@ -37,9 +37,12 @@ const core = path.join(scoopRoot, 'apps/scoop/current');
 const env = { ...process.env, SCOOP: scoopRoot, SCOOP_GLOBAL: path.join(temp, 'global'),
   SCOOP_CACHE: path.join(temp, 'cache'), XDG_CONFIG_HOME: path.join(temp, 'config'),
   PATH: `${path.join(scoopRoot, 'shims')};${process.env.PATH}` };
+// Node inherits PowerShell 7's module path from Actions. Let each child shell
+// rebuild its own default paths rather than loading incompatible PS7 modules in 5.1.
+for (const key of Object.keys(env)) if (key.toLowerCase() === 'psmodulepath') delete env[key];
 async function run(command, args, { code = 0, cwd = temp, log = true, ...options } = {}) {
   return await new Promise((resolve, reject) => {
-    const child = spawn(command, args, { env, cwd, timeout: 180000, ...options });
+    const child = spawn(command, args, { env, cwd, windowsHide: ['powershell.exe', 'pwsh'].includes(command), timeout: 180000, ...options });
     let output = '';
     for (const stream of [child.stdout, child.stderr]) stream?.on('data', bytes => {
       output += bytes; if (log) process.stdout.write(bytes);
@@ -104,6 +107,10 @@ async function assertUninstalled() {
   }
 }
 try {
+  const shellVersion = await run(scoopShell, ['-NoProfile', '-NonInteractive', '-Command',
+    '$PSVersionTable.PSVersion.ToString(); (Get-Command Get-FileHash -ErrorAction Stop).Name']);
+  assert.match(shellVersion, scoopShell === 'powershell.exe' ? /^5\.1\./ : /^7\./);
+  assert(shellVersion.includes('Get-FileHash'));
   assert.equal((await run('git', ['-C', source, 'rev-parse', 'HEAD'], { log: false })).trim(), pin);
   await cp(source, core, { recursive: true });
   for (const directory of ['shims', 'buckets']) await mkdir(path.join(scoopRoot, directory), { recursive: true });
