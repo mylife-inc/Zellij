@@ -1,8 +1,9 @@
 # Shared glossary and index — 2026-11-14
 
-Baseline `0a29442` on main. Implementation is in progress; local and hosted
-acceptance, merge and development-image publication remain pending. Public rc.6
-and production hosting remain unchanged.
+Baseline `0a29442` on main. Implementation and source acceptance are complete
+at `1b9a24f` in PR #173. All 27 source CI jobs pass; merge and development-image
+publication are recorded after completion. Public rc.6 and production hosting
+remain unchanged.
 
 ## Contract
 
@@ -67,8 +68,8 @@ Hosted fixtures extend the bibliography manuscript without changing existing
 PDF inputs. Acceptance covers relocated offline Chromium/WebKit on all three
 OS families, JavaScript on/off, two widths, prefixed Next and actual PDF under
 Docker amd64/arm64 and rootless Podman. The fixtures retain PDF receipts/text/fonts,
-all page captures and glossary/index screenshots for visual review. Exact
-results will be recorded after observation.
+all page captures and glossary/index screenshots for visual review. Final source
+results are recorded below.
 
 Deeper index hierarchies, page-range compression, automatic indexing, rich
 Markdown definitions and localized collation remain extensions. BibTeX/custom
@@ -84,4 +85,39 @@ checks. All 86 native docs tests pass after the final renderer edits. Strict/dee
 validation passes 59 documentation routes and 25 examples, plus the actual
 Rust-emitted eight-page Next manuscript. Fresh dependency installation reports
 no vulnerabilities. No local browser, GUI, container or actual LaTeX was run.
-Hosted source acceptance remains required before merge.
+Final source acceptance is recorded below.
+
+## Final source acceptance
+
+All 27 jobs in [CI `43587957194`](https://github.com/mylife-inc/Zellij/actions/runs/43587957194)
+pass at exact source `1b9a24f1a633b7250007b3252d638682e924506c` without workflow
+reruns. The [JSON evidence](evidence/zellij-book-terms-2026-11-14.json) retains
+job IDs, local log hashes, receipts, captures and the visual-review record.
+
+- Relocated `file://` books pass in Chromium/WebKit on Linux/macOS/Windows,
+  with JavaScript on/off, keyboard links, footnote targets and two widths.
+  Prefixed Next passes the same references and responsive checks. All 52 new
+  glossary/index captures are retained; representative native and Next views
+  are visually reviewed for readable wrapping, focus, subentries and navigation.
+- Docker amd64/arm64 and rootless Podman each render eight books: 24 PDFs and
+  192 captures. All 156 previous captures are byte-identical. The new 12-page
+  manuscript has identical page PNGs across all three runtimes; ten pages were
+  inspected directly, and pages 1 and 5 match previously reviewed bibliography
+  pages. Glossary definitions, see-also links, index subentries, contents and
+  folios are readable without observed clipping or overlap. The energy index
+  has four occurrences and three unique page links: `iii, 3, 5`. This compares
+  rendered layouts, not PDF binary identity. PDF receipt/text/font/qpdf checks pass.
+- Engine checks pass 490 tests and preserve all 46 original plus 13 added
+  documentation routes, 282 original heading IDs, 82 compatibility mappings
+  and 29 byte-identical images, with all six browser regressions passing.
+  Showcase and installer results are retained in the evidence.
+- A bounded native check validates 10,000 catalog terms with 2,000 marked
+  occurrences successfully. This is a capacity sample, not a performance
+  guarantee across machines or manuscripts.
+
+The final record-only commit changes context, this contract, completion and
+product ledgers, and the JSON evidence. Runtime, test, workflow and public-guide
+inputs remain identical to the tested source. The next delivery task is a new
+CLI candidate with the accumulated book/installation improvements, followed by
+richer technical/study editions. The limitations and unexplained browser timing
+findings above remain open; live providers remain deferred.

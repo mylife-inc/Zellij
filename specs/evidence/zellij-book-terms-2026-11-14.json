@@ -1,0 +1,1733 @@
+{
+  "date": "2026-11-14",
+  "status": "source verified; merge and development images pending",
+  "baseline": "0a294426ea7cfcc101ba3da18398aa27c44a4fda",
+  "implementation": "1b9a24f1a633b7250007b3252d638682e924506c",
+  "verified_head": "1b9a24f1a633b7250007b3252d638682e924506c",
+  "pull_request": 173,
+  "local": {
+    "workspace_rust_passed": 796,
+    "existing_hosted_only_ignored": 5,
+    "engine_tests_passed": 490,
+    "final_native_docs_passed": 86,
+    "terms_cases_passed": 7,
+    "workspace_typechecks": true,
+    "engine_packaging": true,
+    "warnings_denied_workspace_clippy": true,
+    "formatting": true,
+    "actionlint": true,
+    "javascript_syntax": true,
+    "strict_deep_docs": {
+      "routes": 59,
+      "examples": 25
+    },
+    "actual_rust_to_next_bridge": {
+      "pages": 8,
+      "strict": true,
+      "deep": true
+    },
+    "logs": [
+      {
+        "file": "zellij-terms-rust-final.log",
+        "sha256": "d3a84454b23b29bbe768019b7a43d97c62f299fcc9d38ec1cf5ecd536cb91cfe"
+      },
+      {
+        "file": "zellij-terms-engine.log",
+        "sha256": "d74ae49e3607ab1b16f5c328cf00c037a8e5a9fcc1210fc8676f6f50be3ff044"
+      },
+      {
+        "file": "zellij-terms-types.log",
+        "sha256": "e7079eeea85a546dcc90f331f0c2c82aefa1e4f72e3c8c9bd9ad255bdb28ff48"
+      },
+      {
+        "file": "zellij-terms-engine-build.log",
+        "sha256": "eba23aef45720fc477bb38f753e012f640580844e09762b28946639aadc2c455"
+      },
+      {
+        "file": "zellij-terms-clippy.log",
+        "sha256": "eb91f8dd47fb373c30c8a1b96a31ab6ef2ba92aeab2ed84a5c17552e777df914"
+      },
+      {
+        "file": "zellij-terms-docs-final.log",
+        "sha256": "a2d9bb718e60e1a330053f163776ee0f97adf1ea7b99e9dd9d184040665f4a54"
+      },
+      {
+        "file": "zellij-terms-tests-final.log",
+        "sha256": "d83a8ad900442b33e9e4c0331cd4d0bf6f0c899570f300a3dc60c76ca95062f6"
+      },
+      {
+        "file": "zellij-terms-bridge-final.log",
+        "sha256": "efd024fedcbb61072073c43405128504db3fe9aa2eac43f4440e40888271e5e7"
+      },
+      {
+        "file": "zellij-terms-docs.log",
+        "sha256": "e421e991a54c11c23d220b7aac5f0e297f84a53877db8c6de86add01c2259f08"
+      },
+      {
+        "file": "zellij-terms-build.log",
+        "sha256": "159a8ae7978399bf1af5d2194155c55f709e357e7af6ccc1222026ed4a37d9c8"
+      }
+    ],
+    "catalog_capacity_check": {
+      "terms": 10000,
+      "occurrences": 2000,
+      "exit_code": 0,
+      "elapsed_seconds": 2.527,
+      "output": "\u2713 /private/tmp/zellij-terms-catalog-limit/content\n  3 HTML pages checked; no files written\n",
+      "errors": ""
+    }
+  },
+  "ci": {
+    "run_id": 43587957194,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43587957194",
+    "head": "1b9a24f1a633b7250007b3252d638682e924506c",
+    "run_attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "job_id": 132426408740,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408878,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408902,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408920,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408929,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408931,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408940,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408961,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408975,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426408994,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409000,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409023,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409055,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409061,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409068,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409092,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409100,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132426409194,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132427253737,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869220,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869225,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869228,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869238,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869252,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869259,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869261,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132428869262,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "existing_product": {
+    "engine_job_id": 132426408740,
+    "engine_tests_passed": 490,
+    "showcase_job_id": 132426408920,
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "showcase_retries": 0,
+    "documentation_preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_regressions_passed": 6
+    }
+  },
+  "pdf": {
+    "count": 24,
+    "captures": 192,
+    "prior_captures": 156,
+    "prior_captures_unchanged": 156,
+    "terms_pages": 12,
+    "terms_captures_equal_across_runtimes": true,
+    "runtimes": [
+      {
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "2fed1cb5c0f9f0d0d7fdc0c0fcfe54b3da603bd7ff410c24ce8b36b7780d96b7",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "bibliography/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "1edda5f2dbf03998b249a8a1ff6838ca3bf8e3d5b7bbaa7ca6d3e85070d0aced",
+            "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "4dd914fe1a774dfc316bd8b6298b8ae565b3766674f0a73aedad250c650bd046",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "5db4de55efe430d26a7b7627def3d5bb301e01fb9988938ba3781a830c5d106d",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "1d0628f4f0c6fae2d9e0da976f8429984865b488a2121aa629ba2cce14ddfd8e",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "446a1988d8fdf97875fedfe1e28fff54a254d62657c75d8630ce638992980d99",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "888ad5c2cef4f61fc1bf698a1a8bb5b8bcc9ac0321c74676dc23dbd36c7e62a6",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "terms/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "febe62d05055e69a50fd4e2c940b8b3266d0642d25e7509a0cdc1b93230224f9",
+            "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "bibliography/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "bibliography/page-2.png",
+            "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+          },
+          {
+            "file": "bibliography/page-3.png",
+            "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+          },
+          {
+            "file": "bibliography/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "bibliography/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "bibliography/page-6.png",
+            "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+          },
+          {
+            "file": "bibliography/page-7.png",
+            "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+          },
+          {
+            "file": "bibliography/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "bibliography/page-9.png",
+            "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "terms/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "terms/page-10.png",
+            "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+          },
+          {
+            "file": "terms/page-11.png",
+            "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+          },
+          {
+            "file": "terms/page-12.png",
+            "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+          },
+          {
+            "file": "terms/page-2.png",
+            "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+          },
+          {
+            "file": "terms/page-3.png",
+            "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+          },
+          {
+            "file": "terms/page-4.png",
+            "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+          },
+          {
+            "file": "terms/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "terms/page-6.png",
+            "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+          },
+          {
+            "file": "terms/page-7.png",
+            "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+          },
+          {
+            "file": "terms/page-8.png",
+            "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+          },
+          {
+            "file": "terms/page-9.png",
+            "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+          }
+        ]
+      },
+      {
+        "name": "book-pdf-ubuntu-latest-docker",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "d54e22eb064431b64d4a64b8d4b1aab936e30522b74e2c5c02eda2b5140d31d1",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "bibliography/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "20dd1751e6cf881affa82503285df1ba33d9dd335cd62b1b30712de8aabc2633",
+            "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "c1067410b07beb08e9af166278494fcf0cf958542000f88a0a87dd6a6ab606b2",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "f74dc3bf504295dbaf88ac76ebcd2fdd0b7ec09f92569ac3dc44801b62eeb425",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "cb0616cbe79f96dda8d7c032ccab1694d45a6a0dcad09b6c03ce2c463808cd5b",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "aa7ee1b1302095769cc49fd043ed2537ebbc089d75b76da710b07358b033029b",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "38931e683f7ccf7fa46d21ee17d8cb808893700eaa8f9ad365c1cebf620931e6",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "terms/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "ff0a4d99ce98c299734692c4f52f51f5b45dcbadf724b5a453e4d76b288a30cf",
+            "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "bibliography/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "bibliography/page-2.png",
+            "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+          },
+          {
+            "file": "bibliography/page-3.png",
+            "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+          },
+          {
+            "file": "bibliography/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "bibliography/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "bibliography/page-6.png",
+            "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+          },
+          {
+            "file": "bibliography/page-7.png",
+            "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+          },
+          {
+            "file": "bibliography/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "bibliography/page-9.png",
+            "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "terms/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "terms/page-10.png",
+            "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+          },
+          {
+            "file": "terms/page-11.png",
+            "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+          },
+          {
+            "file": "terms/page-12.png",
+            "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+          },
+          {
+            "file": "terms/page-2.png",
+            "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+          },
+          {
+            "file": "terms/page-3.png",
+            "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+          },
+          {
+            "file": "terms/page-4.png",
+            "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+          },
+          {
+            "file": "terms/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "terms/page-6.png",
+            "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+          },
+          {
+            "file": "terms/page-7.png",
+            "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+          },
+          {
+            "file": "terms/page-8.png",
+            "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+          },
+          {
+            "file": "terms/page-9.png",
+            "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+          }
+        ]
+      },
+      {
+        "name": "book-pdf-ubuntu-latest-podman",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "018a9882aefaab3a058407ca284b0ee38f1cef63e57d002005780309c1339a08",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "bibliography/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "f3958ccc9d714818f82602f8cecfacaf722ba2de609bb5130299dea76595f7fe",
+            "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "ac82dce966397afff837d3fa06b8411f4e69e4ad7a8efed252baef2a4657299e",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "ed9c414e1f5a03c135e82dc320287a80fa9397e28813be16761bb871d3de0eb4",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "afe487d65ab3e12360a049e846e58730f5761fb65dfb04a58c5071708e13ce17",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "39d926ef1f1f6743ed6bc04e4c78700ce75049901e8ad52745d68f848d4f7cce",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "9602bccb239fd09acad8227b997bdcd9770b466b73f840c987ae7e99b9549b3f",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "terms/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "11bef3195e5bd0e3c324ac2f3cfbf3efd5f6f6915f0ef458e155db038bbe5ab6",
+            "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "bibliography/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "bibliography/page-2.png",
+            "sha256": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be"
+          },
+          {
+            "file": "bibliography/page-3.png",
+            "sha256": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6"
+          },
+          {
+            "file": "bibliography/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "bibliography/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "bibliography/page-6.png",
+            "sha256": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780"
+          },
+          {
+            "file": "bibliography/page-7.png",
+            "sha256": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a"
+          },
+          {
+            "file": "bibliography/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "bibliography/page-9.png",
+            "sha256": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          },
+          {
+            "file": "terms/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "terms/page-10.png",
+            "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+          },
+          {
+            "file": "terms/page-11.png",
+            "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+          },
+          {
+            "file": "terms/page-12.png",
+            "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+          },
+          {
+            "file": "terms/page-2.png",
+            "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+          },
+          {
+            "file": "terms/page-3.png",
+            "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+          },
+          {
+            "file": "terms/page-4.png",
+            "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+          },
+          {
+            "file": "terms/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "terms/page-6.png",
+            "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+          },
+          {
+            "file": "terms/page-7.png",
+            "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+          },
+          {
+            "file": "terms/page-8.png",
+            "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+          },
+          {
+            "file": "terms/page-9.png",
+            "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+          }
+        ]
+      }
+    ]
+  },
+  "web": {
+    "captures": [
+      {
+        "file": "book-preview-macos-latest/chromium-terms-false-book-index-1280.png",
+        "sha256": "6fa3de04d071e281c6e8d13bb1f8b6411af60fb86983f96ac9ce231f4d4dd4b6"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-false-book-index-390.png",
+        "sha256": "195e06067c8e5f924b2804981fe1a26a49acf37206476fdcf57294ca99a4df68"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-false-glossary-1280.png",
+        "sha256": "ab72572d2f6d57a75eda9da96c356da7c9381c436a6c8480a619833bd5c90c4c"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-false-glossary-390.png",
+        "sha256": "f0b82408a1ff3ec411b1ed90aa88f1674aa15e2368dc431fcb4da42b210a9013"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-true-book-index-1280.png",
+        "sha256": "d90fc7a611b8f5ba435b86285c20c63bee1dc1b4958fb4a5ee48ead48bc14dbd"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-true-book-index-390.png",
+        "sha256": "2e7c911399323c6dc44512090bd4ce1eb8eaafc22dba3c2c5d37df8ac73aa637"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-true-glossary-1280.png",
+        "sha256": "025806039f429f18becdc41e9b888f6d56d549aef8c512c442c6e1219d1e152d"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-true-glossary-390.png",
+        "sha256": "1f002c678556614e80ff76f041d7f10fa1fe91a98c90013cb84b316c9c5980a5"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-false-book-index-1280.png",
+        "sha256": "02060c83d65308c45487dcfc70828059fcb12eff319e725f4e93c1d956aa51b6"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-false-book-index-390.png",
+        "sha256": "df4ebd95d00ec8f2ad7f6aebd21c8c39b312479e506b3a08c04e52b371980440"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-false-glossary-1280.png",
+        "sha256": "f7a2e625662ec4845eb83e4257faa51b09d6eef41dbc6910be0926d23c5c6713"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-false-glossary-390.png",
+        "sha256": "9aab97f8883ecadc0ba08c849c8cce52e42ce88b9f332739f76fef69c32e7b47"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-true-book-index-1280.png",
+        "sha256": "9d69f9b35bc841c464c190f62e57061e9181a6eae664ce2a0336d3165bf7c920"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-true-book-index-390.png",
+        "sha256": "d4d9979eda72503c73cf7701c554bd7c3c859b569df96daacd1b042595c12cf6"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-true-glossary-1280.png",
+        "sha256": "787fd22a5e4832fad30d388b7ae4840b89af05d16fff6ca284f47f8312c10fc4"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-true-glossary-390.png",
+        "sha256": "aca3f42a1498930a4ee803cad724763b9621f8af7a4966075fd00cb7afa4ba4f"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-false-book-index-1280.png",
+        "sha256": "9b8777782ca81aa65c6b42df39c405ad72019db6922f5870c3adef5046d2879b"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-false-book-index-390.png",
+        "sha256": "716a03772e6d954f8d0a933a3f9a1033b28407669b6abf593fd1d65f8cdc8eb6"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-false-glossary-1280.png",
+        "sha256": "972f92fe3571d5666f2e36191ef3bbadfa01cc848da547087d1ae974ccf03cae"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-false-glossary-390.png",
+        "sha256": "1f389d140692c9b8729d77cdcd3f478cdded4aed29894e61f21860ee9e017515"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-true-book-index-1280.png",
+        "sha256": "17fbbc3f4094df22e43f3633e1013e95bc54d498303271313191b958614f8fe1"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-true-book-index-390.png",
+        "sha256": "46ae7ecaffc2b848851b50507dc94909012c924bd32c7cb7b13c967b46642dc7"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-true-glossary-1280.png",
+        "sha256": "38b74e02d1f911b2e132a2529e1daa69b444274f6965b43b4fa090326836cead"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-true-glossary-390.png",
+        "sha256": "afad6aafba9b9aefb684a97558664c8db17dc526e4a0811fa709dfac1ac0bbff"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-false-book-index-1280.png",
+        "sha256": "bf0a4f3d7e24969b355104c8a3273d37a5657145612da53601a4b80542bd59bd"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-false-book-index-390.png",
+        "sha256": "a5c153f2dfcc26152e8139fa505edba0b9e51df5ce30ff41190fd50d19fb4db3"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-false-glossary-1280.png",
+        "sha256": "ec7ede17e093258f931b2e0b8078fa9662698d6aea0251bdb0715e8fa1ab969a"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-false-glossary-390.png",
+        "sha256": "1e02bb33270bbf8634876a26a3272349902d23343a55c7685b104e1d6a333aa3"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-true-book-index-1280.png",
+        "sha256": "521f0c9adb74f23b5363cc742af9b451ce591e209afcd3bb192fba21daab37cc"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-true-book-index-390.png",
+        "sha256": "faeb8597e52cbab6c9adf3446cc9555d8b83bff094546f97dbdd254ac0239039"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-true-glossary-1280.png",
+        "sha256": "18be0f118a6a76a500b8db5ccdcebc344689b1008649146df9bd6649cae7c04b"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-true-glossary-390.png",
+        "sha256": "c5121d9f8568170ea107ee6414885b042bffeabf93c3d97f4d420140473c5977"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-false-book-index-1280.png",
+        "sha256": "403a1e26f00b13f3e14ca01d6a7c3e83cb47d208f917c8f79dc584c6dddad846"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-false-book-index-390.png",
+        "sha256": "e9393d2bef33bb1542b47645a6e46074d4dd932ba12c3bd25564cb5906543fd7"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-false-glossary-1280.png",
+        "sha256": "45b79a2c86c15387f42e94cbe024f6f3c3409bdb7ea154f2cf27e02cb72417cf"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-false-glossary-390.png",
+        "sha256": "43441a0c9746951fc32c4b5ab3188e51251e61fda6374bbc755203a2ea754732"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-true-book-index-1280.png",
+        "sha256": "cbe7f2ab7d57cd55fb1d32d1f9141363982e184f89064031d57f53551933d184"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-true-book-index-390.png",
+        "sha256": "ca75a3b91a0be7fcf4bac7dfb0d2d6469ee16339f25d983e10f297a1368ffe11"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-true-glossary-1280.png",
+        "sha256": "f153ef2ea391834547a8a93b4eea87595b44e2a00457568f9219fa5ceef731c2"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-true-glossary-390.png",
+        "sha256": "d89246bc2732286069008172c74b43c271a30fc5e7a6134d174e23df8d98bc79"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-false-book-index-1280.png",
+        "sha256": "7d9fd6c52a552692c6a3596af4cb3807e4d1aa47d511a31151107d991cabee02"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-false-book-index-390.png",
+        "sha256": "099313686f45aa69454e31c7b3f23957d304b65e07f196c4792cbffe7bc9d78f"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-false-glossary-1280.png",
+        "sha256": "b96de66df53c38fce74ca3cd07032a7c7be496f5519a1183f1fa445976d459b3"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-false-glossary-390.png",
+        "sha256": "2e7dbf649da55d150154557505a1547bf5a441c5221c16d2fbaf4697213d8fe4"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-true-book-index-1280.png",
+        "sha256": "b45315b58039efefe26f7bc0a8edf15625354d0ad24a77e43df0ced1911d9734"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-true-book-index-390.png",
+        "sha256": "4772726efc5404609ef9c1a42a8401f3e3412b2795a34c015c0fc2e39a67536d"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-true-glossary-1280.png",
+        "sha256": "20b5dd19d7f7f1d8a6f085ff1b76a7fb7a7eca3f4b81d879afda09159aa2ca36"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-true-glossary-390.png",
+        "sha256": "2fe453bd873fe0570dbc6d65f918718f7b69313e8f3bc3eca229a942794b8f3a"
+      },
+      {
+        "file": "next-equation-previews/next-terms-book-index-1280.png",
+        "sha256": "cb6098fb9f225a4e81e6c8a26fe2260bf012606e16565b10200c05c5bdb99600"
+      },
+      {
+        "file": "next-equation-previews/next-terms-book-index-390.png",
+        "sha256": "e3cd3a13d1b1bc079277faccdc99200bd7811f5edef355c5ed898f518c808cec"
+      },
+      {
+        "file": "next-equation-previews/next-terms-glossary-1280.png",
+        "sha256": "a7c78d391d7cb131318be22dcb76148a283c1f4d74ab9fe373908a7cd566471d"
+      },
+      {
+        "file": "next-equation-previews/next-terms-glossary-390.png",
+        "sha256": "b85771d96a2df67f7d87604e291e1a214f5a62482f1ce03a95c7a8bb8d209274"
+      }
+    ]
+  },
+  "visual_review": {
+    "pdf": {
+      "source": "1b9a24f1a633b7250007b3252d638682e924506c",
+      "reviewed_pages": [
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "pages_matching_previously_reviewed_bibliography_pages": [
+        1,
+        5
+      ],
+      "all_runtime_captures_match": true,
+      "captures": [
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-1.png",
+          "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-10.png",
+          "sha256": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-11.png",
+          "sha256": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-12.png",
+          "sha256": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-2.png",
+          "sha256": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-3.png",
+          "sha256": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-4.png",
+          "sha256": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-5.png",
+          "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-6.png",
+          "sha256": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-7.png",
+          "sha256": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-8.png",
+          "sha256": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f"
+        },
+        {
+          "file": "book-pdf-ubuntu-latest-docker/terms/page-9.png",
+          "sha256": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+        }
+      ],
+      "notes": "Reviewed contents, authored body, equations/statements, footnotes, bibliography, glossary definitions, see-also links, subentry indentation and linked folios. Energy index has four occurrences but unique page references iii, 3, 5. No clipping or overlap observed."
+    },
+    "web": [
+      {
+        "file": "next-equation-previews/next-terms-glossary-1280.png",
+        "sha256": "a7c78d391d7cb131318be22dcb76148a283c1f4d74ab9fe373908a7cd566471d",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "next-equation-previews/next-terms-glossary-390.png",
+        "sha256": "b85771d96a2df67f7d87604e291e1a214f5a62482f1ce03a95c7a8bb8d209274",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "next-equation-previews/next-terms-book-index-1280.png",
+        "sha256": "cb6098fb9f225a4e81e6c8a26fe2260bf012606e16565b10200c05c5bdb99600",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "next-equation-previews/next-terms-book-index-390.png",
+        "sha256": "e3cd3a13d1b1bc079277faccdc99200bd7811f5edef355c5ed898f518c808cec",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-terms-true-glossary-1280.png",
+        "sha256": "38b74e02d1f911b2e132a2529e1daa69b444274f6965b43b4fa090326836cead",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-terms-false-book-index-390.png",
+        "sha256": "a5c153f2dfcc26152e8139fa505edba0b9e51df5ce30ff41190fd50d19fb4db3",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-terms-false-glossary-390.png",
+        "sha256": "9aab97f8883ecadc0ba08c849c8cce52e42ce88b9f332739f76fef69c32e7b47",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-terms-true-book-index-1280.png",
+        "sha256": "d90fc7a611b8f5ba435b86285c20c63bee1dc1b4958fb4a5ee48ead48bc14dbd",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-terms-true-glossary-1280.png",
+        "sha256": "f153ef2ea391834547a8a93b4eea87595b44e2a00457568f9219fa5ceef731c2",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-terms-false-book-index-390.png",
+        "sha256": "099313686f45aa69454e31c7b3f23957d304b65e07f196c4792cbffe7bc9d78f",
+        "notes": "Readable definitions or index entries, occurrence and see-also links, focus outlines and navigation. No observed clipping or overlap; mobile wrapping and child indentation remain readable."
+      }
+    ]
+  },
+  "retained_findings": [
+    {
+      "type": "home-route mapping",
+      "details": "Review found that naive prefix removal could collapse index.html.md backlinks into the home route. Replacement is restricted to exact index.html# targets; the dotted-page regression passes."
+    },
+    {
+      "type": "footnote reading order",
+      "details": "Definitions before a call site now retain source-order anchors but order backlinks by the first footnote call site. A regression covers a later source marker preceding an earlier footnote definition in reading order."
+    },
+    {
+      "type": "earlier unresolved browser timings",
+      "details": "The separate WebKit overflow and documentation hydration findings remain open; later feature acceptance does not close them."
+    }
+  ],
+  "limits": [
+    "Public rc.6 and production hosting are unchanged.",
+    "One subentry level and plain definitions; no automatic indexing, locale-aware collation, rich definitions or compressed page ranges.",
+    "BibTeX/custom CSL, multilingual/RTL print, Next-image PDFs, richer book editions and remaining installation work remain open.",
+    "Live providers and production-domain migration remain deferred.",
+    "No claim of zero bugs or complete 1.0."
+  ]
+}
