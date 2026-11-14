@@ -156,9 +156,86 @@ test.describe('measured overflow', () => {
     await page.getByRole('button', { name: 'Open navigation' }).click();
     const drawer = page.getByRole('dialog', { name: 'Site navigation' });
     await expect(drawer).toBeVisible();
-    for (const width of [1280, 390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
+    // Browsers can coalesce transient widths; observe the initial desktop
+    // transition before checking the final focus after the remaining burst.
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await expect(drawer).toHaveCount(0);
+    for (const width of [390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
     await expect(drawer).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
   });
+  for (const destination of ['navigation', 'content', 'brand', 'pointer'] as const) {
+    test(`preserves ${destination} focus across resizes before queued frames run`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 900 });
+      await page.goto('/');
+      await page.getByRole('button', { name: 'Open navigation' }).click();
+      const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+      await expect(drawer).toBeFocused();
+      // Hold only animation callbacks after the drawer is ready. DOM commits and
+      // real media-query events still run, modelling a delayed rendering frame.
+      await page.evaluate(() => {
+        const request = window.requestAnimationFrame.bind(window);
+        const cancel = window.cancelAnimationFrame.bind(window);
+        const callbacks = new Map<number, FrameRequestCallback>();
+        let held = true;
+        let id = 0;
+        window.requestAnimationFrame = callback => {
+          if (!held) return request(callback);
+          callbacks.set(--id, callback);
+          return id;
+        };
+        window.cancelAnimationFrame = handle => {
+          if (handle < 0) callbacks.delete(handle);
+          else cancel(handle);
+        };
+        const state = { events: 0, release: () => new Promise<void>(resolve => {
+          held = false;
+          request(time => {
+            for (const handle of [...callbacks.keys()]) {
+              const callback = callbacks.get(handle);
+              callbacks.delete(handle);
+              callback?.(time);
+            }
+            request(() => request(() => resolve()));
+          });
+        }) };
+        (window as unknown as { delayedFocusFrames: typeof state }).delayedFocusFrames = state;
+        matchMedia('(max-width: 900px)').addEventListener('change', () => state.events++);
+      });
+      const events = () => page.evaluate(() =>
+        (window as unknown as { delayedFocusFrames: { events: number } }).delayedFocusFrames.events);
+      await page.setViewportSize({ width: 1280, height: 900 });
+      await expect(drawer).toHaveCount(0);
+      await expect.poll(events).toBe(1);
+      await page.setViewportSize({ width: 390, height: 900 });
+      await expect.poll(events).toBe(2);
+      const contentLink = page.locator('main a[href]').first();
+      const brand = page.locator('.zellij-logo');
+      if (destination === 'content') {
+        await contentLink.focus();
+        await expect(contentLink).toBeFocused();
+      } else if (destination === 'brand') {
+        await brand.focus();
+        await expect(brand).toBeFocused();
+      } else if (destination === 'pointer') {
+        const heading = await page.locator('main h1').boundingBox();
+        expect(heading).not.toBeNull();
+        await page.mouse.click(heading!.x + heading!.width / 2, heading!.y + heading!.height / 2);
+      }
+      await page.evaluate(() =>
+        (window as unknown as { delayedFocusFrames: { release(): Promise<void> } }).delayedFocusFrames.release());
+      await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
+      if (destination === 'navigation') {
+        await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
+      } else if (destination === 'content') {
+        await expect(contentLink).toBeFocused();
+      } else if (destination === 'brand') {
+        await expect(brand).toBeFocused();
+      } else {
+        await expect(page.locator('body')).toBeFocused();
+      }
+    });
+  }
+
 });

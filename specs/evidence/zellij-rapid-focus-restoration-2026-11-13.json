@@ -1,0 +1,967 @@
+{
+  "date": "2026-11-13",
+  "original_finding": {
+    "run_id": 43531633137,
+    "job_id": 132250636619,
+    "status": "failed first attempt, passed retry"
+  },
+  "reproduction": {
+    "run_id": 43537359369,
+    "job_id": 132269477540,
+    "head": "ba3c1fdadd36cd5c7b7f490b934f443996b75073",
+    "retries": 0,
+    "passed": 112,
+    "failed": 8,
+    "failures": [
+      {
+        "file": "raw-107-107.json",
+        "sha256": "b1b8c8c01d2ed0fdfd047f3bb88bdfabb68718bfb914edaaae12a377219b9a29",
+        "last_hidden_blur": {
+          "at": 1050.3000000000175,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1073,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-109-109.json",
+        "sha256": "e06796ecec699efc44a8ffdd97de109132060811c62eb0ad9f7808fca1653360",
+        "last_hidden_blur": {
+          "at": 984.2999999999884,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1042.7999999999884,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-116-116.json",
+        "sha256": "b13a20c3720b6d59a41568c9786432a67312745d620093fe593a86c9502b4f57",
+        "last_hidden_blur": {
+          "at": 750.3999999999942,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 806.6999999999825,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-119-119.json",
+        "sha256": "8873e7b87407afbfffb8c1998beed37064f131994167550581a691aa90e16236",
+        "last_hidden_blur": {
+          "at": 418.30000000001746,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 432.6000000000058,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-35-35.json",
+        "sha256": "5e72251e2bfda6a5bd5e388c0ccf7beca9721c606ae4fecc347cf510074c99a9",
+        "last_hidden_blur": {
+          "at": 1292.7000000000116,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1349.6000000000058,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-45-45.json",
+        "sha256": "8edfeebaa7e7b4e7c8f51c53dbbf25b274e45e9b5bb8fff0e3ebb8eb92554433",
+        "last_hidden_blur": {
+          "at": 1123.8999999999942,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1200.7000000000116,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-87-87.json",
+        "sha256": "b142aa5577bed0c2d2ccd83c4f0328ea0ca83610c1fefd2bf1dd569e08c12579",
+        "last_hidden_blur": {
+          "at": 1108,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1155.7000000000116,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      },
+      {
+        "file": "raw-93-93.json",
+        "sha256": "6699714f2c8aaae7805634be13670c25fbbccd0bf5aa3d6f159829e0986c001e",
+        "last_hidden_blur": {
+          "at": 995.2999999999884,
+          "event": "react-focusout",
+          "width": 1280,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 0
+          },
+          "latestRequest": null,
+          "related": false
+        },
+        "last_media_handler": {
+          "at": 1038.7999999999884,
+          "event": "react-media",
+          "width": 390,
+          "active": {
+            "tag": "BODY",
+            "class": "",
+            "connected": true,
+            "rects": 1
+          },
+          "previous": {
+            "tag": "BUTTON",
+            "class": "zellij-hamburger",
+            "connected": true,
+            "rects": 1
+          },
+          "latestRequest": null,
+          "drawerOpen": false,
+          "hiddenFocus": false,
+          "restore": false,
+          "mobile": true
+        }
+      }
+    ],
+    "representative_events": [
+      {
+        "at": 616.5,
+        "event": "react-effect",
+        "width": 390,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": null,
+        "latestRequest": null,
+        "resizeFocus": null,
+        "drawerOpen": false
+      },
+      {
+        "at": 756.6000000000058,
+        "event": "react-focusin",
+        "width": 390,
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": null,
+        "latestRequest": null
+      },
+      {
+        "at": 775.2000000000116,
+        "event": "react-focusout",
+        "width": 390,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "related": true
+      },
+      {
+        "at": 775.6000000000058,
+        "event": "react-focusin",
+        "width": 390,
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": null,
+        "latestRequest": null
+      },
+      {
+        "at": 775.9000000000233,
+        "event": "react-effect",
+        "width": 390,
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "resizeFocus": null,
+        "drawerOpen": true
+      },
+      {
+        "at": 882.9000000000233,
+        "event": "media-before-react",
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "label": "Site navigation",
+          "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+          "connected": true,
+          "rects": 0
+        },
+        "target": null,
+        "width": 1280,
+        "mobile": false,
+        "drawer": true
+      },
+      {
+        "at": 884.3000000000175,
+        "event": "react-media",
+        "width": 1280,
+        "active": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 0
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": null,
+        "drawerOpen": true,
+        "hiddenFocus": false,
+        "restore": true,
+        "mobile": false
+      },
+      {
+        "at": 888.8000000000175,
+        "event": "react-focusout",
+        "width": 1280,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": "desktop",
+        "related": false
+      },
+      {
+        "at": 897.8000000000175,
+        "event": "react-effect",
+        "width": 1280,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": false,
+          "rects": 0
+        },
+        "latestRequest": "desktop",
+        "resizeFocus": "desktop",
+        "drawerOpen": false
+      },
+      {
+        "at": 897.9000000000233,
+        "event": "media-frame-1",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 1280,
+        "mobile": false,
+        "drawer": false
+      },
+      {
+        "at": 898.1000000000058,
+        "event": "react-frame",
+        "width": 1280,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": false,
+          "rects": 0
+        },
+        "latestRequest": "desktop",
+        "request": "desktop",
+        "mobile": false
+      },
+      {
+        "at": 900.5,
+        "event": "react-focusin",
+        "width": 1280,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "DIV",
+          "class": "zellij-drawer-panel",
+          "connected": false,
+          "rects": 0
+        },
+        "latestRequest": "desktop"
+      },
+      {
+        "at": 945.9000000000233,
+        "event": "react-clear",
+        "width": 1280,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": "desktop",
+        "current": "desktop",
+        "request": "desktop"
+      },
+      {
+        "at": 947.1000000000058,
+        "event": "media-frame-2",
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "label": null,
+          "text": "Lumen 3 Pro",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 1280,
+        "mobile": false,
+        "drawer": false
+      },
+      {
+        "at": 964.1000000000058,
+        "event": "react-cancel",
+        "width": 1280,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "request": "desktop"
+      },
+      {
+        "at": 964.4000000000233,
+        "event": "react-effect",
+        "width": 1280,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "resizeFocus": null,
+        "drawerOpen": false
+      },
+      {
+        "at": 998,
+        "event": "media-before-react",
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "label": null,
+          "text": "Lumen 3 Pro",
+          "connected": true,
+          "rects": 0
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      },
+      {
+        "at": 998.2000000000116,
+        "event": "react-media",
+        "width": 390,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": null,
+        "drawerOpen": false,
+        "hiddenFocus": false,
+        "restore": true,
+        "mobile": true
+      },
+      {
+        "at": 1000.3000000000175,
+        "event": "react-effect",
+        "width": 390,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": "mobile",
+        "resizeFocus": "mobile",
+        "drawerOpen": false
+      },
+      {
+        "at": 1000.4000000000233,
+        "event": "media-frame-1",
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "label": null,
+          "text": "Lumen 3 Pro",
+          "connected": true,
+          "rects": 0
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      },
+      {
+        "at": 1000.5,
+        "event": "react-frame",
+        "width": 390,
+        "active": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": "mobile",
+        "request": "mobile",
+        "mobile": true
+      },
+      {
+        "at": 1000.7000000000116,
+        "event": "react-focusout",
+        "width": 390,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "A",
+          "class": "zellij-nav-link",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": "mobile",
+        "related": true
+      },
+      {
+        "at": 1000.7000000000116,
+        "event": "react-focusin",
+        "width": 390,
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": null,
+        "latestRequest": "mobile"
+      },
+      {
+        "at": 1016.5,
+        "event": "react-clear",
+        "width": 390,
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": "mobile",
+        "current": "mobile",
+        "request": "mobile"
+      },
+      {
+        "at": 1017.4000000000233,
+        "event": "react-cancel",
+        "width": 390,
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "request": "mobile"
+      },
+      {
+        "at": 1017.4000000000233,
+        "event": "react-effect",
+        "width": 390,
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "resizeFocus": null,
+        "drawerOpen": false
+      },
+      {
+        "at": 1031,
+        "event": "media-frame-2",
+        "active": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "label": "Open navigation",
+          "text": "",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      },
+      {
+        "at": 1050.3000000000175,
+        "event": "react-focusout",
+        "width": 1280,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 0
+        },
+        "latestRequest": null,
+        "related": false
+      },
+      {
+        "at": 1072.9000000000233,
+        "event": "media-before-react",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      },
+      {
+        "at": 1073,
+        "event": "react-media",
+        "width": 390,
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "connected": true,
+          "rects": 1
+        },
+        "previous": {
+          "tag": "BUTTON",
+          "class": "zellij-hamburger",
+          "connected": true,
+          "rects": 1
+        },
+        "latestRequest": null,
+        "drawerOpen": false,
+        "hiddenFocus": false,
+        "restore": false,
+        "mobile": true
+      },
+      {
+        "at": 1074,
+        "event": "media-frame-1",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      },
+      {
+        "at": 1105.3000000000175,
+        "event": "media-frame-2",
+        "active": {
+          "tag": "BODY",
+          "class": "",
+          "label": null,
+          "text": "(function(){try{\n  var d = document.documentElemen",
+          "connected": true,
+          "rects": 1
+        },
+        "target": null,
+        "width": 390,
+        "mobile": true,
+        "drawer": false
+      }
+    ]
+  },
+  "implementation": "in progress; hosted verification pending",
+  "public_release": "v0.2.0-rc.6 unchanged",
+  "delayed_baseline": {
+    "run_id": 43538255973,
+    "head": "87c60494fe13adaf83e105d5ce7678fdfc390bd1",
+    "job_id": 132272416670,
+    "retries": 0,
+    "passed": 16,
+    "failed": 8,
+    "failure": "All four navigation-restoration repetitions fail in Chromium and all four in WebKit; content/pointer preservation cases pass."
+  }
+}
