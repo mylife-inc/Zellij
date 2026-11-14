@@ -127,6 +127,13 @@ follow-up adds the exact page URL to future readiness errors while preserving
 the original cause, timeout and browser-error checks. Investigate these findings
 before the next candidate; no zero-bug claim is made by this checkpoint.
 
+Subsequent [bounded investigation](zellij-browser-timing-investigation-2026-11-13.md)
+passes 120 overflow repetitions and 40 full-site annotation checks without
+retries. Neither finding reproduces; both remain unexplained. The follow-up adds
+bounded failure-only diagnostics instead of changing runtime behavior based on
+an unestablished cause. See that record for capture acceptance and retained
+probe failures. This advances the investigation without erasing the two findings.
+
 
 The verification follow-up changes no product runtime. It carries the exact
 native-frame fixture from the passing stress run, the readiness URL diagnostic,
