@@ -1,0 +1,35 @@
+name: Rapid header focus diagnostic
+on:
+  push:
+    branches: [codex/rapid-focus-probe]
+permissions:
+  contents: read
+jobs:
+  focus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npm run build --workspace @shebka/zellij-showcase
+      - run: npx playwright install --with-deps chromium webkit
+        working-directory: examples/showcase
+      - name: Exercise resize and open-drawer updates without retries
+        run: npx playwright test e2e/header-layout.spec.ts --project desktop --project desktop-safari --retries 0 --repeat-each 12 --workers 4
+        working-directory: examples/showcase
+      - name: Repeat full desktop workload without retries
+        run: npx playwright test --project desktop --project desktop-safari --retries 0 --repeat-each 4 --workers 4
+        working-directory: examples/showcase
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: rapid-focus-diagnostic
+          path: |
+            examples/showcase/test-results/
+            examples/showcase/focus-probe-results/
+          retention-days: 7
