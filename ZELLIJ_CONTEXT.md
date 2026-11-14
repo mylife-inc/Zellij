@@ -7,8 +7,7 @@ Scoop is published in the owned [`mylife-inc/scoop-bucket`](https://github.com/m
 at `ca62345`, installing immutable rc.6 on native Windows x64/ARM64. All four
 public lifecycle jobs in `43532235784` pass under Windows PowerShell 5.1 and
 PowerShell 7, including actual HTTPS installation. PR #162 (`fd5f07a`, matching
-the tested tree at `7788140`) merges a
-checksum-pinned manifest generator, exact `scoop update zel` guidance, native
+the tested tree at `7788140`) merges a checksum-pinned manifest generator, exact `scoop update zel` guidance, native
 lifecycle/release gates and a future `zel.json` release artifact. Its four source
 Scoop jobs pass at `7788140`; all 27 jobs in `43531633137` pass without workflow
 reruns. The unrelated browser retry is recorded below and in the evidence.

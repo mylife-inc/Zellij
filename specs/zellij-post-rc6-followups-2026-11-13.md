@@ -7,8 +7,7 @@ the trace and unresolved status are retained in the
 now published at `ca62345`, with all four public Windows lifecycle jobs passing
 in `43532235784`. PR #162 (`fd5f07a`, tested `7788140`) adds exact upgrade
 guidance and release gating; all 27 source CI jobs pass with the recorded
-browser retry.
-see [the Scoop contract](zel-scoop-distribution-2026-11-13.md).
+browser retry. See [the Scoop contract](zel-scoop-distribution-2026-11-13.md).
 
 The earlier investigation and planned sequence below are retained as history.
 

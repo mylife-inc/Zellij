@@ -231,14 +231,16 @@ in PRs #151 and #153. PR #155 versions the book starter around the shared
 publication model and optional print settings, and publishes rc.6. Public
 acceptance and Homebrew migration pass. PR #156 (`8eb117a`) merges docs and
 consumer pins after all 23 CI and six delivery build jobs pass. Replacement
-image checks and scoped rc.5 retirement are complete. Generated hosted/container CI selection was fixed by PR #158 (`dd0f620`),
+image checks and scoped rc.5 retirement are complete. Generated hosted/container
+CI selection was fixed by PR #158 (`dd0f620`),
 with all source and generated-consumer checks passing. PR #160 (`dece6c9`)
 resolved the two reproduced header-focus defects. A new rapid-resize assertion
 failed once in source run `43531633137` and passed on retry; that separate finding
 remains open and takes priority before the next candidate.
 
 The owned Scoop bucket now publishes rc.6 with deliberate ownership protection;
-all four public lifecycle combinations pass. PR #162 (`fd5f07a`, matching tested `7788140`) adds explicit Scoop
+all four public lifecycle combinations pass. PR #162 (`fd5f07a`, matching tested
+`7788140`) adds explicit Scoop
 upgrade guidance and release gating; all 27 CI jobs pass with the recorded
 header assertion retry. Advanced print semantics, technical/study
 editions and the remaining installation channels follow. The [expansion design](zellij-product-expansion-2026-11-11.md)
