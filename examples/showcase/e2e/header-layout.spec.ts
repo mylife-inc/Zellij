@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
+import { writeFile } from 'node:fs/promises';
 import { browserFailureState } from '../../../scripts/browser-failure-state.mjs';
 
 test.afterEach(async ({ page }, info) => {
   if (info.status === info.expectedStatus) return;
-  await info.attach('header-failure-state', {
-    body: JSON.stringify(await browserFailureState(page), null, 2),
-    contentType: 'application/json',
-  });
+  try {
+    const output = info.outputPath('header-failure-state.json');
+    await writeFile(output, JSON.stringify(await browserFailureState(page), null, 2));
+    await info.attach('header-failure-state', { path: output, contentType: 'application/json' });
+  } catch (error) {
+    console.error(`Header diagnostic capture failed: ${error}`);
+  }
 });
 
 test('branding and controls sit at opposite viewport edges without overlap', async ({ page }) => {
