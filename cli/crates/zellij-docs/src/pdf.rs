@@ -156,6 +156,7 @@ impl Writer<'_> {
         let mut out = String::new();
         let mut i = 0;
         let mut lists = vec![];
+        let mut quotes = vec![];
         let mut cell = 0;
         while i < events.len() {
             match &events[i] {
@@ -240,12 +241,32 @@ impl Writer<'_> {
                     out.push('}')
                 }
                 Event::Start(Tag::BlockQuote(kind)) => {
-                    out.push_str("\\begin{quote}\n");
-                    if let Some(kind) = kind {
-                        out.push_str(&format!("\\textbf{{{kind:?}}}\\par\n"));
+                    let statement = if kind.is_none()
+                        && let Some(h) = crate::statements::header(&events[i + 1..])?
+                    {
+                        i += h.consumed;
+                        Some(self.book.statement(&h.id))
+                    } else {
+                        None
+                    };
+                    quotes.push(statement.map(|s| s.kind));
+                    if let Some(s) = statement {
+                        out.push_str(&format!("\\zelheadingroom\\begin{{quote}}\\hypertarget{{{}}}{{}}\n{{\\sffamily\\bfseries\\color{{zelaccent}} {}}}\\par\\nobreak\n", label(page,&s.anchor),tex(&s.heading())));
+                    } else {
+                        out.push_str("\\begin{quote}\n");
+                        if let Some(kind) = kind {
+                            out.push_str(&format!("\\textbf{{{kind:?}}}\\par\n"));
+                        }
                     }
                 }
-                Event::End(TagEnd::BlockQuote(_)) => out.push_str("\\end{quote}\n"),
+                Event::End(TagEnd::BlockQuote(_)) => {
+                    if let Some(Some(kind)) = quotes.pop()
+                        && kind.proof()
+                    {
+                        out.push_str("\\par\\nobreak\\hfill\\rule{0.45em}{0.45em}\\par\n");
+                    }
+                    out.push_str("\\end{quote}\n");
+                }
                 Event::Start(Tag::List(start)) => {
                     if lists.len() >= 4 {
                         return Err(invalid("print lists support at most four nesting levels"));
@@ -460,7 +481,14 @@ pub(crate) fn compose(
         if entry.source.is_none() {
             continue;
         }
-        if entry.kind != "title-page" {
+        if entry.kind == "title-page" {
+            // Authored home content follows the printed contents on its own
+            // page; it must not become part of the contents page's body.
+            let title = tex(&page.markdown.title);
+            out.push_str(&format!(
+                "\\clearpage\\markboth{{{title}}}{{{title}}}\\thispagestyle{{plain}}\n"
+            ));
+        } else {
             out.push_str(&format!("\\chapter{{{}}}\n", tex(&page.markdown.title)));
         }
         out.push_str(&format!(

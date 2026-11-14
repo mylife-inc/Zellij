@@ -3,10 +3,8 @@ import type { ReactNode } from 'react';
 /**
  * The environments a mathematical text is built from.
  *
- * Numbering is per-kind and per-page, the convention most textbooks use: a page
- * with two theorems and a lemma reads "Theorem 1", "Lemma 1", "Theorem 2". A
- * counter is not shared across kinds, because a reader looking for Theorem 2
- * should not have to know how many definitions came before it.
+ * These MDX components accept authored numbers. Portable books instead resolve
+ * one statement counter per reading entry before rendering in HTML, Next or PDF.
  */
 const KINDS = {
   theorem: 'Theorem',

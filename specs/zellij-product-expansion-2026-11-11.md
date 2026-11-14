@@ -12,13 +12,19 @@ inline references are implemented across native HTML, adapted Next and PDF.
 See [the contract and acceptance record](zellij-book-equations-2026-11-13.md).
 All 27 final-source jobs in `43557146014` pass at `09fd2cc` (PR #167), including
 prefixed Next, offline browsers and 15 real PDFs. Per-row numbering, references
-within larger math, theorems and the remaining advanced publishing work are not
+within larger math and the remaining advanced publishing work are not
 marked complete. This source increment awaits the next candidate.
+
+Shared theorem/lemma/proof blocks and references are also implemented across
+all three outputs in PR #169. All 27 jobs in `43567230812` pass at `5dfaf59`,
+including 18 real PDFs and 129 page captures; all 105 prior captures are
+unchanged. See the [statement contract](zellij-book-statements-2026-11-13.md).
+Bibliography/citations and index/glossary are next; public rc.6 is unchanged.
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
 | 1 | Separate company and product branding | Implemented and released in rc.4, including portable/hosted rendering, mobile layout, independent destinations/tab selection, dark variants and compatibility. |
-| 2 | Package-manager distribution | Homebrew is live and verified with rc.6. Add the owned Scoop bucket next; submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
+| 2 | Package-manager distribution | Homebrew and the owned Scoop bucket are live and verified with rc.6. Submit WinGet after the intended release is available. Test install, upgrade and uninstall on supported native architectures. Stable channels must not silently install release candidates. |
 | 3 | Template catalog and creation command | Released in rc.5: versioned bundled/local/release templates, guarded creation, offline cache and receipts. Product documentation, hosted product landing and classic reading-book starters are verified. Technical/study editions remain planned. |
 | 4 | Composition engine and additional Apple-inspired patterns | Build a bounded composition format, reusable presentation/effect primitives and named presets. Extend the product template using these; retain all existing section types and authored content. |
 | 5 | Complete book publishing and PDF | Extend the book template into a publication model, dedicated print renderer and version-matched downloadable PDF. Validate technical, prose and multilingual books before calling this milestone complete. |

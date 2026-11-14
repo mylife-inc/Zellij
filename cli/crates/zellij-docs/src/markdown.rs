@@ -85,7 +85,7 @@ pub fn slug(text: &str) -> String {
     }
 }
 
-fn plain(events: &[Event<'_>]) -> String {
+pub(crate) fn plain(events: &[Event<'_>]) -> String {
     let mut text = String::new();
     for event in events {
         match event {
@@ -230,11 +230,46 @@ pub fn highlight(
     static THEMES: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
     let mut output = Vec::new();
     let mut iter = events.into_iter();
+    let mut quotes = vec![];
     let mut equation = 0;
     let mut mindmap = 0;
     let mut diagram = 0;
     while let Some(event) = iter.next() {
-        if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
+        if let Event::Start(Tag::BlockQuote(kind)) = event {
+            let statement = if kind.is_none()
+                && let Some(book) = book
+                && let Some(h) = crate::statements::header(iter.as_slice())?
+            {
+                for _ in 0..h.consumed {
+                    iter.next();
+                }
+                Some(book.statement(&h.id))
+            } else {
+                None
+            };
+            quotes.push(statement);
+            if let Some(s) = statement {
+                output.push(Event::Html(format!("<div class=\"zellij-statement {}\" id=\"{}\"><p class=\"zellij-statement-head\"><strong>{}</strong></p><div class=\"zellij-statement-body\">", s.class(), escape(&s.anchor), escape(&s.heading())).into()));
+            } else {
+                output.push(event);
+            }
+        } else if matches!(event, Event::End(TagEnd::BlockQuote(_))) {
+            if let Some(Some(s)) = quotes.pop() {
+                output.push(Event::Html(
+                    format!(
+                        "</div>{}</div>",
+                        if s.kind.proof() {
+                            "<p class=\"zellij-statement-qed\" aria-hidden=\"true\">∎</p>"
+                        } else {
+                            ""
+                        }
+                    )
+                    .into(),
+                ));
+            } else {
+                output.push(event);
+            }
+        } else if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
             equation += 1;
             let block = matches!(event, Event::DisplayMath(_));
             let html = if let Some(book) = book

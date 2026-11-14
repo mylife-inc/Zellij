@@ -1,0 +1,2567 @@
+{
+  "date": "2026-11-13",
+  "status": "source verified; merge and development images pending",
+  "baseline": "ed23611fcffcb30f78ff3071e055c7c3a183a02a",
+  "implementation": "4203d65678ef077d58846c54888f203add6c67cc",
+  "verified_head": "5dfaf5967464b07421ff4c1f780676d15ae61c65",
+  "pull_request": 169,
+  "fixes": {
+    "native_focus_readiness": "7e307f43d8f60b9b3475e2ea5d94f74e5941a0b5",
+    "authored_home_page_break": "36a670a35e5f2fb06319f95d89255b8d9de0e6e1",
+    "full_page_captures": "2ddd17a8cfa4eb946138c2a5de7ed883fcfbcca6",
+    "home_running_header_and_no_script_evidence": "6b76504b7a7d4ab92ae30dadf0e1a25c504b89ba",
+    "equation_focus_readiness": "5dfaf5967464b07421ff4c1f780676d15ae61c65"
+  },
+  "local": {
+    "full_rust_passed": 782,
+    "existing_hosted_only_ignored": 5,
+    "full_engine_passed": 490,
+    "final_docs_passed": 72,
+    "final_failure_capture_tests_passed": 4,
+    "focused_engine_bridge_passed": 2,
+    "strict_deep_docs": {
+      "routes": 59,
+      "examples": 25
+    },
+    "actual_rust_to_next_bridge": {
+      "pages": 5,
+      "deep": true,
+      "strict": true
+    },
+    "formatting": true,
+    "clippy_warnings_denied": true,
+    "workspace_typechecks": true,
+    "engine_packaging": true,
+    "actionlint": true,
+    "logs": [
+      {
+        "file": "zellij-statements-rust.log",
+        "sha256": "e295eb986658aed1fdc844f774e5939ef252c1eac421bc79706bf3b4ab0c9064",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-engine.log",
+        "sha256": "23824cf06eaf5aeeb1654c935b594566e5bce5c4c50b4e76a85d0db7cc1004cf",
+        "note": "Earlier full engine log retains the initial ariaHidden type error; types log and focused bridge run validate the correction."
+      },
+      {
+        "file": "zellij-statements-bridge-unit.log",
+        "sha256": "11d3f9ab32069b61ef5e75ea3c101a65a99031217c9bd2eb7cbdc14706e0590b",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-types.log",
+        "sha256": "e7079eeea85a546dcc90f331f0c2c82aefa1e4f72e3c8c9bd9ad255bdb28ff48",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-engine-build.log",
+        "sha256": "12d538680e9ea97e9d6001f847dfdd8b7fdca89a1ea8c74e608933c8523234e8",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-final-docs.log",
+        "sha256": "50686370f9920eb7913681038a91dbebf4234761d65702c0b54a67ff43fea1b5",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-final-clippy.log",
+        "sha256": "07ea7814e74668bb0d3b3bf57479bb32b586746539f3081e1ba1626215af0cb9",
+        "note": null
+      },
+      {
+        "file": "zellij-statements-final-capture-tests.log",
+        "sha256": "d8bf9abd8f4fb62d34296387be62c4679559229e25d292426e5d98592903916e",
+        "note": null
+      }
+    ]
+  },
+  "ci": {
+    "run_id": 43567230812,
+    "head": "5dfaf5967464b07421ff4c1f780676d15ae61c65",
+    "status": "completed",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43567230812",
+    "jobs": [
+      {
+        "job_id": 132363679632,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679718,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679768,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679773,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679793,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679794,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679799,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679817,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679824,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679837,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679850,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679857,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679873,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679876,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679894,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679901,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679920,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132363679957,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132364375563,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147321,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147349,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147369,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147375,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147394,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147401,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147422,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132365147590,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "ci_attempts": [
+    {
+      "run_id": 43563739586,
+      "head": "4203d65678ef077d58846c54888f203add6c67cc",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43563739586",
+      "jobs": [
+        {
+          "job_id": 132352905874,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352905998,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906006,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906017,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 132352906035,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906068,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132352906091,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906108,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906113,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906153,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906166,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906219,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906248,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906249,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906254,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906310,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906330,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132352906375,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132353784483,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541430,
+          "name": "homebrew / Homebrew (macos-15)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541442,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541443,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541445,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541446,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541458,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541496,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132354541529,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "run_id": 43565512056,
+      "head": "7e307f43d8f60b9b3475e2ea5d94f74e5941a0b5",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43565512056",
+      "jobs": [
+        {
+          "job_id": 132358410238,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410429,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410450,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132358410453,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410493,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410499,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410510,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410518,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410521,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410524,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410531,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410565,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410592,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410612,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410622,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132358410639,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358410656,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132358410683,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132358990431,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359000698,
+          "name": "scoop",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 132359000728,
+          "name": "homebrew",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43565692206,
+      "head": "36a670a35e5f2fb06319f95d89255b8d9de0e6e1",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43565692206",
+      "jobs": [
+        {
+          "job_id": 132359002067,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002207,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002212,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002234,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002238,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002262,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002272,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002287,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002292,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002293,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002294,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359002295,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002296,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002297,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002307,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002327,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002329,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359002366,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359266853,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359276879,
+          "name": "scoop",
+          "status": "completed",
+          "conclusion": "skipped"
+        },
+        {
+          "job_id": 132359276932,
+          "name": "homebrew",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43565778634,
+      "head": "2ddd17a8cfa4eb946138c2a5de7ed883fcfbcca6",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43565778634",
+      "jobs": [
+        {
+          "job_id": 132359277106,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277240,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359277286,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277288,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277318,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277342,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277344,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277369,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277370,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277376,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277378,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359277380,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277412,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132359277419,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277425,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277448,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277453,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132359277558,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132360096786,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032107,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032108,
+          "name": "homebrew / Homebrew (macos-15)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032110,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032113,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032117,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032127,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032143,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361032146,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        }
+      ]
+    },
+    {
+      "run_id": 43566612273,
+      "head": "6b76504b7a7d4ab92ae30dadf0e1a25c504b89ba",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43566612273",
+      "jobs": [
+        {
+          "job_id": 132361845928,
+          "name": "Native images (amd64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846085,
+          "name": "Portable docs (macos-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132361846095,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846132,
+          "name": "Native images (arm64)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846138,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846140,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846164,
+          "name": "Showcase end to end",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846199,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846213,
+          "name": "Portable docs (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "failure"
+        },
+        {
+          "job_id": 132361846221,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846224,
+          "name": "CLI",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132361846255,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846257,
+          "name": "Embedded schema is current",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846262,
+          "name": "Portable docs (windows-latest)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132361846388,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846429,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846442,
+          "name": "Engine",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132361846462,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132362571816,
+          "name": "Combined image manifests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132363345253,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132363345277,
+          "name": "homebrew / Homebrew (macos-15)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132363345284,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132363345290,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132363345297,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132363345308,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "status": "completed",
+          "conclusion": "cancelled"
+        },
+        {
+          "job_id": 132363345318,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132363345323,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "focus_investigation": [
+    {
+      "run_id": 43565934456,
+      "head": "a8f73559a75dfbeba8686d5ed11e9cf9a74494bb",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43565934456",
+      "jobs": [
+        {
+          "job_id": 132359670602,
+          "name": "probe",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "results_sha256": "17607da0075086fb8590896f261cb9a1ba644c4f4741b953667c08049d052f87",
+      "platform": "darwin",
+      "browser": "webkit",
+      "javaScriptEnabled": false,
+      "attempts": [
+        {
+          "round": 0,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 0,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 1,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 1,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 2,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 2,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 3,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 3,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 4,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 4,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 5,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 5,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 6,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 6,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 7,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 7,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    14 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "captureError": "Browser state capture exceeded 1500 ms"
+          }
+        },
+        {
+          "round": 8,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    14 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "captureError": "Browser state capture exceeded 1500 ms"
+          }
+        },
+        {
+          "round": 8,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 9,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 9,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    13 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "captureError": "Browser state capture exceeded 1500 ms"
+          }
+        },
+        {
+          "round": 10,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 10,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 11,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 11,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 12,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 12,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 13,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 13,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 14,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 14,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 15,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 15,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 16,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 16,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 17,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 17,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 18,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    14 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "captureError": "Browser state capture exceeded 1500 ms"
+          }
+        },
+        {
+          "round": 18,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 19,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 19,
+          "variant": "original",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "run_id": 43566630220,
+      "head": "048008e1f2706b3e3da8aa79c9af3784a8842f46",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43566630220",
+      "jobs": [
+        {
+          "job_id": 132361802285,
+          "name": "probe",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "results_sha256": "cd909820b0c0093c664ac74d39332efe2ec1e5ac2afb8ae9da38c2a5d020adda",
+      "platform": "darwin",
+      "browser": "webkit",
+      "javaScriptEnabled": false,
+      "attempts": [
+        {
+          "round": 0,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 0,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 1,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 1,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 2,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 2,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 3,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 3,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    14 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "before": {
+              "at": 5102,
+              "url": "file:///var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/zel-statement-focus-FyzJ0V/Moved%20book%20%E6%97%A5%E6%9C%AC/chapters/energy.html#_zel-stmt-thm%3Aenergy",
+              "readyState": "complete",
+              "visibility": "visible",
+              "documentFocus": true,
+              "viewport": {
+                "width": 1280,
+                "height": 900
+              },
+              "scroll": {
+                "x": 0,
+                "y": 733
+              },
+              "fontStatus": "loaded",
+              "active": {
+                "tag": "BODY",
+                "id": "",
+                "class": "",
+                "role": null,
+                "label": null
+              },
+              "header": null,
+              "navigation": {
+                "box": null,
+                "items": [],
+                "probeWidths": null,
+                "probeFonts": null,
+                "gap": null,
+                "font": null
+              },
+              "themeControls": [],
+              "drawerCount": 0
+            },
+            "after": {
+              "at": 5105,
+              "url": "file:///var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/zel-statement-focus-FyzJ0V/Moved%20book%20%E6%97%A5%E6%9C%AC/chapters/energy.html#_zel-stmt-thm%3Aenergy",
+              "readyState": "complete",
+              "visibility": "visible",
+              "documentFocus": true,
+              "viewport": {
+                "width": 1280,
+                "height": 900
+              },
+              "scroll": {
+                "x": 0,
+                "y": 733
+              },
+              "fontStatus": "loaded",
+              "active": {
+                "tag": "BODY",
+                "id": "",
+                "class": "",
+                "role": null,
+                "label": null
+              },
+              "header": null,
+              "navigation": {
+                "box": null,
+                "items": [],
+                "probeWidths": null,
+                "probeFonts": null,
+                "gap": null,
+                "font": null
+              },
+              "themeControls": [],
+              "drawerCount": 0
+            },
+            "frameTimes": [],
+            "sampledFrames": false
+          }
+        },
+        {
+          "round": 4,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 4,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 5,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 5,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 6,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 6,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 7,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 7,
+          "variant": "original",
+          "passed": true
+        },
+        {
+          "round": 8,
+          "variant": "original",
+          "passed": false,
+          "error": "Error: expect(locator).toBeFocused() failed\n\nLocator:  getByRole('link', { name: 'Proof', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n  - Expect \"to.be.focused\" with timeout 5000ms\n  - waiting for getByRole('link', { name: 'Proof', exact: true })\n    14 \u00d7 locator resolved to <a title=\"Proof (Of the energy theorem)\" href=\"../chapters/energy.html#_zel-stmt-proof%3Aenergy\">Proof</a>\n       - unexpected value \"inactive\"\n",
+          "state": {
+            "before": {
+              "at": 5082,
+              "url": "file:///var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/zel-statement-focus-FyzJ0V/Moved%20book%20%E6%97%A5%E6%9C%AC/chapters/energy.html#_zel-stmt-thm%3Aenergy",
+              "readyState": "complete",
+              "visibility": "visible",
+              "documentFocus": true,
+              "viewport": {
+                "width": 1280,
+                "height": 900
+              },
+              "scroll": {
+                "x": 0,
+                "y": 733
+              },
+              "fontStatus": "loaded",
+              "active": {
+                "tag": "BODY",
+                "id": "",
+                "class": "",
+                "role": null,
+                "label": null
+              },
+              "header": null,
+              "navigation": {
+                "box": null,
+                "items": [],
+                "probeWidths": null,
+                "probeFonts": null,
+                "gap": null,
+                "font": null
+              },
+              "themeControls": [],
+              "drawerCount": 0
+            },
+            "after": {
+              "at": 5084,
+              "url": "file:///var/folders/h5/t85nd63d71x27_8gl5gw3l_w0000gn/T/zel-statement-focus-FyzJ0V/Moved%20book%20%E6%97%A5%E6%9C%AC/chapters/energy.html#_zel-stmt-thm%3Aenergy",
+              "readyState": "complete",
+              "visibility": "visible",
+              "documentFocus": true,
+              "viewport": {
+                "width": 1280,
+                "height": 900
+              },
+              "scroll": {
+                "x": 0,
+                "y": 733
+              },
+              "fontStatus": "loaded",
+              "active": {
+                "tag": "BODY",
+                "id": "",
+                "class": "",
+                "role": null,
+                "label": null
+              },
+              "header": null,
+              "navigation": {
+                "box": null,
+                "items": [],
+                "probeWidths": null,
+                "probeFonts": null,
+                "gap": null,
+                "font": null
+              },
+              "themeControls": [],
+              "drawerCount": 0
+            },
+            "frameTimes": [],
+            "sampledFrames": false
+          }
+        },
+        {
+          "round": 8,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 9,
+          "variant": "revised",
+          "passed": true
+        },
+        {
+          "round": 9,
+          "variant": "original",
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "pdf": {
+    "count": 18,
+    "captures": 129,
+    "prior_captures": 105,
+    "prior_captures_unchanged": 105,
+    "statement_pages": 8,
+    "statement_pages_equal_across_runtimes": true,
+    "visual_review": {
+      "source": "6b76504",
+      "pages": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "notes": "Separate contents/home pages, correct running headers, resolved statement/equation references, proof mark, lists, code, table and footnotes."
+    },
+    "runtimes": [
+      {
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "1889061f47979b60d677172538287e9bcd32fe4327c49f326a8509ab641dff70",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "2a3b13c4c3d3153bbba3f8f49d1b1115e42f1698a392468456cb9403e0e9c7dd",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "e857026c4c661d715f38f1042120c2de7a87a7a3a6a15a541d93f114c0a0135e",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "45db2a2e78174494d6b8e85e776053fee549f4c7b548c3c08ff7621911b4cc48",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "756e94c041f5a820fd9394ba3c4016f335eeb0bf66f9c210500918d619be50b9",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "2a33121bd5e0de22eab1817c3a96b8ce2f17e6a0e947de2042dd2aeb29381333",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          }
+        ]
+      },
+      {
+        "name": "book-pdf-ubuntu-latest-docker",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "d8c72d3fe48cc6bb49f20609edbd56e9262a80e517612891329b0c0fb28d0f8f",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "fc6bc5b97ee92c083a3f9f7f705953edcbd53b59483974ae4e738b4c9867121f",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "6c728e7d1ebcbc914e798fc3ee04b3694ccf42807026e6382435b37563aeb15c",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "450fc8d6ee813b4fe2c90f7dc6ce3ee5a98ffadce386179120c52b045df9e329",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "5ae9f765c44558e06dca492c1169c207ae2b4db8fd5f5fdfbb15c132d5cc6093",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "767702152668db988a3b273546c239b085b9382fec3b9cdfe3f314d9fe95dfff",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          }
+        ]
+      },
+      {
+        "name": "book-pdf-ubuntu-latest-podman",
+        "receipts": [
+          {
+            "file": "a4/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "60ab9d63197f0a88ff57332da1af3fd147188805437dc8d79ef8e8b3710d734e",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 12,
+              "paper": "a4"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "equations/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "9922a392bf8be768a562fba535509f68a0442490c30d9c4a1dfafe133c621923",
+            "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "letter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "4b7d188785dc4e230eab6c9ec947d75dad3307805ad3de4b9096c6345bc7c79e",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 10,
+              "paper": "letter"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "publication/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "5e6881b3de932020a43559191046137a250703620fa6fd36f55b8808ca1c7cae",
+            "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+            "schema_version": 1,
+            "settings": {
+              "enabled": true,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "starter/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "3db20247055dab8235f9968fe4487794485e4cdcbd2fcd511f4751f3451bf2d5",
+            "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          },
+          {
+            "file": "statements/pdf.json",
+            "backend": "lualatex",
+            "pdf_sha256": "622c682e105a4c3dd2eb8a8ae7b23d258ebff4dd7d62209b18025a524aa7c116",
+            "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+            "schema_version": 1,
+            "settings": {
+              "enabled": false,
+              "font-size": 11,
+              "paper": "a5"
+            },
+            "template": "classic-v1",
+            "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+          }
+        ],
+        "captures": [
+          {
+            "file": "a4/page-1.png",
+            "sha256": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a"
+          },
+          {
+            "file": "a4/page-2.png",
+            "sha256": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba"
+          },
+          {
+            "file": "a4/page-3.png",
+            "sha256": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6"
+          },
+          {
+            "file": "a4/page-4.png",
+            "sha256": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f"
+          },
+          {
+            "file": "a4/page-5.png",
+            "sha256": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710"
+          },
+          {
+            "file": "a4/page-6.png",
+            "sha256": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467"
+          },
+          {
+            "file": "a4/page-7.png",
+            "sha256": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+          },
+          {
+            "file": "equations/page-1.png",
+            "sha256": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d"
+          },
+          {
+            "file": "equations/page-2.png",
+            "sha256": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1"
+          },
+          {
+            "file": "equations/page-3.png",
+            "sha256": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee"
+          },
+          {
+            "file": "equations/page-4.png",
+            "sha256": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7"
+          },
+          {
+            "file": "equations/page-5.png",
+            "sha256": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a"
+          },
+          {
+            "file": "equations/page-6.png",
+            "sha256": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+          },
+          {
+            "file": "letter/page-1.png",
+            "sha256": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3"
+          },
+          {
+            "file": "letter/page-2.png",
+            "sha256": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4"
+          },
+          {
+            "file": "letter/page-3.png",
+            "sha256": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23"
+          },
+          {
+            "file": "letter/page-4.png",
+            "sha256": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b"
+          },
+          {
+            "file": "letter/page-5.png",
+            "sha256": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d"
+          },
+          {
+            "file": "letter/page-6.png",
+            "sha256": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670"
+          },
+          {
+            "file": "letter/page-7.png",
+            "sha256": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+          },
+          {
+            "file": "page-1.png",
+            "sha256": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34"
+          },
+          {
+            "file": "page-2.png",
+            "sha256": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685"
+          },
+          {
+            "file": "page-3.png",
+            "sha256": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a"
+          },
+          {
+            "file": "page-4.png",
+            "sha256": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc"
+          },
+          {
+            "file": "page-5.png",
+            "sha256": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc"
+          },
+          {
+            "file": "page-6.png",
+            "sha256": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1"
+          },
+          {
+            "file": "page-7.png",
+            "sha256": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2"
+          },
+          {
+            "file": "page-8.png",
+            "sha256": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+          },
+          {
+            "file": "starter/page-1.png",
+            "sha256": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003"
+          },
+          {
+            "file": "starter/page-2.png",
+            "sha256": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c"
+          },
+          {
+            "file": "starter/page-3.png",
+            "sha256": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66"
+          },
+          {
+            "file": "starter/page-4.png",
+            "sha256": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6"
+          },
+          {
+            "file": "starter/page-5.png",
+            "sha256": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599"
+          },
+          {
+            "file": "starter/page-6.png",
+            "sha256": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b"
+          },
+          {
+            "file": "starter/page-7.png",
+            "sha256": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+          },
+          {
+            "file": "statements/page-1.png",
+            "sha256": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb"
+          },
+          {
+            "file": "statements/page-2.png",
+            "sha256": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f"
+          },
+          {
+            "file": "statements/page-3.png",
+            "sha256": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91"
+          },
+          {
+            "file": "statements/page-4.png",
+            "sha256": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056"
+          },
+          {
+            "file": "statements/page-5.png",
+            "sha256": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564"
+          },
+          {
+            "file": "statements/page-6.png",
+            "sha256": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499"
+          },
+          {
+            "file": "statements/page-7.png",
+            "sha256": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6"
+          },
+          {
+            "file": "statements/page-8.png",
+            "sha256": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+          }
+        ]
+      }
+    ],
+    "final_captures_equal_reviewed_source": 129
+  },
+  "web": {
+    "source": "5dfaf59",
+    "captures": [
+      {
+        "file": "book-preview-macos-latest/chromium-statements-false-1280.png",
+        "sha256": "b42caf8542e5c1162a993fbd8bc4b8de265576c54c9d1011ed8fa3fb6394ead9"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-statements-false-390.png",
+        "sha256": "9732f870889b57c8b9c9ba82a5cb49b93dd8846aae5d93a6fea5a08eb072d726"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-statements-true-1280.png",
+        "sha256": "44b8862ae15d1485c1821d86d36bddf42ca58558ba1b4d0be5cf4ede0db7c6bd"
+      },
+      {
+        "file": "book-preview-macos-latest/chromium-statements-true-390.png",
+        "sha256": "a6c4eda1032d2d6d018d2fb7d1f7e8fed3ecc35517d3a10089ba18633cca1eb2"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-statements-false-1280.png",
+        "sha256": "852b6c13518ff6797751ab669f9b08c041e728393c2e86e406f17ae60b250304"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-statements-false-390.png",
+        "sha256": "3e5c4bbd548ff1fd38800bb23cdf39564996ba2dadfb1d2a81acada1945a5348"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-statements-true-1280.png",
+        "sha256": "e8313509ae4be4202ebcd4720eab71e4b4247094811c1a7eaa2d0eabe0d23b07"
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-statements-true-390.png",
+        "sha256": "41cff74514272f8c13b8c079833c9aed6afc640c929a93dd19438a28aa62b5f8"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-statements-false-1280.png",
+        "sha256": "9ddeec9a42b1912d96f40682da3145239deefbf995477ab5781bce46a870786f"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-statements-false-390.png",
+        "sha256": "54632b1d075487ab4a01cafdb83a15969f89fdb1c770265ad0081c29b34e0746"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-statements-true-1280.png",
+        "sha256": "0154160e2ad63e06d15f859803613c9a52908768d4e640a967c37a3a032512a4"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/chromium-statements-true-390.png",
+        "sha256": "44424e344aef4a3a38a69164fd5800817fcab1f1c7753bba143c7ceb1b6650a8"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-statements-false-1280.png",
+        "sha256": "b6da22caabb5bf72af1c7771f82cfa85cbcd542f9e00128c3478e29dc7e504af"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-statements-false-390.png",
+        "sha256": "f5cdd9db9c1d8be3f77c81a660ba58db4edebff2eba89e4cabd159de15414558"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-statements-true-1280.png",
+        "sha256": "eca7b0fca45105ca8214bac719f3be753af6dad4a2c106185ff442a0b47f4ec3"
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-statements-true-390.png",
+        "sha256": "3575cd9abc4c3b02b5c5b9807200901abfd9ab6f0fd8bda1e0d743c7222949ca"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-statements-false-1280.png",
+        "sha256": "d873757ae8f971137fd2913fcf651688f7a53dbad0a75a0811f1b0a724a4dbc8"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-statements-false-390.png",
+        "sha256": "a763c07a283da740f98959507b52433843332c589eb205c8500c6477364c96e4"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-statements-true-1280.png",
+        "sha256": "bef147e7761f1489917e8b9e216016e970b0759acccccb3c172bce9eefb6ea12"
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-statements-true-390.png",
+        "sha256": "314bb9f7974311fd0a1326e02e812efb1107b4cdc28c31f68c6a3405c2a85458"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-statements-false-1280.png",
+        "sha256": "833307d29d94b02d5fb3a998aeec95c91f1c8d08d6d07b9978fc04bf4b18a436"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-statements-false-390.png",
+        "sha256": "76852651fb3c3b251b626986af08d3da37aa2d02c45d8ab9e776405839de7e2d"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-statements-true-1280.png",
+        "sha256": "4e8772a8a86d491f5cc0d2086746e0d2e416f3a0dab2e9891c7f944849d8c880"
+      },
+      {
+        "file": "book-preview-windows-latest/webkit-statements-true-390.png",
+        "sha256": "f9b070bfe1744df48c6ae4d94fa8bdb9f940d655fb9df0c93205a1c59299d892"
+      },
+      {
+        "file": "next-equation-previews/next-statements-1280.png",
+        "sha256": "98c2a28653d4e8c492cfd71df37da6e7b35086e8f42861e4d2ad0ca6a5b8d38b"
+      },
+      {
+        "file": "next-equation-previews/next-statements-390.png",
+        "sha256": "6378eae802b9e6eaebe498fcfc4be6c7bf3780b1e27f8093e7cc4619706b0ace"
+      }
+    ],
+    "visual_review": [
+      {
+        "file": "book-preview-ubuntu-latest/chromium-statements-true-1280.png",
+        "sha256": "0154160e2ad63e06d15f859803613c9a52908768d4e640a967c37a3a032512a4",
+        "notes": "Reviewed complete statement layout, heading hierarchy, proof mark, rich body and readable narrow layout."
+      },
+      {
+        "file": "book-preview-ubuntu-latest/webkit-statements-false-390.png",
+        "sha256": "f5cdd9db9c1d8be3f77c81a660ba58db4edebff2eba89e4cabd159de15414558",
+        "notes": "Reviewed complete statement layout, heading hierarchy, proof mark, rich body and readable narrow layout."
+      },
+      {
+        "file": "book-preview-macos-latest/webkit-statements-false-390.png",
+        "sha256": "3e5c4bbd548ff1fd38800bb23cdf39564996ba2dadfb1d2a81acada1945a5348",
+        "notes": "Reviewed header at page top, resolved references, numbered blocks, proof mark and rich body. Mobile code remains horizontally scrollable within its block."
+      },
+      {
+        "file": "next-equation-previews/next-statements-1280.png",
+        "sha256": "98c2a28653d4e8c492cfd71df37da6e7b35086e8f42861e4d2ad0ca6a5b8d38b",
+        "notes": "Reviewed header at page top, resolved references, numbered blocks, proof mark and rich body. Mobile code remains horizontally scrollable within its block."
+      },
+      {
+        "file": "next-equation-previews/next-statements-390.png",
+        "sha256": "6378eae802b9e6eaebe498fcfc4be6c7bf3780b1e27f8093e7cc4619706b0ace",
+        "notes": "Reviewed header at page top, resolved references, numbered blocks, proof mark and rich body. Mobile code remains horizontally scrollable within its block."
+      },
+      {
+        "file": "book-preview-windows-latest/chromium-statements-true-1280.png",
+        "sha256": "bef147e7761f1489917e8b9e216016e970b0759acccccb3c172bce9eefb6ea12",
+        "notes": "Reviewed Windows desktop native layout: stable header, readable rich blocks, resolved equation/statement links and proof mark."
+      }
+    ]
+  },
+  "retained_findings": [
+    {
+      "run_id": 43563739586,
+      "job_id": 132352906017,
+      "source": "4203d65",
+      "failure": "macOS WebKit, JavaScript disabled: the new proof link focus assertion lost focus after returning across documents to a fragment.",
+      "resolution": "7e307f4 waits for document load, fonts and target scrolling before taking focus. The original helper fails 4/20 bounded attempts and the revised helper passes 20/20. Initial frame sampling timed out with page JavaScript disabled; retained in the investigation results. Further bounded no-frame results are recorded separately."
+    },
+    {
+      "source": "4203d65",
+      "failure": "Authored home body shared the contents page in real PDF captures.",
+      "fix": "36a670a adds the missing page break. Captures then reveal inherited CONTENTS running marks, corrected by 6b76504 with escaped marks and the plain first-page style."
+    },
+    {
+      "type": "local development",
+      "details": [
+        "Missing-label diagnostic clarified.",
+        "New no-math fixture corrected to include required authors and chapters; manifest rules unchanged.",
+        "HAST ariaHidden uses string enum rather than boolean; emitter/schema/types now agree.",
+        "Rendering assertion corrected to allow HTML attribute order."
+      ]
+    },
+    {
+      "type": "previous unresolved browser timings",
+      "details": "Separate WebKit overflow and documentation hydration findings remain open in the existing timing-investigation record; statement acceptance does not close them."
+    },
+    {
+      "run_id": 43566612273,
+      "job_id": 132361846213,
+      "failure": "Older equation helper also takes focus before native fragment navigation settles; Linux Equation 1.1 focus assertion fails.",
+      "fix": "5dfaf59 applies the same URL/load/font/target readiness and no-frame evidence capture to equation keyboard acceptance."
+    }
+  ],
+  "existing_product": {
+    "engine_job_id": 132363679768,
+    "engine_tests_passed": 490,
+    "showcase_job_id": 132363679799,
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "showcase_retries": 0,
+    "docs_preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_regressions_passed": 6
+    }
+  },
+  "focus_comparison_summary": {
+    "original_failed": 6,
+    "original_attempts": 30,
+    "revised_passed": 30,
+    "revised_attempts": 30,
+    "retries": 0,
+    "interpretation": "Supports native-navigation test readiness; not a product focus-script fix."
+  },
+  "limits": [
+    "Public rc.6 and production domain are unchanged.",
+    "No claim of zero bugs or complete 1.0.",
+    "Bibliography, index/glossary, multilingual/RTL print, Next-image PDFs and richer technical/study/custom print templates remain open.",
+    "Live providers and production migration remain deferred."
+  ]
+}

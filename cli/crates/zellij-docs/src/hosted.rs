@@ -98,6 +98,7 @@ fn tree(
     let mut head = false;
     let mut cell = 0;
     let mut events = events.iter();
+    let mut quotes = vec![];
     fn push(stack: &mut [Value], node: Value) {
         stack.last_mut().unwrap()["children"]
             .as_array_mut()
@@ -110,6 +111,54 @@ fn tree(
     }
     while let Some(event) = events.next() {
         match event {
+            Event::Start(Tag::BlockQuote(kind)) => {
+                let statement = if kind.is_none()
+                    && let Some(book) = book
+                    && let Some(h) = crate::statements::header(events.as_slice())?
+                {
+                    for _ in 0..h.consumed {
+                        events.next();
+                    }
+                    Some(book.statement(&h.id))
+                } else {
+                    None
+                };
+                quotes.push(statement);
+                if let Some(s) = statement {
+                    stack.push(element(
+                        "div",
+                        json!({"className":["zellij-statement",s.class()],"id":s.anchor}),
+                        vec![element(
+                            "p",
+                            json!({"className":["zellij-statement-head"]}),
+                            vec![element("strong", json!({}), vec![text(&s.heading())])],
+                        )],
+                    ));
+                    stack.push(element(
+                        "div",
+                        json!({"className":["zellij-statement-body"]}),
+                        vec![],
+                    ));
+                } else {
+                    stack.push(element("blockquote", kind.map_or_else(|| json!({}), |kind| json!({"className":[format!("markdown-alert-{kind:?}").to_lowercase()]})),vec![]));
+                }
+            }
+            Event::End(TagEnd::BlockQuote(_)) => {
+                close(&mut stack);
+                if let Some(Some(s)) = quotes.pop() {
+                    if s.kind.proof() {
+                        push(
+                            &mut stack,
+                            element(
+                                "p",
+                                json!({"className":["zellij-statement-qed"],"ariaHidden":"true"}),
+                                vec![text("∎")],
+                            ),
+                        );
+                    }
+                    close(&mut stack);
+                }
+            }
             Event::Start(Tag::Image {
                 dest_url, title, ..
             }) => {
@@ -176,7 +225,6 @@ fn tree(
                     Tag::Heading { level, id, .. } => {
                         (level.to_string(), json!({"id":id.as_deref()}))
                     }
-                    Tag::BlockQuote(kind) => ("blockquote".into(), kind.map_or_else(|| json!({}), |kind| json!({"className":[format!("markdown-alert-{kind:?}").to_lowercase()]}))),
                     Tag::List(Some(start)) => ("ol".into(), json!({"start":start})),
                     Tag::List(None) => ("ul".into(), json!({})),
                     Tag::Item => ("li".into(), json!({})),

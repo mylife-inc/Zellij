@@ -13,3 +13,11 @@ dialog{width:min(42rem,calc(100vw - 2rem));max-height:80dvh;padding:1.5rem;borde
 @media(max-width:800px){.brand-group{flex:1 0 100%}.brand{min-width:0}}
 
 .book-number{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--zellij-muted)}.book-subtitle{font-size:1.4rem;line-height:1.5}.book-authors{color:var(--zellij-muted)}article .book-cover{display:block;width:min(100%,24rem);margin:2rem 0;box-shadow:var(--zellij-shadow-float)}[dir=rtl] pre{direction:ltr;text-align:left}
+
+/* Shared book statement blocks. Numbering is supplied by the publication model. */
+.zellij-statement{margin-block:1.5rem;padding:1rem 1.25rem;border-inline-start:3px solid var(--zellij-accent);border-radius:0 var(--zellij-radius) var(--zellij-radius) 0;background:var(--zellij-surface);scroll-margin-top:6rem;overflow-wrap:anywhere}
+.zellij-statement .zellij-statement-head{margin:0 0 .75rem;font-size:1rem;line-height:1.5}
+.zellij-statement-body>:first-child{margin-top:0}.zellij-statement-body>:last-child{margin-bottom:0}
+.zellij-statement-proof{background:transparent;border-inline-start-color:var(--zellij-border)}
+.zellij-statement .zellij-statement-qed{margin:.5rem 0 0;text-align:end;line-height:1}
+@media print{.zellij-statement-head{break-after:avoid}.zellij-statement-qed{break-before:avoid}}

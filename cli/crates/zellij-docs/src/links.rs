@@ -196,9 +196,14 @@ impl Resolver<'_> {
                     .iter()
                     .any(|eq| eq.source == target.source.as_str() && eq.anchor == id)
             });
-            if !ids.contains(id) && !equation {
+            let statement = self.book.is_some_and(|book| {
+                book.statements
+                    .iter()
+                    .any(|s| s.source == target.source.as_str() && s.anchor == id)
+            });
+            if !ids.contains(id) && !equation && !statement {
                 return Err(fail(&format!(
-                    "missing heading/footnote #{id} in {}",
+                    "missing heading/footnote/equation/statement #{id} in {}",
                     target.source
                 )));
             }

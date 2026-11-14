@@ -20,7 +20,7 @@ pub struct Equation {
 pub(crate) enum Expression {
     Plain,
     Numbered { id: String, tex: String },
-    Reference { id: String, parentheses: bool },
+    Reference { id: String, style: ReferenceStyle },
 }
 fn invalid(message: impl std::fmt::Display) -> Error {
     Error::InvalidArgument(format!("book equations: {message}"))
@@ -28,7 +28,7 @@ fn invalid(message: impl std::fmt::Display) -> Error {
 fn at(page: &Page, error: Error) -> Error {
     zellij_core::files::unsafe_path(&page.source, error.to_string())
 }
-fn identifier(id: &str) -> Result<()> {
+pub(crate) fn identifier(id: &str) -> Result<()> {
     if id.len() > 128
         || !id.starts_with(|c: char| c.is_ascii_alphabetic())
         || !id
@@ -102,18 +102,22 @@ pub(crate) fn expression(source: &str, block: bool) -> Result<Expression> {
                 label = Some((id.to_owned(), start..end));
                 i = end;
             }
-            "ref" | "eqref" => {
-                let parentheses = &source[name_start..i] == "eqref";
+            "ref" | "eqref" | "autoref" => {
+                let style = match &source[name_start..i] {
+                    "eqref" => ReferenceStyle::Equation,
+                    "autoref" => ReferenceStyle::Auto,
+                    _ => ReferenceStyle::Number,
+                };
                 let (id, end) = argument(source, i)?;
                 identifier(id)?;
                 if block || !source[..start].trim().is_empty() || !source[end..].trim().is_empty() {
                     return Err(invalid(
-                        "put each reference in its own inline expression: $\\eqref{id}$ or $\\ref{id}$",
+                        "put each reference in its own inline expression: $\\eqref{id}$, $\\ref{id}$ or $\\autoref{id}$",
                     ));
                 }
                 return Ok(Expression::Reference {
                     id: id.into(),
-                    parentheses,
+                    style,
                 });
             }
             "tag" | "notag" | "nonumber" => {
@@ -162,18 +166,8 @@ pub(crate) fn expression(source: &str, block: bool) -> Result<Expression> {
 
 pub(crate) fn resolve(book: &mut Publication, pages: &[Page]) -> Result<()> {
     let mut ids = std::collections::BTreeMap::<String, String>::new();
-    let mut references = vec![];
-    let mut front = 0;
-    for entry in &book.entries {
+    for (entry, prefix) in prefixes(book) {
         let page = &pages[entry.index];
-        let prefix = match entry.number.as_ref() {
-            Some(n) => n.clone(),
-            None if entry.kind == "title-page" => "T".into(),
-            None => {
-                front += 1;
-                format!("F{front}")
-            }
-        };
         let mut ordinal = 0;
         let mut restricted = 0;
         for event in &page.markdown.events {
@@ -187,7 +181,7 @@ pub(crate) fn resolve(book: &mut Publication, pages: &[Page]) -> Result<()> {
                         return Err(at(
                             page,
                             invalid(
-                                "labelled equations and equation references belong in prose, not headings or links",
+                                "labelled equations and book references belong in prose, not headings or links",
                             ),
                         ));
                     }
@@ -217,20 +211,12 @@ pub(crate) fn resolve(book: &mut Publication, pages: &[Page]) -> Result<()> {
                                 page: entry.index,
                             });
                         }
-                        Expression::Reference { id, .. } => references.push((page, id)),
+                        Expression::Reference { .. } => {}
                         Expression::Plain => {}
                     }
                 }
                 _ => {}
             }
-        }
-    }
-    for (page, id) in references {
-        if !ids.contains_key(&id) {
-            return Err(at(
-                page,
-                invalid(format!("undefined equation label {id:?}")),
-            ));
         }
     }
     Ok(())
@@ -256,34 +242,116 @@ pub(crate) fn references(
     let mut result = vec![];
     for event in events {
         if let Event::InlineMath(tex) = &event
-            && let Expression::Reference { id, parentheses } = expression(tex, false)?
+            && let Expression::Reference { id, style } = expression(tex, false)?
         {
-            let eq = book.equation(&id);
+            let reference = target(book, &id, style)?;
             let dest = format!(
                 "{}#{}",
-                links::href(&page.output, &pages[eq.page].output),
-                links::encode(&eq.anchor)
+                links::href(&page.output, &pages[reference.page].output),
+                links::encode(reference.anchor)
             );
             result.push(Event::Start(Tag::Link {
                 link_type: LinkType::Inline,
                 dest_url: dest.into(),
-                title: format!("Equation {}", eq.number).into(),
+                title: reference.title.into(),
                 id: "".into(),
             }));
-            result.push(Event::Text(
-                if parentheses {
-                    format!("({})", eq.number)
-                } else {
-                    eq.number.clone()
-                }
-                .into(),
-            ));
+            result.push(Event::Text(reference.text.into()));
             result.push(Event::End(TagEnd::Link));
         } else {
             result.push(event);
         }
     }
     Ok(result)
+}
+
+// Prefixes are shared by independent equation and statement counters.
+pub(crate) fn prefixes(book: &Publication) -> Vec<(crate::ReadingEntry, String)> {
+    let mut front = 0;
+    book.entries
+        .iter()
+        .map(|entry| {
+            let prefix = match &entry.number {
+                Some(n) => n.clone(),
+                None if entry.kind == "title-page" => "T".into(),
+                None => {
+                    front += 1;
+                    format!("F{front}")
+                }
+            };
+            (entry.clone(), prefix)
+        })
+        .collect()
+}
+#[derive(Clone, Copy)]
+pub(crate) enum ReferenceStyle {
+    Number,
+    Equation,
+    Auto,
+}
+struct Reference<'a> {
+    page: usize,
+    anchor: &'a str,
+    title: String,
+    text: String,
+}
+fn target<'a>(book: &'a Publication, id: &str, style: ReferenceStyle) -> Result<Reference<'a>> {
+    if let Some(eq) = book.equations.iter().find(|eq| eq.id == id) {
+        let title = format!("Equation {}", eq.number);
+        let text = match style {
+            ReferenceStyle::Number => eq.number.clone(),
+            ReferenceStyle::Equation => format!("({})", eq.number),
+            ReferenceStyle::Auto => title.clone(),
+        };
+        return Ok(Reference {
+            page: eq.page,
+            anchor: &eq.anchor,
+            title,
+            text,
+        });
+    }
+    if let Some(s) = book.statements.iter().find(|s| s.id == id) {
+        let text = match style {
+            ReferenceStyle::Equation => {
+                return Err(invalid(format!(
+                    "{id:?} is a statement; use \\ref or \\autoref instead of \\eqref"
+                )));
+            }
+            ReferenceStyle::Number => s.number.clone().ok_or_else(|| {
+                invalid(format!(
+                    "{id:?} is an unnumbered proof; use \\autoref instead of \\ref"
+                ))
+            })?,
+            ReferenceStyle::Auto => s.label(),
+        };
+        return Ok(Reference {
+            page: s.page,
+            anchor: &s.anchor,
+            title: s.heading(),
+            text,
+        });
+    }
+    Err(invalid(format!(
+        "undefined {}label {id:?}",
+        if matches!(style, ReferenceStyle::Equation) {
+            "equation "
+        } else {
+            "book "
+        }
+    )))
+}
+pub(crate) fn validate_references(book: &Publication, pages: &[Page]) -> Result<()> {
+    for page in pages {
+        for event in &page.markdown.events {
+            if let Event::InlineMath(tex) = event
+                && let Expression::Reference { id, style } =
+                    expression(tex, false).map_err(|e| at(page, e))?
+            {
+                target(book, &id, style).map_err(|e| at(page, e))?;
+            }
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]
