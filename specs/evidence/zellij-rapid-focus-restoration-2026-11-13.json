@@ -1054,5 +1054,97 @@
         ]
       }
     ]
+  },
+  "second_fixed_probe": {
+    "run_id": 43539410410,
+    "job_id": 132276191750,
+    "head": "19d2dad08b0a69f4a518828a848fb6687f210506",
+    "retries": 0,
+    "delayed_cases_passed": 32,
+    "original_raw_repetitions_passed": 120,
+    "header_passed": 334,
+    "header_failed": 2,
+    "full_workload": "skipped after header failure",
+    "findings": [
+      "WebKit rapid drawer test passed the initial role-count check while the drawer remained in DOM but was CSS-hidden. Permanent removal assertions now use the drawer-root DOM locator, so the first transition must actually commit before the remaining burst.",
+      "WebKit overflow case kept More after width 1600. No post-resize screenshot frame was recorded before the five-second assertion timeout. Cause is not established; diagnostic-only event/measurement observations added for investigation."
+    ],
+    "traces": [
+      {
+        "case": "header-layout-measured-ove-9e6df-during-rapid-drawer-resizes-desktop-safari-repeat4",
+        "trace_sha256": "7b227e41ca401e42bad63e43390fb0ba98798a4502539b4a31775ff73ac9ef5d",
+        "resizes": [
+          {
+            "time": 159562.953,
+            "viewport": {
+              "width": 390,
+              "height": 900
+            }
+          },
+          {
+            "time": 161277.045,
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            }
+          },
+          {
+            "time": 161421.202,
+            "viewport": {
+              "width": 390,
+              "height": 900
+            }
+          },
+          {
+            "time": 161438.882,
+            "viewport": {
+              "width": 1280,
+              "height": 900
+            }
+          },
+          {
+            "time": 161463.921,
+            "viewport": {
+              "width": 390,
+              "height": 900
+            }
+          }
+        ],
+        "last_screencast": [
+          {
+            "timestamp": 161831.78,
+            "width": 780,
+            "height": 1800
+          }
+        ]
+      },
+      {
+        "case": "header-layout-measured-ove-fedf3-res-them-when-space-returns-desktop-safari",
+        "trace_sha256": "e27ef920e44bfc81c566c36f03bb2d7fdd7289d8c8420306b749603987608f19",
+        "resizes": [
+          {
+            "time": 97635.807,
+            "viewport": {
+              "width": 901,
+              "height": 900
+            }
+          },
+          {
+            "time": 99328.205,
+            "viewport": {
+              "width": 1600,
+              "height": 900
+            }
+          }
+        ],
+        "last_screencast": [
+          {
+            "timestamp": 99108.897,
+            "width": 1802,
+            "height": 1800
+          }
+        ]
+      }
+    ]
   }
 }

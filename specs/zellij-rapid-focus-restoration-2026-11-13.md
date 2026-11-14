@@ -66,3 +66,14 @@ and trace hashes are retained in the evidence. The corrected test clicks a
 visible non-focusable paragraph and asserts receipt of its real pointer event
 before releasing callbacks. No further engine change was required by this
 finding; hosted validation of the corrected test remains pending.
+
+The next probe (`43539410410`, `19d2dad`) passes 32 delayed cases and all 120
+original rapid Chromium sequences without retries. Header stress passes 334 and
+fails two WebKit cases; the full-workload stage therefore does not run. The
+rapid case reveals a second precondition error: a role locator omits the drawer
+while desktop CSS hides it, before React removes it. Permanent removal assertions
+now use the drawer-root DOM locator, including the initial desktop acknowledgment.
+The other case retains More after widening to 1600. Its trace records no painted
+frame after that resize, but the cause is not established. Event/measurement
+observations on the diagnostic branch will distinguish delivery from measurement;
+do not count this failed stress run as acceptance.

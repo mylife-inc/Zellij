@@ -95,7 +95,7 @@ test.describe('measured overflow', () => {
     await page.getByRole('button', { name: 'Open navigation' }).click();
     await expect(page.getByRole('dialog', { name: 'Site navigation' })).toBeVisible();
     await page.setViewportSize({ width: 1280, height: 900 });
-    await expect(page.getByRole('dialog', { name: 'Site navigation' })).toHaveCount(0);
+    await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     await expect(page.locator('.zellij-nav-list [data-zellij-navitem]').first()).toBeFocused();
   });
@@ -118,7 +118,7 @@ test.describe('measured overflow', () => {
     await expect(drawer).toBeVisible();
     await expect(link).toBeFocused();
     await page.keyboard.press('Escape');
-    await expect(drawer).toHaveCount(0);
+    await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
   });
 
@@ -156,12 +156,12 @@ test.describe('measured overflow', () => {
     await page.getByRole('button', { name: 'Open navigation' }).click();
     const drawer = page.getByRole('dialog', { name: 'Site navigation' });
     await expect(drawer).toBeVisible();
-    // Browsers can coalesce transient widths; observe the initial desktop
-    // transition before checking the final focus after the remaining burst.
+    // Browsers can coalesce transient widths. Require actual DOM removal:
+    // role queries omit a CSS-hidden drawer before React has closed it.
     await page.setViewportSize({ width: 1280, height: 900 });
-    await expect(drawer).toHaveCount(0);
+    await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
     for (const width of [390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
-    await expect(drawer).toHaveCount(0);
+    await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
     await expect(page.locator('body')).not.toHaveCSS('overflow', 'hidden');
     await expect(page.getByRole('button', { name: 'Open navigation' })).toBeFocused();
   });
@@ -206,7 +206,7 @@ test.describe('measured overflow', () => {
       const events = () => page.evaluate(() =>
         (window as unknown as { delayedFocusFrames: { events: number } }).delayedFocusFrames.events);
       await page.setViewportSize({ width: 1280, height: 900 });
-      await expect(drawer).toHaveCount(0);
+      await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
       await expect.poll(events).toBe(1);
       await page.setViewportSize({ width: 390, height: 900 });
       await expect.poll(events).toBe(2);
