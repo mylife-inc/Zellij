@@ -25,6 +25,8 @@ pub struct Publication {
     /// Presentation overrides and output locations do not change content identity.
     pub revision: String,
     pub entries: Vec<ReadingEntry>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub equations: Vec<crate::equations::Equation>,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ReadingEntry {
@@ -193,6 +195,7 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
             manifest: manifest.clone(),
             revision: String::new(),
             entries: builder.entries,
+            equations: vec![],
         },
     ))
 }

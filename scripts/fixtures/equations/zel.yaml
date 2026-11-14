@@ -1,0 +1,14 @@
+version: 1
+renderer: portable
+markdown: {math: true}
+book:
+  version: 1
+  title: Equations that travel
+  authors: [Mira Vale]
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - {id: energy, source: chapters/energy.md}
+    - {id: series, source: series.md}
+  appendices:
+    - {id: notes, source: notes.md}

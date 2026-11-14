@@ -11,6 +11,7 @@ const url = z.string().refine((value) =>
 const properties = z.object({
   id: z.string().min(1).optional(),
   href: url.optional(), src: url.optional(),
+  ariaLabel: z.string().optional(),
   title: z.string().optional(), alt: z.string().optional(),
   className: z.array(z.string()).optional(),
   start: z.number().int().nonnegative().optional(),
@@ -23,7 +24,7 @@ const node: z.ZodType<PortableNode> = z.lazy(() => z.union([
   z.object({ type: z.literal('text'), value: z.string() }).strict(),
   z.object({
     type: z.literal('element'),
-    tagName: z.enum(['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'ol', 'ul', 'li', 'div', 'sup', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'em', 'strong', 'del', 'a', 'img', 'pre', 'code', 'br', 'hr', 'input']),
+    tagName: z.enum(['span', 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'ol', 'ul', 'li', 'div', 'sup', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'em', 'strong', 'del', 'a', 'img', 'pre', 'code', 'br', 'hr', 'input']),
     properties, children: z.array(node),
   }).strict(),
 ]));

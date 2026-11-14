@@ -22,6 +22,11 @@ const document = {
     el('img', {src:'/_zellij/assets/logo.svg', alt:'Logo'}),
     el('pre', {}, [el('code', {className:['language-an-unknown-language']}, [text('literal <code> {brace}')])]),
     el('code', {className:['language-math','math-inline']}, [text('x^2')]),
+    el('span', {id:'_zel-eq-eq:energy',className:['zellij-equation']}, [
+      el('span', {className:['zellij-equation-math']}, [el('code', {className:['language-math','math-display']}, [text('E=mc^2')])]),
+      el('a', {href:'#_zel-eq-eq%3Aenergy',className:['zellij-equation-number'],ariaLabel:'Equation 1.1'}, [text('(1.1)')]),
+    ]),
+    el('p', {}, [el('a', {href:'/other#_zel-eq-eq%3Asum',title:'Equation 2.1'}, [text('(2.1)')])]),
     el('pre', {}, [el('code', {className:['language-mindmap']}, [text('Root: [A, B]')])]),
   ]},
 };
@@ -42,7 +47,7 @@ it('loads and renders native trees with metadata, assets, safe literals, navigat
     await writeFile(path.join(root,'site.yaml'), 'name: Docs\nhome: manual\nbasePath: /products/docs\n');
     await writeFile(path.join(root,'manual/_sidebar.yaml'), 'title: Docs\nroute: /\nnav:\n - {page: index, label: Welcome}\n - {href: "https://example.com", label: Company}\n - label: Group\n   items: [{page: other, label: Second}]\n');
     await writeFile(path.join(root,'manual/index.zeldoc.json'), JSON.stringify(document));
-    await writeFile(path.join(root,'manual/other.mdx'), '# Other\n\nOther page.\n');
+    await writeFile(path.join(root,'manual/other.mdx'), '# Other\n\nOther page.\n\n<span id="_zel-eq-eq:sum" />\n');
     await writeFile(path.join(root,'manual/unlisted.mdx'), '# Unlisted\n\nKept.\n');
     const site = await loadSite(new FolderContentSource({contentDir:root}));
     expect(site.guidePages).toHaveLength(3);
@@ -61,6 +66,10 @@ it('loads and renders native trees with metadata, assets, safe literals, navigat
     expect(html).toContain('&lt;script&gt;{process.exit(1)}&lt;/script&gt;');
     expect(html).toContain('src="/products/docs/_zellij/assets/logo.svg"');
     expect(html).toContain('mjx-container');
+    expect(html).toContain('id="_zel-eq-eq:energy"');
+    expect(html).toContain('aria-label="Equation 1.1"');
+    expect(html).toContain('href="/other#_zel-eq-eq%3Asum"');
+    expect(html).toContain('(2.1)');
     expect(html).toContain('zellij-mindmap');
     expect(html).toContain('literal');
     expect(html).not.toContain('<script>');

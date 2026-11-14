@@ -15,6 +15,29 @@ const waitFor = async (condition, label) => {
   while(!await condition()) { assert(Date.now()<end,`Timed out: ${label}`); await new Promise(r=>setTimeout(r,200)); }
 };
 try {
+  const equations = path.join(root,'equations');
+  cpSync('scripts/fixtures/equations',equations,{recursive:true});
+  run(['build',equations,'--pdf']);
+  const equationPrint=path.join(equations,'site/_zellij/pdf');
+  const equationPdf=path.join(equationPrint,'book.pdf');
+  const equationBook=JSON.parse(readFileSync(path.join(equations,'site/_zellij/book.json')));
+  assert.equal(JSON.parse(readFileSync(path.join(equationPrint,'pdf.json'))).revision,equationBook.revision);
+  assert.deepEqual(equationBook.equations.map(e=>e.number),['F1.1','1.1','1.2','2.1','A.1']);
+  const equationText=execFileSync('pdftotext',['-layout',equationPdf,'-'],{encoding:'utf8'});
+  for (const number of ['F1.1','1.1','1.2','2.1','A.1']) assert(equationText.includes(`(${number})`),equationText);
+  assert.match(equationText,/Equation\s+2\.1/);
+  execFileSync('qpdf',['--check',equationPdf]);
+  const equationObjects=JSON.stringify(JSON.parse(execFileSync('qpdf',['--json',equationPdf],{encoding:'utf8',maxBuffer:8*1024*1024})));
+  for (const equation of equationBook.equations) {
+    const target=Buffer.from(equation.anchor).toString('hex');
+    assert(equationObjects.includes(target),`Missing PDF equation destination ${equation.id}`);
+  }
+  const equationCapture=path.join(artifacts,'equations');
+  cpSync(equationPrint,equationCapture,{recursive:true});
+  writeFileSync(path.join(equationCapture,'text.txt'),equationText);
+  const equationInfo=execFileSync('pdfinfo',[equationPdf],{encoding:'utf8'});
+  writeFileSync(path.join(equationCapture,'pdfinfo.txt'),equationInfo);
+  for(let n=1;n<=Number(equationInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',equationPdf,path.join(equationCapture,`page-${n}`)]);
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');

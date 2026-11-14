@@ -221,7 +221,11 @@ pub fn parse(source: &str, fallback: &str, math: bool, mermaid: bool) -> Result<
     })
 }
 
-pub fn highlight(events: Vec<Event<'static>>, mermaid: bool) -> Result<Vec<Event<'static>>> {
+pub fn highlight(
+    events: Vec<Event<'static>>,
+    mermaid: bool,
+    book: Option<&crate::Publication>,
+) -> Result<Vec<Event<'static>>> {
     static SYNTAXES: LazyLock<SyntaxSet> = LazyLock::new(SyntaxSet::load_defaults_newlines);
     static THEMES: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
     let mut output = Vec::new();
@@ -232,9 +236,24 @@ pub fn highlight(events: Vec<Event<'static>>, mermaid: bool) -> Result<Vec<Event
     while let Some(event) = iter.next() {
         if let Event::InlineMath(ref text) | Event::DisplayMath(ref text) = event {
             equation += 1;
-            output.push(Event::Html(
-                crate::math::render(text, matches!(event, Event::DisplayMath(_)), equation)?.into(),
-            ));
+            let block = matches!(event, Event::DisplayMath(_));
+            let html = if let Some(book) = book
+                && let crate::equations::Expression::Numbered { id, tex } =
+                    crate::equations::expression(text, block)?
+            {
+                let eq = book.equation(&id);
+                format!(
+                    "<span class=\"zellij-equation\" id=\"{}\">{}<a class=\"zellij-equation-number\" href=\"#{}\" aria-label=\"Equation {}\">({})</a></span>",
+                    escape(&eq.anchor),
+                    crate::math::render(&tex, true, equation)?,
+                    crate::links::encode(&eq.anchor),
+                    eq.number,
+                    eq.number
+                )
+            } else {
+                crate::math::render(text, block, equation)?
+            };
+            output.push(Event::Html(html.into()));
         } else if let Event::Start(Tag::CodeBlock(kind)) = event {
             let language = match kind {
                 CodeBlockKind::Fenced(s) => s.split_whitespace().next().unwrap_or("").to_owned(),

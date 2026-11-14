@@ -1159,3 +1159,8 @@ a.zellij-card:hover {
 .zellij-mindmap-edge[data-branch='4'] { stroke: var(--zellij-branch-4); }
 .zellij-mindmap-node[data-branch='5'] rect { stroke: var(--zellij-branch-5); }
 .zellij-mindmap-edge[data-branch='5'] { stroke: var(--zellij-branch-5); }
+
+/* Number labels stay visible while wide formulae scroll independently. */
+.zellij-equation{display:flex;align-items:center;gap:1rem;max-width:100%;margin:1.5rem 0;scroll-margin-top:6rem}
+.zellij-equation>.math-display,.zellij-equation-math{flex:1;min-width:0;overflow-x:auto;margin:0;padding:.5rem 0}
+.zellij-equation-number{flex:none;white-space:nowrap;font-variant-numeric:tabular-nums}

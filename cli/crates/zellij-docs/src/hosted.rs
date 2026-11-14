@@ -26,11 +26,13 @@ fn route(page: &Page) -> String {
     format!("/{path}")
 }
 fn target(page: &Page, url: &str, pages: &[Page]) -> Result<String> {
-    if url.starts_with('#') || url.contains(':') || url.starts_with("//") {
-        return Ok(url.into());
-    }
     let end = url.find(['?', '#']).unwrap_or(url.len());
     let (path, suffix) = url.split_at(end);
+    // The resolver has already validated schemes. A colon in a fragment or
+    // query does not make a relative document/asset link an absolute URL.
+    if url.starts_with('#') || path.contains(':') || url.starts_with("//") {
+        return Ok(url.into());
+    }
     if path.is_empty() {
         return Ok(url.into());
     }
@@ -83,7 +85,13 @@ fn contents(items: &[Item], pages: &[Page]) -> Value {
 
 /// Pulldown events already contain normalized headings, escaped raw HTML and
 /// expanded reference links. Build HAST directly instead of reparsing Markdown.
-fn tree(page: &Page, pages: &[Page], events: &[Event<'_>], mermaid: bool) -> Result<Value> {
+fn tree(
+    page: &Page,
+    pages: &[Page],
+    events: &[Event<'_>],
+    mermaid: bool,
+    book: Option<&crate::Publication>,
+) -> Result<Value> {
     let mut stack = vec![json!({"type":"root", "children":[]})];
     let mut footnotes = BTreeMap::<String, usize>::new();
     let mut aligns = vec![];
@@ -252,6 +260,36 @@ fn tree(page: &Page, pages: &[Page], events: &[Event<'_>], mermaid: bool) -> Res
             Event::Text(t) => push(&mut stack, text(t)),
             Event::Code(t) => push(&mut stack, element("code", json!({}), vec![text(t)])),
             Event::InlineMath(t) | Event::DisplayMath(t) => {
+                if let Some(book) = book
+                    && let crate::equations::Expression::Numbered { id, tex } =
+                        crate::equations::expression(t, matches!(event, Event::DisplayMath(_)))?
+                {
+                    let eq = book.equation(&id);
+                    push(
+                        &mut stack,
+                        element(
+                            "span",
+                            json!({"className":["zellij-equation"],"id":eq.anchor}),
+                            vec![
+                                element(
+                                    "span",
+                                    json!({"className":["zellij-equation-math"]}),
+                                    vec![element(
+                                        "code",
+                                        json!({"className":["language-math","math-display"]}),
+                                        vec![text(&tex)],
+                                    )],
+                                ),
+                                element(
+                                    "a",
+                                    json!({"className":["zellij-equation-number"],"href":format!("#{}",links::encode(&eq.anchor)),"ariaLabel":format!("Equation {}",eq.number)}),
+                                    vec![text(&format!("({})", eq.number))],
+                                ),
+                            ],
+                        ),
+                    );
+                    continue;
+                }
                 let class = if matches!(event, Event::DisplayMath(_)) {
                     "math-display"
                 } else {
@@ -401,7 +439,13 @@ pub(super) fn emit(
         json!({"title":name, "route":"/", "nav":nav(&navigation.items)}),
     )?;
     for (index, (page, events)) in pages.iter().zip(rewritten).enumerate() {
-        let mut body = tree(page, pages, events, config.markdown.mermaid)?;
+        let mut body = tree(
+            page,
+            pages,
+            events,
+            config.markdown.mermaid,
+            presentation.book,
+        )?;
         if !page.markdown.has_h1 {
             body["children"].as_array_mut().unwrap().insert(
                 0,

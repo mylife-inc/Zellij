@@ -52,6 +52,16 @@ investigation. Product runtime and rc.6 are unchanged. Resume shared equation
 numbering/references and further book publishing; keep the findings visible
 when assessing the next release.
 
+Current source adds a shared registry for labelled book equations, chapter and
+appendix numbers, stable anchors and forward/backward references in portable
+HTML, adapted Next and PDF. The source-only guide documents the exact syntax
+and boundaries; [the equation record](zellij-book-equations-2026-11-13.md) tracks
+acceptance at `09fd2cc` in PR #167. All 27 jobs in `43557146014` pass, including
+offline/native and prefixed Next browsers, all three PDF runtimes and native
+installer lifecycles. The fixed URL-colon and TeX-boundary defects retain their
+regressions and original evidence. This does not complete theorem semantics or
+the remaining advanced publishing backlog. Public rc.6 is unchanged.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).
@@ -255,7 +265,9 @@ CI selection was fixed by PR #158 (`dd0f620`),
 with all source and generated-consumer checks passing. PR #160 (`dece6c9`)
 resolved the two reproduced header-focus defects. A new rapid-resize assertion
 failed once in source run `43531633137` and passed on retry; that separate finding
-remains open and takes priority before the next candidate.
+remained open at that checkpoint. PR #164 subsequently resolves the reproduced
+rapid-resize race; the later bounded investigation leaves two different timing
+findings unexplained, as recorded above.
 
 The owned Scoop bucket now publishes rc.6 with deliberate ownership protection;
 all four public lifecycle combinations pass. PR #162 (`fd5f07a`, matching tested

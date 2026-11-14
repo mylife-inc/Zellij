@@ -69,6 +69,7 @@ pub fn resolve(parent: &Utf8Path, url: &str) -> Option<Utf8PathBuf> {
 pub struct Resolver<'a> {
     pub root: &'a Utf8Path,
     pub pages: &'a [Page],
+    pub book: Option<&'a crate::Publication>,
     pub assets: BTreeMap<Utf8PathBuf, Vec<u8>>,
 }
 
@@ -190,7 +191,12 @@ impl Resolver<'_> {
                     ids.insert(name);
                 }
             }
-            if !ids.contains(id) {
+            let equation = self.book.is_some_and(|book| {
+                book.equations
+                    .iter()
+                    .any(|eq| eq.source == target.source.as_str() && eq.anchor == id)
+            });
+            if !ids.contains(id) && !equation {
                 return Err(fail(&format!(
                     "missing heading/footnote #{id} in {}",
                     target.source

@@ -118,6 +118,7 @@ fn label(page: usize, id: &str) -> String {
     )
 }
 struct Writer<'a> {
+    book: &'a Publication,
     pages: &'a [Page],
     assets: &'a BTreeMap<Utf8PathBuf, Vec<u8>>,
     files: BTreeMap<Utf8PathBuf, Vec<u8>>,
@@ -289,16 +290,16 @@ impl Writer<'_> {
                 Event::Code(s) => out.push_str(&format!("\\texttt{{{}}}", tex(s))),
                 Event::Text(s) => out.push_str(&tex(s)),
                 Event::InlineMath(s) | Event::DisplayMath(s) => {
-                    for command in s.split('\\').skip(1).map(|part| {
-                        part.chars()
-                            .take_while(char::is_ascii_alphabetic)
-                            .collect::<String>()
-                    }) {
-                        if ["label", "ref", "eqref", "tag"].contains(&command.as_str()) {
-                            return Err(invalid(
-                                "numbered math labels/references need the planned shared equation model; use unnumbered expressions in this print template",
-                            ));
-                        }
+                    if let crate::equations::Expression::Numbered { id, tex: body } =
+                        crate::equations::expression(
+                            s,
+                            matches!(&events[i], Event::DisplayMath(_)),
+                        )?
+                    {
+                        let eq = self.book.equation(&id);
+                        out.push_str(&format!("\\hypertarget{{{}}}{{}}\n\\begin{{equation*}}\\tag{{{}}}{}\n\\end{{equation*}}\n", label(page, &eq.anchor), eq.number, body));
+                        i += 1;
+                        continue;
                     }
                     if matches!(&events[i], Event::DisplayMath(_)) {
                         out.push_str(&format!("\\[{s}\\]\n"));
@@ -383,6 +384,7 @@ pub(crate) fn compose(
         ));
     }
     let mut w = Writer {
+        book,
         pages,
         assets,
         files: BTreeMap::new(),

@@ -80,7 +80,11 @@ impl Diagnostics {
     ) -> Result<T> {
         result.inspect_err(|error| {
             let inferred = match error {
-                Error::UnsafePath { path, .. } if code == Code::Source => Some(path.as_path()),
+                Error::UnsafePath { path, .. }
+                    if matches!(code, Code::Source | Code::Reference) =>
+                {
+                    Some(path.as_path())
+                }
                 _ => None,
             };
             let file = file.or(inferred).and_then(|path| {

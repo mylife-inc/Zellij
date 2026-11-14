@@ -325,6 +325,22 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - name: Reclaim container build cache before Next images
+        run: docker builder prune --all --force
+
+      - name: Next image publication and portable/hosted browser acceptance
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-next-images.mjs cli/target/debug/zel
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: next-equation-previews
+          path: test-results/next-equations/
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Site templates export and render on desktop and mobile
         env:
           ZELLIJ_IMAGE: zellij-ci
@@ -439,14 +455,6 @@ jobs:
           ZELLIJ_IMAGE: zellij-ci
         run: |
           node scripts/check-static-images.mjs cli/target/debug/zel
-
-      - name: Reclaim container build cache before Next images
-        run: docker builder prune --all --force
-
-      - name: Next image publication and portable/hosted browser acceptance
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-next-images.mjs cli/target/debug/zel
 
       - name: Reclaim container build cache before imported images
         run: docker builder prune --all --force
