@@ -48,6 +48,16 @@ shared-repository publication retains its existing token requirement; no new
 credential is needed for CI package tests. The old `zrelease-local` fallback is
 not this six-target acceptance path and should not be used for the next release.
 
+## Managed package installation
+
+The owned Homebrew tap and [Scoop bucket](https://github.com/mylife-inc/scoop-bucket)
+install verified native archives with an ownership marker. Use the package
+manager to update them; `zel upgrade` refuses even with `--force`. Scoop uses
+`bin/zel.exe` behind its shim and writes `share/zel/installation-manager` before
+publishing that shim. Published rc.6 already honors the marker with generic
+guidance; the next candidate adds the exact `scoop update zel` message.
+See [Scoop acceptance and platform boundaries](zel-scoop-distribution-2026-11-13.md).
+
 ## Installers
 
 `install.sh` handles GNU/Linux and macOS; `install.ps1` handles native Windows

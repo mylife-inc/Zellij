@@ -130,7 +130,22 @@ It is a public image — no login, no account. By the time you have installed
 Use published [candidate 0.2.0-rc.6](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.6)
 for this guide. Stable `0.1.3` predates these workflows. The candidate's six native
 packages and both Linux image architectures passed
-[public-artifact acceptance](https://github.com/mylife-inc/Zellij/actions/runs/41548199714).
+[public-artifact acceptance](https://github.com/mylife-inc/Zellij/actions/runs/43496517451).
+
+If you already use a package manager, choose one of these installation methods:
+
+```bash title="Homebrew — macOS and Linux"
+brew install mylife-inc/tap/zel
+```
+
+```powershell title="Scoop — Windows"
+scoop bucket add mylife-inc https://github.com/mylife-inc/scoop-bucket
+scoop install mylife-inc/zel
+```
+
+Update managed installations with `brew upgrade mylife-inc/tap/zel` or
+`scoop update; scoop update zel`. The standalone archive installers below are
+another option. Use one installation method to avoid competing copies on PATH.
 
 <Tabs>
 <Tab title="macOS and Linux">

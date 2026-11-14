@@ -1,0 +1,226 @@
+{
+  "run_id": 43533726998,
+  "head": "c0a2bed1f3ebfbb342d2f91f97484389bf2eb29c",
+  "job_id": 132257498847,
+  "retries": 0,
+  "targeted": {
+    "passed": 239,
+    "failed": 1
+  },
+  "full_workload": "skipped after targeted failure",
+  "failed_case": "desktop-safari rapid drawer resize, drawer count expected zero and remained one",
+  "events_sha256": "1fe8b27cdedba7a9883f796b671d2e0eab04a72a04f440e3b7df51f66817db94",
+  "events": [
+    {
+      "at": 420,
+      "event": "media-before-react",
+      "active": {
+        "tag": "BODY",
+        "class": "",
+        "label": null,
+        "text": "(function(){try{\n  var d = document.documentElemen",
+        "connected": true,
+        "rects": 1
+      },
+      "target": null,
+      "width": 390,
+      "mobile": true,
+      "drawer": false
+    },
+    {
+      "at": 421,
+      "event": "media-frame-1",
+      "active": {
+        "tag": "BODY",
+        "class": "",
+        "label": null,
+        "text": "(function(){try{\n  var d = document.documentElemen",
+        "connected": true,
+        "rects": 1
+      },
+      "target": null,
+      "width": 390,
+      "mobile": true,
+      "drawer": false
+    },
+    {
+      "at": 666,
+      "event": "media-frame-2",
+      "active": {
+        "tag": "BODY",
+        "class": "",
+        "label": null,
+        "text": "(function(){try{\n  var d = document.documentElemen",
+        "connected": true,
+        "rects": 1
+      },
+      "target": null,
+      "width": 390,
+      "mobile": true,
+      "drawer": false
+    },
+    {
+      "at": 954,
+      "event": "focusin",
+      "active": {
+        "tag": "BUTTON",
+        "class": "zellij-hamburger",
+        "label": "Open navigation",
+        "text": "",
+        "connected": true,
+        "rects": 1
+      },
+      "target": {
+        "tag": "BUTTON",
+        "class": "zellij-hamburger",
+        "label": "Open navigation",
+        "text": "",
+        "connected": true,
+        "rects": 1
+      },
+      "width": 390,
+      "mobile": true,
+      "drawer": false
+    },
+    {
+      "at": 985,
+      "event": "focus-call-before",
+      "active": {
+        "tag": "BUTTON",
+        "class": "zellij-hamburger",
+        "label": "Open navigation",
+        "text": "",
+        "connected": true,
+        "rects": 1
+      },
+      "target": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "stack": "@web-inspector://bootstrap.js:590:52\n@http://127.0.0.1:4317/_next/static/chunks/05tbx1g_5ftbi.js:1:1805\niE@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:113832\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138941\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138921\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138986\nuw@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:138603\nuS@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:139011\nsM@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:168796\nsL@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:168574\nsz@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:168298\n@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:165806\ns_@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:165810\nss@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:149074\nsu@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:147310\nsZ@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:172532\nsK@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:170746\nsX@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:171090\n@http://127.0.0.1:4317/_next/static/chunks/3bu__esd273st.js:1:170375",
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    },
+    {
+      "at": 986,
+      "event": "focusout",
+      "active": {
+        "tag": "BODY",
+        "class": "",
+        "label": null,
+        "text": "(function(){try{\n  var d = document.documentElemen",
+        "connected": true,
+        "rects": 1
+      },
+      "target": {
+        "tag": "BUTTON",
+        "class": "zellij-hamburger",
+        "label": "Open navigation",
+        "text": "",
+        "connected": true,
+        "rects": 1
+      },
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    },
+    {
+      "at": 986,
+      "event": "focusin",
+      "active": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "target": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    },
+    {
+      "at": 986,
+      "event": "focus-call-after",
+      "active": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "target": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    },
+    {
+      "at": 1115,
+      "event": "resize",
+      "active": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "target": null,
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    },
+    {
+      "at": 1191,
+      "event": "resize",
+      "active": {
+        "tag": "DIV",
+        "class": "zellij-drawer-panel",
+        "label": "Site navigation",
+        "text": "Lumen 3 ProShopExploreSpecsGuideBuy",
+        "connected": true,
+        "rects": 1
+      },
+      "target": null,
+      "width": 390,
+      "mobile": true,
+      "drawer": true
+    }
+  ],
+  "finding": "After the drawer opens, WebKit reports only final-width 390 resize events; no desktop media-query change reaches the page. The test assumes an intermediate desktop transition that was not observed.",
+  "instrumentation_note": "The original testInfo.status field was captured before the runner finalized the result and says passed even for this failing assertion. Use the actual Playwright outcome above; the next probe records assertionsPassed explicitly.",
+  "next_probe": {
+    "head": "9f24261dd17d990ed562a6da8dc5798c7fb97429",
+    "run_id": 43534470738,
+    "change": "Wait for drawer closure at the initial desktop width before the remaining rapid resize burst; retain final focus assertion.",
+    "result": "success",
+    "targeted_passed": 240,
+    "full_workload_passed": 632,
+    "full_workload_conditional_skips": 64,
+    "retries": 0,
+    "product_code_changed": false,
+    "probe_only": true
+  },
+  "original_chromium_finding": "still open; this WebKit finding does not establish its cause or resolution"
+}

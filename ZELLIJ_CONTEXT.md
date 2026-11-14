@@ -3,11 +3,30 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Scoop distribution implementation is now prepared: a checksum-pinned manifest
-generator, explicit managed-upgrade guidance, native x64/ARM64 Windows lifecycle
-workflow, and a release publication gate/manifest artifact. Hosted acceptance
-and the owned bucket are pending; rc.6 remains unchanged. See
-[the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md).
+Scoop is published in the owned [`mylife-inc/scoop-bucket`](https://github.com/mylife-inc/scoop-bucket)
+at `ca62345`, installing immutable rc.6 on native Windows x64/ARM64. All four
+public lifecycle jobs in `43532235784` pass under Windows PowerShell 5.1 and
+PowerShell 7, including actual HTTPS installation. PR #162 (`fd5f07a`, matching
+the tested tree at `7788140`) merges a
+checksum-pinned manifest generator, exact `scoop update zel` guidance, native
+lifecycle/release gates and a future `zel.json` release artifact. Its four source
+Scoop jobs pass at `7788140`; all 27 jobs in `43531633137` pass without workflow
+reruns. The unrelated browser retry is recorded below and in the evidence.
+rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
+message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
+and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
+
+**Next priority:** source CI `43531633137` observed a rapid-drawer-resize focus
+assertion fail once and pass on automatic retry (369 passed, one flaky, 132
+conditional skips). No engine code changed in the Scoop work. This finding
+remains open; its trace is preserved in the [focus record](specs/zellij-header-resize-focus-2026-11-13.md).
+A separate no-retry probe finds a coalesced-resize test precondition on WebKit;
+its revised scenario passes 240 targeted and 632 full-workload cases (64 skips)
+in `43534470738`, without engine changes. This does not establish the original
+Chromium failure's cause; the diagnostic changes stay on the probe branch.
+Address it before the next candidate, then resume richer books and remaining
+installation channels. Live provider verification and production-domain
+migration stay deferred.
 
 PR #160 (`dece6c9`) fixes two reproduced header-focus defects; its tree
 matches tested head `17be3af`. Focus lost when breakpoint CSS hides navigation
@@ -22,8 +41,8 @@ and four Homebrew targets. All 13 development-image jobs in `43524812741`
 pass on the merged source. The original failures and the corrected test-readiness
 gap remain in [the focus record](specs/zellij-header-resize-focus-2026-11-13.md)
 and [evidence](specs/evidence/zellij-header-focus-2026-11-13.json). Public rc.6 is
-unchanged. Next: Scoop ownership guidance, native Windows lifecycle acceptance
-and an owned bucket, then richer books and the next release candidate.
+unchanged at that milestone. The Scoop publication and new rapid-resize finding
+recorded above are subsequent work; the original fixes and evidence remain valid.
 
 PR #158 (`dd0f620`) fixes generated container CI selection after the recorded
 rc.6 discovery failures; its tree matches tested head `bd0ae9b`. A shared requirement

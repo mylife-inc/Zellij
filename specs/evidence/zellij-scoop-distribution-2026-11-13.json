@@ -1,0 +1,300 @@
+{
+  "date": "2026-11-13",
+  "source": {
+    "pull_request": 162,
+    "tested_head": "77881402bcb8bd6c2e1d337221c17c9906b16a22",
+    "ci_run": 43531633137,
+    "status": "merged; all 27 CI jobs successful",
+    "merge_commit": "fd5f07af726d8338c94ad56db9475f69a9587a1c",
+    "tree_matches_tested_head": true,
+    "tree": "38a022bb079ff0a9301a106a6a263bd215056e2f",
+    "ci_run_attempt": 1,
+    "ci_jobs": 27,
+    "engine_tests": 490
+  },
+  "package": {
+    "repository": "mylife-inc/scoop-bucket",
+    "version": "0.2.0-rc.6",
+    "manifest_sha256": "73bf89385f5eefc535f9b7f2367f2b38cc00e9ce5db32738d3fabd63cb4b8552",
+    "scoop_pin": "e6aa3b366bdee8ed138c1e0f7b85192ebdd35d0f",
+    "platforms": [
+      "windows-2022 / x86_64-pc-windows-msvc",
+      "windows-11-arm / aarch64-pc-windows-msvc"
+    ],
+    "shells": [
+      "Windows PowerShell 5.1",
+      "PowerShell 7"
+    ],
+    "public_acceptance": "all four jobs passed",
+    "commit": "ca62345d918777b5d66c9954610af60116edcb76",
+    "run_id": 43532235784,
+    "run_attempt": 1,
+    "tooling_pin": "77881402bcb8bd6c2e1d337221c17c9906b16a22"
+  },
+  "probe_history": [
+    {
+      "run": 43530387032,
+      "result": "failure",
+      "cause": "Portable harness omitted shim/bucket directories and supplied a raw Windows bucket path instead of a Git URL.",
+      "fix": "06e4762"
+    },
+    {
+      "run": 43531108782,
+      "result": "failure",
+      "cause": "Scoop update expects its default main bucket to exist. The disposable fixture now uses that name.",
+      "fix": "e47016a"
+    },
+    {
+      "run": 43531304912,
+      "result": "two PowerShell 7 successes, two Windows PowerShell 5.1 failures",
+      "cause": "Actions PowerShell 7 -> Node -> Windows PowerShell 5.1 inherited incompatible PSModulePath, hiding Get-FileHash. Child environments now omit that variable to restore native shell discovery.",
+      "fix": "7788140"
+    },
+    {
+      "run": 43531544959,
+      "head": "d151bc3f7b486b01b52290ed32069ce352328919",
+      "result": "all four success",
+      "note": "Public rc.6 archives with local Git fixture; acceptance scripts identical to source 7788140. Diagnostic caller workflow is not merged."
+    }
+  ],
+  "checks": [
+    "exact public archive checksums",
+    "native executable architecture",
+    "PowerShell shim and PATH invocation in both shells",
+    "UTF-8 ownership marker without BOM before shim publication",
+    "self-upgrade refused for check, preview, forced version and custom release URL",
+    "managed binary bytes preserved",
+    "portable creation, strict check and HTML build",
+    "corrupt checksum update preserves installed executable",
+    "ordinary Scoop fixture package-revision update",
+    "uninstall removes app and shim",
+    "actual public HTTPS bucket and release installation matches the generated manifest"
+  ],
+  "local": {
+    "release_helper_tests": 36,
+    "targeted_rust_upgrade_tests": 9,
+    "clippy": "workspace all-targets warnings denied",
+    "formatting": "passed",
+    "actionlint": "passed",
+    "docs": {
+      "routes": 59,
+      "validated_examples": 25,
+      "strict": true,
+      "deep": true
+    }
+  },
+  "immutable_rc6": {
+    "tag_object": "26f2adad84783d03cedd8eb74784bd72b085f5a8",
+    "source_commit": "668e8faa47a7d4a435c71f63a51b903838a12f48",
+    "assets_each_repository": 20,
+    "changed": false
+  },
+  "boundaries": [
+    "Public rc.6 prints generic managed-upgrade guidance; the exact Scoop command ships in the next candidate.",
+    "Fixture package revision is not a new CLI release; verify actual rc.6-to-next-candidate migration before retirement.",
+    "No local Windows/browser/container acceptance ran; Windows checks use disposable hosted runners.",
+    "Next tagged releases add generated zel.json and require Scoop acceptance; no existing release assets were replaced.",
+    "Live provider and external runner verification remains deferred."
+  ],
+  "unresolved_finding": {
+    "run_id": 43531633137,
+    "job_id": 132250636619,
+    "test": "[desktop] e2e/header-layout.spec.ts:153 keeps the final breakpoint in charge during rapid drawer resizes",
+    "assertion_line": 162,
+    "result": "first attempt failed; automatic retry passed",
+    "showcase_summary": {
+      "passed": 369,
+      "flaky": 1,
+      "conditional_skips": 132
+    },
+    "trace_sha256": "e20f3e9416396ca0631b89ec4a5817a4754c80152b597e9477d042a8eb028741",
+    "trace_local": "/private/tmp/zellij-scoop-focus-failure/header-layout-measured-ove-9e6df-during-rapid-drawer-resizes-desktop/trace.zip",
+    "artifact": "playwright-failure-details",
+    "status": "open; not resolved by retry",
+    "scope": "No engine or browser test source changes in Scoop PR #162.",
+    "followup_evidence": "zellij-rapid-focus-discovery-2026-11-13.json"
+  },
+  "jobs": {
+    "source": [
+      {
+        "id": 132250636345,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636617,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636619,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636638,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636671,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636693,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636696,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636697,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636698,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636746,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636826,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636829,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636841,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636870,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636907,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636930,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250636995,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250637076,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132251790415,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102078,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102156,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102168,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102208,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102216,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102239,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102273,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132253102389,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ],
+    "public_bucket": [
+      {
+        "id": 132252522170,
+        "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132252522252,
+        "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132252522305,
+        "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132252522380,
+        "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      }
+    ],
+    "public_archive_probe": [
+      {
+        "id": 132250211043,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250211212,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250211343,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132250211419,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ]
+  }
+}
