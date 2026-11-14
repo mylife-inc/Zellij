@@ -145,7 +145,9 @@ pub(crate) fn expression(source: &str, block: bool) -> Result<Expression> {
     }
     if let Some((id, range)) = label {
         let mut tex = source.to_owned();
-        tex.replace_range(range, "");
+        // Preserve the boundary between a preceding control word and the next
+        // letter: removing a label from \alpha\label{id}x must not form \alphax.
+        tex.replace_range(range, " ");
         if !tex
             .lines()
             .any(|line| !line.trim().is_empty() && !line.trim_start().starts_with('%'))

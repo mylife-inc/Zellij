@@ -102,7 +102,7 @@ fn inserting_an_equation_changes_numbers_and_revision_but_keeps_target_identity(
     fs::write(
         &page,
         format!(
-            "$$x=0\\label{{eq:new}}$$\n\n{}",
+            "$$\\alpha\\label{{eq:new}}x=0$$\n\n{}",
             fs::read_to_string(&page).unwrap()
         ),
     )
