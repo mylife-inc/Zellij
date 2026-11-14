@@ -3,8 +3,9 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-PR #173 implements shared glossary and subject-index catalogs, marked occurrences,
-web backlinks and deduplicated PDF page references. All 27 jobs in `43587957194`
+PR #173 (`efb14f7`, matching reviewed tree `f2e5535`) merges shared glossary and
+subject-index catalogs, marked occurrences, web backlinks and deduplicated PDF
+page references. All 27 jobs in `43587957194`
 pass at `1b9a24f`; local verification passes 796 Rust and 490 engine tests, with
 86 native docs tests after the final renderer edits. Twenty-four PDFs/192 page
 captures pass, all 156 previous captures are unchanged, and the 12 new manuscript
@@ -13,7 +14,11 @@ native and Next layouts are visually reviewed. A bounded native check also passe
 10,000 catalog terms with 2,000 occurrences. See [the contract](specs/zellij-book-terms-2026-11-14.md)
 and [evidence](specs/evidence/zellij-book-terms-2026-11-14.json).
 The final context/evidence update changes no runtime, test or workflow inputs.
-Merge and development-image publication are pending; public rc.6 is unchanged.
+All 13 development-image jobs in `43625206162` pass at the merge, publishing all
+four `main` variants on amd64/arm64 and building/serving a site from the published
+default image. Its first HTTP readiness probe reset; the next succeeded within
+the existing bounded startup loop. The final record-only follow-up changes no
+runtime, test or workflow inputs. Public rc.6 is unchanged.
 **Next priority:** prepare the next CLI candidate with the accumulated book and
 installation fixes, then richer technical/study book editions and the remaining
 print and installation work. Deeper index hierarchies, automatic indexing,

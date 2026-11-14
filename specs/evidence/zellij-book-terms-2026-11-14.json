@@ -1,6 +1,6 @@
 {
   "date": "2026-11-14",
-  "status": "source verified; merge and development images pending",
+  "status": "merged; development images published and smoke-tested",
   "baseline": "0a294426ea7cfcc101ba3da18398aa27c44a4fda",
   "implementation": "1b9a24f1a633b7250007b3252d638682e924506c",
   "verified_head": "1b9a24f1a633b7250007b3252d638682e924506c",
@@ -1729,5 +1729,143 @@
     "BibTeX/custom CSL, multilingual/RTL print, Next-image PDFs, richer book editions and remaining installation work remain open.",
     "Live providers and production-domain migration remain deferred.",
     "No claim of zero bugs or complete 1.0."
-  ]
+  ],
+  "merge": {
+    "commit": "efb14f752c91a227edc14d2c5842ec5346f07aad",
+    "reviewed_head": "f2e5535ed5d24b9b57d422df92ad0bcefdfd7b44",
+    "tree": "4121301abf86a9d2ec1c9deddfd80a14d7dc4fd4",
+    "tree_matches_reviewed_head": true,
+    "changes_after_verified_source": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/evidence/zellij-book-terms-2026-11-14.json",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-book-terms-2026-11-14.md",
+      "specs/zellij-product-expansion-2026-11-11.md"
+    ],
+    "runtime_tests_workflows_public_guide_unchanged_after_verified_source": true
+  },
+  "development_images": {
+    "run_id": 43625206162,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43625206162",
+    "head": "efb14f752c91a227edc14d2c5842ec5346f07aad",
+    "run_attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "diagrams \u00b7 amd64",
+        "job_id": 132539390635,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "job_id": 132539390796,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "job_id": 132539390810,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "job_id": 132539390817,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 arm64",
+        "job_id": 132539390819,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "job_id": 132539390844,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "job_id": 132539390869,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "job_id": 132539390967,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "job_id": 132540043573,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "job_id": 132540043583,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "job_id": 132540043629,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "job_id": 132540043669,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "job_id": 132540177945,
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "job_id": 132540043669,
+        "tag": "main",
+        "image": "ghcr.io/mylife-inc/zellij-base:main",
+        "digest": "sha256:6b58478018856a0f5891714dca38141314cd391165f306eda9f81487ac98cbd3",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "job_id": 132540043573,
+        "tag": "main-all",
+        "image": "ghcr.io/mylife-inc/zellij-base:main-all",
+        "digest": "sha256:869060fb5dd5ee2df4e3017da231a518d2f271e585c70a51c6fae08522dff0fe",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "job_id": 132540043629,
+        "tag": "main-diagrams",
+        "image": "ghcr.io/mylife-inc/zellij-base:main-diagrams",
+        "digest": "sha256:11d252739877ce9b9c699e3b588adb5fcbb2fcb001698299e832f1fb17d1b81c",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "job_id": 132540043583,
+        "tag": "main-maths",
+        "image": "ghcr.io/mylife-inc/zellij-base:main-maths",
+        "digest": "sha256:a207a63739ebc5f390ce0d94bc8a9da5286b8cda223538b1d3d8bdf7c29d18f7",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      }
+    ],
+    "published_image_build_and_http_smoke": "success",
+    "http_readiness": {
+      "job_id": 132540177945,
+      "first_probe": "2026-11-14T18:15:28.9751235Z curl: (56) Recv failure: Connection reset by peer",
+      "successful_probe": "2026-11-14T18:15:31.0540927Z serving",
+      "workflow": "Up to 30 curl -fsS requests, two seconds apart; serving and exit 0 occur only after a successful request, otherwise logs are printed and exit 1.",
+      "conclusion": "success after one initial readiness-probe failure; no job or workflow rerun"
+    }
+  }
 }
