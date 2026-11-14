@@ -186,4 +186,22 @@ The [machine-readable evidence](evidence/zellij-book-statements-2026-11-13.json)
 retains exact commits, job IDs, receipts, capture hashes, bounded probe results,
 local checks and limitations. The record-only commit after source verification
 changes no runtime, test or workflow inputs. Merge and development-image
-publication are recorded separately once complete.
+publication are recorded below.
+
+## Merge and development-image publication
+
+PR #169 merges as `cd791146f7857ae019174c27b0f096f867cfba45`. Its tree
+`7b482645fe098b4466f71efd2ce2c2aa82f9b8e1` matches reviewed head `5ab8acf`;
+only five context/evidence files differ from tested source `5dfaf59`.
+
+All 13 jobs in [development-image run `43569715226`](https://github.com/mylife-inc/Zellij/actions/runs/43569715226)
+pass at that merge without reruns. Eight native builds feed four manifests
+(`main`, `main-maths`, `main-diagrams`, `main-all`) for Linux amd64/arm64;
+the published default image builds and serves a site. The evidence retains
+all job IDs and manifest digests. This final record-only follow-up changes no
+runtime, test or workflow inputs, so it does not repeat product CI or image
+publication. Public rc.6 and production hosting remain unchanged.
+
+Next implementation priority is shared bibliography and citations, followed by
+index/glossary and richer book editions. The remaining print and provider
+boundaries above stay open; this milestone is not a claim of zero bugs or 1.0.

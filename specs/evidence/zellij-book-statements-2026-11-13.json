@@ -1,6 +1,6 @@
 {
   "date": "2026-11-13",
-  "status": "source verified; merge and development images pending",
+  "status": "merged; development images published and smoke-tested",
   "baseline": "ed23611fcffcb30f78ff3071e055c7c3a183a02a",
   "implementation": "4203d65678ef077d58846c54888f203add6c67cc",
   "verified_head": "5dfaf5967464b07421ff4c1f780676d15ae61c65",
@@ -2563,5 +2563,132 @@
     "No claim of zero bugs or complete 1.0.",
     "Bibliography, index/glossary, multilingual/RTL print, Next-image PDFs and richer technical/study/custom print templates remain open.",
     "Live providers and production migration remain deferred."
-  ]
+  ],
+  "merge": {
+    "commit": "cd791146f7857ae019174c27b0f096f867cfba45",
+    "reviewed_head": "5ab8acfe385323dbef67092ab0a81e8a12c53896",
+    "tree": "7b482645fe098b4466f71efd2ce2c2aa82f9b8e1",
+    "tree_matches_reviewed_head": true,
+    "changes_after_verified_source": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/evidence/zellij-book-statements-2026-11-13.json",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-book-statements-2026-11-13.md",
+      "specs/zellij-product-expansion-2026-11-11.md"
+    ],
+    "runtime_tests_workflows_unchanged_after_verified_source": true
+  },
+  "development_images": {
+    "run_id": 43569715226,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43569715226",
+    "head": "cd791146f7857ae019174c27b0f096f867cfba45",
+    "run_attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "none \u00b7 arm64",
+        "job_id": 132371235060,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "job_id": 132371235240,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "job_id": 132371235245,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "job_id": 132371235265,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "job_id": 132371235343,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "job_id": 132371235360,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "job_id": 132371235374,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "job_id": 132371235406,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "job_id": 132371896490,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "job_id": 132371896507,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "job_id": 132371896532,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "job_id": 132371896560,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "job_id": 132371993635,
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "main",
+        "job_id": 132371896532,
+        "digest": "sha256:f6cc4536bc8e9291225d510d39a6eadee2819fea230a9c77306f73ec90a29fae",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-all",
+        "job_id": 132371896507,
+        "digest": "sha256:4cd47a76153df2b49faa3d9cb623a82003f391c706839096a12c09a61afcd77e",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-diagrams",
+        "job_id": 132371896560,
+        "digest": "sha256:1e81ef64caf15b393715ce3a00320196d73fab5e39e17b5554d170efbd04d671",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-maths",
+        "job_id": 132371896490,
+        "digest": "sha256:942e55648e279bfcc1fdedb190837d0e3aa5786c916c41d8ebd3ab1257419529",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      }
+    ],
+    "published_image_build_and_http_smoke": "success"
+  }
 }
