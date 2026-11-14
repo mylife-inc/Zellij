@@ -1,5 +1,24 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
+`f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
+have 21 byte-identical assets; all three template archives retain their previous
+bytes and versions. Six public native installs and both Linux image checks pass;
+16 public PDFs/128 page captures match the reviewed content and pixels.
+Shared equations, theorem/proof blocks, numeric citations, glossary/index,
+responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
+are included. The actual standalone rc.6-to-rc.7 upgrade passes.
+
+The owned Homebrew tap at `ebdcc19` and Scoop bucket at
+`0d57926` publish the attached, verified rc.7 recipes. Homebrew's
+four public lifecycle jobs pass; the remaining Scoop lifecycle and actual
+rc.6-to-rc.7 managed upgrade checks are still running. See
+[release evidence](evidence/zellij-rc7-release-2026-11-14.json).
+Documentation/consumer migration and scoped rc.6 retirement are tracked
+separately; production hosting and deferred live provider checks are unchanged.
+
+## Earlier release and implementation milestones
+
 Implemented policy, November 2, 2026; publication status refreshed November 13.
 Candidate **0.2.0-rc.6 is published and publicly verified**. Both repositories
 have 20 identical assets. All eight jobs in public acceptance `43496517451`
@@ -124,22 +143,27 @@ for candidate acceptance. Source development can explicitly select
 ## Managed Windows distribution
 
 The owned [Scoop bucket](https://github.com/mylife-inc/scoop-bucket) publishes
-rc.6 for native Windows x64/ARM64. All four public acceptance jobs in
-`43532235784` pass at bucket commit `ca62345`. The release pipeline now gates publication on
-four Scoop lifecycle jobs (both CPU architectures under Windows PowerShell 5.1
-and PowerShell 7) and generates `zel.json` from `SHA256SUMS`. This additional
-manifest applies to future tags; immutable rc.6 retains its existing 20 assets.
+rc.7 for native Windows x64/ARM64. Public lifecycle run `43647962901` and actual rc.6-to-rc.7 upgrade
+acceptance are tracked in the release evidence; final managed-channel checks
+are pending at this documentation checkpoint.
+The release pipeline requires all four Scoop checks to succeed before native
+publication and attaches `zel.json` generated from verified `SHA256SUMS`.
 
-For each new candidate, update the owned bucket from the verified release's
-manifest, update its README/CI version and pin the matching acceptance tooling.
-Require all four public-bucket jobs to pass before retiring the previous release.
-The checks include real HTTPS installation, marker bytes, managed self-upgrade
-refusal, portable builds, checksum-failure preservation, a fixture package update
-and uninstall. Also verify an actual old-to-new CLI update when publishing a new
-candidate; a fixture package revision alone does not establish that migration.
-See [the Scoop contract](zel-scoop-distribution-2026-11-13.md) for evidence and
-`gh workflow run scoop.yml --ref main -f version=v0.2.0-rc.6 -f public_bucket=true`
-for manual acceptance (substitute the current published version).
+For each candidate, copy its verified manifest to the bucket, update its README
+and CI version, and pin the reviewed acceptance tooling. Run public installation,
+architecture/shim/ownership checks, checksum-failure preservation, a fixture
+package update and uninstall. Before retiring the previous CLI, dispatch the
+bucket workflow with `upgrade_from` set to its still-published tag; this installs
+and upgrades the real old/new HTTPS archives in a disposable bucket. The empty
+default keeps later lifecycle checks independent of retired downloads.
+
+For Homebrew, the owned tap workflow similarly accepts `upgrade_from_commit`,
+the full previous tap commit SHA. It installs that formula, restores the current
+recipe, upgrades and checks both real CLI versions and portable builds.
+The standalone public executable also runs `upgrade --preview --check` and
+`upgrade --preview` in an isolated directory; its final bytes must match the
+verified current archive. Fixture-only package revisions do not establish a
+real CLI migration. See [Scoop history](zel-scoop-distribution-2026-11-13.md).
 
 ## Prepare a candidate
 
@@ -155,7 +179,7 @@ for manual acceptance (substitute the current published version).
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.6` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.7` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -170,7 +194,7 @@ for manual acceptance (substitute the current published version).
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The rc.6 notes are specs/releases/v0.2.0-rc.6.md;
+in both release pages. The rc.7 notes are specs/releases/v0.2.0-rc.7.md;
 the earlier rc.2 publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
@@ -190,7 +214,7 @@ the latest acceptance code, select the Published release acceptance workflow on
 `main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.6 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.7 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,

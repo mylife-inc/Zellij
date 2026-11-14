@@ -49,3 +49,38 @@ version checks pass. The [source evidence](evidence/zellij-rc7-preparation-2026-
 retains all job IDs and capture hashes. The final record-only update changes
 context and preparation evidence, with no runtime, workflow or test differences.
 The normal local release preflight still precedes tagging after merge.
+
+## Merge, local preflight and release start
+
+PR #175 merges as `f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0`. Its tree
+`076631bcab2e01e102336d399b0bcc3f9ac83b76` matches reviewed `5bbb60d`.
+The normal `zrelease` helper passes 796 Rust tests (five hosted-only cases),
+490 engine tests, typechecks, schema consistency, formatting and Clippy, then
+creates immutable tag `v0.2.0-rc.7` at that merge.
+
+The merge's `[skip ci]` message suppresses automatic push workflows. Automatic
+approval review initially rejected a manual dispatch because it assumed a
+release was already running; no dispatch command executed in that attempt.
+Two exact-head API queries found zero runs. A guarded command checked again
+before starting the first [Release run `43646140679`](https://github.com/mylife-inc/Zellij/actions/runs/43646140679).
+At that checkpoint publication/public-download acceptance was pending. The
+subsequent verified outcome is below; no rc.6 distribution has yet been removed.
+
+## Published acceptance
+
+**2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
+`f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
+have 21 byte-identical assets; all three template archives retain their previous
+bytes and versions. Six public native installs and both Linux image checks pass;
+16 public PDFs/128 page captures match the reviewed content and pixels.
+Shared equations, theorem/proof blocks, numeric citations, glossary/index,
+responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
+are included. The actual standalone rc.6-to-rc.7 upgrade passes.
+
+The owned Homebrew tap at `ebdcc19` and Scoop bucket at
+`0d57926` publish the attached, verified rc.7 recipes. Homebrew's
+four public lifecycle jobs pass; the remaining Scoop lifecycle and actual
+rc.6-to-rc.7 managed upgrade checks are still running. See
+[release evidence](evidence/zellij-rc7-release-2026-11-14.json).
+Documentation/consumer migration and scoped rc.6 retirement are tracked
+separately; production hosting and deferred live provider checks are unchanged.

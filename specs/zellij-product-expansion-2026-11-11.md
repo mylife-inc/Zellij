@@ -7,6 +7,25 @@ design; proposed commands remain planned unless explicitly marked implemented be
 
 ## Delivery order and release boundaries
 
+**2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
+`f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
+have 21 byte-identical assets; all three template archives retain their previous
+bytes and versions. Six public native installs and both Linux image checks pass;
+16 public PDFs/128 page captures match the reviewed content and pixels.
+Shared equations, theorem/proof blocks, numeric citations, glossary/index,
+responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
+are included. The actual standalone rc.6-to-rc.7 upgrade passes.
+
+The owned Homebrew tap at `ebdcc19` and Scoop bucket at
+`0d57926` publish the attached, verified rc.7 recipes. Homebrew's
+four public lifecycle jobs pass; the remaining Scoop lifecycle and actual
+rc.6-to-rc.7 managed upgrade checks are still running. See
+[release evidence](evidence/zellij-rc7-release-2026-11-14.json).
+Documentation/consumer migration and scoped rc.6 retirement are tracked
+separately; production hosting and deferred live provider checks are unchanged.
+
+## Earlier release and implementation milestones
+
 Current source increment (2026-11-13): shared labelled equations and standalone
 inline references are implemented across native HTML, adapted Next and PDF.
 See [the contract and acceptance record](zellij-book-equations-2026-11-13.md).

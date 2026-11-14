@@ -1,6 +1,6 @@
 {
   "date": "2026-11-14",
-  "status": "source accepted; release pending",
+  "status": "source accepted; release passed; see rc.7 release evidence for post-publication checks",
   "candidate": "v0.2.0-rc.7",
   "baseline": "474fc8f97edf28a3692cf3ee92a91559047e3d91",
   "source_head": "81315063f9ef2f7550fddd85c245db0fc521bb28",
@@ -1055,5 +1055,31 @@
     "compatibility_mappings": 82,
     "byte_identical_images": 29,
     "preservation_browser_regressions": 6
+  },
+  "release_preflight": {
+    "tag": "v0.2.0-rc.7",
+    "commit": "f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0",
+    "reviewed_head": "5bbb60de97cb357eeef1fb148f7f2794c82c221e",
+    "tree": "076631bcab2e01e102336d399b0bcc3f9ac83b76",
+    "rust_passed": 796,
+    "hosted_only_ignored_locally": 5,
+    "engine_tests": 490,
+    "typechecks": true,
+    "schema_drift": false,
+    "formatting": true,
+    "warnings_denied_clippy": true
+  },
+  "release_started": {
+    "run_id": 43646140679,
+    "head": "f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0",
+    "dispatch": "workflow_dispatch against immutable v0.2.0-rc.7",
+    "initial_dispatch_rejected": "Automatic approval review assumed the tag had already triggered a release. No command ran. Repeated exact-head API queries returned zero runs; the tagged commit contains [skip ci]. A guarded first dispatch then succeeded.",
+    "publication_status": "pending"
+  },
+  "release_outcome": {
+    "run_id": 43646140679,
+    "conclusion": "success",
+    "jobs": 33,
+    "evidence": "zellij-rc7-release-2026-11-14.json"
   }
 }

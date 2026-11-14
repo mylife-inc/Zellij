@@ -3,10 +3,11 @@ title: Books and reading order
 description: Define a book once, validate its manuscript, and build an offline reading website with an optional LuaLaTeX PDF.
 ---
 
-<Callout type="info" title="Included in candidate 0.2.0-rc.6">
-Candidate rc.6 includes the versioned book manifest, `book-classic@0.2.0`
-and optional LuaLaTeX PDFs on all six native platforms. Advanced
-indexes, bibliography, multilingual print and technical/study templates remain planned.
+<Callout type="info" title="Included in candidate 0.2.0-rc.7">
+Candidate rc.7 includes the versioned book manifest, `book-classic@0.2.0`
+and optional LuaLaTeX PDFs on all six native platforms. Shared equation and
+statement references, numeric citations, glossary and subject index are included.
+Multilingual print and richer technical/study templates remain planned.
 </Callout>
 
 ## One manuscript, one reading order
@@ -93,12 +94,13 @@ choose another theme. A separate site `name` controls the header; without one,
 the book title is used. Existing company/product branding, Markdown features,
 local fonts, search and offline navigation continue to work.
 
-## Numbered equations and cross-references (current source)
+<div id="numbered-equations-and-cross-references-current-source" className="zellij-legacy-anchor" />
 
-<Callout type="info" title="After rc.6">
-Shared equation numbering is implemented in current source and awaits the next
-CLI candidate. Use a matching engine build for Next images. Published rc.6
-continues to support its earlier unnumbered print-math subset.
+## Numbered equations and cross-references
+
+<Callout type="info" title="Included in rc.7">
+Shared equation numbering is included in rc.7. Use the matching engine image
+for Next output. Earlier rc.6 supports its unnumbered print-math subset.
 </Callout>
 
 Enable `markdown: {math: true}` beside the `book` block in `zel.yaml`. Label a
@@ -146,11 +148,13 @@ When equations exist, the publication record adds `equations` to schema version
 no labelled equations. The Next sidecar keeps those portable hrefs; its `routes`
 map supplies hosted entry paths, and deployment base paths apply as usual.
 
-## Theorems, lemmas and proofs (current source)
+<div id="theorems-lemmas-and-proofs-current-source" className="zellij-legacy-anchor" />
 
-<Callout type="info" title="After rc.6">
-Shared statement numbering and references are implemented in current source and
-await the next candidate. Use a matching engine build for Next images.
+## Theorems, lemmas and proofs
+
+<Callout type="info" title="Included in rc.7">
+Shared statement numbering and references are included in rc.7. Use the matching
+engine image for Next output.
 </Callout>
 
 Write a top-level Markdown blockquote with a marker, stable label, optional
@@ -213,9 +217,9 @@ components retain their existing behavior.
 
 ## Bibliography and citations
 
-<Callout type="info" title="Current source after rc.6">
-The numeric bibliography described here is implemented in current source and
-will ship in the next candidate. It is not included in the rc.6 binary.
+<Callout type="info" title="Included in rc.7">
+The numeric bibliography described here is included in rc.7. Use the matching
+engine image for Next output.
 </Callout>
 
 Save a local CSL-JSON reference catalog under `content/` and configure it in
@@ -313,8 +317,8 @@ omit that field and keep their existing revision behavior.
 ## Glossary and index
 
 <Callout type="info">
-These features are implemented in current source and await the next CLI
-candidate. Public rc.6 does not yet include them.
+Glossary and subject-index catalogs are included in rc.7, with the same
+resolved terms and references across portable HTML, Next and PDF.
 </Callout>
 
 Enable either catalog, or both, inside the existing book manifest:
@@ -455,7 +459,7 @@ reading order, chapter markers and title-page content. Its public
 `routes` (entry IDs mapped to hosted routes). Apply the deployment's configured
 `basePath` to both this URL and the mapped routes: the map contains unprefixed
 content routes, not complete deployment URLs. Its portable `href` fields are not
-hosted route declarations. Use the matching rc.6 engine image or later. Native
+hosted route declarations. Use the matching rc.7 engine image. Native
 portable web builds require no external renderer.
 
 ## Start from the existing book template
@@ -562,7 +566,7 @@ GitHub and CircleCI use their existing Linux machine runners; GitLab enables its
 Docker service and shared build directory even for a portable PDF build. Runner
 setup must allow the CLI and runtime to bind the same temporary paths.
 Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**.
-Generate the workflow with `--zel-version 0.2.0-rc.6` to select this published
+Generate the workflow with `--zel-version 0.2.0-rc.7` to select this published
 candidate. Earlier binaries do not support these settings.
 
 ### Toolchain and failure behavior
@@ -610,8 +614,8 @@ quotes, footnotes, tables of up to six columns, the existing validated math
 subset, local PNG/JPEG images and links between book pages/headings. Code and
 ordinary text are escaped; authored HTML remains literal. Repeated footnote
 references share their number; unreferenced definitions are rejected. The printed cover is followed by contents and
-any authored home document; its body remains part of the publication. Current
-source starts that authored home content on a separate page after the contents.
+any authored home document; its body remains part of the publication. rc.7
+starts that authored home content on a separate page after the contents.
 
 This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and internal-link URL queries
@@ -619,6 +623,6 @@ are rejected for print with an explanation; ordinary web builds retain their exi
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
 trim sizes and multilingual/RTL print remain future increments.
-Current source adds glossary/index backmatter, shared equations, statement blocks, numeric bibliography
-and citations as described above; rc.6 does not include them.
+rc.7 includes glossary/index backmatter, shared equations, statement blocks,
+numeric bibliography and citations as described above.
 Mathematical expressions otherwise use the web renderer's supported subset.
