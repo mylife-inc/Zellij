@@ -407,14 +407,15 @@ quotes, footnotes, tables of up to six columns, the existing validated math
 subset, local PNG/JPEG images and links between book pages/headings. Code and
 ordinary text are escaped; authored HTML remains literal. Repeated footnote
 references share their number; unreferenced definitions are rejected. The printed cover is followed by contents and
-any authored home document; its body remains part of the publication.
+any authored home document; its body remains part of the publication. Current
+source starts that authored home content on a separate page after the contents.
 
 This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and URL queries are rejected
 for print with an explanation; ordinary web builds retain their existing support.
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
-trim sizes, multilingual/RTL print, bibliography, index, glossary and semantic
-theorem numbering remain future increments. Current source adds the shared
-equation labels and references described above; rc.6 does not include them.
+trim sizes, multilingual/RTL print, bibliography, index and glossary remain
+future increments. Current source adds the shared equations, statement blocks
+and references described above; rc.6 does not include them.
 Mathematical expressions otherwise use the web renderer's supported subset.

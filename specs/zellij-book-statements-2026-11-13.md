@@ -108,3 +108,10 @@ after that last return. The follow-up waits for those native navigation
 preconditions before taking focus and adds failure-only state/screenshot capture.
 No product focus behavior is changed. The exact lost-focus timing was not
 captured in the initial run; retain that limit when interpreting a later pass.
+
+Visual review of the first seven statement PDF pages exposes an existing print
+layout defect: authored home content starts directly below the table of contents.
+The adapter now starts that content on its own page before emitting its stable
+target. Native source assertions and real PDF page-text checks enforce the
+separation. This affects books with an authored home; all 105 existing baseline
+captures matched before this change and will be compared again after it.
