@@ -75,6 +75,13 @@ test also assumed `next/link` applies a deployment base path in a plain React
 unit render; actual prefix handling is checked by the hosted prefixed build.
 No product behavior was changed to accommodate those test assumptions.
 
+The first hosted run `43552849248` exposed a Windows-only fixture assumption:
+the chapter-reorder test replaced LF text in a CRLF checkout and therefore did
+not reorder anything. The fixture now explicitly exercises CRLF, normalizes
+line endings before replacement, and asserts that the replacement changes the
+input. All four equation integration tests pass locally after that correction.
+The original Windows failure is retained; it did not require a product change.
+
 Final local and hosted results remain to be recorded. Public documentation
 marks this feature as source-only after rc.6. No release or provider deployment
 is part of this increment. Per-row numbering, references embedded in larger

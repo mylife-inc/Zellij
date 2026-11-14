@@ -206,10 +206,10 @@ fn title_and_front_matter_have_distinct_namespaces_and_renumber_with_manifest_or
     let original = fs::read_to_string(&settings).unwrap();
     fs::write(
         &settings,
-        original.replace(
+        original.replace("\r\n", "\n").replace(
             "    - {id: preface, source: preface.md}",
             "    - {id: preface, source: preface.md}\n    - {id: afterword, source: afterword.md}",
-        ),
+        ).replace('\n', "\r\n"),
     )
     .unwrap();
     fs::write(
@@ -228,15 +228,16 @@ fn title_and_front_matter_have_distinct_namespaces_and_renumber_with_manifest_or
             .collect::<Vec<_>>(),
         ["T.1", "F1.1", "F2.1"]
     );
-    let config = fs::read_to_string(&settings).unwrap();
-    fs::write(
-        &settings,
-        config.replace(
-            "    - {id: energy, source: chapters/energy.md}\n    - {id: series, source: series.md}",
-            "    - {id: series, source: series.md}\n    - {id: energy, source: chapters/energy.md}",
-        ),
-    )
-    .unwrap();
+    let config = fs::read_to_string(&settings).unwrap().replace("\r\n", "\n");
+    let reordered = config.replace(
+        "    - {id: energy, source: chapters/energy.md}\n    - {id: series, source: series.md}",
+        "    - {id: series, source: series.md}\n    - {id: energy, source: chapters/energy.md}",
+    );
+    assert_ne!(
+        reordered, config,
+        "the fixture must actually reorder its chapters"
+    );
+    fs::write(&settings, reordered).unwrap();
     let after = check(&source, true).book.unwrap();
     assert_eq!(
         after
