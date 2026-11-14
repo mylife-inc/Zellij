@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.6](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.6)
+[Candidate 0.2.0-rc.7](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.7)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -86,17 +86,17 @@ a LuaLaTeX PDF and download link using a supported Linux container runtime.
 PDF is off by default. The classic print design supports English/LTR books;
 advanced technical and multilingual publishing remain planned.
 
-Current source adds shared labelled equations, theorem/lemma/proof blocks, numeric
+rc.7 adds shared labelled equations, theorem/lemma/proof blocks, numeric
 bibliography/citations, glossary/index and cross-chapter references for portable/Next websites and PDF, with stable anchors
-and native validation. These additions are being prepared for rc.7; public rc.6 is unchanged. See the
+and native validation. See the
 [equation contract](specs/zellij-book-equations-2026-11-13.md) and
 [statement contract](specs/zellij-book-statements-2026-11-13.md), plus the
 [bibliography contract](specs/zellij-book-bibliography-2026-11-14.md) and
 [glossary/index contract](specs/zellij-book-terms-2026-11-14.md).
 
-The [candidate notes](specs/releases/v0.2.0-rc.6.md) cover templates, composition
+The [candidate notes](specs/releases/v0.2.0-rc.7.md) cover templates, composition
 presets, book/PDF publishing and remaining limits. See the
-[release evidence](specs/evidence/zellij-rc6-release-2026-11-13.json) and
+[release evidence](specs/evidence/zellij-rc7-release-2026-11-14.json) and
 [completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification and
 deferred provider/runner checks. This is a preview, not a stable 1.0 release.
 

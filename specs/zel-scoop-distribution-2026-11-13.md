@@ -1,5 +1,14 @@
 # Scoop distribution — 2026-11-13
 
+**2026-11-14 update:** rc.7 is published with the generated `zel.json` asset
+and exact `scoop update zel` ownership guidance. The owned bucket at `0d57926`
+passes all four public lifecycle jobs in `43647962901`. All four actual
+rc.6-to-rc.7 upgrade jobs in `43648717666` also pass, using reviewed tooling
+`9e8ba4c`. See [rc.7 release evidence](evidence/zellij-rc7-release-2026-11-14.json).
+The source, public downloads and all package-manager checks are separate gates.
+
+## Initial implementation checkpoint
+
 Status: the public bucket is published and all four public lifecycle jobs pass.
 PR #162 merges the implementation as `fd5f07a`, with a tree identical to tested
 head `7788140`. All 27 CI jobs in `43531633137` pass without workflow reruns;
@@ -41,8 +50,13 @@ lifecycle: architecture-specific extraction, shim execution in Windows PowerShel
 preservation, and a native portable creation/check/build. It rejects a corrupt
 checksum update while preserving the installation, then performs a normal
 Scoop version update and uninstall, checking that shims and the app directory
-are removed. The lifecycle test advances a **fixture package revision** only;
+are removed. The default lifecycle test advances a **fixture package revision** only;
 it does not claim to test a new CLI release or publish a fictitious version.
+Optional `upgrade_from` acceptance separately installs a still-published previous
+CLI from HTTPS, updates the disposable Git bucket to the current verified
+manifest, and checks both actual binary versions, ownership and portable builds.
+Leave that input empty after retirement so ordinary checks do not depend on
+removed downloads.
 The real binary version remains checked before and after the package update.
 Public-bucket acceptance additionally installs from the actual HTTPS bucket
 and release URLs, then uninstalls. Real rc.6-to-next-candidate acceptance remains

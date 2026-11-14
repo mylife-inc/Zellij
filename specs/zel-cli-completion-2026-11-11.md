@@ -5,6 +5,26 @@ and external-runner acceptance remains incomplete. The user explicitly moved
 deployment verification to the end and authorized cutting a CLI release with
 updated documentation on 2026-11-11. This page separates implementation,
 release checks, deferred acceptance work, and format boundaries.
+**2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
+`f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
+have 21 byte-identical assets; all three template archives retain their previous
+bytes and versions. Six public native installs and both Linux image checks pass;
+16 public PDFs/128 page captures match the reviewed content and pixels.
+Shared equations, theorem/proof blocks, numeric citations, glossary/index,
+responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
+are included. The actual standalone rc.6-to-rc.7 upgrade passes.
+
+The owned Homebrew tap at `ebdcc19` and Scoop bucket at
+`0d57926` publish the attached, verified rc.7 recipes. All four public
+lifecycle checks and all four actual rc.6-to-rc.7 upgrade checks pass for
+each channel. The upgrade checks verify both installed CLI versions and
+portable builds; they use actual HTTPS release archives. See
+[release evidence](evidence/zellij-rc7-release-2026-11-14.json).
+Documentation/consumer migration and scoped rc.6 retirement are tracked
+separately; production hosting and deferred live provider checks are unchanged.
+
+## Earlier release and implementation milestones
+
 Refreshed 2026-11-13: **v0.2.0-rc.6 is published** from PR #155
 (`668e8fa`), including composition/presets, the shared book model, optional
 LuaLaTeX PDFs, configured preview/static delivery and book-classic 0.2.0.
@@ -174,12 +194,12 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in rc.6; configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
-| Book publication and PDF (rc.6) | Shared publication snapshot, direct LaTeX adapter, saved settings, atomic web/PDF builds and previews, static delivery/images, standalone export and native compatibility checks; three real PDF runtime jobs and 87 reviewed/matched captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, bibliography/index and technical/study templates remain open. |
+| Book publication and PDF (rc.7) | Shared publication snapshot, equations/statements/citations/glossary/index, direct LaTeX adapter, saved settings, atomic web/PDF builds, previews and static delivery; 24 source PDFs/192 captures and 16 public PDFs/128 captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, richer technical/study templates, BibTeX/custom styles and extended indexing remain open. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.6 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs, four public Homebrew jobs and four public Scoop lifecycle jobs pass | WinGet and other package channels and live provider/external-runner acceptance remain deferred. |
+| Distribution | Published rc.7 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs pass; owned-channel lifecycle and actual old-to-new upgrades are tracked separately | WinGet and other package channels and live provider/external-runner acceptance remain deferred. |
 
 Earlier importer milestone: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust

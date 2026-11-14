@@ -1,5 +1,20 @@
 # zel CLI implementation status — 2026-11-05
 
+**2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
+`f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
+have 21 byte-identical assets; all three template archives retain their previous
+bytes and versions. Six public native installs and both Linux image checks pass;
+16 public PDFs/128 page captures match the reviewed content and pixels.
+Shared equations, theorem/proof blocks, numeric citations, glossary/index,
+responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
+are included. The actual standalone rc.6-to-rc.7 upgrade passes.
+
+See the [current completion ledger](zel-cli-completion-2026-11-11.md) for
+remaining expansion and deferred acceptance. All older “current source” and
+release statements below describe their dated milestones.
+
+## Earlier implementation and release snapshots
+
 **2026-11-11 release sequencing:** the user authorized publishing the current CLI
 with updated documentation before remaining live deployment verification.
 Rc.3 is now published with all 29 release/public-artifact checks passing;
