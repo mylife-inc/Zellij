@@ -62,6 +62,20 @@ installer lifecycles. The fixed URL-colon and TeX-boundary defects retain their
 regressions and original evidence. This does not complete theorem semantics or
 the remaining advanced publishing backlog. Public rc.6 is unchanged.
 
+PR #169 subsequently implements shared theorem, lemma, proposition, corollary,
+definition, example, remark and proof blocks, with one reading-entry counter,
+stable labels and references shared by native HTML, adapted Next and PDF.
+All 27 jobs in `43567230812` pass at `5dfaf59`; local verification passes 782
+Rust and 490 engine tests. Eighteen PDFs/129 captures pass, with all 105 prior
+captures unchanged. The authored-home PDF page break and inherited contents
+header are fixed. Native-fragment keyboard acceptance now waits for navigation
+readiness; original failures and a bounded comparison remain recorded in the
+[statement contract](zellij-book-statements-2026-11-13.md) and
+[evidence](evidence/zellij-book-statements-2026-11-13.json).
+Bibliography/citations, index/glossary, multilingual print and richer book
+editions remain incomplete. These additions await the next candidate; rc.6 and
+the separate unresolved browser timing findings remain unchanged.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

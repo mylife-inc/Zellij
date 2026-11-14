@@ -2,7 +2,8 @@
 
 Source baseline: `ed23611` on `main`. Public rc.6 remains unchanged. This
 increment extends shared equation identity with mathematical statement blocks.
-Implementation and acceptance are in progress; no hosted result is claimed yet.
+Implementation and source acceptance are complete at `5dfaf59` in PR #169.
+All 27 final-source CI jobs pass; merge and image publication are recorded below.
 
 ## Authoring contract
 
@@ -61,7 +62,8 @@ an allowed `ariaHidden` string enum (true/false) for the decorative mark. Print 
 escaped titles and stable hyperlink destinations with the resolved numbers;
 LaTeX does not run another counter or execute authored metadata. Blocks can flow
 across pages; headings reserve following space and proof marks stay with the
-preceding content. Existing PDF layouts are unaffected by absent statements.
+preceding content. The statement renderer adds no layout for books without statement blocks; the
+separate authored-home pagination correction is described below.
 
 ## Verification and retained findings
 
@@ -153,3 +155,35 @@ uses the same URL/load/font/target readiness before focus and the bounded
 no-script failure capture. Both helpers capture full-page layouts from the top
 only after their keyboard assertions. Product code is unchanged by this
 follow-up; the final combined-source CI must pass before merge.
+
+
+## Final source acceptance
+
+All 27 jobs in [CI `43567230812`](https://github.com/mylife-inc/Zellij/actions/runs/43567230812)
+pass at exact source `5dfaf5967464b07421ff4c1f780676d15ae61c65` without workflow
+reruns. This final run includes both readiness corrections and both print fixes.
+Intermediate failures and cancelled superseded runs remain in the evidence.
+
+- Portable books pass relocated `file://` checks in Chromium/WebKit on
+  Linux/macOS/Windows, with JavaScript enabled/disabled, keyboard references,
+  front matter/appendices, rich block bodies and two viewport widths. Prefixed
+  Next images pass the same statement/equation references and responsive checks.
+  All 26 statement browser captures are retained; desktop/mobile native samples
+  and both Next samples are visually reviewed.
+- Docker amd64/arm64 and rootless Podman each render six books: 18 PDFs and 129
+  page captures total. All 105 prior captures remain byte-identical. The final
+  24 statement captures match the eight visually reviewed pages across runtimes,
+  and all 129 final-source PNGs match the reviewed print implementation at
+  `6b76504`. PDF binaries have distinct hashes; rendered layouts and extracted
+  content agree. Receipt and capture hashes remain in the evidence.
+- Existing checks pass 490 engine tests, 378 showcase cases (140 conditional
+  skips, no retries), complete documentation preservation and all six browser
+  regressions. Preservation covers 46 original routes, 13 added routes, 282
+  original heading IDs, 82 compatibility mappings and 29 byte-identical images.
+  Six native packages, four Homebrew targets and four Scoop combinations pass.
+
+The [machine-readable evidence](evidence/zellij-book-statements-2026-11-13.json)
+retains exact commits, job IDs, receipts, capture hashes, bounded probe results,
+local checks and limitations. The record-only commit after source verification
+changes no runtime, test or workflow inputs. Merge and development-image
+publication are recorded separately once complete.
