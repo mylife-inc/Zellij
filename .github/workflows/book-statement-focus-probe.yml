@@ -1,0 +1,31 @@
+name: Book statement focus investigation
+on:
+  push:
+    branches: [codex/book-statement-focus-probe]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps webkit
+      - run: node scripts/probe-statement-focus.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: statement-focus-investigation
+          path: test-results/statement-focus/
+          retention-days: 7
