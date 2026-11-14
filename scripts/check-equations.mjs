@@ -20,7 +20,7 @@ export async function checkEquations(page, origin, captures, prefix) {
     await expect(page.locator('[id="_zel-eq-eq:sum"] .zellij-equation-number')).toHaveText('(2.1)');
     await page.getByRole('link', { name: '(1.1)', exact: true }).click();
     await expect(page).toHaveURL(/\/chapters\/energy\.html#_zel-eq-eq%3Aenergy$/);
-    await page.getByRole('link', { name: 'Link with custom text.', exact: true }).click();
+    await page.getByRole('link', { name: 'Link with custom text', exact: true }).click();
     await expect(page).toHaveURL(/\/series\.html#_zel-eq-eq(?::|%3A)sum$/);
     await page.getByRole('link', { name: '(1.1)', exact: true }).click();
     // A self-link is keyboard reachable and the shared stable target exists.
