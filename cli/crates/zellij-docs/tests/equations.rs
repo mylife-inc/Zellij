@@ -71,6 +71,7 @@ fn publication_numbers_forward_and_backward_references_once_for_all_renderers() 
         .unwrap();
     let body = doc["body"].to_string();
     assert!(body.contains("/series.html#_zel-eq-eq%3Asum"));
+    assert!(body.contains("\"href\":\"/series.html#_zel-eq-eq:sum\""));
     assert!(body.contains("zellij-equation-number"));
     assert!(body.contains("Equation 1.1"));
     assert!(!body.contains("label{"));

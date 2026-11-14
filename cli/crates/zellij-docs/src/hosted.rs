@@ -26,11 +26,13 @@ fn route(page: &Page) -> String {
     format!("/{path}")
 }
 fn target(page: &Page, url: &str, pages: &[Page]) -> Result<String> {
-    if url.starts_with('#') || url.contains(':') || url.starts_with("//") {
-        return Ok(url.into());
-    }
     let end = url.find(['?', '#']).unwrap_or(url.len());
     let (path, suffix) = url.split_at(end);
+    // The resolver has already validated schemes. A colon in a fragment or
+    // query does not make a relative document/asset link an absolute URL.
+    if url.starts_with('#') || path.contains(':') || url.starts_with("//") {
+        return Ok(url.into());
+    }
     if path.is_empty() {
         return Ok(url.into());
     }

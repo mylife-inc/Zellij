@@ -31,7 +31,7 @@ fn adapter_preserves_pages_settings_literal_text_and_references() {
     let source = root.join("manual");
     fs::create_dir_all(source.join("content/nested")).unwrap();
     fs::write(source.join("zel.yaml"), "version: 1\nrenderer: portable\nname: Acme\ntheme: forest\nbrand:\n  logo: {src: 'logo #1%.svg', alt: Acme, href: 'https://example.com'}\nnav:\n  - {page: index.md, label: Start}\n  - label: Learn\n    children:\n      - {href: 'https://example.com/help', label: Help}\n      - {page: nested/readme.md, label: Guide}\n").unwrap();
-    fs::write(source.join("content/index.md"), "---\ntitle: Welcome\ndescription: Description\n---\n# Authored {#exact}\n\n[Guide](nested/#there) [File](report.pdf?dl=1) ![Mark](logo%20%231%25.svg)\n\n<a>{process.exit(9)}</a>\n\nexport const value = 1\n\n| A | B |\n| :- | -: |\n| x | y |\n\n- [x] Done\n\nNote[^ref].\n\n[^ref]: A footnote.\n\n```mermaid\ngraph TD; A-->B\n```\n\n$x$ stays literal.\n").unwrap();
+    fs::write(source.join("content/index.md"), "---\ntitle: Welcome\ndescription: Description\n---\n# Authored {#exact}\n\n[Guide](nested/#there) [File](report.pdf?dl=1) [Time](report.pdf?at=12:30) ![Mark](logo%20%231%25.svg)\n\n<a>{process.exit(9)}</a>\n\nexport const value = 1\n\n| A | B |\n| :- | -: |\n| x | y |\n\n- [x] Done\n\nNote[^ref].\n\n[^ref]: A footnote.\n\n```mermaid\ngraph TD; A-->B\n```\n\n$x$ stays literal.\n").unwrap();
     fs::write(
         source.join("content/nested/readme.md"),
         "# Details\n\n## There {#there}\n\n[Home](../index.md#exact)\n",
@@ -76,6 +76,7 @@ fn adapter_preserves_pages_settings_literal_text_and_references() {
     for expected in [
         "/nested/index.html#there",
         "/_zellij/assets/portable/report.pdf?dl=1",
+        "/_zellij/assets/portable/report.pdf?at=12:30",
         "process.exit(9)",
         "export const value = 1",
         "language-text",
