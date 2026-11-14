@@ -179,6 +179,10 @@ test.describe('measured overflow', () => {
         const cancel = window.cancelAnimationFrame.bind(window);
         const callbacks = new Map<number, FrameRequestCallback>();
         let held = true;
+        // Keep the browser rendering while only application callbacks wait.
+        // Media-query and ResizeObserver delivery must continue independently.
+        const render = () => { if (held) request(render); };
+        request(render);
         let id = 0;
         window.requestAnimationFrame = callback => {
           if (!held) return request(callback);

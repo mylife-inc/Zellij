@@ -33,6 +33,16 @@ development-image jobs pass. These header fixes also await the next candidate.
 See [verification evidence](evidence/zellij-ci-runtime-selection-2026-11-13.json)
 and [the focus investigation](zellij-header-resize-focus-2026-11-13.md).
 
+PR #164 (`cc88bc0`, tested `36c7882`) subsequently resolves the rapid-focus
+race observed during Scoop acceptance. Final stress passes 1,156 cases without
+retries; all 27 CI jobs pass after one unchanged Engine rerun, and all 13
+development-image jobs in `43543832220` pass. The test fixture
+is checked against the unfixed engine and still fails all eight navigation
+cases. An isolated WebKit overflow timeout and the first documentation-readiness
+timeout remain unexplained, with their failures retained. See
+[the resolution](zellij-rapid-focus-restoration-2026-11-13.md). These source
+changes await the next candidate; rc.6 remains unchanged.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

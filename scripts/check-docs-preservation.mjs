@@ -56,6 +56,8 @@ try {
     // signal. This also detects a page whose client scripts never hydrate.
     try {
       await page.getByRole('button', { name: /^Switch to (light|dark) theme$/ }).waitFor({ timeout: 15_000 });
+    } catch (error) {
+      throw new Error(`Documentation hydration readiness failed at ${page.url()}`, { cause: error });
     } finally {
       // Keep the causal browser error if it prevented mounting altogether.
       assertNoErrors();

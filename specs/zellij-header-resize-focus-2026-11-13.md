@@ -103,7 +103,7 @@ first-attempt failure in the desktop rapid-drawer-resize case at
 `examples/showcase/e2e/header-layout.spec.ts:162`. The final mobile hamburger
 remained inactive after widths 1280 → 390 → 1280 → 390. The drawer was closed
 and body scroll lock released. Its automatic retry passed; totals are 369
-passed, one flaky and 132 conditional skips. **This finding remains open.**
+passed, one flaky and 132 conditional skips. **At this checkpoint the finding remained open; see the subsequent resolution below.**
 The earlier fixes and their no-retry verification above remain part of the
 history; they do not establish that this newly observed case is resolved.
 
@@ -112,7 +112,7 @@ Scoop PR #162 changes no engine or browser-test code. Retained trace:
 SHA-256 `e20f3e9416396ca0631b89ec4a5817a4754c80152b597e9477d042a8eb028741`.
 The hosted `playwright-failure-details` artifact retains the original evidence.
 
-Next: reproduce with retries disabled and instrument pending restoration,
+Next at that checkpoint: reproduce with retries disabled and instrument pending restoration,
 focus events, drawer removal and media-query changes. A possible race is that
 another breakpoint arrives after the drawer's focused node is disconnected but
 before pending focus restoration runs; the current handler can then clear the
@@ -140,5 +140,19 @@ conditional skips), with retries disabled. The diagnostic changes only the test
 precondition and instrumentation; engine code is unchanged, and neither the
 probe workflow nor its test changes are merged with Scoop. These passes confirm
 that the clarified scenario is viable, not that the original Chromium failure
-has been explained. Continue investigating its pending restoration/event ordering
-before claiming that finding resolved.
+has been explained. The next step at that checkpoint was to investigate pending restoration/event
+ordering before claiming that finding resolved.
+
+
+## Subsequent rapid-focus resolution
+
+PR #164 (`cc88bc0`, tested `36c7882`) records hidden focus loss at blur time and
+retains pending restoration through subsequent resizes. The original Chromium
+failure is reproduced eight times, and controlled delayed-frame tests fail all
+eight navigation repetitions against the unfixed engine. Final stress passes
+1,156 cases without retries; all 27 source CI jobs pass after one unchanged
+Engine rerun. The additional test-precondition corrections and two unresolved
+timing findings are preserved in the
+[follow-up record](zellij-rapid-focus-restoration-2026-11-13.md) and
+[evidence](evidence/zellij-rapid-focus-restoration-2026-11-13.json). This resolves
+the original rapid-focus correctness defect without erasing earlier failures.
