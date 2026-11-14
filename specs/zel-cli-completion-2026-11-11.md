@@ -15,9 +15,10 @@ responsive focus fixes, Scoop diagnostics and generated-CI runtime selection
 are included. The actual standalone rc.6-to-rc.7 upgrade passes.
 
 The owned Homebrew tap at `ebdcc19` and Scoop bucket at
-`0d57926` publish the attached, verified rc.7 recipes. Homebrew's
-four public lifecycle jobs pass; the remaining Scoop lifecycle and actual
-rc.6-to-rc.7 managed upgrade checks are still running. See
+`0d57926` publish the attached, verified rc.7 recipes. All four public
+lifecycle checks and all four actual rc.6-to-rc.7 upgrade checks pass for
+each channel. The upgrade checks verify both installed CLI versions and
+portable builds; they use actual HTTPS release archives. See
 [release evidence](evidence/zellij-rc7-release-2026-11-14.json).
 Documentation/consumer migration and scoped rc.6 retirement are tracked
 separately; production hosting and deferred live provider checks are unchanged.

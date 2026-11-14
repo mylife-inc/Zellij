@@ -1,7 +1,7 @@
 {
   "date": "2026-11-14",
   "candidate": "v0.2.0-rc.7",
-  "status": "published and public release acceptance passed; channel and consumer migration pending",
+  "status": "public rc.7 release, both managed channels, actual old-to-new upgrades, documentation CI, six consumer builds and development images accepted; final consumer publication and retirement pending",
   "source": {
     "date": "2026-11-14",
     "status": "source accepted; release pending",
@@ -2965,8 +2965,8 @@
       "repository": "mylife-inc/homebrew-tap",
       "run_id": 43648144263,
       "head": "ebdcc19c5ce4dd7c9f7d09743b7d7cea36c95984",
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
       "attempt": 1,
       "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/43648144263",
       "jobs": [
@@ -2983,7 +2983,7 @@
         {
           "id": 132610425105,
           "name": "Install, upgrade and uninstall (macos-15-intel)",
-          "conclusion": null
+          "conclusion": "success"
         },
         {
           "id": 132610425140,
@@ -2996,8 +2996,8 @@
       "repository": "mylife-inc/scoop-bucket",
       "run_id": 43647962901,
       "head": "0d57926250942696f7de04d2329262ac292ca982",
-      "status": "in_progress",
-      "conclusion": null,
+      "status": "completed",
+      "conclusion": "success",
       "attempt": 1,
       "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/43647962901",
       "jobs": [
@@ -3009,7 +3009,7 @@
         {
           "id": 132609850380,
           "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
-          "conclusion": null
+          "conclusion": "success"
         },
         {
           "id": 132609850416,
@@ -3023,7 +3023,393 @@
         }
       ]
     },
+    "scoop_upgrade": {
+      "repository": "mylife-inc/scoop-bucket",
+      "run_id": 43648717666,
+      "head": "0d57926250942696f7de04d2329262ac292ca982",
+      "status": "completed",
+      "conclusion": "success",
+      "attempt": 1,
+      "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/43648717666",
+      "jobs": [
+        {
+          "id": 132612177306,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132612177601,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132612177680,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132612177689,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        }
+      ]
+    },
     "shared_readme_commit": "aeca2986f70262a7a32f27d3eee40df4467bce4c",
     "shared_readme_approval_retry": "The approval service returned Bad Request before execution; the same scoped README update was retried through approval successfully."
-  }
+  },
+  "consumer_builds": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322906,
+      "name": "Documentation (acceptance-hosted.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986255,
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322923,
+      "name": "Documentation (acceptance-next.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986379,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 132610987721,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322899,
+      "name": "Documentation (acceptance-netlify-hosted.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986291,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 132610987474,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322877,
+      "name": "Documentation (acceptance-portable.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986254,
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322875,
+      "name": "Documentation (acceptance-netlify-portable.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986190,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 132610987452,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43648322910,
+      "name": "Documentation (acceptance-static.yml)",
+      "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132610986473,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 132610987498,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  ],
+  "replacement_images": {
+    "development": {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43649847900,
+      "head": "f3d55f6ab9f63e0e59daca6844ff8dbb01ddefe0",
+      "conclusion": "success",
+      "attempt": 1,
+      "jobs": [
+        {
+          "id": 132615645243,
+          "name": "diagrams \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645434,
+          "name": "diagrams \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645468,
+          "name": "maths \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645478,
+          "name": "all \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645486,
+          "name": "maths \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645507,
+          "name": "none \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645509,
+          "name": "all \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132615645527,
+          "name": "none \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "id": 132616250997,
+          "name": "Publish diagrams",
+          "conclusion": "success"
+        },
+        {
+          "id": 132616251000,
+          "name": "Publish all",
+          "conclusion": "success"
+        },
+        {
+          "id": 132616251010,
+          "name": "Publish none",
+          "conclusion": "success"
+        },
+        {
+          "id": 132616251040,
+          "name": "Publish maths",
+          "conclusion": "success"
+        },
+        {
+          "id": 132616364768,
+          "name": "The image can build a site",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "development_inputs_match_documentation_ci": "git diff f3d55f6 fb2767c is empty for engine/, docker/, package.json, package-lock.json and .github/workflows/base-image.yml; later records also change no image build inputs",
+  "documentation_ci": {
+    "repository": "mylife-inc/Zellij",
+    "run_id": 43648322918,
+    "head": "fb2767c28e6039a7aea1d760f8f84a562dd3516f",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132610986526,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986697,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986735,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986759,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986776,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986802,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986812,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986813,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986835,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986838,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986862,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986915,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986918,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986941,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986949,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986987,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610986990,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132610987013,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132612243977,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028931,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028935,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028944,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028946,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028953,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028957,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028958,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132613028977,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "documentation_validation": {
+    "engine_tests": 490,
+    "helper_tests": 95,
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "showcase_retries": 0,
+    "preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_original_images": 29,
+      "browser_regression_cases": 6
+    },
+    "local_strict_deep": {
+      "routes": 59,
+      "examples": 25
+    },
+    "local_helpers_passed": 37,
+    "actionlint": "passed"
+  },
+  "final_documentation_record": "After tested fb2767c, only ZELLIJ_CONTEXT.md and dated specs/evidence are updated; no runtime, active guide, fixture, test or workflow differences."
 }
