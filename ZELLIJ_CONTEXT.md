@@ -3,6 +3,14 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Current work prepares **v0.2.0-rc.7** from `474fc8f`: the accumulated equation,
+statement, bibliography, glossary/index, navigation and installer improvements.
+A release-gate review reproduced a missing Scoop result check: `publish` waited
+for Scoop but its `always()` condition did not require success. Preparation adds
+that requirement and a dependency-result regression. rc.6 remains the only
+published candidate until release and consumer checks pass. See
+[the preparation record](specs/zellij-rc7-preparation-2026-11-14.md).
+
 PR #173 (`efb14f7`, matching reviewed tree `f2e5535`) merges shared glossary and
 subject-index catalogs, marked occurrences, web backlinks and deduplicated PDF
 page references. All 27 jobs in `43587957194`
