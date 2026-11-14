@@ -43,6 +43,15 @@ timeout remain unexplained, with their failures retained. See
 [the resolution](zellij-rapid-focus-restoration-2026-11-13.md). These source
 changes await the next candidate; rc.6 remains unchanged.
 
+The subsequent [bounded timing investigation](zellij-browser-timing-investigation-2026-11-13.md)
+passes 120 WebKit overflow repetitions and 40 full documentation annotation
+checks without retries. Neither intermittent finding reproduced; both remain
+open. Source `f70e942` adds failure-only browser state and retained CI JSON to
+make a recurrence actionable. Final capture acceptance is recorded in that
+investigation. Product runtime and rc.6 are unchanged. Resume shared equation
+numbering/references and further book publishing; keep the findings visible
+when assessing the next release.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

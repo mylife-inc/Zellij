@@ -29,16 +29,21 @@ rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
 message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
 and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
 
-**Next priority:** investigate two separate intermittent timing findings before
-the next candidate: WebKit kept the overflow menu after a width increase in
-`43539410410`, and the documentation annotation check timed out waiting for the
-hydrated theme label in `43540700668`. Later runs pass, but their causes remain
-unestablished. These are distinct from the now-resolved rapid-focus defect;
-failed runs and test-precondition corrections remain in the
-[resolution record](specs/zellij-rapid-focus-restoration-2026-11-13.md). Then resume
-shared numbered equations/theorems and references, richer book templates and
-remaining installation channels. Live provider verification and production-domain
-migration stay deferred. Public rc.6 is unchanged.
+**Next priority:** shared numbered equations and references across web/PDF,
+then further book semantics, richer book templates and remaining installation
+channels. The bounded investigation of the separate WebKit overflow and docs
+hydration timings passes 120 overflow repetitions and 40 full documentation
+annotation checks without retries in `43547198588`. Neither failure reproduced;
+both remain unexplained. Source `f70e942` adds bounded failure-only browser
+state capture and CI artifacts. Hosted `43549176065` passes both deliberate
+capture checks, 378 ordinary showcase cases (140 skips, zero retries), full
+documentation preservation and all six browser regressions. See
+[the investigation](specs/zellij-browser-timing-investigation-2026-11-13.md).
+Do not infer a timing fix from later passes or block unrelated feature work on
+indefinite repetition. Retain these findings when assessing the next candidate,
+alongside the [resolved rapid-focus defect](specs/zellij-rapid-focus-restoration-2026-11-13.md).
+Live provider verification and production-domain migration stay deferred.
+Public rc.6 is unchanged.
 
 PR #160 (`dece6c9`) fixes two reproduced header-focus defects; its tree
 matches tested head `17be3af`. Focus lost when breakpoint CSS hides navigation

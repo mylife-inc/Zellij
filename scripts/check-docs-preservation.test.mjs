@@ -56,6 +56,8 @@ for (const regression of [
     }
     await assert.rejects(run(process.execPath, [checker, output], {
       cwd: repo, timeout: 90_000, maxBuffer: 4 * 1024 * 1024,
+      // Expected failures exercise capture in their own disposable directory.
+      env: { ...process.env, ZELLIJ_BROWSER_DIAGNOSTICS: path.join(temp, 'diagnostics') },
     }), error => {
       assert.equal(error.code, 1, 'Checker must fail normally, not hang or crash');
       assert.match(error.stderr, /Browser runtime errors at http:\/\/127\.0\.0\.1:\d+\//);
@@ -64,6 +66,13 @@ for (const regression of [
       assert(!error.stdout.includes('Preservation passed:'), 'Bad HTML must not report success');
       return true;
     });
+    const captures = await readdir(path.join(temp, 'diagnostics'));
+    assert.equal(captures.length, 1);
+    const capture = JSON.parse(await readFile(path.join(temp, 'diagnostics', captures[0]), 'utf8'));
+    assert.match(capture.error, /Browser runtime errors/);
+    assert(capture.browserErrors.some(error => regression.diagnostic.test(error.message)));
+    assert.equal(capture.state.before.viewport.width, 1280);
+    assert.match(capture.state.before.url, /^http:\/\/127\.0\.0\.1:\d+\//);
   });
 }
 
@@ -96,3 +105,34 @@ for (const [name, prefix] of [
     assert.equal(result.stderr, '');
   });
 }
+
+// An unhydrated page must retain its readiness error and the SSR control state.
+test('preservation records a missing hydration failure', { timeout: 120_000 }, async t => {
+  const temp = await mkdtemp(path.join(tmpdir(), 'zellij-hydration-evidence-'));
+  t.after(() => rm(temp, { recursive: true, force: true }));
+  const output = path.join(temp, 'out');
+  await cp(path.join(repo, 'examples/zellij-docs/out'), output, { recursive: true });
+  const home = path.join(output, 'index.html');
+  const html = await readFile(home, 'utf8');
+  const withoutScripts = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/g, '');
+  assert.notEqual(withoutScripts, html);
+  await writeFile(home, withoutScripts);
+  const diagnostics = path.join(temp, 'diagnostics');
+  await assert.rejects(run(process.execPath, [checker, output], {
+    cwd: repo, timeout: 90_000, maxBuffer: 4 * 1024 * 1024,
+    env: { ...process.env, ZELLIJ_BROWSER_DIAGNOSTICS: diagnostics },
+  }), error => {
+    assert.equal(error.code, 1);
+    assert.match(error.stderr, /Documentation hydration readiness failed at http:\/\/127\.0\.0\.1:\d+\//);
+    assert.match(error.stderr, /Timeout 15000ms exceeded/);
+    return true;
+  });
+  const files = await readdir(diagnostics);
+  assert.equal(files.length, 1);
+  const capture = JSON.parse(await readFile(path.join(diagnostics, files[0]), 'utf8'));
+  assert.match(capture.error, /Documentation hydration readiness failed/);
+  assert.deepEqual(capture.browserErrors, []);
+  assert(capture.state.before.themeControls.some(control => control.label === 'Toggle theme'));
+  assert(!capture.state.before.themeControls.some(control => /^Switch to (light|dark) theme$/.test(control.label)));
+  assert.equal(capture.state.before.readyState, 'complete');
+});

@@ -1,0 +1,793 @@
+{
+  "date": "2026-11-13",
+  "status": "Bounded investigation complete without reproducing either original finding. Failure-only capture verified; both original findings remain open.",
+  "baseline": "6fceee8fe2521be315aede80952decaddb937b2f",
+  "open_findings": [
+    {
+      "run_id": 43539410410,
+      "job_id": 132276191750,
+      "finding": "WebKit retained More after widening to 1600; no later painted frame in trace. Cause unknown."
+    },
+    {
+      "run_id": 43540700668,
+      "job_id": 132280394586,
+      "finding": "First Engine attempt exceeded the 15-second annotation-case hydration wait; unchanged rerun passed. Cause unknown."
+    }
+  ],
+  "investigation": {
+    "run_id": 43547198588,
+    "head": "4f7e71f6d13ff40e50e424581c3721200eca90b9",
+    "conclusion": "success",
+    "retries": 0,
+    "overflow": {
+      "job_id": 132301166554,
+      "browser": "desktop WebKit",
+      "passed": 120,
+      "failed": 0,
+      "workers": 4
+    },
+    "hydration": {
+      "job_id": 132301166334,
+      "iterations": 20,
+      "passed": 40,
+      "failed": 0,
+      "artifact_id": 14095391924,
+      "logs": [
+        {
+          "file": "hydration-1.log",
+          "sha256": "d6304444d5a2191da5c820b42ce5dfff7e48665d512f53d5e757d96919b2af05",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-10.log",
+          "sha256": "e2f083fa7f8a257f0c9a9a42d9d63cd30cb4ad8e7841e81bb50bb6caa65ad687",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-11.log",
+          "sha256": "cf9ce18767d4f7ce584433ffe0c81b6d8a6833882011d85f4cd9c2d9169fa45c",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-12.log",
+          "sha256": "b3007ad4ed0020944de1426024297095edc7c74e99a481806b771c27456aa115",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-13.log",
+          "sha256": "56859648608def84b8142d775213dacf44511c45d56890196fc600f6cfa36649",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-14.log",
+          "sha256": "bd156548fdf695359993abb7f51e2d3ea8cccdcd924d71d03410fdd669c502a1",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-15.log",
+          "sha256": "8b732a84d391ceb4cffd38193ac2e6193ebe00d8354eef2f7ce3db273c9606fa",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-16.log",
+          "sha256": "55a9b71350eca66123e2a1d5793da414aa1d85e5bb848924caabb91cc9e91dd9",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-17.log",
+          "sha256": "c84368d42bff2347e007c983180f8c1902c65c94fb97cede11a773eab0a17038",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-18.log",
+          "sha256": "a19eabf3941e2877978fd281144264d8c9677e5a4d8e93e05ac5cb235fd9d372",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-19.log",
+          "sha256": "810bb433d651afe23f4fa874da7f1d186727443d49caa7dcde18fe56a67dacea",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-2.log",
+          "sha256": "0881a4ea221f0d648ebbeab907011230b78b9ae5dcd7cc60b6fe28d88a54aefd",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-20.log",
+          "sha256": "1018d8a32dcecbcb1af4d43b92f493ae091514841670ebf5545d7e495a7cf989",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-3.log",
+          "sha256": "3de382366cac8c6b9b040da3a62dba96cd28cbbb016997cc75b718a14d87b287",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-4.log",
+          "sha256": "21345fe184be9c3bb0bd08ca8e9363232170e59dda473171570306aaa088446a",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-5.log",
+          "sha256": "8dfb857ca3f43554aeb698eff3fd59ccd2c8ec490d1fa23f8602757b27c6abff",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-6.log",
+          "sha256": "923cad250a967567398c3991e9cccd92b86b96d888817fcf16c61d1e10b9eea3",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-7.log",
+          "sha256": "f68787acb5846b71b5345ca686ef8d2b3d0f4fbadeb146b615e36bb23cc4cca4",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-8.log",
+          "sha256": "cd0f9e168d49810e0806adfbeb3e6989a13a9f487a913449e80bc988ed3ad92b",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "file": "hydration-9.log",
+          "sha256": "03b4ef645853977ab6c8f8d3ae72bbc8b71d92b75786b6b2023f7096b7ed2b83",
+          "tests": 2,
+          "pass": 2,
+          "fail": 0,
+          "skipped": 0
+        }
+      ]
+    },
+    "limitations": [
+      "Frame/ResizeObserver wrappers and browser tracing can affect timing.",
+      "Passing repetitions do not establish a cause or fix.",
+      "Nonmatching documentation test names were filtered out, not executed."
+    ]
+  },
+  "source": {
+    "commits": [
+      "34d3053e18758e0a87a9cbd086c87fb93dbe316d",
+      "f70e942fc2b8d73a3aebf6783e6f2a11463c0c74"
+    ],
+    "runtime_changes": false,
+    "files": [
+      {
+        "path": "scripts/browser-failure-state.mjs",
+        "sha256": "7065896e71a034bf45423f9377f93d99784e6eb539a660dc398864cc4937f515"
+      },
+      {
+        "path": "scripts/browser-failure-state.test.mjs",
+        "sha256": "defedf5f3025238db5119e5667dc8565d5b978056d97da2f2072ca3645168a5d"
+      },
+      {
+        "path": "scripts/check-docs-preservation.mjs",
+        "sha256": "f5fff4f9a1c6d3b3ec41fd72f78ec2159eb26336e51a7885a2b88e0b909300a9"
+      },
+      {
+        "path": "scripts/check-docs-preservation.test.mjs",
+        "sha256": "f62c09c1c0afedae52430d73d2f674cb3e3c59c997316852c4e6ff955d943fb6"
+      },
+      {
+        "path": "examples/showcase/e2e/header-layout.spec.ts",
+        "sha256": "1d5fb6ea4be44aa320b427c60fe71f60d384bfe7dfc67a2872187c99a8557495"
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "sha256": "59e5a84b5c99ddae2f6e92cdbbdabd363a65d4b9b8d22df27446da6c1e974836"
+      }
+    ]
+  },
+  "initial_capture_verification": [
+    {
+      "run_id": 43548836499,
+      "head": "437139f32ad7a4d28e1c129ad598ec4ee7075c80",
+      "header_job": 132306331992,
+      "docs_job": 132306332246,
+      "result": "Documentation acceptance and all six regressions pass; header artifact assertion fails because body attachment did not persist a JSON file."
+    },
+    {
+      "run_id": 43548885977,
+      "head": "5dfd1e3b5e43a30768f0c233adbdc0b6ca54c5be",
+      "header_job": 132306484102,
+      "docs_job": 132306484305,
+      "result": "Same tree and same result; separate push run, not a workflow retry."
+    }
+  ],
+  "final_capture_verification": {
+    "run_id": 43549176065,
+    "head": "914fb03c1819eecddc1dc64f310265c35dd060c9",
+    "header_job": 132307414972,
+    "docs_job": 132307414919,
+    "status": "success",
+    "source_comparison": "Five files byte-identical; header spec identical with one additional intentional-failure fixture. Verification-only workflow/fixture excluded from source branch.",
+    "retries": 0,
+    "deliberate_failure_cases": 2,
+    "capture_artifact_id": 14095328992,
+    "capture_artifact_sha256": "c3c098617845b3d04d0f5e9a5a602687d4c7e21abdb5d26f3f32c00f87e5ad3f",
+    "captures": [
+      {
+        "file": "header-layout-diagnostic-f-a3361-nally-fails-after-hydration-desktop-safari.json",
+        "sha256": "ed977760b3ca895643b2a305c137b909bddc63506b061f7607d6d24dc3fd9aaa",
+        "before": {
+          "at": 578,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BODY",
+            "id": "",
+            "class": "",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 123.84375,
+              "y": 40,
+              "width": 775.734375,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              114.265625,
+              79.046875,
+              95.84375,
+              68.515625,
+              66.109375,
+              79.46875
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1060.5,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1104.5,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "after": {
+          "at": 843,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BODY",
+            "id": "",
+            "class": "",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 123.84375,
+              "y": 40,
+              "width": 775.734375,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              114.265625,
+              79.046875,
+              95.84375,
+              68.515625,
+              66.109375,
+              79.46875
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, SF Pro Text, SF Pro Display, Zellij Inter, Zellij Inter Fallback, system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1060.5,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1104.5,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "frameTimes": []
+      },
+      {
+        "file": "header-layout-diagnostic-f-a3361-nally-fails-after-hydration-desktop.json",
+        "sha256": "6b8cd49da39b2a3d7bbed39fab3fd08c415b0c510d56ab0445bc9cb3a6d761f4",
+        "before": {
+          "at": 813.8999999999942,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BODY",
+            "id": "",
+            "class": "",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 123.84375,
+              "y": 40,
+              "width": 775.109375,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              114,
+              79,
+              97,
+              69,
+              68,
+              82
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1060.40625,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1104.40625,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "after": {
+          "at": 1064.8999999999942,
+          "url": "http://127.0.0.1:4317/",
+          "readyState": "complete",
+          "visibility": "visible",
+          "documentFocus": true,
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "scroll": {
+            "x": 0,
+            "y": 0
+          },
+          "fontStatus": "loaded",
+          "active": {
+            "tag": "BODY",
+            "id": "",
+            "class": "",
+            "role": null,
+            "label": null
+          },
+          "header": {
+            "x": 0,
+            "y": 0,
+            "width": 1280,
+            "height": 89
+          },
+          "navigation": {
+            "box": {
+              "x": 123.84375,
+              "y": 40,
+              "width": 775.109375,
+              "height": 48
+            },
+            "measured": "true",
+            "items": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4"
+            ],
+            "probeWidths": [
+              114,
+              79,
+              97,
+              69,
+              68,
+              82
+            ],
+            "probeFonts": [
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              },
+              {
+                "family": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif",
+                "size": "16px",
+                "weight": "400"
+              }
+            ],
+            "gap": "4px",
+            "font": "-apple-system, BlinkMacSystemFont, \"SF Pro Text\", \"SF Pro Display\", \"Zellij Inter\", \"Zellij Inter Fallback\", system-ui, sans-serif"
+          },
+          "themeControls": [
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Change theme",
+              "box": {
+                "x": 1060.40625,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            },
+            {
+              "tag": "BUTTON",
+              "id": "",
+              "class": "zellij-icon-button",
+              "role": null,
+              "label": "Switch to dark theme",
+              "box": {
+                "x": 1104.40625,
+                "y": 46,
+                "width": 36,
+                "height": 36
+              },
+              "display": "grid",
+              "visibility": "visible",
+              "hiddenBy": null
+            }
+          ],
+          "drawerCount": 0
+        },
+        "frameTimes": [
+          813.364,
+          830
+        ]
+      }
+    ],
+    "showcase": {
+      "passed": 378,
+      "failed": 0,
+      "skipped": 140
+    },
+    "documentation": {
+      "preservation_passed": true,
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_heading_ids": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "regression_cases_passed": 6,
+      "unexpected_failure_artifacts": 0
+    },
+    "bounded_capture_tests_passed": 3
+  },
+  "local_checks": [
+    "Three bounded-capture Node tests",
+    "JavaScript syntax",
+    "Engine build",
+    "Showcase typecheck",
+    "Actionlint",
+    "git diff --check"
+  ],
+  "release": "Public rc.6 and development images unchanged; this patch affects tests and verification only."
+}
