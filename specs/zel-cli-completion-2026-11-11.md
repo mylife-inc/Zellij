@@ -76,6 +76,11 @@ Bibliography/citations, index/glossary, multilingual print and richer book
 editions remain incomplete. These additions await the next candidate; rc.6 and
 the separate unresolved browser timing findings remain unchanged.
 
+Current work adds numeric bibliography/citations from local CSL-JSON across
+all three book outputs. The [2026-11-14 contract](zellij-book-bibliography-2026-11-14.md)
+tracks implementation and acceptance; hosted results and merge are pending.
+BibTeX import and arbitrary citation styles remain outside this increment.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

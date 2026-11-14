@@ -507,6 +507,9 @@ pub(super) fn emit(
         if let Some(book) = presentation.book {
             let children = body["children"].as_array_mut().unwrap();
             let entry = book.entry(index);
+            if entry.kind == "bibliography" {
+                children.push(crate::bibliography::tree(book));
+            }
             if let Some(number) = &entry.number {
                 children.insert(
                     0,

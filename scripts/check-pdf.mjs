@@ -65,6 +65,30 @@ try {
   writeFileSync(path.join(statementCapture,'pdfinfo.txt'),statementInfo);
   writeFileSync(path.join(statementCapture,'fonts.txt'),execFileSync('pdffonts',[statementPdf],{encoding:'utf8'}));
   for(let n=1;n<=Number(statementInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',statementPdf,path.join(statementCapture,`page-${n}`)]);
+  const bibliography=path.join(root,'bibliography');
+  cpSync('scripts/fixtures/bibliography',bibliography,{recursive:true});
+  run(['build',bibliography,'--pdf']);
+  const bibPrint=path.join(bibliography,'site/_zellij/pdf');
+  const bibPdf=path.join(bibPrint,'book.pdf');
+  const bibBook=JSON.parse(readFileSync(path.join(bibliography,'site/_zellij/book.json')));
+  const bibReceipt=JSON.parse(readFileSync(path.join(bibPrint,'pdf.json')));
+  assert.equal(bibReceipt.revision,bibBook.revision);
+  assert.equal(bibReceipt.pdf_sha256,createHash('sha256').update(readFileSync(bibPdf)).digest('hex'));
+  assert.deepEqual(bibBook.bibliography.references.map(r=>r.id),['vale2024','river2021','shebka2026','uncited']);
+  const bibText=execFileSync('pdftotext',['-layout',bibPdf,'-'],{encoding:'utf8'});
+  const bibWords=bibText.replace(/\s+/g,' ');
+  for(const term of ['Bibliography','[1]','[2, pp. 12–14; 1, chapter 2]','Finite sums and careful arguments','Notes on open documentation','Further reading for curious minds','10.1234/example.sum']) assert(bibWords.includes(term),`${term}\n${bibText}`);
+  assert(!bibText.includes('[@river2021]'));
+  execFileSync('qpdf',['--check',bibPdf]);
+  const bibObjects=JSON.stringify(JSON.parse(execFileSync('qpdf',['--json',bibPdf],{encoding:'utf8',maxBuffer:8*1024*1024})));
+  for(const r of bibBook.bibliography.references) assert(bibObjects.includes(Buffer.from(r.anchor).toString('hex')),`Missing bibliography target ${r.id}`);
+  const bibCapture=path.join(artifacts,'bibliography');
+  cpSync(bibPrint,bibCapture,{recursive:true});
+  writeFileSync(path.join(bibCapture,'text.txt'),bibText);
+  const bibInfo=execFileSync('pdfinfo',[bibPdf],{encoding:'utf8'});
+  writeFileSync(path.join(bibCapture,'pdfinfo.txt'),bibInfo);
+  writeFileSync(path.join(bibCapture,'fonts.txt'),execFileSync('pdffonts',[bibPdf],{encoding:'utf8'}));
+  for(let n=1;n<=Number(bibInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',bibPdf,path.join(bibCapture,`page-${n}`)]);
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');

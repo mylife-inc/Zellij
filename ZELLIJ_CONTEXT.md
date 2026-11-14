@@ -1,7 +1,12 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+Work in progress after `6d2696a`: numeric bibliography and citations, with a
+local CSL-JSON catalog and a shared registry for portable HTML, adapted Next
+and PDF. See [the contract and acceptance record](specs/zellij-book-bibliography-2026-11-14.md).
+Hosted acceptance and merge are pending; public rc.6 remains unchanged.
 
 PR #169 (`cd79114`, matching reviewed tree `5ab8acf`) merges shared book
 theorem/lemma/proof semantics (and proposition, corollary, definition, example

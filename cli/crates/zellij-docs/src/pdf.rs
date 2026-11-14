@@ -478,6 +478,34 @@ pub(crate) fn compose(
             }
             part = entry.part.clone();
         }
+        if entry.kind == "bibliography" {
+            out.push_str(&format!(
+                "\\backmatter\n\\chapter{{{}}}\n\\hypertarget{{{}}}{{}}\n\\hypertarget{{{}}}{{}}\n",
+                tex(&entry.title),
+                label(entry.index, ""),
+                label(entry.index, "_zel-title")
+            ));
+            if book.bibliography.as_ref().unwrap().references.is_empty() {
+                out.push_str("No references cited.\\par\n");
+            }
+            for reference in &book
+                .bibliography
+                .as_ref()
+                .expect("resolved bibliography")
+                .references
+            {
+                out.push_str(&format!("\\par\\addvspace{{0.8\\baselineskip}}\\hypertarget{{{}}}{{}}\\noindent\\hangindent=2em\\hangafter=1 \\textbf{{[{}]}} {}", label(entry.index, &reference.anchor), reference.number, tex(&reference.text)));
+                if let Some(url) = &reference.url {
+                    out.push_str(&format!(
+                        " \\href{{{}}}{{{}}}",
+                        tex(url),
+                        tex(reference.link_text.as_deref().unwrap_or("Online source"))
+                    ));
+                }
+                out.push_str("\\par\n");
+            }
+            continue;
+        }
         if entry.source.is_none() {
             continue;
         }

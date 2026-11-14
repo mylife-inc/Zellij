@@ -29,6 +29,8 @@ pub struct Publication {
     pub equations: Vec<crate::equations::Equation>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub statements: Vec<crate::statements::Statement>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bibliography: Option<crate::bibliography::Bibliography>,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ReadingEntry {
@@ -162,6 +164,28 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
     for (i, c) in manifest.appendices.iter().enumerate() {
         items.push(builder.chapter(c, "appendix", Some(appendix(i + 1)), None)?);
     }
+    if manifest.bibliography.is_some() {
+        let index = pages
+            .iter()
+            .position(|p| p.output == crate::bibliography::OUTPUT)
+            .expect("prepared bibliography page");
+        builder.seen.insert(index);
+        let title = pages[index].markdown.title.clone();
+        builder.entries.push(ReadingEntry {
+            id: "bibliography".into(),
+            kind: "bibliography",
+            number: None,
+            part: None,
+            title: title.clone(),
+            source: None,
+            href: crate::bibliography::OUTPUT.into(),
+            index,
+        });
+        items.push(Item::Page {
+            index,
+            label: title,
+        });
+    }
     let omitted: Vec<_> = pages
         .iter()
         .enumerate()
@@ -199,6 +223,7 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
             entries: builder.entries,
             equations: vec![],
             statements: vec![],
+            bibliography: None,
         },
     ))
 }
@@ -247,6 +272,9 @@ impl Publication {
             let page = &pages[entry.index];
             add(&mut hash, page.source.as_str().as_bytes());
             add(&mut hash, page.original.as_bytes());
+        }
+        if let Some(bib) = &self.bibliography {
+            add(&mut hash, &bib.original);
         }
         for (path, bytes) in assets {
             add(&mut hash, path.as_str().as_bytes());
