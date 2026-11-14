@@ -53,8 +53,8 @@ try {
   for(const term of ['Remark T.1','Definition F1.1','Definition 1.1','Lemma 1.2','Theorem 1.3 (Energy & equality)','Proof (Of the energy theorem)','Corollary 1.4','Proposition 2.1','Example 2.2','Remark A.1','Equation 2.1','All quantities are real']) assert(statementWords.includes(term),`${term}\n${statementText}`);
   assert(!statementText.includes('[!THEOREM]'));
   const statementPages=statementText.split('\f');
-  assert(statementPages.some(page=>page.includes('Remark T.1')&&!page.includes('Contents')),'Authored home content starts on its own page');
-  assert(statementPages.filter(page=>page.includes('Contents')).every(page=>!page.includes('Remark T.1')),'Contents pages do not absorb authored home content');
+  assert(statementPages.some(page=>page.includes('Remark T.1')&&!/contents/i.test(page)),'Authored home content starts on its own page');
+  assert(statementPages.filter(page=>/contents/i.test(page)).every(page=>!page.includes('Remark T.1')),'Contents pages do not absorb authored home content');
   execFileSync('qpdf',['--check',statementPdf]);
   const statementObjects=JSON.stringify(JSON.parse(execFileSync('qpdf',['--json',statementPdf],{encoding:'utf8',maxBuffer:8*1024*1024})));
   for(const statement of statementBook.statements) assert(statementObjects.includes(Buffer.from(statement.anchor).toString('hex')),`Missing PDF statement destination ${statement.id}`);

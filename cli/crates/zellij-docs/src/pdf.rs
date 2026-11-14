@@ -484,7 +484,10 @@ pub(crate) fn compose(
         if entry.kind == "title-page" {
             // Authored home content follows the printed contents on its own
             // page; it must not become part of the contents page's body.
-            out.push_str("\\clearpage\n");
+            let title = tex(&page.markdown.title);
+            out.push_str(&format!(
+                "\\clearpage\\markboth{{{title}}}{{{title}}}\\thispagestyle{{plain}}\n"
+            ));
         } else {
             out.push_str(&format!("\\chapter{{{}}}\n", tex(&page.markdown.title)));
         }

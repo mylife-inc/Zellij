@@ -115,3 +115,18 @@ The adapter now starts that content on its own page before emitting its stable
 target. Native source assertions and real PDF page-text checks enforce the
 separation. This affects books with an authored home; all 105 existing baseline
 captures matched before this change and will be compared again after it.
+
+The separated home-page capture at `2ddd17a` also reveals an inherited `CONTENTS`
+running header. The follow-up resets both running marks to the escaped home title
+and uses the plain first-page style, including a case-insensitive PDF regression
+for the old contents heading. No other publication layout is changed.
+
+Bounded hosted comparison `43565934456` at probe source `a8f7355` runs 20 attempts
+each, alternating the original and revised helper on the same native manuscript,
+macOS WebKit, with JavaScript disabled and no retries. The original fails its
+focus assertion 4/20 times (rounds 7, 8, 9, 18); the revised helper passes 20/20.
+This supports the readiness correction. The shared failure sampler originally
+waited for an in-page timer, which cannot run with JavaScript disabled; those
+four state captures time out and are retained. Failure capture now has a bounded
+no-frame mode that returns native DOM/focus state without page timers. The new
+helper selects that mode; other existing callers retain frame sampling.

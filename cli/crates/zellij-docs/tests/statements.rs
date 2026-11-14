@@ -108,7 +108,7 @@ fn all_adapters_share_statement_identity_numbers_and_resolved_references() {
     assert_eq!(prepared.source.revision, publication["revision"]);
     let tex = String::from_utf8(prepared.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
     let after_contents = tex.split_once("\\tableofcontents").unwrap().1;
-    assert!(after_contents.trim_start().starts_with("\\clearpage"));
+    assert!(after_contents.trim_start().starts_with("\\clearpage\\markboth{Equations and arguments}{Equations and arguments}\\thispagestyle{plain}"));
     assert!(tex.contains("Theorem 1.3 (Energy \\& equality)"));
     assert!(tex.contains("}{Proposition 2.1}"));
     assert!(tex.contains("}{Equation 2.1}"));

@@ -65,7 +65,7 @@ export async function checkStatements(page, origin, captures, prefix) {
     try {
       await mkdir(captures, { recursive: true });
       await writeFile(path.join(captures, `${prefix}-failure.json`), JSON.stringify({
-        error: String(error), origin, prefix, errors, state: await browserFailureState(page),
+        error: String(error), origin, prefix, errors, state: await browserFailureState(page, { sampleFrames: false }),
       }, null, 2));
       await page.screenshot({ path: path.join(captures, `${prefix}-failure.png`), fullPage: true, timeout: 3000 });
     } catch { /* Keep the assertion even if the browser is already gone. */ }
