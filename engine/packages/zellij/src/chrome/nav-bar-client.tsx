@@ -131,6 +131,17 @@ export function NavBarClient({ model }: { model: NavModel }) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [resizeFocus, setResizeFocus] = useState<'mobile' | 'desktop' | null>(null);
+  const probeResizeFocus = useRef(resizeFocus);
+  probeResizeFocus.current = resizeFocus;
+  const probe = (event: string, details: Record<string, unknown>) => {
+    const entries = (window as any).__focusProbe;
+    if (!entries) return;
+    const identify = (node: Element | null) => node && ({ tag: node.tagName, class: node.className,
+      connected: node.isConnected, rects: node.getClientRects().length });
+    entries.push({ at: performance.now(), event, width: innerWidth,
+      active: identify(document.activeElement), previous: identify(lastNavigationFocus.current),
+      latestRequest: probeResizeFocus.current, ...details });
+  };
   const menuBarRef = useRef<HTMLUListElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -287,10 +298,12 @@ export function NavBarClient({ model }: { model: NavModel }) {
     // CSS can hide a focused control before the media-query event is delivered.
     // Retain only that focus loss, not an intentional blur or move into content.
     const focused = (event: FocusEvent) => {
+      probe('react-focusin', {});
       lastNavigationFocus.current = event.target instanceof HTMLElement && inNavigation(event.target)
         ? event.target : null;
     };
     const blurred = (event: FocusEvent) => {
+      probe('react-focusout', { related: !!event.relatedTarget });
       if (event.target === lastNavigationFocus.current &&
           (event.relatedTarget || lastNavigationFocus.current?.getClientRects().length)) {
         lastNavigationFocus.current = null;
@@ -316,6 +329,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
       const previous = lastNavigationFocus.current;
       const hiddenFocus = focused === document.body && previous?.isConnected && !previous.getClientRects().length;
       const restore = drawerOpen || inNavigation(focused) || hiddenFocus;
+      probe('react-media', { drawerOpen, hiddenFocus, restore, mobile: media.matches });
       focusAfterResize.current = null;
       closeMenu();
       cancelSwitch();
@@ -327,6 +341,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
   }, [closeMenu, cancelSwitch, closeDrawer, drawerOpen, inNavigation]);
 
   useEffect(() => {
+    probe('react-effect', { resizeFocus, drawerOpen });
     if (resizeFocus === null) return;
     if (drawerOpen) { setResizeFocus(null); return; }
     // Run after closing panels has committed and their focus traps have cleaned
@@ -334,15 +349,16 @@ export function NavBarClient({ model }: { model: NavModel }) {
     const frame = requestAnimationFrame(() => {
       const mobile = window.matchMedia('(max-width: 900px)').matches;
       const active = document.activeElement;
+      probe('react-frame', { request: resizeFocus, mobile });
       if (mobile === (resizeFocus === 'mobile') && (active === document.body || inNavigation(active))) {
         const target = mobile
           ? headerRef.current?.querySelector<HTMLElement>('.zellij-hamburger')
           : menuBarRef.current?.querySelector<HTMLElement>('[data-zellij-navitem]') ?? headerRef.current?.querySelector<HTMLElement>('.zellij-logo');
         target?.focus({ preventScroll: true });
       }
-      setResizeFocus(current => current === resizeFocus ? null : current);
+      setResizeFocus(current => { probe('react-clear', { current, request: resizeFocus }); return current === resizeFocus ? null : current; });
     });
-    return () => cancelAnimationFrame(frame);
+    return () => { probe('react-cancel', { request: resizeFocus }); cancelAnimationFrame(frame); };
   }, [resizeFocus, drawerOpen, visibleCount, inNavigation]);
 
   /*

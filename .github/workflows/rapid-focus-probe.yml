@@ -19,6 +19,9 @@ jobs:
       - run: npm run build --workspace @shebka/zellij-showcase
       - run: npx playwright install --with-deps chromium webkit
         working-directory: examples/showcase
+      - name: Capture original Chromium ordering without retries
+        run: npx playwright test e2e/rapid-raw-probe.spec.ts --project desktop --retries 0 --repeat-each 120 --workers 4
+        working-directory: examples/showcase
       - name: Exercise resize and open-drawer updates without retries
         run: npx playwright test e2e/header-layout.spec.ts --project desktop --project desktop-safari --retries 0 --repeat-each 12 --workers 4
         working-directory: examples/showcase
