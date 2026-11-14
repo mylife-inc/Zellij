@@ -2,7 +2,7 @@
 
 Baseline `0a29442` on main. Implementation and source acceptance are complete
 at `1b9a24f` in PR #173. All 27 source CI jobs pass; merge and development-image
-publication are recorded after completion. Public rc.6 and production hosting
+publication are complete and recorded below. Public rc.6 and production hosting
 remain unchanged.
 
 ## Contract
@@ -121,3 +121,25 @@ inputs remain identical to the tested source. The next delivery task is a new
 CLI candidate with the accumulated book/installation improvements, followed by
 richer technical/study editions. The limitations and unexplained browser timing
 findings above remain open; live providers remain deferred.
+
+## Merge and development-image publication
+
+PR #173 merges as `efb14f752c91a227edc14d2c5842ec5346f07aad`. Its tree
+`4121301abf86a9d2ec1c9deddfd80a14d7dc4fd4` matches reviewed head `f2e5535`.
+Only the five documentation/evidence paths described above differ from tested
+source `1b9a24f`; runtime, test, workflow and public-guide inputs are unchanged.
+
+All 13 jobs in [development-image run `43625206162`](https://github.com/mylife-inc/Zellij/actions/runs/43625206162)
+pass at that merge without reruns. Eight native builds feed four manifests
+(`main`, `main-maths`, `main-diagrams`, `main-all`) on Linux amd64/arm64. The
+published default image builds and serves a site. Its first HTTP readiness
+probe reports a connection reset at `18:15:28.975Z`; the next succeeds and prints
+`serving` at `18:15:31.054Z`. The workflow allows up to 30 probes, two seconds
+apart, and exits successfully only after `curl -fsS` succeeds. This is a startup
+probe retry, not a job or workflow rerun. The JSON evidence retains both results,
+all job IDs and the observed manifest digests/architectures.
+
+This final record-only follow-up changes context, this contract and evidence;
+it does not repeat product CI or image publication. Public rc.6 and production
+hosting remain unchanged. The next delivery milestone is a new CLI candidate
+with the accumulated book and installation improvements.
