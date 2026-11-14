@@ -38,6 +38,30 @@ try {
   const equationInfo=execFileSync('pdfinfo',[equationPdf],{encoding:'utf8'});
   writeFileSync(path.join(equationCapture,'pdfinfo.txt'),equationInfo);
   for(let n=1;n<=Number(equationInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',equationPdf,path.join(equationCapture,`page-${n}`)]);
+  const statements = path.join(root,'statements');
+  cpSync('scripts/fixtures/statements',statements,{recursive:true});
+  run(['build',statements,'--pdf']);
+  const statementPrint=path.join(statements,'site/_zellij/pdf');
+  const statementPdf=path.join(statementPrint,'book.pdf');
+  const statementBook=JSON.parse(readFileSync(path.join(statements,'site/_zellij/book.json')));
+  const statementReceipt=JSON.parse(readFileSync(path.join(statementPrint,'pdf.json')));
+  assert.equal(statementReceipt.revision,statementBook.revision);
+  assert.equal(statementReceipt.pdf_sha256,createHash('sha256').update(readFileSync(statementPdf)).digest('hex'));
+  assert.deepEqual(statementBook.statements.map(s=>s.number??null),['T.1','F1.1','1.1','1.2','1.3',null,'1.4','2.1','2.2','A.1']);
+  const statementText=execFileSync('pdftotext',['-layout',statementPdf,'-'],{encoding:'utf8'});
+  const statementWords=statementText.replace(/\s+/g,' ');
+  for(const term of ['Remark T.1','Definition F1.1','Definition 1.1','Lemma 1.2','Theorem 1.3 (Energy & equality)','Proof (Of the energy theorem)','Corollary 1.4','Proposition 2.1','Example 2.2','Remark A.1','Equation 2.1','All quantities are real']) assert(statementWords.includes(term),`${term}\n${statementText}`);
+  assert(!statementText.includes('[!THEOREM]'));
+  execFileSync('qpdf',['--check',statementPdf]);
+  const statementObjects=JSON.stringify(JSON.parse(execFileSync('qpdf',['--json',statementPdf],{encoding:'utf8',maxBuffer:8*1024*1024})));
+  for(const statement of statementBook.statements) assert(statementObjects.includes(Buffer.from(statement.anchor).toString('hex')),`Missing PDF statement destination ${statement.id}`);
+  const statementCapture=path.join(artifacts,'statements');
+  cpSync(statementPrint,statementCapture,{recursive:true});
+  writeFileSync(path.join(statementCapture,'text.txt'),statementText);
+  const statementInfo=execFileSync('pdfinfo',[statementPdf],{encoding:'utf8'});
+  writeFileSync(path.join(statementCapture,'pdfinfo.txt'),statementInfo);
+  writeFileSync(path.join(statementCapture,'fonts.txt'),execFileSync('pdffonts',[statementPdf],{encoding:'utf8'}));
+  for(let n=1;n<=Number(statementInfo.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',statementPdf,path.join(statementCapture,`page-${n}`)]);
   // Exercise the bundled book users actually create, as well as the richer
   // adapter fixture below. Captures/receipts are retained for visual review.
   const starter=path.join(root,'classic');

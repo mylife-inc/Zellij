@@ -27,6 +27,15 @@ const document = {
       el('a', {href:'#_zel-eq-eq%3Aenergy',className:['zellij-equation-number'],ariaLabel:'Equation 1.1'}, [text('(1.1)')]),
     ]),
     el('p', {}, [el('a', {href:'/other#_zel-eq-eq%3Asum',title:'Equation 2.1'}, [text('(2.1)')])]),
+    el('div', {id:'_zel-stmt-thm:energy',className:['zellij-statement','zellij-statement-theorem']}, [
+      el('p', {className:['zellij-statement-head']}, [el('strong', {}, [text('Theorem 1.3 (Energy & equality)')])]),
+      el('div', {className:['zellij-statement-body']}, [el('p', {}, [text('An argument.'),el('a',{href:'#_zel-stmt-thm%3Aenergy',title:'Theorem 1.3'},[text('Theorem 1.3')])])]),
+    ]),
+    el('div', {className:['zellij-statement','zellij-statement-proof']}, [
+      el('p', {className:['zellij-statement-head']}, [text('Proof')]),
+      el('div', {className:['zellij-statement-body']}, [el('p',{},[text('The conclusion follows.')])]),
+      el('p', {className:['zellij-statement-qed'],ariaHidden:'true'}, [text('∎')]),
+    ]),
     el('pre', {}, [el('code', {className:['language-mindmap']}, [text('Root: [A, B]')])]),
   ]},
 };
@@ -71,6 +80,10 @@ it('loads and renders native trees with metadata, assets, safe literals, navigat
     expect(html).toContain('href="/other#_zel-eq-eq%3Asum"');
     expect(html).toContain('(2.1)');
     expect(html).toContain('zellij-mindmap');
+    expect(html).toContain('id="_zel-stmt-thm:energy"');
+    expect(html).toContain('Theorem 1.3 (Energy &amp; equality)');
+    expect(html).toContain('href="#_zel-stmt-thm%3Aenergy"');
+    expect(html.match(/<p\b[^>]*class="zellij-statement-qed"[^>]*>/)?.[0]).toContain('aria-hidden="true"');
     expect(html).toContain('literal');
     expect(html).not.toContain('<script>');
   } finally { await rm(root,{recursive:true,force:true}); }

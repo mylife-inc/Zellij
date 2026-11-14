@@ -13,7 +13,9 @@ mod diagnostics;
 use diagnostics::Diagnostics;
 pub use diagnostics::{CheckReport, Code, Diagnostic, Severity};
 mod equations;
+mod statements;
 pub use equations::Equation;
+pub use statements::{Statement, StatementKind};
 mod hosted;
 mod links;
 mod markdown;
@@ -463,6 +465,12 @@ fn compile(
     )?;
     if let Some(book) = &mut publication {
         diagnostics.capture(equations::resolve(book, &pages), Code::Reference, None)?;
+        diagnostics.capture(statements::resolve(book, &pages), Code::Reference, None)?;
+        diagnostics.capture(
+            equations::validate_references(book, &pages),
+            Code::Reference,
+            None,
+        )?;
     }
     let mut resolver = links::Resolver {
         root: &root,
@@ -513,6 +521,11 @@ fn compile(
         return Err(error);
     }
     let assets = resolver.assets;
+    if let Some(book) = &publication {
+        for (page, events) in pages.iter_mut().zip(&rewritten) {
+            page.markdown.text = statements::text(events, book)?;
+        }
+    }
     if let Some(book) = &mut publication {
         diagnostics.capture(
             book.finish(&pages, &assets),

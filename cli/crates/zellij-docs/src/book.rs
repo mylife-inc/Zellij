@@ -27,6 +27,8 @@ pub struct Publication {
     pub entries: Vec<ReadingEntry>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub equations: Vec<crate::equations::Equation>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    pub statements: Vec<crate::statements::Statement>,
 }
 #[derive(Clone, Debug, Serialize)]
 pub struct ReadingEntry {
@@ -196,6 +198,7 @@ pub(crate) fn resolve(manifest: &Manifest, pages: &[Page]) -> Result<(Navigation
             revision: String::new(),
             entries: builder.entries,
             equations: vec![],
+            statements: vec![],
         },
     ))
 }

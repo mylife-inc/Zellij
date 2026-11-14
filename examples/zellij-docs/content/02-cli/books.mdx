@@ -137,7 +137,7 @@ Duplicate/missing labels, empty labelled math and unsupported placements fail
 labels instead of manual `\tag`, `\notag`, `\nonumber` or `equation`/`align`
 numbering environments. This first shared syntax assigns one number per labelled
 display expression; per-row numbering, references within larger math, custom
-tags and theorem numbering remain future increments. Non-book expression-local
+tags remain future increments. Non-book expression-local
 math behavior is unchanged.
 
 When equations exist, the publication record adds `equations` to schema version
@@ -145,6 +145,71 @@ When equations exist, the publication record adds `equations` to schema version
 `anchor` and encoded root-relative `href`. This field is omitted for books with
 no labelled equations. The Next sidecar keeps those portable hrefs; its `routes`
 map supplies hosted entry paths, and deployment base paths apply as usual.
+
+## Theorems, lemmas and proofs (current source)
+
+<Callout type="info" title="After rc.6">
+Shared statement numbering and references are implemented in current source and
+await the next candidate. Use a matching engine build for Next images.
+</Callout>
+
+Write a top-level Markdown blockquote with a marker, stable label, optional
+plain text title, then a blank quoted line before its body:
+
+```md
+> [!LEMMA] {#lem:square} A square is nonnegative
+>
+> For real $x$, we have $x^2\geq 0$.
+
+> [!THEOREM] {#thm:energy} Energy and equality
+>
+> The energy is nonnegative when the mass is positive.
+
+> [!PROOF] {#proof:energy}
+>
+> Apply $\autoref{lem:square}$ and multiply by the positive mass.
+> This proves $\autoref{thm:energy}$.
+```
+
+Supported markers are `THEOREM`, `LEMMA`, `PROPOSITION`, `COROLLARY`, `DEFINITION`,
+`EXAMPLE`, `REMARK` and `PROOF`. Every block needs a `{#id}`, including proofs.
+Titles are plain text on one line. Bodies accept normal Markdown formatting,
+lists, code, ordinary nested quotes, math and footnote references. Put footnote
+definitions outside the block. Semantic blocks must be top-level; nesting them
+inside other quotes, lists or footnotes is unsupported, as are headings inside
+their bodies. Leave a blank quoted line between the metadata and body.
+
+Numbered kinds share one counter per reading entry. In the first chapter the
+example above becomes **Lemma 1.1**, **Theorem 1.2**, then **Proof** with an end
+mark. Proofs remain unnumbered and do not consume a number. Equations have their
+own counter. Appendices use `A.1`, front matter uses `F1.1`, and an authored title
+page uses `T.1`, following the same reading order as equations.
+
+Enable `markdown: {math: true}` for math and LaTeX-style references:
+
+- `$\ref{thm:energy}$` displays a linked `1.2`.
+- `$\autoref{thm:energy}$` displays a linked `Theorem 1.2`.
+- `$\autoref{proof:energy}$` displays a linked `Proof`.
+- `$\autoref{eq:energy}$` displays a linked `Equation 1.1`.
+
+`\eqref` accepts only equations; `\ref` cannot number a proof. Put references
+in their own inline expression in prose, outside headings and other links.
+Labels must be unique across both equations and statements. Forward and
+cross-chapter references resolve before output is written. Native HTML, Next
+and PDF use the same numbers, headings and link targets.
+
+Statement blocks without math need no math feature. Custom Markdown links such
+as `[Read the argument](chapter.md#_zel-stmt-thm:energy)` also work without it.
+Stable anchors follow labels, not numbers, and continue to work after adding
+an earlier block. Renaming a label or file changes its target.
+
+The publication record adds an optional `statements` array to schema version 1.
+Each item contains `id`, lowercase `kind`, optional `number` and `title`, reading
+entry ID in `entry`, `source`, `anchor` and encoded root-relative `href`. Proofs
+omit `number`; books without blocks omit `statements`. Invalid metadata, duplicate
+or missing labels and unsupported placements fail checks/builds before replacing
+existing output. Ordinary non-book blockquotes and authored MDX `<Theorem>`
+components retain their existing behavior.
 
 ## Language and direction
 

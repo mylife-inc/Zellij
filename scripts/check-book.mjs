@@ -1,6 +1,7 @@
 // Hosted CI only: a complete book must remain usable after moving its export.
 import assert from 'node:assert/strict';
 import { checkEquations } from './check-equations.mjs';
+import { checkStatements } from './check-statements.mjs';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdtemp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -27,6 +28,11 @@ try {
   execFileSync(binary, ['build', technical], { env, stdio: 'pipe' });
   const relocated = path.join(temp, 'Relocated equations 日本');
   await rename(path.join(technical, 'site'), relocated);
+  const statements = path.join(temp, 'statements');
+  await cp('scripts/fixtures/statements', statements, { recursive: true });
+  execFileSync(binary, ['build', statements], { env, stdio: 'pipe' });
+  const movedStatements = path.join(temp, 'Relocated statements 日本');
+  await rename(path.join(statements, 'site'), movedStatements);
   await mkdir(captures, { recursive: true });
   for (const [engine, launcher] of Object.entries({ chromium, webkit })) {
     const browser = await launcher.launch();
@@ -80,6 +86,7 @@ try {
         await equations.route(/^https?:/, route => route.abort());
         const equationPage = await equations.newPage();
         await checkEquations(equationPage, pathToFileURL(relocated + path.sep).href, captures, `${engine}-equations-${javaScriptEnabled}`);
+        await checkStatements(equationPage, pathToFileURL(movedStatements + path.sep).href, captures, `${engine}-statements-${javaScriptEnabled}`);
         await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });

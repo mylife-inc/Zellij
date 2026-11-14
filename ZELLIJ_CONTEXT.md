@@ -3,6 +3,12 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Work in progress after `ed23611`: shared book theorem/lemma/proof semantics
+(and proposition/corollary/definition/example/remark), using one statement
+counter per reading entry and a shared label namespace with equations.
+See [the contract and verification record](specs/zellij-book-statements-2026-11-13.md).
+Hosted acceptance and merge are pending; public rc.6 remains unchanged.
+
 PR #164 (`cc88bc0`) resolves the reproduced rapid-resize focus race, with the
 same tree as tested source `36c7882`. Hidden blur is remembered when it happens;
 a pending restoration survives later breakpoints and respects subsequent focus
@@ -44,7 +50,7 @@ and [evidence](specs/evidence/zellij-book-equations-2026-11-13.json).
 All 13 development-image jobs in `43560554366` pass at the merge, publishing
 all four `main` variants for amd64/arm64 and building/serving a site from the
 published image. The final evidence follow-up changes only context and records.
-**Next priority:** shared theorem/lemma/proof semantics, then bibliography,
+**Next priority:** finish shared statement acceptance, then bibliography,
 index/glossary, richer book templates and remaining installation channels.
 These equation additions await the next candidate; public rc.6 is unchanged.
 The bounded investigation of the separate WebKit overflow and docs

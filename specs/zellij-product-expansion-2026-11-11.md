@@ -12,8 +12,12 @@ inline references are implemented across native HTML, adapted Next and PDF.
 See [the contract and acceptance record](zellij-book-equations-2026-11-13.md).
 All 27 final-source jobs in `43557146014` pass at `09fd2cc` (PR #167), including
 prefixed Next, offline browsers and 15 real PDFs. Per-row numbering, references
-within larger math, theorems and the remaining advanced publishing work are not
+within larger math and the remaining advanced publishing work are not
 marked complete. This source increment awaits the next candidate.
+
+Shared theorem/lemma/proof blocks and references are the next source increment,
+with implementation and acceptance tracked in the
+[statement contract](zellij-book-statements-2026-11-13.md).
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
