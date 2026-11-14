@@ -20,7 +20,7 @@ Zellij/
 
 ## The engine
 
-[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 23
+[`engine/packages/zellij`](engine/packages/zellij) is the whole product: 25
 section types, 14 themes, a documentation renderer, ⌘K search, and a build that
 refuses to ship broken content.
 
@@ -88,7 +88,7 @@ advanced technical and multilingual publishing remain planned.
 
 Current source adds shared labelled equations, theorem/lemma/proof blocks, numeric
 bibliography/citations, glossary/index and cross-chapter references for portable/Next websites and PDF, with stable anchors
-and native validation. These additions await the next candidate; see the
+and native validation. These additions are being prepared for rc.7; public rc.6 is unchanged. See the
 [equation contract](specs/zellij-book-equations-2026-11-13.md) and
 [statement contract](specs/zellij-book-statements-2026-11-13.md), plus the
 [bibliography contract](specs/zellij-book-bibliography-2026-11-14.md) and

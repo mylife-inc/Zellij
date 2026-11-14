@@ -203,6 +203,26 @@ test('release workflow selects and publishes the expected manifest tags', t => {
   assert.equal(f.records().length, count);
 });
 
+test('publication requires successful native verification including Scoop', () => {
+  const job = workflow('release').jobs.publish;
+  const required = ['verify', 'binaries', 'docs', 'scoop'];
+  for (const dependency of required) assert.ok(job.needs.includes(dependency));
+  const expression = job.if.match(/^\$\{\{\s*([\s\S]*?)\s*\}\}$/)?.[1];
+  assert.ok(expression, 'Expected an explicit publication condition');
+  // Evaluate the actual workflow condition against GitHub's dependency results.
+  const eligible = new Function('needs', 'always', `return (${expression});`);
+  const success = Object.fromEntries(job.needs.map(name => [name, { result: 'success' }]));
+  assert.equal(eligible(success, () => true), true);
+  for (const dependency of required) {
+    for (const result of ['failure', 'cancelled', 'skipped']) {
+      assert.equal(eligible({ ...success, [dependency]: { result } }, () => true), false,
+        `${dependency} ${result} must prevent native publication`);
+    }
+  }
+  // Image publication is independent; the native release can still be usable.
+  assert.equal(eligible({ ...success, manifests: { result: 'failure' } }, () => true), true);
+});
+
 test('workflow effects are gated by the checked release policy', () => {
   const jobs = workflow('release').jobs;
   assert.equal(jobs.verify.outputs.stable, '${{ steps.policy.outputs.stable }}');
