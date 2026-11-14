@@ -1,8 +1,9 @@
 # Shared book equations — 2026-11-13
 
 Source baseline: `d7a8416` (PR #166). Public rc.6 remains unchanged.
-Implementation is under verification; do not call hosted acceptance complete
-until the final run and source commit are recorded below.
+Final-source acceptance passes at `09fd2cc` in PR #167; the recorded full CI
+run is `43557146014`. The merge and development-image result are recorded
+separately when complete.
 
 ## Authoring contract
 
@@ -82,8 +83,63 @@ line endings before replacement, and asserts that the replacement changes the
 input. All four equation integration tests pass locally after that correction.
 The original Windows failure is retained; it did not require a product change.
 
-Final local and hosted results remain to be recorded. Public documentation
-marks this feature as source-only after rc.6. No release or provider deployment
-is part of this increment. Per-row numbering, references embedded in larger
+The corrected-CRLF run is `43553446088`. Its 26 other jobs pass, but the
+Next-image build
+finds an adapter defect at `manual/p1.zeldoc.json`: a colon in an authored
+fragment was treated as a URL scheme, leaving `../series.html#_zel-eq-eq:sum`
+unconverted. Fix `4c399af` splits query/fragment before checking the path for a
+scheme. Native regressions cover both fragment and query colons, and the hosted
+browser helper follows the custom-text link explicitly. All 68 native docs
+tests and warnings-denied crate Clippy pass after the fix. The Next-image gate
+moves earlier in CI without removing any checks. The final helper's exact link
+text is corrected in `6adfae7` before its hosted run.
+
+The Next-image gate passes at `6adfae7` in `43556287071`, including the
+custom-text link, deployed prefix and desktop/phone captures. Source review
+then reproduces a second defect: deleting a label between `\alpha` and `x`
+forms the invalid command `\alphax`. Fix `09fd2cc` substitutes a space; the
+renumbering regression fails before and passes after the correction. All 68
+native docs tests and crate Clippy pass afterward. The combined-source
+acceptance below closes that verification requirement.
+
+## Verification results
+
+Implementation `2c77a39`, CRLF fixture correction `ed869ce`, URL fix `4c399af`
+and TeX-boundary fix `09fd2cc` are tracked in PR #167. Combined-source CI
+`43557146014` passes all 27 jobs at `09fd2cc` without workflow reruns. The
+intermediate runs and their findings remain above and in the evidence.
+
+- Local: 778 Rust tests pass (five existing hosted-only cases ignored locally),
+  warnings-denied workspace Clippy, formatting, 490 engine tests, workspace
+  typechecks, engine build, JavaScript syntax and Actionlint. Strict/deep docs
+  validation passes 59 routes and 25 examples. The four equation integration
+  tests also pass after the CRLF fixture correction.
+- Portable browsers: Linux/macOS/Windows all pass relocated `file://` navigation
+  in Chromium and WebKit, with JavaScript enabled and disabled. The fixture
+  checks forward/backward links, keyboard self-links, front matter/appendices,
+  two viewport widths and absence of page errors. All 24 new screenshots are
+  retained; Linux desktop/phone, macOS WebKit phone and Windows Chromium desktop
+  samples were reviewed. Equation numbers remain visible and text fits.
+- Real PDF: Docker amd64/arm64 and rootless Podman each generate five books.
+  All 15 receipt hashes verify. The 18 new equation-book page captures and
+  extracted text agree across runtimes and match the six visually reviewed
+  pages. All 87 existing page captures match the rc.6 review exactly.
+- Existing product checks: 378 showcase cases pass, 140 conditional skips,
+  zero flaky cases/retries. Full docs preserve 46 original routes, 13 added
+  routes, 282 heading IDs, 82 mappings and 29 identical images, with no captured
+  hydration errors. All six browser regressions pass. Six native packages,
+  four Homebrew targets and four Scoop lifecycle combinations pass.
+
+The [machine-readable evidence](evidence/zellij-book-equations-2026-11-13.json)
+retains receipts, page/screenshot hashes and intermediate findings. The
+final-source Next-image gate passes with the custom-link regression and both captures. All 26 equation
+web captures match their initial artifacts; the six listed desktop/phone
+samples were visually reviewed. The merge and development-image publication
+are the remaining closure steps.
+
+## Release boundary and next work
+
+Public documentation marks this feature as source-only after rc.6. No release
+or provider deployment is part of this increment. Per-row numbering, references embedded in larger
 math, custom tags, theorem/lemma/proof semantics, bibliography/index/glossary,
 multilingual print and richer book templates remain separate work.

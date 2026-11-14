@@ -29,12 +29,20 @@ rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
 message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
 and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
 
-Shared numbered equations and references now have a source implementation in
-the native book registry, portable/Next adapters and PDF writer. The new
-`\label` / standalone inline `\eqref` / `\ref` contract and verification state
-are in [the equation record](specs/zellij-book-equations-2026-11-13.md).
-**Next priority:** finish its hosted browser/PDF acceptance, then continue book
-semantics, richer book templates and remaining installation channels.
+Shared book equations are verified at `09fd2cc` in PR #167. One registry in
+`cli/crates/zellij-docs/src/equations.rs` supplies chapter/appendix numbers,
+stable anchors and standalone `\eqref`/`\ref` links to native HTML, adapted
+Next and PDF. All 27 final-source jobs in `43557146014` pass, including offline
+Chromium/WebKit on Linux/macOS/Windows, prefixed Next images, six native packages,
+four Homebrew and four Scoop combinations. Fifteen PDFs/105 page captures pass;
+all 87 prior layouts remain unchanged. Local validation passes 778 Rust and
+490 engine tests. The record retains the Windows CRLF fixture correction, the
+fixed colon-in-fragment/query adapter defect and the fixed TeX token-boundary
+defect. See [the contract and verification](specs/zellij-book-equations-2026-11-13.md)
+and [evidence](specs/evidence/zellij-book-equations-2026-11-13.json).
+**Next priority:** shared theorem/lemma/proof semantics, then bibliography,
+index/glossary, richer book templates and remaining installation channels.
+These equation additions await the next candidate; public rc.6 is unchanged.
 The bounded investigation of the separate WebKit overflow and docs
 hydration timings passes 120 overflow repetitions and 40 full documentation
 annotation checks without retries in `43547198588`. Neither failure reproduced;
@@ -2198,7 +2206,8 @@ derived assets/search after content edits; automatic browser reload for every
 prepared-file change still requires further acceptance.
 
 - npm workspaces: `engine/packages/*` and `examples/*`; committed npm lockfile.
-- Engine package version `0.1.0`; Rust workspace version `0.1.3`.
+- Engine package version `0.1.0`; Rust workspace version `0.2.0-rc.6`. Post-rc.6
+  source increments are identified at the top of this context and await the next candidate.
 - Examples now pin Next `16.4.2`, React/React DOM `19.2.8`; TypeScript
   `5.9.3` range. Engine peer ranges are Next `~16.4.2`, React `19.2.x`.
 - Manifests declare Node `^20.19.0 || >=22.12.0`; `.nvmrc`, CI and Docker use Node 24. Audit used Node
@@ -2235,6 +2244,10 @@ prepared-file change still requires further acceptance.
 | Build-time operations | `src/cli/check.ts`, `sync-assets.ts`, `context.ts`, `init.ts` |
 | Development preparation | `src/cli/dev.ts`, `watch-preparation.ts`, `write-prepared-file.ts`; packaged/browser/container fixtures in `scripts/check-dev-*.mjs` |
 | Static reference validation | `src/cli/deep-check.ts`, `src/content/reference-schema.ts`, `src/content/inline-markdown.ts` |
+| Book manifest and reading order | `cli/crates/zellij-docs/src/book.rs` |
+| Shared equation numbers/references | `cli/crates/zellij-docs/src/equations.rs`; regression manuscript in `scripts/fixtures/equations` |
+| Native/Next book adapters | `cli/crates/zellij-docs/src/markdown.rs`, `cli/crates/zellij-docs/src/hosted.rs`; `src/content/portable-document.ts` |
+| Print model and execution | `cli/crates/zellij-docs/src/pdf.rs`, `cli/crates/zellij-docs/assets/book.tex`; `cli/crates/zellij-cli/src/pdf.rs` |
 | Rust command truth | `cli/crates/zellij-cli/src/main.rs` — enum AND dispatch |
 | Release truth | `.github/workflows/release.yml`, `scripts/install.sh` |
 

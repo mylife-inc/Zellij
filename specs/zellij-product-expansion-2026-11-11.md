@@ -10,8 +10,10 @@ design; proposed commands remain planned unless explicitly marked implemented be
 Current source increment (2026-11-13): shared labelled equations and standalone
 inline references are implemented across native HTML, adapted Next and PDF.
 See [the contract and acceptance record](zellij-book-equations-2026-11-13.md).
-Hosted acceptance is pending; per-row numbering, references within larger math,
-theorems and the remaining advanced publishing work are not marked complete.
+All 27 final-source jobs in `43557146014` pass at `09fd2cc` (PR #167), including
+prefixed Next, offline browsers and 15 real PDFs. Per-row numbering, references
+within larger math, theorems and the remaining advanced publishing work are not
+marked complete. This source increment awaits the next candidate.
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |
