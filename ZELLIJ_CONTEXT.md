@@ -3,10 +3,22 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Work in progress after `6d2696a`: numeric bibliography and citations, with a
-local CSL-JSON catalog and a shared registry for portable HTML, adapted Next
-and PDF. See [the contract and acceptance record](specs/zellij-book-bibliography-2026-11-14.md).
-Hosted acceptance and merge are pending; public rc.6 remains unchanged.
+PR #171 implements numeric bibliography and citations from local CSL-JSON, with
+one registry for portable HTML, adapted Next and PDF. All 27 jobs in
+`43578754363` pass at `d9e22cc`; local verification passes 789 Rust and 490 engine
+tests. Twenty-one PDFs/156 page captures pass, with all 129 prior layouts
+unchanged. All 26 new browser captures are retained; desktop/mobile Next and
+native Linux/macOS/Windows samples are visually reviewed. The documented format
+supports numeric citations, locators, footnotes, DOI/URL links and uncited entries;
+BibTeX and custom citation styles remain open. No PDF package or image-size
+change is required. See [the contract](specs/zellij-book-bibliography-2026-11-14.md)
+and [evidence](specs/evidence/zellij-book-bibliography-2026-11-14.json).
+The final documentation/evidence update changes no runtime, test or workflow
+inputs; its public-guide URL wording passes strict/deep validation separately.
+Merge and development-image publication are pending. Public rc.6 is unchanged.
+**Next priority:** index/glossary, followed by richer book editions and the
+remaining print and installation work. The separate unresolved browser timings
+and deferred provider verification retain their existing status.
 
 PR #169 (`cd79114`, matching reviewed tree `5ab8acf`) merges shared book
 theorem/lemma/proof semantics (and proposition, corollary, definition, example
@@ -66,8 +78,9 @@ and [evidence](specs/evidence/zellij-book-equations-2026-11-13.json).
 All 13 development-image jobs in `43560554366` pass at the merge, publishing
 all four `main` variants for amd64/arm64 and building/serving a site from the
 published image. The final evidence follow-up changes only context and records.
-**Next priority:** bibliography and citations, then
-index/glossary, richer book templates and remaining installation channels.
+At that equation milestone, bibliography/citations were next; PR #171 above
+implements numeric citations. Index/glossary, richer book templates and remaining
+installation channels follow.
 These equation additions await the next candidate; public rc.6 is unchanged.
 The bounded investigation of the separate WebKit overflow and docs
 hydration timings passes 120 overflow repetitions and 40 full documentation

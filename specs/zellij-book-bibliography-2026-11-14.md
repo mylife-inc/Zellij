@@ -1,8 +1,9 @@
 # Shared bibliography and citations — 2026-11-14
 
 Source baseline: `6d2696a` on `main`. Public rc.6 and production hosting remain
-unchanged. Implementation and local verification are in progress; hosted
-acceptance and merge have not yet completed.
+unchanged. Implementation and source acceptance are complete at `d9e22cc`
+in PR #171. All 27 final-source CI jobs pass; merge and development-image
+publication are recorded separately after completion.
 
 ## Contract and scope
 
@@ -94,8 +95,8 @@ Hosted fixtures extend the equation/statement book without altering the earlier
 PDF inputs. CI exercises relocated `file://` books in Chromium/WebKit on all
 three OS families, JavaScript on/off, two widths, prefixed Next images and real
 PDF on Docker amd64/arm64 plus rootless Podman. It retains bibliography browser
-captures, PDF receipts, extracted text/fonts and every page capture. Final results
-will be recorded with exact commits and job IDs once observed.
+captures, PDF receipts, extracted text/fonts and every page capture. Final source
+results and exact commits/job IDs are recorded below.
 
 The separate WebKit overflow and docs hydration timing findings remain open.
 Live provider acceptance and production-domain migration stay deferred.
@@ -110,3 +111,42 @@ The isolated unprotected-parser probe reproduces the nested-link ambiguity:
 only the private citation target survives and the original external URL is lost.
 The protected parser regression retains the outer link and literal marker.
 No local browser, GUI, container or actual LaTeX execution was used.
+
+## Final source acceptance
+
+All 27 jobs in [CI `43578754363`](https://github.com/mylife-inc/Zellij/actions/runs/43578754363)
+pass at exact source `d9e22ccd5d0b23494e66ffa1165d968ced825fc9` without workflow
+reruns.
+
+- Portable books pass relocated `file://` acceptance in Chromium/WebKit on
+  Linux/macOS/Windows, with JavaScript on/off and two viewport widths. Prefixed
+  Next passes the same references, bibliography links and responsive checks.
+  All 26 new browser captures are retained; desktop/mobile Next plus native
+  Linux/macOS/Windows samples are visually reviewed. Numeric labels appear once,
+  entries wrap readably, and keyboard focus and previous navigation remain visible.
+- Docker amd64/arm64 and rootless Podman each render seven books: 21 PDFs and
+  156 page captures. All 129 previous captures are byte-identical. The nine-page
+  bibliography manuscript has identical rendered PNGs across all three runtimes;
+  pages 2, 3, 6, 7 and 9 were inspected directly, and pages 1, 4, 5 and 8 match
+  previously reviewed statement pages. Contents entries, footnote citations,
+  locators, bibliography hanging paragraphs and links are readable without
+  observed clipping or overlap. PDF receipts, text/font checks and qpdf checks
+  pass. This is rendered-layout equality, not PDF binary equality.
+- Existing engine coverage passes 490 tests. Showcase passes 378 cases with
+  140 conditional skips and no retries. Documentation preservation covers
+  46 original and 13 added routes, 282 original heading IDs, 82 compatibility
+  mappings and 29 byte-identical images; all six browser regressions pass.
+  Six native packages, four Homebrew targets and four Scoop combinations pass.
+
+The [machine-readable evidence](evidence/zellij-book-bibliography-2026-11-14.json)
+retains job IDs, local logs' hashes, PDF receipts, capture hashes, visual review
+and the initial parser/fixture findings. A documentation-only commit follows
+CI: context, ledgers, this contract, evidence, and a two-line public-guide wording
+clarification that URL-query rejection in PDF applies to internal links.
+That guide passes strict/deep validation separately (59 routes, 25 examples);
+runtime, test and workflow inputs are identical to the tested source.
+
+Index/glossary is the next implementation priority. BibTeX/custom CSL, broader
+print support, richer book editions, remaining installation channels and the
+separate unresolved browser timings stay open. No new public CLI candidate or
+production deployment is performed by this increment.

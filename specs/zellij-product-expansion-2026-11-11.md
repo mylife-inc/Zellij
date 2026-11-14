@@ -19,8 +19,11 @@ Shared theorem/lemma/proof blocks and references are also implemented across
 all three outputs in PR #169. All 27 jobs in `43567230812` pass at `5dfaf59`,
 including 18 real PDFs and 129 page captures; all 105 prior captures are
 unchanged. See the [statement contract](zellij-book-statements-2026-11-13.md).
-Numeric bibliography/citations are the next source increment, with implementation
-and acceptance tracked in the [bibliography contract](zellij-book-bibliography-2026-11-14.md).
+Numeric bibliography/citations are implemented in PR #171 at `d9e22cc`, with
+all 27 jobs in `43578754363` passing. Twenty-one PDFs/156 captures pass and all
+129 prior layouts remain unchanged; offline browsers on three OS families and
+prefixed Next pass. See the [bibliography contract](zellij-book-bibliography-2026-11-14.md)
+for the bounded CSL-JSON format and evidence. BibTeX/custom styles remain open.
 Index/glossary follows; public rc.6 is unchanged.
 
 | Order | Deliverable | Timing and acceptance |
