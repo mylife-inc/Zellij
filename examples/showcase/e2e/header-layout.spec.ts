@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import './header-observations';
 
 test('branding and controls sit at opposite viewport edges without overlap', async ({ page }) => {
   await page.goto('/');
@@ -157,8 +156,8 @@ test.describe('measured overflow', () => {
     await page.getByRole('button', { name: 'Open navigation' }).click();
     const drawer = page.getByRole('dialog', { name: 'Site navigation' });
     await expect(drawer).toBeVisible();
-    // Browsers can coalesce transient widths; observe the initial desktop
-    // transition before checking the final focus after the remaining burst.
+    // Browsers can coalesce transient widths. Require actual DOM removal:
+    // role queries omit a CSS-hidden drawer before React has closed it.
     await page.setViewportSize({ width: 1280, height: 900 });
     await expect(page.locator('.zellij-drawer-root')).toHaveCount(0);
     for (const width of [390, 1280, 390]) await page.setViewportSize({ width, height: 900 });
