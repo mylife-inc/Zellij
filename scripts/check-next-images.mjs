@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
+import { checkTerms } from './check-terms.mjs';
 import { checkBibliography } from './check-bibliography.mjs';
 import { execFileSync, spawn } from 'node:child_process';
 import { chmod, cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
@@ -54,6 +55,8 @@ async function browserChecks(origin, prefix, portable) {
       await checkStatements(page, `${origin}${prefix}/`, path.join(repo, 'test-results/next-equations'), 'next-statements');
       assert.deepEqual(record.publication.bibliography.references.map(r => r.number), [1,2,3,4]);
       await checkBibliography(page, `${origin}${prefix}/`, path.join(repo, 'test-results/next-equations'), 'next-bibliography');
+      assert.deepEqual(record.publication.terms.map(c => c.kind), ['glossary','index']);
+      await checkTerms(page, `${origin}${prefix}/`, path.join(repo, 'test-results/next-equations'), 'next-terms');
     } else if (portable === 'book') {
       await page.getByRole('heading', { name: 'An atlas of quiet ideas', exact: true }).waitFor();
       assert.equal(await page.locator('html').getAttribute('lang'), 'en');
@@ -187,7 +190,7 @@ try {
     const book = `zellij-next-book:${suffix}`; images.push(book);
     run(['image', 'next', 'book', '--tag', book, '--features', 'none']);
     await container(book, '', 'book');
-    await cp(path.join(repo, 'scripts/fixtures/bibliography'), path.join(root, 'equations'), { recursive: true });
+    await cp(path.join(repo, 'scripts/fixtures/terms'), path.join(root, 'equations'), { recursive: true });
     const equations = `zellij-next-equations:${suffix}`; images.push(equations);
     run(['image', 'next', 'equations', '--tag', equations, '--features', 'maths', '--base-path', '/books/equations']);
     await container(equations, '/books/equations', 'equations');

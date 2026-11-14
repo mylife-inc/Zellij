@@ -285,7 +285,25 @@ pub fn highlight(
     let mut mindmap = 0;
     let mut diagram = 0;
     while let Some(event) = iter.next() {
-        if let Event::Start(Tag::BlockQuote(kind)) = event {
+        if let Event::Start(Tag::Link {
+            ref id,
+            ref dest_url,
+            ref title,
+            ..
+        }) = event
+            && book.is_some()
+            && id.starts_with(crate::terms::USE_PREFIX)
+        {
+            output.push(Event::InlineHtml(
+                format!(
+                    "<a id=\"{}\" href=\"{}\" title=\"{}\">",
+                    escape(id),
+                    escape(dest_url),
+                    escape(title)
+                )
+                .into(),
+            ));
+        } else if let Event::Start(Tag::BlockQuote(kind)) = event {
             let statement = if kind.is_none()
                 && let Some(book) = book
                 && let Some(h) = crate::statements::header(iter.as_slice())?

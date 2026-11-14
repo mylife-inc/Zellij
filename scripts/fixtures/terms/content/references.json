@@ -1,0 +1,6 @@
+[
+  {"id":"river2021","type":"article-journal","title":"Finite sums and careful arguments","author":[{"given":"Ravi","family":"River"}],"issued":{"date-parts":[[2021,4,12]]},"container-title":"Journal of Example Mathematics","volume":"4","issue":"2","page":"12–24","DOI":"10.1234/example.sum"},
+  {"id":"vale2024","type":"book","title":"An atlas of quiet ideas","author":[{"given":"Mira","family":"Vale"}],"issued":{"date-parts":[[2024]]},"publisher":"Example Press","URL":"https://example.com/atlas"},
+  {"id":"shebka2026","type":"webpage","title":"Notes on open documentation","author":[{"literal":"Shebka"}],"issued":{"literal":"2026"},"URL":"https://example.com/docs?edition=1&lang=en"},
+  {"id":"uncited","type":"report","title":"Further reading for curious minds","author":[{"family":"Vale","given":"Mira"}],"issued":{"date-parts":[[2023],[2024]]}}
+]

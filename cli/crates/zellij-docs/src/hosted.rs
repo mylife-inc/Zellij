@@ -279,11 +279,18 @@ fn tree(
                     Tag::Strong => ("strong".into(), json!({})),
                     Tag::Strikethrough => ("del".into(), json!({})),
                     Tag::Link {
-                        dest_url, title, ..
-                    } => (
-                        "a".into(),
-                        json!({"href":target(page, dest_url, pages)?, "title":title.as_ref()}),
-                    ),
+                        dest_url,
+                        title,
+                        id,
+                        ..
+                    } => {
+                        let mut props =
+                            json!({"href":target(page, dest_url, pages)?, "title":title.as_ref()});
+                        if book.is_some() && id.starts_with(crate::terms::USE_PREFIX) {
+                            props["id"] = json!(id.as_ref());
+                        }
+                        ("a".into(), props)
+                    }
                     _ => {
                         return Err(Error::InvalidArgument(format!(
                             "unsupported Markdown node in Next adapter: {tag:?}"
@@ -509,6 +516,9 @@ pub(super) fn emit(
             let entry = book.entry(index);
             if entry.kind == "bibliography" {
                 children.push(crate::bibliography::tree(book));
+            }
+            if let Some(collection) = crate::terms::collection_for_page(book, page) {
+                children.push(crate::terms::tree(collection, true));
             }
             if let Some(number) = &entry.number {
                 children.insert(

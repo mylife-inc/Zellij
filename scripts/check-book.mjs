@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
+import { checkTerms } from './check-terms.mjs';
 import { checkBibliography } from './check-bibliography.mjs';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdtemp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
@@ -34,6 +35,11 @@ try {
   execFileSync(binary, ['build', statements], { env, stdio: 'pipe' });
   const movedStatements = path.join(temp, 'Relocated statements 日本');
   await rename(path.join(statements, 'site'), movedStatements);
+  const terms = path.join(temp, 'terms');
+  await cp('scripts/fixtures/terms', terms, { recursive: true });
+  execFileSync(binary, ['build', terms], { env, stdio: 'pipe' });
+  const movedTerms = path.join(temp, 'Relocated terms 日本');
+  await rename(path.join(terms, 'site'), movedTerms);
   const bibliography = path.join(temp, 'bibliography');
   await cp('scripts/fixtures/bibliography', bibliography, { recursive: true });
   execFileSync(binary, ['build', bibliography], { env, stdio: 'pipe' });
@@ -96,6 +102,7 @@ try {
         await checkEquations(equationPage, pathToFileURL(relocated + path.sep).href, captures, `${engine}-equations-${javaScriptEnabled}`);
         await checkStatements(equationPage, pathToFileURL(movedStatements + path.sep).href, captures, `${engine}-statements-${javaScriptEnabled}`);
         await checkBibliography(equationPage, pathToFileURL(movedBibliography + path.sep).href, captures, `${engine}-bibliography-${javaScriptEnabled}`);
+        await checkTerms(equationPage, pathToFileURL(movedTerms + path.sep).href, captures, `${engine}-terms-${javaScriptEnabled}`);
         await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });

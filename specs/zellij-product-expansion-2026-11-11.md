@@ -24,7 +24,9 @@ all 27 jobs in `43578754363` passing. Twenty-one PDFs/156 captures pass and all
 129 prior layouts remain unchanged; offline browsers on three OS families and
 prefixed Next pass. See the [bibliography contract](zellij-book-bibliography-2026-11-14.md)
 for the bounded CSL-JSON format and evidence. BibTeX/custom styles remain open.
-Index/glossary follows; public rc.6 is unchanged.
+Glossary/index is the current source increment, tracked in the
+[terms contract](zellij-book-terms-2026-11-14.md). Acceptance and merge remain
+pending; public rc.6 is unchanged.
 
 | Order | Deliverable | Timing and acceptance |
 | --- | --- | --- |

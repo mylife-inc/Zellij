@@ -3,6 +3,12 @@
 Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+Work in progress after `0a29442`: shared glossary and subject-index catalogs,
+marked occurrences, backlinks and deduplicated PDF page references. The source
+guide and [contract](specs/zellij-book-terms-2026-11-14.md) document local JSON
+catalogs, one-level index subentries and see-also links. Local/hosted acceptance
+and merge are pending; public rc.6 remains unchanged.
+
 PR #171 (`e58133b`, matching reviewed tree `11b3c55`) merges numeric bibliography
 and citations from local CSL-JSON, with one registry for portable HTML, adapted
 Next and PDF. All 27 jobs in `43578754363` pass at `d9e22cc`; local verification

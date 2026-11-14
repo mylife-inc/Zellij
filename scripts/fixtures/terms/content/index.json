@@ -1,0 +1,22 @@
+[
+  {
+    "id": "mechanics",
+    "term": "Mechanics",
+    "see-also": [
+      "sum"
+    ]
+  },
+  {
+    "id": "energy",
+    "term": "Energy",
+    "parent": "mechanics"
+  },
+  {
+    "id": "sum",
+    "term": "Finite sums",
+    "sort": "sums",
+    "see-also": [
+      "energy"
+    ]
+  }
+]

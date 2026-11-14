@@ -188,7 +188,13 @@ impl Writer<'_> {
                         out.push_str(&format!("\\par{{\\small\\itshape {}}}\\par\n", tex(&alt)));
                     }
                 }
-                Event::Start(Tag::Link { dest_url, .. }) => {
+                Event::Start(Tag::Link { dest_url, id, .. }) => {
+                    if id.starts_with(crate::terms::USE_PREFIX) {
+                        let anchor = label(page, id);
+                        out.push_str(&format!(
+                            "\\leavevmode\\hypertarget{{{anchor}}}{{}}\\label{{{anchor}}}"
+                        ));
+                    }
                     if dest_url.starts_with("https:")
                         || dest_url.starts_with("http:")
                         || dest_url.starts_with("mailto:")
@@ -504,6 +510,16 @@ pub(crate) fn compose(
                 }
                 out.push_str("\\par\n");
             }
+            continue;
+        }
+        if let Some(collection) = crate::terms::collection_for_page(book, page) {
+            out.push_str(&crate::terms::latex(
+                collection,
+                entry.index,
+                book,
+                label,
+                tex,
+            ));
             continue;
         }
         if entry.source.is_none() {
