@@ -1,6 +1,7 @@
 // Shared hosted acceptance for relocated file:// books and prefixed Next images.
 import assert from 'node:assert/strict';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { browserFailureState } from './browser-failure-state.mjs';
 import path from 'node:path';
 import { expect } from '@playwright/test';
 
@@ -32,6 +33,13 @@ export async function checkStatements(page, origin, captures, prefix) {
     await page.getByRole('link', { name: 'custom statement link', exact: true }).click();
     await expect(page).toHaveURL(/\/series\.html#_zel-stmt-prop(?::|%3A)sum$/);
     await page.getByRole('link', { name: 'Theorem 1.3', exact: true }).click();
+    // The last click crosses documents and targets a fragment. Wait for that
+    // document, its fonts and target scroll before taking keyboard focus from
+    // native navigation (also needed when authored JavaScript is disabled).
+    await expect(page).toHaveURL(/\/chapters\/energy\.html#_zel-stmt-thm%3Aenergy$/);
+    await page.waitForLoadState('load');
+    await page.evaluate(() => document.fonts.ready);
+    await expect(block('thm:energy')).toBeInViewport();
     const proof = page.getByRole('link', { name: 'Proof', exact: true });
     await proof.focus(); await expect(proof).toBeFocused(); await page.keyboard.press('Enter');
     await expect(block('proof:energy')).toBeInViewport();
@@ -49,5 +57,15 @@ export async function checkStatements(page, origin, captures, prefix) {
     await page.goto(url(new URL(origin).protocol === 'file:' ? 'index.html' : ''));
     await expect(block('remark:title').locator('.zellij-statement-head')).toHaveText('Remark T.1 (How to read this book)');
     assert.deepEqual(errors, []);
+  } catch (error) {
+    // Failure-only diagnostics; never replace the original assertion.
+    try {
+      await mkdir(captures, { recursive: true });
+      await writeFile(path.join(captures, `${prefix}-failure.json`), JSON.stringify({
+        error: String(error), origin, prefix, errors, state: await browserFailureState(page),
+      }, null, 2));
+      await page.screenshot({ path: path.join(captures, `${prefix}-failure.png`), fullPage: true, timeout: 3000 });
+    } catch { /* Keep the assertion even if the browser is already gone. */ }
+    throw error;
   } finally { page.off('pageerror', onError); }
 }

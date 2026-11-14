@@ -98,3 +98,13 @@ multilingual/RTL print, Next-image PDFs and richer technical/study/custom
 print templates. This increment does not establish zero bugs or a complete 1.0.
 The separate recorded WebKit overflow and documentation hydration timings remain
 unexplained; live providers and production-domain migration remain deferred.
+
+The first hosted run `43563739586` at `4203d65` passes real PDF on all three
+runtimes, prefixed Next, Linux/Windows book browsers and the engine/showcase
+checks. macOS WebKit with JavaScript disabled loses the new helper's programmatic
+focus immediately after returning to a fragment in another document (job
+`132352906017`). The helper had no explicit load/font/target readiness check
+after that last return. The follow-up waits for those native navigation
+preconditions before taking focus and adds failure-only state/screenshot capture.
+No product focus behavior is changed. The exact lost-focus timing was not
+captured in the initial run; retain that limit when interpreting a later pass.
