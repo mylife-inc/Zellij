@@ -953,7 +953,7 @@
       }
     ]
   },
-  "implementation": "in progress; hosted verification pending",
+  "implementation": "rapid-focus correctness defect resolved by PR #164; separate timing findings retained",
   "public_release": "v0.2.0-rc.6 unchanged",
   "delayed_baseline": {
     "run_id": 43538255973,
@@ -1145,6 +1145,330 @@
           }
         ]
       }
+    ]
+  },
+  "instrumented_verification": {
+    "run_id": 43540562985,
+    "head": "46ea8c464158f9e4508e0db7927d131170ab6de1",
+    "job_id": 132279888315,
+    "retries": 0,
+    "delayed_passed": 32,
+    "raw_passed": 120,
+    "header_passed": 336,
+    "full_workload_passed": 668,
+    "full_workload_skipped": 64,
+    "note": "Diagnostic-only native event/measurement observers; engine code unchanged. No overflow timeout reproduced."
+  },
+  "native_frame_fixture": {
+    "initial_run_id": 43541465663,
+    "head": "7bb512f8547d8bf167b57ec4a6aa5bb56b622785",
+    "job_id": 132282751951,
+    "passed": 31,
+    "failed": 1,
+    "failure": "WebKit navigation case received one rather than two native media-query events before the five-second precondition timeout; focus assertions were not reached.",
+    "change": "Use the captured native requestAnimationFrame to keep browser rendering active while application callbacks remain held. Remove diagnostic observers; keep actual viewport events, DOM closure and post-release focus assertions.",
+    "control": {
+      "run_id": 43542045252,
+      "head": "6d68b6d3e00210c39672f45b32841be6e678c485",
+      "job_id": 132284579038,
+      "retries": 0,
+      "passed": 24,
+      "failed": 8,
+      "engine_equals_unfixed_main": "4ec0ec906585c41db90b41afd7cc0c76aa10f90f",
+      "failure": "All four navigation repetitions on each browser still fail at the final focus assertion. Other destinations pass."
+    }
+  },
+  "final_stress": {
+    "run_id": 43541961094,
+    "head": "1000876e28fe30d806ea26eb78b4d1856fc54b64",
+    "job_id": 132284320903,
+    "retries": 0,
+    "workers": 4,
+    "delayed_passed": 32,
+    "raw_passed": 120,
+    "header_passed": 336,
+    "full_workload_passed": 668,
+    "full_workload_skipped": 64,
+    "total_passed": 1156,
+    "engine_equals_source": "36c78826ddf36d6c632540bb70e46e6b56a86a61",
+    "fixture_followup": "Permanent test adds the four-line native rendering driver from this exact passing stress head. No engine change.",
+    "file_sha256": {
+      "engine/packages/zellij/src/chrome/nav-bar-client.tsx": "82bb95df578ba003565a3ad1a980ecdd5316a622265c533c3b964a947288e557",
+      "examples/showcase/e2e/header-layout.spec.ts": "d70d95be40a8148588dad5fde9b5d4f26593022a2682f3151f4ad3bd572668fd",
+      "examples/showcase/playwright.config.ts": "1c1444d5621bee3f248b5160068da2d29fa23865855dd4c1456262bc39491951"
+    }
+  },
+  "source_ci_first_attempt": {
+    "run_id": 43540700668,
+    "head": "36c78826ddf36d6c632540bb70e46e6b56a86a61",
+    "attempt": 1,
+    "jobs_passed": 26,
+    "jobs_failed": 1,
+    "failed_job_id": 132280394586,
+    "failure": "Engine: hosting-annotation/CRLF preservation case timed out waiting 15 seconds for the hydrated theme-toggle label during a legacy-heading visit; no captured browser error. Cause remains unknown.",
+    "source_showcase": {
+      "passed": 378,
+      "skipped": 140,
+      "flaky": 0
+    },
+    "engine_tests_passed": 490
+  },
+  "unresolved_findings": [
+    {
+      "run_id": 43539410410,
+      "kind": "WebKit overflow measurement timeout",
+      "status": "Cause not established. Later instrumented and uninstrumented no-retry runs pass; this does not resolve the original timeout."
+    },
+    {
+      "run_id": 43540700668,
+      "job_id": 132280394586,
+      "kind": "Documentation hydration readiness timeout",
+      "status": "Cause not established. First failure retained; a verification-only follow-up adds the exact page URL to future readiness errors without changing timeout or acceptance."
+    }
+  ],
+  "merge": {
+    "pr": 164,
+    "commit": "cc88bc010a196a1a121eece958fd6cab136c29eb",
+    "tested_source": "36c78826ddf36d6c632540bb70e46e6b56a86a61",
+    "tree": "456deb56d19aebf5ef33192de124582aa3865700",
+    "tested_tree_matches": true
+  },
+  "source_ci": {
+    "run_id": 43540700668,
+    "head": "36c78826ddf36d6c632540bb70e46e6b56a86a61",
+    "attempt": 2,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "Engine",
+        "job_id": 132289114445,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "job_id": 132289115504,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "job_id": 132289116065,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "job_id": 132289116226,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "job_id": 132289116254,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "job_id": 132289116275,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "job_id": 132289116356,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "job_id": 132289116385,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "job_id": 132289116662,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "job_id": 132289116678,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "job_id": 132289117294,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "job_id": 132289117390,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "job_id": 132289117395,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "job_id": 132289117759,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "job_id": 132289117776,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "job_id": 132289117789,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "job_id": 132289117838,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "job_id": 132289118113,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "job_id": 132289140497,
+        "conclusion": "success"
+      },
+      {
+        "name": "Embedded schema is current",
+        "job_id": 132289143186,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "job_id": 132289144598,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "job_id": 132289148880,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "job_id": 132289149401,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "job_id": 132289154218,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "job_id": 132289154710,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "job_id": 132289155347,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "job_id": 132289158563,
+        "conclusion": "success"
+      }
+    ],
+    "rerun": "Only Engine rerun on unchanged source after first readiness timeout; all other jobs pass on first attempt."
+  },
+  "development_images": {
+    "run_id": 43543832220,
+    "head": "cc88bc010a196a1a121eece958fd6cab136c29eb",
+    "conclusion": "success",
+    "attempt": 1,
+    "jobs": [
+      {
+        "name": "all \u00b7 arm64",
+        "job_id": 132290301528,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "job_id": 132290301608,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "job_id": 132290301638,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "job_id": 132290301652,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "job_id": 132290301659,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 arm64",
+        "job_id": 132290301698,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "job_id": 132290301729,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "job_id": 132290301753,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "job_id": 132290992930,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "job_id": 132290992931,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "job_id": 132290992944,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "job_id": 132290992951,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "job_id": 132291133907,
+        "conclusion": "success"
+      }
+    ],
+    "outputs": "All four main variants on Linux amd64/arm64, combined manifests, published-image build and HTTP serving check."
+  },
+  "release_observation": {
+    "tag": "v0.2.0-rc.6",
+    "source_tag_object": "26f2adad84783d03cedd8eb74784bd72b085f5a8",
+    "source_tag_commit": "668e8faa47a7d4a435c71f63a51b903838a12f48",
+    "source_assets": 20,
+    "mirror_assets": 20,
+    "release_mutations": "none",
+    "mirror_tag": "zellij-v0.2.0-rc.6"
+  },
+  "verification_followup": {
+    "runtime_changes": "none",
+    "test_fixture": "Four-line native rendering driver copied exactly from passing stress head 1000876.",
+    "diagnostics": "Readiness failures include page URL; original error cause, 15-second wait and captured-browser-error checks are preserved.",
+    "local_checks": [
+      "strict/deep guide validation: 59 routes, 25 examples",
+      "node --check scripts/check-docs-preservation.mjs",
+      "JSON evidence integrity",
+      "git diff --check"
     ]
   }
 }

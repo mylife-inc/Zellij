@@ -3,13 +3,19 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-Rapid-focus follow-up is in progress: diagnostic `43537359369` reproduces the
-original Chromium failure eight times without retries (112 passes). The traces
-show focus lost while a hamburger is hidden, followed by the handler seeing it
-visible again and dropping restoration. The proposed fix remembers that loss at
-blur time and retains pending restoration through later resizes while respecting
-new user focus/pointer choices. Local 490-test/typecheck/build/doc checks pass;
-hosted regression gates are pending. See [the implementation record](specs/zellij-rapid-focus-restoration-2026-11-13.md).
+PR #164 (`cc88bc0`) resolves the reproduced rapid-resize focus race, with the
+same tree as tested source `36c7882`. Hidden blur is remembered when it happens;
+a pending restoration survives later breakpoints and respects subsequent focus
+or pointer choices. Final hosted stress `43541961094` passes 1,156 cases without
+retries (64 conditional skips). Its revised delayed-frame fixture still fails
+all eight navigation cases against the old engine. All 27 source CI jobs in
+`43540700668` pass after one unchanged Engine rerun; the first hydration-readiness
+timeout is retained. The fixture follow-up keeps native rendering active while
+application callbacks wait and adds the failed page URL to future readiness
+errors. All 13 development-image jobs in `43543832220` pass at the merge,
+publishing all four `main` variants on Linux amd64/arm64 and building/serving
+from the published image. See
+[the resolution and evidence](specs/zellij-rapid-focus-restoration-2026-11-13.md).
 
 Scoop is published in the owned [`mylife-inc/scoop-bucket`](https://github.com/mylife-inc/scoop-bucket)
 at `ca62345`, installing immutable rc.6 on native Windows x64/ARM64. All four
@@ -23,17 +29,16 @@ rc.6 keeps its generic ownership message and all 20 assets unchanged. The new
 message ships in the next candidate. See [the Scoop contract](specs/zel-scoop-distribution-2026-11-13.md)
 and [evidence](specs/evidence/zellij-scoop-distribution-2026-11-13.json).
 
-**Next priority:** source CI `43531633137` observed a rapid-drawer-resize focus
-assertion fail once and pass on automatic retry (369 passed, one flaky, 132
-conditional skips). No engine code changed in the Scoop work. This finding
-remains open; its trace is preserved in the [focus record](specs/zellij-header-resize-focus-2026-11-13.md).
-A separate no-retry probe finds a coalesced-resize test precondition on WebKit;
-its revised scenario passes 240 targeted and 632 full-workload cases (64 skips)
-in `43534470738`, without engine changes. This does not establish the original
-Chromium failure's cause; the diagnostic changes stay on the probe branch.
-Address it before the next candidate, then resume richer books and remaining
-installation channels. Live provider verification and production-domain
-migration stay deferred.
+**Next priority:** investigate two separate intermittent timing findings before
+the next candidate: WebKit kept the overflow menu after a width increase in
+`43539410410`, and the documentation annotation check timed out waiting for the
+hydrated theme label in `43540700668`. Later runs pass, but their causes remain
+unestablished. These are distinct from the now-resolved rapid-focus defect;
+failed runs and test-precondition corrections remain in the
+[resolution record](specs/zellij-rapid-focus-restoration-2026-11-13.md). Then resume
+shared numbered equations/theorems and references, richer book templates and
+remaining installation channels. Live provider verification and production-domain
+migration stay deferred. Public rc.6 is unchanged.
 
 PR #160 (`dece6c9`) fixes two reproduced header-focus defects; its tree
 matches tested head `17be3af`. Focus lost when breakpoint CSS hides navigation

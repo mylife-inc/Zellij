@@ -1,13 +1,19 @@
 # Implementation follow-ups after rc.6 — 2026-11-13
 
-Current priority: investigate the **new rapid-resize header-focus failure** in
-run `43531633137` before cutting the next candidate. Its automatic retry passed;
-the trace and unresolved status are retained in the
-[focus record](zellij-header-resize-focus-2026-11-13.md). Scoop's owned bucket is
-now published at `ca62345`, with all four public Windows lifecycle jobs passing
-in `43532235784`. PR #162 (`fd5f07a`, tested `7788140`) adds exact upgrade
-guidance and release gating; all 27 source CI jobs pass with the recorded
-browser retry. See [the Scoop contract](zel-scoop-distribution-2026-11-13.md).
+PR #164 (`cc88bc0`, tested `36c7882`) resolves the reproduced rapid-resize focus
+race. Final stress passes 1,156 cases without retries, and all 27 source CI jobs
+pass after one unchanged Engine rerun. See
+[the resolution](zellij-rapid-focus-restoration-2026-11-13.md). Current priority:
+explain the separate WebKit overflow-measurement timeout and documentation
+hydration-readiness timeout retained there before cutting the next candidate.
+Later passes do not establish their causes. Then resume advanced book references
+and print templates. Live provider verification remains deferred.
+
+Scoop's owned bucket is published at `ca62345`, with all four public Windows
+lifecycle jobs passing in `43532235784`. PR #162 (`fd5f07a`, tested `7788140`)
+adds exact upgrade guidance and release gating. Its 27 CI jobs pass with the
+original rapid-focus retry recorded; that defect is resolved above. See
+[the Scoop contract](zel-scoop-distribution-2026-11-13.md).
 
 The earlier investigation and planned sequence below are retained as history.
 
