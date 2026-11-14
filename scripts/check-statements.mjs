@@ -43,6 +43,9 @@ export async function checkStatements(page, origin, captures, prefix) {
     const proof = page.getByRole('link', { name: 'Proof', exact: true });
     await proof.focus(); await expect(proof).toBeFocused(); await page.keyboard.press('Enter');
     await expect(block('proof:energy')).toBeInViewport();
+    // Review the complete layout from the top, without a scrolled sticky header
+    // obscuring the body in a full-page capture. Keyboard checks above stand.
+    await page.goto(url('chapters/energy.html'));
     for (const width of [1280, 390]) {
       await page.setViewportSize({ width, height: 900 });
       await page.evaluate(() => document.fonts.ready);
