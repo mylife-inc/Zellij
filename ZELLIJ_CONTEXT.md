@@ -3,9 +3,9 @@
 Last refreshed: **2026-11-13**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-PR #169 adds shared book theorem/lemma/proof semantics (and proposition,
-corollary, definition, example and remark), with one statement counter per
-reading entry and a shared label namespace with equations. Native HTML, adapted
+PR #169 (`cd79114`, matching reviewed tree `5ab8acf`) merges shared book
+theorem/lemma/proof semantics (and proposition, corollary, definition, example
+and remark), with one statement counter per reading entry and a shared label namespace with equations. Native HTML, adapted
 Next and PDF use the same resolved numbers, targets and references. All 27 jobs
 in `43567230812` pass at `5dfaf59`; local verification passes 782 Rust and
 490 engine tests. Eighteen PDFs/129 page captures pass; all 105 prior layouts
@@ -15,7 +15,9 @@ test-readiness failures and the bounded original/revised comparison (6/30
 failures versus 30/30 passes), without claiming a product focus-script fix.
 See [the contract and verification record](specs/zellij-book-statements-2026-11-13.md)
 and [evidence](specs/evidence/zellij-book-statements-2026-11-13.json).
-Merge and development-image publication are pending at this source checkpoint.
+All 13 development-image jobs in `43569715226` pass at the merge, publishing
+all four `main` variants on amd64/arm64 and building/serving from the published
+default image. The final record-only follow-up changes no runtime or test inputs.
 Public rc.6 remains unchanged.
 
 PR #164 (`cc88bc0`) resolves the reproduced rapid-resize focus race, with the
