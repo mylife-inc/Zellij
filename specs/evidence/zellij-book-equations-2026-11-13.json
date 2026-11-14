@@ -1,6 +1,6 @@
 {
   "date": "2026-11-13",
-  "status": "Final-source acceptance complete; merge and development-image publication pending.",
+  "status": "Merged in PR #167; all final-source and development-image acceptance passes. Published rc.6 is unchanged.",
   "baseline": "d7a8416c256629dde1f29726743b8aa1c2c29c1c",
   "implementation": "2c77a39bd85bbe90088ad8a75b9f26405530cc83",
   "verified_head": "09fd2cc3a0ca3eeb3913e20922822c05e3c94ccd",
@@ -1229,5 +1229,131 @@
       "conclusion": "cancelled",
       "finding": "Next-image acceptance passes; superseded after the local TeX token-boundary regression was fixed."
     }
-  ]
+  ],
+  "merge": {
+    "pull_request": 167,
+    "commit": "fe0f82c3e8090dd2fcb26b15a5283f3af0561bfa",
+    "reviewed_head": "168c903e6333ccd1314ce1724693136b19630915",
+    "tree": "227b8e4b0c2101ccdbc0185b0cd6324da0a893b6",
+    "matches_reviewed_tree": true,
+    "verified_runtime_head": "09fd2cc3a0ca3eeb3913e20922822c05e3c94ccd",
+    "post_verification_paths": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/evidence/zellij-book-equations-2026-11-13.json",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-book-equations-2026-11-13.md",
+      "specs/zellij-product-expansion-2026-11-11.md"
+    ]
+  },
+  "development_images": {
+    "run_id": 43560554366,
+    "head": "fe0f82c3e8090dd2fcb26b15a5283f3af0561bfa",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "none \u00b7 arm64",
+        "job_id": 132343043847,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "job_id": 132343044040,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "job_id": 132343044075,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "job_id": 132343044084,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "job_id": 132343044089,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "job_id": 132343044147,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "job_id": 132343044193,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "job_id": 132343044234,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "job_id": 132343853977,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "job_id": 132343854008,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "job_id": 132343854021,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "job_id": 132343854029,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "job_id": 132343997395,
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "main",
+        "job_id": 132343854021,
+        "digest": "sha256:1ed3ea4186740410167dbc581af73d27f7170d58cbf2a23034f3e2eaeaf50ae8",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-maths",
+        "job_id": 132343854029,
+        "digest": "sha256:6d81d7860a6062054a4bc7aba547df42dee6efb209e8988ee901c8c791a58834",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-diagrams",
+        "job_id": 132343854008,
+        "digest": "sha256:efb754ce23d86b9fb5dea8104ba048875c06407505b968cd22f1351b2be82fc1",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-all",
+        "job_id": 132343853977,
+        "digest": "sha256:334f24ac2656421b93b00c2d3b2373adfd6a3dd2c8c4cab9abd77ef210931b81",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      }
+    ],
+    "published_image_build_and_http_smoke": "success"
+  }
 }

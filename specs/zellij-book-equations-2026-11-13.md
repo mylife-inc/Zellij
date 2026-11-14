@@ -1,9 +1,9 @@
 # Shared book equations — 2026-11-13
 
 Source baseline: `d7a8416` (PR #166). Public rc.6 remains unchanged.
-Final-source acceptance passes at `09fd2cc` in PR #167; the recorded full CI
-run is `43557146014`. The merge and development-image result are recorded
-separately when complete.
+PR #167 merges this increment as `fe0f82c`, with the same tree as reviewed
+head `168c903`. Final-source acceptance passes at `09fd2cc` in CI `43557146014`;
+all 13 development-image jobs pass in `43560554366` at the merge.
 
 ## Authoring contract
 
@@ -134,8 +134,17 @@ The [machine-readable evidence](evidence/zellij-book-equations-2026-11-13.json)
 retains receipts, page/screenshot hashes and intermediate findings. The
 final-source Next-image gate passes with the custom-link regression and both captures. All 26 equation
 web captures match their initial artifacts; the six listed desktop/phone
-samples were visually reviewed. The merge and development-image publication
-are the remaining closure steps.
+samples were visually reviewed. Merge and publication are recorded below.
+
+## Merge and development-image publication
+
+The merge tree `227b8e4b0c2101ccdbc0185b0cd6324da0a893b6` matches reviewed
+head `168c903`; only context/evidence files differ from tested source `09fd2cc`.
+All 13 jobs in `43560554366` pass at merge `fe0f82c`. Eight native builds feed
+four amd64/arm64 manifests (`main`, `main-maths`, `main-diagrams`, `main-all`);
+the published default image builds and serves a site. Manifest digests and job
+IDs are retained in the evidence. The final record-only follow-up changes no
+runtime or test inputs and needs no repeated product CI or image publication.
 
 ## Release boundary and next work
 
