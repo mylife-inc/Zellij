@@ -1,6 +1,6 @@
 {
   "date": "2026-11-14",
-  "status": "source verified; merge and development images pending",
+  "status": "merged; development images published and smoke-tested",
   "baseline": "6d2696a1a8ba8e891b98d3eacb5f0371c4190e0c",
   "implementation": "d9e22ccd5d0b23494e66ffa1165d968ced825fc9",
   "verified_head": "d9e22ccd5d0b23494e66ffa1165d968ced825fc9",
@@ -1410,5 +1410,134 @@
     "Index/glossary, multilingual print, Next-image PDFs and richer book editions remain open.",
     "Live provider verification and production-domain migration remain deferred.",
     "No claim of zero bugs or completed 1.0."
-  ]
+  ],
+  "merge": {
+    "commit": "e58133bceee500849376cdd17d969069a0399388",
+    "reviewed_head": "11b3c554ef18036599a39392dcd35f31e6fe350d",
+    "tree": "43368f80d05accd4838f61927fc379ee0189012f",
+    "tree_matches_reviewed_head": true,
+    "changes_after_verified_source": [
+      "ZELLIJ_CONTEXT.md",
+      "examples/zellij-docs/content/02-cli/books.mdx",
+      "specs/evidence/zellij-book-bibliography-2026-11-14.json",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-book-bibliography-2026-11-14.md",
+      "specs/zellij-product-expansion-2026-11-11.md"
+    ],
+    "runtime_tests_workflows_unchanged_after_verified_source": true,
+    "public_guide_change_after_ci": "Two-line wording clarification restricting PDF URL-query rejection to internal links; strict/deep validation separately passes 59 routes and 25 examples."
+  },
+  "development_images": {
+    "run_id": 43581129613,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43581129613",
+    "head": "e58133bceee500849376cdd17d969069a0399388",
+    "run_attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "none \u00b7 arm64",
+        "job_id": 132405884504,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "job_id": 132405884614,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "job_id": 132405884630,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "job_id": 132405884632,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "job_id": 132405884668,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "job_id": 132405884713,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "job_id": 132405884729,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "job_id": 132405884778,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "job_id": 132406440114,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "job_id": 132406440115,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "job_id": 132406440121,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "job_id": 132406440168,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "job_id": 132406542101,
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "main",
+        "job_id": 132406440121,
+        "digest": "sha256:0b0107b27d7a4edc589d29bc0327366b953d9205124c91575ebda1be4e802662",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-all",
+        "job_id": 132406440168,
+        "digest": "sha256:2985c171f6e2aa2618e600fa1b43c3b1db9c36c64b7826e9134a92e6c79d801f",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-diagrams",
+        "job_id": 132406440114,
+        "digest": "sha256:4efe72e4a5b72e9ccc38cc7d5a6caee6eaa7dcb0dfd65c473f36c47c2792573b",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      {
+        "tag": "main-maths",
+        "job_id": 132406440115,
+        "digest": "sha256:604cd9a1d271acc464018f3b28b5efba633faa71d8ba2b9e3cf12ff0e3426c1f",
+        "architectures": [
+          "amd64",
+          "arm64"
+        ]
+      }
+    ],
+    "published_image_build_and_http_smoke": "success"
+  }
 }
