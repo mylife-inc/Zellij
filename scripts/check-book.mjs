@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
+import { checkBibliography } from './check-bibliography.mjs';
 import { execFileSync } from 'node:child_process';
 import { cp, mkdtemp, mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -33,6 +34,13 @@ try {
   execFileSync(binary, ['build', statements], { env, stdio: 'pipe' });
   const movedStatements = path.join(temp, 'Relocated statements 日本');
   await rename(path.join(statements, 'site'), movedStatements);
+  const bibliography = path.join(temp, 'bibliography');
+  await cp('scripts/fixtures/bibliography', bibliography, { recursive: true });
+  execFileSync(binary, ['build', bibliography], { env, stdio: 'pipe' });
+  const movedBibliography = path.join(temp, 'Relocated bibliography 日本');
+  await rename(path.join(bibliography, 'site'), movedBibliography);
+  const bibRecord = JSON.parse(await readFile(path.join(movedBibliography, '_zellij/book.json'), 'utf8'));
+  assert.deepEqual(bibRecord.bibliography.references.map(r => r.id), ['vale2024', 'river2021', 'shebka2026', 'uncited']);
   await mkdir(captures, { recursive: true });
   for (const [engine, launcher] of Object.entries({ chromium, webkit })) {
     const browser = await launcher.launch();
@@ -87,6 +95,7 @@ try {
         const equationPage = await equations.newPage();
         await checkEquations(equationPage, pathToFileURL(relocated + path.sep).href, captures, `${engine}-equations-${javaScriptEnabled}`);
         await checkStatements(equationPage, pathToFileURL(movedStatements + path.sep).href, captures, `${engine}-statements-${javaScriptEnabled}`);
+        await checkBibliography(equationPage, pathToFileURL(movedBibliography + path.sep).href, captures, `${engine}-bibliography-${javaScriptEnabled}`);
         await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });

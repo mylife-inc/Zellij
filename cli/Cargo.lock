@@ -2395,6 +2395,7 @@ dependencies = [
  "tempfile",
  "tokio",
  "tokio-util",
+ "url",
  "walkdir",
  "zellij-core",
 ]

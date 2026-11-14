@@ -211,6 +211,105 @@ or missing labels and unsupported placements fail checks/builds before replacing
 existing output. Ordinary non-book blockquotes and authored MDX `<Theorem>`
 components retain their existing behavior.
 
+## Bibliography and citations
+
+<Callout type="info" title="Current source after rc.6">
+The numeric bibliography described here is implemented in current source and
+will ship in the next candidate. It is not included in the rc.6 binary.
+</Callout>
+
+Save a local CSL-JSON reference catalog under `content/` and configure it in
+`zel.yaml`:
+
+```yaml
+book:
+  # Keep the book's existing title, authors and chapters here.
+  bibliography:
+    source: references.json
+    title: Bibliography
+    include-uncited: false
+```
+
+`source` is relative to `content/`, stays within that directory, and must be a
+regular `.json` file. `title` is optional; its default is `Bibliography`.
+`include-uncited` defaults to `false`. Set it to `true` to append unused catalog
+entries in catalog order after the cited entries.
+
+A minimal `content/references.json` contains an array of reference objects:
+
+```json
+[
+  {
+    "id": "vale2024",
+    "type": "book",
+    "title": "An atlas of quiet ideas",
+    "author": [{"given": "Mira", "family": "Vale"}],
+    "issued": {"date-parts": [[2024]]},
+    "publisher": "Example Press",
+    "URL": "https://example.com/atlas"
+  }
+]
+```
+
+This is an illustrative reference. Cite a real catalog entry in ordinary prose,
+lists, tables, statement bodies or footnotes:
+
+```md
+Read the introduction [@vale2024].
+Compare the sources [@vale2024, pp. 12–14; @other-key, chapter 2].
+```
+
+Each reference gets a number at its first citation in the book's reading order.
+Footnotes are visited where first referenced. Repeated citations reuse that
+number. A cluster preserves its authored order, for example `[1, pp. 12–14; 2,
+chapter 2]`; each number links to the corresponding bibliography entry. No math
+feature, JavaScript, container or citation service is required for HTML builds.
+
+Markers must fit on one line, with at most 32 references and a 256-byte plain
+text locator per reference. IDs are case-sensitive: 1–128 ASCII letters, digits,
+colons, dots, underscores or hyphens, starting with a letter, digit or underscore.
+CSL integer IDs also work (`[@123]`). If an exported record has an inconvenient
+ID, add a `citation-key` field and cite that alias; the original ID remains in
+`source_id` in the publication record. Aliases must be unique.
+
+Inline/fenced code and escaped brackets (`\[@literal]`) remain literal. Markers
+inside existing Markdown link labels and image alt text also remain literal.
+Citation markers cannot supply heading text or act as Markdown reference-link
+or image definitions. Bare `@id`, author-in-text citations, automatic locator
+translation, BibTeX input and user-selected CSL styles are not implemented.
+Ordinary non-book Markdown is unchanged.
+
+The generated `bibliography.html` follows the appendices in navigation and PDF
+reading order. Reserve that route; do not author a `bibliography.md` page.
+References also appear in search. Stable `_zel-bib-ID` anchors survive renumbering;
+custom links such as `[Reference](bibliography.html#_zel-bib-vale2024)` work too.
+The generated page participates in prefixed Next images and the PDF table of
+contents. HTML, Next and PDF share the same reference text, numbers and targets.
+
+The built-in numeric presentation uses `id`, `type` and `title` (required), plus
+optional `author`, `issued`, `container-title`, `publisher`, `publisher-place`,
+`volume`, `issue`, `page`, `DOI` and `URL`. Author names support `literal`, or
+`family` with optional `given`, particles and `suffix`. Dates show the year or
+year range from `date-parts`, or an explicit `literal`/`raw` date; absent dates
+show `n.d.`. Volume, issue and page fields accept strings or numbers. Metadata
+is plain text, including any HTML or TeX-looking content. Other CSL fields are
+not displayed by this presentation. This is a bounded reader of
+[CSL-JSON data](https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json),
+not a complete CSL style processor or a claim of APA/Chicago compliance.
+
+DOIs must be identifiers such as `10.1234/example`; their links take precedence
+over `URL`. URLs must be absolute HTTP(S) addresses without credentials. Neither
+is fetched during a build. Catalogs support up to 10,000 entries and 8 MiB.
+The raw catalog is not copied into the website unless explicitly linked as an
+asset. Catalog bytes contribute to the book's content revision, including
+uncited metadata, so an edited source cannot leave a stale downloadable PDF.
+
+Missing references, duplicate IDs, malformed metadata, unsafe paths and route
+collisions fail before publishing output. A failed build retains the previous
+complete website/PDF. Bibliography details are exposed in the optional
+`bibliography` field of publication schema version 1; books without this setting
+omit that field and keep their existing revision behavior.
+
 ## Language and direction
 
 `language` defaults to `en`; `direction` defaults to `ltr` and can be `rtl`.
@@ -411,11 +510,11 @@ any authored home document; its body remains part of the publication. Current
 source starts that authored home content on a separate page after the contents.
 
 This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
-GIF, remote images, diagram fences, attachment links and URL queries are rejected
-for print with an explanation; ordinary web builds retain their existing support.
+GIF, remote images, diagram fences, attachment links and internal-link URL queries
+are rejected for print with an explanation; ordinary web builds retain their existing support.
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
-trim sizes, multilingual/RTL print, bibliography, index and glossary remain
-future increments. Current source adds the shared equations, statement blocks
-and references described above; rc.6 does not include them.
+trim sizes, multilingual/RTL print, index and glossary remain future increments.
+Current source adds shared equations, statement blocks, numeric bibliography
+and citations as described above; rc.6 does not include them.
 Mathematical expressions otherwise use the web renderer's supported subset.

@@ -76,6 +76,18 @@ Bibliography/citations, index/glossary, multilingual print and richer book
 editions remain incomplete. These additions await the next candidate; rc.6 and
 the separate unresolved browser timing findings remain unchanged.
 
+PR #171 implements numeric bibliography/citations from local CSL-JSON across
+all three book outputs. All 27 jobs in `43578754363` pass at `d9e22cc`; 789 local
+Rust tests and 490 engine tests pass. Twenty-one PDFs/156 page captures pass,
+with all 129 prior layouts unchanged. Cross-platform offline browsers and
+prefixed Next pass; 26 new browser captures are retained and representative
+native/Next views are visually reviewed. The [contract](zellij-book-bibliography-2026-11-14.md)
+and [evidence](evidence/zellij-book-bibliography-2026-11-14.json) record exact
+checks and retained findings. The final documentation-only update clarifies
+internal-link URL queries and passes strict/deep validation separately.
+BibTeX import and arbitrary citation styles remain outside this increment;
+index/glossary is next. Public rc.6 and production hosting remain unchanged.
+
 `zel create` / `zel new site`, `zel templates [show]`, three bundled starters,
 local/release catalogs, exact versions, checksums, offline cache and receipts
 were first available in rc.5 and remain included in rc.6. See [the template contract](../templates/README.md).

@@ -17,11 +17,22 @@ pub struct Manifest {
     #[serde(default)]
     pub direction: Direction,
     pub cover: Option<Cover>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bibliography: Option<Bibliography>,
     #[serde(default)]
     pub front_matter: Vec<Chapter>,
     pub chapters: Vec<Entry>,
     #[serde(default)]
     pub appendices: Vec<Chapter>,
+}
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(deny_unknown_fields, rename_all = "kebab-case")]
+pub struct Bibliography {
+    #[serde(deserialize_with = "text")]
+    pub source: String,
+    pub title: Option<Text>,
+    #[serde(default)]
+    pub include_uncited: bool,
 }
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(transparent)]
@@ -120,6 +131,15 @@ impl Manifest {
             ));
         }
         let mut ids = BTreeSet::from(["title-page".to_string()]);
+        if let Some(bib) = &self.bibliography {
+            files::relative_path(Utf8Path::new(&bib.source))?;
+            if !bib.source.ends_with(".json") {
+                return Err(invalid(
+                    "bibliography.source must name a local CSL-JSON .json file within content/",
+                ));
+            }
+            ids.insert("bibliography".into());
+        }
         let mut sources = BTreeSet::new();
         fn id(ids: &mut BTreeSet<String>, value: &str) -> Result<()> {
             if value.len() > 64

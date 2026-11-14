@@ -1172,3 +1172,5 @@ a.zellij-card:hover {
 .zellij-statement-proof{background:transparent;border-inline-start-color:var(--zellij-border)}
 .zellij-statement .zellij-statement-qed{margin:.5rem 0 0;text-align:end;line-height:1}
 @media print{.zellij-statement-head{break-after:avoid}.zellij-statement-qed{break-before:avoid}}
+
+.zellij-bibliography{list-style:none;padding:0}.zellij-bibliography>li{margin:1.25rem 0;scroll-margin-top:6rem;overflow-wrap:anywhere}.zellij-bibliography>li p{padding-inline-start:2rem;text-indent:-2rem}

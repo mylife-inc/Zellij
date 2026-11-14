@@ -100,6 +100,16 @@ pub(crate) fn plain(events: &[Event<'_>]) -> String {
 }
 
 pub fn parse(source: &str, fallback: &str, math: bool, mermaid: bool) -> Result<Markdown> {
+    parse_book(source, fallback, math, mermaid, false)
+}
+
+pub(crate) fn parse_book(
+    source: &str,
+    fallback: &str,
+    math: bool,
+    mermaid: bool,
+    citations: bool,
+) -> Result<Markdown> {
     let (meta, body) = frontmatter(source)?;
     let mut options = Options::ENABLE_TABLES
         | Options::ENABLE_FOOTNOTES
@@ -108,9 +118,49 @@ pub fn parse(source: &str, fallback: &str, math: bool, mermaid: bool) -> Result<
         | Options::ENABLE_HEADING_ATTRIBUTES
         | Options::ENABLE_GFM;
     options.set(Options::ENABLE_MATH, math);
-    let mut events: Vec<_> = Parser::new_ext(&body, options)
+    // Existing explicit/reference links own their labels. Do not let a newly
+    // recognized shortcut citation turn a valid outer link into literal text.
+    let protected: Vec<_> = if citations {
+        Parser::new_ext(&body, options)
+            .into_offset_iter()
+            .filter_map(|(e, r)| {
+                matches!(e, Event::Start(Tag::Link { .. } | Tag::Image { .. })).then_some(r)
+            })
+            .collect()
+    } else {
+        vec![]
+    };
+    let callback = |link: pulldown_cmark::BrokenLink<'_>| {
+        if citations
+            && link.reference.starts_with('@')
+            && !protected
+                .iter()
+                .any(|r| r.start <= link.span.start && link.span.end <= r.end)
+        {
+            Some((
+                format!(
+                    "{}{}{}",
+                    crate::bibliography::SCHEME,
+                    link.reference,
+                    if body[link.span].contains(['\n', '\r']) {
+                        "\n"
+                    } else {
+                        ""
+                    }
+                )
+                .into(),
+                "".into(),
+            ))
+        } else {
+            None
+        }
+    };
+    let mut events: Vec<_> = Parser::new_with_broken_link_callback(&body, options, Some(callback))
         .map(Event::into_static)
         .collect();
+    if citations {
+        crate::bibliography::validate_markup(&events)?;
+    }
     let mut used = BTreeSet::new();
     for event in &events {
         if let Event::Start(Tag::FootnoteDefinition(id)) = event
