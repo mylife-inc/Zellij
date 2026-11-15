@@ -114,3 +114,9 @@ jobs:
       - name: Pull and execute every published feature variant natively
         working-directory: release-source
         run: node ../scripts/check-published-images.mjs
+
+  next-pdf:
+    name: Published Next PDF
+    uses: ./.github/workflows/next-pdf-acceptance.yml
+    with:
+      version: ${{ inputs.version || github.ref_name }}

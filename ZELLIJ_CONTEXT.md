@@ -1,6 +1,6 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-14**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
@@ -77,8 +77,12 @@ existing bounded startup loop. The records-only follow-up changes no runtime,
 active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
 rc.7 and production hosting are unchanged.
 
-**Next priority:** prepare the rc.8 candidate with both new book editions and
-Next PDF delivery, including public-download/engine acceptance of the new path.
+**Current work:** rc.8 preparation on `codex/rc8-preparation`, based on
+`ec463ed`, adds public-download/engine acceptance for Next PDF delivery and
+versioned release notes. All 29 source jobs in `43694035458` pass at `0afb807`;
+312 reviewed PDF pages match, and the rc.7 compatibility dispatch passes both
+architectures with the new capability explicitly skipped. Publication remains
+pending. See [the preparation record](specs/zellij-rc8-preparation-2026-11-15.md).
 Remaining print customization and installation work follow.
 Live provider verification and production-domain migration remain deferred.
 Unexplained browser timing findings stay open; no zero-bug or 1.0-complete claim
