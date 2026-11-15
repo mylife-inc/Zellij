@@ -20,5 +20,5 @@ children:
 layout:
   kind: stack
   gap: large
-padding: loose
+padding: normal
 background: tinted

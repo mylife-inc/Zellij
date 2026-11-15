@@ -44,4 +44,4 @@ children:
       columns: 3
       gap: large
 background: tinted
-padding: loose
+padding: normal

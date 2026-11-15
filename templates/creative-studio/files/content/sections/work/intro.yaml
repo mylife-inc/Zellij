@@ -16,4 +16,4 @@ children:
       portfolio.
     size: lead
     tone: muted
-padding: loose
+padding: normal

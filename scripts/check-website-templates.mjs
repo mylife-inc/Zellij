@@ -6,7 +6,7 @@ import path from 'node:path';
 const sites = {
   'product-launch': { secondary: 'design', heading: 'Sound, beautifully shaped.', action: 'Explore the design' },
   'software-platform': { secondary: 'workflow', heading: 'From first idea to shipped.', action: 'Explore the workflow' },
-  'creative-studio': { secondary: 'work', heading: 'A point of view. A world of possibilities.', action: 'Discover the work' },
+  'creative-studio': { secondary: 'work', heading: 'A point of view. Made visible.', action: 'Discover the work' },
 };
 
 async function loadImages(page) {
@@ -66,6 +66,27 @@ async function checkBentoSurfaces(page) {
   }
 }
 
+async function checkStudioTextContrast(page) {
+  const samples = await page.locator('.zellij-compose-text[data-tone="muted"]').evaluateAll(elements => {
+    const rgba = value => value.match(/[\d.]+/g).map(Number);
+    const luminance = rgb => rgb.slice(0, 3).map(v => {
+      const s = v / 255; return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    }).reduce((sum, value, i) => sum + value * [0.2126, 0.7152, 0.0722][i], 0);
+    return elements.map(el => {
+      let parent = el, background;
+      while (parent) {
+        const candidate = rgba(getComputedStyle(parent).backgroundColor);
+        if (candidate.length === 3 || candidate[3] === 1) { background = candidate; break; }
+        parent = parent.parentElement;
+      }
+      if (!background) throw new Error('Muted text needs an explicit opaque background');
+      const foreground = luminance(rgba(getComputedStyle(el).color)), back = luminance(background);
+      return { text: el.textContent, ratio: (Math.max(foreground, back) + 0.05) / (Math.min(foreground, back) + 0.05) };
+    });
+  });
+  for (const sample of samples) assert(sample.ratio >= 4.5, `Muted studio text contrast ${sample.ratio}: ${sample.text}`);
+}
+
 export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
   const site = sites[manifest.id];
   if (!site) return;
@@ -90,6 +111,7 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           assert.equal(await page.locator('html').getAttribute('data-zellij-mode'), mode);
           // Scroll the complete page to load lazy images and exercise section visibility.
           await loadImages(page);
+          if (manifest.id === 'creative-studio') await checkStudioTextContrast(page);
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${manifest.id}/${route}: overflow`);
           await page.evaluate(() => scrollTo(0, 0));
           await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-${route.replaceAll('/', '-') || 'home'}.png`), fullPage: true });

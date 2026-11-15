@@ -39,4 +39,4 @@ children:
       kind: split
       gap: large
 id: field
-padding: loose
+padding: normal

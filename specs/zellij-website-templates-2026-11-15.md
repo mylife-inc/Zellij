@@ -79,3 +79,12 @@ combinations in both palettes. This requires the rc.9 engine for these starters.
 The initial no-JavaScript harness also relied on a page-side animation-frame
 promise, which cannot settle with scripting disabled. Driver-side scrolling
 and bounded image polling fix the harness; the failed run remains in evidence.
+
+Visual review of the complete 97-capture run prompted a final artwork pass:
+the studio has a dedicated portrait poster and tighter section spacing; software
+illustrations use a 4:3 frame so the sidebar and workflow nodes stay visible in
+split layouts. Porcelain's light muted text changes from #8a8a8a to #6e6e6e,
+with computed browser contrast checks for the studio's muted prose in both
+palettes and on normal/tinted surfaces. This targets the 4.5:1 ordinary-text
+threshold in [WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html);
+it is not a claim of a complete accessibility audit.

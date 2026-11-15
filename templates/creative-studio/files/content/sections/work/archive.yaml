@@ -40,5 +40,5 @@ children:
       kind: split
       gap: large
 id: archive
-padding: loose
+padding: normal
 background: tinted

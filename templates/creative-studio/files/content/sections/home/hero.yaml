@@ -9,7 +9,7 @@ children:
         size: small
         tone: muted
       - type: heading
-        text: A point of view. A world of possibilities.
+        text: A point of view. Made visible.
         level: 1
         scale: display
         weight: regular
@@ -24,11 +24,11 @@ children:
         style: secondary
   - type: image
     image: assets/identity.svg
-    alt: A terracotta and forest-green geometric identity study beside a typographic poster.
+    alt: A terracotta poster with a cream and forest-green circular composition.
     ratio: portrait
 layout:
   kind: split
   ratio: equal
   gap: large
   align: center
-padding: loose
+padding: normal
