@@ -33,29 +33,33 @@ async function checkBentoSurfaces(page) {
   if (!await tile.count()) return;
   const results = await tile.evaluate(tile => {
     const section = tile.closest('.zellij-section');
-    const originalTile = tile.getAttribute('data-background');
-    const originalSection = section.getAttribute('data-zellij-background');
     const result = [];
-    try {
-      for (const outer of ['default', 'inverted', 'accent']) {
-        section.setAttribute('data-zellij-background', outer);
-        for (const inner of ['default', 'tinted', 'inverted', 'accent']) {
-          tile.setAttribute('data-background', inner);
+    // Verify the real authored state before constructing independent variants.
+    result.push({ outer: 'authored', inner: tile.getAttribute('data-background'),
+      title: getComputedStyle(tile.querySelector('h3')).color,
+      body: getComputedStyle(tile.querySelector('p')).color,
+      expected: getComputedStyle(tile).color });
+    for (const outer of ['default', 'inverted', 'accent']) {
+      for (const inner of ['default', 'tinted', 'inverted', 'accent']) {
+        const frame = section.cloneNode(false);
+        const sample = tile.cloneNode(true);
+        frame.setAttribute('data-zellij-background', outer);
+        sample.setAttribute('data-background', inner);
+        frame.append(sample); section.after(frame);
+        try {
           const token = inner === 'inverted' ? '--zellij-inverted-fg' : inner === 'accent' ? '--zellij-accent-fg' : '--zellij-fg';
           const probe = document.createElement('span'); probe.style.color = `var(${token})`;
-          tile.append(probe);
-          result.push({ outer, inner, title: getComputedStyle(tile.querySelector('h3')).color,
-            body: getComputedStyle(tile.querySelector('p')).color, expected: getComputedStyle(probe).color });
-          probe.remove();
-        }
+          sample.append(probe);
+          result.push({ outer, inner, title: getComputedStyle(sample.querySelector('h3')).color,
+            body: getComputedStyle(sample.querySelector('p')).color, expected: getComputedStyle(probe).color,
+            tileColor: getComputedStyle(sample).color,
+            tileHtml: sample.outerHTML.slice(0, 400) });
+        } finally { frame.remove(); }
       }
-    } finally {
-      tile.setAttribute('data-background', originalTile);
-      if (originalSection === null) section.removeAttribute('data-zellij-background');
-      else section.setAttribute('data-zellij-background', originalSection);
     }
     return result;
   });
+  if (results.some(r => r.title !== r.expected || r.body !== r.expected)) console.error(JSON.stringify(results, null, 2));
   for (const { outer, inner, title, body, expected } of results) {
     assert.equal(title, expected, `${outer} section / ${inner} tile: heading foreground`);
     assert.equal(body, expected, `${outer} section / ${inner} tile: body foreground`);
