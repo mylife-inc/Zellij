@@ -3,3 +3,5 @@ templates:
   - product-docs
   - product-studio
   - book-classic
+  - book-technical
+  - book-study

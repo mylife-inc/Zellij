@@ -1,0 +1,20 @@
+% Study edition v1: quiet serif openings using the existing font inventory.
+\definecolor{zelaccent}{HTML}{86462D}
+\newcommand{\zelcover}[1]{\centering
+  \vspace*{0.06\textheight}{\color{zelaccent}\rule{.35\linewidth}{.5pt}}\par
+  \vspace{2em}{\small\sffamily\color{zelaccent}STUDY EDITION\par}
+  \vspace{2em}{\Huge\itshape #1\par}
+  \vspace{1.5em}{\color{zelaccent}\rule{.35\linewidth}{.5pt}}\par}
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{24pt}{\parindent\z@\centering\normalfont
+  \ifnum\c@secnumdepth>\m@ne\if@mainmatter
+    {\small\sffamily\color{zelaccent}\@chapapp\space\thechapter\par}\vskip18pt
+  \fi\fi
+  \interlinepenalty\@M{\Huge\itshape #1\par}\nobreak
+  \vskip18pt{\color{zelaccent}\rule{.25\linewidth}{.5pt}}\par\nobreak\vskip28pt}}
+\def\@makeschapterhead#1{%
+  \vspace*{24pt}{\parindent\z@\centering\normalfont
+  \interlinepenalty\@M{\Huge\itshape #1\par}\nobreak
+  \vskip18pt{\color{zelaccent}\rule{.25\linewidth}{.5pt}}\par\nobreak\vskip28pt}}
+\makeatother

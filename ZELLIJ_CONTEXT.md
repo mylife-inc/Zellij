@@ -38,8 +38,12 @@ versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
 and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
 the two Zellij release channels. See [retirement evidence](specs/evidence/zellij-rc7-image-retirement-2026-11-14.json).
 
-**Next implementation priority:** richer technical/study book editions, then
-remaining print and installation work. Unexplained browser timing findings stay
+**Current implementation:** technical/study book editions are in progress on
+`codex/book-editions`, based on `af31e7f`. Source version advances to rc.8 (not
+published) so new templates can accurately require the edition-capable CLI.
+See [the edition contract](specs/zellij-book-editions-2026-11-14.md). Local checks
+and hosted acceptance are recorded there; merge/visual verification remain pending.
+Next after this milestone: remaining print and installation work. Unexplained browser timing findings stay
 open; no zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,

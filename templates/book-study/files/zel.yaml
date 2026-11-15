@@ -1,0 +1,30 @@
+version: 1
+renderer: portable
+name: {{zel.title|yaml}}
+theme: paper
+markdown: {math: true}
+book:
+  version: 1
+  edition: study
+  title: {{zel.title|yaml}}
+  subtitle: Passages, commentary and questions for a reflective life
+  authors: [{{zel.author|yaml}}]
+  language: en
+  direction: ltr
+  front-matter:
+    - {id: preface, source: preface.md}
+  chapters:
+    - id: foundations
+      title: Reading with care
+      chapters:
+        - {id: first, source: chapters/01-first.md}
+        - {id: second, source: chapters/02-second.md}
+  appendices:
+    - {id: notes, source: notes.md}
+  bibliography: {source: references.json}
+  glossary: {source: glossary.json}
+  index: {source: index.json}
+pdf:
+  enabled: false
+  paper: a5
+  font-size: 11

@@ -217,9 +217,30 @@ pub fn render(
                     )
                 })
                 .unwrap_or_default();
-            (metadata, marker, format!(" data-book-id=\"{}\"", entry.id))
+            let edition = book.manifest.edition;
+            let class = if edition.is_classic() {
+                String::new()
+            } else {
+                format!(
+                    " class=\"zellij-book-edition zellij-book-{}\"",
+                    edition.as_str()
+                )
+            };
+            (
+                metadata,
+                marker,
+                format!(" data-book-id=\"{}\"{class}", entry.id),
+            )
         })
         .unwrap_or_default();
+    let edition_css = if presentation
+        .book
+        .is_some_and(|b| !b.manifest.edition.is_classic())
+    {
+        format!("<link rel=\"stylesheet\" href=\"{prefix}_zellij/book-editions.css\">")
+    } else {
+        String::new()
+    };
     let download = if presentation.pdf {
         format!(
             "<p><a href=\"{prefix}_zellij/pdf/book.pdf\" download>Download the complete book (PDF)</a></p>"
@@ -234,7 +255,7 @@ pub fn render(
 {metadata}<title>{title} · {name}</title><meta name="description" content="{description}">
 <link rel="stylesheet" href="{prefix}_zellij/fonts/fonts.css">
 <link rel="stylesheet" href="{prefix}_zellij/themes.css"><link rel="stylesheet" href="{prefix}_zellij/style.css">{mindmap_css}
-{math_css}{mermaid_css}
+{math_css}{mermaid_css}{edition_css}
 <script defer src="{prefix}_zellij/search.js"></script><script defer src="{prefix}_zellij/site.js"></script>{mermaid_script}</head>
 <body data-root="{prefix}"><a class="skip" href="#_zel-content">Skip to content</a>
 <header class="header"><div class="brand-group">{company}{logo}<a class="brand" href="{prefix}index.html">{name}</a></div>

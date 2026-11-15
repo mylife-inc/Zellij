@@ -1,5 +1,6 @@
 // Hosted CI only: a complete book must remain usable after moving its export.
 import assert from 'node:assert/strict';
+import { checkEdition } from './check-book-editions.mjs';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
 import { checkTerms } from './check-terms.mjs';
@@ -47,6 +48,14 @@ try {
   await rename(path.join(bibliography, 'site'), movedBibliography);
   const bibRecord = JSON.parse(await readFile(path.join(movedBibliography, '_zellij/book.json'), 'utf8'));
   assert.deepEqual(bibRecord.bibliography.references.map(r => r.id), ['vale2024', 'river2021', 'shebka2026', 'uncited']);
+  const editions = [];
+  for(const edition of ['technical','study']) {
+    const manuscript=path.join(temp,edition+'-edition');
+    execFileSync(binary,['create',manuscript,'-t',`book-${edition}`,'--offline'],{env,stdio:'pipe'});
+    execFileSync(binary,['build',manuscript],{env,stdio:'pipe'});
+    const moved=path.join(temp,edition+' relocated 日本');
+    await rename(path.join(manuscript,'site'),moved);editions.push([edition,moved]);
+  }
   await mkdir(captures, { recursive: true });
   for (const [engine, launcher] of Object.entries({ chromium, webkit })) {
     const browser = await launcher.launch();
@@ -103,6 +112,16 @@ try {
         await checkStatements(equationPage, pathToFileURL(movedStatements + path.sep).href, captures, `${engine}-statements-${javaScriptEnabled}`);
         await checkBibliography(equationPage, pathToFileURL(movedBibliography + path.sep).href, captures, `${engine}-bibliography-${javaScriptEnabled}`);
         await checkTerms(equationPage, pathToFileURL(movedTerms + path.sep).href, captures, `${engine}-terms-${javaScriptEnabled}`);
+        for(const [edition,moved] of editions) {
+          await equationPage.goto(pathToFileURL(path.join(moved,'index.html')).href);
+          await checkEdition(equationPage,edition,captures,`${engine}-${edition}-${javaScriptEnabled}`);
+          await equationPage.goto(pathToFileURL(path.join(moved,'chapters/01-first.html')).href);
+          await expect(equationPage.locator('.book-number')).toHaveText('Chapter 1');
+          await checkEdition(equationPage,edition,captures,`${engine}-${edition}-chapter-${javaScriptEnabled}`);
+          const term=equationPage.locator('a[href*="glossary.html#"]').first();
+          await term.focus();await equationPage.keyboard.press('Enter');
+          await expect(equationPage.locator('.zellij-terms')).toBeVisible();
+        }
         await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });

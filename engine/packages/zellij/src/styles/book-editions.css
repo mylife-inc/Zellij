@@ -1,0 +1,105 @@
+/* One inert stylesheet shared by native HTML and the Next document adapter.
+   Edition typography is intentional; reader theme/mode and forced colors remain usable. */
+.zellij-book-edition.zellij-book-edition {
+  --zellij-font-body: var(--zellij-font-source-serif), Georgia, serif;
+  font-family: var(--zellij-font-body);
+  font-size: 1.08rem;
+  line-height: 1.85;
+  max-width: 46rem;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}
+.zellij-book-technical {
+  --zellij-font-heading: var(--zellij-font-outfit), sans-serif;
+  --zellij-accent: #234f86;
+}
+.zellij-book-study {
+  --zellij-font-heading: var(--zellij-font-cormorant), Georgia, serif;
+  --zellij-accent: #86462d;
+}
+.zellij-book-edition.zellij-book-edition h1 {
+  font-family: var(--zellij-font-heading);
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1.06;
+  letter-spacing: -.025em;
+  margin-block: .7rem 2rem;
+  color: var(--zellij-fg);
+}
+.zellij-book-edition.zellij-book-edition h2,
+.zellij-book-edition.zellij-book-edition h3 {
+  font-family: var(--zellij-font-heading);
+  color: var(--zellij-fg);
+}
+.zellij-book-edition.zellij-book-edition .book-number {
+  font-family: var(--zellij-font-outfit), sans-serif;
+  color: var(--zellij-accent);
+  font-size: .8rem;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  margin-block: 0 1rem;
+}
+.zellij-book-technical.zellij-book-technical {
+  border-block-start: 4px solid var(--zellij-accent);
+  padding-block-start: 1.5rem;
+}
+.zellij-book-technical.zellij-book-technical h2 {
+  border-block-start: 1px solid var(--zellij-border);
+  padding-block-start: 1.2rem;
+  font-size: 1.75rem;
+}
+.zellij-book-edition.zellij-book-edition .book-subtitle {
+  font-size: 1.3rem;
+  line-height: 1.6;
+  max-width: 34rem;
+  color: var(--zellij-muted);
+}
+.zellij-book-edition.zellij-book-edition .book-authors {
+  font-family: var(--zellij-font-outfit), sans-serif;
+  font-size: .9rem;
+  margin-block: 1.5rem 3rem;
+  color: var(--zellij-muted);
+}
+.zellij-book-study.zellij-book-study {
+  border-block-start: 1px solid var(--zellij-accent);
+  padding-block-start: 2.5rem;
+  max-width: 42rem;
+}
+.zellij-book-study.zellij-book-study h1 {
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 500;
+  padding-block-end: 1.5rem;
+  border-block-end: 1px solid var(--zellij-accent);
+}
+.zellij-book-study.zellij-book-study h2 { font-size: 2.15rem; }
+.zellij-book-study.zellij-book-study blockquote {
+  background: transparent;
+  border: 0;
+  border-block: 1px solid var(--zellij-border);
+  padding: 1rem clamp(.5rem, 3vw, 2rem);
+  margin-inline: 0;
+  font-style: italic;
+  color: var(--zellij-fg);
+}
+.zellij-book-edition.zellij-book-edition .zellij-statement {
+  border-radius: 0;
+  font-style: normal;
+}
+.zellij-book-edition.zellij-book-edition .zellij-statement-head {
+  font-family: var(--zellij-font-outfit), sans-serif;
+  font-size: 1rem;
+  color: var(--zellij-accent);
+}
+[data-zellij-mode="dark"] .zellij-book-technical { --zellij-accent: #9ec5fb; }
+[data-zellij-mode="dark"] .zellij-book-study { --zellij-accent: #edbba1; }
+@media (prefers-color-scheme: dark) {
+  [data-zellij-mode="system"] .zellij-book-technical { --zellij-accent: #9ec5fb; }
+  [data-zellij-mode="system"] .zellij-book-study { --zellij-accent: #edbba1; }
+}
+@media (forced-colors: active) {
+  .zellij-book-edition.zellij-book-edition { --zellij-accent: LinkText; }
+}
+@media print {
+  .zellij-book-edition.zellij-book-edition { --zellij-accent: #222; --zellij-fg: #111; --zellij-muted: #444; }
+}

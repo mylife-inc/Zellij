@@ -15,6 +15,27 @@ const waitFor = async (condition, label) => {
   while(!await condition()) { assert(Date.now()<end,`Timed out: ${label}`); await new Promise(r=>setTimeout(r,200)); }
 };
 try {
+  for (const edition of ['technical','study']) {
+    const manuscript=path.join(root,edition);
+    run(['create',manuscript,'-t',`book-${edition}`,'--offline']);
+    run(['build',manuscript,'--pdf']);
+    const printed=path.join(manuscript,'site/_zellij/pdf'), pdf=path.join(printed,'book.pdf');
+    const record=JSON.parse(readFileSync(path.join(manuscript,'site/_zellij/book.json')));
+    const receipt=JSON.parse(readFileSync(path.join(printed,'pdf.json')));
+    assert.equal(receipt.template,`${edition}-v1`);
+    assert.equal(receipt.revision,record.revision);
+    assert.equal(receipt.pdf_sha256,createHash('sha256').update(readFileSync(pdf)).digest('hex'));
+    execFileSync('qpdf',['--check',pdf]);
+    const text=execFileSync('pdftotext',['-layout',pdf,'-'],{encoding:'utf8'});
+    const words=text.replace(/\s+/g,' ');
+    for(const required of [record.manifest.title,'Contents','Chapter 1','Chapter 2','Appendix A','Bibliography','Glossary','Index',edition==='technical'?'Theorem 1.1':'Remark 1.1']) assert(words.includes(required),`${edition}: ${required}\n${text}`);
+    assert(!words.includes('??'),'All cross references resolve');
+    const info=execFileSync('pdfinfo',[pdf],{encoding:'utf8'});
+    const capture=path.join(artifacts,edition);cpSync(printed,capture,{recursive:true});
+    writeFileSync(path.join(capture,'text.txt'),text);writeFileSync(path.join(capture,'pdfinfo.txt'),info);
+    writeFileSync(path.join(capture,'fonts.txt'),execFileSync('pdffonts',[pdf],{encoding:'utf8'}));
+    for(let n=1;n<=Number(info.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',pdf,path.join(capture,`page-${n}`)]);
+  }
   const equations = path.join(root,'equations');
   cpSync('scripts/fixtures/equations',equations,{recursive:true});
   run(['build',equations,'--pdf']);
