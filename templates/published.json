@@ -4,6 +4,8 @@
     {"id": "product-docs", "version": "0.1.0", "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"},
     {"id": "product-studio", "version": "0.1.0", "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"},
     {"id": "book-classic", "version": "0.1.0", "sha256": "5961e7221e5837c5f4f9b8cfcbc25f2cb1ca2067e81c0a76b0feb83c489e3b8e"},
-    {"id": "book-classic", "version": "0.2.0", "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"}
+    {"id": "book-classic", "version": "0.2.0", "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"},
+    {"id": "book-technical", "version": "0.1.0", "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"},
+    {"id": "book-study", "version": "0.1.0", "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"}
   ]
 }

@@ -43,7 +43,7 @@ It checks image/download paths, heading and footnote fragments, and portable
 output filename collisions. Hidden paths and `node_modules` cannot supply
 published assets. Configured branding and navigation use the same checks as build.
 
-Candidate rc.7 also validates [book manifests](/cli/books), including
+Candidate rc.8 also validates [book manifests](/cli/books), including
 complete chapter coverage, unique IDs/sources and cover assets. Successful
 compilation adds an optional `book` object to JSON reports.
 
@@ -194,14 +194,14 @@ An **unknown value for a known key fails**, naming the key and listing what it
 accepts. `theme: cupertno` is a typo, not forward compatibility, and treating it
 as one would render the wrong theme silently.
 
-<Callout type="tip" title="Ignored section-field warnings — included in rc.7">
-The rc.7 engine warns when a section field is discarded, including nested
+<Callout type="tip" title="Ignored section-field warnings — included in rc.8">
+The rc.8 engine warns when a section field is discarded, including nested
 card/CTA fields, Markdown section front matter, section examples, legacy inline
 sections and page-reference overrides. For example, `items[0].description` in a
 bento card warns because that card uses `body`. The warning names the source file
 and field path, without printing its value. Normal checks/builds continue;
 `--strict` makes the check fail. This fast check does not require `--deep`.
-Use a matching rc.7 engine or later to receive these diagnostics.
+Use a matching rc.8 engine or later to receive these diagnostics.
 </Callout>
 
 These warnings run after the section schema validates. Defaults, numeric text

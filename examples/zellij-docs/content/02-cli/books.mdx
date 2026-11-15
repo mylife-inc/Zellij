@@ -3,18 +3,20 @@ title: Books and reading order
 description: Define a book once, validate its manuscript, and build an offline reading website with an optional LuaLaTeX PDF.
 ---
 
-<Callout type="info" title="Included in candidate 0.2.0-rc.7">
-Candidate rc.7 includes the versioned book manifest, `book-classic@0.2.0`
+<Callout type="info" title="Included in candidate 0.2.0-rc.8">
+Candidate rc.8 includes the versioned book manifest, `book-classic@0.2.0`
 and optional LuaLaTeX PDFs on all six native platforms. Shared equation and
 statement references, numeric citations, glossary and subject index are included.
-Multilingual print remains planned. Richer technical/study templates and the
-`book.edition` selector are implemented in the unreleased rc.8 source below.
+Technical/study templates, the `book.edition` selector and PDF downloads in
+Next images are also included. Multilingual print remains planned.
 </Callout>
 
-## Coordinated editions (rc.8 source)
+<div id="coordinated-editions-rc8-source" className="zellij-legacy-anchor" />
 
-The current source adds `book-technical@0.1.0` and `book-study@0.1.0`.
-They require CLI/engine 0.2.0-rc.8; released rc.7 does not include them.
+## Coordinated editions
+
+Candidate rc.8 includes `book-technical@0.1.0` and `book-study@0.1.0`.
+They require CLI/engine 0.2.0-rc.8 or later.
 
 ```sh
 zel create my-handbook -t book-technical
@@ -144,8 +146,8 @@ local fonts, search and offline navigation continue to work.
 
 ## Numbered equations and cross-references
 
-<Callout type="info" title="Included in rc.7">
-Shared equation numbering is included in rc.7. Use the matching engine image
+<Callout type="info" title="Included in rc.8">
+Shared equation numbering is included in rc.8. Use the matching engine image
 for Next output. Earlier rc.6 supports its unnumbered print-math subset.
 </Callout>
 
@@ -198,8 +200,8 @@ map supplies hosted entry paths, and deployment base paths apply as usual.
 
 ## Theorems, lemmas and proofs
 
-<Callout type="info" title="Included in rc.7">
-Shared statement numbering and references are included in rc.7. Use the matching
+<Callout type="info" title="Included in rc.8">
+Shared statement numbering and references are included in rc.8. Use the matching
 engine image for Next output.
 </Callout>
 
@@ -263,8 +265,8 @@ components retain their existing behavior.
 
 ## Bibliography and citations
 
-<Callout type="info" title="Included in rc.7">
-The numeric bibliography described here is included in rc.7. Use the matching
+<Callout type="info" title="Included in rc.8">
+The numeric bibliography described here is included in rc.8. Use the matching
 engine image for Next output.
 </Callout>
 
@@ -363,7 +365,7 @@ omit that field and keep their existing revision behavior.
 ## Glossary and index
 
 <Callout type="info">
-Glossary and subject-index catalogs are included in rc.7, with the same
+Glossary and subject-index catalogs are included in rc.8, with the same
 resolved terms and references across portable HTML, Next and PDF.
 </Callout>
 
@@ -505,7 +507,7 @@ reading order, chapter markers and title-page content. Its public
 `routes` (entry IDs mapped to hosted routes). Apply the deployment's configured
 `basePath` to both this URL and the mapped routes: the map contains unprefixed
 content routes, not complete deployment URLs. Its portable `href` fields are not
-hosted route declarations. Use the matching rc.7 engine image. Native
+hosted route declarations. Use the matching rc.8 engine image. Native
 portable web builds require no external renderer.
 
 ## Start from the existing book template
@@ -605,7 +607,7 @@ failure prevents delivery. The generated static image contains the export and
 HTTP server, without the LaTeX toolchain. Deployment dry runs report the PDF
 requirement without checking credentials or starting a runtime.
 
-**Source after rc.7 (rc.8, not yet released):** `zel ni` / `zel image next` also
+**Included in rc.8:** `zel ni` / `zel image next` also
 honor `pdf.enabled`, including saved image publication and Next-image delivery.
 The web documents and print inputs are resolved from one manuscript snapshot.
 Every reading page has a **Download the complete book (PDF)** link; it works
@@ -616,10 +618,9 @@ Only the PDF and receipt enter the final Next image: TeX source, logs,
 intermediate files and the optional LaTeX toolchain are excluded. A PDF failure
 or an edit during typesetting stops image building/publication and preserves
 existing site output. With PDF disabled, Next image builds stay web-only.
-Published rc.7 supports PDF delivery through static output/images only.
 
 ```sh
-# rc.8 source; set pdf.enabled: true in the book's zel.yaml first
+# Set pdf.enabled: true in the book's zel.yaml first
 zel ni my-book --tag my-book:next
 zel pub my-book                    # Uses saved publish/image settings
 ```
@@ -632,7 +633,7 @@ Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**.
 PDF-enabled **Next** image jobs require **0.2.0-rc.8 or later**; CI generation
 rejects older pins before writing a workflow, including with `--force`.
 Generation does not check whether a pinned candidate has been published.
-Generate the workflow with `--zel-version 0.2.0-rc.7` to select this published
+Generate the workflow with `--zel-version 0.2.0-rc.8` to select this published
 candidate. Earlier binaries do not support these settings.
 
 ### Toolchain and failure behavior
@@ -680,16 +681,16 @@ quotes, footnotes, tables of up to six columns, the existing validated math
 subset, local PNG/JPEG images and links between book pages/headings. Code and
 ordinary text are escaped; authored HTML remains literal. Repeated footnote
 references share their number; unreferenced definitions are rejected. The printed cover is followed by contents and
-any authored home document; its body remains part of the publication. rc.7
+any authored home document; its body remains part of the publication. rc.8
 starts that authored home content on a separate page after the contents.
 
-This first template supports English/LTR and Latin Modern fonts. SVG, WebP,
+These print editions support English/LTR and Latin Modern fonts. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and internal-link URL queries
 are rejected for print with an explanation; ordinary web builds retain their existing support.
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
 trim sizes and multilingual/RTL print remain future increments.
-rc.7 includes glossary/index backmatter, shared equations, statement blocks,
+rc.8 includes glossary/index backmatter, shared equations, statement blocks,
 numeric bibliography and citations as described above.
 Mathematical expressions otherwise use the web renderer's supported subset.
 

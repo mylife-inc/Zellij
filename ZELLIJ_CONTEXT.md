@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: rc.8 publication**
+
+PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and
+workflows match tested `0afb807`. All 29 source CI jobs pass. Normal release
+preflight passes 802 Rust and 490 engine tests before the immutable rc.8 tag.
+The release publishes five templates, including technical/study books, and
+PDF-enabled Next-image delivery. Both download repositories have 23 matching
+assets; existing template archives retain their bytes. Public-download checks,
+channel migration, documentation CI and scoped rc.7 retirement are in progress.
+See [release evidence](specs/evidence/zellij-rc8-release-2026-11-15.json).
+Production hosting and live-provider verification remain deferred. Remaining
+print customization and installation work follow; no zero-bug or 1.0 claim.
+
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
 `f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
 have 21 byte-identical assets; all three template archives retain their previous
@@ -77,13 +90,10 @@ existing bounded startup loop. The records-only follow-up changes no runtime,
 active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
 rc.7 and production hosting are unchanged.
 
-**Current work:** rc.8 preparation on `codex/rc8-preparation`, based on
-`ec463ed`, adds public-download/engine acceptance for Next PDF delivery and
-versioned release notes. All 29 source jobs in `43694035458` pass at `0afb807`;
-312 reviewed PDF pages match, and the rc.7 compatibility dispatch passes both
-architectures with the new capability explicitly skipped. Publication remains
-pending. See [the preparation record](specs/zellij-rc8-preparation-2026-11-15.md).
-Remaining print customization and installation work follow.
+**Current work:** rc.8 is tagged at `d70e10f`, with public assets verified.
+Release/public-download acceptance, channel migration, documentation CI and
+scoped rc.7 retirement remain in progress. Keep rc.7 until replacement gates
+pass. Remaining print customization and installation work follow.
 Live provider verification and production-domain migration remain deferred.
 Unexplained browser timing findings stay open; no zero-bug or 1.0-complete claim
 is made.

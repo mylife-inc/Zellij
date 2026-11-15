@@ -1,5 +1,19 @@
 # Product expansion: branding, composition, templates, books and installation
 
+## rc.8 publication — 2026-11-15
+
+PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and
+workflows match tested `0afb807`. All 29 source CI jobs pass. Normal release
+preflight passes 802 Rust and 490 engine tests before the immutable rc.8 tag.
+The release publishes five templates, including technical/study books, and
+PDF-enabled Next-image delivery. Both download repositories have 23 matching
+assets; existing template archives retain their bytes. Public-download checks,
+channel migration, documentation CI and scoped rc.7 retirement are in progress.
+See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
+Production hosting and live-provider verification remain deferred. Remaining
+print customization and installation work follow; no zero-bug or 1.0 claim.
+
+
 Date: 2026-11-11. Source baseline: `3ca63ba` on `main`; latest published CLI:
 `v0.2.0-rc.3`. These are new requirements beyond the completed earlier CLI
 contract. This document records the user's intentions and a proposed staged

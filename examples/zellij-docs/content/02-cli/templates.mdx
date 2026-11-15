@@ -3,9 +3,10 @@ title: zel templates and create
 description: Choose a versioned starter and create an editable documentation or book site.
 ---
 
-<Callout type="info" title="Book starter update for candidate 0.2.0-rc.7">
-Candidate rc.7 includes `book-classic@0.2.0`, with a shared book manifest and
-optional LuaLaTeX PDF. Product templates remain at 0.1.0. Templates are bundled
+<Callout type="info" title="Book starter update for candidate 0.2.0-rc.8">
+Candidate rc.8 includes `book-classic@0.2.0`, with a shared book manifest and
+optional LuaLaTeX PDF, plus `book-technical@0.1.0` and `book-study@0.1.0`.
+Product templates remain at 0.1.0. Templates are bundled
 on all six native platforms; creation and web-only portable builds work offline.
 </Callout>
 
@@ -22,6 +23,8 @@ zel templates --json
 | `product-docs` | Portable | Yes | An overview and a short handbook. |
 | `product-studio` | Hosted | No | A Cupertino-themed product page with hero, bento and feature sections, plus a guide. |
 | `book-classic` | Portable | Yes | Generated title page and contents, cover, preface, part, two chapters and appendix; optional PDF. |
+| `book-technical` | Portable | Yes | Blue rules, mathematical prose, numbered equations and proofs; coordinated web/PDF layouts. |
+| `book-study` | Portable | Yes | Warm typography, passages, commentary and questions; coordinated web/PDF layouts. |
 
 Book-classic 0.2.0 requires CLI/engine rc.6 or later. Its [book manifest](/cli/books)
 drives reading order, metadata and both web and print. PDF is disabled by default:
@@ -29,15 +32,17 @@ normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
 LuaLaTeX Linux container runtime. The classic print design supports English/LTR;
-numeric citations, glossary and subject index are also supported in rc.7.
-Multilingual print remains planned. Technical/study editions are implemented in
-the unreleased rc.8 source, as described below.
+numeric citations, glossary and subject index are also supported in rc.8.
+Multilingual print remains planned. Technical/study editions are included in
+rc.8, as described below.
 Previously published book-classic 0.1.0 archives remain unchanged.
 
-## Technical and study editions (rc.8 source)
+<div id="technical-and-study-editions-rc8-source" className="zellij-legacy-anchor" />
 
-The current source adds two starters, each at template version 0.1.0. These need
-CLI/engine 0.2.0-rc.8; the published rc.7 binary does not yet include them.
+## Technical and study editions
+
+Candidate rc.8 adds two starters, each at template version 0.1.0. These need
+CLI/engine 0.2.0-rc.8 or later.
 
 ```sh
 zel create my-handbook -t book-technical --name "Reasoning clearly" --set author="A. Writer"
@@ -53,7 +58,7 @@ Both include a preface, part, two chapters and appendix. Their title pages are
 typographic; an optional local PNG/JPEG cover can be added to the manifest.
 
 Set `book.edition` to `classic`, `technical` or `study` to change the coordinated
-web/PDF design without rewriting the content. [Book editions](/cli/books#coordinated-editions-rc8-source)
+web/PDF design without rewriting the content. [Book editions](/cli/books#coordinated-editions)
 explains the scope. The original three template archives remain unchanged.
 
 ## Create and edit
