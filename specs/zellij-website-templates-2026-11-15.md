@@ -107,5 +107,14 @@ packaging and local/bundled/remote/cached parity; the five published archive
 hashes remain unchanged. The final records-only update does not alter any
 runtime, active-guide, template, test or workflow input from the tested head.
 
-This milestone does not publish rc.9 or change production hosting. Development
-image publication follows merge and is recorded separately in the evidence.
+PR #185 merges as `aaf14e3`, with the same tree as reviewed `e807955`. All 13
+jobs in development-image publication
+[43759089541](https://github.com/mylife-inc/Zellij/actions/runs/43759089541)
+pass at the merge. Four `main` feature variants publish both amd64/arm64; the
+published default image builds and serves a site. The initial readiness probe
+reset and the next succeeded within the existing bounded loop. Manifest digests
+and job results are retained in evidence. This records-only follow-up changes
+no runtime, active-guide, template, test, workflow or image input.
+
+This milestone does not publish rc.9 or change production hosting; the public
+release remains rc.8.
