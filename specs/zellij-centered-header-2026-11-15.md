@@ -52,5 +52,12 @@ produces 97 captures. Six refreshed hero previews are visually reviewed and
 retained in `specs/evidence/centered-header-2026-11-15/`. See
 [the evidence](evidence/zellij-centered-header-2026-11-15.json) for hashes,
 initial failures and fixes. The final records-only update changes no runtime,
-active-guide, template, test or workflow input from the verified head. Merge
-and development-image publication follow; public rc.8 stays unchanged.
+active-guide, template, test or workflow input from the verified head.
+
+PR #187 merges as `8079aff`, whose tree matches reviewed `00cb656`. All 13
+jobs in [development-image publication 43767527768](https://github.com/mylife-inc/Zellij/actions/runs/43767527768)
+pass at the merge. Four `main` variants publish amd64/arm64, and the published
+default image builds and serves a site. The first readiness probe reset; the
+next succeeded within the existing bounded loop. Manifest digests and job
+results are retained in evidence. The records-only follow-up changes no image
+inputs; public rc.8 stays unchanged and rc.9 remains unreleased.
