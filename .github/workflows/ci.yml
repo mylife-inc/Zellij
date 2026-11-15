@@ -11,6 +11,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  next-pdf:
+    uses: ./.github/workflows/next-pdf-acceptance.yml
+
   book-pdf:
     uses: ./.github/workflows/pdf-acceptance.yml
 

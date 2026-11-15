@@ -643,7 +643,10 @@ projects remain a separate acceptance step; account access is needed for those.
 ## Book PDF delivery
 
 Portable books with `pdf.enabled: true` generate the website and matching PDF
-before static deployment or static-image packaging. This opt-in requires the
+before static deployment or static-image packaging. Source rc.8 (unreleased)
+also supports PDF-enabled Next images; published rc.7 supports static delivery.
+The Next image includes the PDF and receipt, without TeX inputs or the toolchain.
+Next-image CI requires a pin of rc.8 or later. This opt-in requires the
 optional LaTeX container runtime; PDF failure stops delivery. Generated CI
 requires a compatible release pin and, for GitLab, a shared Docker build directory.
 See [static book publication and CI](/cli/books#static-publication-and-ci) for

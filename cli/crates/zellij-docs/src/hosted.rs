@@ -590,6 +590,17 @@ pub(super) fn emit(
                 pages,
             ));
         }
+        if presentation.pdf {
+            body["children"].as_array_mut().unwrap().push(element(
+                "p",
+                json!({}),
+                vec![element(
+                    "a",
+                    json!({"href":"/_zellij/assets/pdf/book.pdf", "download":true}),
+                    vec![text("Download the complete book (PDF)")],
+                )],
+            ));
+        }
         if let Some(book) = presentation.book
             && !book.manifest.edition.is_classic()
         {

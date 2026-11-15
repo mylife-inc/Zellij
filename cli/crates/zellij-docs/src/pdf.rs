@@ -20,6 +20,9 @@ pub struct Prepared {
     pub source: Source,
     pub destination: Utf8PathBuf,
     report: BuildReport,
+    /// Optional features needed by the generated Next documents.
+    pub features: Vec<&'static str>,
+    delivery: Option<Utf8PathBuf>,
 }
 impl Prepared {
     /// Publish only after the caller has verified the PDF and written its receipt.
@@ -31,6 +34,32 @@ impl Prepared {
             || !fs::read(&path)?.starts_with(b"%PDF-")
         {
             return Err(invalid("toolchain did not produce a regular PDF"));
+        }
+        if let Some(delivery) = &self.delivery {
+            // Only the finished artifact and receipt enter the serving image.
+            // Source, logs and intermediate files stay in the private stage.
+            let receipt_path = self.destination.join("pdf.json");
+            let metadata = fs::symlink_metadata(&receipt_path)?;
+            if !metadata.is_file()
+                || metadata.file_type().is_symlink()
+                || metadata.len() > 1024 * 1024
+            {
+                return Err(invalid("missing or invalid PDF receipt"));
+            }
+            let receipt: serde_json::Value = serde_json::from_slice(&fs::read(&receipt_path)?)
+                .map_err(|_| invalid("invalid PDF receipt"))?;
+            use sha2::{Digest, Sha256};
+            if receipt["revision"] != self.source.revision
+                || receipt["pdf_sha256"] != format!("{:x}", Sha256::digest(fs::read(&path)?))
+            {
+                return Err(invalid(
+                    "PDF receipt does not match the publication and artifact",
+                ));
+            }
+            fs::create_dir_all(delivery)?;
+            fs::rename(&path, delivery.join("book.pdf"))?;
+            fs::rename(receipt_path, delivery.join("pdf.json"))?;
+            fs::remove_dir_all(&self.destination)?;
         }
         self.stage.publish()?;
         Ok(self.report)
@@ -44,10 +73,52 @@ pub fn prepare(
     options: BuildOptions<'_>,
     with_site: bool,
 ) -> Result<Prepared> {
+    prepare_output(
+        source,
+        output,
+        options,
+        if with_site {
+            Output::Portable
+        } else {
+            Output::Standalone
+        },
+    )
+}
+
+/// Compile print inputs and inert Next documents from one publication snapshot.
+/// The caller typesets before publishing; only the PDF and receipt are delivered.
+pub fn prepare_hosted(
+    source: &SiteInput,
+    output: &Utf8Path,
+    options: BuildOptions<'_>,
+) -> Result<Prepared> {
+    prepare_output(source, output, options, Output::Hosted)
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Output {
+    Standalone,
+    Portable,
+    Hosted,
+}
+
+fn prepare_output(
+    source: &SiteInput,
+    output: &Utf8Path,
+    options: BuildOptions<'_>,
+    layout: Output,
+) -> Result<Prepared> {
     let mut diagnostics = Diagnostics::new(source.root());
-    let compiled = compile(source, options, &mut diagnostics, None, false, true)?;
+    let compiled = compile(
+        source,
+        options,
+        &mut diagnostics,
+        None,
+        layout == Output::Hosted,
+        true,
+    )?;
     let stage = StaticOutput::prepare(&compiled.root, output)?;
-    if with_site {
+    if layout != Output::Standalone {
         files::write_files(
             &stage.directory,
             &compiled
@@ -58,16 +129,19 @@ pub fn prepare(
             false,
         )?;
     }
-    let destination = if with_site {
-        stage.directory.join("_zellij/pdf")
-    } else {
-        stage.directory.clone()
+    let delivery = (layout == Output::Hosted).then(|| stage.directory.join("assets/pdf"));
+    let destination = match layout {
+        Output::Standalone => stage.directory.clone(),
+        Output::Portable => stage.directory.join("_zellij/pdf"),
+        Output::Hosted => stage.directory.join(".zel-pdf-work"),
     };
     fs::create_dir_all(&destination)?;
     Ok(Prepared {
         stage,
         source: compiled.pdf.expect("requested print source"),
         destination,
+        delivery,
+        features: compiled.features,
         report: BuildReport {
             pages: compiled.pages,
             warnings: diagnostics.warnings(),

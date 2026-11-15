@@ -39,12 +39,6 @@ pub(crate) fn execute(provider: Option<&str>, options: &crate::args::DeliveryArg
 }
 
 fn validate_options(site: &Site, plan: &DeliveryPlan, options: &BuildOptions) -> Result<()> {
-    match plan {
-        DeliveryPlan::Push(ImagePublication { kind, .. })
-        | DeliveryPlan::Fly { kind, .. }
-        | DeliveryPlan::Railway { kind, .. } => crate::images::require_pdf_kind(site, *kind)?,
-        _ => {}
-    }
     if !matches!(
         plan,
         DeliveryPlan::Push(_) | DeliveryPlan::Fly { .. } | DeliveryPlan::Railway { .. }

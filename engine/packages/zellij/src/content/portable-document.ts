@@ -11,6 +11,7 @@ const url = z.string().refine((value) =>
 const properties = z.object({
   id: z.string().min(1).optional(),
   href: url.optional(), src: url.optional(),
+  download: z.literal(true).optional(),
   ariaLabel: z.string().optional(),
   ariaHidden: z.enum(['true', 'false']).optional(),
   title: z.string().optional(), alt: z.string().optional(),

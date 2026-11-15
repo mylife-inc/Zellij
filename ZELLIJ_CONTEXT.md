@@ -56,8 +56,11 @@ published default image. The first startup probe reset; the next succeeded in
 the existing bounded readiness loop. The records-only follow-up changes no
 runtime, active guide, versioned template, test or workflow inputs.
 
-**Next implementation priority:** configured PDF delivery in Next images, then
-remaining print and installation work. Unexplained browser timing findings stay
+**Current implementation:** configured PDF delivery in Next images is in progress
+on `codex/next-pdf`, based on `daa865b`. It shares one publication snapshot with
+print inputs, delivers only the PDF/receipt, and requires rc.8 for generated
+Next-image CI. See [the contract](specs/zellij-next-pdf-2026-11-14.md).
+Remaining print and installation work follows this milestone. Unexplained browser timing findings stay
 open; no zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,

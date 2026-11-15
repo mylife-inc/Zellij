@@ -133,6 +133,40 @@ pub(crate) fn build_to(
     prepared.publish()
 }
 
+/// Image preparation resolves the web and print forms once, then rejects edits
+/// made while the optional typesetter was running before starting an image build.
+pub(crate) fn adapt_hosted_to(
+    source: &SiteInput,
+    output: &Utf8Path,
+    options: zellij_docs::BuildOptions<'_>,
+) -> Result<zellij_docs::HostedReport> {
+    let site = Site::load(source)?;
+    if !site.pdf.enabled {
+        return zellij_docs::adapt_hosted_with_options(source, output, options);
+    }
+    let before = zellij_docs::watch::Snapshot::site(source, site.configured)?;
+    let stop = crate::preview::signals()?;
+    let prepared = zellij_docs::pdf::prepare_hosted(source, output, options)?;
+    let features = prepared.features.clone();
+    let prepared = typeset(prepared, &stop)?;
+    if stop.load(Ordering::Acquire) {
+        return Err(failed("cancelled"));
+    }
+    if zellij_docs::watch::Snapshot::site(source, site.configured)? != before {
+        return Err(failed(
+            "content changed during typesetting; retry after saving",
+        ));
+    }
+    let report = prepared.publish()?;
+    // The adapted context is ephemeral, not a user-visible static export.
+    fs::remove_file(output.join(".zellij-output"))?;
+    Ok(zellij_docs::HostedReport {
+        pages: report.pages,
+        warnings: report.warnings,
+        features,
+    })
+}
+
 fn typeset(
     prepared: zellij_docs::pdf::Prepared,
     stop: &AtomicBool,
