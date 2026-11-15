@@ -1,0 +1,19 @@
+type: compose
+version: 1
+label: Selected work
+children:
+  - type: text
+    text: SELECTED STUDIES
+    size: small
+    tone: muted
+  - type: heading
+    text: Different stories. A shared curiosity.
+    level: 1
+    scale: display
+    weight: regular
+  - type: text
+    text: Two original fictional projects, included as editable starting points for your own
+      portfolio.
+    size: lead
+    tone: muted
+padding: loose

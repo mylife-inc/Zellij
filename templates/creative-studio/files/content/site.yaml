@@ -1,0 +1,29 @@
+name: {{zel.title|yaml}}
+tagline: An editorial studio website with expressive typography, original project studies
+  and a considered approach.
+theme: porcelain
+mode: light
+motion: subtle
+overrides: {}
+home: home
+nav:
+  sticky: true
+  search: true
+  themeToggle: true
+  transparentOverHero: false
+footer:
+  columns:
+    - heading: Explore
+      links:
+        - label: Studio
+          page: home
+        - label: Selected work
+          page: work
+        - label: Guide
+          page: 01-guide
+    - heading: Make it yours
+      links:
+        - label: Customization guide
+          page: 01-guide
+  legal: An original fictional concept, built with Zellij. Replace the sample identity and
+    content before publishing.

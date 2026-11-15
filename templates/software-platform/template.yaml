@@ -1,0 +1,23 @@
+schema: 1
+id: software-platform
+version: 0.1.0
+title: Relay
+description: A focused software website with a product interface, connected workflows and
+  a practical guide.
+minimum-cli: 0.2.0-rc.8
+minimum-engine: 0.2.0-rc.8
+renderer: hosted
+kind: site
+outputs:
+  - web
+variables:
+  title: Relay
+substitute:
+  - content/site.yaml
+  - content/pages.yaml
+assets:
+  - path: content/assets/workspace.svg
+    license: LicenseRef-Zellij
+  - path: content/assets/workflow.svg
+    license: LicenseRef-Zellij
+preview: content/assets/workspace.svg

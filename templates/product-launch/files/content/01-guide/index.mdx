@@ -1,0 +1,31 @@
+---
+title: Make it yours
+---
+
+# Make it yours
+
+The launch page moves from a large product illustration to a gradient headline, material details and an everyday setting. The separate Design page adds an accessible media accordion and frequently asked questions. Begin with `content/sections/home/hero.yaml` and replace the fictional Forma One story.
+
+## Edit the story
+
+Start with `content/site.yaml` for the name, theme and navigation controls.
+`content/pages.yaml` orders the sections; each section is a separate, editable
+YAML file in `content/sections/`. Add Markdown pages in this guide folder.
+The sample identity and illustrations are fictional, not customer endorsements
+or promises about a real product. Replace them with your own before publishing.
+
+## Preview and publish
+
+Run these commands from the folder containing `zel.yaml`:
+
+```sh
+zel check --strict
+zel build
+zel view --watch
+```
+
+These are hosted website sections. Building uses the matching engine through
+a supported container runtime; the generated site needs an HTTP server.
+Creation itself works offline. This starter does not enable book PDF output.
+
+[Artwork and navigation](/guide/customize) · [Back to the website](/)

@@ -3,6 +3,21 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: website collection in progress**
+
+The user prioritizes website templates now, alongside the completed book
+starters. Source rc.9 adds `product-launch`, `software-platform` and
+`creative-studio`, each version 0.1.0, for eight bundled templates. Existing
+published archives and rc.8 release channels are unchanged. Each new starter
+has two landing pages, two guide pages and original local vector artwork.
+They use existing hosted sections and need CLI/engine rc.8 or later; authors
+can use local template paths before the next catalog release. The independent
+hosted template job covers every page in light/dark, desktop/mobile, keyboard
+selection and no-JavaScript layouts. See
+[the contract](specs/zellij-website-templates-2026-11-15.md).
+Verification and visual review are in progress. Print customization and remaining
+installation work follow this website milestone; live providers stay deferred.
+
 **2026-11-15: rc.8 publication**
 
 PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and

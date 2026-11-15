@@ -1,0 +1,42 @@
+type: compose
+version: 1
+label: Field identity study
+children:
+  - type: image
+    image: assets/field.svg
+    alt: "Original Field identity: pale-green rolling hills on a deep forest-green ground."
+    ratio: landscape
+  - type: group
+    children:
+      - type: group
+        children:
+          - type: text
+            text: 01 / IDENTITY & DIGITAL
+            size: small
+            tone: muted
+          - type: heading
+            text: Field
+            level: 2
+            scale: display
+            weight: regular
+      - type: group
+        children:
+          - type: heading
+            text: Room to grow.
+            level: 3
+            scale: subtitle
+          - type: text
+            text: "An imagined community growing space needed a welcoming identity. The study begins
+              with a landscape: layered, seasonal and always changing."
+            size: body
+            tone: normal
+          - type: text
+            text: Replace this brief with your own challenge, role, process and outcome. The study is
+              fictional and makes no claims about a real client.
+            size: small
+            tone: muted
+    layout:
+      kind: split
+      gap: large
+id: field
+padding: loose

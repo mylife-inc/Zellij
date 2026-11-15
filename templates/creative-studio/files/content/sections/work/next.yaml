@@ -1,0 +1,7 @@
+type: cta-banner
+headline: Your next chapter starts here.
+body: Add your real projects, adapt the palette and connect your own contact page.
+cta:
+  label: Customize the portfolio
+  href: /guide
+  style: secondary

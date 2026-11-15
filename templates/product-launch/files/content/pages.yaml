@@ -1,0 +1,17 @@
+- name: home
+  title: {{zel.title|yaml}}
+  description: Sound, beautifully shaped.
+  layout: landing
+  sections:
+    - home/hero
+    - home/statement
+    - home/details
+    - home/living
+    - home/next
+- name: design
+  title: The design
+  layout: landing
+  sections:
+    - design/hero
+    - design/materials
+    - design/faq

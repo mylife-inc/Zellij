@@ -1,0 +1,11 @@
+type: showcase
+eyebrow: THE BIG PICTURE, CLOSE AT HAND
+headline: One view. A shared direction.
+body: A fictional workspace shows how priorities, projects and release notes can live
+  together. Replace it with your own product in action.
+visual: assets/workspace.svg
+background: tinted
+cta:
+  label: See how the story fits together
+  href: /workflow
+  style: ghost

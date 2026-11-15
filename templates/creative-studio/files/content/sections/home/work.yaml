@@ -1,0 +1,21 @@
+type: zigzag
+heading: Selected studies
+rows:
+  - title: Field / Room to grow
+    body: An imagined identity for a new kind of growing space. A living palette, a generous
+      wordmark and a landscape in motion.
+    image: assets/field.svg
+    align: image-left
+    cta:
+      label: Explore the study
+      href: /work#field
+      style: ghost
+  - title: The Archive / Objects with a story
+    body: An imagined cultural collection. Warm geometry and an editorial voice make space for
+      objects and the stories they carry.
+    image: assets/archive.svg
+    align: image-right
+    cta:
+      label: Explore the study
+      href: /work#archive
+      style: ghost

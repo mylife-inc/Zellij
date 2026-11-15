@@ -1,0 +1,11 @@
+type: zigzag
+rows:
+  - title: Part of the room. Part of your day.
+    body: From the first quiet morning to the last song of the evening. An everyday object,
+      considered from every angle.
+    image: assets/room.svg
+    align: image-left
+    cta:
+      label: See the thinking behind it
+      href: /design
+      style: ghost

@@ -1,0 +1,8 @@
+type: cta-banner
+headline: Your product deserves a clear story.
+body: Start with this website. Replace the sample interface, add your guides and connect
+  your real product.
+cta:
+  label: Make it your own
+  href: /guide
+  style: primary

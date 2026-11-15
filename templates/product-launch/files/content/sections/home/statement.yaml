@@ -1,0 +1,27 @@
+type: compose
+version: 1
+label: A quieter kind of statement
+children:
+  - type: text
+    text: DESIGNED TO FEEL AT HOME
+    size: small
+    tone: muted
+  - type: heading
+    text: Less noise. More feeling.
+    level: 2
+    scale: display
+    gradient:
+      colors:
+        - fg
+        - accent
+      effect: reveal
+  - type: text
+    text: Not another screen. Not another interruption. Just an object that makes a little
+      more room for the things you love.
+    size: lead
+    tone: muted
+layout:
+  kind: stack
+  align: center
+  gap: large
+padding: loose

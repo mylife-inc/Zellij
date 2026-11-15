@@ -1,0 +1,41 @@
+---
+title: Artwork and navigation
+---
+
+# Artwork and navigation
+
+The original local SVG illustrations are in `content/assets/`. Replace the
+image path in the relevant section YAML with your own local asset. For compose
+images, update `alt` too. Keep informative text in the section, not only inside
+an illustration. No external fonts, tracking scripts or image services are
+required. See `ASSETS.md` for provenance.
+
+## Your company and product
+
+The site name links to the website home. A separate company mark is optional:
+add `brand.company` to `content/site.yaml`, using your own logo and URL.
+
+```yaml
+brand:
+  company:
+    src: assets/company.svg
+    alt: Your company
+    href: https://example.com
+    newTab: true
+```
+
+Add that local image before enabling the example. `newTab: false` keeps the
+company website in the same tab. The product name still returns home.
+
+## Color, motion and links
+
+`theme` selects the type and spacing system; `mode` accepts `light`, `dark`
+or `system`. Theme colors adapt in both modes. Authored SVG artwork retains its
+own palette. `motion: none` removes motion; reduced-motion preferences are
+already respected. The page content remains readable without JavaScript.
+
+Navigation comes from `menu.yaml`. Buttons link to working sample pages, so
+replace their destinations when you add your own contact, purchase or signup
+flow. There is no payment, form submission or account service behind this starter.
+
+[Back to the guide](/guide)

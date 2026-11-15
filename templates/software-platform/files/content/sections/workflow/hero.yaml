@@ -1,0 +1,9 @@
+type: hero
+background: default
+badge: HOW THE WORK FLOWS
+headline: Keep the context. Find the next step.
+subhead: A simple product story, from discovering a problem to sharing what you learned.
+cta:
+  - label: Follow the steps
+    href: "#steps"
+    style: primary

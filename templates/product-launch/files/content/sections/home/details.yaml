@@ -1,0 +1,13 @@
+type: bento-grid
+heading: Small details. A different experience.
+items:
+  - title: An honest material palette
+    body: A brushed shell, a tactile dial and a soft woven face. The character is in the
+      contrast.
+    image: assets/detail.svg
+    span: wide
+    background: inverted
+  - title: Nothing between you and the music
+    body: One simple control. A gentle signal. A concept built around the pleasure of
+      listening.
+    background: tinted

@@ -1,0 +1,7 @@
+type: cta-banner
+headline: Make something worth a closer look.
+body: This is your starting point. Bring your own product, photography and story.
+cta:
+  - label: Customize this website
+    href: /guide
+    style: primary

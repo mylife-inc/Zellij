@@ -1,0 +1,12 @@
+type: faq
+heading: A few things to know.
+items:
+  - question: Can I buy Forma One?
+    answer: Forma One is fictional sample content. Replace this page with your real product
+      details and purchase links.
+  - question: Can I use my own photography?
+    answer: Yes. Replace the local SVG assets with your own images and update each image path
+      and alternative text in the section YAML.
+  - question: Can I change the layout?
+    answer: Yes. Reorder the section list in pages.yaml, or use a compose section to arrange
+      headings, text, images and buttons.

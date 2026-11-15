@@ -1,0 +1,17 @@
+type: media-accordion
+id: materials
+heading: Look a little closer.
+label: Design details
+items:
+  - title: Shape
+    body: A softened silhouette catches the light without taking over the room.
+    image: assets/speaker.svg
+    alt: Rounded graphite speaker with a brushed metallic rim on a low plinth.
+  - title: Touch
+    body: A physical dial and woven texture give the idea a human scale.
+    image: assets/detail.svg
+    alt: Close view of a circular dial and a finely ribbed metallic surface.
+  - title: Place
+    body: Warm materials help an everyday object settle into its surroundings.
+    image: assets/room.svg
+    alt: A speaker on a low green table in a sunlit room.

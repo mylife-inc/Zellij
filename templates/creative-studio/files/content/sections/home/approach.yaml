@@ -1,0 +1,47 @@
+type: compose
+version: 1
+label: Our approach
+children:
+  - type: heading
+    text: Good work begins with a good conversation.
+    level: 2
+    scale: title
+    weight: regular
+  - type: group
+    children:
+      - type: group
+        children:
+          - type: heading
+            text: Listen
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Find the question beneath the brief. Learn what matters and what can change.
+            size: body
+            tone: normal
+      - type: group
+        children:
+          - type: heading
+            text: Explore
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Try the unexpected. Build a direction around one strong, useful idea.
+            size: body
+            tone: normal
+      - type: group
+        children:
+          - type: heading
+            text: Make
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Care for the details. Make a system that others can carry forward.
+            size: body
+            tone: normal
+    layout:
+      kind: grid
+      columns: 3
+      gap: large
+background: tinted
+padding: loose

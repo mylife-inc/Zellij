@@ -142,7 +142,10 @@ try {
   assert.equal(details.cli.version, version.slice(1)); assert.equal(details.cli.target, target);
   assert.equal(details.configuration_version, 1); assert.match(details.content_schema_sha256, /^[a-f0-9]{64}$/);
   const templates = JSON.parse((await run(executable, ['templates', '--json', '--offline'], env)).stdout);
-  assert.equal(templates.templates.length, 5);
+  assert.deepEqual(templates.templates.map(t => t.id).sort(), [
+    'book-classic', 'book-study', 'book-technical', 'creative-studio',
+    'product-docs', 'product-launch', 'product-studio', 'software-platform',
+  ]);
   for (const template of templates.templates) {
     const site = path.join(temp, 'templates', template.id);
     await run(executable, ['create', site, '-t', `${template.id}@${template.version}`, '--offline'], env);

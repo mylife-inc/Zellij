@@ -1,0 +1,18 @@
+type: hero-split
+background: default
+badge: A LITTLE MORE CLARITY
+headline: From first idea to shipped.
+subhead: A shared place for the work, the decisions and the people behind them. Less
+  chasing. More making.
+visual: assets/workspace.svg
+cta:
+  - label: Explore the workflow
+    href: /workflow
+    style: primary
+  - label: Read the guide
+    href: /guide
+    style: ghost
+highlights:
+  - label: Clear priorities
+  - label: Shared context
+  - label: Steady progress

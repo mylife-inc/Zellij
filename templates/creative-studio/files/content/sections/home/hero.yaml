@@ -1,0 +1,34 @@
+type: compose
+version: 1
+label: Atelier North introduction
+children:
+  - type: group
+    children:
+      - type: text
+        text: INDEPENDENT BY NATURE
+        size: small
+        tone: muted
+      - type: heading
+        text: A point of view. A world of possibilities.
+        level: 1
+        scale: display
+        weight: regular
+      - type: text
+        text: An independent design practice shaping identities, digital places and stories with
+          staying power.
+        size: lead
+        tone: normal
+      - type: button
+        label: Discover the work
+        href: /work
+        style: secondary
+  - type: image
+    image: assets/identity.svg
+    alt: A terracotta and forest-green geometric identity study beside a typographic poster.
+    ratio: portrait
+layout:
+  kind: split
+  ratio: equal
+  gap: large
+  align: center
+padding: loose

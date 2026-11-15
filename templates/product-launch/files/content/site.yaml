@@ -1,0 +1,29 @@
+name: {{zel.title|yaml}}
+tagline: A sculptural product launch with cinematic imagery, material details and a quiet
+  editorial rhythm.
+theme: cupertino
+mode: system
+motion: subtle
+overrides: {}
+home: home
+nav:
+  sticky: true
+  search: true
+  themeToggle: true
+  transparentOverHero: false
+footer:
+  columns:
+    - heading: Explore
+      links:
+        - label: Overview
+          page: home
+        - label: Design
+          page: design
+        - label: Guide
+          page: 01-guide
+    - heading: Make it yours
+      links:
+        - label: Customization guide
+          page: 01-guide
+  legal: An original fictional concept, built with Zellij. Replace the sample identity and
+    content before publishing.

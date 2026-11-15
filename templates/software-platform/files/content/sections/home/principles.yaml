@@ -1,0 +1,54 @@
+type: compose
+version: 1
+label: Make room for the work
+children:
+  - type: heading
+    text: Make room for the work.
+    level: 2
+    scale: display
+    gradient:
+      colors:
+        - fg
+        - accent
+      effect: reveal
+  - type: text
+    text: Move the project forward without losing the thinking that got you here.
+    size: lead
+    tone: muted
+  - type: group
+    children:
+      - type: group
+        children:
+          - type: heading
+            text: 01 / Decide
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Capture the problem before the task. Keep the reason close to the work.
+            size: body
+            tone: normal
+      - type: group
+        children:
+          - type: heading
+            text: 02 / Build
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Break a direction into a clear next step. Let everyone see what is moving.
+            size: body
+            tone: normal
+      - type: group
+        children:
+          - type: heading
+            text: 03 / Learn
+            level: 3
+            scale: subtitle
+          - type: text
+            text: Bring a release back to its purpose. Make the next decision a better one.
+            size: body
+            tone: normal
+    layout:
+      kind: grid
+      columns: 3
+      gap: large
+padding: loose
