@@ -77,7 +77,8 @@ test.describe('overlays are fixed to the viewport, not to the header', () => {
   test('the search overlay fills the viewport when opened part-way down a page', async ({
     page,
   }) => {
-    await page.goto('/guide/quickstart');
+    await page.goto('/guide/quickstart', { waitUntil: 'networkidle' });
+    await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
     await scrollDown(page);
 
     await page.keyboard.press('ControlOrMeta+k');
