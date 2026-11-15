@@ -108,7 +108,7 @@ a complete site.
 | field | type | |
 | --- | --- | --- |
 | `sticky` | boolean | default `true` |
-| `align` | `left` \| `center` | default `"left"` |
+| `align` | `left` \| `center` | default `"center"` |
 | `hideOnScrollDown` | boolean | default `false` |
 | `transparentOverHero` | boolean | default `true` |
 | `scrollThreshold` | integer | default `80` |

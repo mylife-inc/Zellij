@@ -13,7 +13,7 @@ test.afterEach(async ({ page }, info) => {
   }
 });
 
-test('branding and controls sit at opposite viewport edges without overlap', async ({ page }) => {
+test('product navigation stays centered while controls stay at the viewport edge', async ({ page }) => {
   await page.goto('/');
   for (const width of [1600, 1280, 1024, 901, 900, 390, 360, 320]) {
     await page.setViewportSize({ width, height: 900 });
@@ -23,10 +23,45 @@ test('branding and controls sit at opposite viewport edges without overlap', asy
       const width = document.documentElement.clientWidth;
       const links = [...bar.querySelectorAll('.zellij-nav-list:not(.zellij-nav-measure) > li > .zellij-nav-link')]
         .filter((link) => link.getClientRects().length).map((link) => link.getBoundingClientRect());
-      return links.every((link) => link.left >= brand.right && link.right <= actions.left) && brand.left >= 15 && brand.left <= 33 && width - actions.right >= 15 &&
+      const content = bar.querySelector('.zellij-nav-content')!.getBoundingClientRect();
+      const aligned = width > 900 ? Math.abs((content.left + content.right) / 2 - width / 2) < 2 : brand.left >= 15 && brand.left <= 33;
+      return aligned && links.every((link) => link.left >= brand.right && link.right <= actions.left) && width - actions.right >= 15 &&
         width - actions.right <= 33 && brand.right <= actions.left && document.documentElement.scrollWidth <= width;
     })).toBe(true);
   }
+});
+
+test('company stays far left without shifting the product/menu center', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto('/');
+  await expect(page.locator('.zellij-nav-desktop')).toHaveAttribute('data-measured', 'true');
+  await page.locator('.zellij-nav-company').evaluate(slot => {
+    const link = document.createElement('a');
+    link.className = 'zellij-company';
+    link.href = 'https://company.example';
+    link.setAttribute('aria-label', 'Company');
+    link.textContent = 'Company';
+    slot.append(link);
+  });
+  for (const width of [1440, 1024, 901, 390, 320, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await expect.poll(() => page.locator('.zellij-nav-inner').evaluate(bar => {
+      const company = bar.querySelector('.zellij-company')!.getBoundingClientRect();
+      const brand = bar.querySelector('.zellij-brand')!.getBoundingClientRect();
+      const content = bar.querySelector('.zellij-nav-content')!.getBoundingClientRect();
+      const actions = bar.querySelector('.zellij-nav-actions')!.getBoundingClientRect();
+      const width = document.documentElement.clientWidth;
+      return company.left >= 15 && company.left <= 33 && company.right <= brand.left && brand.right <= actions.left &&
+        (width <= 900 || Math.abs((content.left + content.right) / 2 - width / 2) < 2) &&
+        document.documentElement.scrollWidth <= width;
+    })).toBe(true);
+  }
+  // Reserve extra right-hand space without letting it pull the menu off center.
+  await page.locator('.zellij-nav-actions').evaluate(actions => { actions.style.paddingLeft = '80px'; });
+  await expect.poll(() => page.locator('.zellij-nav-content').evaluate(content => {
+    const box = content.getBoundingClientRect();
+    return Math.abs((box.left + box.right) / 2 - document.documentElement.clientWidth / 2);
+  })).toBeLessThan(2);
 });
 
 test.describe('measured overflow', () => {
@@ -54,7 +89,7 @@ test.describe('measured overflow', () => {
   test('reacts to larger text and retains nested destinations and external links', async ({ page }) => {
     await page.goto('/');
     await page.setViewportSize({ width: 1024, height: 480 });
-    await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 2.25rem; } .zellij-brand { width: 18rem; max-width: none; flex-shrink: 0; }' });
+    await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 2.25rem; } .zellij-brand { width: 18rem; max-width: 25vw; }' });
     const nav = page.getByRole('navigation', { name: 'Main', exact: true });
     await expect(nav.locator('[data-nav-index]:not([data-nav-index="more"])')).toHaveCount(0);
     const more = nav.locator('[data-nav-index="more"] > button');

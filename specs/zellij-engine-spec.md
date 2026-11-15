@@ -276,7 +276,7 @@ The bar's *items* are declared in `menu.yaml` and its *behaviour* in `site.yaml`
 - **Scroll transition:** on `layout: landing` pages the bar begins transparent with no border over the hero and animates to its solid/blurred state past a scroll threshold (default 80px, configurable). On all other layouts it renders solid from the start. Behavior obeys the motion preset — under `motion: none` the bar simply renders solid always.
 - **Auto-hide (optional):** `nav.hideOnScrollDown: true` hides the bar when scrolling down and reveals it on scroll up; default `false`.
 - **Brand on the left** — `brand.logo` linking to `brand.logo.href` (default `/`), with the dark variant swapped by CSS so the right mark paints on first frame. When the logo points at a hub site, `brand.title` renders beside it as the way home within this site (design §4.1).
-- **Links centered or left-aligned** per `nav.align`; **CTA button(s) on the right**.
+- **Product home link and menu centered on the viewport by default (rc.9)**; `nav.align: left` remains available. The independent company logo stays at the far left; search, theme controls and CTA buttons stay at the far right.
 - **Active-state highlighting:** the nav item matching the current route (or the page's `navHighlight`) is visually marked. On landing pages with in-page anchor links, the active item updates as the user scrolls between sections (IntersectionObserver-driven scroll spy).
 - **Dropdowns and mega-menus:** a nav item may declare children — either a simple dropdown list or a `mega` panel with grouped, described links (title + one-line description + optional icon). Keyboard accessible (arrow keys, Escape to close), focus-trapped while open, and hover-or-click on desktop, tap-to-expand on mobile.
 - **Mobile:** below the theme's `md` breakpoint the links collapse into a hamburger that opens a full-height drawer with the same items (nested items as accordions) and the CTA pinned at the bottom. Body scroll locks while open; Escape and backdrop tap close it.
@@ -304,7 +304,7 @@ everything else. Search, the theme picker and the colour toggle are built in.
 # site.yaml — behaviour
 nav:
   sticky: true                  # default true
-  align: left                   # left | center
+  align: center                 # center (default in rc.9) | left
   hideOnScrollDown: false
   transparentOverHero: true     # applies to layout: landing pages
   scrollThreshold: 80

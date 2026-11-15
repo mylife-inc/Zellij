@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: centered header correction in progress**
+
+The user clarified that only the company mark belongs at the far left; product
+home navigation and menu belong in a centered group, with search/theme controls
+at the far right. The website preview incorrectly inherited the left default,
+and the old center option centered links only within leftover space. Source
+rc.9 changes the default to center, separates company and product identity, and
+reserves equal side space so different utility/logo widths cannot shift the
+product/menu group. Explicit left alignment remains available. The three new,
+unpublished website starters and active docs opt into center; the five released
+archives remain immutable. Local engine tests pass 491 cases; hosted geometry,
+overflow, focus, responsive and screenshot verification are pending.
+
 **2026-11-15: website collection verified for rc.9**
 
 Source rc.9 adds `product-launch`, `software-platform` and `creative-studio`,

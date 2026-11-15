@@ -28,6 +28,19 @@ async function loadImages(page) {
   await page.evaluate(() => scrollTo(0, 0));
 }
 
+async function checkHeaderAlignment(page, width) {
+  const layout = await page.locator('.zellij-nav-inner').evaluate(bar => {
+    const group = bar.querySelector('.zellij-nav-content').getBoundingClientRect();
+    const actions = bar.querySelector('.zellij-nav-actions').getBoundingClientRect();
+    const brand = bar.querySelector('.zellij-brand').getBoundingClientRect();
+    return { center: (group.left + group.right) / 2, viewport: document.documentElement.clientWidth,
+      rightInset: document.documentElement.clientWidth - actions.right, brandEnd: brand.right, actionsStart: actions.left };
+  });
+  if (width > 900) assert(Math.abs(layout.center - layout.viewport / 2) < 2, `Product/menu group must be centered: ${JSON.stringify(layout)}`);
+  assert(layout.rightInset >= 15 && layout.rightInset <= 33, 'Controls stay at the right edge');
+  assert(layout.brandEnd <= layout.actionsStart, 'Product identity does not overlap controls');
+}
+
 async function checkBentoSurfaces(page) {
   const tile = page.locator('.zellij-bento-tile').first();
   if (!await tile.count()) return;
@@ -111,6 +124,7 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           assert.equal(await page.locator('html').getAttribute('data-zellij-mode'), mode);
           // Scroll the complete page to load lazy images and exercise section visibility.
           await loadImages(page);
+          await checkHeaderAlignment(page, width);
           if (manifest.id === 'creative-studio') await checkStudioTextContrast(page);
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${manifest.id}/${route}: overflow`);
           await page.evaluate(() => scrollTo(0, 0));
@@ -145,6 +159,7 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
         assert.equal(await page.locator('h1').count(), 1);
         assert(await page.locator('h1').isVisible());
         await loadImages(page);
+        await checkHeaderAlignment(page, width);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         if (route === 'design') {
           const accordion = page.getByRole('group', { name: 'Design details', exact: true });

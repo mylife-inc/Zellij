@@ -7,6 +7,7 @@ motion: subtle
 overrides: {}
 home: home
 nav:
+  align: center
   sticky: true
   search: true
   themeToggle: true
