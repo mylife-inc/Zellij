@@ -37,14 +37,14 @@ copied. The editorial studio is an original complementary direction.
 Use `zel create <folder> -t <id> [--name <title>]`. Existing aliases, immutable
 archives, receipts, remote catalogs and offline caching apply unchanged.
 The source catalog has eight entries; the published rc.8 catalog still has five.
-Before rc.9 release, rc.8 users can select a local template directory from a
-checkout. Minimum CLI/engine remains rc.8 because no new section capability is
-needed. All hosted builds require a supported runtime and HTTP viewing. No
+Before rc.9 release, use a source-built CLI and matching engine. The new
+starters require rc.9, including the bento surface foreground fix. All hosted builds require a supported runtime and HTTP viewing. No
 portable-file, book PDF or pixel-identical clone claim is made.
 
 The templates compose existing hero, split hero, showcase, bento, zigzag,
 compose, steps, media accordion, FAQ and CTA sections. No engine API, dependency,
-font payload, container size input or published template bytes change. New art
+font payload or published template bytes change. Bento tile headings and body
+foregrounds now follow their own surface instead of the surrounding section. New art
 is vector-only. Theme controls, reduced-motion handling and progressive content
 use the existing engine. Source version and the standalone recipe advance to
 rc.9; public installers and release pins do not change.
@@ -70,3 +70,12 @@ Initial local checks found guide-relative links resolving outside their guide
 and an unlisted customization page. Absolute `/guide/...` links and explicit
 sidebar entries fix both. Strict deep checks then pass for all eight starters.
 Final source/hosted results and visual findings will be recorded in evidence.
+
+The first hosted pass exposed a visual bug: inverted bento headings used the
+global dark heading foreground on a dark card. Tile foregrounds and heading
+inheritance now follow the tile surface, including when the enclosing section
+is inverted or accent-colored. Browser coverage checks all 12 section/tile
+combinations in both palettes. This requires the rc.9 engine for these starters.
+The initial no-JavaScript harness also relied on a page-side animation-frame
+promise, which cannot settle with scripting disabled. Driver-side scrolling
+and bounded image polling fix the harness; the failed run remains in evidence.

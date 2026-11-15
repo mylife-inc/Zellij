@@ -10,8 +10,8 @@ starters. Source rc.9 adds `product-launch`, `software-platform` and
 `creative-studio`, each version 0.1.0, for eight bundled templates. Existing
 published archives and rc.8 release channels are unchanged. Each new starter
 has two landing pages, two guide pages and original local vector artwork.
-They use existing hosted sections and need CLI/engine rc.8 or later; authors
-can use local template paths before the next catalog release. The independent
+They use existing hosted sections plus a bento surface foreground fix and need
+CLI/engine rc.9; source builds are needed before the next catalog release. The independent
 hosted template job covers every page in light/dark, desktop/mobile, keyboard
 selection and no-JavaScript layouts. See
 [the contract](specs/zellij-website-templates-2026-11-15.md).

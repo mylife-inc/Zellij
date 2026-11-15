@@ -15,7 +15,7 @@ zel build
 zel view --watch
 ```
 
-Requires CLI and engine rc.8 or later, plus a supported container runtime for
+Requires CLI and engine rc.9 or later, plus a supported container runtime for
 hosted builds. Serve the result over HTTP; this is not a direct-file or PDF
 starter. Creation is offline. The template receipt records original checksums
 without preventing edits. No external assets or extra dependencies are needed.

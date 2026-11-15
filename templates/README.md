@@ -24,8 +24,9 @@ The rc.9 source catalog adds three website starters at template version 0.1.0:
 These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
-They require CLI/engine rc.8 or later, but the published rc.8 catalog does not
-contain them. Until rc.9 is released, use a source build or a local template path:
+They require CLI/engine rc.9 or later, including the bento heading contrast fix.
+The published rc.8 catalog does not contain them. Until rc.9 is released, use
+a source build with its matching engine. A source-built CLI also accepts local paths:
 
 ```sh
 zel create my-website -t ./templates/product-launch --offline

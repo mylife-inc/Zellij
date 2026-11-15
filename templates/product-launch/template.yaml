@@ -1,11 +1,11 @@
 schema: 1
 id: product-launch
 version: 0.1.0
-title: Forma One
+title: Product launch
 description: A sculptural product launch with cinematic imagery, material details and a
   quiet editorial rhythm.
-minimum-cli: 0.2.0-rc.8
-minimum-engine: 0.2.0-rc.8
+minimum-cli: 0.2.0-rc.9
+minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site
 outputs:

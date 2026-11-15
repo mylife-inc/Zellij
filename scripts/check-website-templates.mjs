@@ -10,13 +10,56 @@ const sites = {
 };
 
 async function loadImages(page) {
-  await page.evaluate(async () => {
-    for (let y = 0; y < document.documentElement.scrollHeight; y += innerHeight) {
-      scrollTo(0, y); await new Promise(resolve => requestAnimationFrame(resolve));
-    }
-  });
-  await page.waitForFunction(() => [...document.images].every(img => img.complete && img.naturalWidth > 0));
+  // Drive scrolling/polling from Playwright: page-side animation-frame and
+  // timer callbacks cannot settle when JavaScript is deliberately disabled.
+  const height = await page.evaluate(() => document.documentElement.scrollHeight);
+  for (let y = 0; y < height; y += page.viewportSize().height) {
+    await page.evaluate(y => scrollTo(0, y), y);
+    await page.waitForTimeout(50);
+  }
+  let pending = [];
+  for (let attempt = 0; attempt < 100; attempt++) {
+    pending = await page.evaluate(() => [...document.images]
+      .filter(img => !img.complete || !img.naturalWidth).map(img => img.currentSrc || img.src));
+    if (!pending.length) break;
+    await page.waitForTimeout(100);
+  }
+  assert.deepEqual(pending, [], 'Every local image must load');
   await page.evaluate(() => scrollTo(0, 0));
+}
+
+async function checkBentoSurfaces(page) {
+  const tile = page.locator('.zellij-bento-tile').first();
+  if (!await tile.count()) return;
+  const results = await tile.evaluate(tile => {
+    const section = tile.closest('.zellij-section');
+    const originalTile = tile.getAttribute('data-background');
+    const originalSection = section.getAttribute('data-zellij-background');
+    const result = [];
+    try {
+      for (const outer of ['default', 'inverted', 'accent']) {
+        section.setAttribute('data-zellij-background', outer);
+        for (const inner of ['default', 'tinted', 'inverted', 'accent']) {
+          tile.setAttribute('data-background', inner);
+          const token = inner === 'inverted' ? '--zellij-inverted-fg' : inner === 'accent' ? '--zellij-accent-fg' : '--zellij-fg';
+          const probe = document.createElement('span'); probe.style.color = `var(${token})`;
+          tile.append(probe);
+          result.push({ outer, inner, title: getComputedStyle(tile.querySelector('h3')).color,
+            body: getComputedStyle(tile.querySelector('p')).color, expected: getComputedStyle(probe).color });
+          probe.remove();
+        }
+      }
+    } finally {
+      tile.setAttribute('data-background', originalTile);
+      if (originalSection === null) section.removeAttribute('data-zellij-background');
+      else section.setAttribute('data-zellij-background', originalSection);
+    }
+    return result;
+  });
+  for (const { outer, inner, title, body, expected } of results) {
+    assert.equal(title, expected, `${outer} section / ${inner} tile: heading foreground`);
+    assert.equal(body, expected, `${outer} section / ${inner} tile: body foreground`);
+  }
 }
 
 export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
@@ -46,6 +89,10 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${manifest.id}/${route}: overflow`);
           await page.evaluate(() => scrollTo(0, 0));
           await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-${route.replaceAll('/', '-') || 'home'}.png`), fullPage: true });
+          if (!route) {
+            await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-hero.png`) });
+            await checkBentoSurfaces(page);
+          }
           if (route === 'design') {
             const accordion = page.getByRole('group', { name: 'Design details', exact: true });
             const touch = accordion.getByRole('button', { name: 'Touch', exact: true });
@@ -82,4 +129,13 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
       }
     } finally { await context.close(); }
   }
+  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
+  try {
+    const page = await context.newPage();
+    await page.goto(url, { waitUntil: 'networkidle' });
+    await loadImages(page);
+    await page.waitForFunction(() => [...document.querySelectorAll('[data-zellij-reveal]')]
+      .every(el => getComputedStyle(el).opacity === '1'));
+    await page.screenshot({ path: path.join(artifacts, `${manifest.id}-1440-motion.png`), fullPage: true });
+  } finally { await context.close(); }
 }

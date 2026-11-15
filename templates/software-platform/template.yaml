@@ -1,11 +1,11 @@
 schema: 1
 id: software-platform
 version: 0.1.0
-title: Relay
+title: Software platform
 description: A focused software website with a product interface, connected workflows and
   a practical guide.
-minimum-cli: 0.2.0-rc.8
-minimum-engine: 0.2.0-rc.8
+minimum-cli: 0.2.0-rc.9
+minimum-engine: 0.2.0-rc.9
 renderer: hosted
 kind: site
 outputs:
