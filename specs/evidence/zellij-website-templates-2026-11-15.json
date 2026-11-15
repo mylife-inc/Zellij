@@ -1,0 +1,823 @@
+{
+  "date": "2026-11-15",
+  "status": "implementation verified; merge and development-image publication pending",
+  "baseline": "2d44c4ac9ba4057bc606f73a51fdc511a36be9d6",
+  "implementation": "183fe8e81f71dee03ffca1d755c9066bb97adc05",
+  "pull_request": 185,
+  "source_version": "0.2.0-rc.9 (unreleased)",
+  "published_version": "0.2.0-rc.8 (unchanged)",
+  "local": {
+    "workspace_rust_passed": 802,
+    "engine_tests_passed": 490,
+    "helper_tests_passed": 49,
+    "engine_packaging": true,
+    "strict_deep_docs": true,
+    "template_catalog_count": 8,
+    "deterministic_archive_local_bundled_remote_cached_parity": true,
+    "previous_five_archive_hashes_unchanged": true,
+    "logs": [
+      {
+        "file": "zellij-website-rust-tests.log",
+        "sha256": "f1d30942ebb52461f1aea3ae67d99f37dabc01e680823d9b872e61a7a2e7feb5"
+      },
+      {
+        "file": "zellij-website-engine-tests.log",
+        "sha256": "b0ef645bcb996b8dc1b01241d65204b084a89bc8ca5e442688e4ca45876b7230"
+      },
+      {
+        "file": "zellij-website-helper-tests.log",
+        "sha256": "521895f3cad0fb868265dae693dfff174ec0ef5f8e32450907fee439fafdbc1b"
+      },
+      {
+        "file": "zellij-website-engine-build.log",
+        "sha256": "61f3f0d00f51c6cf4c9aa13f1a6d87a97dd38e19cd9b4446088ac01738fa0996"
+      },
+      {
+        "file": "zellij-website-template-check.log",
+        "sha256": "520c7e815deadc7de7946e8f5bd92dd50ddf683ea86c787c2ae2f464d5df89f6"
+      },
+      {
+        "file": "zellij-website-docs-check.log",
+        "sha256": "fb36cf554122f4cc84b3e402ce0ab7b756f76771956aaba12ac80a75d63ba49f"
+      },
+      {
+        "file": "zellij-website-engine-tests-final.log",
+        "sha256": "689eafcc4d0fc37479b0697f5b31279bd12b7f254669d11b62d2a83d6949033c"
+      },
+      {
+        "file": "zellij-website-rust-tests-final.log",
+        "sha256": "c9c90cefac53cefb0f6a3dfdfa97220d046c29b460bd15e10767c19e01d1c110"
+      }
+    ],
+    "initial_full_rust_test_head": "183fe8e81f71dee03ffca1d755c9066bb97adc05",
+    "engine_tests_after_visual_refinements": 490,
+    "final_workspace_rust_passed": 802,
+    "final_rust_state": "f32fe6b plus the portable palette synchronization committed as 1c34b02"
+  },
+  "hosted": {
+    "run": 43755151229,
+    "status": "success",
+    "initial_run": 43750432375,
+    "initial_template_job": 132922946904,
+    "initial_failure": "No-JavaScript driver awaited a page-side requestAnimationFrame promise; Playwright reported Resulting promise was garbage collected.",
+    "initial_log_sha256": "bc1f6eb68471b8f81011edd1d6ee1ba903c82de2a9850102fef56a24a4ba1779",
+    "second_run": 43751495274,
+    "second_failure": "Live DOM surface mutation check observed the old heading foreground. Replaced with checks of the actual authored card and fresh, independent surface fixtures; not treated as a waived test.",
+    "second_log_sha256": "8963a8e4a178d290087e65e53b4f27a03ddedfb7fe6871781df889923f27041e",
+    "successful_template_run_before_visual_refinements": 43752325276,
+    "successful_template_job_before_visual_refinements": 132928898810,
+    "pre_refinement_captures": 97,
+    "visual_review_run": 43753554988,
+    "visual_review_template_job": 132932679797,
+    "visual_review_capture_count": 97,
+    "fourth_failure": "Portable palette generation guard required synchronizing the Porcelain token change. Fixed by 1c34b02; engine schema was current.",
+    "fourth_failure_log_sha256": "24aecb1d11b5c6dae787e874a16c3567f86c5c9cd87fc18da379774ad1642687",
+    "prior_complete_template_runs": [
+      43752325276,
+      43753554988,
+      43754329101
+    ],
+    "fifth_run": "24 jobs passed; six remaining jobs cancelled by the final product template refinement. No failures.",
+    "template_job": 132937585249,
+    "template_result": "success",
+    "template_artifact": 14177992388,
+    "template_capture_count": 97,
+    "jobs_passed": 30,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43755151229",
+    "jobs": [
+      {
+        "databaseId": 132937585144,
+        "name": "CLI",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:34:59Z"
+      },
+      {
+        "databaseId": 132937585164,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:15Z",
+        "completedAt": "2026-11-15T19:58:02Z"
+      },
+      {
+        "databaseId": 132937585195,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:15Z",
+        "completedAt": "2026-11-15T19:59:16Z"
+      },
+      {
+        "databaseId": 132937585200,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:58:58Z"
+      },
+      {
+        "databaseId": 132937585204,
+        "name": "Showcase end to end",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:12Z",
+        "completedAt": "2026-11-15T20:02:23Z"
+      },
+      {
+        "databaseId": 132937585208,
+        "name": "Engine",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:00:10Z"
+      },
+      {
+        "databaseId": 132937585217,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:12Z",
+        "completedAt": "2026-11-15T20:00:18Z"
+      },
+      {
+        "databaseId": 132937585221,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:03:43Z"
+      },
+      {
+        "databaseId": 132937585231,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:12Z",
+        "completedAt": "2026-11-15T20:01:39Z"
+      },
+      {
+        "databaseId": 132937585241,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:01:50Z"
+      },
+      {
+        "databaseId": 132937585249,
+        "name": "Website and book templates",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:01:03Z"
+      },
+      {
+        "databaseId": 132937585254,
+        "name": "Embedded schema is current",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:56:41Z"
+      },
+      {
+        "databaseId": 132937585262,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:15Z",
+        "completedAt": "2026-11-15T20:00:26Z"
+      },
+      {
+        "databaseId": 132937585263,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:58:00Z"
+      },
+      {
+        "databaseId": 132937585277,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:58:29Z"
+      },
+      {
+        "databaseId": 132937585326,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:59:02Z"
+      },
+      {
+        "databaseId": 132937585330,
+        "name": "Native images (amd64)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T19:58:29Z"
+      },
+      {
+        "databaseId": 132937585383,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:13Z",
+        "completedAt": "2026-11-15T20:16:37Z"
+      },
+      {
+        "databaseId": 132937585401,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:15Z",
+        "completedAt": "2026-11-15T20:00:51Z"
+      },
+      {
+        "databaseId": 132937585416,
+        "name": "Native images (arm64)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:15Z",
+        "completedAt": "2026-11-15T19:58:52Z"
+      },
+      {
+        "databaseId": 132937585512,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:56:43Z",
+        "completedAt": "2026-11-15T20:08:35Z"
+      },
+      {
+        "databaseId": 132938317100,
+        "name": "Combined image manifests",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T19:58:54Z",
+        "completedAt": "2026-11-15T19:59:40Z"
+      },
+      {
+        "databaseId": 132939193833,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:02:45Z"
+      },
+      {
+        "databaseId": 132939193842,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:06:35Z"
+      },
+      {
+        "databaseId": 132939193843,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:55Z",
+        "completedAt": "2026-11-15T20:03:34Z"
+      },
+      {
+        "databaseId": 132939193859,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:02:47Z"
+      },
+      {
+        "databaseId": 132939193890,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:02:51Z"
+      },
+      {
+        "databaseId": 132939193901,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:02:43Z"
+      },
+      {
+        "databaseId": 132939193904,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:52Z",
+        "completedAt": "2026-11-15T20:03:09Z"
+      },
+      {
+        "databaseId": 132939193926,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success",
+        "startedAt": "2026-11-15T20:01:54Z",
+        "completedAt": "2026-11-15T20:02:37Z"
+      }
+    ],
+    "result_sha256": "3f4323443ae7a08c42d12ca1f462771dc244c65afb202d58182ba500659952ab"
+  },
+  "templates": [
+    {
+      "file": "template-book-classic-0.2.0.tar.gz",
+      "size": 4394,
+      "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+    },
+    {
+      "file": "template-book-study-0.1.0.tar.gz",
+      "size": 3845,
+      "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+    },
+    {
+      "file": "template-book-technical-0.1.0.tar.gz",
+      "size": 3959,
+      "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+    },
+    {
+      "file": "template-creative-studio-0.1.0.tar.gz",
+      "size": 5765,
+      "sha256": "68b65025ed436cf1880460f87f23e3e10eaed651c415d0102d29d6413aa96c20"
+    },
+    {
+      "file": "template-product-docs-0.1.0.tar.gz",
+      "size": 1297,
+      "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+    },
+    {
+      "file": "template-product-launch-0.1.0.tar.gz",
+      "size": 5979,
+      "sha256": "9348dd15def4eb1aa336fd25a40b4afdf3267877387fb9c3875669ff3ded6ed4"
+    },
+    {
+      "file": "template-product-studio-0.1.0.tar.gz",
+      "size": 2454,
+      "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+    },
+    {
+      "file": "template-software-platform-0.1.0.tar.gz",
+      "size": 5862,
+      "sha256": "759d83518def81aa70044d0a6aeaa933ff45dea0b31982b136554a8db804f8ff"
+    }
+  ],
+  "limitations": [
+    "Hosted websites require a container runtime to build and HTTP to view.",
+    "No portable-file or PDF promise for these website starters.",
+    "No new public CLI release yet.",
+    "Production migration and deferred live-provider tests are unchanged."
+  ],
+  "verified_head": "40ab8b78f1c8de7e1ae593322e56ec9e3fada103",
+  "findings": [
+    {
+      "issue": "Inverted bento heading used the page foreground; default tiles inside inverted/accent sections inherited the wrong body foreground.",
+      "fix": "196688b6629e5a442e2415c549394da5998e847b",
+      "verification": "Final hosted actual-card and 12 fresh section/tile combinations pass in both palettes at desktop/mobile widths."
+    },
+    {
+      "issue": "No-JavaScript browser harness awaited disabled page callbacks.",
+      "fix": "196688b6629e5a442e2415c549394da5998e847b",
+      "verification": "Final hosted no-JavaScript images, content and layouts pass for all three starters."
+    },
+    {
+      "issue": "Studio artwork and software illustrations cropped meaningful details in their display frames; studio spacing was too large on narrow screens; Porcelain muted light text was too faint.",
+      "fix": "f32fe6b2992f98af15709e1d51b3f88f02e80ef0",
+      "verification": "Final hosted desktop/mobile, both palettes, normal/reduced motion, and muted studio prose contrast checks pass; representative captures visually reviewed."
+    },
+    {
+      "issue": "Portable theme CSS needed the matching Porcelain muted foreground.",
+      "fix": "1c34b0269bff4a00559f0ab64d003ea9ade7d5b8",
+      "verification": "prepare-portable guard passes and final local workspace Rust suite passes 802 tests."
+    },
+    {
+      "issue": "The product material row left one unused desktop column; a decorative caption sat outside the split-hero crop.",
+      "fix": "40ab8b78f1c8de7e1ae593322e56ec9e3fada103",
+      "verification": "Final browser checks pass; full product home and Design captures visually reviewed."
+    }
+  ],
+  "visual_review": {
+    "reviewed": [
+      "creative-studio-1440-light-hero.png",
+      "software-platform-1440-dark-hero.png",
+      "creative-studio-390-light-hero.png",
+      "software-platform-390-dark-hero.png",
+      "product-launch-390-light-hero.png",
+      "product-launch-1440-dark-design.png",
+      "creative-studio-1440-dark-work.png",
+      "software-platform-1440-light-workflow.png",
+      "creative-studio-390-no-js-home.png"
+    ],
+    "saved_previews": [
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/creative-studio-1440.png",
+        "sha256": "4cb7e720fd30d8a7ea503aeda3f972d321e7404f9f2ddda65c65a8d2775b217c",
+        "size": 65711
+      },
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/creative-studio-390.png",
+        "sha256": "5bdac87c85b8c61d4405fb8b78612ad869a37471dc95f6abfb68dd0697e198ae",
+        "size": 30767
+      },
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/product-launch-1440.png",
+        "sha256": "2b3b86a4a79a7d12f3af5d068c6a5e3b6f715f463a1e05ae6d77b858e73eab7c",
+        "size": 262052
+      },
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/product-launch-390.png",
+        "sha256": "809c6133f2c1ebc444c182751417e2d6743d37ae0be4842c04b8761b4afcb90c",
+        "size": 68220
+      },
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/software-platform-1440.png",
+        "sha256": "492652b211a154e8fe8747211a77e3837fa5581f86dc02eef59592343039423c",
+        "size": 103093
+      },
+      {
+        "file": "specs/evidence/website-templates-2026-11-15/software-platform-390.png",
+        "sha256": "ae154b97a67532a35758154f6d15a73406abddd5cd035020bcb5a9b6658882de",
+        "size": 34580
+      }
+    ],
+    "notes": [
+      "Studio poster is composed for its portrait frame; software UI and workflow nodes fit their frames.",
+      "Desktop/mobile heading hierarchy, navigation and CTA spacing are legible; supporting pages work in alternate palettes.",
+      "No-JavaScript studio content remains present and readable.",
+      "Final product row fills the grid with two equally wide image cards; the macro caption remains inside the split crop."
+    ],
+    "final_product_pages": [
+      "product-launch-1440-light-home.png",
+      "product-launch-1440-light-design.png"
+    ],
+    "saved_previews_match_final_run": true,
+    "final_capture_hashes": [
+      {
+        "file": "book-classic-1440-chapter.png",
+        "sha256": "0f084cfda2991d3b4251ed9a8300f87a001b0a87fa8b8792d9e7a06d6db2cb27"
+      },
+      {
+        "file": "book-classic-1440.png",
+        "sha256": "1b79e290d15c71dc51df3094fdd8cc1831ee445a14b390f2dc3342704d4209b8"
+      },
+      {
+        "file": "book-classic-390-chapter.png",
+        "sha256": "52b76d4b6b3b35f5a4ab7dc5dda9caf4849973574e7c0cebbe9cf082b10b7092"
+      },
+      {
+        "file": "book-classic-390.png",
+        "sha256": "04c65adf8b12896f95328b64ca789822d48ac4abad6b0986a49a8ced00240d87"
+      },
+      {
+        "file": "book-study-1440-chapter.png",
+        "sha256": "0bdf74f4e2864c160558756a17bb888d1e7675195d822ff9db1dd4d9a1a814c8"
+      },
+      {
+        "file": "book-study-1440.png",
+        "sha256": "903fcbfb46738845eb8b4e676813c9ee7a0ed7276ec71588060cc7a3ba408b04"
+      },
+      {
+        "file": "book-study-390-chapter.png",
+        "sha256": "9c34d2378d93a2500671432c91c36fb7fe8e41c251252e5875436ae1ff729cfe"
+      },
+      {
+        "file": "book-study-390.png",
+        "sha256": "d7c31ac998c19b4c75c4cff42162da00c274b9028be45bece28ce98b17060ea5"
+      },
+      {
+        "file": "book-technical-1440-chapter.png",
+        "sha256": "2383c076542b6075d28c204e2dc8c38ba92633547c698a73f918804a0d7752b3"
+      },
+      {
+        "file": "book-technical-1440.png",
+        "sha256": "e142d9fe16ecce07de463021f46806188096c36656f8c552b540cc9bb67f7ef9"
+      },
+      {
+        "file": "book-technical-390-chapter.png",
+        "sha256": "dd736c7e56dc55fae11df2b386061240a21d43f47d945f15954685a0f2353772"
+      },
+      {
+        "file": "book-technical-390.png",
+        "sha256": "0259b0498407af6072bf1df7653c18d3911be9a1182f4bfae4cb9988bfebf4b8"
+      },
+      {
+        "file": "creative-studio-1440-dark-guide-customize.png",
+        "sha256": "18bb9a1ca76fda7159563a32fcd27997aa9ba6c6b88491b93a5fc203675dd121"
+      },
+      {
+        "file": "creative-studio-1440-dark-guide.png",
+        "sha256": "0d2d9f892c371a8710c8333eba8bfe7c05c7b53d6e31e6d3666d50b38c70ca51"
+      },
+      {
+        "file": "creative-studio-1440-dark-hero.png",
+        "sha256": "75a6c06ac2d4a1ef1bc1bff4ebb19942fc1e2a9987a1a65c339898dcd26dee80"
+      },
+      {
+        "file": "creative-studio-1440-dark-home.png",
+        "sha256": "b43d3c55dec8b35996bfae62b243216151b1b94de8d8fa39b92b0adfe1afc7bd"
+      },
+      {
+        "file": "creative-studio-1440-dark-work.png",
+        "sha256": "2d498eb89af5697e379b84cdda1bfc8e3447eedb5d57a3ec1fbb52b32b9917aa"
+      },
+      {
+        "file": "creative-studio-1440-light-guide-customize.png",
+        "sha256": "1f49a65642e5d4571f7d23cb853ad3998af81ff758d150f527dc310d71cdb55d"
+      },
+      {
+        "file": "creative-studio-1440-light-guide.png",
+        "sha256": "1c016e04c94716e036effd0afea8120e7e47aa1bc5d17e1a8173fcc8a1d48322"
+      },
+      {
+        "file": "creative-studio-1440-light-hero.png",
+        "sha256": "4cb7e720fd30d8a7ea503aeda3f972d321e7404f9f2ddda65c65a8d2775b217c"
+      },
+      {
+        "file": "creative-studio-1440-light-home.png",
+        "sha256": "82669b889a37cd309693119243bdd726a88f5f90e642103b39ebf4e588d7e9c5"
+      },
+      {
+        "file": "creative-studio-1440-light-work.png",
+        "sha256": "16ecb3540ade12abcf2e5897a32ae0f6a2b071f7baab64116bc1c0cc6d8aca66"
+      },
+      {
+        "file": "creative-studio-1440-motion.png",
+        "sha256": "82669b889a37cd309693119243bdd726a88f5f90e642103b39ebf4e588d7e9c5"
+      },
+      {
+        "file": "creative-studio-1440-no-js-home.png",
+        "sha256": "82669b889a37cd309693119243bdd726a88f5f90e642103b39ebf4e588d7e9c5"
+      },
+      {
+        "file": "creative-studio-1440-no-js-work.png",
+        "sha256": "16ecb3540ade12abcf2e5897a32ae0f6a2b071f7baab64116bc1c0cc6d8aca66"
+      },
+      {
+        "file": "creative-studio-1440.png",
+        "sha256": "82669b889a37cd309693119243bdd726a88f5f90e642103b39ebf4e588d7e9c5"
+      },
+      {
+        "file": "creative-studio-390-dark-guide-customize.png",
+        "sha256": "5cf5d2ea0b62959d4dd205e1e3d5f78f7293b3e3bee31fb9cd1372f01a620283"
+      },
+      {
+        "file": "creative-studio-390-dark-guide.png",
+        "sha256": "f48371581c4177b0195292715817f0e48e4a7d53056fcb146989b7ddb08f9ad2"
+      },
+      {
+        "file": "creative-studio-390-dark-hero.png",
+        "sha256": "30691eff3499ed41a9111e55156fdfe932c063a5390a53af31c0599204b173c5"
+      },
+      {
+        "file": "creative-studio-390-dark-home.png",
+        "sha256": "02d80a727a180e0c29468f361c3961324b4349f9c9cd5f0fcfb31da66a68a26b"
+      },
+      {
+        "file": "creative-studio-390-dark-work.png",
+        "sha256": "9331af41302b8bde4a78297e1b3a9c4c3310eaed1a7b870fcaef0d5538dcc37f"
+      },
+      {
+        "file": "creative-studio-390-light-guide-customize.png",
+        "sha256": "3e1896039fb5ef6e7febc2a1fa0ddf74b108daef6e40bd96dece783b2830a55c"
+      },
+      {
+        "file": "creative-studio-390-light-guide.png",
+        "sha256": "e4e19c2497cbd204708e1fdcad40454292bd12fbc7908c4ff8c86b5e54107b4c"
+      },
+      {
+        "file": "creative-studio-390-light-hero.png",
+        "sha256": "5bdac87c85b8c61d4405fb8b78612ad869a37471dc95f6abfb68dd0697e198ae"
+      },
+      {
+        "file": "creative-studio-390-light-home.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "creative-studio-390-light-work.png",
+        "sha256": "0a452a028f7453d65b584573126c327b641a1f2860596404eb7a837f91bea351"
+      },
+      {
+        "file": "creative-studio-390-no-js-home.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "creative-studio-390-no-js-work.png",
+        "sha256": "0a452a028f7453d65b584573126c327b641a1f2860596404eb7a837f91bea351"
+      },
+      {
+        "file": "creative-studio-390.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "product-docs-1440.png",
+        "sha256": "6559d2ba95c4f00b076ca2ac3f08443d66cd58f3e5539d21301cc3366f327802"
+      },
+      {
+        "file": "product-docs-390.png",
+        "sha256": "7f6d582376f8f1926fd25a565172954935504e1e5b0f5b8a7f03e38a4a9e3db8"
+      },
+      {
+        "file": "product-launch-1440-dark-design.png",
+        "sha256": "276046c2a627bc96f9da0fde6256cc460c47b15aa18741d07bafac18870aee20"
+      },
+      {
+        "file": "product-launch-1440-dark-guide-customize.png",
+        "sha256": "e4ba71f05a3fb9b2f7b18bbae1cf99b78e4847b6f5b029d0d490286ede65d4b1"
+      },
+      {
+        "file": "product-launch-1440-dark-guide.png",
+        "sha256": "e50e6eb55f0ca96797f35ee87687ae2b0a03034aaedd9444537ab81c71d45311"
+      },
+      {
+        "file": "product-launch-1440-dark-hero.png",
+        "sha256": "68c88a1ede9171a8f4ec8f190f747db2cd18287180b4fba23591f238eb1349c1"
+      },
+      {
+        "file": "product-launch-1440-dark-home.png",
+        "sha256": "93c4b6c6467fed1403a58af2003d1f29393b7623619f9c888e0653c6c675e8b2"
+      },
+      {
+        "file": "product-launch-1440-light-design.png",
+        "sha256": "8b3bd2198656776167fbdd3533a00c929460698ccd832192b7bca310423c17cb"
+      },
+      {
+        "file": "product-launch-1440-light-guide-customize.png",
+        "sha256": "75ba6584f3c68b6e8024bfda51bdcf4064277f29338601ce6248b7e5b86719d2"
+      },
+      {
+        "file": "product-launch-1440-light-guide.png",
+        "sha256": "7ba4eee94a2440b5967ed340a2027b929baa70cf2f3d4a959b6cd313b2bfbf17"
+      },
+      {
+        "file": "product-launch-1440-light-hero.png",
+        "sha256": "2b3b86a4a79a7d12f3af5d068c6a5e3b6f715f463a1e05ae6d77b858e73eab7c"
+      },
+      {
+        "file": "product-launch-1440-light-home.png",
+        "sha256": "0f32067b9f4f06776712eca4ba8fef3a6aaad95314564d5f74604255553b8152"
+      },
+      {
+        "file": "product-launch-1440-motion.png",
+        "sha256": "fb1d5366a4de4c047d68ae7280b666a2a3c3167d87990009bcf3b19242e3dad6"
+      },
+      {
+        "file": "product-launch-1440-no-js-design.png",
+        "sha256": "4b450f920c3c1bbcb43cff0f5ef0ee6ce3f16b5a52cf9df747e216f8a165ad9c"
+      },
+      {
+        "file": "product-launch-1440-no-js-home.png",
+        "sha256": "0f32067b9f4f06776712eca4ba8fef3a6aaad95314564d5f74604255553b8152"
+      },
+      {
+        "file": "product-launch-1440.png",
+        "sha256": "0f32067b9f4f06776712eca4ba8fef3a6aaad95314564d5f74604255553b8152"
+      },
+      {
+        "file": "product-launch-390-dark-design.png",
+        "sha256": "5bcdea056992eedd40ec09d8c078e1843ef3a511b374fa5939d96f48f0c47c1f"
+      },
+      {
+        "file": "product-launch-390-dark-guide-customize.png",
+        "sha256": "12a5e6140a01f73e6849a00423240aa89e5ed2e1ff39615e1b90e7d68a54c3e4"
+      },
+      {
+        "file": "product-launch-390-dark-guide.png",
+        "sha256": "7e6fb9520f484fa10c3211829f8cf16353f248d207b8a56799a3395a1e4aa415"
+      },
+      {
+        "file": "product-launch-390-dark-hero.png",
+        "sha256": "3a39212f0691e19be9b8c5f5b765f0723204d6f182620e8b70a3518b26a40b24"
+      },
+      {
+        "file": "product-launch-390-dark-home.png",
+        "sha256": "4acb70b00783b9e4c2332f4c757b98c3871fa539102c3d87895dc7ed8458953a"
+      },
+      {
+        "file": "product-launch-390-light-design.png",
+        "sha256": "999d3fad8e92a1602155e9e5a79f76bd24642597dcfad51c6d07267d9d4b7a71"
+      },
+      {
+        "file": "product-launch-390-light-guide-customize.png",
+        "sha256": "6c7fdedaf935c27bca7721f519ddc070945de79181a1bfef75559e0d00e37c4a"
+      },
+      {
+        "file": "product-launch-390-light-guide.png",
+        "sha256": "fbc38ef3ca0219ca540a0fb8da70266a3c98e48b358c14421b5272753d381daf"
+      },
+      {
+        "file": "product-launch-390-light-hero.png",
+        "sha256": "809c6133f2c1ebc444c182751417e2d6743d37ae0be4842c04b8761b4afcb90c"
+      },
+      {
+        "file": "product-launch-390-light-home.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-launch-390-no-js-design.png",
+        "sha256": "d2103fd5b5cf29ce7326d2309ab9e4ff7517276d6da2e0ae4392ed012b89b64d"
+      },
+      {
+        "file": "product-launch-390-no-js-home.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-launch-390.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-studio-1440.png",
+        "sha256": "23a2a929357f17432a9f9f3e4234b986f1e6bf2b676849e56e6ff5848017b9ba"
+      },
+      {
+        "file": "product-studio-390.png",
+        "sha256": "15bd6c81d900d117f8af0268e2033f9c578e81420f3a62c3f8081f4f76e3b3b7"
+      },
+      {
+        "file": "software-platform-1440-dark-guide-customize.png",
+        "sha256": "b5f30bbf0daac361219bea99a4b02bee762c7feac668dc90a6b122f43eef78f4"
+      },
+      {
+        "file": "software-platform-1440-dark-guide.png",
+        "sha256": "d463c769ce833bd0737417822bdb6ecbc0c0810d750e084725a73fe3c04d9449"
+      },
+      {
+        "file": "software-platform-1440-dark-hero.png",
+        "sha256": "492652b211a154e8fe8747211a77e3837fa5581f86dc02eef59592343039423c"
+      },
+      {
+        "file": "software-platform-1440-dark-home.png",
+        "sha256": "870a2b2b552ca97b1390c3c379b5269690fd73a9814f47820e8a15df443b604b"
+      },
+      {
+        "file": "software-platform-1440-dark-workflow.png",
+        "sha256": "71941fc5565d859408948a95b081db3ea6055431f2eaefdda0cc3563046af544"
+      },
+      {
+        "file": "software-platform-1440-light-guide-customize.png",
+        "sha256": "0ec1c5742accf74eb635f3152bd529faa8a68649b21f4b8246d2f1504084ec6b"
+      },
+      {
+        "file": "software-platform-1440-light-guide.png",
+        "sha256": "ae84f541a9fe2f708e84e9575fcd6afdef550af3809cd5d5e85b788d628202d7"
+      },
+      {
+        "file": "software-platform-1440-light-hero.png",
+        "sha256": "46f8866eca9ff66d51c18df74ea16c7fa57a6cc2c81a72fd6074a634eddb0392"
+      },
+      {
+        "file": "software-platform-1440-light-home.png",
+        "sha256": "1eb90e9cafb0fcbae8fc4b4968da4c8470762664fcbdf4967884867507a3767a"
+      },
+      {
+        "file": "software-platform-1440-light-workflow.png",
+        "sha256": "0365ae0ca1902db29c00042b2d269ee7170c49062ba2518c81ad2ccf79fd09b6"
+      },
+      {
+        "file": "software-platform-1440-motion.png",
+        "sha256": "870a2b2b552ca97b1390c3c379b5269690fd73a9814f47820e8a15df443b604b"
+      },
+      {
+        "file": "software-platform-1440-no-js-home.png",
+        "sha256": "870a2b2b552ca97b1390c3c379b5269690fd73a9814f47820e8a15df443b604b"
+      },
+      {
+        "file": "software-platform-1440-no-js-workflow.png",
+        "sha256": "71941fc5565d859408948a95b081db3ea6055431f2eaefdda0cc3563046af544"
+      },
+      {
+        "file": "software-platform-1440.png",
+        "sha256": "870a2b2b552ca97b1390c3c379b5269690fd73a9814f47820e8a15df443b604b"
+      },
+      {
+        "file": "software-platform-390-dark-guide-customize.png",
+        "sha256": "721725d82c1154425d416fc5378de9f5a435923bd0358005e254f42f6318e766"
+      },
+      {
+        "file": "software-platform-390-dark-guide.png",
+        "sha256": "c497639573a7158a3fa8a7ce63e3485d3c426630e2dcf2f7dffcc935b48b737f"
+      },
+      {
+        "file": "software-platform-390-dark-hero.png",
+        "sha256": "ae154b97a67532a35758154f6d15a73406abddd5cd035020bcb5a9b6658882de"
+      },
+      {
+        "file": "software-platform-390-dark-home.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      },
+      {
+        "file": "software-platform-390-dark-workflow.png",
+        "sha256": "e6033b38114a1498903cd507324a5c3304350292d85b84831abb56a383a5baf4"
+      },
+      {
+        "file": "software-platform-390-light-guide-customize.png",
+        "sha256": "fb06656785a06a4754b62e697bcb268c060bffbf3bb9fb1bf30ec85346ddf28e"
+      },
+      {
+        "file": "software-platform-390-light-guide.png",
+        "sha256": "f4af12b61520f7fc6d85616a36a62aa29631dda08aaa9ea5e1ba70ff7a80c5e3"
+      },
+      {
+        "file": "software-platform-390-light-hero.png",
+        "sha256": "074407d128647585b8405416eeac615fb5c5eb3592774126e96d3f5ed53b50c7"
+      },
+      {
+        "file": "software-platform-390-light-home.png",
+        "sha256": "4a5d3041a8e6586fa766b943fe09ec95e77a017e57b9e7576afcd7f9510608f7"
+      },
+      {
+        "file": "software-platform-390-light-workflow.png",
+        "sha256": "c11f0d50d4d80542406b30e2a59d38e5c2042411d3ad42f3bb2626c81d714e5b"
+      },
+      {
+        "file": "software-platform-390-no-js-home.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      },
+      {
+        "file": "software-platform-390-no-js-workflow.png",
+        "sha256": "e6033b38114a1498903cd507324a5c3304350292d85b84831abb56a383a5baf4"
+      },
+      {
+        "file": "software-platform-390.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      }
+    ]
+  }
+}

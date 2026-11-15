@@ -69,7 +69,8 @@ catalog IDs on all supported targets.
 Initial local checks found guide-relative links resolving outside their guide
 and an unlisted customization page. Absolute `/guide/...` links and explicit
 sidebar entries fix both. Strict deep checks then pass for all eight starters.
-Final source/hosted results and visual findings will be recorded in evidence.
+Final source/hosted results and visual findings are recorded in
+[the evidence](evidence/zellij-website-templates-2026-11-15.json).
 
 The first hosted pass exposed a visual bug: inverted bento headings used the
 global dark heading foreground on a dark card. Tile foregrounds and heading
@@ -93,3 +94,18 @@ The product template's final desktop pass gives both material cards two grid
 columns, filling the four-column row, and places the detail illustration's
 caption inside its narrowest crop. These are unpublished template refinements;
 all previously published archives retain their hashes.
+
+## Verified result
+
+All 30 source CI jobs in [43755151229](https://github.com/mylife-inc/Zellij/actions/runs/43755151229)
+pass at `40ab8b78f1c8de7e1ae593322e56ec9e3fada103`. Local checks pass 802 Rust,
+490 engine and 49 release-helper tests. The hosted template job produces 97
+captures, including the previous book starters; six reviewed website hero
+previews are retained in `specs/evidence/website-templates-2026-11-15/` and match
+the final run byte for byte. All eight template archives pass deterministic
+packaging and local/bundled/remote/cached parity; the five published archive
+hashes remain unchanged. The final records-only update does not alter any
+runtime, active-guide, template, test or workflow input from the tested head.
+
+This milestone does not publish rc.9 or change production hosting. Development
+image publication follows merge and is recorded separately in the evidence.

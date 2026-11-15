@@ -3,20 +3,30 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-15: website collection in progress**
+**2026-11-15: website collection verified for rc.9**
 
-The user prioritizes website templates now, alongside the completed book
-starters. Source rc.9 adds `product-launch`, `software-platform` and
-`creative-studio`, each version 0.1.0, for eight bundled templates. Existing
-published archives and rc.8 release channels are unchanged. Each new starter
-has two landing pages, two guide pages and original local vector artwork.
-They use existing hosted sections plus a bento surface foreground fix and need
-CLI/engine rc.9; source builds are needed before the next catalog release. The independent
-hosted template job covers every page in light/dark, desktop/mobile, keyboard
-selection and no-JavaScript layouts. See
-[the contract](specs/zellij-website-templates-2026-11-15.md).
-Verification and visual review are in progress. Print customization and remaining
-installation work follow this website milestone; live providers stay deferred.
+Source rc.9 adds `product-launch`, `software-platform` and `creative-studio`,
+each version 0.1.0, for eight bundled templates. Each has two landing pages,
+two guide pages and original local vector artwork. These hosted starters need
+CLI/engine rc.9; the five published archives and public rc.8 stay unchanged.
+Bento tile foregrounds now follow their own surface (`196688b`), and Porcelain
+muted light text is darker in hosted/portable output (`f32fe6b`/`1c34b02`).
+
+All 30 CI jobs in `43755151229` pass at `40ab8b7`. Local checks pass 802 Rust,
+490 engine and 49 helper tests. Template verification preserves the five old
+archive hashes and covers deterministic packaging, local/bundled/remote/offline
+parity and strict deep checks. The hosted job retains 97 captures and verifies
+all new pages in light/dark at desktop/mobile widths, keyboard selection,
+normal/reduced motion, no-JavaScript content, 12 bento surface combinations
+and studio muted-text contrast. Six reviewed hero previews are retained.
+Earlier harness/generation failures and their fixes remain in
+[the evidence](specs/evidence/zellij-website-templates-2026-11-15.json).
+See [the design contract](specs/zellij-website-templates-2026-11-15.md).
+
+PR #185 is ready to merge; development images will then be refreshed. The
+records-only final update changes no runtime, active-guide, template, test or
+workflow inputs from verified `40ab8b7`. Print customization and remaining
+installation work follow this milestone; live providers stay deferred.
 
 **2026-11-15: rc.8 publication**
 
