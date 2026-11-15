@@ -13,7 +13,7 @@ import { tmpdir } from 'node:os';
 import net from 'node:net';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { localRegistry, pullPublishedImage } from './fixtures/local-registry.mjs';
 
 const repo = fileURLToPath(new URL('../', import.meta.url));
@@ -70,7 +70,7 @@ async function browserChecks(origin, prefix, portable) {
       const sidebar = page.locator('.zellij-guide-sidebar');
       await sidebar.getByRole('link', { name: '1. The art of noticing', exact: true }).click();
       await page.getByRole('heading', { name: 'The art of noticing', exact: true }).waitFor();
-      assert((await page.locator('article').innerText()).includes('Chapter 1'));
+      await expect(page.locator('.book-number')).toHaveText('Chapter 1');
       await sidebar.getByRole('link', { name: '2. Better questions', exact: true }).click();
       await page.getByRole('heading', { name: 'A question worth keeping', exact: true }).waitFor();
       await page.reload();
