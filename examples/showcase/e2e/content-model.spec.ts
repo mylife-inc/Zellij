@@ -34,6 +34,7 @@ test.describe('menu', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'the desktop bar is hidden on mobile');
 
   test('lists the items declared in menu.yaml, in order', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
     await page.goto('/');
 
     const items = page.locator('.zellij-nav-desktop .zellij-nav-item');
@@ -69,7 +70,11 @@ test.describe('menu', () => {
 
   test('follows a url item carrying an anchor', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('link', { name: 'Specs' }).first().click();
+    const nav = page.getByRole('navigation', { name: 'Main', exact: true });
+    if (await nav.getByRole('button', { name: 'More', exact: true }).count()) {
+      await nav.getByRole('button', { name: 'More', exact: true }).click();
+    }
+    await nav.getByRole('link', { name: 'Specs', exact: true }).click();
     await expect(page).toHaveURL(/\/lumen-3-pro#specs$/);
   });
 });

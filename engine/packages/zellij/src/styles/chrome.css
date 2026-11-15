@@ -60,7 +60,7 @@
 }
 
 /* Company, product navigation and utilities have independent alignment. */
-.zellij-nav-company { display: flex; align-items: center; }
+.zellij-nav-company { display: flex; align-items: center; justify-self: start; }
 .zellij-nav-company:empty { display: none; }
 .zellij-nav-content {
   display: flex;
@@ -150,6 +150,7 @@
   height: var(--zellij-brand-height, 1.125rem);
   width: auto;
   max-width: min(9rem, 100%);
+  min-width: 0;
   object-fit: contain;
 }
 
@@ -825,6 +826,7 @@
     justify-content: center;
   }
 
+  .zellij-nav-github,
   .zellij-nav-desktop,
   .zellij-nav-cta,
   .zellij-kbd {

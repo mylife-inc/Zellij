@@ -147,6 +147,7 @@ test.describe('dropdown and mega panel', () => {
   });
 
   test('moves between top-level items with arrow keys', async ({ page }) => {
+    await page.setViewportSize({ width: 1600, height: 900 });
     await page.goto('/');
     // Scope to the main nav — the footer links share these labels.
     const mainNav = page.getByRole('navigation', { name: 'Main' });
@@ -167,7 +168,9 @@ test.describe('active state', () => {
   test('keeps the parent item active on nested routes', async ({ page }) => {
     // `Explore` points at /guide; this route sits below it.
     await page.goto('/guide/quickstart');
-    await expect(page.locator('.zellij-nav-trigger[data-active="true"]')).toContainText('Explore');
+    await expect(page.getByRole('button', { name: 'Explore', exact: true })).toHaveAttribute('data-active', 'true');
+    const more = page.getByRole('button', { name: 'More', exact: true });
+    if (await more.count()) await expect(more).toHaveAttribute('data-active', 'true');
   });
 });
 

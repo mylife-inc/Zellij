@@ -40,7 +40,13 @@ test('company stays far left without shifting the product/menu center', async ({
     link.className = 'zellij-company';
     link.href = 'https://company.example';
     link.setAttribute('aria-label', 'Company');
-    link.textContent = 'Company';
+    // Exercise the largest permitted company image, not an unsupported text mark.
+    const image = document.createElement('img');
+    image.className = 'zellij-company-image';
+    image.alt = 'Company';
+    image.src = '/_zellij/assets/logo.svg';
+    image.style.width = '48px';
+    link.append(image);
     slot.append(link);
   });
   for (const width of [1440, 1024, 901, 390, 320, 1440]) {
@@ -56,6 +62,12 @@ test('company stays far left without shifting the product/menu center', async ({
         document.documentElement.scrollWidth <= width;
     })).toBe(true);
   }
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.getByRole('button', { name: 'Open navigation' }).click();
+  const drawer = page.getByRole('dialog', { name: 'Site navigation' });
+  await expect(drawer.getByRole('link', { name: 'GitHub repository' })).toHaveAttribute('href', 'https://github.com/shebka/zellij');
+  await page.keyboard.press('Escape');
+  await page.setViewportSize({ width: 1440, height: 900 });
   // Reserve extra right-hand space without letting it pull the menu off center.
   await page.locator('.zellij-nav-actions').evaluate(actions => { actions.style.paddingLeft = '80px'; });
   await expect.poll(() => page.locator('.zellij-nav-content').evaluate(content => {
@@ -116,10 +128,22 @@ test.describe('measured overflow', () => {
 
   test('keeps a compact More panel inside either viewport edge', async ({ page }) => {
     await page.goto('/');
-    await page.setViewportSize({ width: 960, height: 900 });
     await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
+    // Reserve enough centered space for the three non-leaf items, leaving the
+    // final leaf links in a compact More panel. A hard-coded viewport instead
+    // selects a mega panel when branding or utility widths change.
+    const width = await page.locator('.zellij-nav-inner').evaluate(bar => {
+      const probes = [...bar.querySelectorAll('.zellij-nav-measure > li')].map(item => item.getBoundingClientRect().width);
+      const nav = bar.querySelector('.zellij-nav-measure')!;
+      const gap = parseFloat(getComputedStyle(nav).columnGap) || 0;
+      const actions = bar.querySelector('.zellij-nav-actions')!.getBoundingClientRect().width;
+      const brand = bar.querySelector('.zellij-brand')!.getBoundingClientRect().width;
+      const budget = probes.slice(0, 3).reduce((sum, value) => sum + value, 0) + 3 * gap + probes.at(-1)! + 8;
+      return Math.ceil(2 * actions + 2 * 32 + 2 * 24 + brand + 24 + budget);
+    });
+    await page.setViewportSize({ width, height: 900 });
     const more = page.locator('[data-nav-index="more"]');
-    await expect(more).toBeVisible();
+    await expect(more).toHaveAttribute('data-mega', 'false');
     // Exercise both anchor extremes independently of the fixture's short labels.
     for (const edge of ['left', 'right']) {
       await more.evaluate((item, edge) => {

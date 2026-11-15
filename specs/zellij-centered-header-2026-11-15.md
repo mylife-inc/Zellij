@@ -26,3 +26,13 @@ utility widths, 320–1600px viewports, More/restore behavior, large text, keybo
 focus and complete mobile navigation. Actual website export checks include
 header geometry in both palettes with and without JavaScript. Updated screenshots
 and final CI/merge evidence will be recorded after the hosted checks pass.
+
+The first hosted template job passes all 97 captures and exact centering checks.
+Showcase acceptance exposed a crowded 320px company header and older tests that
+assumed all five menu items remained visible at a fixed viewport. Mobile moves
+the GitHub utility into the drawer, preserves its destination, and allows the
+product image to shrink beside a maximum-width company icon. The company slot
+uses its intrinsic width rather than stretching to the grid track. Menu tests
+now select wide-screen versus overflow cases explicitly and the compact-panel
+fixture derives its width from the measured labels and controls. Failed cases
+remain recorded; no assertions are waived.

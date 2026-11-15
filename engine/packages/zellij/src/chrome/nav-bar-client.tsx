@@ -569,7 +569,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
 
           {model.social?.github ? (
             <a
-              className="zellij-icon-button"
+              className="zellij-icon-button zellij-nav-github"
               href={model.social.github}
               target="_blank"
               rel="noreferrer noopener"
@@ -620,6 +620,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
         onClose={closeDrawer}
         items={model.items}
         cta={model.cta}
+        github={model.social?.github}
         isActive={isActive}
       />
 
