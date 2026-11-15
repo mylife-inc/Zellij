@@ -10,4 +10,6 @@ items:
   - title: Nothing between you and the music
     body: One simple control. A gentle signal. A concept built around the pleasure of
       listening.
+    image: assets/speaker.svg
+    span: wide
     background: tinted

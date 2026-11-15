@@ -88,3 +88,8 @@ with computed browser contrast checks for the studio's muted prose in both
 palettes and on normal/tinted surfaces. This targets the 4.5:1 ordinary-text
 threshold in [WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html);
 it is not a claim of a complete accessibility audit.
+
+The product template's final desktop pass gives both material cards two grid
+columns, filling the four-column row, and places the detail illustration's
+caption inside its narrowest crop. These are unpublished template refinements;
+all previously published archives retain their hashes.
