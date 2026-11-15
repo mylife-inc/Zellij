@@ -79,7 +79,10 @@ rc.7 and production hosting are unchanged.
 
 **Current work:** rc.8 preparation on `codex/rc8-preparation`, based on
 `ec463ed`, adds public-download/engine acceptance for Next PDF delivery and
-versioned release notes. See [the preparation record](specs/zellij-rc8-preparation-2026-11-15.md).
+versioned release notes. All 29 source jobs in `43694035458` pass at `0afb807`;
+312 reviewed PDF pages match, and the rc.7 compatibility dispatch passes both
+architectures with the new capability explicitly skipped. Publication remains
+pending. See [the preparation record](specs/zellij-rc8-preparation-2026-11-15.md).
 Remaining print customization and installation work follow.
 Live provider verification and production-domain migration remain deferred.
 Unexplained browser timing findings stay open; no zero-bug or 1.0-complete claim

@@ -1,0 +1,295 @@
+{
+  "date": "2026-11-15",
+  "candidate": "v0.2.0-rc.8",
+  "status": "source preparation verified; release preflight and publication pending",
+  "baseline": "ec463edfda3059314cd68dea0fdec3a61bc098f7",
+  "verified_head": "0afb807a757bbc2a34048273d0c45f944f795050",
+  "pull_request": 182,
+  "source_ci": {
+    "run_id": 43694035458,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43694035458",
+    "head": "0afb807a757bbc2a34048273d0c45f944f795050",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132750530289,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530618,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530630,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530634,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530646,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530655,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530658,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530663,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530667,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530708,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530734,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530741,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530748,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530750,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530751,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530753,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530824,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530872,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530895,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132750530914,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132751440740,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353385,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353389,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353392,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353393,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353399,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353418,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353420,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132752353431,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "older_release_compatibility": {
+    "run_id": 43695181909,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43695181909",
+    "head": "0afb807a757bbc2a34048273d0c45f944f795050",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132754025388,
+        "name": "Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132754025609,
+        "name": "Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      }
+    ],
+    "version": "v0.2.0-rc.7",
+    "new_pdf_capability_explicitly_skipped": true
+  },
+  "local": {
+    "helper_tests_passed": 100,
+    "release_focused_tests_passed": 42,
+    "actionlint": true,
+    "syntax_and_matching_versions": true,
+    "logs": [
+      {
+        "file": "zellij-rc8-helpers.log",
+        "sha256": "f05c2722030947dcdf3915da183e35ae3acda581f6fe31f888aef699552e17f9"
+      },
+      {
+        "file": "zellij-rc8-local-release-tests.log",
+        "sha256": "828b6a15ebb3369bd9f75e94afaec51a77eb97021e6f56b4c2487f9e6270169b"
+      },
+      {
+        "file": "zellij-rc8-first-helper-tests.log",
+        "sha256": "788f02878c9a5a6688a4f9da6167ca1ab7833f0da96f708a8f95fc87cadca630"
+      }
+    ]
+  },
+  "initial_test_failure": {
+    "cause": "Existing workflow test assumed every acceptance job had inline steps; public Next PDF adds a reusable workflow.",
+    "fix": "Traverse its concrete job and keep immutable-tag/version assertions on all three public paths.",
+    "runtime_unchanged": true
+  },
+  "source_pdf": {
+    "pdfs": 34,
+    "page_captures": 312,
+    "tex_byte_identical": 30,
+    "pages_pixel_identical": 312,
+    "baseline": "reviewed Next PDF milestone (ordinary and Next-served PDFs)",
+    "comparison_script_sha256": "d85e8a068e6bbc5332bcc4bab84f7c5370738078a6bf723fd1fd436fc0ee0536",
+    "artifacts": [
+      {
+        "id": 14153971049,
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "size_in_bytes": 4532269
+      },
+      {
+        "id": 14153757735,
+        "name": "next-pdf-ubuntu-latest",
+        "size_in_bytes": 1698948
+      },
+      {
+        "id": 14153368423,
+        "name": "book-pdf-ubuntu-latest-docker",
+        "size_in_bytes": 4532265
+      },
+      {
+        "id": 14153297660,
+        "name": "next-pdf-ubuntu-24.04-arm",
+        "size_in_bytes": 1699467
+      },
+      {
+        "id": 14153152859,
+        "name": "book-pdf-ubuntu-latest-podman",
+        "size_in_bytes": 4531995
+      }
+    ]
+  },
+  "templates": [
+    {
+      "name": "template-product-docs-0.1.0.tar.gz",
+      "size": 1297,
+      "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+    },
+    {
+      "name": "template-product-studio-0.1.0.tar.gz",
+      "size": 2454,
+      "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+    },
+    {
+      "name": "template-book-classic-0.2.0.tar.gz",
+      "size": 4394,
+      "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+    },
+    {
+      "name": "template-book-technical-0.1.0.tar.gz",
+      "size": 3959,
+      "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+    },
+    {
+      "name": "template-book-study-0.1.0.tar.gz",
+      "size": 3845,
+      "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+    },
+    {
+      "name": "templates-catalog.json",
+      "size": 4746,
+      "sha256": "e3d53cd4e19e92528d10f4b944e93484a58e4af654ce45897d0765f1f5433f06"
+    }
+  ],
+  "showcase": {
+    "passed": 378,
+    "conditional_skips": 140,
+    "retries": 0,
+    "log_sha256": "f73dccbb53a05f6ccbbcfc4483e4bcd1a8c0dc5e8760c170f827fbbbf034c299"
+  },
+  "preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0,
+    "log_sha256": "4eea31ae87085b01b31e37f37cac9251f1ec5bd00384d006915fbb50a8b36e78"
+  },
+  "limits": [
+    "Live providers and production-domain migration remain deferred.",
+    "Remaining print customization, multilingual/RTL publishing, additional installation channels and unexplained browser timings remain open.",
+    "No zero-bug or stable 1.0 claim."
+  ]
+}

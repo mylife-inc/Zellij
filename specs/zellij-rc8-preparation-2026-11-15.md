@@ -53,4 +53,15 @@ versus public mode. An initial test assumed every acceptance job contained steps
 it now checks the reusable workflow's concrete job too, retaining version-input
 and immutable-checkout assertions for all three execution paths. Its first
 failure log is retained in `/private/tmp/zellij-rc8-first-helper-tests.log`.
-Full source CI, normal release preflight and public acceptance remain pending.
+All 29 source CI jobs in `43694035458` pass at `0afb807`, including both
+Next PDF architectures. The 34 PDFs retain all 312 reviewed page layouts and
+30 TeX sources. Showcase passes 378 cases without retries (140 conditional
+skips); preservation retains 46 original and 13 added routes, 282 original
+heading IDs, 82 mappings and 29 byte-identical images without browser errors.
+The actual rc.7 compatibility dispatch `43695181909` passes both architectures,
+explicitly skipping the unavailable Next PDF capability. This does not claim
+that rc.7 supports Next PDFs. See [verification evidence](evidence/zellij-rc8-preparation-2026-11-15.json).
+
+Normal release preflight, publication, public-download checks, channel updates,
+consumer migration and scoped retirement remain pending. The final records-only
+update changes no implementation, workflow or runtime inputs from tested `0afb807`.
