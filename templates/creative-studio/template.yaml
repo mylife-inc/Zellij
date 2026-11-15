@@ -1,0 +1,25 @@
+schema: 1
+id: creative-studio
+version: 0.1.0
+title: Creative studio
+description: An editorial studio website with expressive typography, original project
+  studies and a considered approach.
+minimum-cli: 0.2.0-rc.9
+minimum-engine: 0.2.0-rc.9
+renderer: hosted
+kind: site
+outputs:
+  - web
+variables:
+  title: Atelier North
+substitute:
+  - content/site.yaml
+  - content/pages.yaml
+assets:
+  - path: content/assets/identity.svg
+    license: LicenseRef-Zellij
+  - path: content/assets/field.svg
+    license: LicenseRef-Zellij
+  - path: content/assets/archive.svg
+    license: LicenseRef-Zellij
+preview: content/assets/identity.svg

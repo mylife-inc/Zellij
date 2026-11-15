@@ -13,6 +13,32 @@ The product starters remain at template version 0.1.0. Book-classic 0.2.0
 requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
 the bundled catalog; previously published 0.1.0 archives remain immutable.
 
+The rc.9 source catalog adds three website starters at template version 0.1.0:
+
+| ID | Direction | Pages |
+| --- | --- | --- |
+| `product-launch` | Sculptural product imagery, Cupertino typography, restrained gradient reveals | Overview, Design with media accordion, two guide pages |
+| `software-platform` | Dark software interface, connected workflow, practical product story | Product, Workflow, two guide pages |
+| `creative-studio` | Editorial serif typography, geometric identity studies, generous spacing | Studio, Selected work, two guide pages |
+
+These are original designs with local SVG art, not copies of Apple, Linear,
+Stripe or another company's assets. They use the existing engine sections;
+no React, external fonts, tracking, image services or new dependencies are added.
+They require CLI/engine rc.9 or later, including the bento heading contrast fix.
+The published rc.8 catalog does not contain them. Until rc.9 is released, use
+a source build with its matching engine. A source-built CLI also accepts local paths:
+
+```sh
+zel create my-website -t ./templates/product-launch --offline
+```
+
+All three have hosted output, HTTP viewing, light/dark theme controls, an editable
+second landing page and a customization guide. They are not portable direct-file
+or PDF templates. Creation works offline; builds need the matching engine and a
+supported container runtime. Real signup, purchase and contact services belong
+to the author's product. The sample buttons point to functioning local pages.
+All five previously published template archives remain byte-identical.
+
 Each catalog directory has `template.yaml` and `files/`. Files under `files/`
 become the created site. Its layout must use `zel.yaml`, `content/` and generated
 `site/`. Do not commit generated output or personal configuration here.

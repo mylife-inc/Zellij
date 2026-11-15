@@ -1,0 +1,8 @@
+type: cta-banner
+headline: What could we make together?
+body: Bring your own practice, projects and point of view to this original studio website.
+background: default
+cta:
+  label: Make this studio yours
+  href: /guide
+  style: secondary

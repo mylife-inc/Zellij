@@ -8,6 +8,7 @@ import YAML from 'yaml';
 import path from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import { packageTemplates } from './package-templates.mjs';
+import { checkWebsiteTemplate } from './check-website-templates.mjs';
 const [binary,target,...flags]=process.argv.slice(2);
 assert(binary&&target&&flags.every(f=>['--build','--browser'].includes(f)));
 assert(!flags.includes('--browser')||flags.includes('--build'));
@@ -138,8 +139,9 @@ if(flags.includes('--browser')){
           }
           await page.close();
         }
+        await checkWebsiteTemplate(browser,url,manifest,root);
       }finally{if(host)await new Promise(resolve=>host.close(resolve));}
     }
   }finally{await browser.close();}
 }
-console.log('Five templates: deterministic packages, local/bundled/remote parity, exact versions, offline cache and strict validation passed.');
+console.log(`${catalog.templates.length} templates: deterministic packages, local/bundled/remote parity, exact versions, offline cache and strict validation passed.`);

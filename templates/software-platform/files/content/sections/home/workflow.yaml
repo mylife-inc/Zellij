@@ -1,0 +1,11 @@
+type: zigzag
+rows:
+  - title: Connected by design.
+    body: Ideas become decisions. Decisions become a plan. A plan becomes something you can
+      share. Keep the context through every handoff.
+    image: assets/workflow.svg
+    align: image-right
+    cta:
+      label: Walk through the workflow
+      href: /workflow
+      style: ghost

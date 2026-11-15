@@ -1,0 +1,6 @@
+- name: Studio
+  page: home
+- name: Selected work
+  page: work
+- name: Guide
+  page: 01-guide

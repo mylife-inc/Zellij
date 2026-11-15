@@ -1,0 +1,14 @@
+type: steps-panel
+id: steps
+heading: A rhythm your team can make its own.
+visual: assets/workflow.svg
+caption: Illustrative workflow for the fictional Relay product.
+steps:
+  - title: Discover together
+    body: Collect the notes, questions and constraints in one place. Agree on what matters.
+  - title: Decide deliberately
+    body: Write down the direction and why it is worth pursuing. Give the next step an owner.
+  - title: Deliver in small pieces
+    body: Make progress visible while the work is happening. Share what is ready.
+  - title: Reflect and repeat
+    body: Record what changed and what you learned. Carry the useful context forward.

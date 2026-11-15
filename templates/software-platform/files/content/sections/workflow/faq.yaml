@@ -1,0 +1,9 @@
+type: faq
+heading: Make the starter work for you.
+items:
+  - question: Does this include a working application?
+    answer: No. Relay is a fictional website and interface illustration. Connect the buttons
+      to your own application, signup or documentation.
+  - question: Where do my documentation pages go?
+    answer: Add Markdown or MDX files to content/01-guide, or create another guide folder and
+      link it from menu.yaml.

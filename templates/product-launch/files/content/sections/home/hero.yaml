@@ -1,0 +1,15 @@
+type: hero
+background: default
+badge: A STUDY IN SOUND
+headline: Sound, beautifully shaped.
+subhead: A quiet presence. A room full of feeling. Meet Forma One, a concept for listening
+  a little differently.
+visual: assets/speaker.svg
+visualStyle: full-bleed
+cta:
+  - label: Explore the design
+    href: /design
+    style: primary
+  - label: Make it yours
+    href: /guide
+    style: ghost

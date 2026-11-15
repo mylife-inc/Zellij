@@ -1,0 +1,10 @@
+type: hero-split
+background: default
+badge: THE DESIGN
+headline: Good design leaves room.
+subhead: "Forma One is a fictional product study: shape, touch and light brought into balance."
+visual: assets/detail.svg
+cta:
+  - label: Meet the materials
+    href: "#materials"
+    style: ghost

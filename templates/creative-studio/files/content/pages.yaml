@@ -1,0 +1,17 @@
+- name: home
+  title: {{zel.title|yaml}}
+  layout: landing
+  sections:
+    - home/hero
+    - home/intro
+    - home/work
+    - home/approach
+    - home/next
+- name: work
+  title: Selected work
+  layout: landing
+  sections:
+    - work/intro
+    - work/field
+    - work/archive
+    - work/next

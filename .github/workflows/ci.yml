@@ -279,6 +279,38 @@ jobs:
           path: test-results/preview-watch-*.zip
           retention-days: 7
 
+  site-templates:
+    name: Website and book templates
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build --workspace @shebka/zellij
+      - run: docker build --progress=plain -f docker/base.Dockerfile -t zellij-ci .
+      - name: Export templates and verify pages, palettes, keyboard and no-JavaScript layouts
+        env:
+          ZELLIJ_IMAGE: zellij-ci
+        run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: site-template-previews
+          path: ${{ runner.temp }}/site-template-exports/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
   cli:
     name: CLI
     runs-on: ubuntu-latest
@@ -343,18 +375,6 @@ jobs:
           path: test-results/next-equations/
           if-no-files-found: ignore
           retention-days: 14
-
-      - name: Site templates export and render on desktop and mobile
-        env:
-          ZELLIJ_IMAGE: zellij-ci
-        run: node scripts/check-site-templates.mjs cli/target/debug/zel "$RUNNER_TEMP/site-template-exports" --build --browser
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: site-template-previews
-          path: ${{ runner.temp }}/site-template-exports/*.png
-          if-no-files-found: ignore
-          retention-days: 7
 
       - name: Converted documents retain routes, assets and hydrated tables
         env:

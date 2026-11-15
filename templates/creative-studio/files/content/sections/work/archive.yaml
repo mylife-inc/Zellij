@@ -1,0 +1,44 @@
+type: compose
+version: 1
+label: The Archive editorial study
+children:
+  - type: image
+    image: assets/archive.svg
+    alt: "Original Archive identity: a terracotta arch and editorial typography on a warm
+      paper ground."
+    ratio: landscape
+  - type: group
+    children:
+      - type: group
+        children:
+          - type: text
+            text: 02 / EDITORIAL & CULTURE
+            size: small
+            tone: muted
+          - type: heading
+            text: The Archive
+            level: 2
+            scale: display
+            weight: regular
+      - type: group
+        children:
+          - type: heading
+            text: Objects with a story.
+            level: 3
+            scale: subtitle
+          - type: text
+            text: An imagined collection brings ordinary objects into focus. A warm palette and
+              architectural shapes create a quiet frame for their histories.
+            size: body
+            tone: normal
+          - type: text
+            text: "Use this page to show the actual work: the initial idea, the important decisions
+              and the finished system."
+            size: small
+            tone: muted
+    layout:
+      kind: split
+      gap: large
+id: archive
+padding: normal
+background: tinted

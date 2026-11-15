@@ -1,0 +1,16 @@
+- name: home
+  title: {{zel.title|yaml}}
+  layout: landing
+  sections:
+    - home/hero
+    - home/principles
+    - home/workspace
+    - home/workflow
+    - home/next
+- name: workflow
+  title: The workflow
+  layout: landing
+  sections:
+    - workflow/hero
+    - workflow/steps
+    - workflow/faq

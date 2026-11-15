@@ -1253,7 +1253,7 @@ a.zellij-scroll-card:hover {
   border-radius: var(--zellij-radius-media);
   background: var(--zellij-bg);
   border: 1px solid var(--zellij-border);
-  color: inherit;
+  color: var(--zellij-fg);
   text-decoration: none;
   overflow: hidden;
   transition:
@@ -1292,6 +1292,12 @@ a.zellij-bento-tile:hover {
   font-size: 1.25rem;
   line-height: 1.25;
   margin: 0;
+}
+
+/* A tile owns its surface even inside an inverted/accent section. The global
+   heading reset must not repaint its heading with the surrounding foreground. */
+.zellij-section .zellij-bento-tile .zellij-bento-title {
+  color: inherit;
 }
 
 .zellij-bento-body {

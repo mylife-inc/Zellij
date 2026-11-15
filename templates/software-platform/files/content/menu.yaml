@@ -1,0 +1,6 @@
+- name: Product
+  page: home
+- name: Workflow
+  page: workflow
+- name: Guide
+  page: 01-guide

@@ -1,0 +1,24 @@
+type: compose
+version: 1
+label: A thoughtful practice
+children:
+  - type: text
+    text: THE PRACTICE / 01
+    size: small
+    tone: muted
+  - type: heading
+    text: Made with intention. Left open to possibility.
+    level: 2
+    scale: display
+    weight: regular
+  - type: text
+    text: We start with a question, listen closely and follow the idea until it feels
+      inevitable. The result should be useful, distinctive and a pleasure to spend time
+      with.
+    size: lead
+    tone: muted
+layout:
+  kind: stack
+  gap: large
+padding: normal
+background: tinted

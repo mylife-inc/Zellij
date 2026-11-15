@@ -513,7 +513,7 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
     light: {
       bg: '#ffffff',
       fg: '#111111',
-      muted: '#8a8a8a',
+      muted: '#6e6e6e',
       surface: '#fafafa',
       border: '#ececec',
       accent: '#8a7b5c',

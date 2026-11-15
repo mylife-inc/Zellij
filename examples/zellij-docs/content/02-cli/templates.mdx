@@ -61,6 +61,53 @@ Set `book.edition` to `classic`, `technical` or `study` to change the coordinate
 web/PDF design without rewriting the content. [Book editions](/cli/books#coordinated-editions)
 explains the scope. The original three template archives remain unchanged.
 
+## Website collection — rc.9 source
+
+<Callout type="info" title="Implemented in source; not yet in the published rc.8 catalog">
+The next candidate adds three complete website starters. They require CLI/engine rc.9,
+including clearer inverted bento headings and improved Porcelain text contrast. Until rc.9 is
+released, use a source-built CLI and matching engine.
+The published rc.8 binary's bundled catalog still contains the five starters above.
+</Callout>
+
+| Template | Design direction | Included pages |
+| --- | --- | --- |
+| `product-launch` | Large product imagery, Cupertino typography, material details and gradient reveals | Overview, Design, customization guide |
+| `software-platform` | Dark software interface, clear product story and connected workflow | Product, Workflow, customization guide |
+| `creative-studio` | Expressive serif typography, original identity studies and editorial spacing | Studio, Selected work, customization guide |
+
+With an rc.9 source build:
+
+```sh
+zel create my-product -t product-launch --name "My product"
+zel create my-platform -t software-platform --name "My platform"
+zel create my-studio -t creative-studio --name "My studio"
+```
+
+Each starter includes two landing pages, two Markdown guide pages and local,
+original SVG illustrations. Product-launch demonstrates a keyboard-operated
+media accordion; software-platform includes an interface illustration and a
+step-by-step workflow; creative-studio expands two fictional project studies.
+These are original designs inspired by product storytelling and editorial
+layout patterns, not copies of another company's website or assets.
+
+Edit `content/site.yaml` for identity and theme, `content/pages.yaml` for the
+section order, and `content/sections/` for the content. The included guide explains
+artwork replacement, color modes, motion, navigation and the optional separate
+company logo. `--name` changes the site identity and home-page title; replace the
+fictional product names in the sample prose with your own story as well.
+
+These three templates use hosted sections. Build with a supported container
+runtime and serve the output over HTTP with `zel serve` or `zel view`.
+They do not enable direct-file viewing or book PDF output. Creation needs no
+Docker or Node. No external image service or new runtime dependency is added.
+Buttons lead to working sample pages; connect your own signup, purchase or
+contact service when you customize the site. No analytics are enabled.
+
+The default styles, alternate light/dark palettes, narrow layouts and no-JavaScript
+fallbacks are covered by hosted browser acceptance. The five published starter
+archives retain their original bytes and versions.
+
 ## Create and edit
 
 ```sh
