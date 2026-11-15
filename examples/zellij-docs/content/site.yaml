@@ -27,7 +27,7 @@ basePath: ""
 
 nav:
   sticky: true
-  align: left
+  align: center
   themeToggle: true
   # On, deliberately: the fastest way to understand what a theme does here is to
   # switch one and watch this page change.

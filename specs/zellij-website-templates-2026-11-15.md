@@ -118,3 +118,11 @@ no runtime, active-guide, template, test, workflow or image input.
 
 This milestone does not publish rc.9 or change production hosting; the public
 release remains rc.8.
+
+## Header correction after template review
+
+The user clarified the company/menu/control alignment after reviewing the
+original captures. [The centered-header correction](zellij-centered-header-2026-11-15.md)
+now centers product/home navigation on the viewport while company identity
+stays far left and controls stay far right. Its evidence retains six refreshed
+previews; the earlier captures and hashes above remain historical evidence.

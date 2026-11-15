@@ -20,7 +20,8 @@ export interface NavItemModel {
 }
 
 /**
- * The left of the bar — design §4.1. `logo.href` pointing away from this site
+ * Product identity in the navigation group, with a separate company mark
+ * at the left edge. `logo.href` pointing away from this site
  * is how a family of sites shares an owner: the mark returns to the hub, and
  * `title` becomes the way home within this site.
  */

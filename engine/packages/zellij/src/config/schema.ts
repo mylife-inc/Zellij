@@ -120,7 +120,7 @@ export type BrandConfig = z.infer<typeof brandSchema>;
  */
 export const navSchema = z.object({
   sticky: z.boolean().default(true),
-  align: z.enum(['left', 'center']).default('left'),
+  align: z.enum(['left', 'center']).default('center'),
   hideOnScrollDown: z.boolean().default(false),
   transparentOverHero: z.boolean().default(true),
   scrollThreshold: z.number().int().nonnegative().default(80),

@@ -11,6 +11,7 @@ interface MobileDrawerProps {
   onClose: () => void;
   items: NavItemModel[];
   cta: Array<{ label: string; href: string; style: string }>;
+  github?: string;
   isActive: (href: string) => boolean;
 }
 
@@ -18,7 +19,7 @@ interface MobileDrawerProps {
  * Full-height mobile navigation. Nested items become accordions and the CTA is
  * pinned to the bottom; Escape and backdrop tap close it (spec §5.5).
  */
-export function MobileDrawer({ open, onClose, items, cta, isActive }: MobileDrawerProps) {
+export function MobileDrawer({ open, onClose, items, cta, github, isActive }: MobileDrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -158,8 +159,13 @@ export function MobileDrawer({ open, onClose, items, cta, isActive }: MobileDraw
           </ul>
         </nav>
 
-        {cta.length > 0 ? (
+        {cta.length > 0 || github ? (
           <div className="zellij-drawer-cta">
+            {github ? (
+              <a className="zellij-drawer-link" href={github} target="_blank" rel="noopener noreferrer" onClick={onClose}>
+                GitHub repository
+              </a>
+            ) : null}
             {cta.map((action) => (
               <Link
                 key={action.href}

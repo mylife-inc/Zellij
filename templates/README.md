@@ -128,3 +128,7 @@ to work. Never reuse an already published template version for different bytes.
 `published.json` records previously published archive hashes. Packaging uses an
 explicit gzip level and refuses different bytes for a known ID/version; record
 new hashes only after public release verification, without rewriting old entries.
+
+The rc.9 website starters center the product home link and menu on the viewport.
+Optional `brand.company` stays at the far left; search and theme controls stay
+at the far right. The mobile header uses the complete navigation drawer.

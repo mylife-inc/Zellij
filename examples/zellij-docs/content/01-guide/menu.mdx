@@ -80,17 +80,22 @@ Past `menuOverflowAfter` items — seven by default, set it in `site.yaml` — t
 remainder collapses into one trailing drawer. A book with thirty chapters gets
 a usable bar with no configuration at all.
 
-The desktop header also measures the space between the brand and its controls.
+The desktop header measures the space available after reserving its edge controls.
 When labels do not fit, trailing items move into **More**; they return to the
 bar when more space becomes available. Dropdowns keep their destinations, and
 grouped menus keep their headings, descriptions and external-link behavior.
 This also responds to larger text, font and theme changes. `menuOverflowAfter`
 remains an upper limit, rather than a promise that every item will always fit.
 
-The bar spans the viewport with consistent edge padding: branding on the left,
-search and theme controls on the right. `nav.align` positions the menu within
-the remaining space. Search still opens the search dialog. On mobile, the
-navigation drawer contains the complete menu.
+The bar spans the viewport with consistent edge padding. In rc.9, `nav.align`
+defaults to `center`: the product logo/home link and menu form one group centered
+on the viewport. An optional `brand.company` logo sits at the far left, while
+search, theme controls and other utilities stay at the far right. Unequal logo
+and control widths do not shift the centered group. Explicit `nav.align: left`
+remains available. Search opens the search dialog. On mobile, the product home
+link remains beside the company mark and the navigation drawer contains the
+complete menu. The optional GitHub destination moves into that drawer on
+mobile, leaving room for both company and product identity.
 
 When resizing switches between mobile and desktop navigation, open menus close
 and keyboard focus moves to a visible navigation control. Focus already in the

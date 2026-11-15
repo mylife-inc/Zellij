@@ -38,7 +38,7 @@ import type { BrandModel, NavItemModel, NavLeafModel, NavModel } from './nav-mod
  * which is not known until after hydration, and the logo would visibly swap.
  */
 function NavBrand({ brand }: { brand: BrandModel }) {
-  const { logo, title, company } = brand;
+  const { logo, title } = brand;
 
   /*
    * Set as the variable the stylesheet already falls back on, rather than as a
@@ -82,23 +82,6 @@ function NavBrand({ brand }: { brand: BrandModel }) {
       data-has-dark={logo?.dark ? 'true' : 'false'}
       style={sizing}
     >
-      {company ? (
-        <a
-          className="zellij-company"
-          href={company.href}
-          aria-label={company.alt}
-          target={company.newTab ? '_blank' : undefined}
-          rel={company.newTab ? 'noopener noreferrer' : undefined}
-          data-has-dark={company.dark ? 'true' : 'false'}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="zellij-company-image" data-variant="light" src={company.src} alt={company.alt} />
-          {company.dark ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img className="zellij-company-image" data-variant="dark" src={company.dark} alt="" aria-hidden="true" />
-          ) : null}
-        </a>
-      ) : null}
       {logo?.external ? (
         <a className="zellij-logo" href={logo.href} aria-label={logo.alt}>
           {mark}
@@ -120,6 +103,26 @@ function NavBrand({ brand }: { brand: BrandModel }) {
       ) : null}
     </div>
   );
+}
+
+function NavCompany({ company }: { company: BrandModel['company'] }) {
+  return company ? (
+    <a
+      className="zellij-company"
+      href={company.href}
+      aria-label={company.alt}
+      target={company.newTab ? '_blank' : undefined}
+      rel={company.newTab ? 'noopener noreferrer' : undefined}
+      data-has-dark={company.dark ? 'true' : 'false'}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img className="zellij-company-image" data-variant="light" src={company.src} alt={company.alt} />
+      {company.dark ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img className="zellij-company-image" data-variant="dark" src={company.dark} alt="" aria-hidden="true" />
+      ) : null}
+    </a>
+  ) : null;
 }
 
 /** Reserved key for the theme picker in the bar's open-panel state. */
@@ -467,54 +470,57 @@ export function NavBarClient({ model }: { model: NavModel }) {
     >
       {model.announcement ? <AnnouncementBar announcement={model.announcement} /> : null}
 
-      <div className="zellij-nav-inner">
-        <NavBrand brand={model.brand} />
+      <div className="zellij-nav-inner" data-align={model.align}>
+        <div className="zellij-nav-company"><NavCompany company={model.brand.company} /></div>
+        <div className="zellij-nav-content">
+          <NavBrand brand={model.brand} />
 
-        <nav ref={navRef} className="zellij-nav-desktop" aria-label="Main" data-align={model.align} data-measured={measured}>
-          <ul className="zellij-nav-list" ref={menuBarRef} onKeyDown={onMenuBarKeyDown}>
-            {model.items.slice(0, visibleCount).map((item, index) => (
-              <NavItem
-                key={index}
-                itemKey={String(index)}
-                item={item}
-                active={isItemActive(item)}
-                open={openMenu === String(index)}
-                onOpen={() => openMenuNow(String(index))}
-                onHover={() => requestOpen(String(index))}
-                onHoverEnd={() => cancelSwitchFor(String(index))}
-                onClose={closeMenu}
-                onToggle={() =>
-                  openMenu === String(index) ? closeMenu() : openMenuNow(String(index))
-                }
-                isActive={isActive}
-              />
-            ))}
-            {visibleCount < model.items.length ? (
-              <NavItem
-                itemKey="more"
-                item={overflow}
-                active={model.items.slice(visibleCount).some(isItemActive)}
-                open={openMenu === OVERFLOW_MENU}
-                onOpen={() => openMenuNow(OVERFLOW_MENU)}
-                onHover={() => requestOpen(OVERFLOW_MENU)}
-                onHoverEnd={() => cancelSwitchFor(OVERFLOW_MENU)}
-                onClose={closeMenu}
-                onToggle={() => openMenu === OVERFLOW_MENU ? closeMenu() : openMenuNow(OVERFLOW_MENU)}
-                isActive={isActive}
-              />
-            ) : null}
-          </ul>
-          <ul className="zellij-nav-list zellij-nav-measure" ref={measureRef} aria-hidden="true" inert>
-            {[...model.items, { label: 'More' }].map((item, index) => (
-              <li className="zellij-nav-probe" key={index}>
-                <span className="zellij-nav-probe-label" data-active={index < model.items.length ? isItemActive(item) : true}>
-                  {item.label}
-                  {item.href ? (item.external ? <ExternalIcon /> : null) : <Chevron />}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          <nav ref={navRef} className="zellij-nav-desktop" aria-label="Main" data-align={model.align} data-measured={measured}>
+            <ul className="zellij-nav-list" ref={menuBarRef} onKeyDown={onMenuBarKeyDown}>
+              {model.items.slice(0, visibleCount).map((item, index) => (
+                <NavItem
+                  key={index}
+                  itemKey={String(index)}
+                  item={item}
+                  active={isItemActive(item)}
+                  open={openMenu === String(index)}
+                  onOpen={() => openMenuNow(String(index))}
+                  onHover={() => requestOpen(String(index))}
+                  onHoverEnd={() => cancelSwitchFor(String(index))}
+                  onClose={closeMenu}
+                  onToggle={() =>
+                    openMenu === String(index) ? closeMenu() : openMenuNow(String(index))
+                  }
+                  isActive={isActive}
+                />
+              ))}
+              {visibleCount < model.items.length ? (
+                <NavItem
+                  itemKey="more"
+                  item={overflow}
+                  active={model.items.slice(visibleCount).some(isItemActive)}
+                  open={openMenu === OVERFLOW_MENU}
+                  onOpen={() => openMenuNow(OVERFLOW_MENU)}
+                  onHover={() => requestOpen(OVERFLOW_MENU)}
+                  onHoverEnd={() => cancelSwitchFor(OVERFLOW_MENU)}
+                  onClose={closeMenu}
+                  onToggle={() => openMenu === OVERFLOW_MENU ? closeMenu() : openMenuNow(OVERFLOW_MENU)}
+                  isActive={isActive}
+                />
+              ) : null}
+            </ul>
+            <ul className="zellij-nav-list zellij-nav-measure" ref={measureRef} aria-hidden="true" inert>
+              {[...model.items, { label: 'More' }].map((item, index) => (
+                <li className="zellij-nav-probe" key={index}>
+                  <span className="zellij-nav-probe-label" data-active={index < model.items.length ? isItemActive(item) : true}>
+                    {item.label}
+                    {item.href ? (item.external ? <ExternalIcon /> : null) : <Chevron />}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
         <div className="zellij-nav-actions">
           {model.search ? (
@@ -563,7 +569,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
 
           {model.social?.github ? (
             <a
-              className="zellij-icon-button"
+              className="zellij-icon-button zellij-nav-github"
               href={model.social.github}
               target="_blank"
               rel="noreferrer noopener"
@@ -614,6 +620,7 @@ export function NavBarClient({ model }: { model: NavModel }) {
         onClose={closeDrawer}
         items={model.items}
         cta={model.cta}
+        github={model.social?.github}
         isActive={isActive}
       />
 

@@ -55,3 +55,14 @@ it('permits a company mark with the product name as home link, and rejects unsaf
     expect(siteConfigSchema.safeParse({ brand: { company: { ...company, href } } }).success).toBe(false);
   }
 });
+
+it('centers product navigation by default and keeps explicit left alignment available', () => {
+  for (const align of [undefined, 'left', 'center']) {
+    const config = siteConfigSchema.parse({ name: 'Product', nav: { align } });
+    expect(config.nav.align).toBe(align ?? 'center');
+    const site = { config, menu: [], pages: [] } as unknown as Site;
+    const html = renderToStaticMarkup(<NavBar site={site} />);
+    expect(html).toContain(`class="zellij-nav-inner" data-align="${align ?? 'center'}"`);
+    expect(html).toContain('class="zellij-nav-content"');
+  }
+});

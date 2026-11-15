@@ -3,6 +3,32 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: centered header correction verified**
+
+The user clarified that only the company mark belongs at the far left; product
+home navigation and menu belong in a centered group, with search/theme controls
+at the far right. The website previews inherited the left default, and the old
+center option centered links only within leftover space. Source rc.9 changes
+the default to center, separates company and product identity, and reserves
+equal side space (`e9e6a11`). Explicit left alignment remains available. The
+mobile header retains both identities and moves the optional GitHub link into
+the drawer (`b202c5f`), fixing the crowded 320px case. The three unpublished
+website starters and active docs opt into center; five released archives stay
+immutable. Native portable books keep their separate sidebar navigation.
+
+All 30 CI jobs in `43764569035` pass at `b202c5f`. Browser checks pass 382 cases
+with 140 conditional skips and no retries, plus prefix/reload acceptance.
+Local checks pass 491 engine tests, type checking/build, six native template
+integration cases, eight-template packaging/parity and strict deep docs checks.
+The hosted template job verifies exact centering with and without JavaScript
+and retains 97 captures. Six refreshed previews are visually reviewed. The
+initial crowded mobile case and fixture failures remain in
+[the evidence](specs/evidence/zellij-centered-header-2026-11-15.json); see
+[the correction contract](specs/zellij-centered-header-2026-11-15.md).
+PR #187 is ready to merge. The final records-only update changes no runtime,
+active-guide, template, test or workflow inputs from verified `b202c5f`.
+Public rc.8 and production hosting remain unchanged; rc.9 is unreleased.
+
 **2026-11-15: website collection verified for rc.9**
 
 Source rc.9 adds `product-launch`, `software-platform` and `creative-studio`,

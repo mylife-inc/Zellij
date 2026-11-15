@@ -1,0 +1,736 @@
+{
+  "date": "2026-11-15",
+  "baseline": "22345d0e16d673b101ad8fc6a9ba701c19635b2f",
+  "implementation": "e9e6a113cf005d04d028d75d7d022451fc1c6e9d",
+  "pull_request": 187,
+  "status": "implementation verified; merge and development images pending",
+  "source_version": "0.2.0-rc.9 unreleased",
+  "public_version": "0.2.0-rc.8 unchanged",
+  "local": {
+    "engine_tests": 491,
+    "engine_typecheck": true,
+    "engine_build": true,
+    "native_template_integration_tests": 6,
+    "strict_deep_docs_routes": 59,
+    "templates_checked": 8,
+    "previous_five_archive_hashes_unchanged": true,
+    "logs": [
+      {
+        "file": "zellij-centered-header-typecheck.log",
+        "sha256": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018"
+      },
+      {
+        "file": "zellij-centered-header-tests.log",
+        "sha256": "8e7e1cf681445107c028b29ed30eea3b3e6264697ee61fefe247ca5ee5df9885"
+      },
+      {
+        "file": "zellij-centered-header-build.log",
+        "sha256": "5317b7c83e22dfcffec75cab4821f4dbde9c1c7718d731770f61bc034f1d1f44"
+      },
+      {
+        "file": "zellij-centered-header-native.log",
+        "sha256": "162c28151f08004daa6aef0a953df696b082a031354d726bed683b6a2c9b1848"
+      },
+      {
+        "file": "zellij-centered-header-docs.log",
+        "sha256": "fd939476a2813e8c1b333db086c34c623e5227fc75642da77f1ea851beb5be91"
+      },
+      {
+        "file": "zellij-centered-header-template-check.log",
+        "sha256": "520c7e815deadc7de7946e8f5bd92dd50ddf683ea86c787c2ae2f464d5df89f6"
+      },
+      {
+        "file": "zellij-centered-header-typecheck-final.log",
+        "sha256": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018"
+      },
+      {
+        "file": "zellij-centered-header-tests-final.log",
+        "sha256": "989ce4b44f3d73c715c268fa220e54ebde97d52a442ddc6d8e24260de0444de9"
+      }
+    ],
+    "final_engine_tests": 491
+  },
+  "hosted": {
+    "initial_run": 43763560563,
+    "status": "success",
+    "initial_template_job": 132963505617,
+    "initial_template_result": "success; 97 captures, including header geometry",
+    "initial_showcase_job": 132963505677,
+    "initial_showcase_result": {
+      "passed": 372,
+      "failed": 10,
+      "conditional_skips": 140
+    },
+    "initial_failure_log_sha256": "4cfaccf9fee81ec5c0111600fca13a34306487e3329c35fe362f77ea35889dd6",
+    "initial_findings": [
+      "320px header crowded with company identity and all utilities; GitHub moved into mobile drawer, product image can shrink, and company slot uses intrinsic grid width.",
+      "Earlier fixed-width menu tests selected overflow instead of the full menu or selected a mega panel instead of the intended compact panel. Assertions now cover those states explicitly."
+    ],
+    "run": 43764569035,
+    "template_job": 132966729745,
+    "template_result": "success",
+    "template_artifact": 14182012026,
+    "template_captures": 97,
+    "showcase_job": 132966729867,
+    "showcase_result": {
+      "passed": 382,
+      "conditional_skips": 140,
+      "retries": 0,
+      "prefix_and_development_reload": "success"
+    },
+    "showcase_log_sha256": "68a583183932b12cfebb352b803a08820773974f29c68135c12870713446d5aa",
+    "template_log_sha256": "edeeac8f73baaeec0e5c76784dd11d8a9cdd204144ad884f4d4739064c3f1f7e",
+    "jobs_passed": 30,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43764569035",
+    "jobs": [
+      {
+        "name": "Engine",
+        "databaseId": 132966729558,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:40:04Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "databaseId": 132966729727,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:39:18Z"
+      },
+      {
+        "name": "Website and book templates",
+        "databaseId": 132966729745,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:41:38Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "databaseId": 132966729767,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:14Z",
+        "completedAt": "2026-11-15T21:37:57Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "databaseId": 132966729785,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:42:04Z"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "databaseId": 132966729786,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:45:56Z"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "databaseId": 132966729798,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:40:54Z"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "databaseId": 132966729799,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:41:30Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "databaseId": 132966729825,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:39:20Z"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "databaseId": 132966729844,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:58:50Z"
+      },
+      {
+        "name": "Native images (amd64)",
+        "databaseId": 132966729845,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:39:00Z"
+      },
+      {
+        "name": "Showcase end to end",
+        "databaseId": 132966729867,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:42:42Z"
+      },
+      {
+        "name": "CLI",
+        "databaseId": 132966729876,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:11Z",
+        "completedAt": "2026-11-15T22:05:27Z"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "databaseId": 132966729879,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:14Z",
+        "completedAt": "2026-11-15T21:40:55Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "databaseId": 132966729886,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:14Z",
+        "completedAt": "2026-11-15T21:39:08Z"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "databaseId": 132966729888,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:13Z",
+        "completedAt": "2026-11-15T21:43:05Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "databaseId": 132966729896,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:38:13Z"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "databaseId": 132966729907,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:13Z",
+        "completedAt": "2026-11-15T21:48:20Z"
+      },
+      {
+        "name": "Embedded schema is current",
+        "databaseId": 132966729912,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:12Z",
+        "completedAt": "2026-11-15T21:36:39Z"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "databaseId": 132966729913,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:40Z",
+        "completedAt": "2026-11-15T21:38:28Z"
+      },
+      {
+        "name": "Native images (arm64)",
+        "databaseId": 132966729926,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:36:14Z",
+        "completedAt": "2026-11-15T21:38:54Z"
+      },
+      {
+        "name": "Combined image manifests",
+        "databaseId": 132967525633,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:39:02Z",
+        "completedAt": "2026-11-15T21:40:04Z"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "databaseId": 132968683189,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:43:47Z"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 132968683214,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:43:57Z"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "databaseId": 132968683215,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:10Z",
+        "completedAt": "2026-11-15T21:43:59Z"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 132968683219,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:47:49Z"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "databaseId": 132968683227,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:43:52Z"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "databaseId": 132968683257,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:09Z",
+        "completedAt": "2026-11-15T21:44:39Z"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "databaseId": 132968683270,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:43:52Z"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "databaseId": 132968683280,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T21:43:07Z",
+        "completedAt": "2026-11-15T21:44:35Z"
+      }
+    ],
+    "result_sha256": "0b89bd97ab01040d897d251dc750f62e15df2fd2f44882d06ecff4f423ce5c89"
+  },
+  "scope": "Shared hosted header; native portable books retain separate sidebar navigation.",
+  "verified_head": "b202c5f1c055a238149dfb9b4e5b41c43424d67d",
+  "visual_review": {
+    "result": "Reviewed all six retained desktop/mobile hero previews; desktop centering and mobile spacing are correct. Desktop files match the first reviewed run byte for byte.",
+    "previews": [
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/product-launch-1440.png",
+        "sha256": "bccb41239d7af9e2085ffbe3e2d0b3400c991dd9821c8dd54e98d555c93740ba",
+        "bytes": 262076
+      },
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/product-launch-390.png",
+        "sha256": "809c6133f2c1ebc444c182751417e2d6743d37ae0be4842c04b8761b4afcb90c",
+        "bytes": 68220
+      },
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/software-platform-1440.png",
+        "sha256": "7dd6771cc14da58e6393b8cc13544c567aa36702a27385b21c20d7acc6d47fb0",
+        "bytes": 103154
+      },
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/software-platform-390.png",
+        "sha256": "ae154b97a67532a35758154f6d15a73406abddd5cd035020bcb5a9b6658882de",
+        "bytes": 34580
+      },
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/creative-studio-1440.png",
+        "sha256": "82931f1674da23566346745bf1d708c82e0a1b7c250ecd03f6fa01a89711a108",
+        "bytes": 65768
+      },
+      {
+        "file": "specs/evidence/centered-header-2026-11-15/creative-studio-390.png",
+        "sha256": "5bdac87c85b8c61d4405fb8b78612ad869a37471dc95f6abfb68dd0697e198ae",
+        "bytes": 30767
+      }
+    ],
+    "capture_hashes": [
+      {
+        "file": "book-classic-1440-chapter.png",
+        "sha256": "0f084cfda2991d3b4251ed9a8300f87a001b0a87fa8b8792d9e7a06d6db2cb27"
+      },
+      {
+        "file": "book-classic-1440.png",
+        "sha256": "1b79e290d15c71dc51df3094fdd8cc1831ee445a14b390f2dc3342704d4209b8"
+      },
+      {
+        "file": "book-classic-390-chapter.png",
+        "sha256": "52b76d4b6b3b35f5a4ab7dc5dda9caf4849973574e7c0cebbe9cf082b10b7092"
+      },
+      {
+        "file": "book-classic-390.png",
+        "sha256": "04c65adf8b12896f95328b64ca789822d48ac4abad6b0986a49a8ced00240d87"
+      },
+      {
+        "file": "book-study-1440-chapter.png",
+        "sha256": "0bdf74f4e2864c160558756a17bb888d1e7675195d822ff9db1dd4d9a1a814c8"
+      },
+      {
+        "file": "book-study-1440.png",
+        "sha256": "903fcbfb46738845eb8b4e676813c9ee7a0ed7276ec71588060cc7a3ba408b04"
+      },
+      {
+        "file": "book-study-390-chapter.png",
+        "sha256": "9c34d2378d93a2500671432c91c36fb7fe8e41c251252e5875436ae1ff729cfe"
+      },
+      {
+        "file": "book-study-390.png",
+        "sha256": "d7c31ac998c19b4c75c4cff42162da00c274b9028be45bece28ce98b17060ea5"
+      },
+      {
+        "file": "book-technical-1440-chapter.png",
+        "sha256": "2383c076542b6075d28c204e2dc8c38ba92633547c698a73f918804a0d7752b3"
+      },
+      {
+        "file": "book-technical-1440.png",
+        "sha256": "e142d9fe16ecce07de463021f46806188096c36656f8c552b540cc9bb67f7ef9"
+      },
+      {
+        "file": "book-technical-390-chapter.png",
+        "sha256": "dd736c7e56dc55fae11df2b386061240a21d43f47d945f15954685a0f2353772"
+      },
+      {
+        "file": "book-technical-390.png",
+        "sha256": "0259b0498407af6072bf1df7653c18d3911be9a1182f4bfae4cb9988bfebf4b8"
+      },
+      {
+        "file": "creative-studio-1440-dark-guide-customize.png",
+        "sha256": "e0f13bdcda43837ea7c737c7d772a3b7dfade6ae54b6d955d202fd19608cd4e8"
+      },
+      {
+        "file": "creative-studio-1440-dark-guide.png",
+        "sha256": "2fdac512f618905b296b6a9dd8001863fb22f0bc8719994f6118cb51ede5f9af"
+      },
+      {
+        "file": "creative-studio-1440-dark-hero.png",
+        "sha256": "d789bb033682e23f696a37cc4a773f0f56b827363d675be22ceab0504ca0430e"
+      },
+      {
+        "file": "creative-studio-1440-dark-home.png",
+        "sha256": "63fe885212f66925919cf474024e76e407806c957ae84fe453b6a6142d827ef6"
+      },
+      {
+        "file": "creative-studio-1440-dark-work.png",
+        "sha256": "1bb51c1f2ed56e5be4d6a9ee859d571c28d682edcdfe8c4d7d6e42e880ac151f"
+      },
+      {
+        "file": "creative-studio-1440-light-guide-customize.png",
+        "sha256": "443c1dc08e8bf4bfaf314b4d173e9bf528f83907021bb467da0569e82b581fa4"
+      },
+      {
+        "file": "creative-studio-1440-light-guide.png",
+        "sha256": "52e3572975351a240f20423e1b4daec2d11bab0f3e917c057fed8cab72c5129d"
+      },
+      {
+        "file": "creative-studio-1440-light-hero.png",
+        "sha256": "82931f1674da23566346745bf1d708c82e0a1b7c250ecd03f6fa01a89711a108"
+      },
+      {
+        "file": "creative-studio-1440-light-home.png",
+        "sha256": "fab5ffea7da55c30f040fc05f999ab240eb448125d84814bd0bd5f0ee621af22"
+      },
+      {
+        "file": "creative-studio-1440-light-work.png",
+        "sha256": "30516bed436730f9d994f40f836f4f13124573215330b37e9665afd9c40cf6bd"
+      },
+      {
+        "file": "creative-studio-1440-motion.png",
+        "sha256": "fab5ffea7da55c30f040fc05f999ab240eb448125d84814bd0bd5f0ee621af22"
+      },
+      {
+        "file": "creative-studio-1440-no-js-home.png",
+        "sha256": "fab5ffea7da55c30f040fc05f999ab240eb448125d84814bd0bd5f0ee621af22"
+      },
+      {
+        "file": "creative-studio-1440-no-js-work.png",
+        "sha256": "30516bed436730f9d994f40f836f4f13124573215330b37e9665afd9c40cf6bd"
+      },
+      {
+        "file": "creative-studio-1440.png",
+        "sha256": "fab5ffea7da55c30f040fc05f999ab240eb448125d84814bd0bd5f0ee621af22"
+      },
+      {
+        "file": "creative-studio-390-dark-guide-customize.png",
+        "sha256": "5cf5d2ea0b62959d4dd205e1e3d5f78f7293b3e3bee31fb9cd1372f01a620283"
+      },
+      {
+        "file": "creative-studio-390-dark-guide.png",
+        "sha256": "f48371581c4177b0195292715817f0e48e4a7d53056fcb146989b7ddb08f9ad2"
+      },
+      {
+        "file": "creative-studio-390-dark-hero.png",
+        "sha256": "30691eff3499ed41a9111e55156fdfe932c063a5390a53af31c0599204b173c5"
+      },
+      {
+        "file": "creative-studio-390-dark-home.png",
+        "sha256": "02d80a727a180e0c29468f361c3961324b4349f9c9cd5f0fcfb31da66a68a26b"
+      },
+      {
+        "file": "creative-studio-390-dark-work.png",
+        "sha256": "9331af41302b8bde4a78297e1b3a9c4c3310eaed1a7b870fcaef0d5538dcc37f"
+      },
+      {
+        "file": "creative-studio-390-light-guide-customize.png",
+        "sha256": "3e1896039fb5ef6e7febc2a1fa0ddf74b108daef6e40bd96dece783b2830a55c"
+      },
+      {
+        "file": "creative-studio-390-light-guide.png",
+        "sha256": "e4e19c2497cbd204708e1fdcad40454292bd12fbc7908c4ff8c86b5e54107b4c"
+      },
+      {
+        "file": "creative-studio-390-light-hero.png",
+        "sha256": "5bdac87c85b8c61d4405fb8b78612ad869a37471dc95f6abfb68dd0697e198ae"
+      },
+      {
+        "file": "creative-studio-390-light-home.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "creative-studio-390-light-work.png",
+        "sha256": "0a452a028f7453d65b584573126c327b641a1f2860596404eb7a837f91bea351"
+      },
+      {
+        "file": "creative-studio-390-no-js-home.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "creative-studio-390-no-js-work.png",
+        "sha256": "0a452a028f7453d65b584573126c327b641a1f2860596404eb7a837f91bea351"
+      },
+      {
+        "file": "creative-studio-390.png",
+        "sha256": "bc9fd0307a108cfd79abc2f8141ad9ab8d95ae30ae1596affac05b4eb37c9440"
+      },
+      {
+        "file": "product-docs-1440.png",
+        "sha256": "6559d2ba95c4f00b076ca2ac3f08443d66cd58f3e5539d21301cc3366f327802"
+      },
+      {
+        "file": "product-docs-390.png",
+        "sha256": "7f6d582376f8f1926fd25a565172954935504e1e5b0f5b8a7f03e38a4a9e3db8"
+      },
+      {
+        "file": "product-launch-1440-dark-design.png",
+        "sha256": "65d626caabd27bd655a9451d33a71e3a69516fc72f0c98f6cc79442d6a778965"
+      },
+      {
+        "file": "product-launch-1440-dark-guide-customize.png",
+        "sha256": "b73126ac03174e5100ede86741b61979ac76367edf0bfa0cbe98c6b30812c628"
+      },
+      {
+        "file": "product-launch-1440-dark-guide.png",
+        "sha256": "0387ab58857a3f925f38684994e44fe15b98d8dd627d4dcb153b6084657c6f04"
+      },
+      {
+        "file": "product-launch-1440-dark-hero.png",
+        "sha256": "0144841113d636abbebdfacdc0eb52c6cf50c08fadc4832f652bc0745fa04d2f"
+      },
+      {
+        "file": "product-launch-1440-dark-home.png",
+        "sha256": "7e5acb25cbf7c5f8b5331dfa2ec5f8e3e5d4e6f611ac7e552690e2abed8bbb3a"
+      },
+      {
+        "file": "product-launch-1440-light-design.png",
+        "sha256": "2bbf01cf6436ab3e01051d2e6b7edd8da48958a7881693b1921551f464fe8ed9"
+      },
+      {
+        "file": "product-launch-1440-light-guide-customize.png",
+        "sha256": "395e9ec86134b9603320f9019abed049436c8084a49bf4df7fcba0903e481eab"
+      },
+      {
+        "file": "product-launch-1440-light-guide.png",
+        "sha256": "acff70bd448f83bffe8475511cfd8e30816acd3b8de2dde772df1388752593fa"
+      },
+      {
+        "file": "product-launch-1440-light-hero.png",
+        "sha256": "bccb41239d7af9e2085ffbe3e2d0b3400c991dd9821c8dd54e98d555c93740ba"
+      },
+      {
+        "file": "product-launch-1440-light-home.png",
+        "sha256": "ee2fcc27fa04fb4458aaf64a53a479576728b84d369ad9a67c7d214828e74151"
+      },
+      {
+        "file": "product-launch-1440-motion.png",
+        "sha256": "424af931ffc63f924eeb8df5e17a14206ecbd3f15df6ae1a1e064d4e06868959"
+      },
+      {
+        "file": "product-launch-1440-no-js-design.png",
+        "sha256": "bbd782111fa81d524967e8de6e1a32846e1bf37d0a2ce6db7034ee9557be9d88"
+      },
+      {
+        "file": "product-launch-1440-no-js-home.png",
+        "sha256": "ee2fcc27fa04fb4458aaf64a53a479576728b84d369ad9a67c7d214828e74151"
+      },
+      {
+        "file": "product-launch-1440.png",
+        "sha256": "ee2fcc27fa04fb4458aaf64a53a479576728b84d369ad9a67c7d214828e74151"
+      },
+      {
+        "file": "product-launch-390-dark-design.png",
+        "sha256": "5bcdea056992eedd40ec09d8c078e1843ef3a511b374fa5939d96f48f0c47c1f"
+      },
+      {
+        "file": "product-launch-390-dark-guide-customize.png",
+        "sha256": "12a5e6140a01f73e6849a00423240aa89e5ed2e1ff39615e1b90e7d68a54c3e4"
+      },
+      {
+        "file": "product-launch-390-dark-guide.png",
+        "sha256": "7e6fb9520f484fa10c3211829f8cf16353f248d207b8a56799a3395a1e4aa415"
+      },
+      {
+        "file": "product-launch-390-dark-hero.png",
+        "sha256": "3a39212f0691e19be9b8c5f5b765f0723204d6f182620e8b70a3518b26a40b24"
+      },
+      {
+        "file": "product-launch-390-dark-home.png",
+        "sha256": "4acb70b00783b9e4c2332f4c757b98c3871fa539102c3d87895dc7ed8458953a"
+      },
+      {
+        "file": "product-launch-390-light-design.png",
+        "sha256": "999d3fad8e92a1602155e9e5a79f76bd24642597dcfad51c6d07267d9d4b7a71"
+      },
+      {
+        "file": "product-launch-390-light-guide-customize.png",
+        "sha256": "6c7fdedaf935c27bca7721f519ddc070945de79181a1bfef75559e0d00e37c4a"
+      },
+      {
+        "file": "product-launch-390-light-guide.png",
+        "sha256": "fbc38ef3ca0219ca540a0fb8da70266a3c98e48b358c14421b5272753d381daf"
+      },
+      {
+        "file": "product-launch-390-light-hero.png",
+        "sha256": "809c6133f2c1ebc444c182751417e2d6743d37ae0be4842c04b8761b4afcb90c"
+      },
+      {
+        "file": "product-launch-390-light-home.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-launch-390-no-js-design.png",
+        "sha256": "d2103fd5b5cf29ce7326d2309ab9e4ff7517276d6da2e0ae4392ed012b89b64d"
+      },
+      {
+        "file": "product-launch-390-no-js-home.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-launch-390.png",
+        "sha256": "50da0be0c2ed86df79ef77ba9162af24fabc423db1e4024f615488f102e5b480"
+      },
+      {
+        "file": "product-studio-1440.png",
+        "sha256": "1d7335c00923d317b3d122d42cea28c273b7251c30b1d2889034e5f0749480ec"
+      },
+      {
+        "file": "product-studio-390.png",
+        "sha256": "15bd6c81d900d117f8af0268e2033f9c578e81420f3a62c3f8081f4f76e3b3b7"
+      },
+      {
+        "file": "software-platform-1440-dark-guide-customize.png",
+        "sha256": "56d6f42e17c3016407d8cc7f9422b8874a8e45b9f6796d418285e4395af138ba"
+      },
+      {
+        "file": "software-platform-1440-dark-guide.png",
+        "sha256": "8c3d9a3c4a36d4026e960d6a7549dd2e2f4d97272ffe9f313e67d69fb290ee43"
+      },
+      {
+        "file": "software-platform-1440-dark-hero.png",
+        "sha256": "7dd6771cc14da58e6393b8cc13544c567aa36702a27385b21c20d7acc6d47fb0"
+      },
+      {
+        "file": "software-platform-1440-dark-home.png",
+        "sha256": "cf291ad9add1fbe0a8e493db201af22753da09f8c2446b20b6af3fdc29718f74"
+      },
+      {
+        "file": "software-platform-1440-dark-workflow.png",
+        "sha256": "9c10aa1fbaee5bc6bd601636df7a35600921277abe0e7011456d98876665de82"
+      },
+      {
+        "file": "software-platform-1440-light-guide-customize.png",
+        "sha256": "f8d085640714f909baa1f62b8e696f646b39c8fdc01a80e57465d15d453bc06e"
+      },
+      {
+        "file": "software-platform-1440-light-guide.png",
+        "sha256": "7d19160e05ae551af11c3cc66b35d8bc67cfbb37bb7aba7922add95981ded412"
+      },
+      {
+        "file": "software-platform-1440-light-hero.png",
+        "sha256": "8e4826df7dd9c384eaad0347f96285470de058947ebcd30aa4df83749d16c60c"
+      },
+      {
+        "file": "software-platform-1440-light-home.png",
+        "sha256": "d711c0a5cf57ffb49d1ec754e1f9a4686f746b4751ad0bb57dc126461534a6c7"
+      },
+      {
+        "file": "software-platform-1440-light-workflow.png",
+        "sha256": "94f11e6fcc23dc17de6cf1143cd4e7609b086c9810188c6b1beffebb3257c741"
+      },
+      {
+        "file": "software-platform-1440-motion.png",
+        "sha256": "cf291ad9add1fbe0a8e493db201af22753da09f8c2446b20b6af3fdc29718f74"
+      },
+      {
+        "file": "software-platform-1440-no-js-home.png",
+        "sha256": "cf291ad9add1fbe0a8e493db201af22753da09f8c2446b20b6af3fdc29718f74"
+      },
+      {
+        "file": "software-platform-1440-no-js-workflow.png",
+        "sha256": "9c10aa1fbaee5bc6bd601636df7a35600921277abe0e7011456d98876665de82"
+      },
+      {
+        "file": "software-platform-1440.png",
+        "sha256": "cf291ad9add1fbe0a8e493db201af22753da09f8c2446b20b6af3fdc29718f74"
+      },
+      {
+        "file": "software-platform-390-dark-guide-customize.png",
+        "sha256": "721725d82c1154425d416fc5378de9f5a435923bd0358005e254f42f6318e766"
+      },
+      {
+        "file": "software-platform-390-dark-guide.png",
+        "sha256": "c497639573a7158a3fa8a7ce63e3485d3c426630e2dcf2f7dffcc935b48b737f"
+      },
+      {
+        "file": "software-platform-390-dark-hero.png",
+        "sha256": "ae154b97a67532a35758154f6d15a73406abddd5cd035020bcb5a9b6658882de"
+      },
+      {
+        "file": "software-platform-390-dark-home.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      },
+      {
+        "file": "software-platform-390-dark-workflow.png",
+        "sha256": "e6033b38114a1498903cd507324a5c3304350292d85b84831abb56a383a5baf4"
+      },
+      {
+        "file": "software-platform-390-light-guide-customize.png",
+        "sha256": "fb06656785a06a4754b62e697bcb268c060bffbf3bb9fb1bf30ec85346ddf28e"
+      },
+      {
+        "file": "software-platform-390-light-guide.png",
+        "sha256": "f4af12b61520f7fc6d85616a36a62aa29631dda08aaa9ea5e1ba70ff7a80c5e3"
+      },
+      {
+        "file": "software-platform-390-light-hero.png",
+        "sha256": "074407d128647585b8405416eeac615fb5c5eb3592774126e96d3f5ed53b50c7"
+      },
+      {
+        "file": "software-platform-390-light-home.png",
+        "sha256": "4a5d3041a8e6586fa766b943fe09ec95e77a017e57b9e7576afcd7f9510608f7"
+      },
+      {
+        "file": "software-platform-390-light-workflow.png",
+        "sha256": "c11f0d50d4d80542406b30e2a59d38e5c2042411d3ad42f3bb2626c81d714e5b"
+      },
+      {
+        "file": "software-platform-390-no-js-home.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      },
+      {
+        "file": "software-platform-390-no-js-workflow.png",
+        "sha256": "e6033b38114a1498903cd507324a5c3304350292d85b84831abb56a383a5baf4"
+      },
+      {
+        "file": "software-platform-390.png",
+        "sha256": "25279c8051cafe5a5888f0959f22175f96489ebabfea6d279fe9acd30d2a7e69"
+      }
+    ]
+  },
+  "fixes": [
+    {
+      "commit": "e9e6a113cf005d04d028d75d7d022451fc1c6e9d",
+      "change": "Separate owner mark, center product/menu on viewport, reserve equal side widths and measure overflow from full available width."
+    },
+    {
+      "commit": "b202c5f1c055a238149dfb9b4e5b41c43424d67d",
+      "change": "Intrinsic company width, shrinkable product mark and mobile GitHub drawer destination; explicit full-menu/overflow browser fixtures."
+    }
+  ]
+}

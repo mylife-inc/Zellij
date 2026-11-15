@@ -5679,7 +5679,7 @@
               "type": "boolean"
             },
             "align": {
-              "default": "left",
+              "default": "center",
               "type": "string",
               "enum": [
                 "left",
