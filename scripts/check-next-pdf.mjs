@@ -106,6 +106,8 @@ try {
     const failed = spawnSync(zel,['pub',source,...flags],{encoding:'utf8',timeout:600000});
     assert.notEqual(failed.status,0);assert.match(failed.stderr,/print images must be local/);
     assert.equal(JSON.parse(docker(['image','inspect',tag]))[0].Id,image.Id);
+    // The fresh-pull helper removes the tag first; release our own server before that.
+    docker(['rm','-f',name]);containers.splice(containers.indexOf(name),1);
     pullPublishedImage(docker,tag);
     assert.equal(JSON.parse(docker(['image','inspect',tag]))[0].Id,image.Id);
     assert.equal(await readFile(path.join(source,'site/index.html'),'utf8'),'previous export');
