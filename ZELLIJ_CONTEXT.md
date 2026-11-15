@@ -38,12 +38,26 @@ versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
 and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
 the two Zellij release channels. See [retirement evidence](specs/evidence/zellij-rc7-image-retirement-2026-11-14.json).
 
-**Current implementation:** technical/study book editions are in progress on
-`codex/book-editions`, based on `af31e7f`. Source version advances to rc.8 (not
-published) so new templates can accurately require the edition-capable CLI.
-See [the edition contract](specs/zellij-book-editions-2026-11-14.md). Local checks
-and hosted acceptance are recorded there; merge/visual verification remain pending.
-Next after this milestone: remaining print and installation work. Unexplained browser timing findings stay
+**Technical/study editions are merged** in PR #178 as `b57d71d`, whose tree
+matches tested `02d0c7b`. All 27 jobs in `43683371365` pass; local verification
+passes 799 Rust, 490 engine and 95 helper tests. Thirty PDFs/264 page captures
+pass, preserving all 192 previous layouts and 24 previous TeX sources. The two
+new editions have 12 pages each, matching across runtimes. All 250 new edition
+web captures are retained; native Linux/macOS/Windows and Next samples are
+visually reviewed. The actual rc.7 and rc.8 classic builds have 89 byte-identical
+files. All three existing template archives retain their published bytes.
+See [the contract](specs/zellij-book-editions-2026-11-14.md) and
+[evidence](specs/evidence/zellij-book-editions-2026-11-14.json), including the
+fixed capitalization assertion and full-page screenshot limitation.
+Source advances to rc.8 (unreleased); published rc.7 remains unchanged.
+All 13 development-image jobs in `43685610738` pass at the merge, publishing
+four `main` variants for amd64/arm64 and building/serving a site from the
+published default image. The first startup probe reset; the next succeeded in
+the existing bounded readiness loop. The records-only follow-up changes no
+runtime, active guide, versioned template, test or workflow inputs.
+
+**Next implementation priority:** configured PDF delivery in Next images, then
+remaining print and installation work. Unexplained browser timing findings stay
 open; no zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,

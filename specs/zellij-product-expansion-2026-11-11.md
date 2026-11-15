@@ -7,14 +7,20 @@ design; proposed commands remain planned unless explicitly marked implemented be
 
 ## Technical/study edition increment — 2026-11-14
 
-Current branch `codex/book-editions` adds shared `book.edition` selection and
-`book-technical@0.1.0` / `book-study@0.1.0`. Source becomes rc.8 so the template
-minimum versions reject released rc.7. No public candidate is cut by this change.
-Existing published template bytes stay immutable. Native and adapted Next styles
-share one CSS source; the PDF variants reuse the pinned fonts/toolchain.
-[Contract and verification](zellij-book-editions-2026-11-14.md). Hosted acceptance
-and visual review are pending. Remaining print/installation/provider work remains
-open; this is not a zero-bug or 1.0-complete claim.
+PR #178 merges as `b57d71d`, matching verified `02d0c7b`, with shared
+`book.edition` selection and `book-technical@0.1.0` / `book-study@0.1.0`.
+All 27 CI jobs pass. Thirty PDFs/264 page captures pass; 192 previous page
+captures and 24 TeX sources remain unchanged. The new layouts match across
+runtimes; 250 new edition browser captures are retained and representative
+native/Next samples are visually reviewed. Local checks pass 799 Rust,
+490 engine and 95 helper tests. Native/Next share CSS; print reuses the existing
+fonts/toolchain. Actual rc.7/rc.8 classic output has 89 byte-identical files, and
+all three published template archives keep their bytes.
+Source rc.8 is unreleased; public rc.7 remains unchanged. All 13 development-image
+jobs in `43685610738` pass at the merge, including the published-image HTTP
+check. [Contract and verification](zellij-book-editions-2026-11-14.md).
+Next: configured PDF delivery in Next images, followed by remaining print and
+installation work. Provider checks remain deferred; no zero-bug or 1.0 claim.
 
 ## Delivery order and release boundaries
 
