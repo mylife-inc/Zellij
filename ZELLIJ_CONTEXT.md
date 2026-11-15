@@ -23,9 +23,13 @@ Earlier harness/generation failures and their fixes remain in
 [the evidence](specs/evidence/zellij-website-templates-2026-11-15.json).
 See [the design contract](specs/zellij-website-templates-2026-11-15.md).
 
-PR #185 is ready to merge; development images will then be refreshed. The
-records-only final update changes no runtime, active-guide, template, test or
-workflow inputs from verified `40ab8b7`. Print customization and remaining
+PR #185 merges as `aaf14e3`, whose tree matches reviewed `e807955`. All 13
+development-image jobs in `43759089541` pass at the merge, publishing four
+`main` variants for amd64/arm64 and building/serving a site from the published
+default image. The first startup probe reset; the next succeeded within the
+existing bounded readiness loop. Four manifest digests are retained in evidence.
+The records-only follow-up changes no runtime, active-guide, template, test,
+workflow or image inputs from verified `40ab8b7`. Print customization and remaining
 installation work follow this milestone; live providers stay deferred.
 
 **2026-11-15: rc.8 publication**
