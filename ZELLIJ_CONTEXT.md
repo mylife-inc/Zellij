@@ -25,8 +25,13 @@ and retains 97 captures. Six refreshed previews are visually reviewed. The
 initial crowded mobile case and fixture failures remain in
 [the evidence](specs/evidence/zellij-centered-header-2026-11-15.json); see
 [the correction contract](specs/zellij-centered-header-2026-11-15.md).
-PR #187 is ready to merge. The final records-only update changes no runtime,
-active-guide, template, test or workflow inputs from verified `b202c5f`.
+PR #187 merges as `8079aff`, whose tree matches reviewed `00cb656`. All 13
+development-image jobs in `43767527768` pass at the merge, publishing four
+`main` variants for amd64/arm64 and building/serving a site from the published
+default image. The first readiness probe reset; the next succeeded in the
+existing bounded loop. Four manifest digests are retained in evidence. The
+records-only follow-up changes no runtime, active-guide, template, test,
+workflow or image inputs from verified `b202c5f`.
 Public rc.8 and production hosting remain unchanged; rc.9 is unreleased.
 
 **2026-11-15: website collection verified for rc.9**
