@@ -56,12 +56,33 @@ published default image. The first startup probe reset; the next succeeded in
 the existing bounded readiness loop. The records-only follow-up changes no
 runtime, active guide, versioned template, test or workflow inputs.
 
-**Current implementation:** configured PDF delivery in Next images is in progress
-on `codex/next-pdf`, based on `daa865b`. It shares one publication snapshot with
-print inputs, delivers only the PDF/receipt, and requires rc.8 for generated
-Next-image CI. See [the contract](specs/zellij-next-pdf-2026-11-14.md).
-Remaining print and installation work follows this milestone. Unexplained browser timing findings stay
-open; no zero-bug or 1.0-complete claim is made.
+**Next-image PDF delivery is merged** in PR #180 as `5ed3aeb`, whose tree
+matches tested `6804917`. All 29 jobs in `43688478658` pass; local verification
+passes 802 Rust, 490 engine and 95 helper tests. One publication snapshot supplies
+web/print; only the verified PDF/receipt enter the Next image. Download links
+work with URL prefixes, keyboard activation and JavaScript disabled. Generated
+Next-image CI requires rc.8 or later.
+All 264 prior PDF page captures and 30 TeX sources remain unchanged; 48 new
+Next-served PDF pages match native layouts. Sixteen new browser captures are
+retained and representative layouts are visually reviewed. Documentation
+preserves all original routes/headings/mappings/image bytes; 378 Showcase cases
+pass without retries (140 conditional skips). The initial new-test server-cleanup
+failure and its test-only fix are retained in
+[the contract](specs/zellij-next-pdf-2026-11-14.md) and
+[evidence](specs/evidence/zellij-next-pdf-2026-11-14.json).
+All 13 development-image jobs in `43691586062` pass at the merge, publishing
+four `main` variants for amd64/arm64 and building/serving from the published
+default image. Its first readiness probe reset; the next succeeded within the
+existing bounded startup loop. The records-only follow-up changes no runtime,
+active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
+rc.7 and production hosting are unchanged.
+
+**Next priority:** prepare the rc.8 candidate with both new book editions and
+Next PDF delivery, including public-download/engine acceptance of the new path.
+Remaining print customization and installation work follow.
+Live provider verification and production-domain migration remain deferred.
+Unexplained browser timing findings stay open; no zero-bug or 1.0-complete claim
+is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,
 statement, bibliography, glossary/index, navigation and installer improvements.

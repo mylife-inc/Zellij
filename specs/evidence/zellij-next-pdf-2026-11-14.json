@@ -1,0 +1,589 @@
+{
+  "date": "2026-11-14",
+  "status": "merged and verified; development images published; source rc.8 unreleased",
+  "baseline": "daa865b64901c40dfb0386879d61a58f15c491f5",
+  "implementation": "fe4ef8cd98042613e0396c552dcb6909d51d5fcd",
+  "verified_head": "6804917bbbe6a2c1f0cb6e27920f9735a3cac96e",
+  "pull_request": 180,
+  "source_version": "0.2.0-rc.8 (unreleased)",
+  "published_version": "0.2.0-rc.7 (unchanged)",
+  "local": {
+    "workspace_rust_passed": 802,
+    "existing_hosted_only_ignored": 5,
+    "engine_tests_passed": 490,
+    "helper_tests_passed": 95,
+    "workspace_typechecks": true,
+    "engine_build": true,
+    "warnings_denied_clippy": true,
+    "formatting": true,
+    "actionlint": true,
+    "javascript_syntax": true,
+    "strict_deep_docs": {
+      "routes": 59,
+      "examples": 25
+    },
+    "logs": [
+      {
+        "file": "zellij-next-pdf-rust-final.log",
+        "sha256": "02c84f2a46cbe02672c78fe946b1e6c807adc39ccb313ae21904812c2ce89413"
+      },
+      {
+        "file": "zellij-next-pdf-engine-tests.log",
+        "sha256": "b52970d8c5be0830436680250be853dc8949f2253f85684b5fc52c1fbf80297b"
+      },
+      {
+        "file": "zellij-next-pdf-helpers-final.log",
+        "sha256": "3711df60cbdc6fe9b04c42c43f380991c308921e4b8e183c10789794aa1908b3"
+      },
+      {
+        "file": "zellij-next-pdf-types.log",
+        "sha256": "e7079eeea85a546dcc90f331f0c2c82aefa1e4f72e3c8c9bd9ad255bdb28ff48"
+      },
+      {
+        "file": "zellij-next-pdf-engine-build.log",
+        "sha256": "83fe83044df178a747506e0e1a03e374fd20202a718fdbb403244e085cfc9f8c"
+      },
+      {
+        "file": "zellij-next-pdf-clippy.log",
+        "sha256": "5ef0e7bb7097bb01171e1689176151e9b0532828f373b3c5c0f41cebcb24cb18"
+      },
+      {
+        "file": "zellij-next-pdf-docs.log",
+        "sha256": "9b79c77e65975aa4334f40dc69973ab7d204ecf179779cf32622c0b349a457be"
+      }
+    ]
+  },
+  "ci": {
+    "run_id": 43688478658,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43688478658",
+    "head": "6804917bbbe6a2c1f0cb6e27920f9735a3cac96e",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "jobs": [
+      {
+        "job_id": 132733932448,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932528,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932582,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932592,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932626,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932629,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932646,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932647,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932649,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932653,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932658,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932670,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932678,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932686,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932692,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932697,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932711,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932727,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932729,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132733932739,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132734580699,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735838961,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735838989,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839000,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839003,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839009,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839035,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839041,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132735839055,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 14152015388,
+        "name": "binary-x86_64-pc-windows-msvc",
+        "size_in_bytes": 7778501
+      },
+      {
+        "id": 14151990408,
+        "name": "book-preview-ubuntu-latest",
+        "size_in_bytes": 11809620
+      },
+      {
+        "id": 14151866844,
+        "name": "book-preview-windows-latest",
+        "size_in_bytes": 9627724
+      },
+      {
+        "id": 14151780909,
+        "name": "multi-images-amd64",
+        "size_in_bytes": 82618415
+      },
+      {
+        "id": 14151755923,
+        "name": "binary-aarch64-unknown-linux-gnu",
+        "size_in_bytes": 7464435
+      },
+      {
+        "id": 14151686292,
+        "name": "binary-aarch64-apple-darwin",
+        "size_in_bytes": 7225190
+      },
+      {
+        "id": 14151686172,
+        "name": "book-pdf-ubuntu-latest-docker",
+        "size_in_bytes": 4532278
+      },
+      {
+        "id": 14151671388,
+        "name": "book-pdf-ubuntu-latest-podman",
+        "size_in_bytes": 4531989
+      },
+      {
+        "id": 14151587321,
+        "name": "binary-aarch64-pc-windows-msvc",
+        "size_in_bytes": 7611324
+      },
+      {
+        "id": 14151516792,
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "size_in_bytes": 4532273
+      },
+      {
+        "id": 14151466827,
+        "name": "binary-x86_64-unknown-linux-gnu",
+        "size_in_bytes": 7616739
+      },
+      {
+        "id": 14151402498,
+        "name": "next-pdf-ubuntu-latest",
+        "size_in_bytes": 1698945
+      },
+      {
+        "id": 14151378340,
+        "name": "next-equation-previews",
+        "size_in_bytes": 1466357
+      },
+      {
+        "id": 14151377249,
+        "name": "multi-images-arm64",
+        "size_in_bytes": 227215922
+      },
+      {
+        "id": 14151368185,
+        "name": "book-preview-macos-latest",
+        "size_in_bytes": 14137853
+      },
+      {
+        "id": 14151342717,
+        "name": "playwright-failure-details",
+        "size_in_bytes": 7183178
+      },
+      {
+        "id": 14151268877,
+        "name": "site-template-previews",
+        "size_in_bytes": 1292798
+      },
+      {
+        "id": 14151128039,
+        "name": "next-pdf-ubuntu-24.04-arm",
+        "size_in_bytes": 1699467
+      },
+      {
+        "id": 14150794417,
+        "name": "binary-x86_64-apple-darwin",
+        "size_in_bytes": 7351856
+      }
+    ]
+  },
+  "initial_failure": {
+    "run_id": 43688080406,
+    "head": "fe4ef8cd98042613e0396c552dcb6909d51d5fcd",
+    "conclusion": "cancelled after test-only fix",
+    "job_ids": [
+      132732661759,
+      132732661801
+    ],
+    "cause": "Both Next PDF jobs completed the study PDF/download checks but attempted to remove its image tag for a fresh registry pull while their own test server still used it. Docker refused deletion.",
+    "fix": "6804917bbbe6a2c1f0cb6e27920f9735a3cac96e stops and removes that task-owned server before the second pull. No runtime, renderer, PDF or template inputs changed.",
+    "logs": [
+      {
+        "file": "zellij-next-pdf-job-132732661759.log",
+        "sha256": "95d9c27132a75c08e9a861a20d21e4945d5e5022b0c9745bd0ba7924d09e1bc1"
+      },
+      {
+        "file": "zellij-next-pdf-job-132732661801.log",
+        "sha256": "ac4125641b887a31817925001976bb01b47253faf21bf451ac3f6b73da054db3"
+      }
+    ]
+  },
+  "pdf": {
+    "existing_pdf_count": 30,
+    "existing_capture_count": 264,
+    "reviewed_existing_artifact_run": 43688080406,
+    "reviewed_existing_artifact_ids": [
+      14151660248,
+      14151123570,
+      14151079090
+    ],
+    "provenance": "The first run passed all three PDF jobs. Final source differs only in Next-test server cleanup, with identical PDF inputs; all three PDF jobs pass again. Existing page comparison uses the first run downloads.",
+    "new_next_pdf_count": 4,
+    "new_next_capture_count": 48,
+    "native_pdf_runtimes": [
+      "amd64 Docker",
+      "arm64 Docker",
+      "amd64 rootless Podman"
+    ],
+    "next_image_architectures": [
+      "amd64",
+      "arm64"
+    ],
+    "pixel_comparison": {
+      "existing_tex_byte_identical": 30,
+      "existing_pages_pixel_identical": 264,
+      "next_pages_match_native_pdf": 48
+    },
+    "comparison_script_sha256": "5fa8cbb1a15666146f58813fc08d0925ebacae3e2b3e3ffef6a792f2f171514d"
+  },
+  "next_delivery": {
+    "summaries": {
+      "ubuntu-latest": [
+        {
+          "edition": "study",
+          "prefix": "",
+          "pages": 12,
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "pdf_sha256": "a1eea125611e31d5420ebb30e13a6bb634bf3382bf79b2db6dee4f815a8679cb",
+          "pdf_bytes": 59352,
+          "image_bytes": 76787503,
+          "architecture": "amd64"
+        },
+        {
+          "edition": "technical",
+          "prefix": "/books/technical",
+          "pages": 12,
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "pdf_sha256": "5819e8716feb019b9001dc64748da262dd4b4dc22d38527cbf931d7c6b542324",
+          "pdf_bytes": 63248,
+          "image_bytes": 76822584,
+          "architecture": "amd64"
+        }
+      ],
+      "ubuntu-24.04-arm": [
+        {
+          "edition": "study",
+          "prefix": "",
+          "pages": 12,
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "pdf_sha256": "6e85bde6efc39eb810b7da461f8dc98b06af8835f07dc896ac2fb5c1ede0a4f2",
+          "pdf_bytes": 59352,
+          "image_bytes": 213176753,
+          "architecture": "arm64"
+        },
+        {
+          "edition": "technical",
+          "prefix": "/books/technical",
+          "pages": 12,
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "pdf_sha256": "4f557e6b186cb976a0e6da2c4742b1c6c65ef07578863add173d4072cf6a5103",
+          "pdf_bytes": 63248,
+          "image_bytes": 213365500,
+          "architecture": "arm64"
+        }
+      ]
+    },
+    "image_size_note": "image_bytes is Docker-reported image-inspect Size, not compressed download bytes. Different classic/containerd stores prevent direct architecture comparisons; see the 2026-11-04 audit size-accounting record. This feature adds no runtime toolchain.",
+    "browser_captures": 16,
+    "checked": [
+      "same publication revision and PDF hash",
+      "actual keyboard downloads with JavaScript on/off",
+      "desktop/mobile layouts",
+      "root and URL prefix",
+      "nonroot final server",
+      "finished PDF and receipt only; no TeX/log/private working directory",
+      "no LaTeX, Pandoc or npm executable in final image",
+      "fresh-pull registry publication",
+      "PDF validation failure preserves both local/registry image IDs and existing export",
+      "source/configuration unchanged on success"
+    ],
+    "visual_samples": [
+      "initial amd64 study/download-390-false.png",
+      "initial arm64 study/download-1280-true.png",
+      "initial amd64 study/page-5.png",
+      "final arm64 technical/download-390-false.png",
+      "final amd64 technical/download-1280-true.png",
+      "final arm64 technical/page-5.png"
+    ]
+  },
+  "boundaries": [
+    "Source rc.8 remains unreleased; public rc.7 assets, recipes and production hosting unchanged.",
+    "English/LTR print constraints and optional external Linux toolchain unchanged.",
+    "Live provider verification and production-domain migration remain deferred.",
+    "Earlier unexplained browser timings remain open; no zero-bug or 1.0 claim.",
+    "Next milestone: prepare and publish rc.8 with the editions and Next PDF delivery, then continue print customization and installation work."
+  ],
+  "browser": {
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "test_retries": 0,
+    "log_sha256": "d6ac5785e6691d97cf4ed4dc34809f0ebebcb0a8e03ba0911b65fbd7c4792a6a"
+  },
+  "documentation_preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "current_repository_links": true,
+    "captured_browser_errors": 0,
+    "log_sha256": "8570b20dcd88b040a7fd669798c88a1816ea32718890098cd547f96447998433"
+  },
+  "merge": {
+    "headRefOid": "6804917bbbe6a2c1f0cb6e27920f9735a3cac96e",
+    "mergeCommit": {
+      "oid": "5ed3aeb4ffdbace64026f3c84dccefff8a09fc94"
+    },
+    "mergedAt": "2026-11-15T07:47:55Z",
+    "state": "MERGED",
+    "tree_equals_verified_head": true
+  },
+  "development_images": {
+    "run_id": 43691586062,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43691586062",
+    "source": "5ed3aeb4ffdbace64026f3c84dccefff8a09fc94",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "jobs": [
+      {
+        "job_id": 132743186955,
+        "name": "none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187137,
+        "name": "all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187140,
+        "name": "none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187169,
+        "name": "maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187178,
+        "name": "all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187207,
+        "name": "diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187223,
+        "name": "diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743187273,
+        "name": "maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743797487,
+        "name": "Publish maths",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743797493,
+        "name": "Publish all",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743797540,
+        "name": "Publish diagrams",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743797552,
+        "name": "Publish none",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132743883101,
+        "name": "The image can build a site",
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main",
+        "digest": "sha256:5a93b5bdb697197adec9ac2ea50add19ef6669aa5e988c7154baa61b664c66ce",
+        "platforms": [
+          "linux/arm64",
+          "linux/amd64"
+        ],
+        "log_sha256": "75a0739e91d6d4c5fb13f64507efc964ac6753279a533467b322acc07901971a"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-maths",
+        "digest": "sha256:5ce7e80e9a6348e0f6d33977fadf81fd0e33384b5eea6cf35a8e2df827d26919",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "01238c53012829f3136409564db28efc3c12a64e042522c003b23f2f8b204fc8"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-diagrams",
+        "digest": "sha256:fe4824d62989a018d2e4665a40594a8cc460434a73c6c1087fa9d27056a32d7c",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "94351b680edfad0b8068c818956207321961502e60821a7c2123ff63166c1499"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-all",
+        "digest": "sha256:b6de14dcf06d1c4badbd10357640237cc3590ca116ac60d854277945fcd69840",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "4c46804f2fa4d224dc9eace6dbdade6a4d65f7efcf98b8b447313a213f5ddd74"
+      }
+    ],
+    "smoke": {
+      "passed": true,
+      "log_sha256": "42837db9862e160ff68d850308d97434f62a86890cb2237219bf3d9afa8717ee",
+      "readiness_results": [
+        "2026-11-15T07:52:28.5008030Z curl: (56) Recv failure: Connection reset by peer",
+        "2026-11-15T07:52:30.5567609Z serving"
+      ],
+      "note": "The first startup probe reset; the next succeeded in the existing bounded readiness loop."
+    }
+  },
+  "records_only_followup": {
+    "changed_files": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-next-pdf-2026-11-14.md",
+      "specs/zellij-product-expansion-2026-11-11.md",
+      "specs/evidence/zellij-next-pdf-2026-11-14.json"
+    ],
+    "runtime_active_guides_versioned_templates_tests_workflows_unchanged": true
+  }
+}

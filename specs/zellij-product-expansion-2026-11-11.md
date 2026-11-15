@@ -5,6 +5,31 @@ Date: 2026-11-11. Source baseline: `3ca63ba` on `main`; latest published CLI:
 contract. This document records the user's intentions and a proposed staged
 design; proposed commands remain planned unless explicitly marked implemented below.
 
+## Next-image PDF delivery increment — 2026-11-14
+
+PR #180 merges as `5ed3aeb`, matching verified `6804917`. PDF-enabled portable
+books now work with `zel ni`, saved `zel pub` and shared Next-image delivery.
+One publication snapshot supplies web and print; only the verified PDF/receipt
+enter the serving image. Downloads support URL prefixes, keyboard activation
+and JavaScript-disabled readers. Generated Next-image CI requires rc.8 or later.
+
+All 29 CI jobs in `43688478658` pass. Local checks pass 802 Rust, 490 engine and
+95 helper tests. All 264 previous PDF page captures and 30 TeX sources are
+unchanged; all 48 Next-served PDF pages match the native layouts. Sixteen browser
+captures cover both architectures, root/prefixed paths and desktop/mobile
+readers. Representative layouts are visually reviewed. All 13 development-image
+jobs in `43691586062` pass at the merge, including the published-image HTTP check.
+The [contract](zellij-next-pdf-2026-11-14.md) and
+[evidence](evidence/zellij-next-pdf-2026-11-14.json) retain the initial acceptance
+cleanup failure and its test-only fix. Source rc.8 remains unreleased; public
+rc.7 and production hosting are unchanged.
+
+Next: prepare the rc.8 candidate with the technical/study editions and Next PDF
+delivery. Extend public-release acceptance to exercise this path with the
+downloaded CLI and published engine before calling that candidate ready. Then
+continue remaining print customization and installation work.
+Provider checks remain deferred; no zero-bug or 1.0-complete claim is made.
+
 ## Technical/study edition increment — 2026-11-14
 
 PR #178 merges as `b57d71d`, matching verified `02d0c7b`, with shared
@@ -19,8 +44,9 @@ all three published template archives keep their bytes.
 Source rc.8 is unreleased; public rc.7 remains unchanged. All 13 development-image
 jobs in `43685610738` pass at the merge, including the published-image HTTP
 check. [Contract and verification](zellij-book-editions-2026-11-14.md).
-Next: configured PDF delivery in Next images, followed by remaining print and
-installation work. Provider checks remain deferred; no zero-bug or 1.0 claim.
+At that checkpoint, Next-image PDF delivery was next; the increment above
+completes it. Remaining print/installation work and deferred provider checks stay
+open; no zero-bug or 1.0 claim.
 
 ## Delivery order and release boundaries
 
