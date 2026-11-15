@@ -20,6 +20,7 @@ const document = {
     el('h2', {id:'custom'}, [text('Custom heading')]),
     el('p', {}, [text('<script>{process.exit(1)}</script>'), el('a', {href:'#custom'}, [text('Jump')])]),
     el('img', {src:'/_zellij/assets/logo.svg', alt:'Logo'}),
+    el('a', {href:'/_zellij/assets/book.pdf',download:true}, [text('Download the book')]),
     el('pre', {}, [el('code', {className:['language-an-unknown-language']}, [text('literal <code> {brace}')])]),
     el('code', {className:['language-math','math-inline']}, [text('x^2')]),
     el('span', {id:'_zel-eq-eq:energy',className:['zellij-equation']}, [
@@ -41,7 +42,7 @@ const document = {
 };
 
 it('rejects executable tags, properties, URL schemes and expression nodes in generated data', () => {
-  for (const bad of [el('script'), el('div', {dangerouslySetInnerHTML:{__html:'bad'}}), el('img', {onError:'bad'}), el('a', {href:'javascript:alert(1)'}), {type:'mdxFlowExpression',value:'process.exit(1)'}]) {
+  for (const bad of [el('script'), el('div', {dangerouslySetInnerHTML:{__html:'bad'}}), el('img', {onError:'bad'}), el('a', {href:'javascript:alert(1)'}), el('a', {href:'/_zellij/assets/book.pdf',download:'untrusted-name'}), {type:'mdxFlowExpression',value:'process.exit(1)'}]) {
     expect(portableDocumentSchema.safeParse({...document, body:{type:'root', children:[bad]}}).success).toBe(false);
   }
   expect(portableDocumentSchema.safeParse({...document,version:2}).success).toBe(false);
@@ -52,6 +53,7 @@ it('loads and renders native trees with metadata, assets, safe literals, navigat
   try {
     await mkdir(path.join(root,'manual'));
     await mkdir(path.join(root,'assets'));
+    await writeFile(path.join(root,'assets/book.pdf'), '%PDF-1.7\nfixture');
     await writeFile(path.join(root,'assets/logo.svg'), '<svg xmlns="http://www.w3.org/2000/svg"/>');
     await writeFile(path.join(root,'site.yaml'), 'name: Docs\nhome: manual\nbasePath: /products/docs\n');
     await writeFile(path.join(root,'manual/_sidebar.yaml'), 'title: Docs\nroute: /\nnav:\n - {page: index, label: Welcome}\n - {href: "https://example.com", label: Company}\n - label: Group\n   items: [{page: other, label: Second}]\n');
@@ -74,6 +76,7 @@ it('loads and renders native trees with metadata, assets, safe literals, navigat
     expect(html).toContain('id="custom"');
     expect(html).toContain('&lt;script&gt;{process.exit(1)}&lt;/script&gt;');
     expect(html).toContain('src="/products/docs/_zellij/assets/logo.svg"');
+    expect(html).toContain('href="/products/docs/_zellij/assets/book.pdf" download=""');
     expect(html).toContain('mjx-container');
     expect(html).toContain('id="_zel-eq-eq:energy"');
     expect(html).toContain('aria-label="Equation 1.1"');

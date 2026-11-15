@@ -220,6 +220,12 @@ case "$1" in
  info) if [ "$2" = --format ]; then printf '%s\n' "${PDF_INFO:-[]}"; fi; exit 0;;
  --version) exit 0;;
  rm) echo cleaned >> cleanup; exit 0;;
+ build)
+  /bin/cat > recipe
+  for arg in "$@"; do context=$arg; done
+  /bin/cp -R "$context" captured
+  echo built >> builds; exit 0;;
+ push) echo pushed >> pushes; exit 0;;
  run)
   printf '%s\n' "$@" > arguments
   if [ -f hold ]; then echo holding > holding; while [ -f hold ]; do /bin/sleep 0.05; done; fi
@@ -229,6 +235,7 @@ case "$1" in
   [ -n "$out" ] || exit 90
   printf '%%PDF-1.7\nfixture\n%%%%EOF\n' > "$out/book.pdf"
   printf '%s' "${PDF_LOG:-clean typesetting}" > "$out/book.log"
+  if [ -n "${PDF_EDIT:-}" ]; then printf '\nEdited while typesetting.\n' >> "$PDF_EDIT"; fi
   if [ "${PDF_WAIT:-0}" = 1 ]; then echo waiting > waiting; while :; do :; done; fi
   exit "${PDF_EXIT:-0}";;
  *) exit 99;;
@@ -334,7 +341,7 @@ fn configured_pdf_validation_overrides_and_doctor_remain_explicit() {
 
 #[cfg(unix)]
 #[test]
-fn configured_print_settings_reach_artifacts_and_next_delivery_fails_before_runtime() {
+fn configured_print_settings_reach_artifacts_and_no_pdf_remains_native() {
     let tmp = tempfile::tempdir().unwrap();
     let root = tmp.path();
     site(root);
@@ -366,10 +373,6 @@ fn configured_print_settings_reach_artifacts_and_next_delivery_fails_before_runt
     assert_eq!(receipt["settings"]["paper"], "letter");
     assert_eq!(receipt["settings"]["font-size"], 10);
     fs::remove_file(root.join("arguments")).unwrap();
-    let result = run(&["ni"]);
-    assert_eq!(result.status.code(), Some(2), "{result:?}");
-    assert!(String::from_utf8_lossy(&result.stderr).contains("static image"));
-    assert!(!root.join("arguments").exists());
     let result = run(&["build", "--no-pdf"]);
     assert!(result.status.success(), "{result:?}");
     assert!(!root.join("site/_zellij/pdf").exists());
@@ -522,4 +525,125 @@ fn preview_rebuilds_pdf_and_web_together_and_recovers_without_stale_publication(
             .count()
             >= 5
     );
+}
+
+#[cfg(unix)]
+#[test]
+fn next_pdf_builds_and_publishes_once_and_stops_on_failure_or_changed_input() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    site(root);
+    runtime(root);
+    let base = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    let config = format!(
+        "{base}pdf: {{enabled: true}}\nimage: {{name: ghcr.io/mylife-inc/books:next}}\npublish: {{action: push, image: next}}\n"
+    );
+    fs::write(root.join("zel.yaml"), &config).unwrap();
+    fs::create_dir(root.join("site")).unwrap();
+    fs::write(root.join("site/index.html"), "previous export").unwrap();
+    let run = |args: &[&str], failure: bool, edit: bool| {
+        command(root)
+            .env_remove("CONTAINER_HOST")
+            .env_remove("DOCKER_CONTEXT")
+            .env_remove("CONTAINER_CONNECTION")
+            .env_remove("CONTAINERD_ADDRESS")
+            .env_remove("CONTAINERD_NAMESPACE")
+            .env("PDF_EXIT", if failure { "1" } else { "0" })
+            .env(
+                "PDF_EDIT",
+                if edit {
+                    root.join("content/one.md")
+                } else {
+                    std::path::PathBuf::new()
+                },
+            )
+            .args(args)
+            .output()
+            .unwrap()
+    };
+    for args in [
+        vec!["pub", "--dry-run"],
+        vec![
+            "deploy",
+            "fly",
+            "--prod",
+            "--kind",
+            "next",
+            "--site-id",
+            "book-test",
+            "--dry-run",
+        ],
+        vec![
+            "deploy",
+            "railway",
+            "--prod",
+            "--kind",
+            "next",
+            "--site-id",
+            "00000000-0000-4000-8000-000000000001",
+            "--dry-run",
+        ],
+    ] {
+        let output = run(&args, false, false);
+        assert!(output.status.success(), "{output:?}");
+        assert!(String::from_utf8_lossy(&output.stdout).contains("PDF"));
+        assert!(!root.join("arguments").exists());
+    }
+    for args in [vec!["ni"], vec!["pub"]] {
+        let output = run(&args, false, false);
+        assert!(output.status.success(), "{output:?}");
+        let captured = root.join("captured");
+        assert!(captured.join("assets/pdf/book.pdf").is_file());
+        assert_eq!(
+            fs::read_dir(captured.join("assets/pdf")).unwrap().count(),
+            2
+        );
+        assert!(!captured.join(".zel-pdf-work").exists());
+        assert!(!captured.join(".zellij-output").exists());
+        let receipt: serde_json::Value =
+            serde_json::from_slice(&fs::read(captured.join("assets/pdf/pdf.json")).unwrap())
+                .unwrap();
+        let book: serde_json::Value =
+            serde_json::from_slice(&fs::read(captured.join("assets/book.json")).unwrap()).unwrap();
+        assert_eq!(receipt["revision"], book["publication"]["revision"]);
+        fs::remove_dir_all(captured).unwrap();
+    }
+    assert_eq!(
+        fs::read_to_string(root.join("builds"))
+            .unwrap()
+            .lines()
+            .count(),
+        2
+    );
+    assert_eq!(
+        fs::read_to_string(root.join("pushes"))
+            .unwrap()
+            .lines()
+            .count(),
+        1
+    );
+    for (failure, edit) in [(true, false), (false, true)] {
+        let output = run(&["pub"], failure, edit);
+        assert_eq!(output.status.code(), Some(3), "{output:?}");
+        assert!(!root.join("captured").exists());
+        assert_eq!(
+            fs::read_to_string(root.join("builds"))
+                .unwrap()
+                .lines()
+                .count(),
+            2
+        );
+        assert_eq!(
+            fs::read_to_string(root.join("pushes"))
+                .unwrap()
+                .lines()
+                .count(),
+            1
+        );
+    }
+    assert_eq!(
+        fs::read_to_string(root.join("site/index.html")).unwrap(),
+        "previous export"
+    );
+    assert_eq!(fs::read_to_string(root.join("zel.yaml")).unwrap(), config);
 }

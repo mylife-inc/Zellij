@@ -158,25 +158,31 @@ struct Prepared {
 }
 fn prepare(options: &CiOptions) -> Result<Prepared> {
     if options.pdf.is_some() {
-        if options.pdf == Some(true)
-            && (options.renderer != zellij_core::site::Renderer::Portable
-                || matches!(
-                    options.publish,
-                    Publish::Image {
-                        kind: ImageKind::Next,
-                        ..
-                    } | Publish::Fly {
-                        kind: ImageKind::Next,
-                        ..
-                    } | Publish::Railway {
-                        kind: ImageKind::Next,
-                        ..
-                    } | Publish::LegacyImage
-                ))
-        {
-            return Err(invalid(
-                "PDF-enabled CI requires a portable site and static output/image",
-            ));
+        if options.pdf == Some(true) {
+            if options.renderer != zellij_core::site::Renderer::Portable {
+                return Err(invalid("PDF-enabled CI requires a portable book"));
+            }
+            let next = matches!(
+                options.publish,
+                Publish::Image {
+                    kind: ImageKind::Next,
+                    ..
+                } | Publish::Fly {
+                    kind: ImageKind::Next,
+                    ..
+                } | Publish::Railway {
+                    kind: ImageKind::Next,
+                    ..
+                } | Publish::LegacyImage
+            );
+            if next
+                && !semver::Version::parse(options.version.trim_start_matches('v'))
+                    .is_ok_and(|v| v >= semver::Version::parse("0.2.0-rc.8").unwrap())
+            {
+                return Err(invalid(
+                    "PDF-enabled Next images require CLI/engine 0.2.0-rc.8 or later; pin ci.zel-version or --zel-version. Generation does not verify release availability.",
+                ));
+            }
         }
         if !semver::Version::parse(options.version.trim_start_matches('v'))
             .is_ok_and(|v| v >= semver::Version::parse("0.2.0-rc.6").unwrap())

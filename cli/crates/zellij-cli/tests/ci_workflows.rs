@@ -2106,7 +2106,9 @@ fn pdf_ci_requires_a_compatible_release_and_a_bind_capable_runtime() {
         ],
         2,
     );
-    assert!(String::from_utf8_lossy(&next.stderr).contains("static output/image"));
+    assert!(
+        String::from_utf8_lossy(&next.stderr).contains("Next images require CLI/engine 0.2.0-rc.8")
+    );
     assert_eq!(
         previous,
         fs::read(root.join(".github/workflows/docs.yml")).unwrap()
@@ -2145,5 +2147,51 @@ fn explicit_book_editions_require_compatible_ci_pins_before_writing() {
             fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
             before
         );
+    }
+}
+
+#[test]
+fn next_pdf_ci_requires_rc8_across_all_generators_without_replacing_old_files() {
+    let tmp = tempfile::tempdir().unwrap();
+    let root = tmp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "book: {version: 1, title: Manual, authors: [Author], chapters: [{id: next, source: next.md}]}\npdf: {enabled: true}\nimage: {name: ghcr.io/mylife-inc/books:next}\npublish: {action: push, image: next}\n",
+    );
+    for (system, path) in [
+        ("github", ".github/workflows/docs.yml"),
+        ("gitlab", ".gitlab-ci.yml"),
+        ("circle", ".circleci/config.yml"),
+    ] {
+        run(
+            root,
+            &["ci", "--system", system, "--zel-version", "0.2.0-rc.8"],
+            0,
+        );
+        let before = fs::read(root.join(path)).unwrap();
+        let body = String::from_utf8(before.clone()).unwrap();
+        assert!(
+            body.contains("image next") && body.contains("docker info"),
+            "{body}"
+        );
+        let old = run(
+            root,
+            &[
+                "ci",
+                "--system",
+                system,
+                "--zel-version",
+                "0.2.0-rc.7",
+                "--force",
+            ],
+            2,
+        );
+        assert!(
+            String::from_utf8_lossy(&old.stderr)
+                .contains("Next images require CLI/engine 0.2.0-rc.8")
+        );
+        assert_eq!(fs::read(root.join(path)).unwrap(), before);
     }
 }

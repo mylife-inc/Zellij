@@ -118,3 +118,78 @@ fn generated_headings_and_repeated_footnotes_keep_resolvable_print_targets() {
     let error = pdf::check(&SiteInput::from(root)).unwrap_err().to_string();
     assert!(error.contains("has no footnote reference"), "{error}");
 }
+
+#[test]
+fn next_print_uses_one_publication_and_publishes_only_verified_downloads() {
+    use sha2::{Digest, Sha256};
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    let source = SiteInput::from(root);
+    let native =
+        pdf::prepare(&source, &root.join("native"), BuildOptions::default(), true).unwrap();
+    let output = root.join("next");
+    let prepared = pdf::prepare_hosted(&source, &output, BuildOptions::default()).unwrap();
+    assert_eq!(prepared.source.files, native.source.files);
+    assert_eq!(prepared.source.revision, native.source.revision);
+    assert_eq!(prepared.features, vec!["maths"]);
+    let pdf_bytes = b"%PDF-1.7\nfixture\n%%EOF\n";
+    fs::write(prepared.destination.join("book.pdf"), pdf_bytes).unwrap();
+    fs::write(
+        prepared.destination.join("book.tex"),
+        b"private print source",
+    )
+    .unwrap();
+    fs::write(
+        prepared.destination.join("build.log"),
+        b"private diagnostic",
+    )
+    .unwrap();
+    fs::create_dir(prepared.destination.join("assets")).unwrap();
+    fs::write(
+        prepared.destination.join("assets/a.png"),
+        b"private print input",
+    )
+    .unwrap();
+    fs::write(
+        prepared.destination.join("pdf.json"),
+        serde_json::to_vec(&serde_json::json!({
+            "revision":prepared.source.revision,
+            "pdf_sha256":format!("{:x}", Sha256::digest(pdf_bytes)),
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    prepared.publish().unwrap();
+    let record: serde_json::Value =
+        serde_json::from_slice(&fs::read(output.join("assets/book.json")).unwrap()).unwrap();
+    assert_eq!(record["publication"]["revision"], native.source.revision);
+    assert_eq!(
+        fs::read(output.join("assets/pdf/book.pdf")).unwrap(),
+        pdf_bytes
+    );
+    assert_eq!(fs::read_dir(output.join("assets/pdf")).unwrap().count(), 2);
+    assert!(!output.join(".zel-pdf-work").exists());
+    for index in 0..3 {
+        let body = fs::read_to_string(output.join(format!("manual/p{index}.zeldoc.json"))).unwrap();
+        assert!(body.contains("/_zellij/assets/pdf/book.pdf"));
+        assert!(body.contains("\"download\": true"));
+    }
+    let before = fs::read(output.join("assets/book.json")).unwrap();
+    for bad in ["missing", "revision", "hash"] {
+        let prepared = pdf::prepare_hosted(&source, &output, BuildOptions::default()).unwrap();
+        fs::write(prepared.destination.join("book.pdf"), pdf_bytes).unwrap();
+        if bad != "missing" {
+            fs::write(prepared.destination.join("pdf.json"),serde_json::to_vec(&serde_json::json!({
+                "revision":if bad=="revision" {"stale"} else {&prepared.source.revision},
+                "pdf_sha256":if bad=="hash" {"invalid".into()} else {format!("{:x}",Sha256::digest(pdf_bytes))},
+            })).unwrap()).unwrap();
+        }
+        assert!(prepared.publish().is_err());
+        assert_eq!(fs::read(output.join("assets/book.json")).unwrap(), before);
+        assert_eq!(
+            fs::read(output.join("assets/pdf/book.pdf")).unwrap(),
+            pdf_bytes
+        );
+    }
+}

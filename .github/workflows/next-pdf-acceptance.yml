@@ -1,0 +1,45 @@
+name: Next book PDF acceptance
+on:
+  workflow_call:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  next-pdf:
+    name: Next PDF (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        working-directory: cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends poppler-utils qpdf
+      - name: Build the matching Next engine
+        run: docker build -f docker/base.Dockerfile -t zellij-next-pdf-ci .
+      - name: Publish and serve PDF-enabled Next books
+        env:
+          DOCKER_CONTEXT: default
+          ZELLIJ_IMAGE: zellij-next-pdf-ci
+        run: node scripts/check-next-pdf.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: next-pdf-${{ matrix.runner }}
+          path: test-results/next-pdf
+          if-no-files-found: warn
+          retention-days: 14
