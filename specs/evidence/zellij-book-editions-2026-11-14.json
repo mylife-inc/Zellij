@@ -1,0 +1,634 @@
+{
+  "date": "2026-11-14",
+  "status": "merged; development images published and smoke-tested",
+  "baseline": "af31e7f9814f3b29f9545e18189d3500a3217b7e",
+  "implementation": "adc5bb4885c7a7039ed716e33c426dbfa6e13194",
+  "verified_head": "02d0c7b19ebb2c5c8973a2046fcfd8625bd96942",
+  "pull_request": 178,
+  "source_version": "0.2.0-rc.8 (unreleased)",
+  "published_version": "0.2.0-rc.7 (unchanged)",
+  "local": {
+    "workspace_rust_passed": 799,
+    "existing_hosted_only_ignored": 5,
+    "engine_tests_passed": 490,
+    "helper_tests_passed": 95,
+    "workspace_typechecks": true,
+    "engine_packaging": true,
+    "formatting": true,
+    "warnings_denied_workspace_clippy": true,
+    "strict_deep_docs": true,
+    "template_catalog_count": 5,
+    "deterministic_archive_local_bundled_remote_cached_parity": true,
+    "previous_three_archive_hashes_unchanged": true,
+    "logs": [
+      {
+        "file": "zellij-book-editions-rust.log",
+        "sha256": "79e3a7b35e58bbd04841ef1f7c00a855f875dc722ae0902e1e06e0f33a045a00"
+      },
+      {
+        "file": "zellij-book-editions-vitest.log",
+        "sha256": "b7edd5892b4b567e0537b80fca060ecd12ae0ecdfc6b0786f6074529d9149826"
+      },
+      {
+        "file": "zellij-book-editions-helpers.log",
+        "sha256": "57ccf2e79ceed8d00a546ac296cb4169217624d0eb4a13d61308c5a3122c4fa5"
+      },
+      {
+        "file": "zellij-book-editions-clippy.log",
+        "sha256": "5de50c1a00141cf84036bc21fb679f98cbc14a0f04ed9dbeb21cfd8792b62944"
+      },
+      {
+        "file": "zellij-book-editions-typecheck.log",
+        "sha256": "99793096bb9a66bd37ef98afb162a888300f1c48cee670a671636e4135f3774d"
+      },
+      {
+        "file": "zellij-book-editions-engine.log",
+        "sha256": "af098476a907fc9043e1827bfc7b5a7809742d61f2fba8caac144ab1f4b05383"
+      },
+      {
+        "file": "zellij-book-editions-archives.log",
+        "sha256": "cd0229b2a8e97d26e5ad8c0ba2db2e14073bd509f350926d268941fb8a3b9972"
+      },
+      {
+        "file": "zellij-book-editions-showcase.log",
+        "sha256": "83b42992fb725773c9e01576cae44226201e506379cd38faa6f54ab084a8d7e9"
+      }
+    ],
+    "classic_against_released_binary": {
+      "root": "/private/tmp/zellij-edition-classic-compat-5qcekqtc",
+      "old_version": "zel 0.2.0-rc.7",
+      "new_version": "zel 0.2.0-rc.8",
+      "files": 89,
+      "changed": []
+    },
+    "new_template_minimum_on_released_binary": [
+      {
+        "template": "book-technical",
+        "released_cli": "0.2.0-rc.7",
+        "exit_code": 2,
+        "destination_created": false
+      },
+      {
+        "template": "book-study",
+        "released_cli": "0.2.0-rc.7",
+        "exit_code": 2,
+        "destination_created": false
+      }
+    ]
+  },
+  "ci": {
+    "run_id": 43683371365,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43683371365",
+    "head": "02d0c7b19ebb2c5c8973a2046fcfd8625bd96942",
+    "run_attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "job_id": 132718642766,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642895,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642897,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642900,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642905,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642918,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642930,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642936,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642951,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642987,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642988,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718642994,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643002,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643014,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643031,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643045,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643076,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132718643083,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132719223143,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005166,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005183,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005203,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005223,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005224,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005229,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005231,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132720005246,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      }
+    ],
+    "artifacts": [
+      {
+        "id": 14150375117,
+        "name": "book-preview-windows-latest",
+        "size_in_bytes": 9627724
+      },
+      {
+        "id": 14149845851,
+        "name": "binary-x86_64-unknown-linux-gnu",
+        "size_in_bytes": 7614364
+      },
+      {
+        "id": 14149786535,
+        "name": "book-pdf-ubuntu-24.04-arm-docker",
+        "size_in_bytes": 4532273
+      },
+      {
+        "id": 14149675966,
+        "name": "multi-images-amd64",
+        "size_in_bytes": 82618415
+      },
+      {
+        "id": 14149667450,
+        "name": "book-preview-ubuntu-latest",
+        "size_in_bytes": 11809620
+      },
+      {
+        "id": 14149577603,
+        "name": "binary-x86_64-pc-windows-msvc",
+        "size_in_bytes": 7775427
+      },
+      {
+        "id": 14149542640,
+        "name": "book-preview-macos-latest",
+        "size_in_bytes": 14137853
+      },
+      {
+        "id": 14149512598,
+        "name": "binary-x86_64-apple-darwin",
+        "size_in_bytes": 7349803
+      },
+      {
+        "id": 14149383055,
+        "name": "binary-aarch64-pc-windows-msvc",
+        "size_in_bytes": 7608607
+      },
+      {
+        "id": 14149306842,
+        "name": "multi-images-arm64",
+        "size_in_bytes": 227214898
+      },
+      {
+        "id": 14149271820,
+        "name": "binary-aarch64-apple-darwin",
+        "size_in_bytes": 7220962
+      },
+      {
+        "id": 14149268783,
+        "name": "site-template-previews",
+        "size_in_bytes": 1292798
+      },
+      {
+        "id": 14149167146,
+        "name": "book-pdf-ubuntu-latest-podman",
+        "size_in_bytes": 4531993
+      },
+      {
+        "id": 14149012615,
+        "name": "binary-aarch64-unknown-linux-gnu",
+        "size_in_bytes": 7461935
+      },
+      {
+        "id": 14148953274,
+        "name": "playwright-failure-details",
+        "size_in_bytes": 7183178
+      },
+      {
+        "id": 14148823147,
+        "name": "book-pdf-ubuntu-latest-docker",
+        "size_in_bytes": 4532275
+      },
+      {
+        "id": 14148793773,
+        "name": "next-equation-previews",
+        "size_in_bytes": 1466386
+      }
+    ],
+    "showcase": {
+      "passed": 378,
+      "conditional_skips": 140,
+      "retries": 0
+    },
+    "cli_log": {
+      "file": "zellij-book-editions-cli-final.log",
+      "sha256": "753296dc40e25f6d89325965fd28d67664be35308e20b06c06fa980b6730d8dd"
+    }
+  },
+  "retained_initial_failure": {
+    "run_id": 43682531662,
+    "head": "adc5bb4885c7a7039ed716e33c426dbfa6e13194",
+    "job_id": 132716034103,
+    "conclusion": "cancelled after test-only fix",
+    "failure": "Next test expected mixed-case Chapter 1 via innerText, which reflects the edition CSS uppercase presentation. Semantic DOM text was unchanged.",
+    "resolution_commit": "02d0c7b19ebb2c5c8973a2046fcfd8625bd96942",
+    "resolution": "Use Playwright DOM-text assertion on .book-number. No renderer, PDF, template or stylesheet change. Final complete workflow passes."
+  },
+  "pdf": {
+    "reviewed_artifact_run": 43682531662,
+    "reviewed_source": "adc5bb4885c7a7039ed716e33c426dbfa6e13194",
+    "provenance": "All three PDF jobs passed before the first run was cancelled. The final source differs only in the Next browser assertion, with identical PDF/runtime/template inputs; all three PDF jobs pass again in the final run.",
+    "reviewed_artifact_ids": [
+      14149127101,
+      14149002762,
+      14148837078
+    ],
+    "pdf_count": 30,
+    "page_capture_count": 264,
+    "previous_tex_files_byte_identical": 24,
+    "previous_page_captures_pixel_identical": 192,
+    "new_pdf_count": 6,
+    "new_capture_count": 72,
+    "new_pages_per_book": 12,
+    "new_captures_pixel_identical_across_runtimes": true,
+    "fonts_embedded_subset_unicode": true,
+    "structural_text_references_revision_hash_checks": true,
+    "runtimes": [
+      "Linux amd64 Docker",
+      "Linux arm64 Docker",
+      "Linux amd64 rootless Podman"
+    ],
+    "review": {
+      "oldCaptures": 192,
+      "oldTex": 24,
+      "newCaptures": 72,
+      "summaries": [
+        {
+          "runtime": "book-pdf-ubuntu-24.04-arm-docker",
+          "edition": "technical",
+          "pages": 12,
+          "fonts": 14,
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "pdf_sha256": "65126d7cc7ca4257e5dab5304078a4288383604fe4ed2bdf5b3881e89f88de6c"
+        },
+        {
+          "runtime": "book-pdf-ubuntu-24.04-arm-docker",
+          "edition": "study",
+          "pages": 12,
+          "fonts": 12,
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "pdf_sha256": "cc8138c032d173f7c2a83cffc005ed51e4638523627daf0c737fdb03a1dabb72"
+        },
+        {
+          "runtime": "book-pdf-ubuntu-latest-docker",
+          "edition": "technical",
+          "pages": 12,
+          "fonts": 14,
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "pdf_sha256": "f67992ea3abaa51e013fbaf9703cbdcd54de1a3572accd966a572fcf317882d3"
+        },
+        {
+          "runtime": "book-pdf-ubuntu-latest-docker",
+          "edition": "study",
+          "pages": 12,
+          "fonts": 12,
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "pdf_sha256": "a7a77a5d1bb053546657882ff9a7cf766355e4d5ef1c1ca9c12e735e6a4414c8"
+        },
+        {
+          "runtime": "book-pdf-ubuntu-latest-podman",
+          "edition": "technical",
+          "pages": 12,
+          "fonts": 14,
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "pdf_sha256": "1f46674432374f7d52f1145c8e93edb2c057f786678a5ee893bc3ab385c2382f"
+        },
+        {
+          "runtime": "book-pdf-ubuntu-latest-podman",
+          "edition": "study",
+          "pages": 12,
+          "fonts": 12,
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "pdf_sha256": "5fb57c9578f792f2685fbb4d47ddd0772f795f4f633c6bc351cbcf05fc9d4f5e"
+        }
+      ]
+    },
+    "visual_samples": {
+      "technical": [
+        1,
+        5,
+        6,
+        7,
+        8
+      ],
+      "study": [
+        1,
+        2,
+        5,
+        6,
+        12
+      ]
+    }
+  },
+  "browser": {
+    "new_native_edition_captures": 240,
+    "new_next_edition_captures": 10,
+    "native_os": [
+      "Linux",
+      "macOS",
+      "Windows"
+    ],
+    "browsers": [
+      "Chromium",
+      "WebKit"
+    ],
+    "checks": [
+      "relocated offline file output",
+      "JavaScript on/off",
+      "1280/390 pixel layouts",
+      "light/dark and forced colors",
+      "edition fonts, rules and accents",
+      "no horizontal overflow",
+      "keyboard term navigation",
+      "adapted Next; technical with path prefix"
+    ],
+    "reviewed_artifacts": [
+      {
+        "os": "Linux",
+        "run": 43682531662,
+        "artifact_id": 14148688055,
+        "captures": 132
+      },
+      {
+        "os": "macOS",
+        "run": 43683371365,
+        "artifact_id": 14149542640,
+        "captures": 132
+      },
+      {
+        "renderer": "Next",
+        "run": 43683371365,
+        "artifact_id": 14148793773,
+        "captures": 20
+      },
+      {
+        "os": "Windows",
+        "run": 43683371365,
+        "artifact_id": 14150375117,
+        "captures": 132
+      }
+    ],
+    "visual_samples": [
+      "Linux Chromium technical chapter desktop light",
+      "Linux Chromium study chapter mobile light",
+      "Linux WebKit study cover desktop dark without JavaScript",
+      "macOS WebKit technical chapter mobile light without JavaScript",
+      "Next technical mobile dark",
+      "Next study desktop light",
+      "Windows Chromium technical chapter mobile light without JavaScript",
+      "Windows WebKit study cover desktop dark",
+      "Windows Chromium study chapter forced colors without JavaScript"
+    ],
+    "capture_limitations": "Forced-color full-page images are captured after focusing an article link. Fixed/sticky chrome is recorded at the current scroll offset; these full-page images are not used to judge viewport placement or occlusion. Focus and link navigation are separately asserted."
+  },
+  "boundaries": [
+    "PDF output remains opt-in and English/LTR.",
+    "No new font/runtime/toolchain dependency. Classic outputs and published template archives remain unchanged.",
+    "Custom typography, multilingual/RTL print, BibTeX/custom styles, deeper indexes and other installation channels remain open.",
+    "Next-image delivery of configured PDFs remains unsupported and is the next implementation priority.",
+    "Live provider verification and production-domain migration remain deferred.",
+    "Earlier unexplained browser timings remain open. No zero-bug or 1.0 claim."
+  ],
+  "merge": {
+    "headRefOid": "02d0c7b19ebb2c5c8973a2046fcfd8625bd96942",
+    "mergeCommit": {
+      "oid": "b57d71d76c12fdc9c894aa2bc2ce4883eb1630bb"
+    },
+    "mergedAt": "2026-11-15T06:28:07Z",
+    "state": "MERGED",
+    "tree_equals_verified_head": true
+  },
+  "development_images": {
+    "run_id": 43685610738,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43685610738",
+    "source": "b57d71d76c12fdc9c894aa2bc2ce4883eb1630bb",
+    "conclusion": "success",
+    "run_attempt": 1,
+    "jobs": [
+      {
+        "job_id": 132725361178,
+        "name": "all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361253,
+        "name": "none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361264,
+        "name": "none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361290,
+        "name": "maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361294,
+        "name": "diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361329,
+        "name": "diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361347,
+        "name": "maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725361357,
+        "name": "all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725812033,
+        "name": "Publish maths",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725812060,
+        "name": "Publish diagrams",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725812066,
+        "name": "Publish all",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725812102,
+        "name": "Publish none",
+        "conclusion": "success"
+      },
+      {
+        "job_id": 132725914132,
+        "name": "The image can build a site",
+        "conclusion": "success"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main",
+        "digest": "sha256:233207c3a2e6d05514539c2a485f85827764c142059d65fb6cf48f3d9fd1a776",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "2493e717161fdb353f9f4bd20c3d684ee5818da5aab0bdd6b91e97f54951a50d"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-maths",
+        "digest": "sha256:798bbd0a5cf4d5d15d1fa26328647a030dcf10738518083ab83bfcc21d00cca2",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "b748b86f8bd3dd78e27cca9187bcb965d0d7a3ca71b80301d25e2db42c8b8af0"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-diagrams",
+        "digest": "sha256:79b922be003b78150f50084df9f425e8399893a2eda63b7ac16ce2249351ad65",
+        "platforms": [
+          "linux/arm64",
+          "linux/amd64"
+        ],
+        "log_sha256": "26adb7949c58f9b9240d8bc2da3232e760df840d0a95a276740ff1c9aedbe8a1"
+      },
+      {
+        "tag": "ghcr.io/mylife-inc/zellij-base:main-all",
+        "digest": "sha256:63b68ba0f33f9034f31a2fc0706ff561ab5392ed5bcf8070f10dfd879da6cf6b",
+        "platforms": [
+          "linux/arm64",
+          "linux/amd64"
+        ],
+        "log_sha256": "bf49ecdbe986cc81f158521a90e19af37e6b233fda46b0571383393179d1c046"
+      }
+    ],
+    "smoke": {
+      "passed": true,
+      "log_sha256": "2fff736f6e8ba1a43a9a971a851611828f87a1d4c340eac2400ddb9a99cf8a25",
+      "readiness_results": [
+        "2026-11-15T06:32:15.5059244Z curl: (56) Recv failure: Connection reset by peer",
+        "2026-11-15T06:32:17.5734009Z serving"
+      ],
+      "note": "First startup probe reset; the next succeeded in the existing bounded readiness loop."
+    }
+  },
+  "records_only_followup": {
+    "changed_files": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/zel-cli-completion-2026-11-11.md",
+      "specs/zellij-book-editions-2026-11-14.md",
+      "specs/zellij-product-expansion-2026-11-11.md",
+      "specs/evidence/zellij-book-editions-2026-11-14.json",
+      "templates/README.md"
+    ],
+    "runtime_active_guides_versioned_templates_tests_workflows_unchanged": true
+  }
+}

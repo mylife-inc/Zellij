@@ -2,7 +2,7 @@
 
 This is the authored source for the catalog bundled in `zel` and attached to
 CLI releases. It is independent of `examples/`. The rc.8 source catalog contains five starters:
-`product-docs` (portable handbook), `product-studio` (hosted product landing page)
+`product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
 `book-technical` (mathematics and proofs) and `book-study` (passages and commentary).
 The latter two start at template version 0.1.0, require CLI/engine rc.8 and are
@@ -29,7 +29,7 @@ manuscript against the native PDF adapter without running a toolchain. Enabled
 PDF settings must be disclosed by the manifest; a false print declaration fails
 before the destination is published. This capability does not enable PDF
 automatically or promise successful typesetting of arbitrary subsequent edits.
-The three print editions remain English/LTR; its optional Linux toolchain runs only
+The three print editions remain English/LTR; their optional Linux toolchain runs only
 when PDF is requested.
 
 `variables` maps names to default single-line text. `substitute` lists the exact
