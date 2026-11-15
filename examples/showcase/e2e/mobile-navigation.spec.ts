@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 const dialog = (page: import('@playwright/test').Page) => page.getByRole('dialog', { name: 'Site navigation', exact: true });
 async function open(page: import('@playwright/test').Page) {
   const trigger = page.getByRole('button', { name: 'Open navigation', exact: true });
-  await trigger.focus();
+  await trigger.evaluate(node => node.focus({ preventScroll: true }));
   await page.keyboard.press('Enter');
   await expect(dialog(page)).toBeFocused();
   return dialog(page);
@@ -92,7 +92,9 @@ test('Escape closes a section and preserves the document scroll position', async
   await page.evaluate(() => scrollTo(0, 400));
   const before = await page.evaluate(() => scrollY);
   const drawer = await open(page);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
   await drawer.getByRole('button', { name: 'Shop', exact: true }).click();
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeCloseTo(before, 0);
   await page.keyboard.press('Escape');
   await expect(drawer).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Open navigation', exact: true })).toBeFocused();

@@ -718,7 +718,7 @@
 [data-zellij-motion='none'] .zellij-drawer-root *,
 [data-zellij-motion='none'] .zellij-drawer-panel { animation: none; }
 @media (prefers-reduced-motion: reduce) {
-  .zellij-drawer-root * { animation: none; }
+  .zellij-drawer-root *, .zellij-drawer-root .zellij-drawer-view { animation: none; }
 }
 @media (max-width: 600px) {
   .zellij-drawer-panel { width: 100%; border: none; }

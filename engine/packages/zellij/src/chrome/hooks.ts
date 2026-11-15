@@ -180,7 +180,8 @@ export function useFocusTrap(
     document.addEventListener('keydown', onKeyDown);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
-      previouslyFocused?.focus?.();
+      // Restoring a sticky-header control must not scroll the page underneath.
+      previouslyFocused?.focus?.({ preventScroll: true });
     };
   }, [container, active, onEscape]);
 }
