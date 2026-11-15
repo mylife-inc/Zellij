@@ -14,13 +14,23 @@ rc.8 recipes. All eight public lifecycle checks and eight actual rc.7-to-rc.8
 upgrade checks pass, as does the isolated standalone upgrade. Documentation
 CI `43698716955` passes all 29 jobs at `9c61a2a`; all six consumer builds pass.
 Preservation retains all original routes/headings/images, and 378 showcase cases
-pass without retries (140 conditional skips). The final records-only update
+pass without retries (140 conditional skips). PR #183's final records-only update
 changes no runtime, active-guide, template or workflow input from tested `9c61a2a`.
 See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
 
-Documentation merge, replacement image publication and scoped rc.7 retirement
-remain pending. Production hosting and live-provider verification stay deferred.
-Remaining print customization and installation work follow; no zero-bug or 1.0 claim.
+Documentation PR #183 merges as `4753953`, matching reviewed `f73f536`.
+Replacement static/Next publications `43701099730`/`43701102406` and both
+fresh-pull HTTP checks in `43701261554` pass. The existing development-image
+publication `43691586062` remains valid: engine code, Docker configuration, dependency manifests and its four public
+digests are unchanged. Scoped rc.7 retirement is complete after 16 exact
+replacement gates: two releases, 42 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,573 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43701809747`
+and both post-cleanup HTTP checks in `43701811954` pass. Only rc.8 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc8-image-retirement-2026-11-15.json).
+
+Production hosting and live-provider verification stay deferred. Remaining print
+customization and installation work follow; no zero-bug or 1.0 claim is made.
 
 The **documented CLI command surface is implemented**. Live deployment-provider
 and external-runner acceptance remains incomplete. The user explicitly moved

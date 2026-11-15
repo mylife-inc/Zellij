@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "candidate": "v0.2.0-rc.8",
-  "status": "rc.8 release, public downloads, channel lifecycle/upgrades, documentation CI and six consumer builds accepted; merge, replacement images and scoped retirement pending",
+  "status": "rc.8 published; public, channel, upgrade and documentation acceptance passed; scoped rc.7 retirement complete",
   "source": {
     "date": "2026-11-15",
     "candidate": "v0.2.0-rc.8",
@@ -3629,10 +3629,218 @@
     "guide_commit": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
     "reason": "Tagged preparation guide still described rc.8 as unreleased; published notes should link to the exact updated rc.8 guide. Also list the supported nerdctl runtime.",
     "assets_and_tag_unchanged": true,
-    "publication_status": "pending documentation merge"
+    "publication_status": "both source and mirror notes corrected; assets and tag identities unchanged",
+    "receipts": [
+      {
+        "repository": "mylife-inc/Zellij",
+        "id": 445937047,
+        "old_body_sha256": "d34d481f36c50340c025e543afdb92c76b8bff83cb7b2e4497d10df6c85a3538",
+        "new_body_sha256": "08382bbc05f8f863eb0d0dd8a0286861a2b7eb225f3e01b75e6e541421c483a5",
+        "assets_and_tag_unchanged": true
+      },
+      {
+        "repository": "mylife-inc/releases",
+        "id": 445937080,
+        "old_body_sha256": "592a6ddb7ce4104e9887d005c0088f7104cbeaeb343c3059cce49438c43f9742",
+        "new_body_sha256": "63c6fb544cdcced1e9b6dac63a7f77c96c97097b14c0f1d894f39923909feaac",
+        "assets_and_tag_unchanged": true
+      }
+    ]
   },
   "final_documentation_record": {
     "implementation_active_guides_templates_workflows_unchanged_from_ci_head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
     "scope": "Context, dated evidence, completion/expansion ledgers and release-note permalink only."
+  },
+  "documentation_merge": {
+    "reviewed_head": "f73f5363600aa38406b80ca31bd08af7945fa802",
+    "sha": "47539533fd1b48e1262e4eb08662e565f3edcc3e",
+    "tree_equals_reviewed_head": true,
+    "tested_input_head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a"
+  },
+  "replacement_images": {
+    "development": {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43691586062,
+      "head": "5ed3aeb4ffdbace64026f3c84dccefff8a09fc94",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "job_id": 132743186955,
+          "name": "none \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187137,
+          "name": "all \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187140,
+          "name": "none \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187169,
+          "name": "maths \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187178,
+          "name": "all \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187207,
+          "name": "diagrams \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187223,
+          "name": "diagrams \u00b7 arm64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743187273,
+          "name": "maths \u00b7 amd64",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743797487,
+          "name": "Publish maths",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743797493,
+          "name": "Publish all",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743797540,
+          "name": "Publish diagrams",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743797552,
+          "name": "Publish none",
+          "conclusion": "success"
+        },
+        {
+          "job_id": 132743883101,
+          "name": "The image can build a site",
+          "conclusion": "success"
+        }
+      ],
+      "manifests": [
+        {
+          "tag": "ghcr.io/mylife-inc/zellij-base:main",
+          "digest": "sha256:5a93b5bdb697197adec9ac2ea50add19ef6669aa5e988c7154baa61b664c66ce",
+          "platforms": [
+            "linux/arm64",
+            "linux/amd64"
+          ],
+          "log_sha256": "75a0739e91d6d4c5fb13f64507efc964ac6753279a533467b322acc07901971a"
+        },
+        {
+          "tag": "ghcr.io/mylife-inc/zellij-base:main-maths",
+          "digest": "sha256:5ce7e80e9a6348e0f6d33977fadf81fd0e33384b5eea6cf35a8e2df827d26919",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ],
+          "log_sha256": "01238c53012829f3136409564db28efc3c12a64e042522c003b23f2f8b204fc8"
+        },
+        {
+          "tag": "ghcr.io/mylife-inc/zellij-base:main-diagrams",
+          "digest": "sha256:fe4824d62989a018d2e4665a40594a8cc460434a73c6c1087fa9d27056a32d7c",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ],
+          "log_sha256": "94351b680edfad0b8068c818956207321961502e60821a7c2123ff63166c1499"
+        },
+        {
+          "tag": "ghcr.io/mylife-inc/zellij-base:main-all",
+          "digest": "sha256:b6de14dcf06d1c4badbd10357640237cc3590ca116ac60d854277945fcd69840",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ],
+          "log_sha256": "4c46804f2fa4d224dc9eace6dbdade6a4d65f7efcf98b8b447313a213f5ddd74"
+        }
+      ],
+      "reused_verified_publication": true,
+      "reason": "No engine, Docker, dependency or workspace manifest input changed; release and documentation acceptance pass again."
+    },
+    "static": {
+      "run_id": 43701099730,
+      "head": "47539533fd1b48e1262e4eb08662e565f3edcc3e",
+      "repository": "mylife-inc/Zellij",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132772207403,
+          "name": "publish",
+          "conclusion": "success"
+        },
+        {
+          "id": 132772208226,
+          "name": "verify",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "next": {
+      "run_id": 43701102406,
+      "head": "47539533fd1b48e1262e4eb08662e565f3edcc3e",
+      "repository": "mylife-inc/Zellij",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132772215863,
+          "name": "publish",
+          "conclusion": "success"
+        },
+        {
+          "id": 132772216834,
+          "name": "verify",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "http": {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43701261554,
+      "head": "47539533fd1b48e1262e4eb08662e565f3edcc3e",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132772697456,
+          "name": "inspect (static)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132772697821,
+          "name": "inspect (next)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132772698540,
+          "name": "live-providers",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "retirement": {
+    "status": "complete",
+    "deleted_releases": 2,
+    "deleted_assets": 42,
+    "deleted_remote_tags": 2,
+    "deleted_image_versions": 26,
+    "protected_manifest_nodes": 38,
+    "excluded_build_history_preserved": 3573,
+    "post_inventory_run": 43701809747,
+    "post_http_run": 43701811954,
+    "evidence": "specs/evidence/zellij-rc8-image-retirement-2026-11-15.json"
   }
 }

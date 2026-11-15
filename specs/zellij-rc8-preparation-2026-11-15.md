@@ -65,3 +65,14 @@ that rc.7 supports Next PDFs. See [verification evidence](evidence/zellij-rc8-pr
 Normal release preflight, publication, public-download checks, channel updates,
 consumer migration and scoped retirement remain pending. The final records-only
 update changes no implementation, workflow or runtime inputs from tested `0afb807`.
+
+
+## Publication follow-through
+
+The immutable tag is `d70e10f`. All 35 release jobs, public PDF comparisons,
+managed-channel lifecycles and actual rc.7-to-rc.8 upgrades pass. PR #183 merges
+updated guides/consumer pins after 29 CI jobs and six consumer checks pass.
+Scoped rc.7 retirement and post-cleanup inventory/HTTP checks are complete.
+See [release evidence](evidence/zellij-rc8-release-2026-11-15.json) and
+[retirement evidence](evidence/zellij-rc8-image-retirement-2026-11-15.json).
+The earlier pending statuses above describe the preparation checkpoint.
