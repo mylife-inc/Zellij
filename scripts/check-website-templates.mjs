@@ -132,6 +132,16 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           if (!route) {
             await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-hero.png`) });
             await checkBentoSurfaces(page);
+            if (width <= 900) {
+              await page.getByRole('button', { name: 'Open navigation', exact: true }).click();
+              const drawer = page.getByRole('dialog', { name: 'Site navigation', exact: true });
+              await drawer.waitFor({ state: 'visible' });
+              assert.equal(await drawer.getByRole('heading', { name: 'Menu', exact: true }).count(), 1);
+              assert.equal(await drawer.getByRole('button', { name: 'Back to main menu' }).count(), 0);
+              await drawer.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-drawer.png`) });
+              await drawer.getByRole('link').first().click();
+              await page.waitForSelector('.zellij-drawer-root', { state: 'detached' });
+            }
           }
           if (route === 'design') {
             const accordion = page.getByRole('group', { name: 'Design details', exact: true });

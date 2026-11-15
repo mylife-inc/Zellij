@@ -3,6 +3,18 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: mobile section navigation in progress**
+
+The user approved replacing the mobile accordion with Apple-style section views
+before rc.9 publication. One dialog shows either the main menu or a titled
+section, with Back restoring parent scroll/focus and Close/Escape exiting the
+whole menu. Direct links navigate immediately; grouped headings/descriptions
+remain within a section. Phones use the full width, tablets retain a side
+panel, and reduced motion is honored. No new menu configuration is required.
+Mobile links also preserve existing external/new-tab metadata, which the old
+renderer dropped. Source/hosted verification and publication are pending; see
+[the contract](specs/zellij-mobile-navigation-2026-11-15.md).
+
 **2026-11-15: centered header correction verified**
 
 The user clarified that only the company mark belongs at the far left; product
