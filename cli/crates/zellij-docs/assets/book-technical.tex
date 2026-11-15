@@ -1,0 +1,19 @@
+% Technical edition v1: existing Latin Modern fonts; no extra packages.
+\definecolor{zelaccent}{HTML}{234F86}
+\newcommand{\zelcover}[1]{\raggedright
+  {\color{zelaccent}\hrule height 2pt}\vspace{2em}
+  {\sffamily\small\color{zelaccent}TECHNICAL EDITION\par}
+  \vspace{2em}{\Huge\sffamily\bfseries #1\par}}
+\makeatletter
+\def\@makechapterhead#1{%
+  \vspace*{12pt}{\parindent\z@\raggedright\normalfont
+  {\color{zelaccent}\hrule height 2pt}\vskip18pt
+  \ifnum\c@secnumdepth>\m@ne\if@mainmatter
+    {\small\sffamily\bfseries\color{zelaccent}\@chapapp\space\thechapter\par}\vskip12pt
+  \fi\fi
+  \interlinepenalty\@M{\Huge\sffamily\bfseries #1\par}\nobreak\vskip28pt}}
+\def\@makeschapterhead#1{%
+  \vspace*{12pt}{\parindent\z@\raggedright\normalfont
+  {\color{zelaccent}\hrule height 2pt}\vskip18pt
+  \interlinepenalty\@M{\Huge\sffamily\bfseries #1\par}\nobreak\vskip28pt}}
+\makeatother

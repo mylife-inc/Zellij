@@ -16,6 +16,8 @@ pub struct Manifest {
     pub language: String,
     #[serde(default)]
     pub direction: Direction,
+    #[serde(default, skip_serializing_if = "Edition::is_classic")]
+    pub edition: Edition,
     pub cover: Option<Cover>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub bibliography: Option<Bibliography>,
@@ -60,6 +62,28 @@ impl Direction {
         match self {
             Self::Ltr => "ltr",
             Self::Rtl => "rtl",
+        }
+    }
+}
+/// A coordinated web/print design. Omission preserves the original manifest
+/// bytes and revision; explicitly choosing classic is equivalent to omission.
+#[derive(Clone, Copy, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "lowercase")]
+pub enum Edition {
+    #[default]
+    Classic,
+    Technical,
+    Study,
+}
+impl Edition {
+    pub fn is_classic(&self) -> bool {
+        *self == Self::Classic
+    }
+    pub fn as_str(self) -> &'static str {
+        match self {
+            Self::Classic => "classic",
+            Self::Technical => "technical",
+            Self::Study => "study",
         }
     }
 }

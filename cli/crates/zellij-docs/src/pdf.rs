@@ -12,6 +12,7 @@ use zellij_core::{Error, Result, files, output::StaticOutput, site::SiteInput};
 pub struct Source {
     pub files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     pub revision: String,
+    pub template: String,
     pub settings: zellij_core::pdf::Settings,
 }
 pub struct Prepared {
@@ -407,7 +408,7 @@ pub(crate) fn compose(
             .eq_ignore_ascii_case("en")
     {
         return Err(invalid(
-            "this first print template supports English/LTR; multilingual/RTL print templates remain planned (web reading remains available)",
+            "these print editions support English/LTR; multilingual/RTL print templates remain planned (web reading remains available)",
         ));
     }
     let mut w = Writer {
@@ -421,7 +422,22 @@ pub(crate) fn compose(
     let mut out = include_str!("../assets/book.tex")
         .replace("@PAPER@", settings.paper.latex())
         .replace("@FONT_SIZE@", &settings.font_size.to_string());
-    out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n",tex(&m.title),tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")),book.revision,tex(&m.title)));
+    match m.edition {
+        zellij_core::book::Edition::Classic => {}
+        zellij_core::book::Edition::Technical => {
+            out.push_str(include_str!("../assets/book-technical.tex"))
+        }
+        zellij_core::book::Edition::Study => out.push_str(include_str!("../assets/book-study.tex")),
+    }
+    out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n", tex(&m.title), tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")), book.revision));
+    if m.edition.is_classic() {
+        out.push_str(&format!("\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n", tex(&m.title)));
+    } else {
+        out.push_str(&format!(
+            "\\begin{{titlepage}}\\zelcover{{{}}}\n",
+            tex(&m.title)
+        ));
+    }
     if book.entries[0].source.is_none() {
         out.push_str(&format!(
             "\\hypertarget{{{}}}{{}}\n",
@@ -603,6 +619,7 @@ pub(crate) fn compose(
     Ok(Source {
         files: w.files,
         revision: book.revision.clone(),
+        template: format!("{}-v1", m.edition.as_str()),
         settings: settings.clone(),
     })
 }

@@ -31,7 +31,7 @@ pub(crate) fn standalone(args: &crate::args::PdfArgs) -> Result<()> {
     if args.check {
         zellij_docs::pdf::check(&source)?;
         zellij_core::statusln!(
-            "✓ Book is compatible with the classic PDF adapter (typesetting not run)"
+            "✓ Book is compatible with the selected PDF edition (typesetting not run)"
         );
         return Ok(());
     }
@@ -287,7 +287,7 @@ fn typeset(
     )?;
     fs::write(prepared.destination.join("book.pdf"), &pdf)?;
     fs::write(prepared.destination.join("build.log"), log)?;
-    let receipt = serde_json::json!({"schema_version":1,"backend":"lualatex","template":"classic-v1","toolchain_image":IMAGE,"revision":prepared.source.revision,"settings":prepared.source.settings,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
+    let receipt = serde_json::json!({"schema_version":1,"backend":"lualatex","template":prepared.source.template,"toolchain_image":IMAGE,"revision":prepared.source.revision,"settings":prepared.source.settings,"pdf_sha256":format!("{:x}",Sha256::digest(&pdf))});
     fs::write(
         prepared.destination.join("pdf.json"),
         serde_json::to_vec_pretty(&receipt).map_err(|e| failed(e.to_string()))?,

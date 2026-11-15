@@ -7,8 +7,54 @@ description: Define a book once, validate its manuscript, and build an offline r
 Candidate rc.7 includes the versioned book manifest, `book-classic@0.2.0`
 and optional LuaLaTeX PDFs on all six native platforms. Shared equation and
 statement references, numeric citations, glossary and subject index are included.
-Multilingual print and richer technical/study templates remain planned.
+Multilingual print remains planned. Richer technical/study templates and the
+`book.edition` selector are implemented in the unreleased rc.8 source below.
 </Callout>
+
+## Coordinated editions (rc.8 source)
+
+The current source adds `book-technical@0.1.0` and `book-study@0.1.0`.
+They require CLI/engine 0.2.0-rc.8; released rc.7 does not include them.
+
+```sh
+zel create my-handbook -t book-technical
+zel create my-study -t book-study
+zel build my-handbook             # Complete offline website
+zel build my-handbook --pdf       # Also generate the matching PDF
+```
+
+In any portable book's existing `book` block, add one setting:
+
+```yaml
+book:
+  version: 1
+  edition: technical  # classic (default), technical, study
+  # Keep your title, authors and reading order here.
+```
+
+| Edition | Web design | PDF design |
+| --- | --- | --- |
+| `classic` | Existing theme typography and reading layout. | Existing green rules and bold serif chapter openings. |
+| `technical` | Blue rules, Outfit headings and Source Serif reading text. | Blue rules, sans-serif cover/chapter titles and serif body/math. |
+| `study` | Warm accents, Cormorant headings, Source Serif body and ruled quotations. | Centered italic serif chapter openings and fine warm rules. |
+
+These designs reuse bundled web fonts and the existing embedded Latin Modern
+print fonts. They coordinate color and hierarchy across formats; they do not
+promise identical fonts, line wrapping or pagination. PDF does not depend on
+the reader's browser theme. Web light/dark mode and forced colors still work.
+No new image, font download or toolchain package is needed. The same edition
+also travels through `zel image next`'s portable-book adapter.
+
+Omitting `edition` or explicitly choosing `classic` preserves the classic
+publication record, revision and print source. Selecting another edition changes
+the publication revision, so a downloadable PDF remains tied to that selection.
+The PDF receipt records `classic-v1`, `technical-v1` or `study-v1` in `template`.
+Unknown edition names fail validation and preserve the previous export.
+
+PDF remains opt-in and English/LTR. Custom TeX execution, custom design tokens,
+multilingual/RTL print, automatic indexing and alternate citation styles remain
+separate work. The new starters contain original sample writing and an explicitly
+illustrative bibliography entry; replace these with your own content and sources.
 
 ## One manuscript, one reading order
 
@@ -532,7 +578,7 @@ pdf:
 Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
 (points). Settings are validated even when PDF is disabled. Unknown keys,
 unsupported values, null settings, hosted sites and missing book manifests fail
-validation. The classic template still controls margins, fonts and chapter styling;
+validation. The selected edition controls fonts and chapter styling;
 custom templates and RTL print remain future work. Standalone `zel pdf` explicitly
 requests export regardless of `enabled`, using the same paper and font settings.
 
@@ -626,3 +672,8 @@ trim sizes and multilingual/RTL print remain future increments.
 rc.7 includes glossary/index backmatter, shared equations, statement blocks,
 numeric bibliography and citations as described above.
 Mathematical expressions otherwise use the web renderer's supported subset.
+
+Explicit `book.edition` settings require a CI pin of rc.8 or later, including
+explicit `classic` (older binaries reject the new field). `zel ci` rejects an
+older `--zel-version` before writing any workflow. Generation does not publish
+the candidate or check whether its release assets are available yet.

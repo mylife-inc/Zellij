@@ -20,10 +20,12 @@ fn real_cli_catalog_aliases_pinned_templates_and_native_builds_work_offline() {
     let root = temp.path();
     let listed = run(root, &["templates", "--json", "--offline"], 0);
     let data: serde_json::Value = serde_json::from_slice(&listed.stdout).unwrap();
-    assert_eq!(data["templates"].as_array().unwrap().len(), 3);
+    assert_eq!(data["templates"].as_array().unwrap().len(), 5);
     for (id, portable) in [
         ("product-docs", true),
         ("book-classic", true),
+        ("book-technical", true),
+        ("book-study", true),
         ("product-studio", false),
     ] {
         run(root, &["templates", "show", id, "--json"], 0);
@@ -180,4 +182,48 @@ fn current_directory_is_not_replaced_or_detached() {
     let output = run(t.path(), &["create", ".", "--offline"], 2);
     assert!(String::from_utf8_lossy(&output.stderr).contains("current working directory"));
     assert_eq!(fs::read_dir(t.path()).unwrap().count(), 0);
+}
+
+#[test]
+fn richer_book_starters_have_references_and_native_print_validation() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    for edition in ["technical", "study"] {
+        let id = format!("book-{edition}");
+        run(
+            root,
+            &[
+                "create",
+                &id,
+                "-t",
+                &id,
+                "--name",
+                "My & book",
+                "--set",
+                "author=A. Writer",
+                "--offline",
+            ],
+            0,
+        );
+        run(root, &["pdf", &id, "--check"], 0);
+        run(root, &["build", &id], 0);
+        let output = root.join(&id).join("site");
+        let record: serde_json::Value =
+            serde_json::from_slice(&fs::read(output.join("_zellij/book.json")).unwrap()).unwrap();
+        assert_eq!(record["manifest"]["edition"], edition);
+        assert_eq!(record["manifest"]["title"], "My & book");
+        assert_eq!(
+            record["bibliography"]["references"]
+                .as_array()
+                .unwrap()
+                .len(),
+            1
+        );
+        assert_eq!(record["terms"].as_array().unwrap().len(), 2);
+        assert!(record["statements"].as_array().unwrap().len() >= 2);
+        assert!(!output.join("_zellij/pdf").exists());
+        if edition == "technical" {
+            assert_eq!(record["equations"][0]["number"], "1.1");
+        }
+    }
 }

@@ -2112,3 +2112,38 @@ fn pdf_ci_requires_a_compatible_release_and_a_bind_capable_runtime() {
         fs::read(root.join(".github/workflows/docs.yml")).unwrap()
     );
 }
+
+#[test]
+fn explicit_book_editions_require_compatible_ci_pins_before_writing() {
+    for edition in ["classic", "technical", "study"] {
+        let tmp = tempfile::tempdir().unwrap();
+        let root = tmp.path();
+        repo(root);
+        site(
+            root,
+            "docs/zellij",
+            &format!(
+                "book: {{version: 1, edition: {edition}, title: Book, authors: [Author], chapters: [{{id: next, source: next.md}}]}}\n"
+            ),
+        );
+        for system in ["github", "gitlab", "circle"] {
+            let old = run(
+                root,
+                &["ci", "--system", system, "--zel-version", "0.2.0-rc.7"],
+                2,
+            );
+            assert!(String::from_utf8_lossy(&old.stderr).contains("book.edition requires"));
+            run(
+                root,
+                &["ci", "--system", system, "--zel-version", "0.2.0-rc.8"],
+                0,
+            );
+        }
+        let before = fs::read(root.join(".github/workflows/docs.yml")).unwrap();
+        run(root, &["ci", "--zel-version", "0.2.0-rc.7", "--force"], 2);
+        assert_eq!(
+            fs::read(root.join(".github/workflows/docs.yml")).unwrap(),
+            before
+        );
+    }
+}

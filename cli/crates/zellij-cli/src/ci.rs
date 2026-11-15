@@ -71,6 +71,21 @@ pub(crate) fn generate(
         .or(settings.zel_version.as_deref())
         .unwrap_or(env!("CARGO_PKG_VERSION"));
     let version = zellij_core::ci::version_pin(version).map_err(|error| invalid(&format!("CI needs a pinned compatible release (0.2.0 or later). Set ci.zel-version or pass --zel-version, for example 0.2.0-rc.1. This binary reports {}. Generation prepares a file but does not publish or verify release availability. {error}", env!("CARGO_PKG_VERSION"))))?;
+    if let Some(edition) = site
+        .portable
+        .get("book")
+        .and_then(|book| book.get("edition"))
+    {
+        let _: zellij_core::book::Edition = serde_yaml_ng::from_value(edition.clone())
+            .map_err(|e| invalid(&format!("book.edition: {e}")))?;
+        let pinned = semver::Version::parse(version.trim_start_matches('v'))
+            .map_err(|_| invalid("book.edition requires an exact semantic CLI version"))?;
+        if pinned < semver::Version::parse("0.2.0-rc.8").expect("edition release") {
+            return Err(invalid(
+                "book.edition requires CLI/engine 0.2.0-rc.8 or later; choose a compatible --zel-version (no workflow was written)",
+            ));
+        }
+    }
     let provider = Provider::selected(&site, args.deploy.as_deref(), None)?;
     let environment_site = provider
         .and_then(|p| std::env::var(p.site_environment()).ok())

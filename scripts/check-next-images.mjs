@@ -4,6 +4,7 @@
 import assert from 'node:assert/strict';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
+import { checkEdition } from './check-book-editions.mjs';
 import { checkTerms } from './check-terms.mjs';
 import { checkBibliography } from './check-bibliography.mjs';
 import { execFileSync, spawn } from 'node:child_process';
@@ -114,6 +115,11 @@ async function browserChecks(origin, prefix, portable) {
       await page.getByRole('heading',{name:'More documentation',exact:true}).waitFor();
       assert.equal((await fetch(`${origin}/manual`)).status,404);
     }
+    if(portable==='book'||portable==='equations') {
+      const edition=portable==='book'?'study':'technical';
+      await page.goto(`${origin}${prefix}/`);
+      await checkEdition(page,edition,path.join(repo,'test-results/next-equations'),`next-${edition}`);
+    }
     assert.deepEqual(errors,[],'Browser errors or failed resources');
   } finally { await browser.close(); }
 }
@@ -187,10 +193,14 @@ try {
     assert.equal(await readFile(path.join(root,'hosted/content/site.yaml'),'utf8'),hostedSettings);
     await container(hosted,'/products/.docs',false,'https://next.example');
     await cp(path.join(repo, 'scripts/fixtures/book'), path.join(root, 'book'), { recursive: true });
+    const bookSettings=path.join(root,'book/zel.yaml');
+    await writeFile(bookSettings,(await readFile(bookSettings,'utf8')).replace('book:', 'book:\n  edition: study'));
     const book = `zellij-next-book:${suffix}`; images.push(book);
     run(['image', 'next', 'book', '--tag', book, '--features', 'none']);
     await container(book, '', 'book');
     await cp(path.join(repo, 'scripts/fixtures/terms'), path.join(root, 'equations'), { recursive: true });
+    const equationSettings=path.join(root,'equations/zel.yaml');
+    await writeFile(equationSettings,(await readFile(equationSettings,'utf8')).replace('book:', 'book:\n  edition: technical'));
     const equations = `zellij-next-equations:${suffix}`; images.push(equations);
     run(['image', 'next', 'equations', '--tag', equations, '--features', 'maths', '--base-path', '/books/equations']);
     await container(equations, '/books/equations', 'equations');

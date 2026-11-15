@@ -32,6 +32,17 @@ versions and both CodeSeal releases remain intact. Fresh inventory `43652529198`
 and both post-cleanup HTTP checks in `43652531820` pass; only rc.7 remains in
 the two Zellij release channels. See [retirement evidence](evidence/zellij-rc7-image-retirement-2026-11-14.json).
 
+## Technical/study edition increment — 2026-11-14
+
+Current branch `codex/book-editions` adds shared `book.edition` selection and
+`book-technical@0.1.0` / `book-study@0.1.0`. Source becomes rc.8 so the template
+minimum versions reject released rc.7. No public candidate is cut by this change.
+Existing published template bytes stay immutable. Native and adapted Next styles
+share one CSS source; the PDF variants reuse the pinned fonts/toolchain.
+[Contract and verification](zellij-book-editions-2026-11-14.md). Hosted acceptance
+and visual review are pending. Remaining print/installation/provider work remains
+open; this is not a zero-bug or 1.0-complete claim.
+
 ## Earlier release and implementation milestones
 
 Refreshed 2026-11-13: **v0.2.0-rc.6 is published** from PR #155

@@ -711,6 +711,13 @@ fn compile(
         format!("window.ZELLIJ_SEARCH={data};\n").into_bytes(),
     );
     if let Some(book) = &publication {
+        if !book.manifest.edition.is_classic() {
+            files.insert(
+                "_zellij/book-editions.css".into(),
+                include_bytes!("../../../../engine/packages/zellij/src/styles/book-editions.css")
+                    .to_vec(),
+            );
+        }
         files.insert(
             "_zellij/book.json".into(),
             serde_json::to_vec_pretty(book).map_err(|e| Error::Io(std::io::Error::other(e)))?,

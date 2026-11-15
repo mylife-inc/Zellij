@@ -1,0 +1,19 @@
+[
+  {
+    "id": "sample-note",
+    "type": "manuscript",
+    "title": "Technical sample notes (illustrative, unpublished)",
+    "author": [
+      {
+        "literal": "Shebka sample author"
+      }
+    ],
+    "issued": {
+      "date-parts": [
+        [
+          2026
+        ]
+      ]
+    }
+  }
+]

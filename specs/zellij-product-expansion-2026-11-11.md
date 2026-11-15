@@ -5,6 +5,17 @@ Date: 2026-11-11. Source baseline: `3ca63ba` on `main`; latest published CLI:
 contract. This document records the user's intentions and a proposed staged
 design; proposed commands remain planned unless explicitly marked implemented below.
 
+## Technical/study edition increment — 2026-11-14
+
+Current branch `codex/book-editions` adds shared `book.edition` selection and
+`book-technical@0.1.0` / `book-study@0.1.0`. Source becomes rc.8 so the template
+minimum versions reject released rc.7. No public candidate is cut by this change.
+Existing published template bytes stay immutable. Native and adapted Next styles
+share one CSS source; the PDF variants reuse the pinned fonts/toolchain.
+[Contract and verification](zellij-book-editions-2026-11-14.md). Hosted acceptance
+and visual review are pending. Remaining print/installation/provider work remains
+open; this is not a zero-bug or 1.0-complete claim.
+
 ## Delivery order and release boundaries
 
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge

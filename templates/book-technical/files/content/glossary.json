@@ -1,0 +1,12 @@
+[
+  {
+    "id": "sum",
+    "term": "Finite sum",
+    "definition": "The result of adding a finite sequence of terms."
+  },
+  {
+    "id": "invariant",
+    "term": "Invariant",
+    "definition": "A property preserved through the steps of a process."
+  }
+]

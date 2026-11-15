@@ -29,8 +29,32 @@ normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
 LuaLaTeX Linux container runtime. The classic print design supports English/LTR;
-indexes, bibliography, multilingual print and technical/study editions remain planned.
+numeric citations, glossary and subject index are also supported in rc.7.
+Multilingual print remains planned. Technical/study editions are implemented in
+the unreleased rc.8 source, as described below.
 Previously published book-classic 0.1.0 archives remain unchanged.
+
+## Technical and study editions (rc.8 source)
+
+The current source adds two starters, each at template version 0.1.0. These need
+CLI/engine 0.2.0-rc.8; the published rc.7 binary does not yet include them.
+
+```sh
+zel create my-handbook -t book-technical --name "Reasoning clearly" --set author="A. Writer"
+zel create my-study -t book-study
+```
+
+The technical edition pairs blue rules and sans-serif chapter titles with serif
+reading text. Its manuscript demonstrates a numbered sum, theorem/proof,
+invariants, code, citations, glossary and subject index. The study edition uses
+warm accents, expressive serif titles and quiet quotation treatments, with
+original passages, commentary, questions, footnotes and reference catalogs.
+Both include a preface, part, two chapters and appendix. Their title pages are
+typographic; an optional local PNG/JPEG cover can be added to the manifest.
+
+Set `book.edition` to `classic`, `technical` or `study` to change the coordinated
+web/PDF design without rewriting the content. [Book editions](/cli/books#coordinated-editions-rc8-source)
+explains the scope. The original three template archives remain unchanged.
 
 ## Create and edit
 

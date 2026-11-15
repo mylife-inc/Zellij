@@ -1,9 +1,14 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. Version 1 contains three starters:
+CLI releases. It is independent of `examples/`. The rc.8 source catalog contains five starters:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page)
-and `book-classic` (portable book publication with optional LuaLaTeX PDF).
+`book-classic` (portable book publication with optional LuaLaTeX PDF),
+`book-technical` (mathematics and proofs) and `book-study` (passages and commentary).
+The latter two start at template version 0.1.0, require CLI/engine rc.8 and are
+not available in the published rc.7 binary. They set `book.edition` for coordinated
+web/print layouts and include citations, glossary and index examples. No artwork,
+font or runtime dependency is added.
 The product starters remain at template version 0.1.0. Book-classic 0.2.0
 requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
 the bundled catalog; previously published 0.1.0 archives remain immutable.
@@ -24,7 +29,7 @@ manuscript against the native PDF adapter without running a toolchain. Enabled
 PDF settings must be disclosed by the manifest; a false print declaration fails
 before the destination is published. This capability does not enable PDF
 automatically or promise successful typesetting of arbitrary subsequent edits.
-The classic adapter remains English/LTR; its optional Linux toolchain runs only
+The three print editions remain English/LTR; its optional Linux toolchain runs only
 when PDF is requested.
 
 `variables` maps names to default single-line text. `substitute` lists the exact

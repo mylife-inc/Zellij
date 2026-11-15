@@ -539,11 +539,23 @@ pub(super) fn emit(
             }
             if page.source.as_str().is_empty() {
                 if let Some(subtitle) = &book.manifest.subtitle {
-                    children.push(element("p", json!({}), vec![text(&subtitle.0)]));
+                    children.push(element(
+                        "p",
+                        if book.manifest.edition.is_classic() {
+                            json!({})
+                        } else {
+                            json!({"className":["book-subtitle"]})
+                        },
+                        vec![text(&subtitle.0)],
+                    ));
                 }
                 children.push(element(
                     "p",
-                    json!({}),
+                    if book.manifest.edition.is_classic() {
+                        json!({})
+                    } else {
+                        json!({"className":["book-authors"]})
+                    },
                     vec![text(
                         &book
                             .manifest
@@ -577,6 +589,16 @@ pub(super) fn emit(
                 },
                 pages,
             ));
+        }
+        if let Some(book) = presentation.book
+            && !book.manifest.edition.is_classic()
+        {
+            let children = std::mem::take(body["children"].as_array_mut().unwrap());
+            body["children"] = json!([element(
+                "div",
+                json!({"className":["zellij-book-edition",format!("zellij-book-{}",book.manifest.edition.as_str())]}),
+                children
+            )]);
         }
         json_file(
             &mut files,
