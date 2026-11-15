@@ -155,3 +155,95 @@ if (args[0] === 'run') {
   assert.deepEqual(calls.filter(args => args[0] === 'pull').map(args => args[1]), expected);
   assert.deepEqual(calls.filter(args => args[0] === 'run').map(args => args.slice(0, 4)), expected.map(image => ['run', '--rm', '--network=none', image]));
 });
+
+// Keep public Next PDF orchestration injectable: these tests never run a browser,
+// Docker, installer or real public download.
+async function nextPdfFixture(t) {
+  const { verifyPublishedNextPdf } = await import('./check-published-next-pdf.mjs');
+  const f = await fixture(t);
+  const calls = [];
+  const options = { version: 'v0.2.0-rc.8', repository: 'example/Zellij',
+    imageRepository: 'ghcr.io/example/zellij-base', captures: path.join(f.root, 'captures') };
+  let downloadRoot;
+  const hooks = {
+    environment: { PATH: '/fixture', GITHUB_TOKEN: 'fixture-token', GH_TOKEN: 'fixture-token',
+      ZEL_INSECURE_SKIP_CHECKSUM: 'true', ZELLIJ_IMAGE: 'wrong:latest', DOCKER_CONTEXT: 'default' },
+    download: async args => {
+      calls.push({ tool: 'download', args }); downloadRoot = path.dirname(args.destination);
+      await mkdir(args.destination);
+      await writeFile(path.join(args.destination, 'install.sh'), 'fixture installer');
+      return { base: 'https://github.com/example/Zellij/releases/download/v0.2.0-rc.8',
+        archive: `zel-v0.2.0-rc.8-${args.target}.tar.gz`, hash: 'a'.repeat(64) };
+    },
+    run: (tool, args, execution) => {
+      calls.push({ tool, args, execution });
+      if (args[0] === '--version') return 'zel 0.2.0-rc.8\n';
+      if (tool === 'docker' && args[0] === 'image') return JSON.stringify([{ Architecture: process.arch === 'arm64' ? 'arm64' : 'amd64',
+        RepoDigests: [`ghcr.io/example/zellij-base@sha256:${'b'.repeat(64)}`] }]);
+      return '';
+    },
+  };
+  return { ...f, options, hooks, calls, verify: () => verifyPublishedNextPdf(options, hooks), downloadRoot: () => downloadRoot };
+}
+
+test('public Next PDF gate installs checked bytes and pins the exact published engine', async t => {
+  const f = await nextPdfFixture(t);
+  const receipt = await f.verify();
+  assert.equal(receipt.version, f.options.version);
+  assert.equal(receipt.archive_sha256, 'a'.repeat(64));
+  assert.equal(receipt.engine, 'ghcr.io/example/zellij-base:0.2.0-rc.8');
+  assert.deepEqual(JSON.parse(await readFile(path.join(f.options.captures, 'published.json'), 'utf8')), receipt);
+  const install = f.calls.find(c => c.tool === 'sh');
+  assert.equal(install.execution.env.ZEL_VERSION, 'v0.2.0-rc.8');
+  assert.equal(install.execution.env.ZEL_RELEASE_BASE_URL, 'https://github.com/example/Zellij/releases/download/v0.2.0-rc.8');
+  const driver = f.calls.find(c => c.args[0] === 'scripts/check-next-pdf.mjs');
+  assert.equal(driver.args[1], path.join(install.execution.env.ZEL_INSTALL_DIR, 'zel'));
+  assert.deepEqual(f.calls.filter(c => c.tool === 'docker').map(c => c.args), [
+    ['pull', receipt.engine], ['image', 'inspect', receipt.engine],
+  ]);
+  for (const call of f.calls.filter(c => c.execution)) {
+    const env = call.execution.env;
+    for (const key of ['GH_TOKEN', 'GITHUB_TOKEN', 'ZEL_INSECURE_SKIP_CHECKSUM']) assert.equal(env[key], undefined);
+    assert.equal(env.ZELLIJ_IMAGE, receipt.engine); assert.equal(env.DOCKER_CONTEXT, 'default');
+  }
+  await assert.rejects(access(f.downloadRoot()));
+});
+
+test('public Next PDF gate rejects invalid pins before installation or runtime access', async t => {
+  for (const change of [{ version: 'main' }, { imageRepository: 'ghcr.io/example/zellij-base:latest' }]) {
+    const f = await nextPdfFixture(t); Object.assign(f.options, change);
+    await assert.rejects(f.verify()); assert.equal(f.calls.length, 0);
+  }
+});
+
+test('public Next PDF gate stops before PDF execution for wrong binary or engine', async t => {
+  for (const fault of ['version', 'architecture', 'digest']) {
+    const f = await nextPdfFixture(t), run = f.hooks.run;
+    f.hooks.run = (tool, args, options) => {
+      const result = run(tool, args, options);
+      if (fault === 'version' && args[0] === '--version') return 'zel 0.2.0-rc.7\n';
+      if (tool === 'docker' && args[0] === 'image') {
+        const engine = JSON.parse(result);
+        if (fault === 'architecture') engine[0].Architecture = 'wrong';
+        if (fault === 'digest') engine[0].RepoDigests = [];
+        return JSON.stringify(engine);
+      }
+      return result;
+    };
+    await assert.rejects(f.verify());
+    assert(!f.calls.some(c => c.args[0] === 'scripts/check-next-pdf.mjs'));
+    if (fault === 'version') assert(!f.calls.some(c => c.tool === 'docker'));
+    await assert.rejects(access(f.downloadRoot()));
+  }
+});
+
+test('public Next PDF gate retains identity evidence and propagates driver failures', async t => {
+  const f = await nextPdfFixture(t), run = f.hooks.run;
+  f.hooks.run = (tool, args, options) => {
+    if (args[0] === 'scripts/check-next-pdf.mjs') throw new Error('PDF download regression');
+    return run(tool, args, options);
+  };
+  await assert.rejects(f.verify(), /PDF download regression/);
+  assert.equal(JSON.parse(await readFile(path.join(f.options.captures, 'published.json'), 'utf8')).engine, 'ghcr.io/example/zellij-base:0.2.0-rc.8');
+  await assert.rejects(access(f.downloadRoot()));
+});
