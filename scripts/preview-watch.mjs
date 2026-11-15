@@ -295,6 +295,13 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       polling = false; await probe;
       assert.ifError(probeError);
       assert(availability.length > 10 && availability.every(code => code === 200), 'Publication must not expose a missing root index');
+      assert.deepEqual(errors, []);
+      // End the browser session before deliberately stopping its server. WebKit
+      // can report a refused polling request as pageerror even though fetch is
+      // caught. The checks below still exercise real Ctrl-C and watcher cleanup.
+      await context.tracing.stop();
+      await context.close();
+      context = undefined;
       await stop(server);
       assert.deepEqual(await snapshot(source), authored, 'Watching never rewrites authored source');
       await writeFile(readme, home('Edited after stopping'));
@@ -302,9 +309,6 @@ export async function checkWatch({ temp, source, output, start, stop, snapshot, 
       assert.deepEqual(await snapshot(output), exported, 'Ctrl-C also stops the watcher');
       assert(!(await readdir(temp)).some(name => name.startsWith('.zel-build-')), 'No staging directories remain');
       assert.deepEqual(errors, []);
-      await context.tracing.stop();
-      await context.close();
-      context = undefined;
 
       // Watch output is still a movable direct-file artifact with no polling.
       const moved = `${output}-moved-${engine}`;
