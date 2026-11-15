@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-14 with verified rc.7 replacement and scoped rc.6 retirement.
+Refreshed 2026-11-15 with verified rc.8 replacement and scoped rc.7 retirement.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -26,7 +26,31 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.7 execution status — 2026-11-14
+## Current rc.8 execution status — 2026-11-15
+
+Documentation PR #183 merges as `4753953`, matching reviewed `f73f536`.
+Replacement static/Next publications `43701099730`/`43701102406` and both
+fresh-pull HTTP checks in `43701261554` pass. The existing development-image
+publication `43691586062` remains valid: engine code, Docker configuration, dependency manifests and its four public
+digests are unchanged. Scoped rc.7 retirement is complete after 16 exact
+replacement gates: two releases, 42 assets, two remote tags and 26 obsolete
+image versions removed. All 38 current manifest nodes, 3,573 excluded build-history
+versions and both CodeSeal releases remain intact. Fresh inventory `43701809747`
+and both post-cleanup HTTP checks in `43701811954` pass. Only rc.8 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc8-image-retirement-2026-11-15.json).
+
+Production hosting and live-provider verification stay deferred. Remaining print
+customization and installation work follow; no zero-bug or 1.0 claim is made.
+
+Image policy `68ad748` and committed plan `61227d2` pass all 13 safeguards locally
+and in both hosted inventories. Seven native-release guard cases and the live
+read-only preflight pass. Owner execution completes without a failed deletion
+attempt. Both repositories retain rc.8 with 23 matching assets each. All 35
+release jobs, 29 documentation CI jobs, six consumer builds, both managed-channel
+lifecycles and actual rc.7-to-rc.8 upgrades pass. The final evidence update changes
+no runtime, active guide or workflow inputs. Do not reuse these completed plans.
+
+## Previous rc.7 execution status — 2026-11-14
 
 PR #176 merges as `eae65fb`, matching reviewed tree `e3f7014`. Replacement
 static/Next publications `43651607322`/`43651609913` and both fresh-pull HTTP
