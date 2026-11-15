@@ -3,16 +3,24 @@
 ## rc.8 publication — 2026-11-15
 
 PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and
-workflows match tested `0afb807`. All 29 source CI jobs pass. Normal release
-preflight passes 802 Rust and 490 engine tests before the immutable rc.8 tag.
-The release publishes five templates, including technical/study books, and
-PDF-enabled Next-image delivery. Both download repositories have 23 matching
-assets; existing template archives retain their bytes. Public-download checks,
-channel migration, documentation CI and scoped rc.7 retirement are in progress.
-See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
-Production hosting and live-provider verification remain deferred. Remaining
-print customization and installation work follow; no zero-bug or 1.0 claim.
+workflows match tested `0afb807`. All 29 source CI jobs pass, followed by normal
+release preflight with 802 Rust and 490 engine tests. Immutable rc.8 release
+`43697118925` passes all 35 jobs. Both repositories publish 23 byte-identical
+assets, including five template archives; the three existing archives are unchanged.
+Twenty-four public PDFs and 224 page captures match reviewed content and layouts.
 
+The owned Homebrew tap (`064be17`) and Scoop bucket (`356856f`) publish verified
+rc.8 recipes. All eight public lifecycle checks and eight actual rc.7-to-rc.8
+upgrade checks pass, as does the isolated standalone upgrade. Documentation
+CI `43698716955` passes all 29 jobs at `9c61a2a`; all six consumer builds pass.
+Preservation retains all original routes/headings/images, and 378 showcase cases
+pass without retries (140 conditional skips). The final records-only update
+changes no runtime, active-guide, template or workflow input from tested `9c61a2a`.
+See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
+
+Documentation merge, replacement image publication and scoped rc.7 retirement
+remain pending. Production hosting and live-provider verification stay deferred.
+Remaining print customization and installation work follow; no zero-bug or 1.0 claim.
 
 Date: 2026-11-11. Source baseline: `3ca63ba` on `main`; latest published CLI:
 `v0.2.0-rc.3`. These are new requirements beyond the completed earlier CLI
@@ -454,7 +462,9 @@ download link. A beautiful short demo alone does not establish book support.
 ## 5. Installation channels
 
 Six native OS/architecture packages and shell/PowerShell installers exist.
-Homebrew is now published; other package-manager channels remain delivery work.
+The owned Homebrew tap and Scoop bucket now publish rc.8; their public lifecycle
+and actual previous-version upgrade evidence is tracked in the rc.8 release record.
+WinGet and other package-manager channels remain delivery work.
 
 The name `brew install zellij` is already used by the unrelated terminal
 multiplexer: [current Homebrew formula](https://formulae.brew.sh/formula/zellij).
@@ -479,7 +489,8 @@ the user owns and will continue using the GitHub account **`mylife-inc`**.
 The agreed one-command form is **`brew install mylife-inc/tap/zel`**. Use Shebka
 for company-facing branding; retain the established GitHub/distribution
 namespace. No account rename or `shebka` tap owner is required. The public tap
-is published at `mylife-inc/homebrew-tap`, selecting the rc.6 preview.
+is published at `mylife-inc/homebrew-tap`, selecting the rc.8 preview.
+The owned Windows bucket is `mylife-inc/scoop-bucket`, also selecting rc.8.
 
 The [current tap rules](https://docs.brew.sh/Taps) allow the short command after
 one-time tap setup and formula-specific trust. The qualified command above
@@ -517,7 +528,7 @@ Apply the user's pre-1.0 retention policy to channels we control; evaluate
 registry version-removal constraints before publishing previews to external
 catalogs. A channel that cannot support the requested cleanup may wait for 1.0.
 
-## Current work and next handoff
+## Earlier handoff — rc.4
 
 The company slot merged in [PR #131](https://github.com/mylife-inc/Zellij/pull/131)
 as `b4cc9baf0133cf477ea9d128f035a0554c70cad2`. All 16 jobs in

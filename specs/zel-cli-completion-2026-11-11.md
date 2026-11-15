@@ -3,16 +3,24 @@
 ## rc.8 publication — 2026-11-15
 
 PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and
-workflows match tested `0afb807`. All 29 source CI jobs pass. Normal release
-preflight passes 802 Rust and 490 engine tests before the immutable rc.8 tag.
-The release publishes five templates, including technical/study books, and
-PDF-enabled Next-image delivery. Both download repositories have 23 matching
-assets; existing template archives retain their bytes. Public-download checks,
-channel migration, documentation CI and scoped rc.7 retirement are in progress.
-See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
-Production hosting and live-provider verification remain deferred. Remaining
-print customization and installation work follow; no zero-bug or 1.0 claim.
+workflows match tested `0afb807`. All 29 source CI jobs pass, followed by normal
+release preflight with 802 Rust and 490 engine tests. Immutable rc.8 release
+`43697118925` passes all 35 jobs. Both repositories publish 23 byte-identical
+assets, including five template archives; the three existing archives are unchanged.
+Twenty-four public PDFs and 224 page captures match reviewed content and layouts.
 
+The owned Homebrew tap (`064be17`) and Scoop bucket (`356856f`) publish verified
+rc.8 recipes. All eight public lifecycle checks and eight actual rc.7-to-rc.8
+upgrade checks pass, as does the isolated standalone upgrade. Documentation
+CI `43698716955` passes all 29 jobs at `9c61a2a`; all six consumer builds pass.
+Preservation retains all original routes/headings/images, and 378 showcase cases
+pass without retries (140 conditional skips). The final records-only update
+changes no runtime, active-guide, template or workflow input from tested `9c61a2a`.
+See [release evidence](evidence/zellij-rc8-release-2026-11-15.json).
+
+Documentation merge, replacement image publication and scoped rc.7 retirement
+remain pending. Production hosting and live-provider verification stay deferred.
+Remaining print customization and installation work follow; no zero-bug or 1.0 claim.
 
 The **documented CLI command surface is implemented**. Live deployment-provider
 and external-runner acceptance remains incomplete. The user explicitly moved
@@ -260,12 +268,12 @@ compilation. A handler's existence alone does not prove every real-provider case
 | Creation and authoring | Versioned templates, guarded creation and public/offline catalog acceptance; site/app/page/section wizard tests; full starter; all 25 section types and four composition presets in rc.6; configured layouts and aliases | Existing authored files are protected; page registration remains a documented printed entry. |
 | Inspection and maintenance | Inspection JSON, doctor, version, completions, runtime discovery, native installer/self-upgrade, eject/features acceptance | JSON is available only on documented commands; dependencies are not installed automatically. |
 | Build/check/fmt/watch/dev/serve/view | Portable native and hosted engine tests; direct-file browser acceptance; watch/reload and failure recovery | Hosted rendering requires the documented container/engine prerequisites. |
-| Book publication and PDF (rc.7) | Shared publication snapshot, equations/statements/citations/glossary/index, direct LaTeX adapter, saved settings, atomic web/PDF builds, previews and static delivery; 24 source PDFs/192 captures and 16 public PDFs/128 captures | English/LTR classic template in A5/A4/Letter; opt-in external Linux runtime; Next-image PDFs, multilingual print, richer technical/study templates, BibTeX/custom styles and extended indexing remain open. |
+| Book publication and PDF (rc.8) | Shared publication snapshot, equations/statements/citations/glossary/index, direct LaTeX adapter, saved settings, atomic web/PDF builds, previews and static/Next delivery; 34 source PDFs/312 captures and 24 public PDFs/224 captures | English/LTR classic, technical and study editions in A5/A4/Letter; opt-in external Linux runtime; further print customization, multilingual print, BibTeX/custom styles and extended indexing remain open. |
 | Static and Next images | Both Linux architectures, combined manifests, registry publication, fresh HTTP/browser checks | Images target Linux; the CLI itself ships on all six native OS/architecture targets. |
 | Imports/migrate/ship | Six format fixtures through the real CLI and engine; source containment, assets and configured delivery tests | Supported source subsets are explicit; automatic full format/plugin parity is not implemented. |
 | Deployment | Netlify, Cloudflare, Vercel, GitHub Pages, S3, Fly and Railway adapters and protocol tests | Live Fly/S3 acceptance pending; Vercel deferred by the user. |
 | CI generation | GitHub/GitLab/CircleCI generator tests and installed-CLI delivery runs | Actual GitLab/CircleCI runner acceptance pending; provisioning/dispatch remain GitHub-specific. |
-| Distribution | Published rc.7 assets; six native platforms and four engine variants on both Linux architectures; all eight public acceptance jobs pass; owned-channel lifecycle and actual old-to-new upgrades are tracked separately | WinGet and other package channels and live provider/external-runner acceptance remain deferred. |
+| Distribution | Published rc.8 assets; six native platforms and four engine variants on both Linux architectures; all ten public acceptance jobs pass; owned-channel lifecycle and actual old-to-new upgrades are tracked separately | WinGet and other package channels and live provider/external-runner acceptance remain deferred. |
 
 Earlier importer milestone: Sphinx inclusion patterns, source `47b3293`, in
 [PR #123](https://github.com/mylife-inc/Zellij/pull/123). All 720 local Rust

@@ -6,15 +6,24 @@ Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 **2026-11-15: rc.8 publication**
 
 PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and
-workflows match tested `0afb807`. All 29 source CI jobs pass. Normal release
-preflight passes 802 Rust and 490 engine tests before the immutable rc.8 tag.
-The release publishes five templates, including technical/study books, and
-PDF-enabled Next-image delivery. Both download repositories have 23 matching
-assets; existing template archives retain their bytes. Public-download checks,
-channel migration, documentation CI and scoped rc.7 retirement are in progress.
+workflows match tested `0afb807`. All 29 source CI jobs pass, followed by normal
+release preflight with 802 Rust and 490 engine tests. Immutable rc.8 release
+`43697118925` passes all 35 jobs. Both repositories publish 23 byte-identical
+assets, including five template archives; the three existing archives are unchanged.
+Twenty-four public PDFs and 224 page captures match reviewed content and layouts.
+
+The owned Homebrew tap (`064be17`) and Scoop bucket (`356856f`) publish verified
+rc.8 recipes. All eight public lifecycle checks and eight actual rc.7-to-rc.8
+upgrade checks pass, as does the isolated standalone upgrade. Documentation
+CI `43698716955` passes all 29 jobs at `9c61a2a`; all six consumer builds pass.
+Preservation retains all original routes/headings/images, and 378 showcase cases
+pass without retries (140 conditional skips). The final records-only update
+changes no runtime, active-guide, template or workflow input from tested `9c61a2a`.
 See [release evidence](specs/evidence/zellij-rc8-release-2026-11-15.json).
-Production hosting and live-provider verification remain deferred. Remaining
-print customization and installation work follow; no zero-bug or 1.0 claim.
+
+Documentation merge, replacement image publication and scoped rc.7 retirement
+remain pending. Production hosting and live-provider verification stay deferred.
+Remaining print customization and installation work follow; no zero-bug or 1.0 claim.
 
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
 `f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
@@ -90,13 +99,12 @@ existing bounded startup loop. The records-only follow-up changes no runtime,
 active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
 rc.7 and production hosting are unchanged.
 
-**Current work:** rc.8 is tagged at `d70e10f`, with public assets verified.
-Release/public-download acceptance, channel migration, documentation CI and
-scoped rc.7 retirement remain in progress. Keep rc.7 until replacement gates
-pass. Remaining print customization and installation work follow.
-Live provider verification and production-domain migration remain deferred.
-Unexplained browser timing findings stay open; no zero-bug or 1.0-complete claim
-is made.
+**Current work:** rc.8 public release and channel/upgrade acceptance pass.
+All documentation CI and consumer checks pass. Finish the documentation merge,
+replacement static/Next image publication and scoped rc.7 retirement. Remaining
+print customization and installation work follow. Live providers and production
+migration stay deferred; unexplained browser timing findings remain open.
+No zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,
 statement, bibliography, glossary/index, navigation and installer improvements.

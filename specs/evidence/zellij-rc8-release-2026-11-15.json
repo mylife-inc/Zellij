@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "candidate": "v0.2.0-rc.8",
-  "status": "public rc.8 assets published and verified; public-download acceptance, channel migration, documentation CI and retirement pending",
+  "status": "rc.8 release, public downloads, channel lifecycle/upgrades, documentation CI and six consumer builds accepted; merge, replacement images and scoped retirement pending",
   "source": {
     "date": "2026-11-15",
     "candidate": "v0.2.0-rc.8",
@@ -864,8 +864,186 @@
   "release": {
     "run_id": 43697118925,
     "url": "https://github.com/mylife-inc/Zellij/actions/runs/43697118925",
+    "attempt": 1,
     "head": "d70e10f983aefeb67474ea209a5caf928ca328f2",
-    "status": "in progress"
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132760049391,
+        "name": "Verify",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242693,
+        "name": "Documentation site",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242720,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242739,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242743,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242750,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242752,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242760,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242821,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242827,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242840,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242841,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242848,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242878,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242897,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761242956,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761808676,
+        "name": "Publish image diagrams",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761808701,
+        "name": "Publish image all",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761808728,
+        "name": "Publish image maths",
+        "conclusion": "success"
+      },
+      {
+        "id": 132761808759,
+        "name": "Publish image none",
+        "conclusion": "success"
+      },
+      {
+        "id": 132763172865,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132763172870,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132763172875,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132763172931,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764380222,
+        "name": "Publish the release",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471864,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471883,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471917,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471927,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471931,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471941,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471971,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764471991,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764472068,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764472110,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      }
+    ]
   },
   "production_docs_deploy": "skipped by prerelease policy",
   "documentation_validation": {
@@ -873,7 +1051,18 @@
     "examples": 25,
     "log_sha256": "628072e2f8a691f1909aa76b50b6f719a9669ce5283a813b150138e1a253294e",
     "generated_consumer_workflows_match_cli": true,
-    "actionlint": true
+    "actionlint": true,
+    "showcase_passed": 378,
+    "showcase_conditional_skips": 140,
+    "test_retries": 0,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0,
+    "engine_log_sha256": "e68636209247d1b7b8cdbcc001e7ab0589ede276998417a7a517f6962766833e",
+    "showcase_log_sha256": "15ce12bf821237a5a1eda898fe5fb36f33bd27a572b8792033e0c304b79610b6"
   },
   "standalone_upgrade": {
     "from": "0.2.0-rc.7",
@@ -886,5 +1075,2564 @@
     "matches_verified_public_archive": true,
     "portable_create_check_build": "passed",
     "scope": "isolated temporary installation; normal user CLI unchanged"
+  },
+  "shared_release_readme": {
+    "commit": "d43e0e04f06d9f09d0a990e9677009a69933be4c",
+    "changed_only": "zellij/README.md",
+    "stable_installers_and_CodeSeal_unchanged": true
+  },
+  "public_pdf": {
+    "pdfs": 24,
+    "captures": 224,
+    "comparison": "Decoded RGBA pixels, dimensions, extracted text, receipts, revisions and embedded fonts; PDF binary identity is not claimed.",
+    "records": [
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "81378d7d03817abfcbfff02a83df0a929d8b1010df0cd94098a36ecfed153c76",
+          "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "81378d7d03817abfcbfff02a83df0a929d8b1010df0cd94098a36ecfed153c76",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "5ded07fc0b182ea2d56d7522fb3231b52529b4544d42907f79f0764d30914a40",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "5ded07fc0b182ea2d56d7522fb3231b52529b4544d42907f79f0764d30914a40",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "6499e145ef614022e815c9b0a84dafe8ec369b56fc92548ad0aa1242a9d97449",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "6499e145ef614022e815c9b0a84dafe8ec369b56fc92548ad0aa1242a9d97449",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "484f61044b3ec65a5e9e720044a9b699b96fd9853de56d179c62e313819ad29e",
+          "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "484f61044b3ec65a5e9e720044a9b699b96fd9853de56d179c62e313819ad29e",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "151a936af0e5cfa83dc6bb112540cbcb4661ec798c59bd77b56bf8e642ba40e4",
+          "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "151a936af0e5cfa83dc6bb112540cbcb4661ec798c59bd77b56bf8e642ba40e4",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "publication/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "b1fdb89e48adb8b19d2839a54444f62cde8143bd48e886a0ece51d63b60e0892",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "b1fdb89e48adb8b19d2839a54444f62cde8143bd48e886a0ece51d63b60e0892",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "87aeb53e1c99410e5c5067c01a220b481afa3b493e092c0c8f8f697c001c06fa",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 10,
+            "paper": "letter"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "87aeb53e1c99410e5c5067c01a220b481afa3b493e092c0c8f8f697c001c06fa",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "62ac84459d22d9b738e6b97817feb8c4552e4dda37ac56066a2bc2d572c5b11b",
+          "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "62ac84459d22d9b738e6b97817feb8c4552e4dda37ac56066a2bc2d572c5b11b",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "0d87723df650a220cb56fa12e66cafadb237bcd7ddbf635c65b4a70c5db64271",
+          "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "0d87723df650a220cb56fa12e66cafadb237bcd7ddbf635c65b4a70c5db64271",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "f5402b1849bf267b5a517b3b446e8c8b9385f000601b7184185b7be79101d41c",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 12,
+            "paper": "a4"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "f5402b1849bf267b5a517b3b446e8c8b9385f000601b7184185b7be79101d41c",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-1.png",
+        "png_sha256": "a89fd1c334e54c27eaf6ccda6e08c66608cb876350098e10bc9570e9e539929f",
+        "rgba_sha256": "c0cac6759a0aa26afdbb2bf459681989b6cdcb9688d8660e07766c907d88fc7e",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-2.png",
+        "png_sha256": "96807a81bae598ea1c4efd26af152eca4e1940365d43270cfcd55cd4f8892e51",
+        "rgba_sha256": "e73ed30d40a59e63338ce2264b59b169eb1e4d271c5eaf901ef37c5753856753",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-3.png",
+        "png_sha256": "2facd03600dfd62c78cd0dc306e7ca857d0d4b616f1755a044255f3ceb4d9359",
+        "rgba_sha256": "f228ccdc3814913384df79947afd5a84559c88dc247de21f2aa12c221b71905b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-4.png",
+        "png_sha256": "48b8b758be38627306cfde1d0ac53419e07383bc026fec3736a969206dfc5941",
+        "rgba_sha256": "902821101995290db30e7d4d7acfc762f35ef458ea4b5d1edb9bc424af569e78",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-5.png",
+        "png_sha256": "130e511548385f3db8e8403638a9cdac692a1ce5857560f19a04dab6ac171f4f",
+        "rgba_sha256": "e49cba3bf45ce6e15bbeab6989d74fd3584ce6e53280cb01201ba5b501bf15ae",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-6.png",
+        "png_sha256": "26e414bcdf0475a6bd1ade6d5bce7b70ec4e0ba32843f8115b4bb240c27b4cb6",
+        "rgba_sha256": "bd9ae667c223047340f0f528c9d12ade8613cfeb6d03a881f9c36c30ef645025",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-7.png",
+        "png_sha256": "7698c9e2a805c0e8a46892fd06a822caf2da26c53620fe987a8533d9940c2b07",
+        "rgba_sha256": "6ee359d56cc775371fc29f5ffe5de33c800f09286a6d02249f97cb71846d1e3d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-8.png",
+        "png_sha256": "0faf0930b3150442685a35c303dff2dbdc428c91bf6629420d2ab7c6f64a77b6",
+        "rgba_sha256": "66e1db8160a63eb7ab386ef0f1899e51f6f0b8f275e57b569ea7e9fb180f0c1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-10.png",
+        "png_sha256": "44305d384ea13454fb2734012e8b25c59a0788d6559cd929bf7b11d8b3bbb742",
+        "rgba_sha256": "8e5ae2fe67d384c087e9556a614dc5c0cdf65131310af2883c0e6cdd2e52ee01",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-11.png",
+        "png_sha256": "d50e3fe64cbe7306832d780f36590892e844a6dfd9dffa56c52f3c94540b96b7",
+        "rgba_sha256": "a34e25ab1f95934ec3f91d2f16a6484d4b19468d4eb7236e808b8def0e552ec3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-12.png",
+        "png_sha256": "06d782b41d3c9553d40bb2e9c3dd075d8afe6be78eafc72ec86c231c6843a60b",
+        "rgba_sha256": "e281329482aa93e0b9840411a984521da66f0390395117197f2f46c94d8c1879",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-2.png",
+        "png_sha256": "f9f5e502abd8366ab37059ef2f68f31920a742f3e819ac9a75f29233a7391736",
+        "rgba_sha256": "d5d56870c4f8622a1b29e8ba529b49841387a6feb703c5f3e58ec8cfd3a7e145",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-3.png",
+        "png_sha256": "c7e00a9e8c2ad9cf060fb261b0e73e6ef0b7b1cc8fb56a1c7510fa7325871558",
+        "rgba_sha256": "7df424893b210c1fd531140f0ce9c84b557ced2a46164d06f89747381fcdd3c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-4.png",
+        "png_sha256": "a8b33a411f50a52a7d86f0edf7b1bc187272bec8a2e1d30dac6bd618a697a285",
+        "rgba_sha256": "75ad2e32883a0fd3479d63799ffb3f072943f7f2ed893f6a43547c1c5e62cfde",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-6.png",
+        "png_sha256": "031d266f26125c41f172d8df0c12643527166b6b46dabbd5086d1e66d20f7480",
+        "rgba_sha256": "f50b727c866e791dde055e2c237620e0c570aa4e13d543ec2edaeba7d6e84feb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-7.png",
+        "png_sha256": "078b3df7ddc1419dd704883ffe17e0c26fa8bd0f2466c611008451dcdc947995",
+        "rgba_sha256": "8f6ffea326a34bf324b96f9d541c33e0f748e044693e29c02d9f51ab69465b35",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-8.png",
+        "png_sha256": "430f1117df8c7c1ff68e383e0959ffd508f7690d83bc8443492fccd424eda5cb",
+        "rgba_sha256": "accd0848a8cd2b133d763917f1c2b28bf51198b44d4a984975909068dd4fa975",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-9.png",
+        "png_sha256": "bc5c0f53ef39dcfb31632e8754ac8b607302ee9995ece3472736bed6fc284116",
+        "rgba_sha256": "97dab1e3b0fc91c211358795bac9139b0e13f55059ec606d2be21242f3cf29b8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "8b30192ba537bc1609d5452939135ef666afaea86db4e3fe082340b901dd71ec",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "ecfc93c29c98f301016966a49d7f4c976ced684257bf5bbbad671556c8d4d2f0",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "c75fbb4f3d23a54b8f2d9b94a515404262a24ab788dc319e812b6b391e6d7692",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "f50fb695e2a30995ea33a7a53c8f98f0ff633d8af326ebe786cfe93e2559eaf7",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "9edec8e38cbb0e86216b3b6c3ed5f6354662438ff46b4cc28a6062d71a55fcb7",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "0e50677008d6d52ebf8575fbee031de2b8fce0f7adc4b0e7ce03ac11e8ef45b5",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "56fe1c9b7caf3c1b199d220e24498ae001fc1833ca079264e1761e2f5a8f9709",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "a84c6252cb83b8541732313e7101a7e063bc904347307eed2f1f9e4786189729",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "846307bb6e950e30c66fc312ac110f3c6213c1e15a4354eb885c23f26b554b9c",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "90fdab9e93c4ceae8b8b093ff27b98db02975aeebf3a926b96a17c7492f228e8",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "06e77fd261788dc6d84786f8c51507057332076f99f9bbc5da7450014cecb1ae",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "6ffd918e5de84fcc668e1272b6960dbefa324e3f07daceff60454a55a85280c2",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "e115dbaaf9eab778dc4f8f7e52b724b5c9068a2f35bea680e24a65994e281067",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a09948a3acf56eb9b801a3fd69dfd6668c4df78e4d58227b718172781700374b",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "965dfb2ada76191ea031ca76cd44131d20ebbbf31ba6129b0b35227b27df6877",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "3b4c4c7c34b7cfb6b4c1988aa7f5a7e6f0a2fc1378704cf9857fe7020119f748",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "0b074fea27e5b39101e6cc3104d031f65970c9a11e8fc25b06f63231ccffcb0a",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "5679721724077c7eab63166142c1a9ad6fc23c31d1d35f6cd41489f109884548",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "7a0f1ec78eb71ffaccdeef2dc8b1013330c5fc6b688bc190fc4bf0958ff7330f",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "5e154004b6377d776e3f98e0772c67d932896cf5e5054df2ee8d854b84d5807c",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "f22045eb566269edbcd48a438b735f955c95ba4daa10b0d18fb434cf15a66427",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "8f8e058708d53a2bb39ca6bc2cecbfcae792d9f0bfc7f06fea3a09d6bcd09c16",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "ae411297cd826fe621a017873d7fe969dff83545823da8b9997626943c2bd175",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "107eb5f7246940776d7fd37c3d7efddf5c06c5342a30bf5b9e0aef7dc7daacba",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-2.png",
+        "png_sha256": "5a0ff388dd3cc7d361f6362b9f899e5028e85935e78a2bb7104645137fcdb1f4",
+        "rgba_sha256": "8246811d3903d3e0d5d8ecb8e13fedbe8dac324cff96de3a99be4633d9dc8cf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-3.png",
+        "png_sha256": "cee7006815676e297ef7d6e2d9ff0ed0d3cc8496cb61abba0c93c76c72ffbc65",
+        "rgba_sha256": "eb54a1c3ba4a9831dd8c9ce63952da6247650b62ea5c4e1cbdd9f01478222091",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-6.png",
+        "png_sha256": "66d69167389bc6761095db23b058a65b30e9054c94acb0a9007e184bff75a578",
+        "rgba_sha256": "b50cf78d1b3ae6d52fefda7668294c5706b245ee2ed22fc49bb4e25ee78edc88",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-7.png",
+        "png_sha256": "b06eebe56a41f238cd182389d98cc19a3b1ea6e5232dffab9b43c66144b49bb8",
+        "rgba_sha256": "49cda33dba195834696dc8c0b31fe6f0580e78f1801f4f8e3d2a20e08d5f34f9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-1.png",
+        "png_sha256": "6ea0d4de7585919fa3f18bc70900aa0e7f63fe14adf1d6544ff7b32730728837",
+        "rgba_sha256": "1801ff11c1489b24689ca12c8a86de085230bc89947d4d6c022c8440115650bb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-2.png",
+        "png_sha256": "d401b658869abfc2916ed986d465246e3dffe2baa0448061f822a877564c387e",
+        "rgba_sha256": "33e83d6dacfdf8dd3fbd59d740a3d25e9ef6f1a1851fed16cbea3554aeba05bf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-3.png",
+        "png_sha256": "cdd1beda3be690d91ece4e3acc3996ec2849761111047bb2e12548e0cbeeda87",
+        "rgba_sha256": "1561168d66c40b826b4f0f365129e8d779d2a5c579c01f87c5a15d04690d72e2",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-4.png",
+        "png_sha256": "ac7c9459d675d1b0184baaf0576c4134fbb98d44fb0ff828b3a26eab1ab1d0de",
+        "rgba_sha256": "2b352991767b4d9295daabfaf10db0172c57ff93c8a813256760fa2e1f7eed8d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-5.png",
+        "png_sha256": "2bf3b0dcdf40e63b743ca0d2883dc037ac59ab75a16bc482e7d4ff7ef9f99860",
+        "rgba_sha256": "8774c7d93766bc6838fb174a2733b7755a5f364bd28cb8cc2e817a39d061e498",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-6.png",
+        "png_sha256": "b479295cc9fd9923f3ddb2bb62868a18c20584b05333895aa9da445056f9162c",
+        "rgba_sha256": "383eb11af7ba756c75defe1992b4c4359a7c6dc34fb52aca3ffe955cd9ab5094",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-7.png",
+        "png_sha256": "da3287c17dd252b4ac8b9d5bee040300a2113ca4ca437586a6581c5d535bfe9c",
+        "rgba_sha256": "6da4a5fb73e576ed62c7770c440bc347196e7791ab9fded4672ee858354050c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-1.png",
+        "png_sha256": "896d0888148755dae85fb00631be67e3bb6784aed681c6fb470f7ad0c950bcdf",
+        "rgba_sha256": "d96b75fe4939849f6bc69e6885abc9f6fffcbd4158a121f8b64a4d2a88c7fd63",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-2.png",
+        "png_sha256": "e16b235c442d3eee88e2ef8eac281d46d07aea7da2e5ace3894a918bfb82f96e",
+        "rgba_sha256": "b29e9167d51aa8cf4d1454c8e564426b39cba2c6994d36e9ba5a66724e1dbef8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-3.png",
+        "png_sha256": "fff96710b15154b3f6d73a306a9ba1e4f018739daf0b33af8725a37ea737f95b",
+        "rgba_sha256": "16f7a4bbeb01bca40ac480fc78d591308becb467be3a8a7a19b35690f2910fd1",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-4.png",
+        "png_sha256": "0dda478452bc216d560aab2fdec2f3e1a8dbb24259f45800eb1fd9e70b0882d7",
+        "rgba_sha256": "f20b1fbdcbe7371f32f9a6175cea6623af74cdb59452c60af202214f5ae0a81d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-5.png",
+        "png_sha256": "40aa5615ec4697fb144c787bbc661bcb2699c19d11851092b944286c9d36b46f",
+        "rgba_sha256": "a966e30fae55ffb3017edf4815b9496c0b907152e1d062305c689b40de7f56e5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-6.png",
+        "png_sha256": "26567131aa50f80f62f76d2eee4a035a662374dcb0fb62c95038620782155174",
+        "rgba_sha256": "2d7c1a57d00c147415d469d672af5b5a0ce9c20659c2625bb5d0b1df3a0481e8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-7.png",
+        "png_sha256": "af2b357ff2b379c3dfe19259016aaebce05b0827829694209ffbb9bd434550d7",
+        "rgba_sha256": "1f5a3c60a063b6f0fb147524f97ccdcad3da246f43ae930bea55e510d1449bad",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-1.png",
+        "png_sha256": "702d8e8759e1826b914ca84013fc17e583bf301d9c2dbf2cd3755cd81fbae7c5",
+        "rgba_sha256": "9bd45b26789506b549b4d7a55561de1b2e35ce99fd403f6feb2b34cc00f8180b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-2.png",
+        "png_sha256": "33b45c6a59a5260ec8b669f097a21fa5fa3f119631b373c03deb79e750c8fe43",
+        "rgba_sha256": "61c78af218fe9a83372d24f5409e3f2bf5d843a13d308c66ffc8917e29ed33f3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-3.png",
+        "png_sha256": "a6e9d0685d5a60de74238de77b5300995163c4c947aa0c9397352a8fc80bba28",
+        "rgba_sha256": "75cab5818a4d8cf86af48e60d77c3899b994b7eefc7c4f0493a7c2074b7ae8c0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-4.png",
+        "png_sha256": "203402ee97a72fd630f704022283dedd84840a3bb5f8f6aecc00956e0883bb9f",
+        "rgba_sha256": "cd87da635d215dbaabfe087c0e43e327f9c607da945879e192561f63b3b7b79c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-5.png",
+        "png_sha256": "785d80d175e86f4fc35d242affd45ffc149f856c397b0280aac3d7596b2b94fc",
+        "rgba_sha256": "19cb720e5727a5d6111422ac0e2425477c31005a0aa691c58a56e8a8511a7680",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-6.png",
+        "png_sha256": "9455c31ca55013d7ac14fa6175c0ff2f284328aed04caa6a6051871161a3c64f",
+        "rgba_sha256": "9872b2b3d69a005ac1dc9eff1684de0ea9d87f46b8b1496a164ec813395ba0c7",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-2.png",
+        "png_sha256": "7c66d4e68be88d7d5335cbd9cf19b545a7eb6e814eb929067216fd3cae849c8f",
+        "rgba_sha256": "7cad8ac107869eed0156ed2371df953a8b24174570aa9c805f21b984cacb97aa",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-3.png",
+        "png_sha256": "4eb8468b5f969bfb84bfb7a43837e5052078bf08fff9f1065cb2bad439bf37da",
+        "rgba_sha256": "bf49d07fe7c281301aaee1970ef79b4989cc479c044affa0f359514b146ca9b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-6.png",
+        "png_sha256": "229c30215ca44e2da9330cc2b9fab7fbfcdae2bdfebfbeca6c6d4f81d81b09be",
+        "rgba_sha256": "369fd348223268ace404b77ec44cc581f565e0e24caceca7a01e7029e9fae350",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-7.png",
+        "png_sha256": "aab4aafff419e08cc3f79083ac128ce06f971b5ca5215e6075eb2774189bea80",
+        "rgba_sha256": "5b196abf0f3139cb1d1e63b0435be937f8c39cd70c212f544be1392724dca76a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-9.png",
+        "png_sha256": "712a9594db2a2e80b7032ad371a8187d85e174107764bcade812f3e4178e8574",
+        "rgba_sha256": "d659103dea1434ae6da8eb592417bbddf7e85f1180bd6377853d512f0583daf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-1.png",
+        "png_sha256": "9f05117293456d073c8036cdeb456924e3471bc560370a6db2c4b686e1a1dec9",
+        "rgba_sha256": "2c25f92d445a26731773ae88f6d90def44ca6422336e808c511c0d5ad49b0c5d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-2.png",
+        "png_sha256": "cebfab2d08925ef1c878a3e6117cf5476175b5a57543989e028dc24ebad89ad8",
+        "rgba_sha256": "06bb548f9ea659ff9845a7b96544fb7c4b8ef568c8469b1b9aa46b9e48fee06a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-3.png",
+        "png_sha256": "34452be2b2ed09c56c36f0c707ae3e8b6f9f133046b6987480181459e07d6eae",
+        "rgba_sha256": "9c2e5e990bd66675fb689b86a681c24a04d4aa239f6fd6aa0358c2d2541c67c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-4.png",
+        "png_sha256": "7b9f35ab70667e2a2d6b979f465c125267022b52a30892d68357312d43a3db3b",
+        "rgba_sha256": "a33cb56c4331033dd181e884b035104035bc95c37e80db77974cfa7e79ee7b2c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-5.png",
+        "png_sha256": "e31bd9372b6393d3aa539fb01a2b3dfc8fd4fc6edb8825d957117b2d280bb359",
+        "rgba_sha256": "2f04caa8ca2cede0b5f603843e99794e7ab59859ad3e0cf0462d09ad1ec5828d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-6.png",
+        "png_sha256": "8db0c94d502eddd648fb834f1b5d4633d9c3c10ce72f0eace4c3490544b7ab07",
+        "rgba_sha256": "202d5ba2828e66aeeb9ae8994a9e81b9eaa5a51a2a5de6a954fb8dd3aa8a0871",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-7.png",
+        "png_sha256": "019fd25ab49f3bd12c4300efa026bbe7a157a203642ac502b508e5cb9aab3e25",
+        "rgba_sha256": "3b0c1d98f88fe5cf04fa62db45729387e96c50f1b70e0e8fb36e07ff78d1d10d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "1441c2ea3d9d79a65e982b7b926877ab887878030a1c7354b8fa3f3121fb3dc4",
+          "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "1441c2ea3d9d79a65e982b7b926877ab887878030a1c7354b8fa3f3121fb3dc4",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "2d851db9de15d9f5a6f83f5e36f7de93d2abf671e707771a93a1cd7d09d0263c",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "2d851db9de15d9f5a6f83f5e36f7de93d2abf671e707771a93a1cd7d09d0263c",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "a53355571ed4b65a4452b62ece72b286eb418a6e0da321d6f8a0658626e6d005",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "a53355571ed4b65a4452b62ece72b286eb418a6e0da321d6f8a0658626e6d005",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "2618ce187fc7595bfd1b0cf8cc0fcfe3bc1bc92c32472d4f62167eaaa5d22347",
+          "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "2618ce187fc7595bfd1b0cf8cc0fcfe3bc1bc92c32472d4f62167eaaa5d22347",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "9a86d8864ffb4ae7d60e3f9b2b0db3cf02ae028dfccef5bc91ccdfc650a20461",
+          "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "9a86d8864ffb4ae7d60e3f9b2b0db3cf02ae028dfccef5bc91ccdfc650a20461",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "publication/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "f416fe4170b157faaf90632c6397c1afb845c2f88823f21d9d5d0a70ba8d2f77",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "f416fe4170b157faaf90632c6397c1afb845c2f88823f21d9d5d0a70ba8d2f77",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "905af7939a040cd1db62d3df17ab46785df222006cbfc9a7b4f05c5a404ac046",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 10,
+            "paper": "letter"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "905af7939a040cd1db62d3df17ab46785df222006cbfc9a7b4f05c5a404ac046",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "4612fce08841d14c2f49016b43932627c4e88afaf44d2ecf9e9b98098879146a",
+          "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "4612fce08841d14c2f49016b43932627c4e88afaf44d2ecf9e9b98098879146a",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "ca238b9d415bc8dca1d8500e7f2ab98b02975466617c87765a53e97bcaadb39f",
+          "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "ca238b9d415bc8dca1d8500e7f2ab98b02975466617c87765a53e97bcaadb39f",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "78194938247947e83143dfd34c6e3aca7726e830b41e8d714e68c353f91aa03b",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 12,
+            "paper": "a4"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "78194938247947e83143dfd34c6e3aca7726e830b41e8d714e68c353f91aa03b",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-1.png",
+        "png_sha256": "a89fd1c334e54c27eaf6ccda6e08c66608cb876350098e10bc9570e9e539929f",
+        "rgba_sha256": "c0cac6759a0aa26afdbb2bf459681989b6cdcb9688d8660e07766c907d88fc7e",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-2.png",
+        "png_sha256": "96807a81bae598ea1c4efd26af152eca4e1940365d43270cfcd55cd4f8892e51",
+        "rgba_sha256": "e73ed30d40a59e63338ce2264b59b169eb1e4d271c5eaf901ef37c5753856753",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-3.png",
+        "png_sha256": "2facd03600dfd62c78cd0dc306e7ca857d0d4b616f1755a044255f3ceb4d9359",
+        "rgba_sha256": "f228ccdc3814913384df79947afd5a84559c88dc247de21f2aa12c221b71905b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-4.png",
+        "png_sha256": "48b8b758be38627306cfde1d0ac53419e07383bc026fec3736a969206dfc5941",
+        "rgba_sha256": "902821101995290db30e7d4d7acfc762f35ef458ea4b5d1edb9bc424af569e78",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-5.png",
+        "png_sha256": "130e511548385f3db8e8403638a9cdac692a1ce5857560f19a04dab6ac171f4f",
+        "rgba_sha256": "e49cba3bf45ce6e15bbeab6989d74fd3584ce6e53280cb01201ba5b501bf15ae",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-6.png",
+        "png_sha256": "26e414bcdf0475a6bd1ade6d5bce7b70ec4e0ba32843f8115b4bb240c27b4cb6",
+        "rgba_sha256": "bd9ae667c223047340f0f528c9d12ade8613cfeb6d03a881f9c36c30ef645025",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-7.png",
+        "png_sha256": "7698c9e2a805c0e8a46892fd06a822caf2da26c53620fe987a8533d9940c2b07",
+        "rgba_sha256": "6ee359d56cc775371fc29f5ffe5de33c800f09286a6d02249f97cb71846d1e3d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-8.png",
+        "png_sha256": "0faf0930b3150442685a35c303dff2dbdc428c91bf6629420d2ab7c6f64a77b6",
+        "rgba_sha256": "66e1db8160a63eb7ab386ef0f1899e51f6f0b8f275e57b569ea7e9fb180f0c1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-10.png",
+        "png_sha256": "44305d384ea13454fb2734012e8b25c59a0788d6559cd929bf7b11d8b3bbb742",
+        "rgba_sha256": "8e5ae2fe67d384c087e9556a614dc5c0cdf65131310af2883c0e6cdd2e52ee01",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-11.png",
+        "png_sha256": "d50e3fe64cbe7306832d780f36590892e844a6dfd9dffa56c52f3c94540b96b7",
+        "rgba_sha256": "a34e25ab1f95934ec3f91d2f16a6484d4b19468d4eb7236e808b8def0e552ec3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-12.png",
+        "png_sha256": "06d782b41d3c9553d40bb2e9c3dd075d8afe6be78eafc72ec86c231c6843a60b",
+        "rgba_sha256": "e281329482aa93e0b9840411a984521da66f0390395117197f2f46c94d8c1879",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-2.png",
+        "png_sha256": "f9f5e502abd8366ab37059ef2f68f31920a742f3e819ac9a75f29233a7391736",
+        "rgba_sha256": "d5d56870c4f8622a1b29e8ba529b49841387a6feb703c5f3e58ec8cfd3a7e145",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-3.png",
+        "png_sha256": "c7e00a9e8c2ad9cf060fb261b0e73e6ef0b7b1cc8fb56a1c7510fa7325871558",
+        "rgba_sha256": "7df424893b210c1fd531140f0ce9c84b557ced2a46164d06f89747381fcdd3c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-4.png",
+        "png_sha256": "a8b33a411f50a52a7d86f0edf7b1bc187272bec8a2e1d30dac6bd618a697a285",
+        "rgba_sha256": "75ad2e32883a0fd3479d63799ffb3f072943f7f2ed893f6a43547c1c5e62cfde",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-6.png",
+        "png_sha256": "031d266f26125c41f172d8df0c12643527166b6b46dabbd5086d1e66d20f7480",
+        "rgba_sha256": "f50b727c866e791dde055e2c237620e0c570aa4e13d543ec2edaeba7d6e84feb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-7.png",
+        "png_sha256": "078b3df7ddc1419dd704883ffe17e0c26fa8bd0f2466c611008451dcdc947995",
+        "rgba_sha256": "8f6ffea326a34bf324b96f9d541c33e0f748e044693e29c02d9f51ab69465b35",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-8.png",
+        "png_sha256": "430f1117df8c7c1ff68e383e0959ffd508f7690d83bc8443492fccd424eda5cb",
+        "rgba_sha256": "accd0848a8cd2b133d763917f1c2b28bf51198b44d4a984975909068dd4fa975",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-9.png",
+        "png_sha256": "bc5c0f53ef39dcfb31632e8754ac8b607302ee9995ece3472736bed6fc284116",
+        "rgba_sha256": "97dab1e3b0fc91c211358795bac9139b0e13f55059ec606d2be21242f3cf29b8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "8b30192ba537bc1609d5452939135ef666afaea86db4e3fe082340b901dd71ec",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "ecfc93c29c98f301016966a49d7f4c976ced684257bf5bbbad671556c8d4d2f0",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "c75fbb4f3d23a54b8f2d9b94a515404262a24ab788dc319e812b6b391e6d7692",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "f50fb695e2a30995ea33a7a53c8f98f0ff633d8af326ebe786cfe93e2559eaf7",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "9edec8e38cbb0e86216b3b6c3ed5f6354662438ff46b4cc28a6062d71a55fcb7",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "0e50677008d6d52ebf8575fbee031de2b8fce0f7adc4b0e7ce03ac11e8ef45b5",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "56fe1c9b7caf3c1b199d220e24498ae001fc1833ca079264e1761e2f5a8f9709",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "a84c6252cb83b8541732313e7101a7e063bc904347307eed2f1f9e4786189729",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "846307bb6e950e30c66fc312ac110f3c6213c1e15a4354eb885c23f26b554b9c",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "90fdab9e93c4ceae8b8b093ff27b98db02975aeebf3a926b96a17c7492f228e8",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "06e77fd261788dc6d84786f8c51507057332076f99f9bbc5da7450014cecb1ae",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "6ffd918e5de84fcc668e1272b6960dbefa324e3f07daceff60454a55a85280c2",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "e115dbaaf9eab778dc4f8f7e52b724b5c9068a2f35bea680e24a65994e281067",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a09948a3acf56eb9b801a3fd69dfd6668c4df78e4d58227b718172781700374b",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "965dfb2ada76191ea031ca76cd44131d20ebbbf31ba6129b0b35227b27df6877",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "3b4c4c7c34b7cfb6b4c1988aa7f5a7e6f0a2fc1378704cf9857fe7020119f748",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "0b074fea27e5b39101e6cc3104d031f65970c9a11e8fc25b06f63231ccffcb0a",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "5679721724077c7eab63166142c1a9ad6fc23c31d1d35f6cd41489f109884548",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "7a0f1ec78eb71ffaccdeef2dc8b1013330c5fc6b688bc190fc4bf0958ff7330f",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "5e154004b6377d776e3f98e0772c67d932896cf5e5054df2ee8d854b84d5807c",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "f22045eb566269edbcd48a438b735f955c95ba4daa10b0d18fb434cf15a66427",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "8f8e058708d53a2bb39ca6bc2cecbfcae792d9f0bfc7f06fea3a09d6bcd09c16",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "ae411297cd826fe621a017873d7fe969dff83545823da8b9997626943c2bd175",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "107eb5f7246940776d7fd37c3d7efddf5c06c5342a30bf5b9e0aef7dc7daacba",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-2.png",
+        "png_sha256": "5a0ff388dd3cc7d361f6362b9f899e5028e85935e78a2bb7104645137fcdb1f4",
+        "rgba_sha256": "8246811d3903d3e0d5d8ecb8e13fedbe8dac324cff96de3a99be4633d9dc8cf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-3.png",
+        "png_sha256": "cee7006815676e297ef7d6e2d9ff0ed0d3cc8496cb61abba0c93c76c72ffbc65",
+        "rgba_sha256": "eb54a1c3ba4a9831dd8c9ce63952da6247650b62ea5c4e1cbdd9f01478222091",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-6.png",
+        "png_sha256": "66d69167389bc6761095db23b058a65b30e9054c94acb0a9007e184bff75a578",
+        "rgba_sha256": "b50cf78d1b3ae6d52fefda7668294c5706b245ee2ed22fc49bb4e25ee78edc88",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-7.png",
+        "png_sha256": "b06eebe56a41f238cd182389d98cc19a3b1ea6e5232dffab9b43c66144b49bb8",
+        "rgba_sha256": "49cda33dba195834696dc8c0b31fe6f0580e78f1801f4f8e3d2a20e08d5f34f9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-1.png",
+        "png_sha256": "6ea0d4de7585919fa3f18bc70900aa0e7f63fe14adf1d6544ff7b32730728837",
+        "rgba_sha256": "1801ff11c1489b24689ca12c8a86de085230bc89947d4d6c022c8440115650bb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-2.png",
+        "png_sha256": "d401b658869abfc2916ed986d465246e3dffe2baa0448061f822a877564c387e",
+        "rgba_sha256": "33e83d6dacfdf8dd3fbd59d740a3d25e9ef6f1a1851fed16cbea3554aeba05bf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-3.png",
+        "png_sha256": "cdd1beda3be690d91ece4e3acc3996ec2849761111047bb2e12548e0cbeeda87",
+        "rgba_sha256": "1561168d66c40b826b4f0f365129e8d779d2a5c579c01f87c5a15d04690d72e2",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-4.png",
+        "png_sha256": "ac7c9459d675d1b0184baaf0576c4134fbb98d44fb0ff828b3a26eab1ab1d0de",
+        "rgba_sha256": "2b352991767b4d9295daabfaf10db0172c57ff93c8a813256760fa2e1f7eed8d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-5.png",
+        "png_sha256": "2bf3b0dcdf40e63b743ca0d2883dc037ac59ab75a16bc482e7d4ff7ef9f99860",
+        "rgba_sha256": "8774c7d93766bc6838fb174a2733b7755a5f364bd28cb8cc2e817a39d061e498",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-6.png",
+        "png_sha256": "b479295cc9fd9923f3ddb2bb62868a18c20584b05333895aa9da445056f9162c",
+        "rgba_sha256": "383eb11af7ba756c75defe1992b4c4359a7c6dc34fb52aca3ffe955cd9ab5094",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-7.png",
+        "png_sha256": "da3287c17dd252b4ac8b9d5bee040300a2113ca4ca437586a6581c5d535bfe9c",
+        "rgba_sha256": "6da4a5fb73e576ed62c7770c440bc347196e7791ab9fded4672ee858354050c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-1.png",
+        "png_sha256": "896d0888148755dae85fb00631be67e3bb6784aed681c6fb470f7ad0c950bcdf",
+        "rgba_sha256": "d96b75fe4939849f6bc69e6885abc9f6fffcbd4158a121f8b64a4d2a88c7fd63",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-2.png",
+        "png_sha256": "e16b235c442d3eee88e2ef8eac281d46d07aea7da2e5ace3894a918bfb82f96e",
+        "rgba_sha256": "b29e9167d51aa8cf4d1454c8e564426b39cba2c6994d36e9ba5a66724e1dbef8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-3.png",
+        "png_sha256": "fff96710b15154b3f6d73a306a9ba1e4f018739daf0b33af8725a37ea737f95b",
+        "rgba_sha256": "16f7a4bbeb01bca40ac480fc78d591308becb467be3a8a7a19b35690f2910fd1",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-4.png",
+        "png_sha256": "0dda478452bc216d560aab2fdec2f3e1a8dbb24259f45800eb1fd9e70b0882d7",
+        "rgba_sha256": "f20b1fbdcbe7371f32f9a6175cea6623af74cdb59452c60af202214f5ae0a81d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-5.png",
+        "png_sha256": "40aa5615ec4697fb144c787bbc661bcb2699c19d11851092b944286c9d36b46f",
+        "rgba_sha256": "a966e30fae55ffb3017edf4815b9496c0b907152e1d062305c689b40de7f56e5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-6.png",
+        "png_sha256": "26567131aa50f80f62f76d2eee4a035a662374dcb0fb62c95038620782155174",
+        "rgba_sha256": "2d7c1a57d00c147415d469d672af5b5a0ce9c20659c2625bb5d0b1df3a0481e8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-7.png",
+        "png_sha256": "af2b357ff2b379c3dfe19259016aaebce05b0827829694209ffbb9bd434550d7",
+        "rgba_sha256": "1f5a3c60a063b6f0fb147524f97ccdcad3da246f43ae930bea55e510d1449bad",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-1.png",
+        "png_sha256": "702d8e8759e1826b914ca84013fc17e583bf301d9c2dbf2cd3755cd81fbae7c5",
+        "rgba_sha256": "9bd45b26789506b549b4d7a55561de1b2e35ce99fd403f6feb2b34cc00f8180b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-2.png",
+        "png_sha256": "33b45c6a59a5260ec8b669f097a21fa5fa3f119631b373c03deb79e750c8fe43",
+        "rgba_sha256": "61c78af218fe9a83372d24f5409e3f2bf5d843a13d308c66ffc8917e29ed33f3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-3.png",
+        "png_sha256": "a6e9d0685d5a60de74238de77b5300995163c4c947aa0c9397352a8fc80bba28",
+        "rgba_sha256": "75cab5818a4d8cf86af48e60d77c3899b994b7eefc7c4f0493a7c2074b7ae8c0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-4.png",
+        "png_sha256": "203402ee97a72fd630f704022283dedd84840a3bb5f8f6aecc00956e0883bb9f",
+        "rgba_sha256": "cd87da635d215dbaabfe087c0e43e327f9c607da945879e192561f63b3b7b79c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-5.png",
+        "png_sha256": "785d80d175e86f4fc35d242affd45ffc149f856c397b0280aac3d7596b2b94fc",
+        "rgba_sha256": "19cb720e5727a5d6111422ac0e2425477c31005a0aa691c58a56e8a8511a7680",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-6.png",
+        "png_sha256": "9455c31ca55013d7ac14fa6175c0ff2f284328aed04caa6a6051871161a3c64f",
+        "rgba_sha256": "9872b2b3d69a005ac1dc9eff1684de0ea9d87f46b8b1496a164ec813395ba0c7",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-2.png",
+        "png_sha256": "7c66d4e68be88d7d5335cbd9cf19b545a7eb6e814eb929067216fd3cae849c8f",
+        "rgba_sha256": "7cad8ac107869eed0156ed2371df953a8b24174570aa9c805f21b984cacb97aa",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-3.png",
+        "png_sha256": "4eb8468b5f969bfb84bfb7a43837e5052078bf08fff9f1065cb2bad439bf37da",
+        "rgba_sha256": "bf49d07fe7c281301aaee1970ef79b4989cc479c044affa0f359514b146ca9b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-6.png",
+        "png_sha256": "229c30215ca44e2da9330cc2b9fab7fbfcdae2bdfebfbeca6c6d4f81d81b09be",
+        "rgba_sha256": "369fd348223268ace404b77ec44cc581f565e0e24caceca7a01e7029e9fae350",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-7.png",
+        "png_sha256": "aab4aafff419e08cc3f79083ac128ce06f971b5ca5215e6075eb2774189bea80",
+        "rgba_sha256": "5b196abf0f3139cb1d1e63b0435be937f8c39cd70c212f544be1392724dca76a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-9.png",
+        "png_sha256": "712a9594db2a2e80b7032ad371a8187d85e174107764bcade812f3e4178e8574",
+        "rgba_sha256": "d659103dea1434ae6da8eb592417bbddf7e85f1180bd6377853d512f0583daf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-1.png",
+        "png_sha256": "9f05117293456d073c8036cdeb456924e3471bc560370a6db2c4b686e1a1dec9",
+        "rgba_sha256": "2c25f92d445a26731773ae88f6d90def44ca6422336e808c511c0d5ad49b0c5d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-2.png",
+        "png_sha256": "cebfab2d08925ef1c878a3e6117cf5476175b5a57543989e028dc24ebad89ad8",
+        "rgba_sha256": "06bb548f9ea659ff9845a7b96544fb7c4b8ef568c8469b1b9aa46b9e48fee06a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-3.png",
+        "png_sha256": "34452be2b2ed09c56c36f0c707ae3e8b6f9f133046b6987480181459e07d6eae",
+        "rgba_sha256": "9c2e5e990bd66675fb689b86a681c24a04d4aa239f6fd6aa0358c2d2541c67c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-4.png",
+        "png_sha256": "7b9f35ab70667e2a2d6b979f465c125267022b52a30892d68357312d43a3db3b",
+        "rgba_sha256": "a33cb56c4331033dd181e884b035104035bc95c37e80db77974cfa7e79ee7b2c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-5.png",
+        "png_sha256": "e31bd9372b6393d3aa539fb01a2b3dfc8fd4fc6edb8825d957117b2d280bb359",
+        "rgba_sha256": "2f04caa8ca2cede0b5f603843e99794e7ab59859ad3e0cf0462d09ad1ec5828d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-6.png",
+        "png_sha256": "8db0c94d502eddd648fb834f1b5d4633d9c3c10ce72f0eace4c3490544b7ab07",
+        "rgba_sha256": "202d5ba2828e66aeeb9ae8994a9e81b9eaa5a51a2a5de6a954fb8dd3aa8a0871",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-7.png",
+        "png_sha256": "019fd25ab49f3bd12c4300efa026bbe7a157a203642ac502b508e5cb9aab3e25",
+        "rgba_sha256": "3b0c1d98f88fe5cf04fa62db45729387e96c50f1b70e0e8fb36e07ff78d1d10d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "09c2dcea8c9ee6c641f9bcf8e8e6dd5c6721ce05e4920a56da77d65ce3b6da89",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "09c2dcea8c9ee6c641f9bcf8e8e6dd5c6721ce05e4920a56da77d65ce3b6da89",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "13320b506ec0024cd0bcf728ed21682ea37758bac753a8945039409ff8e729cc",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "13320b506ec0024cd0bcf728ed21682ea37758bac753a8945039409ff8e729cc",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "8b90bdc0c11f7dd040858612b0841753b45d1f5d8f662cafb2617688ac31c722",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "8b90bdc0c11f7dd040858612b0841753b45d1f5d8f662cafb2617688ac31c722",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "5e860abb733b47dc77f20995f2758bf34aff53a3ac3d78ef171796ae59486a98",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "5e860abb733b47dc77f20995f2758bf34aff53a3ac3d78ef171796ae59486a98",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      }
+    ],
+    "comparison_script_sha256": "bddfe944b6607caf3b6b3bad3281fe98bbce4e0625181d1551b510fa5585784a",
+    "next_receipts": {
+      "next-pdf-ubuntu-24.04-arm": {
+        "published": {
+          "version": "v0.2.0-rc.8",
+          "target": "aarch64-unknown-linux-gnu",
+          "repository": "mylife-inc/Zellij",
+          "archive": "zel-v0.2.0-rc.8-aarch64-unknown-linux-gnu.tar.gz",
+          "archive_sha256": "b02c2bd2f4545f458600b52338931c81fa9ad1cbd670e1ffeb26d66e8fe00012",
+          "engine": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.8",
+          "engine_digests": [
+            "ghcr.io/mylife-inc/zellij-base@sha256:fceed0b4bf73bde6711bb482380f883e6ea3642823a6694ea85aa3ceff140517"
+          ]
+        },
+        "summaries": [
+          {
+            "edition": "study",
+            "prefix": "",
+            "pages": 12,
+            "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+            "pdf_sha256": "5e860abb733b47dc77f20995f2758bf34aff53a3ac3d78ef171796ae59486a98",
+            "pdf_bytes": 59352,
+            "image_bytes": 213176753,
+            "architecture": "arm64"
+          },
+          {
+            "edition": "technical",
+            "prefix": "/books/technical",
+            "pages": 12,
+            "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+            "pdf_sha256": "8b90bdc0c11f7dd040858612b0841753b45d1f5d8f662cafb2617688ac31c722",
+            "pdf_bytes": 63248,
+            "image_bytes": 213364812,
+            "architecture": "arm64"
+          }
+        ]
+      },
+      "next-pdf-ubuntu-latest": {
+        "published": {
+          "version": "v0.2.0-rc.8",
+          "target": "x86_64-unknown-linux-gnu",
+          "repository": "mylife-inc/Zellij",
+          "archive": "zel-v0.2.0-rc.8-x86_64-unknown-linux-gnu.tar.gz",
+          "archive_sha256": "a326d1a6af05549f442b26fb2f1c2bdd0c5914b113977b62a5c707dc58a9332e",
+          "engine": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.8",
+          "engine_digests": [
+            "ghcr.io/mylife-inc/zellij-base@sha256:fceed0b4bf73bde6711bb482380f883e6ea3642823a6694ea85aa3ceff140517"
+          ]
+        },
+        "summaries": [
+          {
+            "edition": "study",
+            "prefix": "",
+            "pages": 12,
+            "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+            "pdf_sha256": "13320b506ec0024cd0bcf728ed21682ea37758bac753a8945039409ff8e729cc",
+            "pdf_bytes": 59352,
+            "image_bytes": 76787541,
+            "architecture": "amd64"
+          },
+          {
+            "edition": "technical",
+            "prefix": "/books/technical",
+            "pages": 12,
+            "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+            "pdf_sha256": "09c2dcea8c9ee6c641f9bcf8e8e6dd5c6721ce05e4920a56da77d65ce3b6da89",
+            "pdf_bytes": 63248,
+            "image_bytes": 76822536,
+            "architecture": "amd64"
+          }
+        ]
+      }
+    },
+    "visual_samples": [
+      "next-pdf-ubuntu-latest/technical/download-390-false.png",
+      "next-pdf-ubuntu-24.04-arm/study/download-1280-true.png"
+    ]
+  },
+  "template_ledger": {
+    "new_entries": [
+      "book-technical@0.1.0",
+      "book-study@0.1.0"
+    ],
+    "public_cli_reproduces_reviewed_archives": true,
+    "existing_hashes_unchanged": true
+  },
+  "consumer_builds": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698717007,
+      "name": "Documentation (acceptance-next.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698716897,
+      "name": "Documentation (acceptance-netlify-portable.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698716926,
+      "name": "Documentation (acceptance-portable.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698716979,
+      "name": "Documentation (acceptance-hosted.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698717067,
+      "name": "Documentation (acceptance-static.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run_id": 43698716940,
+      "name": "Documentation (acceptance-netlify-hosted.yml)",
+      "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  ],
+  "development_inputs_match_documentation_ci": {
+    "development_image_source": "5ed3aeb4ffdbace64026f3c84dccefff8a09fc94",
+    "documentation_ci_head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+    "unchanged_paths": [
+      "engine",
+      "docker",
+      "package.json",
+      "package-lock.json",
+      ".dockerignore",
+      "examples/*/package.json"
+    ]
+  },
+  "channels": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "run_id": 43698752235,
+      "head": "064be17acfd53fb506f4bf9db5276c1226cfbd84",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132764971624,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764971780,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764971789,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764971836,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "homebrew_upgrade": {
+      "repository": "mylife-inc/homebrew-tap",
+      "run_id": 43699148795,
+      "head": "064be17acfd53fb506f4bf9db5276c1226cfbd84",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132766193108,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132766193326,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132766193387,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132766193420,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success"
+        }
+      ],
+      "from": "0.2.0-rc.7",
+      "to": "0.2.0-rc.8",
+      "actual_versions_and_portable_builds_verified": true,
+      "logs": [
+        {
+          "job_id": 132766193108,
+          "sha256": "e0d66c88048e87efbff7da5116ad16be163eb43e48beafcea0209431ef3968c9"
+        },
+        {
+          "job_id": 132766193326,
+          "sha256": "92976dbd798b5df374becca0720bb29b4fc8acbfa7287f27dfc1cc971fc6ba16"
+        },
+        {
+          "job_id": 132766193387,
+          "sha256": "4f19525c37289633468e5f40251a71ae67f30f9587b26de9309ca013efa37c30"
+        },
+        {
+          "job_id": 132766193420,
+          "sha256": "c347e764c479336eca65e2438931555bf55b0e6fe7bb59bdc546ad1054a07c45"
+        }
+      ]
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "run_id": 43698756686,
+      "head": "356856f2e35dc8dab70177633a05ce464af3fa1d",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132764985636,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764985788,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764985790,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132764985813,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "scoop_upgrade": {
+      "repository": "mylife-inc/scoop-bucket",
+      "run_id": 43699445710,
+      "head": "356856f2e35dc8dab70177633a05ce464af3fa1d",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 132767138087,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132767138199,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132767138323,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 132767138327,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        }
+      ],
+      "from": "0.2.0-rc.7",
+      "to": "0.2.0-rc.8",
+      "actual_versions_and_portable_builds_verified": true,
+      "logs": [
+        {
+          "job_id": 132767138087,
+          "sha256": "a13e93970e900150ca341146716a1b6db69b326887d397ffdcc79c72bc83e88d"
+        },
+        {
+          "job_id": 132767138199,
+          "sha256": "d5dc1d732f7e5e42e7bbf4eafecca7a533efd90561f5f26ac0b602fe9ad86357"
+        },
+        {
+          "job_id": 132767138323,
+          "sha256": "ac8019b57177504a487ef47d758bb4f776a057e35c8c7633dc9a36b5f8884ad2"
+        },
+        {
+          "job_id": 132767138327,
+          "sha256": "79467bb16232ceb645bae4f126b7992933ba1e6e56fd86b3c041e95b728a5053"
+        }
+      ]
+    }
+  },
+  "documentation_ci": {
+    "repository": "mylife-inc/Zellij",
+    "run_id": 43698716955,
+    "head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 132764865613,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865777,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865787,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865791,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865817,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865827,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865832,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865841,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865852,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865864,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865865,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865872,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865873,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865884,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865889,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865910,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865949,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764865982,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764866072,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132764866141,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132766127195,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305286,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305295,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305300,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305303,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305304,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305319,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305358,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 132767305394,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "release_notes_correction": {
+    "guide_commit": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+    "reason": "Tagged preparation guide still described rc.8 as unreleased; published notes should link to the exact updated rc.8 guide. Also list the supported nerdctl runtime.",
+    "assets_and_tag_unchanged": true,
+    "publication_status": "pending documentation merge"
+  },
+  "final_documentation_record": {
+    "implementation_active_guides_templates_workflows_unchanged_from_ci_head": "9c61a2a59abc5843e4b0268e9ae0ef2a9020614a",
+    "scope": "Context, dated evidence, completion/expansion ledgers and release-note permalink only."
   }
 }
