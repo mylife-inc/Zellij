@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "candidate": "v0.2.0-rc.9",
-  "status": "source preparation merged and older-release compatibility verified; release preflight and publication pending",
+  "status": "source preparation merged and rc.9 published; subsequent channels and retirement tracked in the separate release record",
   "baseline": "b599749f19abe2be6aa7bd7f7007369c1f50f366",
   "verified_head": "abc556a48c56530321d2a9eecc5b73fa6935be87",
   "pull_request": 191,

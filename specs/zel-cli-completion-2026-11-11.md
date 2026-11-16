@@ -1,18 +1,28 @@
 # CLI completion gates — 2026-11-11
 
-## rc.9 publication — started 2026-11-15
+## rc.9 publication — 2026-11-16
 
 PR #191 merges as `f03f803`, matching reviewed `7071bb9`; implementation and
-workflows match tested `abc556a`. All 32 source CI jobs pass, followed by normal
-release preflight with 802 Rust and 491 engine tests. The immutable rc.9 tag
-includes the three website starters, centered header and mobile section menus.
-Both repositories publish 26 matching assets, including all eight template
-archives. The five older template archives retain their original hashes.
-Public-download acceptance, channel upgrades, documentation CI and scoped rc.8
-retirement are still in progress. See [release evidence](evidence/zellij-rc9-release-2026-11-15.json).
-Production hosting and live-provider verification remain deferred. Remaining
-print customization and installation work follow; no zero-bug or 1.0 claim.
+workflows match tested `abc556a`. All 32 source CI jobs pass. Normal release
+preflight passes 802 Rust and 491 engine tests before the immutable rc.9 tag.
+Release `43825155269` passes all 37 jobs. Both repositories publish 26 matching
+assets, including all eight templates; the five older archives retain their bytes.
+Twenty-four public PDFs/224 page captures and 170 website/navigation captures
+match their reviewed source baselines.
 
+Homebrew (`091c679`) and Scoop (`1cb8a6b`) publish verified rc.9 recipes. All
+eight public lifecycle cases and eight actual rc.8-to-rc.9 upgrade cases pass,
+as does an isolated standalone upgrade. Documentation CI `43827537521` passes
+all 32 jobs at `ab2377c`, and all six consumer builds pass. Preservation retains
+original routes/headings/images; 418 showcase cases pass without retries
+(140 conditional skips). The final records-only update changes no runtime,
+active guide, template or workflow inputs from tested `ab2377c`.
+See [release evidence](evidence/zellij-rc9-release-2026-11-15.json).
+
+Documentation merge, replacement image publication and scoped rc.8 retirement
+remain pending. Production hosting and live-provider verification remain deferred.
+Remaining print customization and installation channels follow; no zero-bug or
+1.0 claim is made.
 
 ## rc.8 publication — 2026-11-15
 
