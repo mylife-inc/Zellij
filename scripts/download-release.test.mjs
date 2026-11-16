@@ -158,8 +158,9 @@ if (args[0] === 'run') {
 
 // Keep public Next PDF orchestration injectable: these tests never run a browser,
 // Docker, installer or real public download.
-async function nextPdfFixture(t) {
+async function nextPdfFixture(t, websites = false) {
   const { verifyPublishedNextPdf } = await import('./check-published-next-pdf.mjs');
+  const { verifyPublishedWebsites } = await import('./check-published-websites.mjs');
   const f = await fixture(t);
   const calls = [];
   const options = { version: 'v0.2.0-rc.8', repository: 'example/Zellij',
@@ -183,7 +184,7 @@ async function nextPdfFixture(t) {
       return '';
     },
   };
-  return { ...f, options, hooks, calls, verify: () => verifyPublishedNextPdf(options, hooks), downloadRoot: () => downloadRoot };
+  return { ...f, options, hooks, calls, verify: () => (websites ? verifyPublishedWebsites : verifyPublishedNextPdf)(options, hooks), downloadRoot: () => downloadRoot };
 }
 
 test('public Next PDF gate installs checked bytes and pins the exact published engine', async t => {
@@ -245,5 +246,32 @@ test('public Next PDF gate retains identity evidence and propagates driver failu
   };
   await assert.rejects(f.verify(), /PDF download regression/);
   assert.equal(JSON.parse(await readFile(path.join(f.options.captures, 'published.json'), 'utf8')).engine, 'ghcr.io/example/zellij-base:0.2.0-rc.8');
+  await assert.rejects(access(f.downloadRoot()));
+});
+
+
+test('public website gate uses the downloaded CLI, exact engine and tagged website driver', async t => {
+  const f = await nextPdfFixture(t, true);
+  const receipt = await f.verify();
+  const install = f.calls.find(c => c.tool === 'sh');
+  const driver = f.calls.find(c => c.args[0] === 'scripts/check-website-release.mjs');
+  assert.equal(driver.args[1], path.join(install.execution.env.ZEL_INSTALL_DIR, 'zel'));
+  assert.equal(driver.execution.env.ZELLIJ_IMAGE, receipt.engine);
+  assert.equal(receipt.archive_sha256, 'a'.repeat(64));
+  assert(!f.calls.some(c => c.args[0] === 'scripts/check-next-pdf.mjs'));
+  for (const call of f.calls.filter(c => c.execution)) {
+    for (const key of ['GITHUB_TOKEN', 'GH_TOKEN', 'ZEL_INSECURE_SKIP_CHECKSUM']) assert.equal(call.execution.env[key], undefined);
+  }
+  await assert.rejects(access(f.downloadRoot()));
+});
+
+test('public website gate retains downloaded identities and propagates browser failures', async t => {
+  const f = await nextPdfFixture(t, true), run = f.hooks.run;
+  f.hooks.run = (tool, args, options) => {
+    if (args[0] === 'scripts/check-website-release.mjs') throw new Error('Website navigation regression');
+    return run(tool, args, options);
+  };
+  await assert.rejects(f.verify(), /Website navigation regression/);
+  assert.equal(JSON.parse(await readFile(path.join(f.options.captures, 'published.json'), 'utf8')).archive_sha256, 'a'.repeat(64));
   await assert.rejects(access(f.downloadRoot()));
 });

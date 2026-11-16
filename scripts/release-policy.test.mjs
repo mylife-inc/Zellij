@@ -115,7 +115,7 @@ test('published acceptance validates version input and checks the immutable tag 
   assert.equal(runtime.env.DOCKER_CONTEXT, 'default');
   assert.equal(install.env.DOCKER_CONTEXT, "${{ contains(matrix.target, 'linux') && 'default' || '' }}");
   assert.ok(native.steps.indexOf(runtime) < native.steps.indexOf(install));
-  for (const job of [...Object.values(acceptance.jobs).filter(job => job.steps), workflow('next-pdf-acceptance').jobs['next-pdf']]) {
+  for (const job of [...Object.values(acceptance.jobs).filter(job => job.steps), workflow('next-pdf-acceptance').jobs['next-pdf'], workflow('website-acceptance').jobs.websites]) {
     const validate = step(job, 'Validate published version');
     for (const version of ['v0.2.0-rc.1', 'v0.2.0']) f.shell(validate.run, { env: { ...f.env, VERSION: version } });
     for (const version of ['main', 'refs/heads/main', 'v0.2.0\n', '']) {
@@ -127,9 +127,9 @@ test('published acceptance validates version input and checks the immutable tag 
     assert.equal(source.with.path, 'release-source');
     assert.equal(source.with['persist-credentials'], false);
     assert.ok(job.steps.indexOf(validate) < job.steps.indexOf(source));
-    const run = job.steps.find(step => /check-published-(release|images|next-pdf)\.mjs/.test(step.run ?? ''));
+    const run = job.steps.find(step => /check-published-(release|images|next-pdf|websites)\.mjs/.test(step.run ?? ''));
     assert.equal(run['working-directory'], source.with.path);
-    assert.match(run.run, /^node \.\.\/scripts\/check-published-(?:release|images|next-pdf)\.mjs$/);
+    assert.match(run.run, /^node \.\.\/scripts\/check-published-(?:release|images|next-pdf|websites)\.mjs$/);
   }
   assert.deepEqual(f.records(), []);
 });
@@ -321,4 +321,24 @@ test('published Next PDF acceptance uses the released binary and never builds a 
   assert(builds.every(s => s.if === "inputs.version == ''"), 'Public acceptance must not rebuild CLI or engine');
   assert(!job.steps.some(s => s.uses?.startsWith('docker/login-action')), 'Published images are pulled anonymously');
   assert.match(step(job, 'Check released PDF capability').run, /package-native.*--check-version[\s\S]*existsSync\('scripts\/check-next-pdf\.mjs'\)/);
+});
+
+
+test('published website acceptance keeps source builds separate and skips unavailable older capabilities', () => {
+  const accepted = workflow('release-acceptance').jobs.websites;
+  assert.equal(accepted.uses, './.github/workflows/website-acceptance.yml');
+  assert.equal(accepted.with.version, '${{ inputs.version || github.ref_name }}');
+  assert.equal(workflow('ci').jobs.websites.uses, accepted.uses);
+  const job = workflow('website-acceptance').jobs.websites;
+  assert.deepEqual(job.strategy.matrix.runner, ['ubuntu-latest', 'ubuntu-24.04-arm']);
+  const published = step(job, 'Verify public CLI and website templates');
+  assert.equal(published.run, 'node ../scripts/check-published-websites.mjs');
+  assert.equal(published['working-directory'], 'release-source');
+  assert.equal(published.if, "inputs.version != '' && steps.capability.outputs.available == 'true'");
+  assert.equal(published.env.DOCKER_CONTEXT, 'default');
+  const builds = job.steps.filter(s => /cargo build|docker build|npm run build/.test(s.run || ''));
+  assert.equal(builds.length, 3);
+  assert(builds.every(s => s.if === "inputs.version == ''"));
+  assert(!job.steps.some(s => s.uses?.startsWith('docker/login-action')));
+  assert.match(step(job, 'Check released website capability').run, /existsSync\('scripts\/check-website-release\.mjs'\)/);
 });
