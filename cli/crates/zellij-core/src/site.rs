@@ -279,6 +279,25 @@ impl Site {
                 if !value.is_mapping() {
                     return Err(invalid(&config, "pdf must be a settings mapping"));
                 }
+                if let Some(style) = value.get("style") {
+                    if !style.is_mapping() {
+                        return Err(invalid(&config, "pdf.style must be a settings mapping"));
+                    }
+                    if style
+                        .as_mapping()
+                        .expect("checked style mapping")
+                        .values()
+                        .any(Value::is_null)
+                    {
+                        return Err(invalid(&config, "pdf.style entries must not be null"));
+                    }
+                    if style.get("margins").is_some_and(|v| !v.is_mapping()) {
+                        return Err(invalid(
+                            &config,
+                            "pdf.style.margins must be a settings mapping",
+                        ));
+                    }
+                }
                 pdf = parse(&config, value)?;
                 pdf.validate()?;
                 if renderer != Renderer::Portable

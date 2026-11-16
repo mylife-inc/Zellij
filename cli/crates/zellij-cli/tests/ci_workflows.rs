@@ -2195,3 +2195,52 @@ fn next_pdf_ci_requires_rc8_across_all_generators_without_replacing_old_files() 
         assert_eq!(fs::read(root.join(path)).unwrap(), before);
     }
 }
+
+#[test]
+fn print_styles_require_rc10_for_every_ci_generator_even_when_disabled_or_empty() {
+    for style in ["{}", "{accent: '#493B72'}"] {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path();
+        repo(root);
+        site(
+            root,
+            "docs/zellij",
+            &format!(
+                "book: {{version: 1, title: Book, authors: [Author], chapters: [{{id: next, source: next.md}}]}}\npdf: {{enabled: false, style: {style}}}\n"
+            ),
+        );
+        for (system, path) in [
+            ("github", ".github/workflows/docs.yml"),
+            ("gitlab", ".gitlab-ci.yml"),
+            ("circle", ".circleci/config.yml"),
+        ] {
+            for old in ["0.2.0-rc.8", "0.2.0-rc.9"] {
+                let result = run(root, &["ci", "--system", system, "--zel-version", old], 2);
+                assert!(
+                    String::from_utf8_lossy(&result.stderr)
+                        .contains("pdf.style requires CLI 0.2.0-rc.10")
+                );
+                assert!(!root.join(path).exists());
+            }
+            run(
+                root,
+                &["ci", "--system", system, "--zel-version", "0.2.0-rc.10"],
+                0,
+            );
+            let before = fs::read(root.join(path)).unwrap();
+            run(
+                root,
+                &[
+                    "ci",
+                    "--system",
+                    system,
+                    "--zel-version",
+                    "0.2.0-rc.9",
+                    "--force",
+                ],
+                2,
+            );
+            assert_eq!(before, fs::read(root.join(path)).unwrap());
+        }
+    }
+}

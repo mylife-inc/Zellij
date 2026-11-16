@@ -193,3 +193,95 @@ fn next_print_uses_one_publication_and_publishes_only_verified_downloads() {
         );
     }
 }
+
+#[test]
+fn print_overrides_preserve_web_and_content_revision_but_customize_both_print_paths() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    let base = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    for edition in ["classic", "technical", "study"] {
+        let config = base.replace(
+            "  version: 1",
+            &format!("  version: 1\n  edition: {edition}"),
+        );
+        fs::write(root.join("zel.yaml"), &config).unwrap();
+        let source = SiteInput::from(root);
+        let original = pdf::prepare(
+            &source,
+            &root.join("original"),
+            BuildOptions::default(),
+            false,
+        )
+        .unwrap();
+        zellij_docs::build(root, &root.join("site"), BuildOptions::default()).unwrap();
+        let html = fs::read(root.join("site/first.html")).unwrap();
+        assert!(
+            !serde_json::to_value(&original.source.settings)
+                .unwrap()
+                .as_object()
+                .unwrap()
+                .contains_key("style")
+        );
+        fs::write(
+            root.join("zel.yaml"),
+            format!("{config}pdf: {{style: {{}}}}\n"),
+        )
+        .unwrap();
+        let empty =
+            pdf::prepare(&source, &root.join("empty"), BuildOptions::default(), false).unwrap();
+        assert_eq!(
+            original.source.files, empty.source.files,
+            "empty style must preserve every print source byte"
+        );
+        assert!(
+            !String::from_utf8_lossy(&empty.source.files[Utf8Path::new("book.tex")])
+                .contains("@TITLE_FONT@")
+        );
+        for chapter in ["classic", "technical", "study"] {
+            let custom = format!(
+                "{config}pdf:\n  style:\n    accent: '#493B72'\n    body-font: sans\n    title-font: serif\n    chapter-style: {chapter}\n    line-spacing: relaxed\n    margins: {{left: 24, right: 22}}\n"
+            );
+            fs::write(root.join("zel.yaml"), &custom).unwrap();
+            let native = pdf::prepare(
+                &source,
+                &root.join("native"),
+                BuildOptions::default(),
+                false,
+            )
+            .unwrap();
+            let hosted =
+                pdf::prepare_hosted(&source, &root.join("hosted"), BuildOptions::default())
+                    .unwrap();
+            assert_eq!(native.source.files, hosted.source.files);
+            assert_eq!(native.source.revision, original.source.revision);
+            assert_eq!(native.source.template, original.source.template);
+            let tex =
+                String::from_utf8(native.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
+            assert!(tex.contains("\\definecolor{zelaccent}{HTML}{493B72}"));
+            assert!(tex.contains("\\renewcommand{\\familydefault}{\\sfdefault}"));
+            assert!(tex.contains("\\linespread{1.15}"));
+            assert!(tex.contains("\\geometry{left=24mm,right=22mm,top=20mm,bottom=22mm}"));
+            let preamble = tex.split("\\begin{document}").next().unwrap();
+            for title in preamble.split("\\Huge").skip(1) {
+                assert!(title.split('#').next().unwrap().contains("\\rmfamily"));
+            }
+            let opening = preamble.rsplit("\\def\\@makechapterhead").next().unwrap();
+            assert!(opening.contains(match chapter {
+                "technical" => "\\hrule height 2pt",
+                "study" => "\\rule{.25\\linewidth}",
+                _ => "\\hrule height 0.6pt",
+            }));
+            assert_eq!(
+                tex.split("\\begin{document}")
+                    .nth(1)
+                    .unwrap()
+                    .matches("\\end{document}")
+                    .count(),
+                1
+            );
+            zellij_docs::build(root, &root.join("site"), BuildOptions::default()).unwrap();
+            assert_eq!(html, fs::read(root.join("site/first.html")).unwrap());
+        }
+    }
+}

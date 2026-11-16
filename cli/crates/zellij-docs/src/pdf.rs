@@ -503,9 +503,58 @@ pub(crate) fn compose(
         }
         zellij_core::book::Edition::Study => out.push_str(include_str!("../assets/book-study.tex")),
     }
+    // Override chapter openings independently of the cover and web edition.
+    // Only internal template fragments are selected; authored strings never become TeX.
+    if let Some(style) = &settings.style {
+        if let Some(chapter) = style.chapter_style.filter(|chapter| *chapter != m.edition) {
+            let template = match chapter {
+                zellij_core::book::Edition::Classic => include_str!("../assets/book.tex"),
+                zellij_core::book::Edition::Technical => {
+                    include_str!("../assets/book-technical.tex")
+                }
+                zellij_core::book::Edition::Study => include_str!("../assets/book-study.tex"),
+            };
+            let start = template
+                .find("\\makeatletter")
+                .expect("internal chapter template");
+            let end = template
+                .find("\\makeatother")
+                .expect("internal chapter template")
+                + "\\makeatother".len();
+            out.push_str(&template[start..end]);
+            out.push('\n');
+        }
+        if let Some(color) = &style.accent {
+            out.push_str(&format!(
+                "\\definecolor{{zelaccent}}{{HTML}}{{{}}}\n",
+                &color[1..]
+            ));
+        }
+        if let Some(font) = style.body_font {
+            out.push_str(&format!(
+                "\\renewcommand{{\\familydefault}}{{{}}}\n",
+                font.default_family()
+            ));
+        }
+        if let Some(spacing) = style.line_spacing {
+            out.push_str(&format!("\\linespread{{{}}}\n", spacing.latex()));
+        }
+        if let Some(m) = &style.margins {
+            out.push_str(&format!(
+                "\\geometry{{left={}mm,right={}mm,top={}mm,bottom={}mm}}\n",
+                m.left, m.right, m.top, m.bottom
+            ));
+        }
+    }
+    let title_font = settings
+        .style
+        .as_ref()
+        .and_then(|s| s.title_font)
+        .map_or("", |f| f.latex());
+    out = out.replace("@TITLE_FONT@", title_font);
     out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n", tex(&m.title), tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")), book.revision));
     if m.edition.is_classic() {
-        out.push_str(&format!("\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge\\bfseries\\color{{zelaccent}} {}\\par}}\n", tex(&m.title)));
+        out.push_str(&format!("\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge{}\\bfseries\\color{{zelaccent}} {}\\par}}\n", title_font, tex(&m.title)));
     } else {
         out.push_str(&format!(
             "\\begin{{titlepage}}\\zelcover{{{}}}\n",
