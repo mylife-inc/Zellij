@@ -36,3 +36,24 @@ Preserve all known template archive hashes and unrelated shared-repository
 products. Record observed outcomes and earlier failures; never move a published
 tag. Local browser/container/LaTeX execution remains on hosted runners.
 Production hosting and live-provider verification remain deferred.
+
+## Source acceptance
+
+All 32 source CI jobs in `43821076647` pass at `abc556a`, including real website
+builds and navigation on both Linux architectures. Each retains 85 captures;
+the amd64 website captures match the previously reviewed template layouts.
+All 103 ordinary template captures remain byte-identical. New light/dark
+root/section screenshots are reviewed and retained; ARM samples are reviewed
+separately rather than assuming cross-architecture raster identity.
+
+The 34 PDFs retain all 312 reviewed page layouts and 30 TeX sources. Showcase
+passes 418 cases without retries (140 conditional skips). Preservation retains
+46 original and 13 added routes, 282 original heading IDs, 82 mappings and 29
+byte-identical images without captured browser errors. Local release-helper
+checks pass all 45 cases, actionlint, syntax, version and eight-template packaging.
+See [verification evidence](evidence/zellij-rc9-preparation-2026-11-15.json).
+
+The final records-only update changes no implementation, workflow, template or
+runtime inputs from tested `abc556a`. The older-release capability dispatch,
+normal release preflight, publication, channel migration and scoped retirement
+remain pending.

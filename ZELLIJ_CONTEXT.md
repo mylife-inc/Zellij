@@ -11,6 +11,10 @@ the three website starters and shared navigation. Source/public website checks
 run on native Linux amd64/arm64, with real author-configured company branding and
 nested navigation. Public checks install verified downloaded CLI bytes and use
 the exact published image; shared identity/cleanup logic also serves Next PDFs.
+All 32 jobs in source CI `43821076647` pass at `abc556a`, including both
+website architectures. Each retains 85 captures; 103 ordinary template captures
+and 312 PDF page layouts match reviewed baselines. Showcase passes 418 cases
+without retries (140 conditional skips). Local release helpers pass 45 tests.
 See [the preparation contract](specs/zellij-rc9-preparation-2026-11-15.md).
 Publication, managed-channel upgrades, documentation/consumer migration and
 scoped rc.8 retirement follow successful verification. Production hosting and
