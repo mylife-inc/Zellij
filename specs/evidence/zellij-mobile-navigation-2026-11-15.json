@@ -3,7 +3,7 @@
   "baseline": "259567ee25a07da9e6ccadd51ceadea17c0692aa",
   "implementation": "18739b3527c8cd624b1a2fd2d1540d562e2ee5f0",
   "pull_request": 189,
-  "status": "source verified; merge and development images pending",
+  "status": "merged and verified; development images published; rc.9 unreleased",
   "source_version": "0.2.0-rc.9 unreleased",
   "public_version": "0.2.0-rc.8 unchanged",
   "local": {
@@ -562,5 +562,160 @@
       }
     ],
     "drawer_capture_bytes_match_initial_reviewed_run": true
-  }
+  },
+  "merge": {
+    "pull_request": 189,
+    "commit": "31920148a2841ddaac5899c28442a88e228a4927",
+    "reviewed_head": "c8d36a5f035f027fbe02d333b2391e52adfb2cf0",
+    "tree_matches_reviewed_head": true,
+    "changes_after_verified_head": "Verification records and screenshots only."
+  },
+  "development_images": {
+    "run": 43780204929,
+    "head": "31920148a2841ddaac5899c28442a88e228a4927",
+    "status": "success",
+    "tags": [
+      "main",
+      "main-maths",
+      "main-diagrams",
+      "main-all"
+    ],
+    "public_release_tags_unchanged": true,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43780204929",
+    "jobs_passed": 13,
+    "jobs": [
+      {
+        "name": "all \u00b7 amd64",
+        "databaseId": 133015434920,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:47Z",
+        "completedAt": "2026-11-16T00:26:24Z"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "databaseId": 133015435148,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:47Z",
+        "completedAt": "2026-11-16T00:26:27Z"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "databaseId": 133015435188,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:50Z",
+        "completedAt": "2026-11-16T00:26:50Z"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "databaseId": 133015435223,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:47Z",
+        "completedAt": "2026-11-16T00:26:29Z"
+      },
+      {
+        "name": "none \u00b7 arm64",
+        "databaseId": 133015435236,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:50Z",
+        "completedAt": "2026-11-16T00:26:39Z"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "databaseId": 133015435248,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:50Z",
+        "completedAt": "2026-11-16T00:26:32Z"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "databaseId": 133015435329,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:50Z",
+        "completedAt": "2026-11-16T00:26:32Z"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "databaseId": 133015435332,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:24:47Z",
+        "completedAt": "2026-11-16T00:26:40Z"
+      },
+      {
+        "name": "Publish diagrams",
+        "databaseId": 133016072500,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:26:52Z",
+        "completedAt": "2026-11-16T00:27:14Z"
+      },
+      {
+        "name": "Publish all",
+        "databaseId": 133016072504,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:26:52Z",
+        "completedAt": "2026-11-16T00:27:19Z"
+      },
+      {
+        "name": "Publish maths",
+        "databaseId": 133016072521,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:26:51Z",
+        "completedAt": "2026-11-16T00:27:09Z"
+      },
+      {
+        "name": "Publish none",
+        "databaseId": 133016072679,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:26:51Z",
+        "completedAt": "2026-11-16T00:27:06Z"
+      },
+      {
+        "name": "The image can build a site",
+        "databaseId": 133016223916,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:27:21Z",
+        "completedAt": "2026-11-16T00:28:18Z"
+      }
+    ],
+    "manifests": [
+      {
+        "tag": "main",
+        "digest": "sha256:4d7f24be1c9b88246b6df3e4aabe71bdae66dc52698e266ba7f4d4149af4436f",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "ad61bebfeb98259af4ae7ab040a94363260e557bd61e703fd1fe64312b251799"
+      },
+      {
+        "tag": "main-maths",
+        "digest": "sha256:8d0145926c05211624b17eb2a105a33c04852c45e68e80085f03e1e76d72921c",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "2c5f6b265ca1a8c5d0e46c2edd21ca02f316701fc5e1ddbff7151be442441219"
+      },
+      {
+        "tag": "main-diagrams",
+        "digest": "sha256:2136cba01098137f6d0d3053d13f72915f058fb07736d8e84c1523d75a35c742",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "0ee07ec953cbcdfd1857cca6e9e88dd0555d2997883f7ed9edc693c99e64bace"
+      },
+      {
+        "tag": "main-all",
+        "digest": "sha256:b67ff65f2feb5dc3d9e106a6e27bc87c32b6ad30d1f5ca0e8525332c8cfc76f8",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ],
+        "log_sha256": "23f5a9c459926dd140db9a41883c83f31c5d7def9d0df5ffd44b900b02e349ac"
+      }
+    ],
+    "smoke_log_sha256": "14cc57b3a1dceef25b0bca9529cd98a64b18519e7d21c426aebb7b8854dec05a",
+    "default_image_site_build_and_http": "success; first startup probe reset, next probe succeeded within the existing bounded readiness loop"
+  },
+  "records_followup": "Only project context, the mobile-navigation contract and this evidence change after merge; runtime, guides, templates, tests, workflows and image inputs remain identical to the verified implementation."
 }
