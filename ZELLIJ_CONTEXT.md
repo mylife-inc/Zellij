@@ -3,17 +3,29 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-15: mobile section navigation in progress**
+**2026-11-15: mobile section navigation verified for rc.9**
 
-The user approved replacing the mobile accordion with Apple-style section views
-before rc.9 publication. One dialog shows either the main menu or a titled
-section, with Back restoring parent scroll/focus and Close/Escape exiting the
-whole menu. Direct links navigate immediately; grouped headings/descriptions
-remain within a section. Phones use the full width, tablets retain a side
-panel, and reduced motion is honored. No new menu configuration is required.
-Mobile links also preserve existing external/new-tab metadata, which the old
-renderer dropped. Source/hosted verification and publication are pending; see
+The approved mobile menu now shows a main list or a titled section view, with
+Back restoring parent scroll/focus and Close/Escape exiting the menu (`18739b3`).
+Phones use the full width; tablets retain a side panel and backdrop dismissal.
+Existing groups, descriptions/icons, direct links, external/new-tab behavior and
+root CTA/GitHub footer are preserved. No new configuration/dependency is needed.
+`eef7755` fixes modal focus restoration moving the page and ensures reduced
+motion disables Back animation. Native portable books retain their sidebar.
+
+All 30 jobs in `43777347096` pass at `a99cc94`. The showcase passes 418 cases
+(36 new navigation cases), with 140 conditional skips and no retries, plus
+prefix/reload checks. Local verification passes 491 engine tests, type checking,
+build, strict deep docs and eight-template parity. The template job retains 103
+captures; all match the initially reviewed bytes. Four root/section captures and
+six template-menu previews are visually reviewed and retained. Earlier failures,
+including corrected readiness/shutdown fixtures, remain in
+[the evidence](specs/evidence/zellij-mobile-navigation-2026-11-15.json) and
 [the contract](specs/zellij-mobile-navigation-2026-11-15.md).
+Merge and development-image publication are pending. Public rc.8, production
+hosting and deferred live-provider checks are unchanged; rc.9 remains unreleased.
+Next: prepare rc.9 with the website templates, centered header and mobile menu,
+then continue print customization and installation channels.
 
 **2026-11-15: centered header correction verified**
 

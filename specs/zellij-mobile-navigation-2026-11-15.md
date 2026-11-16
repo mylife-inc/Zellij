@@ -43,5 +43,50 @@ palettes. Actual CLI website exports also open/close their direct-link mobile
 menus and retain screenshots.
 
 Native portable books retain their independent sidebar navigation. Public rc.8,
-production hosting and deferred live-provider checks are unchanged. Final source
-CI, visual review, merge and development-image evidence will follow verification.
+production hosting and deferred live-provider checks are unchanged. Source CI and visual review are complete below; merge and development-image
+evidence will follow.
+
+### First hosted pass and corrections
+
+Run `43774698117` at `18739b3` produced 103 successful template captures, but
+its showcase suite found eight failures (two checks across four projects) and
+one existing Safari overflow fixture retry. The reduced-motion wildcard lost
+`animation-name` specificity to the Back selector. The scroll trace showed a
+22px movement when the test focused the sticky-header trigger and another 22px
+when modal cleanup restored it. Commit `eef7755` adds `preventScroll` to modal
+restoration and test setup, asserts scroll at every stage, and gives the reduced
+motion override sufficient specificity. The overflow fixture now waits for fonts
+and the final item measurement before keyboard interaction. The superseded run
+was cancelled; its failures are preserved in the evidence rather than waived.
+
+Local engine checks pass again (491 tests and type checking). Run
+`43775728142` then passed all 36 new navigation cases. It exposed a Linux watch
+fixture that kept Safari polling after intentionally stopping its server; the
+trace shows a refused status fetch, reported by WebKit as a page error despite
+the caught fetch. `0e2f688` closes the browser session first while retaining the
+real Ctrl-C and output-preservation checks. `91d3571` also waits for hydrated
+navigation before an existing mobile-Safari search-shortcut case, which retried
+in that run. Full acceptance is now tracked by `43776685463`; superseded runs
+remain in the evidence.
+
+Run `43776685463` again passed the new navigation cases, but the search fixture
+used a desktop measurement attribute that intentionally stays false on phones.
+That produced two fixture failures (416 passed, 140 conditional skips).
+`a99cc94` replaces it with the established bounded shortcut-opening pattern from
+`search.spec.ts`. The current full acceptance run is `43777347096`.
+
+## Accepted source and visuals
+
+All 30 jobs in `43777347096` pass at `a99cc94`. The showcase reports 418 passed,
+140 conditional skips and no retries; all 36 new navigation cases pass. Both
+browser engines also pass prefixed deployment and development-reload acceptance.
+Local verification passes 491 engine tests, type checking/build, strict deep docs
+(59 routes), eight-template packaging/parity, actionlint and script syntax checks.
+
+The final template job retains 103 captures, byte-identical to the initial
+reviewed set. All four final root/section captures also match their reviewed
+versions. Ten reviewed menu previews are retained in
+`specs/evidence/mobile-navigation-2026-11-15/`; machine-readable evidence records
+artifact IDs, log/image hashes, fixing commits and earlier unsuccessful runs.
+The final records update changes no runtime, guide, template, test or workflow
+inputs from the verified head. Public rc.8 stays unchanged; rc.9 is unreleased.
