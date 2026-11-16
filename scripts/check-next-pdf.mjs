@@ -8,6 +8,8 @@ import path from 'node:path';
 import { chromium, expect } from '@playwright/test';
 import { localRegistry, pullPublishedImage } from './fixtures/local-registry.mjs';
 
+import { printStyles, withPrintStyle } from './fixtures/print-styles.mjs';
+
 const zel = path.resolve(process.argv[2] || 'cli/target/debug/zel');
 const root = await mkdtemp(path.join(tmpdir(), 'zellij-next-pdf-'));
 const captures = path.resolve('test-results/next-pdf');
@@ -26,12 +28,14 @@ async function ready(url) {
 }
 try {
   const registry = await localRegistry(docker, containers, suffix);
-  for (const [edition,prefix] of [['study',''],['technical','/books/technical']]) {
-    const source = path.join(root,edition);
+  for (const [edition,prefix,style] of [['study',''],['technical','/books/technical'],['technical','/books/custom',printStyles.technical]]) {
+    const variant = style ? edition+'-custom' : edition;
+    const source = path.join(root,variant);
     run(['create',source,'-t',`book-${edition}`,'--offline']);
-    const tag = `${registry}/books/${edition}:${suffix}`; images.push(tag);
+    const tag = `${registry}/books/${variant}:${suffix}`; images.push(tag);
     const configFile = path.join(source,'zel.yaml');
-    const config = (await readFile(configFile,'utf8')).replace('enabled: false','enabled: true') + `\nimage: {name: '${tag}'}\npublish: {action: push, image: next}\n`;
+    let config = (await readFile(configFile,'utf8')).replace('enabled: false','enabled: true') + `\nimage: {name: '${tag}'}\npublish: {action: push, image: next}\n`;
+    if (style) config = withPrintStyle(config,style);
     await writeFile(configFile,config);
     await mkdir(path.join(source,'site'));
     await writeFile(path.join(source,'site/index.html'),'previous export');
@@ -41,7 +45,7 @@ try {
     run(['pub',source,...flags]);
     pullPublishedImage(docker,tag);
     const image = JSON.parse(docker(['image','inspect',tag]))[0];
-    const name = `zel-pdf-${edition}-${suffix}`;containers.push(name);
+    const name = `zel-pdf-${variant}-${suffix}`;containers.push(name);
     docker(['run','-d','--name',name,'-p','127.0.0.1::3000',tag]);
     const info = JSON.parse(docker(['inspect',name]))[0];
     assert.equal(info.Config.User,'nextjs');
@@ -57,10 +61,11 @@ try {
     const book = await (await fetch(`${origin}${prefix}/_zellij/assets/book.json`)).json();
     assert.equal(receipt.revision,book.publication.revision);assert.equal(receipt.pdf_sha256,sha(pdf));
     assert.equal(receipt.template,`${edition}-v1`);
+    if (style) assert.deepEqual(receipt.settings.style,style);
     for(const file of ['book.tex','build.log','console.log','assets/image-0.png']) assert.equal((await fetch(`${asset}/${file}`)).status,404);
     assert.equal((await fetch(`${origin}${prefix}/.zel-pdf-work/book.pdf`)).status,404);
     if(prefix) assert.equal((await fetch(`${origin}/_zellij/assets/pdf/book.pdf`)).status,404);
-    const out = path.join(captures,edition);await mkdir(out,{recursive:true});
+    const out = path.join(captures,variant);await mkdir(out,{recursive:true});
     const pdfPath = path.join(out,'book.pdf');await writeFile(pdfPath,pdf);
     await writeFile(path.join(out,'pdf.json'),JSON.stringify(receipt,null,2));
     await writeFile(path.join(out,'book.json'),JSON.stringify(book,null,2));
@@ -111,9 +116,9 @@ try {
     pullPublishedImage(docker,tag);
     assert.equal(JSON.parse(docker(['image','inspect',tag]))[0].Id,image.Id);
     assert.equal(await readFile(path.join(source,'site/index.html'),'utf8'),'previous export');
-    summary.push({edition,prefix,pages,revision:receipt.revision,pdf_sha256:receipt.pdf_sha256,pdf_bytes:pdf.length,image_bytes:image.Size,architecture:image.Architecture});
+    summary.push({edition,variant,prefix,pages,revision:receipt.revision,pdf_sha256:receipt.pdf_sha256,pdf_bytes:pdf.length,image_bytes:image.Size,architecture:image.Architecture});
     await writeFile(path.join(captures,'summary.json'),JSON.stringify(summary,null,2));
-    console.log(`${edition}: Next image PDF publication, download, revision, private-file exclusion and failure preservation passed.`);
+    console.log(`${variant}: Next image PDF publication, download, revision, private-file exclusion and failure preservation passed.`);
   }
 } finally {
   for(const name of containers) {try {docker(['rm','-f',name]);} catch {}}

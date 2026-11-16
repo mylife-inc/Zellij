@@ -647,3 +647,105 @@ fn next_pdf_builds_and_publishes_once_and_stops_on_failure_or_changed_input() {
     );
     assert_eq!(fs::read_to_string(root.join("zel.yaml")).unwrap(), config);
 }
+
+#[test]
+fn invalid_print_styles_fail_natively_and_preserve_existing_output() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    site(root);
+    let base = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    assert!(
+        command(root)
+            .arg("build")
+            .output()
+            .unwrap()
+            .status
+            .success()
+    );
+    let before = fs::read(root.join("site/index.html")).unwrap();
+    for style in [
+        "null",
+        "[]",
+        "{accent: null}",
+        "{accent: '#fff'}",
+        "{accent: '#GG1234'}",
+        "{accent: '123456'}",
+        "{accent: '#123456}\\\\input{secret}'}",
+        "{body-font: Arial}",
+        "{body-font: null}",
+        "{title-font: 12}",
+        "{chapter-style: novel}",
+        "{line-spacing: 1.15}",
+        "{margins: null}",
+        "{margins: []}",
+        "{margins: {left: 9}}",
+        "{margins: {right: 41}}",
+        "{margins: {top: 12.5}}",
+        "{margins: {bottom: '20'}}",
+        "{margins: {left: 0, right: 255}}",
+        "{margins: {inside: 20}}",
+        "{font: serif}",
+    ] {
+        fs::write(
+            root.join("zel.yaml"),
+            format!("{base}pdf: {{enabled: false, style: {style}}}\n"),
+        )
+        .unwrap();
+        for args in [["build", "--no-pdf"], ["pdf", "--check"]] {
+            let result = command(root).args(args).output().unwrap();
+            assert!(!result.status.success(), "{style}: {result:?}");
+            assert!(!String::from_utf8_lossy(&result.stderr).contains("PDF requires a running"));
+            assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
+            assert!(!root.join("pdf").exists());
+        }
+    }
+    for style in [
+        "{}",
+        "{accent: '#493b72', body-font: sans, title-font: serif, chapter-style: study, line-spacing: relaxed, margins: {left: 15, right: 40, top: 15, bottom: 40}}",
+        "{body-font: serif, title-font: sans, chapter-style: technical, line-spacing: spacious}",
+        "{line-spacing: normal}",
+    ] {
+        fs::write(
+            root.join("zel.yaml"),
+            format!("{base}pdf: {{style: {style}}}\n"),
+        )
+        .unwrap();
+        let result = command(root).args(["pdf", "--check"]).output().unwrap();
+        assert!(result.status.success(), "{style}: {result:?}");
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn print_style_receipt_survives_static_and_next_delivery() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    site(root);
+    runtime(root);
+    let base = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    fs::write(root.join("zel.yaml"),format!("{base}pdf: {{enabled: true, style: {{accent: '#493B72', title-font: sans, chapter-style: study, line-spacing: spacious, margins: {{left: 24}}}}}}\n")).unwrap();
+    let run = |args: &[&str]| {
+        command(root)
+            .env_remove("CONTAINER_HOST")
+            .env_remove("DOCKER_CONTEXT")
+            .env_remove("CONTAINER_CONNECTION")
+            .env_remove("CONTAINERD_ADDRESS")
+            .env_remove("CONTAINERD_NAMESPACE")
+            .args(args)
+            .output()
+            .unwrap()
+    };
+    let result = run(&["build"]);
+    assert!(result.status.success(), "{result:?}");
+    let record: serde_json::Value =
+        serde_json::from_slice(&fs::read(root.join("site/_zellij/pdf/pdf.json")).unwrap()).unwrap();
+    assert_eq!(record["settings"]["style"]["title-font"], "sans");
+    assert_eq!(record["settings"]["style"]["margins"]["left"], 24);
+    assert_eq!(record["settings"]["style"]["margins"]["right"], 18);
+    let result = run(&["ni", "--tag", "book:next"]);
+    assert!(result.status.success(), "{result:?}");
+    let next: serde_json::Value =
+        serde_json::from_slice(&fs::read(root.join("captured/assets/pdf/pdf.json")).unwrap())
+            .unwrap();
+    assert_eq!(record["settings"], next["settings"]);
+}

@@ -580,8 +580,9 @@ pdf:
 Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
 (points). Settings are validated even when PDF is disabled. Unknown keys,
 unsupported values, null settings, hosted sites and missing book manifests fail
-validation. The selected edition controls fonts and chapter styling;
-custom templates and RTL print remain future work. Standalone `zel pdf` explicitly
+validation. The selected edition supplies the default fonts and chapter styling.
+The optional source rc.10 print overrides below customize it; custom font files
+and multilingual/RTL print remain future work. Standalone `zel pdf` explicitly
 requests export regardless of `enabled`, using the same paper and font settings.
 
 ```sh
@@ -598,6 +599,59 @@ last complete website and PDF. Changes made during typesetting discard that
 outdated build; watch mode retries the new content. Ctrl-C cancels the typesetter
 and cleans up its container. `serve` only serves the existing export and never
 runs a PDF toolchain.
+
+### Custom print styling — rc.10 source
+
+**Requires CLI 0.2.0-rc.10 or later; not included in published rc.9.** Add a
+`style` mapping inside `pdf` to customize a book without writing LaTeX:
+
+```yaml
+pdf:
+  enabled: true
+  paper: a5
+  font-size: 11
+  style:
+    accent: "#493B72"
+    body-font: serif
+    title-font: sans
+    chapter-style: study
+    line-spacing: relaxed
+    margins:
+      left: 22
+      right: 20
+      top: 22
+      bottom: 24
+```
+
+All style fields are optional. Omitting `style` or using `style: {}` retains the
+selected edition's existing print design. These overrides affect PDF output;
+`book.edition` continues to select the web design and the PDF cover composition.
+
+| Setting | Values and effect |
+| --- | --- |
+| `accent` | A quoted six-digit `"#RRGGBB"` color for accents, rules and links. Choose a dark color for the white paper background. |
+| `body-font` | `serif` or `sans`, using the toolchain's Latin Modern Roman or Sans. Ordinary section headings follow the body family. |
+| `title-font` | `serif` or `sans` for the cover title, chapter openings and unnumbered openings such as Contents. Their size, weight and italic treatment still follow the chosen design. |
+| `chapter-style` | `classic`, `technical` or `study`, independently of the cover and web edition. Applies to numbered and unnumbered chapter openings. |
+| `line-spacing` | `normal`, `relaxed` or `spacious`: baseline multipliers of 1, 1.15 or 1.3. |
+| `margins` | Optional `left`, `right`, `top`, `bottom`, each an integer from 15 to 40 millimeters. Omitted sides retain 20, 18, 20 and 22 mm respectively. |
+
+Math and code retain Latin Modern Math and Mono. Font names, file paths, raw
+TeX and custom preambles are not accepted as style values. No additional font
+or runtime dependency is installed. A different font, spacing or margin can
+change pagination; overly wide content still fails with the normal typesetting
+diagnostic and preserves the previous export.
+
+Use `zel pdf my-book --check` for native validation, then `zel pdf my-book` or
+`zel build my-book --pdf` to typeset. The same settings flow through previews,
+static exports, static images and Next images. Watch mode rebuilds after style
+edits even when the manuscript content revision stays the same. `pdf.json`
+records the selected settings and the actual PDF hash separately from that
+content revision.
+
+Any explicit `pdf.style`, including `{}` or a disabled PDF, requires a generated
+CI pin of rc.10 or later. `zel ci` rejects an older pin before writing a workflow;
+it does not publish or verify the availability of a future release.
 
 ### Static publication and CI
 

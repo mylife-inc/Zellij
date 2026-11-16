@@ -5,6 +5,7 @@ import { mkdtempSync, cpSync, readFileSync, writeFileSync, mkdirSync, rmSync, re
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
+import { printStyles, withPrintStyle } from './fixtures/print-styles.mjs';
 const binary=path.resolve(process.argv[2] || 'cli/target/debug/zel');
 const root=mkdtempSync(path.join(tmpdir(),'zel-pdf-'));
 const site=path.join(root,'book');
@@ -34,6 +35,29 @@ try {
     const capture=path.join(artifacts,edition);cpSync(printed,capture,{recursive:true});
     writeFileSync(path.join(capture,'text.txt'),text);writeFileSync(path.join(capture,'pdfinfo.txt'),info);
     writeFileSync(path.join(capture,'fonts.txt'),execFileSync('pdffonts',[pdf],{encoding:'utf8'}));
+    for(let n=1;n<=Number(info.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',pdf,path.join(capture,`page-${n}`)]);
+  }
+  for (const edition of ['technical','study']) {
+    const manuscript=path.join(root,edition), style=printStyles[edition];
+    const configFile=path.join(manuscript,'zel.yaml');
+    writeFileSync(configFile,withPrintStyle(readFileSync(configFile,'utf8'),style));
+    const previous=JSON.parse(readFileSync(path.join(manuscript,'site/_zellij/book.json')));
+    run(['build',manuscript,'--pdf']);
+    const printed=path.join(manuscript,'site/_zellij/pdf'), pdf=path.join(printed,'book.pdf');
+    const receipt=JSON.parse(readFileSync(path.join(printed,'pdf.json')));
+    assert.equal(receipt.revision,previous.revision,'Print-only design keeps the manuscript revision');
+    assert.deepEqual(receipt.settings.style,style);
+    assert.equal(receipt.pdf_sha256,createHash('sha256').update(readFileSync(pdf)).digest('hex'));
+    execFileSync('qpdf',['--check',pdf]);
+    const text=execFileSync('pdftotext',['-layout',pdf,'-'],{encoding:'utf8'});
+    for(const word of [previous.manifest.title,'Contents','Chapter 1','Chapter 2','Bibliography','Glossary','Index']) assert(text.replace(/\s+/g,' ').includes(word),word);
+    assert(!text.includes('??'));
+    const fonts=execFileSync('pdffonts',[pdf],{encoding:'utf8'});
+    for(const line of fonts.trim().split('\n').slice(2)) assert.match(line,/\byes\s+yes\s+yes\b/,'Print fonts must be embedded, subset and Unicode mapped');
+    assert.match(fonts,/LMSans/);assert.match(fonts,/LMRoman/);
+    const info=execFileSync('pdfinfo',[pdf],{encoding:'utf8'});
+    const capture=path.join(artifacts,edition+'-custom');cpSync(printed,capture,{recursive:true});
+    writeFileSync(path.join(capture,'text.txt'),text);writeFileSync(path.join(capture,'pdfinfo.txt'),info);writeFileSync(path.join(capture,'fonts.txt'),fonts);
     for(let n=1;n<=Number(info.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',pdf,path.join(capture,`page-${n}`)]);
   }
   const equations = path.join(root,'equations');
@@ -230,6 +254,14 @@ try {
     const latest=await (await get('/_zellij/book.json')).json();
     assert.equal((await (await get('/_zellij/pdf/pdf.json')).json()).revision,latest.revision);
     assert.match(await (await get('/practice.html')).text(),/A revised closing observation/);
+    const beforeStyle=await (await get('/_zellij/pdf/pdf.json')).json();
+    writeFileSync(path.join(site,'zel.yaml'),config+'\npdf: {enabled: true, style: '+JSON.stringify(printStyles.technical)+'}\n');
+    await waitFor(async()=> (await (await get('/_zellij/pdf/pdf.json')).json()).settings.style?.accent==='#493B72','PDF watched style rebuild');
+    const afterStyle=await (await get('/_zellij/pdf/pdf.json')).json();
+    assert.equal(afterStyle.revision,beforeStyle.revision);
+    assert.notEqual(afterStyle.pdf_sha256,beforeStyle.pdf_sha256);
+    assert.deepEqual(afterStyle.settings.style,printStyles.technical);
+    writeFileSync(path.join(artifacts,'style-preview.json'),JSON.stringify({revision:afterStyle.revision,before:beforeStyle.pdf_sha256,after:afterStyle.pdf_sha256,style:afterStyle.settings.style},null,2));
     writeFileSync(path.join(artifacts,'preview.json'),JSON.stringify({initial:initial.revision,rebuilt:latest.revision,pdfMatchesWeb:true},null,2));
   } finally {
     preview.kill('SIGINT');
@@ -251,6 +283,7 @@ try {
       const publication=await (await request('/_zellij/book.json')).json();
       const receipt=await (await request('/_zellij/pdf/pdf.json')).json();
       const bytes=Buffer.from(await (await request('/_zellij/pdf/book.pdf')).arrayBuffer());
+      assert.deepEqual(receipt.settings.style,printStyles.technical);
       assert.equal(receipt.revision,publication.revision);assert.equal(receipt.pdf_sha256,createHash('sha256').update(bytes).digest('hex'));
       assert.equal(container.Config.User,'nginx');
       const absent=docker(['exec',name,'sh','-c','! command -v lualatex && ! command -v node && ! command -v cargo']); assert.equal(absent,'');
@@ -258,5 +291,5 @@ try {
       writeFileSync(path.join(artifacts,'static-image.json'),JSON.stringify({architecture:image.Architecture,bytes:image.Size,pdfBytes:bytes.length,revision:publication.revision,user:container.Config.User,latexAbsent:true},null,2));
     } finally { spawnSync('docker',['rm','-f',name]); spawnSync('docker',['image','rm','-f',tag]); }
   }
-  console.log('PDF: actual LuaLaTeX, text/order/math, links, fonts, valid PDF, source identity, failed-build preservation and standalone/web-only behavior, configured A4/Letter, live PDF preview and configured static-output behavior passed.');
+  console.log('PDF: actual LuaLaTeX, text/order/math, links, fonts, valid PDF, source identity, failed-build preservation and standalone/web-only behavior, configured A4/Letter, authored print styles, live PDF/style preview and configured static-output behavior passed.');
 } finally { rmSync(root,{recursive:true,force:true}); }

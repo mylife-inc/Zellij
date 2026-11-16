@@ -14,11 +14,11 @@
   \ifnum\c@secnumdepth>\m@ne\if@mainmatter
     {\large\sffamily\color{zelaccent}\@chapapp\space\thechapter\par}\vskip12pt
   \fi\fi
-  \interlinepenalty\@M{\Huge\bfseries\color{zelaccent}#1\par}\nobreak
+  \interlinepenalty\@M{\Huge@TITLE_FONT@\bfseries\color{zelaccent}#1\par}\nobreak
   \vskip14pt{\color{zelaccent}\hrule height 0.6pt}\vskip24pt}}
 \def\@makeschapterhead#1{%
   \vspace*{18pt}{\parindent\z@\raggedright\normalfont
-  \interlinepenalty\@M{\Huge\bfseries\color{zelaccent}#1\par}\nobreak
+  \interlinepenalty\@M{\Huge@TITLE_FONT@\bfseries\color{zelaccent}#1\par}\nobreak
   \vskip14pt{\color{zelaccent}\hrule height 0.6pt}\vskip24pt}}
 \makeatother
 % Keep a heading with enough following content, including a longtable header.

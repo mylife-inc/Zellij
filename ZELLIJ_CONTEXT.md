@@ -3,6 +3,16 @@
 Last refreshed: **2026-11-16**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-16: print-style authoring in progress (source rc.10)**
+
+Optional `pdf.style` customizes accent, serif/sans body and title fonts, chapter
+openings, line spacing and margins. Existing editions retain their output when
+styles are omitted. Native checks cover validation, receipts, web/source identity
+and CI compatibility; hosted typesetting and visual preservation checks are next.
+See [the contract](specs/zellij-print-style-2026-11-16.md). Public rc.9, published templates and
+production hosting remain unchanged. Multilingual/RTL and remaining installer
+work follow; live-provider checks stay deferred.
+
 **2026-11-16: rc.9 publication**
 
 PR #191 merges as `f03f803`, matching reviewed `7071bb9`; implementation and

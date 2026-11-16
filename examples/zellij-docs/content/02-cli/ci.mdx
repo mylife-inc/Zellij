@@ -651,3 +651,8 @@ optional LaTeX container runtime; PDF failure stops delivery. Generated CI
 requires a compatible release pin and, for GitLab, a shared Docker build directory.
 See [static book publication and CI](/cli/books#static-publication-and-ci) for
 supported output kinds, release requirements and configuration.
+
+
+For source rc.10 print styling, an explicit `pdf.style` requires a CLI pin of
+`0.2.0-rc.10` or later, even with PDF disabled or an empty style mapping.
+Older pins fail before workflow writes. See [custom print styling](./books#custom-print-styling--rc10-source).
