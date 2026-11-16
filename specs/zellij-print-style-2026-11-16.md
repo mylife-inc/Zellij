@@ -57,3 +57,27 @@ regression fails before the engine test stage; the recipe pin is corrected to
 rc.10. The original failed/cancelled run is retained. Full local validation passes
 806 Rust tests (five existing hosted-only cases ignored), formatting and
 warnings-denied Clippy; engine build and strict/deep docs pass (59 routes).
+
+
+## Verified result
+
+Final source `c8893da` passes all 32 jobs in `43946832641`. Local checks pass
+806 Rust tests, 103 helper tests, formatting and warnings-denied Clippy. Hosted
+engine tests pass 491 cases; showcase passes 418 without retries (140 conditional
+skips). Documentation retains 46 original routes, 282 heading IDs and all 29
+original image bytes.
+
+All 30 prior TeX sources and 312 page captures are unchanged. The 42 checked
+PDFs include eight styled outputs and 101 new page captures; technical native
+and Next output match across five runtime/architecture cases, and study matches
+across three. Ten representative covers/contents/chapters/proofs/tables/prose/
+footnote/index pages are visually reviewed; six are retained in evidence.
+Settings survive watched rebuilds and actual static/Next image publication.
+The LaTeX toolchain and font inventory are unchanged and absent from serving
+images. The first local comparison mistakenly compared the saved enabled flag
+between native `--pdf` and configured Next; it now verifies each expected flag
+and compares the actual print settings, revision, text and page pixels.
+See [the evidence](evidence/zellij-print-style-2026-11-16.json).
+
+PR #194 carries the verified implementation. The final records update changes no runtime, active guide,
+versioned template, test, workflow or image inputs from verified `c8893da`.

@@ -1,0 +1,1669 @@
+{
+  "date": "2026-11-16",
+  "status": "source rc.10 print-style implementation verified",
+  "baseline": "23c56d0d70d0e9f132a8115109ef10f9e0d5ff2e",
+  "implementation": "887dde95f9ce5d81b6b8d916f1a2ed42c9c4a89a",
+  "tested_head": "c8893da87054a6f19828bf3f8ea1fa97614e73b2",
+  "pull_request": 194,
+  "ci": {
+    "run": 43946832641,
+    "head": "c8893da87054a6f19828bf3f8ea1fa97614e73b2",
+    "attempt": 1,
+    "status": "success",
+    "jobs": [
+      {
+        "name": "websites / Websites (ubuntu-latest)",
+        "id": 133578816742,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "id": 133578817163,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "id": 133578817164,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "id": 133578817177,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "id": 133578817186,
+        "conclusion": "success"
+      },
+      {
+        "name": "Embedded schema is current",
+        "id": 133578817239,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "id": 133578817298,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "id": 133578817317,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "id": 133578817340,
+        "conclusion": "success"
+      },
+      {
+        "name": "Website and book templates",
+        "id": 133578817407,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "id": 133578817432,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "id": 133578817470,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "id": 133578817484,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "id": 133578817493,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "id": 133578817554,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "id": 133578817653,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "id": 133578817679,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "id": 133578817709,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "id": 133578817752,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "id": 133578817836,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "id": 133578817845,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "id": 133578818157,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "id": 133578818275,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "id": 133580959868,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "id": 133586360092,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "id": 133586360142,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "id": 133586360191,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "id": 133586360193,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "id": 133586360212,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "id": 133586360269,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "id": 133586361368,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "id": 133586361982,
+        "conclusion": "success"
+      }
+    ]
+  },
+  "local": {
+    "rust_passed": 806,
+    "rust_hosted_only_ignored": 5,
+    "clippy_warnings_denied": true,
+    "helper_tests": 103,
+    "strict_deep_doc_routes": 59,
+    "strict_deep_doc_examples": 25,
+    "logs_sha256": {
+      "rust-full": "d0d9c82518666fc874bd15287b3af3b29b1f1307875ccd9ca92f309b696745ee",
+      "clippy": "160f345ca458859eb902a6c78a680467103a8403fc6908dbc87d04692cd84ce0",
+      "helper-tests": "b3344b958e7c73446625a0a05b3057d27971254151107c0e951038d0a0bdde60",
+      "engine-build": "b985c57822b7fd16b5d45ce1f19434482b4438a44fa614ec8382d955b9d202a8",
+      "docs-check": "660da7569e42be31d994f9e0d1f0e9b2f004e0b11bfb844e284606cb4ac82d60"
+    }
+  },
+  "hosted": {
+    "engine_tests": 491,
+    "showcase_passed": 418,
+    "showcase_conditional_skips": 140,
+    "showcase_retries": 0,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0,
+    "engine_log_sha256": "66870278835b6dbbdfc044e28ddae3f251a00c26b92d53e40d68ff6519d477c7",
+    "showcase_log_sha256": "b39be49dfe7490afc671985577311b9b3093b5778c9eac57a67d4587e0c57f4a"
+  },
+  "pdf_comparison": {
+    "baseline": "reviewed rc.9 source PDFs, same runtime/architecture",
+    "unchanged_tex": 30,
+    "unchanged_pages": 312,
+    "total_pdfs": 42,
+    "new_styled_pages": 101,
+    "styled_technical_native_next_runtimes_match": true,
+    "styled_study_native_runtimes_match": true,
+    "baseline_run": 43821076647,
+    "baseline_tag": "v0.2.0-rc.9",
+    "comparison_script_sha256": "b6805e91a18cef403181c1034908b7876571bfc87d517b8af6812e823bab91da",
+    "comparison_script_source": "import assert from 'node:assert/strict';\nimport {readdir,readFile,writeFile} from 'node:fs/promises';\nimport path from 'node:path';\nimport sharp from '/private/tmp/zellij-rc7-preparation/node_modules/sharp/dist/index.mjs';\nconst baseline='/private/tmp/zellij-rc9-source-pdfs',current='/private/tmp/zellij-print-style-pdfs';\nasync function files(root,prefix='') {const out=[];for(const d of await readdir(path.join(root,prefix),{withFileTypes:true})){const p=path.join(prefix,d.name);if(d.isDirectory())out.push(...await files(root,p));else out.push(p);}return out;}\nlet tex=0,pages=0;\nfor(const name of await files(baseline)) {\n if(name.endsWith('book.tex')) {assert((await readFile(path.join(baseline,name))).equals(await readFile(path.join(current,name))),name);tex++;}\n if(/page-\\d+\\.png$/.test(name)) {const [a,b]=await Promise.all([baseline,current].map(dir=>sharp(path.join(dir,name)).ensureAlpha().raw().toBuffer({resolveWithObject:true})));assert.deepEqual(a.info,b.info,name);assert(a.data.equals(b.data),name);pages++;}\n}\nassert.equal(tex,30);assert.equal(pages,312);\nconst names=await files(current);const customs=names.filter(n=>n.includes('-custom/')&&/page-\\d+\\.png$/.test(n));\n// All three native runtimes and both Next architectures typeset the same styled technical manuscript.\nfor (const edition of ['technical','study']) for(const folder of ['book-pdf-ubuntu-latest-podman','book-pdf-ubuntu-24.04-arm-docker',...(edition==='technical'?['next-pdf-ubuntu-latest','next-pdf-ubuntu-24.04-arm']:[])]) {\n const a=path.join(current,'book-pdf-ubuntu-latest-docker',edition+'-custom'),b=path.join(current,folder,edition+'-custom');\n const receiptA=JSON.parse(await readFile(path.join(a,'pdf.json'))),receiptB=JSON.parse(await readFile(path.join(b,'pdf.json')));\n assert.equal(receiptA.revision,receiptB.revision);\n const {enabled: aEnabled,...aPrint}=receiptA.settings,{enabled:bEnabled,...bPrint}=receiptB.settings;\n assert.equal(aEnabled,false);assert.equal(bEnabled,folder.startsWith('next-pdf'));assert.deepEqual(aPrint,bPrint);\n assert((await readFile(path.join(a,'text.txt'))).equals(await readFile(path.join(b,'text.txt'))),folder+' text');\n const images=(await files(a)).filter(n=>/^page-\\d+\\.png$/.test(n));assert.deepEqual(images.sort(),(await files(b)).filter(n=>/^page-\\d+\\.png$/.test(n)).sort());\n for(const name of images) {const [x,y]=await Promise.all([a,b].map(dir=>sharp(path.join(dir,name)).ensureAlpha().raw().toBuffer({resolveWithObject:true})));assert.deepEqual(x.info,y.info);assert(x.data.equals(y.data),folder+'/'+name);}\n}\nconst result={baseline:'reviewed rc.9 source PDFs, same runtime/architecture',unchanged_tex:tex,unchanged_pages:pages,total_pdfs:names.filter(n=>/\\bbook\\.pdf$/.test(n)).length,new_styled_pages:customs.length,styled_technical_native_next_runtimes_match:true,styled_study_native_runtimes_match:true};\nawait writeFile('/private/tmp/zellij-print-style-pdf-comparison.json',JSON.stringify(result,null,2)+'\\n');console.log(result);\n"
+  },
+  "pdfs": [
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/a4/book.pdf",
+      "pdf_sha256": "5b79b7eae3eeedf283e33023f2965b0d7dd67a48d76056fec233be008b1a97d8",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/a4",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 12,
+        "paper": "a4"
+      },
+      "receipt_sha256": "c1afc5fe189578df99ce04e995242e6140b9819540ac0da3e3b55b49759db644",
+      "page_capture_sha256": {
+        "page-1.png": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+        "page-2.png": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+        "page-3.png": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+        "page-4.png": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+        "page-5.png": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+        "page-6.png": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+        "page-7.png": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      "tex_sha256": "772cf58d2ef205b7055081783e89b63fc6c7c0455fc1d9717f034a5d35279e22"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/bibliography/book.pdf",
+      "pdf_sha256": "9f7124b55dd5e2f5526930cb8dbf62bf3a1a7a57531e60fbd63f9a0bf1953fcc",
+      "pages": 9,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/bibliography",
+      "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "2737ad994f703e2658237ed9267277e5933cae0ad46ad0b96e6198e41bfa6b39",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be",
+        "page-3.png": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780",
+        "page-7.png": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb",
+        "page-9.png": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      "tex_sha256": "61b6aca449b40512af0e22722e2c2763a3291824b710eedd264c430986f7a4e7"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/equations/book.pdf",
+      "pdf_sha256": "3054ab68572a32fbe2b18ba0c49a3082a45afc0d9eb0b5a08b013ec7bde5462f",
+      "pages": 6,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/equations",
+      "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "9f18b5b4fddc648ffc4374211b5018f73cc1dbf0cf03d6124ac669e426458805",
+      "page_capture_sha256": {
+        "page-1.png": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d",
+        "page-2.png": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1",
+        "page-3.png": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee",
+        "page-4.png": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7",
+        "page-5.png": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a",
+        "page-6.png": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      "tex_sha256": "384224eccc89284a18f9d71ad8f5b4dcade874464442ff43f1f051f8d665407a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/letter/book.pdf",
+      "pdf_sha256": "03d405b71210d167766955cd1406dbb738446c1bb02e3adfc09f4e52dbf69505",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/letter",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 10,
+        "paper": "letter"
+      },
+      "receipt_sha256": "4f9201d97b532ba9bd4fb06cac480d2c679610fba1325bb595db90f053e3f2db",
+      "page_capture_sha256": {
+        "page-1.png": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+        "page-2.png": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+        "page-3.png": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+        "page-4.png": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+        "page-5.png": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+        "page-6.png": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+        "page-7.png": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      "tex_sha256": "4934102f1e340b0ee2ac14e12ef30bff7b90269c0a2e944ca7fe5e8cefc7336b"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/publication/book.pdf",
+      "pdf_sha256": "2b4ef188a3c4aecd78a3aec30c8e4059b2172cb7d325ffbb725ea7c5715c39a0",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "5315f1e8634c469b58e878f46afbeb48b7edcf9a315ba80decca6f82c006fe4c",
+      "page_capture_sha256": {
+        "page-1.png": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+        "page-2.png": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+        "page-3.png": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+        "page-4.png": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+        "page-5.png": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+        "page-6.png": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+        "page-7.png": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+        "page-8.png": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      "tex_sha256": "e3314b19866b6b913f168ece4d4ef1197ee3bfdfbabc3de02dcb8e77850b48e4"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/starter/book.pdf",
+      "pdf_sha256": "29bb4587f4ebdb5116023e453813e89b1f3fd40179189eec079edfdbd3573bcf",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/starter",
+      "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "f28f32bd4a056b73d12e37c3004778b90584de9f638c56bd16ad96a4d7cd9415",
+      "page_capture_sha256": {
+        "page-1.png": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003",
+        "page-2.png": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c",
+        "page-3.png": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66",
+        "page-4.png": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6",
+        "page-5.png": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599",
+        "page-6.png": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b",
+        "page-7.png": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      "tex_sha256": "88d48c2616d43e4414627c160719c3641a5ada753ba60de83cd0d40e55ce5a39"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/statements/book.pdf",
+      "pdf_sha256": "71a4f0fff98b89c1585ce2d08d996bca5a69ccb477d411184117243ec864b492",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/statements",
+      "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "04d6ce386a395cc16f15e71dd72f8fff5354039063e0451ba5f18721c53efb75",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f",
+        "page-3.png": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499",
+        "page-7.png": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      "tex_sha256": "6b97def423f789df8a36e7349271f60d2173427cdcb381ad1ac5f28bceaac31d"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/study/book.pdf",
+      "pdf_sha256": "c37680dfaaa04e66e951f4868c2e1899992f6b399ccaa7166da90a3d88f1e534",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/study",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "757634c004edbe5aceeffc5b904808f640c6afca7ec22b8a3f4cf83d34e40074",
+      "page_capture_sha256": {
+        "page-1.png": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "page-10.png": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "page-11.png": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "page-12.png": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "page-2.png": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "page-3.png": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "page-4.png": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "page-5.png": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "page-6.png": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "page-7.png": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "page-8.png": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "page-9.png": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a"
+      },
+      "tex_sha256": "444102a08f865de4dd64e5a10c35b374b6ec4a0f2e6f12ae4b34398d9a5e3117"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/study-custom/book.pdf",
+      "pdf_sha256": "6f49fa3fe30e6b4dc600f8be046c554172575bccc25fa4feb0cec0ebba451129",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/study-custom",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#1D5960",
+          "body-font": "sans",
+          "chapter-style": "classic",
+          "line-spacing": "spacious",
+          "margins": {
+            "bottom": 22,
+            "left": 20,
+            "right": 18,
+            "top": 20
+          },
+          "title-font": "serif"
+        }
+      },
+      "receipt_sha256": "6330d99a13c3d5b1c364eb8d18d4ac5685c7b9784b84fca757d8cbd047474be3",
+      "page_capture_sha256": {
+        "page-1.png": "b82ac0bd6b8c94b3e0e3307574375ac8ce473a776d5505d15e99b84561bce2ae",
+        "page-10.png": "81ea67d429d218c379634a56a5411399b3ff6e9399406533810981fd613c7e44",
+        "page-11.png": "b394f7476906ec3423d8fd8c4997ce0a7e8646ea4326920f39049520bd8e46c9",
+        "page-12.png": "921e40d66dbe6cd86354ea18706b78c04354c131c28d67c49152ec53f83ac016",
+        "page-2.png": "8a04723aa9ab86b1686c33a6c154a909be697acec9a71a5166da57c9b317fb24",
+        "page-3.png": "4d349a3dd0450fe9bf51c484b4f378ae3b3591d7d2f73068a2a477d7ff1e3df2",
+        "page-4.png": "f8e64b3e6c219ef63990263a7e4dc9a462e84393f2f587150c10809775ee9826",
+        "page-5.png": "f47cc6d0247e9fa0385af4a6bfdb5daae7524c2501bf9067aae5fc724d7a8e6b",
+        "page-6.png": "a4d36750820698b11812dbd17ba00d6380596515f3ad4aa0a8e10fc78344af94",
+        "page-7.png": "cda896a40e222eeb7ab5dfd5f4003cacb9aee9514a44bf0e2b60921bb8634231",
+        "page-8.png": "b8cf9f01190beb8d9fa2cef5c644aaa1d914c8a64189a389c93b045b2efe2383",
+        "page-9.png": "9f3de85e8022bac35c79bfb0162c14e924b7d7646f169fd180257976dcbb20bc"
+      },
+      "tex_sha256": "e062c71beda08fc21e840e91477effdbb2c2e8f789258c0b832fd93d34c1504a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/technical/book.pdf",
+      "pdf_sha256": "63fea08b19202f8b6455523ea9ee9a775e780cc4554865505617efc2e5d8213e",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/technical",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "343a6643597cf1623c64a67ebc53b5e62bdf7eb3dce58670403676b50426f7ea",
+      "page_capture_sha256": {
+        "page-1.png": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "page-10.png": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "page-11.png": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "page-12.png": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "page-2.png": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "page-3.png": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "page-4.png": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "page-5.png": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "page-6.png": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "page-7.png": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "page-8.png": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "page-9.png": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8"
+      },
+      "tex_sha256": "24dd9f7e779baddf8ecafcdb1fd8359c42adf017989e61c80a962b89a8fb714c"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/technical-custom/book.pdf",
+      "pdf_sha256": "4d88a2dfa3163c9cc4b0d4acec46f01e8fd8a555244ba22929133a8720500376",
+      "pages": 13,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/technical-custom",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#493B72",
+          "body-font": "serif",
+          "chapter-style": "study",
+          "line-spacing": "relaxed",
+          "margins": {
+            "bottom": 24,
+            "left": 22,
+            "right": 20,
+            "top": 22
+          },
+          "title-font": "sans"
+        }
+      },
+      "receipt_sha256": "d288b85676fef37ca6df2f4288b028baed4aa49519b1a2ece7d62432387b8751",
+      "page_capture_sha256": {
+        "page-1.png": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41",
+        "page-10.png": "572ee09949ea27b740fedad85097e3b0ae69bbcb86421a5fa9e4c4ea71a367a2",
+        "page-11.png": "e09ad69201ac52b5ad3248746d0fcd086d6b10e89da56eee646691e13d5d6534",
+        "page-12.png": "e38cf505852ab46dfcf313e7f4e3abaa06b869456662e66107762f10721cc27b",
+        "page-13.png": "d668e6753ac583e6ec46044aca4697ca2802f0fd6b48a19505b9bd97109f8490",
+        "page-2.png": "b0cbabe5721125218e28306780d88514425f6c6270f4c70aab85f1d38dc98bbf",
+        "page-3.png": "5bafa7795d67162886a2739262227d309201320609289297bbdab5d420f0f4eb",
+        "page-4.png": "72629e484d511cddca3e1e4588dd8626e030f74755f7b79bd38f2c0d807ea9a2",
+        "page-5.png": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9",
+        "page-6.png": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc",
+        "page-7.png": "bc5bcd3e5b0c033af9f02cd9b2d14f8db720779c0bc46237e1c8d2627c324273",
+        "page-8.png": "73794dcf07e8049343567843c23914019a535eec00c12c749bf340de374dcf03",
+        "page-9.png": "45a4a4f6c097b475abbf7d3eaa6ef716fd9db241041965b3879ac2d01575763d"
+      },
+      "tex_sha256": "b2ebcff578d2826ea4aaa9860bf22aee430f87db213a269698cae272dbc2d9b6"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-24.04-arm-docker/terms/book.pdf",
+      "pdf_sha256": "4f94ebbc335ec61804da334373bf3f619e09e6879ceb29a603a0ea19762b8c15",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-24.04-arm-docker/terms",
+      "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "ecd83f82081bc46eaeb39a45492d3c390a15259cbb6f018ec11ed624e56ec42a",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-10.png": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9",
+        "page-11.png": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0",
+        "page-12.png": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f",
+        "page-2.png": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17",
+        "page-3.png": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a",
+        "page-4.png": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c",
+        "page-7.png": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534",
+        "page-8.png": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f",
+        "page-9.png": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      "tex_sha256": "f3eb010a329a65b2a80076766b6b45e80a6b57db72be2ff595205b96408b9560"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/a4/book.pdf",
+      "pdf_sha256": "8265a1bd8b25d4140b8c1146f40fffb6a6d188cacfadba8b912868689aa5945c",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/a4",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 12,
+        "paper": "a4"
+      },
+      "receipt_sha256": "29baabbfcc922807411f1b67dbf050121a665f3ddd8436d6aaa4ed423f6e030a",
+      "page_capture_sha256": {
+        "page-1.png": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+        "page-2.png": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+        "page-3.png": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+        "page-4.png": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+        "page-5.png": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+        "page-6.png": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+        "page-7.png": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      "tex_sha256": "772cf58d2ef205b7055081783e89b63fc6c7c0455fc1d9717f034a5d35279e22"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/bibliography/book.pdf",
+      "pdf_sha256": "00043b5c4384ef3b9998bc188b77864965cf23fb67175cc1c84844cb96f9f675",
+      "pages": 9,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/bibliography",
+      "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "1e9b7a19a14492c494a4f5e7ba0b70cc076722c76a5cc22eeee848661e2daa0c",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be",
+        "page-3.png": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780",
+        "page-7.png": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb",
+        "page-9.png": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      "tex_sha256": "61b6aca449b40512af0e22722e2c2763a3291824b710eedd264c430986f7a4e7"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/equations/book.pdf",
+      "pdf_sha256": "5b557bb1cd0c97a77a9b31d4510cb5d85dfa34d793b9fc5fa77497aac5e0d658",
+      "pages": 6,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/equations",
+      "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "18f57e8c64439d96136ec6e3bcf1dc31538bdf022e939b88f582c7cb9990007d",
+      "page_capture_sha256": {
+        "page-1.png": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d",
+        "page-2.png": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1",
+        "page-3.png": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee",
+        "page-4.png": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7",
+        "page-5.png": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a",
+        "page-6.png": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      "tex_sha256": "384224eccc89284a18f9d71ad8f5b4dcade874464442ff43f1f051f8d665407a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/letter/book.pdf",
+      "pdf_sha256": "5f47eb6e42fcd11430f7b0815a3428ae6bd5ab268ff250a6effef8d616db1fea",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/letter",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 10,
+        "paper": "letter"
+      },
+      "receipt_sha256": "b4a2c9548d14374fd963c9d92671af119ee0f500c87dc5b799b9cff909885706",
+      "page_capture_sha256": {
+        "page-1.png": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+        "page-2.png": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+        "page-3.png": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+        "page-4.png": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+        "page-5.png": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+        "page-6.png": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+        "page-7.png": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      "tex_sha256": "4934102f1e340b0ee2ac14e12ef30bff7b90269c0a2e944ca7fe5e8cefc7336b"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/publication/book.pdf",
+      "pdf_sha256": "d387b1dde843d56e249efe5a9167782589c333ba8b8add0e726b517a1c951662",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "aa6255abfaf9220598289a8a6d690ea25b1e58b98f12b20c796ff9fde8f3f031",
+      "page_capture_sha256": {
+        "page-1.png": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+        "page-2.png": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+        "page-3.png": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+        "page-4.png": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+        "page-5.png": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+        "page-6.png": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+        "page-7.png": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+        "page-8.png": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      "tex_sha256": "e3314b19866b6b913f168ece4d4ef1197ee3bfdfbabc3de02dcb8e77850b48e4"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/starter/book.pdf",
+      "pdf_sha256": "b7a6d32a9ad7cc0c7dc8630df3b53d040a3170d84d5bda79014d7a026ab1a73e",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/starter",
+      "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "48e613ff4f4d078dc14b2c4f1574cf890511fdb5b6550ef34a43d51b4a070a06",
+      "page_capture_sha256": {
+        "page-1.png": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003",
+        "page-2.png": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c",
+        "page-3.png": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66",
+        "page-4.png": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6",
+        "page-5.png": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599",
+        "page-6.png": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b",
+        "page-7.png": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      "tex_sha256": "88d48c2616d43e4414627c160719c3641a5ada753ba60de83cd0d40e55ce5a39"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/statements/book.pdf",
+      "pdf_sha256": "b55f2898a739a4853a8a0c1de601d2489256aac87dc178b8f0cb7588bcd64aae",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/statements",
+      "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "704e54e0467271641f2349617c812e422ccb61eeebf8e449b2e03a66cdfaf50a",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f",
+        "page-3.png": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499",
+        "page-7.png": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      "tex_sha256": "6b97def423f789df8a36e7349271f60d2173427cdcb381ad1ac5f28bceaac31d"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/study/book.pdf",
+      "pdf_sha256": "6accf884705c4bf3059ee1e8bbbf00c54ae391e5690be549ccf01693a2274a8e",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/study",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "dd51606a31223b681213ca372dc6b451f8f7103106654b3a46887cab71dfc4c9",
+      "page_capture_sha256": {
+        "page-1.png": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "page-10.png": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "page-11.png": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "page-12.png": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "page-2.png": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "page-3.png": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "page-4.png": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "page-5.png": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "page-6.png": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "page-7.png": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "page-8.png": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "page-9.png": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a"
+      },
+      "tex_sha256": "444102a08f865de4dd64e5a10c35b374b6ec4a0f2e6f12ae4b34398d9a5e3117"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/study-custom/book.pdf",
+      "pdf_sha256": "e142381bbbd345d718e1ffc65fd06a0ee3f9165b2141c6aad0e903de45b9dd68",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/study-custom",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#1D5960",
+          "body-font": "sans",
+          "chapter-style": "classic",
+          "line-spacing": "spacious",
+          "margins": {
+            "bottom": 22,
+            "left": 20,
+            "right": 18,
+            "top": 20
+          },
+          "title-font": "serif"
+        }
+      },
+      "receipt_sha256": "fd57520ab54ae829c289f643d587f34841425ba026f08f0e56cb10619edec83d",
+      "page_capture_sha256": {
+        "page-1.png": "b82ac0bd6b8c94b3e0e3307574375ac8ce473a776d5505d15e99b84561bce2ae",
+        "page-10.png": "81ea67d429d218c379634a56a5411399b3ff6e9399406533810981fd613c7e44",
+        "page-11.png": "b394f7476906ec3423d8fd8c4997ce0a7e8646ea4326920f39049520bd8e46c9",
+        "page-12.png": "921e40d66dbe6cd86354ea18706b78c04354c131c28d67c49152ec53f83ac016",
+        "page-2.png": "8a04723aa9ab86b1686c33a6c154a909be697acec9a71a5166da57c9b317fb24",
+        "page-3.png": "4d349a3dd0450fe9bf51c484b4f378ae3b3591d7d2f73068a2a477d7ff1e3df2",
+        "page-4.png": "f8e64b3e6c219ef63990263a7e4dc9a462e84393f2f587150c10809775ee9826",
+        "page-5.png": "f47cc6d0247e9fa0385af4a6bfdb5daae7524c2501bf9067aae5fc724d7a8e6b",
+        "page-6.png": "a4d36750820698b11812dbd17ba00d6380596515f3ad4aa0a8e10fc78344af94",
+        "page-7.png": "cda896a40e222eeb7ab5dfd5f4003cacb9aee9514a44bf0e2b60921bb8634231",
+        "page-8.png": "b8cf9f01190beb8d9fa2cef5c644aaa1d914c8a64189a389c93b045b2efe2383",
+        "page-9.png": "9f3de85e8022bac35c79bfb0162c14e924b7d7646f169fd180257976dcbb20bc"
+      },
+      "tex_sha256": "e062c71beda08fc21e840e91477effdbb2c2e8f789258c0b832fd93d34c1504a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/technical/book.pdf",
+      "pdf_sha256": "df371450ef925305339c3622db00a7dc6b16973d961738add791186fe1126ade",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/technical",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "e4d6bcff308de1e89189b2ea2cc7e1b696a50a87c676a2900e55d161bb68debf",
+      "page_capture_sha256": {
+        "page-1.png": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "page-10.png": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "page-11.png": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "page-12.png": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "page-2.png": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "page-3.png": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "page-4.png": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "page-5.png": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "page-6.png": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "page-7.png": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "page-8.png": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "page-9.png": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8"
+      },
+      "tex_sha256": "24dd9f7e779baddf8ecafcdb1fd8359c42adf017989e61c80a962b89a8fb714c"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/technical-custom/book.pdf",
+      "pdf_sha256": "5b1803146b21916e076e2128315d7d1e92d0bc58d0344312f8f5a8a4961c7fa7",
+      "pages": 13,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/technical-custom",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#493B72",
+          "body-font": "serif",
+          "chapter-style": "study",
+          "line-spacing": "relaxed",
+          "margins": {
+            "bottom": 24,
+            "left": 22,
+            "right": 20,
+            "top": 22
+          },
+          "title-font": "sans"
+        }
+      },
+      "receipt_sha256": "4218ebd3355b3b8e58f5cbc0a2069a307d78d7d55a747293f6aa215ae9f328af",
+      "page_capture_sha256": {
+        "page-1.png": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41",
+        "page-10.png": "572ee09949ea27b740fedad85097e3b0ae69bbcb86421a5fa9e4c4ea71a367a2",
+        "page-11.png": "e09ad69201ac52b5ad3248746d0fcd086d6b10e89da56eee646691e13d5d6534",
+        "page-12.png": "e38cf505852ab46dfcf313e7f4e3abaa06b869456662e66107762f10721cc27b",
+        "page-13.png": "d668e6753ac583e6ec46044aca4697ca2802f0fd6b48a19505b9bd97109f8490",
+        "page-2.png": "b0cbabe5721125218e28306780d88514425f6c6270f4c70aab85f1d38dc98bbf",
+        "page-3.png": "5bafa7795d67162886a2739262227d309201320609289297bbdab5d420f0f4eb",
+        "page-4.png": "72629e484d511cddca3e1e4588dd8626e030f74755f7b79bd38f2c0d807ea9a2",
+        "page-5.png": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9",
+        "page-6.png": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc",
+        "page-7.png": "bc5bcd3e5b0c033af9f02cd9b2d14f8db720779c0bc46237e1c8d2627c324273",
+        "page-8.png": "73794dcf07e8049343567843c23914019a535eec00c12c749bf340de374dcf03",
+        "page-9.png": "45a4a4f6c097b475abbf7d3eaa6ef716fd9db241041965b3879ac2d01575763d"
+      },
+      "tex_sha256": "b2ebcff578d2826ea4aaa9860bf22aee430f87db213a269698cae272dbc2d9b6"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-docker/terms/book.pdf",
+      "pdf_sha256": "4f562129d24e4536bb8d5f1fa0f2be576f7b1e84cad288ed8624e575be080543",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-docker/terms",
+      "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "069974aebb12039f4f55d3ea4bec2cc0d0f354302981756df121c8c4925a905a",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-10.png": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9",
+        "page-11.png": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0",
+        "page-12.png": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f",
+        "page-2.png": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17",
+        "page-3.png": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a",
+        "page-4.png": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c",
+        "page-7.png": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534",
+        "page-8.png": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f",
+        "page-9.png": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      "tex_sha256": "f3eb010a329a65b2a80076766b6b45e80a6b57db72be2ff595205b96408b9560"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/a4/book.pdf",
+      "pdf_sha256": "c8510ed73e421131476c8a90bd162f9a1432d7e9c03e826ff981b33eb12bf873",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/a4",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 12,
+        "paper": "a4"
+      },
+      "receipt_sha256": "2af03b938ed3f8ddcd70084d4a9bcd79a21f4626cf26342fe202c34a5755b3e7",
+      "page_capture_sha256": {
+        "page-1.png": "893e2f89064dff46e6b8db624147b67127dbe5678d6ab854b59cba51ffe4619a",
+        "page-2.png": "ff58202b23a77b28c6201e56207653aa4066093bebafc97490443d3ebe4413ba",
+        "page-3.png": "5a894d8ebc219c2929168c0f1d1c60844df130fcd33c93699017d4ea05a61fb6",
+        "page-4.png": "6456fbd560e387411f0fc23aa03c52fafbe9215bc76ea063925656226b398b1f",
+        "page-5.png": "bc88594adaa9021aab12f92b22957ed6b5e60fb2f9a35a9da3be3cee4e89d710",
+        "page-6.png": "2ee7c5d03833da9adf14b35766222aca012efebe39c22a7b5bbf0326b0380467",
+        "page-7.png": "fe265eaeb925025460a7903a186c5c5fa0501b1a1fc0573b3fe764cbdd0c45a3"
+      },
+      "tex_sha256": "772cf58d2ef205b7055081783e89b63fc6c7c0455fc1d9717f034a5d35279e22"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/bibliography/book.pdf",
+      "pdf_sha256": "38cbd2996c98f92e04af5b8ddfa1b30c1c73532dbaa54f7b1eb3aaa50d9abbd5",
+      "pages": 9,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/bibliography",
+      "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "eab8dc1f03cbe3b3a7be010f5191c4160454fe713207ad87a8a49d169e821465",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "421b75a4e21a5bb79528b448336b0db3d3507b762dc8305b368f70408015e0be",
+        "page-3.png": "fa9d0dc0839d9a77a296b923ff459f5fa6663d39123776da02c28ef17a64c7b6",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "6ea43cf2ca9670041567a239a7400600da0269239f6379c926692329ecfe2780",
+        "page-7.png": "ef20339ed26b581c89b80e112744530bb134cf6ad91e20ee398d608c377ca82a",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb",
+        "page-9.png": "651d42dfa695f6aed41fa5b05b95c18b90137389426573eb03ab0823de260652"
+      },
+      "tex_sha256": "61b6aca449b40512af0e22722e2c2763a3291824b710eedd264c430986f7a4e7"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/equations/book.pdf",
+      "pdf_sha256": "14e8e000e38e0f8b8c5779ef3069f2340da47d12c7ed765813c6340884a77295",
+      "pages": 6,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/equations",
+      "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "0795dd5bc230104b6764c41e7d83056f1a30be8bc0a72d9b99508cd78b916a99",
+      "page_capture_sha256": {
+        "page-1.png": "55a19f1c80385bbf2821c6fe0824e74940d8c07eaf33019225bd60e23b3bca4d",
+        "page-2.png": "1fef22f1f1530444efaac483885022c0c40cff2eed337f04af25f83f1147bdc1",
+        "page-3.png": "731736ffd4bad2d569cfa2f324ccb60b5db1200af9db9ed5cadb55d9505428ee",
+        "page-4.png": "e8f612c5949539d8729b3565a7a9154dc5529984c799dfb262e3d59f61ea95f7",
+        "page-5.png": "10f299ab3dd2fd8f87d07af661d022ba637a963f44baaa904fa85a079027e91a",
+        "page-6.png": "59fca0a46022c2ef0d6a10e15f8d34a53dca4245d227162fe510095c9e702cf2"
+      },
+      "tex_sha256": "384224eccc89284a18f9d71ad8f5b4dcade874464442ff43f1f051f8d665407a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/letter/book.pdf",
+      "pdf_sha256": "5aac53ec61ca060f3b1d45238273218b8148e94becdec01ce913b6cd60c5cbd7",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/letter",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 10,
+        "paper": "letter"
+      },
+      "receipt_sha256": "db4dfa30f182f9d37f35c43b7352c91d842bfa012a1825c07544da29e95b2514",
+      "page_capture_sha256": {
+        "page-1.png": "fc5c88d066576bc357a1762c7f8a9b32b1ec6dd0fe8c3e5dcefacec1c43551c3",
+        "page-2.png": "7a7d211bc96ad79220020591d4db6fc016858adefbf88bfd0dec28dea86d74f4",
+        "page-3.png": "13c536ec30549756857a8fb6d73017ac9a4a6818415b5825235bafa96d2d6a23",
+        "page-4.png": "60361347bb70c53b2f63d122f826a236472c1444854443439fbea7e971382f1b",
+        "page-5.png": "50d7c80d299487b5d7fb1a6f667127c494125864d80080b552ee1507e837044d",
+        "page-6.png": "b2f1065d1f8ee5b6f20982da86af8fd07b74f5d1a5c19a5ce06f3d11b2fea670",
+        "page-7.png": "7ca138897d7ac99e7aa73368cbfb5e9e1b301b6bb9d1537fcbc72d18c9c6ff93"
+      },
+      "tex_sha256": "4934102f1e340b0ee2ac14e12ef30bff7b90269c0a2e944ca7fe5e8cefc7336b"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/publication/book.pdf",
+      "pdf_sha256": "074823a63673c08300a2ba6ff0fe2ad06ca8d7cc3fe81be5b29d5abae9dfbb2c",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman",
+      "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "c9737edab4eae76f90a9a150a1d6f8699613626318768eb93668d24b8421f75e",
+      "page_capture_sha256": {
+        "page-1.png": "3d1e8060d1f24dce0f8728b4b82006cc45e754f07becb52e69c97bfecc954c34",
+        "page-2.png": "fdf7f4e9b3228698cba5b6493dd8a22e790aec6b11fece6ff1dba481bef07685",
+        "page-3.png": "4ba312202b9a28196990195bbf6e236d382898af205faede69f1ad4b0a4b762a",
+        "page-4.png": "fd608d61a89184471ffd38a2ac66a8de4a3721f351631daaf6db8a1eb6522dcc",
+        "page-5.png": "0736688b1dff6c52450bea32f1f99cdf9efe5bc4b3533d6c45ef964d174baabc",
+        "page-6.png": "33aa50af1a058e4f851047f2955682140a7ccfdb5cb535be43f7cca7e1889fd1",
+        "page-7.png": "a51510a83f9ba1f9024e5130d06644017aca3ff1476c7cef080b477962da9df2",
+        "page-8.png": "261b9ea11e085ebd41515486cb19273387315540bdbaa55cd8866a939f05c51c"
+      },
+      "tex_sha256": "e3314b19866b6b913f168ece4d4ef1197ee3bfdfbabc3de02dcb8e77850b48e4"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/starter/book.pdf",
+      "pdf_sha256": "b97e9a86d881d4575072f835d27f84058148758f65a3d2b30316b6dddbaf0c01",
+      "pages": 7,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/starter",
+      "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "334f3800f49e237a3a05ce87e915a8604dc2217078423314939900055d002f02",
+      "page_capture_sha256": {
+        "page-1.png": "aea3be72a1f8d4cb48008ef8184507028cf54ea01029942f68857441eb400003",
+        "page-2.png": "f12bceb91ae69e70325ae7a1a26b64534604fcfce46211186d9f09677fc8fd8c",
+        "page-3.png": "c754e2e0fe910d7a700191de37e2a9efdf8f6647e37f2b54b173b47d82f84d66",
+        "page-4.png": "fd069bb1103b874876fdb731d30d4ea4beb4e25f222e344887cab17dec7169e6",
+        "page-5.png": "a3d5e54d999baac0b4552597b3a7a853232fb00a2acf1c5247676fb847d5c599",
+        "page-6.png": "bfdc1bbfae9bd4f3c1230e7e310d7e6ec8684191286d7a52a035104e4474df3b",
+        "page-7.png": "005455f26f734eca4bacfd94eb81d171e2bfbb557e6ec9f587bc86ca999de9c8"
+      },
+      "tex_sha256": "88d48c2616d43e4414627c160719c3641a5ada753ba60de83cd0d40e55ce5a39"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/statements/book.pdf",
+      "pdf_sha256": "638ad965abc958dab2cb14acc6b9fdfde934f8a7073b3c07076c73db5e5f1cf0",
+      "pages": 8,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/statements",
+      "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "8149fa02f4c674a3ff6dd5902c294cdc501136c0353715a44790582950973493",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-2.png": "1380e898347df76b0325c32c0c2d3d288e29f75252afabdb0ecfeb0c9443344f",
+        "page-3.png": "65f885eddf021005284ebac1ea375e536cf414249d48622ed1f92230b3039b91",
+        "page-4.png": "8290b069e6b9254b0f33fea18de143438db7cd8237c91fa7b1ac2ee3f2417056",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "2cd1b267b7fb04a49b2b9b78db93d8490772cd5dfbbf26002279967b113dc499",
+        "page-7.png": "a925f523f802e10510128f9b6b04ebd8dff93396e95eaf8d0e046cc3c41c0df6",
+        "page-8.png": "00706c13bf59cb74f9eb33004a6153b345d9a895c352eb96ccc9e3cb48d24fcb"
+      },
+      "tex_sha256": "6b97def423f789df8a36e7349271f60d2173427cdcb381ad1ac5f28bceaac31d"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/study/book.pdf",
+      "pdf_sha256": "ac11efec54bdaa61d32bf8207ddbc239c18ce7c31c14252bea380c027b7cd75a",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/study",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "1d41839bf6c79b985e362f462ee87c916a7bd58d95a495355147e2a4b8be2d5d",
+      "page_capture_sha256": {
+        "page-1.png": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "page-10.png": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "page-11.png": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "page-12.png": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "page-2.png": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "page-3.png": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "page-4.png": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "page-5.png": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "page-6.png": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "page-7.png": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "page-8.png": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "page-9.png": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a"
+      },
+      "tex_sha256": "444102a08f865de4dd64e5a10c35b374b6ec4a0f2e6f12ae4b34398d9a5e3117"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/study-custom/book.pdf",
+      "pdf_sha256": "dc89b2455dfc991fc22ab40cd0b534da6b479f34fff6613e73740d6211478162",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/study-custom",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#1D5960",
+          "body-font": "sans",
+          "chapter-style": "classic",
+          "line-spacing": "spacious",
+          "margins": {
+            "bottom": 22,
+            "left": 20,
+            "right": 18,
+            "top": 20
+          },
+          "title-font": "serif"
+        }
+      },
+      "receipt_sha256": "11fbf380ede9454af9ddcc6744aad334de032cdca5d38a22ec8dd564e805060c",
+      "page_capture_sha256": {
+        "page-1.png": "b82ac0bd6b8c94b3e0e3307574375ac8ce473a776d5505d15e99b84561bce2ae",
+        "page-10.png": "81ea67d429d218c379634a56a5411399b3ff6e9399406533810981fd613c7e44",
+        "page-11.png": "b394f7476906ec3423d8fd8c4997ce0a7e8646ea4326920f39049520bd8e46c9",
+        "page-12.png": "921e40d66dbe6cd86354ea18706b78c04354c131c28d67c49152ec53f83ac016",
+        "page-2.png": "8a04723aa9ab86b1686c33a6c154a909be697acec9a71a5166da57c9b317fb24",
+        "page-3.png": "4d349a3dd0450fe9bf51c484b4f378ae3b3591d7d2f73068a2a477d7ff1e3df2",
+        "page-4.png": "f8e64b3e6c219ef63990263a7e4dc9a462e84393f2f587150c10809775ee9826",
+        "page-5.png": "f47cc6d0247e9fa0385af4a6bfdb5daae7524c2501bf9067aae5fc724d7a8e6b",
+        "page-6.png": "a4d36750820698b11812dbd17ba00d6380596515f3ad4aa0a8e10fc78344af94",
+        "page-7.png": "cda896a40e222eeb7ab5dfd5f4003cacb9aee9514a44bf0e2b60921bb8634231",
+        "page-8.png": "b8cf9f01190beb8d9fa2cef5c644aaa1d914c8a64189a389c93b045b2efe2383",
+        "page-9.png": "9f3de85e8022bac35c79bfb0162c14e924b7d7646f169fd180257976dcbb20bc"
+      },
+      "tex_sha256": "e062c71beda08fc21e840e91477effdbb2c2e8f789258c0b832fd93d34c1504a"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/technical/book.pdf",
+      "pdf_sha256": "c2c0252514564c0c1486f4dea76477ce999e6c4278347049c56fdbb8cbc50133",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/technical",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "4ff40e062671373ddbf7728193d4e13537484ae81feed58bc78356af1f582b5b",
+      "page_capture_sha256": {
+        "page-1.png": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "page-10.png": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "page-11.png": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "page-12.png": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "page-2.png": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "page-3.png": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "page-4.png": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "page-5.png": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "page-6.png": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "page-7.png": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "page-8.png": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "page-9.png": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8"
+      },
+      "tex_sha256": "24dd9f7e779baddf8ecafcdb1fd8359c42adf017989e61c80a962b89a8fb714c"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/technical-custom/book.pdf",
+      "pdf_sha256": "937db75281d79cd34efb41a775c001d331a8fcff9a0f839e69eae28c9c579cc3",
+      "pages": 13,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/technical-custom",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#493B72",
+          "body-font": "serif",
+          "chapter-style": "study",
+          "line-spacing": "relaxed",
+          "margins": {
+            "bottom": 24,
+            "left": 22,
+            "right": 20,
+            "top": 22
+          },
+          "title-font": "sans"
+        }
+      },
+      "receipt_sha256": "7f276d4d5db6a3154327dfc4739c0fa23dd70179776bdee9bd1ab284d4f3b758",
+      "page_capture_sha256": {
+        "page-1.png": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41",
+        "page-10.png": "572ee09949ea27b740fedad85097e3b0ae69bbcb86421a5fa9e4c4ea71a367a2",
+        "page-11.png": "e09ad69201ac52b5ad3248746d0fcd086d6b10e89da56eee646691e13d5d6534",
+        "page-12.png": "e38cf505852ab46dfcf313e7f4e3abaa06b869456662e66107762f10721cc27b",
+        "page-13.png": "d668e6753ac583e6ec46044aca4697ca2802f0fd6b48a19505b9bd97109f8490",
+        "page-2.png": "b0cbabe5721125218e28306780d88514425f6c6270f4c70aab85f1d38dc98bbf",
+        "page-3.png": "5bafa7795d67162886a2739262227d309201320609289297bbdab5d420f0f4eb",
+        "page-4.png": "72629e484d511cddca3e1e4588dd8626e030f74755f7b79bd38f2c0d807ea9a2",
+        "page-5.png": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9",
+        "page-6.png": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc",
+        "page-7.png": "bc5bcd3e5b0c033af9f02cd9b2d14f8db720779c0bc46237e1c8d2627c324273",
+        "page-8.png": "73794dcf07e8049343567843c23914019a535eec00c12c749bf340de374dcf03",
+        "page-9.png": "45a4a4f6c097b475abbf7d3eaa6ef716fd9db241041965b3879ac2d01575763d"
+      },
+      "tex_sha256": "b2ebcff578d2826ea4aaa9860bf22aee430f87db213a269698cae272dbc2d9b6"
+    },
+    {
+      "artifact": "book-pdf-ubuntu-latest-podman/terms/book.pdf",
+      "pdf_sha256": "c1ef38dad22b8941898b4bd61a958700827e2d3cfcc13f80d7820e92f284b211",
+      "pages": 12,
+      "page_capture_directory": "book-pdf-ubuntu-latest-podman/terms",
+      "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+      "template": "classic-v1",
+      "settings": {
+        "enabled": false,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "45d9683d2e64126c6f954cfaff97c46c7e19bbe3c754b817ef3fc58da56a7d6c",
+      "page_capture_sha256": {
+        "page-1.png": "229b4951210cbf024456816d89c57c7a4f2436b9c8ffd364e84b739ac1bf57bb",
+        "page-10.png": "fd458a51c149fbe71649889242d24a62a026f757214b7cc61daf330ae79ee0d9",
+        "page-11.png": "b9bfbf7b6d6103becc35641a056242ff43e9088d18ed2ca6ded44a4986bf2db0",
+        "page-12.png": "e9ea55330880174603ff0c69895b12aea46f361f4c44dc627e883b5512a7eb4f",
+        "page-2.png": "b776acfa5585ce7c68b5cbde54b4289c0a54a65c4413d9ada87c6aef0a9d2f17",
+        "page-3.png": "61e25dca4086216ac004252a5688c515be129d9ba5f529cc123deff7d05ba89a",
+        "page-4.png": "8c1beb358e5c0111d983bafa1a6779ea70a4b10ae7d8f971d6b2e2a40bb02c51",
+        "page-5.png": "f9c40415d4d1697680b3c8bfbc5809a755d4e164c58a1d6f69e80a8eba8ac564",
+        "page-6.png": "fc14ce8976667d0d64a2b2b1cc35878dc072e2d39baf5791c9840aa3107e662c",
+        "page-7.png": "2d3b01570126d83cef7ef55ae5a814560ff9f46bace234600913f235fa24a534",
+        "page-8.png": "db4a387a777fab31bbbdc0d938011491e2e3de7ccaf346b0f501c750caf04c3f",
+        "page-9.png": "32f64791c624dfd40381a86390c9d0a500485f4f630b54a372df30418ac83f7b"
+      },
+      "tex_sha256": "f3eb010a329a65b2a80076766b6b45e80a6b57db72be2ff595205b96408b9560"
+    },
+    {
+      "artifact": "next-pdf-ubuntu-24.04-arm/study/book.pdf",
+      "pdf_sha256": "740c209a35154655f1ffe107bd63d8c4337008509fcbf51bcf7dcfbb10b090d9",
+      "pages": 12,
+      "page_capture_directory": "next-pdf-ubuntu-24.04-arm/study",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "46ee73a30252c97052d7425565ea2f7e0549e321cd6e71b36bbd3f8cd7e7edcf",
+      "page_capture_sha256": {
+        "page-1.png": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "page-10.png": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "page-11.png": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "page-12.png": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "page-2.png": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "page-3.png": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "page-4.png": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "page-5.png": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "page-6.png": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "page-7.png": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "page-8.png": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "page-9.png": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a"
+      }
+    },
+    {
+      "artifact": "next-pdf-ubuntu-24.04-arm/technical/book.pdf",
+      "pdf_sha256": "70b9898fd87dceb3a211d50549d065d071651715a72c91317786f45f56cf758c",
+      "pages": 12,
+      "page_capture_directory": "next-pdf-ubuntu-24.04-arm/technical",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "58ed50a69d0fa52bb75e1a8d76d92890c68a7e20688aa7a55bf29c14fd99e670",
+      "page_capture_sha256": {
+        "page-1.png": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "page-10.png": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "page-11.png": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "page-12.png": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "page-2.png": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "page-3.png": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "page-4.png": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "page-5.png": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "page-6.png": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "page-7.png": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "page-8.png": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "page-9.png": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8"
+      }
+    },
+    {
+      "artifact": "next-pdf-ubuntu-24.04-arm/technical-custom/book.pdf",
+      "pdf_sha256": "4026d99dce27724a2c3dcd6fe393b0c2ed9634e63ce23a13e87f4481e9cd49e5",
+      "pages": 13,
+      "page_capture_directory": "next-pdf-ubuntu-24.04-arm/technical-custom",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#493B72",
+          "body-font": "serif",
+          "chapter-style": "study",
+          "line-spacing": "relaxed",
+          "margins": {
+            "bottom": 24,
+            "left": 22,
+            "right": 20,
+            "top": 22
+          },
+          "title-font": "sans"
+        }
+      },
+      "receipt_sha256": "577505de65ddaac76f36a28912ac40fdb2a0660958f5bcdd8422b41f6f246b63",
+      "page_capture_sha256": {
+        "page-1.png": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41",
+        "page-10.png": "572ee09949ea27b740fedad85097e3b0ae69bbcb86421a5fa9e4c4ea71a367a2",
+        "page-11.png": "e09ad69201ac52b5ad3248746d0fcd086d6b10e89da56eee646691e13d5d6534",
+        "page-12.png": "e38cf505852ab46dfcf313e7f4e3abaa06b869456662e66107762f10721cc27b",
+        "page-13.png": "d668e6753ac583e6ec46044aca4697ca2802f0fd6b48a19505b9bd97109f8490",
+        "page-2.png": "b0cbabe5721125218e28306780d88514425f6c6270f4c70aab85f1d38dc98bbf",
+        "page-3.png": "5bafa7795d67162886a2739262227d309201320609289297bbdab5d420f0f4eb",
+        "page-4.png": "72629e484d511cddca3e1e4588dd8626e030f74755f7b79bd38f2c0d807ea9a2",
+        "page-5.png": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9",
+        "page-6.png": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc",
+        "page-7.png": "bc5bcd3e5b0c033af9f02cd9b2d14f8db720779c0bc46237e1c8d2627c324273",
+        "page-8.png": "73794dcf07e8049343567843c23914019a535eec00c12c749bf340de374dcf03",
+        "page-9.png": "45a4a4f6c097b475abbf7d3eaa6ef716fd9db241041965b3879ac2d01575763d"
+      }
+    },
+    {
+      "artifact": "next-pdf-ubuntu-latest/study/book.pdf",
+      "pdf_sha256": "a43d1286be1cd91ab80774a2c4510ea58e2861df43af324f395930e2c6258bc5",
+      "pages": 12,
+      "page_capture_directory": "next-pdf-ubuntu-latest/study",
+      "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+      "template": "study-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "5391aa39a47f6a12c418a2c43cb3121e4977cdc7ca68998bc1ad558d45d0bc45",
+      "page_capture_sha256": {
+        "page-1.png": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "page-10.png": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "page-11.png": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "page-12.png": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "page-2.png": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "page-3.png": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "page-4.png": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "page-5.png": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "page-6.png": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "page-7.png": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "page-8.png": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "page-9.png": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a"
+      }
+    },
+    {
+      "artifact": "next-pdf-ubuntu-latest/technical/book.pdf",
+      "pdf_sha256": "33c50f7fea0fc5056937caae2b85884f207cabf61c0ebde794c0e168889eeb43",
+      "pages": 12,
+      "page_capture_directory": "next-pdf-ubuntu-latest/technical",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5"
+      },
+      "receipt_sha256": "a5ae2bb1cb64c7e99e49407ce6aca165efc3b199d42005a89d5a57837d04d61c",
+      "page_capture_sha256": {
+        "page-1.png": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "page-10.png": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "page-11.png": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "page-12.png": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "page-2.png": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "page-3.png": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "page-4.png": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "page-5.png": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "page-6.png": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "page-7.png": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "page-8.png": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "page-9.png": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8"
+      }
+    },
+    {
+      "artifact": "next-pdf-ubuntu-latest/technical-custom/book.pdf",
+      "pdf_sha256": "c4a63a8966dcd311dcdb199a83c669c8d649d449e6ebbe36d0d73b32dd084ab5",
+      "pages": 13,
+      "page_capture_directory": "next-pdf-ubuntu-latest/technical-custom",
+      "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+      "template": "technical-v1",
+      "settings": {
+        "enabled": true,
+        "font-size": 11,
+        "paper": "a5",
+        "style": {
+          "accent": "#493B72",
+          "body-font": "serif",
+          "chapter-style": "study",
+          "line-spacing": "relaxed",
+          "margins": {
+            "bottom": 24,
+            "left": 22,
+            "right": 20,
+            "top": 22
+          },
+          "title-font": "sans"
+        }
+      },
+      "receipt_sha256": "f410fe80e7c3e789e608f40f5e8de409be0d3ffc1446723350775fa4f5275b0d",
+      "page_capture_sha256": {
+        "page-1.png": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41",
+        "page-10.png": "572ee09949ea27b740fedad85097e3b0ae69bbcb86421a5fa9e4c4ea71a367a2",
+        "page-11.png": "e09ad69201ac52b5ad3248746d0fcd086d6b10e89da56eee646691e13d5d6534",
+        "page-12.png": "e38cf505852ab46dfcf313e7f4e3abaa06b869456662e66107762f10721cc27b",
+        "page-13.png": "d668e6753ac583e6ec46044aca4697ca2802f0fd6b48a19505b9bd97109f8490",
+        "page-2.png": "b0cbabe5721125218e28306780d88514425f6c6270f4c70aab85f1d38dc98bbf",
+        "page-3.png": "5bafa7795d67162886a2739262227d309201320609289297bbdab5d420f0f4eb",
+        "page-4.png": "72629e484d511cddca3e1e4588dd8626e030f74755f7b79bd38f2c0d807ea9a2",
+        "page-5.png": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9",
+        "page-6.png": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc",
+        "page-7.png": "bc5bcd3e5b0c033af9f02cd9b2d14f8db720779c0bc46237e1c8d2627c324273",
+        "page-8.png": "73794dcf07e8049343567843c23914019a535eec00c12c749bf340de374dcf03",
+        "page-9.png": "45a4a4f6c097b475abbf7d3eaa6ef716fd9db241041965b3879ac2d01575763d"
+      }
+    }
+  ],
+  "visual_review": {
+    "selected": [
+      {
+        "source": "technical-custom/page-1.png",
+        "retained": "specs/evidence/print-style-2026-11-16/technical-custom-page-1.png",
+        "sha256": "49e2e87c107d8c121f6c9c14e450b12ead4a08e3fce685702ab12dcec5114d41"
+      },
+      {
+        "source": "technical-custom/page-5.png",
+        "retained": "specs/evidence/print-style-2026-11-16/technical-custom-page-5.png",
+        "sha256": "06b32fbdfb3abf7a783bd8e13b2ffcd5a4152103e2e5c696fec33a3ec59058e9"
+      },
+      {
+        "source": "technical-custom/page-6.png",
+        "retained": "specs/evidence/print-style-2026-11-16/technical-custom-page-6.png",
+        "sha256": "7fae84ffa58c56c53cb5e9e338c362f69bb2c04e23ed4c894cfc71081cb01ddc"
+      },
+      {
+        "source": "study-custom/page-1.png",
+        "retained": "specs/evidence/print-style-2026-11-16/study-custom-page-1.png",
+        "sha256": "b82ac0bd6b8c94b3e0e3307574375ac8ce473a776d5505d15e99b84561bce2ae"
+      },
+      {
+        "source": "study-custom/page-5.png",
+        "retained": "specs/evidence/print-style-2026-11-16/study-custom-page-5.png",
+        "sha256": "f47cc6d0247e9fa0385af4a6bfdb5daae7524c2501bf9067aae5fc724d7a8e6b"
+      },
+      {
+        "source": "study-custom/page-6.png",
+        "retained": "specs/evidence/print-style-2026-11-16/study-custom-page-6.png",
+        "sha256": "a4d36750820698b11812dbd17ba00d6380596515f3ad4aa0a8e10fc78344af94"
+      }
+    ],
+    "additional_reviewed_pages": [
+      "technical-custom/page-2.png",
+      "technical-custom/page-8.png",
+      "technical-custom/page-13.png",
+      "study-custom/page-7.png"
+    ],
+    "observations": [
+      "Cover and chapter families, accent colors, line spacing and margins reflect the authored settings.",
+      "Reviewed title, contents, proof/math/table, prose/footnote and index layouts show no clipping or overlapping content.",
+      "Pagination changes are expected; existing unstyled page pixels are compared separately."
+    ]
+  },
+  "style_previews": {
+    "book-pdf-ubuntu-24.04-arm-docker": {
+      "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+      "before": "b08f038b2f8ad1396653d20e16c762ecf8777a3c250b35ae64ce96028441d853",
+      "after": "2072b01c6ba1e837801a0a1379a3531710d2bf9690edb219dd5f815b52833334",
+      "style": {
+        "accent": "#493B72",
+        "body-font": "serif",
+        "chapter-style": "study",
+        "line-spacing": "relaxed",
+        "margins": {
+          "bottom": 24,
+          "left": 22,
+          "right": 20,
+          "top": 22
+        },
+        "title-font": "sans"
+      }
+    },
+    "book-pdf-ubuntu-latest-docker": {
+      "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+      "before": "09b8e3f503e03b439bb462369713abcfb8d6b4eff138107eeb7cd4227ababecf",
+      "after": "11dc55006ee1970422d347def4942f71d57ad6984ba80f570e2875e1042770ff",
+      "style": {
+        "accent": "#493B72",
+        "body-font": "serif",
+        "chapter-style": "study",
+        "line-spacing": "relaxed",
+        "margins": {
+          "bottom": 24,
+          "left": 22,
+          "right": 20,
+          "top": 22
+        },
+        "title-font": "sans"
+      }
+    },
+    "book-pdf-ubuntu-latest-podman": {
+      "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+      "before": "a2052f30b8bdfe39c5068be781f05b39dc871a7e07b1a5de41d7d856b7b6de72",
+      "after": "7b6622dad5fe719a15cfce91396a015a7fef568fd2d85aed8a66839ce4e487fc",
+      "style": {
+        "accent": "#493B72",
+        "body-font": "serif",
+        "chapter-style": "study",
+        "line-spacing": "relaxed",
+        "margins": {
+          "bottom": 24,
+          "left": 22,
+          "right": 20,
+          "top": 22
+        },
+        "title-font": "sans"
+      }
+    }
+  },
+  "static_images": {
+    "book-pdf-ubuntu-24.04-arm-docker": {
+      "architecture": "arm64",
+      "bytes": 14048938,
+      "pdfBytes": 56533,
+      "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+      "user": "nginx",
+      "latexAbsent": true
+    },
+    "book-pdf-ubuntu-latest-docker": {
+      "architecture": "amd64",
+      "bytes": 7245483,
+      "pdfBytes": 56533,
+      "revision": "sha256:e582bc2eceebfc63fade7dd337465f242d6d1681e7e95856f6cf2c6efa870071",
+      "user": "nginx",
+      "latexAbsent": true
+    }
+  },
+  "next_images": {
+    "next-pdf-ubuntu-24.04-arm": [
+      {
+        "edition": "study",
+        "variant": "study",
+        "prefix": "",
+        "pages": 12,
+        "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+        "pdf_sha256": "740c209a35154655f1ffe107bd63d8c4337008509fcbf51bcf7dcfbb10b090d9",
+        "pdf_bytes": 59352,
+        "image_bytes": 213201962,
+        "architecture": "arm64"
+      },
+      {
+        "edition": "technical",
+        "variant": "technical",
+        "prefix": "/books/technical",
+        "pages": 12,
+        "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+        "pdf_sha256": "70b9898fd87dceb3a211d50549d065d071651715a72c91317786f45f56cf758c",
+        "pdf_bytes": 63248,
+        "image_bytes": 213390021,
+        "architecture": "arm64"
+      },
+      {
+        "edition": "technical",
+        "variant": "technical-custom",
+        "prefix": "/books/custom",
+        "pages": 13,
+        "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+        "pdf_sha256": "4026d99dce27724a2c3dcd6fe393b0c2ed9634e63ce23a13e87f4481e9cd49e5",
+        "pdf_bytes": 67960,
+        "image_bytes": 213397040,
+        "architecture": "arm64"
+      }
+    ],
+    "next-pdf-ubuntu-latest": [
+      {
+        "edition": "study",
+        "variant": "study",
+        "prefix": "",
+        "pages": 12,
+        "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+        "pdf_sha256": "a43d1286be1cd91ab80774a2c4510ea58e2861df43af324f395930e2c6258bc5",
+        "pdf_bytes": 59352,
+        "image_bytes": 76790576,
+        "architecture": "amd64"
+      },
+      {
+        "edition": "technical",
+        "variant": "technical",
+        "prefix": "/books/technical",
+        "pages": 12,
+        "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+        "pdf_sha256": "33c50f7fea0fc5056937caae2b85884f207cabf61c0ebde794c0e168889eeb43",
+        "pdf_bytes": 63248,
+        "image_bytes": 76831586,
+        "architecture": "amd64"
+      },
+      {
+        "edition": "technical",
+        "variant": "technical-custom",
+        "prefix": "/books/custom",
+        "pages": 13,
+        "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+        "pdf_sha256": "c4a63a8966dcd311dcdb199a83c669c8d649d449e6ebbe36d0d73b32dd084ab5",
+        "pdf_bytes": 67960,
+        "image_bytes": 76839909,
+        "architecture": "amd64"
+      }
+    ]
+  },
+  "history": [
+    {
+      "run": 43946520960,
+      "head": "887dde95f9ce5d81b6b8d916f1a2ed42c9c4a89a",
+      "conclusion": "cancelled",
+      "failed_jobs": [
+        {
+          "name": "Engine",
+          "id": 133577531467
+        }
+      ],
+      "finding": "Standalone Docker recipe retained rc.9 after source version bump; version-consistency helper rejected the mismatch.",
+      "fix": "c8893da87054a6f19828bf3f8ea1fa97614e73b2",
+      "log_sha256": "ffeb8720bb8b6840c02613a7968720f79820d68b873344ec174b0d6f6c3d5384"
+    },
+    {
+      "scope": "local comparison only",
+      "finding": "The first cross-delivery comparison included pdf.enabled; native --pdf overrides saved false, while Next uses saved true.",
+      "resolution": "Compare style, paper, font size, revision, text and pixels while explicitly verifying each expected enabled value; rendering is unchanged."
+    }
+  ],
+  "unchanged": {
+    "public_version": "v0.2.0-rc.9",
+    "published_template_bytes": true,
+    "engine_source_base_dockerfile_and_dependency_inputs": true,
+    "new_font_or_runtime_dependencies": false,
+    "production_hosting": true,
+    "live_provider_tests_deferred": true
+  },
+  "limits": [
+    "Print stays English/LTR; no custom font paths or raw LaTeX preambles.",
+    "Passing acceptance does not prove zero bugs or 1.0 completeness."
+  ]
+}

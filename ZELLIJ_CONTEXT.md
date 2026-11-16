@@ -3,15 +3,27 @@
 Last refreshed: **2026-11-16**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-16: print-style authoring in progress (source rc.10)**
+**2026-11-16: print-style authoring verified (source rc.10)**
 
-Optional `pdf.style` customizes accent, serif/sans body and title fonts, chapter
-openings, line spacing and margins. Existing editions retain their output when
-styles are omitted. Native checks cover validation, receipts, web/source identity
-and CI compatibility; hosted typesetting and visual preservation checks are next.
-See [the contract](specs/zellij-print-style-2026-11-16.md). Public rc.9, published templates and
-production hosting remain unchanged. Multilingual/RTL and remaining installer
-work follow; live-provider checks stay deferred.
+`pdf.style` now customizes accent, serif/sans body and cover/chapter-title fonts,
+chapter openings, line spacing and margins. Defaults retain the existing design;
+PDF settings stay separate from the manuscript revision. CI rejects older pins
+before writes. Implementation `887dde9` and recipe-pin correction `c8893da` pass
+all 32 CI jobs in `43946832641`. Local checks pass 806 Rust tests (five hosted-only
+cases ignored), 103 helper tests and warnings-denied Clippy. Hosted engine tests
+pass 491 cases; showcase passes 418 without retries (140 conditional skips).
+
+All 30 existing TeX sources and 312 page captures match reviewed rc.9. Forty-two
+PDFs include 101 new styled captures; technical native/Next output and study
+output match across their runtimes. Six representative reviewed pages are retained.
+Watch mode verifies style-only rebuilds, and minimal static/Next images serve
+matching PDFs without the LaTeX toolchain. The initial recipe-pin CI failure and
+local comparison correction remain in the evidence. Public rc.9, templates,
+engine runtime inputs and production hosting remain unchanged. Multilingual/RTL,
+custom font inventories and remaining installation work follow; live providers
+stay deferred. [PR #194](https://github.com/mylife-inc/Zellij/pull/194) carries this verified change.
+
+See [the contract](specs/zellij-print-style-2026-11-16.md) and [verification evidence](specs/evidence/zellij-print-style-2026-11-16.json).
 
 **2026-11-16: rc.9 publication**
 
@@ -260,11 +272,11 @@ existing bounded startup loop. The records-only follow-up changes no runtime,
 active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
 rc.7 and production hosting are unchanged.
 
-**Current checkpoint:** rc.9 publication, public/channel upgrades, documentation
-migration and scoped rc.8 retirement are complete. Next are remaining print
-customization and installation channels. Live-provider verification and production
-migration stay deferred; unexplained browser timing findings remain open.
-No zero-bug or 1.0-complete claim is made.
+**Current checkpoint:** print-style authoring is verified for source rc.10.
+Public rc.9 and its distribution channels remain unchanged.
+Next are multilingual/RTL print, custom font inventories and remaining installation
+channels. Live providers and production migration stay deferred; unexplained
+browser timing findings remain open. No zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,
 statement, bibliography, glossary/index, navigation and installer improvements.
