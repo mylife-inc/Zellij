@@ -1,5 +1,19 @@
 # Product expansion: branding, composition, templates, books and installation
 
+## rc.9 publication — started 2026-11-15
+
+PR #191 merges as `f03f803`, matching reviewed `7071bb9`; implementation and
+workflows match tested `abc556a`. All 32 source CI jobs pass, followed by normal
+release preflight with 802 Rust and 491 engine tests. The immutable rc.9 tag
+includes the three website starters, centered header and mobile section menus.
+Both repositories publish 26 matching assets, including all eight template
+archives. The five older template archives retain their original hashes.
+Public-download acceptance, channel upgrades, documentation CI and scoped rc.8
+retirement are still in progress. See [release evidence](evidence/zellij-rc9-release-2026-11-15.json).
+Production hosting and live-provider verification remain deferred. Remaining
+print customization and installation work follow; no zero-bug or 1.0 claim.
+
+
 ## rc.8 publication — 2026-11-15
 
 PR #182 merges as `d70e10f`, matching reviewed `599e43e`; implementation and

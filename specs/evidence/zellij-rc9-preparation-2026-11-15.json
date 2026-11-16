@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "candidate": "v0.2.0-rc.9",
-  "status": "source preparation verified; compatibility dispatch, release preflight and publication pending",
+  "status": "source preparation merged and older-release compatibility verified; release preflight and publication pending",
   "baseline": "b599749f19abe2be6aa7bd7f7007369c1f50f366",
   "verified_head": "abc556a48c56530321d2a9eecc5b73fa6935be87",
   "pull_request": 191,
@@ -378,5 +378,33 @@
     "Live providers and production-domain migration remain deferred.",
     "Remaining print customization, multilingual/RTL publishing and additional installation channels remain open.",
     "No zero-bug or stable 1.0 claim."
-  ]
+  ],
+  "merge": {
+    "headRefOid": "7071bb959dd26bcc06f9adcde488a990f4c9ba6d",
+    "mergeCommit": {
+      "oid": "f03f80319b097a1f8cadd16830c17b42d914c2a3"
+    },
+    "mergedAt": "2026-11-16T07:30:27Z",
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/191"
+  },
+  "older_release_compatibility": {
+    "run_id": 43824360532,
+    "head": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
+    "version": "v0.2.0-rc.8",
+    "conclusion": "success",
+    "new_website_capability_explicitly_skipped": true,
+    "jobs": [
+      {
+        "id": 133154530840,
+        "name": "Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133154531244,
+        "name": "Websites (ubuntu-latest)",
+        "conclusion": "success"
+      }
+    ]
+  }
 }

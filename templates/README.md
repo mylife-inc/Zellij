@@ -1,7 +1,8 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.8 catalog contains five starters:
+CLI releases. It is independent of `examples/`. The rc.9 catalog contains eight
+starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
 `book-technical` (mathematics and proofs) and `book-study` (passages and commentary).
@@ -13,7 +14,7 @@ The product starters remain at template version 0.1.0. Book-classic 0.2.0
 requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
 the bundled catalog; previously published 0.1.0 archives remain immutable.
 
-The rc.9 source catalog adds three website starters at template version 0.1.0:
+The published rc.9 catalog adds three website starters at template version 0.1.0:
 
 | ID | Direction | Pages |
 | --- | --- | --- |
@@ -25,8 +26,8 @@ These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
 They require CLI/engine rc.9 or later, including the bento heading contrast fix.
-The published rc.8 catalog does not contain them. Until rc.9 is released, use
-a source build with its matching engine. A source-built CLI also accepts local paths:
+Create them by ID, for example `zel create my-website -t product-launch`.
+Use the release's matching engine when building. Local paths are also supported:
 
 ```sh
 zel create my-website -t ./templates/product-launch --offline

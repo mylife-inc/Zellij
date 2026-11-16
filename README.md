@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.8](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.8)
+[Candidate 0.2.0-rc.9](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.9)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -88,7 +88,7 @@ PDF is off by default. Choose `book-technical` for mathematics and proofs or
 layouts and support English/LTR print. Further print customization and multilingual
 publishing remain planned.
 
-rc.8 also supports configured PDF delivery in Next images: `zel ni` and saved
+Configured PDF delivery also works in Next images: `zel ni` and saved
 `zel pub` include a matching downloadable PDF and receipt. Keyboard activation,
 JavaScript-disabled readers and URL prefixes work; TeX sources and the toolchain
 stay outside the serving image.
@@ -101,9 +101,16 @@ and native validation. See the
 [bibliography contract](specs/zellij-book-bibliography-2026-11-14.md) and
 [glossary/index contract](specs/zellij-book-terms-2026-11-14.md).
 
-The [candidate notes](specs/releases/v0.2.0-rc.8.md) cover the new book templates,
-Next-image PDF delivery and remaining limits. See the
-[release evidence](specs/evidence/zellij-rc8-release-2026-11-15.json) and
+rc.9 adds three hosted website starters: `product-launch`, `software-platform`
+and `creative-studio`. Each includes two landing pages, two guide pages and local
+artwork. Run `zel create my-site -t product-launch`, edit `content/`, then
+`zel build my-site` with a supported container runtime. The menu centers on desktop,
+company branding stays at the far left, and search/theme controls stay at the
+far right. On phones, sections open their own menu view with Back and Close.
+
+The [candidate notes](specs/releases/v0.2.0-rc.9.md) cover the website collection,
+navigation improvements and remaining limits. See the
+[release evidence](specs/evidence/zellij-rc9-release-2026-11-15.json) and
 [completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification and
 deferred provider/runner checks. This is a preview, not a stable 1.0 release.
 

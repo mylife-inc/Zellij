@@ -57,3 +57,9 @@ The final records-only update changes no implementation, workflow, template or
 runtime inputs from tested `abc556a`. The older-release capability dispatch,
 normal release preflight, publication, channel migration and scoped retirement
 remain pending.
+
+PR #191 merges as `f03f803`, whose tree matches reviewed `7071bb9`.
+The actual rc.8 compatibility dispatch `43824360532` passes both architectures,
+explicitly skipping the unavailable website capability. This does not claim
+that rc.8 includes the new website collection. Normal release preflight follows
+at the merge; release publication and retirement results are recorded separately.

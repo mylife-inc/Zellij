@@ -6,6 +6,9 @@
     {"id": "book-classic", "version": "0.1.0", "sha256": "5961e7221e5837c5f4f9b8cfcbc25f2cb1ca2067e81c0a76b0feb83c489e3b8e"},
     {"id": "book-classic", "version": "0.2.0", "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"},
     {"id": "book-technical", "version": "0.1.0", "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"},
-    {"id": "book-study", "version": "0.1.0", "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"}
+    {"id": "book-study", "version": "0.1.0", "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"},
+    {"id": "product-launch", "version": "0.1.0", "sha256": "8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"},
+    {"id": "software-platform", "version": "0.1.0", "sha256": "2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"},
+    {"id": "creative-studio", "version": "0.1.0", "sha256": "efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"}
   ]
 }

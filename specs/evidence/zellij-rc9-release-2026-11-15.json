@@ -1,0 +1,729 @@
+{
+  "date": "2026-11-15",
+  "candidate": "v0.2.0-rc.9",
+  "status": "rc.9 public assets published and verified; public acceptance, channel migration, documentation CI and retirement pending",
+  "source": "abc556a48c56530321d2a9eecc5b73fa6935be87",
+  "tag_commit": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
+  "merge": {
+    "headRefOid": "7071bb959dd26bcc06f9adcde488a990f4c9ba6d",
+    "mergeCommit": {
+      "oid": "f03f80319b097a1f8cadd16830c17b42d914c2a3"
+    },
+    "mergedAt": "2026-11-16T07:30:27Z",
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/191"
+  },
+  "preflight": {
+    "rust_passed": 802,
+    "existing_hosted_only_ignored": 5,
+    "engine_passed": 491,
+    "typechecks_schema_format_clippy_passed": true,
+    "log_sha256": "3252e04c7c8260ea639995b287c8c40961e91023adaebe6ab88492856c4b52b5"
+  },
+  "limits": [
+    "Live providers and production-domain migration deferred.",
+    "Print customization, multilingual/RTL printing and further installation channels remain work.",
+    "No zero-bug or stable 1.0 claim."
+  ],
+  "dispatch": {
+    "run_id": 43825155269,
+    "event": "workflow_dispatch",
+    "reason": "The reviewed merge commit skips automatic CI; release is explicitly dispatched on the immutable tag.",
+    "head": "f03f80319b097a1f8cadd16830c17b42d914c2a3"
+  },
+  "images": [
+    {
+      "job_id": 133159681331,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-all",
+      "digest": "sha256:62d76f8c3596f2adf9c02298854dbecf8a81d7f4196621f7a9cdd15eef17211b",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "2052fb9ab25a851b0504e5126358fa49c18fb96969b26169a0bbe652ac440100",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681332,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-diagrams",
+      "digest": "sha256:42313d4c4eac834c5ae88af49f318ed69544b150e54432bfb4ca826bc3b25da5",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "ea00dfb9838c5accba0ce91f0fc65200f089e57ad3baf88a3520f8c467220658",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681344,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-maths",
+      "digest": "sha256:3fa96bf1cd174df813c0cc59f56f62c9dcb77175592535520199c9295bffb74d",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "fecd0d53b68f0efd46036c8891a75cce044c3b6467d054bf005e3e981633a44f",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681390,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9",
+      "digest": "sha256:a7c582581e0bea44d8b9acf75da9664f5ccb84f66e49d53f80a7be8383835ed1",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "90c1e4a913ac07b799ff793d90c35a6292547b8c6276f0b320e8e8a901529678",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    }
+  ],
+  "published_default_image_smoke": {
+    "build_and_http": "passed",
+    "initial_probe": "Connection reset before readiness; the next bounded probe served successfully."
+  },
+  "public_assets": {
+    "source": {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.9",
+      "id": 446742217,
+      "url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.9",
+      "assets": [
+        {
+          "id": 753969447,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 753969436,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 753969456,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:2b15e9b7bf77e94aa7600ba40867ba5dbafb9b105deefbdc32ebe3b2a8573f2b"
+        },
+        {
+          "id": 753969449,
+          "name": "template-book-classic-0.2.0.tar.gz",
+          "size": 4394,
+          "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+        },
+        {
+          "id": 753969438,
+          "name": "template-book-study-0.1.0.tar.gz",
+          "size": 3845,
+          "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+        },
+        {
+          "id": 753969451,
+          "name": "template-book-technical-0.1.0.tar.gz",
+          "size": 3959,
+          "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+        },
+        {
+          "id": 753969437,
+          "name": "template-creative-studio-0.1.0.tar.gz",
+          "size": 5768,
+          "digest": "sha256:efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+        },
+        {
+          "id": 753969454,
+          "name": "template-product-docs-0.1.0.tar.gz",
+          "size": 1297,
+          "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+        },
+        {
+          "id": 753969457,
+          "name": "template-product-launch-0.1.0.tar.gz",
+          "size": 5979,
+          "digest": "sha256:8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+        },
+        {
+          "id": 753969452,
+          "name": "template-product-studio-0.1.0.tar.gz",
+          "size": 2454,
+          "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+        },
+        {
+          "id": 753969453,
+          "name": "template-software-platform-0.1.0.tar.gz",
+          "size": 5870,
+          "digest": "sha256:2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+        },
+        {
+          "id": 753969434,
+          "name": "templates-catalog.json",
+          "size": 8316,
+          "digest": "sha256:29fcd6025871d6c591e2567c5780a318db726d18b2e3e7825e1e4b6598681b6c"
+        },
+        {
+          "id": 753969441,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz",
+          "size": 7241099,
+          "digest": "sha256:c1a4641f582842463174d4edf6d28d1e5d4a18b1aec0f4ddf833fe067bc93a8c"
+        },
+        {
+          "id": 753969432,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:84e2e4b8c2d69f371c83e15fd802bf068f77d6847dd7f82b12e9c16389f84e5f"
+        },
+        {
+          "id": 753969440,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip",
+          "size": 7625619,
+          "digest": "sha256:789f77523900064d0d7c430c2c3cf8720fbdcce366227212cf81ff661c20f06b"
+        },
+        {
+          "id": 753969443,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:2c30f4d596368309caa9d2c1714137392885ad2fc78285d3c997f253c8e4d3b7"
+        },
+        {
+          "id": 753969444,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7503357,
+          "digest": "sha256:f6c1377a0f98b2630dd64aebcf758dde71c9645d42664ff5ce9f6d54bbf234eb"
+        },
+        {
+          "id": 753969448,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:bcb1a93f174837f7e7aa6d6d56f6dcaf3fbca2813e93fe27f86a895ae53e282d"
+        },
+        {
+          "id": 753969458,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz",
+          "size": 7368522,
+          "digest": "sha256:50929f237131d666c24c0c0503db82f16fd81c0c351bdce37f9b2dccc3a71cf0"
+        },
+        {
+          "id": 753969455,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:db4de448cb37c899d82078663538ed1be05c490db0d5b1b702d77cd8661971fc"
+        },
+        {
+          "id": 753969445,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip",
+          "size": 7793109,
+          "digest": "sha256:c82c759474abbdf654ca16673d053dc58f683f2235e38b84b6adfa1898fe6f7e"
+        },
+        {
+          "id": 753969450,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:a77d61e7051f4fe989f77422007bef58b6053e3e2c176b62c24e9eb9433030d5"
+        },
+        {
+          "id": 753969439,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7642559,
+          "digest": "sha256:4f1f88f92423a7bef562a40f3af0cd43aa8d6baf99377a6c7223690ff3e56e4b"
+        },
+        {
+          "id": 753969433,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:e94c239dff9f09bec3c0ae32a9c7ea19c4f3e13ef2f278b2300f474e9d3c69fe"
+        },
+        {
+          "id": 753969435,
+          "name": "zel.json",
+          "size": 1446,
+          "digest": "sha256:44fcc18eff8609f2a90b75e694699f12e776fb7a845bee22243851ccd17da3cb"
+        },
+        {
+          "id": 753969446,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:f97cfe8627373388dd93f43290b14ff98575e8322b29e5a9fd76368ecb9bacd5"
+        }
+      ]
+    },
+    "mirror": {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.9",
+      "id": 446742284,
+      "url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.9",
+      "assets": [
+        {
+          "id": 753969699,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 753969707,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 753969704,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:2b15e9b7bf77e94aa7600ba40867ba5dbafb9b105deefbdc32ebe3b2a8573f2b"
+        },
+        {
+          "id": 753969693,
+          "name": "template-book-classic-0.2.0.tar.gz",
+          "size": 4394,
+          "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+        },
+        {
+          "id": 753969706,
+          "name": "template-book-study-0.1.0.tar.gz",
+          "size": 3845,
+          "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+        },
+        {
+          "id": 753969696,
+          "name": "template-book-technical-0.1.0.tar.gz",
+          "size": 3959,
+          "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+        },
+        {
+          "id": 753969716,
+          "name": "template-creative-studio-0.1.0.tar.gz",
+          "size": 5768,
+          "digest": "sha256:efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+        },
+        {
+          "id": 753969686,
+          "name": "template-product-docs-0.1.0.tar.gz",
+          "size": 1297,
+          "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+        },
+        {
+          "id": 753969705,
+          "name": "template-product-launch-0.1.0.tar.gz",
+          "size": 5979,
+          "digest": "sha256:8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+        },
+        {
+          "id": 753969700,
+          "name": "template-product-studio-0.1.0.tar.gz",
+          "size": 2454,
+          "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+        },
+        {
+          "id": 753969698,
+          "name": "template-software-platform-0.1.0.tar.gz",
+          "size": 5870,
+          "digest": "sha256:2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+        },
+        {
+          "id": 753969701,
+          "name": "templates-catalog.json",
+          "size": 8316,
+          "digest": "sha256:29fcd6025871d6c591e2567c5780a318db726d18b2e3e7825e1e4b6598681b6c"
+        },
+        {
+          "id": 753969690,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz",
+          "size": 7241099,
+          "digest": "sha256:c1a4641f582842463174d4edf6d28d1e5d4a18b1aec0f4ddf833fe067bc93a8c"
+        },
+        {
+          "id": 753969685,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:84e2e4b8c2d69f371c83e15fd802bf068f77d6847dd7f82b12e9c16389f84e5f"
+        },
+        {
+          "id": 753969697,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip",
+          "size": 7625619,
+          "digest": "sha256:789f77523900064d0d7c430c2c3cf8720fbdcce366227212cf81ff661c20f06b"
+        },
+        {
+          "id": 753969684,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:2c30f4d596368309caa9d2c1714137392885ad2fc78285d3c997f253c8e4d3b7"
+        },
+        {
+          "id": 753969691,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7503357,
+          "digest": "sha256:f6c1377a0f98b2630dd64aebcf758dde71c9645d42664ff5ce9f6d54bbf234eb"
+        },
+        {
+          "id": 753969692,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:bcb1a93f174837f7e7aa6d6d56f6dcaf3fbca2813e93fe27f86a895ae53e282d"
+        },
+        {
+          "id": 753969683,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz",
+          "size": 7368522,
+          "digest": "sha256:50929f237131d666c24c0c0503db82f16fd81c0c351bdce37f9b2dccc3a71cf0"
+        },
+        {
+          "id": 753969708,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:db4de448cb37c899d82078663538ed1be05c490db0d5b1b702d77cd8661971fc"
+        },
+        {
+          "id": 753969694,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip",
+          "size": 7793109,
+          "digest": "sha256:c82c759474abbdf654ca16673d053dc58f683f2235e38b84b6adfa1898fe6f7e"
+        },
+        {
+          "id": 753969687,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:a77d61e7051f4fe989f77422007bef58b6053e3e2c176b62c24e9eb9433030d5"
+        },
+        {
+          "id": 753969695,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7642559,
+          "digest": "sha256:4f1f88f92423a7bef562a40f3af0cd43aa8d6baf99377a6c7223690ff3e56e4b"
+        },
+        {
+          "id": 753969689,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:e94c239dff9f09bec3c0ae32a9c7ea19c4f3e13ef2f278b2300f474e9d3c69fe"
+        },
+        {
+          "id": 753969702,
+          "name": "zel.json",
+          "size": 1446,
+          "digest": "sha256:44fcc18eff8609f2a90b75e694699f12e776fb7a845bee22243851ccd17da3cb"
+        },
+        {
+          "id": 753969688,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:f97cfe8627373388dd93f43290b14ff98575e8322b29e5a9fd76368ecb9bacd5"
+        }
+      ]
+    },
+    "all_asset_bytes_match": true,
+    "previous_releases_preserved": true,
+    "eight_archives_match_reviewed_packaging": true,
+    "five_previously_published_archives_unchanged": true,
+    "templates": {
+      "schema": 1,
+      "release": "v0.2.0-rc.9",
+      "templates": [
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A portable handbook with clear navigation and offline search.",
+            "id": "product-docs",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.5",
+            "minimum-engine": "0.2.0-rc.5",
+            "outputs": [
+              "web",
+              "file"
+            ],
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml",
+              "content/index.md"
+            ],
+            "title": "Product documentation",
+            "variables": {
+              "title": "Your product"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-docs-0.1.0.tar.gz",
+            "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/product.svg"
+              }
+            ],
+            "description": "An editorial product landing page and guide using existing Cupertino sections.",
+            "id": "product-studio",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.5",
+            "minimum-engine": "0.2.0-rc.5",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/product.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml",
+              "content/sections/home/hero.yaml"
+            ],
+            "title": "Product studio",
+            "variables": {
+              "title": "Your next idea"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-studio-0.1.0.tar.gz",
+            "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/wave.png"
+              }
+            ],
+            "description": "A complete portable manuscript with a cover, preface, part, chapters and appendix; optional LuaLaTeX PDF.",
+            "id": "book-classic",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.6",
+            "minimum-engine": "0.2.0-rc.6",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "preview": "content/assets/wave.png",
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Classic book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "A question worth following"
+            },
+            "version": "0.2.0"
+          },
+          "archive": {
+            "url": "template-book-classic-0.2.0.tar.gz",
+            "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A mathematics handbook with numbered equations, proofs, references and a subject index. Optional LuaLaTeX PDF.",
+            "id": "book-technical",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.8",
+            "minimum-engine": "0.2.0-rc.8",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Technical book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "The shape of a proof"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-book-technical-0.1.0.tar.gz",
+            "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A reflective reading edition with original passages, commentary, questions, footnotes and a glossary. Optional LuaLaTeX PDF.",
+            "id": "book-study",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.8",
+            "minimum-engine": "0.2.0-rc.8",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Study book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "A practice of attention"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-book-study-0.1.0.tar.gz",
+            "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/speaker.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/detail.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/room.svg"
+              }
+            ],
+            "description": "A sculptural product launch with cinematic imagery, material details and a quiet editorial rhythm.",
+            "id": "product-launch",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/speaker.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Product launch",
+            "variables": {
+              "title": "Forma One"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-launch-0.1.0.tar.gz",
+            "sha256": "8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/workspace.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/workflow.svg"
+              }
+            ],
+            "description": "A focused software website with a product interface, connected workflows and a practical guide.",
+            "id": "software-platform",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/workspace.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Software platform",
+            "variables": {
+              "title": "Relay"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-software-platform-0.1.0.tar.gz",
+            "sha256": "2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/identity.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/field.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/archive.svg"
+              }
+            ],
+            "description": "An editorial studio website with expressive typography, original project studies and a considered approach.",
+            "id": "creative-studio",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/identity.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Creative studio",
+            "variables": {
+              "title": "Atelier North"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-creative-studio-0.1.0.tar.gz",
+            "sha256": "efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+          }
+        }
+      ]
+    }
+  },
+  "release": {
+    "run_id": 43825155269,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43825155269",
+    "head": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
+    "status": "in progress"
+  },
+  "production_docs_deploy": "skipped by prerelease policy",
+  "documentation_validation": {
+    "strict_deep_routes": 59,
+    "examples": 25,
+    "log_sha256": "e6adf1d30d7c345fd823b86b585bd521109ab3f57832c9c075b58c4a2e887d0e",
+    "generated_consumer_workflows_match_cli": true,
+    "actionlint": true,
+    "website_heading_compatibility_anchor": "website-collection--rc9-source",
+    "initial_attempt": {
+      "reason": "Fresh documentation worktree had no generated engine bundle; built the unchanged engine before the successful deep check.",
+      "log_sha256": "c8828ddbe851ecaac4b81da1531f7ecbcd4f953df623a17e9e3b469d81a6318a",
+      "build_log_sha256": "fd7c2144fb1eccc846754e437a3fcd358120587f11b48d0e26025132708267d0"
+    }
+  }
+}

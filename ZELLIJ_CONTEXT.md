@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**rc.9 publication — started 2026-11-15**
+
+PR #191 merges as `f03f803`, matching reviewed `7071bb9`; implementation and
+workflows match tested `abc556a`. All 32 source CI jobs pass, followed by normal
+release preflight with 802 Rust and 491 engine tests. The immutable rc.9 tag
+includes the three website starters, centered header and mobile section menus.
+Both repositories publish 26 matching assets, including all eight template
+archives. The five older template archives retain their original hashes.
+Public-download acceptance, channel upgrades, documentation CI and scoped rc.8
+retirement are still in progress. See [release evidence](specs/evidence/zellij-rc9-release-2026-11-15.json).
+Production hosting and live-provider verification remain deferred. Remaining
+print customization and installation work follow; no zero-bug or 1.0 claim.
+
 **2026-11-15: rc.9 release preparation in progress**
 
 The user asked to continue with rc.9 publication. Baseline is `b599749`; public
