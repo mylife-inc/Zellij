@@ -1,0 +1,326 @@
+{
+  "date": "2026-11-16",
+  "candidate": "v0.2.0-rc.9",
+  "status": "reviewed scoped rc.8 retirement complete and independently verified",
+  "policy_commit": "1e3bef20c7eff2a2dfd179b4e409c2474370fa21",
+  "plan_commit": "6f187a891c55c966e7444078c47c70e408beec3e",
+  "plan_file": "specs/evidence/zellij-rc9-image-retirement-plan-2026-11-16.json",
+  "plan_sha256": "2f3938511a336a486dbab40b7ffa7a6a5eeb715ffece5ac05aea8e3aa801a222",
+  "execution": {
+    "planSha256": "2f3938511a336a486dbab40b7ffa7a6a5eeb715ffece5ac05aea8e3aa801a222",
+    "sourceCommit": "6f187a891c55c966e7444078c47c70e408beec3e",
+    "execution": "local-owner",
+    "authenticatedOwner": "mylife-inc",
+    "keepVersion": "0.2.0-rc.9",
+    "startedAt": "2026-11-16T08:47:03.719Z",
+    "complete": true,
+    "events": [
+      {
+        "package": "zellij-base",
+        "id": 1567159771,
+        "digest": "sha256:5b9e5e380be5e878cf971b415f5711bf56105925aa94cdb2bf365ffc8da308c8",
+        "tags": [
+          "0.2.0-rc.8-all"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567159764,
+        "digest": "sha256:fceed0b4bf73bde6711bb482380f883e6ea3642823a6694ea85aa3ceff140517",
+        "tags": [
+          "0.2.0-rc.8"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567159671,
+        "digest": "sha256:9fbeb8deb7e82f26600e33fa462561c7f263d63cc582da8919d9db4b917a180a",
+        "tags": [
+          "0.2.0-rc.8-diagrams"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567159646,
+        "digest": "sha256:e57ede09191af928ab5f1d5203d4c48a920a9a2b40e0bb89f789b2cad1de7db4",
+        "tags": [
+          "0.2.0-rc.8-maths"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155703,
+        "digest": "sha256:36bbb0b16a90a7d90e676b4c9a78dfaad2bfb9494e8cdf3d27b9c5caae09c891",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155474,
+        "digest": "sha256:57ddad1dd5be75b1b5bbf47d105eec4a6f9126411338a8de7516a6d0643efeb6",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155413,
+        "digest": "sha256:74009703520aacbf098165cdd9575915f2cea3f34598e27d8f92678bd82f511c",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155265,
+        "digest": "sha256:62a692e9dd6ee342cf814d3bf3432ab3b30e226e5b4d74d88b18f0e997bf14fa",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155220,
+        "digest": "sha256:acb75f8a83d3b591b4c4dc447f3e6383780ab786025f04f3572a8c47798846a9",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567155050,
+        "digest": "sha256:e9ee2dace2acbbaebeaa9aca27c5e72ff95129b840f03a64a08fd60299752323",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567154872,
+        "digest": "sha256:47a0949346937e9be60805aeb577e7ae6a9c152aef065c9db1fe38dd9182f84e",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1567154671,
+        "digest": "sha256:6c417eafa09b3d0f34a68cd261d16ca4a0d763190c71e76ca4da1fd45a110dae",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566954257,
+        "digest": "sha256:3b1ddacdca1be58c2b2f72a3c655c1e188880002ade3bed3a68be15130117f13",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566954096,
+        "digest": "sha256:261e7d7d5bfe5f1ad6bffceb8080bd9ee2c38bbc9acae9efc6f9f80d4c835d12",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953778,
+        "digest": "sha256:6d410561fe10e7e4b1bb0d92157db736627d414783598f1470c61848bcc41dbd",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953771,
+        "digest": "sha256:93efe66e58ef487a6a6b71098c146f0c09efd1016c2813b50cf7432e8a1dca5b",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953757,
+        "digest": "sha256:13dc708a2471be2cd225943719f6c0c43edc29123f0f3bb78ba65d0c59c1c1a3",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953691,
+        "digest": "sha256:91f3fdfc406bd560a5c2d78b279e8deddaa9bc81d979e61b666711ffded8a21a",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953679,
+        "digest": "sha256:aabaffeae5d41ef790c1100d2b6b80c407f8111dd93075a00b2b7c566cc91119",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij-base",
+        "id": 1566953676,
+        "digest": "sha256:71a32c1fbcb0234743b0b85fb7da108b0398f0627b1faff4f24fd7465ccb7417",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-static",
+        "id": 1567275246,
+        "digest": "sha256:9ea240d2fb631167d65b055672481447001455033a62a47d512b052113528364",
+        "tags": [
+          "0.2.0-rc.8"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-static",
+        "id": 1567275208,
+        "digest": "sha256:12e8c5c637a60aa4b5ead299a64bbb46c044ded281701a2184ca17b153e2d339",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-static",
+        "id": 1567275199,
+        "digest": "sha256:6778b86235c1630169e3e0fb9e9a53ab6574c02d7f63dabc7ac2e916299b8adc",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "id": 1567277821,
+        "digest": "sha256:1114fd582a8f9bffa46999381fd6a31a3ba480ffb77783c7fe074e46ad9584ac",
+        "tags": [
+          "0.2.0-rc.8"
+        ],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "id": 1567277790,
+        "digest": "sha256:7d45baa6da9376dfb83d9f264b4c8fb723e4bdc170def4f6701d6f9fe13f8810",
+        "tags": [],
+        "status": "deleted"
+      },
+      {
+        "package": "zellij/acceptance-next",
+        "id": 1567277763,
+        "digest": "sha256:bb37dbde44f1c97a5dcdf4f1cbeb8f3fca55f63135b18895d5861d5d0e314b57",
+        "tags": [],
+        "status": "deleted"
+      }
+    ],
+    "finishedAt": "2026-11-16T08:49:18.734Z"
+  },
+  "packages": [
+    {
+      "name": "zellij-base",
+      "removed_versions": 20,
+      "retained_versions": 3684,
+      "protected_manifest_nodes": 34,
+      "excluded_build_history_preserved": 3650,
+      "all_retained_ids_digests_tags_match": true
+    },
+    {
+      "name": "zellij/acceptance-static",
+      "removed_versions": 3,
+      "retained_versions": 7,
+      "protected_manifest_nodes": 3,
+      "excluded_build_history_preserved": 4,
+      "all_retained_ids_digests_tags_match": true
+    },
+    {
+      "name": "zellij/acceptance-next",
+      "removed_versions": 3,
+      "retained_versions": 6,
+      "protected_manifest_nodes": 3,
+      "excluded_build_history_preserved": 3,
+      "all_retained_ids_digests_tags_match": true
+    }
+  ],
+  "verification": {
+    "before_inventory": {
+      "run_id": 43833371667,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43833371667",
+      "head": "1e3bef20c7eff2a2dfd179b4e409c2474370fa21",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133183865538,
+          "name": "inventory",
+          "conclusion": "success"
+        },
+        {
+          "id": 133183868382,
+          "name": "retire-images",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "after_inventory": {
+      "run_id": 43834472434,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43834472434",
+      "head": "6f187a891c55c966e7444078c47c70e408beec3e",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133187572608,
+          "name": "inventory",
+          "conclusion": "success"
+        },
+        {
+          "id": 133187574504,
+          "name": "retire-images",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    "after_http": {
+      "run_id": 43834478152,
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/43834478152",
+      "head": "6818ce9278f3c27a298759b3d9c1d75579dd7c68",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133187599300,
+          "name": "inspect (next)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133187599560,
+          "name": "inspect (static)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133187601442,
+          "name": "live-providers",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  },
+  "local_safeguards_passed": 13,
+  "local_guard_log_sha256": "f8f5422d4959f31d73d5d763153fed2a7f80a55206c5e56e77145691b6758030",
+  "before_inventory_sha256": "951f9420f82539d91736d165ec1ecb2a9f25b0908b3519181a1afdaff92ae6b6",
+  "after_inventory_sha256": "d4d27fdbccd842f306c0419c344a2071f82a27074966022124b2e288bfc3f001",
+  "after_plan_sha256": "28fdac2edf10d4d54496da84c09ac590fd211c44b3fff51ddf18109e48eeea58",
+  "native_retirement": {
+    "file": "specs/evidence/zellij-rc9-native-retirement-2026-11-16.json",
+    "releases_removed": 2,
+    "assets_removed": 46,
+    "remote_tags_removed": 2,
+    "remaining_rc9_assets_per_repository": 26,
+    "CodeSeal_releases_preserved": [
+      "codeseal-v1.1.0",
+      "codeseal-v1.0.4"
+    ]
+  },
+  "no_unreferenced_build_history_sweep": true,
+  "limits": [
+    "Live providers and production-domain migration remain deferred.",
+    "Passing checks do not prove zero bugs or stable 1.0 readiness."
+  ]
+}

@@ -68,3 +68,14 @@ The normal preflight subsequently passes 802 Rust and 491 engine tests; rc.9
 is published at the immutable merge. All 37 release jobs and public artifact
 comparisons pass. See [the release record](evidence/zellij-rc9-release-2026-11-15.json)
 for managed upgrades, documentation migration and retirement.
+
+
+## Publication follow-through — 2026-11-16
+
+The immutable tag is `f03f803`. All 37 release jobs, public PDF/website comparisons,
+managed channel lifecycles and actual rc.8-to-rc.9 upgrades pass. PR #192 merges
+updated guides/consumer pins after 32 CI jobs and six consumer checks pass.
+Scoped rc.8 retirement and post-cleanup inventory/HTTP checks are complete.
+See [release evidence](evidence/zellij-rc9-release-2026-11-15.json) and
+[retirement evidence](evidence/zellij-rc9-image-retirement-2026-11-16.json).
+The earlier pending statuses above describe the preparation checkpoint.
