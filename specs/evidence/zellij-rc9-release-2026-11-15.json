@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
   "candidate": "v0.2.0-rc.9",
-  "status": "rc.9 published and accepted across native, images, managed upgrades and documentation; scoped rc.8 retirement pending",
+  "status": "rc.9 published; public, channel, upgrade and documentation acceptance passed; scoped rc.8 retirement complete",
   "source": "abc556a48c56530321d2a9eecc5b73fa6935be87",
   "tag_commit": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
   "merge": {
@@ -4586,5 +4586,17 @@
         }
       ]
     }
+  },
+  "retirement": {
+    "status": "complete",
+    "deleted_releases": 2,
+    "deleted_assets": 46,
+    "deleted_remote_tags": 2,
+    "deleted_image_versions": 26,
+    "protected_manifest_nodes": 40,
+    "excluded_build_history_preserved": 3657,
+    "post_inventory_run": 43834472434,
+    "post_http_run": 43834478152,
+    "evidence": "specs/evidence/zellij-rc9-image-retirement-2026-11-16.json"
   }
 }

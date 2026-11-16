@@ -19,10 +19,20 @@ original routes/headings/images; 418 showcase cases pass without retries
 active guide, template or workflow inputs from tested `ab2377c`.
 See [release evidence](evidence/zellij-rc9-release-2026-11-15.json).
 
-Documentation merge, replacement image publication and scoped rc.8 retirement
-remain pending. Production hosting and live-provider verification remain deferred.
-Remaining print customization and installation channels follow; no zero-bug or
-1.0 claim is made.
+Documentation PR #192 merges as `6818ce9`, matching reviewed `d68f4bc`.
+Replacement static/Next publications `43832860248`/`43832864233` and both
+fresh-pull HTTP checks in `43833094546` pass. The existing development-image
+publication `43780204929` remains valid: engine code, Docker configuration,
+dependency inputs and its four public digests are unchanged. Scoped rc.8
+retirement is complete after 16 exact replacement gates: two releases,
+46 assets, two remote tags and 26 obsolete image versions removed.
+All 40 current manifest nodes, 3,657 excluded build-history versions and
+both CodeSeal releases remain intact. Fresh inventory `43834472434` and
+both post-cleanup HTTP checks in `43834478152` pass. Only rc.9 remains in
+the two Zellij release channels. See [retirement evidence](evidence/zellij-rc9-image-retirement-2026-11-16.json).
+
+Production hosting and live-provider verification stay deferred. Remaining print
+customization and installation channels follow; no zero-bug or 1.0 claim is made.
 
 ## rc.8 publication — 2026-11-15
 
