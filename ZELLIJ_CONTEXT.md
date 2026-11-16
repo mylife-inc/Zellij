@@ -22,8 +22,14 @@ six template-menu previews are visually reviewed and retained. Earlier failures,
 including corrected readiness/shutdown fixtures, remain in
 [the evidence](specs/evidence/zellij-mobile-navigation-2026-11-15.json) and
 [the contract](specs/zellij-mobile-navigation-2026-11-15.md).
-Merge and development-image publication are pending. Public rc.8, production
-hosting and deferred live-provider checks are unchanged; rc.9 remains unreleased.
+PR #189 merges as `3192014`, whose tree matches reviewed `c8d36a5`. All 13
+jobs in development-image run `43780204929` pass at the merge, publishing four
+`main` variants for amd64/arm64 and building/serving a site from the published
+default image. The first readiness probe reset; the next succeeded in the
+existing bounded loop. Four manifest digests are retained in evidence. The
+records-only follow-up changes no runtime, guide, template, test, workflow or
+image inputs from verified `a99cc94`. Public rc.8, production hosting and
+deferred live-provider checks are unchanged; rc.9 remains unreleased.
 Next: prepare rc.9 with the website templates, centered header and mobile menu,
 then continue print customization and installation channels.
 

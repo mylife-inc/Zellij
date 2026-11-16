@@ -43,8 +43,8 @@ palettes. Actual CLI website exports also open/close their direct-link mobile
 menus and retain screenshots.
 
 Native portable books retain their independent sidebar navigation. Public rc.8,
-production hosting and deferred live-provider checks are unchanged. Source CI and visual review are complete below; merge and development-image
-evidence will follow.
+production hosting and deferred live-provider checks are unchanged. Source CI, visual review, merge and development-image evidence are recorded
+below.
 
 ### First hosted pass and corrections
 
@@ -90,3 +90,17 @@ versions. Ten reviewed menu previews are retained in
 artifact IDs, log/image hashes, fixing commits and earlier unsuccessful runs.
 The final records update changes no runtime, guide, template, test or workflow
 inputs from the verified head. Public rc.8 stays unchanged; rc.9 is unreleased.
+
+## Merge and development images
+
+PR #189 merges as `3192014`, matching reviewed tree `c8d36a5`. All 13 jobs in
+`43780204929` pass at that merge. Four `main` image variants are published for
+amd64/arm64, and the published default image builds and serves a site. Its first
+startup probe reset; the next succeeded within the existing bounded readiness
+loop. Four manifest digests and the smoke-log hash are retained in evidence.
+
+The records-only follow-up changes this contract, project context and evidence;
+runtime, active guide, templates, tests, workflows and image inputs still match
+verified `a99cc94`. Public rc.8 and production hosting remain unchanged. Next is
+rc.9 preparation/publication with the website templates, centered header and
+mobile menu, followed by print customization and remaining install channels.
