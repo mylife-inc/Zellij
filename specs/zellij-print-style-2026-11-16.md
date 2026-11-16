@@ -50,3 +50,10 @@ hosted verification, visual review and merge results will be recorded below.
 No local browser, GUI, container or real LaTeX process is used. Public release,
 package channels, template archive bytes, production hosting and live-provider
 tests remain unchanged by this implementation milestone.
+
+Initial hosted run `43946520960` catches the standalone Docker recipe still
+selecting rc.9 after the native source version advances. The version-consistency
+regression fails before the engine test stage; the recipe pin is corrected to
+rc.10. The original failed/cancelled run is retained. Full local validation passes
+806 Rust tests (five existing hosted-only cases ignored), formatting and
+warnings-denied Clippy; engine build and strict/deep docs pass (59 routes).
