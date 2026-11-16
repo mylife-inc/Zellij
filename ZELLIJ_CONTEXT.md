@@ -3,6 +3,19 @@
 Last refreshed: **2026-11-15**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-15: rc.9 release preparation in progress**
+
+The user asked to continue with rc.9 publication. Baseline is `b599749`; public
+rc.8 remains unchanged while preparing versioned notes and public acceptance for
+the three website starters and shared navigation. Source/public website checks
+run on native Linux amd64/arm64, with real author-configured company branding and
+nested navigation. Public checks install verified downloaded CLI bytes and use
+the exact published image; shared identity/cleanup logic also serves Next PDFs.
+See [the preparation contract](specs/zellij-rc9-preparation-2026-11-15.md).
+Publication, managed-channel upgrades, documentation/consumer migration and
+scoped rc.8 retirement follow successful verification. Production hosting and
+live-provider checks remain deferred.
+
 **2026-11-15: mobile section navigation verified for rc.9**
 
 The approved mobile menu now shows a main list or a titled section view, with

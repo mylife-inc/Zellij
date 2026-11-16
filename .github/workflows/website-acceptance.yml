@@ -1,0 +1,92 @@
+name: Website template acceptance
+on:
+  workflow_call:
+    inputs:
+      version:
+        description: Published tag to verify; empty builds the current source
+        type: string
+        default: ''
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Published tag to verify; empty builds the selected source
+        type: string
+        required: false
+permissions:
+  contents: read
+jobs:
+  websites:
+    name: Websites (${{ matrix.runner }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      VERSION: ${{ inputs.version }}
+      RELEASE_REPOSITORY: ${{ github.repository }}
+      RELEASE_IMAGE: ghcr.io/${{ github.repository_owner }}/zellij-base
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - name: Validate published version
+        if: inputs.version != ''
+        run: >-
+          node --input-type=module -e "import { releasePolicy } from './scripts/release-policy.mjs'; releasePolicy(process.env.VERSION);"
+      - name: Check out the released source
+        if: inputs.version != ''
+        uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ env.VERSION }}
+          path: release-source
+          persist-credentials: false
+      - name: Check released website capability
+        id: capability
+        if: inputs.version != ''
+        working-directory: release-source
+        run: |
+          node scripts/package-native.mjs "$VERSION" --check-version
+          node --input-type=module -e "import fs from 'node:fs'; const available = fs.existsSync('scripts/check-website-release.mjs'); fs.appendFileSync(process.env.GITHUB_OUTPUT, 'available=' + available + '\n'); if (!available) console.log('This older release predates the website collection; native/template/image acceptance still applies.');"
+      - uses: dtolnay/rust-toolchain@stable
+        if: inputs.version == ''
+      - uses: Swatinem/rust-cache@v2
+        if: inputs.version == ''
+        with:
+          workspaces: cli
+      - run: cargo build --locked -p zellij-cli
+        if: inputs.version == ''
+        working-directory: cli
+      - run: npm ci
+        if: inputs.version == '' || steps.capability.outputs.available == 'true'
+      - run: npm run build --workspace @shebka/zellij
+        if: inputs.version == ''
+      - run: npx playwright install --with-deps chromium
+        if: inputs.version == '' || steps.capability.outputs.available == 'true'
+      - name: Build the matching website engine
+        if: inputs.version == ''
+        run: docker build -f docker/base.Dockerfile -t zellij-websites-ci .
+      - name: Build and inspect website templates and navigation
+        if: inputs.version == ''
+        env:
+          DOCKER_CONTEXT: default
+          ZELLIJ_IMAGE: zellij-websites-ci
+        run: node scripts/check-website-release.mjs
+      - name: Verify public CLI and website templates
+        if: inputs.version != '' && steps.capability.outputs.available == 'true'
+        working-directory: release-source
+        env:
+          DOCKER_CONTEXT: default
+        run: node ../scripts/check-published-websites.mjs
+      - uses: actions/upload-artifact@v7
+        if: always() && (inputs.version == '' || steps.capability.outputs.available == 'true')
+        with:
+          name: websites-${{ matrix.runner }}
+          path: ${{ inputs.version != '' && 'release-source/test-results/websites' || 'test-results/websites' }}
+          if-no-files-found: warn
+          retention-days: 14
