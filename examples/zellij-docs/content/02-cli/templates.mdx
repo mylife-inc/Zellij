@@ -3,10 +3,11 @@ title: zel templates and create
 description: Choose a versioned starter and create an editable documentation or book site.
 ---
 
-<Callout type="info" title="Book starter update for candidate 0.2.0-rc.8">
-Candidate rc.8 includes `book-classic@0.2.0`, with a shared book manifest and
+<Callout type="info" title="Eight starters in candidate 0.2.0-rc.9">
+Candidate rc.9 includes `book-classic@0.2.0`, with a shared book manifest and
 optional LuaLaTeX PDF, plus `book-technical@0.1.0` and `book-study@0.1.0`.
-Product templates remain at 0.1.0. Templates are bundled
+Three new hosted website starters join the catalog below. Product and website
+templates remain at 0.1.0. Templates are bundled
 on all six native platforms; creation and web-only portable builds work offline.
 </Callout>
 
@@ -25,6 +26,9 @@ zel templates --json
 | `book-classic` | Portable | Yes | Generated title page and contents, cover, preface, part, two chapters and appendix; optional PDF. |
 | `book-technical` | Portable | Yes | Blue rules, mathematical prose, numbered equations and proofs; coordinated web/PDF layouts. |
 | `book-study` | Portable | Yes | Warm typography, passages, commentary and questions; coordinated web/PDF layouts. |
+| `product-launch` | Hosted | No | Product storytelling with large local artwork, gradient reveals and a media accordion. |
+| `software-platform` | Hosted | No | Dark software interface, connected workflow and guide pages. |
+| `creative-studio` | Hosted | No | Editorial studio portfolio with local identity studies and serif typography. |
 
 Book-classic 0.2.0 requires CLI/engine rc.6 or later. Its [book manifest](/cli/books)
 drives reading order, metadata and both web and print. PDF is disabled by default:
@@ -32,16 +36,16 @@ normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
 LuaLaTeX Linux container runtime. The classic print design supports English/LTR;
-numeric citations, glossary and subject index are also supported in rc.8.
+numeric citations, glossary and subject index are also supported in rc.9.
 Multilingual print remains planned. Technical/study editions are included in
-rc.8, as described below.
+rc.9, as described below.
 Previously published book-classic 0.1.0 archives remain unchanged.
 
 <div id="technical-and-study-editions-rc8-source" className="zellij-legacy-anchor" />
 
 ## Technical and study editions
 
-Candidate rc.8 adds two starters, each at template version 0.1.0. These need
+Technical and study starters each use template version 0.1.0. They need
 CLI/engine 0.2.0-rc.8 or later.
 
 ```sh
@@ -61,13 +65,15 @@ Set `book.edition` to `classic`, `technical` or `study` to change the coordinate
 web/PDF design without rewriting the content. [Book editions](/cli/books#coordinated-editions)
 explains the scope. The original three template archives remain unchanged.
 
-## Website collection — rc.9 source
+<div id="website-collection--rc9-source" className="zellij-legacy-anchor" />
 
-<Callout type="info" title="Implemented in source; not yet in the published rc.8 catalog">
-The next candidate adds three complete website starters. They require CLI/engine rc.9,
-including clearer inverted bento headings and improved Porcelain text contrast. Until rc.9 is
-released, use a source-built CLI and matching engine.
-The published rc.8 binary's bundled catalog still contains the five starters above.
+## Website collection
+
+<Callout type="info" title="Included in published candidate 0.2.0-rc.9">
+Three complete website starters require CLI/engine rc.9 or later, including
+clearer inverted bento headings, improved Porcelain text contrast, centered
+navigation and mobile section views. The published catalog contains all eight
+starters; the five older archives retain their original versions and bytes.
 </Callout>
 
 | Template | Design direction | Included pages |
@@ -76,7 +82,7 @@ The published rc.8 binary's bundled catalog still contains the five starters abo
 | `software-platform` | Dark software interface, clear product story and connected workflow | Product, Workflow, customization guide |
 | `creative-studio` | Expressive serif typography, original identity studies and editorial spacing | Studio, Selected work, customization guide |
 
-With an rc.9 source build:
+With the published rc.9 CLI:
 
 ```sh
 zel create my-product -t product-launch --name "My product"

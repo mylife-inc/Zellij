@@ -57,3 +57,14 @@ The final records-only update changes no implementation, workflow, template or
 runtime inputs from tested `abc556a`. The older-release capability dispatch,
 normal release preflight, publication, channel migration and scoped retirement
 remain pending.
+
+PR #191 merges as `f03f803`, whose tree matches reviewed `7071bb9`.
+The actual rc.8 compatibility dispatch `43824360532` passes both architectures,
+explicitly skipping the unavailable website capability. This does not claim
+that rc.8 includes the new website collection. Normal release preflight follows
+at the merge; release publication and retirement results are recorded separately.
+
+The normal preflight subsequently passes 802 Rust and 491 engine tests; rc.9
+is published at the immutable merge. All 37 release jobs and public artifact
+comparisons pass. See [the release record](evidence/zellij-rc9-release-2026-11-15.json)
+for managed upgrades, documentation migration and retirement.

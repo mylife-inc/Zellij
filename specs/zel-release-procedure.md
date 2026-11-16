@@ -1,5 +1,17 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-16: v0.2.0-rc.9 is publicly verified.** The immutable source tag is
+`f03f803`; release run `43825155269` passes all 37 jobs. Both repositories have
+26 matching assets, including eight template archives. Source CI passes 32 jobs,
+and normal preflight passes 802 Rust and 491 engine tests. Public acceptance
+verifies six native installations, all image variants on both Linux architectures,
+24 PDFs/224 page captures and 170 website/navigation captures. Managed upgrades,
+documentation migration and retirement status are tracked in
+[the rc.9 record](evidence/zellij-rc9-release-2026-11-15.json).
+Earlier release checkpoints below remain historical; refresh GitHub state before
+using their versions or run IDs.
+
+
 **2026-11-14: v0.2.0-rc.7 is published** at immutable tag/merge
 `f3d55f6`. All 33 jobs in release `43646140679` pass. Both release repositories
 have 21 byte-identical assets; all three template archives retain their previous
@@ -188,7 +200,7 @@ real CLI migration. See [Scoop history](zel-scoop-distribution-2026-11-13.md).
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
 4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.7` (substitute the actual agreed candidate). The helper
+   `zrelease v0.2.0-rc.9` (substitute the actual agreed candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -203,7 +215,7 @@ real CLI migration. See [Scoop history](zel-scoop-distribution-2026-11-13.md).
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The rc.7 notes are specs/releases/v0.2.0-rc.7.md;
+in both release pages. The rc.9 notes are specs/releases/v0.2.0-rc.9.md;
 the earlier rc.2 publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
@@ -223,7 +235,7 @@ the latest acceptance code, select the Published release acceptance workflow on
 `main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.7 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.9 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,
@@ -240,6 +252,21 @@ public verification, and never rewrite a previously published identity.
 This performs public reads and temporary local installs on the runners. It does
 not rebuild, republish or move a release tag. Record both the source tag and the
 acceptance workflow revision when reporting this verification.
+
+Public acceptance also runs the released Next-image PDF and website drivers
+when that tagged source supplies them. The shared public-engine helper installs
+checksum-verified public CLI bytes, pulls the exact image anonymously, verifies
+its architecture/digest and retains an installation receipt. It never rebuilds
+the CLI or engine. Both drivers run on native Linux amd64/arm64.
+
+Website acceptance covers the three website starters and a separate authored
+company/nested-menu fixture: light/dark, desktop/phone, centered header,
+no-JavaScript content, Back/Close focus, reduced motion and external new tabs.
+Compare public captures against reviewed source captures on the same architecture.
+Older tags explicitly skip a driver they do not contain; that skip does not imply
+support for its feature. The remaining native, template and image checks remain
+required. After active guides are verified and merged, point release-note links
+to their exact documentation commit without changing assets or release tags.
 
 ## Stable promotion
 

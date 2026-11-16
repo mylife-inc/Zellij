@@ -1,0 +1,4349 @@
+{
+  "date": "2026-11-15",
+  "candidate": "v0.2.0-rc.9",
+  "status": "rc.9 public downloads, managed lifecycles/upgrades, documentation CI and six consumer builds accepted; documentation merge, replacement images and rc.8 retirement pending",
+  "source": "abc556a48c56530321d2a9eecc5b73fa6935be87",
+  "tag_commit": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
+  "merge": {
+    "headRefOid": "7071bb959dd26bcc06f9adcde488a990f4c9ba6d",
+    "mergeCommit": {
+      "oid": "f03f80319b097a1f8cadd16830c17b42d914c2a3"
+    },
+    "mergedAt": "2026-11-16T07:30:27Z",
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/191"
+  },
+  "preflight": {
+    "rust_passed": 802,
+    "existing_hosted_only_ignored": 5,
+    "engine_passed": 491,
+    "typechecks_schema_format_clippy_passed": true,
+    "log_sha256": "3252e04c7c8260ea639995b287c8c40961e91023adaebe6ab88492856c4b52b5"
+  },
+  "limits": [
+    "Live providers and production-domain migration deferred.",
+    "Print customization, multilingual/RTL printing and further installation channels remain work.",
+    "No zero-bug or stable 1.0 claim."
+  ],
+  "dispatch": {
+    "run_id": 43825155269,
+    "event": "workflow_dispatch",
+    "reason": "The reviewed merge commit skips automatic CI; release is explicitly dispatched on the immutable tag.",
+    "head": "f03f80319b097a1f8cadd16830c17b42d914c2a3"
+  },
+  "images": [
+    {
+      "job_id": 133159681331,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-all",
+      "digest": "sha256:62d76f8c3596f2adf9c02298854dbecf8a81d7f4196621f7a9cdd15eef17211b",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "2052fb9ab25a851b0504e5126358fa49c18fb96969b26169a0bbe652ac440100",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681332,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-diagrams",
+      "digest": "sha256:42313d4c4eac834c5ae88af49f318ed69544b150e54432bfb4ca826bc3b25da5",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "ea00dfb9838c5accba0ce91f0fc65200f089e57ad3baf88a3520f8c467220658",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681344,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9-maths",
+      "digest": "sha256:3fa96bf1cd174df813c0cc59f56f62c9dcb77175592535520199c9295bffb74d",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "fecd0d53b68f0efd46036c8891a75cce044c3b6467d054bf005e3e981633a44f",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    },
+    {
+      "job_id": 133159681390,
+      "tag": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9",
+      "digest": "sha256:a7c582581e0bea44d8b9acf75da9664f5ccb84f66e49d53f80a7be8383835ed1",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "log_sha256": "90c1e4a913ac07b799ff793d90c35a6292547b8c6276f0b320e8e8a901529678",
+      "anonymous_registry_manifest_digest_and_platforms_verified": true
+    }
+  ],
+  "published_default_image_smoke": {
+    "build_and_http": "passed",
+    "initial_probe": "Connection reset before readiness; the next bounded probe served successfully."
+  },
+  "public_assets": {
+    "source": {
+      "repository": "mylife-inc/Zellij",
+      "tag": "v0.2.0-rc.9",
+      "id": 446742217,
+      "url": "https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.9",
+      "assets": [
+        {
+          "id": 753969447,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 753969436,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 753969456,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:2b15e9b7bf77e94aa7600ba40867ba5dbafb9b105deefbdc32ebe3b2a8573f2b"
+        },
+        {
+          "id": 753969449,
+          "name": "template-book-classic-0.2.0.tar.gz",
+          "size": 4394,
+          "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+        },
+        {
+          "id": 753969438,
+          "name": "template-book-study-0.1.0.tar.gz",
+          "size": 3845,
+          "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+        },
+        {
+          "id": 753969451,
+          "name": "template-book-technical-0.1.0.tar.gz",
+          "size": 3959,
+          "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+        },
+        {
+          "id": 753969437,
+          "name": "template-creative-studio-0.1.0.tar.gz",
+          "size": 5768,
+          "digest": "sha256:efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+        },
+        {
+          "id": 753969454,
+          "name": "template-product-docs-0.1.0.tar.gz",
+          "size": 1297,
+          "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+        },
+        {
+          "id": 753969457,
+          "name": "template-product-launch-0.1.0.tar.gz",
+          "size": 5979,
+          "digest": "sha256:8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+        },
+        {
+          "id": 753969452,
+          "name": "template-product-studio-0.1.0.tar.gz",
+          "size": 2454,
+          "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+        },
+        {
+          "id": 753969453,
+          "name": "template-software-platform-0.1.0.tar.gz",
+          "size": 5870,
+          "digest": "sha256:2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+        },
+        {
+          "id": 753969434,
+          "name": "templates-catalog.json",
+          "size": 8316,
+          "digest": "sha256:29fcd6025871d6c591e2567c5780a318db726d18b2e3e7825e1e4b6598681b6c"
+        },
+        {
+          "id": 753969441,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz",
+          "size": 7241099,
+          "digest": "sha256:c1a4641f582842463174d4edf6d28d1e5d4a18b1aec0f4ddf833fe067bc93a8c"
+        },
+        {
+          "id": 753969432,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:84e2e4b8c2d69f371c83e15fd802bf068f77d6847dd7f82b12e9c16389f84e5f"
+        },
+        {
+          "id": 753969440,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip",
+          "size": 7625619,
+          "digest": "sha256:789f77523900064d0d7c430c2c3cf8720fbdcce366227212cf81ff661c20f06b"
+        },
+        {
+          "id": 753969443,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:2c30f4d596368309caa9d2c1714137392885ad2fc78285d3c997f253c8e4d3b7"
+        },
+        {
+          "id": 753969444,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7503357,
+          "digest": "sha256:f6c1377a0f98b2630dd64aebcf758dde71c9645d42664ff5ce9f6d54bbf234eb"
+        },
+        {
+          "id": 753969448,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:bcb1a93f174837f7e7aa6d6d56f6dcaf3fbca2813e93fe27f86a895ae53e282d"
+        },
+        {
+          "id": 753969458,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz",
+          "size": 7368522,
+          "digest": "sha256:50929f237131d666c24c0c0503db82f16fd81c0c351bdce37f9b2dccc3a71cf0"
+        },
+        {
+          "id": 753969455,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:db4de448cb37c899d82078663538ed1be05c490db0d5b1b702d77cd8661971fc"
+        },
+        {
+          "id": 753969445,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip",
+          "size": 7793109,
+          "digest": "sha256:c82c759474abbdf654ca16673d053dc58f683f2235e38b84b6adfa1898fe6f7e"
+        },
+        {
+          "id": 753969450,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:a77d61e7051f4fe989f77422007bef58b6053e3e2c176b62c24e9eb9433030d5"
+        },
+        {
+          "id": 753969439,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7642559,
+          "digest": "sha256:4f1f88f92423a7bef562a40f3af0cd43aa8d6baf99377a6c7223690ff3e56e4b"
+        },
+        {
+          "id": 753969433,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:e94c239dff9f09bec3c0ae32a9c7ea19c4f3e13ef2f278b2300f474e9d3c69fe"
+        },
+        {
+          "id": 753969435,
+          "name": "zel.json",
+          "size": 1446,
+          "digest": "sha256:44fcc18eff8609f2a90b75e694699f12e776fb7a845bee22243851ccd17da3cb"
+        },
+        {
+          "id": 753969446,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:f97cfe8627373388dd93f43290b14ff98575e8322b29e5a9fd76368ecb9bacd5"
+        }
+      ]
+    },
+    "mirror": {
+      "repository": "mylife-inc/releases",
+      "tag": "zellij-v0.2.0-rc.9",
+      "id": 446742284,
+      "url": "https://github.com/mylife-inc/releases/releases/tag/zellij-v0.2.0-rc.9",
+      "assets": [
+        {
+          "id": 753969699,
+          "name": "install.ps1",
+          "size": 7031,
+          "digest": "sha256:f19c5f85f6e549f17f53edbba4f4dfd4718b1c99e3b68b1c0302ab4825102dcf"
+        },
+        {
+          "id": 753969707,
+          "name": "install.sh",
+          "size": 13204,
+          "digest": "sha256:1aa58eedf3cbf21898e444b36cfc7943db29ee1996641185c40b2c47efda78d5"
+        },
+        {
+          "id": 753969704,
+          "name": "SHA256SUMS",
+          "size": 679,
+          "digest": "sha256:2b15e9b7bf77e94aa7600ba40867ba5dbafb9b105deefbdc32ebe3b2a8573f2b"
+        },
+        {
+          "id": 753969693,
+          "name": "template-book-classic-0.2.0.tar.gz",
+          "size": 4394,
+          "digest": "sha256:70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+        },
+        {
+          "id": 753969706,
+          "name": "template-book-study-0.1.0.tar.gz",
+          "size": 3845,
+          "digest": "sha256:0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+        },
+        {
+          "id": 753969696,
+          "name": "template-book-technical-0.1.0.tar.gz",
+          "size": 3959,
+          "digest": "sha256:8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+        },
+        {
+          "id": 753969716,
+          "name": "template-creative-studio-0.1.0.tar.gz",
+          "size": 5768,
+          "digest": "sha256:efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+        },
+        {
+          "id": 753969686,
+          "name": "template-product-docs-0.1.0.tar.gz",
+          "size": 1297,
+          "digest": "sha256:f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+        },
+        {
+          "id": 753969705,
+          "name": "template-product-launch-0.1.0.tar.gz",
+          "size": 5979,
+          "digest": "sha256:8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+        },
+        {
+          "id": 753969700,
+          "name": "template-product-studio-0.1.0.tar.gz",
+          "size": 2454,
+          "digest": "sha256:c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+        },
+        {
+          "id": 753969698,
+          "name": "template-software-platform-0.1.0.tar.gz",
+          "size": 5870,
+          "digest": "sha256:2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+        },
+        {
+          "id": 753969701,
+          "name": "templates-catalog.json",
+          "size": 8316,
+          "digest": "sha256:29fcd6025871d6c591e2567c5780a318db726d18b2e3e7825e1e4b6598681b6c"
+        },
+        {
+          "id": 753969690,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz",
+          "size": 7241099,
+          "digest": "sha256:c1a4641f582842463174d4edf6d28d1e5d4a18b1aec0f4ddf833fe067bc93a8c"
+        },
+        {
+          "id": 753969685,
+          "name": "zel-v0.2.0-rc.9-aarch64-apple-darwin.tar.gz.sha256",
+          "size": 110,
+          "digest": "sha256:84e2e4b8c2d69f371c83e15fd802bf068f77d6847dd7f82b12e9c16389f84e5f"
+        },
+        {
+          "id": 753969697,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip",
+          "size": 7625619,
+          "digest": "sha256:789f77523900064d0d7c430c2c3cf8720fbdcce366227212cf81ff661c20f06b"
+        },
+        {
+          "id": 753969684,
+          "name": "zel-v0.2.0-rc.9-aarch64-pc-windows-msvc.zip.sha256",
+          "size": 110,
+          "digest": "sha256:2c30f4d596368309caa9d2c1714137392885ad2fc78285d3c997f253c8e4d3b7"
+        },
+        {
+          "id": 753969691,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz",
+          "size": 7503357,
+          "digest": "sha256:f6c1377a0f98b2630dd64aebcf758dde71c9645d42664ff5ce9f6d54bbf234eb"
+        },
+        {
+          "id": 753969692,
+          "name": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 115,
+          "digest": "sha256:bcb1a93f174837f7e7aa6d6d56f6dcaf3fbca2813e93fe27f86a895ae53e282d"
+        },
+        {
+          "id": 753969683,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz",
+          "size": 7368522,
+          "digest": "sha256:50929f237131d666c24c0c0503db82f16fd81c0c351bdce37f9b2dccc3a71cf0"
+        },
+        {
+          "id": 753969708,
+          "name": "zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz.sha256",
+          "size": 109,
+          "digest": "sha256:db4de448cb37c899d82078663538ed1be05c490db0d5b1b702d77cd8661971fc"
+        },
+        {
+          "id": 753969694,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip",
+          "size": 7793109,
+          "digest": "sha256:c82c759474abbdf654ca16673d053dc58f683f2235e38b84b6adfa1898fe6f7e"
+        },
+        {
+          "id": 753969687,
+          "name": "zel-v0.2.0-rc.9-x86_64-pc-windows-msvc.zip.sha256",
+          "size": 109,
+          "digest": "sha256:a77d61e7051f4fe989f77422007bef58b6053e3e2c176b62c24e9eb9433030d5"
+        },
+        {
+          "id": 753969695,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz",
+          "size": 7642559,
+          "digest": "sha256:4f1f88f92423a7bef562a40f3af0cd43aa8d6baf99377a6c7223690ff3e56e4b"
+        },
+        {
+          "id": 753969689,
+          "name": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz.sha256",
+          "size": 114,
+          "digest": "sha256:e94c239dff9f09bec3c0ae32a9c7ea19c4f3e13ef2f278b2300f474e9d3c69fe"
+        },
+        {
+          "id": 753969702,
+          "name": "zel.json",
+          "size": 1446,
+          "digest": "sha256:44fcc18eff8609f2a90b75e694699f12e776fb7a845bee22243851ccd17da3cb"
+        },
+        {
+          "id": 753969688,
+          "name": "zel.rb",
+          "size": 2310,
+          "digest": "sha256:f97cfe8627373388dd93f43290b14ff98575e8322b29e5a9fd76368ecb9bacd5"
+        }
+      ]
+    },
+    "all_asset_bytes_match": true,
+    "previous_releases_preserved": true,
+    "eight_archives_match_reviewed_packaging": true,
+    "five_previously_published_archives_unchanged": true,
+    "templates": {
+      "schema": 1,
+      "release": "v0.2.0-rc.9",
+      "templates": [
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A portable handbook with clear navigation and offline search.",
+            "id": "product-docs",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.5",
+            "minimum-engine": "0.2.0-rc.5",
+            "outputs": [
+              "web",
+              "file"
+            ],
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml",
+              "content/index.md"
+            ],
+            "title": "Product documentation",
+            "variables": {
+              "title": "Your product"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-docs-0.1.0.tar.gz",
+            "sha256": "f183fc035b1300dc8799592d008341162b5a1361d2b0f7402fb11f5e3dfdfd9f"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/product.svg"
+              }
+            ],
+            "description": "An editorial product landing page and guide using existing Cupertino sections.",
+            "id": "product-studio",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.5",
+            "minimum-engine": "0.2.0-rc.5",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/product.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml",
+              "content/sections/home/hero.yaml"
+            ],
+            "title": "Product studio",
+            "variables": {
+              "title": "Your next idea"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-studio-0.1.0.tar.gz",
+            "sha256": "c3db40dc9ece1797454574ee27e5775e63b068d97f6c30a7fa03c67bd429c375"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/wave.png"
+              }
+            ],
+            "description": "A complete portable manuscript with a cover, preface, part, chapters and appendix; optional LuaLaTeX PDF.",
+            "id": "book-classic",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.6",
+            "minimum-engine": "0.2.0-rc.6",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "preview": "content/assets/wave.png",
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Classic book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "A question worth following"
+            },
+            "version": "0.2.0"
+          },
+          "archive": {
+            "url": "template-book-classic-0.2.0.tar.gz",
+            "sha256": "70f979559f1c3a0a45e09d9f9d6c2fd87903911d92a9b446bf88e146ff62dbfb"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A mathematics handbook with numbered equations, proofs, references and a subject index. Optional LuaLaTeX PDF.",
+            "id": "book-technical",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.8",
+            "minimum-engine": "0.2.0-rc.8",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Technical book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "The shape of a proof"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-book-technical-0.1.0.tar.gz",
+            "sha256": "8d350a0072bfb36f44edfb3f10f5961f3edf7d715eeb3641a2bc2bb1e4fbcf26"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [],
+            "description": "A reflective reading edition with original passages, commentary, questions, footnotes and a glossary. Optional LuaLaTeX PDF.",
+            "id": "book-study",
+            "kind": "book",
+            "minimum-cli": "0.2.0-rc.8",
+            "minimum-engine": "0.2.0-rc.8",
+            "outputs": [
+              "web",
+              "file",
+              "pdf"
+            ],
+            "print": "lualatex",
+            "renderer": "portable",
+            "schema": 1,
+            "substitute": [
+              "zel.yaml"
+            ],
+            "title": "Study book edition",
+            "variables": {
+              "author": "Your name",
+              "title": "A practice of attention"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-book-study-0.1.0.tar.gz",
+            "sha256": "0527f6e3c56576692487d2083585c4a40747b2e4f1b96aef5eda11da8b72c90f"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/speaker.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/detail.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/room.svg"
+              }
+            ],
+            "description": "A sculptural product launch with cinematic imagery, material details and a quiet editorial rhythm.",
+            "id": "product-launch",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/speaker.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Product launch",
+            "variables": {
+              "title": "Forma One"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-product-launch-0.1.0.tar.gz",
+            "sha256": "8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/workspace.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/workflow.svg"
+              }
+            ],
+            "description": "A focused software website with a product interface, connected workflows and a practical guide.",
+            "id": "software-platform",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/workspace.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Software platform",
+            "variables": {
+              "title": "Relay"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-software-platform-0.1.0.tar.gz",
+            "sha256": "2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"
+          }
+        },
+        {
+          "manifest": {
+            "assets": [
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/identity.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/field.svg"
+              },
+              {
+                "license": "LicenseRef-Zellij",
+                "path": "content/assets/archive.svg"
+              }
+            ],
+            "description": "An editorial studio website with expressive typography, original project studies and a considered approach.",
+            "id": "creative-studio",
+            "kind": "site",
+            "minimum-cli": "0.2.0-rc.9",
+            "minimum-engine": "0.2.0-rc.9",
+            "outputs": [
+              "web"
+            ],
+            "preview": "content/assets/identity.svg",
+            "renderer": "hosted",
+            "schema": 1,
+            "substitute": [
+              "content/site.yaml",
+              "content/pages.yaml"
+            ],
+            "title": "Creative studio",
+            "variables": {
+              "title": "Atelier North"
+            },
+            "version": "0.1.0"
+          },
+          "archive": {
+            "url": "template-creative-studio-0.1.0.tar.gz",
+            "sha256": "efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"
+          }
+        }
+      ]
+    }
+  },
+  "release": {
+    "run_id": 43825155269,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43825155269",
+    "attempt": 1,
+    "head": "f03f80319b097a1f8cadd16830c17b42d914c2a3",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 133157136125,
+        "name": "Verify",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913582,
+        "name": "Documentation site",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913657,
+        "name": "Image none \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913666,
+        "name": "Image maths \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913668,
+        "name": "Image none \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913701,
+        "name": "Image diagrams \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913708,
+        "name": "Image maths \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913740,
+        "name": "Image all \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913763,
+        "name": "Image diagrams \u00b7 amd64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913765,
+        "name": "Image all \u00b7 arm64",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913777,
+        "name": "binaries / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913822,
+        "name": "binaries / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913848,
+        "name": "binaries / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913874,
+        "name": "binaries / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913905,
+        "name": "binaries / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133158913924,
+        "name": "binaries / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133159681331,
+        "name": "Publish image all",
+        "conclusion": "success"
+      },
+      {
+        "id": 133159681332,
+        "name": "Publish image diagrams",
+        "conclusion": "success"
+      },
+      {
+        "id": 133159681344,
+        "name": "Publish image maths",
+        "conclusion": "success"
+      },
+      {
+        "id": 133159681390,
+        "name": "Publish image none",
+        "conclusion": "success"
+      },
+      {
+        "id": 133161969411,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133161969457,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133161969479,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133161969520,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163785885,
+        "name": "Publish the release",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942515,
+        "name": "Verify published artifacts / Published images (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942558,
+        "name": "Verify published artifacts / Published images (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942590,
+        "name": "Verify published artifacts / Published install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942610,
+        "name": "Verify published artifacts / Published install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942633,
+        "name": "Verify published artifacts / Published install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942653,
+        "name": "Verify published artifacts / Published install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942660,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942664,
+        "name": "Verify published artifacts / Published install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942671,
+        "name": "Verify published artifacts / Published install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942771,
+        "name": "Verify published artifacts / Published Next PDF / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163942780,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133163943032,
+        "name": "Verify published artifacts / Published websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "production_docs_deploy": "skipped by prerelease policy",
+  "documentation_validation": {
+    "strict_deep_routes": 59,
+    "examples": 25,
+    "log_sha256": "e6adf1d30d7c345fd823b86b585bd521109ab3f57832c9c075b58c4a2e887d0e",
+    "generated_consumer_workflows_match_cli": true,
+    "actionlint": true,
+    "website_heading_compatibility_anchor": "website-collection--rc9-source",
+    "initial_attempt": {
+      "reason": "Fresh documentation worktree had no generated engine bundle; built the unchanged engine before the successful deep check.",
+      "log_sha256": "c8828ddbe851ecaac4b81da1531f7ecbcd4f953df623a17e9e3b469d81a6318a",
+      "build_log_sha256": "fd7c2144fb1eccc846754e437a3fcd358120587f11b48d0e26025132708267d0"
+    },
+    "engine_log_sha256": "075e55ad65a27c3c91221a50f63ab2f1dafc29045cda970eb2dec385ade2c35d",
+    "showcase_log_sha256": "d16fa16a57455c1a5da2e8d29cd3fb24465f570fba0f9f03eb52a168cc309bab",
+    "showcase_passed": 418,
+    "showcase_conditional_skips": 140,
+    "test_retries": 0,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0
+  },
+  "standalone_upgrade": {
+    "from": "0.2.0-rc.8",
+    "to": "0.2.0-rc.9",
+    "target": "x86_64-apple-darwin",
+    "check_output": "Installed zel 0.2.0-rc.8; selected release 0.2.0-rc.9 (x86_64-apple-darwin)\nUpgrade available; no files changed.\n",
+    "upgrade_output": "Installed zel 0.2.0-rc.8; selected release 0.2.0-rc.9 (x86_64-apple-darwin)\nDownloading verified release archive zel-v0.2.0-rc.9-x86_64-apple-darwin.tar.gz\nUpgraded /private/tmp/zellij-rc9-standalone-upgrade/bin/zel to zel 0.2.0-rc.9.\n",
+    "check_preserved_binary": true,
+    "binary_sha256": "ff3987250ba86376330627d399167912da79bd435bd8726c8b8af29348f566fc",
+    "matches_verified_public_archive": true,
+    "portable_create_check_build": "passed",
+    "scope": "isolated temporary installation; normal user CLI unchanged"
+  },
+  "template_ledger": {
+    "existing_identities_unchanged": 6,
+    "new_identities": 3,
+    "current_published_archives": 8
+  },
+  "last_verified_date": "2026-11-16",
+  "public_pdf": {
+    "pdfs": 24,
+    "captures": 224,
+    "comparison": "Decoded RGBA pixels, dimensions, extracted text, receipts, revisions and embedded fonts; PDF binary identity is not claimed.",
+    "records": [
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "1d4b951371338c5737773972ad4fb846749648061a0330a5947722a583f25684",
+          "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "1d4b951371338c5737773972ad4fb846749648061a0330a5947722a583f25684",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "03496b08b600676b2523eabb974f5ba6d30d6dfd3dd4429e6d173b2524f84b52",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "03496b08b600676b2523eabb974f5ba6d30d6dfd3dd4429e6d173b2524f84b52",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "ae37c49594de549ccfe51a6011532fe72e0fe022e9ad65d94079a98f39c29bff",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "ae37c49594de549ccfe51a6011532fe72e0fe022e9ad65d94079a98f39c29bff",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "8726970ea3d43ac06af39c51707f996ce58cac41d0d657248c986e59b1c87e21",
+          "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "8726970ea3d43ac06af39c51707f996ce58cac41d0d657248c986e59b1c87e21",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "13127f694d19bf886c5c4bf857ce304dfe3c889a290d54cdc93baf0e60ce3261",
+          "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "13127f694d19bf886c5c4bf857ce304dfe3c889a290d54cdc93baf0e60ce3261",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "publication/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "bdcae9c41f00e8281327c67578fa0c6644e5956f4f839ec88589c96275189b15",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "bdcae9c41f00e8281327c67578fa0c6644e5956f4f839ec88589c96275189b15",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "106605d0937628f93e67a75785ef97e1d7c88147af57796ee5fbda07d5fb7e96",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 10,
+            "paper": "letter"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "106605d0937628f93e67a75785ef97e1d7c88147af57796ee5fbda07d5fb7e96",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "4155f515efaf890fe70eb8071e2357c3a67c4a23cc5a028ea224ec35fa5cfe45",
+          "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "4155f515efaf890fe70eb8071e2357c3a67c4a23cc5a028ea224ec35fa5cfe45",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "f27ce9aa8aac7738f1692f498fa3055e2b2ab5f536422fa65ce6e9ef7879e114",
+          "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "f27ce9aa8aac7738f1692f498fa3055e2b2ab5f536422fa65ce6e9ef7879e114",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "1c8585ec9393ea231a2cc36f2a62387cadfd7b5205685623400a4ff952cb0a4b",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 12,
+            "paper": "a4"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "1c8585ec9393ea231a2cc36f2a62387cadfd7b5205685623400a4ff952cb0a4b",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-1.png",
+        "png_sha256": "a89fd1c334e54c27eaf6ccda6e08c66608cb876350098e10bc9570e9e539929f",
+        "rgba_sha256": "c0cac6759a0aa26afdbb2bf459681989b6cdcb9688d8660e07766c907d88fc7e",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-2.png",
+        "png_sha256": "96807a81bae598ea1c4efd26af152eca4e1940365d43270cfcd55cd4f8892e51",
+        "rgba_sha256": "e73ed30d40a59e63338ce2264b59b169eb1e4d271c5eaf901ef37c5753856753",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-3.png",
+        "png_sha256": "2facd03600dfd62c78cd0dc306e7ca857d0d4b616f1755a044255f3ceb4d9359",
+        "rgba_sha256": "f228ccdc3814913384df79947afd5a84559c88dc247de21f2aa12c221b71905b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-4.png",
+        "png_sha256": "48b8b758be38627306cfde1d0ac53419e07383bc026fec3736a969206dfc5941",
+        "rgba_sha256": "902821101995290db30e7d4d7acfc762f35ef458ea4b5d1edb9bc424af569e78",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-5.png",
+        "png_sha256": "130e511548385f3db8e8403638a9cdac692a1ce5857560f19a04dab6ac171f4f",
+        "rgba_sha256": "e49cba3bf45ce6e15bbeab6989d74fd3584ce6e53280cb01201ba5b501bf15ae",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-6.png",
+        "png_sha256": "26e414bcdf0475a6bd1ade6d5bce7b70ec4e0ba32843f8115b4bb240c27b4cb6",
+        "rgba_sha256": "bd9ae667c223047340f0f528c9d12ade8613cfeb6d03a881f9c36c30ef645025",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-7.png",
+        "png_sha256": "7698c9e2a805c0e8a46892fd06a822caf2da26c53620fe987a8533d9940c2b07",
+        "rgba_sha256": "6ee359d56cc775371fc29f5ffe5de33c800f09286a6d02249f97cb71846d1e3d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "page-8.png",
+        "png_sha256": "0faf0930b3150442685a35c303dff2dbdc428c91bf6629420d2ab7c6f64a77b6",
+        "rgba_sha256": "66e1db8160a63eb7ab386ef0f1899e51f6f0b8f275e57b569ea7e9fb180f0c1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-10.png",
+        "png_sha256": "44305d384ea13454fb2734012e8b25c59a0788d6559cd929bf7b11d8b3bbb742",
+        "rgba_sha256": "8e5ae2fe67d384c087e9556a614dc5c0cdf65131310af2883c0e6cdd2e52ee01",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-11.png",
+        "png_sha256": "d50e3fe64cbe7306832d780f36590892e844a6dfd9dffa56c52f3c94540b96b7",
+        "rgba_sha256": "a34e25ab1f95934ec3f91d2f16a6484d4b19468d4eb7236e808b8def0e552ec3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-12.png",
+        "png_sha256": "06d782b41d3c9553d40bb2e9c3dd075d8afe6be78eafc72ec86c231c6843a60b",
+        "rgba_sha256": "e281329482aa93e0b9840411a984521da66f0390395117197f2f46c94d8c1879",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-2.png",
+        "png_sha256": "f9f5e502abd8366ab37059ef2f68f31920a742f3e819ac9a75f29233a7391736",
+        "rgba_sha256": "d5d56870c4f8622a1b29e8ba529b49841387a6feb703c5f3e58ec8cfd3a7e145",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-3.png",
+        "png_sha256": "c7e00a9e8c2ad9cf060fb261b0e73e6ef0b7b1cc8fb56a1c7510fa7325871558",
+        "rgba_sha256": "7df424893b210c1fd531140f0ce9c84b557ced2a46164d06f89747381fcdd3c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-4.png",
+        "png_sha256": "a8b33a411f50a52a7d86f0edf7b1bc187272bec8a2e1d30dac6bd618a697a285",
+        "rgba_sha256": "75ad2e32883a0fd3479d63799ffb3f072943f7f2ed893f6a43547c1c5e62cfde",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-6.png",
+        "png_sha256": "031d266f26125c41f172d8df0c12643527166b6b46dabbd5086d1e66d20f7480",
+        "rgba_sha256": "f50b727c866e791dde055e2c237620e0c570aa4e13d543ec2edaeba7d6e84feb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-7.png",
+        "png_sha256": "078b3df7ddc1419dd704883ffe17e0c26fa8bd0f2466c611008451dcdc947995",
+        "rgba_sha256": "8f6ffea326a34bf324b96f9d541c33e0f748e044693e29c02d9f51ab69465b35",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-8.png",
+        "png_sha256": "430f1117df8c7c1ff68e383e0959ffd508f7690d83bc8443492fccd424eda5cb",
+        "rgba_sha256": "accd0848a8cd2b133d763917f1c2b28bf51198b44d4a984975909068dd4fa975",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "terms/page-9.png",
+        "png_sha256": "bc5c0f53ef39dcfb31632e8754ac8b607302ee9995ece3472736bed6fc284116",
+        "rgba_sha256": "97dab1e3b0fc91c211358795bac9139b0e13f55059ec606d2be21242f3cf29b8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "8b30192ba537bc1609d5452939135ef666afaea86db4e3fe082340b901dd71ec",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "ecfc93c29c98f301016966a49d7f4c976ced684257bf5bbbad671556c8d4d2f0",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "c75fbb4f3d23a54b8f2d9b94a515404262a24ab788dc319e812b6b391e6d7692",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "f50fb695e2a30995ea33a7a53c8f98f0ff633d8af326ebe786cfe93e2559eaf7",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "9edec8e38cbb0e86216b3b6c3ed5f6354662438ff46b4cc28a6062d71a55fcb7",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "0e50677008d6d52ebf8575fbee031de2b8fce0f7adc4b0e7ce03ac11e8ef45b5",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "56fe1c9b7caf3c1b199d220e24498ae001fc1833ca079264e1761e2f5a8f9709",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "a84c6252cb83b8541732313e7101a7e063bc904347307eed2f1f9e4786189729",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "846307bb6e950e30c66fc312ac110f3c6213c1e15a4354eb885c23f26b554b9c",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "90fdab9e93c4ceae8b8b093ff27b98db02975aeebf3a926b96a17c7492f228e8",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "06e77fd261788dc6d84786f8c51507057332076f99f9bbc5da7450014cecb1ae",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "6ffd918e5de84fcc668e1272b6960dbefa324e3f07daceff60454a55a85280c2",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "e115dbaaf9eab778dc4f8f7e52b724b5c9068a2f35bea680e24a65994e281067",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a09948a3acf56eb9b801a3fd69dfd6668c4df78e4d58227b718172781700374b",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "965dfb2ada76191ea031ca76cd44131d20ebbbf31ba6129b0b35227b27df6877",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "3b4c4c7c34b7cfb6b4c1988aa7f5a7e6f0a2fc1378704cf9857fe7020119f748",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "0b074fea27e5b39101e6cc3104d031f65970c9a11e8fc25b06f63231ccffcb0a",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "5679721724077c7eab63166142c1a9ad6fc23c31d1d35f6cd41489f109884548",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "7a0f1ec78eb71ffaccdeef2dc8b1013330c5fc6b688bc190fc4bf0958ff7330f",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "5e154004b6377d776e3f98e0772c67d932896cf5e5054df2ee8d854b84d5807c",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "f22045eb566269edbcd48a438b735f955c95ba4daa10b0d18fb434cf15a66427",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "8f8e058708d53a2bb39ca6bc2cecbfcae792d9f0bfc7f06fea3a09d6bcd09c16",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "ae411297cd826fe621a017873d7fe969dff83545823da8b9997626943c2bd175",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "107eb5f7246940776d7fd37c3d7efddf5c06c5342a30bf5b9e0aef7dc7daacba",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-2.png",
+        "png_sha256": "5a0ff388dd3cc7d361f6362b9f899e5028e85935e78a2bb7104645137fcdb1f4",
+        "rgba_sha256": "8246811d3903d3e0d5d8ecb8e13fedbe8dac324cff96de3a99be4633d9dc8cf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-3.png",
+        "png_sha256": "cee7006815676e297ef7d6e2d9ff0ed0d3cc8496cb61abba0c93c76c72ffbc65",
+        "rgba_sha256": "eb54a1c3ba4a9831dd8c9ce63952da6247650b62ea5c4e1cbdd9f01478222091",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-6.png",
+        "png_sha256": "66d69167389bc6761095db23b058a65b30e9054c94acb0a9007e184bff75a578",
+        "rgba_sha256": "b50cf78d1b3ae6d52fefda7668294c5706b245ee2ed22fc49bb4e25ee78edc88",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-7.png",
+        "png_sha256": "b06eebe56a41f238cd182389d98cc19a3b1ea6e5232dffab9b43c66144b49bb8",
+        "rgba_sha256": "49cda33dba195834696dc8c0b31fe6f0580e78f1801f4f8e3d2a20e08d5f34f9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "statements/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-1.png",
+        "png_sha256": "6ea0d4de7585919fa3f18bc70900aa0e7f63fe14adf1d6544ff7b32730728837",
+        "rgba_sha256": "1801ff11c1489b24689ca12c8a86de085230bc89947d4d6c022c8440115650bb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-2.png",
+        "png_sha256": "d401b658869abfc2916ed986d465246e3dffe2baa0448061f822a877564c387e",
+        "rgba_sha256": "33e83d6dacfdf8dd3fbd59d740a3d25e9ef6f1a1851fed16cbea3554aeba05bf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-3.png",
+        "png_sha256": "cdd1beda3be690d91ece4e3acc3996ec2849761111047bb2e12548e0cbeeda87",
+        "rgba_sha256": "1561168d66c40b826b4f0f365129e8d779d2a5c579c01f87c5a15d04690d72e2",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-4.png",
+        "png_sha256": "ac7c9459d675d1b0184baaf0576c4134fbb98d44fb0ff828b3a26eab1ab1d0de",
+        "rgba_sha256": "2b352991767b4d9295daabfaf10db0172c57ff93c8a813256760fa2e1f7eed8d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-5.png",
+        "png_sha256": "2bf3b0dcdf40e63b743ca0d2883dc037ac59ab75a16bc482e7d4ff7ef9f99860",
+        "rgba_sha256": "8774c7d93766bc6838fb174a2733b7755a5f364bd28cb8cc2e817a39d061e498",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-6.png",
+        "png_sha256": "b479295cc9fd9923f3ddb2bb62868a18c20584b05333895aa9da445056f9162c",
+        "rgba_sha256": "383eb11af7ba756c75defe1992b4c4359a7c6dc34fb52aca3ffe955cd9ab5094",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "starter/page-7.png",
+        "png_sha256": "da3287c17dd252b4ac8b9d5bee040300a2113ca4ca437586a6581c5d535bfe9c",
+        "rgba_sha256": "6da4a5fb73e576ed62c7770c440bc347196e7791ab9fded4672ee858354050c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-1.png",
+        "png_sha256": "896d0888148755dae85fb00631be67e3bb6784aed681c6fb470f7ad0c950bcdf",
+        "rgba_sha256": "d96b75fe4939849f6bc69e6885abc9f6fffcbd4158a121f8b64a4d2a88c7fd63",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-2.png",
+        "png_sha256": "e16b235c442d3eee88e2ef8eac281d46d07aea7da2e5ace3894a918bfb82f96e",
+        "rgba_sha256": "b29e9167d51aa8cf4d1454c8e564426b39cba2c6994d36e9ba5a66724e1dbef8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-3.png",
+        "png_sha256": "fff96710b15154b3f6d73a306a9ba1e4f018739daf0b33af8725a37ea737f95b",
+        "rgba_sha256": "16f7a4bbeb01bca40ac480fc78d591308becb467be3a8a7a19b35690f2910fd1",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-4.png",
+        "png_sha256": "0dda478452bc216d560aab2fdec2f3e1a8dbb24259f45800eb1fd9e70b0882d7",
+        "rgba_sha256": "f20b1fbdcbe7371f32f9a6175cea6623af74cdb59452c60af202214f5ae0a81d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-5.png",
+        "png_sha256": "40aa5615ec4697fb144c787bbc661bcb2699c19d11851092b944286c9d36b46f",
+        "rgba_sha256": "a966e30fae55ffb3017edf4815b9496c0b907152e1d062305c689b40de7f56e5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-6.png",
+        "png_sha256": "26567131aa50f80f62f76d2eee4a035a662374dcb0fb62c95038620782155174",
+        "rgba_sha256": "2d7c1a57d00c147415d469d672af5b5a0ce9c20659c2625bb5d0b1df3a0481e8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "letter/page-7.png",
+        "png_sha256": "af2b357ff2b379c3dfe19259016aaebce05b0827829694209ffbb9bd434550d7",
+        "rgba_sha256": "1f5a3c60a063b6f0fb147524f97ccdcad3da246f43ae930bea55e510d1449bad",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-1.png",
+        "png_sha256": "702d8e8759e1826b914ca84013fc17e583bf301d9c2dbf2cd3755cd81fbae7c5",
+        "rgba_sha256": "9bd45b26789506b549b4d7a55561de1b2e35ce99fd403f6feb2b34cc00f8180b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-2.png",
+        "png_sha256": "33b45c6a59a5260ec8b669f097a21fa5fa3f119631b373c03deb79e750c8fe43",
+        "rgba_sha256": "61c78af218fe9a83372d24f5409e3f2bf5d843a13d308c66ffc8917e29ed33f3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-3.png",
+        "png_sha256": "a6e9d0685d5a60de74238de77b5300995163c4c947aa0c9397352a8fc80bba28",
+        "rgba_sha256": "75cab5818a4d8cf86af48e60d77c3899b994b7eefc7c4f0493a7c2074b7ae8c0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-4.png",
+        "png_sha256": "203402ee97a72fd630f704022283dedd84840a3bb5f8f6aecc00956e0883bb9f",
+        "rgba_sha256": "cd87da635d215dbaabfe087c0e43e327f9c607da945879e192561f63b3b7b79c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-5.png",
+        "png_sha256": "785d80d175e86f4fc35d242affd45ffc149f856c397b0280aac3d7596b2b94fc",
+        "rgba_sha256": "19cb720e5727a5d6111422ac0e2425477c31005a0aa691c58a56e8a8511a7680",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "equations/page-6.png",
+        "png_sha256": "9455c31ca55013d7ac14fa6175c0ff2f284328aed04caa6a6051871161a3c64f",
+        "rgba_sha256": "9872b2b3d69a005ac1dc9eff1684de0ea9d87f46b8b1496a164ec813395ba0c7",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-2.png",
+        "png_sha256": "7c66d4e68be88d7d5335cbd9cf19b545a7eb6e814eb929067216fd3cae849c8f",
+        "rgba_sha256": "7cad8ac107869eed0156ed2371df953a8b24174570aa9c805f21b984cacb97aa",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-3.png",
+        "png_sha256": "4eb8468b5f969bfb84bfb7a43837e5052078bf08fff9f1065cb2bad439bf37da",
+        "rgba_sha256": "bf49d07fe7c281301aaee1970ef79b4989cc479c044affa0f359514b146ca9b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-6.png",
+        "png_sha256": "229c30215ca44e2da9330cc2b9fab7fbfcdae2bdfebfbeca6c6d4f81d81b09be",
+        "rgba_sha256": "369fd348223268ace404b77ec44cc581f565e0e24caceca7a01e7029e9fae350",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-7.png",
+        "png_sha256": "aab4aafff419e08cc3f79083ac128ce06f971b5ca5215e6075eb2774189bea80",
+        "rgba_sha256": "5b196abf0f3139cb1d1e63b0435be937f8c39cd70c212f544be1392724dca76a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "bibliography/page-9.png",
+        "png_sha256": "712a9594db2a2e80b7032ad371a8187d85e174107764bcade812f3e4178e8574",
+        "rgba_sha256": "d659103dea1434ae6da8eb592417bbddf7e85f1180bd6377853d512f0583daf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-1.png",
+        "png_sha256": "9f05117293456d073c8036cdeb456924e3471bc560370a6db2c4b686e1a1dec9",
+        "rgba_sha256": "2c25f92d445a26731773ae88f6d90def44ca6422336e808c511c0d5ad49b0c5d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-2.png",
+        "png_sha256": "cebfab2d08925ef1c878a3e6117cf5476175b5a57543989e028dc24ebad89ad8",
+        "rgba_sha256": "06bb548f9ea659ff9845a7b96544fb7c4b8ef568c8469b1b9aa46b9e48fee06a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-3.png",
+        "png_sha256": "34452be2b2ed09c56c36f0c707ae3e8b6f9f133046b6987480181459e07d6eae",
+        "rgba_sha256": "9c2e5e990bd66675fb689b86a681c24a04d4aa239f6fd6aa0358c2d2541c67c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-4.png",
+        "png_sha256": "7b9f35ab70667e2a2d6b979f465c125267022b52a30892d68357312d43a3db3b",
+        "rgba_sha256": "a33cb56c4331033dd181e884b035104035bc95c37e80db77974cfa7e79ee7b2c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-5.png",
+        "png_sha256": "e31bd9372b6393d3aa539fb01a2b3dfc8fd4fc6edb8825d957117b2d280bb359",
+        "rgba_sha256": "2f04caa8ca2cede0b5f603843e99794e7ab59859ad3e0cf0462d09ad1ec5828d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-6.png",
+        "png_sha256": "8db0c94d502eddd648fb834f1b5d4633d9c3c10ce72f0eace4c3490544b7ab07",
+        "rgba_sha256": "202d5ba2828e66aeeb9ae8994a9e81b9eaa5a51a2a5de6a954fb8dd3aa8a0871",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "a4/page-7.png",
+        "png_sha256": "019fd25ab49f3bd12c4300efa026bbe7a157a203642ac502b508e5cb9aab3e25",
+        "rgba_sha256": "3b0c1d98f88fe5cf04fa62db45729387e96c50f1b70e0e8fb36e07ff78d1d10d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "eb9a985bd45f0bb80f0e78d65084b0ab5307ed2274a3a51b2b747712690c2e31",
+          "revision": "sha256:082fcc111fb754bf4f2bc9b1782f530164cb61510e90113f938234eae511dbc7",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "eb9a985bd45f0bb80f0e78d65084b0ab5307ed2274a3a51b2b747712690c2e31",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "0d4fdaf73af0d4768a8082197bcb9264b701a72ff94889a193838334cbd5cebd",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "0d4fdaf73af0d4768a8082197bcb9264b701a72ff94889a193838334cbd5cebd",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "a5f6a9992752979ceea64313c7311457e949d45c7b0f44aefc5fa0ad9be90cd7",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "a5f6a9992752979ceea64313c7311457e949d45c7b0f44aefc5fa0ad9be90cd7",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "dbfda5428a45be7d152da650d1f3acec14a8eac727e12726e6b587639c31b501",
+          "revision": "sha256:2a271a4c1a17b9056e52266b9d3b28cabf4fea16d1942d10ad7533a5cb13c01d",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "dbfda5428a45be7d152da650d1f3acec14a8eac727e12726e6b587639c31b501",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "655ee9ab835ed184cc6e05389a0a3763d00a5598dbdeaf132cd4e5ce13fd43df",
+          "revision": "sha256:8c1c7efe6291303805a3b6212a29b0cc30caec95805b8886e41d9858f4596466",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "655ee9ab835ed184cc6e05389a0a3763d00a5598dbdeaf132cd4e5ce13fd43df",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "publication/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "23d9ae817dc536927c58a54f96aea27b7ef16872d416c66fc044be872ac6e850",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "23d9ae817dc536927c58a54f96aea27b7ef16872d416c66fc044be872ac6e850",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "ebd81a783d02c38ed9a421b3a5c1cea72e1eb56a1f807c146cfa87a32d056f3d",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 10,
+            "paper": "letter"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "ebd81a783d02c38ed9a421b3a5c1cea72e1eb56a1f807c146cfa87a32d056f3d",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "8c363ea4b0cc2033884c63cc4c446dc5827ffb91d6ab6a87503ec00560800429",
+          "revision": "sha256:98ca12a22b7d61d87245389d690d2539849edff9d8aa931625e866243e7ac9aa",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "8c363ea4b0cc2033884c63cc4c446dc5827ffb91d6ab6a87503ec00560800429",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "f27ce9aa8aac7738f1692f498fa3055e2b2ab5f536422fa65ce6e9ef7879e114",
+          "revision": "sha256:0e923e3424de3f83fd3acb109464c770466a36149263cdffc1b0095bc85d0d68",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "f27ce9aa8aac7738f1692f498fa3055e2b2ab5f536422fa65ce6e9ef7879e114",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "ec5ba10501880484da3d04ad0f2c1e5d5f36b7460815d06c4e2022e260216b7e",
+          "revision": "sha256:626e8153191c80501d36f79c581e6f3c80bcb96c31d5a1b1e4daa511adefc5f2",
+          "schema_version": 1,
+          "settings": {
+            "enabled": false,
+            "font-size": 12,
+            "paper": "a4"
+          },
+          "template": "classic-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "ec5ba10501880484da3d04ad0f2c1e5d5f36b7460815d06c4e2022e260216b7e",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-1.png",
+        "png_sha256": "a89fd1c334e54c27eaf6ccda6e08c66608cb876350098e10bc9570e9e539929f",
+        "rgba_sha256": "c0cac6759a0aa26afdbb2bf459681989b6cdcb9688d8660e07766c907d88fc7e",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-2.png",
+        "png_sha256": "96807a81bae598ea1c4efd26af152eca4e1940365d43270cfcd55cd4f8892e51",
+        "rgba_sha256": "e73ed30d40a59e63338ce2264b59b169eb1e4d271c5eaf901ef37c5753856753",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-3.png",
+        "png_sha256": "2facd03600dfd62c78cd0dc306e7ca857d0d4b616f1755a044255f3ceb4d9359",
+        "rgba_sha256": "f228ccdc3814913384df79947afd5a84559c88dc247de21f2aa12c221b71905b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-4.png",
+        "png_sha256": "48b8b758be38627306cfde1d0ac53419e07383bc026fec3736a969206dfc5941",
+        "rgba_sha256": "902821101995290db30e7d4d7acfc762f35ef458ea4b5d1edb9bc424af569e78",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-5.png",
+        "png_sha256": "130e511548385f3db8e8403638a9cdac692a1ce5857560f19a04dab6ac171f4f",
+        "rgba_sha256": "e49cba3bf45ce6e15bbeab6989d74fd3584ce6e53280cb01201ba5b501bf15ae",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-6.png",
+        "png_sha256": "26e414bcdf0475a6bd1ade6d5bce7b70ec4e0ba32843f8115b4bb240c27b4cb6",
+        "rgba_sha256": "bd9ae667c223047340f0f528c9d12ade8613cfeb6d03a881f9c36c30ef645025",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-7.png",
+        "png_sha256": "7698c9e2a805c0e8a46892fd06a822caf2da26c53620fe987a8533d9940c2b07",
+        "rgba_sha256": "6ee359d56cc775371fc29f5ffe5de33c800f09286a6d02249f97cb71846d1e3d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "page-8.png",
+        "png_sha256": "0faf0930b3150442685a35c303dff2dbdc428c91bf6629420d2ab7c6f64a77b6",
+        "rgba_sha256": "66e1db8160a63eb7ab386ef0f1899e51f6f0b8f275e57b569ea7e9fb180f0c1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-10.png",
+        "png_sha256": "44305d384ea13454fb2734012e8b25c59a0788d6559cd929bf7b11d8b3bbb742",
+        "rgba_sha256": "8e5ae2fe67d384c087e9556a614dc5c0cdf65131310af2883c0e6cdd2e52ee01",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-11.png",
+        "png_sha256": "d50e3fe64cbe7306832d780f36590892e844a6dfd9dffa56c52f3c94540b96b7",
+        "rgba_sha256": "a34e25ab1f95934ec3f91d2f16a6484d4b19468d4eb7236e808b8def0e552ec3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-12.png",
+        "png_sha256": "06d782b41d3c9553d40bb2e9c3dd075d8afe6be78eafc72ec86c231c6843a60b",
+        "rgba_sha256": "e281329482aa93e0b9840411a984521da66f0390395117197f2f46c94d8c1879",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-2.png",
+        "png_sha256": "f9f5e502abd8366ab37059ef2f68f31920a742f3e819ac9a75f29233a7391736",
+        "rgba_sha256": "d5d56870c4f8622a1b29e8ba529b49841387a6feb703c5f3e58ec8cfd3a7e145",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-3.png",
+        "png_sha256": "c7e00a9e8c2ad9cf060fb261b0e73e6ef0b7b1cc8fb56a1c7510fa7325871558",
+        "rgba_sha256": "7df424893b210c1fd531140f0ce9c84b557ced2a46164d06f89747381fcdd3c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-4.png",
+        "png_sha256": "a8b33a411f50a52a7d86f0edf7b1bc187272bec8a2e1d30dac6bd618a697a285",
+        "rgba_sha256": "75ad2e32883a0fd3479d63799ffb3f072943f7f2ed893f6a43547c1c5e62cfde",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-6.png",
+        "png_sha256": "031d266f26125c41f172d8df0c12643527166b6b46dabbd5086d1e66d20f7480",
+        "rgba_sha256": "f50b727c866e791dde055e2c237620e0c570aa4e13d543ec2edaeba7d6e84feb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-7.png",
+        "png_sha256": "078b3df7ddc1419dd704883ffe17e0c26fa8bd0f2466c611008451dcdc947995",
+        "rgba_sha256": "8f6ffea326a34bf324b96f9d541c33e0f748e044693e29c02d9f51ab69465b35",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-8.png",
+        "png_sha256": "430f1117df8c7c1ff68e383e0959ffd508f7690d83bc8443492fccd424eda5cb",
+        "rgba_sha256": "accd0848a8cd2b133d763917f1c2b28bf51198b44d4a984975909068dd4fa975",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "terms/page-9.png",
+        "png_sha256": "bc5c0f53ef39dcfb31632e8754ac8b607302ee9995ece3472736bed6fc284116",
+        "rgba_sha256": "97dab1e3b0fc91c211358795bac9139b0e13f55059ec606d2be21242f3cf29b8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "8b30192ba537bc1609d5452939135ef666afaea86db4e3fe082340b901dd71ec",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "ecfc93c29c98f301016966a49d7f4c976ced684257bf5bbbad671556c8d4d2f0",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "c75fbb4f3d23a54b8f2d9b94a515404262a24ab788dc319e812b6b391e6d7692",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "f50fb695e2a30995ea33a7a53c8f98f0ff633d8af326ebe786cfe93e2559eaf7",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "9edec8e38cbb0e86216b3b6c3ed5f6354662438ff46b4cc28a6062d71a55fcb7",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "0e50677008d6d52ebf8575fbee031de2b8fce0f7adc4b0e7ce03ac11e8ef45b5",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "56fe1c9b7caf3c1b199d220e24498ae001fc1833ca079264e1761e2f5a8f9709",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "a84c6252cb83b8541732313e7101a7e063bc904347307eed2f1f9e4786189729",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "846307bb6e950e30c66fc312ac110f3c6213c1e15a4354eb885c23f26b554b9c",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "90fdab9e93c4ceae8b8b093ff27b98db02975aeebf3a926b96a17c7492f228e8",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "06e77fd261788dc6d84786f8c51507057332076f99f9bbc5da7450014cecb1ae",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "6ffd918e5de84fcc668e1272b6960dbefa324e3f07daceff60454a55a85280c2",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "e115dbaaf9eab778dc4f8f7e52b724b5c9068a2f35bea680e24a65994e281067",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a09948a3acf56eb9b801a3fd69dfd6668c4df78e4d58227b718172781700374b",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "965dfb2ada76191ea031ca76cd44131d20ebbbf31ba6129b0b35227b27df6877",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "3b4c4c7c34b7cfb6b4c1988aa7f5a7e6f0a2fc1378704cf9857fe7020119f748",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "0b074fea27e5b39101e6cc3104d031f65970c9a11e8fc25b06f63231ccffcb0a",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "5679721724077c7eab63166142c1a9ad6fc23c31d1d35f6cd41489f109884548",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "7a0f1ec78eb71ffaccdeef2dc8b1013330c5fc6b688bc190fc4bf0958ff7330f",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "5e154004b6377d776e3f98e0772c67d932896cf5e5054df2ee8d854b84d5807c",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "f22045eb566269edbcd48a438b735f955c95ba4daa10b0d18fb434cf15a66427",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "8f8e058708d53a2bb39ca6bc2cecbfcae792d9f0bfc7f06fea3a09d6bcd09c16",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "ae411297cd826fe621a017873d7fe969dff83545823da8b9997626943c2bd175",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "107eb5f7246940776d7fd37c3d7efddf5c06c5342a30bf5b9e0aef7dc7daacba",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-2.png",
+        "png_sha256": "5a0ff388dd3cc7d361f6362b9f899e5028e85935e78a2bb7104645137fcdb1f4",
+        "rgba_sha256": "8246811d3903d3e0d5d8ecb8e13fedbe8dac324cff96de3a99be4633d9dc8cf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-3.png",
+        "png_sha256": "cee7006815676e297ef7d6e2d9ff0ed0d3cc8496cb61abba0c93c76c72ffbc65",
+        "rgba_sha256": "eb54a1c3ba4a9831dd8c9ce63952da6247650b62ea5c4e1cbdd9f01478222091",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-6.png",
+        "png_sha256": "66d69167389bc6761095db23b058a65b30e9054c94acb0a9007e184bff75a578",
+        "rgba_sha256": "b50cf78d1b3ae6d52fefda7668294c5706b245ee2ed22fc49bb4e25ee78edc88",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-7.png",
+        "png_sha256": "b06eebe56a41f238cd182389d98cc19a3b1ea6e5232dffab9b43c66144b49bb8",
+        "rgba_sha256": "49cda33dba195834696dc8c0b31fe6f0580e78f1801f4f8e3d2a20e08d5f34f9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "statements/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-1.png",
+        "png_sha256": "6ea0d4de7585919fa3f18bc70900aa0e7f63fe14adf1d6544ff7b32730728837",
+        "rgba_sha256": "1801ff11c1489b24689ca12c8a86de085230bc89947d4d6c022c8440115650bb",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-2.png",
+        "png_sha256": "d401b658869abfc2916ed986d465246e3dffe2baa0448061f822a877564c387e",
+        "rgba_sha256": "33e83d6dacfdf8dd3fbd59d740a3d25e9ef6f1a1851fed16cbea3554aeba05bf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-3.png",
+        "png_sha256": "cdd1beda3be690d91ece4e3acc3996ec2849761111047bb2e12548e0cbeeda87",
+        "rgba_sha256": "1561168d66c40b826b4f0f365129e8d779d2a5c579c01f87c5a15d04690d72e2",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-4.png",
+        "png_sha256": "ac7c9459d675d1b0184baaf0576c4134fbb98d44fb0ff828b3a26eab1ab1d0de",
+        "rgba_sha256": "2b352991767b4d9295daabfaf10db0172c57ff93c8a813256760fa2e1f7eed8d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-5.png",
+        "png_sha256": "2bf3b0dcdf40e63b743ca0d2883dc037ac59ab75a16bc482e7d4ff7ef9f99860",
+        "rgba_sha256": "8774c7d93766bc6838fb174a2733b7755a5f364bd28cb8cc2e817a39d061e498",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-6.png",
+        "png_sha256": "b479295cc9fd9923f3ddb2bb62868a18c20584b05333895aa9da445056f9162c",
+        "rgba_sha256": "383eb11af7ba756c75defe1992b4c4359a7c6dc34fb52aca3ffe955cd9ab5094",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "starter/page-7.png",
+        "png_sha256": "da3287c17dd252b4ac8b9d5bee040300a2113ca4ca437586a6581c5d535bfe9c",
+        "rgba_sha256": "6da4a5fb73e576ed62c7770c440bc347196e7791ab9fded4672ee858354050c9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-1.png",
+        "png_sha256": "896d0888148755dae85fb00631be67e3bb6784aed681c6fb470f7ad0c950bcdf",
+        "rgba_sha256": "d96b75fe4939849f6bc69e6885abc9f6fffcbd4158a121f8b64a4d2a88c7fd63",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-2.png",
+        "png_sha256": "e16b235c442d3eee88e2ef8eac281d46d07aea7da2e5ace3894a918bfb82f96e",
+        "rgba_sha256": "b29e9167d51aa8cf4d1454c8e564426b39cba2c6994d36e9ba5a66724e1dbef8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-3.png",
+        "png_sha256": "fff96710b15154b3f6d73a306a9ba1e4f018739daf0b33af8725a37ea737f95b",
+        "rgba_sha256": "16f7a4bbeb01bca40ac480fc78d591308becb467be3a8a7a19b35690f2910fd1",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-4.png",
+        "png_sha256": "0dda478452bc216d560aab2fdec2f3e1a8dbb24259f45800eb1fd9e70b0882d7",
+        "rgba_sha256": "f20b1fbdcbe7371f32f9a6175cea6623af74cdb59452c60af202214f5ae0a81d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-5.png",
+        "png_sha256": "40aa5615ec4697fb144c787bbc661bcb2699c19d11851092b944286c9d36b46f",
+        "rgba_sha256": "a966e30fae55ffb3017edf4815b9496c0b907152e1d062305c689b40de7f56e5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-6.png",
+        "png_sha256": "26567131aa50f80f62f76d2eee4a035a662374dcb0fb62c95038620782155174",
+        "rgba_sha256": "2d7c1a57d00c147415d469d672af5b5a0ce9c20659c2625bb5d0b1df3a0481e8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "letter/page-7.png",
+        "png_sha256": "af2b357ff2b379c3dfe19259016aaebce05b0827829694209ffbb9bd434550d7",
+        "rgba_sha256": "1f5a3c60a063b6f0fb147524f97ccdcad3da246f43ae930bea55e510d1449bad",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-1.png",
+        "png_sha256": "702d8e8759e1826b914ca84013fc17e583bf301d9c2dbf2cd3755cd81fbae7c5",
+        "rgba_sha256": "9bd45b26789506b549b4d7a55561de1b2e35ce99fd403f6feb2b34cc00f8180b",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-2.png",
+        "png_sha256": "33b45c6a59a5260ec8b669f097a21fa5fa3f119631b373c03deb79e750c8fe43",
+        "rgba_sha256": "61c78af218fe9a83372d24f5409e3f2bf5d843a13d308c66ffc8917e29ed33f3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-3.png",
+        "png_sha256": "a6e9d0685d5a60de74238de77b5300995163c4c947aa0c9397352a8fc80bba28",
+        "rgba_sha256": "75cab5818a4d8cf86af48e60d77c3899b994b7eefc7c4f0493a7c2074b7ae8c0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-4.png",
+        "png_sha256": "203402ee97a72fd630f704022283dedd84840a3bb5f8f6aecc00956e0883bb9f",
+        "rgba_sha256": "cd87da635d215dbaabfe087c0e43e327f9c607da945879e192561f63b3b7b79c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-5.png",
+        "png_sha256": "785d80d175e86f4fc35d242affd45ffc149f856c397b0280aac3d7596b2b94fc",
+        "rgba_sha256": "19cb720e5727a5d6111422ac0e2425477c31005a0aa691c58a56e8a8511a7680",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "equations/page-6.png",
+        "png_sha256": "9455c31ca55013d7ac14fa6175c0ff2f284328aed04caa6a6051871161a3c64f",
+        "rgba_sha256": "9872b2b3d69a005ac1dc9eff1684de0ea9d87f46b8b1496a164ec813395ba0c7",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-1.png",
+        "png_sha256": "0eb36d2b3bc7c06a32fcc27dd3f850918d5b3242d945f9ad2ea2d28ebca2ef4f",
+        "rgba_sha256": "07781ed044f54f0391c992a55937d526028ccfe5bd05e37814ea1678c990f040",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-2.png",
+        "png_sha256": "7c66d4e68be88d7d5335cbd9cf19b545a7eb6e814eb929067216fd3cae849c8f",
+        "rgba_sha256": "7cad8ac107869eed0156ed2371df953a8b24174570aa9c805f21b984cacb97aa",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-3.png",
+        "png_sha256": "4eb8468b5f969bfb84bfb7a43837e5052078bf08fff9f1065cb2bad439bf37da",
+        "rgba_sha256": "bf49d07fe7c281301aaee1970ef79b4989cc479c044affa0f359514b146ca9b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-4.png",
+        "png_sha256": "35e099b733ee1e414f133c5cf54607150cf02239030d8ed53094342a2014f6ce",
+        "rgba_sha256": "8c3f6b3a0d690f1ef10766e1119bb6f02443de3cf76ed00f3b293d91012ef8df",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-5.png",
+        "png_sha256": "5936d913ec1b667e123b03febdca447c023382d4d51137d1a0f8cb5f348ec476",
+        "rgba_sha256": "6d1296452700629446f663e9baad96adac719a67566625d8eb5e19ddab856d66",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-6.png",
+        "png_sha256": "229c30215ca44e2da9330cc2b9fab7fbfcdae2bdfebfbeca6c6d4f81d81b09be",
+        "rgba_sha256": "369fd348223268ace404b77ec44cc581f565e0e24caceca7a01e7029e9fae350",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-7.png",
+        "png_sha256": "aab4aafff419e08cc3f79083ac128ce06f971b5ca5215e6075eb2774189bea80",
+        "rgba_sha256": "5b196abf0f3139cb1d1e63b0435be937f8c39cd70c212f544be1392724dca76a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-8.png",
+        "png_sha256": "045418728b2c79e89d22f10f609b9a50fe6ed2bd835816441cb33d96599d3255",
+        "rgba_sha256": "c0528618f0ad332881e669c84847f6a2479e0e6d204b67bde102b58a4d1e38b9",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "bibliography/page-9.png",
+        "png_sha256": "712a9594db2a2e80b7032ad371a8187d85e174107764bcade812f3e4178e8574",
+        "rgba_sha256": "d659103dea1434ae6da8eb592417bbddf7e85f1180bd6377853d512f0583daf5",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-1.png",
+        "png_sha256": "9f05117293456d073c8036cdeb456924e3471bc560370a6db2c4b686e1a1dec9",
+        "rgba_sha256": "2c25f92d445a26731773ae88f6d90def44ca6422336e808c511c0d5ad49b0c5d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-2.png",
+        "png_sha256": "cebfab2d08925ef1c878a3e6117cf5476175b5a57543989e028dc24ebad89ad8",
+        "rgba_sha256": "06bb548f9ea659ff9845a7b96544fb7c4b8ef568c8469b1b9aa46b9e48fee06a",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-3.png",
+        "png_sha256": "34452be2b2ed09c56c36f0c707ae3e8b6f9f133046b6987480181459e07d6eae",
+        "rgba_sha256": "9c2e5e990bd66675fb689b86a681c24a04d4aa239f6fd6aa0358c2d2541c67c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-4.png",
+        "png_sha256": "7b9f35ab70667e2a2d6b979f465c125267022b52a30892d68357312d43a3db3b",
+        "rgba_sha256": "a33cb56c4331033dd181e884b035104035bc95c37e80db77974cfa7e79ee7b2c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-5.png",
+        "png_sha256": "e31bd9372b6393d3aa539fb01a2b3dfc8fd4fc6edb8825d957117b2d280bb359",
+        "rgba_sha256": "2f04caa8ca2cede0b5f603843e99794e7ab59859ad3e0cf0462d09ad1ec5828d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-6.png",
+        "png_sha256": "8db0c94d502eddd648fb834f1b5d4633d9c3c10ce72f0eace4c3490544b7ab07",
+        "rgba_sha256": "202d5ba2828e66aeeb9ae8994a9e81b9eaa5a51a2a5de6a954fb8dd3aa8a0871",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "a4/page-7.png",
+        "png_sha256": "019fd25ab49f3bd12c4300efa026bbe7a157a203642ac502b508e5cb9aab3e25",
+        "rgba_sha256": "3b0c1d98f88fe5cf04fa62db45729387e96c50f1b70e0e8fb36e07ff78d1d10d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "6456dc9c60a57371320bdf6e583826587a16be3d5aa4a79982461ca43bffd0e4",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "6456dc9c60a57371320bdf6e583826587a16be3d5aa4a79982461ca43bffd0e4",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "68b77e263549c425e09c8e536e4981f2ebf357a4382194dd50cfaddd16cfd6a5",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "68b77e263549c425e09c8e536e4981f2ebf357a4382194dd50cfaddd16cfd6a5",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "x86_64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "e1a16b333fcbb57ca8b6879f5c372658197ff2fa601783fee9f3e5e0a5951039",
+          "revision": "sha256:a9b5d0c101d63c8669157188e6a425aaac35daa3456c38953cf09c48b766662b",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "technical-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "e1a16b333fcbb57ca8b6879f5c372658197ff2fa601783fee9f3e5e0a5951039",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/pdf.json",
+        "receipt": {
+          "backend": "lualatex",
+          "pdf_sha256": "c2598e411aa01af39af74cdb1d047abc5a23938a2df21e459b2d900ff60f177e",
+          "revision": "sha256:4662eeaf482862d5cf99e8597247c59b63a17f212c21a77e616ca04845be5109",
+          "schema_version": 1,
+          "settings": {
+            "enabled": true,
+            "font-size": 11,
+            "paper": "a5"
+          },
+          "template": "study-v1",
+          "toolchain_image": "docker.io/pandoc/latex:3.11-ubuntu@sha256:24cd38c7f0e9f7020cb3faaa5122eca719f5e72039f45d15b699bb3168055d44"
+        },
+        "pdf_sha256": "c2598e411aa01af39af74cdb1d047abc5a23938a2df21e459b2d900ff60f177e",
+        "text_and_embedded_fonts_verified": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-1.png",
+        "png_sha256": "acbdc385cb7d837b09756202cc0080f9004c4ad3ee6f53803be97aff59c1644f",
+        "rgba_sha256": "ac18268d48b2d92cd5ac284ce43d92fa3f62d3543e3543bd7ef4902bf5e9757f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-10.png",
+        "png_sha256": "39ff1518d4b26540d9f91ed6e01f2ad6d8e5f4529ae9f34daf75a7ed4db91924",
+        "rgba_sha256": "0854f505c11b3cf2cc5c8987720b7b36eb0f9a789a6d9bd8a1cbd48288676be8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-11.png",
+        "png_sha256": "6ebcd524ff4c92a15da4fe2f2cffdffd757728f8d0189e5d6cfc0bc975910c76",
+        "rgba_sha256": "29231278c6477ebdab33c288476fbf4dcd2fdd476e8bb339bf7368e914896688",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-12.png",
+        "png_sha256": "49518cad67471be1432133dea8619728f3ce40f6821f99cfe2cb4c1c0716223d",
+        "rgba_sha256": "8a24c021ff0a63ee9808079ad61a8a5d75448fa57babb0b68f37a9f638f3eadc",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-2.png",
+        "png_sha256": "aa369fd0e24ffe03174d3d3bd9432dbab05901bcce8289bac7fd927d9f16c09d",
+        "rgba_sha256": "25a8df5c4b33ce1e0218e308f311bc111e8b6d84c050beec646a53146ff78dc8",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-3.png",
+        "png_sha256": "c7ade061a9ef3ed422f37f1825e07f18f3f7859ed4745c1fc6ca342116e35be8",
+        "rgba_sha256": "5542bcede147e77a2f91ba11bbe4b0821ffff369472ae612a84d7226d725bfb3",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-4.png",
+        "png_sha256": "f2ca131006b688e6b332143ac2a277764339edd5b144be60167a067677e97de3",
+        "rgba_sha256": "66ca9b577df74d272aee9d73010a832e631f227d8dbdbcca2a6b73bfe2a31a1f",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-5.png",
+        "png_sha256": "75b36ec005f3d6ef5070d174d634f71b5aa874216dd24987943c406ed3c09751",
+        "rgba_sha256": "a1ac2d0c9160afaceec9d2e12fe9fc95b671092a1c50bbc4058b809db529f5f0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-6.png",
+        "png_sha256": "32917564756829fa85d2edcaa8ef6c91db105c9de4635147e017488235912802",
+        "rgba_sha256": "f4b3a661f780751585dea9b8221a26b4d6186b8f6d840af248fbdb56027b9750",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-7.png",
+        "png_sha256": "39bdef888e2c690bfae13c858c807856cfe2423fcb4a9688b33a6f733e176b2d",
+        "rgba_sha256": "4a318d371376a525c01c9d34659b0ac4faac2c94086a38deb107f20d9ab300a0",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-8.png",
+        "png_sha256": "56ee47eeed816685af80973d7e31b24c5e9da0af991ba78c7186a8d4a49f51f2",
+        "rgba_sha256": "fde4ae089a2722e425606704c13d65967527d495d80f1e22b490a521275ca68c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "technical/page-9.png",
+        "png_sha256": "c52ab4602ce1f714eb9f6a9aa48a4a16ab66d4179e9b6496da52c3e2a2e0c0b8",
+        "rgba_sha256": "51dbbf5bf4a773f36e7786879e53171c703d3c31007fc5a7b002efc81ed339c6",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-1.png",
+        "png_sha256": "24def1736f334ef455dc5b2b0972e157c62d0aeccef339930b89703b80403b94",
+        "rgba_sha256": "8ad557689535c165cc81698ad72eb7912f1af91ff0893faadb7a5d5efe67f06c",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-10.png",
+        "png_sha256": "a19ea43d59c31f962345aed672ed937205c0e8617c250503d228a993a0c6a255",
+        "rgba_sha256": "13ec3aa705d3316af66192ab919680784a5650c6fd3b9a2ac198c651b1376b1d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-11.png",
+        "png_sha256": "27f114a6c81f6f7da44732953a6c6d018503379e2b5374a1b6926249191fce42",
+        "rgba_sha256": "b1d0a6eeaff7de299571a745f77292fb769e4db9fe7f4fd16f8bbd2c40698554",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-12.png",
+        "png_sha256": "5cf9a1bf66801fcd0052ebf2ca28099eb8daad9d75d8155be15342b70854d108",
+        "rgba_sha256": "21c00a41abbe68139b140167cdc760d958507d38dde10c170e3c7ef8efc49edf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-2.png",
+        "png_sha256": "7ee30b5e9acd93a736ad235144ecc1b2fa85fd558c2f6a8cd0c07fc722f37fbb",
+        "rgba_sha256": "7c885602fd01bda92f408d3d61d2ddba13aa8cb79c677195f5ef71499484b915",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-3.png",
+        "png_sha256": "ed2627ac1564aa00e4ac23d1856b4387b287138beb5402e9763ad21aa4baf39b",
+        "rgba_sha256": "54594da9fb586c3703cba380e250cb2e33cb830497358812797f0969a32cb895",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-4.png",
+        "png_sha256": "13ffbabc41ce45c252d801bf4479d7871b6936ac992efb97a19251b2bc9cb8c8",
+        "rgba_sha256": "2bedab77126e24b6822ddf4aaf1247fc20604af08bb5ac5085f4bc879a26527d",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-5.png",
+        "png_sha256": "148f6bac8a7ac84d4ea88c5d6c0537b168171f8c24852939d415f4330d99e35d",
+        "rgba_sha256": "ccf5dc26058f228e3ef33abb7c89f4ca95c0611f32a047815910d388d55d8706",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-6.png",
+        "png_sha256": "16e8a37554023d42d9ee93a826ded19526438c145b3d30d382cb0d432e83c601",
+        "rgba_sha256": "ba56c203598a6a420d7a26fd3ca409a963c1ff7e756e3dafadd97863572defcf",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-7.png",
+        "png_sha256": "501793b07e602784d3d0f9ec4978d169c26bae802e1199c497c55269bd3d2679",
+        "rgba_sha256": "aac5fff61c76b98c8c3616beafca3b0b75bdac7fe652444aff9e3be6f3220db4",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-8.png",
+        "png_sha256": "5451b3369be27a8c467ed6c571025a645998a7d64db3dcd01592b59d2cb785d5",
+        "rgba_sha256": "1e7fb0a6d182e7efb3bf821f704f798535122ba1769483362af602284122c742",
+        "reviewed_pixels_match": true
+      },
+      {
+        "target": "aarch64-unknown-linux-gnu",
+        "file": "study/page-9.png",
+        "png_sha256": "f01e750899954626e80c85cc1f7cb2976b43b602393c10ac85547aaeb615c08a",
+        "rgba_sha256": "8af03face4e6e0c67f912c5d1b0913690a0543aa2d4cf202578bc6664b475a9f",
+        "reviewed_pixels_match": true
+      }
+    ]
+  },
+  "public_websites": {
+    "captures": 170,
+    "comparison": "Decoded RGBA pixels against the reviewed source captures on the same architecture.",
+    "records": [
+      {
+        "runner": "ubuntu-latest",
+        "receipt": {
+          "version": "v0.2.0-rc.9",
+          "target": "x86_64-unknown-linux-gnu",
+          "repository": "mylife-inc/Zellij",
+          "archive": "zel-v0.2.0-rc.9-x86_64-unknown-linux-gnu.tar.gz",
+          "archive_sha256": "4f1f88f92423a7bef562a40f3af0cd43aa8d6baf99377a6c7223690ff3e56e4b",
+          "engine": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9",
+          "engine_digests": [
+            "ghcr.io/mylife-inc/zellij-base@sha256:a7c582581e0bea44d8b9acf75da9664f5ccb84f66e49d53f80a7be8383835ed1"
+          ]
+        },
+        "captures": [
+          {
+            "name": "creative-studio-1440-dark-guide-customize.png",
+            "rgba_sha256": "3e2fad33b67b0eb1eb2e266fa910ec91ef147bcc4ea9fc2256eb1c882429c2f5",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-guide.png",
+            "rgba_sha256": "66e463d5a9e2380b983299273c20755d3bd1cac38c1e8ca549a553db6e1751e3",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-hero.png",
+            "rgba_sha256": "cc5d1691342bc72c04b1747484e289ecfa4b372ec9ca9fd97de796687e6c4ec6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-home.png",
+            "rgba_sha256": "44c4bda402ca32db5a5df8137d9c0c5e44550d048e2aaae80bee81747e6184df",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-work.png",
+            "rgba_sha256": "d1db6d93f2277add6c0f5533b46e59263b466e78d656b513045ce33653c160a8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-guide-customize.png",
+            "rgba_sha256": "3051de8279580f78d48bc6a702c691df289a153a41ab411ca4d46f481d2f51da",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-guide.png",
+            "rgba_sha256": "19cfc75241eccf02f9080ce9287278f67e87a453a33ab32e506d3596b6da1aca",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-hero.png",
+            "rgba_sha256": "9ebde36285b21906902a64758ae7b4bc84ec3453116e03cae14f020a1519074e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-home.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-work.png",
+            "rgba_sha256": "f42825d6b4fdee48ebb001f6345078c3538dc59ca32048d45ed0fb124b2cbe3b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-motion.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-no-js-home.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-no-js-work.png",
+            "rgba_sha256": "f42825d6b4fdee48ebb001f6345078c3538dc59ca32048d45ed0fb124b2cbe3b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-drawer.png",
+            "rgba_sha256": "773258d4c9a65822e991c983c87c387c861d7066705e8e4a6dad7dfcd299a0c8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-guide-customize.png",
+            "rgba_sha256": "da6b20db8f8dff0f2a654d0f044d78d601f9a590131979d21f83b77f9716db1c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-guide.png",
+            "rgba_sha256": "dfbc8a44dbfc2e743699016731c26d692c13ac165e5ffe3f0eb5cc0d4c50e3a9",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-hero.png",
+            "rgba_sha256": "bd21ac5e69fc12ebf5248e7685f15f89262336736875478acb30c70c24b6de2c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-home.png",
+            "rgba_sha256": "6eea9b800f41fc2a1bdfa6b807767e563385da8e7766b76c7a3f5093a5cd365f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-work.png",
+            "rgba_sha256": "c9a7a00b7134bdc320f2bcb2d1cbfa0be7d00de43284f44fa42274ce5b9ec96e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-drawer.png",
+            "rgba_sha256": "33f8a6a8ce6cb9a82930e3801cb99c9bbcfeac3c455143c446dab592c8a0864d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-guide-customize.png",
+            "rgba_sha256": "bf9f3f2b574f2b9799ae75278cf9748c7f6964852def4f053f185305ce72dc4a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-guide.png",
+            "rgba_sha256": "2dcb760371f830deb057290dfff56f7946af446eb26067bd466299a21e536e08",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-hero.png",
+            "rgba_sha256": "d5e77bca8d67201a765e059222d11b2793a8229a61670a4ecbfba778ed7f74fa",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-home.png",
+            "rgba_sha256": "e48058eb7108632a2ad9d830461b40372d8eb2cc1476fdf3efe9a9e39f029023",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-work.png",
+            "rgba_sha256": "ea06ddae69fd34aada9f958d7a5b0da3e00dce4a4935eb743753b0ee8a6a6e8f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-no-js-home.png",
+            "rgba_sha256": "e48058eb7108632a2ad9d830461b40372d8eb2cc1476fdf3efe9a9e39f029023",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-no-js-work.png",
+            "rgba_sha256": "ea06ddae69fd34aada9f958d7a5b0da3e00dce4a4935eb743753b0ee8a6a6e8f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-dark-root.png",
+            "rgba_sha256": "9fe0f8924a74dd38cdfb9190a7f4b5243f850483011ececab278330fa6d9234a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-dark-section.png",
+            "rgba_sha256": "e1c389586ae79d4348c139be7424472964c1184767022b9a16d88358c6f39b81",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-light-root.png",
+            "rgba_sha256": "7e3f172c51ab56bacd05ee6aba121e05e5ef7f4a9af102b33a07bf1f456b68e8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-light-section.png",
+            "rgba_sha256": "061a42a023e8b99af549b8b01a6faec0b698756c803e3d7128de85d6ea163be0",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-design.png",
+            "rgba_sha256": "babcb4c298dc39a8930a13fce9ad38cab4bb0ec82d3f17e111758df8ac0ef93b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-guide-customize.png",
+            "rgba_sha256": "e25a3d0538190aef546a4072f1330e80e6aa2ebef57161c15f5e9c8b5bf84750",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-guide.png",
+            "rgba_sha256": "63be1d3ff3aa380d3852be95cdd1cb51d6f471b42e00a3910319b29361cba90b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-hero.png",
+            "rgba_sha256": "ac562c66f7890371f681085d328ecea1a25d4e77301d9fb9839671cecb4f90ca",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-home.png",
+            "rgba_sha256": "721e5a9ba1d6c675558261411d8cb7ac1a92a98127e1c443ee3127166998b6eb",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-design.png",
+            "rgba_sha256": "344ad54b2fc6962f1b10dd7db366c6e507357a548be46a97fc016484b379900e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-guide-customize.png",
+            "rgba_sha256": "4298ffbd47a05d1733ac0516dfb6dcf9e96f26b0e39f4ffffda6ddc1a194b128",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-guide.png",
+            "rgba_sha256": "7c6b055a6bd87855a04074cbe6221814ecc8b5c5f84372de156a7c3719597066",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-hero.png",
+            "rgba_sha256": "bb4e80cc2d1751c8308a459bd7a78381d28de516df703bbdaeffea37b1e00960",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-home.png",
+            "rgba_sha256": "aa94ba7b452d2e63402a56affdc57954ac2c8e8a7a687ae3b4f7ddc4145818ef",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-motion.png",
+            "rgba_sha256": "6fc0a49450f6ca61847df83153e6cb951f05dd81ccb09c5e17aaf73cee1c2d2a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-no-js-design.png",
+            "rgba_sha256": "cd1a4c7d1c3de7d95bdef0cc550f02e254b74c48bfb490025daa3b5c481fd9ef",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-no-js-home.png",
+            "rgba_sha256": "aa94ba7b452d2e63402a56affdc57954ac2c8e8a7a687ae3b4f7ddc4145818ef",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-design.png",
+            "rgba_sha256": "6112da30d81f159968721ef25ec5f14e79cf66d805eaa889b48f4ced7ff8cafd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-drawer.png",
+            "rgba_sha256": "a1e4c84c25e2166cb4e23cf60f94ff6082a5b8123af19e6bc4b1257ac02a3e4b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-guide-customize.png",
+            "rgba_sha256": "652b675d4dbe4fa2e19f2c55bc4cb6d51a4fa55d0b76dea9f5ca801cd8fecb73",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-guide.png",
+            "rgba_sha256": "d7e766b93a19c10a70144892dfe7b5e7e19455bec5b66c4320c0ec324f42f6a0",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-hero.png",
+            "rgba_sha256": "3f1f7850df8131b5bfef166744254e07bf4566b2d281b518545caaafd8c51259",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-home.png",
+            "rgba_sha256": "251139dc3ce831edf0be1c7b2cd9fc10ed6654035c730388ac24509374700506",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-design.png",
+            "rgba_sha256": "7569d591c41771a6dcb853de04adda5655d974e5f6386c8237a3b8664c90d2a9",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-drawer.png",
+            "rgba_sha256": "fd39e518578e1b12d97cde0904bbdfda85b8d54ddd82d7842d72e74430a9e16f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-guide-customize.png",
+            "rgba_sha256": "a12ace5084a81bf38b303ca0a1df5c2a69b55867f5297e22fced731ab406f9b7",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-guide.png",
+            "rgba_sha256": "a9c336da499301ba90db949488d9011fb8debd991226ccb84d5842ca290aff28",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-hero.png",
+            "rgba_sha256": "482e5ca1dea70d8ca277e212f4cf7a6bc1d50d15acca5faae5866bfd89ecdfdf",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-home.png",
+            "rgba_sha256": "51a5750a851c469adead020a903c1002c51d1103c1859ff0d2c3dc4748feda05",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-no-js-design.png",
+            "rgba_sha256": "63d3d857471f48e8aabd36b31a85d922e0e7905119801998db0d3b065394a56e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-no-js-home.png",
+            "rgba_sha256": "51a5750a851c469adead020a903c1002c51d1103c1859ff0d2c3dc4748feda05",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-guide-customize.png",
+            "rgba_sha256": "3df2566bac612de7f734e8b0d6e771b4cdaa03c7d7d6851e6367a3816e12c89c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-guide.png",
+            "rgba_sha256": "318c8e1d43227e6333ec6c17c3729ab30210a5f4bd033beaf473311e5fd37aa3",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-hero.png",
+            "rgba_sha256": "22f01645e83e2b89a7bf9d58dd4a173478d0b2fac32cc3aafde581ba5aef227c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-home.png",
+            "rgba_sha256": "d27eff4664a2e155dda9ae6dc997e081e89445b643cf55f74f1341aa11c98a0d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-workflow.png",
+            "rgba_sha256": "3a6650b012276b714b790c80703051b9d7acc659aa5fe90413ac2e39cc51aaf9",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-guide-customize.png",
+            "rgba_sha256": "1a80102a35dbf2ef16fb097646acdd47d0a6c9af0449c7cc8e8368453d57320c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-guide.png",
+            "rgba_sha256": "1682bb2073835d0b01e9fdadd119b721916c6ba07302fefdd6b7d4323afd2920",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-hero.png",
+            "rgba_sha256": "09b65e89bb35aeb7089c5a8e05ce08673d80b9850862f3ceced80e68ae556acd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-home.png",
+            "rgba_sha256": "38f08105d790b0c0fbd227d3ee81873fca6cc46c0387ff6c4f020ac1508f4cfe",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-workflow.png",
+            "rgba_sha256": "50cfe04c011665bc69c243c87f75f1806894e03e9dd5dcbb3320e6e73d97aa30",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-motion.png",
+            "rgba_sha256": "d27eff4664a2e155dda9ae6dc997e081e89445b643cf55f74f1341aa11c98a0d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-no-js-home.png",
+            "rgba_sha256": "d27eff4664a2e155dda9ae6dc997e081e89445b643cf55f74f1341aa11c98a0d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-no-js-workflow.png",
+            "rgba_sha256": "3a6650b012276b714b790c80703051b9d7acc659aa5fe90413ac2e39cc51aaf9",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-drawer.png",
+            "rgba_sha256": "0e5bd33976dc6b5926feac3121fd81bcf2e6e8e0cad7e2fbec54a3458ce54f11",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-guide-customize.png",
+            "rgba_sha256": "3dca8c3776242dd248681fee194830b6caf286520ddcc908deda9d6165e7c09c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-guide.png",
+            "rgba_sha256": "8132c5884c5ef93d0a8c6f765e0222ec1c48eaa05cf987ab01bbf386b4679d9e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-hero.png",
+            "rgba_sha256": "135aa2f766ba4927cd0e56974db33a6896c9e9a2a7b3f42015a5cb2ec24e48bb",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-home.png",
+            "rgba_sha256": "aa0efa854de97d7870c13e5d854d2ecb03b03cf3bda7d6ec9f9a6143de5709fc",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-workflow.png",
+            "rgba_sha256": "538465f92c127b52e8d9ded60c5687013a3150c3b205fdad6ebc8a3e073fa05a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-drawer.png",
+            "rgba_sha256": "0a5f44972061b08edeff0d6585db6c2bf11c020faa1207a2c98e109054494127",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-guide-customize.png",
+            "rgba_sha256": "25d5a5d8f40ebbebefe0dc068f62cef8ef5a73455717fe1e2de9940a11690e9f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-guide.png",
+            "rgba_sha256": "b450a4d8ed9aa62a324ee34a9c418dc4612c04c97a6ad856625d269a6a8706f7",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-hero.png",
+            "rgba_sha256": "9bf2f8b5afc0d49ae8eb3d99ee80f68b3e27a8126f0fe777c3dcee47166f0745",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-home.png",
+            "rgba_sha256": "7065dc34cff303a3869e54b25e44599337fe9e34724c630d99c4c8e7086425c7",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-workflow.png",
+            "rgba_sha256": "252ceedf4982ff9f4f1e86a40ce0a5b7bb1585160af3e25159befb7e380f00fa",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-no-js-home.png",
+            "rgba_sha256": "aa0efa854de97d7870c13e5d854d2ecb03b03cf3bda7d6ec9f9a6143de5709fc",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-no-js-workflow.png",
+            "rgba_sha256": "538465f92c127b52e8d9ded60c5687013a3150c3b205fdad6ebc8a3e073fa05a",
+            "reviewed_pixels_match": true
+          }
+        ]
+      },
+      {
+        "runner": "ubuntu-24.04-arm",
+        "receipt": {
+          "version": "v0.2.0-rc.9",
+          "target": "aarch64-unknown-linux-gnu",
+          "repository": "mylife-inc/Zellij",
+          "archive": "zel-v0.2.0-rc.9-aarch64-unknown-linux-gnu.tar.gz",
+          "archive_sha256": "f6c1377a0f98b2630dd64aebcf758dde71c9645d42664ff5ce9f6d54bbf234eb",
+          "engine": "ghcr.io/mylife-inc/zellij-base:0.2.0-rc.9",
+          "engine_digests": [
+            "ghcr.io/mylife-inc/zellij-base@sha256:a7c582581e0bea44d8b9acf75da9664f5ccb84f66e49d53f80a7be8383835ed1"
+          ]
+        },
+        "captures": [
+          {
+            "name": "creative-studio-1440-dark-guide-customize.png",
+            "rgba_sha256": "24f62c4db0d0b7f49f0cc16e192c9a040d565cb0e53e408e8ce825fede56a72d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-guide.png",
+            "rgba_sha256": "3bac8ba859409f3596c12fecce732679abe39ec2fe2782fdbb3735057d8a1262",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-hero.png",
+            "rgba_sha256": "1bd69a33115d0d6dde79c8e07fdbc58fc045384866c3f9932e58661a66e14623",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-home.png",
+            "rgba_sha256": "f9ea657d43b2d9108f02a352516173bdf228156f7f048ec169441fc9fda0d3e4",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-dark-work.png",
+            "rgba_sha256": "045e2b7d2c78dab09fada4222f9bca16d5e7fe06318c28d79424328e054a1f73",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-guide-customize.png",
+            "rgba_sha256": "3051de8279580f78d48bc6a702c691df289a153a41ab411ca4d46f481d2f51da",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-guide.png",
+            "rgba_sha256": "19cfc75241eccf02f9080ce9287278f67e87a453a33ab32e506d3596b6da1aca",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-hero.png",
+            "rgba_sha256": "9ebde36285b21906902a64758ae7b4bc84ec3453116e03cae14f020a1519074e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-home.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-light-work.png",
+            "rgba_sha256": "f42825d6b4fdee48ebb001f6345078c3538dc59ca32048d45ed0fb124b2cbe3b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-motion.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-no-js-home.png",
+            "rgba_sha256": "57118310759f62ffa3cede5f079c4edf5f2880500631b717a7c6c4862c217bc6",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-1440-no-js-work.png",
+            "rgba_sha256": "f42825d6b4fdee48ebb001f6345078c3538dc59ca32048d45ed0fb124b2cbe3b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-drawer.png",
+            "rgba_sha256": "773258d4c9a65822e991c983c87c387c861d7066705e8e4a6dad7dfcd299a0c8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-guide-customize.png",
+            "rgba_sha256": "354b2bb17b5782de95864e8f18aaa4d52548b1fd06150cfa04cc33ddf70d45a1",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-guide.png",
+            "rgba_sha256": "6122039d37635b1d5949ec9e611ec54c8b39be13e443f6ee1cb06e28e000493d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-hero.png",
+            "rgba_sha256": "8472e748785aee589ee403d422d1be27dc3a33703676939b29e84d43a1d24989",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-home.png",
+            "rgba_sha256": "55fbae1b95bb21726679d0ed12dd3f1ecede2207ce0be44029c7dc2c392b4c65",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-dark-work.png",
+            "rgba_sha256": "b7270ef14cacda8804e408437f6c5568dedc8136a99280e160830bf9dcc30a82",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-drawer.png",
+            "rgba_sha256": "33f8a6a8ce6cb9a82930e3801cb99c9bbcfeac3c455143c446dab592c8a0864d",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-guide-customize.png",
+            "rgba_sha256": "bf9f3f2b574f2b9799ae75278cf9748c7f6964852def4f053f185305ce72dc4a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-guide.png",
+            "rgba_sha256": "2dcb760371f830deb057290dfff56f7946af446eb26067bd466299a21e536e08",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-hero.png",
+            "rgba_sha256": "d5e77bca8d67201a765e059222d11b2793a8229a61670a4ecbfba778ed7f74fa",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-home.png",
+            "rgba_sha256": "e48058eb7108632a2ad9d830461b40372d8eb2cc1476fdf3efe9a9e39f029023",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-light-work.png",
+            "rgba_sha256": "ea06ddae69fd34aada9f958d7a5b0da3e00dce4a4935eb743753b0ee8a6a6e8f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-no-js-home.png",
+            "rgba_sha256": "e48058eb7108632a2ad9d830461b40372d8eb2cc1476fdf3efe9a9e39f029023",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "creative-studio-390-no-js-work.png",
+            "rgba_sha256": "ea06ddae69fd34aada9f958d7a5b0da3e00dce4a4935eb743753b0ee8a6a6e8f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-dark-root.png",
+            "rgba_sha256": "9fe0f8924a74dd38cdfb9190a7f4b5243f850483011ececab278330fa6d9234a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-dark-section.png",
+            "rgba_sha256": "e1c389586ae79d4348c139be7424472964c1184767022b9a16d88358c6f39b81",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-light-root.png",
+            "rgba_sha256": "7e3f172c51ab56bacd05ee6aba121e05e5ef7f4a9af102b33a07bf1f456b68e8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "navigation-light-section.png",
+            "rgba_sha256": "061a42a023e8b99af549b8b01a6faec0b698756c803e3d7128de85d6ea163be0",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-design.png",
+            "rgba_sha256": "f2ffc076454acc182ce074f57c44f5d3add109eaae4659a35a67cf60514507cd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-guide-customize.png",
+            "rgba_sha256": "e25a3d0538190aef546a4072f1330e80e6aa2ebef57161c15f5e9c8b5bf84750",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-guide.png",
+            "rgba_sha256": "63be1d3ff3aa380d3852be95cdd1cb51d6f471b42e00a3910319b29361cba90b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-hero.png",
+            "rgba_sha256": "cfa6f2d6f8deb732010403a732f92087f4d20330614b735e38bdfe38be7b2d2a",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-dark-home.png",
+            "rgba_sha256": "2560dc13207eb151c5480a47edc0b5cc073beae0bf0a23603ff47445dbb08c05",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-design.png",
+            "rgba_sha256": "852ace12950f76ee5064af7249c7af07970db148abd4a92eb58b8be8872fab8f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-guide-customize.png",
+            "rgba_sha256": "4298ffbd47a05d1733ac0516dfb6dcf9e96f26b0e39f4ffffda6ddc1a194b128",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-guide.png",
+            "rgba_sha256": "7c6b055a6bd87855a04074cbe6221814ecc8b5c5f84372de156a7c3719597066",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-hero.png",
+            "rgba_sha256": "7336e3cadaabf66d80320483cc029839f12203f4f2afdf14ac93e76ef52ef683",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-light-home.png",
+            "rgba_sha256": "056a652784649b9cf9283ad18cb2120e876d6be23cda63e720958b3ed54baaa2",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-motion.png",
+            "rgba_sha256": "7c2defccaa3c8dfa63585d8e34e628317c677e454ba38ee8640b19a404012724",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-no-js-design.png",
+            "rgba_sha256": "ba151810e1c24f57661341da54e84eadf72a89d3a28760dbbaa82693115aae9c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-1440-no-js-home.png",
+            "rgba_sha256": "056a652784649b9cf9283ad18cb2120e876d6be23cda63e720958b3ed54baaa2",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-design.png",
+            "rgba_sha256": "fbe37e2577e6e9bedee050399a77ea350295a9800031469bbf1ea81f118fee87",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-drawer.png",
+            "rgba_sha256": "a1e4c84c25e2166cb4e23cf60f94ff6082a5b8123af19e6bc4b1257ac02a3e4b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-guide-customize.png",
+            "rgba_sha256": "652b675d4dbe4fa2e19f2c55bc4cb6d51a4fa55d0b76dea9f5ca801cd8fecb73",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-guide.png",
+            "rgba_sha256": "d7e766b93a19c10a70144892dfe7b5e7e19455bec5b66c4320c0ec324f42f6a0",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-hero.png",
+            "rgba_sha256": "f263b6b089b207e345d50d4777afb6c646b31be2de0c8e307701d6f3c0d724b8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-dark-home.png",
+            "rgba_sha256": "46b1db81581a72afed38e3afa0f0080dc7abc9f612b195f6564432d6aa92d4ff",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-design.png",
+            "rgba_sha256": "0d8a3e94dd5ac2f41297f61bd24bf0c57427b75c575f4a44c6de438611bbc2ea",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-drawer.png",
+            "rgba_sha256": "fd39e518578e1b12d97cde0904bbdfda85b8d54ddd82d7842d72e74430a9e16f",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-guide-customize.png",
+            "rgba_sha256": "a12ace5084a81bf38b303ca0a1df5c2a69b55867f5297e22fced731ab406f9b7",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-guide.png",
+            "rgba_sha256": "a9c336da499301ba90db949488d9011fb8debd991226ccb84d5842ca290aff28",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-hero.png",
+            "rgba_sha256": "57266eacf88ad14ec641265790b8c163212a8911d73ab4f51bc84d1eb9a42e54",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-light-home.png",
+            "rgba_sha256": "55a0918518350cf820fd898cf84750cc41fb796c885ae47240211599979835bd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-no-js-design.png",
+            "rgba_sha256": "debf9caafb4e9a82d99162f26dc546438ac1f31922544f2f57274e1b500057f8",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "product-launch-390-no-js-home.png",
+            "rgba_sha256": "55a0918518350cf820fd898cf84750cc41fb796c885ae47240211599979835bd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-guide-customize.png",
+            "rgba_sha256": "62bf1dd9aa40a32206b1451741a58687bea1eb79c99f530d9df60ca060030635",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-guide.png",
+            "rgba_sha256": "cea58d0f63b587fbb73c64b8ea6da59d3b12affe4248635300b9eb178b32dde1",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-hero.png",
+            "rgba_sha256": "66ab74523bf20a61493a3a9b5b3cc683bf95a8de1498c45ad17d7ea38b99136b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-home.png",
+            "rgba_sha256": "274a887b7c136649f9e66b9eb1232256cfcd2d772c5e17769fac71b9fd92aa3c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-dark-workflow.png",
+            "rgba_sha256": "44c7b4b165b03f92afbdc201ef3df5995c6eab60fbfb0a048fa874bc0b678d8e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-guide-customize.png",
+            "rgba_sha256": "e6d0fd0d33feade5ed4459e7e379133492884eb5bd287ff41559b75bb4294c52",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-guide.png",
+            "rgba_sha256": "e71c6651dbb91d7641928d4fb6fe78a929e4f36867a19f90d9ac993d4e8c373b",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-hero.png",
+            "rgba_sha256": "f389d97c7bc0c901f362ed77fecb0eea66780d70e0a63f64a4665cb32ec3fe96",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-home.png",
+            "rgba_sha256": "ff3208680f2a277bb26b4621aa4e7dc6386374076127c2ae864d406ea7b36aa1",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-light-workflow.png",
+            "rgba_sha256": "72a928093629c9df6f27bb727be4f74c5323de5aade38d4931f40a90f92217a3",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-motion.png",
+            "rgba_sha256": "274a887b7c136649f9e66b9eb1232256cfcd2d772c5e17769fac71b9fd92aa3c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-no-js-home.png",
+            "rgba_sha256": "274a887b7c136649f9e66b9eb1232256cfcd2d772c5e17769fac71b9fd92aa3c",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-1440-no-js-workflow.png",
+            "rgba_sha256": "44c7b4b165b03f92afbdc201ef3df5995c6eab60fbfb0a048fa874bc0b678d8e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-drawer.png",
+            "rgba_sha256": "0e5bd33976dc6b5926feac3121fd81bcf2e6e8e0cad7e2fbec54a3458ce54f11",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-guide-customize.png",
+            "rgba_sha256": "6ff343271b85e8015cb40f3bc6893cdd4fdac153585316db18606b065382f95e",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-guide.png",
+            "rgba_sha256": "fbeaec526a9b8df34f6abde407e2ab7220cc901bc680d8ed26bf0df8ade007d3",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-hero.png",
+            "rgba_sha256": "025d2ad70c20731a6f2c6966d2032f1fb81fd9c2935216341839255a86adf508",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-home.png",
+            "rgba_sha256": "579a2849b18d5e17b25fda57c1a0aa8787605c2bfb682bf0e5b0d99dad67a1fd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-dark-workflow.png",
+            "rgba_sha256": "370b62a9633f435444105a10efe17aab2f7e2ca160bc4bc336f95065b28be6c4",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-drawer.png",
+            "rgba_sha256": "0a5f44972061b08edeff0d6585db6c2bf11c020faa1207a2c98e109054494127",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-guide-customize.png",
+            "rgba_sha256": "8a0b74b8f4259406a509710d7d7699464cccdd577a96225ac5bfa9a831c78043",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-guide.png",
+            "rgba_sha256": "4f226ab0210facac21f43f20473d3b00060ef9a6a758a289728b79254f6f1ef3",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-hero.png",
+            "rgba_sha256": "4a24b6098694419774a0fd01a8d424a0d535e00785f452d4ac85304963fe67ef",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-home.png",
+            "rgba_sha256": "c30721109d0956b2428cb8477bc53a3cbdd76b34cfd92bf98697225d27365e73",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-light-workflow.png",
+            "rgba_sha256": "9656036844a40f14d7df0c421a71e40fed424488fe23e5a75ef5e446e79a16db",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-no-js-home.png",
+            "rgba_sha256": "579a2849b18d5e17b25fda57c1a0aa8787605c2bfb682bf0e5b0d99dad67a1fd",
+            "reviewed_pixels_match": true
+          },
+          {
+            "name": "software-platform-390-no-js-workflow.png",
+            "rgba_sha256": "370b62a9633f435444105a10efe17aab2f7e2ca160bc4bc336f95065b28be6c4",
+            "reviewed_pixels_match": true
+          }
+        ]
+      }
+    ]
+  },
+  "channels_publication": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "before_head": "064be17acfd53fb506f4bf9db5276c1226cfbd84",
+      "head": "091c67956504d276e234ea7d6f8508241336950c"
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "before_head": "356856f2e35dc8dab70177633a05ce464af3fa1d",
+      "head": "1cb8a6b8e4308f8c28d616a9eba9b370f81e8047"
+    },
+    "shared": {
+      "repository": "mylife-inc/releases",
+      "before_head": "d43e0e04f06d9f09d0a990e9677009a69933be4c",
+      "head": "fd2ca8478d726aea06e19ad3dcc8850f982304ab"
+    }
+  },
+  "shared_release_readme": {
+    "head": "fd2ca8478d726aea06e19ad3dcc8850f982304ab",
+    "both_installers_match_verified_tagged_bytes": true,
+    "candidate_selection_remains_explicit": true
+  },
+  "consumer_builds": [
+    {
+      "run_id": 43827537560,
+      "workflow": "Documentation (acceptance-next.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164822537,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 133164824925,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43827537494,
+      "workflow": "Documentation (acceptance-netlify-portable.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164822444,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 133164824373,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43827537430,
+      "workflow": "Documentation (acceptance-portable.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164822480,
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "run_id": 43827537416,
+      "workflow": "Documentation (acceptance-static.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164821694,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 133164824255,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43827537491,
+      "workflow": "Documentation (acceptance-netlify-hosted.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164822334,
+          "name": "verify",
+          "conclusion": "success"
+        },
+        {
+          "id": 133164824048,
+          "name": "publish",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run_id": 43827537368,
+      "workflow": "Documentation (acceptance-hosted.yml)",
+      "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+      "conclusion": "success",
+      "build_only": true,
+      "jobs": [
+        {
+          "id": 133164823689,
+          "name": "verify",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "managed_upgrade_runs": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "head": "091c67956504d276e234ea7d6f8508241336950c",
+      "lifecycle_run": 43827848320,
+      "upgrade_run": 43828394353,
+      "upgrade_input": "upgrade_from_commit=064be17acfd53fb506f4bf9db5276c1226cfbd84"
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "head": "1cb8a6b8e4308f8c28d616a9eba9b370f81e8047",
+      "lifecycle_run": 43827854477,
+      "upgrade_run": 43829153914,
+      "upgrade_input": "upgrade_from=v0.2.0-rc.8"
+    }
+  },
+  "documentation_pull_request": 192,
+  "channels": {
+    "homebrew": {
+      "repository": "mylife-inc/homebrew-tap",
+      "run_id": 43827848320,
+      "head": "091c67956504d276e234ea7d6f8508241336950c",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133165805797,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165806024,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165806061,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165806127,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "homebrew_upgrade": {
+      "repository": "mylife-inc/homebrew-tap",
+      "run_id": 43828394353,
+      "head": "091c67956504d276e234ea7d6f8508241336950c",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133167540605,
+          "name": "Install, upgrade and uninstall (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133167540881,
+          "name": "Install, upgrade and uninstall (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133167540920,
+          "name": "Install, upgrade and uninstall (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133167540957,
+          "name": "Install, upgrade and uninstall (macos-15-intel)",
+          "conclusion": "success"
+        }
+      ],
+      "from": "0.2.0-rc.8",
+      "to": "0.2.0-rc.9",
+      "actual_versions_and_portable_builds_verified": true,
+      "logs": [
+        {
+          "job_id": 133167540605,
+          "sha256": "baf7af4e74fd21b59d2e6ddd8deeaf609d9c8b67bd075c87454e287a896db43f"
+        },
+        {
+          "job_id": 133167540881,
+          "sha256": "0eab8fa20c142f88dacce068949a8fbf2fba85041593f16ef87878f6cc54ba84"
+        },
+        {
+          "job_id": 133167540920,
+          "sha256": "07c6e27161b60c3b904f5dc37fad33fab06418170c0ec9fd5c23e66fcc2189c9"
+        },
+        {
+          "job_id": 133167540957,
+          "sha256": "fcbd391b0bc8f4301337225e4eeeec4df0280628c16730ca829ad3502348b4ca"
+        }
+      ]
+    },
+    "scoop": {
+      "repository": "mylife-inc/scoop-bucket",
+      "run_id": 43827854477,
+      "head": "1cb8a6b8e4308f8c28d616a9eba9b370f81e8047",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133165823941,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165824304,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165824376,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133165824511,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        }
+      ]
+    },
+    "scoop_upgrade": {
+      "repository": "mylife-inc/scoop-bucket",
+      "run_id": 43829153914,
+      "head": "1cb8a6b8e4308f8c28d616a9eba9b370f81e8047",
+      "attempt": 1,
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 133169996950,
+          "name": "Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133169997441,
+          "name": "Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133169997451,
+          "name": "Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 133169997704,
+          "name": "Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        }
+      ],
+      "from": "0.2.0-rc.8",
+      "to": "0.2.0-rc.9",
+      "actual_versions_and_portable_builds_verified": true,
+      "logs": [
+        {
+          "job_id": 133169996950,
+          "sha256": "a7134a9bfe1f1bc8c3de20af15ef93aeab11149ce47516a04890b1f21b54ea3a"
+        },
+        {
+          "job_id": 133169997441,
+          "sha256": "79a54e0530494e004f351143f83b549fa675feb50f6839602f4da602eca18737"
+        },
+        {
+          "job_id": 133169997451,
+          "sha256": "af700a3af846f98212de5c51f597f32a88c23bd625bb4f04f6e8d7cdd1b6d355"
+        },
+        {
+          "job_id": 133169997704,
+          "sha256": "871d4011671dab8dd8a1e5c035930472d2aedf15673142ca1daa4a363ab5e74e"
+        }
+      ]
+    }
+  },
+  "documentation_ci": {
+    "repository": "mylife-inc/Zellij",
+    "run_id": 43827537521,
+    "head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+    "attempt": 1,
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 133164823291,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823571,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823620,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823655,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823687,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823699,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823710,
+        "name": "Website and book templates",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823767,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823779,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823806,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823813,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823830,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823837,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823858,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823917,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164823961,
+        "name": "websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824025,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824124,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824153,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824156,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824168,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824175,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133164824213,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133166198235,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613631,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613719,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613732,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613746,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613748,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613757,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613787,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 133168613929,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "release_notes_correction": {
+    "guide_commit": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+    "reason": "Point published notes to the exact verified rc.9 guides instead of the earlier preparation snapshot.",
+    "assets_and_tag_unchanged": true,
+    "publication_status": "pending documentation merge"
+  },
+  "final_documentation_record": {
+    "implementation_active_guides_templates_workflows_unchanged_from_ci_head": "ab2377c21c076844dae38866bdfe125d9b4569d5",
+    "scope": "Context, evidence, completion/expansion records, release procedure and release-note permalinks only."
+  }
+}
