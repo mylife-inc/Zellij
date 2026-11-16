@@ -1,0 +1,566 @@
+{
+  "date": "2026-11-15",
+  "baseline": "259567ee25a07da9e6ccadd51ceadea17c0692aa",
+  "implementation": "18739b3527c8cd624b1a2fd2d1540d562e2ee5f0",
+  "pull_request": 189,
+  "status": "source verified; merge and development images pending",
+  "source_version": "0.2.0-rc.9 unreleased",
+  "public_version": "0.2.0-rc.8 unchanged",
+  "local": {
+    "engine_tests": 491,
+    "engine_typecheck": true,
+    "engine_build": true,
+    "strict_deep_docs_routes": 59,
+    "templates_checked": 8,
+    "actionlint": true,
+    "template_browser_driver_syntax": true,
+    "diff_check": true,
+    "logs": [
+      {
+        "file": "zellij-mobile-navigation-typecheck.log",
+        "sha256": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018"
+      },
+      {
+        "file": "zellij-mobile-navigation-engine.log",
+        "sha256": "602c1fd72840e1439fb3afb098c09a94a2e381e697e783129308e7ca9a6e271f"
+      },
+      {
+        "file": "zellij-mobile-navigation-build.log",
+        "sha256": "a54fe8be472a2080e4aaac39044cd503807ee4b7bb6617c9cc21adf2bcad866c"
+      },
+      {
+        "file": "zellij-mobile-navigation-docs.log",
+        "sha256": "acc0444d5287a578cb581d88bd8fe863e4f670b28e9e9cb985f5b77902868778"
+      },
+      {
+        "file": "zellij-mobile-navigation-templates.log",
+        "sha256": "520c7e815deadc7de7946e8f5bd92dd50ddf683ea86c787c2ae2f464d5df89f6"
+      },
+      {
+        "file": "zellij-mobile-navigation-typecheck-final.log",
+        "sha256": "308d45116a90180019cb09524a76878e200c36c9082c4c9a78d877c3b6925018"
+      },
+      {
+        "file": "zellij-mobile-navigation-engine-final.log",
+        "sha256": "2d9ebf838c3fffca372718bf472938008a05fde89b820f3042c5149905ed938b"
+      },
+      {
+        "file": "zellij-mobile-navigation-build-final.log",
+        "sha256": "2001f5f77798b8e5ac5aec03070a3d46e4c2a23c9225b9f0c378c6cddb94b9f5"
+      }
+    ]
+  },
+  "hosted": {
+    "run": 43777347096,
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/43777347096",
+    "status": "success",
+    "initial_run": 43774698117,
+    "initial_showcase_result": {
+      "passed": 409,
+      "failed": 8,
+      "flaky": 1,
+      "conditional_skips": 140
+    },
+    "initial_showcase_log_sha256": "ed4f0dce08f18b038cc36210a89f2a629ae8479390b898dc59fb39626ed33acc",
+    "initial_findings": [
+      "Reduced-motion wildcard lost animation-name specificity to the Back selector; add an equally specific later override.",
+      "Modal cleanup focused the sticky header without preventScroll; trace shows 22px shift on test setup focus and another 22px on cleanup. Use preventScroll for both and assert scroll before entry, in section and after Escape.",
+      "Existing Safari overflow fixture raced font/resize measurement; await fonts and final expected item count before keyboard interaction."
+    ],
+    "initial_run_conclusion": "cancelled",
+    "initial_jobs": [
+      {
+        "name": "Website and book templates",
+        "databaseId": 132998232057,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "databaseId": 132998232401,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "databaseId": 132998232415,
+        "conclusion": "failure"
+      },
+      {
+        "name": "Embedded schema is current",
+        "databaseId": 132998232438,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "databaseId": 132998232444,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "databaseId": 132998232475,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "Native images (amd64)",
+        "databaseId": 132998232480,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "databaseId": 132998232483,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "databaseId": 132998232496,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "databaseId": 132998232500,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "databaseId": 132998232517,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "databaseId": 132998232561,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "databaseId": 132998232567,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "databaseId": 132998232578,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "databaseId": 132998232584,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "databaseId": 132998232632,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "databaseId": 132998232683,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "databaseId": 132998232741,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "databaseId": 132998232783,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "databaseId": 132998232813,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "databaseId": 132998232895,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "databaseId": 132999334404,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "databaseId": 133001405380,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "databaseId": 133001405401,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "databaseId": 133001405416,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "databaseId": 133001405420,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "databaseId": 133001405422,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 133001405436,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "databaseId": 133001405463,
+        "conclusion": "cancelled"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 133001405465,
+        "conclusion": "cancelled"
+      }
+    ],
+    "tested_head": "a99cc94e62ed3918023f020fc5d1caf3351cf99a",
+    "template_job": 133006639088,
+    "template_result": "success",
+    "template_log_sha256": "3f99322dcc152a3cbe9f4ea00d64c931e0879e011330dd0c6045c86091b7fc32",
+    "template_captures": 103,
+    "second_run": 43775728142,
+    "second_findings": [
+      "All 36 new mobile-navigation cases pass after eef7755; showcase main suite has 417 passed and one existing mobile-Safari search-opening retry, with 140 conditional skips. Prefix/reload job was interrupted by superseding commit.",
+      "Linux watch acceptance kept a browser polling after deliberate server shutdown; WebKit reported the caught connection-refused fetch as pageerror. 0e2f688 ends browser session before stopping the server and retains Ctrl-C/output-preservation checks."
+    ],
+    "second_logs": [
+      {
+        "file": "zellij-mobile-navigation-showcase-second.log",
+        "sha256": "cec0be0b9da16a12b9eac0711748a6f830e476406ba3dc0890215cc52f202da8"
+      },
+      {
+        "file": "zellij-mobile-navigation-portable-linux-failure.log",
+        "sha256": "aa675350d6c0fde8ebabb29ffd9adb992e30a68f0528403e0793df0743979c00"
+      }
+    ],
+    "intermediate_run": 43776574870,
+    "intermediate_run_status": "cancelled before acceptance completed when the final fixture correction superseded it",
+    "third_run": 43776685463,
+    "third_showcase_result": {
+      "passed": 416,
+      "failed": 2,
+      "conditional_skips": 140,
+      "finding": "The added search readiness assertion used desktop data-measured, which stays false at phone widths. Product navigation cases all pass. a99cc94 uses the existing bounded keyboard-opening pattern from search.spec.ts instead."
+    },
+    "third_showcase_log_sha256": "18846bafd95410e6a6a281ef91b0c2b28965bf275951b3b42105d43f29a873e3",
+    "showcase_job": 133006639197,
+    "showcase_result": {
+      "passed": 418,
+      "conditional_skips": 140,
+      "retries": 0,
+      "new_navigation_cases": 36,
+      "prefix_and_development_reload": "success"
+    },
+    "showcase_log_sha256": "0568b119e5782a9a2cc4ca26194416c3480eb228c07e93e7d4f93eb138471bf6",
+    "artifacts": [
+      {
+        "id": 14187426416,
+        "name": "playwright-failure-details",
+        "size_in_bytes": 7349018
+      },
+      {
+        "id": 14186583490,
+        "name": "site-template-previews",
+        "size_in_bytes": 17331314
+      }
+    ],
+    "jobs_passed": 30,
+    "jobs": [
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "databaseId": 133006638801,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-15T23:56:53Z"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "databaseId": 133006639019,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-15T23:58:50Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "databaseId": 133006639024,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-16T00:01:51Z"
+      },
+      {
+        "name": "Native images (amd64)",
+        "databaseId": 133006639059,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-15T23:58:02Z"
+      },
+      {
+        "name": "Engine",
+        "databaseId": 133006639065,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-15T23:58:36Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "databaseId": 133006639078,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:17Z",
+        "completedAt": "2026-11-15T23:58:23Z"
+      },
+      {
+        "name": "Website and book templates",
+        "databaseId": 133006639088,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-16T00:00:51Z"
+      },
+      {
+        "name": "CLI",
+        "databaseId": 133006639105,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-16T00:23:09Z"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "databaseId": 133006639145,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-16T00:00:12Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "databaseId": 133006639146,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:18Z",
+        "completedAt": "2026-11-15T23:58:20Z"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "databaseId": 133006639152,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-15T23:58:30Z"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "databaseId": 133006639181,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:55Z",
+        "completedAt": "2026-11-16T00:00:26Z"
+      },
+      {
+        "name": "Showcase end to end",
+        "databaseId": 133006639197,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-16T00:03:50Z"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "databaseId": 133006639207,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:18Z",
+        "completedAt": "2026-11-15T23:56:59Z"
+      },
+      {
+        "name": "Embedded schema is current",
+        "databaseId": 133006639228,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-15T23:55:52Z"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "databaseId": 133006639255,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-16T00:06:16Z"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "databaseId": 133006639257,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-16T00:11:11Z"
+      },
+      {
+        "name": "Native images (arm64)",
+        "databaseId": 133006639258,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:18Z",
+        "completedAt": "2026-11-15T23:58:01Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "databaseId": 133006639268,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-15T23:58:04Z"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "databaseId": 133006639276,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:15Z",
+        "completedAt": "2026-11-16T00:04:21Z"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "databaseId": 133006639335,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:55:16Z",
+        "completedAt": "2026-11-15T23:58:05Z"
+      },
+      {
+        "name": "Combined image manifests",
+        "databaseId": 133007392835,
+        "conclusion": "success",
+        "startedAt": "2026-11-15T23:58:04Z",
+        "completedAt": "2026-11-15T23:58:42Z"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "databaseId": 133008478509,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:53Z",
+        "completedAt": "2026-11-16T00:02:49Z"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "databaseId": 133008478517,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:53Z",
+        "completedAt": "2026-11-16T00:03:07Z"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "databaseId": 133008478518,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:53Z",
+        "completedAt": "2026-11-16T00:02:31Z"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 133008478526,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:57Z",
+        "completedAt": "2026-11-16T00:07:09Z"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "databaseId": 133008478529,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:55Z",
+        "completedAt": "2026-11-16T00:02:43Z"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "databaseId": 133008478553,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:55Z",
+        "completedAt": "2026-11-16T00:04:01Z"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "databaseId": 133008478556,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:54Z",
+        "completedAt": "2026-11-16T00:03:02Z"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "databaseId": 133008478586,
+        "conclusion": "success",
+        "startedAt": "2026-11-16T00:01:53Z",
+        "completedAt": "2026-11-16T00:02:34Z"
+      }
+    ]
+  },
+  "fixes": [
+    {
+      "commit": "18739b3527c8cd624b1a2fd2d1540d562e2ee5f0",
+      "change": "Replace mobile accordions with root/section views, Back scroll/focus restoration, visible Close, responsive layouts and reduced motion; preserve configured mobile new-tab metadata."
+    },
+    {
+      "commit": "eef7755886003c1be70b4f90d4405ca73717b2f8",
+      "change": "Preserve scroll while restoring modal focus; honor reduced motion on Back; settle existing overflow fixture before keyboard input."
+    },
+    {
+      "commit": "0e2f688cc426e4409c1535319b603380013105b0",
+      "change": "Order preview acceptance teardown so WebKit is closed before intentionally stopping its polled server; preserve lifecycle assertions."
+    },
+    {
+      "commit": "91d35713d77758747643a67d55b645e090e896c9",
+      "change": "Wait for hydrated navigation before the existing mobile search keyboard shortcut check."
+    },
+    {
+      "commit": "a99cc94e62ed3918023f020fc5d1caf3351cf99a",
+      "change": "Correct the mobile-search readiness fixture to reuse the bounded shortcut-opening pattern; hidden desktop measurement is not a mobile readiness signal."
+    }
+  ],
+  "boundaries": [
+    "No new menu configuration or dependencies.",
+    "Native portable books retain their separate sidebar.",
+    "Public rc.8 and production hosting unchanged; live providers deferred.",
+    "Hosted Chromium/WebKit checks do not constitute a complete assistive-technology audit."
+  ],
+  "visual_review": {
+    "template_drawers": [
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/creative-studio-390-dark-drawer.png",
+        "sha256": "82605d3d971e92f5c788dc79aff3f367f0e8e7d1f5554693c28449a4ab76be76"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/creative-studio-390-light-drawer.png",
+        "sha256": "bf1be69c1ddefcc498c8e7f9977e8c897e942060562adef7028db714085ff98c"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/product-launch-390-dark-drawer.png",
+        "sha256": "88357d0fe90097922b1a53381b44fe7c7564a162bf36e2a292555296e2fd1f4d"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/product-launch-390-light-drawer.png",
+        "sha256": "1d1ae477f661570fd571b6b837294b4e54213145c71816b13ce0bf06fb79859e"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/software-platform-390-dark-drawer.png",
+        "sha256": "08a4ffa89955567d63b87d81b078b460887e3c5729173d0e1683c92a2d1448a1"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/software-platform-390-light-drawer.png",
+        "sha256": "bfe92d5c71454b77673202cea3f15979c863c96a1778bbf0e77a4d945abb0099"
+      }
+    ],
+    "template_captures": 103,
+    "template_capture_bytes_match_initial_reviewed_run": true,
+    "notes": "Reviewed all three website drawers in light/dark; labels, active colors and Close control remain clear and retain each template typography. Reviewed root and section views in light/dark, including toolbar placement, descriptions, icons and root footer.",
+    "section_drawers": [
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/drawer-dark-root.png",
+        "sha256": "410fa49685283513d7a9f9f36e83098dab0532c7ab9f7c211f3ea74f131772da"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/drawer-dark-section.png",
+        "sha256": "703c8d82348b80acda56bfc28c14bdf71ab7ee2ed4b72062a4da68142807b237"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/drawer-light-root.png",
+        "sha256": "1d9c89b0d307aa069af8fb6c9e37f7ff838403a5f1b315bff1e14ca7257f9cd3"
+      },
+      {
+        "file": "specs/evidence/mobile-navigation-2026-11-15/drawer-light-section.png",
+        "sha256": "6370459df1e802856ee904e1bf96e22dec9e222feb75d07510812bc907f40d67"
+      }
+    ],
+    "drawer_capture_bytes_match_initial_reviewed_run": true
+  }
+}

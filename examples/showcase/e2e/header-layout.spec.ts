@@ -80,12 +80,16 @@ test.describe('measured overflow', () => {
   test.skip(({ isMobile }) => Boolean(isMobile), 'desktop keyboard and resize behavior');
 
   test('moves trailing links into More and restores them when space returns', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'networkidle' });
+    await page.evaluate(() => document.fonts.ready);
     const nav = page.getByRole('navigation', { name: 'Main', exact: true });
     await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
     await page.setViewportSize({ width: 901, height: 900 });
     const more = nav.locator('[data-nav-index="more"] > button');
     await expect(more).toBeVisible();
+    // At this narrow width every item belongs in More. Wait for the final
+    // measurement, not an intermediate count while text/resize events settle.
+    await expect(nav.locator('[data-nav-index]:not([data-nav-index="more"])')).toHaveCount(0);
     await more.focus();
     await page.keyboard.press('ArrowDown');
     await expect(nav.locator('[data-nav-index="more"] a').first()).toBeFocused();

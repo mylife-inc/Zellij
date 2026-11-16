@@ -223,7 +223,7 @@ test.describe('theme toggle', () => {
 test.describe('mobile drawer', () => {
   test.skip(({ isMobile }) => !isMobile, 'mobile viewport only');
 
-  test('opens, locks scroll, expands nested items, and closes on Escape', async ({ page }) => {
+  test('opens, locks scroll, enters a section, and closes on Escape', async ({ page }) => {
     await page.goto('/');
 
     await page.getByRole('button', { name: 'Open navigation' }).click();
@@ -232,11 +232,9 @@ test.describe('mobile drawer', () => {
 
     await expect(page.locator('body')).toHaveCSS('overflow', 'hidden');
 
-    // Nested items are accordions on mobile.
-    const shop = drawer.getByRole('button', { name: 'Shop' });
-    await expect(shop).toHaveAttribute('aria-expanded', 'false');
-    await shop.click();
-    await expect(shop).toHaveAttribute('aria-expanded', 'true');
+    await drawer.getByRole('button', { name: 'Shop', exact: true }).click();
+    await expect(drawer.getByRole('heading', { name: 'Shop', exact: true })).toBeFocused();
+    await expect(drawer.getByRole('button', { name: 'Back to main menu' })).toBeVisible();
     await expect(drawer.getByRole('link', { name: /Trade in/ })).toBeVisible();
 
     await page.keyboard.press('Escape');
@@ -314,13 +312,13 @@ test.describe('mobile drawer', () => {
     await expect(drawer.locator(':focus')).toHaveCount(1);
   });
 
-  test('closes when the backdrop is tapped', async ({ page }) => {
+  test('closes from the visible close button', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Open navigation' }).click();
     const drawer = page.getByRole('dialog', { name: 'Site navigation' });
     await expect(drawer).toBeVisible();
 
-    await page.locator('.zellij-drawer-backdrop').click({ position: { x: 5, y: 5 } });
+    await drawer.getByRole('button', { name: 'Close navigation', exact: true }).click();
     await expect(drawer).toBeHidden();
   });
 

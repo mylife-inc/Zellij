@@ -77,11 +77,15 @@ test.describe('overlays are fixed to the viewport, not to the header', () => {
   test('the search overlay fills the viewport when opened part-way down a page', async ({
     page,
   }) => {
-    await page.goto('/guide/quickstart');
+    await page.goto('/guide/quickstart', { waitUntil: 'networkidle' });
     await scrollDown(page);
 
-    await page.keyboard.press('ControlOrMeta+k');
-    await expect(page.getByRole('dialog', { name: 'Search the guide' })).toBeVisible();
+    // As in search.spec.ts, retry a shortcut sent before its listener mounts.
+    // Desktop overflow measurement is deliberately inactive at phone widths.
+    await expect(async () => {
+      await page.keyboard.press('ControlOrMeta+k');
+      await expect(page.getByRole('dialog', { name: 'Search the guide' })).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 15000 });
 
     const viewport = page.viewportSize()!;
     const box = (await page.locator('.zellij-search-root').boundingBox())!;

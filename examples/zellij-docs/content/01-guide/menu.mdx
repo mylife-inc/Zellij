@@ -97,6 +97,24 @@ link remains beside the company mark and the navigation drawer contains the
 complete menu. The optional GitHub destination moves into that drawer on
 mobile, leaving room for both company and product identity.
 
+### Mobile section views
+
+In rc.9, the hamburger opens a full-screen menu on phones and a side drawer on
+larger mobile/tablet layouts. Primary section names use large touch targets.
+A section with children opens its own view with a title and its links; grouped
+menus retain their headings, descriptions and icons within that view.
+
+The top-left **Back** arrow returns to the main menu and restores its scroll
+position and focused section. The top-right **Close** button exits the entire
+menu; Escape does the same. A direct page link navigates immediately and closes
+the menu. External links preserve their configured `newTab` behavior. Reopening
+always starts at the main menu. The visible backdrop on tablets also closes it.
+
+Transitions respect reduced motion and `motion: none`. The existing `menu.yaml`
+is the source for both desktop and mobile navigation; no separate menu or new
+configuration is needed. The optional GitHub link and CTA buttons stay in the
+main menu's footer. Long lists scroll independently of the Back/Close controls.
+
 When resizing switches between mobile and desktop navigation, open menus close
 and keyboard focus moves to a visible navigation control. Focus already in the
 page content stays there. Rapid changes use the final viewport width, even if
