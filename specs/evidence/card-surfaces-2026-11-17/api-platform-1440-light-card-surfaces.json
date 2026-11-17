@@ -1,0 +1,794 @@
+[
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": "rgb(11, 18, 32)",
+      "features": "rgb(11, 18, 32)",
+      "link": null,
+      "ghost": "rgb(11, 18, 32)",
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "baseline": {
+      "heading": "rgb(11, 18, 32)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(11, 18, 32)"
+    },
+    "foreground": "rgb(11, 18, 32)"
+  }
+]

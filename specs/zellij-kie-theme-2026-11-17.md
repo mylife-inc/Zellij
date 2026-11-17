@@ -45,7 +45,7 @@ needed. Public rc.9 is unchanged until an explicitly verified release.
 
 ## Acceptance
 
-Pending: engine/native tests, schema and token freshness, exact archive
+Initial acceptance plan: engine/native tests, schema and token freshness, exact archive
 preservation, strict authored-content validation, actual source engine builds,
 desktop/mobile light/dark captures, local fonts, FAQ keyboard use, no-JS content,
 reduced motion, full shared navigation and image/network checks. All actual
@@ -79,3 +79,33 @@ The showcase still expected 14 theme choices; it now expects 15 and checks Kie
 by name. Arabic skip-link acceptance polls its layout with the same one-pixel
 tolerance as the page-overflow check and includes measured bounds on failure.
 This does not change the skip-link CSS or relax the requirement to show it.
+
+The final Next browser measurements in `44080427260` explain the skip-link
+assertion: focus state arrives before its CSS placement on three of four cases.
+Initial x coordinates still contain the offscreen 9,999px offset; settled bounds
+are exactly x=1141 at 1280px and x=251 at 390px, each 139px wide. Polling rendered
+layout resolves this harness race without changing the product's logical CSS.
+
+## Verified theme result
+
+All 32 jobs in `44080427260` pass at `4604cfc`. The showcase passes 418 cases
+with 140 conditional skips and no retries; additional prefix/reload/page-theme
+checks pass. The scoped-theme regression passes Chromium/WebKit on all three
+OS families. The template job retains 132 captures and each native website
+architecture retains 112. All 356 captures retain the reviewed earlier bytes.
+Cross-architecture geometry is identical; 35 images match every pixel and the
+remaining 77 differ by at most one RGB-channel step.
+
+Local checks pass 810 Rust tests (five hosted-only cases ignored), 494 engine
+tests, 104 helpers, warnings-denied Clippy and strict 59-route/25-example docs.
+All nine templates pass creation/packaging/content acceptance; eight previously
+published archives retain their exact bytes. Reference/design and final previews
+are retained in [the evidence](evidence/zellij-kie-theme-2026-11-17.json).
+A final CSS review leads to the separate [card-surface follow-up](zellij-card-surfaces-2026-11-17.md).
+
+PR #196 merges as `5edac83`, identical to tested `4604cfc`. Development-image
+run `44091260003` passes all 13 jobs, publishing four amd64/arm64 variants and
+passing the serving check. Card follow-up PR #197 merges as `84dcce6`; its
+32-job CI passes and all 356 existing captures retain exact bytes. Final records
+include retained previews and a strict-checked guide correction distinguishing
+published rc.9 from source rc.10 multilingual support.

@@ -1,0 +1,345 @@
+{
+  "date": "2026-11-17",
+  "source": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
+  "pull_request": 197,
+  "ci": {
+    "run": 44086609777,
+    "attempt": 2,
+    "head": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
+    "status": "success",
+    "jobs": [
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "id": 134071159133,
+        "conclusion": "success"
+      },
+      {
+        "name": "Embedded schema is current",
+        "id": 134071159496,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "id": 134071160012,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "id": 134071160421,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "id": 134071160992,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "id": 134071161047,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "id": 134071161070,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-latest)",
+        "id": 134071161162,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "id": 134071161900,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "id": 134071162571,
+        "conclusion": "success"
+      },
+      {
+        "name": "Website and book templates",
+        "id": 134071225370,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "id": 134071226531,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "id": 134071229129,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "id": 134071233825,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "id": 134071234443,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "id": 134071234778,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "id": 134071234795,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "id": 134071238880,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "id": 134071240634,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "id": 134071247527,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "id": 134071250570,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "id": 134071250576,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "id": 134071252757,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "id": 134071253587,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "id": 134072648175,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "id": 134072648273,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "id": 134072648282,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "id": 134072648297,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "id": 134072648349,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "id": 134072648361,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "id": 134072648380,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "id": 134072648441,
+        "conclusion": "success"
+      }
+    ]
+  },
+  "scope": "feature/pricing card text follows its own surface, independently of surrounding section backgrounds",
+  "samples": [
+    {
+      "path": "specs/evidence/card-surfaces-2026-11-17/api-platform-1440-dark-card-surfaces.json",
+      "sha256": "2570b8856857c9032a351b699afe12d0e14a03dde5a57e1556a61c83ffcecd8c",
+      "measurements": 36
+    },
+    {
+      "path": "specs/evidence/card-surfaces-2026-11-17/api-platform-1440-light-card-surfaces.json",
+      "sha256": "b25e8e738baaff56fb949e3397d0cdf286acefe021e41220cfda95f8c20cdd4a",
+      "measurements": 36
+    },
+    {
+      "path": "specs/evidence/card-surfaces-2026-11-17/api-platform-390-dark-card-surfaces.json",
+      "sha256": "2570b8856857c9032a351b699afe12d0e14a03dde5a57e1556a61c83ffcecd8c",
+      "measurements": 36
+    },
+    {
+      "path": "specs/evidence/card-surfaces-2026-11-17/api-platform-390-light-card-surfaces.json",
+      "sha256": "b25e8e738baaff56fb949e3397d0cdf286acefe021e41220cfda95f8c20cdd4a",
+      "measurements": 36
+    }
+  ],
+  "template_previews": {
+    "count": 132,
+    "byte_identical_to_theme_baseline": 132
+  },
+  "websites_arm64": {
+    "captures": 112,
+    "byte_identical_to_theme_baseline": 112,
+    "card_surface_measurements": 144
+  },
+  "public_rc9": "unchanged",
+  "local_browser_container": "not used",
+  "websites_amd64": {
+    "captures": 112,
+    "byte_identical_to_theme_baseline": 112,
+    "card_surface_measurements": 144
+  },
+  "infrastructure_history": [
+    {
+      "job": 134050572822,
+      "platform": "macos-15 / aarch64-apple-darwin",
+      "result": "cancelled before any runner/step started",
+      "annotations": [
+        "The job was not acquired by Runner of type hosted even after multiple attempts",
+        "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+      ],
+      "consequence": "Dependent Scoop and Homebrew jobs skipped",
+      "retry": "GitHub initially rejected retry while the original CLI job was running. Once attempt 1 completed, retrying only the cancelled package job succeeded in attempt 2 without source changes; all eight dependent Homebrew/Scoop cases passed.",
+      "retry_job": 134071159133
+    }
+  ],
+  "merge_commit": "84dcce64f220dea3e3bc2748b2d1c63271d49fe5",
+  "merge_tree": "identical to tested 7b6f052",
+  "duplicate_main_ci": {
+    "run": 44094639309,
+    "status": "cancelled after verifying complete merge-tree equivalence to all-green PR head; base-image publication continues"
+  },
+  "development_images": {
+    "run": 44094639060,
+    "head": "84dcce64f220dea3e3bc2748b2d1c63271d49fe5",
+    "status": "success",
+    "manifests": {
+      "main": {
+        "reference": "ghcr.io/mylife-inc/zellij-base:main",
+        "digest": "sha256:2d344c87a9e8aac6804eaeec45507a2a15addd7cf9fcd0e5703708cac54714ca",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      "main-maths": {
+        "reference": "ghcr.io/mylife-inc/zellij-base:main-maths",
+        "digest": "sha256:49f03e5557b5f6f7f83681d73d78a62e211b5b62aeccf7cc0ebd3ddbaaee238a",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      "main-diagrams": {
+        "reference": "ghcr.io/mylife-inc/zellij-base:main-diagrams",
+        "digest": "sha256:ca3c6b4c30478136a50f12a70e6361da2580e7f03aadf16458c52dfcd13d99c0",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      "main-all": {
+        "reference": "ghcr.io/mylife-inc/zellij-base:main-all",
+        "digest": "sha256:6481f5a2ec61e13e4629ee0420deb2936cd97f98f873c3d1f71593330419ff08",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      }
+    },
+    "jobs": [
+      {
+        "name": "maths \u00b7 amd64",
+        "id": 134078415625,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "id": 134078415899,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "id": 134078415988,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 arm64",
+        "id": 134078416037,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "id": 134078416067,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "id": 134078416108,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "id": 134078416150,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "id": 134078416318,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "id": 134080123785,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "id": 134080123810,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "id": 134080123818,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "id": 134080123979,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "id": 134080368753,
+        "conclusion": "success"
+      }
+    ],
+    "serving_check": "passed; published image builds and serves a site"
+  },
+  "records_followup": {
+    "runtime_and_checks": "unchanged from tested 7b6f052",
+    "guide_delta": "one prose paragraph distinguishing published rc.9 from source rc.10 multilingual support",
+    "guide_validation": "strict deep check passed: 59 routes, 25 examples",
+    "ci_policy": "records/prose-only follow-up uses [skip ci]; no claim that this later records head ran the full suite"
+  }
+}

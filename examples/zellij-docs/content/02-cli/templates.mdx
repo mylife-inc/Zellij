@@ -35,10 +35,11 @@ drives reading order, metadata and both web and print. PDF is disabled by defaul
 normal creation, checks and web builds need no container runtime. Enable PDF
 with `zel build my-book --pdf` or `pdf.enabled: true`; `zel pdf my-book --check`
 checks print compatibility natively. Actual typesetting requires the optional
-LuaLaTeX Linux container runtime. The classic print design supports English/LTR;
-numeric citations, glossary and subject index are also supported in rc.9.
-Multilingual print remains planned. Technical/study editions are included in
-rc.9, as described below.
+LuaLaTeX Linux container runtime. Published rc.9 supports English/LTR print,
+numeric citations, glossary and subject index. Current source rc.10 also supports
+French, German, Spanish and Arabic RTL with pinned print fonts; see
+[book language and PDF configuration](/cli/books). Technical/study editions are
+included in rc.9, as described below.
 Previously published book-classic 0.1.0 archives remain unchanged.
 
 <div id="technical-and-study-editions-rc8-source" className="zellij-legacy-anchor" />
