@@ -78,3 +78,21 @@ The same run's portable search test incorrectly expects one match for a chapter
 title also present in two cross-links. It now queries the unique Arabic body
 term `تجربة`, still requiring one result and keyboard navigation to chapter one.
 The search implementation itself is unchanged.
+
+## Verified result
+
+All 32 jobs in `44075182273` pass at `6d9b4b5`. PR #195 merges as `56a60f6`,
+with an identical tree. Local checks pass 810 Rust tests (five hosted-only cases
+ignored), 491 engine tests, 104 helper tests, warnings-denied Clippy and zero
+reported npm advisories. Hosted acceptance produces 65 PDFs and 586 page captures.
+All native language pages match across Docker/Podman amd64 and Docker arm64;
+Arabic technical pages also match both Next architectures. The 485 compared
+pre-existing artifacts retain their exact bytes (413 page images, 36 TeX files
+and 36 assets). Six representative reviewed pages are retained with hashes.
+
+The duplicate post-merge CI run is cancelled after complete tree equivalence
+with the all-green PR is confirmed. Development-image run `44079346628` passes
+all 13 jobs, publishes four main variants for amd64/arm64 and builds/serves a
+site from the published default image.
+See [durable evidence](evidence/zellij-book-languages-2026-11-17.json).
+Public rc.9 stays unchanged. Kie theme verification follows separately.

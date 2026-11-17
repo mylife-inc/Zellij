@@ -1,0 +1,794 @@
+[
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 0,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 1,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 2,
+    "type": "zellij-pricing-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": "rgb(236, 239, 247)",
+      "features": "rgb(236, 239, 247)",
+      "link": null,
+      "ghost": "rgb(236, 239, 247)",
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 3,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 4,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 5,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 6,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 7,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "default",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "inverted",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "accent",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  },
+  {
+    "index": 8,
+    "type": "zellij-feature-card",
+    "background": "gradient",
+    "colors": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "baseline": {
+      "heading": "rgb(236, 239, 247)",
+      "amount": null,
+      "features": null,
+      "link": null,
+      "ghost": null,
+      "card": "rgb(236, 239, 247)"
+    },
+    "foreground": "rgb(236, 239, 247)"
+  }
+]

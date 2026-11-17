@@ -1,5 +1,31 @@
 # Product expansion: branding, composition, templates, books and installation
 
+**2026-11-17: multilingual books, Kie theme and card contrast verified**
+
+Source rc.10 now supports Arabic RTL and French/German/Spanish print with pinned
+Amiri/Libertinus fonts. PR #195 (`56a60f6`, tested `6d9b4b5`) passes all 32 jobs;
+65 PDFs produce 586 page captures, and 485 existing artifacts retain exact bytes.
+Web UI labels remain English; code/math stay LTR. The RTL skip-link overflow and
+active Next dependency advisory are fixed. See the
+[book contract](zellij-book-languages-2026-11-17.md).
+
+The fifteenth theme `kie` and ninth starter `api-platform` follow the inspected
+Kie palette/type/layout while preserving the user's shared navigation choices.
+Live reference browser access returned Cloudflare 403; no verified 100% clone
+claim is made. PR #196 (`5edac83`, tested `4604cfc`) passes all 32 jobs, including
+418 showcase cases and nine-template acceptance. The shared scoped-theme fix
+restores older presentation rules. PR #197 (`84dcce6`, tested `7b6f052`) fixes
+card foregrounds on inverted/accent sections; all 32 jobs and 288 additional
+card-surface measurements pass. All 356 reviewed captures retain exact bytes.
+See the [theme contract](zellij-kie-theme-2026-11-17.md) and
+[card contract](zellij-card-surfaces-2026-11-17.md).
+
+Public rc.9, published documentation and installer recipes remain unchanged.
+Next: prepare, publish and verify rc.10, then update the public guide and retire
+rc.9 only after the existing replacement gates pass. Live-provider work stays
+deferred; additional installation channels remain separate backlog work.
+
+
 **2026-11-16: print-style authoring verified (source rc.10)**
 
 `pdf.style` now customizes accent, serif/sans body and cover/chapter-title fonts,

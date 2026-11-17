@@ -1,0 +1,440 @@
+{
+  "schema": 1,
+  "date": "2026-11-17",
+  "source": "4604cfc4df64d6d4dd9b5c1c96fc7acece76b488",
+  "pull_request": 196,
+  "ci": {
+    "run": 44080427260,
+    "head": "4604cfc4df64d6d4dd9b5c1c96fc7acece76b488",
+    "status": "success",
+    "jobs": [
+      {
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "id": 134029401391,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (windows-latest)",
+        "id": 134029401491,
+        "conclusion": "success"
+      },
+      {
+        "name": "CLI",
+        "id": 134029401534,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "id": 134029401593,
+        "conclusion": "success"
+      },
+      {
+        "name": "Showcase end to end",
+        "id": 134029401619,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "id": 134029401637,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (arm64)",
+        "id": 134029401649,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "id": 134029401669,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "id": 134029401671,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (ubuntu-latest)",
+        "id": 134029401677,
+        "conclusion": "success"
+      },
+      {
+        "name": "Website and book templates",
+        "id": 134029401694,
+        "conclusion": "success"
+      },
+      {
+        "name": "Native images (amd64)",
+        "id": 134029401746,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "id": 134029401799,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "id": 134029401845,
+        "conclusion": "success"
+      },
+      {
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "id": 134029401880,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-latest)",
+        "id": 134029401923,
+        "conclusion": "success"
+      },
+      {
+        "name": "Engine",
+        "id": 134029401934,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "id": 134029401941,
+        "conclusion": "success"
+      },
+      {
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "id": 134029401973,
+        "conclusion": "success"
+      },
+      {
+        "name": "Portable docs (macos-latest)",
+        "id": 134029402035,
+        "conclusion": "success"
+      },
+      {
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "id": 134029402046,
+        "conclusion": "success"
+      },
+      {
+        "name": "Embedded schema is current",
+        "id": 134029402065,
+        "conclusion": "success"
+      },
+      {
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "id": 134029402815,
+        "conclusion": "success"
+      },
+      {
+        "name": "Combined image manifests",
+        "id": 134031721914,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "id": 134038492557,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "id": 134038492573,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "id": 134038492586,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (macos-15)",
+        "id": 134038492588,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "id": 134038492598,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "id": 134038492683,
+        "conclusion": "success"
+      },
+      {
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "id": 134038492697,
+        "conclusion": "success"
+      },
+      {
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "id": 134038492751,
+        "conclusion": "success"
+      }
+    ]
+  },
+  "implementation": {
+    "theme": "kie",
+    "template": "api-platform@0.1.0",
+    "minimum_cli_engine": "0.2.0-rc.10",
+    "shared_css_fix": "4afef384fb98a862e5bf4c8b830f82df26f73ba6",
+    "local": {
+      "engine_tests": 494,
+      "rust_tests": 810,
+      "rust_ignored_hosted_only": 5,
+      "helper_tests": 104,
+      "clippy": "pass with warnings denied",
+      "docs": "59 routes, 25 examples; strict deep validation passed"
+    },
+    "public_rc9": "unchanged"
+  },
+  "visuals": {
+    "template_captures": 132,
+    "website_captures_per_arch": 112,
+    "reviewed_previous_run": 44078723389,
+    "repeat_byte_identical_captures": 356,
+    "architectures": {
+      "identical_pixels": 35,
+      "other_captures": 77,
+      "maximum_channel_difference": 1,
+      "dimension_changes": 0
+    },
+    "previews": [
+      {
+        "path": "specs/evidence/kie-theme-2026-11-17/api-platform-1440-light-hero.png",
+        "sha256": "0312b2afec1d59eccee9c92bdcea8874bd4318a64335022eb4a61edf52481ff5"
+      },
+      {
+        "path": "specs/evidence/kie-theme-2026-11-17/api-platform-1440-dark-hero.png",
+        "sha256": "c2372dc8a0832489022388fcaeff41b06e808ff4f7a3434a9c58807c9db1fe15"
+      },
+      {
+        "path": "specs/evidence/kie-theme-2026-11-17/api-platform-390-light-hero.png",
+        "sha256": "ff7c4dd1eec774e87b7c2d40e6de0c499011493e82af7a251e1ee2123ecf6a77"
+      },
+      {
+        "path": "specs/evidence/kie-theme-2026-11-17/api-platform-390-dark-hero.png",
+        "sha256": "684c4f3dafb71f09db124320fa8afda83e5c4c020d59f0bc8dd784ec300b21bf"
+      },
+      {
+        "path": "specs/evidence/kie-theme-2026-11-17/api-platform-1440-light-home.png",
+        "sha256": "1e4c262b349d8cbb74e3dc89fe382f0f5b7998297fbfd0bde1899ede0aa2abde"
+      }
+    ]
+  },
+  "reference": "zellij-kie-reference-2026-11-17.json",
+  "history": [
+    {
+      "run": 44074881310,
+      "result": "Kie title inherited 64px/centered instead of 72px/start: existing shared @scope root-selector bug; reproduced in Chromium/WebKit by 44076164327 and fixed by 4afef38"
+    },
+    {
+      "run": 44075574709,
+      "result": "Generated Markdown schema context missing new theme; regenerated alongside JSON schema"
+    },
+    {
+      "run": 44076881549,
+      "result": "Preservation rejected renamed existing theme heading; original anchor restored. Mobile lazy carousel driver needed to reveal horizontal cards before asserting every image loaded."
+    },
+    {
+      "run": 44078723389,
+      "result": "Website, template, docs and native PDF checks passed. Showcase had stale 14-theme assertion; now 15 plus named Kie check. Arabic skip-link bounds assertion corrected to poll with one CSS pixel tolerance and retained layout measurements."
+    }
+  ],
+  "limitations": [
+    "Measured public server-rendered CSS/reference; live Kie browser access returned Cloudflare 403, so no certified pixel or behavior identity",
+    "Original starter copy/art; no remote model services, account, payment or customer endorsements",
+    "Centered shared navigation and authored optional company mark retained",
+    "Shared @scope fix intentionally restores previously inactive older theme presentation; reviewed product-launch, software-platform and creative-studio previews",
+    "No new font or dependency for Kie; local pinned Space Grotesk",
+    "Public rc.9 unchanged; no production/provider deployment; no local browser/container execution"
+  ],
+  "skip_link_layout": [
+    {
+      "case": "ar-technical/arabic-1280-false-skip-link.json",
+      "initial": {
+        "x": 11140,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "settled": {
+        "x": 1141,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "case": "ar-technical/arabic-1280-true-skip-link.json",
+      "initial": {
+        "x": 1141,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "settled": {
+        "x": 1141,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "case": "ar-technical/arabic-390-false-skip-link.json",
+      "initial": {
+        "x": 10250,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "settled": {
+        "x": 251,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "viewport": {
+        "width": 390,
+        "height": 900
+      }
+    },
+    {
+      "case": "ar-technical/arabic-390-true-skip-link.json",
+      "initial": {
+        "x": 10250,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "settled": {
+        "x": 251,
+        "y": 0,
+        "width": 139,
+        "height": 48
+      },
+      "viewport": {
+        "width": 390,
+        "height": 900
+      }
+    }
+  ],
+  "skip_link_result": "Focus state was visible before focus CSS placement: three initial rectangles retained the offscreen position, then settled exactly at x=viewportWidth-139. Polling rendered bounds passes; no remaining clipping or fractional overflow in these captures.",
+  "showcase": {
+    "passed": 418,
+    "conditional_skips": 140,
+    "retries": 0,
+    "additional": "Chromium/WebKit basepath, page-theme restoration, privacy, reload and invalid-edit recovery passed"
+  },
+  "theme_scope_check": {
+    "browsers": [
+      "Chromium",
+      "WebKit"
+    ],
+    "platforms": [
+      "Linux",
+      "macOS",
+      "Windows"
+    ],
+    "status": "passed"
+  },
+  "diagnostic_branch": "codex/kie-reference removed after evidence retention; no product PR used its temporary workflow",
+  "followup": {
+    "pull_request": 197,
+    "contract": "zellij-card-surfaces-2026-11-17.md",
+    "reason": "Final shared CSS review found card foreground inheritance on surrounding inverted/accent sections; fixed by 7b6f052, merged as 84dcce6 with all 32 CI jobs passing.",
+    "evidence": "zellij-card-surfaces-2026-11-17.json"
+  },
+  "native_smoke": {
+    "cli": "0.2.0-rc.10",
+    "commands": [
+      "zel create my-docs -t product-docs",
+      "zel build my-docs --theme kie"
+    ],
+    "result": "success; output index.html has Kie theme marker; no browser/container required"
+  },
+  "merge_commit": "5edac833a7cefafd8722103511910a3af275f60f",
+  "merge_tree": "identical to tested 4604cfc",
+  "duplicate_main_ci": {
+    "run": 44091260072,
+    "status": "cancelled after complete merge-tree equivalence to all-green PR head; base-image run continues"
+  },
+  "development_images": {
+    "run": 44091260003,
+    "head": "5edac833a7cefafd8722103511910a3af275f60f",
+    "status": "success",
+    "jobs": [
+      {
+        "name": "none \u00b7 arm64",
+        "id": 134066650798,
+        "conclusion": "success"
+      },
+      {
+        "name": "none \u00b7 amd64",
+        "id": 134066651073,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 arm64",
+        "id": 134066651075,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 arm64",
+        "id": 134066651203,
+        "conclusion": "success"
+      },
+      {
+        "name": "maths \u00b7 amd64",
+        "id": 134066651209,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 arm64",
+        "id": 134066651245,
+        "conclusion": "success"
+      },
+      {
+        "name": "all \u00b7 amd64",
+        "id": 134066651250,
+        "conclusion": "success"
+      },
+      {
+        "name": "diagrams \u00b7 amd64",
+        "id": 134066651300,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish none",
+        "id": 134068181332,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish all",
+        "id": 134068181456,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish maths",
+        "id": 134068181469,
+        "conclusion": "success"
+      },
+      {
+        "name": "Publish diagrams",
+        "id": 134068181485,
+        "conclusion": "success"
+      },
+      {
+        "name": "The image can build a site",
+        "id": 134068436838,
+        "conclusion": "success"
+      }
+    ],
+    "result": "four main variants for native amd64/arm64; default publication built and served a site"
+  }
+}

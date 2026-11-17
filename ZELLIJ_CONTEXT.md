@@ -3,16 +3,59 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-17: Kie theme implementation in progress**
+**2026-11-17: Kie theme and card contrast verified (source rc.10)**
 
-`codex/kie-theme` follows the multilingual branch with selectable `kie` tokens,
-section presentation and the original `api-platform` starter (source rc.10).
-See [the contract](specs/zellij-kie-theme-2026-11-17.md) for measured design,
-reference limitations and acceptance. Preserve centered navigation and company
-placement; do not claim a verified pixel clone. Hosted visual checks and merge
-remain pending. All eight released template archives and public rc.9 stay intact.
+New fifteenth theme `kie` and ninth starter `api-platform@0.1.0` match the
+inspected Kie palette, Space Grotesk typography and geometry. The original
+starter has four routes, pricing, model cards, integration steps, FAQ and local
+illustrations. It preserves centered navigation, the optional far-left company
+link, right-hand controls and the two-level mobile drawer. Live Kie browser access
+returned Cloudflare 403, so this is not a verified pixel/behavior clone.
 
-**2026-11-17: multilingual books in progress; Kie theme requested**
+PR #196 merges as `5edac83`, identical to tested `4604cfc`; all 32 CI jobs in
+`44080427260` pass. The shared `@scope` root-selector fix restores older theme
+presentation as well as Kie. Local checks pass 810 Rust, 494 engine and 104 helper
+tests plus Clippy. Hosted checks cover both browsers on Linux/macOS/Windows,
+418 showcase cases without retries, nine templates and 356 reviewed captures.
+All eight released template archives retain their exact bytes.
+
+PR #197 merges as `84dcce6`, identical to tested `7b6f052`, fixing feature/pricing
+card text inherited from surrounding accent/inverted sections. All 32 jobs in
+`44086609777` pass after retrying a macOS runner-capacity cancellation; no source
+change was needed. Both architectures pass 144 card-surface measurements each,
+and all 356 prior captures retain exact bytes. Development-image run `44094639060`
+passes all 13 jobs; four main variants publish for amd64/arm64 and the serving
+check passes. Final records/prose-only follow-up changes no runtime, checks,
+templates or workflow inputs from tested `7b6f052`. Its one guide correction
+passes strict validation (59 routes, 25 examples). See the
+[theme contract](specs/zellij-kie-theme-2026-11-17.md),
+[theme evidence](specs/evidence/zellij-kie-theme-2026-11-17.json) and
+[card evidence](specs/evidence/zellij-card-surfaces-2026-11-17.json).
+
+Source rc.10 is ready for release preparation; public rc.9, its installation
+recipes and production documentation are unchanged. Publish and verify rc.10
+before advertising these source-only features as released. Live-provider work
+remains deferred. No zero-bug or 1.0 claim is made.
+
+**2026-11-17: multilingual books verified (source rc.10)**
+
+PR #195 merges as `56a60f6`, identical to tested `6d9b4b5`. All 32 CI jobs in
+`44075182273` pass. Arabic RTL and French/German/Spanish print now work with
+pinned Amiri/Libertinus; code/math remain LTR and web UI labels remain English.
+The shared skip link uses logical positioning so it no longer expands RTL pages.
+Active Next pins are 16.4.6, fixing the newly reported advisory; npm audit is clean.
+
+Local checks pass 810 Rust, 491 engine and 104 helper tests plus Clippy. Hosted
+acceptance produces 65 PDFs/586 page captures; native language and Arabic
+native/Next pages match across runtimes/architectures. All 485 existing compared
+artifacts retain exact bytes. Earlier failed findings remain in the contract.
+The duplicate merge CI is cancelled only after complete tree equivalence is
+verified. Development-image run `44079346628` passes all 13 jobs, publishing
+four main variants for amd64/arm64 and passing its build/HTTP check.
+See [the contract](specs/zellij-book-languages-2026-11-17.md) and
+[evidence](specs/evidence/zellij-book-languages-2026-11-17.json). Public rc.9 is unchanged.
+
+**Historical start — 2026-11-17: multilingual books in progress; Kie theme requested**
 
 Continue from verified print styling at `ebd43e1`. Source rc.10 now develops
 bounded French/German/Spanish/Arabic print and pinned Amiri/Libertinus fonts;
