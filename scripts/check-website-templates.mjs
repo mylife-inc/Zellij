@@ -2,6 +2,7 @@
 // template driver, against the actual CLI export, without external services.
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import {writeFile} from 'node:fs/promises';
 import { expect } from '@playwright/test';
 
 const sites = {
@@ -88,6 +89,42 @@ async function checkBentoSurfaces(page) {
   }
 }
 
+async function checkCardSurfaces(page, artifact) {
+  const samples = await page.locator('.zellij-feature-card, .zellij-pricing-card').evaluateAll(cards => {
+    const records = [];
+    for (const [index, card] of cards.entries()) {
+      let baseline;
+      for (const background of ['default', 'inverted', 'accent', 'gradient']) {
+        const section = card.closest('.zellij-section');
+        const frame = section.cloneNode(false), sample = card.cloneNode(true);
+        frame.setAttribute('data-zellij-background', background);
+        frame.append(sample); section.after(frame);
+        try {
+          const probe = document.createElement('span'); probe.style.color = 'var(--zellij-fg)';
+          sample.append(probe);
+          const read = selector => {const el=sample.querySelector(selector);return el ? getComputedStyle(el).color : null;};
+          const colors = {heading: read('h3'), amount: read('.zellij-pricing-amount'),
+            features: read('.zellij-pricing-features'), link: read('.zellij-feature-link'),
+            ghost: read('.zellij-button[data-style="ghost"]'), card: getComputedStyle(sample).color};
+          baseline ??= colors;
+          records.push({index, type: card.className, background, colors, baseline,
+            foreground: getComputedStyle(probe).color});
+        } finally { frame.remove(); }
+      }
+    }
+    return records;
+  });
+  if (!samples.length) return;
+  await writeFile(artifact, JSON.stringify(samples, null, 2));
+  for (const sample of samples) {
+    const label = `${sample.type} ${sample.index} on ${sample.background}`;
+    assert.deepEqual(sample.colors, sample.baseline, `${label}: a card keeps its own foregrounds`);
+    for (const key of ['heading', 'amount', 'features', 'link', 'card']) {
+      if (sample.colors[key] !== null) assert.equal(sample.colors[key], sample.foreground, `${label}: ${key} follows the card surface`);
+    }
+  }
+}
+
 async function checkStudioTextContrast(page) {
   const samples = await page.locator('.zellij-compose-text[data-tone="muted"]').evaluateAll(elements => {
     const rgba = value => value.match(/[\d.]+/g).map(Number);
@@ -134,6 +171,7 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           // Scroll the complete page to load lazy images and exercise section visibility.
           await loadImages(page);
           await checkHeaderAlignment(page, width);
+          if (!route) await checkCardSurfaces(page, path.join(artifacts, `${manifest.id}-${width}-${mode}-card-surfaces.json`));
           if (manifest.id === 'creative-studio') await checkStudioTextContrast(page);
           assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `${manifest.id}/${route}: overflow`);
           await page.evaluate(() => scrollTo(0, 0));

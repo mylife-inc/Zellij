@@ -2284,6 +2284,24 @@ a.zellij-promo-tile:hover .zellij-promo-image {
   border-color: color-mix(in srgb, var(--zellij-inverted-fg) 38%, transparent);
 }
 
+/* Feature/pricing cards paint their own page-colored surface. Their text must
+   follow that surface even when the surrounding section is inverted or accent.
+   Keep section headings outside the cards on their section's foreground. */
+.zellij-feature-card,
+.zellij-pricing-card {
+  color: var(--zellij-fg);
+}
+
+.zellij-section .zellij-feature-card .zellij-feature-title,
+.zellij-section .zellij-pricing-card .zellij-pricing-name {
+  color: inherit;
+}
+
+.zellij-section .zellij-pricing-card .zellij-button[data-style='ghost'] {
+  color: var(--zellij-fg);
+  border-color: var(--zellij-border);
+}
+
 /* ----------------------------------------------------------- code-cards -- */
 
 /*
