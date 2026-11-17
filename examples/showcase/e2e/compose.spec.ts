@@ -46,6 +46,12 @@ test('compositions retain source order, responsive layouts, links and images', a
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor)).not.toBe(light);
   await page.screenshot({ path: info.outputPath('composition-dark.png'), fullPage: true, animations: 'disabled' });
   await info.attach('composition-dark', { path: info.outputPath('composition-dark.png'), contentType: 'image/png' });
+  await illustration.scrollIntoViewIfNeeded();
+  await illustration.evaluate((element: HTMLImageElement) => element.decode());
+  await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
+  await illustration.screenshot({ path: info.outputPath('composition-dark-detail.png'), animations: 'disabled' });
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+  await page.screenshot({ path: info.outputPath('composition-dark-visited.png'), fullPage: true, animations: 'disabled' });
   expect(errors).toEqual([]);
 });
 
