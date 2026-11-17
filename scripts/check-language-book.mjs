@@ -29,7 +29,11 @@ export async function checkArabicBook(page, captures, name) {
   const skip = page.locator('.zellij-skip-link');
   if(await skip.count()) {
     await skip.focus(); await expect(skip).toBeFocused();
-    assert(await skip.evaluate(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;}), 'RTL skip link is reachable on screen');
+    // Logical positioning/font metrics can land on a fractional CSS pixel.
+    // Poll layout as well as focus, using the same one-pixel tolerance as overflow.
+    await expect.poll(()=>skip.evaluate(el=>{const r=el.getBoundingClientRect();return {
+      left:r.left,right:r.right,width:innerWidth,reachable:r.left>=-1&&r.right<=innerWidth+1,
+    };}), {message:'RTL skip link is reachable on screen'}).toMatchObject({reachable:true});
     await page.keyboard.press('Enter');
   }
   for (const mode of ['light','dark']) {

@@ -73,3 +73,9 @@ each card, verifies decoded images and restores the track before screenshots.
 The new template is formatted as editable YAML, and hero/stat band colors and
 mobile stat columns are refined. Arabic comparison captures request reduced
 motion to avoid recording a header halfway through a color transition.
+
+Run `44078723389` passes the nine-template job and strict documentation gate.
+The showcase still expected 14 theme choices; it now expects 15 and checks Kie
+by name. Arabic skip-link acceptance polls its layout with the same one-pixel
+tolerance as the page-overflow check and includes measured bounds on failure.
+This does not change the skip-link CSS or relax the requirement to show it.
