@@ -73,3 +73,8 @@ That offscreen position expands RTL scrolling in the opposite direction.
 The link now uses logical inline-start positioning; focus returns it to the
 reading edge. Browser acceptance checks both unfocused overflow and keyboard
 visibility, retaining layout/screenshot diagnostics on any failure.
+
+The same run's portable search test incorrectly expects one match for a chapter
+title also present in two cross-links. It now queries the unique Arabic body
+term `تجربة`, still requiring one result and keyboard navigation to chapter one.
+The search implementation itself is unchanged.

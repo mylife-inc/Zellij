@@ -121,7 +121,7 @@ try {
           await checkArabicBook(equationPage,captures,`${engine}-arabic-${javaScriptEnabled}-${width}`);
           if(javaScriptEnabled) {
             await equationPage.getByRole('button',{name:/Search/}).click();
-            await equationPage.getByRole('searchbox').fill('بداية');
+            await equationPage.getByRole('searchbox').fill('تجربة');
             await expect(equationPage.locator('#_zel-results a')).toHaveCount(1);
             await equationPage.getByRole('searchbox').press('ArrowDown');
             await equationPage.keyboard.press('Enter');
