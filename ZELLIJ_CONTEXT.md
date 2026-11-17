@@ -3,31 +3,44 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-17: rc.10 published; documentation/channels in progress**
+**2026-11-17: rc.10 publication and documentation verified**
 
-PR #199 merges as `9319729` with the reviewed notes-only tree. Normal preflight
-passes 810 Rust tests (five hosted-only cases ignored), 494 engine tests,
-format/type/schema checks and warnings-denied Clippy. Immutable rc.10 points
-there. All 37 release jobs in `44159670077` and all 12 expanded public acceptance
-jobs in `44163817890` pass. Both release repositories have 27 byte-identical,
-checksum-verified assets. The expanded harness additionally runs the tagged
-seven-case language PDF driver with the downloaded CLI; tagged source and
-artifacts are unchanged. Forty-six public PDFs/420 page captures and 224 website
-captures match the reviewed source output. An isolated standalone rc.9-to-rc.10
-upgrade succeeds. Nine current template archives match reviewed packaging;
-eight previously published archives are unchanged.
+PR #199 merges as `9319729`, the immutable rc.10 tag. Normal preflight passes
+810 Rust tests (five hosted-only cases ignored), 494 engine tests,
+format/type/schema checks and warnings-denied Clippy. All 37 release jobs in
+`44159670077` and all 12 expanded public acceptance jobs in `44163817890` pass.
+Both release repositories have 27 byte-identical, checksum-verified assets.
+The expanded harness runs the tagged seven-case language PDF driver with the
+public CLI. Forty-six public PDFs/420 page captures and 224 website captures
+match reviewed source output. Nine current template archives match reviewed
+packaging; eight previously published archives are unchanged. An isolated
+standalone rc.9-to-rc.10 upgrade succeeds.
 
 Homebrew (`aa82b4e`), Scoop (`992b4e1`) and shared installation docs (`a6ee987`)
-now select verified rc.10. Their public lifecycle/actual-upgrade gates remain
-in progress. Active guides and all six consumer build-only workflows are updated;
-the six consumers pass at `fee9939`. Documentation CI `44163958595` discovers
-seven high development findings for the newly reviewed picomatch advisory.
-Upstream has no patched version; the production audit has no findings. The
-[dated disposition](specs/zellij-picomatch-disposition-2026-11-17.md) permits only
-the exact reviewed development chain until December 1, with six rejection tests.
-This is an open upstream issue, not a vulnerability fix or clean full audit.
-New documentation CI, merge, replacement images and scoped rc.9 retirement
-remain pending. See [release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json).
+select verified rc.10. All eight managed lifecycle cases and eight actual
+rc.9-to-rc.10 upgrades pass. Homebrew's macOS ARM job needed one retry after
+GitHub could not allocate a runner; no test step ran in that failed attempt.
+Documentation CI `44166612903` passes all 32 jobs at `6c9fde4`; the six consumer
+builds also pass there. Engine checks pass 494 cases and 110 helper tests;
+showcase passes 418 cases without retries (140 conditional skips). Preservation
+retains all 46 original routes, 282 original heading IDs, 82 compatibility
+mappings and 29 byte-identical images, with no captured browser errors.
+The final records/procedure-only update retains all tested runtime, authoring
+guide, template, dependency, workflow and acceptance inputs.
+
+The first documentation run `44163958595` exposed seven high development
+findings for the newly reviewed picomatch advisory. Upstream has no patched
+version; production and fresh all-features wrapper audits have no findings.
+The [dated disposition](specs/zellij-picomatch-disposition-2026-11-17.md) permits
+only the exact reviewed development chain until December 1, with six rejection
+tests. This is an open upstream issue, not a vulnerability fix or clean full
+audit. Both public release pages disclose it. Audit again immediately before
+future release tagging, even after green CI.
+
+Documentation merge, replacement consumer images and scoped rc.9 retirement
+remain next. Existing development-image run `44094639060` remains valid:
+engine/dependency/build inputs and all four public digests are unchanged.
+See [release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json).
 Production hosting and live providers stay deferred.
 
 **2026-11-17: rc.10 release preparation**
