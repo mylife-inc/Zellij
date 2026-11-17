@@ -50,7 +50,7 @@ export function VideoPlayer({
   if (playing && fileUrl) {
     return (
       <div className="zellij-video-frame">
-        <video ref={video} src={fileUrl} aria-label={label} tabIndex={0} controls autoPlay preload="metadata" poster={poster}
+        <video ref={video} src={fileUrl} aria-label={label} tabIndex={0} controls playsInline autoPlay preload="metadata" poster={poster}
           crossOrigin={tracks.length ? 'anonymous' : undefined}>{captions}</video>
       </div>
     );
@@ -73,7 +73,7 @@ export function VideoPlayer({
     <noscript>
       <style>{'.zellij-video-poster { display: none !important; }'}</style>
       {fileUrl ? <div className="zellij-video-frame">
-        <video src={fileUrl} aria-label={label} controls preload="none" poster={poster}
+        <video src={fileUrl} aria-label={label} controls playsInline preload="none" poster={poster}
           crossOrigin={tracks.length ? 'anonymous' : undefined}>{captions}</video>
       </div> : null}
     </noscript>

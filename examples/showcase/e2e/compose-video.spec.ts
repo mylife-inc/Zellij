@@ -16,6 +16,7 @@ test('video loads only on request, keeps keyboard focus and exposes captions', a
   const video = section.locator('video');
   await expect(video).toBeFocused();
   await expect(video).toHaveAttribute('controls', '');
+  await expect(video).toHaveAttribute('playsinline', '');
   await expect(video).toHaveAttribute('aria-label', 'Three sheets in motion');
   await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.readyState)).toBeGreaterThanOrEqual(2);
   await expect.poll(() => video.evaluate((element: HTMLVideoElement) => element.currentTime)).toBeGreaterThan(0);
@@ -54,6 +55,7 @@ test.describe('without JavaScript', () => {
     await expect(section.getByRole('button', { name: /Play video/ })).toBeHidden();
     await expect(section.locator('video')).toBeVisible();
     await expect(section.locator('video')).toHaveAttribute('controls', '');
+    await expect(section.locator('video')).toHaveAttribute('playsinline', '');
     await expect(section.locator('video')).toHaveAttribute('preload', 'none');
     await expect(section.locator('video')).not.toHaveAttribute('autoplay');
     await expect(section.locator('track')).toHaveAttribute('label', 'English');
