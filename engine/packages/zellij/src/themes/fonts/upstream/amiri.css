@@ -1,0 +1,5 @@
+/* Amiri 1.003. Lossless WOFF2 compression of the pinned upstream fonts. */
+@font-face { font-family: 'Amiri'; src: url(Amiri-Regular.woff2) format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Amiri'; src: url(Amiri-Bold.woff2) format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Amiri'; src: url(Amiri-Italic.woff2) format('woff2'); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Amiri'; src: url(Amiri-BoldItalic.woff2) format('woff2'); font-style: italic; font-weight: 700; font-display: swap; }

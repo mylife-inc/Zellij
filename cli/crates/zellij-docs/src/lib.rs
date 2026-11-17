@@ -28,6 +28,7 @@ mod mermaid;
 mod mindmap;
 mod page;
 pub mod pdf;
+mod print_language;
 pub mod server;
 pub mod watch;
 include!(concat!(env!("OUT_DIR"), "/fonts.rs"));
@@ -711,6 +712,19 @@ fn compile(
         format!("window.ZELLIJ_SEARCH={data};\n").into_bytes(),
     );
     if let Some(book) = &publication {
+        if book
+            .manifest
+            .language
+            .split('-')
+            .next()
+            .is_some_and(|s| s.eq_ignore_ascii_case("ar"))
+        {
+            files.insert(
+                "_zellij/book-language.css".into(),
+                include_bytes!("../../../../engine/packages/zellij/src/styles/book-language.css")
+                    .to_vec(),
+            );
+        }
         if !book.manifest.edition.is_classic() {
             files.insert(
                 "_zellij/book-editions.css".into(),

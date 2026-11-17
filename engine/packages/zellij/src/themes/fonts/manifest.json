@@ -730,6 +730,53 @@
           "bytes": 37776
         }
       ]
+    },
+    {
+      "name": "Amiri",
+      "variable": "--zellij-font-amiri",
+      "css": {
+        "path": "upstream/amiri.css",
+        "source": "Lossless WOFF2 via fonttools 4.61.1 and brotli 1.2.0; print-fonts/manifest.json pins originals",
+        "sha256": "7ab6240c41086be75a427d656106b2dabe7fccc4b702838f48cb2d04de73142d"
+      },
+      "license": {
+        "path": "licenses/amiri.txt",
+        "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/OFL.txt",
+        "sha256": "72de68e5954f4fdd24702292ef5a32f003ca960ec9330dc86e5eefb5dffb9b22"
+      },
+      "fallback": {
+        "fallbackFont": "Times New Roman",
+        "ascentOverride": "normal",
+        "descentOverride": "normal",
+        "lineGapOverride": "normal",
+        "sizeAdjust": "100%"
+      },
+      "files": [
+        {
+          "path": "files/amiri-regular.woff2",
+          "url": "Amiri-Regular.woff2",
+          "sha256": "3c5e549aef48bf0f185d1d7802a6a7f590b40da8ba5808d9b59b2504b9173f4d",
+          "bytes": 172008
+        },
+        {
+          "path": "files/amiri-bold.woff2",
+          "url": "Amiri-Bold.woff2",
+          "sha256": "40ba91e8f9509f2d5f87aa29229ed08ea564a412eee7d86e56847d608831e9b1",
+          "bytes": 161916
+        },
+        {
+          "path": "files/amiri-italic.woff2",
+          "url": "Amiri-Italic.woff2",
+          "sha256": "28f0c66a89963a8afe1360cafc7c6665e416f8bf3fa29fcb111a05e504e57b10",
+          "bytes": 175436
+        },
+        {
+          "path": "files/amiri-bolditalic.woff2",
+          "url": "Amiri-BoldItalic.woff2",
+          "sha256": "e3e097ad3b65be8d3df84e22393c37266651feac1c5caf525cb430f2782cb0bc",
+          "bytes": 164976
+        }
+      ]
     }
   ]
 }

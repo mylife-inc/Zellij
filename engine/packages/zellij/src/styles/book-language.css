@@ -1,0 +1,10 @@
+/* Arabic books use pinned local Amiri, including headings from all editions.
+ * Other languages retain their existing theme typography and layout. */
+html[lang|='ar'][data-zellij-theme] :is(body, article, .zellij-prose, .zellij-book-edition, h1, h2, h3, h4, h5, h6) {
+  font-family: var(--zellij-font-amiri), serif;
+  letter-spacing: normal;
+}
+html[lang|='ar'] :is(article, .zellij-prose) { line-height: 1.95; }
+html[lang|='ar'] :is(h1, h2, h3, h4, h5, h6) { line-height: 1.6; }
+html[dir='rtl'] :is(pre, .katex, .MathJax, mjx-container, math) { direction: ltr; }
+html[dir='rtl'] pre { text-align: left; }

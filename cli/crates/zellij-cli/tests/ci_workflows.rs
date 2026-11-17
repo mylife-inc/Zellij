@@ -2244,3 +2244,50 @@ fn print_styles_require_rc10_for_every_ci_generator_even_when_disabled_or_empty(
         }
     }
 }
+
+#[test]
+fn multilingual_pdf_workflows_require_rc10_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    repo(root);
+    site(
+        root,
+        "docs/zellij",
+        "book: {version: 1, title: Livre, authors: [Author], language: fr, chapters: [{id: next, source: next.md}]}\npdf: {enabled: true}\n",
+    );
+    for (system, path) in [
+        ("github", ".github/workflows/docs.yml"),
+        ("gitlab", ".gitlab-ci.yml"),
+        ("circle", ".circleci/config.yml"),
+    ] {
+        let result = run(
+            root,
+            &["ci", "--system", system, "--zel-version", "0.2.0-rc.9"],
+            2,
+        );
+        assert!(
+            String::from_utf8_lossy(&result.stderr)
+                .contains("multilingual PDF requires CLI 0.2.0-rc.10")
+        );
+        assert!(!root.join(path).exists());
+        run(
+            root,
+            &["ci", "--system", system, "--zel-version", "0.2.0-rc.10"],
+            0,
+        );
+        let previous = fs::read(root.join(path)).unwrap();
+        run(
+            root,
+            &[
+                "ci",
+                "--system",
+                system,
+                "--zel-version",
+                "0.2.0-rc.9",
+                "--force",
+            ],
+            2,
+        );
+        assert_eq!(previous, fs::read(root.join(path)).unwrap());
+    }
+}

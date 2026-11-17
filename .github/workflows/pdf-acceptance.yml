@@ -42,6 +42,10 @@ jobs:
         env:
           DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
         run: node scripts/check-pdf.mjs
+      - name: Typeset multilingual books and named print fonts
+        env:
+          DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
+        run: node scripts/check-language-pdfs.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:

@@ -1,5 +1,7 @@
 // Hosted CI only: a complete book must remain usable after moving its export.
 import assert from 'node:assert/strict';
+import { writeLanguageBook } from './fixtures/book-languages.mjs';
+import { checkArabicBook } from './check-language-book.mjs';
 import { checkEdition } from './check-book-editions.mjs';
 import { checkEquations } from './check-equations.mjs';
 import { checkStatements } from './check-statements.mjs';
@@ -48,6 +50,10 @@ try {
   await rename(path.join(bibliography, 'site'), movedBibliography);
   const bibRecord = JSON.parse(await readFile(path.join(movedBibliography, '_zellij/book.json'), 'utf8'));
   assert.deepEqual(bibRecord.bibliography.references.map(r => r.id), ['vale2024', 'river2021', 'shebka2026', 'uncited']);
+  const arabic = path.join(temp,'arabic');
+  writeLanguageBook(arabic);
+  execFileSync(binary,['build',arabic,'--no-pdf'],{env,stdio:'pipe'});
+  const movedArabic=path.join(temp,'كتاب moved');await rename(path.join(arabic,'site'),movedArabic);
   const editions = [];
   for(const edition of ['technical','study']) {
     const manuscript=path.join(temp,edition+'-edition');
@@ -107,7 +113,21 @@ try {
       for (const javaScriptEnabled of [true, false]) {
         const equations = await browser.newContext({ javaScriptEnabled, offline: engine !== 'webkit' });
         await equations.route(/^https?:/, route => route.abort());
-        const equationPage = await equations.newPage();
+        const equationPage = await equations.newPage(), readingErrors=[];
+        equationPage.on('pageerror',e=>readingErrors.push(e.message));
+        for(const width of [1280,390]) {
+          await equationPage.setViewportSize({width,height:900});
+          await equationPage.goto(pathToFileURL(path.join(movedArabic,'chapters/01-first.html')).href);
+          await checkArabicBook(equationPage,captures,`${engine}-arabic-${javaScriptEnabled}-${width}`);
+          if(javaScriptEnabled) {
+            await equationPage.getByRole('button',{name:/Search/}).click();
+            await equationPage.getByRole('searchbox').fill('تجربة');
+            await expect(equationPage.locator('#_zel-results a')).toHaveCount(1);
+            await equationPage.getByRole('searchbox').press('ArrowDown');
+            await equationPage.keyboard.press('Enter');
+            await expect(equationPage.locator('article')).toHaveAttribute('data-book-id','first');
+          }
+        }
         await checkEquations(equationPage, pathToFileURL(relocated + path.sep).href, captures, `${engine}-equations-${javaScriptEnabled}`);
         await checkStatements(equationPage, pathToFileURL(movedStatements + path.sep).href, captures, `${engine}-statements-${javaScriptEnabled}`);
         await checkBibliography(equationPage, pathToFileURL(movedBibliography + path.sep).href, captures, `${engine}-bibliography-${javaScriptEnabled}`);
@@ -122,6 +142,7 @@ try {
           await term.focus();await equationPage.keyboard.press('Enter');
           await expect(equationPage.locator('.zellij-terms')).toBeVisible();
         }
+        assert.deepEqual(readingErrors,[]);
         await equations.close();
       }
       const context = await browser.newContext({ javaScriptEnabled: false });

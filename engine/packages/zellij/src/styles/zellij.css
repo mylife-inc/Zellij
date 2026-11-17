@@ -6,6 +6,7 @@
 @import './motion.css';
 @import './guide.css';
 @import './book-editions.css';
+@import './book-language.css';
 @import './themes.css';
 
 /**
@@ -153,7 +154,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .zellij-skip-link {
   position: absolute;
-  left: -9999px;
+  inset-inline-start: -9999px;
   top: 0;
   z-index: 100;
   padding: 0.75rem 1.25rem;
@@ -163,7 +164,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .zellij-skip-link:focus {
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .zellij-container {

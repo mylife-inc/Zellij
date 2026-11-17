@@ -64,7 +64,7 @@ fn complete_markdown_site_has_relative_links_assets_anchors_and_embedded_search(
         fs::read_dir(out.join("_zellij/fonts/files"))
             .unwrap()
             .count(),
-        75
+        79
     );
     assert!(out.join(".zellij-output").is_file());
     assert!(!source.join("site.yaml").exists());
