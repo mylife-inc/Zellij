@@ -2,7 +2,7 @@
 
 Date: 2026-11-11. This records the user's explicit follow-up to the
 [product expansion design](zellij-product-expansion-2026-11-11.md).
-Refreshed 2026-11-16 with verified rc.9 replacement and scoped rc.8 retirement.
+Refreshed 2026-11-17 with verified rc.10 replacement and scoped rc.9 retirement.
 Earlier records and failed attempts remain historical.
 
 ## User decision
@@ -26,7 +26,33 @@ dated release records remain valid historical evidence; add retirement records
 rather than silently rewrite them. The user has authorized this cleanup policy;
 do not repeatedly request approval for a reviewed cleanup within its scope.
 
-## Current rc.9 execution status — 2026-11-16
+## Current rc.10 execution status — 2026-11-17
+
+Documentation PR #200 merges as `d5ed0bf`, matching reviewed `8ecdf57` and the
+runtime/acceptance inputs tested at `6c9fde4`. All 37 release jobs, 12 expanded
+public checks, 32 source CI jobs, six consumers, eight managed lifecycle cases
+and eight actual rc.9-to-rc.10 upgrades pass. One Homebrew macOS ARM job needed
+an infrastructure-only retry after no runner was allocated.
+
+Replacement static/Next publications `44173413951`/`44173419383` and fresh-pull
+HTTP run `44173703719` pass. Development-image run `44094639060` remains valid:
+engine/dependency/build inputs and all four public digests are unchanged. Policy
+`2885858` and committed plans `dc43b7d` pass all 13 image guards locally and in
+both hosted inventories; seven native guards and the live read-only preflight
+also pass. After 17 exact gates, owner execution removes two rc.9 releases,
+52 assets, two tags and 26 exact image versions without a failed deletion.
+All 38 current manifest nodes, 3,743 excluded build-history identities and both
+CodeSeal releases remain intact. Post-cleanup inventory `44175159235` and both
+HTTP checks in `44175166206` pass. Only rc.10 remains in both Zellij release
+channels, with 27 matching assets each. See [the evidence](evidence/zellij-rc10-image-retirement-2026-11-17.json).
+
+Production hosting and live providers remain deferred. The unpatched development
+picomatch advisory remains open under its dated disposition; passing scoped
+checks is not a clean full audit or zero-bug claim. Do not reuse completed plans.
+The final record update preserves all verified runtime, active-guide, workflow,
+policy, guard and plan inputs.
+
+## Previous rc.9 execution status — 2026-11-16
 
 Documentation PR #192 merges as `6818ce9`, matching reviewed `d68f4bc`.
 Replacement static/Next publications `43832860248`/`43832864233` and both
