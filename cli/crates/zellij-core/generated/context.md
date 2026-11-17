@@ -52,7 +52,7 @@ a complete site.
 | `name` | string | **required** |
 | `tagline` | string |  |
 | `brand` | object { company, logo, title } | default `{}` |
-| `theme` | `midnight` \| `paper` \| `terracotta` \| `mono` \| `aurora` \| `slate` \| `forest` \| `sunburst` \| `carbon` \| `porcelain` \| `cupertino` \| `studio` \| `iris` \| `meridian` | default `"paper"` |
+| `theme` | `midnight` \| `paper` \| `terracotta` \| `mono` \| `aurora` \| `slate` \| `forest` \| `sunburst` \| `carbon` \| `porcelain` \| `cupertino` \| `studio` \| `iris` \| `meridian` \| `kie` | default `"paper"` |
 | `mode` | `light` \| `dark` \| `system` | default `"system"` |
 | `motion` | `none` \| `subtle` \| `expressive` | default `"subtle"` |
 | `overrides` | object { accent, accentForeground, radius, fontHeading, fontBody } | default `{}` |
@@ -245,7 +245,7 @@ presentation overrides.
 | `description` | string |  |
 | `route` | string |  |
 | `layout` | `stack` \| `stack-narrow` \| `stack-sidebar` \| `landing` | default `"stack"` |
-| `theme` | `midnight` \| `paper` \| `terracotta` \| `mono` \| `aurora` \| `slate` \| `forest` \| `sunburst` \| `carbon` \| `porcelain` \| `cupertino` \| `studio` \| `iris` \| `meridian` |  |
+| `theme` | `midnight` \| `paper` \| `terracotta` \| `mono` \| `aurora` \| `slate` \| `forest` \| `sunburst` \| `carbon` \| `porcelain` \| `cupertino` \| `studio` \| `iris` \| `meridian` \| `kie` |  |
 | `motion` | `none` \| `subtle` \| `expressive` |  |
 | `navHighlight` | string |  |
 | `sections` | list of string \| object { id, background, motion, padding, titleGradient, section } | default `[]` |
