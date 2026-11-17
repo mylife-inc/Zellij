@@ -30,7 +30,7 @@
       items:
         - name: Themes
           url: /guide/themes
-          description: Fourteen glazes, one token system.
+          description: Fifteen glazes, one token system.
           icon: palette
         - name: The zel command
           url: /cli

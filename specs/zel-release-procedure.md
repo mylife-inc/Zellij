@@ -1,5 +1,21 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-17: v0.2.0-rc.10 is published and publicly verified.** Immutable tag
+`9319729` passes all 37 release jobs in `44159670077`; expanded public acceptance
+`44163817890` passes all 12 jobs, including the tagged language-PDF driver.
+Both release repositories have 27 matching assets and nine current template
+archives. Forty-six public PDFs/420 page captures and 224 website captures
+match reviewed source output. All eight managed lifecycle checks and eight
+actual rc.9-to-rc.10 upgrades pass; one Homebrew macOS ARM job required a retry
+after GitHub failed to allocate a runner. Documentation merge and retirement
+status are tracked in [the rc.10 record](evidence/zellij-rc10-release-2026-11-17.json).
+
+The full repository audit has an open, unpatched development-only picomatch
+advisory. Production and fresh all-features wrapper audits have no findings.
+The [exact disposition](zellij-picomatch-disposition-2026-11-17.md) expires
+December 1; it is not a fix or a clean full audit. Run the audit immediately
+before future release tagging, even when an earlier source CI run was green.
+
 **2026-11-16: v0.2.0-rc.9 is publicly verified.** The immutable source tag is
 `f03f803`; release run `43825155269` passes all 37 jobs. Both repositories have
 26 matching assets, including eight template archives. Source CI passes 32 jobs,
@@ -199,8 +215,11 @@ real CLI migration. See [Scoop history](zel-scoop-distribution-2026-11-13.md).
    publication to `mylife-inc/releases`; without it, the workflow only creates
    the development repository release and emits a warning. No extra token is
    needed for ordinary package/installer tests.
-4. From the reviewed, clean commit, run `source scripts/app.sh`, followed by
-   `zrelease v0.2.0-rc.9` (substitute the actual agreed candidate). The helper
+4. From the reviewed, clean repository root, run
+   `node scripts/check-dependency-audit.mjs` and require success. Registry
+   advisories can change after source CI; any bounded development disposition
+   must still be unexpired and applicable. Then run `source scripts/app.sh`, followed by
+   `zrelease v0.2.0-rc.10` (substitute the actual agreed **new** candidate). The helper
    checks the committed native version before creating or pushing a tag. A
    candidate does not prompt to enable production docs. Monitor `zrelease-watch`.
 5. Check every release job and all six attached packages. The native publication
@@ -215,7 +234,7 @@ real CLI migration. See [Scoop history](zel-scoop-distribution-2026-11-13.md).
    upload and acceptance of the final downloaded release are separate checks.
 
 Candidate notes live in specs/releases/<version>.md and are included automatically
-in both release pages. The rc.9 notes are specs/releases/v0.2.0-rc.9.md;
+in both release pages. The rc.10 notes are specs/releases/v0.2.0-rc.10.md;
 the earlier rc.2 publication evidence is linked above. The Published release acceptance workflow runs after
 publication and can be dispatched again against the same tag. It downloads both
 repositories' public assets, checks their bytes and checksums, uses their attached
@@ -235,7 +254,7 @@ the latest acceptance code, select the Published release acceptance workflow on
 `main` and provide its published `version` tag, for example (use a still-published version):
 
 ```sh
-gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.9 -f shared=true
+gh workflow run release-acceptance.yml --ref main -f version=v0.2.0-rc.10 -f shared=true
 ```
 
 The workflow checks out `refs/tags/<version>` separately. Version, engine metadata,
@@ -243,7 +262,8 @@ installer byte comparisons and the native acceptance suite use that tagged sourc
 only the download/acceptance driver comes from the selected workflow revision.
 On native Linux, print-capable catalogs additionally run the tagged PDF
 acceptance driver with the installed public binary, retaining PDF captures and
-receipts. Those hosted checks explicitly select and preflight Docker's default
+receipts. When present, the tagged language-PDF driver also runs with the same
+downloaded binary. Those hosted checks explicitly select and preflight Docker's default
 context, matching the dedicated Docker PDF jobs. Preinstalled rootless runtimes
 are not assumed to have delegated resource controllers; dedicated Podman jobs
 provision their own rootless session. Older reading-only releases skip this check. Template packaging checks
@@ -259,7 +279,7 @@ checksum-verified public CLI bytes, pulls the exact image anonymously, verifies
 its architecture/digest and retains an installation receipt. It never rebuilds
 the CLI or engine. Both drivers run on native Linux amd64/arm64.
 
-Website acceptance covers the three website starters and a separate authored
+Website acceptance covers the four website starters and a separate authored
 company/nested-menu fixture: light/dark, desktop/phone, centered header,
 no-JavaScript content, Back/Close focus, reduced motion and external new tabs.
 Compare public captures against reviewed source captures on the same architecture.

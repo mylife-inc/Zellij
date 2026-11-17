@@ -10,12 +10,12 @@ items:
     image: assets/card-content.png
     href: /guide/content-model
   - eyebrow: Sections
-    title: Nineteen ways to say it.
+    title: Twenty-five ways to say it.
     body: Each one is documented with its source and its output.
     image: assets/card-sections.png
     href: /sections
   - eyebrow: Themes
-    title: Fourteen looks, no redesign.
+    title: Fifteen looks, no redesign.
     body: Swap a single line in site.yaml.
     image: assets/card-themes.png
     background: tinted

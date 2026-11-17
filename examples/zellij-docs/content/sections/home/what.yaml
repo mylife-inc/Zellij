@@ -22,7 +22,7 @@ items:
     span: normal
     background: tinted
     href: /guide/guide-folders
-  - title: Fourteen themes, no forks
+  - title: Fifteen themes, no forks
     body: >-
       Every colour, radius, font and easing is a token. Switching theme
       restyles the site — try the picker in the bar above.
