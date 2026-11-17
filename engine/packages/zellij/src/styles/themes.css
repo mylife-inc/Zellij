@@ -12,6 +12,7 @@
 @scope ([data-zellij-theme]) to ([data-zellij-theme]) {
 
 /* --------------------------------------------------------------- kie -- */
+[data-zellij-theme='kie'] .zellij-container { padding-inline: 2.5rem; }
 [data-zellij-theme='kie'] .zellij-header {
   backdrop-filter: saturate(150%) blur(16px);
 }
@@ -98,11 +99,11 @@
   border-color: var(--zellij-border);
   color: var(--zellij-fg);
 }
-[data-zellij-theme='kie'] .zellij-hero + .zellij-stats {
+[data-zellij-theme='kie'] .zellij-hero + .zellij-stats[data-zellij-background='default'] {
   padding-block: 1rem 3rem;
   background: linear-gradient(110deg, var(--zellij-bg), color-mix(in srgb, var(--zellij-accent) 7%, var(--zellij-bg)) 80%);
 }
-[data-zellij-theme='kie'] .zellij-hero + .zellij-stats .zellij-stats-list {
+[data-zellij-theme='kie'] .zellij-hero + .zellij-stats[data-zellij-background='default'] .zellij-stats-list {
   max-width: 57.5rem;
   margin: 0;
   border: 1px solid var(--zellij-border);
@@ -135,13 +136,14 @@
 }
 [data-zellij-theme='kie'] .zellij-faq-list { max-width: none; }
 [data-zellij-theme='kie'] .zellij-faq-question { font-weight: 500; font-size: 1.125rem; padding-block: 1.5rem; }
-[data-zellij-theme='kie'] .zellij-cta-banner {
-  text-align: start;
+[data-zellij-theme='kie'] .zellij-cta-banner { text-align: start; }
+[data-zellij-theme='kie'] .zellij-cta-banner[data-zellij-background='default'] {
   background: radial-gradient(ellipse at 90% 50%, color-mix(in srgb, var(--zellij-accent) 18%, transparent), transparent 65%), var(--zellij-surface);
 }
 [data-zellij-theme='kie'] .zellij-cta-banner-inner { margin-inline: 0; max-width: 44rem; }
 [data-zellij-theme='kie'] .zellij-cta-banner .zellij-cta-group { justify-content: start; }
 @media (max-width: 600px) {
+  [data-zellij-theme='kie'] .zellij-container { padding-inline: 1.5rem; }
   [data-zellij-theme='kie'] .zellij-hero { padding-block: 5.5rem 2rem; }
   [data-zellij-theme='kie'] .zellij-hero-subhead { font-size: 1rem; }
   [data-zellij-theme='kie'] .zellij-hero .zellij-cta-group { flex-direction: column; align-items: start; }

@@ -60,7 +60,7 @@ export const THEMES: Record<ThemeName, ThemeTokens> = {
     description: 'Space Grotesk, blue light, pill buttons and generous API-platform compositions.',
     fonts: { heading: FONT_STACKS.spaceGrotesk, body: FONT_STACKS.spaceGrotesk, mono: FONT_STACKS.mono },
     geometry: { radius: '1.25rem', radiusButton: '999px', radiusMedia: '1.25rem',
-      container: '75rem', sectionGap: '5rem', navHeight: '3.75rem' },
+      container: '80rem', sectionGap: '5rem', navHeight: '3.75rem' },
     type: { tracking: '-0.032em', headingWeight: '600', displayScale: '1' },
     shadow: { card: '0 1px 0 rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.1)',
       float: '0 24px 60px -20px rgb(15 23 42 / 0.2)' },

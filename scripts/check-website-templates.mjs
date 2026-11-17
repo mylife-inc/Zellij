@@ -142,7 +142,7 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
               assert.equal(design.weight, '600');
               assert(['start', 'left'].includes(design.align));
               assert.equal(design.accent, mode === 'dark' ? '#4d86ff' : '#2d6cff');
-              assert(await page.evaluate(() => document.fonts.check('600 72px "Space Grotesk"')));
+              assert(await page.evaluate(() => [...document.fonts].some(f => f.family.replaceAll("\"", "").replaceAll("\'", "") === "Zellij Space Grotesk" && f.status === "loaded")));
               const faq = page.locator('.zellij-faq-question').first();
               await faq.focus(); await page.keyboard.press('Enter');
               assert(await faq.evaluate(el => el.parentElement.open));

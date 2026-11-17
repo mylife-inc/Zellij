@@ -85,7 +85,7 @@ fn archive(entries: &BTreeMap<String, Vec<u8>>) -> Vec<u8> {
     builder.into_inner().unwrap().finish().unwrap()
 }
 #[test]
-fn bundled_catalog_creates_eight_valid_editable_sites() {
+fn bundled_catalog_creates_valid_editable_sites() {
     let bundles = bundled().unwrap();
     assert_eq!(bundles.len(), 9);
     let temp = tempfile::tempdir().unwrap();
