@@ -66,3 +66,10 @@ now removes layout whitespace on both sides while retaining all characters and
 their order. This check is shared by native and Next PDFs and includes localized
 contents/chapter labels. A seventh native fixture exercises Arabic's default
 font selection separately from explicit Amiri.
+
+Run `44073820716` passes all seven native print fixtures on three runtimes but
+Next Arabic reading exposes the shared skip link's physical `left: -9999px`.
+That offscreen position expands RTL scrolling in the opposite direction.
+The link now uses logical inline-start positioning; focus returns it to the
+reading edge. Browser acceptance checks both unfocused overflow and keyboard
+visibility, retaining layout/screenshot diagnostics on any failure.
