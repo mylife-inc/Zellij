@@ -1,0 +1,24 @@
+type: card-carousel
+heading: Find your creative starting point.
+subhead: Different formats. One familiar way to work. Replace these concepts with your
+  real model catalog.
+link:
+  label: Explore all models
+  href: /models
+cardWidth: wide
+items:
+  - eyebrow: IMAGE
+    title: A world in a frame.
+    body: Shape a scene from a thought, a sketch or a new perspective.
+    image: assets/frame.svg
+    href: /guide
+  - eyebrow: VIDEO
+    title: Ideas in motion.
+    body: Turn a single moment into the beginning of a story.
+    image: assets/motion.svg
+    href: /guide
+  - eyebrow: AUDIO
+    title: Give it a voice.
+    body: Find the rhythm, texture and sound of your next project.
+    image: assets/sound.svg
+    href: /guide

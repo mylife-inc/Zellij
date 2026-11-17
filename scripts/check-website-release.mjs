@@ -36,14 +36,14 @@ try {
   await mkdir(captures, { recursive: true });
   const catalog = JSON.parse(run(['templates', '--json', '--offline']));
   browser = await chromium.launch();
-  for (const id of ['product-launch', 'software-platform', 'creative-studio']) {
+  for (const id of ['product-launch', 'software-platform', 'creative-studio', 'api-platform']) {
     const manifest = catalog.templates.find(template => template.id === id);
     assert(manifest, `Released catalog must include ${id}`);
     const site = path.join(root, id);
     run(['create', site, '-t', `${id}@${manifest.version}`, '--offline']);
     run(['build', site]);
     await serve(path.join(site, 'site'), url => checkWebsiteTemplate(browser, url, manifest, captures));
-    records.push({ id, version: manifest.version, pages: ['', id === 'product-launch' ? 'design' : id === 'software-platform' ? 'workflow' : 'work', 'guide', 'guide/customize'] });
+    records.push({ id, version: manifest.version, pages: ['', id === 'product-launch' ? 'design' : id === 'software-platform' ? 'workflow' : id === 'api-platform' ? 'models' : 'work', 'guide', 'guide/customize'] });
   }
 
   // A separate authored fixture exercises section navigation and actual company
@@ -116,7 +116,7 @@ try {
     }
   });
   await writeFile(path.join(captures, 'websites.json'), JSON.stringify({ templates: records, navigation: ['company alignment', 'root/section/back/close', 'external new tab', 'reduced motion'] }, null, 2) + '\n');
-  console.log('Three website templates and company/mobile navigation passed with the selected CLI and engine.');
+  console.log('Four website templates and company/mobile navigation passed with the selected CLI and engine.');
 } finally {
   if (browser) await browser.close();
   await rm(root, { recursive: true, force: true });

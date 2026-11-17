@@ -225,6 +225,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
+      - name: Theme presentation applies within its own scope
+        run: node scripts/check-theme-scoping.mjs
       - run: npm run build --workspace @shebka/zellij
       - name: Native section authoring follows the engine schemas
         run: node scripts/check-section-authoring.mjs

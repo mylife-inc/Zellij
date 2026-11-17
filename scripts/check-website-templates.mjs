@@ -2,8 +2,10 @@
 // template driver, against the actual CLI export, without external services.
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import { expect } from '@playwright/test';
 
 const sites = {
+  'api-platform': { secondary: 'models', heading: 'One API for images, video, music and new possibilities.', action: 'Explore the models' },
   'product-launch': { secondary: 'design', heading: 'Sound, beautifully shaped.', action: 'Explore the design' },
   'software-platform': { secondary: 'workflow', heading: 'From first idea to shipped.', action: 'Explore the workflow' },
   'creative-studio': { secondary: 'work', heading: 'A point of view. Made visible.', action: 'Discover the work' },
@@ -17,6 +19,13 @@ async function loadImages(page) {
     await page.evaluate(y => scrollTo(0, y), y);
     await page.waitForTimeout(50);
   }
+  // Lazy carousel images can be outside the horizontal viewport even after
+  // scrolling the whole document. Visit each card as a reader would.
+  for(const picture of await page.locator('.zellij-carousel-track img').all()) {
+    await picture.evaluate(el=>el.scrollIntoView({block:'center',inline:'center',behavior:'instant'}));
+    await expect.poll(()=>picture.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
+  }
+  await page.locator('.zellij-carousel-track').evaluateAll(tracks=>tracks.forEach(track=>track.scrollTo({left:0,behavior:'instant'})));
   let pending = [];
   for (let attempt = 0; attempt < 100; attempt++) {
     pending = await page.evaluate(() => [...document.images]
@@ -130,6 +139,23 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           await page.evaluate(() => scrollTo(0, 0));
           await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-${route.replaceAll('/', '-') || 'home'}.png`), fullPage: true });
           if (!route) {
+            if (manifest.id === 'api-platform') {
+              const design = await page.locator('h1').evaluate(el => {
+                const css = getComputedStyle(el), root = getComputedStyle(document.documentElement);
+                return { font: css.fontFamily, size: css.fontSize, weight: css.fontWeight,
+                  align: css.textAlign, accent: root.getPropertyValue('--zellij-accent').trim() };
+              });
+              assert.match(design.font, /Space Grotesk/);
+              assert.equal(design.size, width === 1440 ? '72px' : '38px');
+              assert.equal(design.weight, '600');
+              assert(['start', 'left'].includes(design.align));
+              assert.equal(design.accent, mode === 'dark' ? '#4d86ff' : '#2d6cff');
+              assert(await page.evaluate(() => [...document.fonts].some(f => f.family.replaceAll("\"", "").replaceAll("\'", "") === "Zellij Space Grotesk" && f.status === "loaded")));
+              const faq = page.locator('.zellij-faq-question').first();
+              await faq.focus(); await page.keyboard.press('Enter');
+              assert(await faq.evaluate(el => el.parentElement.open));
+              await page.evaluate(() => scrollTo(0, 0));
+            }
             await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-hero.png`) });
             await checkBentoSurfaces(page);
             if (width <= 900) {

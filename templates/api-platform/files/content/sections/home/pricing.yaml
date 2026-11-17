@@ -1,0 +1,39 @@
+type: pricing-table
+heading: Clear plans. Room to grow.
+subhead: Show readers how your product fits their work. These illustrative plans are ready
+  for your own pricing and terms.
+tiers:
+  - name: Explore
+    price: $0
+    period: to get started
+    description: A space for your first experiments.
+    features:
+      - Try the sample workflow
+      - Read the integration guide
+      - Choose your creative format
+    cta:
+      label: Start exploring
+      href: /guide
+  - name: Build
+    price: $19
+    period: per month · example
+    description: A focused home for the next idea.
+    highlighted: true
+    features:
+      - Everything in Explore
+      - Organize your projects
+      - Keep your team in sync
+    cta:
+      label: See the workflow
+      href: /models
+  - name: Scale
+    price: Let’s talk
+    description: Make a plan around your product.
+    features:
+      - Your preferred models
+      - A workflow for your team
+      - Support that fits your needs
+    cta:
+      label: Read the platform guide
+      href: /guide
+      style: ghost

@@ -1,0 +1,22 @@
+type: steps-panel
+eyebrow: BUILT FOR DEVELOPERS
+heading: From an idea to your first request.
+subhead: Keep the integration approachable. A small example is often the best place to start.
+steps:
+  - title: Choose a format
+    body: "Start with the result you want: an image, a film, a voice or a conversation."
+  - title: Make it your own
+    body: Add the context that makes your idea specific. Keep the first request small.
+  - title: Build on the result
+    body: Review the output, refine the prompt and connect it to your product.
+terminal:
+  title: A request, simplified
+  body: |-
+    // Illustrative API — replace with your own SDK.
+    const result = await client.create({
+      model: "image-studio",
+      prompt: "A blue glass sculpture at sunrise"
+    });
+
+    console.log(result.url);
+caption: An illustrative request. The starter does not include an API service.

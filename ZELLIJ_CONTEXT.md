@@ -3,6 +3,15 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: Kie theme implementation in progress**
+
+`codex/kie-theme` follows the multilingual branch with selectable `kie` tokens,
+section presentation and the original `api-platform` starter (source rc.10).
+See [the contract](specs/zellij-kie-theme-2026-11-17.md) for measured design,
+reference limitations and acceptance. Preserve centered navigation and company
+placement; do not claim a verified pixel clone. Hosted visual checks and merge
+remain pending. All eight released template archives and public rc.9 stay intact.
+
 **2026-11-17: multilingual books in progress; Kie theme requested**
 
 Continue from verified print styling at `ebd43e1`. Source rc.10 now develops

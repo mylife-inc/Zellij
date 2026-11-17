@@ -54,6 +54,23 @@ export interface ThemeTokens {
 const NEUTRAL_INVERT = { invertedBg: '#14161a', invertedFg: '#f7f8fa' };
 
 export const THEMES: Record<ThemeName, ThemeTokens> = {
+  // Measured from kie.ai's public design tokens, 2026-11-17. See the theme spec.
+  kie: {
+    label: 'Kie',
+    description: 'Space Grotesk, blue light, pill buttons and generous API-platform compositions.',
+    fonts: { heading: FONT_STACKS.spaceGrotesk, body: FONT_STACKS.spaceGrotesk, mono: FONT_STACKS.mono },
+    geometry: { radius: '1.25rem', radiusButton: '999px', radiusMedia: '1.25rem',
+      container: '80rem', sectionGap: '5rem', navHeight: '3.75rem' },
+    type: { tracking: '-0.032em', headingWeight: '600', displayScale: '1' },
+    shadow: { card: '0 1px 0 rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(15 23 42 / 0.1)',
+      float: '0 24px 60px -20px rgb(15 23 42 / 0.2)' },
+    motion: { duration: '500ms', ease: 'cubic-bezier(0.22, 1, 0.36, 1)', distance: '16px', stagger: '60ms' },
+    light: { bg: '#fafafc', fg: '#0b1220', muted: '#44516b', surface: '#f2f4f8',
+      border: '#e3e8f0', accent: '#2d6cff', accentFg: '#ffffff', invertedBg: '#0c111b', invertedFg: '#d6deeb' },
+    dark: { bg: '#060814', fg: '#eceff7', muted: '#bfc6d8', surface: '#0b1024',
+      border: '#1a2138', accent: '#4d86ff', accentFg: '#060814', invertedBg: '#0a0e1f', invertedFg: '#eceff7' },
+  },
+
   /* ------------------------------------------------------------- midnight */
   midnight: {
     label: 'Midnight',

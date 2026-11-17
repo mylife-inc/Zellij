@@ -1,0 +1,23 @@
+type: feature-grid
+heading: More room for the work that matters.
+subhead: Explain the details that make your platform a pleasure to use.
+columns: 3
+items:
+  - icon: layers
+    title: One consistent interface
+    body: Keep a familiar request format as your project moves between creative tools.
+  - icon: code
+    title: A clear path to integration
+    body: Start with readable examples and a guide that answers the next question.
+  - icon: sliders-horizontal
+    title: Your workflow, your way
+    body: Compose the tools around the product you want to build.
+  - icon: book-open
+    title: Documentation close at hand
+    body: Put practical explanations beside the capabilities they describe.
+  - icon: sparkles
+    title: Space to experiment
+    body: Make small iterations visible so every result teaches you something.
+  - icon: globe
+    title: Ready to share
+    body: Give your project a home with clear navigation and local assets.

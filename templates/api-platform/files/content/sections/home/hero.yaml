@@ -1,0 +1,12 @@
+type: hero
+badge: THE CREATIVE API LAYER
+headline: One API for images, video, music and new possibilities.
+subhead: Bring your ideas to life through one thoughtful interface. Explore the models,
+  find your workflow, and build something worth sharing.
+cta:
+  - label: Explore the models
+    href: /models
+    style: primary
+  - label: Read the documentation
+    href: /guide
+    style: ghost

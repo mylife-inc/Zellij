@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "source": "https://kie.ai",
+  "date": "2026-11-17",
+  "public_inputs": {
+    "zellij-kie-reference.html": {
+      "sha256": "6ecb95d029727e5872507b2227bacab38e76a30079e7c22d535ec3df764ce2e0",
+      "bytes": 255999
+    },
+    "zellij-kie-reference.css": {
+      "sha256": "41dd437408389c76f34b00672b9012913f92b00f88298223ba39d12a937886cd",
+      "bytes": 740409
+    }
+  },
+  "reference_run": 44072718969,
+  "scope_probe_run": 44076164327,
+  "scope_probe": [
+    {
+      "engine": "chromium",
+      "name": "existing",
+      "sizes": [
+        "16px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "name": "descendant-limit",
+      "sizes": [
+        "16px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "name": "explicit-root",
+      "sizes": [
+        "72px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "chromium",
+      "name": "root-only",
+      "sizes": [
+        "72px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "name": "existing",
+      "sizes": [
+        "16px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "name": "descendant-limit",
+      "sizes": [
+        "16px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "name": "explicit-root",
+      "sizes": [
+        "72px",
+        "16px"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "name": "root-only",
+      "sizes": [
+        "72px",
+        "16px"
+      ]
+    }
+  ],
+  "limitations": [
+    "Live browser navigation returned Cloudflare 403; the challenge page was rejected.",
+    "Reference capture uses public server-rendered main/CSS with scripts disabled.",
+    "The declared Space Grotesk family uses the already bundled Zellij font snapshot.",
+    "Original site content/assets are not redistributed; pixel identity and live interactions are not certified."
+  ]
+}

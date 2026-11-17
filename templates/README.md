@@ -133,3 +133,11 @@ new hashes only after public release verification, without rewriting old entries
 The rc.9 website starters center the product home link and menu on the viewport.
 Optional `brand.company` stays at the far left; search and theme controls stay
 at the far right. The mobile header uses the complete navigation drawer.
+
+## Source rc.10 addition
+
+`api-platform` 0.1.0 uses the new `kie` theme, with a wide introduction, pricing,
+model cards, integration steps and a code example. Its four pages and original
+SVG artwork use no remote assets or services. CLI and engine rc.10 are required;
+public rc.9 remains the eight-template catalog. All eight published archives
+remain byte-identical. The API, plans and product names are fictional examples.

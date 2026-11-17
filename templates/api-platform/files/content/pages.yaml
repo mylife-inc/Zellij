@@ -1,0 +1,21 @@
+- name: home
+  title: {{zel.title|yaml}}
+  description: One API for your next great idea.
+  layout: landing
+  sections:
+    - home/hero
+    - home/stats
+    - home/pricing
+    - home/models
+    - home/integration
+    - home/features
+    - home/faq
+    - home/next
+- name: models
+  title: Explore the models
+  layout: landing
+  sections:
+    - models/hero
+    - home/models
+    - home/integration
+    - home/faq

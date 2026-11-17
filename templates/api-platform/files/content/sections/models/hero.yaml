@@ -1,0 +1,8 @@
+type: hero
+badge: A WORLD OF POSSIBILITIES
+headline: The right format for your next idea.
+subhead: Start with a still image, follow a story in motion, or find a sound that makes it yours.
+cta:
+  - label: Read the integration guide
+    href: /guide
+    style: primary

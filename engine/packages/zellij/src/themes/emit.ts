@@ -86,7 +86,7 @@ function overrideVars(overrides: SiteConfig['overrides']): string[] {
 
 /**
  * Builds the stylesheet for the active theme only, so a site ships one theme's
- * tokens rather than all eleven. Dark values are emitted for both the explicit
+ * tokens rather than the entire inventory. Dark values are emitted for both the explicit
  * `mode: dark` selector and the `system` + prefers-dark case.
  */
 export function emitThemeCss(config: SiteConfig): string {

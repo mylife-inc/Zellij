@@ -6,6 +6,7 @@ import { languages } from './fixtures/book-languages.mjs';
 
 // Shared assertions for a moved file:// book and a prefixed Next publication.
 export async function checkArabicBook(page, captures, name) {
+  await page.emulateMedia({reducedMotion:'reduce'});
   await expect(page.locator('html')).toHaveAttribute('lang','ar');
   await expect(page.locator('html')).toHaveAttribute('dir','rtl');
   const heading = page.getByRole('heading',{name:languages.ar.first,exact:true});
@@ -28,7 +29,13 @@ export async function checkArabicBook(page, captures, name) {
   const skip = page.locator('.zellij-skip-link');
   if(await skip.count()) {
     await skip.focus(); await expect(skip).toBeFocused();
-    assert(await skip.evaluate(el=>{const r=el.getBoundingClientRect();return r.left>=0&&r.right<=innerWidth;}), 'RTL skip link is reachable on screen');
+    const initialBounds = await skip.boundingBox();
+    // Logical positioning/font metrics can land on a fractional CSS pixel.
+    // Poll layout as well as focus, using the same one-pixel tolerance as overflow.
+    await expect.poll(()=>skip.evaluate(el=>{const r=el.getBoundingClientRect();return {
+      left:r.left,right:r.right,width:innerWidth,reachable:r.left>=-1&&r.right<=innerWidth+1,
+    };}), {message:'RTL skip link is reachable on screen'}).toMatchObject({reachable:true});
+    await writeFile(path.join(captures,`${name}-skip-link.json`),JSON.stringify({initial:initialBounds,settled:await skip.boundingBox(),viewport:page.viewportSize()},null,2));
     await page.keyboard.press('Enter');
   }
   for (const mode of ['light','dark']) {

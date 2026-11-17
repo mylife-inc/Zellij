@@ -134,7 +134,8 @@ test.describe('theme switcher', () => {
     const panel = (await page.locator('.zellij-theme-panel').boundingBox())!;
     expect(panel.y - (header.y + header.height)).toBeLessThanOrEqual(0);
 
-    await expect(page.locator('.zellij-theme-card')).toHaveCount(14);
+    await expect(page.locator('.zellij-theme-card')).toHaveCount(15);
+    await expect(page.locator('.zellij-theme-card').filter({ hasText: 'Kie' })).toBeVisible();
   });
 
   /**
