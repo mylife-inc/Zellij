@@ -1,0 +1,23 @@
+{
+  "type": "faq",
+  "heading": "A few questions, answered.",
+  "subhead": "Replace these starter answers with the things your readers ask most.",
+  "items": [
+    {
+      "question": "Is this a working API service?",
+      "answer": "This is an editable website template. The platform, plans and model names are fictional. Connect your own product and replace the example information before publishing."
+    },
+    {
+      "question": "Can I change the colors and typography?",
+      "answer": "Yes. Select a theme in `content/site.yaml`, or use its documented overrides. The Kie theme includes light and dark palettes and local Space Grotesk fonts."
+    },
+    {
+      "question": "Where do I edit the website?",
+      "answer": "Edit the YAML files in `content/sections`. Reorder sections in `content/pages.yaml` and add Markdown pages to the guide."
+    },
+    {
+      "question": "Does the site need external fonts or images?",
+      "answer": "No. Fonts and original SVG illustrations are local. The generated hosted website is served over HTTP."
+    }
+  ]
+}

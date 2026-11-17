@@ -190,3 +190,16 @@ overrides the normal OS cache directory. `id@version` pins exactly; an unpinned 
 selects the highest version in the chosen catalog. Unsupported versions fail
 without creating a site. Old release URLs can disappear under pre-1.0 retention;
 bundled, local and already cached copies continue to work.
+
+## API platform (source rc.10)
+
+`api-platform` adds a Kie-inspired platform website with a light/dark theme,
+local Space Grotesk fonts, blue gradients, pricing cards, model carousel and
+integration guide. Create it with `zel create my-api -t api-platform` using
+CLI and engine rc.10. This source addition is not in the public rc.9 catalog.
+
+Its model names, prices and claims are fictional examples. It includes no API,
+checkout or signup backend. Replace the sample text and local SVG illustrations
+with your own. Creation works offline; hosted builds need the matching engine
+and a container runtime, and the output is served over HTTP. It does not enable
+book PDF output. See [Themes](/guide/themes) for `theme: kie` on an existing site.

@@ -87,7 +87,7 @@ fn archive(entries: &BTreeMap<String, Vec<u8>>) -> Vec<u8> {
 #[test]
 fn bundled_catalog_creates_eight_valid_editable_sites() {
     let bundles = bundled().unwrap();
-    assert_eq!(bundles.len(), 8);
+    assert_eq!(bundles.len(), 9);
     let temp = tempfile::tempdir().unwrap();
     for b in bundles {
         let name = b.manifest.id.clone();

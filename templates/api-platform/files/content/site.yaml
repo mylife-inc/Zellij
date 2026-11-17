@@ -1,0 +1,20 @@
+name: {{zel.title|yaml}}
+tagline: One place to build your next idea.
+theme: kie
+mode: light
+motion: subtle
+home: home
+nav:
+  align: center
+  sticky: true
+  search: true
+  themeToggle: true
+  transparentOverHero: false
+footer:
+  columns:
+    - heading: Explore
+      links:
+        - {label: Platform, page: home}
+        - {label: Models, page: models}
+        - {label: Documentation, page: 01-guide}
+  legal: A fictional API platform, made with Zellij. All plans and capabilities are illustrative.

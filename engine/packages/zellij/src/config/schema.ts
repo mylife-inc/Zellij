@@ -6,6 +6,7 @@ import { assetReferenceSchema, hrefReferenceSchema } from '../content/reference-
  * plus four drawn from design specs: `cupertino`, `studio`, `iris`, and
  * `meridian`. The latter three carry neutral names for the same reason
  * `cupertino` does — they capture a design language, not a brand.
+ * `kie` follows the later user-requested kie.ai design reference.
  */
 export const THEME_NAMES = [
   'midnight',
@@ -22,6 +23,7 @@ export const THEME_NAMES = [
   'studio',
   'iris',
   'meridian',
+  'kie',
 ] as const;
 
 export const themeNameSchema = z.enum(THEME_NAMES);

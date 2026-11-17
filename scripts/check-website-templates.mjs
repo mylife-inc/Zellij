@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 
 const sites = {
+  'api-platform': { secondary: 'models', heading: 'One API for images, video, music and new possibilities.', action: 'Explore the models' },
   'product-launch': { secondary: 'design', heading: 'Sound, beautifully shaped.', action: 'Explore the design' },
   'software-platform': { secondary: 'workflow', heading: 'From first idea to shipped.', action: 'Explore the workflow' },
   'creative-studio': { secondary: 'work', heading: 'A point of view. Made visible.', action: 'Discover the work' },
@@ -130,6 +131,23 @@ export async function checkWebsiteTemplate(browser, url, manifest, artifacts) {
           await page.evaluate(() => scrollTo(0, 0));
           await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-${route.replaceAll('/', '-') || 'home'}.png`), fullPage: true });
           if (!route) {
+            if (manifest.id === 'api-platform') {
+              const design = await page.locator('h1').evaluate(el => {
+                const css = getComputedStyle(el), root = getComputedStyle(document.documentElement);
+                return { font: css.fontFamily, size: css.fontSize, weight: css.fontWeight,
+                  align: css.textAlign, accent: root.getPropertyValue('--zellij-accent').trim() };
+              });
+              assert.match(design.font, /Space Grotesk/);
+              assert.equal(design.size, width === 1440 ? '72px' : '38px');
+              assert.equal(design.weight, '600');
+              assert(['start', 'left'].includes(design.align));
+              assert.equal(design.accent, mode === 'dark' ? '#4d86ff' : '#2d6cff');
+              assert(await page.evaluate(() => document.fonts.check('600 72px "Space Grotesk"')));
+              const faq = page.locator('.zellij-faq-question').first();
+              await faq.focus(); await page.keyboard.press('Enter');
+              assert(await faq.evaluate(el => el.parentElement.open));
+              await page.evaluate(() => scrollTo(0, 0));
+            }
             await page.screenshot({ path: path.join(artifacts, `${manifest.id}-${width}-${mode}-hero.png`) });
             await checkBentoSurfaces(page);
             if (width <= 900) {

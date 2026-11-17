@@ -45,7 +45,7 @@ fn site_yaml(name: &str, default_theme: bool, theme: &str, with_guide: bool) -> 
     let name = yaml_string(name);
     let theme = yaml_string(theme);
     let theme_line = if default_theme {
-        format!("theme: {theme}          # zel list themes — there are fourteen")
+        format!("theme: {theme}          # zel list themes — choose a built-in theme")
     } else {
         format!("theme: {theme}")
     };

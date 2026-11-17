@@ -1,0 +1,18 @@
+{
+  "type": "stats-band",
+  "background": "default",
+  "stats": [
+    {
+      "value": "One",
+      "label": "Unified interface"
+    },
+    {
+      "value": "4",
+      "label": "Creative formats"
+    },
+    {
+      "value": "Your",
+      "label": "Next great idea"
+    }
+  ]
+}

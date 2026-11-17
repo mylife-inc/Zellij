@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Platform",
+    "page": "home"
+  },
+  {
+    "name": "Models",
+    "page": "models"
+  },
+  {
+    "name": "Documentation",
+    "page": "01-guide"
+  }
+]

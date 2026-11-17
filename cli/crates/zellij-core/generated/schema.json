@@ -97,6 +97,11 @@
       "name": "meridian",
       "label": "Meridian",
       "description": "Warm cream over deep navy ink, with an electric blue — calm, human, trustworthy."
+    },
+    {
+      "name": "kie",
+      "label": "Kie",
+      "description": "Space Grotesk, blue light, pill buttons and generous API-platform compositions."
     }
   ],
   "sectionTemplates": {
@@ -5599,7 +5604,8 @@
             "cupertino",
             "studio",
             "iris",
-            "meridian"
+            "meridian",
+            "kie"
           ]
         },
         "mode": {
@@ -6080,7 +6086,8 @@
             "cupertino",
             "studio",
             "iris",
-            "meridian"
+            "meridian",
+            "kie"
           ]
         },
         "motion": {

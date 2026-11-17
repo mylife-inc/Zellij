@@ -20,7 +20,7 @@ fn real_cli_catalog_aliases_pinned_templates_and_native_builds_work_offline() {
     let root = temp.path();
     let listed = run(root, &["templates", "--json", "--offline"], 0);
     let data: serde_json::Value = serde_json::from_slice(&listed.stdout).unwrap();
-    assert_eq!(data["templates"].as_array().unwrap().len(), 8);
+    assert_eq!(data["templates"].as_array().unwrap().len(), 9);
     for (id, portable) in [
         ("product-docs", true),
         ("book-classic", true),
@@ -30,6 +30,7 @@ fn real_cli_catalog_aliases_pinned_templates_and_native_builds_work_offline() {
         ("product-launch", false),
         ("software-platform", false),
         ("creative-studio", false),
+        ("api-platform", false),
     ] {
         run(root, &["templates", "show", id, "--json"], 0);
         let version = data["templates"]
