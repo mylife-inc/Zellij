@@ -1,0 +1,323 @@
+{
+  "date": "2026-11-17",
+  "status": "Exact plans reviewed and read-only native preflight passed; no deletion yet.",
+  "replacement": "v0.2.0-rc.10",
+  "documentation": {
+    "pull_request": 200,
+    "tested_head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+    "reviewed_head": "8ecdf57a7c35fb18f2fe0fbcf8784554ae61738f",
+    "merge": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+    "merge_tree_identical": true
+  },
+  "gates": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612903,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612903"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44159670077,
+      "head": "9319729c8c325558c0418fbb4ab24be27940d9a1",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44159670077"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44163817890,
+      "head": "5bdfe7e058b5fadb2f8ecfa8bc656f87edcd3791",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44163817890"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44164634346,
+      "head": "aa82b4e9d15debdb1de6ff2f952fc23841ccad7d",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44164634346"
+    },
+    {
+      "repository": "mylife-inc/homebrew-tap",
+      "run": 44166260276,
+      "head": "aa82b4e9d15debdb1de6ff2f952fc23841ccad7d",
+      "attempt": 2,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/homebrew-tap/actions/runs/44166260276"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44164643192,
+      "head": "992b4e13232f41f3ddfa9dee6e7c4dcdbd3ace7c",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44164643192"
+    },
+    {
+      "repository": "mylife-inc/scoop-bucket",
+      "run": 44166529833,
+      "head": "992b4e13232f41f3ddfa9dee6e7c4dcdbd3ace7c",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/scoop-bucket/actions/runs/44166529833"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612875,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612875"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612814,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612814"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612784,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612784"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612879,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612879"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166612803,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166612803"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44166613081,
+      "head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44166613081"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44094639060,
+      "head": "84dcce64f220dea3e3bc2748b2d1c63271d49fe5",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44094639060"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44173413951,
+      "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44173413951"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44173419383,
+      "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44173419383"
+    },
+    {
+      "repository": "mylife-inc/Zellij",
+      "run": 44173703719,
+      "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+      "attempt": 1,
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44173703719"
+    }
+  ],
+  "replacement_publications": [
+    {
+      "run": 44173413951,
+      "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 134358282444,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 134358285687,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    },
+    {
+      "run": 44173419383,
+      "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 134358302102,
+          "name": "publish",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 134358304413,
+          "name": "verify",
+          "status": "completed",
+          "conclusion": "skipped"
+        }
+      ]
+    }
+  ],
+  "pre_cleanup_http": {
+    "run": 44173703719,
+    "head": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 134359302638,
+        "name": "inspect (next)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 134359303332,
+        "name": "inspect (static)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 134359305569,
+        "name": "live-providers",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "inventory": {
+    "run": 44173793859,
+    "head": "288585886d9713d016289db595768e1dc7cc46ec",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "id": 134359620421,
+        "name": "inventory",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 134359623413,
+        "name": "retire-images",
+        "status": "completed",
+        "conclusion": "skipped"
+      }
+    ]
+  },
+  "plans": {
+    "native": {
+      "sha256": "b7b97d4e167e6c130bdcc35b029a3cb6bacbd6188c496c19413be064511d6955",
+      "releases": 2,
+      "assets": 52,
+      "tags": 2,
+      "protected_releases": 4,
+      "guards_passed": 7,
+      "read_only_preflight_passed": true
+    },
+    "images": {
+      "sha256": "da8839fd3a8f0bb2f8dcfd9c7a70b8778e08e6f963d29b21e9b7a84e87c26cdc",
+      "exact_versions": 26,
+      "protected_manifest_nodes": 38,
+      "excluded_build_history": 3743,
+      "guards_passed": 13
+    }
+  },
+  "development_image_equivalence": {
+    "checked_at": "2026-11-17T20:14:33.871178+00:00",
+    "source_run": 44094639060,
+    "source_head": "84dcce64f220dea3e3bc2748b2d1c63271d49fe5",
+    "compared_head": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+    "unchanged_input_paths": [
+      "engine",
+      "docker",
+      "package.json",
+      "package-lock.json",
+      "scripts/prepare-app-scaffold.mjs",
+      "cli/crates/zellij-scaffold/generated/app.json"
+    ],
+    "no_dependency_or_runtime_changes": true,
+    "public_manifests": [
+      {
+        "tag": "main",
+        "digest": "sha256:2d344c87a9e8aac6804eaeec45507a2a15addd7cf9fcd0e5703708cac54714ca",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      {
+        "tag": "main-maths",
+        "digest": "sha256:49f03e5557b5f6f7f83681d73d78a62e211b5b62aeccf7cc0ebd3ddbaaee238a",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      {
+        "tag": "main-diagrams",
+        "digest": "sha256:ca3c6b4c30478136a50f12a70e6361da2580e7f03aadf16458c52dfcd13d99c0",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      },
+      {
+        "tag": "main-all",
+        "digest": "sha256:6481f5a2ec61e13e4629ee0420deb2936cd97f98f873c3d1f71593330419ff08",
+        "platforms": [
+          "linux/amd64",
+          "linux/arm64"
+        ]
+      }
+    ]
+  },
+  "release_guide_links": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "release_id": 449125049,
+      "tag": "v0.2.0-rc.10",
+      "documentation_commit": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "replaced_guide_links": 3,
+      "assets_unchanged": true
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "release_id": 449125120,
+      "tag": "zellij-v0.2.0-rc.10",
+      "documentation_commit": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "replaced_guide_links": 3,
+      "assets_unchanged": true
+    }
+  ],
+  "limits": [
+    "Production hosting and live providers remain deferred.",
+    "Unpatched development-only picomatch advisory remains under a bounded disposition until 2026-12-01; no clean full-audit or zero-bug claim."
+  ]
+}
