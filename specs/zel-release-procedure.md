@@ -9,6 +9,12 @@ match reviewed source output. All eight managed lifecycle checks and eight
 actual rc.9-to-rc.10 upgrades pass; one Homebrew macOS ARM job required a retry
 after GitHub failed to allocate a runner. Documentation merge and retirement
 status are tracked in [the rc.10 record](evidence/zellij-rc10-release-2026-11-17.json).
+Documentation PR #200 is merged as `d5ed0bf`. Scoped rc.9 retirement is complete
+after all 17 gates: two releases, 52 assets, two tags and 26 image versions removed.
+Fresh inventory `44175159235` and both HTTP checks in `44175166206` pass;
+38 current manifest nodes, 3,743 excluded build-history versions and CodeSeal
+remain intact. [PR #201](https://github.com/mylife-inc/Zellij/pull/201) records
+[the exact cleanup evidence](evidence/zellij-rc10-image-retirement-2026-11-17.json).
 
 The full repository audit has an open, unpatched development-only picomatch
 advisory. Production and fresh all-features wrapper audits have no findings.

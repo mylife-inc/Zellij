@@ -3,6 +3,32 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: rc.10 migration and scoped rc.9 retirement complete**
+
+Documentation PR #200 merges as `d5ed0bf`, identical to reviewed `8ecdf57`.
+Its runtime, active guides and acceptance inputs match all-green `6c9fde4`.
+Both public release pages now link those verified guides. Replacement static/Next
+publications `44173413951`/`44173419383` and fresh-pull HTTP run `44173703719`
+pass. Existing development-image run `44094639060` remains valid: its engine,
+dependency/build inputs and all four public digests are unchanged.
+
+Policy `2885858` and committed plans `dc43b7d` pass 13 local/hosted image guards,
+seven native guards and the read-only native preflight. After all 17 replacement
+gates pass, owner execution removes exactly two rc.9 releases, 52 assets, two
+remote tags and 26 image versions, without a failed deletion attempt. All 38
+current manifest nodes, 3,743 excluded build-history identities and both
+CodeSeal releases remain intact. Fresh inventory `44175159235` and both
+post-cleanup HTTP cases in `44175166206` pass. Only rc.10 remains in both Zellij
+release channels, with 27 matching assets each. Do not reuse completed plans.
+[PR #201](https://github.com/mylife-inc/Zellij/pull/201) records the plans and
+[retirement evidence](specs/evidence/zellij-rc10-image-retirement-2026-11-17.json).
+The final update changes records/procedure prose only, preserving verified inputs.
+
+The development-only picomatch finding remains open under the exact disposition
+expiring December 1; production and generated-wrapper audits have no findings.
+Production hosting and live-provider verification remain deferred. No zero-bug
+or stable 1.0 claim is made.
+
 **2026-11-17: rc.10 publication and documentation verified**
 
 PR #199 merges as `9319729`, the immutable rc.10 tag. Normal preflight passes

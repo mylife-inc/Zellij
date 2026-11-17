@@ -1,7 +1,7 @@
 {
   "date": "2026-11-17",
   "candidate": "v0.2.0-rc.10",
-  "status": "All release, expanded public, source documentation, consumer and managed installation/upgrade checks passed. Documentation merge, replacement consumer images and scoped rc.9 retirement remain.",
+  "status": "Complete: rc.10 is published and verified, managed channels and guides migrated, rc.9 artifacts retired after all replacement gates; production hosting/live providers remain deferred.",
   "source_implementation": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
   "tag_candidate_commit": "9319729c8c325558c0418fbb4ab24be27940d9a1",
   "source_ci": {
@@ -7088,5 +7088,36 @@
       "after_body_sha256": "abda4296402c99dabda2c0f77d857ec9361e8342f6b440fc446d55efa264e338",
       "assets_unchanged": true
     }
-  ]
+  ],
+  "documentation_merge": {
+    "pull_request": 200,
+    "reviewed_head": "8ecdf57a7c35fb18f2fe0fbcf8784554ae61738f",
+    "merge": "d5ed0bf76039d278390a430d3accffbb6218f04a",
+    "merge_tree_identical": true
+  },
+  "release_guide_links": [
+    {
+      "repository": "mylife-inc/Zellij",
+      "release_id": 449125049,
+      "tag": "v0.2.0-rc.10",
+      "documentation_commit": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "replaced_guide_links": 3,
+      "assets_unchanged": true
+    },
+    {
+      "repository": "mylife-inc/releases",
+      "release_id": 449125120,
+      "tag": "zellij-v0.2.0-rc.10",
+      "documentation_commit": "6c9fde43df4cfba65352c24a9491c13c6355f0e8",
+      "replaced_guide_links": 3,
+      "assets_unchanged": true
+    }
+  ],
+  "retirement": {
+    "evidence": "zellij-rc10-image-retirement-2026-11-17.json",
+    "pull_request": 201,
+    "completed": true,
+    "source_history_preserved": true,
+    "only_rc10_in_both_zellij_release_channels": true
+  }
 }
