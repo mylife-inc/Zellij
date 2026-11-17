@@ -1173,6 +1173,22 @@
   size-adjust: 96.98%;
 }
 
+/* Amiri — license notices in licenses.txt. */
+/* Amiri 1.003. Lossless WOFF2 compression of the pinned upstream fonts. */
+@font-face { font-family: 'Zellij Amiri'; src: url('./files/amiri-regular.woff2') format('woff2'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Zellij Amiri'; src: url('./files/amiri-bold.woff2') format('woff2'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Zellij Amiri'; src: url('./files/amiri-italic.woff2') format('woff2'); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Zellij Amiri'; src: url('./files/amiri-bolditalic.woff2') format('woff2'); font-style: italic; font-weight: 700; font-display: swap; }
+
+@font-face {
+  font-family: 'Zellij Amiri Fallback';
+  src: local('Times New Roman');
+  ascent-override: normal;
+  descent-override: normal;
+  line-gap-override: normal;
+  size-adjust: 100%;
+}
+
 .zellij-fonts {
   --zellij-font-inter: 'Zellij Inter', 'Zellij Inter Fallback';
   --zellij-font-inter-tight: 'Zellij Inter Tight', 'Zellij Inter Tight Fallback';
@@ -1186,5 +1202,6 @@
   --zellij-font-poppins: 'Zellij Poppins', 'Zellij Poppins Fallback';
   --zellij-font-jetbrains: 'Zellij JetBrains Mono', 'Zellij JetBrains Mono Fallback';
   --zellij-font-cormorant: 'Zellij Cormorant Garamond', 'Zellij Cormorant Garamond Fallback';
+  --zellij-font-amiri: 'Zellij Amiri', 'Zellij Amiri Fallback';
   --zellij-font-license-url: url('./licenses.txt');
 }

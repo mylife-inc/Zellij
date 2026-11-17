@@ -233,7 +233,7 @@ pub fn render(
             )
         })
         .unwrap_or_default();
-    let edition_css = if presentation
+    let mut edition_css = if presentation
         .book
         .is_some_and(|b| !b.manifest.edition.is_classic())
     {
@@ -241,6 +241,15 @@ pub fn render(
     } else {
         String::new()
     };
+    if language
+        .split('-')
+        .next()
+        .is_some_and(|s| s.eq_ignore_ascii_case("ar"))
+    {
+        edition_css.push_str(&format!(
+            "<link rel=\"stylesheet\" href=\"{prefix}_zellij/book-language.css\">"
+        ));
+    }
     let download = if presentation.pdf {
         format!(
             "<p><a href=\"{prefix}_zellij/pdf/book.pdf\" download>Download the complete book (PDF)</a></p>"

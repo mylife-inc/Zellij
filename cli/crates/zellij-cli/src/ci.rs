@@ -95,6 +95,20 @@ pub(crate) fn generate(
             ));
         }
     }
+    if site.pdf.enabled
+        && site
+            .portable
+            .get("book")
+            .and_then(|b| b.get("language"))
+            .and_then(|l| l.as_str())
+            .is_some_and(|l| !l.split('-').next().unwrap_or("").eq_ignore_ascii_case("en"))
+        && semver::Version::parse(version.trim_start_matches('v')).expect("validated version")
+            < semver::Version::parse("0.2.0-rc.10").expect("multilingual print release")
+    {
+        return Err(invalid(
+            "multilingual PDF requires CLI 0.2.0-rc.10 or later; choose a compatible --zel-version (no workflow was written)",
+        ));
+    }
     let provider = Provider::selected(&site, args.deploy.as_deref(), None)?;
     let environment_site = provider
         .and_then(|p| std::env::var(p.site_environment()).ok())

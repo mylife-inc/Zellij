@@ -749,3 +749,45 @@ fn print_style_receipt_survives_static_and_next_delivery() {
             .unwrap();
     assert_eq!(record["settings"], next["settings"]);
 }
+
+#[test]
+fn unsupported_print_locales_and_font_combinations_preserve_existing_site() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = temp.path();
+    site(root);
+    let original = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    assert!(
+        command(root)
+            .arg("build")
+            .output()
+            .unwrap()
+            .status
+            .success()
+    );
+    let before = fs::read(root.join("site/index.html")).unwrap();
+    for (language, direction, font) in [
+        ("ja", "ltr", "serif"),
+        ("ar", "ltr", "serif"),
+        ("ar", "rtl", "libertinus"),
+        ("fr", "rtl", "serif"),
+    ] {
+        let mut yaml: serde_yaml_ng::Value = serde_yaml_ng::from_str(&original).unwrap();
+        yaml["book"]["language"] = language.into();
+        yaml["book"]["direction"] = direction.into();
+        yaml["pdf"] = serde_yaml_ng::from_str::<serde_yaml_ng::Value>(&format!(
+            "{{enabled: true, style: {{body-font: {font}}}}}"
+        ))
+        .unwrap();
+        fs::write(
+            root.join("zel.yaml"),
+            serde_yaml_ng::to_string(&yaml).unwrap(),
+        )
+        .unwrap();
+        for args in [["build", "--pdf"], ["pdf", "--check"]] {
+            let result = command(root).args(args).output().unwrap();
+            assert!(!result.status.success(), "{result:?}");
+            assert!(!String::from_utf8_lossy(&result.stderr).contains("PDF requires a running"));
+            assert_eq!(before, fs::read(root.join("site/index.html")).unwrap());
+        }
+    }
+}

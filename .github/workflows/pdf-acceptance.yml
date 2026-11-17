@@ -2,34 +2,8 @@ name: Book PDF acceptance
 on:
   workflow_call:
   workflow_dispatch:
-    inputs:
-      probe:
-        description: Inspect pinned fonts and the requested design reference
-        type: boolean
-        default: false
 jobs:
-  probe:
-    if: inputs.probe == true
-    runs-on: ubuntu-latest
-    timeout-minutes: 12
-    steps:
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v7
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      - run: node scripts/probe-book-design.mjs
-      - uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: book-design-reference
-          path: test-results/book-design-reference
   pdf:
-    if: inputs.probe != true
     name: LuaLaTeX (${{ matrix.runner }}, ${{ matrix.runtime }})
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 25
@@ -68,6 +42,10 @@ jobs:
         env:
           DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
         run: node scripts/check-pdf.mjs
+      - name: Typeset multilingual books and named print fonts
+        env:
+          DOCKER_CONTEXT: ${{ matrix.runtime == 'docker' && 'default' || '' }}
+        run: node scripts/check-language-pdfs.mjs
       - uses: actions/upload-artifact@v7
         if: always()
         with:

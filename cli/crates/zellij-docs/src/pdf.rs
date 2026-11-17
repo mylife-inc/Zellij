@@ -162,7 +162,7 @@ pub fn check(source: &SiteInput) -> Result<()> {
     )?;
     Ok(())
 }
-fn invalid(message: impl std::fmt::Display) -> Error {
+pub(crate) fn invalid(message: impl std::fmt::Display) -> Error {
     Error::InvalidArgument(format!("PDF: {message}"))
 }
 fn tex(s: &str) -> String {
@@ -199,6 +199,7 @@ struct Writer<'a> {
     files: BTreeMap<Utf8PathBuf, Vec<u8>>,
     images: BTreeMap<Utf8PathBuf, String>,
     notes: BTreeSet<(usize, String)>,
+    rtl: bool,
 }
 impl Writer<'_> {
     fn image(&mut self, relative: &Utf8Path) -> Result<String> {
@@ -374,6 +375,9 @@ impl Writer<'_> {
                 Event::Start(Tag::Item) => out.push_str("\\item "),
                 Event::End(TagEnd::Item) => out.push('\n'),
                 Event::Start(Tag::CodeBlock(_)) => {
+                    if self.rtl {
+                        out.push_str("\\begingroup\\pardir TLT\\textdir TLT\n");
+                    }
                     out.push_str("\\begin{quote}\\small\\ttfamily\\raggedright\n");
                     i += 1;
                     while i < events.len() && !matches!(events[i], Event::End(TagEnd::CodeBlock)) {
@@ -388,8 +392,19 @@ impl Writer<'_> {
                         i += 1;
                     }
                     out.push_str("\\end{quote}\n");
+                    if self.rtl {
+                        out.push_str("\\endgroup\n");
+                    }
                 }
-                Event::Code(s) => out.push_str(&format!("\\texttt{{{}}}", tex(s))),
+                Event::Code(s) => {
+                    if self.rtl {
+                        out.push_str("{\\textdir TLT ");
+                    }
+                    out.push_str(&format!("\\texttt{{{}}}", tex(s)));
+                    if self.rtl {
+                        out.push('}');
+                    }
+                }
                 Event::Text(s) => out.push_str(&tex(s)),
                 Event::InlineMath(s) | Event::DisplayMath(s) => {
                     if let crate::equations::Expression::Numbered { id, tex: body } =
@@ -473,18 +488,7 @@ pub(crate) fn compose(
 ) -> Result<Source> {
     settings.validate()?;
     let m = &book.manifest;
-    if m.direction.as_str() != "ltr"
-        || !m
-            .language
-            .split('-')
-            .next()
-            .unwrap_or("")
-            .eq_ignore_ascii_case("en")
-    {
-        return Err(invalid(
-            "these print editions support English/LTR; multilingual/RTL print templates remain planned (web reading remains available)",
-        ));
-    }
+    let language = crate::print_language::Language::resolve(m, settings)?;
     let mut w = Writer {
         book,
         pages,
@@ -492,10 +496,62 @@ pub(crate) fn compose(
         files: BTreeMap::new(),
         images: BTreeMap::new(),
         notes: BTreeSet::new(),
+        rtl: language.rtl,
     };
     let mut out = include_str!("../assets/book.tex")
         .replace("@PAPER@", settings.paper.latex())
         .replace("@FONT_SIZE@", &settings.font_size.to_string());
+    out = out.replace(
+        "\\usepackage{hyperref,bookmark}",
+        &format!("{}\\usepackage{{hyperref,bookmark}}", language.preamble()),
+    );
+    let fonts = settings
+        .style
+        .as_ref()
+        .map(|s| [s.body_font, s.title_font])
+        .unwrap_or([None, None]);
+    for (font, folder, assets, options, family, command) in [
+        (
+            zellij_core::pdf::Font::Amiri,
+            "amiri",
+            crate::print_language::AMIRI,
+            crate::print_language::AMIRI_OPTIONS,
+            "zelAmiri",
+            "zelamiri",
+        ),
+        (
+            zellij_core::pdf::Font::Libertinus,
+            "libertinus",
+            crate::print_language::LIBERTINUS,
+            crate::print_language::LIBERTINUS_OPTIONS,
+            "zelLibertinus",
+            "zellibertinus",
+        ),
+    ] {
+        if fonts.contains(&Some(font)) || (language.rtl && font == zellij_core::pdf::Font::Amiri) {
+            for (name, bytes) in assets {
+                w.files
+                    .insert(format!("fonts/{folder}/{name}").into(), bytes.to_vec());
+            }
+            let regular = if folder == "amiri" {
+                "Amiri-Regular.ttf"
+            } else {
+                "LibertinusSerif-Regular.otf"
+            };
+            out.push_str(&format!(
+                "\\newfontfamily\\{command}[{options},NFSSFamily={family}]{{{regular}}}\n"
+            ));
+        }
+    }
+    if language.rtl {
+        let options = crate::print_language::AMIRI_OPTIONS;
+        for family in ["rm", "sf", "tt"] {
+            out.push_str(&format!(
+                "\\babelfont{{{family}}}[{options}]{{Amiri-Regular.ttf}}\n"
+            ));
+        }
+        out.push_str("\\babelfont[english]{rm}{Latin Modern Roman}\n\\babelfont[english]{sf}{Latin Modern Sans}\n\\babelfont[english]{tt}{Latin Modern Mono}\n");
+    }
     match m.edition {
         zellij_core::book::Edition::Classic => {}
         zellij_core::book::Edition::Technical => {
@@ -552,6 +608,12 @@ pub(crate) fn compose(
         .and_then(|s| s.title_font)
         .map_or("", |f| f.latex());
     out = out.replace("@TITLE_FONT@", title_font);
+    if language.rtl {
+        // Covers/chapters follow the reading direction; centered study openings
+        // remain centered. Code and mathematical notation keep LTR ordering.
+        out = out.replace("\\raggedright", "\\raggedleft");
+        out.push_str("\\hypersetup{pdflang=ar}\n");
+    }
     out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n", tex(&m.title), tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")), book.revision));
     if m.edition.is_classic() {
         out.push_str(&format!("\\begin{{titlepage}}\\centering\n\\vspace*{{0.08\\textheight}}\n{{\\Huge{}\\bfseries\\color{{zelaccent}} {}\\par}}\n", title_font, tex(&m.title)));

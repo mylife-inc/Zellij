@@ -103,18 +103,24 @@ impl Style {
 pub enum Font {
     Serif,
     Sans,
+    Libertinus,
+    Amiri,
 }
 impl Font {
     pub fn latex(self) -> &'static str {
         match self {
             Self::Serif => "\\rmfamily",
             Self::Sans => "\\sffamily",
+            Self::Libertinus => "\\zellibertinus",
+            Self::Amiri => "\\zelamiri",
         }
     }
     pub fn default_family(self) -> &'static str {
         match self {
             Self::Serif => "\\rmdefault",
             Self::Sans => "\\sfdefault",
+            Self::Libertinus => "zelLibertinus",
+            Self::Amiri => "zelAmiri",
         }
     }
 }

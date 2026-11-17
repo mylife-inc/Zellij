@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "amiri_version": "1.003",
+  "amiri_commit": "480bb746e99ea700bb0d6b4dbf96302d58192103",
+  "libertinus_version": "7.051",
+  "libertinus_archive_sha256": "4d9be29b5cb380c35af8ba967abcc752ad1e07be1f738a9789c33e0dd7478c92",
+  "files": [
+    {
+      "path": "amiri/Amiri-Regular.ttf",
+      "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/fonts/Amiri-Regular.ttf",
+      "bytes": 612944,
+      "sha256": "f810bbd1448031169f237a0de429300bf249d67739800edc3a8587abaed7ffb3"
+    },
+    {
+      "path": "amiri/Amiri-Bold.ttf",
+      "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/fonts/Amiri-Bold.ttf",
+      "bytes": 588212,
+      "sha256": "85681ccfc5c6138fbc20961f846477cdb8bf6cd4fb3369fa214e2a5529b25530"
+    },
+    {
+      "path": "amiri/Amiri-Italic.ttf",
+      "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/fonts/Amiri-Italic.ttf",
+      "bytes": 612224,
+      "sha256": "fc40d2ff3302570bdeeec26a21d2e1272265648aead53d47a4625cbd0c8dc602"
+    },
+    {
+      "path": "amiri/Amiri-BoldItalic.ttf",
+      "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/fonts/Amiri-BoldItalic.ttf",
+      "bytes": 584480,
+      "sha256": "912909442169c07c3e70a8800c0f42ea3c4f717ccd9b0bcc880acb8ef76371c2"
+    },
+    {
+      "path": "amiri/OFL.txt",
+      "url": "https://raw.githubusercontent.com/aliftype/amiri/480bb746e99ea700bb0d6b4dbf96302d58192103/OFL.txt",
+      "bytes": 4389,
+      "sha256": "72de68e5954f4fdd24702292ef5a32f003ca960ec9330dc86e5eefb5dffb9b22"
+    },
+    {
+      "path": "libertinus/LibertinusSerif-Regular.otf",
+      "url": "https://github.com/alerque/libertinus/releases/download/v7.051/Libertinus-7.051.zip",
+      "archive_member": "Libertinus-7.051/static/OTF/LibertinusSerif-Regular.otf",
+      "bytes": 337132,
+      "sha256": "fcf06307a77367394fcb0ccb241e59eea70dba3d732be309647611224679c733"
+    },
+    {
+      "path": "libertinus/LibertinusSerif-Bold.otf",
+      "url": "https://github.com/alerque/libertinus/releases/download/v7.051/Libertinus-7.051.zip",
+      "archive_member": "Libertinus-7.051/static/OTF/LibertinusSerif-Bold.otf",
+      "bytes": 293908,
+      "sha256": "0264914210ed51b3231ebc92ce529e9f2e166ba9eebf0cd4a579558690a27b64"
+    },
+    {
+      "path": "libertinus/LibertinusSerif-Italic.otf",
+      "url": "https://github.com/alerque/libertinus/releases/download/v7.051/Libertinus-7.051.zip",
+      "archive_member": "Libertinus-7.051/static/OTF/LibertinusSerif-Italic.otf",
+      "bytes": 332312,
+      "sha256": "9a393d63d6e05f620d3dc0190dfd35a8ede58c0808cf0fc9de7fcb9c723e4c24"
+    },
+    {
+      "path": "libertinus/LibertinusSerif-BoldItalic.otf",
+      "url": "https://github.com/alerque/libertinus/releases/download/v7.051/Libertinus-7.051.zip",
+      "archive_member": "Libertinus-7.051/static/OTF/LibertinusSerif-BoldItalic.otf",
+      "bytes": 259176,
+      "sha256": "47a665259f09f554f5d133d7718cdad43ff462c6a6b2328f38023465e62d57ce"
+    },
+    {
+      "path": "libertinus/OFL.txt",
+      "url": "https://github.com/alerque/libertinus/releases/download/v7.051/Libertinus-7.051.zip",
+      "archive_member": "Libertinus-7.051/OFL.txt",
+      "bytes": 4426,
+      "sha256": "9aeecc8107c489ec1ec0068b0313e531a760edf3493705b32ab8ab8215a8794e"
+    }
+  ]
+}

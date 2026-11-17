@@ -12,6 +12,130 @@ fn fixture(root: &Utf8Path) {
     )
     .unwrap();
 }
+
+#[test]
+fn print_languages_validate_direction_and_keep_both_renderers_in_sync() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    let original = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    for (language, direction, expected) in [
+        ("fr-CA", "ltr", "french"),
+        ("de", "ltr", "ngerman"),
+        ("es", "ltr", "spanish"),
+        ("ar-Arab-MA", "rtl", "arabic"),
+    ] {
+        fs::write(
+            root.join("zel.yaml"),
+            original.replace(
+                "book:\n",
+                &format!("book:\n  language: {language}\n  direction: {direction}\n"),
+            ),
+        )
+        .unwrap();
+        let source = SiteInput::from(root);
+        let native =
+            pdf::prepare(&source, &root.join("native"), BuildOptions::default(), true).unwrap();
+        let next =
+            pdf::prepare_hosted(&source, &root.join("next"), BuildOptions::default()).unwrap();
+        assert_eq!(native.source.files, next.source.files);
+        let tex =
+            String::from_utf8(native.source.files[Utf8Path::new("book.tex")].clone()).unwrap();
+        assert!(tex.contains(&format!("\\babelprovide[import,main]{{{expected}}}")));
+        assert_eq!(
+            native
+                .source
+                .files
+                .contains_key(Utf8Path::new("fonts/amiri/Amiri-Regular.ttf")),
+            direction == "rtl"
+        );
+    }
+    for (language, direction) in [
+        ("ar", "ltr"),
+        ("fr", "rtl"),
+        ("en", "rtl"),
+        ("ja", "ltr"),
+        ("ar-Latn", "rtl"),
+        ("fr-Arab", "ltr"),
+    ] {
+        fs::write(
+            root.join("zel.yaml"),
+            original.replace(
+                "book:\n",
+                &format!("book:\n  language: {language}\n  direction: {direction}\n"),
+            ),
+        )
+        .unwrap();
+        assert!(
+            pdf::check(&SiteInput::from(root)).is_err(),
+            "{language}/{direction}"
+        );
+        assert!(
+            zellij_docs::build(root, &root.join("site"), BuildOptions::default()).is_ok(),
+            "web-only {language}/{direction}"
+        );
+    }
+}
+
+#[test]
+fn named_print_fonts_are_pinned_optional_and_do_not_change_the_manuscript() {
+    let temp = tempfile::tempdir().unwrap();
+    let root = Utf8Path::from_path(temp.path()).unwrap();
+    fixture(root);
+    let original = fs::read_to_string(root.join("zel.yaml")).unwrap();
+    let baseline = pdf::prepare(
+        &SiteInput::from(root),
+        &root.join("base"),
+        BuildOptions::default(),
+        false,
+    )
+    .unwrap();
+    assert!(!baseline.source.files.keys().any(|p| p.starts_with("fonts")));
+    for font in ["amiri", "libertinus"] {
+        fs::write(
+            root.join("zel.yaml"),
+            format!("{original}pdf: {{style: {{body-font: {font}, title-font: {font}}}}}\n"),
+        )
+        .unwrap();
+        let styled = pdf::prepare(
+            &SiteInput::from(root),
+            &root.join("styled"),
+            BuildOptions::default(),
+            false,
+        )
+        .unwrap();
+        assert_eq!(baseline.source.revision, styled.source.revision);
+        assert_eq!(
+            styled
+                .source
+                .files
+                .keys()
+                .filter(|p| p.starts_with(format!("fonts/{font}")))
+                .count(),
+            5
+        );
+        assert!(
+            styled
+                .source
+                .files
+                .contains_key(Utf8Path::new(&format!("fonts/{font}/OFL.txt")))
+        );
+    }
+    fs::write(
+        root.join("zel.yaml"),
+        format!(
+            "{}pdf: {{style: {{body-font: libertinus}}}}\n",
+            original.replace("book:\n", "book:\n  language: ar\n  direction: rtl\n")
+        ),
+    )
+    .unwrap();
+    assert!(
+        pdf::check(&SiteInput::from(root))
+            .unwrap_err()
+            .to_string()
+            .contains("Libertinus does not contain Arabic")
+    );
+}
 #[test]
 fn print_uses_validated_content_order_links_math_and_escaped_text() {
     let temp = tempfile::tempdir().unwrap();

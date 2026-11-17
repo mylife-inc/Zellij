@@ -41,7 +41,7 @@ try {
   execFileSync(binary, ['build', source, '--target', 'portable', '--out', output, '--name', 'Acme documentation'], { env, stdio: 'pipe' });
   await rename(output, moved);
   console.log('Native build, failure preservation and relocation passed without external tools.');
-  assert.equal((await readdir(path.join(moved, '_zellij/fonts/files'))).length, 75);
+  assert.equal((await readdir(path.join(moved, '_zellij/fonts/files'))).length, 79);
   const home = pathToFileURL(path.join(moved, 'index.html')).href;
   const nested = pathToFileURL(path.join(moved, 'guide/Install Now.html')).href;
   const selected = process.env.ZELLIJ_PORTABLE_BROWSER?.split(',') || ['chromium', 'webkit'];

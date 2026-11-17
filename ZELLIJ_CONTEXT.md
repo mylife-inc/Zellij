@@ -1,7 +1,18 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-16**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-17: multilingual books in progress; Kie theme requested**
+
+Continue from verified print styling at `ebd43e1`. Source rc.10 now develops
+bounded French/German/Spanish/Arabic print and pinned Amiri/Libertinus fonts;
+verification and merge remain pending. See [the contract](specs/zellij-book-languages-2026-11-17.md).
+The user additionally requests a theme matching https://kie.ai after the current
+tasks. Preserve that request across sessions; inspect its actual colors,
+typography, geometry and interactions, then add a selectable Zellij theme and
+matching starter/docs with hosted visual acceptance. Do not claim pixel identity
+without a valid reference comparison. Public rc.9 and live-provider deferral remain.
 
 **2026-11-16: print-style authoring verified (source rc.10)**
 
