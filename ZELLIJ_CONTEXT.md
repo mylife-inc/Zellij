@@ -3,6 +3,16 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: rc.10 release preparation**
+
+The user asked to continue with publication and documentation. Baseline `8cb6a99`
+contains the all-green `7b6f052` implementation plus records/prose only. Add
+versioned notes, run normal release preflight, publish and verify immutable rc.10,
+then migrate managed channels, active guides and saved consumers before scoped
+rc.9 retirement. No runtime or acceptance changes are planned for preparation.
+See [the release contract](specs/zellij-rc10-preparation-2026-11-17.md).
+Production hosting and live-provider work remain deferred.
+
 **2026-11-17: Kie theme and card contrast verified (source rc.10)**
 
 New fifteenth theme `kie` and ninth starter `api-platform@0.1.0` match the
@@ -335,10 +345,10 @@ existing bounded startup loop. The records-only follow-up changes no runtime,
 active guide, versioned template, test or workflow inputs. Source rc.8 is unreleased; public
 rc.7 and production hosting are unchanged.
 
-**Current checkpoint:** print-style authoring is verified for source rc.10.
-Public rc.9 and its distribution channels remain unchanged.
-Next are multilingual/RTL print, custom font inventories and remaining installation
-channels. Live providers and production migration stay deferred; unexplained
+**Historical print-style checkpoint:** print-style authoring was verified before
+multilingual/Kie work. The newer entries at the top supersede its next-work order.
+Public rc.9 and its distribution channels remain unchanged pending rc.10 release.
+Remaining installation channels are separate backlog work. Live providers and production migration stay deferred; unexplained
 browser timing findings remain open. No zero-bug or 1.0-complete claim is made.
 
 The rc.7 preparation checkpoint began from `474fc8f`: the accumulated equation,
