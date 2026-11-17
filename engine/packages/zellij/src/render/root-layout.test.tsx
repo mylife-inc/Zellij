@@ -35,6 +35,7 @@ it('emits managed theme CSS in head with an identity that changes with its conte
   expect(stylesheet(first)[1]).toBe(stylesheet(repeated)[1]);
   expect(stylesheet(changed)[1]).not.toBe(stylesheet(first)[1]);
   expect(stylesheet(changed)[2]).toContain('#123456');
+  expect(first.slice(0, first.indexOf('</head>'))).toContain('<noscript><style>.zellij-video-poster { display: none !important; }</style></noscript>');
   expect(first.split('<body>')[1]).not.toContain('<style');
 });
 

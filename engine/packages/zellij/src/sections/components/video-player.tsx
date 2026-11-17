@@ -71,7 +71,6 @@ export function VideoPlayer({
       </span>
     </button>
     <noscript>
-      <style>{'.zellij-video-poster { display: none !important; }'}</style>
       {fileUrl ? <div className="zellij-video-frame">
         <video src={fileUrl} aria-label={label} controls playsInline preload="none" poster={poster}
           crossOrigin={tracks.length ? 'anonymous' : undefined}>{captions}</video>

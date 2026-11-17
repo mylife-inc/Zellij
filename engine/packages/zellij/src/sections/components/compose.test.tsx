@@ -42,6 +42,7 @@ it('renders composed video with a named player, nested references and readable n
   expect(html).toContain('/product/_zellij/assets/demo.vtt');
   expect(html).toContain('srcLang="en"');
   expect(html).toContain('<noscript>');
+  expect(html).not.toContain('<style');
   expect(html).toContain('preload="none"');
   expect(html).not.toContain('autoPlay');
   expect(html).toContain('<strong>original</strong>');

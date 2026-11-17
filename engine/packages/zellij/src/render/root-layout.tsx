@@ -43,6 +43,8 @@ export function createZellijRootLayout(options: ZellijRuntimeOptions = {}) {
             href={themeHref}
             precedence="zellij-theme"
           >{themeCss}</style>
+          {/* No-script styles belong in head; the body fallback contains media only. */}
+          <noscript><style>{'.zellij-video-poster { display: none !important; }'}</style></noscript>
         </head>
         <body>
           {config.nav.themeToggle || config.nav.themeSwitcher ? (
