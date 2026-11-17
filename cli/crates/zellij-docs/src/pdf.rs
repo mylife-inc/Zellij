@@ -539,7 +539,12 @@ pub(crate) fn compose(
                 "LibertinusSerif-Regular.otf"
             };
             out.push_str(&format!(
-                "\\newfontfamily\\{command}[{options},NFSSFamily={family}]{{{regular}}}\n"
+                "\\newfontfamily\\{command}[{options},{}NFSSFamily={family}]{{{regular}}}\n",
+                if language.rtl {
+                    "Script=Arabic,Language=Arabic,"
+                } else {
+                    ""
+                }
             ));
         }
     }
@@ -609,9 +614,8 @@ pub(crate) fn compose(
         .map_or("", |f| f.latex());
     out = out.replace("@TITLE_FONT@", title_font);
     if language.rtl {
-        // Covers/chapters follow the reading direction; centered study openings
-        // remain centered. Code and mathematical notation keep LTR ordering.
-        out = out.replace("\\raggedright", "\\raggedleft");
+        // LuaTeX's RTL paragraphs interpret raggedright relative to their
+        // reading direction. Replacing it with raggedleft would align left.
         out.push_str("\\hypersetup{pdflang=ar}\n");
     }
     out.push_str(&format!("\\hypersetup{{pdftitle={{{}}},pdfauthor={{{}}},pdfsubject={{{}}}}}\n\\begin{{document}}\n\\frontmatter\n", tex(&m.title), tex(&m.authors.iter().map(|a|a.0.as_str()).collect::<Vec<_>>().join(", ")), book.revision));

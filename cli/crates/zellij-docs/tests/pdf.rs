@@ -49,6 +49,10 @@ fn print_languages_validate_direction_and_keep_both_renderers_in_sync() {
                 .contains_key(Utf8Path::new("fonts/amiri/Amiri-Regular.ttf")),
             direction == "rtl"
         );
+        if direction == "rtl" {
+            assert!(tex.contains("Script=Arabic,Language=Arabic,NFSSFamily=zelAmiri"));
+            assert!(!tex.contains("\\raggedleft"));
+        }
     }
     for (language, direction) in [
         ("ar", "ltr"),

@@ -22,7 +22,11 @@ try {
     writeFileSync(path.join(out,'text.txt'),extracted);writeFileSync(path.join(out,'pdfinfo.txt'),info);writeFileSync(path.join(out,'fonts.txt'),fonts);
     assert(!extracted.includes('??'));
     for(const line of fonts.trim().split('\n').slice(2)) assert.match(line,/\byes\s+yes\s+yes\b/,'Fonts embedded, subset and Unicode mapped');
-    if(language==='ar') assert.match(fonts,/Amiri/);else { for(const term of [text.title,text.first,text.second,text.chapter]) assert(extracted.replace(/\s+/g,' ').includes(term),`${key}: ${term}`); }
+    const normalized=extracted.normalize('NFKC').replace(/[\u202a-\u202e\u2066-\u2069]/g,'').replace(/\s+/g,' ');
+    if(language==='ar') {
+      assert.match(fonts,/Amiri/);
+      for(const term of [text.title,text.first,text.second,text.contents,text.detail,text.note]) assert(normalized.includes(term),`${key}: missing extracted ${term}\n${normalized}`);
+    } else { for(const term of [text.title,text.first,text.second,text.chapter]) assert(normalized.includes(term),`${key}: ${term}`); }
     if(language==='fr') assert.match(fonts,/Libertinus/);
     assert.match(extracted,/Zellij/);assert.match(extracted,/Shebka/);
     for(let n=1;n<=Number(info.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',pdf,path.join(out,`page-${n}`)]);

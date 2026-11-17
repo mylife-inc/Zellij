@@ -42,3 +42,12 @@ Verification pending: native tests, real PDFs across Docker/Podman/amd64/arm64,
 Arabic native/Next parity, embedded fonts/text extraction/visual pages, moved
 file:// reading without network, responsive no-JS reading, default preservation
 and full CI. No local browser, container or real LaTeX process is used.
+
+Initial native typesetting run `44071291159` exits successfully across all three
+runtimes, but visual review of Arabic pages catches unjoined letter forms when
+explicit named Amiri bypasses Babel's automatic script selection. The fixed
+named family explicitly selects Arabic script/language for RTL. The same review
+catches reversed chapter alignment caused by substituting raggedleft; LuaTeX's
+RTL paragraph already interprets raggedright relative to reading direction.
+These results are not accepted visual baselines. Extraction checks now normalize
+Arabic compatibility forms/bidi controls and require the authored Arabic strings.
