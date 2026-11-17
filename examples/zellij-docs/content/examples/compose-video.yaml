@@ -1,0 +1,12 @@
+type: compose
+version: 1
+label: A composed video
+children:
+  - type: heading
+    text: Motion, at your pace.
+  - type: video
+    label: Three sheets in motion
+    src: assets/compose-motion.mp4
+    caption: An original silent study. Black fades into three coloured sheets on a warm background.
+    tracks:
+      - {src: assets/compose-motion.en.vtt, srclang: en, label: English}

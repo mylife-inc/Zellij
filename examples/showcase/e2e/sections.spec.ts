@@ -240,6 +240,7 @@ test.describe('video embed', () => {
 
     await video.getByRole('button', { name: /Play video/ }).click();
     await expect(video.locator('video')).toHaveCount(1);
+    await expect.poll(() => video.locator('video').evaluate((element: HTMLVideoElement) => element.readyState)).toBeGreaterThanOrEqual(2);
   });
 });
 

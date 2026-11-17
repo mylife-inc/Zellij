@@ -43,7 +43,7 @@
   title: Clarity, composed
   description: A hero, split story and feature grid made with one composition vocabulary.
   layout: stack
-  sections: [compose/hero, compose/story, compose/details]
+  sections: [compose/hero, compose/story, compose/details, compose/media]
 
 - name: media-accordion
   title: Fieldnotes — a study in clarity

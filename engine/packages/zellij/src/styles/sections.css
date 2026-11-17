@@ -887,8 +887,8 @@
   transition: transform 200ms var(--zellij-motion-ease);
 }
 
-.zellij-video-poster:hover .zellij-video-play {
-  transform: scale(1.06);
+@media (hover: hover) and (pointer: fine) {
+  .zellij-video-poster:hover .zellij-video-play { transform: scale(1.06); }
 }
 
 .zellij-video-caption {
@@ -896,6 +896,15 @@
   text-align: center;
   color: var(--zellij-muted);
   font-size: 0.875rem;
+}
+
+.zellij-video-links { margin: .75rem 0 0; font-size: .875rem; line-height: 1.5; overflow-wrap: anywhere; color: var(--zellij-muted); }
+.zellij-video-links a { color: inherit; text-decoration: underline; text-underline-offset: .2em; }
+.zellij-video-frame :is(iframe, video):focus-visible { outline: 2px solid var(--zellij-accent); outline-offset: -3px; }
+@media (prefers-reduced-motion: reduce) { .zellij-video-play { transition: none; } }
+@media print {
+  .zellij-video-frame { display: none !important; }
+  .zellij-video-caption, .zellij-video-links { color: #111 !important; }
 }
 
 /* ----------------------------------------------------------------- focus -- */

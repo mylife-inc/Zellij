@@ -18,6 +18,12 @@ zel new section compose --out content/sections/intro.yaml
 zel ns compose --out content/sections/intro.yaml
 ```
 
+<Callout type="info" title="Next candidate: source 0.2.0-rc.11">
+The `video` element, caption tracks, transcript links and container-aware nested
+layouts described below are new in source rc.11. They need a matching rc.11 CLI
+and engine build; the published rc.10 candidate does not include them yet.
+</Callout>
+
 Replace the generated content with a composition and reference `intro` in
 `pages.yaml`, just like any other section:
 
@@ -56,7 +62,10 @@ accessible fallback heading.
 
 A root or group accepts `layout` with `kind: stack`, `grid` or `split`. Omitted
 layout means a stack. All preserve source reading order and collapse to a single
-column below 760 pixels.
+column below 760 pixels. In source rc.11 that threshold measures the space
+available to each layout, not the whole browser window: a grid inside a narrow
+card stays stacked even on a desktop. Print always uses one column. Browsers
+without container-query support retain the readable single-column layout.
 
 | Field | Values | Default |
 | --- | --- | --- |
@@ -104,11 +113,60 @@ Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
 | `stat` | Required string `value` and `label`. Quote numeric YAML values. |
 | `divider` | A separator; no extra fields. |
 | `media-accordion` | Required `label` and 2–8 `items`; the same synchronized text/image component as [the concise section](/sections/media-accordion). Supports `mediaSide`, `ratio`, `fit` and `itemHeadingLevel`. |
+| `video` (source rc.11) | Required `label` and `src`; optional `poster`, inline-Markdown `caption`, WebVTT `tracks`, and `transcript` link. Uses the same player as `video-embed`. |
 | `group` | Required `children`; optional layout and surface settings above. |
 
 Elements other than dividers also accept `effect: reveal`, which uses the site's
 existing entrance motion. Omit it for an ordinary element. The site's `motion:
 none` and the reader's reduced-motion preference take precedence.
+
+## Video inside a composition
+
+Add a video wherever a text or image element can go, including inside a group.
+This example places copy beside a video; replace the asset paths with your own
+files and `/guide/transcript` with a real page:
+
+```yaml
+type: compose
+version: 1
+label: Product demonstration
+layout: {kind: split, gap: large, align: center}
+children:
+  - type: group
+    children:
+      - {type: heading, text: See the idea in motion.}
+      - {type: text, text: A short demonstration, ready when you are.}
+  - type: video
+    label: Product demonstration
+    src: assets/demo.mp4
+    poster: assets/demo-poster.webp
+    caption: "A **two-minute** tour."
+    tracks:
+      - src: assets/demo.en.vtt
+        srclang: en
+        label: English captions
+        kind: captions
+    transcript: /guide/transcript
+```
+
+`label` names the play button and player for assistive technology. A visible
+caption describes the video; it does not replace synchronized captions for
+speech or sound. Supply WebVTT files in `tracks` and a readable transcript when
+the recording needs them. Each track requires `src`, a language tag such as
+`en` or `pt-BR` in `srclang`, and a human-readable `label`. `kind` is `captions`
+(default) or `subtitles`; up to eight tracks are supported. These tracks apply
+to self-hosted videos. YouTube/Vimeo captions are managed by those providers.
+Remote media with caption tracks must allow anonymous cross-origin requests;
+local files in `content/assets` avoid that hosting requirement.
+
+The player has a fixed 16:9 frame and never starts by scrolling into view.
+With JavaScript, a play action loads the video and moves keyboard focus to it.
+Without JavaScript, self-hosted video has native controls with `preload="none"`;
+provider videos retain a direct source link. No third-party iframe loads before
+play. The source and transcript links remain available in print, where playback
+controls are hidden. A 16:9 frame contains portrait footage without cropping.
+
+<SectionPreview example="compose-video" />
 
 ## Gradient reveal
 
@@ -141,7 +199,7 @@ zel check --deep --strict
 A root or group contains 1–24 children. Up to three groups may nest along a path,
 with at most 128 elements and one level-1 heading in each composition. Both
 native authoring and engine checking enforce these bounds. Deep checks follow
-nested image paths, button links and inline Markdown; unknown fields warn and
+nested image/video/poster/track paths, button/transcript links and inline Markdown; unknown fields warn and
 fail strict checks.
 
 ## Named presets
@@ -162,7 +220,28 @@ the type with `-p`; an output positional argument requires the explicit type.
 Image paths are placeholders to replace before building. These section presets
 are distinct from the whole-site templates offered by `zel templates`.
 
-Version 1 covers these bounded layouts and elements. Layers, video, arbitrary
-embedded sections, independent media selectors, scroll stories,
-and authored effect ranges are not implemented by this version. Existing
-sections such as `video-embed` can still be adjacent sections on the page.
+## How universal is it?
+
+`compose` is an extensible composition system, not a promise that every possible
+website section can be expressed. It can create many heroes, split stories,
+feature grids, calls to action and mixed-media sections using the same validated
+tree. A large title that changes from solid text to a gradient as it enters view
+is already supported by `gradient.effect: reveal`.
+
+| Capability | Status |
+| --- | --- |
+| Nested stacks, grids and splits; styled groups; headings, text, images, buttons, statistics and separators | Available in rc.10 |
+| Solid-to-gradient heading reveal; entrance reveal; readable reduced-motion, no-JS and print fallbacks | Available in rc.10 |
+| Synchronized media accordion and four editable section presets | Available in rc.10 |
+| Video nodes, WebVTT captions, transcript links and layouts responsive to their containing space | Implemented in source rc.11; not yet published |
+| Layered/overlapping composition layouts and per-child placement | Not implemented |
+| Sticky scroll stages, scroll stories, authored progress ranges and transform effects | Not implemented |
+| Block Markdown/MDX, icon nodes and arbitrary existing sections as children | Not implemented |
+| Independent media selectors and feature explorers | Not implemented |
+
+Use a dedicated section when it already provides the behavior you need, such as
+`media-panel` for copy over background media, `card-carousel` for a carousel,
+`pricing-table` for pricing, or `faq` for questions. Those sections can sit next
+to compositions. The composer does not yet embed them as children. Arbitrary
+author-supplied JavaScript and unrestricted CSS are outside its declarative
+contract. Book pagination and PDF composition remain part of the book system.

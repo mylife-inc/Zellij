@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { VideoTrack } from '../video-schema';
 
 /**
  * Lazy video (spec §5.2 #12). Nothing loads until the visitor presses play:
@@ -14,18 +15,29 @@ export function VideoPlayer({
   fileUrl,
   poster,
   label,
+  tracks = [],
 }: {
   embedUrl?: string;
   fileUrl?: string;
   poster?: string;
   label: string;
+  tracks?: VideoTrack[];
 }) {
   const [playing, setPlaying] = useState(false);
+  const frame = useRef<HTMLIFrameElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    // The play button disappears: keep keyboard focus on the activated player.
+    if (playing) (frame.current ?? video.current)?.focus();
+  }, [playing]);
+
+  const captions = tracks.map((track, index) => <track key={index} src={track.src} kind={track.kind} srcLang={track.srclang} label={track.label} />);
 
   if (playing && embedUrl) {
     return (
       <div className="zellij-video-frame">
         <iframe
+          ref={frame}
           src={`${embedUrl}?autoplay=1`}
           title={label}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture"
@@ -38,13 +50,13 @@ export function VideoPlayer({
   if (playing && fileUrl) {
     return (
       <div className="zellij-video-frame">
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption -- caption text is rendered as a figcaption */}
-        <video src={fileUrl} controls autoPlay preload="metadata" poster={poster} />
+        <video ref={video} src={fileUrl} aria-label={label} tabIndex={0} controls autoPlay preload="metadata" poster={poster}
+          crossOrigin={tracks.length ? 'anonymous' : undefined}>{captions}</video>
       </div>
     );
   }
 
-  return (
+  return <>
     <button
       type="button"
       className="zellij-video-frame zellij-video-poster"
@@ -58,5 +70,12 @@ export function VideoPlayer({
         </svg>
       </span>
     </button>
-  );
+    <noscript>
+      <style>{'.zellij-video-poster { display: none !important; }'}</style>
+      {fileUrl ? <div className="zellij-video-frame">
+        <video src={fileUrl} aria-label={label} controls preload="none" poster={poster}
+          crossOrigin={tracks.length ? 'anonymous' : undefined}>{captions}</video>
+      </div> : null}
+    </noscript>
+  </>;
 }

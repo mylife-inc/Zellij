@@ -5,6 +5,7 @@ import { FolderContentSource, loadSite, type Site } from '../../content';
 import { videoEmbedSchema } from '../schemas';
 import { VideoEmbed } from './video-embed';
 import { VideoPlayer } from './video-player';
+import { videoEmbedUrl } from './video-content';
 
 vi.mock('./video-player', () => ({ VideoPlayer: vi.fn(() => null) }));
 let site: Site;
@@ -13,6 +14,19 @@ beforeAll(async () => {
     contentDir: path.resolve('../../../examples/showcase/content'),
     basePath: '/products/acme/docs',
   }));
+});
+
+it.each([
+  ['https://youtu.be/abcdefghijk?t=12', 'https://www.youtube-nocookie.com/embed/abcdefghijk'],
+  ['https://youtube.com/watch?feature=shared&v=abcdefghijk', 'https://www.youtube-nocookie.com/embed/abcdefghijk'],
+  ['https://www.youtube.com/shorts/abcdefghijk', 'https://www.youtube-nocookie.com/embed/abcdefghijk'],
+  ['https://player.vimeo.com/video/12345', 'https://player.vimeo.com/video/12345'],
+  ['https://example.com/youtube.com/watch?v=abcdefghijk', undefined],
+  ['https://youtube.com.example.org/watch?v=abcdefghijk', undefined],
+  ['https://youtube.com/watch?v=short', undefined],
+  ['assets/movie.mp4', undefined],
+])('resolves provider URLs strictly: %s', (src, expected) => {
+  expect(videoEmbedUrl(src)).toBe(expected);
 });
 
 describe('video media resolution', () => {

@@ -128,7 +128,7 @@
     "team-grid": "type: team-grid\npeople:\n  - name: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# columns: 3\n",
     "testimonial": "type: testimonial\nquotes:\n  - quote: TODO\n    author: TODO\n\n# Uncomment what you need.\n# heading: TODO\n",
     "timeline": "type: timeline\nitems:\n  - date: TODO\n    title: TODO\n  - date: TODO\n    title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
-    "video-embed": "type: video-embed\nsrc: assets/replace-me.mp4\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# poster: assets/replace-me.svg\n# caption: TODO\n",
+    "video-embed": "type: video-embed\nsrc: assets/replace-me.mp4\n\n# Media paths are placeholders. Add your own files under content/assets\n# and update these paths before publishing.\n\n# Uncomment what you need.\n# heading: TODO\n# poster: assets/replace-me.svg\n# tracks:\n#   - src: assets/replace-me.mp4\n#     srclang: TODO\n#     label: TODO\n# transcript: TODO\n# caption: TODO\n",
     "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
   },
   "sectionPresets": {
@@ -1154,6 +1154,85 @@
                 "properties": {
                   "type": {
                     "type": "string",
+                    "const": "video"
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "src": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "asset"
+                  },
+                  "poster": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "asset"
+                  },
+                  "tracks": {
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "src": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "kind": {
+                          "default": "captions",
+                          "type": "string",
+                          "enum": [
+                            "captions",
+                            "subtitles"
+                          ]
+                        },
+                        "srclang": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "src",
+                        "srclang",
+                        "label"
+                      ]
+                    }
+                  },
+                  "transcript": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "href"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "caption": {
+                    "type": "string",
+                    "zellijReference": "inline"
+                  }
+                },
+                "required": [
+                  "type",
+                  "src",
+                  "label"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
                     "const": "group"
                   },
                   "effect": {
@@ -1651,6 +1730,85 @@
                             "type",
                             "label",
                             "items"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "video"
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "src": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "asset"
+                            },
+                            "poster": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "asset"
+                            },
+                            "tracks": {
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "src": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "kind": {
+                                    "default": "captions",
+                                    "type": "string",
+                                    "enum": [
+                                      "captions",
+                                      "subtitles"
+                                    ]
+                                  },
+                                  "srclang": {
+                                    "type": "string",
+                                    "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                },
+                                "required": [
+                                  "src",
+                                  "srclang",
+                                  "label"
+                                ]
+                              }
+                            },
+                            "transcript": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "href"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "caption": {
+                              "type": "string",
+                              "zellijReference": "inline"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "src",
+                            "label"
                           ]
                         },
                         {
@@ -2162,6 +2320,85 @@
                                     "properties": {
                                       "type": {
                                         "type": "string",
+                                        "const": "video"
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "src": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "asset"
+                                      },
+                                      "poster": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "asset"
+                                      },
+                                      "tracks": {
+                                        "maxItems": 8,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "src": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "kind": {
+                                              "default": "captions",
+                                              "type": "string",
+                                              "enum": [
+                                                "captions",
+                                                "subtitles"
+                                              ]
+                                            },
+                                            "srclang": {
+                                              "type": "string",
+                                              "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                            },
+                                            "label": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            }
+                                          },
+                                          "required": [
+                                            "src",
+                                            "srclang",
+                                            "label"
+                                          ]
+                                        }
+                                      },
+                                      "transcript": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "href"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "caption": {
+                                        "type": "string",
+                                        "zellijReference": "inline"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "src",
+                                      "label"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
                                         "const": "group"
                                       },
                                       "effect": {
@@ -2659,6 +2896,85 @@
                                                 "type",
                                                 "label",
                                                 "items"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "video"
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "src": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "asset"
+                                                },
+                                                "poster": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "asset"
+                                                },
+                                                "tracks": {
+                                                  "maxItems": 8,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "src": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "kind": {
+                                                        "default": "captions",
+                                                        "type": "string",
+                                                        "enum": [
+                                                          "captions",
+                                                          "subtitles"
+                                                        ]
+                                                      },
+                                                      "srclang": {
+                                                        "type": "string",
+                                                        "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                                      },
+                                                      "label": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "src",
+                                                      "srclang",
+                                                      "label"
+                                                    ]
+                                                  }
+                                                },
+                                                "transcript": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "href"
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "caption": {
+                                                  "type": "string",
+                                                  "zellijReference": "inline"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "src",
+                                                "label"
                                               ]
                                             }
                                           ]
@@ -5344,6 +5660,46 @@
           "type": "string",
           "minLength": 1,
           "zellijReference": "asset"
+        },
+        "tracks": {
+          "maxItems": 8,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "src": {
+                "type": "string",
+                "minLength": 1,
+                "zellijReference": "asset"
+              },
+              "kind": {
+                "default": "captions",
+                "type": "string",
+                "enum": [
+                  "captions",
+                  "subtitles"
+                ]
+              },
+              "srclang": {
+                "type": "string",
+                "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+              },
+              "label": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": [
+              "src",
+              "srclang",
+              "label"
+            ]
+          }
+        },
+        "transcript": {
+          "type": "string",
+          "minLength": 1,
+          "zellijReference": "href"
         },
         "caption": {
           "type": "string"

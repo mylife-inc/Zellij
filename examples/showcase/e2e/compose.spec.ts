@@ -7,7 +7,7 @@ test('compositions retain source order, responsive layouts, links and images', a
   await expect(page.locator('main h1')).toHaveCount(1);
   await expect(page.getByRole('heading', { name: 'Clarity, composed.', level: 1 })).toBeVisible();
   const types = await page.locator('[data-zellij-section]').evaluateAll(nodes => nodes.map(node => node.getAttribute('data-zellij-section')));
-  expect(types).toEqual(['compose', 'compose', 'compose']);
+  expect(types).toEqual(['compose', 'compose', 'compose', 'compose']);
   await page.getByRole('link', { name: 'Explore the composition' }).focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL(/#composed-story$/);

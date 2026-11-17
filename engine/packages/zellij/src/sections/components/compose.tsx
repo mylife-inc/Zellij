@@ -6,6 +6,7 @@ import { CtaLink, InlineMarkdown, SectionImage, SectionShell, gradientTextProps 
 import { Reveal } from '../../motion/reveal';
 import { GradientReveal } from '../../motion/gradient-reveal';
 import { MediaAccordionContent } from './media-accordion';
+import { VideoContent } from './video-content';
 
 function layoutProps(layout?: ComposeLayout) {
   return { 'data-layout': layout?.kind ?? 'stack', 'data-align': layout?.align ?? 'start',
@@ -18,9 +19,11 @@ function Node({ node, basePath, motion, titleGradient }: {
 }) {
   let content: ReactNode;
   switch (node.type) {
-    case 'group': content = <div className="zellij-compose-layout zellij-compose-group" {...layoutProps(node.layout)}
+    case 'group': content = <div className="zellij-compose-group zellij-compose-scope"
       data-surface={node.surface} data-padding={node.padding} data-radius={node.radius}>
-      {node.children.map((child, i) => <Node key={i} node={child} basePath={basePath} motion={motion} titleGradient={titleGradient} />)}
+      <div className="zellij-compose-layout" {...layoutProps(node.layout)}>
+        {node.children.map((child, i) => <Node key={i} node={child} basePath={basePath} motion={motion} titleGradient={titleGradient} />)}
+      </div>
     </div>; break;
     case 'heading': {
       const Tag = `h${node.level}` as 'h1' | 'h2' | 'h3' | 'h4';
@@ -41,6 +44,8 @@ function Node({ node, basePath, motion, titleGradient }: {
     case 'stat': content = <dl className="zellij-compose-stat"><dt>{node.label}</dt><dd>{node.value}</dd></dl>; break;
     case 'divider': content = <hr className="zellij-compose-divider" />; break;
     case 'media-accordion': content = <MediaAccordionContent node={node} basePath={basePath} motion={motion} />; break;
+    case 'video': content = <VideoContent {...node} basePath={basePath} composed
+      caption={node.caption ? <InlineMarkdown text={node.caption} /> : undefined} />; break;
   }
   return node.type !== 'divider' && node.effect === 'reveal'
     ? <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal> : content;

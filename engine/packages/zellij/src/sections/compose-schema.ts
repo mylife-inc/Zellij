@@ -3,6 +3,7 @@ import { baseSectionSchema } from './registry';
 import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema } from '../content/reference-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { mediaAccordionNodeSchema } from './media-accordion-schema';
+import { videoFields } from './video-schema';
 
 const spacing = z.enum(['none', 'small', 'medium', 'large']);
 const alignment = z.enum(['start', 'center', 'end', 'stretch']);
@@ -33,6 +34,8 @@ const leaves = [
   z.object({ type: z.literal('stat'), ...common, value: z.string().min(1), label: z.string().min(1) }),
   z.object({ type: z.literal('divider') }),
   mediaAccordionNodeSchema.extend(common),
+  z.object({ type: z.literal('video'), ...common, ...videoFields,
+    label: z.string().min(1), caption: inlineReferenceSchema.optional() }),
 ] as const;
 const leafSchema = z.union(leaves);
 export type ComposeLeaf = z.infer<typeof leafSchema>;
