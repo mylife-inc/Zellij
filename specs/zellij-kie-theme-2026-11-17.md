@@ -61,3 +61,15 @@ Mono, Porcelain, Aurora and Carbon rules; their website visuals require review.
 A durable two-browser check covers root, nested and re-entered scopes and these
 older presentation rules. Full CI also catches the missing generated Markdown
 context snapshot; both generated forms now include Kie.
+
+The preservation gate in `44076881549` catches a renamed existing theme-list
+heading. The original `#the-fourteen` anchor is restored; it still describes
+the public rc.9 inventory, with Kie documented in a separate source rc.10 section.
+
+The corrected desktop captures confirm the measured typography and placement.
+The mobile driver then catches its own incomplete loading strategy: vertical
+scrolling does not reveal lazy images in a horizontal carousel. It now visits
+each card, verifies decoded images and restores the track before screenshots.
+The new template is formatted as editable YAML, and hero/stat band colors and
+mobile stat columns are refined. Arabic comparison captures request reduced
+motion to avoid recording a header halfway through a color transition.

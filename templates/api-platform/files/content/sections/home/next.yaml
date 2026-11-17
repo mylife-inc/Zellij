@@ -1,17 +1,10 @@
-{
-  "type": "cta-banner",
-  "headline": "Your next great idea starts here.",
-  "body": "Take the starter, make it your own, and give your product a place to shine.",
-  "cta": [
-    {
-      "label": "Make it yours",
-      "href": "/guide",
-      "style": "primary"
-    },
-    {
-      "label": "Explore the models",
-      "href": "/models",
-      "style": "ghost"
-    }
-  ]
-}
+type: cta-banner
+headline: Your next great idea starts here.
+body: Take the starter, make it your own, and give your product a place to shine.
+cta:
+  - label: Make it yours
+    href: /guide
+    style: primary
+  - label: Explore the models
+    href: /models
+    style: ghost

@@ -2,6 +2,7 @@
 // template driver, against the actual CLI export, without external services.
 import assert from 'node:assert/strict';
 import path from 'node:path';
+import { expect } from '@playwright/test';
 
 const sites = {
   'api-platform': { secondary: 'models', heading: 'One API for images, video, music and new possibilities.', action: 'Explore the models' },
@@ -18,6 +19,13 @@ async function loadImages(page) {
     await page.evaluate(y => scrollTo(0, y), y);
     await page.waitForTimeout(50);
   }
+  // Lazy carousel images can be outside the horizontal viewport even after
+  // scrolling the whole document. Visit each card as a reader would.
+  for(const picture of await page.locator('.zellij-carousel-track img').all()) {
+    await picture.evaluate(el=>el.scrollIntoView({block:'center',inline:'center',behavior:'instant'}));
+    await expect.poll(()=>picture.evaluate(el=>el.complete&&el.naturalWidth>0)).toBe(true);
+  }
+  await page.locator('.zellij-carousel-track').evaluateAll(tracks=>tracks.forEach(track=>track.scrollTo({left:0,behavior:'instant'})));
   let pending = [];
   for (let attempt = 0; attempt < 100; attempt++) {
     pending = await page.evaluate(() => [...document.images]

@@ -6,6 +6,7 @@ import { languages } from './fixtures/book-languages.mjs';
 
 // Shared assertions for a moved file:// book and a prefixed Next publication.
 export async function checkArabicBook(page, captures, name) {
+  await page.emulateMedia({reducedMotion:'reduce'});
   await expect(page.locator('html')).toHaveAttribute('lang','ar');
   await expect(page.locator('html')).toHaveAttribute('dir','rtl');
   const heading = page.getByRole('heading',{name:languages.ar.first,exact:true});
