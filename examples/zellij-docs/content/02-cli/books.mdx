@@ -53,8 +53,9 @@ the publication revision, so a downloadable PDF remains tied to that selection.
 The PDF receipt records `classic-v1`, `technical-v1` or `study-v1` in `template`.
 Unknown edition names fail validation and preserve the previous export.
 
-PDF remains opt-in and English/LTR. Custom TeX execution, custom design tokens,
-multilingual/RTL print, automatic indexing and alternate citation styles remain
+Published rc.9 PDF remains opt-in and English/LTR. Source rc.10 adds print design
+settings and the multilingual support described below. Custom TeX execution,
+automatic indexing and alternate citation styles remain
 separate work. The new starters contain original sample writing and an explicitly
 illustrative bibliography entry; replace these with your own content and sources.
 
@@ -471,8 +472,8 @@ collation and rich glossary definitions remain separate extensions.
 `language` defaults to `en`; `direction` defaults to `ltr` and can be `rtl`.
 These set the HTML content language and writing direction, including in adapted
 Next images. Portable layout uses logical inline edges. They do not translate
-interface labels such as “Chapter” and “Search”, select additional font packs,
-or promise complete typesetting support for every language. Verify the glyphs
+interface labels such as “Chapter” and “Search” or promise complete typesetting
+support for every language. Source rc.10 selects local Amiri for Arabic books. Verify the glyphs
 needed by your manuscript; the bundled fonts do not cover every script.
 
 The supported language syntax is 2–8 ASCII letters, optionally followed by
@@ -581,8 +582,8 @@ Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
 (points). Settings are validated even when PDF is disabled. Unknown keys,
 unsupported values, null settings, hosted sites and missing book manifests fail
 validation. The selected edition supplies the default fonts and chapter styling.
-The optional source rc.10 print overrides below customize it; custom font files
-and multilingual/RTL print remain future work. Standalone `zel pdf` explicitly
+Source rc.10 adds the print overrides and bounded language/font support below.
+Custom font files remain unsupported. Standalone `zel pdf` explicitly
 requests export regardless of `enabled`, using the same paper and font settings.
 
 ```sh
@@ -630,15 +631,17 @@ selected edition's existing print design. These overrides affect PDF output;
 | Setting | Values and effect |
 | --- | --- |
 | `accent` | A quoted six-digit `"#RRGGBB"` color for accents, rules and links. Choose a dark color for the white paper background. |
-| `body-font` | `serif` or `sans`, using the toolchain's Latin Modern Roman or Sans. Ordinary section headings follow the body family. |
-| `title-font` | `serif` or `sans` for the cover title, chapter openings and unnumbered openings such as Contents. Their size, weight and italic treatment still follow the chosen design. |
+| `body-font` | `serif`, `sans`, `libertinus` or `amiri`. Ordinary section headings follow the body family. See the language/font section below. |
+| `title-font` | `serif`, `sans`, `libertinus` or `amiri` for the cover title, chapter openings and unnumbered openings such as Contents. Their size, weight and italic treatment still follow the chosen design. |
 | `chapter-style` | `classic`, `technical` or `study`, independently of the cover and web edition. Applies to numbered and unnumbered chapter openings. |
 | `line-spacing` | `normal`, `relaxed` or `spacious`: baseline multipliers of 1, 1.15 or 1.3. |
 | `margins` | Optional `left`, `right`, `top`, `bottom`, each an integer from 15 to 40 millimeters. Omitted sides retain 20, 18, 20 and 22 mm respectively. |
 
-Math and code retain Latin Modern Math and Mono. Font names, file paths, raw
-TeX and custom preambles are not accepted as style values. No additional font
-or runtime dependency is installed. A different font, spacing or margin can
+Math retains Latin Modern Math. English/LTR code retains Latin Modern Mono;
+Arabic print uses the Arabic font for text, including code glyphs. Only the four
+named choices above are accepted: system font names, file paths, raw TeX and
+custom preambles are not style values. Additional fonts are bundled and licensed;
+Zellij does not install fonts or tools on the host. A different font, spacing or margin can
 change pagination; overly wide content still fails with the normal typesetting
 diagnostic and preserves the previous export.
 
@@ -652,6 +655,60 @@ content revision.
 Any explicit `pdf.style`, including `{}` or a disabled PDF, requires a generated
 CI pin of rc.10 or later. `zel ci` rejects an older pin before writing a workflow;
 it does not publish or verify the availability of a future release.
+
+### Multilingual books and named fonts — rc.10 source
+
+**Requires CLI/engine 0.2.0-rc.10 or later; not included in published rc.9.**
+The print adapter accepts English (`en`), French (`fr`), German (`de`) and Spanish
+(`es`) with `direction: ltr`, and Arabic (`ar`) with `direction: rtl`. For example:
+
+```yaml
+book:
+  version: 1
+  title: دفتر المعرفة
+  authors: [ليلى منصور]
+  language: ar
+  direction: rtl
+  chapters:
+    - {id: beginning, source: beginning.md}
+pdf:
+  enabled: true
+```
+
+Keep these settings in `zel.yaml` and write `content/beginning.md` as ordinary
+Markdown. The same manuscript supplies the offline website, Next website and PDF.
+Arabic book text and headings use **Amiri 1.003**, including local web fonts;
+Arabic is shaped and laid out right to left. Mathematical notation and code
+retain left-to-right order. Latin text can appear alongside Arabic. UI labels,
+statement names and generated bibliography/index labels remain English unless
+an existing authored title overrides them; this is not automatic translation.
+
+Regional tags such as `fr-CA` or `ar-MA` select their primary language's print
+rules. Specific regional typography is not implemented. A matching `Latn` or
+`Arab` script subtag is accepted; conflicting script/direction settings are
+rejected. Other languages remain usable in web-only books; PDF generation gives
+an explanation instead of silently selecting English. Missing glyphs still fail
+actual typesetting. `zel pdf --check` does not typeset or prove glyph coverage.
+
+The `body-font` and `title-font` choices are:
+
+| Choice | Print typeface |
+| --- | --- |
+| `serif` | Latin Modern Roman for LTR books; Amiri for Arabic. |
+| `sans` | Latin Modern Sans for LTR books; Amiri for Arabic, whose current font set has no separate sans face. |
+| `libertinus` | Bundled Libertinus Serif 7.051, with regular, bold, italic and bold italic faces. Rejected for Arabic because it lacks Arabic glyphs. |
+| `amiri` | Bundled Amiri 1.003, with regular, bold, italic and bold italic faces; also usable for Latin text. |
+
+Both font sets use the SIL Open Font License. Their versions, source URLs,
+checksums and notices are pinned in Zellij. There is no font download during a
+book build and no font installation on the host. Named print choices do not
+change the web theme; Arabic selects Amiri independently for readable web text.
+All three book editions and the other `pdf.style` settings remain available.
+
+Configured multilingual PDFs require an rc.10-or-later generated CI pin.
+The optional PDF toolchain remains isolated, and serving images do not acquire
+LaTeX. Custom font paths, arbitrary system font names and additional scripts are
+not supported by this increment.
 
 ### Static publication and CI
 
@@ -738,12 +795,13 @@ references share their number; unreferenced definitions are rejected. The printe
 any authored home document; its body remains part of the publication. rc.9
 starts that authored home content on a separate page after the contents.
 
-These print editions support English/LTR and Latin Modern fonts. SVG, WebP,
+Published rc.9 print editions support English/LTR and Latin Modern fonts.
+Source rc.10 extends languages and fonts as described above. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and internal-link URL queries
 are rejected for print with an explanation; ordinary web builds retain their existing support.
 Use local PNG/JPEG artwork and static diagram equivalents when requesting PDF.
 Complex/nested tables, custom TeX templates, arbitrary raw TeX, user-selected
-trim sizes and multilingual/RTL print remain future increments.
+trim sizes and languages outside the supported set remain future increments.
 rc.9 includes glossary/index backmatter, shared equations, statement blocks,
 numeric bibliography and citations as described above.
 Mathematical expressions otherwise use the web renderer's supported subset.

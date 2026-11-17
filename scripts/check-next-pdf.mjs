@@ -1,5 +1,7 @@
 // Hosted CI only: build, publish, pull and serve complete PDF-enabled Next books.
 import assert from 'node:assert/strict';
+import { writeLanguageBook } from './fixtures/book-languages.mjs';
+import { checkArabicBook } from './check-language-book.mjs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -28,13 +30,14 @@ async function ready(url) {
 }
 try {
   const registry = await localRegistry(docker, containers, suffix);
-  for (const [edition,prefix,style] of [['study',''],['technical','/books/technical'],['technical','/books/custom',printStyles.technical]]) {
-    const variant = style ? edition+'-custom' : edition;
+  for (const [edition,prefix,style,language] of [['study',''],['technical','/books/technical'],['technical','/books/custom',printStyles.technical],['technical','/books/arabic',undefined,'ar']]) {
+    const variant = language ? language+'-'+edition : style ? edition+'-custom' : edition;
     const source = path.join(root,variant);
-    run(['create',source,'-t',`book-${edition}`,'--offline']);
+    if(language) writeLanguageBook(source,language,edition);
+    else run(['create',source,'-t',`book-${edition}`,'--offline']);
     const tag = `${registry}/books/${variant}:${suffix}`; images.push(tag);
     const configFile = path.join(source,'zel.yaml');
-    let config = (await readFile(configFile,'utf8')).replace('enabled: false','enabled: true') + `\nimage: {name: '${tag}'}\npublish: {action: push, image: next}\n`;
+    let config = language ? JSON.stringify({...JSON.parse(await readFile(configFile,'utf8')),image:{name:tag},publish:{action:'push',image:'next'}},null,2)+'\n' : (await readFile(configFile,'utf8')).replace('enabled: false','enabled: true') + `\nimage: {name: '${tag}'}\npublish: {action: push, image: next}\n`;
     if (style) config = withPrintStyle(config,style);
     await writeFile(configFile,config);
     await mkdir(path.join(source,'site'));
@@ -62,7 +65,7 @@ try {
     assert.equal(receipt.revision,book.publication.revision);assert.equal(receipt.pdf_sha256,sha(pdf));
     assert.equal(receipt.template,`${edition}-v1`);
     if (style) assert.deepEqual(receipt.settings.style,style);
-    for(const file of ['book.tex','build.log','console.log','assets/image-0.png']) assert.equal((await fetch(`${asset}/${file}`)).status,404);
+    for(const file of ['book.tex','build.log','console.log','assets/image-0.png','fonts/amiri/Amiri-Regular.ttf','fonts/libertinus/LibertinusSerif-Regular.otf']) assert.equal((await fetch(`${asset}/${file}`)).status,404);
     assert.equal((await fetch(`${origin}${prefix}/.zel-pdf-work/book.pdf`)).status,404);
     if(prefix) assert.equal((await fetch(`${origin}/_zellij/assets/pdf/book.pdf`)).status,404);
     const out = path.join(captures,variant);await mkdir(out,{recursive:true});
@@ -71,7 +74,7 @@ try {
     await writeFile(path.join(out,'book.json'),JSON.stringify(book,null,2));
     execFileSync('qpdf',['--check',pdfPath]);
     const text = execFileSync('pdftotext',['-layout',pdfPath,'-'],{encoding:'utf8'});
-    for(const word of [book.publication.manifest.title,'Contents','Chapter 1','Chapter 2','Bibliography','Glossary','Index']) assert(text.replace(/\s+/g,' ').includes(word),word);
+    for(const word of language ? ['Zellij','Shebka'] : [book.publication.manifest.title,'Contents','Chapter 1','Chapter 2','Bibliography','Glossary','Index']) assert(text.replace(/\s+/g,' ').includes(word),word);
     assert(!text.includes('??'));
     const pdfInfo = execFileSync('pdfinfo',[pdfPath],{encoding:'utf8'});
     const pages = Number(pdfInfo.match(/Pages:\s+(\d+)/)[1]);
@@ -86,8 +89,12 @@ try {
         page.on('pageerror',e=>errors.push(e.message));
         for(const width of [1280,390]) {
           await page.setViewportSize({width,height:900});
-          const route = width===1280 ? '/' : book.routes.find(r=>r.id==='first').route;
+          const route = width===1280 && !language ? '/' : book.routes.find(r=>r.id==='first').route;
           await page.goto(`${origin}${prefix}${route}`);
+          if(language) {
+            await checkArabicBook(page,out,`arabic-${width}-${javaScriptEnabled}`);
+            await page.goto(`${origin}${prefix}${route}`);
+          }
           const link = page.getByRole('link',{name:'Download the complete book (PDF)',exact:true});
           await expect(link).toHaveAttribute('href',`${prefix}/_zellij/assets/pdf/book.pdf`);
           await expect(link).toHaveAttribute('download','');
