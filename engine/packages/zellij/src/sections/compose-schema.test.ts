@@ -56,8 +56,28 @@ it('exports a complete bounded schema, node alternatives and native authoring li
   expect(json.sectionTypes).toContain('compose');
   expect(json.sectionAuthoringRules.compose.boundedTree.maxNodes).toBe(128);
   const context = buildContext();
-  expect(context).toContain('**`children (option 7)`**');
+  expect(context).toContain('**`children (option 8)`**');
   expect(context).toContain('at most three groups');
   expect(composeSchema.safeParse(section([{ type: 'heading', text: 'Hello', gradient: { colors: ['accent', 'url(bad)'] } }])).success).toBe(false);
   expect(composeSchema.safeParse(section([{ type: 'heading', text: 'Hello', level: 1.5 }])).success).toBe(false);
+});
+
+it('validates video labels and bounded caption tracks and preserves nested reference locations', () => {
+  const video = { type: 'video', label: 'A demonstration', src: 'assets/demo.mp4', poster: 'assets/poster.svg',
+    tracks: [{ src: 'assets/captions.vtt', srclang: 'en-GB', label: 'English' }], transcript: '/transcript',
+    caption: 'Watch **carefully** and [read more](/guide)' };
+  const value = composeSchema.parse(section([group([video])]));
+  const refs = schemaReferences(composeSchema, value);
+  expect(refs).toEqual(expect.arrayContaining([
+    { kind: 'asset', value: 'assets/demo.mp4', field: 'children[0].children[0].src' },
+    { kind: 'asset', value: 'assets/poster.svg', field: 'children[0].children[0].poster' },
+    { kind: 'asset', value: 'assets/captions.vtt', field: 'children[0].children[0].tracks[0].src' },
+    { kind: 'href', value: '/transcript', field: 'children[0].children[0].transcript' },
+    { kind: 'inline', value: video.caption, field: 'children[0].children[0].caption' },
+  ]));
+  for (const invalid of [{ ...video, label: '' }, { ...video, src: '' },
+    { ...video, tracks: Array(9).fill(video.tracks[0]) },
+    { ...video, tracks: [{ ...video.tracks[0], srclang: 'not a language' }] }]) {
+    expect(composeSchema.safeParse(section([invalid])).success).toBe(false);
+  }
 });

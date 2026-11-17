@@ -3,6 +3,42 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: composer video and nested layouts verified (source rc.11)**
+
+The user's universal-section readiness question prompted a fresh code/doc audit.
+`compose` is available in rc.10 with nested stack/grid/split layouts, seven leaf
+types, groups, four presets and solid-to-gradient heading reveal. It is not the
+entire proposed universal system. The guide now distinguishes released features,
+source additions and unfinished layers, sticky stages, authored effect ranges,
+block Markdown, icon/embedded-section nodes and selector/explorer patterns.
+
+Source rc.11 adds video leaves with shared standalone/composed playback,
+WebVTT tracks and transcripts; fixes no-JS playback and focus after activation;
+and makes nested grids/splits respond to their own available width. Schema
+annotations preserve nested asset/link diagnostics in the engine and native CLI.
+See the [implementation and acceptance record](specs/zellij-compose-video-2026-11-17.md).
+Implementation `aaab66a` and final playback correction `04c92b5` are in PR #202.
+Local checks pass 811 Rust tests (five hosted-only cases ignored), 505 engine
+tests, 18 native authoring cases, warnings-denied Clippy, workspace types, strict
+content checks and 20 release-policy guards. The focused hosted run `44187882059`
+passes all 27 composer browser cases without retries and all six hydration
+preservation cases. All 32 jobs in full run `44189074537` pass on the first run attempt, including
+all 427 showcase cases without retries (140 conditional skips), cross-platform
+native/managed installation, container, website, book/PDF and CLI export checks.
+Documentation preserves 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images; all 13 added routes also pass, with no
+captured browser errors. All six final composer captures match reviewed images.
+The native export corpus renders all 25 section types and all four presets.
+The final follow-up changes context/evidence/history only; runtime, active guides,
+dependencies, workflows and acceptance inputs match verified `04c92b5`. The
+implementation record also maps every registered section to concrete composer gaps.
+An earlier attempt to put the no-JS stylesheet in the head failed two hydration
+probes; the final implementation restores root layout exactly and uses progressive
+play controls. The rejected attempt and its evidence remain in the record.
+Public rc.10 artifacts and production hosting are unchanged. Prioritize the
+remaining composer design after this increment; do not call it unlimited or
+fully implemented.
+
 **2026-11-17: rc.10 migration and scoped rc.9 retirement complete**
 
 Documentation PR #200 merges as `d5ed0bf`, identical to reviewed `8ecdf57`.

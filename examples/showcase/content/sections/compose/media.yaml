@@ -1,0 +1,26 @@
+type: compose
+version: 1
+label: Motion, at your pace
+id: composed-media
+background: tinted
+layout: {kind: split, gap: large, align: center}
+children:
+  - type: video
+    label: Three sheets in motion
+    src: assets/compose-motion.mp4
+    poster: assets/compose-study.svg
+    caption: An original, silent **two-second** composition study.
+    tracks:
+      - {src: assets/compose-motion.en.vtt, srclang: en, label: English}
+    transcript: "#composed-media"
+  - type: group
+    layout: {kind: grid, columns: 2, gap: medium}
+    children:
+      - type: heading
+        text: Motion, at your pace.
+        scale: title
+      - type: text
+        text: "**Animation transcript:** Black fades into a warm paper background with three rectangular sheets in copper, slate and gold. There is no speech or music."
+      - type: text
+        text: "Play when you are ready. Captions and a readable transcript stay close to the story."
+        tone: muted

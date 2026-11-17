@@ -30,6 +30,13 @@ is all that ships — which matters most for third-party embeds, where the
 alternative is loading a player and its trackers on every page view whether or
 not anyone watches.
 
+In source rc.11, the shared player also supports optional WebVTT `tracks` and a
+`transcript` link. These fields use [the same format as composed videos](/sections/compose#video-inside-a-composition).
+For `video-embed`, `heading` (or `caption`) names the player; captions here remain
+plain text. Without JavaScript, self-hosted media gets native controls and
+provider media keeps a direct source link. Print keeps the source and transcript
+links. The published rc.10 player does not yet include these additions.
+
 ## Choosing between them
 
 | You want | Use |

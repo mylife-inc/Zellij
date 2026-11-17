@@ -1,5 +1,6 @@
 import { composeSchema, composeHasPageHeading, type ComposeSection } from './compose-schema';
 import { mediaAccordionSchema, type MediaAccordionSection } from './media-accordion-schema';
+import { videoFields } from './video-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { z } from 'zod';
 import { backgroundSchema, baseSectionSchema, registerSection } from './registry';
@@ -419,8 +420,7 @@ export const videoEmbedSchema = baseSectionSchema.extend({
   type: z.literal('video-embed'),
   heading: z.string().optional(),
   /** Self-hosted mp4 (content-relative) or a YouTube/Vimeo URL. */
-  src: asset,
-  poster: asset.optional(),
+  ...videoFields,
   caption: z.string().optional(),
 });
 

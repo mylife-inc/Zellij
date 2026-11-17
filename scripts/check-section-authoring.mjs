@@ -76,6 +76,12 @@ try {
   ]));
   assert.deepEqual(refined.cta, [{ label: 'Read 日本', href: '/guide' }]);
   getSection('hero').schema.parse(refined);
+  const composition = YAML.parse(execute('compose', ['--set-json', 'children=' + JSON.stringify([
+    { type: 'group', children: [{ type: 'video', src: 'assets/demo.mp4', label: 'A demonstration',
+      tracks: [{ src: 'assets/demo.en.vtt', srclang: 'en', label: 'English' }], transcript: '/transcript' }] },
+  ]), '--set', 'children.0.children.0.tracks.0.label=English captions']));
+  getSection('compose').schema.parse(composition);
+  assert.equal(composition.children[0].children[0].tracks[0].label, 'English captions');
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);

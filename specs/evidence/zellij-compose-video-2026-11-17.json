@@ -1,0 +1,714 @@
+{
+  "date": "2026-11-17",
+  "source_commit": "04c92b546d6c7fb004bfefefb45854845c4cfafc",
+  "implementation_commit": "aaab66a2300765ef57c0e79b82b67ec4a0c55b1d",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/202",
+  "source_version": "0.2.0-rc.11",
+  "published_version_unchanged": "0.2.0-rc.10",
+  "local": {
+    "rust": {
+      "passed": 811,
+      "ignored": 5
+    },
+    "engine": {
+      "passed": 505
+    },
+    "final_video_tests": {
+      "passed": 16
+    },
+    "native_authoring": {
+      "passed": 18
+    },
+    "release_policy": {
+      "passed": 20
+    },
+    "clippy": "pass, warnings denied",
+    "workspace_types": "pass",
+    "strict_content": {
+      "showcase": {
+        "routes": 9
+      },
+      "zellij-docs": {
+        "routes": 59,
+        "validated_examples": 26
+      }
+    },
+    "actual_engine_authoring": {
+      "sections": 25,
+      "presets": 4
+    }
+  },
+  "hosted": {
+    "run_id": 44189074537,
+    "source_commit": "04c92b546d6c7fb004bfefefb45854845c4cfafc",
+    "status": "success",
+    "engine_job": 134413314823,
+    "showcase_job": 134413314451,
+    "cli_job": 134413314527,
+    "preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_headings": 282,
+      "compatibility_mappings": 82,
+      "unchanged_images": 29,
+      "browser_errors": 0
+    },
+    "showcase": {
+      "passed": 427,
+      "skipped": 140,
+      "retries": 0
+    },
+    "run_attempt": 1,
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 134413314108,
+        "name": "Native images (amd64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314364,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314409,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314451,
+        "name": "Showcase end to end",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314476,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314501,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314527,
+        "name": "CLI",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314547,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314616,
+        "name": "Native images (arm64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314617,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314625,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314731,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314742,
+        "name": "Embedded schema is current",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314823,
+        "name": "Engine",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314940,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314965,
+        "name": "websites / Websites (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314987,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413314997,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413315111,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413315140,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413315183,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413315197,
+        "name": "Website and book templates",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134413315278,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134414944805,
+        "name": "Combined image manifests",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416760871,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416760879,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416760910,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416760916,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416760925,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416761044,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416761048,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134416761127,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      }
+    ],
+    "job_reruns": 0,
+    "native_exports": {
+      "section_types": 25,
+      "presets": 4
+    },
+    "runtime_equivalence": "The final follow-up changes only project context, this evidence and the implementation/audit record. Runtime, active guides, dependencies, workflows and acceptance inputs match the verified source commit."
+  },
+  "visual": {
+    "artifact_id": 14372691259,
+    "artifact_name": "playwright-failure-details",
+    "screenshots": [
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png",
+        "sha256": "17262de5664efab4917fa82b588a8f193bda2b36c0de2588df974245df5be331",
+        "review": "layout and content reviewed"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png",
+        "sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+        "review": "layout and content reviewed"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56",
+        "review": "Initial preview concern resolved by identical-file comparison and complete close-up"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png",
+        "sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+        "review": "layout and content reviewed"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png",
+        "sha256": "e1b129dd303d8349c9c27cd436456b48121358e120845004857c18c037021d8d",
+        "review": "layout and content reviewed"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png",
+        "sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+        "review": "layout and content reviewed"
+      }
+    ],
+    "probe_run": 44181878309,
+    "probe_commit": "7dff1293885fda1151d63d124e8f896843f571ac",
+    "status": "reviewed; initial preview concern disproved by byte-identical capture",
+    "probe_job": 134388050639,
+    "probe_artifact": 14371553457,
+    "probe_passed": 3,
+    "probe_retries": 0,
+    "comparison": {
+      "originalSha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56",
+      "repeatSha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56",
+      "upperHalfDifferentPixels": 0
+    },
+    "note": "The initial image preview appeared to omit SVG paths. Original and complete repeated screenshots have identical SHA-256 and pixels; the close-up contains the entire illustration. No product or capture-harness change was needed.",
+    "probe_screenshots": [
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark-detail.png",
+        "sha256": "ab5dbba8bfbc83d70021fefee4929fcd8ac3a08621fd1963f1a2312566bed0d4"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark-visited.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat1/composition-dark-detail.png",
+        "sha256": "ab5dbba8bfbc83d70021fefee4929fcd8ac3a08621fd1963f1a2312566bed0d4"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat1/composition-dark-visited.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat1/composition-dark.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat2/composition-dark-detail.png",
+        "sha256": "ab5dbba8bfbc83d70021fefee4929fcd8ac3a08621fd1963f1a2312566bed0d4"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat2/composition-dark-visited.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      },
+      {
+        "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-repeat2/composition-dark.png",
+        "sha256": "98f0ae5c3bdbf3c0f545b2abfed6848da149909722097d25f6b6cf4eb1ad1b56"
+      }
+    ],
+    "final_probe": {
+      "artifact_id": 14374054272,
+      "screenshots": [
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png",
+          "sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+          "identical_to_initial": false,
+          "review": "Reviewed final light/dark layout, full illustration, video controls, captions and mobile stacking"
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png",
+          "sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+          "identical_to_initial": true,
+          "review": "Byte-identical to reviewed initial capture"
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+          "sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+          "identical_to_initial": false,
+          "review": "Reviewed final light/dark layout, full illustration, video controls, captions and mobile stacking"
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png",
+          "sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+          "identical_to_initial": true,
+          "review": "Byte-identical to reviewed initial capture"
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png",
+          "sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+          "identical_to_initial": false,
+          "review": "Reviewed final light/dark layout, full illustration, video controls, captions and mobile stacking"
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png",
+          "sha256": "0275bf7c0b8a51c33097889c070f7947898cbbb2275e77588a21d24934f3a786",
+          "identical_to_initial": false,
+          "review": "Reviewed final light/dark layout, full illustration, video controls, captions and mobile stacking"
+        }
+      ],
+      "status": "reviewed; no visual blocker found"
+    },
+    "final_full_run": {
+      "artifact_id": 14376286554,
+      "screenshots": [
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png",
+          "sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+          "identical_to_reviewed_probe": true,
+          "identical_to_reviewed_initial": false
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png",
+          "sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+          "identical_to_reviewed_probe": true,
+          "identical_to_reviewed_initial": true
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+          "sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+          "identical_to_reviewed_probe": true,
+          "identical_to_reviewed_initial": false
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png",
+          "sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+          "identical_to_reviewed_probe": true,
+          "identical_to_reviewed_initial": true
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png",
+          "sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+          "identical_to_reviewed_probe": true,
+          "identical_to_reviewed_initial": false
+        },
+        {
+          "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png",
+          "sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+          "identical_to_reviewed_probe": false,
+          "identical_to_reviewed_initial": true
+        }
+      ],
+      "status": "All six screenshots match reviewed captures byte-for-byte"
+    }
+  },
+  "fixture": {
+    "path": "examples/showcase/content/assets/compose-motion.mp4",
+    "bytes": 4527,
+    "sha256": "699f6d67492953c1a0fdcd36f8fd8a0556681c2477ee91c39c1d7ddc1b1edf5a",
+    "origin": "Original two-second silent FFmpeg-generated three-rectangle motion study; no third-party footage"
+  },
+  "limits": [
+    "Layers/placement, sticky stages, authored scroll ranges, block Markdown, icons and arbitrary section embedding remain unimplemented",
+    "No public candidate or production hosting updated",
+    "Development-only picomatch advisory remains open under the existing dated exception",
+    "No zero-bug or arbitrary-section-completeness claim"
+  ],
+  "pre_caption_correction": {
+    "source_commit": "b1d31ff3715f189f576980b9ccd741d3f5b01fe0",
+    "hosted": {
+      "run_id": 44179876080,
+      "status": "superseded: 31 successful jobs; unfinished CLI cancelled",
+      "engine_job": 134381204755,
+      "showcase_job": 134381205170,
+      "showcase": {
+        "passed": 427,
+        "skipped": 140,
+        "retries": 0
+      },
+      "preservation": {
+        "original_routes": 46,
+        "added_routes": 13,
+        "original_headings": 282,
+        "compatibility_mappings": 82,
+        "unchanged_images": 29,
+        "browser_errors": 0
+      }
+    },
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 134381204146,
+        "name": "Native images (amd64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204755,
+        "name": "Engine",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204798,
+        "name": "Website and book templates",
+        "status": "completed"
+      },
+      {
+        "conclusion": "cancelled",
+        "id": 134381204814,
+        "name": "CLI",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204841,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204845,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204860,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204881,
+        "name": "Embedded schema is current",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204888,
+        "name": "Native images (arm64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204944,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381204958,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205039,
+        "name": "websites / Websites (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205044,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205113,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205117,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205155,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205170,
+        "name": "Showcase end to end",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205189,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205219,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205248,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205459,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381205621,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134381206331,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134383037467,
+        "name": "Combined image manifests",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900330,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900335,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900357,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900380,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900389,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900447,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900462,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134386900499,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      }
+    ],
+    "note": "Superseded after review corrected figcaption placement; 31 jobs passed and CLI was cancelled by the final-head push."
+  },
+  "caption_fix_commit": "3de61c8b1ed3a0ffe197b77ac48ff3a7c6a7309a",
+  "caption_only_superseded_run": {
+    "run_id": 44184326067,
+    "source_commit": "3de61c8b1ed3a0ffe197b77ac48ff3a7c6a7309a",
+    "status": "cancelled after no-script stylesheet placement review"
+  },
+  "head_stylesheet_attempt": {
+    "source_commit": "e8a8eaf387fa06c61c35463bdf1c1f14320f7df0",
+    "run_id": 44186274088,
+    "engine_job": 134403685670,
+    "failed_artifact": 14374047934,
+    "failed_cases": [
+      "preservation accepts head whitespace",
+      "preservation accepts hosting annotation and CRLF whitespace"
+    ],
+    "error": "React hydration error 418",
+    "disposition": "Replaced with a server-hidden play control enabled after hydration, native no-JS controls and a provider source link. Root layout restored exactly.",
+    "focused_local_tests": 22
+  },
+  "progressive_probe": {
+    "run_id": 44187882059,
+    "commit": "a4bcce7c0fff3f5c7a60db4782c57d6797a5e171",
+    "status": "success",
+    "job_id": 134409155301,
+    "artifact_id": 14374054272,
+    "engine_passed": 505,
+    "composer_browser_passed": 27,
+    "composer_browser_retries": 0,
+    "hydration_preservation_passed": 6,
+    "workspace_types": "pass",
+    "preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_headings": 282,
+      "compatibility_mappings": 82,
+      "unchanged_images": 29,
+      "browser_errors": 0
+    },
+    "source_equivalence": "Probe commit is a child of the final runtime commit; only the manual diagnostic workflow differs."
+  },
+  "progressive_fix_commit": "04c92b546d6c7fb004bfefefb45854845c4cfafc",
+  "catalog_review": {
+    "registered_types": 25,
+    "covered_exactly_once": 25,
+    "record": "specs/zellij-compose-video-2026-11-17.md#catalog-coverage-audit",
+    "basis": [
+      "engine/packages/zellij/src/sections/compose-schema.ts",
+      "engine/packages/zellij/src/sections/components/"
+    ],
+    "conclusion": "Direct shared children exist for media-accordion and video-embed; visual arrangements do not imply semantic or behavioral parity for the rest of the catalog."
+  }
+}

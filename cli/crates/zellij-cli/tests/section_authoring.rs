@@ -596,7 +596,7 @@ fn composition_explain_names_every_node_and_layout_variant() {
     let output = run(temp.path(), &["explain", "compose"], "", 0);
     let text = String::from_utf8(output.stdout).unwrap();
     for name in [
-        "heading", "text", "image", "button", "stat", "divider", "group",
+        "heading", "text", "image", "button", "stat", "divider", "group", "video",
     ] {
         assert!(text.contains(&format!("`children` ({name})")), "{text}");
     }
@@ -607,6 +607,57 @@ fn composition_explain_names_every_node_and_layout_variant() {
     let output = run(temp.path(), &["explain", "compose", "--json"], "", 0);
     let value: Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(value["properties"]["children"]["maxItems"], 24);
+}
+
+#[test]
+fn composition_authors_video_captions_and_rejects_invalid_tracks_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let video = serde_json::json!({"type":"video", "label":"A study", "src":"assets/study.mp4",
+        "tracks":[{"src":"assets/study.vtt", "srclang":"en", "label":"English"}], "transcript":"/transcript"});
+    let assignment = format!(
+        "children={}",
+        serde_json::json!([{"type":"group", "children":[video.clone()]}])
+    );
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "compose",
+            "--set-json",
+            &assignment,
+            "--set",
+            "children.0.children.0.tracks.0.label=English captions",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&out)["children"][0]["children"][0]["tracks"][0]["label"],
+        "English captions"
+    );
+    for tracks in [
+        serde_json::json!([{"src":"assets/study.vtt", "srclang":"en"}]),
+        serde_json::json!([{"src":"assets/study.vtt", "srclang":"not a language", "label":"Invalid"}]),
+        serde_json::json!(vec![video["tracks"][0].clone(); 9]),
+    ] {
+        let mut invalid = video.clone();
+        invalid["tracks"] = tracks;
+        let assignment = format!("children={}", serde_json::json!([invalid]));
+        run(
+            temp.path(),
+            &[
+                "ns",
+                "compose",
+                "--set-json",
+                &assignment,
+                "--out",
+                "invalid.yaml",
+            ],
+            "",
+            2,
+        );
+        assert!(!temp.path().join("invalid.yaml").exists());
+    }
 }
 
 #[test]
