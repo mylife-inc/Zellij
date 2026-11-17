@@ -4,7 +4,7 @@ import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 const out = 'test-results/book-design-reference'; mkdirSync(out, { recursive: true });
 const image = readFileSync('cli/crates/zellij-cli/src/pdf.rs','utf8').match(/pub\(crate\) const IMAGE: &str = "([^"]+)"/)[1];
-const fonts = execFileSync('docker', ['run','--rm','--network','none','--entrypoint','sh',image,'-c', 'find /usr/share/fonts /opt /usr/local/share /usr/local/texlive -type f \( -iname "*.ttf" -o -iname "*.otf" -o -name "babel.sty" -o -name "bidi.sty" -o -name "arabic.ldf" -o -name "babel-ar.ini" \) 2>/dev/null || true'], {encoding:'utf8', maxBuffer:16*1024*1024});
+const fonts = execFileSync('docker', ['run','--rm','--network','none','--entrypoint','sh',image,'-c', String.raw`find /usr/share/fonts /opt /usr/local/share /usr/local/texlive -type f \( -iname "*.ttf" -o -iname "*.otf" -o -name "babel.sty" -o -name "bidi.sty" -o -name "arabic.ldf" -o -name "babel-ar.ini" \) 2>/dev/null || true`], {encoding:'utf8', maxBuffer:16*1024*1024});
 writeFileSync(out+'/fonts.txt', fonts);
 const browser = await chromium.launch({headless:true});
 try {
