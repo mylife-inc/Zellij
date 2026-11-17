@@ -36,10 +36,12 @@ export function VideoContent({ src, poster, label, tracks, transcript, caption, 
       {...(tracks?.length ? { tracks: tracks.map(track => ({ ...track, src: assetHref(track.src, basePath) })) } : {})}
       label={label}
     />
-    {caption ? <figcaption className="zellij-video-caption">{caption}</figcaption> : null}
-    <p className="zellij-video-links">
-      <a href={sourceUrl}>Open video: {label}</a>
-      {transcript ? <> · <Link href={transcript}>Read transcript</Link></> : null}
-    </p>
+    <figcaption>
+      {caption ? <div className="zellij-video-caption">{caption}</div> : null}
+      <p className="zellij-video-links">
+        <a href={sourceUrl}>Open video: {label}</a>
+        {transcript ? <> · <Link href={transcript}>Read transcript</Link></> : null}
+      </p>
+    </figcaption>
   </figure>;
 }

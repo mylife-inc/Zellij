@@ -47,6 +47,7 @@ it('renders composed video with a named player, nested references and readable n
   expect(html).toContain('<strong>original</strong>');
   expect(html).toContain('href="/transcript"');
   expect(html).toContain('Open video: Motion study');
+  expect(html).toMatch(/<figcaption><div class="zellij-video-caption">[\s\S]*<p class="zellij-video-links">[\s\S]*<\/p><\/figcaption><\/figure>/);
 });
 
 it('uses instance heading ownership and an explicit rail label', () => {
