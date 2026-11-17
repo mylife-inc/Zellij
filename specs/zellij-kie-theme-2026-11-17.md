@@ -50,3 +50,14 @@ preservation, strict authored-content validation, actual source engine builds,
 desktop/mobile light/dark captures, local fonts, FAQ keyboard use, no-JS content,
 reduced motion, full shared navigation and image/network checks. All actual
 browsers and containers run in hosted CI; no local browser/container is started.
+
+First website run `44074881310` catches the Kie hero at the base 64px/centered
+style instead of its 72px/start design. Hosted Chromium/WebKit probe
+`44076164327` isolates an existing shared-theme bug: bare attribute selectors
+inside `@scope` implicitly select descendants, excluding the theme-bearing root.
+Using `:scope[data-zellij-theme=…]` restores the presentation rules while retaining
+nested theme boundaries. This also restores the previously inert Cupertino,
+Mono, Porcelain, Aurora and Carbon rules; their website visuals require review.
+A durable two-browser check covers root, nested and re-entered scopes and these
+older presentation rules. Full CI also catches the missing generated Markdown
+context snapshot; both generated forms now include Kie.
