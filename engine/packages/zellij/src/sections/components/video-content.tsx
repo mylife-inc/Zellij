@@ -31,6 +31,7 @@ export function VideoContent({ src, poster, label, tracks, transcript, caption, 
   const sourceUrl = assetHref(src, basePath);
   return <figure className={composed ? 'zellij-video-figure zellij-compose-video' : 'zellij-video-figure'}>
     <VideoPlayer
+      sourceUrl={sourceUrl}
       {...(embedUrl ? { embedUrl } : { fileUrl: sourceUrl })}
       {...(poster ? { poster: assetHref(poster, basePath) } : {})}
       {...(tracks?.length ? { tracks: tracks.map(track => ({ ...track, src: assetHref(track.src, basePath) })) } : {})}

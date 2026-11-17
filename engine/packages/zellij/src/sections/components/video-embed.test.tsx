@@ -39,6 +39,6 @@ describe('video media resolution', () => {
     vi.mocked(VideoPlayer).mockClear();
     const section = videoEmbedSchema.parse({ type: 'video-embed', src, poster, heading: 'Watch the demo' });
     renderToStaticMarkup(<VideoEmbed site={site} section={section} defaultMotion="none" />);
-    expect(vi.mocked(VideoPlayer).mock.calls[0]?.[0]).toEqual({ ...expected, label: 'Watch the demo' });
+    expect(vi.mocked(VideoPlayer).mock.calls[0]?.[0]).toEqual({ ...expected, sourceUrl: 'fileUrl' in expected ? expected.fileUrl : src, label: 'Watch the demo' });
   });
 });
