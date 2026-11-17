@@ -3,21 +3,31 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-17: rc.10 publication and documentation in progress**
+**2026-11-17: rc.10 published; documentation/channels in progress**
 
 PR #199 merges as `9319729` with the reviewed notes-only tree. Normal preflight
 passes 810 Rust tests (five hosted-only cases ignored), 494 engine tests,
-format/type/schema checks and warnings-denied Clippy. The immutable tag
-`v0.2.0-rc.10` points there. Release run `44159670077` is explicitly dispatched
-against that tag because the preparation commit uses `[skip ci]`.
+format/type/schema checks and warnings-denied Clippy. Immutable rc.10 points
+there. All 37 release jobs in `44159670077` and all 12 expanded public acceptance
+jobs in `44163817890` pass. Both release repositories have 27 byte-identical,
+checksum-verified assets. The expanded harness additionally runs the tagged
+seven-case language PDF driver with the downloaded CLI; tagged source and
+artifacts are unchanged. Forty-six public PDFs/420 page captures and 224 website
+captures match the reviewed source output. An isolated standalone rc.9-to-rc.10
+upgrade succeeds. Nine current template archives match reviewed packaging;
+eight previously published archives are unchanged.
 
-The active guides and six consumer workflows are prepared for rc.10. Strict
-local validation passes 59 routes and 25 examples. A public-acceptance gap is
-being closed in the latest harness: after the tagged styled-PDF driver, execute
-the tagged seven-case language matrix with the downloaded binary. Tagged source
-and assets remain immutable. Source language/Next checks already passed; the
-additional public run, managed channels, documentation merge and scoped rc.9
-retirement remain pending. See [release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json).
+Homebrew (`aa82b4e`), Scoop (`992b4e1`) and shared installation docs (`a6ee987`)
+now select verified rc.10. Their public lifecycle/actual-upgrade gates remain
+in progress. Active guides and all six consumer build-only workflows are updated;
+the six consumers pass at `fee9939`. Documentation CI `44163958595` discovers
+seven high development findings for the newly reviewed picomatch advisory.
+Upstream has no patched version; the production audit has no findings. The
+[dated disposition](specs/zellij-picomatch-disposition-2026-11-17.md) permits only
+the exact reviewed development chain until December 1, with six rejection tests.
+This is an open upstream issue, not a vulnerability fix or clean full audit.
+New documentation CI, merge, replacement images and scoped rc.9 retirement
+remain pending. See [release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json).
 Production hosting and live providers stay deferred.
 
 **2026-11-17: rc.10 release preparation**
