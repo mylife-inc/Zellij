@@ -4,14 +4,15 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, mkdirSync, cpSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { languages, writeLanguageBook } from './fixtures/book-languages.mjs';
+import { languages, writeLanguageBook, normalizedPrintText, requiredPrintTerms } from './fixtures/book-languages.mjs';
 const binary = path.resolve(process.argv[2] || 'cli/target/debug/zel');
 const root = mkdtempSync(path.join(tmpdir(),'zel-language-'));
 const artifacts = path.resolve('test-results/pdf');
 try {
-  for(const [language, edition] of [['ar','classic'],['ar','technical'],['ar','study'],['fr','study'],['de','classic'],['es','classic']]) {
-    const key = `${language}-${edition}`, source = path.join(root,key), text = languages[language];
-    writeLanguageBook(source,language,edition);
+  for(const [language, edition, defaultFonts] of [['ar','classic'],['ar','technical'],['ar','study'],['ar','classic',true],['fr','study'],['de','classic'],['es','classic']]) {
+    const key = `${language}-${edition}${defaultFonts ? '-default' : ''}`, source = path.join(root,key), text = languages[language];
+    const config = writeLanguageBook(source,language,edition);
+    if(defaultFonts) { delete config.pdf.style; writeFileSync(path.join(source,'zel.yaml'),JSON.stringify(config,null,2)+'\n'); }
     try { execFileSync(binary,['build',source],{stdio:'pipe',timeout:600000}); }
     catch(e) { console.error(e.stderr?.toString()); throw e; }
     const printed=path.join(source,'site/_zellij/pdf'), out=path.join(artifacts,key);
@@ -22,11 +23,9 @@ try {
     writeFileSync(path.join(out,'text.txt'),extracted);writeFileSync(path.join(out,'pdfinfo.txt'),info);writeFileSync(path.join(out,'fonts.txt'),fonts);
     assert(!extracted.includes('??'));
     for(const line of fonts.trim().split('\n').slice(2)) assert.match(line,/\byes\s+yes\s+yes\b/,'Fonts embedded, subset and Unicode mapped');
-    const normalized=extracted.normalize('NFKC').replace(/[\u202a-\u202e\u2066-\u2069]/g,'').replace(/\s+/g,' ');
-    if(language==='ar') {
-      assert.match(fonts,/Amiri/);
-      for(const term of [text.title,text.first,text.second,text.contents,text.detail,text.note]) assert(normalized.includes(term),`${key}: missing extracted ${term}\n${normalized}`);
-    } else { for(const term of [text.title,text.first,text.second,text.chapter]) assert(normalized.includes(term),`${key}: ${term}`); }
+    const normalized=normalizedPrintText(extracted);
+    for(const term of requiredPrintTerms(language)) assert(normalized.includes(normalizedPrintText(term)),`${key}: missing extracted ${term}\n${extracted}`);
+    if(language==='ar') assert.match(fonts,/Amiri/);
     if(language==='fr') assert.match(fonts,/Libertinus/);
     assert.match(extracted,/Zellij/);assert.match(extracted,/Shebka/);
     for(let n=1;n<=Number(info.match(/Pages:\s+(\d+)/)[1]);n++) execFileSync('pdftoppm',['-f',String(n),'-singlefile','-scale-to','1300','-png',pdf,path.join(out,`page-${n}`)]);

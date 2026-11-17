@@ -38,7 +38,7 @@
     },
     "dependencies": {
       "@shebka/zellij": "__ZELLIJ_ENGINE__",
-      "next": "~16.4.2",
+      "next": "~16.4.6",
       "react": "~19.2.0",
       "react-dom": "~19.2.0"
     },

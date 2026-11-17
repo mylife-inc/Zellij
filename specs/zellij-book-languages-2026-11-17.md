@@ -51,3 +51,18 @@ catches reversed chapter alignment caused by substituting raggedleft; LuaTeX's
 RTL paragraph already interprets raggedright relative to reading direction.
 These results are not accepted visual baselines. Extraction checks now normalize
 Arabic compatibility forms/bidi controls and require the authored Arabic strings.
+
+Full CI `44072424318` exposes two additional issues: an old native font-count
+assertion still expects 75 instead of 79, and npm audit now reports
+[GHSA-mfr8-8qww-v76h](https://github.com/vercel/next.js/security/advisories/GHSA-mfr8-8qww-v76h)
+for pinned Next 16.4.2. Active workspace and generated-wrapper pins move to
+16.4.6, with a fresh lockfile/install and unchanged historical font metrics.
+The old assertion is updated to the exact new inventory; checks are not skipped.
+
+The corrected Arabic chapter is visually reviewed from hosted PDF output. Its
+joined letters and relative right alignment are correct. Poppler adds layout
+spaces inside some non-joining words (for example `أجو بة`); extraction comparison
+now removes layout whitespace on both sides while retaining all characters and
+their order. This check is shared by native and Next PDFs and includes localized
+contents/chapter labels. A seventh native fixture exercises Arabic's default
+font selection separately from explicit Amiri.

@@ -1,6 +1,6 @@
 // Hosted CI only: build, publish, pull and serve complete PDF-enabled Next books.
 import assert from 'node:assert/strict';
-import { writeLanguageBook } from './fixtures/book-languages.mjs';
+import { writeLanguageBook, normalizedPrintText, requiredPrintTerms } from './fixtures/book-languages.mjs';
 import { checkArabicBook } from './check-language-book.mjs';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
@@ -74,7 +74,7 @@ try {
     await writeFile(path.join(out,'book.json'),JSON.stringify(book,null,2));
     execFileSync('qpdf',['--check',pdfPath]);
     const text = execFileSync('pdftotext',['-layout',pdfPath,'-'],{encoding:'utf8'});
-    for(const word of language ? ['Zellij','Shebka'] : [book.publication.manifest.title,'Contents','Chapter 1','Chapter 2','Bibliography','Glossary','Index']) assert(text.replace(/\s+/g,' ').includes(word),word);
+    for(const word of language ? requiredPrintTerms(language) : [book.publication.manifest.title,'Contents','Chapter 1','Chapter 2','Bibliography','Glossary','Index']) assert(language ? normalizedPrintText(text).includes(normalizedPrintText(word)) : text.replace(/\s+/g,' ').includes(word),word);
     assert(!text.includes('??'));
     const pdfInfo = execFileSync('pdfinfo',[pdfPath],{encoding:'utf8'});
     const pages = Number(pdfInfo.match(/Pages:\s+(\d+)/)[1]);

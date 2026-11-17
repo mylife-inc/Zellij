@@ -52,7 +52,7 @@
     "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
-    "next": "~16.4.2",
+    "next": "~16.4.6",
     "react": "19.2.x",
     "react-dom": "19.2.x",
     "mermaid": "^11.17.2",
