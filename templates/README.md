@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.9 catalog contains eight
+CLI releases. It is independent of `examples/`. The rc.10 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -14,7 +14,7 @@ The product starters remain at template version 0.1.0. Book-classic 0.2.0
 requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
 the bundled catalog; previously published 0.1.0 archives remain immutable.
 
-The published rc.9 catalog adds three website starters at template version 0.1.0:
+The catalog also includes three website starters introduced in rc.9 at template version 0.1.0:
 
 | ID | Direction | Pages |
 | --- | --- | --- |
@@ -130,14 +130,14 @@ to work. Never reuse an already published template version for different bytes.
 explicit gzip level and refuses different bytes for a known ID/version; record
 new hashes only after public release verification, without rewriting old entries.
 
-The rc.9 website starters center the product home link and menu on the viewport.
+The website starters center the product home link and menu on the viewport.
 Optional `brand.company` stays at the far left; search and theme controls stay
 at the far right. The mobile header uses the complete navigation drawer.
 
-## Source rc.10 addition
+## API platform in rc.10
 
 `api-platform` 0.1.0 uses the new `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
 SVG artwork use no remote assets or services. CLI and engine rc.10 are required;
-public rc.9 remains the eight-template catalog. All eight published archives
+the published rc.10 catalog includes nine starters. All eight earlier archives
 remain byte-identical. The API, plans and product names are fictional examples.

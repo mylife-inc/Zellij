@@ -7,7 +7,7 @@ items:
     span: large
     href: /guide/content-model
   - title: Themes
-    body: Fourteen of them, switchable at runtime.
+    body: Fifteen of them, switchable at runtime.
     icon: palette
     span: normal
     background: tinted

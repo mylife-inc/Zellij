@@ -11,12 +11,12 @@ items:
     image: assets/card-content.png
     href: /guide/content-model
   - eyebrow: Sections
-    title: Nineteen ways to say something
+    title: Twenty-five ways to say something
     body: Heroes, carousels, timelines, galleries, pricing, proof.
     image: assets/card-sections.png
     href: /sections
   - eyebrow: Themes
-    title: Fourteen glazes
+    title: Fifteen glazes
     body: A token system deep enough that themes never touch a component.
     image: assets/card-themes.png
     href: /guide/themes

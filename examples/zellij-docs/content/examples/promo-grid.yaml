@@ -15,7 +15,7 @@ items:
       - { label: Read the guide, href: /guide }
       - { label: Browse sections, href: /sections }
   - eyebrow: Themes
-    title: Fourteen of them.
+    title: Fifteen of them.
     image: assets/example/promo-1.png
     alt: ""
     width: half

@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-17",
+  "candidate": "v0.2.0-rc.10",
+  "status": "immutable rc.10 tag pushed; release workflow dispatched; public acceptance pending",
+  "source_implementation": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
+  "tag_candidate_commit": "9319729c8c325558c0418fbb4ab24be27940d9a1",
+  "source_ci": {
+    "run": 44086609777,
+    "attempt": 2,
+    "conclusion": "success",
+    "jobs": 32
+  },
+  "preparation": {
+    "pull_request": 199,
+    "head": "ed6f3552b6cb87a2619acc95a8c08bfc7e959f03",
+    "merge": "9319729c8c325558c0418fbb4ab24be27940d9a1",
+    "merge_tree_matches": true,
+    "runtime_and_acceptance_inputs_unchanged_from": "7b6f052f8ad3dcb19fa4622b11113fb30699d10d",
+    "release_helpers_passed": 39,
+    "initial_local_helper_attempt": "New worktree lacked js-yaml before npm ci; installed locked dependencies and all 39 tests passed."
+  },
+  "documentation_validation": {
+    "strict_deep_routes": 59,
+    "examples": 25,
+    "generated_consumer_workflows_match_cli": 6,
+    "status": "prepared locally; hosted CI and merge pending",
+    "catalog_counts": "25 sections, 15 themes, 9 templates",
+    "legacy_heading_targets": "prior theme/print/template source headings retained as explicit anchors",
+    "release_helpers_passed": 39
+  },
+  "limits": [
+    "Production hosting and live-provider verification deferred",
+    "Kie public HTML/CSS inspected; live browser comparison blocked by Cloudflare",
+    "Book typography is multilingual; generated web UI labels remain English"
+  ],
+  "preflight": {
+    "rust_passed": 810,
+    "existing_hosted_only_ignored": 5,
+    "engine_passed": 494,
+    "typechecks_schema_format_clippy_passed": true,
+    "log_sha256": "1fa9adab8579925d9b3090b00e74f4b78f53cba0b357a5b879620efbd5a1167c"
+  },
+  "tag_commit": "9319729c8c325558c0418fbb4ab24be27940d9a1",
+  "dispatch": {
+    "event": "workflow_dispatch",
+    "reason": "Preparation merge carries [skip ci]; explicit tag dispatch runs all release gates.",
+    "run_id": 44159670077
+  },
+  "acceptance_followup": {
+    "reason": "Tagged public native driver runs styled PDFs but omits the separate seven-case native language matrix. Source CI and tagged Next PDF already cover languages; latest acceptance harness adds the tagged language driver against the same downloaded public binary.",
+    "tag_unchanged": true,
+    "status": "prepared; hosted public acceptance pending"
+  }
+}

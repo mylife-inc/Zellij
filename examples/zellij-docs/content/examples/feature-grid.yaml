@@ -8,10 +8,10 @@ items:
     body: YAML for structure, MDX for prose. No database.
     href: /guide/content-model
   - icon: layout-grid
-    title: Nineteen sections
+    title: Twenty-five sections
     body: Openers, grids, narrative, proof and media.
     href: /sections
   - icon: palette
-    title: Fourteen themes
+    title: Fifteen themes
     body: Palette, type, geometry and shadow, switched together.
     href: /guide/themes

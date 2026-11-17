@@ -11,7 +11,7 @@ cta:
   - { label: See every section, href: /sections, style: ghost }
 highlights:
   - { icon: file-text, label: YAML and Markdown }
-  - { icon: palette, label: Fourteen themes }
+  - { icon: palette, label: Fifteen themes }
   - { icon: terminal, label: One command }
 media: right
 terminal:

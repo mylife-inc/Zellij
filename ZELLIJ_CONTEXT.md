@@ -3,6 +3,23 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: rc.10 publication and documentation in progress**
+
+PR #199 merges as `9319729` with the reviewed notes-only tree. Normal preflight
+passes 810 Rust tests (five hosted-only cases ignored), 494 engine tests,
+format/type/schema checks and warnings-denied Clippy. The immutable tag
+`v0.2.0-rc.10` points there. Release run `44159670077` is explicitly dispatched
+against that tag because the preparation commit uses `[skip ci]`.
+
+The active guides and six consumer workflows are prepared for rc.10. Strict
+local validation passes 59 routes and 25 examples. A public-acceptance gap is
+being closed in the latest harness: after the tagged styled-PDF driver, execute
+the tagged seven-case language matrix with the downloaded binary. Tagged source
+and assets remain immutable. Source language/Next checks already passed; the
+additional public run, managed channels, documentation merge and scoped rc.9
+retirement remain pending. See [release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json).
+Production hosting and live providers stay deferred.
+
 **2026-11-17: rc.10 release preparation**
 
 The user asked to continue with publication and documentation. Baseline `8cb6a99`

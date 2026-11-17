@@ -54,6 +54,11 @@ try {
         const catalog = JSON.parse(execFileSync(binary, ['templates', '--json', '--offline'], { env, encoding: 'utf8', timeout: 10000 }));
         if (catalog.templates.some(template => template.print === 'lualatex')) {
           execFileSync(process.execPath, ['scripts/check-pdf.mjs', binary], { env, stdio: 'inherit', timeout: 600000 });
+          // Newer tags also supply the multilingual matrix. Execute the tagged
+          // driver with the downloaded binary; older releases remain verifiable.
+          if (existsSync('scripts/check-language-pdfs.mjs')) {
+            execFileSync(process.execPath, ['scripts/check-language-pdfs.mjs', binary], { env, stdio: 'inherit', timeout: 600000 });
+          }
         }
       }
     }
