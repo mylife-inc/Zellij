@@ -1,0 +1,612 @@
+{
+  "date": "2026-11-18",
+  "source_commit": "9ef8e369a436d6caeb873e4694a9d9d85ef96956",
+  "implementation_commit": "88af13f3d2eb989135c3a5725073092aba7dc5b0",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/205",
+  "source_version": "0.2.0-rc.11",
+  "published_version_unchanged": "0.2.0-rc.10",
+  "scope": {
+    "node": "story",
+    "scenes": "2\u20138",
+    "media": [
+      "image",
+      "direct-file video segment"
+    ],
+    "preset": "scroll-story",
+    "distance_viewports": "0.5\u20132",
+    "video_bounds_seconds": "0 <= start < end <= 3600",
+    "reading_fallbacks": [
+      "narrow/tall content",
+      "no JavaScript",
+      "print",
+      "reduced motion",
+      "forced colors",
+      "keyboard/focus",
+      "reader opt-out",
+      "media error/invalid duration"
+    ],
+    "not_included": [
+      "arbitrary keyframe timelines",
+      "overlapping scenes",
+      "audio synchronization",
+      "arbitrary child sections",
+      "controlled section reuse"
+    ]
+  },
+  "local": {
+    "rust_passed": 815,
+    "rust_ignored": 5,
+    "engine_passed": 520,
+    "native_authoring_passed": 21,
+    "release_policy_passed": 20,
+    "clippy": "pass, warnings denied",
+    "format": "pass",
+    "workspace_types": "pass",
+    "engine_native_authoring": {
+      "sections": 25,
+      "presets": 7
+    },
+    "existing_presets_unchanged": 6,
+    "deep_strict_content": {
+      "showcase_routes": 15,
+      "documentation_routes": 59,
+      "documentation_examples": 32,
+      "codeseal_routes": 21
+    }
+  },
+  "superseded": [
+    {
+      "run_id": 44363366370,
+      "source_commit": "88af13f",
+      "status": "cancelled after retained known browser test failures",
+      "showcase_job": 135010459857,
+      "showcase_passed": 496,
+      "showcase_failed": 9,
+      "showcase_skipped": 140,
+      "artifact_id": 14454319535,
+      "cause": "Asset-version query strings were omitted by three test assertions/interceptors across three browsers."
+    },
+    {
+      "run_id": 44363433317,
+      "job_id": 135010698318,
+      "head": "15cc3e0",
+      "source_commit": "88af13f",
+      "status": "failure",
+      "passed": 96,
+      "failed": 9,
+      "retries": 0,
+      "cause": "Same asset-version URL test mismatch."
+    }
+  ],
+  "fixes": [
+    {
+      "commit": "88af13f",
+      "finding": "Native schema rejected exclusiveMinimum during early local verification. Existing inclusive bounds plus shared start < end rule preserve exact validation."
+    },
+    {
+      "commit": "9ef8e36",
+      "finding": "Pinned story omitted announcement bar; measure and observe actual sticky header. Correct asset URL matchers and wait for completed seeks and computed theme colours."
+    }
+  ],
+  "focused": {
+    "run_id": 44365571744,
+    "job_id": 135018257216,
+    "head": "8bf1f6b1e6fcffb6475aebe3cf2d11fb71405d02",
+    "source_commit": "9ef8e369a436d6caeb873e4694a9d9d85ef96956",
+    "status": "success",
+    "passed": 105,
+    "retries": 0,
+    "preservation_tests": 6,
+    "artifact_id": 14455974955,
+    "capture_count": 40,
+    "new_captures_reviewed": 9,
+    "only_difference_from_source": ".github/workflows/website-acceptance.yml diagnostic override"
+  },
+  "hosted": {
+    "run_id": 44366531686,
+    "status": "success",
+    "showcase_job": 135021632947,
+    "showcase_passed": 505,
+    "showcase_skipped": 140,
+    "showcase_retries": 0,
+    "showcase_artifact_id": 14457382210,
+    "engine_job": 135021632854,
+    "cli_job": 135021632543,
+    "preservation_tests": 6,
+    "native_authoring_export": {
+      "section_types": 25,
+      "editable_presets": 7,
+      "result": "Strict/deep full starter, ordered wizard page, structured-field page, and all editable presets validated and exported successfully; authored registration remained unchanged."
+    },
+    "run_attempt": 2,
+    "job_count": 32,
+    "source_commit": "9ef8e369a436d6caeb873e4694a9d9d85ef96956",
+    "jobs": [
+      {
+        "id": 135041391143,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041336493,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041390808,
+        "name": "websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041336573,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041333234,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041335812,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041337578,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041432766,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041436144,
+        "name": "Website and book templates",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041387658,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041385848,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041394483,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041335713,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041427132,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041336484,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041334252,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041430001,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041335031,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041336429,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041412732,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041426336,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041335982,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041386844,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041336937,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041341693,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041341207,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041341111,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041340912,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041341113,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041340761,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041340623,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 135041341882,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ],
+    "infrastructure_retry": {
+      "first_attempt_conclusion": "failure",
+      "first_attempt_cancelled_job": 135021632492,
+      "reason": "The job was not acquired by Runner of type hosted even after multiple attempts; GitHub reported macOS ARM capacity constraints. No test step started.",
+      "retry_scope": "Only Portable docs (macos-latest); the other 31 passing jobs were retained.",
+      "first_attempt_jobs": [
+        {
+          "id": 135021631907,
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632383,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632480,
+          "name": "websites / Websites (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632485,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632492,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "cancelled"
+        },
+        {
+          "id": 135021632502,
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632522,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632543,
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632647,
+          "name": "Website and book templates",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632681,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632800,
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632814,
+          "name": "Native images (amd64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632843,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632854,
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632934,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632947,
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021632954,
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633107,
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633114,
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633303,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633506,
+          "name": "Native images (arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633659,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135021633881,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135024320882,
+          "name": "Combined image manifests",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483352,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483370,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483382,
+          "name": "homebrew / Homebrew (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483383,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483429,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483469,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483555,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135028483587,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_headings": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "browser_errors": 0
+  },
+  "captures": {
+    "focused": {
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile-safari/compose-story-scrub.png": "70136fe36eb9fb2daa11348f67f037e4add2c17a4ddd7cb5f8254491bfa996bb",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-light.png": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-dark.png": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-light.png": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-dark.png": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-light.png": "5359278ac43cbfcdcde63e384babc5b25eaddb14f1a2fdff9cc699f157d9bc91",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-dark.png": "33a3d462b649d526fbb96e96022faa6b0a99927ed93ae56ad37a97ccf88b1f4a",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-light.png": "3529037448d8223b643354043e7c8ff0d7101b5687b3a7d9127404c46a97bcec",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-dark.png": "7d5326d0dcd0e78c1ac0cd4cf401b07a1c884dfe188c9ddbe5397321d711e255",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png": "657eb1aaee1d3bcc702dace4fd4d3597ac6efb6e723dc0cfb01e9a1585862ead",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png": "7cbcb620ef0237bccd97105b9d1e6600fc1dde7698c0645290988ebda19df666",
+      "compose-expansion-scroll-s-e59aa-th-focus-and-size-fallbacks-desktop/composition-scroll-mid.png": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-light.png": "e30c6024becb958754d97ba81a86846bd62dfe23cd1eb05942f8553b6b019e99",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-dark.png": "0c7f8a174c1db4050ae051979b372428c53784e7070e182ac4b53f722f4558ac",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-light.png": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-dark.png": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-light.png": "c4af6fdb422abe2f74436929b38a9b9a804763136e5f3760af7e8cc9cbdae2a6",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-dark.png": "860e30fa9545f33e428a4cc24574ae4ad622f0bc19cd666d8ed54c04f206d94d",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-dark.png": "72678f5087caeeafddf9e247b08f57e09a7bbdd5c30385ec94741d5971e5c13e",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png": "c74161345c7384c066e4a7f51b7d241d64086532b6f24c655aff936657f9af2a",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png": "408b5be0dee6843040330b4d72effd47540843bdeafd2292c27e27ae8007f243",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-light.png": "74c237ef1e3c1d7123b05793712dc251ae8b2c2ed2cfc8537957c110c76acc08",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-dark.png": "24b3d2b26dc5686f504a20083658c171cee187aea2c3757e4afd21af023c7c0d",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-light.png": "8917a84d19b7e6c415b8b6a30dd74075e07024878ada885005f2139cfbf95727",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-dark.png": "a556ec8e6630decf4ffbfc1d048dce45f54398cd79e9defe5f680a4290153990",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-light.png": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-dark.png": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-light.png": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-dark.png": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-dark.png": "d36a91716c34189154eb5218d99b26b7e6f5cfde621f79b3fdaec9900bf20553",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-light.png": "30bc5bc088d27ae2aeaf76e14a102d92d7289802be7492f40b0b3641365538f9",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-light.png": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-dark.png": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-desktop/compose-story-scrub.png": "f283b5b4650dee3bfdee391251601ef6d2eadbcc838f54391d86e517f077cec0"
+    },
+    "full": {
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile-safari/compose-story-scrub.png": "70136fe36eb9fb2daa11348f67f037e4add2c17a4ddd7cb5f8254491bfa996bb",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-light.png": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-dark.png": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-light.png": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-dark.png": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-light.png": "5359278ac43cbfcdcde63e384babc5b25eaddb14f1a2fdff9cc699f157d9bc91",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-dark.png": "33a3d462b649d526fbb96e96022faa6b0a99927ed93ae56ad37a97ccf88b1f4a",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-light.png": "3529037448d8223b643354043e7c8ff0d7101b5687b3a7d9127404c46a97bcec",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-dark.png": "7d5326d0dcd0e78c1ac0cd4cf401b07a1c884dfe188c9ddbe5397321d711e255",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png": "374a94c6e151df15fe901b8250e3a6dccdf7232b4c721f89782bbf1f5889ad21",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png": "4de29490ea51f746ddc4fe68e7600269acf927f4aaf74c93075ef35bc21458be",
+      "compose-expansion-scroll-s-e59aa-th-focus-and-size-fallbacks-desktop/composition-scroll-mid.png": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-light.png": "e30c6024becb958754d97ba81a86846bd62dfe23cd1eb05942f8553b6b019e99",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-dark.png": "0c7f8a174c1db4050ae051979b372428c53784e7070e182ac4b53f722f4558ac",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-light.png": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-dark.png": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-light.png": "c4af6fdb422abe2f74436929b38a9b9a804763136e5f3760af7e8cc9cbdae2a6",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-dark.png": "860e30fa9545f33e428a4cc24574ae4ad622f0bc19cd666d8ed54c04f206d94d",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-dark.png": "72678f5087caeeafddf9e247b08f57e09a7bbdd5c30385ec94741d5971e5c13e",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png": "15177f17e762b971a6c0d4def7d41d523fea6806794326b4d122abc2a52385c5",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png": "dc7f3dac8fb6d5359e09b25557f772c9ac995f9733cc35f81b9c480d2ee65ed6",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-light.png": "74c237ef1e3c1d7123b05793712dc251ae8b2c2ed2cfc8537957c110c76acc08",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-dark.png": "24b3d2b26dc5686f504a20083658c171cee187aea2c3757e4afd21af023c7c0d",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-light.png": "8917a84d19b7e6c415b8b6a30dd74075e07024878ada885005f2139cfbf95727",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-dark.png": "a556ec8e6630decf4ffbfc1d048dce45f54398cd79e9defe5f680a4290153990",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-light.png": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-dark.png": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-light.png": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-dark.png": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-dark.png": "d36a91716c34189154eb5218d99b26b7e6f5cfde621f79b3fdaec9900bf20553",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-light.png": "30bc5bc088d27ae2aeaf76e14a102d92d7289802be7492f40b0b3641365538f9",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-light.png": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-dark.png": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-desktop/compose-story-scrub.png": "f283b5b4650dee3bfdee391251601ef6d2eadbcc838f54391d86e517f077cec0"
+    }
+  },
+  "visual_review": {
+    "scope": "Six light/dark desktop/mobile captures plus three wide-viewport completed-seek captures, Chromium and WebKit",
+    "result": "Readable copy, loaded illustrations, contained layouts, and scene number/content fully below the announcement/navigation header. Computed-colour assertions and corrected WebKit captures pass without a CSS colour change.",
+    "inspection_note": "Downscaled tall dark previews omitted illustration detail; decoded local crop confirms the original illustration. Native video controls can vary by browser and capture time.",
+    "prior_captures_unchanged": 31,
+    "prior_differences": [],
+    "full_matching_focused": 36,
+    "full_differences": [
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png"
+    ],
+    "full_differences_reviewed": true,
+    "full_difference_notes": [
+      {
+        "path": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png",
+        "changed_pixels": 29,
+        "bounds_device_pixels": [
+          841,
+          1123,
+          860,
+          1134
+        ],
+        "review": "Native video loading indicator variation only; surrounding poster and layout identical."
+      },
+      {
+        "path": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png",
+        "changed_pixels": 969,
+        "bounds_device_pixels": [
+          830,
+          1063,
+          894,
+          1134
+        ],
+        "review": "Native video loading spinner orientation only; surrounding poster and layout identical."
+      },
+      {
+        "path": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png",
+        "changed_pixels": 2241,
+        "bounds_device_pixels": [
+          446,
+          3247,
+          635,
+          3356
+        ],
+        "review": "Native video loading spinner orientation only; surrounding poster and layout identical."
+      },
+      {
+        "path": "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png",
+        "changed_pixels": 7467,
+        "bounds_device_pixels": [
+          304,
+          2184,
+          968,
+          2362
+        ],
+        "review": "Next scene heading is two device pixels lower in the full-run capture; its first line matches exactly after that translation. Pinned scene, decoded video frame, header clearance, scene number and media are byte-identical. No missing text or changed wrapping; the heading continues below the viewport in both captures."
+      }
+    ]
+  },
+  "external_changes": "No production deployment or release publication. Live-provider verification remains deferred.",
+  "records_follow_up": "Only context, contract/history and this evidence change after the verified source; runtime, active guides, dependencies, workflows and acceptance inputs remain identical."
+}

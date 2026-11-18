@@ -132,6 +132,11 @@
     "zigzag": "type: zigzag\nrows:\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n"
   },
   "sectionPresets": {
+    "scroll-story": {
+      "sectionType": "compose",
+      "description": "Ordered image scenes with optional pinning and complete reading fallbacks.",
+      "yaml": "# Composition preset: scroll-story. Edit this file freely.\ntype: compose\nversion: 1\nlabel: A story in chapters\nmotion: expressive\nchildren:\n  - type: heading\n    text: Follow the idea.\n  - type: story\n    label: From idea to detail\n    scenes:\n      - heading: Start with a clear idea.\n        body: Introduce the thought that shaped your product.\n        media:\n          kind: image\n          src: assets/replace-me.svg\n          alt: Describe the starting idea\n      - heading: Bring the details into focus.\n        body: Show how that idea becomes a useful detail.\n        media:\n          kind: image\n          src: assets/replace-me.svg\n          alt: Describe the finished detail\n        cta:\n          label: Explore more\n          href: \"#\"\n\n# Replace the placeholder images with your own content/assets files before building.\n"
+    },
     "product-selector": {
       "sectionType": "compose",
       "description": "Labelled product finishes with synchronized illustrations, facts and actions.",
@@ -1820,6 +1825,203 @@
                   "type",
                   "label",
                   "items"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "story"
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "sceneHeadingLevel": {
+                    "default": 3,
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 4
+                  },
+                  "distance": {
+                    "default": 1,
+                    "type": "number",
+                    "minimum": 0.5,
+                    "maximum": 2
+                  },
+                  "mediaSide": {
+                    "default": "end",
+                    "type": "string",
+                    "enum": [
+                      "start",
+                      "end"
+                    ]
+                  },
+                  "scenes": {
+                    "minItems": 2,
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "heading": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "body": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "inline"
+                        },
+                        "media": {
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "const": "image"
+                                },
+                                "src": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "zellijReference": "asset"
+                                },
+                                "alt": {
+                                  "type": "string",
+                                  "minLength": 1
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "src",
+                                "alt"
+                              ]
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "kind": {
+                                  "type": "string",
+                                  "const": "video"
+                                },
+                                "src": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "zellijReference": "asset"
+                                },
+                                "poster": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "zellijReference": "asset"
+                                },
+                                "tracks": {
+                                  "maxItems": 8,
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "src": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "asset"
+                                      },
+                                      "kind": {
+                                        "default": "captions",
+                                        "type": "string",
+                                        "enum": [
+                                          "captions",
+                                          "subtitles"
+                                        ]
+                                      },
+                                      "srclang": {
+                                        "type": "string",
+                                        "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "src",
+                                      "srclang",
+                                      "label"
+                                    ]
+                                  }
+                                },
+                                "transcript": {
+                                  "type": "string",
+                                  "minLength": 1,
+                                  "zellijReference": "href"
+                                },
+                                "label": {
+                                  "type": "string",
+                                  "minLength": 1
+                                },
+                                "start": {
+                                  "default": 0,
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 3600
+                                },
+                                "end": {
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 3600
+                                }
+                              },
+                              "required": [
+                                "kind",
+                                "src",
+                                "poster",
+                                "label",
+                                "end"
+                              ]
+                            }
+                          ]
+                        },
+                        "cta": {
+                          "type": "object",
+                          "properties": {
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "href": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "href"
+                            },
+                            "style": {
+                              "default": "secondary",
+                              "type": "string",
+                              "enum": [
+                                "primary",
+                                "secondary",
+                                "ghost"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "label",
+                            "href"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "heading",
+                        "body",
+                        "media"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "label",
+                  "scenes"
                 ]
               },
               {
@@ -3602,6 +3804,203 @@
                           "properties": {
                             "type": {
                               "type": "string",
+                              "const": "story"
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "sceneHeadingLevel": {
+                              "default": 3,
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 4
+                            },
+                            "distance": {
+                              "default": 1,
+                              "type": "number",
+                              "minimum": 0.5,
+                              "maximum": 2
+                            },
+                            "mediaSide": {
+                              "default": "end",
+                              "type": "string",
+                              "enum": [
+                                "start",
+                                "end"
+                              ]
+                            },
+                            "scenes": {
+                              "minItems": 2,
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "heading": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "body": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "inline"
+                                  },
+                                  "media": {
+                                    "anyOf": [
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "kind": {
+                                            "type": "string",
+                                            "const": "image"
+                                          },
+                                          "src": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "zellijReference": "asset"
+                                          },
+                                          "alt": {
+                                            "type": "string",
+                                            "minLength": 1
+                                          }
+                                        },
+                                        "required": [
+                                          "kind",
+                                          "src",
+                                          "alt"
+                                        ]
+                                      },
+                                      {
+                                        "type": "object",
+                                        "properties": {
+                                          "kind": {
+                                            "type": "string",
+                                            "const": "video"
+                                          },
+                                          "src": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "zellijReference": "asset"
+                                          },
+                                          "poster": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "zellijReference": "asset"
+                                          },
+                                          "tracks": {
+                                            "maxItems": 8,
+                                            "type": "array",
+                                            "items": {
+                                              "type": "object",
+                                              "properties": {
+                                                "src": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "asset"
+                                                },
+                                                "kind": {
+                                                  "default": "captions",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "captions",
+                                                    "subtitles"
+                                                  ]
+                                                },
+                                                "srclang": {
+                                                  "type": "string",
+                                                  "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                }
+                                              },
+                                              "required": [
+                                                "src",
+                                                "srclang",
+                                                "label"
+                                              ]
+                                            }
+                                          },
+                                          "transcript": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "zellijReference": "href"
+                                          },
+                                          "label": {
+                                            "type": "string",
+                                            "minLength": 1
+                                          },
+                                          "start": {
+                                            "default": 0,
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 3600
+                                          },
+                                          "end": {
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 3600
+                                          }
+                                        },
+                                        "required": [
+                                          "kind",
+                                          "src",
+                                          "poster",
+                                          "label",
+                                          "end"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "cta": {
+                                    "type": "object",
+                                    "properties": {
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "href": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "href"
+                                      },
+                                      "style": {
+                                        "default": "secondary",
+                                        "type": "string",
+                                        "enum": [
+                                          "primary",
+                                          "secondary",
+                                          "ghost"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "label",
+                                      "href"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "heading",
+                                  "body",
+                                  "media"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "label",
+                            "scenes"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
                               "const": "video"
                             },
                             "place": {
@@ -5377,6 +5776,203 @@
                                     "properties": {
                                       "type": {
                                         "type": "string",
+                                        "const": "story"
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "sceneHeadingLevel": {
+                                        "default": 3,
+                                        "type": "integer",
+                                        "minimum": 2,
+                                        "maximum": 4
+                                      },
+                                      "distance": {
+                                        "default": 1,
+                                        "type": "number",
+                                        "minimum": 0.5,
+                                        "maximum": 2
+                                      },
+                                      "mediaSide": {
+                                        "default": "end",
+                                        "type": "string",
+                                        "enum": [
+                                          "start",
+                                          "end"
+                                        ]
+                                      },
+                                      "scenes": {
+                                        "minItems": 2,
+                                        "maxItems": 8,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "heading": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "body": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "inline"
+                                            },
+                                            "media": {
+                                              "anyOf": [
+                                                {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "kind": {
+                                                      "type": "string",
+                                                      "const": "image"
+                                                    },
+                                                    "src": {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "zellijReference": "asset"
+                                                    },
+                                                    "alt": {
+                                                      "type": "string",
+                                                      "minLength": 1
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "kind",
+                                                    "src",
+                                                    "alt"
+                                                  ]
+                                                },
+                                                {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "kind": {
+                                                      "type": "string",
+                                                      "const": "video"
+                                                    },
+                                                    "src": {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "zellijReference": "asset"
+                                                    },
+                                                    "poster": {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "zellijReference": "asset"
+                                                    },
+                                                    "tracks": {
+                                                      "maxItems": 8,
+                                                      "type": "array",
+                                                      "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "src": {
+                                                            "type": "string",
+                                                            "minLength": 1,
+                                                            "zellijReference": "asset"
+                                                          },
+                                                          "kind": {
+                                                            "default": "captions",
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "captions",
+                                                              "subtitles"
+                                                            ]
+                                                          },
+                                                          "srclang": {
+                                                            "type": "string",
+                                                            "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                                          },
+                                                          "label": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                          }
+                                                        },
+                                                        "required": [
+                                                          "src",
+                                                          "srclang",
+                                                          "label"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "transcript": {
+                                                      "type": "string",
+                                                      "minLength": 1,
+                                                      "zellijReference": "href"
+                                                    },
+                                                    "label": {
+                                                      "type": "string",
+                                                      "minLength": 1
+                                                    },
+                                                    "start": {
+                                                      "default": 0,
+                                                      "type": "number",
+                                                      "minimum": 0,
+                                                      "maximum": 3600
+                                                    },
+                                                    "end": {
+                                                      "type": "number",
+                                                      "minimum": 0,
+                                                      "maximum": 3600
+                                                    }
+                                                  },
+                                                  "required": [
+                                                    "kind",
+                                                    "src",
+                                                    "poster",
+                                                    "label",
+                                                    "end"
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            "cta": {
+                                              "type": "object",
+                                              "properties": {
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "href": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "href"
+                                                },
+                                                "style": {
+                                                  "default": "secondary",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "primary",
+                                                    "secondary",
+                                                    "ghost"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "label",
+                                                "href"
+                                              ]
+                                            }
+                                          },
+                                          "required": [
+                                            "heading",
+                                            "body",
+                                            "media"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "label",
+                                      "scenes"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
                                         "const": "video"
                                       },
                                       "place": {
@@ -7145,6 +7741,203 @@
                                                 "type",
                                                 "label",
                                                 "items"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "story"
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "sceneHeadingLevel": {
+                                                  "default": 3,
+                                                  "type": "integer",
+                                                  "minimum": 2,
+                                                  "maximum": 4
+                                                },
+                                                "distance": {
+                                                  "default": 1,
+                                                  "type": "number",
+                                                  "minimum": 0.5,
+                                                  "maximum": 2
+                                                },
+                                                "mediaSide": {
+                                                  "default": "end",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "start",
+                                                    "end"
+                                                  ]
+                                                },
+                                                "scenes": {
+                                                  "minItems": 2,
+                                                  "maxItems": 8,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "heading": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "body": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "inline"
+                                                      },
+                                                      "media": {
+                                                        "anyOf": [
+                                                          {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "kind": {
+                                                                "type": "string",
+                                                                "const": "image"
+                                                              },
+                                                              "src": {
+                                                                "type": "string",
+                                                                "minLength": 1,
+                                                                "zellijReference": "asset"
+                                                              },
+                                                              "alt": {
+                                                                "type": "string",
+                                                                "minLength": 1
+                                                              }
+                                                            },
+                                                            "required": [
+                                                              "kind",
+                                                              "src",
+                                                              "alt"
+                                                            ]
+                                                          },
+                                                          {
+                                                            "type": "object",
+                                                            "properties": {
+                                                              "kind": {
+                                                                "type": "string",
+                                                                "const": "video"
+                                                              },
+                                                              "src": {
+                                                                "type": "string",
+                                                                "minLength": 1,
+                                                                "zellijReference": "asset"
+                                                              },
+                                                              "poster": {
+                                                                "type": "string",
+                                                                "minLength": 1,
+                                                                "zellijReference": "asset"
+                                                              },
+                                                              "tracks": {
+                                                                "maxItems": 8,
+                                                                "type": "array",
+                                                                "items": {
+                                                                  "type": "object",
+                                                                  "properties": {
+                                                                    "src": {
+                                                                      "type": "string",
+                                                                      "minLength": 1,
+                                                                      "zellijReference": "asset"
+                                                                    },
+                                                                    "kind": {
+                                                                      "default": "captions",
+                                                                      "type": "string",
+                                                                      "enum": [
+                                                                        "captions",
+                                                                        "subtitles"
+                                                                      ]
+                                                                    },
+                                                                    "srclang": {
+                                                                      "type": "string",
+                                                                      "pattern": "^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$"
+                                                                    },
+                                                                    "label": {
+                                                                      "type": "string",
+                                                                      "minLength": 1
+                                                                    }
+                                                                  },
+                                                                  "required": [
+                                                                    "src",
+                                                                    "srclang",
+                                                                    "label"
+                                                                  ]
+                                                                }
+                                                              },
+                                                              "transcript": {
+                                                                "type": "string",
+                                                                "minLength": 1,
+                                                                "zellijReference": "href"
+                                                              },
+                                                              "label": {
+                                                                "type": "string",
+                                                                "minLength": 1
+                                                              },
+                                                              "start": {
+                                                                "default": 0,
+                                                                "type": "number",
+                                                                "minimum": 0,
+                                                                "maximum": 3600
+                                                              },
+                                                              "end": {
+                                                                "type": "number",
+                                                                "minimum": 0,
+                                                                "maximum": 3600
+                                                              }
+                                                            },
+                                                            "required": [
+                                                              "kind",
+                                                              "src",
+                                                              "poster",
+                                                              "label",
+                                                              "end"
+                                                            ]
+                                                          }
+                                                        ]
+                                                      },
+                                                      "cta": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                          "label": {
+                                                            "type": "string",
+                                                            "minLength": 1
+                                                          },
+                                                          "href": {
+                                                            "type": "string",
+                                                            "minLength": 1,
+                                                            "zellijReference": "href"
+                                                          },
+                                                          "style": {
+                                                            "default": "secondary",
+                                                            "type": "string",
+                                                            "enum": [
+                                                              "primary",
+                                                              "secondary",
+                                                              "ghost"
+                                                            ]
+                                                          }
+                                                        },
+                                                        "required": [
+                                                          "label",
+                                                          "href"
+                                                        ]
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "heading",
+                                                      "body",
+                                                      "media"
+                                                    ]
+                                                  }
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "label",
+                                                "scenes"
                                               ]
                                             },
                                             {

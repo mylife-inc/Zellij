@@ -75,3 +75,8 @@
   title: Look a little closer
   layout: stack
   sections: [compose/explorer]
+
+- name: compose-story
+  title: An idea takes shape
+  layout: stack
+  sections: [compose/scroll-story, compose/story-independent]

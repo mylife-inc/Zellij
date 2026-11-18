@@ -669,7 +669,7 @@ fn named_presets_are_listed_and_generated_offline_as_editable_yaml() {
         run(temp.path(), &["list", "presets", "--json"], "", 0).stdout
     );
     let value: Value = serde_json::from_slice(&catalog.stdout).unwrap();
-    assert_eq!(value["presets"].as_array().unwrap().len(), 6);
+    assert_eq!(value["presets"].as_array().unwrap().len(), 7);
     let context: Value =
         serde_json::from_slice(&run(temp.path(), &["context", "--json"], "", 0).stdout).unwrap();
     for preset in value["presets"].as_array().unwrap() {
@@ -902,4 +902,53 @@ fn choice_nodes_reject_ambiguous_or_incomplete_selection_before_writing() {
     let explorer = serde_json::json!({"type":"explorer","label":"Features","initial":"missing","items":feature_items});
     let arg = format!("children={}", serde_json::json!([explorer]));
     run(temp.path(), &["ns", "compose", "--set-json", &arg], "", 2);
+}
+
+#[test]
+fn story_segments_and_nested_stage_rules_validate_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let scenes = serde_json::json!([
+        {"heading":"Begin","body":"One","media":{"kind":"image","src":"assets/a.svg","alt":"A"}},
+        {"heading":"Continue","body":"Two","media":{"kind":"video","src":"assets/a.mp4","poster":"assets/a.svg","label":"A fold","start":0.1,"end":1.9}}
+    ]);
+    let story = serde_json::json!({"type":"story","label":"Study","scenes":scenes});
+    let arg = format!("children={}", serde_json::json!([story]));
+    let output = run(
+        temp.path(),
+        &[
+            "ns",
+            "compose",
+            "--set-json",
+            &arg,
+            "--set",
+            "children.0.scenes.1.media.end=1.8",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&output)["children"][0]["scenes"][1]["media"]["end"],
+        1.8
+    );
+    for extra in [
+        vec!["--set", "children.0.scenes.1.media.end=0.1"],
+        vec!["--count", "children.0.scenes=1"],
+        vec!["--set-json", r#"scroll={"from":{},"to":{}}"#],
+        vec![
+            "--set-json",
+            r#"layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}"#,
+        ],
+    ] {
+        let mut args = vec![
+            "ns",
+            "compose",
+            "--set-json",
+            &arg,
+            "--out",
+            "rejected.yaml",
+        ];
+        args.extend(extra);
+        run(temp.path(), &args, "", 2);
+        assert!(!temp.path().join("rejected.yaml").exists());
+    }
 }
