@@ -1,0 +1,24 @@
+type: compose
+version: 1
+label: Every element, in its place
+id: layered-study
+layout:
+  kind: layers
+  backdrop: {kind: image, src: assets/compose-study.svg, alt: ""}
+  tone: dark
+  scrim: 0.7
+  height: medium
+children:
+  - type: group
+    place: center-start
+    children:
+      - {type: text, text: SHEBKA / THE COMPOSITION STUDIO, size: small}
+      - {type: heading, text: "Every element, in its place.", level: 2}
+  - type: text
+    place: top-end
+    text: A foreground with room to breathe. A backdrop that holds the story.
+  - type: group
+    place: bottom-end
+    children:
+      - {type: text, text: "On a smaller screen, the story follows its natural reading order."}
+      - {type: button, label: Explore the elements, href: /sections/compose, style: secondary}

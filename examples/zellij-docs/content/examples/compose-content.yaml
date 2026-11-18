@@ -1,0 +1,67 @@
+type: compose
+version: 1
+label: Form follows meaning
+id: composed-content
+children:
+  - {type: heading, text: Form follows meaning., level: 2, scale: display}
+  - {type: text, text: "The same vocabulary. More ways to tell the story.", size: lead}
+  - type: group
+    layout: {kind: split, gap: large}
+    children:
+      - type: group
+        children:
+          - {type: icon, name: book-open, label: An open book}
+          - type: prose
+            body: |
+              ## Make the idea clear.
+
+              A paragraph, a list, a **thoughtful emphasis**. The structure is
+              part of the message.[^care]
+
+              [^care]: Good structure makes an idea easier to read.
+
+              - Start with the reader.
+              - Give each idea a place.
+
+              [Read the guide](/guide).
+          - {type: quote, text: "Clarity comes from choosing what matters.", author: The composition studio}
+      - type: group
+        children:
+          - type: code
+            title: Start a composition
+            language: sh
+            code: "zel ns compose --out content/sections/intro.yaml"
+          - type: list
+            ordered: true
+            items: [Choose a layout., Write the story., Check the result.]
+          - type: disclosure
+            summary: Does the content need JavaScript?
+            body: "The text, tables and disclosure remain available. Galleries link to their images; carousels keep ordinary scrolling. [Read more](/guide)."
+  - type: table
+    caption: One story, every reading mode
+    rowLabel: Element
+    columns: [Screen, Print]
+    rows:
+      - {label: Text, cells: [Readable, Readable]}
+      - {label: Video, cells: [User-controlled playback, Source and transcript]}
+      - {label: Scroll stage, cells: [Motion when appropriate, Ordinary reading order]}
+  - type: carousel
+    label: Three principles
+    items:
+      - {title: Space, body: "Room for the idea.", image: assets/compose-study.svg, alt: Folded paper study, href: /sections/compose}
+      - {title: Structure, body: "A clear path through the story.", image: assets/compose-study.svg, alt: Copper and paper study, href: /sections/compose}
+      - {title: Care, body: "Details that make reading easier.", image: assets/compose-study.svg, alt: Geometric paper study, href: /guide}
+  - type: gallery
+    label: Paper studies
+    items:
+      - {image: assets/compose-study.svg, alt: First paper study, caption: "One vocabulary. A different point of view."}
+      - {image: assets/compose-study.svg, alt: Second paper study, caption: "A study in balance."}
+  - type: gallery
+    label: An independent gallery
+    items:
+      - {image: assets/compose-study.svg, alt: Independent paper study, caption: "A separate collection."}
+  - type: prose
+    body: |
+      A final note, in its own space.[^care]
+
+      [^care]: Every composition can have more than one prose block.

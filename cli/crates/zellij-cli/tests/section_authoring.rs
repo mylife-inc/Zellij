@@ -773,3 +773,81 @@ fn invalid_presets_and_accordion_sizes_fail_before_prompting_or_writing() {
     let text = String::from_utf8(explain.stdout).unwrap();
     assert!(text.contains("media-accordion") && text.contains("zel ns -p product-hero"));
 }
+
+#[test]
+fn composer_expansion_rules_match_native_authoring_and_preserve_failed_destinations() {
+    let temp = tempfile::tempdir().unwrap();
+    let children = serde_json::json!([{ "type":"group", "place":"center", "children":[
+        {"type":"table", "caption":"Modes", "rowLabel":"Element", "columns":["Screen"], "rows":[{"label":"Text", "cells":["Readable"]}]},
+        {"type":"disclosure", "summary":"Details", "body":"Read **carefully**."},
+        {"type":"code", "title":"Shell", "code":"zel build"},
+        {"type":"prose", "body":"## Read\n\nA paragraph."},
+        {"type":"gallery", "label":"Gallery", "items":[{"image":"assets/a.svg", "alt":"A study"}]},
+        {"type":"carousel", "label":"Ideas", "items":[{"title":"One"},{"title":"Two"}]}
+    ]}]);
+    let layout =
+        serde_json::json!({"kind":"layers", "backdrop":{"kind":"image", "src":"assets/a.svg"}});
+    let scroll = serde_json::json!({"start":0.2,"end":0.8,"from":{"y":32},"to":{}});
+    let child_arg = format!("children={children}");
+    let layout_arg = format!("layout={layout}");
+    let scroll_arg = format!("scroll={scroll}");
+    let args = [
+        "ns",
+        "compose",
+        "--set-json",
+        &child_arg,
+        "--set-json",
+        &layout_arg,
+        "--set-json",
+        &scroll_arg,
+    ];
+    let output = run(temp.path(), &args, "", 0);
+    assert_eq!(
+        yaml(&output)["children"][0]["children"][0]["columns"][0],
+        "Screen"
+    );
+    for case in 0..6 {
+        let mut bad_children = children.clone();
+        let mut bad_layout = layout.clone();
+        let mut bad_scroll = scroll.clone();
+        match case {
+            0 => {
+                bad_children[0]["children"][0]["rows"][0]["cells"] =
+                    serde_json::json!(["One", "Two"])
+            }
+            1 => {
+                bad_children[0]["children"][0]["columns"] =
+                    serde_json::json!(["Duplicate", "Duplicate"])
+            }
+            2 => bad_children[0]["scroll"] = serde_json::json!({"from":{},"to":{}}),
+            3 => bad_scroll["start"] = serde_json::json!(0.9),
+            4 => bad_layout = serde_json::json!({"kind":"stack"}),
+            5 => {
+                let duplicate = bad_children[0].clone();
+                bad_children.as_array_mut().unwrap().push(duplicate);
+            }
+            _ => unreachable!(),
+        }
+        let bad_child_arg = format!("children={bad_children}");
+        let bad_layout_arg = format!("layout={bad_layout}");
+        let bad_scroll_arg = format!("scroll={bad_scroll}");
+        run(
+            temp.path(),
+            &[
+                "ns",
+                "compose",
+                "--set-json",
+                &bad_child_arg,
+                "--set-json",
+                &bad_layout_arg,
+                "--set-json",
+                &bad_scroll_arg,
+                "--out",
+                "must-not-exist.yaml",
+            ],
+            "",
+            2,
+        );
+        assert!(!temp.path().join("must-not-exist.yaml").exists());
+    }
+}

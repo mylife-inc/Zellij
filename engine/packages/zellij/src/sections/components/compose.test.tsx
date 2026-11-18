@@ -82,3 +82,60 @@ it('retains solid text beneath a static shared gradient so failed background pai
   expect(html).toContain('aria-hidden="true" class="zellij-gradient-reveal-paint"');
   expect(html).not.toContain('class="zellij-gradient-text"');
 });
+
+
+it('renders semantic leaves, accessible gallery links and inert scroll/backdrop fallbacks', () => {
+  const value = composeSchema.parse({type: 'compose', version: 1, label: 'Rich', scroll: {from: {y: 40}, to: {}},
+    layout: {kind: 'layers', backdrop: {kind: 'video', src: 'assets/bg.mp4', poster: 'assets/poster.svg', label: 'A quiet study'}},
+    children: [{type: 'group', place: 'center', children: [
+      {type: 'list', ordered: true, items: ['First', 'Second']},
+      {type: 'quote', text: 'A **good** idea.', author: 'An author'},
+      {type: 'icon', name: 'book-open', label: 'Read'},
+      {type: 'code', title: 'Install', code: '<script>not executable</script>'},
+      {type: 'table', caption: 'Comparison', rowLabel: 'Format', columns: ['Web'], rows: [{label: 'Markdown', cells: ['**Yes**']}]},
+      {type: 'disclosure', summary: 'More', body: 'Read [the guide](/guide)'},
+      {type: 'carousel', label: 'Ideas', items: [{title: 'First idea'}, {title: 'Second idea', href: '/guide'}]},
+      {type: 'gallery', label: 'Studies', items: [{image: 'assets/a.svg', alt: 'A study', caption: 'Original'}]},
+    ]}]});
+  const html = renderToStaticMarkup(<Compose section={value} site={site} defaultMotion="expressive" />);
+  expect(html).toContain('data-scroll-active="false"');
+  expect(html).not.toContain('position:sticky');
+  expect(html).not.toContain('autoPlay');
+  expect(html).toContain('Play background video: A quiet study');
+  expect(html).toContain('<ol class="zellij-compose-list">');
+  expect(html).toContain('<blockquote>');
+  expect(html).toContain('aria-label="Read"');
+  expect(html).toContain('&lt;script&gt;not executable&lt;/script&gt;');
+  expect(html).toContain('<caption>Comparison</caption>');
+  expect(html).toContain('<th scope="row">Markdown</th>');
+  expect(html).toContain('<summary>More</summary>');
+  expect(html).toContain('aria-label="Ideas"');
+  expect(html).toContain('href="/product/_zellij/assets/a.svg"');
+  expect(html).not.toContain('/_zellij/product/');
+  expect(html).toContain('aria-label="Studies"');
+});
+
+it('renders block Markdown without executing HTML or MDX and keeps primary heading ownership', () => {
+  const value = composeSchema.parse({type: 'compose', version: 1, label: 'Prose', children: [{type: 'prose', body:
+    '# A subordinate heading\n\nA **clear** paragraph.\n\n- One\n- Two\n\n![Diagram](assets/a.svg)\n\n[Unsafe](javascript:alert(1))\n\n<script>alert(1)</script>\n\n{process.exit(1)}'}]});
+  const html = renderToStaticMarkup(<Compose section={value} site={site} defaultMotion="none" />);
+  expect(html).toContain('<h2>A subordinate heading</h2>');
+  expect(html).not.toContain('<h1');
+  expect(html).toContain('<strong>clear</strong>');
+  expect(html).toContain('<li>One</li>');
+  expect(html).toContain('/product/_zellij/assets/a.svg');
+  expect(html).not.toContain('<script');
+  expect(html).not.toContain('href="javascript:');
+  expect(html).toContain('{process.exit(1)}');
+});
+
+
+it('keeps footnote IDs and their links/accessibility references local to each prose instance', () => {
+  const prose = {type: 'prose', body: 'A note[^one].\n\n[^one]: A footnote.'};
+  const value = composeSchema.parse({type: 'compose', version: 1, label: 'Notes', children: [prose, prose]});
+  const html = renderToStaticMarkup(<Compose section={value} site={site} defaultMotion="none" />);
+  const ids = [...html.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
+  expect(ids).toHaveLength(6);
+  expect(new Set(ids).size).toBe(ids.length);
+  for (const match of html.matchAll(/(?:href="#|aria-describedby=")([^"]+)"/g)) expect(ids).toContain(match[1]);
+});

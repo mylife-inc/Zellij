@@ -16,7 +16,7 @@ it('accepts three nested groups and rejects a fourth without recursive schema re
   const json = JSON.stringify(z.toJSONSchema(composeSchema, { io: 'input' }));
   expect(json).not.toContain('"$ref"');
   expect(json).not.toContain('"$defs"');
-  expect(json.length).toBeLessThan(50000);
+  expect(json.length).toBeLessThan(120000);
 });
 
 it('bounds total nodes independently of per-container size and counts primary headings at every depth', () => {
@@ -80,4 +80,35 @@ it('validates video labels and bounded caption tracks and preserves nested refer
     { ...video, tracks: [{ ...video.tracks[0], srclang: 'not a language' }] }]) {
     expect(composeSchema.safeParse(section([invalid])).success).toBe(false);
   }
+});
+
+
+it('validates distinct layer positions, table dimensions and non-nested scroll ranges', () => {
+  const layout = {kind: 'layers', backdrop: {kind: 'image', src: 'assets/a.svg'}};
+  const scroll = {from: {}, to: {}, start: 0.2, end: 0.8};
+  expect(composeSchema.safeParse({...section([{...text, place: 'top-start'}, {...text, place: 'bottom-end'}]), layout, scroll}).success).toBe(true);
+  expect(composeSchema.safeParse({...section([text, text]), layout}).success).toBe(false);
+  expect(composeSchema.safeParse(section([{...text, place: 'center'}])).success).toBe(false);
+  expect(composeSchema.safeParse({...section([text]), scroll: {...scroll, end: 0.1}}).success).toBe(false);
+  expect(composeSchema.safeParse({...section([{...group([text]), scroll}]), scroll}).success).toBe(false);
+  const table = {type: 'table', caption: 'Compare', rowLabel: 'Feature', columns: ['One', 'Two'], rows: [{label: 'Format', cells: ['YAML', 'JSON']}]};
+  expect(composeSchema.safeParse(section([group([table])])).success).toBe(true);
+  expect(composeSchema.safeParse(section([{...table, columns: ['One']}])).success).toBe(false);
+  expect(composeSchema.safeParse(section([{...table, columns: ['One', 'One']}])).success).toBe(false);
+});
+
+it('annotates backdrop, prose, carousel and gallery references inside groups', () => {
+  const value = composeSchema.parse(section([{type: 'group', layout: {kind: 'layers', backdrop: {kind: 'video', src: 'assets/bg.mp4', poster: 'assets/bg.svg', label: 'Backdrop'}}, children: [
+    {type: 'group', children: [
+      {type: 'prose', body: '## Read\n\n[Guide](/guide)'},
+      {type: 'gallery', label: 'Gallery', items: [{image: 'assets/one.svg', alt: 'One'}]},
+      {type: 'carousel', label: 'Cards', items: [{title: 'A', href: '/a'}, {title: 'B', image: 'assets/b.svg'}]},
+    ]},
+  ]}]));
+  expect(schemaReferences(composeSchema, value)).toEqual(expect.arrayContaining([
+    {kind: 'asset', value: 'assets/bg.mp4', field: 'children[0].layout.backdrop.src'},
+    {kind: 'asset', value: 'assets/bg.svg', field: 'children[0].layout.backdrop.poster'},
+    {kind: 'markdown', value: '## Read\n\n[Guide](/guide)', field: 'children[0].children[0].children[0].body'},
+    {kind: 'href', value: '/a', field: 'children[0].children[0].children[2].items[0].href'},
+  ]));
 });

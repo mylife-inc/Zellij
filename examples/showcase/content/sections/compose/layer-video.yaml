@@ -1,0 +1,15 @@
+type: compose
+version: 1
+label: A little motion, by choice
+id: layered-video
+layout:
+  kind: layers
+  backdrop: {kind: video, src: assets/compose-motion.mp4, poster: assets/compose-study.svg, label: Three sheets in motion}
+  scrim: 0.7
+  height: compact
+children:
+  - type: group
+    place: center
+    children:
+      - {type: heading, text: "A little motion. By choice.", scale: subtitle}
+      - {type: text, text: "Press Play background below. This silent, decorative study stays still until you ask it to move."}

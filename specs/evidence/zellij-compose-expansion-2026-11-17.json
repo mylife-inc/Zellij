@@ -1,0 +1,443 @@
+{
+  "date": "2026-11-17",
+  "source_commit": "72052b9df91c3ca495ac60d0397e0c61039a87b5",
+  "implementation_commit": "dc6f977a49ca1e07acc92aa4420ba64c8e767fdf",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/203",
+  "source_version": "0.2.0-rc.11",
+  "published_version_unchanged": "0.2.0-rc.10",
+  "scope": {
+    "layer_layout": true,
+    "semantic_leaves": [
+      "prose",
+      "list",
+      "quote",
+      "icon",
+      "code",
+      "table",
+      "disclosure",
+      "carousel",
+      "gallery"
+    ],
+    "scroll": "bounded single root/group stages; optional pin; explicit ranges and endpoints",
+    "limits": {
+      "format": 1,
+      "group_depth": 3,
+      "nodes": 128,
+      "primary_heading": 1
+    },
+    "not_included": [
+      "MDX execution",
+      "arbitrary section embedding",
+      "multi-scene timelines",
+      "video scrubbing",
+      "independent selectors/explorers"
+    ]
+  },
+  "local": {
+    "engine_passed": 511,
+    "rust_passed": 812,
+    "rust_ignored": 5,
+    "native_authoring_passed": 19,
+    "release_policy_passed": 20,
+    "clippy": "pass, warnings denied",
+    "workspace_types": "pass",
+    "format": "pass",
+    "strict_deep_content": {
+      "showcase_routes": 12,
+      "documentation_routes": 59,
+      "documentation_examples": 29,
+      "codeseal_routes": 21
+    },
+    "engine_native_authoring": {
+      "sections": 25,
+      "presets": 4
+    }
+  },
+  "focused": {
+    "run_id": 44221960838,
+    "head": "f80bf258e0747d58f92c0447fea0e16a59d7245e",
+    "only_difference_from_source": ".github/workflows/website-acceptance.yml diagnostic override",
+    "status": "success",
+    "job_id": 134525752989,
+    "passed": 51,
+    "retries": 0,
+    "preservation_tests": 6,
+    "artifact_id": 14391735698,
+    "capture_count": 19,
+    "new_captures_reviewed": 13
+  },
+  "hosted": {
+    "run_id": 44221933333,
+    "status": "success",
+    "run_attempt": 1,
+    "engine_job": 134525655628,
+    "showcase_job": 134525655565,
+    "cli_job": 134525655512,
+    "preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_headings": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_errors": 0
+    },
+    "showcase": {
+      "passed": 451,
+      "skipped": 140,
+      "retries": 0,
+      "trace_files": 0
+    },
+    "artifact_id": 14391581471,
+    "captures_identical_to_focused": 19,
+    "jobs": [
+      {
+        "conclusion": "success",
+        "id": 134525655255,
+        "name": "Website and book templates",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655426,
+        "name": "Native images (arm64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655476,
+        "name": "Native images (amd64)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655512,
+        "name": "CLI",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655562,
+        "name": "Embedded schema is current",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655565,
+        "name": "Showcase end to end",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655628,
+        "name": "Engine",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655689,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655716,
+        "name": "websites / Websites (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655729,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655800,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655828,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655838,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655878,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655892,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655901,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655918,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655927,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655941,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655945,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525655951,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525656107,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134525656147,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134527090264,
+        "name": "Combined image manifests",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529340916,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529340926,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529340950,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529340982,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529341004,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529341067,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529341092,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "status": "completed"
+      },
+      {
+        "conclusion": "success",
+        "id": 134529341183,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed"
+      }
+    ]
+  },
+  "corrections": [
+    {
+      "commit": "3d9392bc3553749ac3de58000515152c09de8029",
+      "finding": "Screenshot setup included hidden dialog images; restrict image readiness checks to visible content."
+    },
+    {
+      "commit": "b500c357fe680e00ee9b4a5fdb1fd06da211234f",
+      "finding": "Isolate repeated footnote IDs and preserve anchor attributes; print closed disclosures without relying on the details content slot; move Rust helper before test module."
+    },
+    {
+      "commit": "72052b9df91c3ca495ac60d0397e0c61039a87b5",
+      "finding": "Deep checker must share plain Markdown semantics with rendering, retaining local footnotes and excluding nonexistent heading anchors/MDX behavior."
+    }
+  ],
+  "superseded_runs": [
+    {
+      "id": 44220277420,
+      "status": "cancelled",
+      "reason": "Correct visible-image screenshot selection before browser run."
+    },
+    {
+      "id": 44220395935,
+      "status": "failure",
+      "passed": 50,
+      "failed": 1,
+      "reason": "Closed disclosure remained hidden in WebKit print."
+    },
+    {
+      "id": 44221389302,
+      "status": "cancelled",
+      "reason": "Engine deep check found incorrect MDX/global-anchor treatment of composed Markdown."
+    },
+    {
+      "id": 44221347568,
+      "status": "cancelled",
+      "reason": "Superseded by final parser/validation correction before browser execution."
+    }
+  ],
+  "captures": [
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png",
+      "sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "full_sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "identical": true
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png",
+      "sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "full_sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "identical": true
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+      "sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "full_sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "identical": true
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png",
+      "sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "full_sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "identical": true
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png",
+      "sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "full_sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "identical": true
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png",
+      "sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "full_sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-dark.png",
+      "sha256": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "full_sha256": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-light.png",
+      "sha256": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "full_sha256": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-dark.png",
+      "sha256": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "full_sha256": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-light.png",
+      "sha256": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "full_sha256": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-dark.png",
+      "sha256": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "full_sha256": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-light.png",
+      "sha256": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "full_sha256": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-dark.png",
+      "sha256": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "full_sha256": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-light.png",
+      "sha256": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "full_sha256": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-dark.png",
+      "sha256": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "full_sha256": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-light.png",
+      "sha256": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "full_sha256": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-dark.png",
+      "sha256": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "full_sha256": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-scroll-s-e59aa-th-focus-and-size-fallbacks-desktop/composition-scroll-mid.png",
+      "sha256": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "full_sha256": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "identical": true
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-light.png",
+      "sha256": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "full_sha256": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "identical": true
+    }
+  ],
+  "environment": "Browsers, containers and LaTeX run on hosted CI only. No production deployment or public release mutation.",
+  "records_only_followup": "Final context/history/evidence changes preserve runtime, active guides, dependencies, workflows and acceptance inputs from source_commit."
+}

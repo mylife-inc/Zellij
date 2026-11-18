@@ -50,7 +50,7 @@ export function CardCarouselTrack({
     };
   }, [measure]);
 
-  const page = useCallback((direction: 1 | -1): void => {
+  const page = useCallback((direction: 1 | -1, keyboard: boolean): void => {
     const node = trackRef.current;
     if (!node) return;
 
@@ -60,7 +60,7 @@ export function CardCarouselTrack({
     const card = node.querySelector<HTMLElement>('[data-zellij-card]');
     const step = card ? card.offsetWidth + gapOf(node) : node.clientWidth * 0.8;
 
-    node.scrollBy({ left: step * direction, behavior: 'smooth' });
+    node.scrollBy({ left: step * direction, behavior: keyboard || matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' });
   }, []);
 
   // Nothing overflows: the row fits, so controls would be inert decoration.
@@ -87,7 +87,7 @@ export function CardCarouselTrack({
           <button
             type="button"
             className="zellij-icon-button"
-            onClick={() => page(-1)}
+            onClick={event => page(-1, event.detail === 0)}
             disabled={atStart}
             aria-label="Scroll left"
           >
@@ -96,7 +96,7 @@ export function CardCarouselTrack({
           <button
             type="button"
             className="zellij-icon-button"
-            onClick={() => page(1)}
+            onClick={event => page(1, event.detail === 0)}
             disabled={atEnd}
             aria-label="Scroll right"
           >

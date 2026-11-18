@@ -19,8 +19,10 @@ export interface LightboxImage {
 export function GalleryLightbox({
   images,
   children,
+  label = 'Image viewer',
 }: {
   images: LightboxImage[];
+  label?: string;
   /**
    * The server-rendered tiles. Each opener carries `data-lightbox-index`; a
    * render prop would be the obvious API but a function cannot cross the
@@ -30,6 +32,7 @@ export function GalleryLightbox({
   children: ReactNode;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
   const [index, setIndex] = useState(0);
 
   const step = useCallback(
@@ -62,11 +65,14 @@ export function GalleryLightbox({
     if (!opener) return;
 
     const next = Number(opener.dataset['lightboxIndex']);
-    if (!Number.isInteger(next)) return;
+    if (!Number.isInteger(next) || next < 0 || next >= images.length || !dialogRef.current?.showModal) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    openerRef.current = opener;
 
     setIndex(next);
     dialogRef.current?.showModal();
-  }, []);
+  }, [images.length]);
 
   return (
     <>
@@ -78,7 +84,8 @@ export function GalleryLightbox({
       <dialog
         ref={dialogRef}
         className="zellij-lightbox"
-        aria-label="Image viewer"
+        aria-label={label}
+        onClose={() => openerRef.current?.focus()}
         // Clicking the backdrop closes: the dialog element itself is the
         // backdrop, and the figure inside stops the event.
         onClick={(event) => {
@@ -103,6 +110,7 @@ export function GalleryLightbox({
             className="zellij-icon-button"
             onClick={() => step(-1)}
             aria-label="Previous image"
+            disabled={images.length < 2}
           >
             <Chevron direction="left" />
           </button>
@@ -114,6 +122,7 @@ export function GalleryLightbox({
             className="zellij-icon-button"
             onClick={() => step(1)}
             aria-label="Next image"
+            disabled={images.length < 2}
           >
             <Chevron direction="right" />
           </button>

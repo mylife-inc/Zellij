@@ -1,0 +1,14 @@
+type: compose
+version: 1
+label: Without a pause
+id: composed-scroll-flow
+motion: expressive
+scroll:
+  pin: false
+  start: 0.1
+  end: 0.7
+  from: {y: 40, scale: 0.96, opacity: 0.65}
+  to: {y: -16, scale: 1, opacity: 1}
+children:
+  - {type: heading, text: Without a pause.}
+  - {type: text, text: "An unpinned stage follows its ordinary place in the page. On a phone, in print, or with reduced motion, it stays still and readable.", size: lead}

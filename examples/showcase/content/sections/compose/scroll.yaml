@@ -1,0 +1,20 @@
+type: compose
+version: 1
+label: A story in motion
+id: composed-scroll
+motion: expressive
+scroll:
+  pin: true
+  distance: 1
+  start: 0.2
+  end: 0.8
+  from: {y: 32, scale: 0.94, opacity: 0.6}
+  to: {y: 0, scale: 1, opacity: 1}
+layout: {kind: split, gap: large, align: center}
+children:
+  - type: group
+    children:
+      - {type: heading, text: A story in motion., level: 1}
+      - {type: text, text: "A quiet change of scale. A gradual arrival. Scroll to see the composition settle into place."}
+      - {type: button, label: Read without waiting, href: /compose-content}
+  - {type: image, image: assets/compose-study.svg, alt: A folded paper composition, ratio: landscape}

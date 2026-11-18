@@ -19,8 +19,8 @@ zel ns compose --out content/sections/intro.yaml
 ```
 
 <Callout type="info" title="Next candidate: source 0.2.0-rc.11">
-The `video` element, caption tracks, transcript links and container-aware nested
-layouts described below are new in source rc.11. They need a matching rc.11 CLI
+Video, caption tracks, transcripts, container-aware layouts, layers, semantic
+content nodes and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
 and engine build; the published rc.10 candidate does not include them yet.
 </Callout>
 
@@ -60,7 +60,7 @@ accessible fallback heading.
 
 ## Layout and groups
 
-A root or group accepts `layout` with `kind: stack`, `grid` or `split`. Omitted
+A root or group accepts `layout` with `kind: stack`, `grid`, `split` or `layers` (source rc.11). Omitted
 layout means a stack. All preserve source reading order and collapse to a single
 column below 760 pixels. In source rc.11 that threshold measures the space
 available to each layout, not the whole browser window: a grid inside a narrow
@@ -102,6 +102,54 @@ Groups accept `surface: plain | tinted | inverted | accent`,
 `padding: none | small | medium | large`, and `radius: none | medium | large`.
 Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
 
+## Layers and placement (source rc.11)
+
+A layered layout puts foreground content over an image or a silent video backdrop.
+Use `place` on its direct children. It accepts `top-start`, `top-center`, `top-end`,
+`center-start`, `center`, `center-end`, `bottom-start`, `bottom-center`, or
+`bottom-end`. Each child needs a distinct position; omitted `place` means `center`.
+Put a group in a position when several elements belong together. `place` outside
+a layered layout is an error. Positions use logical start/end, including RTL.
+
+```yaml
+type: compose
+version: 1
+label: A layered introduction
+layout:
+  kind: layers
+  backdrop: {kind: image, src: assets/landscape.webp, alt: ""}
+  tone: dark
+  scrim: 0.7
+  height: medium
+children:
+  - type: group
+    place: center-start
+    children:
+      - {type: heading, text: Give the idea a place.}
+      - {type: text, text: A few clear words against a quiet background.}
+  - {type: button, place: bottom-end, label: Read more, href: /guide}
+```
+
+`tone: dark` (default) uses white foreground text and a black scrim; `light` uses
+dark text and a white scrim. `scrim` is 0–1, default 0.65; choose sufficient
+contrast for your image. `height: compact | medium | tall` sets a desktop minimum
+of 24/32/42rem, not a fixed height that clips copy. Desktop placements occupy
+separate cells in a three-by-three grid; they do not overlap one another.
+
+Below 760px of available container width, the image sits above the copy and
+children follow source order. Print does the same. This is deliberate: visual
+placement does not change the authored reading or keyboard order. Text stays
+readable without JavaScript. Nested groups retain their own surface colors.
+
+A video backdrop uses `kind: video`, `src`, required `poster` and required `label`.
+Use an actual video-file URL or local asset, not a YouTube/Vimeo page. It is muted
+and loops only after the reader presses **Play background**; a persistent control
+pauses it. Reduced-motion changes and printing pause playback. Without JavaScript,
+the poster remains. Keep meaningful speech/video content in a normal `video`
+element with captions and a transcript. Backdrops are decorative.
+
+<SectionPreview example="compose-layers" />
+
 ## Elements
 
 | Type | Content and options |
@@ -114,11 +162,62 @@ Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
 | `divider` | A separator; no extra fields. |
 | `media-accordion` | Required `label` and 2–8 `items`; the same synchronized text/image component as [the concise section](/sections/media-accordion). Supports `mediaSide`, `ratio`, `fit` and `itemHeadingLevel`. |
 | `video` (source rc.11) | Required `label` and `src`; optional `poster`, inline-Markdown `caption`, WebVTT `tracks`, and `transcript` link. Uses the same player as `video-embed`. |
-| `group` | Required `children`; optional layout and surface settings above. |
+| `prose` (rc.11) | Required `body`: plain block Markdown, including paragraphs, lists, tables and code. No MDX execution or raw HTML. |
+| `list` (rc.11) | Required 1–24 inline-Markdown `items`; `ordered` defaults to false. |
+| `quote` (rc.11) | Required inline-Markdown `text` and plain-text `author`; renders a blockquote and attribution. |
+| `icon` (rc.11) | Required Lucide `name` and accessible `label`; `size: small | medium | large` gives 24/40/64px. |
+| `code` (rc.11) | Required `title` and literal `code`; optional `language` class. Selectable code, with no execution or automatic syntax highlighting. |
+| `table` (rc.11) | Required `caption`, `rowLabel`, 1–8 unique `columns`, and 1–40 `rows` with `label` and one inline-Markdown `cells` value per column. |
+| `disclosure` (rc.11) | Required plain `summary` and inline-Markdown `body`; `open` defaults to false. Native keyboard-operable details. |
+| `carousel` (rc.11) | Required `label` and 2–12 `items`; each has `title` and optional inline-Markdown `body`, `image`, `alt`, `href`. |
+| `gallery` (rc.11) | Required `label` and 1–12 `items` with `image`, meaningful `alt`, optional plain `caption`; `columns` is 2–4, default 3. |
+| `group` | Required `children`; optional layout, surface and rc.11 `scroll` settings. |
 
 Elements other than dividers also accept `effect: reveal`, which uses the site's
 existing entrance motion. Omit it for an ordinary element. The site's `motion:
 none` and the reader's reduced-motion preference take precedence.
+
+## Semantic and interactive content (source rc.11)
+
+Use semantic nodes instead of arranging ordinary text to imitate a table, list or
+code block. For example:
+
+```yaml
+- type: table
+  caption: Publication formats
+  rowLabel: Format
+  columns: [Screen, Print]
+  rows:
+    - {label: Text, cells: [Readable, Readable]}
+    - {label: Video, cells: [Playback, Source and transcript]}
+- type: disclosure
+  summary: Does this need JavaScript?
+  body: "This disclosure works without it. [Read the guide](/guide)."
+- type: code
+  title: Build the site
+  language: sh
+  code: zel build
+```
+
+Tables retain their headers and captions, and scroll horizontally when needed.
+Carousels use the existing scroll-snap component: touch/trackpad scrolling works
+without JavaScript; buttons enhance it. Keyboard or reduced-motion scrolling is
+instant. Galleries reuse the existing lightbox with arrow-key navigation, Escape
+to close and focus restoration. Without JavaScript, each thumbnail links to its
+original image. Modified clicks retain normal browser behavior. A gallery's
+`label` names its dialog so multiple galleries remain distinguishable.
+
+Print includes each disclosure’s summary and full body, even when closed and
+without JavaScript; it lays out every carousel card and prints gallery
+thumbnails/captions. `prose` supports ordinary Markdown; raw HTML/JSX markup is
+dropped and expressions are never evaluated. H1 syntax becomes H2 so a prose
+block cannot take ownership of the page heading. Prose headings have no automatic
+anchor IDs; use heading nodes and section IDs for the surrounding structure.
+Footnotes stay local to each prose block, so separate blocks may reuse the same
+footnote label. Deep checking uses these same plain-Markdown rules.
+Use `markdown-prose` as a separate section when you need the engine's MDX components.
+
+<SectionPreview example="compose-content" />
 
 ## Video inside a composition
 
@@ -182,6 +281,49 @@ JavaScript or an intersection observer; reduced motion shows the finished
 heading. Forced colours and print use solid text. Print preserves authored
 reading order and does not reproduce animation.
 
+## Scroll stages (source rc.11)
+
+A root or group can declare `scroll`. Set the enclosing section's `motion` to
+`expressive`; `none`, `subtle` and the reader's reduced-motion preference keep
+ordinary layout. Stages cannot nest.
+
+```yaml
+type: compose
+version: 1
+label: A story in motion
+motion: expressive
+scroll:
+  pin: true
+  distance: 1
+  start: 0.2
+  end: 0.8
+  from: {y: 32, scale: 0.94, opacity: 0.6}
+  to: {y: 0, scale: 1, opacity: 1}
+children:
+  - {type: heading, text: A quiet arrival.}
+  - {type: text, text: Scroll to let the idea settle into place.}
+```
+
+`pin` defaults to true. `distance` reserves 0.25–2 extra viewport heights (default
+1) while pinning. With `pin: false`, the stage stays in normal flow and progress
+measures its passage through the viewport. `start` (0–0.95, default 0) and `end`
+(0.05–1, default 1) select the active part of that progress; start must be less
+than end. Values before/after the range hold the corresponding endpoint, and
+scrolling back reverses the effect.
+
+Both `from` and `to` are required objects. Their optional fields are `y` in pixels
+(-80–80, default 0), `scale` (0.85–1.15, default 1) and `opacity` (0.5–1, default 1).
+Only transforms and opacity animate. Focused content is restored to full opacity
+and its ordinary position.
+
+Stages activate only when both the viewport and available container are at least
+760px wide and the content fits below the navigation bar. Long content, resizing,
+reduced motion, forced colors, print, missing observer APIs and no-JavaScript
+output retain ordinary readable content without extra scroll space. These are
+bounded single stages, not a multi-scene timeline or a video scrubbing system.
+
+<SectionPreview example="compose-scroll" />
+
 ## Authoring and checking
 
 Use complete JSON values to choose node/layout variants, then refine scalar
@@ -234,14 +376,16 @@ is already supported by `gradient.effect: reveal`.
 | Solid-to-gradient heading reveal; entrance reveal; readable reduced-motion, no-JS and print fallbacks | Available in rc.10 |
 | Synchronized media accordion and four editable section presets | Available in rc.10 |
 | Video nodes, WebVTT captions, transcript links and layouts responsive to their containing space | Implemented in source rc.11; not yet published |
-| Layered/overlapping composition layouts and per-child placement | Not implemented |
-| Sticky scroll stages, scroll stories, authored progress ranges and transform effects | Not implemented |
-| Block Markdown/MDX, icon nodes and arbitrary existing sections as children | Not implemented |
+| Image/video backdrops and nine distinct foreground placements | Implemented in source rc.11; not yet published |
+| Single sticky/unpinned stages, authored ranges and bounded transforms | Implemented in source rc.11; not yet published |
+| Multi-scene scroll stories, video scrubbing and arbitrary timelines | Not implemented |
+| Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Implemented in source rc.11; not yet published |
+| MDX execution and arbitrary existing sections as children | Not implemented |
 | Independent media selectors and feature explorers | Not implemented |
 
 Use a dedicated section when it already provides the behavior you need, such as
 `media-panel` for copy over background media, `card-carousel` for a carousel,
 `pricing-table` for pricing, or `faq` for questions. Those sections can sit next
-to compositions. The composer does not yet embed them as children. Arbitrary
+to compositions. The composer reuses the video, media-accordion, carousel-track and lightbox components through its own node schemas; it does not embed arbitrary section definitions. Arbitrary
 author-supplied JavaScript and unrestricted CSS are outside its declarative
 contract. Book pagination and PDF composition remain part of the book system.

@@ -3,6 +3,42 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: composer layers, semantic nodes and scroll stages verified (source rc.11)**
+
+PR [#203](https://github.com/mylife-inc/Zellij/pull/203) implements the three
+requested capability groups: image/video backdrops with nine distinct foreground
+positions; plain-Markdown prose, lists, quotes, icons, code, tables, disclosures,
+carousels and galleries; and bounded root/group scroll stages with authored
+ranges, transforms and optional pinning. Format 1, three nested groups, 128 nodes
+and one primary heading remain the limits. Native and engine authoring share the
+placement/table/stage rules. The active guide documents all fields, examples,
+reading fallbacks and explicit remaining limitations.
+
+Implementation `dc6f977` and corrections `3d9392b`, `b500c35`, `72052b9` are recorded
+in [the contract and acceptance history](specs/zellij-compose-expansion-2026-11-17.md).
+Review fixed WebKit printing of closed disclosures, repeated Markdown footnote
+IDs and deep validation's incorrect MDX treatment of plain prose. Rendering and
+deep checking now share Markdown semantics. Local checks pass 511 engine tests,
+812 Rust tests (five hosted-only cases ignored), 19 native authoring cases,
+20 release-policy guards, warnings-denied Clippy, formatting, workspace types,
+authoring parity and deep strict content checks.
+
+Focused run `44221960838` passes all 51 composer browser cases without retries.
+All 32 jobs in full run `44221933333` pass on `72052b9`, first run attempt, including
+451 showcase cases without retries (140 conditional skips), cross-platform
+native/managed installation, containers, website and book/PDF output. All 19
+composer captures match the reviewed focused output. Documentation preserves
+46 original routes, 282 heading IDs, 82 compatibility mappings and 29 byte-identical
+images, with all 13 added routes verified and no captured browser errors. Six
+hydration-preservation probes pass. The final records-only follow-up preserves
+verified runtime, active guides and acceptance inputs. See
+[the evidence](specs/evidence/zellij-compose-expansion-2026-11-17.json).
+
+Public rc.10 artifacts and production hosting remain unchanged. Independent
+selector/explorer primitives, arbitrary MDX/section embedding, multi-scene scroll
+stories and video scrubbing remain unsupported; more editable presets remain a
+future content task. Do not describe the composer as unlimited or bug-free.
+
 **2026-11-17: composer video and nested layouts verified (source rc.11)**
 
 The user's universal-section readiness question prompted a fresh code/doc audit.
