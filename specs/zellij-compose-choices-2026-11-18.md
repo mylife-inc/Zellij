@@ -107,3 +107,34 @@ the next control. This is a runtime fix, not a test delay or extra retry.
 | Before | After | Why |
 | --- | --- | --- |
 | Queued gallery close always focused its opener | Restore focus only when still needed | Preserve the user's next keyboard action and another open dialog |
+
+## Final acceptance
+
+Final source `b168e2e` includes implementation `71da152`, choice/authoring fixes
+`1f86514`, artifact retention `e07ce96` and the gallery focus correction. All 32
+jobs in full run `44274155563` pass on its first run attempt. The showcase passes
+478 cases without retries, with 140 conditional skips. Native and managed
+installation, container, website, book and PDF acceptance all pass. Actual native
+export covers all 25 section types and all six editable presets.
+
+Focused run `44274171240` on `945881e` differs only in its diagnostic workflow
+and passes 78 composer cases without retries. All 31 distinct composer captures
+match the final full run byte for byte. Twelve new light/dark desktop/mobile
+captures were visually reviewed; the rest match the existing reviewed output.
+Documentation preserves 46 original routes, 282 original heading IDs, 82
+compatibility mappings and 29 byte-identical images, validates all 13 added
+routes, and records no captured browser errors. Six hydration probes pass.
+
+Local validation passes 814 Rust tests (five hosted-only cases ignored), 516
+engine tests, 20 native authoring cases and 20 release-policy guards, plus
+warnings-denied Clippy, formatting, workspace types, engine/native authoring
+parity and deep strict checks (14 showcase routes, 59 documentation routes,
+31 documentation examples, 21 CodeSeal routes). The original four presets and
+paired original illustrations are unchanged/identical as recorded in
+[the machine-readable evidence](evidence/zellij-compose-choices-2026-11-18.json).
+
+The final follow-up changes context, this history and evidence only. Runtime,
+active guides, dependencies, workflows and acceptance inputs remain identical
+to verified `b168e2e`. No release or production deployment is included. Multi-scene
+stories, video scrubbing and controlled reuse remain subsequent roadmap work;
+this is not unrestricted section embedding or a zero-bug claim.

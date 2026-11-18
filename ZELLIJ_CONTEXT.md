@@ -3,16 +3,46 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-18: composer choices under implementation (source rc.11)**
+**2026-11-18: composer selectors and feature explorers verified (source rc.11)**
 
-The next approved composer increment adds independent product selectors and
-feature explorers with finite synchronized panels, a shared progressive
-controller, native/engine validation, and `product-selector` / `feature-explorer`
-presets. The active guide distinguishes source rc.11 from public rc.10 and
-explains keyboard, mobile, no-JS and print behavior. See
-[the contract](specs/zellij-compose-choices-2026-11-18.md). Verification and merge
-are pending; no release or production deployment is included. Multi-scene
-stories and controlled section reuse remain subsequent roadmap work.
+PR [#204](https://github.com/mylife-inc/Zellij/pull/204) adds independent product
+selectors (segmented controls or labelled swatches) and feature explorers
+(horizontal tabs or vertical lists). Each switches a finite heading/body/image/
+facts/CTA panel. Native and engine authoring enforce matching choice rules.
+Controls enhance complete server-rendered content, retain every panel without
+JavaScript and in print, and support arrows, Home/End, roving focus and RTL.
+Selection has no animation or shared form/cart state. Two editable presets,
+`product-selector` and `feature-explorer`, bring the catalog to six; the original
+four remain byte-identical. The active guide documents fields, examples and limits.
+
+Implementation `71da152`, correction `1f86514`, capture retention `e07ce96` and
+focus correction `b168e2e` are recorded in
+[the contract and acceptance history](specs/zellij-compose-choices-2026-11-18.md).
+Review fixed hidden print panels, inverted-card heading contrast, native editing
+of tagged union fields, and a queued gallery close event stealing a later focus
+move. The gallery fix has a deterministic real-dialog browser regression.
+Local checks pass 814 Rust tests (five hosted-only cases ignored), 516 engine
+tests, 20 native authoring cases, 20 release-policy guards, formatting,
+warnings-denied Clippy, workspace types, authoring parity and deep strict content.
+
+Focused run `44274171240` passes all 78 composer cases without retries. All 32
+jobs in full run `44274155563` pass on `b168e2e`, first run attempt, including
+478 showcase cases without retries (140 conditional skips), native/managed
+installation, containers, website and book/PDF output. All 31 composer captures
+match the reviewed focused output; 12 new captures were visually reviewed.
+Documentation preserves 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images, with all 13 added routes verified and no
+captured browser errors. Six hydration-preservation probes pass. Evidence and
+superseded failures are retained in
+[the acceptance record](specs/evidence/zellij-compose-choices-2026-11-18.json).
+The final records-only follow-up preserves every verified runtime, active guide,
+dependency, workflow and acceptance input.
+
+Public rc.10 and production hosting remain unchanged. Next: multi-scene scroll
+stories/video scrubbing, then controlled section reuse and further presets,
+before rc.11 publication. Arbitrary MDX/section embedding remains unsupported;
+do not describe the composer as unrestricted or bug-free. Live-provider
+verification remains deferred.
 
 **2026-11-17: composer layers, semantic nodes and scroll stages verified (source rc.11)**
 
