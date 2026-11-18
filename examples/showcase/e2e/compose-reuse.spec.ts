@@ -67,6 +67,12 @@ test('statistics preserve an authored accessible and print value independently o
   await expect(stats.locator('.zellij-count-up-animated').first()).toHaveText('48');
   await expect(stats.locator('.zellij-count-up-literal').first()).toHaveText('48');
   await expect(stats.locator('.zellij-count-up-animated').first()).toHaveAttribute('aria-hidden','true');
+  // CSS print emulation does not open a print dialog or load offscreen lazy images.
+  // Capture the fully loaded document, as in the ordinary light/dark visual check.
+  for(const img of await page.locator('main img').all()) {
+    await img.scrollIntoViewIfNeeded();
+    await expect.poll(()=>img.evaluate((el:HTMLImageElement)=>el.complete&&el.naturalWidth>0)).toBe(true);
+  }
   // Model any intermediate frame without depending on animation/capture timing.
   await stats.locator('.zellij-count-up-animated').first().evaluate(el=>{el.textContent='17';});
   await page.emulateMedia({media:'print',colorScheme:'dark'});
@@ -85,6 +91,8 @@ test('statistics preserve an authored accessible and print value independently o
     await expect(card).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
     await expect(card).toHaveCSS('color','rgb(17, 17, 17)');
   }
+  for(const img of await page.locator('main img').all())
+    await expect(img).toBeVisible();
   await page.screenshot({path:info.outputPath('compose-reuse-print.png'),fullPage:true,animations:'disabled'});
   for(const list of await page.locator('.zellij-compose-section .zellij-feature-list,.zellij-compose-section .zellij-pricing-list,.zellij-compose-section .zellij-bento-grid').all())
     expect(await list.evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(1);
