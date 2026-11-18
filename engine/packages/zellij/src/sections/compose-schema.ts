@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { baseSectionSchema } from './registry';
-import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema, mdxReferenceSchema } from '../content/reference-schema';
+import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema, markdownReferenceSchema } from '../content/reference-schema';
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { mediaAccordionNodeSchema } from './media-accordion-schema';
 import { videoFields } from './video-schema';
@@ -50,7 +50,7 @@ const leaves = [
   mediaAccordionNodeSchema.extend(common),
   z.object({ type: z.literal('video'), ...common, ...videoFields,
     label: z.string().min(1), caption: inlineReferenceSchema.optional() }),
-  z.object({ type: z.literal('prose'), ...common, body: mdxReferenceSchema.min(1) }),
+  z.object({ type: z.literal('prose'), ...common, body: markdownReferenceSchema.min(1) }),
   z.object({ type: z.literal('list'), ...common, ordered: z.boolean().default(false), items: z.array(inlineReferenceSchema.min(1)).min(1).max(24) }),
   z.object({ type: z.literal('quote'), ...common, text: inlineReferenceSchema.min(1), author: z.string().min(1) }),
   z.object({ type: z.literal('icon'), ...common, name: z.string().min(1), label: z.string().min(1), size: z.enum(['small', 'medium', 'large']).default('medium') }),

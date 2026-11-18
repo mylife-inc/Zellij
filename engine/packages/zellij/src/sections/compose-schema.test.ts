@@ -108,7 +108,7 @@ it('annotates backdrop, prose, carousel and gallery references inside groups', (
   expect(schemaReferences(composeSchema, value)).toEqual(expect.arrayContaining([
     {kind: 'asset', value: 'assets/bg.mp4', field: 'children[0].layout.backdrop.src'},
     {kind: 'asset', value: 'assets/bg.svg', field: 'children[0].layout.backdrop.poster'},
-    {kind: 'mdx', value: '## Read\n\n[Guide](/guide)', field: 'children[0].children[0].children[0].body'},
+    {kind: 'markdown', value: '## Read\n\n[Guide](/guide)', field: 'children[0].children[0].children[0].body'},
     {kind: 'href', value: '/a', field: 'children[0].children[0].children[2].items[0].href'},
   ]));
 });
