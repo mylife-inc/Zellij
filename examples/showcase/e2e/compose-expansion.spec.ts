@@ -92,6 +92,28 @@ test('semantic nodes retain keyboard operation, independent dialogs and print co
   await expect(page.getByRole('heading', {name: 'Care', exact: true})).toBeVisible();
 });
 
+test('a queued gallery close event preserves focus already moved to another control', async ({ page }) => {
+  await page.goto('/compose-content');
+  const opener = page.getByRole('link', {name: 'View Independent paper study full size'});
+  await opener.click();
+  const dialog = page.locator('dialog[aria-label="An independent gallery"]');
+  await expect(dialog).toBeVisible();
+  const next = page.locator('.zellij-compose-carousel').getByRole('button', {name: 'Scroll right'});
+  await expect(next).toBeEnabled();
+  // close() restores native focus now and queues a close event. Moving focus in
+  // the same task reproduces the race without relying on machine timing.
+  await dialog.evaluate((node: HTMLDialogElement) => {
+    node.addEventListener('close', () => queueMicrotask(() => { node.dataset.closeHandled = 'true'; }), {once:true});
+    node.close();
+    document.querySelector<HTMLButtonElement>('.zellij-compose-carousel button[aria-label="Scroll right"]')!.focus();
+  });
+  await expect(dialog).toHaveAttribute('data-close-handled', 'true');
+  await expect(next).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect.poll(() => page.getByRole('group', {name: 'Three principles'}).evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
+  await expect(dialog).toBeHidden();
+});
+
 test('scroll stages follow authored ranges and reverse, with focus and size fallbacks', async ({ page, isMobile }, info) => {
   await page.emulateMedia({reducedMotion: 'no-preference'});
   await page.goto('/compose-scroll');
