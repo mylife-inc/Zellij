@@ -8,11 +8,14 @@ Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 Continue from verified merge `0d25d84`. The candidate contains the completed
 composer increments, nine editable section presets and unchanged site/book
 archive identities. GitHub withdrew the picomatch advisory today; fresh full and
-production audits report zero findings. Remove its temporary exception and keep
-the original disposition as history. Audit tooling now rejects every finding.
+production audits report zero findings. Its temporary exception is removed; the
+original disposition remains history. Audit tooling now rejects every finding.
 See [preparation and gates](specs/zellij-rc11-preparation-2026-11-18.md).
-Publication, installer/public-guide migration and scoped rc.10 retirement are
-pending. Production-domain migration and live-provider verification stay deferred.
+Normal preflight passes 817 Rust and 527 engine tests. All 32 hosted CI jobs in
+`44415698968` pass on `f913d16`, including 526 showcase cases without retries
+and all preservation probes. The final update adds records only. Publication,
+installer/public-guide migration and scoped rc.10 retirement are pending.
+Production-domain migration and live-provider verification stay deferred.
 
 **2026-11-18: controlled section reuse verified (source rc.11)**
 
