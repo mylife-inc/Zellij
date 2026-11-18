@@ -76,3 +76,34 @@ case removes selector-only fields before checking an explorer.
 | --- | --- | --- |
 | Inverted-card choice heading used the global foreground | Heading uses the local composition foreground | Keep light-theme dark cards readable |
 | Important print rule was outside the base layer | Override uses the same layer as the hidden reset | Preserve every choice in printed output |
+
+## Capture retention follow-up
+
+Corrected source `1f86514` passes all 75 focused composer cases without retries
+in run `44270115427`; all six documentation hydration-preservation cases pass.
+Full-run showcase job `134684083280` passes 475 cases without retries (140
+conditional skips). Its artifact retained the existing composer images but
+omitted the twelve new `compose-*.png` captures because the upload pattern only
+matched `composition-*.png`. All new captures are retained by the focused run.
+The CI follow-up adds the missing artifact pattern without changing rendering,
+authoring, content or tests; a fresh full run verifies final retention.
+
+## Gallery focus race found during final regression
+
+Run `44271759523` passed the choice cases and retained all 31 distinct composer
+captures, byte-identical to the reviewed focused run. Its existing semantic-node
+case needed one retry on desktop Chromium (474 first-pass cases, one retry,
+140 conditional skips). The failure trace showed the independent gallery reopened
+instead of the carousel advancing. Native `dialog.close()` had already restored
+focus, then the queued React close handler moved focus back to the gallery opener
+after the next control was focused. Enter therefore reopened the image.
+
+The correction restores focus only when it remains in the closed dialog or has
+fallen to the body; it preserves a subsequent focus move and a reopened dialog.
+A deterministic hosted regression closes a real native dialog and moves focus
+within the same task, then waits for its actual queued close event before using
+the next control. This is a runtime fix, not a test delay or extra retry.
+
+| Before | After | Why |
+| --- | --- | --- |
+| Queued gallery close always focused its opener | Restore focus only when still needed | Preserve the user's next keyboard action and another open dialog |
