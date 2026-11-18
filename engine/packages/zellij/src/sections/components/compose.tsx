@@ -7,6 +7,7 @@ import { Reveal } from '../../motion/reveal';
 import { GradientReveal } from '../../motion/gradient-reveal';
 import { MediaAccordionContent } from './media-accordion';
 import { VideoContent } from './video-content';
+import { ChoiceContent } from './choice-content';
 import { ComposeContent } from './compose-content';
 import { ComposeBackdropMedia } from './compose-backdrop';
 import { ComposeScrollStage } from './compose-scroll';
@@ -48,6 +49,7 @@ function Node({ node, basePath, motion, titleGradient }: {
     </figure>; break;
     case 'button': content = <div className="zellij-compose-action"><CtaLink cta={node} /></div>; break;
     case 'stat': content = <dl className="zellij-compose-stat"><dt>{node.label}</dt><dd>{node.value}</dd></dl>; break;
+    case 'selector': case 'explorer': content = <ChoiceContent node={node} basePath={basePath} />; break;
     case 'prose': case 'list': case 'quote': case 'icon': case 'code': case 'table': case 'disclosure': case 'carousel': case 'gallery':
       content = <ComposeContent node={node} basePath={basePath} />; break;
     case 'divider': content = <hr className="zellij-compose-divider" />; break;

@@ -85,7 +85,16 @@ export function GalleryLightbox({
         ref={dialogRef}
         className="zellij-lightbox"
         aria-label={label}
-        onClose={() => openerRef.current?.focus()}
+        onClose={event => {
+          // Native dialog closure restores focus synchronously, but its close
+          // event is queued. Do not steal a later focus move or interrupt a
+          // dialog that has already reopened before that event is delivered.
+          const node = event.currentTarget;
+          const focused = document.activeElement;
+          if (!node.open && (!focused || focused === document.body || node.contains(focused))) {
+            openerRef.current?.focus();
+          }
+        }}
         // Clicking the backdrop closes: the dialog element itself is the
         // backdrop, and the figure inside stops the event.
         onClick={(event) => {

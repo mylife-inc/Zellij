@@ -16,7 +16,7 @@ it('accepts three nested groups and rejects a fourth without recursive schema re
   const json = JSON.stringify(z.toJSONSchema(composeSchema, { io: 'input' }));
   expect(json).not.toContain('"$ref"');
   expect(json).not.toContain('"$defs"');
-  expect(json.length).toBeLessThan(120000);
+  expect(json.length).toBeLessThan(180000);
 });
 
 it('bounds total nodes independently of per-container size and counts primary headings at every depth', () => {

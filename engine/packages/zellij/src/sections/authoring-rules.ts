@@ -41,6 +41,12 @@ export function satisfiesAuthoringRules(type: string, section: Record<string, un
 function validComposition(node: Record<string, unknown>, insideStage = false): boolean {
   const scroll = node.scroll as Record<string, number> | undefined;
   if (scroll && (insideStage || (scroll.start ?? 0) >= (scroll.end ?? 1))) return false;
+  if (node.type === 'selector' || node.type === 'explorer') {
+    const items = node.items as {id: string; label: string; swatch?: string}[];
+    if (new Set(items.map(item => item.id)).size !== items.length || new Set(items.map(item => item.label)).size !== items.length) return false;
+    if (node.initial !== undefined && !items.some(item => item.id === node.initial)) return false;
+    if (node.type === 'selector' && node.presentation === 'swatches' && items.some(item => !item.swatch)) return false;
+  }
   if (node.type === 'table') {
     const columns = node.columns as string[];
     if (new Set(columns).size !== columns.length || !(node.rows as {cells: unknown[]}[]).every(row => row.cells.length === columns.length)) return false;

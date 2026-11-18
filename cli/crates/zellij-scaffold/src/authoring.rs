@@ -42,6 +42,25 @@ fn shape<'a>(schema: &'a Value, part: &str) -> Option<&'a Value> {
         .iter()
         .find_map(|option| shape(option, part))
 }
+// A field name alone cannot select a tagged union: list, gallery and choice
+// nodes all have `items`, but their entries have different fields and bounds.
+// Select the authored tag before traversing; untagged alternatives still use
+// the existing shape lookup (for example an optional gradient background).
+fn authored_branch<'a>(schema: &'a Value, value: &Value) -> &'a Value {
+    if let Some(options) = schema["anyOf"].as_array() {
+        for key in ["type", "kind"] {
+            if let Some(tag) = value.get(key) {
+                if let Some(option) = options
+                    .iter()
+                    .find(|option| option["properties"][key].get("const") == Some(tag))
+                {
+                    return option;
+                }
+            }
+        }
+    }
+    schema
+}
 fn field<'a>(schema: &'a Value, part: &str, path: &str) -> Result<&'a Value> {
     let schema = shape(schema, part)
         .ok_or_else(|| failure(path, "unknown field; use zel explain for available fields"))?;
@@ -271,6 +290,7 @@ fn target<'a>(
     let Some((head, tail)) = parts.split_first() else {
         return Ok(value);
     };
+    let schema = authored_branch(schema, value);
     let next = field(schema, head, path)?;
     let branch = shape(schema, head).unwrap();
     if (branch.get("properties").is_some() && !value.is_object())
@@ -343,8 +363,15 @@ impl Section {
     }
     pub fn field_schema(&self, path: &str) -> Result<&'static Value> {
         let mut current = schema::section_schema(&self.section_type).unwrap();
+        let mut value = &self.value;
         for part in parts(path)? {
-            current = field(current, part, path)?;
+            current = field(authored_branch(current, value), part, path)?;
+            value = match value {
+                Value::Object(object) => object.get(part),
+                Value::Array(items) => items.get(index(part, path)?),
+                _ => None,
+            }
+            .unwrap_or(&Value::Null);
         }
         Ok(current)
     }
@@ -403,7 +430,7 @@ impl Section {
         let mut schema = schema::section_schema(&self.section_type).unwrap();
         let mut value = &mut self.value;
         for part in parents {
-            schema = field(schema, part, path)?;
+            schema = field(authored_branch(schema, value), part, path)?;
             value = match value {
                 Value::Object(object) => object.get_mut(*part),
                 Value::Array(items) => items.get_mut(index(part, path)?),
@@ -411,6 +438,7 @@ impl Section {
             }
             .ok_or_else(|| failure(path, "parent field is missing or has a different type"))?;
         }
+        schema = authored_branch(schema, value);
         let object = value.as_object_mut().ok_or_else(|| {
             failure(
                 path,
@@ -684,6 +712,31 @@ fn validate_composition(node: &Value, inside_stage: bool) -> Result<()> {
             return Err(invalid("scroll stages cannot nest and require start < end"));
         }
     }
+    if node["type"] == "selector" || node["type"] == "explorer" {
+        let items = node["items"].as_array().unwrap();
+        for key in ["id", "label"] {
+            let unique: std::collections::HashSet<_> = items
+                .iter()
+                .map(|item| item[key].as_str().unwrap())
+                .collect();
+            if unique.len() != items.len() {
+                return Err(invalid("choice IDs and labels must be unique"));
+            }
+        }
+        if let Some(initial) = node.get("initial") {
+            if !items.iter().any(|item| &item["id"] == initial) {
+                return Err(invalid("initial must name an existing choice ID"));
+            }
+        }
+        if node["type"] == "selector"
+            && node["presentation"] == "swatches"
+            && items.iter().any(|item| item.get("swatch").is_none())
+        {
+            return Err(invalid(
+                "swatch presentation requires a colour for every choice",
+            ));
+        }
+    }
     if node["type"] == "table" {
         let columns = node["columns"].as_array().unwrap();
         let unique: std::collections::HashSet<_> = columns
@@ -815,6 +868,46 @@ mod tests {
             )
             .unwrap();
         matrix.render().unwrap();
+    }
+    #[test]
+    fn composed_field_edits_follow_each_authored_union_tag() {
+        let mut section = Section::from_preset("compose", "feature-explorer").unwrap();
+        section.count("children.1.items.1.facts", 2).unwrap();
+        section
+            .set("children.1.items.1.facts.1.value", "More detail")
+            .unwrap();
+        section
+            .set("children.1.items.2.cta.style", "primary")
+            .unwrap();
+        section.unset("children.1.items.0.media").unwrap();
+        assert_eq!(section.count_bounds("children.1.items").unwrap(), (2, 8));
+        let before = section.value.clone();
+        assert!(section.count("children.1.items", 9).is_err());
+        assert!(section.unset("children.1.items.0.body").is_err());
+        assert!(section.set("children.1.items.0.swatch", "#abc").is_err());
+        assert_eq!(section.value, before);
+        section.render().unwrap();
+
+        section.set_json("children", r#"[
+            {"type":"list","items":["First","Second"]},
+            {"type":"gallery","label":"Study","items":[{"image":"assets/a.svg","alt":"A"}]},
+            {"type":"group","layout":{"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}},"children":[{"type":"text","text":"A thought"}]}
+        ]"#).unwrap();
+        section.set("children.0.items.1", "Updated").unwrap();
+        section
+            .set("children.1.items.0.alt", "An illustration")
+            .unwrap();
+        section
+            .set("children.2.layout.backdrop.alt", "Decorative")
+            .unwrap();
+        section.unset("children.2.layout.backdrop.alt").unwrap();
+        assert_eq!(section.value["children"][0]["items"][1], "Updated");
+        assert_eq!(
+            section.value["children"][1]["items"][0]["alt"],
+            "An illustration"
+        );
+        assert!(section.set("children.2.layout.columns", "3").is_err());
+        section.render().unwrap();
     }
     #[test]
     fn every_embedded_template_is_accepted_and_unchanged() {

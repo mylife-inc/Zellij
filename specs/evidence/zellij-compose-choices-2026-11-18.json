@@ -1,0 +1,517 @@
+{
+  "date": "2026-11-18",
+  "source_commit": "b168e2e1e8ce49d6455a2d3037feb61bfeaf5454",
+  "implementation_commit": "71da152bb9382f0b626de12291887e4be9ca1680",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/204",
+  "source_version": "0.2.0-rc.11",
+  "published_version_unchanged": "0.2.0-rc.10",
+  "scope": {
+    "nodes": [
+      "selector",
+      "explorer"
+    ],
+    "presentations": [
+      "segmented",
+      "swatches",
+      "tabs",
+      "list"
+    ],
+    "presets": [
+      "product-selector",
+      "feature-explorer"
+    ],
+    "progressive_reading": [
+      "no JavaScript",
+      "print"
+    ],
+    "keyboard": [
+      "arrows",
+      "Home/End",
+      "roving focus",
+      "RTL"
+    ],
+    "selection": "independent instances; no animation, autoplay or URL mutation",
+    "limits": {
+      "format": 1,
+      "group_depth": 3,
+      "nodes": 128,
+      "primary_heading": 1,
+      "choices_per_node": "2\u20138"
+    },
+    "not_included": [
+      "shared cart/form state",
+      "arbitrary MDX/section embedding",
+      "multi-scene timelines",
+      "video scrubbing"
+    ]
+  },
+  "local": {
+    "engine_passed": 516,
+    "rust_passed": 814,
+    "rust_ignored": 5,
+    "native_authoring_passed": 20,
+    "release_policy_passed": 20,
+    "clippy": "pass, warnings denied",
+    "workspace_types": "pass",
+    "format": "pass",
+    "strict_deep_content": {
+      "showcase_routes": 14,
+      "documentation_routes": 59,
+      "documentation_examples": 31,
+      "codeseal_routes": 21
+    },
+    "engine_native_authoring": {
+      "sections": 25,
+      "presets": 6
+    },
+    "existing_presets_unchanged": [
+      "feature-cards",
+      "media-accordion",
+      "product-hero",
+      "split-story"
+    ],
+    "fixture_hashes": {
+      "silver": "f51f419ea9a32ae966c590d8952ecec66ac8bb9c80daacb06d5417e972bfb853",
+      "copper": "f7e01f23b847f1fd9cd107ccf696bc07b0870b3cf5ca971767402784cce60ad3",
+      "night": "dd86d6b753a5d790baed17e1c122d69de088b7f636d8fdc4e6ab6a870486a274"
+    }
+  },
+  "superseded": [
+    {
+      "commit": "71da152",
+      "run_id": 44269010997,
+      "job_id": 134680608523,
+      "status": "failure",
+      "passed": 72,
+      "failed": 3,
+      "cause": "Tailwind base-layer important hidden rule suppressed inactive print panels",
+      "fixed_by": "1f86514"
+    },
+    {
+      "run_id": 44269051521,
+      "status": "cancelled after known native/print failures"
+    },
+    {
+      "check": "local native authoring",
+      "cause": "field-name-only union traversal selected the wrong items schema for interactive explorer facts",
+      "fixed_by": "1f86514"
+    },
+    {
+      "check": "visual review",
+      "cause": "inverted-card choice heading used global colour in light theme",
+      "fixed_by": "1f86514"
+    },
+    {
+      "run_id": 44270045637,
+      "source_commit": "1f86514",
+      "status": "cancelled by final artifact-retention-only follow-up; no failed jobs",
+      "showcase_job": 134684083280,
+      "showcase_passed": 475,
+      "showcase_skipped": 140,
+      "showcase_retries": 0,
+      "engine_job": 134684082983,
+      "preservation_tests": 6,
+      "artifact_id": 14411399521,
+      "retained_existing_composer_captures": 19
+    },
+    {
+      "run_id": 44271759523,
+      "source_commit": "e07ce963e9cf7f8d6659e394059360298052e261",
+      "status": "superseded after investigating gallery focus race",
+      "showcase_job": 134690030834,
+      "first_pass": 474,
+      "passed_on_retry": 1,
+      "skipped": 140,
+      "artifact_id": 14412613601,
+      "composer_captures_matching_focused": 31,
+      "failure": "semantic nodes: next carousel action reopened independent gallery after queued close stole focus",
+      "fixed_by": "b168e2e"
+    }
+  ],
+  "focused": {
+    "run_id": 44274171240,
+    "job_id": 134697964635,
+    "head": "945881ef08c8c1213f755824232deed45e99eb01",
+    "source_commit": "b168e2e1e8ce49d6455a2d3037feb61bfeaf5454",
+    "status": "success",
+    "passed": 78,
+    "retries": 0,
+    "preservation_tests": 6,
+    "artifact_id": 14412954419,
+    "capture_count": 31,
+    "new_captures_reviewed": 12,
+    "all_captures_identical_to_reviewed": true,
+    "only_difference_from_source": ".github/workflows/website-acceptance.yml diagnostic override"
+  },
+  "hosted": {
+    "run_id": 44274155563,
+    "status": "success",
+    "source_commit": "b168e2e1e8ce49d6455a2d3037feb61bfeaf5454",
+    "showcase_job": 134698004003,
+    "showcase_passed": 478,
+    "showcase_skipped": 140,
+    "showcase_retries": 0,
+    "showcase_artifact_id": 14413269479,
+    "composer_captures_matching_focused": 31,
+    "engine_job": 134698004101,
+    "cli_job": 134698003812,
+    "preservation": {
+      "original_routes": 46,
+      "added_routes": 13,
+      "original_headings": 282,
+      "compatibility_mappings": 82,
+      "byte_identical_images": 29,
+      "browser_errors": 0,
+      "hydration_probes_passed": 6
+    },
+    "run_attempt": 1,
+    "job_count": 32,
+    "jobs": [
+      {
+        "id": 134698003378,
+        "name": "Native images (amd64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698003812,
+        "name": "CLI",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698003820,
+        "name": "websites / Websites (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698003852,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698003908,
+        "name": "Native images (arm64)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004003,
+        "name": "Showcase end to end",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004004,
+        "name": "Website and book templates",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004012,
+        "name": "Embedded schema is current",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004015,
+        "name": "Portable docs (windows-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004101,
+        "name": "Engine",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004113,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004166,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004176,
+        "name": "Portable docs (macos-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004178,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004182,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004207,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004249,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004253,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004262,
+        "name": "Portable docs (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004285,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004437,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004517,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134698004655,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134699533005,
+        "name": "Combined image manifests",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352039,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352044,
+        "name": "homebrew / Homebrew (macos-15)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352067,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352085,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352164,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352251,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352261,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "conclusion": "success"
+      },
+      {
+        "id": 134701352428,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "external_changes": "No release or production deployment; live-provider verification remains deferred",
+  "runtime_verified_commit": "b168e2e1e8ce49d6455a2d3037feb61bfeaf5454",
+  "visual_review": {
+    "scope": "12 new captures: selector/explorer \u00d7 light/dark \u00d7 desktop Chromium/mobile Chromium/mobile WebKit",
+    "result": "Clear selected states, responsive layouts, loaded original illustrations, corrected inverted-card heading",
+    "inspection_note": "Downscaled previews omitted image detail in tall dark captures; decoded local crops confirm original illustrations are present. No browser or GUI ran locally.",
+    "previously_reviewed_captures_unchanged": 19
+  },
+  "prior_focused": {
+    "run_id": 44270115427,
+    "job_id": 134684318213,
+    "status": "success",
+    "head": "d4f7fb6",
+    "source_commit": "1f8651480fb5a84c4eec2553756ff1cc08cca41c",
+    "passed": 75,
+    "retries": 0,
+    "preservation_tests": 6,
+    "artifact_id": 14412168310,
+    "capture_count": 31,
+    "new_captures_reviewed": 12,
+    "difference_from_runtime_source": ".github/workflows/website-acceptance.yml diagnostic override"
+  },
+  "captures": [
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-dark.png",
+      "focused_sha256": "0c7f8a174c1db4050ae051979b372428c53784e7070e182ac4b53f722f4558ac",
+      "full_sha256": "0c7f8a174c1db4050ae051979b372428c53784e7070e182ac4b53f722f4558ac"
+    },
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-light.png",
+      "focused_sha256": "e30c6024becb958754d97ba81a86846bd62dfe23cd1eb05942f8553b6b019e99",
+      "full_sha256": "e30c6024becb958754d97ba81a86846bd62dfe23cd1eb05942f8553b6b019e99"
+    },
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-dark.png",
+      "focused_sha256": "860e30fa9545f33e428a4cc24574ae4ad622f0bc19cd666d8ed54c04f206d94d",
+      "full_sha256": "860e30fa9545f33e428a4cc24574ae4ad622f0bc19cd666d8ed54c04f206d94d"
+    },
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-light.png",
+      "focused_sha256": "c4af6fdb422abe2f74436929b38a9b9a804763136e5f3760af7e8cc9cbdae2a6",
+      "full_sha256": "c4af6fdb422abe2f74436929b38a9b9a804763136e5f3760af7e8cc9cbdae2a6"
+    },
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-dark.png",
+      "focused_sha256": "24b3d2b26dc5686f504a20083658c171cee187aea2c3757e4afd21af023c7c0d",
+      "full_sha256": "24b3d2b26dc5686f504a20083658c171cee187aea2c3757e4afd21af023c7c0d"
+    },
+    {
+      "path": "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-light.png",
+      "focused_sha256": "74c237ef1e3c1d7123b05793712dc251ae8b2c2ed2cfc8537957c110c76acc08",
+      "full_sha256": "74c237ef1e3c1d7123b05793712dc251ae8b2c2ed2cfc8537957c110c76acc08"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-dark.png",
+      "focused_sha256": "a556ec8e6630decf4ffbfc1d048dce45f54398cd79e9defe5f680a4290153990",
+      "full_sha256": "a556ec8e6630decf4ffbfc1d048dce45f54398cd79e9defe5f680a4290153990"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-light.png",
+      "focused_sha256": "8917a84d19b7e6c415b8b6a30dd74075e07024878ada885005f2139cfbf95727",
+      "full_sha256": "8917a84d19b7e6c415b8b6a30dd74075e07024878ada885005f2139cfbf95727"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-dark.png",
+      "focused_sha256": "33a3d462b649d526fbb96e96022faa6b0a99927ed93ae56ad37a97ccf88b1f4a",
+      "full_sha256": "33a3d462b649d526fbb96e96022faa6b0a99927ed93ae56ad37a97ccf88b1f4a"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-light.png",
+      "focused_sha256": "5359278ac43cbfcdcde63e384babc5b25eaddb14f1a2fdff9cc699f157d9bc91",
+      "full_sha256": "5359278ac43cbfcdcde63e384babc5b25eaddb14f1a2fdff9cc699f157d9bc91"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-dark.png",
+      "focused_sha256": "7d5326d0dcd0e78c1ac0cd4cf401b07a1c884dfe188c9ddbe5397321d711e255",
+      "full_sha256": "7d5326d0dcd0e78c1ac0cd4cf401b07a1c884dfe188c9ddbe5397321d711e255"
+    },
+    {
+      "path": "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-light.png",
+      "focused_sha256": "3529037448d8223b643354043e7c8ff0d7101b5687b3a7d9127404c46a97bcec",
+      "full_sha256": "3529037448d8223b643354043e7c8ff0d7101b5687b3a7d9127404c46a97bcec"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png",
+      "focused_sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "full_sha256": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png",
+      "focused_sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "full_sha256": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png",
+      "focused_sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "full_sha256": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png",
+      "focused_sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "full_sha256": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png",
+      "focused_sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "full_sha256": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6"
+    },
+    {
+      "path": "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png",
+      "focused_sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "full_sha256": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-dark.png",
+      "focused_sha256": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "full_sha256": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-light.png",
+      "focused_sha256": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "full_sha256": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-dark.png",
+      "focused_sha256": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "full_sha256": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-light.png",
+      "focused_sha256": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "full_sha256": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-dark.png",
+      "focused_sha256": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "full_sha256": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a"
+    },
+    {
+      "path": "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-light.png",
+      "focused_sha256": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "full_sha256": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-dark.png",
+      "focused_sha256": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "full_sha256": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-light.png",
+      "focused_sha256": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "full_sha256": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-dark.png",
+      "focused_sha256": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "full_sha256": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-light.png",
+      "focused_sha256": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "full_sha256": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-dark.png",
+      "focused_sha256": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "full_sha256": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6"
+    },
+    {
+      "path": "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-light.png",
+      "focused_sha256": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "full_sha256": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda"
+    },
+    {
+      "path": "compose-expansion-scroll-s-e59aa-th-focus-and-size-fallbacks-desktop/composition-scroll-mid.png",
+      "focused_sha256": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "full_sha256": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223"
+    }
+  ],
+  "fixing_commits": [
+    "1f8651480fb5a84c4eec2553756ff1cc08cca41c",
+    "b168e2e1e8ce49d6455a2d3037feb61bfeaf5454"
+  ],
+  "capture_retention_commit": "e07ce963e9cf7f8d6659e394059360298052e261",
+  "records_follow_up": "Only context, contract/history and this evidence change after the verified source; runtime, active guides, dependencies, workflows and acceptance inputs remain identical."
+}
