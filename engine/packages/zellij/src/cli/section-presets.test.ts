@@ -6,7 +6,7 @@ import { validateSection } from '../content/model-schema';
 
 it('exports exactly the validated, editable preset artifacts embedded by the native CLI', () => {
   const presets = buildSectionPresets();
-  expect(Object.keys(presets).sort()).toEqual(['feature-cards', 'media-accordion', 'product-hero', 'split-story']);
+  expect(Object.keys(presets).sort()).toEqual(['feature-cards', 'feature-explorer', 'media-accordion', 'product-hero', 'product-selector', 'split-story']);
   expect(JSON.parse(buildSchemaJson()).sectionPresets).toEqual(presets);
   const context = buildContext();
   for (const [name, preset] of Object.entries(presets)) {

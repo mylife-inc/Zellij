@@ -577,13 +577,18 @@ jobs:
           for (const name of Object.keys(schema.sectionPresets)) {
             const presetHtml = readFileSync(process.argv[2].replace('wizard.html', `preset-${name}.html`), 'utf8');
             assert.match(presetHtml, /data-zellij-section="compose"/);
+            if (name === 'product-selector' || name === 'feature-explorer') {
+              assert.match(presetHtml, /zellij-compose-choice/);
+              assert.match(presetHtml, /data-ready="false"/);
+              assert.match(presetHtml, name === 'product-selector' ? /A warmer perspective/ : /Made to stay with you/);
+            }
             if (name === 'media-accordion') {
               assert.match(presetHtml, /Explore the details/);
               assert.match(presetHtml, /Find a new perspective/);
               assert.match(presetHtml, /zellij-media-accordion-inline/);
             }
           }
-          console.log('All four native presets survive hosted export as editable compositions.');
+          console.log(`All ${Object.keys(schema.sectionPresets).length} native presets survive hosted export as editable compositions.`);
           NODE
           for type in $(node -p "require('./cli/crates/zellij-core/generated/schema.json').sectionTypes.filter(t => t !== 'hero').join(' ')"); do
             test -s "$work/site/$type.html"

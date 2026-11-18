@@ -65,3 +65,13 @@
   title: A story in motion
   layout: stack
   sections: [compose/scroll, compose/scroll-flow, compose/details]
+
+- name: compose-selector
+  title: Make it yours
+  layout: stack
+  sections: [compose/selector]
+
+- name: compose-explorer
+  title: Look a little closer
+  layout: stack
+  sections: [compose/explorer]

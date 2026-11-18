@@ -1,0 +1,57 @@
+type: compose
+version: 1
+label: Look a little closer
+id: feature-choices
+children:
+  - type: heading
+    text: Look a little closer.
+    level: 2
+    scale: display
+  - type: text
+    text: The details tell the story. Choose where to begin.
+    size: lead
+  - type: explorer
+    label: Explore the features
+    items:
+      - id: silver
+        label: Sound
+        heading: Space for every note.
+        body: Hear the details that bring a familiar track to life.
+        media:
+          image: assets/choice-silver.svg
+          alt: Sound illustrated by an original studio speaker study
+        facts:
+          - label: At a glance
+            value: 360°
+        cta:
+          label: Explore sound
+          href: /sections/compose
+          style: ghost
+      - id: copper
+        label: Battery
+        heading: A longer conversation.
+        body: Keep listening from your first idea to your last page.
+        media:
+          image: assets/choice-copper.svg
+          alt: Battery illustrated by an original studio speaker study
+        facts:
+          - label: At a glance
+            value: 40 hours
+        cta:
+          label: Explore battery
+          href: /sections/compose
+          style: ghost
+      - id: night
+        label: Design
+        heading: Considered from every side.
+        body: A quiet silhouette, original materials and room to breathe.
+        media:
+          image: assets/choice-night.svg
+          alt: Design illustrated by an original studio speaker study
+        facts:
+          - label: At a glance
+            value: 3 finishes
+        cta:
+          label: Explore design
+          href: /sections/compose
+          style: ghost

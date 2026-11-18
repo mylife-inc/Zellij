@@ -684,6 +684,31 @@ fn validate_composition(node: &Value, inside_stage: bool) -> Result<()> {
             return Err(invalid("scroll stages cannot nest and require start < end"));
         }
     }
+    if node["type"] == "selector" || node["type"] == "explorer" {
+        let items = node["items"].as_array().unwrap();
+        for key in ["id", "label"] {
+            let unique: std::collections::HashSet<_> = items
+                .iter()
+                .map(|item| item[key].as_str().unwrap())
+                .collect();
+            if unique.len() != items.len() {
+                return Err(invalid("choice IDs and labels must be unique"));
+            }
+        }
+        if let Some(initial) = node.get("initial") {
+            if !items.iter().any(|item| &item["id"] == initial) {
+                return Err(invalid("initial must name an existing choice ID"));
+            }
+        }
+        if node["type"] == "selector"
+            && node["presentation"] == "swatches"
+            && items.iter().any(|item| item.get("swatch").is_none())
+        {
+            return Err(invalid(
+                "swatch presentation requires a colour for every choice",
+            ));
+        }
+    }
     if node["type"] == "table" {
         let columns = node["columns"].as_array().unwrap();
         let unique: std::collections::HashSet<_> = columns

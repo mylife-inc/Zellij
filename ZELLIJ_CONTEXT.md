@@ -1,7 +1,18 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-18: composer choices under implementation (source rc.11)**
+
+The next approved composer increment adds independent product selectors and
+feature explorers with finite synchronized panels, a shared progressive
+controller, native/engine validation, and `product-selector` / `feature-explorer`
+presets. The active guide distinguishes source rc.11 from public rc.10 and
+explains keyboard, mobile, no-JS and print behavior. See
+[the contract](specs/zellij-compose-choices-2026-11-18.md). Verification and merge
+are pending; no release or production deployment is included. Multi-scene
+stories and controlled section reuse remain subsequent roadmap work.
 
 **2026-11-17: composer layers, semantic nodes and scroll stages verified (source rc.11)**
 

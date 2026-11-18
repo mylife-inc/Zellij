@@ -669,7 +669,7 @@ fn named_presets_are_listed_and_generated_offline_as_editable_yaml() {
         run(temp.path(), &["list", "presets", "--json"], "", 0).stdout
     );
     let value: Value = serde_json::from_slice(&catalog.stdout).unwrap();
-    assert_eq!(value["presets"].as_array().unwrap().len(), 4);
+    assert_eq!(value["presets"].as_array().unwrap().len(), 6);
     let context: Value =
         serde_json::from_slice(&run(temp.path(), &["context", "--json"], "", 0).stdout).unwrap();
     for preset in value["presets"].as_array().unwrap() {
@@ -850,4 +850,53 @@ fn composer_expansion_rules_match_native_authoring_and_preserve_failed_destinati
         );
         assert!(!temp.path().join("must-not-exist.yaml").exists());
     }
+}
+
+#[test]
+fn choice_nodes_reject_ambiguous_or_incomplete_selection_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let items = serde_json::json!([
+        {"id":"silver","label":"Silver","heading":"Quiet clarity","body":"Read **carefully**","swatch":"#ddd","media":{"image":"assets/silver.svg","alt":"Silver speaker"}},
+        {"id":"copper","label":"Copper","heading":"A warmer view","body":"Another finish","swatch":"#b97650"}
+    ]);
+    let selector = serde_json::json!({"type":"selector","label":"Finishes","initial":"copper","presentation":"swatches","items":items});
+    let arg = format!("children={}", serde_json::json!([selector]));
+    let good = run(temp.path(), &["ns", "compose", "--set-json", &arg], "", 0);
+    assert_eq!(yaml(&good)["children"][0]["initial"], "copper");
+    for case in 0..6 {
+        let mut invalid = selector.clone();
+        match case {
+            0 => invalid["initial"] = serde_json::json!("missing"),
+            1 => invalid["items"][1]["id"] = serde_json::json!("silver"),
+            2 => invalid["items"][1]["label"] = serde_json::json!("Silver"),
+            3 => {
+                invalid["items"][1]
+                    .as_object_mut()
+                    .unwrap()
+                    .remove("swatch");
+            }
+            4 => invalid["items"][1]["swatch"] = serde_json::json!("url(bad)"),
+            5 => invalid["itemHeadingLevel"] = serde_json::json!(1),
+            _ => unreachable!(),
+        }
+        let arg = format!("children={}", serde_json::json!([invalid]));
+        run(
+            temp.path(),
+            &[
+                "ns",
+                "compose",
+                "--set-json",
+                &arg,
+                "--out",
+                "must-not-exist.yaml",
+            ],
+            "",
+            2,
+        );
+        assert!(!temp.path().join("must-not-exist.yaml").exists());
+    }
+    let explorer =
+        serde_json::json!({"type":"explorer","label":"Features","initial":"missing","items":items});
+    let arg = format!("children={}", serde_json::json!([explorer]));
+    run(temp.path(), &["ns", "compose", "--set-json", &arg], "", 2);
 }

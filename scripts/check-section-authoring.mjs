@@ -107,10 +107,20 @@ try {
     assert.equal(getSection('compose').schema.safeParse(candidate).success, false);
     assert.notEqual(spawnSync(binary, richArgs(children, layout, scroll)).status, 0);
   }
+  for (const kind of ['selector', 'explorer']) {
+    const items = [{id:'one',label:'One',heading:'First',body:'First body',swatch:'#abc'}, {id:'two',label:'Two',heading:'Second',body:'Second body',swatch:'#def'}].map(item => kind === 'selector' ? item : Object.fromEntries(Object.entries(item).filter(([key]) => key !== 'swatch')));
+    const node = {type:kind,label:'Choose',initial:'two',items};
+    const args = ['ns','compose','--set-json','children=' + JSON.stringify([node])];
+    getSection('compose').schema.parse(YAML.parse(execFileSync(binary,args,{encoding:'utf8'})));
+    for (const bad of [{...node, initial:'missing'}, {...node,items:[items[0],{...items[1],id:'one'}]}, {...node,items:[items[0],{...items[1],label:'One'}]}]) {
+      assert.equal(getSection('compose').schema.safeParse({type:'compose',version:1,label:'Bad',children:[bad]}).success,false);
+      assert.notEqual(spawnSync(binary,['ns','compose','--set-json','children=' + JSON.stringify([bad])]).status,0);
+    }
+  }
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 25 authored section types and four editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 25 authored section types and six editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

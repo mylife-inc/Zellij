@@ -4,6 +4,25 @@ import '../sections/schemas';
 
 /** Presets expand once into ordinary authored YAML; rendering has no preset lookup. */
 const presets: Record<string, { description: string; section: Record<string, unknown> }> = {
+  'product-selector': { description: 'Labelled product finishes with synchronized illustrations, facts and actions.', section: {
+    type: 'compose', version: 1, label: 'Choose your finish', children: [
+      {type: 'heading', text: 'Find your point of view.'},
+      {type: 'selector', label: 'Choose a finish', presentation: 'swatches', initial: 'copper', items: [
+        {id: 'silver', label: 'Silver', swatch: '#c3c5c7', heading: 'Quiet clarity.', body: 'Describe the qualities of your silver finish.', media: {image: 'assets/replace-me.svg', alt: 'Replace with a description of the silver product'}, facts: [{label: 'Finish', value: 'Silver'}], cta: {label: 'Explore silver', href: '#'}},
+        {id: 'copper', label: 'Copper', swatch: '#b97650', heading: 'A warmer perspective.', body: 'Describe what makes your copper finish distinctive.', media: {image: 'assets/replace-me.svg', alt: 'Replace with a description of the copper product'}, facts: [{label: 'Finish', value: 'Copper'}], cta: {label: 'Explore copper', href: '#'}},
+      ]},
+    ],
+  } },
+  'feature-explorer': { description: 'Keyboard-operable feature tabs with complete reading and print fallbacks.', section: {
+    type: 'compose', version: 1, label: 'Explore the details', children: [
+      {type: 'heading', text: 'Discover what makes the difference.'},
+      {type: 'explorer', label: 'Explore the features', items: [
+        {id: 'design', label: 'Design', heading: 'Every detail, considered.', body: 'Tell the story behind the design.', media: {image: 'assets/replace-me.svg', alt: 'Describe the design illustration'}},
+        {id: 'performance', label: 'Performance', heading: 'Ready for your next idea.', body: 'Explain what the performance means in everyday use.', facts: [{label: 'Benefit', value: 'Replace with a meaningful measure'}], media: {image: 'assets/replace-me.svg', alt: 'Describe the performance illustration'}},
+        {id: 'care', label: 'Care', heading: 'Made to stay with you.', body: 'Describe the care behind the experience.', cta: {label: 'Learn more', href: '#'}},
+      ]},
+    ],
+  } },
   'product-hero': { description: 'A generous product introduction with a gradient title and call to action.', section: {
     type: 'compose', version: 1, label: 'Introduction', padding: 'loose',
     layout: { kind: 'stack', align: 'center', gap: 'large' }, children: [

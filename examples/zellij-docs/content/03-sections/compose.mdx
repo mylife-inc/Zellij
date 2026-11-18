@@ -20,7 +20,7 @@ zel ns compose --out content/sections/intro.yaml
 
 <Callout type="info" title="Next candidate: source 0.2.0-rc.11">
 Video, caption tracks, transcripts, container-aware layouts, layers, semantic
-content nodes and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
+content nodes, selectors/explorers and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
 and engine build; the published rc.10 candidate does not include them yet.
 </Callout>
 
@@ -168,6 +168,8 @@ element with captions and a transcript. Backdrops are decorative.
 | `icon` (rc.11) | Required Lucide `name` and accessible `label`; `size: small | medium | large` gives 24/40/64px. |
 | `code` (rc.11) | Required `title` and literal `code`; optional `language` class. Selectable code, with no execution or automatic syntax highlighting. |
 | `table` (rc.11) | Required `caption`, `rowLabel`, 1–8 unique `columns`, and 1–40 `rows` with `label` and one inline-Markdown `cells` value per column. |
+| `selector` (rc.11) | Single-choice product variants; segmented controls or labelled colour swatches. See below. |
+| `explorer` (rc.11) | Feature panels with horizontal tabs or a vertical feature list. See below. |
 | `disclosure` (rc.11) | Required plain `summary` and inline-Markdown `body`; `open` defaults to false. Native keyboard-operable details. |
 | `carousel` (rc.11) | Required `label` and 2–12 `items`; each has `title` and optional inline-Markdown `body`, `image`, `alt`, `href`. |
 | `gallery` (rc.11) | Required `label` and 1–12 `items` with `image`, meaningful `alt`, optional plain `caption`; `columns` is 2–4, default 3. |
@@ -218,6 +220,75 @@ footnote label. Deep checking uses these same plain-Markdown rules.
 Use `markdown-prose` as a separate section when you need the engine's MDX components.
 
 <SectionPreview example="compose-content" />
+
+## Selectors and feature explorers
+
+Use `selector` for product choices such as a finish or model. Use `explorer` for
+feature stories. Both switch a heading, body, optional image, facts and action
+as one panel. They are independent: choosing a finish does not automatically
+change another model selector, update a shopping cart, or change the page URL.
+
+```yaml
+type: selector
+label: Choose a finish
+presentation: swatches
+initial: copper
+items:
+  - id: silver
+    label: Silver
+    swatch: "#c3c5c7"
+    heading: Quiet clarity.
+    body: A clean, balanced finish.
+    media: {image: assets/silver.svg, alt: Silver product}
+    facts: [{label: Finish, value: Silver}]
+    cta: {label: Explore silver, href: /guide}
+  - id: copper
+    label: Copper
+    swatch: "#b97650"
+    heading: A warmer perspective.
+    body: A little warmth for your everyday.
+    media: {image: assets/copper.svg, alt: Copper product}
+    facts: [{label: Finish, value: Copper}]
+    cta: {label: Explore copper, href: /guide}
+```
+
+Place this node inside a composition's `children`, including a nested group.
+For an explorer, use `type: explorer`, remove `swatch` and set `presentation` to
+`tabs` (default) or `list`. A selector's default presentation is `segmented`.
+
+| Field | Meaning |
+| --- | --- |
+| `label` | Required visible name for this set of choices. |
+| `items` | 2–8 panels, each with a unique `id` and unique plain `label`. |
+| Item `id` | Lowercase letter followed by lowercase letters, digits or hyphens. IDs may repeat in a different selector/explorer instance. |
+| Item `heading`, `body` | Required plain heading and inline-Markdown body. |
+| Item `swatch` | Selector only: `#RGB` or `#RRGGBB`. Required for every item with `presentation: swatches`; visible text labels always accompany colours. |
+| Item `media` | Optional object with required `image` and meaningful `alt`; optional inline-Markdown `caption`. Use local `assets/...` paths or external image URLs. |
+| Item `facts` | Optional 1–8 `{label, value}` pairs. Labels are plain text; values support inline Markdown. |
+| Item `cta` | Optional `{label, href, style}`. Style is `primary`, `secondary` (default) or `ghost`. |
+| `initial` | Optional item ID to select after hydration. Defaults to the first item. An unknown ID is rejected. |
+| `itemHeadingLevel` | 2–4, default 3; panels cannot add a primary H1. |
+| `mediaSide` | `start` or `end` (default) on wide panels. Narrow panels retain copy-then-image reading order. |
+| `ratio`, `fit` | `landscape` (default), `square` or `portrait`; `contain` (default) or `cover`. |
+
+Selectors use radio controls. Arrow keys change the choice; Home/End select the
+first/last option. Explorers use tabs: Left/Right for horizontal tabs, Up/Down for
+vertical lists, plus Home/End. Horizontal navigation follows the reading direction.
+Tab enters the selected control, then moves to the displayed panel. Choices
+switch immediately, including with reduced motion; focus stays on the control.
+All panel content is server-rendered. Images load eagerly so changing choices
+does not initiate a separate content fetch; use appropriately sized images.
+
+Without JavaScript, controls are hidden and **all panels** appear in source order.
+Print includes every panel regardless of the selected choice. A feature list
+uses a sidebar when there is room and stacks above its content on narrow screens.
+IDs/state are isolated per instance. Invalid IDs, duplicate labels, missing
+swatches and incorrect field values are rejected by native authoring and engine
+validation before output is written.
+
+<SectionPreview example="compose-selector" />
+
+<SectionPreview example="compose-explorer" />
 
 ## Video inside a composition
 
@@ -353,8 +424,15 @@ zel ns -p product-hero --out content/sections/intro.yaml
 zel ns compose --preset split-story --out content/sections/story.yaml
 ```
 
-The bundled presets are `product-hero`, `split-story`, `feature-cards` and
-`media-accordion`. Each expands into an ordinary composition with editable
+The rc.10 presets are `product-hero`, `split-story`, `feature-cards` and
+`media-accordion`. Source rc.11 adds `product-selector` and `feature-explorer`:
+
+```bash
+zel ns compose -p product-selector --out content/sections/finishes.yaml
+zel ns compose -p feature-explorer --out content/sections/features.yaml
+```
+
+These six source presets use the same authoring workflow. Each expands into an ordinary composition with editable
 content and layout. No preset reference remains in the generated file. They
 work offline and accept the same `--set`, `--set-json`, `--count`, `--unset`
 and `--interactive` editing options as other sections. Use `--out` when inferring
@@ -381,7 +459,7 @@ is already supported by `gradient.effect: reveal`.
 | Multi-scene scroll stories, video scrubbing and arbitrary timelines | Not implemented |
 | Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Implemented in source rc.11; not yet published |
 | MDX execution and arbitrary existing sections as children | Not implemented |
-| Independent media selectors and feature explorers | Not implemented |
+| Independent selectors (segmented/swatches), feature explorers (tabs/list) and two matching presets | Implemented in source rc.11; not yet published |
 
 Use a dedicated section when it already provides the behavior you need, such as
 `media-panel` for copy over background media, `card-carousel` for a carousel,

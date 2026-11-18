@@ -1,0 +1,96 @@
+type: compose
+version: 1
+label: Make it yours
+id: product-choices
+children:
+  - type: heading
+    text: Make it yours.
+    level: 1
+    scale: display
+  - type: text
+    text: One considered design. Your point of view.
+    size: lead
+  - type: selector
+    label: Choose a finish
+    presentation: swatches
+    initial: copper
+    items:
+      - id: silver
+        label: Silver
+        swatch: "#b9bec4"
+        heading: Quiet clarity.
+        body: A clean, balanced finish for a room full of ideas.
+        media:
+          image: assets/choice-silver.svg
+          alt: Original silver studio speaker study
+          caption: An original illustration of a fictional product.
+        facts:
+          - label: Finish
+            value: Silver
+          - label: Weight
+            value: 560 g
+        cta:
+          label: Explore silver
+          href: /guide
+          style: secondary
+      - id: copper
+        label: Copper
+        swatch: "#b97650"
+        heading: A warmer perspective.
+        body: Soft copper brings a little warmth to your everyday listening.
+        media:
+          image: assets/choice-copper.svg
+          alt: Original copper studio speaker study
+          caption: An original illustration of a fictional product.
+        facts:
+          - label: Finish
+            value: Copper
+          - label: Weight
+            value: 560 g
+        cta:
+          label: Explore copper
+          href: /guide
+          style: secondary
+      - id: night
+        label: Night
+        swatch: "#344b62"
+        heading: Depth in every detail.
+        body: A deep blue finish that gives the sound centre stage.
+        media:
+          image: assets/choice-night.svg
+          alt: Original night studio speaker study
+          caption: An original illustration of a fictional product.
+        facts:
+          - label: Finish
+            value: Night
+          - label: Weight
+            value: 560 g
+        cta:
+          label: Explore night
+          href: /guide
+          style: secondary
+  - type: group
+    surface: inverted
+    padding: medium
+    radius: large
+    children:
+      - type: selector
+        label: Choose a model
+        items:
+          - id: silver
+            label: Essential
+            heading: The everyday essential.
+            body: A compact companion with everything you need.
+            facts:
+              - label: Listening
+                value: 24 hours
+          - id: copper
+            label: Studio Pro
+            heading: A little more room.
+            body: More sound, more time, more possibilities.
+            facts:
+              - label: Listening
+                value: 40 hours
+            cta:
+              label: Read the model guide
+              href: /guide
