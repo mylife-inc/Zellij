@@ -3,15 +3,51 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-18: composer scroll stories under implementation (source rc.11)**
+**2026-11-18: composer scroll stories verified (source rc.11)**
 
-The next approved increment adds ordered `story` scenes with images or silent,
-scroll-controlled direct-file video segments, a local reading control and
-complete native/no-JS/print/motion fallbacks. Engine/native authoring share scene
-bounds and reject nesting in layer layouts or scroll stages. A `scroll-story`
-preset expands to editable YAML. See [the contract](specs/zellij-compose-stories-2026-11-18.md).
-Verification and merge are pending. Public rc.10 and production hosting are
-unchanged; controlled section reuse remains next, followed by rc.11 publication.
+PR [#205](https://github.com/mylife-inc/Zellij/pull/205) adds `story`: 2–8 ordered
+heading/body/media/CTA scenes with images or silent direct-file video segments.
+Wide expressive-motion layouts pin viewport-fitting scenes and seek through an
+authored range as the reader scrolls; reversing the scroll reverses that segment.
+All copy remains in reading order. Keyboard/focus, local reader opt-out, narrow
+or tall content, reduced motion, forced colours, no JavaScript and print retain
+ordinary reading with native video controls. Media failures and out-of-duration
+segments also return to reading layout. Stories cannot nest inside layers or
+scroll stages. The seventh editable preset is `scroll-story`; the prior six
+remain byte-identical. Active guides and generated native context are updated.
+
+Implementation `88af13f` and correction `9ef8e36` are recorded in
+[the contract and acceptance history](specs/zellij-compose-stories-2026-11-18.md).
+The correction measures the full sticky header, including announcements, and
+observes its size. Hosted tests account for asset-version query strings, wait
+for completed seeks and check computed theme colours before capturing. Corrected
+WebKit captures are readable without a CSS colour override. Earlier failures
+and the rejected native schema keyword remain in the history.
+
+Local validation passes 815 Rust tests (five hosted-only cases ignored), 520
+engine tests, 21 native authoring cases, 20 release-policy guards, formatting,
+warnings-denied Clippy, workspace types, engine/native parity and strict deep
+content checks. Focused run `44365571744` passes 105 composer cases without
+retries and all six hydration-preservation probes. All 32 jobs in full run
+`44366531686` pass on `9ef8e36`, including 505 showcase cases
+without retries (140 conditional skips), cross-platform installation, images,
+website and book/PDF acceptance. GitHub cancelled the first macOS portable job
+before assigning a runner because of ARM capacity constraints; only that job
+was retried in attempt two. The other 31 passing jobs were retained.
+Forty composer captures are retained; the nine
+new story captures and any full-run differences have been reviewed. The focused
+run's 31 existing captures exactly match the preceding reviewed source.
+Documentation preserves all 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images, verifies all 13 added routes and captures
+no browser errors. See [the evidence](specs/evidence/zellij-compose-stories-2026-11-18.json).
+The final records-only follow-up preserves tested runtime, active guides,
+dependencies, workflows and acceptance inputs.
+
+Public rc.10 and production hosting remain unchanged. Next: controlled section
+reuse and further presets, then rc.11 publication/installers/documentation and
+reviewed rc.10 retirement. Arbitrary animation timelines, overlapping scenes,
+audio synchronization, arbitrary section embedding and executable MDX remain
+unsupported. Live-provider verification stays deferred; do not claim zero bugs.
 
 **2026-11-18: composer selectors and feature explorers verified (source rc.11)**
 

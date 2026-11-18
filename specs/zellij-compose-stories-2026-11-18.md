@@ -86,3 +86,38 @@ that concern before accepting the captures.
 | Before | After | Why |
 | --- | --- | --- |
 | Pin inset used only the navigation-height token | Inset includes the actual sticky header and its announcement bar | Keep every scene line below visible chrome |
+
+## Final acceptance
+
+Source `9ef8e36` passes all 32 jobs in full run `44366531686`, including
+505 showcase cases without retries (140 conditional skips),
+all native/managed installation targets, images, website and book/PDF checks.
+GitHub cancelled the first macOS portable job before assigning a runner, citing
+macOS ARM capacity constraints. It ran no test steps. Only that job was retried
+in attempt two; the other 31 passing jobs were retained.
+Actual native export covers all 25 section types and seven editable presets.
+Focused run `44365571744` differs only in its diagnostic workflow and passes
+105 composer cases without retries, plus six documentation hydration probes.
+
+Forty distinct composer captures are retained from each run. All nine new
+light/dark reading and completed-seek captures were reviewed, including native
+video controls and the full sticky-header inset. Corrected WebKit captures show
+readable body text; computed-colour assertions pass without a CSS colour change.
+Downscaled image previews omitted some illustration details, which were confirmed
+in decoded local crops. The focused run's 31 existing captures exactly match the
+preceding reviewed output. Full-run capture hashes and reviewed differences are
+recorded in [the machine-readable evidence](evidence/zellij-compose-stories-2026-11-18.json).
+
+Documentation preserves 46 original routes, 282 original heading IDs, 82
+compatibility mappings and 29 byte-identical images, verifies 13 added routes,
+and captures no browser errors. All six final hydration probes pass.
+Local checks pass 815 Rust tests (five hosted-only cases ignored), 520 engine
+tests, 21 native authoring cases, 20 release-policy guards, formatting,
+warnings-denied Clippy, workspace types and actual engine/native authoring parity.
+Strict deep checks validate 15 showcase routes, 59 documentation routes/32
+examples, and 21 CodeSeal routes. The preceding six presets remain byte-identical.
+
+The final follow-up changes context, this history and evidence only; runtime,
+active guides, dependencies, workflows and acceptance inputs remain identical
+to verified `9ef8e36`. No release or production deployment is included. Controlled
+reuse remains next; the composer is neither unrestricted nor claimed bug-free.
