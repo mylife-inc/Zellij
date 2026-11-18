@@ -3,6 +3,17 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: rc.11 release preparation**
+
+Continue from verified merge `0d25d84`. The candidate contains the completed
+composer increments, nine editable section presets and unchanged site/book
+archive identities. GitHub withdrew the picomatch advisory today; fresh full and
+production audits report zero findings. Remove its temporary exception and keep
+the original disposition as history. Audit tooling now rejects every finding.
+See [preparation and gates](specs/zellij-rc11-preparation-2026-11-18.md).
+Publication, installer/public-guide migration and scoped rc.10 retirement are
+pending. Production-domain migration and live-provider verification stay deferred.
+
 **2026-11-18: controlled section reuse verified (source rc.11)**
 
 The `section` composer node embeds inline content for eight reviewed built-ins:

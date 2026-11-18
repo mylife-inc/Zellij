@@ -140,7 +140,17 @@ try {
   assert.equal((await run(executable, ['--version'], env)).stdout.trim(), `zel ${version.slice(1)}`);
   const details = JSON.parse((await run(executable, ['version', '--json'], env)).stdout);
   assert.equal(details.cli.version, version.slice(1)); assert.equal(details.cli.target, target);
-  assert.equal(details.configuration_version, 1); assert.match(details.content_schema_sha256, /^[a-f0-9]{64}$/);
+  assert.equal(details.configuration_version, 1);
+  const schemaBytes = await readFile('cli/crates/zellij-core/generated/schema.json');
+  const expectedSchema = JSON.parse(schemaBytes);
+  assert.equal(details.content_schema_sha256, sha(schemaBytes), 'Installed binary must contain the tagged authoring model');
+  assert.deepEqual(JSON.parse((await run(executable, ['context', '--json'], env)).stdout), expectedSchema);
+  const presets = JSON.parse((await run(executable, ['presets', '--json'], env)).stdout).presets;
+  assert.deepEqual(presets.map(p => p.name).sort(), Object.keys(expectedSchema.sectionPresets).sort());
+  for (const [name, preset] of Object.entries(expectedSchema.sectionPresets)) {
+    assert.equal((await run(executable, ['ns', '-p', name], env)).stdout, preset.yaml, `Installed preset ${name}`);
+  }
+  console.log(`Installed authoring model and all ${presets.length} editable presets match the tagged source without external tools.`);
   const templates = JSON.parse((await run(executable, ['templates', '--json', '--offline'], env)).stdout);
   assert.deepEqual(templates.templates.map(t => t.id).sort(), [
     'api-platform', 'book-classic', 'book-study', 'book-technical', 'creative-studio',

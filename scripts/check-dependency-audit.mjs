@@ -1,24 +1,9 @@
-// Keep both npm reports visible. One unpatched, development-only advisory has
-// a dated disposition; this is not a general severity or package allowlist.
+// Keep both npm reports visible and reject every finding. The withdrawn
+// picomatch advisory and its retired exception remain in the dated record.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-
-export const disposition = {
-  url: 'https://github.com/advisories/GHSA-fc5q-39xc-vjpf',
-  expires: '2026-12-01T00:00:00.000Z',
-  packages: {
-    fdir: ['node_modules/fdir', '6.5.0', ['picomatch']],
-    picomatch: ['node_modules/picomatch', '4.0.5', []],
-    sucrase: ['node_modules/sucrase', '3.35.1', ['tinyglobby']],
-    tinyglobby: ['node_modules/tinyglobby', '0.2.17', ['fdir', 'picomatch']],
-    tsup: ['node_modules/tsup', '8.5.1', ['tinyglobby']],
-    vite: ['node_modules/vite', '7.3.7', ['fdir', 'picomatch', 'tinyglobby']],
-    vitest: ['engine/packages/zellij/node_modules/vitest', '4.1.12', ['picomatch', 'tinyglobby']],
-  },
-};
 
 function findings(report) {
   assert.equal(report?.auditReportVersion, 2, 'Unsupported/missing npm audit report');
@@ -38,36 +23,10 @@ function findings(report) {
   return entries;
 }
 
-export function verifyAudits(all, production, lock, now = new Date()) {
+export function verifyAudits(all, production) {
   assert.equal(findings(production).length, 0, 'Production dependency audit must be clean');
-  const entries = findings(all);
-  if (!entries.length) return { findings: 0, deferred: false };
-  assert(Number.isFinite(now.getTime()) && now >= new Date('2026-11-17T00:00:00.000Z')
-    && now < new Date(disposition.expires), 'Development advisory disposition expired or clock invalid');
-  assert.equal(lock?.lockfileVersion, 3, 'Expected reviewed npm lockfile');
-  for (const [name, finding] of entries) {
-    const reviewed = disposition.packages[name];
-    assert(reviewed, `Unreviewed vulnerable package: ${name}`);
-    const [node, version, via] = reviewed;
-    assert.equal(finding.name, name, 'Inconsistent advisory name');
-    assert.equal(finding.severity, 'high', `Changed severity for ${name}`);
-    assert.deepEqual(finding.nodes, [node], `Changed dependency location for ${name}`);
-    assert.equal(lock.packages?.[node]?.dev, true, `${name} must remain development-only`);
-    assert.equal(lock.packages[node].version, version, `Unreviewed ${name} version`);
-    if (name === 'picomatch') {
-      assert.equal(finding.via?.length, 1, 'Additional picomatch advisory');
-      const advisory = finding.via[0];
-      assert.equal(advisory.url, disposition.url, 'Unreviewed picomatch advisory');
-      assert.equal(advisory.name, 'picomatch');
-      assert.equal(advisory.dependency, 'picomatch');
-      assert.equal(advisory.range, '<=4.0.7', 'Advisory range changed; re-review upstream');
-      assert.equal(advisory.severity, 'high');
-    } else {
-      assert.deepEqual([...finding.via].sort(), via, `Unreviewed advisory chain for ${name}`);
-      assert(finding.via.every(parent => all.vulnerabilities[parent]), 'Missing root advisory');
-    }
-  }
-  return { findings: entries.length, deferred: true };
+  assert.equal(findings(all).length, 0, 'Full dependency audit must be clean');
+  return { findings: 0 };
 }
 
 export function parseAuditResult(result) {
@@ -94,10 +53,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     };
     const production = audit(['--omit=dev']);
     const all = audit(['--include=dev']);
-    const result = verifyAudits(all, production, JSON.parse(readFileSync('package-lock.json', 'utf8')));
-    console.log(result.deferred
-      ? `WARNING: ${result.findings} development findings trace to ${disposition.url}; reviewed scope only, expires ${disposition.expires}. See specs/zellij-picomatch-disposition-2026-11-17.md. No production findings.`
-      : 'Both production and development dependency audits are clean.');
+    verifyAudits(all, production);
+    console.log('Both production and development dependency audits are clean.');
   } catch (error) {
     console.error(error.message);
     process.exitCode = 1;

@@ -1,5 +1,12 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-18: rc.11 preparation.** The source implementation is verified at
+`0d25d84`; publication remains pending. GitHub withdrew the development-only
+picomatch advisory on November 18. Full and production audits now report zero
+findings; the temporary exception is removed. The dated finding below remains
+historical. Continue to audit immediately before every release tag, even after
+green CI. See [the rc.11 plan](zellij-rc11-preparation-2026-11-18.md).
+
 **2026-11-17: v0.2.0-rc.10 is published and publicly verified.** Immutable tag
 `9319729` passes all 37 release jobs in `44159670077`; expanded public acceptance
 `44163817890` passes all 12 jobs, including the tagged language-PDF driver.
