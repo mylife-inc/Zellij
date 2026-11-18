@@ -111,6 +111,7 @@ ol.zellij-compose-list { list-style: decimal; }
 .zellij-compose-table caption { text-align: start; font-weight: 600; padding-block-end: .75rem; }
 .zellij-compose-table th, .zellij-compose-table td { padding: .85rem; border-block-end: 1px solid var(--zellij-border); text-align: start; overflow-wrap: anywhere; }
 .zellij-compose-table th { font-weight: 600; }
+.zellij-compose-disclosure-print { display: none; }
 .zellij-compose-disclosure { width: 100%; padding-block: 1rem; border-block: 1px solid var(--zellij-border); }
 .zellij-compose-disclosure summary { cursor: pointer; font-weight: 600; min-height: 44px; padding-block: .5rem; }
 .zellij-compose-disclosure > div { padding-block: .5rem; line-height: 1.65; }
@@ -158,6 +159,7 @@ ol.zellij-compose-list { list-style: decimal; }
   .zellij-compose-carousel-card { break-inside: avoid; }
   .zellij-compose-code pre { white-space: pre-wrap; overflow: visible; overflow-wrap: anywhere; }
   .zellij-compose-table-wrap { overflow: visible; }
-  .zellij-compose-disclosure::details-content { content-visibility: visible; display: block; }
-  .zellij-compose-disclosure > div { display: block !important; }
+  /* Closed details remain hidden in some print engines, even with a styled slot. */
+  .zellij-compose-disclosure { display: none !important; }
+  .zellij-compose-disclosure-print { display: block; border-block: 1px solid currentColor; padding-block: 1rem; }
 }

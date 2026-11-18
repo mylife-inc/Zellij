@@ -60,3 +60,25 @@ content slot. Sticky ancestors retain visible overflow, following
 [CSS positioning](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/position).
 Hosted browser tests must verify the actual results; these references are not
 substitutes for browser acceptance.
+
+
+## Review corrections before acceptance
+
+- Focused browser run `44220395935` passed 50 of 51 cases. Mobile WebKit
+  kept closed native details content hidden in print despite `::details-content`
+  styling. The final renderer provides a print-only summary/body sibling and
+  hides the interactive details in print; screen readers and keyboard users see
+  only the interactive copy on screen. Both JavaScript and no-JS print paths are
+  covered. The earlier CSS approach above is retained as history, not the final
+  implementation.
+- Two plain-Markdown blocks using the same footnote label produced duplicate
+  generated IDs. Each synchronous prose instance now namespaces those IDs with
+  React `useId`, rewrites local links/ARIA references, and preserves anchor
+  attributes when rendering through Next Link. Unit and hosted checks exercise
+  two repeated footnotes in separate blocks.
+- Initial screenshot selection included hidden dialog images. It now checks
+  visible content images; dialog image behavior is exercised separately.
+- Full native tests pass 812 cases with five hosted-only cases ignored. Clippy
+  initially rejected a helper after the test module; moving it before the module
+  resolves that warning. Warnings-denied Clippy and native/engine authoring parity
+  now pass. The engine passes 510 tests and workspace types.

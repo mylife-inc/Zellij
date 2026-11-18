@@ -47,6 +47,15 @@ test('backdrop video is opt-in, keeps its button focused and pauses for reduced 
 
 test('semantic nodes retain keyboard operation, independent dialogs and print content', async ({ page }) => {
   await page.goto('/compose-content');
+  const notes = page.locator('.zellij-compose-prose');
+  const ids = await notes.locator('[id]').evaluateAll(nodes => nodes.map(node => node.id));
+  expect(new Set(ids).size).toBe(ids.length);
+  expect(ids.length).toBe(6);
+  for (const block of await notes.all()) {
+    const ref = block.locator('[data-footnote-ref]');
+    const target = (await ref.getAttribute('href'))!.slice(1);
+    expect(await block.evaluate((node, id) => node.contains(document.getElementById(id)), target)).toBe(true);
+  }
   const table = page.getByRole('table', {name: 'One story, every reading mode'});
   await expect(table.locator('th[scope="row"]')).toHaveCount(3);
   const summary = page.locator('.zellij-compose-disclosure summary');
@@ -72,7 +81,8 @@ test('semantic nodes retain keyboard operation, independent dialogs and print co
   await next.focus(); await page.keyboard.press('Enter');
   await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBeGreaterThan(0);
   await page.emulateMedia({media: 'print'});
-  await expect(page.locator('.zellij-compose-disclosure > div')).toBeVisible();
+  await expect(page.locator('.zellij-compose-disclosure')).toBeHidden();
+  await expect(page.locator('.zellij-compose-disclosure-print')).toBeVisible();
   await expect(track).toHaveCSS('overflow-x', 'visible');
   await expect(page.getByRole('heading', {name: 'Care', exact: true})).toBeVisible();
 });
@@ -123,6 +133,11 @@ test.describe('without JavaScript', () => {
     await expect(page).toHaveURL(/compose-content$/);
     await page.locator('.zellij-compose-disclosure summary').click();
     await expect(page.locator('.zellij-compose-disclosure > div')).toBeVisible();
+    await page.locator('.zellij-compose-disclosure summary').click();
+    await page.emulateMedia({media: 'print'});
+    await expect(page.locator('.zellij-compose-disclosure-print')).toBeVisible();
+    await page.emulateMedia({media: 'screen'});
+    await expect(page.locator('.zellij-compose-disclosure-print')).toBeHidden();
     const image = page.getByRole('link', {name: 'View First paper study full size'});
     await expect(image).toHaveAttribute('href', /_zellij\/assets\/compose-study\.svg/);
     await image.click(); await expect(page).toHaveURL(/compose-study\.svg/);

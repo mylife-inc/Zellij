@@ -16,7 +16,9 @@ children:
               ## Make the idea clear.
 
               A paragraph, a list, a **thoughtful emphasis**. The structure is
-              part of the message.
+              part of the message.[^care]
+
+              [^care]: Good structure makes an idea easier to read.
 
               - Start with the reader.
               - Give each idea a place.
@@ -58,3 +60,8 @@ children:
     label: An independent gallery
     items:
       - {image: assets/compose-study.svg, alt: Independent paper study, caption: "A separate collection."}
+  - type: prose
+    body: |
+      A final note, in its own space.[^care]
+
+      [^care]: Every composition can have more than one prose block.
