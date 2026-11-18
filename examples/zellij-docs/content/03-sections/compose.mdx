@@ -3,7 +3,7 @@ title: Compose a section
 description: Build a hero, split story or grid from a bounded tree of reusable elements.
 ---
 
-<Callout type="info" title="Included in candidate 0.2.0-rc.10">
+<Callout type="info" title="Included in candidate 0.2.0-rc.11">
 `compose` requires a matching CLI and engine at rc.6 or later. This section is
 for the hosted engine; portable Markdown output does not render the hosted
 section catalog.
@@ -18,10 +18,10 @@ zel new section compose --out content/sections/intro.yaml
 zel ns compose --out content/sections/intro.yaml
 ```
 
-<Callout type="info" title="Next candidate: source 0.2.0-rc.11">
+<Callout type="info" title="Expanded in candidate 0.2.0-rc.11">
 Video, caption tracks, transcripts, container-aware layouts, layers, semantic
-content nodes, selectors/explorers, scroll stories, controlled section reuse and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
-and engine build; the published rc.10 candidate does not include them yet.
+content nodes, selectors/explorers, scroll stories, controlled section reuse and
+configurable scroll stages require the matching rc.11 CLI and engine.
 </Callout>
 
 Replace the generated content with a composition and reference `intro` in
@@ -60,9 +60,9 @@ accessible fallback heading.
 
 ## Layout and groups
 
-A root or group accepts `layout` with `kind: stack`, `grid`, `split` or `layers` (source rc.11). Omitted
+A root or group accepts `layout` with `kind: stack`, `grid`, `split` or `layers` (rc.11). Omitted
 layout means a stack. All preserve source reading order and collapse to a single
-column below 760 pixels. In source rc.11 that threshold measures the space
+column below 760 pixels. In rc.11 that threshold measures the space
 available to each layout, not the whole browser window: a grid inside a narrow
 card stays stacked even on a desktop. Print always uses one column. Browsers
 without container-query support retain the readable single-column layout.
@@ -102,7 +102,7 @@ Groups accept `surface: plain | tinted | inverted | accent`,
 `padding: none | small | medium | large`, and `radius: none | medium | large`.
 Their defaults are `plain`, `none`, and `none`. Colours follow the active theme.
 
-## Layers and placement (source rc.11)
+## Layers and placement (rc.11)
 
 A layered layout puts foreground content over an image or a silent video backdrop.
 Use `place` on its direct children. It accepts `top-start`, `top-center`, `top-end`,
@@ -161,7 +161,7 @@ element with captions and a transcript. Backdrops are decorative.
 | `stat` | Required string `value` and `label`. Quote numeric YAML values. |
 | `divider` | A separator; no extra fields. |
 | `media-accordion` | Required `label` and 2–8 `items`; the same synchronized text/image component as [the concise section](/sections/media-accordion). Supports `mediaSide`, `ratio`, `fit` and `itemHeadingLevel`. |
-| `video` (source rc.11) | Required `label` and `src`; optional `poster`, inline-Markdown `caption`, WebVTT `tracks`, and `transcript` link. Uses the same player as `video-embed`. |
+| `video` (rc.11) | Required `label` and `src`; optional `poster`, inline-Markdown `caption`, WebVTT `tracks`, and `transcript` link. Uses the same player as `video-embed`. |
 | `prose` (rc.11) | Required `body`: plain block Markdown, including paragraphs, lists, tables and code. No MDX execution or raw HTML. |
 | `list` (rc.11) | Required 1–24 inline-Markdown `items`; `ordered` defaults to false. |
 | `quote` (rc.11) | Required inline-Markdown `text` and plain-text `author`; renders a blockquote and attribution. |
@@ -180,7 +180,7 @@ Elements other than dividers also accept `effect: reveal`, which uses the site's
 existing entrance motion. Omit it for an ordinary element. The site's `motion:
 none` and the reader's reduced-motion preference take precedence.
 
-## Semantic and interactive content (source rc.11)
+## Semantic and interactive content (rc.11)
 
 Use semantic nodes instead of arranging ordinary text to imitate a table, list or
 code block. For example:
@@ -353,7 +353,7 @@ JavaScript or an intersection observer; reduced motion shows the finished
 heading. Forced colours and print use solid text. Print preserves authored
 reading order and does not reproduce animation.
 
-## Scroll stages (source rc.11)
+## Scroll stages (rc.11)
 
 A root or group can declare `scroll`. Set the enclosing section's `motion` to
 `expressive`; `none`, `subtle` and the reader's reduced-motion preference keep
@@ -396,7 +396,7 @@ bounded single stages. For an ordered narrative with video segments, use `story`
 
 <SectionPreview example="compose-scroll" />
 
-## Scroll stories and video scrubbing (source rc.11)
+## Scroll stories and video scrubbing (rc.11)
 
 Use a `story` node to compose 2–8 ordered scenes. Each scene pairs a heading and
 inline Markdown body with an image or a direct video file. On wide screens with
@@ -491,7 +491,7 @@ native authoring and engine checking enforce these bounds. Deep checks follow
 nested image/video/poster/track paths, button/transcript links and inline Markdown; unknown fields warn and
 fail strict checks.
 
-## Reuse a built-in section (source rc.11)
+## Reuse a built-in section (rc.11)
 
 Use `type: section` to place a supported built-in inside a composition. Its
 `content` uses the same fields and renderer as the dedicated section. This
@@ -578,8 +578,8 @@ zel ns -p product-hero --out content/sections/intro.yaml
 zel ns compose --preset split-story --out content/sections/story.yaml
 ```
 
-The rc.10 presets are `product-hero`, `split-story`, `feature-cards` and
-`media-accordion`. Source rc.11 adds `product-selector`, `feature-explorer`, `scroll-story`, `product-overview` and `studio-profile`:
+The nine rc.11 presets are `product-hero`, `split-story`, `feature-cards`,
+`media-accordion`, `product-selector`, `feature-explorer`, `scroll-story`, `product-overview` and `studio-profile`:
 
 ```bash
 zel ns compose -p product-selector --out content/sections/finishes.yaml
@@ -587,7 +587,7 @@ zel ns compose -p feature-explorer --out content/sections/features.yaml
 zel ns compose -p scroll-story --out content/sections/story.yaml
 ```
 
-These nine source presets use the same authoring workflow. Each expands into an ordinary composition with editable
+These nine presets use the same authoring workflow. Each expands into an ordinary composition with editable
 content and layout. No preset reference remains in the generated file. They
 work offline and accept the same `--set`, `--set-json`, `--count`, `--unset`
 and `--interactive` editing options as other sections. Use `--out` when inferring
@@ -605,18 +605,18 @@ is already supported by `gradient.effect: reveal`.
 
 | Capability | Status |
 | --- | --- |
-| Nested stacks, grids and splits; styled groups; headings, text, images, buttons, statistics and separators | Available in rc.10 |
-| Solid-to-gradient heading reveal; entrance reveal; readable reduced-motion, no-JS and print fallbacks | Available in rc.10 |
-| Synchronized media accordion and four editable section presets | Available in rc.10 |
-| Video nodes, WebVTT captions, transcript links and layouts responsive to their containing space | Implemented in source rc.11; not yet published |
-| Image/video backdrops and nine distinct foreground placements | Implemented in source rc.11; not yet published |
-| Single sticky/unpinned stages, authored ranges and bounded transforms | Implemented in source rc.11; not yet published |
-| Ordered pinned story scenes and direct-file video segment scrubbing | Implemented in source rc.11; not yet published |
+| Nested stacks, grids and splits; styled groups; headings, text, images, buttons, statistics and separators | Available in rc.11 |
+| Solid-to-gradient heading reveal; entrance reveal; readable reduced-motion, no-JS and print fallbacks | Available in rc.11 |
+| Synchronized media accordion and nine editable section presets | Available in rc.11 |
+| Video nodes, WebVTT captions, transcript links and layouts responsive to their containing space | Available in rc.11 |
+| Image/video backdrops and nine distinct foreground placements | Available in rc.11 |
+| Single sticky/unpinned stages, authored ranges and bounded transforms | Available in rc.11 |
+| Ordered pinned story scenes and direct-file video segment scrubbing | Available in rc.11 |
 | Arbitrary keyframe timelines, overlapping scene transitions and audio-synchronized animation | Not implemented |
-| Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Implemented in source rc.11; not yet published |
-| Eight built-in sections as inline children, with heading levels and responsive layouts; product/studio presets | Implemented in source rc.11; not yet published |
+| Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Available in rc.11 |
+| Eight built-in sections as inline children, with heading levels and responsive layouts; product/studio presets | Available in rc.11 |
 | MDX execution, named YAML reuse and arbitrary existing sections as children | Not implemented |
-| Independent selectors (segmented/swatches), feature explorers (tabs/list) and two matching presets | Implemented in source rc.11; not yet published |
+| Independent selectors (segmented/swatches), feature explorers (tabs/list) and two matching presets | Available in rc.11 |
 
 Use a dedicated section when it already provides the behavior you need, such as
 `media-panel` for copy over background media, `card-carousel` for a carousel,

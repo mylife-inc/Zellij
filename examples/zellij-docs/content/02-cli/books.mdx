@@ -3,12 +3,12 @@ title: Books and reading order
 description: Define a book once, validate its manuscript, and build an offline reading website with an optional LuaLaTeX PDF.
 ---
 
-<Callout type="info" title="Included in candidate 0.2.0-rc.10">
-Candidate rc.10 includes the versioned book manifest, `book-classic@0.2.0`
+<Callout type="info" title="Included in candidate 0.2.0-rc.11">
+Candidate rc.11 includes the versioned book manifest, `book-classic@0.2.0`
 and optional LuaLaTeX PDFs on all six native platforms. Shared equation and
 statement references, numeric citations, glossary and subject index are included.
 Technical/study templates, the `book.edition` selector and PDF downloads in
-Next images are also included. rc.10 adds print styling, French/German/Spanish
+Next images are also included. The release includes print styling, French/German/Spanish
 and Arabic RTL print, plus pinned Amiri/Libertinus fonts.
 </Callout>
 
@@ -16,7 +16,7 @@ and Arabic RTL print, plus pinned Amiri/Libertinus fonts.
 
 ## Coordinated editions
 
-Candidate rc.10 includes `book-technical@0.1.0` and `book-study@0.1.0`.
+Candidate rc.11 includes `book-technical@0.1.0` and `book-study@0.1.0`.
 They require CLI/engine 0.2.0-rc.8 or later.
 
 ```sh
@@ -54,7 +54,7 @@ the publication revision, so a downloadable PDF remains tied to that selection.
 The PDF receipt records `classic-v1`, `technical-v1` or `study-v1` in `template`.
 Unknown edition names fail validation and preserve the previous export.
 
-PDF remains opt-in. Candidate rc.10 includes print design
+PDF remains opt-in. Candidate rc.11 includes print design
 settings and the multilingual support described below. Custom TeX execution,
 automatic indexing and alternate citation styles remain
 separate work. The new starters contain original sample writing and an explicitly
@@ -148,8 +148,8 @@ local fonts, search and offline navigation continue to work.
 
 ## Numbered equations and cross-references
 
-<Callout type="info" title="Included in rc.10">
-Shared equation numbering is included in rc.10. Use the matching engine image
+<Callout type="info" title="Included in rc.11">
+Shared equation numbering is included in rc.11. Use the matching engine image
 for Next output. Earlier rc.6 supports its unnumbered print-math subset.
 </Callout>
 
@@ -202,8 +202,8 @@ map supplies hosted entry paths, and deployment base paths apply as usual.
 
 ## Theorems, lemmas and proofs
 
-<Callout type="info" title="Included in rc.10">
-Shared statement numbering and references are included in rc.10. Use the matching
+<Callout type="info" title="Included in rc.11">
+Shared statement numbering and references are included in rc.11. Use the matching
 engine image for Next output.
 </Callout>
 
@@ -267,8 +267,8 @@ components retain their existing behavior.
 
 ## Bibliography and citations
 
-<Callout type="info" title="Included in rc.10">
-The numeric bibliography described here is included in rc.10. Use the matching
+<Callout type="info" title="Included in rc.11">
+The numeric bibliography described here is included in rc.11. Use the matching
 engine image for Next output.
 </Callout>
 
@@ -367,7 +367,7 @@ omit that field and keep their existing revision behavior.
 ## Glossary and index
 
 <Callout type="info">
-Glossary and subject-index catalogs are included in rc.10, with the same
+Glossary and subject-index catalogs are included in rc.11, with the same
 resolved terms and references across portable HTML, Next and PDF.
 </Callout>
 
@@ -474,7 +474,7 @@ collation and rich glossary definitions remain separate extensions.
 These set the HTML content language and writing direction, including in adapted
 Next images. Portable layout uses logical inline edges. They do not translate
 interface labels such as “Chapter” and “Search” or promise complete typesetting
-support for every language. Candidate rc.10 selects local Amiri for Arabic books. Verify the glyphs
+support for every language. Candidate rc.11 selects local Amiri for Arabic books. Verify the glyphs
 needed by your manuscript; the bundled fonts do not cover every script.
 
 The supported language syntax is 2–8 ASCII letters, optionally followed by
@@ -509,7 +509,7 @@ reading order, chapter markers and title-page content. Its public
 `routes` (entry IDs mapped to hosted routes). Apply the deployment's configured
 `basePath` to both this URL and the mapped routes: the map contains unprefixed
 content routes, not complete deployment URLs. Its portable `href` fields are not
-hosted route declarations. Use the matching rc.10 engine image. Native
+hosted route declarations. Use the matching rc.11 engine image. Native
 portable web builds require no external renderer.
 
 ## Start from the existing book template
@@ -583,7 +583,7 @@ Paper may be `a5`, `a4` or `letter`; font size is the integer `10`, `11` or `12`
 (points). Settings are validated even when PDF is disabled. Unknown keys,
 unsupported values, null settings, hosted sites and missing book manifests fail
 validation. The selected edition supplies the default fonts and chapter styling.
-Candidate rc.10 includes the print overrides and bounded language/font support below.
+Candidate rc.11 includes the print overrides and bounded language/font support below.
 Custom font files remain unsupported. Standalone `zel pdf` explicitly
 requests export regardless of `enabled`, using the same paper and font settings.
 
@@ -606,7 +606,7 @@ runs a PDF toolchain.
 
 ### Custom print styling
 
-**Included in CLI 0.2.0-rc.10 and later.** Add a
+**Included in CLI 0.2.0-rc.11 and later.** Add a
 `style` mapping inside `pdf` to customize a book without writing LaTeX:
 
 ```yaml
@@ -663,7 +663,7 @@ it does not publish or verify the availability of a future release.
 
 ### Multilingual books and named fonts
 
-**Included in CLI/engine 0.2.0-rc.10 and later.**
+**Included in CLI/engine 0.2.0-rc.11 and later.**
 The print adapter accepts English (`en`), French (`fr`), German (`de`) and Spanish
 (`es`) with `direction: ltr`, and Arabic (`ar`) with `direction: rtl`. For example:
 
@@ -723,7 +723,7 @@ failure prevents delivery. The generated static image contains the export and
 HTTP server, without the LaTeX toolchain. Deployment dry runs report the PDF
 requirement without checking credentials or starting a runtime.
 
-**Included in rc.10:** `zel ni` / `zel image next` also
+**Included in rc.11:** `zel ni` / `zel image next` also
 honor `pdf.enabled`, including saved image publication and Next-image delivery.
 The web documents and print inputs are resolved from one manuscript snapshot.
 Every reading page has a **Download the complete book (PDF)** link; it works
@@ -749,7 +749,7 @@ Any explicit `pdf` settings require a CLI pin of **0.2.0-rc.6 or later**.
 PDF-enabled **Next** image jobs require **0.2.0-rc.8 or later**; CI generation
 rejects older pins before writing a workflow, including with `--force`.
 Generation does not check whether a pinned candidate has been published.
-Generate the workflow with `--zel-version 0.2.0-rc.10` to select this published
+Generate the workflow with `--zel-version 0.2.0-rc.11` to select this published
 candidate. Earlier binaries do not support these settings.
 
 ### Toolchain and failure behavior
@@ -800,7 +800,7 @@ references share their number; unreferenced definitions are rejected. The printe
 any authored home document; its body remains part of the publication. The adapter
 starts that authored home content on a separate page after the contents.
 
-Candidate rc.10 print editions support English/French/German/Spanish LTR and
+Candidate rc.11 print editions support English/French/German/Spanish LTR and
 Arabic RTL, with the bundled fonts described above. SVG, WebP,
 GIF, remote images, diagram fences, attachment links and internal-link URL queries
 are rejected for print with an explanation; ordinary web builds retain their existing support.

@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.10 catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.11 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -138,6 +138,6 @@ at the far right. The mobile header uses the complete navigation drawer.
 
 `api-platform` 0.1.0 uses the new `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
-SVG artwork use no remote assets or services. CLI and engine rc.10 are required;
-the published rc.10 catalog includes nine starters. All eight earlier archives
+SVG artwork use no remote assets or services. CLI and engine rc.10 or later are required;
+the published rc.11 catalog includes nine starters. All eight earlier archives
 remain byte-identical. The API, plans and product names are fictional examples.
