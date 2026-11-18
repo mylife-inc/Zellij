@@ -104,7 +104,14 @@ test('forced colours and reduced motion keep links and all section content usabl
   await page.emulateMedia({forcedColors:'active',reducedMotion:'reduce'});await page.goto('/compose-reuse');
   for(const type of types) await expect(page.locator(`.zellij-compose-section > [data-zellij-section="${type}"]`).first()).toBeVisible();
   await expect(page.locator('.zellij-count-up-animated').first()).toHaveText('48');
-  await page.getByRole('link',{name:'The maker — Read the story'}).click();
+  const link=page.getByRole('link',{name:'The maker — Read the story'});
+  await link.scrollIntoViewIfNeeded();
+  await expect.poll(()=>link.evaluate(el=>{
+    const rect=el.getBoundingClientRect();
+    const hit=document.elementFromPoint(rect.x+rect.width/2,rect.y+rect.height/2);
+    return rect.height>=44 && !!hit && el.contains(hit);
+  })).toBe(true);
+  await link.click();
   await expect(page).toHaveURL(/\/compose$/);
 });
 

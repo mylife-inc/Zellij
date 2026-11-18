@@ -1486,6 +1486,12 @@ a.zellij-bento-tile:hover {
 }
 
 .zellij-team-link {
+  /* One hit area contains both the hidden person prefix and visible label. */
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  min-height: 44px;
+  max-width: 100%;
   font-size: 0.875rem;
   color: var(--zellij-fg);
   text-decoration: none;
