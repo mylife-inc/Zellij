@@ -92,3 +92,8 @@ assumption corrections, not changes to CLI option ordering.
 Print review also found the shared gradient-heading treatment retained a
 transparent text fill when backgrounds were omitted. Print now uses solid dark
 text; the embedded feature fixture and browser test exercise that fallback.
+
+A further print review found that embedded inverted bento tiles and dark-theme
+cards retained their surface when heading text switched to black. Embedded
+cards, CTA links and pricing flags now print without their coloured background,
+with dark foregrounds. A dark-theme print assertion and capture cover the pairing.
