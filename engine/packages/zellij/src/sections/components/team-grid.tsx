@@ -5,8 +5,9 @@ import { InlineMarkdown, SectionHeader, SectionImage, SectionShell } from '../sh
 import { Reveal } from '../../motion/reveal';
 
 /** People: a board, a faculty, a team, a list of contributors. */
-export function TeamGrid({ section, site, defaultMotion }: SectionProps<TeamGridSection>) {
+export function TeamGrid({ section, site, defaultMotion, headingLevel }: SectionProps<TeamGridSection>) {
   const motion = section.motion ?? defaultMotion;
+  const ItemHeading = (headingLevel ? `h${headingLevel + (section.heading ? 1 : 0)}` : 'h3') as 'h2' | 'h3' | 'h4' | 'h5';
   const { basePath } = site.config;
 
   return (
@@ -18,7 +19,7 @@ export function TeamGrid({ section, site, defaultMotion }: SectionProps<TeamGrid
       padding={section.padding}
       className="zellij-team"
     >
-      <SectionHeader
+      <SectionHeader level={headingLevel}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
         motion={motion}
@@ -41,7 +42,7 @@ export function TeamGrid({ section, site, defaultMotion }: SectionProps<TeamGrid
               </div>
             ) : null}
 
-            <h3 className="zellij-team-name">{person.name}</h3>
+            <ItemHeading className="zellij-team-name">{person.name}</ItemHeading>
             {person.role ? <p className="zellij-team-role">{person.role}</p> : null}
             {person.bio ? (
               <p className="zellij-team-bio">

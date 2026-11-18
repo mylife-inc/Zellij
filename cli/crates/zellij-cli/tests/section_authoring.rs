@@ -669,7 +669,7 @@ fn named_presets_are_listed_and_generated_offline_as_editable_yaml() {
         run(temp.path(), &["list", "presets", "--json"], "", 0).stdout
     );
     let value: Value = serde_json::from_slice(&catalog.stdout).unwrap();
-    assert_eq!(value["presets"].as_array().unwrap().len(), 7);
+    assert_eq!(value["presets"].as_array().unwrap().len(), 9);
     let context: Value =
         serde_json::from_slice(&run(temp.path(), &["context", "--json"], "", 0).stdout).unwrap();
     for preset in value["presets"].as_array().unwrap() {
@@ -937,6 +937,94 @@ fn story_segments_and_nested_stage_rules_validate_before_writing() {
         vec![
             "--set-json",
             r#"layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}"#,
+        ],
+    ] {
+        let mut args = vec![
+            "ns",
+            "compose",
+            "--set-json",
+            &arg,
+            "--out",
+            "rejected.yaml",
+        ];
+        args.extend(extra);
+        run(temp.path(), &args, "", 2);
+        assert!(!temp.path().join("rejected.yaml").exists());
+    }
+}
+
+#[test]
+fn embedded_sections_edit_the_selected_schema_and_reject_unsupported_frames_before_writing() {
+    let temp = tempfile::tempdir().unwrap();
+    let embedded = serde_json::json!({"type":"section","label":"Plans","content":{"type":"pricing-table","heading":"Plans","tiers":[{"name":"Studio","price":"Free","features":["One","Initial"]}]}});
+    let arg = format!("children={}", serde_json::json!([embedded]));
+    let out = run(
+        temp.path(),
+        &[
+            "ns",
+            "compose",
+            "--set-json",
+            &arg,
+            "--set",
+            "children.0.content.tiers.0.features.1=Two 日本",
+            "--set",
+            "children.0.headingLevel=3",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&out)["children"][0]["content"]["tiers"][0]["features"][1],
+        "Two 日本"
+    );
+    assert_eq!(yaml(&out)["children"][0]["headingLevel"], 3);
+    let counted = run(
+        temp.path(),
+        &[
+            "ns",
+            "-p",
+            "product-overview",
+            "--count",
+            "children.3.content.tiers.0.features=2",
+            "--set",
+            "children.3.content.tiers.0.features.1=Added feature",
+        ],
+        "",
+        0,
+    );
+    assert_eq!(
+        yaml(&counted)["children"][3]["content"]["tiers"][0]["features"][1],
+        "Added feature"
+    );
+    run(
+        temp.path(),
+        &[
+            "ns",
+            "-p",
+            "product-overview",
+            "--count",
+            "children.3.content.tiers.0.features=25",
+            "--out",
+            "too-large.yaml",
+        ],
+        "",
+        2,
+    );
+    assert!(!temp.path().join("too-large.yaml").exists());
+    for extra in [
+        vec!["--set", "children.0.content.id=duplicate"],
+        vec!["--set", "children.0.content.background=inverted"],
+        vec!["--set", "children.0.content.padding=loose"],
+        vec!["--set", "children.0.content.motion=expressive"],
+        vec!["--set", "children.0.headingLevel=1"],
+        vec!["--set-json", r#"scroll={"from":{},"to":{}}"#],
+        vec![
+            "--set-json",
+            r#"layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}"#,
+        ],
+        vec![
+            "--set-json",
+            r#"children.0.content={"type":"compose","version":1,"label":"Recursive","children":[]}"#,
         ],
     ] {
         let mut args = vec![

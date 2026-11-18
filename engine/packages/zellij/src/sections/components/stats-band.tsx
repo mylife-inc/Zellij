@@ -4,7 +4,7 @@ import { SectionHeader, SectionShell } from '../shared';
 import { Reveal } from '../../motion/reveal';
 import { CountUp } from '../../motion/count-up';
 
-export function StatsBand({ section, defaultMotion }: SectionProps<StatsBandSection>) {
+export function StatsBand({ section, defaultMotion, headingLevel }: SectionProps<StatsBandSection>) {
   const motion = section.motion ?? defaultMotion;
 
   return (
@@ -16,7 +16,7 @@ export function StatsBand({ section, defaultMotion }: SectionProps<StatsBandSect
       padding={section.padding}
       className="zellij-stats"
     >
-      <SectionHeader {...(section.heading ? { heading: section.heading } : {})} motion={motion}
+      <SectionHeader level={headingLevel} {...(section.heading ? { heading: section.heading } : {})} motion={motion}
         {...(section.titleGradient ? { titleGradient: section.titleGradient } : {})}
       />
 

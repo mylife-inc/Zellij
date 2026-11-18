@@ -131,7 +131,7 @@ test.describe('count-up stats', () => {
     const stats = page.locator('[data-zellij-section="stats-band"]');
     await stats.scrollIntoViewIfNeeded();
 
-    const value = stats.locator('.zellij-stat-value').first();
+    const value = stats.locator('.zellij-stat-value .zellij-count-up-animated').first();
     // Whatever it does mid-flight, it must end on exactly what the content says.
     //
     // This once looked like load-related flake and was papered over with a long
@@ -184,7 +184,7 @@ test.describe('reduced motion overrides everything', () => {
   test('stats show their final value without counting', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('/lumen-3-pro');
-    await expect(page.locator('.zellij-stat-value').first()).toHaveText('6.3″');
+    await expect(page.locator('.zellij-stat-value .zellij-count-up-animated').first()).toHaveText('6.3″');
   });
 
   test('the page is not made taller by motion that cannot run', async ({ page, isMobile }) => {

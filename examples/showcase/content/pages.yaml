@@ -80,3 +80,8 @@
   title: An idea takes shape
   layout: stack
   sections: [compose/scroll-story, compose/story-independent]
+
+- name: compose-reuse
+  title: Small studio, wide horizons
+  layout: stack
+  sections: [compose/reuse-product, compose/reuse-studio]

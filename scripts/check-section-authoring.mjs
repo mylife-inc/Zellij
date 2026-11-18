@@ -127,10 +127,20 @@ try {
     ['--set','children.0.scenes.1.media.end=0.1'], ['--set-json','scroll={"from":{},"to":{}}'],
     ['--set-json','layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}'],
   ]) assert.notEqual(spawnSync(binary,[...storyArgs,...extra]).status,0);
+  const embedded = {type:'section',label:'Plans',content:{type:'pricing-table',heading:'Plans',tiers:[{name:'Studio',price:'Free',features:['One','Initial'],cta:{label:'Read',href:'/guide'}}]}};
+  const reuseArgs=['ns','compose','--set-json','children='+JSON.stringify([embedded])];
+  const reused=YAML.parse(execFileSync(binary,[...reuseArgs,'--set','children.0.content.tiers.0.features.1=Two','--set','children.0.headingLevel=3'],{encoding:'utf8'}));
+  getSection('compose').schema.parse(reused);
+  assert.equal(reused.children[0].content.tiers[0].features[1],'Two');
+  for(const extra of [
+    ['--set','children.0.content.id=duplicate'], ['--set','children.0.headingLevel=1'],
+    ['--set-json','scroll={"from":{},"to":{}}'],
+    ['--set-json','layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}'],
+  ]) assert.notEqual(spawnSync(binary,[...reuseArgs,...extra]).status,0);
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 25 authored section types and seven editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 25 authored section types and nine editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

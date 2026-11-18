@@ -20,7 +20,7 @@ zel ns compose --out content/sections/intro.yaml
 
 <Callout type="info" title="Next candidate: source 0.2.0-rc.11">
 Video, caption tracks, transcripts, container-aware layouts, layers, semantic
-content nodes, selectors/explorers, scroll stories and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
+content nodes, selectors/explorers, scroll stories, controlled section reuse and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
 and engine build; the published rc.10 candidate does not include them yet.
 </Callout>
 
@@ -491,6 +491,84 @@ native authoring and engine checking enforce these bounds. Deep checks follow
 nested image/video/poster/track paths, button/transcript links and inline Markdown; unknown fields warn and
 fail strict checks.
 
+## Reuse a built-in section (source rc.11)
+
+Use `type: section` to place a supported built-in inside a composition. Its
+`content` uses the same fields and renderer as the dedicated section. This
+preserves real feature links, pricing features, bento spans, ordered timelines,
+team links, count-up statistics and copy-command controls.
+
+```yaml
+type: compose
+version: 1
+label: A shared workspace
+children:
+  - type: section
+    label: Plans
+    headingLevel: 2
+    content:
+      type: pricing-table
+      heading: A plan for your next chapter.
+      tiers:
+        - name: Studio
+          price: Contact us
+          highlighted: true
+          features: [Shared ideas, Thoughtful documentation]
+          cta: {label: Read the guide, href: /cli}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `label` | Required accessible group name; no extra visible heading |
+| `headingLevel` | 2–4, default 2; section heading level, with item headings one level below it |
+| `content` | Inline data for one of the supported section types below |
+
+When content has no section heading, item headings use `headingLevel` itself.
+Logo-strip's heading remains its existing paragraph, so it introduces no heading.
+The adapter never introduces an H1 or authored ID. Use the outer composition's
+`id` for an anchor; React controls retain their own instance identities.
+
+Supported content types and embedding limits:
+
+| Type | Collection limit |
+| --- | --- |
+| `feature-grid` | 1–12 items |
+| `pricing-table` | 1–4 tiers, at most 24 features per tier |
+| `stats-band` | 3–5 statistics |
+| `cta-banner` | One action or at most two actions; optional copy command |
+| `bento-grid` | 2–12 items |
+| `timeline` | 2–12 items |
+| `team-grid` | 1–12 people, at most eight links per person |
+| `logo-strip` | 1–16 logos |
+
+The outer composition or group owns background, padding and motion. Nested
+`id`, `background`, `padding` and `motion` fields are errors; `titleGradient`
+remains available. Use a styled group around the node for its surface and spacing.
+The actual feature/pricing cards and bento tiles retain their own card surfaces.
+Grids respond to their containing width: one column below 600px, two from 600px,
+and the authored three/four columns (or four-column bento) from 960px. Pricing
+and statistics use their own fitting-column sizes. Print uses a single column.
+
+Use ordinary stacks, splits and grids. Embedding inside layers or scroll stages
+is rejected even through intervening groups. This node has no `place` or `effect`;
+its shared renderer uses the inherited motion preset. Count-up values remain
+complete for screen readers and print, and commands remain selectable without
+clipboard access or JavaScript.
+
+This reuses **inline section content**, not a named YAML file. Copy the content
+fields into `content`, removing the outer frame fields listed above. Other
+registered types, recursive compositions and MDX are not accepted here. The
+existing video, gallery, carousel, media-accordion and prose nodes remain the
+choices for their respective content.
+
+```bash
+zel ns -p product-overview --out content/sections/overview.yaml
+zel ns -p studio-profile --out content/sections/studio.yaml
+zel ns compose --set-json 'children=[{"type":"section","label":"Begin","content":{"type":"cta-banner","headline":"Create something","command":"zel build"}}]' --set 'children.0.content.headline=Begin your next idea'
+```
+
+<SectionPreview example="compose-reuse" />
+
 ## Named presets
 
 ```bash
@@ -501,7 +579,7 @@ zel ns compose --preset split-story --out content/sections/story.yaml
 ```
 
 The rc.10 presets are `product-hero`, `split-story`, `feature-cards` and
-`media-accordion`. Source rc.11 adds `product-selector`, `feature-explorer` and `scroll-story`:
+`media-accordion`. Source rc.11 adds `product-selector`, `feature-explorer`, `scroll-story`, `product-overview` and `studio-profile`:
 
 ```bash
 zel ns compose -p product-selector --out content/sections/finishes.yaml
@@ -509,7 +587,7 @@ zel ns compose -p feature-explorer --out content/sections/features.yaml
 zel ns compose -p scroll-story --out content/sections/story.yaml
 ```
 
-These seven source presets use the same authoring workflow. Each expands into an ordinary composition with editable
+These nine source presets use the same authoring workflow. Each expands into an ordinary composition with editable
 content and layout. No preset reference remains in the generated file. They
 work offline and accept the same `--set`, `--set-json`, `--count`, `--unset`
 and `--interactive` editing options as other sections. Use `--out` when inferring
@@ -536,12 +614,13 @@ is already supported by `gradient.effect: reveal`.
 | Ordered pinned story scenes and direct-file video segment scrubbing | Implemented in source rc.11; not yet published |
 | Arbitrary keyframe timelines, overlapping scene transitions and audio-synchronized animation | Not implemented |
 | Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Implemented in source rc.11; not yet published |
-| MDX execution and arbitrary existing sections as children | Not implemented |
+| Eight built-in sections as inline children, with heading levels and responsive layouts; product/studio presets | Implemented in source rc.11; not yet published |
+| MDX execution, named YAML reuse and arbitrary existing sections as children | Not implemented |
 | Independent selectors (segmented/swatches), feature explorers (tabs/list) and two matching presets | Implemented in source rc.11; not yet published |
 
 Use a dedicated section when it already provides the behavior you need, such as
 `media-panel` for copy over background media, `card-carousel` for a carousel,
 `pricing-table` for pricing, or `faq` for questions. Those sections can sit next
-to compositions. The composer reuses the video, media-accordion, carousel-track and lightbox components through its own node schemas; it does not embed arbitrary section definitions. Arbitrary
+to compositions. The `section` node embeds the eight reviewed built-ins listed above; the composer also shares the video, media-accordion, carousel-track and lightbox components through its own node schemas. Arbitrary
 author-supplied JavaScript and unrestricted CSS are outside its declarative
 contract. Book pagination and PDF composition remain part of the book system.

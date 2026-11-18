@@ -4,8 +4,9 @@ import { CtaLink, SectionHeader, SectionShell } from '../shared';
 import { Icon } from '../../icons';
 import { Reveal } from '../../motion/reveal';
 
-export function PricingTable({ section, defaultMotion }: SectionProps<PricingTableSection>) {
+export function PricingTable({ section, defaultMotion, headingLevel }: SectionProps<PricingTableSection>) {
   const motion = section.motion ?? defaultMotion;
+  const ItemHeading = (headingLevel ? `h${headingLevel + (section.heading ? 1 : 0)}` : 'h3') as 'h2' | 'h3' | 'h4' | 'h5';
 
   return (
     <SectionShell
@@ -16,7 +17,7 @@ export function PricingTable({ section, defaultMotion }: SectionProps<PricingTab
       motion={motion}
       className="zellij-pricing"
     >
-      <SectionHeader
+      <SectionHeader level={headingLevel}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
         motion={motion}
@@ -39,7 +40,7 @@ export function PricingTable({ section, defaultMotion }: SectionProps<PricingTab
                 <p className="zellij-pricing-flag">Most popular</p>
               ) : null}
 
-              <h3 className="zellij-pricing-name">{tier.name}</h3>
+              <ItemHeading className="zellij-pricing-name">{tier.name}</ItemHeading>
 
               <p className="zellij-pricing-price">
                 <span className="zellij-pricing-amount">{tier.price}</span>

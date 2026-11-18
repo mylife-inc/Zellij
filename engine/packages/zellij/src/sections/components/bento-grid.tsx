@@ -11,8 +11,9 @@ import { Reveal } from '../../motion/reveal';
  * An asymmetric tile grid. Tiles claim one, two or four cells on a wide
  * viewport and collapse to a single column on a narrow one.
  */
-export function BentoGrid({ section, site, defaultMotion }: SectionProps<BentoGridSection>) {
+export function BentoGrid({ section, site, defaultMotion, headingLevel }: SectionProps<BentoGridSection>) {
   const motion = section.motion ?? defaultMotion;
+  const ItemHeading = (headingLevel ? `h${headingLevel + (section.heading ? 1 : 0)}` : 'h3') as 'h2' | 'h3' | 'h4' | 'h5';
   const { basePath } = site.config;
 
   return (
@@ -24,7 +25,7 @@ export function BentoGrid({ section, site, defaultMotion }: SectionProps<BentoGr
       padding={section.padding}
       className="zellij-bento"
     >
-      <SectionHeader
+      <SectionHeader level={headingLevel}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
         motion={motion}
@@ -40,7 +41,7 @@ export function BentoGrid({ section, site, defaultMotion }: SectionProps<BentoGr
                   <Icon name={item.icon} context={`bento-grid › ${item.title}`} size={22} />
                 </span>
               ) : null}
-              <h3 className="zellij-bento-title">{item.title}</h3>
+              <ItemHeading className="zellij-bento-title">{item.title}</ItemHeading>
               {item.body ? (
                 <p className="zellij-bento-body">
                   <InlineMarkdown text={item.body} />

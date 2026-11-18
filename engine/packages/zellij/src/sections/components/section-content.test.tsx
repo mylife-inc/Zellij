@@ -1,0 +1,46 @@
+import { expect, it } from 'vitest';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { sectionNodeSchema } from '../reuse-schema';
+import { SectionContent } from './section-content';
+import type { Site } from '../../content/site';
+const site={config:{basePath:'/product'}} as Site;
+const render=(content:unknown,headingLevel=3)=>renderToStaticMarkup(<SectionContent node={sectionNodeSchema.parse({type:'section',label:'Embedded content',headingLevel,content})} site={site} motion="none" />);
+it('reuses linked feature lists with subordinate headings and source order',()=>{
+  const html=render({type:'feature-grid',heading:'Details',items:[{title:'First',body:'A **clear** thought.',href:'/guide'},{title:'Second'}]});
+  expect(html).toContain('role="group" aria-label="Embedded content"');
+  expect(html).toContain('<h3 class="zellij-section-heading">Details');
+  expect(html).toContain('<h4 class="zellij-feature-title">First');
+  expect(html).toContain('<ul class="zellij-feature-list"');
+  expect(html).toContain('href="/guide"');
+  expect(html).toContain('<strong>clear</strong>');
+  expect(html.indexOf('First')).toBeLessThan(html.indexOf('Second'));
+  expect(html).not.toMatch(/<h1\b| id=/);
+  expect(render({type:'feature-grid',items:[{title:'No parent heading'}]},4)).toContain('<h4 class="zellij-feature-title">');
+});
+it('preserves real pricing features, count-up resting values and copyable commands',()=>{
+  const pricing=render({type:'pricing-table',tiers:[{name:'Studio',price:'$20',features:['Offline export'],cta:{label:'Explore',href:'/guide'},highlighted:true}]});
+  expect(pricing).toContain('data-highlighted="true"');
+  expect(pricing).toContain('<ul class="zellij-pricing-features"');
+  expect(pricing).toContain('href="/guide"');
+  const stats=render({type:'stats-band',stats:[{label:'One',value:1},{label:'Two',value:'2',suffix:'%'},{label:'Three',value:'3'}]});
+  expect(stats).toContain('<dl class="zellij-stats-list"');
+  expect(stats).toContain('2%');
+  expect(stats).toContain('class="zellij-count-up-animated" aria-hidden="true"');
+  expect(stats).toContain('class="zellij-visually-hidden zellij-count-up-literal"');
+  const cta=render({type:'cta-banner',headline:'Begin',command:'zel build',body:'Build **locally**.'},4);
+  expect(cta).toContain('<h4 class="zellij-cta-banner-headline">Begin');
+  expect(cta).toContain('<code class="zellij-command-text">zel build</code>');
+  expect(cta).toContain('aria-label="Copy the terminal command"');
+  expect(cta).toContain('<button type="button" hidden=""');
+});
+it('preserves bento spans, ordered timeline, named team links and prefixed assets',()=>{
+  const bento=render({type:'bento-grid',items:[{title:'Wide',span:'wide',image:'assets/a.svg'},{title:'Second'}]});
+  expect(bento).toContain('data-span="wide"');
+  expect(bento).toContain('/product/_zellij/assets/a.svg');
+  expect(render({type:'timeline',items:[{date:2025,title:'Begin'},{date:2026,title:'Continue'}]})).toContain('<ol class="zellij-timeline-list"');
+  const team=render({type:'team-grid',people:[{name:'Author',photo:'assets/author.svg',links:[{label:'Website',href:'https://example.org'}]}]});
+  expect(team).toContain('Author — ');
+  expect(team).toContain('target="_blank" rel="noreferrer noopener"');
+  expect(team).toContain('/product/_zellij/assets/author.svg');
+  expect(render({type:'logo-strip',logos:['assets/logo.svg']})).toContain('/product/_zellij/assets/logo.svg');
+});

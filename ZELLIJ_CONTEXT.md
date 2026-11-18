@@ -3,6 +3,17 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: controlled section reuse under implementation (source rc.11)**
+
+The `section` composer node embeds inline content for eight reviewed built-ins:
+feature grids, pricing, statistics, CTA banners, bento grids, timelines, teams
+and logo strips. It shares their schemas and renderers, adapts heading ownership
+and container sizing, and inherits the composition's frame and motion. It has
+no page ID or recursive section registry lookup. It cannot enter scroll stages
+or layer layouts. This is inline built-in reuse, not file references or MDX.
+See [the contract](specs/zellij-compose-reuse-2026-11-18.md). Verification and merge
+are pending. Public rc.10 is unchanged; rc.11 publication follows acceptance.
+
 **2026-11-18: composer scroll stories verified (source rc.11)**
 
 PR [#205](https://github.com/mylife-inc/Zellij/pull/205) adds `story`: 2–8 ordered

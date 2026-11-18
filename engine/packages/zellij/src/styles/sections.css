@@ -2227,6 +2227,8 @@ a.zellij-promo-tile:hover .zellij-promo-image {
     border-color var(--zellij-motion-duration) var(--zellij-motion-ease);
 }
 
+.zellij-command-copy[hidden] { display: none; }
+
 .zellij-command-copy:hover {
   color: #f2f4f7;
   border-color: #46506a;
@@ -2603,4 +2605,13 @@ a.zellij-promo-tile:hover .zellij-promo-image {
   font-size: 0.9375rem;
   line-height: 1.7;
   max-width: 54rem;
+}
+
+/* Assistive reading and print use the authored number, never an animation frame. */
+@media print {
+  .zellij-gradient-text { background-image: none !important; color: #111 !important; -webkit-text-fill-color: #111; }
+  .zellij-count-up-animated, .zellij-command-copy { display: none !important; }
+  .zellij-command { background: none; border-color: #777; }
+  .zellij-command-text { color: #111; }
+  .zellij-visually-hidden.zellij-count-up-literal { position: static; width: auto; height: auto; margin: 0; overflow: visible; clip-path: none; white-space: normal; }
 }
