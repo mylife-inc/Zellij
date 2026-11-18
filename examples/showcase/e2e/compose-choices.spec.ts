@@ -21,6 +21,10 @@ for (const route of ['compose-selector', 'compose-explorer']) {
     expect(new Set(ids).size).toBe(ids.length);
     for (const colorScheme of ['light','dark'] as const) {
       await page.emulateMedia({colorScheme}); await page.evaluate(() => scrollTo({top:0,behavior:'instant'}));
+      for (const node of await page.locator('.zellij-compose-choice').all()) {
+        const color = await node.evaluate(el => getComputedStyle(el).color);
+        await expect(node.locator('.zellij-choice-heading:visible')).toHaveCSS('color', color);
+      }
       await page.screenshot({path:info.outputPath(`${route}-${colorScheme}.png`),fullPage:true,animations:'disabled'});
     }
     expect(errors).toEqual([]);
@@ -114,7 +118,7 @@ test('print reveals every choice while reduced motion and forced colours preserv
 test('nested choices remain contained with long labels and larger text', async ({page}) => {
   await page.setViewportSize({width:360,height:800}); await page.goto('/compose-selector');
   await page.locator('.zellij-compose-choice').last().evaluate(node => {
-    (node as HTMLElement).style.fontSize='24px';
+    document.documentElement.style.fontSize='24px';
     node.querySelector('.zellij-choice-option-face > span')!.textContent='An unusually long product model name that still needs a readable control';
   });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);

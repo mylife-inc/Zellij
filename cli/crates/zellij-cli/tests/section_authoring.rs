@@ -895,8 +895,11 @@ fn choice_nodes_reject_ambiguous_or_incomplete_selection_before_writing() {
         );
         assert!(!temp.path().join("must-not-exist.yaml").exists());
     }
-    let explorer =
-        serde_json::json!({"type":"explorer","label":"Features","initial":"missing","items":items});
+    let mut feature_items = items.clone();
+    for item in feature_items.as_array_mut().unwrap() {
+        item.as_object_mut().unwrap().remove("swatch");
+    }
+    let explorer = serde_json::json!({"type":"explorer","label":"Features","initial":"missing","items":feature_items});
     let arg = format!("children={}", serde_json::json!([explorer]));
     run(temp.path(), &["ns", "compose", "--set-json", &arg], "", 2);
 }
