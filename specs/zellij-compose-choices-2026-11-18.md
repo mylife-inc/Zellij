@@ -76,3 +76,14 @@ case removes selector-only fields before checking an explorer.
 | --- | --- | --- |
 | Inverted-card choice heading used the global foreground | Heading uses the local composition foreground | Keep light-theme dark cards readable |
 | Important print rule was outside the base layer | Override uses the same layer as the hidden reset | Preserve every choice in printed output |
+
+## Capture retention follow-up
+
+Corrected source `1f86514` passes all 75 focused composer cases without retries
+in run `44270115427`; all six documentation hydration-preservation cases pass.
+Full-run showcase job `134684083280` passes 475 cases without retries (140
+conditional skips). Its artifact retained the existing composer images but
+omitted the twelve new `compose-*.png` captures because the upload pattern only
+matched `composition-*.png`. All new captures are retained by the focused run.
+The CI follow-up adds the missing artifact pattern without changing rendering,
+authoring, content or tests; a fresh full run verifies final retention.

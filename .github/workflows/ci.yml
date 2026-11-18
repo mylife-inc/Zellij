@@ -631,6 +631,7 @@ jobs:
             examples/showcase/test-results/**/error-context.md
             examples/showcase/test-results/**/header-failure-state.json
             examples/showcase/test-results/**/composition-*.png
+            examples/showcase/test-results/**/compose-*.png
             examples/showcase/test-results/**/media-accordion-*.png
             examples/showcase/test-results/**/drawer-*.png
           if-no-files-found: ignore
