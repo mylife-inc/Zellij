@@ -120,3 +120,11 @@ was transparent over a dark page background. Printed compositions now paint
 white, with transparent inner groups; the sticky site header is hidden in print.
 The browser test checks both the outer white surface and hidden header, and
 retains a full-page print capture for review.
+
+The full run on `79f6102` passed all 526 browser cases without retries, with 140
+conditional skips. Its WebKit CSS-print capture was taken before offscreen lazy
+images had loaded (unlike the light/dark visual check, which visits and awaits
+each image). The print fixture now uses that same explicit readiness check before
+emulating print and checks image visibility afterward. This adjusts the capture
+precondition; it does not change the production image loading policy or claim
+that CSS-media emulation is a native print-dialog test.
