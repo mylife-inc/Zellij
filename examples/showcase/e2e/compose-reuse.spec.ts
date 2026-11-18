@@ -71,6 +71,9 @@ test('statistics preserve an authored accessible and print value independently o
   await stats.locator('.zellij-count-up-animated').first().evaluate(el=>{el.textContent='17';});
   await page.emulateMedia({media:'print',colorScheme:'dark'});
   await expect(stats.locator('.zellij-count-up-animated').first()).toBeHidden();
+  await expect(page.locator('.zellij-header')).toBeHidden();
+  for(const composition of await page.locator('[data-zellij-section="compose"]').all())
+    await expect(composition).toHaveCSS('background-color','rgb(255, 255, 255)');
   await expect(stats.locator('.zellij-count-up-literal').first()).toHaveCSS('clip-path','none');
   await expect(stats.locator('.zellij-count-up-literal').first()).toBeVisible();
   await expect(stats.locator('.zellij-count-up-literal').first()).toHaveText('48');

@@ -1244,3 +1244,6 @@
     grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
   }
 }
+
+/* Navigation is screen chrome, and a sticky header can cover printed content. */
+@media print { .zellij-header { display: none !important; } }

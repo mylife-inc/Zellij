@@ -66,7 +66,7 @@
   .zellij-compose-group { break-inside: avoid; }
   .zellij-compose-action .zellij-button { background: none !important; color: #111 !important; border-color: #777 !important; }
   .zellij-compose-layout { gap: 1rem; grid-template-columns: minmax(0, 1fr) !important; }
-  .zellij-section[data-zellij-section="compose"],
+  .zellij-section[data-zellij-section="compose"] { background: #fff !important; --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-section[data-zellij-section="compose"] .zellij-compose-group[data-surface] { background: none !important; --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-section[data-zellij-section="compose"] [data-zellij-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
