@@ -97,3 +97,19 @@ A further print review found that embedded inverted bento tiles and dark-theme
 cards retained their surface when heading text switched to black. Embedded
 cards, CTA links and pricing flags now print without their coloured background,
 with dark foregrounds. A dark-theme print assertion and capture cover the pairing.
+
+## First hosted interaction finding
+
+Focused run `44393615245` on `46acfaa` passed 142 browser cases, skipped 12
+conditional motion cases and failed two forced-colour team-link clicks in
+Chromium desktop/mobile. Its retained trace shows an x-coordinate of 111.5
+for a link whose visible label starts at 112: the inline link exposes its
+absolutely positioned, visually hidden name prefix as a tiny initial hit box.
+The click strikes the parent list item or sticky header while scrolling.
+Team links now establish one positioned inline-flex hit area with a 44px minimum
+height. The accessible person prefix remains; the regression checks the centre
+hit target before a normal, unforced click. WebKit had already passed.
+
+| Before | After | Why |
+| --- | --- | --- |
+| An inline team link can expose a hidden prefix as a tiny hit box | One positioned link box with a 44px touch target | Keep pointer interaction aligned with the visible label and accessible name |
