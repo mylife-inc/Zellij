@@ -32,6 +32,16 @@ test('stories retain readable light/dark layouts, imagery and ordinary scene ord
     await page.emulateMedia({colorScheme});
     const heading = page.locator('#independent-story .zellij-compose-heading').first();
     expect(await heading.evaluate(el => getComputedStyle(el).color)).toBe(await heading.evaluate(el => getComputedStyle(el.parentElement!).color));
+    await info.attach(`story-colors-${colorScheme}`, {contentType:'application/json',body:JSON.stringify(await page.evaluate(()=>
+      ['html','body','main','#composed-story','#composed-story .zellij-container','#composed-story .zellij-compose-layout','#composed-story .zellij-compose-story','#composed-story .zellij-story-copy','#composed-story .zellij-story-copy .zellij-compose-text'].map(selector=>{
+        const el=document.querySelector(selector)!;const css=getComputedStyle(el);
+        return {selector,color:css.color,fg:css.getPropertyValue('--zellij-fg'),localFg:css.getPropertyValue('--zellij-compose-fg')};
+      })),null,2)});
+    for (const copy of await page.locator('.zellij-story-copy').all()) {
+      const color = await copy.locator('.zellij-compose-heading').evaluate(el => getComputedStyle(el).color);
+      await expect(copy.locator('.zellij-compose-text')).toHaveCSS('color',color);
+    }
+    await expect(page.locator('#composed-story > .zellij-container > .zellij-compose-layout > .zellij-compose-text')).toHaveCSS('color',await page.locator('main h1').evaluate(el=>getComputedStyle(el).color));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await page.screenshot({path:info.outputPath(`compose-story-${colorScheme}.png`),fullPage:true,animations:'disabled'});
   }
@@ -48,12 +58,15 @@ test('pinned scenes seek actual video forwards and backwards without playback', 
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeCloseTo(0.46,1);
   await progress(scene,0.8);
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeCloseTo(1.54,1);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.seeking && v.readyState >= 2)).toBe(true);
+  const headerBottom=await page.locator('.zellij-header').evaluate(el=>el.getBoundingClientRect().bottom);
+  expect(await scene.locator('.zellij-story-copy').evaluate(el=>el.getBoundingClientRect().top)).toBeGreaterThan(headerBottom+15);
   await page.screenshot({path:info.outputPath('compose-story-scrub.png'),animations:'disabled'});
   await progress(scene,0.2);
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeCloseTo(0.46,1);
   await expect(video).not.toHaveAttribute('controls');
   expect(await video.evaluate((v: HTMLVideoElement) => v.paused && v.muted)).toBe(true);
-  await expect(video.locator('track')).toHaveAttribute('src',/_zellij\/assets\/compose-motion.en.vtt$/);
+  await expect(video.locator('track')).toHaveAttribute('src',/_zellij\/assets\/compose-motion\.en\.vtt(?:\?v=[a-f0-9]+)?$/);
   await expect(story.locator('.zellij-story-copy')).toHaveCount(3);
   // Jump beyond both ends: final seeks still settle after leaving the observer.
   await scene.evaluate(node => scrollTo({top:scrollY+node.getBoundingClientRect().bottom+innerHeight,behavior:'instant'}));
@@ -66,7 +79,7 @@ test('late metadata uses the latest scroll position and does not start playback'
   let release!: () => void;
   let held = false;
   const gate = new Promise<void>(resolve => {release=resolve;});
-  await page.route('**/compose-motion.mp4',async route => {held=true;await gate;await route.continue();});
+  await page.route(/\/compose-motion\.mp4(?:\?.*)?$/,async route => {held=true;await gate;await route.continue();});
   const story = await wideStory(page);
   const scene = story.locator('.zellij-story-scene').nth(1);
   await progress(scene,0.2);
@@ -75,6 +88,7 @@ test('late metadata uses the latest scroll position and does not start playback'
   release();
   const video=scene.locator('video');
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.currentTime)).toBeCloseTo(1.54,1);
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => !v.seeking && v.readyState >= 2)).toBe(true);
   expect(await video.evaluate((v: HTMLVideoElement) => v.paused)).toBe(true);
 });
 
@@ -120,7 +134,7 @@ test('narrow containers, tall text, motion preferences and printing keep all sce
 });
 
 for (const failure of ['duration','network'] as const) test(`video ${failure} failure preserves reading and native controls`, async ({page}) => {
-  if (failure==='network') await page.route('**/compose-motion.mp4',route=>route.abort());
+  if (failure==='network') await page.route(/\/compose-motion\.mp4(?:\?.*)?$/,route=>route.abort());
   const story=await wideStory(page);
   const scene=story.locator('.zellij-story-scene').nth(1);
   if (failure==='duration') await scene.locator('video').evaluate(node=>{node.dataset.end='30';});
