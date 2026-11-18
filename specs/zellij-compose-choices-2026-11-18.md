@@ -47,3 +47,32 @@ responsive/nested layouts, light/dark/forced colours, print/no-JS, invalid-state
 handling and browser errors. Review captures; retain docs preservation checks.
 Full CI remains the merge gate. No local GUI/browser/container/LaTeX operation,
 production deployment or release mutation is part of this increment.
+
+## Early verification findings
+
+Implementation `71da152` passed 516 engine tests, workspace types, engine build,
+20 release-policy guards and deep strict checks. The focused hosted run
+`44269010997` passed 72 of 75 composer cases with no retries; all three failures
+were the print fallback. Tailwind's important base-layer `[hidden]` rule took
+precedence over an unlayered important rule. The correction follows the existing
+media accordion by placing the print override in the base layer.
+
+The native suite found that interactive `feature-explorer` authoring could not
+traverse an item's facts. Generic authoring selected a union branch by field name
+alone: several composer nodes have `items`, but different item fields and bounds.
+The correction selects the authored `type`/`kind` before field traversal, including
+set, count and unset. Regression coverage exercises choices, lists, galleries and
+layer backdrops; existing interactive preset coverage remains enabled. The initial
+full CI run `44269051521` was cancelled after these failures were understood.
+
+Visual review also found a light-theme inverted-card heading taking the global
+heading colour instead of its local foreground. The correction gives choice
+headings the same surface-aware rule as other composer headings, with browser
+assertions in both colour schemes. The large-text probe now changes the root font
+size so rem-based controls are actually enlarged. The native unknown-initial-ID
+case removes selector-only fields before checking an explorer.
+
+| Before | After | Why |
+| --- | --- | --- |
+| Inverted-card choice heading used the global foreground | Heading uses the local composition foreground | Keep light-theme dark cards readable |
+| Important print rule was outside the base layer | Override uses the same layer as the hidden reset | Preserve every choice in printed output |

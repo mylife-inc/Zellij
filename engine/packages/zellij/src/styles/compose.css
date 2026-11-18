@@ -3,7 +3,8 @@
 .zellij-section[data-zellij-section="compose"][data-zellij-background="inverted"],
 .zellij-section[data-zellij-section="compose"][data-zellij-background="gradient"] { --zellij-compose-fg: var(--zellij-inverted-fg); --zellij-compose-muted: var(--zellij-inverted-fg); }
 .zellij-section[data-zellij-section="compose"][data-zellij-background="accent"] { --zellij-compose-fg: var(--zellij-accent-fg); --zellij-compose-muted: var(--zellij-accent-fg); }
-.zellij-section[data-zellij-section="compose"] .zellij-compose-heading { color: var(--zellij-compose-fg); }
+.zellij-section[data-zellij-section="compose"] .zellij-compose-heading,
+.zellij-section[data-zellij-section="compose"] .zellij-choice-heading { color: var(--zellij-compose-fg); }
 .zellij-compose-group { display: grid; min-width: 0; width: 100%; color: var(--zellij-compose-fg); align-content: start; }
 /* Each layout measures its own available width, including nested cards. */
 .zellij-section[data-zellij-section="compose"] > .zellij-container,
@@ -209,9 +210,13 @@ ol.zellij-compose-list { list-style: decimal; }
   .zellij-choice-option input:checked + .zellij-choice-option-face, .zellij-choice-tab[aria-selected="true"] { outline: 2px solid Highlight; outline-offset: -4px; }
   .zellij-choice-swatch { forced-color-adjust: none; }
 }
+/* Match the base layer: important declarations reverse cascade-layer priority,
+ * including Tailwind's important [hidden] reset. */
+@layer base {
+  @media print { .zellij-choice-panel[hidden] { display: block !important; } }
+}
 @media print {
   .zellij-choice-controls { display: none !important; }
-  .zellij-choice-panel[hidden] { display: block !important; }
   .zellij-compose-choice .zellij-choice-layout, .zellij-compose-choice .zellij-choice-panel-layout { display: block; }
   .zellij-compose-choice .zellij-choice-panel { margin-block: 1.5rem; break-inside: avoid; }
   .zellij-choice-media { margin-block-start: 1rem; }
