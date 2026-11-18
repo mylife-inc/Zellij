@@ -3,6 +3,45 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: controlled section reuse verified (source rc.11)**
+
+The `section` composer node embeds inline content for eight reviewed built-ins:
+feature grids, pricing, statistics, CTA banners, bento grids, timelines, teams
+and logo strips. It shares their schemas and renderers, adapts heading ownership
+and container sizing, and inherits the composition's frame and motion. It has
+no page ID or recursive section registry lookup. It cannot enter scroll stages
+or layer layouts. This is inline built-in reuse, not file references or MDX.
+See [the contract](specs/zellij-compose-reuse-2026-11-18.md). PR
+[#206](https://github.com/mylife-inc/Zellij/pull/206) carries implementation
+`b9865f2`, print corrections `46acfaa`/`79f6102`, named-link hit-area fix
+`2a7b07f`, and capture-readiness corrections `5e52bb2`/`2f69966`. Local validation
+passes 817 Rust tests, 527 engine tests, 22 authoring cases, 20 release guards,
+Clippy/format/types, authoring parity and strict deep content checks. The prior
+24 standalone schemas/templates and seven presets are unchanged.
+
+All 32 jobs in [full run `44397663238`](https://github.com/mylife-inc/Zellij/actions/runs/44397663238)
+pass on `2f69966`, including 526 showcase cases without retries (140 conditional
+skips), cross-platform installation, images, website and book/PDF acceptance.
+GitHub cancelled the first macOS job without assigning a runner because of ARM
+capacity constraints; only that job was retried in attempt two, retaining the
+other 31 passing results. The corrected focused run passed 144 browser cases
+without retries before the final full run covered all selected cases again.
+Fifty-two unique composer captures are retained. The 12 new captures and four
+explained differences from the previous 40 were reviewed; 36 previous captures
+are byte-identical. Print evidence covers CSS media after explicit image
+readiness, not native print dialogs or pagination.
+Documentation preserves 46 original routes, 282 heading IDs, 82 compatibility
+mappings and 29 byte-identical images, verifies all 13 added routes and captures
+no browser errors. All six preservation probes pass. See [the evidence](specs/evidence/zellij-compose-reuse-2026-11-18.json).
+The final records-only follow-up preserves tested runtime, active guides,
+dependencies, workflows and acceptance inputs.
+
+Public rc.10 and production hosting are unchanged. Next: rc.11 publication,
+installer and public-documentation updates, then reviewed rc.10 retirement.
+Live-provider verification remains deferred. The composer supports bounded
+built-in reuse; arbitrary section embedding, executable MDX and unrestricted
+animation timelines remain unsupported. Do not claim zero bugs.
+
 **2026-11-18: composer scroll stories verified (source rc.11)**
 
 PR [#205](https://github.com/mylife-inc/Zellij/pull/205) adds `story`: 2–8 ordered

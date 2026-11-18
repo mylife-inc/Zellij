@@ -8,8 +8,9 @@ import { Reveal } from '../../motion/reveal';
  * A dated sequence. An ordered list, because that is what it is — the rail and
  * markers are decoration over real list semantics.
  */
-export function Timeline({ section, site, defaultMotion }: SectionProps<TimelineSection>) {
+export function Timeline({ section, site, defaultMotion, headingLevel }: SectionProps<TimelineSection>) {
   const motion = section.motion ?? defaultMotion;
+  const ItemHeading = (headingLevel ? `h${headingLevel + (section.heading ? 1 : 0)}` : 'h3') as 'h2' | 'h3' | 'h4' | 'h5';
   const { basePath } = site.config;
 
   return (
@@ -21,7 +22,7 @@ export function Timeline({ section, site, defaultMotion }: SectionProps<Timeline
       padding={section.padding}
       className="zellij-timeline"
     >
-      <SectionHeader
+      <SectionHeader level={headingLevel}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
         motion={motion}
@@ -47,7 +48,7 @@ export function Timeline({ section, site, defaultMotion }: SectionProps<Timeline
             <div className="zellij-timeline-copy">
               {/* The date leads, so scanning the column reads as a sequence. */}
               <p className="zellij-timeline-date">{item.date}</p>
-              <h3 className="zellij-timeline-title">{item.title}</h3>
+              <ItemHeading className="zellij-timeline-title">{item.title}</ItemHeading>
               {item.body ? (
                 <p className="zellij-timeline-body">
                   <InlineMarkdown text={item.body} />

@@ -7,4 +7,6 @@ export interface SectionProps<T extends AnySection = AnySection> {
   site: Site;
   /** Page-level motion preset; a section may override it in its own YAML. */
   defaultMotion: MotionPreset;
+  /** Adapter-owned heading level; standalone components retain their original outline. */
+  headingLevel?: 2 | 3 | 4;
 }

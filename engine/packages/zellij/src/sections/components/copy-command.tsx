@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /**
  * A one-line command, with a button that copies it.
@@ -20,7 +20,13 @@ import { useRef, useState } from 'react';
  */
 export function CopyCommand({ command, label = 'terminal' }: { command: string; label?: string }) {
   const [copied, setCopied] = useState(false);
+  const [ready, setReady] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    setReady(typeof navigator.clipboard?.writeText === 'function');
+    return () => clearTimeout(timer.current);
+  }, []);
 
   const copy = async (): Promise<void> => {
     try {
@@ -38,6 +44,7 @@ export function CopyCommand({ command, label = 'terminal' }: { command: string; 
       <code className="zellij-command-text">{command}</code>
       <button
         type="button"
+        hidden={!ready}
         className="zellij-command-copy"
         onClick={copy}
         aria-label={copied ? `Copied the ${label} command` : `Copy the ${label} command`}

@@ -1,0 +1,527 @@
+{
+  "date": "2026-11-18",
+  "source_commit": "2f69966d49ae571a1e1a1114c95717fa6d0b8a61",
+  "implementation_commit": "b9865f23c268457d2804c730cb392200297fbace",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/206",
+  "source_version": "0.2.0-rc.11",
+  "published_version_unchanged": "0.2.0-rc.10",
+  "scope": {
+    "node": "section",
+    "built_ins": [
+      "feature-grid",
+      "pricing-table",
+      "stats-band",
+      "cta-banner",
+      "bento-grid",
+      "timeline",
+      "team-grid",
+      "logo-strip"
+    ],
+    "new_presets": [
+      "product-overview",
+      "studio-profile"
+    ],
+    "catalog_presets": 9,
+    "heading_levels": "2\u20134, item headings one deeper only when their section has a heading",
+    "restrictions": [
+      "inline content, no file references",
+      "no recursive compose, arbitrary registry dispatch or executable MDX",
+      "no embedding below scroll stages or layers",
+      "composition owns anchor, padding, surface and motion"
+    ]
+  },
+  "local": {
+    "rust_passed": 817,
+    "rust_ignored": 5,
+    "engine_passed": 527,
+    "native_authoring_passed": 22,
+    "release_policy_passed": 20,
+    "clippy": "pass, warnings denied",
+    "format": "pass",
+    "workspace_types": "pass",
+    "engine_native_authoring": {
+      "sections": 25,
+      "presets": 9
+    },
+    "unchanged_standalone_schemas_and_templates": 24,
+    "existing_presets_unchanged": 7,
+    "deep_strict_content": {
+      "showcase_routes": 16,
+      "documentation_routes": 59,
+      "documentation_examples": 33,
+      "codeseal_routes": 21
+    }
+  },
+  "fixes": [
+    {
+      "commit": "b9865f2",
+      "finding": "Explicit additionalProperties:false from strict embedded schemas was unsupported in native authoring. Accept only the equivalent closed-object form; reject permissive/schema-valued/invalid-context forms."
+    },
+    {
+      "commit": "b9865f2",
+      "finding": "Use stable authored statistics for assistive reading/print; retain static values without observers, hide unavailable copy controls and print gradient text as solid text."
+    },
+    {
+      "commit": "46acfaa",
+      "finding": "Pair embedded print card/CTA surfaces with dark text."
+    },
+    {
+      "commit": "2a7b07f",
+      "finding": "Named inline team-link hit testing selected the hidden prefix. Establish one positioned inline-flex target, minimum height 44px."
+    },
+    {
+      "commit": "79f6102",
+      "finding": "Transparent printed compositions exposed the dark page behind dark text; use white and hide the sticky header in print."
+    },
+    {
+      "commits": [
+        "5e52bb2",
+        "2f69966"
+      ],
+      "finding": "Await lazy images before CSS-print and narrow-container captures. Production image loading policy is unchanged."
+    }
+  ],
+  "superseded": [
+    {
+      "run_id": 44393264100,
+      "source_commit": "b9865f2",
+      "status": "cancelled after print-surface follow-up"
+    },
+    {
+      "run_id": 44393313082,
+      "source_commit": "b9865f2",
+      "status": "diagnostic cancelled after print-surface follow-up"
+    },
+    {
+      "run_id": 44393567920,
+      "source_commit": "46acfaa",
+      "status": "cancelled after retained browser failures",
+      "showcase_job": 135117613619,
+      "showcase_passed": 524,
+      "showcase_failed": 2,
+      "showcase_skipped": 140,
+      "artifact_id": 14469044248,
+      "cause": "Named inline team-link hit area in Chromium desktop/mobile."
+    },
+    {
+      "run_id": 44393615245,
+      "source_commit": "46acfaa",
+      "status": "failure",
+      "job_id": 135117542166,
+      "passed": 142,
+      "failed": 2,
+      "skipped": 12,
+      "retries": 0,
+      "artifact_id": 14468099401,
+      "cause": "Same named-link hit area."
+    },
+    {
+      "run_id": 44395055138,
+      "source_commit": "2a7b07f",
+      "status": "cancelled after opaque print-surface fix"
+    },
+    {
+      "run_id": 44395690020,
+      "source_commit": "79f6102",
+      "status": "cancelled after capture-readiness follow-up",
+      "showcase_job": 135125063112,
+      "showcase_passed": 526,
+      "showcase_skipped": 140,
+      "showcase_retries": 0,
+      "artifact_id": 14470091713
+    },
+    {
+      "run_id": 44395724001,
+      "source_commit": "79f6102",
+      "status": "diagnostic superseded during browser dependency installation"
+    },
+    {
+      "run_id": 44397431305,
+      "source_commit": "5e52bb2",
+      "status": "cancelled after narrow-capture readiness follow-up"
+    },
+    {
+      "run_id": 44397497119,
+      "source_commit": "5e52bb2",
+      "status": "diagnostic superseded by final source"
+    }
+  ],
+  "focused": {
+    "run_id": 44395075273,
+    "source_commit": "2a7b07f",
+    "status": "success",
+    "passed": 144,
+    "skipped": 12,
+    "retries": 0,
+    "preservation_tests": 6,
+    "artifact_id": 14470181144,
+    "scope_note": "Intermediate source verifies the hit-area fix. Final full showcase/engine jobs cover all these cases plus later print/readiness corrections."
+  },
+  "redundant_final_probe": {
+    "run_id": 44397696278,
+    "source_commit": "2f69966",
+    "status": "cancelled during browser dependency installation after final-source showcase and documentation gates passed",
+    "coverage": "All selected cases are included in the 526 passing final-source showcase cases; none required a retry."
+  },
+  "hosted": {
+    "run_id": 44397663238,
+    "status": "completed",
+    "conclusion": "success",
+    "source_commit": "2f69966d49ae571a1e1a1114c95717fa6d0b8a61",
+    "job_count": 32,
+    "jobs": [
+      {
+        "id": 135157310225,
+        "name": "Portable docs (macos-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157311784,
+        "name": "CLI",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157312510,
+        "name": "Engine",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157312887,
+        "name": "websites / Websites (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157313234,
+        "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157313360,
+        "name": "Website and book templates",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157313371,
+        "name": "native-packages / Package and install (x86_64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157313419,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157314719,
+        "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157315017,
+        "name": "Combined image manifests",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157315472,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157315915,
+        "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157315930,
+        "name": "homebrew / Homebrew (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157315972,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157316252,
+        "name": "homebrew / Homebrew (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157316336,
+        "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157316340,
+        "name": "homebrew / Homebrew (macos-15)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157316873,
+        "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157374299,
+        "name": "Native images (amd64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157375424,
+        "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157377327,
+        "name": "native-packages / Package and install (aarch64-apple-darwin)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157381510,
+        "name": "Embedded schema is current",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157387249,
+        "name": "Native images (arm64)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157389954,
+        "name": "Portable docs (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157395505,
+        "name": "Portable docs (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157398111,
+        "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157402513,
+        "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157403615,
+        "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157403736,
+        "name": "Showcase end to end",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157404918,
+        "name": "next-pdf / Next PDF (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157405956,
+        "name": "websites / Websites (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "id": 135157412721,
+        "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "showcase_job": 135132001989,
+    "showcase_passed": 526,
+    "showcase_skipped": 140,
+    "showcase_retries": 0,
+    "showcase_artifact_id": 14470384029,
+    "engine_job": 135132002000,
+    "engine_passed": 527,
+    "cli_job": 135132002047,
+    "preservation_tests": 6,
+    "runner_capacity": {
+      "job_id": 135132002174,
+      "name": "Portable docs (macos-latest)",
+      "conclusion": "cancelled before runner assignment; no steps executed",
+      "annotations": [
+        "The job was not acquired by Runner of type hosted even after multiple attempts",
+        "Due to capacity constraints, jobs targeting macOS arm64 runners may experience longer queue times."
+      ],
+      "targeted_retry": {
+        "job_id": 135157310225,
+        "status": "completed",
+        "other_passing_jobs_retained": 31,
+        "conclusion": "success",
+        "started_at": "2026-11-18T21:51:19Z",
+        "completed_at": "2026-11-18T22:03:58Z",
+        "verification": "Native image arguments, hosted preview, YAML formatting, editable wrapper, relocated offline Chromium/WebKit sites and books, HTTP preview, watch/reload, browser launch and Ctrl-C passed."
+      }
+    },
+    "native_authoring_export": {
+      "section_types": 25,
+      "editable_presets": 9,
+      "result": "All templates, presets, ordered wizard and structured-field pages validated/exported; authored registration unchanged."
+    },
+    "run_attempt": 2,
+    "completed_at": "2026-11-18T22:03:59Z",
+    "url": "https://github.com/mylife-inc/Zellij/actions/runs/44397663238"
+  },
+  "preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "captured_browser_errors": 0
+  },
+  "captures": {
+    "final_full": {
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-dark.png": "0c7f8a174c1db4050ae051979b372428c53784e7070e182ac4b53f722f4558ac",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-desktop/compose-explorer-light.png": "e30c6024becb958754d97ba81a86846bd62dfe23cd1eb05942f8553b6b019e99",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-dark.png": "24b3d2b26dc5686f504a20083658c171cee187aea2c3757e4afd21af023c7c0d",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile-safari/compose-explorer-light.png": "74c237ef1e3c1d7123b05793712dc251ae8b2c2ed2cfc8537957c110c76acc08",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-dark.png": "860e30fa9545f33e428a4cc24574ae4ad622f0bc19cd666d8ed54c04f206d94d",
+      "compose-choices-compose-ex-d61c9-nd-fits-its-available-space-mobile/compose-explorer-light.png": "c4af6fdb422abe2f74436929b38a9b9a804763136e5f3760af7e8cc9cbdae2a6",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-dark.png": "a556ec8e6630decf4ffbfc1d048dce45f54398cd79e9defe5f680a4290153990",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-desktop/compose-selector-light.png": "8917a84d19b7e6c415b8b6a30dd74075e07024878ada885005f2139cfbf95727",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-dark.png": "7d5326d0dcd0e78c1ac0cd4cf401b07a1c884dfe188c9ddbe5397321d711e255",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile-safari/compose-selector-light.png": "3529037448d8223b643354043e7c8ff0d7101b5687b3a7d9127404c46a97bcec",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-dark.png": "33a3d462b649d526fbb96e96022faa6b0a99927ed93ae56ad37a97ccf88b1f4a",
+      "compose-choices-compose-se-22931-nd-fits-its-available-space-mobile/compose-selector-light.png": "5359278ac43cbfcdcde63e384babc5b25eaddb14f1a2fdff9cc699f157d9bc91",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-dark.png": "1b7fb51106498668de3d35d91f386a223696541e1815736382d405e2066f1772",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-desktop/composition-light.png": "e64a453f05a048cadf468f19ba9779df00443d2f9722627906dc7df298dfd1ac",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-dark.png": "ef17029c718dd122411b74b1d208cce07b7f70f4666dfd840216265496720cf6",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile-safari/composition-light.png": "f95211ce9479c15ddcae75f1103c14090b071f04ff27b12e9d6cceba2652e8e3",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-dark.png": "31bf3fdba4cf01b4e032cc47698a453b20e03d29487c87501f132e40258ba979",
+      "compose-compositions-retai-a31e7-ve-layouts-links-and-images-mobile/composition-light.png": "29c7ef09ee45c92cdab817846ccdc032accd7862b01d99485ca88311363a3960",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-dark.png": "71f3aa8f7f8dd6071f702416d1db208271da0f9f28aa6265b6438f14752bc912",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-desktop/composition-compose-layers-light.png": "f6ec6cb37a55052ab05c9fee91de2b5ccc14e7c55e8a6a0e70707542aad87ba9",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-dark.png": "ef4a43be27036f91b2e2ad7257bae3f60657618c525aa77e44cb9c4e8adc809a",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile-safari/composition-compose-layers-light.png": "d109638f809d51e67147fc4c670eb7ba81b4ad1444d18fedd9ea052558785d8f",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-dark.png": "452271766f4263b02f232ad175a6890c9c7386d1b75525083ad7aa1b3f58bf60",
+      "compose-expansion-compose--a1e1c-and-light-dark-presentation-mobile/composition-compose-layers-light.png": "5f58d18a7082f5184c9286f39aa19edcb7ac5e0f655546dd383476afaeb830e9",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-dark.png": "f4a6abe433b95bbf4f9bf4b2f93adb3277c7553a642cc07d9e62dd02abb64bdf",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-desktop/composition-compose-content-light.png": "06e307b34d97f81492655f04138e3d3d2ca05c24ac00340b4deea128f04de18f",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-dark.png": "8c4f9b077f828e18d6c6b68d7b537c8ae8bcf55a6db15bc738462b7c08509fa6",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile-safari/composition-compose-content-light.png": "b24699e8cd52a72001ea80deb94e1a24242d9cd0670dbc55fe353297683d6dda",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-dark.png": "c2116b6e291f2854e528e9a8827a7d420046000037cc13f1a4d5b96db040805a",
+      "compose-expansion-compose--e2d94-and-light-dark-presentation-mobile/composition-compose-content-light.png": "eeb369ec9d3faf991e29f087b3e7c791f795502894048b52b155c0813cfa3ab2",
+      "compose-expansion-scroll-s-e59aa-th-focus-and-size-fallbacks-desktop/composition-scroll-mid.png": "c6d4051299f39c4e2096aabe032574886ed74d41e3a23edebb9f20c233ff2223",
+      "compose-reuse-embedded-gri-7bef4--keep-bento-spans-within-it-desktop/compose-reuse-narrow.png": "e2a41a5c259c6068027e11b46c736d9065258cab218e2e00b26b216ae824a9c0",
+      "compose-reuse-embedded-gri-7bef4--keep-bento-spans-within-it-mobile-safari/compose-reuse-narrow.png": "8677d8d26f8bb7ea05c3fd6d5b419f8142060e1c6a967607f311d849dc516e74",
+      "compose-reuse-embedded-gri-7bef4--keep-bento-spans-within-it-mobile/compose-reuse-narrow.png": "5b1b7168f02ebdc5cbebe98fa0e0d71211c2731d6766822b2f23ea485cfb143c",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-desktop/compose-reuse-dark.png": "b980ff46aac795293ad2f50847d8d5a396b1b31d3b650f635078f760ad27b927",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-desktop/compose-reuse-light.png": "403bf2a0b66baa86c8ed4811f0a904ff6bf2a316cf8d2e7f1a19656a1cc01bef",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-mobile-safari/compose-reuse-dark.png": "bbfa6f5a31187bb0ebe40e62595e3ce57dc5f1ede9ebcbb0330ad54a1d559444",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-mobile-safari/compose-reuse-light.png": "0c65ce3ddd7ab4e097a66825f1f7c099f77ff14559ccc4807bf672200125833f",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-mobile/compose-reuse-dark.png": "ddfae8346885338545908ce940cea442ddb510a4783f667beaa2290aa1374c27",
+      "compose-reuse-reused-secti-03f7d-adings-and-semantic-content-mobile/compose-reuse-light.png": "7d567702af472c54f7dab3959d49b46ff08ade29ada4778b2dfefdb16b2cce8e",
+      "compose-reuse-statistics-p-dac74-endently-of-their-animation-desktop/compose-reuse-print.png": "4f63f47f826eb04982967f7c34901e4dbb3d98337d180eca1b27fd49ca7655c8",
+      "compose-reuse-statistics-p-dac74-endently-of-their-animation-mobile-safari/compose-reuse-print.png": "992cd73b21eacbbf3909910385cf0518dc4fe0e2910283980e84bb6a6dddef87",
+      "compose-reuse-statistics-p-dac74-endently-of-their-animation-mobile/compose-reuse-print.png": "faa99d83b9d33d7605f739c80006aa6158bb0e9379a13ccf2a994ac9ac326ca9",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-desktop/compose-story-scrub.png": "f283b5b4650dee3bfdee391251601ef6d2eadbcc838f54391d86e517f077cec0",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile-safari/compose-story-scrub.png": "70136fe36eb9fb2daa11348f67f037e4add2c17a4ddd7cb5f8254491bfa996bb",
+      "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png": "dc7f3dac8fb6d5359e09b25557f772c9ac995f9733cc35f81b9c480d2ee65ed6",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png": "48baeb66744422d7c5b70daebf29510ee8ee132cd09f1c2c5cf1aad126f607eb",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png": "3d9d926c56d6c00e3a3d33bff038ea2064c8cd9f9c15983feb526176b7faf972",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-dark.png": "d36a91716c34189154eb5218d99b26b7e6f5cfde621f79b3fdaec9900bf20553",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile-safari/compose-story-light.png": "30bc5bc088d27ae2aeaf76e14a102d92d7289802be7492f40b0b3641365538f9",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-dark.png": "72678f5087caeeafddf9e247b08f57e09a7bbdd5c30385ec94741d5971e5c13e",
+      "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png": "15177f17e762b971a6c0d4def7d41d523fea6806794326b4d122abc2a52385c5"
+    }
+  },
+  "visual_review": {
+    "new_captures_reviewed": 12,
+    "retained_unique_composer_captures": 52,
+    "existing_exact_matches": 36,
+    "existing_reviewed_differences": [
+      {
+        "file": "compose-story-pinned-scene-e740b--backwards-without-playback-mobile/compose-story-scrub.png",
+        "box": [
+          304,
+          2184,
+          969,
+          2363
+        ],
+        "reason": "Two device pixels of scroll-position shift; cropped heading matches exactly after +2px vertical alignment."
+      },
+      {
+        "file": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-dark.png",
+        "box": [
+          841,
+          1123,
+          851,
+          1132
+        ],
+        "reason": "Native video loading-indicator paint."
+      },
+      {
+        "file": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-desktop/compose-story-light.png",
+        "box": [
+          830,
+          1063,
+          896,
+          1135
+        ],
+        "reason": "Native video loading-indicator paint."
+      },
+      {
+        "file": "compose-story-stories-reta-2180e-ry-and-ordinary-scene-order-mobile/compose-story-light.png",
+        "box": [
+          446,
+          3247,
+          636,
+          3357
+        ],
+        "reason": "Native video loading-indicator paint."
+      }
+    ],
+    "final_vs_reviewed_79f6102": "Ten new captures are byte-identical; WebKit print/narrow captures now contain loaded media and were reviewed again.",
+    "print_scope": "CSS print-media rendering after explicit image readiness, not native print-dialog or pagination testing."
+  },
+  "external_changes": {
+    "release_published": false,
+    "production_deployed": false
+  },
+  "records_follow_up": {
+    "files": [
+      "ZELLIJ_CONTEXT.md",
+      "specs/zellij-compose-reuse-2026-11-18.md",
+      "specs/evidence/zellij-compose-reuse-2026-11-18.json"
+    ],
+    "status": "Only the three listed records differ from the accepted source; runtime, active guides, dependencies, workflows and acceptance inputs are unchanged."
+  }
+}

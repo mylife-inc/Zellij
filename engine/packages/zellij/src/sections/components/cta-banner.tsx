@@ -4,8 +4,9 @@ import { CtaGroup, InlineMarkdown, SectionShell, gradientTextProps } from '../sh
 import { Reveal } from '../../motion/reveal';
 import { CopyCommand } from './copy-command';
 
-export function CtaBanner({ section, defaultMotion }: SectionProps<CtaBannerSection>) {
+export function CtaBanner({ section, defaultMotion, headingLevel }: SectionProps<CtaBannerSection>) {
   const motion = section.motion ?? defaultMotion;
+  const Heading = `h${headingLevel ?? 2}` as 'h2' | 'h3' | 'h4';
 
   // The schema accepts a single CTA or a list; normalise to a list.
   const actions = section.cta ? (Array.isArray(section.cta) ? section.cta : [section.cta]) : [];
@@ -20,9 +21,9 @@ export function CtaBanner({ section, defaultMotion }: SectionProps<CtaBannerSect
       className="zellij-cta-banner"
     >
       <Reveal motion={motion} className="zellij-cta-banner-inner">
-        <h2 {...gradientTextProps(section.titleGradient, 'zellij-cta-banner-headline')}>
+        <Heading {...gradientTextProps(section.titleGradient, 'zellij-cta-banner-headline')}>
           {section.headline}
-        </h2>
+        </Heading>
         {section.body ? (
           <p className="zellij-cta-banner-body">
             <InlineMarkdown text={section.body} />

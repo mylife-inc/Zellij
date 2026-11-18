@@ -49,7 +49,7 @@ export function CountUp({
   const [display, setDisplay] = useState<string>(value);
 
   useEffect(() => {
-    if (!parsed) {
+    if (!parsed || typeof IntersectionObserver === 'undefined') {
       setDisplay(value);
       return;
     }
@@ -94,9 +94,8 @@ export function CountUp({
 
   return (
     <span ref={ref}>
-      {prefix}
-      {display}
-      {suffix}
+      <span className="zellij-count-up-animated" aria-hidden="true">{prefix}{display}{suffix}</span>
+      <span className="zellij-visually-hidden zellij-count-up-literal">{prefix}{value}{suffix}</span>
     </span>
   );
 }

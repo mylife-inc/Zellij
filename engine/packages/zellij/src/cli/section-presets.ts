@@ -4,6 +4,42 @@ import '../sections/schemas';
 
 /** Presets expand once into ordinary authored YAML; rendering has no preset lookup. */
 const presets: Record<string, { description: string; section: Record<string, unknown> }> = {
+  'product-overview': { description: 'Real feature cards, statistics, pricing and an install action in one editable composition.', section: {
+    type: 'compose', version: 1, label: 'Product overview', layout: {kind: 'stack', gap: 'large'}, children: [
+      {type: 'heading', text: 'Built around your next idea.', scale: 'display'},
+      {type: 'section', label: 'Product features', content: {type: 'feature-grid', columns: 2, heading: 'Thoughtful by design.', items: [
+        {title: 'A clear beginning', body: 'Explain the simplest way to begin.', icon: 'sparkles', href: '#'},
+        {title: 'Room to grow', body: 'Describe how your product grows with its reader.', icon: 'layers', href: '#'},
+      ]}},
+      {type: 'section', label: 'At a glance', content: {type: 'stats-band', stats: [
+        {value: '3', label: 'Replace with a meaningful measure'}, {value: '2', label: 'Describe what this number means'}, {value: '1', label: 'Give your measure context'},
+      ]}},
+      {type: 'section', label: 'Choose a plan', content: {type: 'pricing-table', heading: 'A plan for your next chapter.', tiers: [
+        {name: 'Personal', price: 'Free', features: ['Describe what is included'], cta: {label: 'Get started', href: '#'}},
+        {name: 'Studio', price: 'Contact us', features: ['Describe the studio offering'], highlighted: true, cta: {label: 'Talk to us', href: '#'}},
+      ]}},
+      {type: 'section', label: 'Begin creating', content: {type: 'cta-banner', headline: 'Make something worth sharing.', body: 'Replace the command and links with your next step.', command: 'zel build', cta: {label: 'Read the guide', href: '#'}}},
+    ],
+  } },
+  'studio-profile': { description: 'A studio introduction with real bento tiles, people, milestones and a logo strip.', section: {
+    type: 'compose', version: 1, label: 'Studio profile', layout: {kind: 'stack', gap: 'large'}, children: [
+      {type: 'heading', text: 'People. Purpose. Possibility.', scale: 'display'},
+      {type: 'section', label: 'The studio', content: {type: 'bento-grid', items: [
+        {title: 'A shared point of view.', body: 'Describe what brings your work together.', image: 'assets/replace-me.svg', span: 'wide'},
+        {title: 'Made with care.', body: 'Explain a detail that matters to your studio.'},
+      ]}},
+      {type: 'group', layout: {kind: 'split', gap: 'large'}, children: [
+        {type: 'section', label: 'People', content: {type: 'team-grid', heading: 'Meet the people.', people: [
+          {name: 'Your name', role: 'Your role', photo: 'assets/replace-me.svg', bio: 'Tell readers a little about your work.', links: [{label: 'Website', href: '#'}]},
+        ]}},
+        {type: 'section', label: 'Milestones', content: {type: 'timeline', heading: 'The story so far.', items: [
+          {date: 'Beginning', title: 'One clear idea.', body: 'Describe the first milestone.'},
+          {date: 'Today', title: 'A new perspective.', body: 'Describe where that idea has taken you.'},
+        ]}},
+      ]},
+      {type: 'section', label: 'Studio marks', content: {type: 'logo-strip', heading: 'A shared identity', logos: ['assets/replace-me.svg']}},
+    ],
+  } },
   'scroll-story': { description: 'Ordered image scenes with optional pinning and complete reading fallbacks.', section: {
     type: 'compose', version: 1, label: 'A story in chapters', motion: 'expressive', children: [
       {type: 'heading', text: 'Follow the idea.'},

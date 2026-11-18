@@ -41,6 +41,7 @@ export function satisfiesAuthoringRules(type: string, section: Record<string, un
 function validComposition(node: Record<string, unknown>, insideStage = false, insideLayers = false): boolean {
   const scroll = node.scroll as Record<string, number> | undefined;
   if (scroll && (insideStage || (scroll.start ?? 0) >= (scroll.end ?? 1))) return false;
+  if (node.type === 'section' && (insideStage || insideLayers)) return false;
   if (node.type === 'story') {
     if (insideStage || insideLayers) return false;
     if (!(node.scenes as {media: {kind: string; start?: number; end?: number}}[]).every(scene => scene.media.kind !== 'video' || (scene.media.start ?? 0) < scene.media.end!)) return false;

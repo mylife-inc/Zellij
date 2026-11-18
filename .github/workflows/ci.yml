@@ -577,6 +577,14 @@ jobs:
           for (const name of Object.keys(schema.sectionPresets)) {
             const presetHtml = readFileSync(process.argv[2].replace('wizard.html', `preset-${name}.html`), 'utf8');
             assert.match(presetHtml, /data-zellij-section="compose"/);
+            if (name === 'product-overview' || name === 'studio-profile') {
+              assert.match(presetHtml, /zellij-compose-section/);
+              for (const type of name === 'product-overview'
+                ? ['feature-grid', 'pricing-table', 'stats-band', 'cta-banner']
+                : ['bento-grid', 'team-grid', 'timeline', 'logo-strip']) {
+                assert(presetHtml.includes(`data-zellij-section="${type}"`));
+              }
+            }
             if (name === 'scroll-story') {
               assert.match(presetHtml, /zellij-compose-story/);
               assert.match(presetHtml, /data-story-active="false"/);

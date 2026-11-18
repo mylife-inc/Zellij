@@ -66,7 +66,7 @@
   .zellij-compose-group { break-inside: avoid; }
   .zellij-compose-action .zellij-button { background: none !important; color: #111 !important; border-color: #777 !important; }
   .zellij-compose-layout { gap: 1rem; grid-template-columns: minmax(0, 1fr) !important; }
-  .zellij-section[data-zellij-section="compose"],
+  .zellij-section[data-zellij-section="compose"] { background: #fff !important; --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-section[data-zellij-section="compose"] .zellij-compose-group[data-surface] { background: none !important; --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-section[data-zellij-section="compose"] [data-zellij-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
@@ -252,3 +252,48 @@ ol.zellij-compose-list { list-style: decimal; }
   .zellij-compose-story .zellij-story-copy, .zellij-compose-story .zellij-story-media { grid-area: auto !important; }
 }
 .zellij-story-media img { object-fit: contain; }
+
+/* A reused built-in owns its semantics; its composition owns the outer frame.
+   Container rules apply only to this adapter, preserving standalone layouts. */
+.zellij-compose-section { min-width: 0; width: 100%; container: zellij-reused-section / inline-size; color: var(--zellij-compose-fg); }
+.zellij-compose-section > .zellij-section { padding: 0; background: none; overflow: visible; color: inherit; }
+.zellij-compose-section > .zellij-section > .zellij-container { width: 100%; max-width: none; margin: 0; padding-inline: 0; }
+.zellij-compose-section .zellij-section-header { margin-block-end: 1.75rem; }
+.zellij-compose-section .zellij-section :is(.zellij-section-heading, .zellij-cta-banner-headline, .zellij-timeline-title, .zellij-team-name) { color: var(--zellij-compose-fg); overflow-wrap: anywhere; }
+.zellij-compose-section :is(.zellij-section-heading, .zellij-cta-banner-headline) { font-size: clamp(1.5rem, 5cqi, 3rem); }
+.zellij-compose-section :is(.zellij-section-subhead, .zellij-cta-banner-body, .zellij-stat-label, .zellij-timeline-body, .zellij-team-bio, .zellij-logo-strip-heading) { color: var(--zellij-compose-muted); }
+.zellij-compose-section .zellij-team-link { color: var(--zellij-compose-fg); }
+.zellij-compose-section :is(.zellij-feature-card, .zellij-pricing-card) { color: var(--zellij-fg); min-width: 0; overflow-wrap: anywhere; }
+.zellij-compose-section .zellij-feature-card .zellij-feature-title,
+.zellij-compose-section .zellij-pricing-card .zellij-pricing-name { color: var(--zellij-fg); }
+.zellij-compose-section .zellij-feature-list,
+.zellij-compose-section .zellij-team-list,
+.zellij-compose-section .zellij-bento-grid { grid-template-columns: minmax(0, 1fr); }
+.zellij-compose-section .zellij-bento-cell[data-span] { grid-column: auto; grid-row: auto; }
+.zellij-compose-section .zellij-bento-tile .zellij-bento-title { color: inherit; }
+.zellij-compose-section .zellij-pricing-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
+.zellij-compose-section .zellij-stats-list { grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); }
+.zellij-compose-section :is(.zellij-stat-value, .zellij-stat-label, .zellij-team-card, .zellij-timeline-copy) { min-width: 0; overflow-wrap: anywhere; }
+.zellij-compose-section .zellij-logo-image { max-width: 100%; object-fit: contain; }
+.zellij-compose-section .zellij-logo-item { min-width: 0; max-width: 100%; }
+.zellij-compose-section .zellij-command { max-width: 100%; }
+@container zellij-reused-section (min-width: 600px) {
+  .zellij-compose-section .zellij-feature-list,
+  .zellij-compose-section .zellij-team-list,
+  .zellij-compose-section .zellij-bento-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .zellij-compose-section .zellij-bento-cell:is([data-span="wide"], [data-span="large"]) { grid-column: span 2; }
+}
+@container zellij-reused-section (min-width: 960px) {
+  .zellij-compose-section :is(.zellij-feature-list, .zellij-team-list)[data-columns="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .zellij-compose-section :is(.zellij-feature-list, .zellij-team-list)[data-columns="4"],
+  .zellij-compose-section .zellij-bento-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .zellij-compose-section .zellij-bento-cell:is([data-span="tall"], [data-span="large"]) { grid-row: span 2; }
+}
+@media print {
+  .zellij-compose-section :is(.zellij-feature-card, .zellij-pricing-card, .zellij-bento-tile, .zellij-button, .zellij-pricing-flag) { background: none !important; color: #111 !important; border-color: #777 !important; box-shadow: none; }
+  .zellij-compose-section .zellij-pricing-period { color: #444; }
+  .zellij-compose-section :is(.zellij-feature-list, .zellij-team-list, .zellij-bento-grid, .zellij-pricing-list, .zellij-stats-list) { grid-template-columns: minmax(0, 1fr); }
+  .zellij-compose-section .zellij-bento-cell[data-span] { grid-column: auto; grid-row: auto; }
+  .zellij-compose-section .zellij-section :is(h2, h3, h4, h5, p, dd, dt),
+  .zellij-compose-section .zellij-team-link { color: #111 !important; }
+}

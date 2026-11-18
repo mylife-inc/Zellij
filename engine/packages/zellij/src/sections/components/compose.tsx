@@ -1,4 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
+import type { Site } from '../../content/site';
+import { SectionContent } from './section-content';
 import type { SectionProps } from '../types';
 import type { ComposeLayout, ComposeNode, ComposeSection } from '../compose-schema';
 import type { MotionPreset } from '../../config/schema';
@@ -20,15 +22,15 @@ function layoutProps(layout?: ComposeLayout) {
     style: { '--zellij-compose-columns': layout?.kind === 'grid' ? layout.columns : 2 } as CSSProperties };
 }
 
-function Node({ node, basePath, motion, titleGradient }: {
-  node: ComposeNode; basePath: string; motion: MotionPreset; titleGradient?: readonly string[];
+function Node({ node, basePath, motion, titleGradient, site }: {
+  node: ComposeNode; site: Site; basePath: string; motion: MotionPreset; titleGradient?: readonly string[];
 }) {
   let content: ReactNode;
   switch (node.type) {
     case 'group': content = <div className="zellij-compose-group zellij-compose-scope"
       data-surface={node.surface} data-padding={node.padding} data-radius={node.radius}>
       <Layout layout={node.layout} basePath={basePath}>
-        {node.children.map((child, i) => <Node key={i} node={child} basePath={basePath} motion={motion} titleGradient={titleGradient} />)}
+        {node.children.map((child, i) => <Node site={site} key={i} node={child} basePath={basePath} motion={motion} titleGradient={titleGradient} />)}
       </Layout>
     </div>;
       if (node.scroll) content = <ComposeScrollStage settings={node.scroll} motion={motion}>{content}</ComposeScrollStage>;
@@ -50,6 +52,7 @@ function Node({ node, basePath, motion, titleGradient }: {
     </figure>; break;
     case 'button': content = <div className="zellij-compose-action"><CtaLink cta={node} /></div>; break;
     case 'stat': content = <dl className="zellij-compose-stat"><dt>{node.label}</dt><dd>{node.value}</dd></dl>; break;
+    case 'section': content = <SectionContent node={node} site={site} motion={motion} />; break;
     case 'story': content = <StoryContent node={node} basePath={basePath} motion={motion} />; break;
     case 'selector': case 'explorer': content = <ChoiceContent node={node} basePath={basePath} />; break;
     case 'prose': case 'list': case 'quote': case 'icon': case 'code': case 'table': case 'disclosure': case 'carousel': case 'gallery':
@@ -59,8 +62,8 @@ function Node({ node, basePath, motion, titleGradient }: {
     case 'video': content = <VideoContent {...node} basePath={basePath} composed
       caption={node.caption ? <InlineMarkdown text={node.caption} /> : undefined} />; break;
   }
-  if (node.type !== 'divider' && node.type !== 'story' && node.effect === 'reveal') content = <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal>;
-  return node.type !== 'story' && node.place ? <div className="zellij-compose-placement" data-place={node.place}>{content}</div> : content;
+  if (node.type !== 'divider' && node.type !== 'story' && node.type !== 'section' && node.effect === 'reveal') content = <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal>;
+  return node.type !== 'story' && node.type !== 'section' && node.place ? <div className="zellij-compose-placement" data-place={node.place}>{content}</div> : content;
 }
 
 function Layout({ layout, basePath, children }: { layout?: ComposeLayout; basePath: string; children: ReactNode }) {
@@ -80,7 +83,7 @@ function Layout({ layout, basePath, children }: { layout?: ComposeLayout; basePa
 export function Compose({ section, site, defaultMotion }: SectionProps<ComposeSection>) {
   const motion = section.motion ?? defaultMotion;
   const content = <Layout layout={section.layout} basePath={site.config.basePath}>
-    {section.children.map((node, i) => <Node key={i} node={node} basePath={site.config.basePath} motion={motion} titleGradient={section.titleGradient} />)}
+    {section.children.map((node, i) => <Node site={site} key={i} node={node} basePath={site.config.basePath} motion={motion} titleGradient={section.titleGradient} />)}
   </Layout>;
   return <SectionShell type="compose" id={section.id} motion={motion} background={section.background} padding={section.padding}>
     {section.scroll ? <ComposeScrollStage settings={section.scroll} motion={motion}>{content}</ComposeScrollStage> : content}

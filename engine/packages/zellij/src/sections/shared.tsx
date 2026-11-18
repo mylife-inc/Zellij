@@ -168,21 +168,24 @@ export function SectionHeader({
   motion,
   align = 'center',
   titleGradient,
+  level = 2,
 }: {
   eyebrow?: string;
   heading?: string;
   subhead?: string;
   motion: MotionPreset;
   align?: 'center' | 'start';
+  level?: 2 | 3 | 4;
   titleGradient?: readonly string[];
 }) {
   if (!eyebrow && !heading && !subhead) return null;
+  const Heading = `h${level}` as 'h2' | 'h3' | 'h4';
 
   return (
     <Reveal motion={motion} className="zellij-section-header" data-align={align}>
       {eyebrow ? <p className="zellij-eyebrow">{eyebrow}</p> : null}
       {heading ? (
-        <h2 {...gradientTextProps(titleGradient, 'zellij-section-heading')}>{heading}</h2>
+        <Heading {...gradientTextProps(titleGradient, 'zellij-section-heading')}>{heading}</Heading>
       ) : null}
       {/* Inline markdown, like every other body field. A subhead is prose and
           authors write prose with emphasis in it; without this the asterisks

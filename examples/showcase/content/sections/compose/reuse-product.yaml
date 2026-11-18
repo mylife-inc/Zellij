@@ -1,0 +1,73 @@
+type: compose
+version: 1
+label: Product overview
+layout:
+  kind: stack
+  gap: large
+children:
+  - type: heading
+    text: |-
+      Small studio.
+      Wide horizons.
+    scale: display
+    level: 1
+  - type: section
+    label: Product features
+    content:
+      type: feature-grid
+      heading: A little more considered.
+      titleGradient: [accent, fg]
+      items:
+        - title: A clear beginning
+          body: Explain the simplest way to begin.
+          icon: sparkles
+          href: /compose
+        - title: Room to grow
+          body: Describe how your product grows with its reader.
+          icon: layers
+          href: /compose
+      columns: 2
+  - type: section
+    label: At a glance
+    content:
+      type: stats-band
+      stats:
+        - value: "48"
+          label: Original studies
+        - value: "24"
+          label: Shared perspectives
+        - value: "3"
+          label: Ways to begin
+  - type: section
+    label: Choose a plan
+    content:
+      type: pricing-table
+      heading: A plan for your next chapter.
+      tiers:
+        - name: Personal
+          price: Free
+          features:
+            - Describe what is included
+          cta:
+            label: Get started
+            href: /compose
+        - name: Studio
+          price: Contact us
+          features:
+            - Describe the studio offering
+          highlighted: true
+          cta:
+            label: Talk to us
+            href: /compose
+  - type: section
+    label: Begin creating
+    content:
+      type: cta-banner
+      headline: Make something worth sharing.
+      body: Replace the command and links with your next step.
+      command: zel build
+      cta:
+        label: Read the guide
+        href: /compose
+id: reused-product
+motion: expressive

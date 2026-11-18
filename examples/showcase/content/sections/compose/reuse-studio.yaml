@@ -1,0 +1,74 @@
+type: compose
+version: 1
+label: Studio profile
+layout:
+  kind: stack
+  gap: large
+children:
+  - type: heading
+    text: A shared point of view.
+    scale: display
+  - type: section
+    label: The studio
+    content:
+      type: bento-grid
+      items:
+        - title: A shared point of view.
+          body: Describe what brings your work together.
+          image: assets/compose-study.svg
+          span: wide
+        - title: Made with care.
+          body: Explain a detail that matters to your studio.
+          background: inverted
+    headingLevel: 3
+  - type: group
+    layout:
+      kind: split
+      gap: large
+    children:
+      - type: section
+        label: People
+        content:
+          type: team-grid
+          heading: Meet the people.
+          people:
+            - name: The maker
+              role: Design and words
+              photo: assets/compose-study.svg
+              bio: A fictional portrait of an independent studio.
+              links:
+                - label: Read the story
+                  href: /compose
+        headingLevel: 3
+      - type: section
+        label: Milestones
+        content:
+          type: timeline
+          heading: The story so far.
+          items:
+            - date: Beginning
+              title: One clear idea.
+              body: Describe the first milestone.
+            - date: Today
+              title: A new perspective.
+              body: Describe where that idea has taken you.
+        headingLevel: 3
+  - type: section
+    label: Studio marks
+    content:
+      type: logo-strip
+      heading: A shared identity
+      logos:
+        - assets/compose-study.svg
+  - type: section
+    label: Read your work
+    headingLevel: 3
+    content:
+      type: cta-banner
+      headline: A place for every idea.
+      command: zel view
+      cta:
+        label: Explore the composition
+        href: /compose
+id: reused-studio
+background: inverted

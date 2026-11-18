@@ -144,6 +144,7 @@ fn supported(schema: &Value) -> Result<()> {
             "$schema",
             "type",
             "properties",
+            "additionalProperties",
             "required",
             "items",
             "anyOf",
@@ -163,6 +164,18 @@ fn supported(schema: &Value) -> Result<()> {
             return Err(invalid(format!(
                 "unsupported authoring schema constraint {key}; update the native authoring validator"
             )));
+        }
+    }
+    // Native authoring already rejects every undeclared object field. Accept
+    // only the equivalent explicit constraint emitted by strict Zod objects.
+    if let Some(additional) = schema.get("additionalProperties") {
+        if additional != &Value::Bool(false)
+            || schema["type"] != "object"
+            || !schema["properties"].is_object()
+        {
+            return Err(invalid(
+                "unsupported additionalProperties form in authoring schema",
+            ));
         }
     }
     for key in ["properties"] {
@@ -712,6 +725,11 @@ fn validate_composition(node: &Value, inside_stage: bool, inside_layers: bool) -
             return Err(invalid("scroll stages cannot nest and require start < end"));
         }
     }
+    if node["type"] == "section" && (inside_stage || inside_layers) {
+        return Err(invalid(
+            "embedded sections cannot nest inside scroll stages or layer layouts",
+        ));
+    }
     if node["type"] == "story" {
         if inside_stage || inside_layers {
             return Err(invalid(
@@ -798,6 +816,32 @@ fn validate_composition(node: &Value, inside_stage: bool, inside_layers: bool) -
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn closed_object_schema_is_explicit_and_unknown_fields_stay_rejected() {
+        let schema = json!({"type":"object","properties":{"label":{"type":"string"}},"additionalProperties":false});
+        supported(&schema).unwrap();
+        validate(&schema, &json!({"label":"Known"}), "closed").unwrap();
+        assert!(
+            validate(
+                &schema,
+                &json!({"label":"Known","other":"Unknown"}),
+                "closed"
+            )
+            .is_err()
+        );
+        for value in [json!(true), json!({"type":"string"}), Value::Null] {
+            let mut unsupported = schema.clone();
+            unsupported["additionalProperties"] = value;
+            assert!(supported(&unsupported).is_err());
+        }
+        assert!(
+            supported(
+                &json!({"type":"array","items":{"type":"string"},"additionalProperties":false})
+            )
+            .is_err()
+        );
+    }
+
     #[test]
     fn complete_json_values_validate_before_replacing_a_field() {
         let mut section = Section::new("hero").unwrap();

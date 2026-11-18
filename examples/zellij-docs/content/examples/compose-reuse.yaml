@@ -1,0 +1,34 @@
+type: compose
+version: 1
+label: Reusable sections
+children:
+  - type: group
+    layout:
+      kind: split
+    children:
+      - type: section
+        label: A plan
+        headingLevel: 3
+        content:
+          type: pricing-table
+          heading: Create together.
+          tiers:
+            - name: Studio
+              price: Contact us
+              features:
+                - Shared ideas
+                - Thoughtful documentation
+              cta:
+                label: CLI guide
+                href: /cli
+      - type: section
+        label: An invitation
+        headingLevel: 3
+        content:
+          type: cta-banner
+          headline: Put your ideas to work.
+          command: zel build
+          body: Edit the content. Keep the familiar controls.
+          cta:
+            label: Explore sections
+            href: /sections

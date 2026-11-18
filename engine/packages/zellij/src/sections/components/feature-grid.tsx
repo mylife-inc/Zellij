@@ -5,8 +5,9 @@ import { InlineMarkdown, SectionHeader, SectionShell } from '../shared';
 import { Icon } from '../../icons';
 import { Reveal } from '../../motion/reveal';
 
-export function FeatureGrid({ section, defaultMotion }: SectionProps<FeatureGridSection>) {
+export function FeatureGrid({ section, defaultMotion, headingLevel }: SectionProps<FeatureGridSection>) {
   const motion = section.motion ?? defaultMotion;
+  const ItemHeading = (headingLevel ? `h${headingLevel + (section.heading ? 1 : 0)}` : 'h3') as 'h2' | 'h3' | 'h4' | 'h5';
 
   return (
     <SectionShell
@@ -17,7 +18,7 @@ export function FeatureGrid({ section, defaultMotion }: SectionProps<FeatureGrid
       motion={motion}
       className="zellij-feature-grid"
     >
-      <SectionHeader
+      <SectionHeader level={headingLevel}
         {...(section.eyebrow ? { eyebrow: section.eyebrow } : {})}
         {...(section.heading ? { heading: section.heading } : {})}
         {...(section.subhead ? { subhead: section.subhead } : {})}
@@ -38,7 +39,7 @@ export function FeatureGrid({ section, defaultMotion }: SectionProps<FeatureGrid
                   />
                 </span>
               ) : null}
-              <h3 className="zellij-feature-title">{item.title}</h3>
+              <ItemHeading className="zellij-feature-title">{item.title}</ItemHeading>
               {item.body ? (
                 <p className="zellij-feature-body">
                   <InlineMarkdown text={item.body} />
