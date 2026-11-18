@@ -128,3 +128,14 @@ it('renders block Markdown without executing HTML or MDX and keeps primary headi
   expect(html).not.toContain('href="javascript:');
   expect(html).toContain('{process.exit(1)}');
 });
+
+
+it('keeps footnote IDs and their links/accessibility references local to each prose instance', () => {
+  const prose = {type: 'prose', body: 'A note[^one].\n\n[^one]: A footnote.'};
+  const value = composeSchema.parse({type: 'compose', version: 1, label: 'Notes', children: [prose, prose]});
+  const html = renderToStaticMarkup(<Compose section={value} site={site} defaultMotion="none" />);
+  const ids = [...html.matchAll(/ id="([^"]+)"/g)].map(match => match[1]);
+  expect(ids).toHaveLength(6);
+  expect(new Set(ids).size).toBe(ids.length);
+  for (const match of html.matchAll(/(?:href="#|aria-describedby=")([^"]+)"/g)) expect(ids).toContain(match[1]);
+});
