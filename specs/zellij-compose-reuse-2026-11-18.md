@@ -113,3 +113,10 @@ hit target before a normal, unforced click. WebKit had already passed.
 | Before | After | Why |
 | --- | --- | --- |
 | An inline team link can expose a hidden prefix as a tiny hit box | One positioned link box with a 44px touch target | Keep pointer interaction aligned with the visible label and accessible name |
+
+Visual inspection of the retained dark-theme print capture found another
+pairing missed by the computed foreground/card assertions: the outer composition
+was transparent over a dark page background. Printed compositions now paint
+white, with transparent inner groups; the sticky site header is hidden in print.
+The browser test checks both the outer white surface and hidden header, and
+retains a full-page print capture for review.
