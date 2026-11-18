@@ -140,20 +140,33 @@ const fs = require('node:fs');
 const args = process.argv.slice(2);
 fs.appendFileSync(process.env.DOCKER_TEST_LOG, JSON.stringify(args)+'\\n');
 if (args[0] === 'image') console.log(process.arch === 'arm64' ? 'arm64' : 'amd64');
-if (args[0] === 'run') {
+if (args[0] === 'run' && args.includes('context')) {
+  const schema = JSON.parse(fs.readFileSync('cli/crates/zellij-core/generated/schema.json', 'utf8'));
+  if (process.env.DOCKER_TEST_SCHEMA_DRIFT === 'true') schema.sectionPresets = {};
+  console.log(JSON.stringify(schema));
+} else if (args[0] === 'run') {
   const tag = args[3];
   const features = tag.endsWith('-all') ? ['maths','diagrams'] : tag.endsWith('-maths') ? ['maths'] : tag.endsWith('-diagrams') ? ['diagrams'] : [];
   console.log(JSON.stringify({engine: ${JSON.stringify(engine)}, wrapper: {zellij: {features}}}));
 }
 `;
   await writeFile(path.join(bin, 'docker'), program, { mode: 0o755 });
-  execFileSync(process.execPath, ['scripts/check-published-images.mjs'], { env: { ...process.env,
+  const env = { ...process.env,
     PATH: `${bin}:${path.dirname(process.execPath)}:${process.env.PATH}`, DOCKER_TEST_LOG: log,
-    VERSION: currentVersion, RELEASE_IMAGE: 'ghcr.io/example/zellij-base' } });
+    VERSION: currentVersion, RELEASE_IMAGE: 'ghcr.io/example/zellij-base' };
+  execFileSync(process.execPath, ['scripts/check-published-images.mjs'], { env });
   const calls = (await readFile(log, 'utf8')).trim().split('\n').map(line => JSON.parse(line));
   const expected = ['', '-maths', '-diagrams', '-all'].map(suffix => `ghcr.io/example/zellij-base:${currentVersion.slice(1)}${suffix}`);
   assert.deepEqual(calls.filter(args => args[0] === 'pull').map(args => args[1]), expected);
-  assert.deepEqual(calls.filter(args => args[0] === 'run').map(args => args.slice(0, 4)), expected.map(image => ['run', '--rm', '--network=none', image]));
+  assert.deepEqual(calls.filter(args => args[0] === 'run').map(args => args.slice(0, 4)), expected.flatMap(image => [
+    ['run', '--rm', '--network=none', image], ['run', '--rm', '--network=none', image],
+  ]));
+  assert.deepEqual(calls.filter(args => args.includes('context')), expected.map(image => [
+    'run', '--rm', '--network=none', image, 'node', '/opt/zellij/bin/zellij.mjs', 'context', '--json',
+  ]));
+  assert.throws(() => execFileSync(process.execPath, ['scripts/check-published-images.mjs'], {
+    env: { ...env, DOCKER_TEST_SCHEMA_DRIFT: 'true' }, stdio: 'pipe', maxBuffer: 8 * 1024 * 1024,
+  }), error => error.status === 1 && error.stderr.toString().includes('published authoring model and presets'));
 });
 
 // Keep public Next PDF orchestration injectable: these tests never run a browser,

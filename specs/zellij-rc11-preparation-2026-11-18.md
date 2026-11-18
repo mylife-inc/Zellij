@@ -39,3 +39,14 @@ Seven audit regressions and 45 release/helper tests pass. Fresh npm installation
 and engine packaging pass. Local CLI/engine checks match the complete schema,
 schema hash and all nine preset bytes. Normal source preflight and hosted CI
 are running; publication, channel/docs migration and retirement are pending.
+
+
+## First preparation CI finding
+
+Run `44415309056`, Engine job `135193923475`, failed in the mocked public-image
+acceptance test. The new context command correctly required schema data; the
+old fake Docker executable returned package metadata for every run. Correct the
+fixture to distinguish the two commands and assert every variant's offline schema
+invocation. A negative case returns a schema without presets and requires the
+acceptance process to fail. This is a test-fixture correction, not a product or
+published-image failure. Retain the initial result; corrected CI follows.
