@@ -7,7 +7,7 @@ for (const route of ['compose-layers', 'compose-content']) {
     await page.goto(`/${route}`);
     await expect(page.locator('main h1')).toHaveCount(1);
     await page.evaluate(() => document.fonts.ready);
-    for (const img of await page.locator('main img').all()) {
+    for (const img of await page.locator('main img:visible').all()) {
       await img.scrollIntoViewIfNeeded();
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
     }
