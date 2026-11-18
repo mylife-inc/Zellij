@@ -290,6 +290,8 @@ ol.zellij-compose-list { list-style: decimal; }
   .zellij-compose-section .zellij-bento-cell:is([data-span="tall"], [data-span="large"]) { grid-row: span 2; }
 }
 @media print {
+  .zellij-compose-section :is(.zellij-feature-card, .zellij-pricing-card, .zellij-bento-tile, .zellij-button, .zellij-pricing-flag) { background: none !important; color: #111 !important; border-color: #777 !important; box-shadow: none; }
+  .zellij-compose-section .zellij-pricing-period { color: #444; }
   .zellij-compose-section :is(.zellij-feature-list, .zellij-team-list, .zellij-bento-grid, .zellij-pricing-list, .zellij-stats-list) { grid-template-columns: minmax(0, 1fr); }
   .zellij-compose-section .zellij-bento-cell[data-span] { grid-column: auto; grid-row: auto; }
   .zellij-compose-section .zellij-section :is(h2, h3, h4, h5, p, dd, dt),

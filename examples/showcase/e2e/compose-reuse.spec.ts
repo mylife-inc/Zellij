@@ -60,7 +60,7 @@ test('copy controls are independent and keyboard operable',async({page})=>{
   expect(await page.evaluate(()=>(window as unknown as {copied:string}).copied)).toBe('zel view');
 });
 
-test('statistics preserve an authored accessible and print value independently of their animation',async({page})=>{
+test('statistics preserve an authored accessible and print value independently of their animation',async({page},info)=>{
   await page.goto('/compose-reuse');
   const stats=page.getByRole('group',{name:'At a glance',exact:true});
   await stats.scrollIntoViewIfNeeded();
@@ -69,7 +69,7 @@ test('statistics preserve an authored accessible and print value independently o
   await expect(stats.locator('.zellij-count-up-animated').first()).toHaveAttribute('aria-hidden','true');
   // Model any intermediate frame without depending on animation/capture timing.
   await stats.locator('.zellij-count-up-animated').first().evaluate(el=>{el.textContent='17';});
-  await page.emulateMedia({media:'print'});
+  await page.emulateMedia({media:'print',colorScheme:'dark'});
   await expect(stats.locator('.zellij-count-up-animated').first()).toBeHidden();
   await expect(stats.locator('.zellij-count-up-literal').first()).toHaveCSS('clip-path','none');
   await expect(stats.locator('.zellij-count-up-literal').first()).toBeVisible();
@@ -78,6 +78,11 @@ test('statistics preserve an authored accessible and print value independently o
   await expect(page.locator('.zellij-command-text').first()).toHaveCSS('color','rgb(17, 17, 17)');
   await expect(page.locator('.zellij-gradient-text')).toHaveCSS('-webkit-text-fill-color','rgb(17, 17, 17)');
   await expect(page.locator('.zellij-gradient-text')).toHaveCSS('background-image','none');
+  for (const card of await page.locator('.zellij-compose-section :is(.zellij-feature-card,.zellij-pricing-card,.zellij-bento-tile)').all()) {
+    await expect(card).toHaveCSS('background-color','rgba(0, 0, 0, 0)');
+    await expect(card).toHaveCSS('color','rgb(17, 17, 17)');
+  }
+  await page.screenshot({path:info.outputPath('compose-reuse-print.png'),fullPage:true,animations:'disabled'});
   for(const list of await page.locator('.zellij-compose-section .zellij-feature-list,.zellij-compose-section .zellij-pricing-list,.zellij-compose-section .zellij-bento-grid').all())
     expect(await list.evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(1);
 });
