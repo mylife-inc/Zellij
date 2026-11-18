@@ -128,3 +128,5 @@ each image). The print fixture now uses that same explicit readiness check befor
 emulating print and checks image visibility afterward. This adjusts the capture
 precondition; it does not change the production image loading policy or claim
 that CSS-media emulation is a native print-dialog test.
+The narrow-container capture uses the same image-readiness requirement after
+scrolling its bento into view; WebKit could otherwise capture its lazy placeholder.

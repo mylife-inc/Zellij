@@ -41,6 +41,8 @@ test('embedded grids resize to their own column and keep bento spans within it',
     expect(await list.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
   }
   await bento.scrollIntoViewIfNeeded();
+  for(const img of await bento.locator('img').all())
+    await expect.poll(()=>img.evaluate((el:HTMLImageElement)=>el.complete&&el.naturalWidth>0)).toBe(true);
   await page.screenshot({path:info.outputPath('compose-reuse-narrow.png'),animations:'disabled'});
   await feature.evaluate(el=>{el.style.width='100%';});
   await expect.poll(()=>feature.locator('.zellij-feature-list').evaluate(el=>getComputedStyle(el).gridTemplateColumns.split(' ').length)).toBe(2);
