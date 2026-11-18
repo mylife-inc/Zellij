@@ -1,5 +1,20 @@
 # Picomatch development advisory — 2026-11-17
 
+## Closure — 2026-11-18
+
+GitHub withdrew [GHSA-fc5q-39xc-vjpf](https://github.com/advisories/GHSA-fc5q-39xc-vjpf)
+on November 18 at 15:38:56 UTC. The upstream maintainer rejects the vulnerability
+classification in [the linked discussion](https://github.com/micromatch/picomatch/pull/235).
+Fresh production and full repository npm audits both report zero findings.
+No dependency version or runtime behavior changed; withdrawal is not a code fix.
+The temporary exception is removed. The audit gate now rejects every finding,
+including this advisory if a registry reports it again, and still rejects command
+failures, malformed reports and inconsistent counts. Seven regression tests cover
+the strict contract. The original diagnosis and temporary disposition below
+remain historical evidence, not an active exception.
+
+## Original finding and disposition
+
 Documentation CI `44163958595`, Engine job `134324898500`, failed at the
 unchanged `npm audit --audit-level=low` gate. Preserve that failure: the
 [upstream advisory](https://github.com/advisories/GHSA-fc5q-39xc-vjpf) was reviewed

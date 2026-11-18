@@ -1,0 +1,304 @@
+{
+  "date": "2026-11-18",
+  "candidate": "v0.2.0-rc.11",
+  "status": "preparation; not yet tagged or published",
+  "preparation": {
+    "pull_request": 207,
+    "source": "f913d167e428f73f82f992322735d39edc518fcd",
+    "runtime_baseline": "0d25d843112e2369dfddc161576ce685d0c26c85",
+    "unchanged_paths": [
+      "engine",
+      "cli",
+      "docker",
+      "templates",
+      "package.json",
+      "package-lock.json",
+      "scripts/check-website-release.mjs",
+      "scripts/check-pdf.mjs",
+      "scripts/check-language-pdfs.mjs",
+      "scripts/check-next-pdf.mjs"
+    ],
+    "release_helper_and_audit_tests": 52,
+    "first_ci": {
+      "run_id": 44415309056,
+      "head": "890f0355a2c671a73d25678f572f13f0b1069ca0",
+      "failed_job": 135193923475,
+      "finding": "Mock Docker returned engine metadata for new schema command; corrected fixture distinguishes commands and verifies rejection of stale presets.",
+      "fix_commit": "f913d167e428f73f82f992322735d39edc518fcd",
+      "superseded": true
+    },
+    "corrected_ci": {
+      "id": 44415698968,
+      "head": "f913d167e428f73f82f992322735d39edc518fcd",
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/mylife-inc/Zellij/actions/runs/44415698968",
+      "jobs": [
+        {
+          "id": 135195474456,
+          "name": "Engine",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195474858,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195474869,
+          "name": "book-pdf / LuaLaTeX (ubuntu-24.04-arm, docker)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195474875,
+          "name": "Native images (amd64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195474975,
+          "name": "websites / Websites (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195474977,
+          "name": "Website and book templates",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475017,
+          "name": "native-packages / Package and install (aarch64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475023,
+          "name": "Portable docs (macos-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475088,
+          "name": "native-packages / Package and install (x86_64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475130,
+          "name": "next-pdf / Next PDF (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475153,
+          "name": "websites / Websites (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475170,
+          "name": "next-pdf / Next PDF (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475178,
+          "name": "native-packages / Package and install (aarch64-apple-darwin)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475187,
+          "name": "Showcase end to end",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475237,
+          "name": "Portable docs (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475243,
+          "name": "native-packages / Package and install (x86_64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475267,
+          "name": "book-pdf / LuaLaTeX (ubuntu-latest, podman)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475328,
+          "name": "Native images (arm64)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475348,
+          "name": "native-packages / Package and install (x86_64-pc-windows-msvc)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475438,
+          "name": "CLI",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475460,
+          "name": "Portable docs (windows-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475495,
+          "name": "native-packages / Package and install (aarch64-unknown-linux-gnu)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135195475526,
+          "name": "Embedded schema is current",
+          "conclusion": "success"
+        },
+        {
+          "id": 135198300466,
+          "name": "Combined image manifests",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718796,
+          "name": "homebrew / Homebrew (macos-15)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718818,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718821,
+          "name": "homebrew / Homebrew (ubuntu-latest)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718881,
+          "name": "homebrew / Homebrew (ubuntu-24.04-arm)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718923,
+          "name": "scoop / Scoop (x86_64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718951,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, pwsh)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199718953,
+          "name": "scoop / Scoop (aarch64-pc-windows-msvc, powershell.exe)",
+          "conclusion": "success"
+        },
+        {
+          "id": 135199719084,
+          "name": "homebrew / Homebrew (macos-15-intel)",
+          "conclusion": "success"
+        }
+      ]
+    }
+  },
+  "preflight": {
+    "rust_passed": 817,
+    "ignored_hosted_only": 5,
+    "engine_passed": 527,
+    "types_schema_format_clippy": "passed",
+    "log_sha256": "450a7644568fd70dabfc2e01be1c4a468d3a777cae059a096ce6fffd1c042554"
+  },
+  "dependency_audit": {
+    "advisory": {
+      "ghsa_id": "GHSA-fc5q-39xc-vjpf",
+      "html_url": "https://github.com/advisories/GHSA-fc5q-39xc-vjpf",
+      "summary": "Withdrawn Advisory: picomatch vulnerable to ReDoS through single-branch repeated extglobs",
+      "updated_at": "2026-11-18T15:38:58Z",
+      "withdrawn_at": "2026-11-18T15:38:56Z"
+    },
+    "production_findings": 0,
+    "full_findings": 0,
+    "exception_removed": true,
+    "strict_audit_log_sha256": "73fe156517463837a0d2a077f57170d2feb642bf1845ae981605f6ce71bb2bbe"
+  },
+  "visual_source_baseline": {
+    "source_run": 44397663238,
+    "source_commit": "2f69966d49ae571a1e1a1114c95717fa6d0b8a61",
+    "websites": {
+      "compared": 224,
+      "matches": 224,
+      "differences": []
+    },
+    "pdf_pages": {
+      "compared": 420,
+      "matches": 420,
+      "differences": []
+    }
+  },
+  "previous_managed_channels": {
+    "homebrew": "aa82b4e9d15debdb1de6ff2f952fc23841ccad7d",
+    "scoop": "992b4e13232f41f3ddfa9dee6e7c4dcdbd3ace7c"
+  },
+  "previous_standalone": {
+    "version": "zel 0.2.0-rc.10",
+    "target": "x86_64-apple-darwin",
+    "archive": "zel-v0.2.0-rc.10-x86_64-apple-darwin.tar.gz",
+    "archive_sha256": "214d7c5f20efb1368a32ca7a1895091e012ccfa230053747bfe43ce1b2c8c8cb",
+    "repository": "mylife-inc/Zellij"
+  },
+  "showcase": {
+    "passed": 526,
+    "conditionally_skipped": 140,
+    "retries": 0
+  },
+  "preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "browser_errors": 0,
+    "probes_passed": 6
+  },
+  "development_images": {
+    "run": 44415370224,
+    "source": "0d25d843112e2369dfddc161576ce685d0c26c85",
+    "jobs_passed": 13,
+    "manifest_checks": {
+      "checked_at": "2026-11-18T23:00:40.942567+00:00",
+      "source_run": 44415370224,
+      "source_head": "0d25d843112e2369dfddc161576ce685d0c26c85",
+      "manifests": [
+        {
+          "tag": "main",
+          "digest": "sha256:8d24e64ce9b4830c4c2140cec4dae454e15fab3bb75be8c1d18d3b047cfefed7",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ]
+        },
+        {
+          "tag": "main-maths",
+          "digest": "sha256:d6769e1dbdb1e03ce0c329994b15cbf9cd365df6135b66a4bcffc04d8ecddde9",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ]
+        },
+        {
+          "tag": "main-diagrams",
+          "digest": "sha256:b64d87576091c9e70560db37502d18a3444741b5ec8bb5476d1746ce0d8d4883",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ]
+        },
+        {
+          "tag": "main-all",
+          "digest": "sha256:b2c1ff18f73765cb52bfaaa8b626b262bea0516285443e854872b99efa2bea74",
+          "platforms": [
+            "linux/amd64",
+            "linux/arm64"
+          ]
+        }
+      ]
+    }
+  },
+  "final_record_update": "After successful f913d16, only context, preparation prose and preparation evidence change; runtime, dependencies, active guides, workflows and acceptance inputs remain identical."
+}

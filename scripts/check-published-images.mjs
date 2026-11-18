@@ -8,6 +8,7 @@ const version = process.env.VERSION;
 const repository = process.env.RELEASE_IMAGE;
 execFileSync(process.execPath, ['scripts/package-native.mjs', version, '--check-version'], { stdio: 'inherit' });
 const expectedEngine = JSON.parse(readFileSync('engine/packages/zellij/package.json', 'utf8'));
+const expectedSchema = JSON.parse(readFileSync('cli/crates/zellij-core/generated/schema.json', 'utf8'));
 const architecture = process.arch === 'arm64' ? 'arm64' : 'amd64';
 for (const features of ['none', 'maths', 'diagrams', 'all']) {
   const image = imageTags(version, repository, features)[0];
@@ -18,6 +19,8 @@ for (const features of ['none', 'maths', 'diagrams', 'all']) {
   const actual = JSON.parse(execFileSync('docker', ['run', '--rm', '--network=none', image, 'node', '-e', script], { encoding: 'utf8', timeout: 30000 }));
   assert.equal(actual.engine.version, expectedEngine.version);
   assert.deepEqual(actual.engine.zellij, expectedEngine.zellij);
+  const schema = JSON.parse(execFileSync('docker', ['run', '--rm', '--network=none', image, 'node', '/opt/zellij/bin/zellij.mjs', 'context', '--json'], { encoding: 'utf8', timeout: 30000, maxBuffer: 8 * 1024 * 1024 }));
+  assert.deepEqual(schema, expectedSchema, `${image}: published authoring model and presets`);
   assert.deepEqual(actual.wrapper.zellij.features, features === 'none' ? [] : features === 'all' ? ['maths', 'diagrams'] : [features]);
-  console.log(`${image}: native ${architecture} execution, engine contract and ${features} selection passed`);
+  console.log(`${image}: native ${architecture} execution, engine/authoring contracts and ${features} selection passed`);
 }
