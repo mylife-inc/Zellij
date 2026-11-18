@@ -82,6 +82,31 @@ try {
   ]), '--set', 'children.0.children.0.tracks.0.label=English captions']));
   getSection('compose').schema.parse(composition);
   assert.equal(composition.children[0].children[0].tracks[0].label, 'English captions');
+  const richChildren = [{type: 'group', place: 'center', children: [
+    {type: 'table', caption: 'Modes', rowLabel: 'Element', columns: ['Web'], rows: [{label: 'Text', cells: ['Readable']}]},
+    {type: 'prose', body: '## A thought\n\nA clear paragraph.'},
+    {type: 'code', title: 'Build', code: 'zel build'},
+    {type: 'disclosure', summary: 'More', body: 'Read [the guide](/guide)'},
+    {type: 'list', ordered: true, items: ['One', 'Two']},
+    {type: 'quote', text: 'Choose carefully.', author: 'Studio'},
+    {type: 'icon', name: 'book-open', label: 'Read'},
+    {type: 'gallery', label: 'Images', items: [{image: 'assets/a.svg', alt: 'A'}]},
+    {type: 'carousel', label: 'Cards', items: [{title: 'One'}, {title: 'Two'}]},
+  ]}];
+  const richLayout = {kind: 'layers', backdrop: {kind: 'image', src: 'assets/a.svg'}};
+  const richScroll = {start: 0.2, end: 0.8, from: {y: 32}, to: {}};
+  const richArgs = (children, layout, scroll) => ['ns', 'compose', '--set-json', 'children=' + JSON.stringify(children), '--set-json', 'layout=' + JSON.stringify(layout), '--set-json', 'scroll=' + JSON.stringify(scroll)];
+  const rich = YAML.parse(execFileSync(binary, richArgs(richChildren, richLayout, richScroll), {encoding: 'utf8'}));
+  getSection('compose').schema.parse(rich);
+  for (const [children, layout, scroll] of [
+    [richChildren, richLayout, {...richScroll, start: 0.9}],
+    [richChildren, {kind: 'stack'}, richScroll],
+    [[...richChildren, richChildren[0]], richLayout, richScroll],
+  ]) {
+    const candidate = {type: 'compose', version: 1, label: 'Invalid', children, layout, scroll};
+    assert.equal(getSection('compose').schema.safeParse(candidate).success, false);
+    assert.notEqual(spawnSync(binary, richArgs(children, layout, scroll)).status, 0);
+  }
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);

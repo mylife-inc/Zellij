@@ -3,6 +3,20 @@
 Last refreshed: **2026-11-17**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-17: composer expansion under implementation (source rc.11)**
+
+The user authorized all three remaining capability groups. The current branch
+adds layered image/video backdrops and nine distinct foreground positions; prose,
+lists, quotes, icons, code, tables, disclosures, carousels and galleries; and
+bounded root/group scroll stages with authored ranges and optional pinning.
+Native and engine validation share placement, table and non-nested stage rules.
+Source format remains version 1. The active guide includes examples and explicit
+fallbacks/limits. See [the contract](specs/zellij-compose-expansion-2026-11-17.md).
+Local engine tests (509), native authoring tests (19), workspace types and strict
+content checks pass. Full Rust and hosted browser/acceptance checks are pending.
+Public rc.10 and production hosting remain unchanged; do not call this verified
+or released until final acceptance is recorded.
+
 **2026-11-17: composer video and nested layouts verified (source rc.11)**
 
 The user's universal-section readiness question prompted a fresh code/doc audit.

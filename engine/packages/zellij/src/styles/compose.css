@@ -69,3 +69,95 @@
   .zellij-section[data-zellij-section="compose"] .zellij-compose-group[data-surface] { background: none !important; --zellij-compose-fg: #111 !important; --zellij-compose-muted: #444 !important; color: #111 !important; }
   .zellij-section[data-zellij-section="compose"] [data-zellij-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
 }
+
+/* Layer backdrops are separate from foreground flow: mobile and print never overlap. */
+.zellij-compose-layers { position: relative; isolation: isolate; display: grid; min-width: 0; border-radius: var(--zellij-radius-media); background: #111; --zellij-compose-fg: #fff; --zellij-compose-muted: #fff; color: var(--zellij-compose-fg); }
+.zellij-compose-layers[data-tone="light"] { background: #fff; --zellij-compose-fg: #111; --zellij-compose-muted: #333; }
+.zellij-compose-backdrop { position: relative; aspect-ratio: 16 / 9; overflow: hidden; border-radius: inherit; }
+.zellij-compose-backdrop img, .zellij-compose-backdrop video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.zellij-compose-scrim { display: none; pointer-events: none; }
+.zellij-compose-layers > .zellij-compose-layout { position: relative; padding: clamp(1.5rem, 3vw, 3rem); }
+.zellij-compose-placement { min-width: 0; width: 100%; }
+.zellij-compose-backdrop-control { position: relative; z-index: 1; justify-self: end; margin: 0 1.5rem 1.5rem; padding: .65rem 1rem; min-height: 44px; border: 1px solid currentColor; border-radius: 2rem; background: #111; color: #fff; cursor: pointer; }
+.zellij-compose-backdrop-control[hidden] { display: none !important; }
+.zellij-compose-backdrop-control:focus-visible, .zellij-compose-table-wrap:focus-visible, .zellij-compose-code pre:focus-visible { outline: 2px solid var(--zellij-accent); outline-offset: 4px; }
+@container zellij-compose (min-width: 760px) {
+  .zellij-compose-layers > .zellij-compose-backdrop { position: absolute; inset: 0; aspect-ratio: auto; }
+  .zellij-compose-layers > .zellij-compose-scrim { display: block; position: absolute; inset: 0; border-radius: inherit; background: #000; opacity: var(--zellij-compose-scrim); }
+  .zellij-compose-layers[data-tone="light"] > .zellij-compose-scrim { background: #fff; }
+  .zellij-compose-layers > .zellij-compose-layout { min-height: 32rem; grid-template: repeat(3, minmax(min-content, 1fr)) / repeat(3, minmax(0, 1fr)); }
+  .zellij-compose-layers[data-height="compact"] > .zellij-compose-layout { min-height: 24rem; }
+  .zellij-compose-layers[data-height="tall"] > .zellij-compose-layout { min-height: 42rem; }
+  .zellij-compose-layers > .zellij-compose-layout > * { grid-area: 2 / 2; align-self: center; }
+  .zellij-compose-layers > .zellij-compose-layout > [data-place^="top-"] { grid-row: 1; align-self: start; }
+  .zellij-compose-layers > .zellij-compose-layout > [data-place^="bottom-"] { grid-row: 3; align-self: end; }
+  .zellij-compose-layers > .zellij-compose-layout > [data-place$="-start"] { grid-column: 1; }
+  .zellij-compose-layers > .zellij-compose-layout > [data-place$="-end"] { grid-column: 3; }
+  .zellij-compose-layers > .zellij-compose-layout > [data-place$="-center"] { grid-column: 2; }
+}
+
+/* Semantic content remains readable within a narrow card as well as a full section. */
+.zellij-compose-list { margin: 0; padding-inline-start: 1.5rem; list-style: disc; }
+ol.zellij-compose-list { list-style: decimal; }
+.zellij-compose-list li + li { margin-block-start: .6rem; }
+.zellij-compose-quote, .zellij-compose-code { margin: 0; min-width: 0; }
+.zellij-compose-quote blockquote { margin: 0; padding-inline-start: 1.25rem; border-inline-start: 3px solid var(--zellij-accent); font-size: 1.3rem; line-height: 1.5; }
+.zellij-compose-quote figcaption { margin-block-start: .75rem; color: var(--zellij-compose-muted); }
+.zellij-compose-icon { display: inline-flex; color: var(--zellij-compose-fg); }
+.zellij-compose-code figcaption { font-size: .875rem; margin-block-end: .5rem; }
+.zellij-compose-code pre { margin: 0; padding: 1.25rem; overflow: auto; white-space: pre; border: 1px solid var(--zellij-border); border-radius: var(--zellij-radius); }
+.zellij-compose-table-wrap { width: 100%; overflow: auto; }
+.zellij-compose-table { width: 100%; border-collapse: collapse; text-align: start; }
+.zellij-compose-table caption { text-align: start; font-weight: 600; padding-block-end: .75rem; }
+.zellij-compose-table th, .zellij-compose-table td { padding: .85rem; border-block-end: 1px solid var(--zellij-border); text-align: start; overflow-wrap: anywhere; }
+.zellij-compose-table th { font-weight: 600; }
+.zellij-compose-disclosure { width: 100%; padding-block: 1rem; border-block: 1px solid var(--zellij-border); }
+.zellij-compose-disclosure summary { cursor: pointer; font-weight: 600; min-height: 44px; padding-block: .5rem; }
+.zellij-compose-disclosure > div { padding-block: .5rem; line-height: 1.65; }
+.zellij-compose-prose { min-width: 0; line-height: 1.7; overflow-wrap: anywhere; }
+.zellij-compose-prose > :first-child { margin-block-start: 0; }
+.zellij-compose-prose > * { margin-block: 1rem; }
+.zellij-compose-prose h2, .zellij-compose-prose h3, .zellij-compose-prose h4 { font-weight: 600; line-height: 1.25; }
+.zellij-compose-prose h2 { font-size: 1.75rem; }
+.zellij-compose-prose h3 { font-size: 1.4rem; }
+.zellij-compose-prose ul { list-style: disc; padding-inline-start: 1.5rem; }
+.zellij-compose-prose ol { list-style: decimal; padding-inline-start: 1.5rem; }
+.zellij-compose-prose pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 1rem; border: 1px solid var(--zellij-border); }
+.zellij-compose-prose img { max-width: 100%; height: auto; }
+.zellij-compose-prose table { display: block; overflow: auto; border-collapse: collapse; }
+.zellij-compose-prose th, .zellij-compose-prose td { padding: .5rem; border: 1px solid var(--zellij-border); }
+.zellij-compose-prose blockquote { margin-inline: 0; padding-inline-start: 1rem; border-inline-start: 2px solid var(--zellij-accent); }
+.zellij-compose-carousel { min-width: 0; --zellij-rail-inset: .25rem; }
+.zellij-compose-carousel-card { flex: 0 0 min(85%, 22rem); min-width: 0; padding: 1.25rem; scroll-snap-align: start; border: 1px solid var(--zellij-border); border-radius: var(--zellij-radius-media); }
+.zellij-compose-carousel-card h3 { font-size: 1.4rem; font-weight: 600; margin-block: 1rem .5rem; }
+.zellij-compose-carousel-card p { line-height: 1.65; overflow-wrap: anywhere; }
+.zellij-compose-gallery ul { list-style: none; margin: 0; padding: .25rem; display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.zellij-compose-gallery li, .zellij-compose-gallery figure { min-width: 0; margin: 0; }
+.zellij-compose-gallery a { display: block; }
+.zellij-compose-gallery figcaption { font-size: .875rem; line-height: 1.5; margin-block-start: .5rem; }
+@container zellij-compose (min-width: 760px) { .zellij-compose-gallery ul { grid-template-columns: repeat(var(--zellij-compose-gallery-columns), minmax(0, 1fr)); } }
+.zellij-compose-prose a, .zellij-compose-list a, .zellij-compose-quote a, .zellij-compose-table a, .zellij-compose-disclosure a, .zellij-compose-carousel a { text-decoration: underline; text-underline-offset: .18em; }
+
+.zellij-compose-scroll, .zellij-compose-scroll-content { min-width: 0; width: 100%; }
+.zellij-compose-scroll[data-scroll-active="true"][data-scroll-pin="true"] > .zellij-compose-scroll-content { position: sticky; }
+.zellij-compose-scroll-content:focus-within { transform: none !important; opacity: 1 !important; }
+@media (prefers-reduced-motion: reduce), (forced-colors: active) {
+  .zellij-compose-scroll { height: auto !important; }
+  .zellij-compose-scroll-content { position: static !important; transform: none !important; opacity: 1 !important; }
+}
+@media print {
+  .zellij-compose-layers { display: block; background: none !important; --zellij-compose-fg: #111; --zellij-compose-muted: #444; }
+  .zellij-compose-layers > .zellij-compose-backdrop { position: relative; aspect-ratio: 16 / 9; }
+  .zellij-compose-backdrop video, .zellij-compose-scrim, .zellij-compose-backdrop-control { display: none !important; }
+  .zellij-compose-layers > .zellij-compose-layout { display: grid; min-height: 0 !important; padding: 1rem 0; }
+  .zellij-compose-layers > .zellij-compose-layout > * { grid-area: auto !important; }
+  .zellij-compose-scroll { height: auto !important; }
+  .zellij-compose-scroll-content { position: static !important; transform: none !important; opacity: 1 !important; }
+  .zellij-compose-carousel .zellij-carousel-track { display: grid; overflow: visible; }
+  .zellij-compose-carousel .zellij-carousel-arrows, .zellij-compose-gallery .zellij-lightbox { display: none !important; }
+  .zellij-compose-carousel-card { break-inside: avoid; }
+  .zellij-compose-code pre { white-space: pre-wrap; overflow: visible; overflow-wrap: anywhere; }
+  .zellij-compose-table-wrap { overflow: visible; }
+  .zellij-compose-disclosure::details-content { content-visibility: visible; display: block; }
+  .zellij-compose-disclosure > div { display: block !important; }
+}

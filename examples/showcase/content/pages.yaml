@@ -50,3 +50,18 @@
   description: A synchronized media accordion and an independent composed variation.
   layout: stack
   sections: [media-accordion/intro, media-accordion/details, media-accordion/composed]
+
+- name: compose-layers
+  title: Every element, in its place
+  layout: stack
+  sections: [compose/layers, compose/layer-video]
+
+- name: compose-content
+  title: Form follows meaning
+  layout: stack
+  sections: [compose/content]
+
+- name: compose-scroll
+  title: A story in motion
+  layout: stack
+  sections: [compose/scroll, compose/scroll-flow, compose/details]

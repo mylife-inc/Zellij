@@ -108,7 +108,7 @@
     "bento-grid": "type: bento-grid\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n",
     "card-carousel": "type: card-carousel\nitems:\n  - title: TODO\n  - title: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# link:\n#   label: TODO\n#   href: \"#\"\n# narrow | medium | wide\n# cardWidth: medium\n",
     "code-cards": "type: code-cards\ncards:\n  - title: TODO\n    code:\n      body: TODO\n  - title: TODO\n    code:\n      body: TODO\n\n# Uncomment what you need.\n# heading: TODO\n# subhead: TODO\n# eyebrow: TODO\n# footnote: TODO\n",
-    "compose": "type: compose\nversion: 1\nlabel: TODO\nchildren:\n  - type: heading\n    text: TODO\n\n# Uncomment what you need.\n# layout:\n#   kind: stack\n",
+    "compose": "type: compose\nversion: 1\nlabel: TODO\nchildren:\n  - type: heading\n    text: TODO\n\n# Uncomment what you need.\n# layout:\n#   kind: stack\n# scroll:\n#   from: {}\n#   to: {}\n",
     "cta-banner": "type: cta-banner\nheadline: TODO\n\n# Uncomment what you need.\n# body: TODO\n# command: TODO\n# cta:\n#   label: TODO\n#   href: \"#\"\n",
     "faq": "type: faq\nitems:\n  - question: TODO\n    answer: TODO\n\n# Uncomment what you need.\n# eyebrow: TODO\n# heading: TODO\n# subhead: TODO\n",
     "feature-grid": "type: feature-grid\nitems:\n  - title: TODO\n\n# Uncomment what you need.\n# eyebrow: TODO\n# heading: TODO\n# subhead: TODO\n# columns: 3\n",
@@ -155,6 +155,7 @@
   },
   "sectionAuthoringRules": {
     "compose": {
+      "composeConstraints": true,
       "boundedTree": {
         "children": "children",
         "maxNodes": 128,
@@ -761,6 +762,115 @@
               "properties": {
                 "kind": {
                   "type": "string",
+                  "const": "layers"
+                },
+                "backdrop": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "image"
+                        },
+                        "src": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "alt": {
+                          "default": "",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "src"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "video"
+                        },
+                        "src": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "poster": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        }
+                      },
+                      "required": [
+                        "kind",
+                        "src",
+                        "poster",
+                        "label"
+                      ]
+                    }
+                  ]
+                },
+                "tone": {
+                  "default": "dark",
+                  "type": "string",
+                  "enum": [
+                    "dark",
+                    "light"
+                  ]
+                },
+                "scrim": {
+                  "default": 0.65,
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "height": {
+                  "default": "medium",
+                  "type": "string",
+                  "enum": [
+                    "compact",
+                    "medium",
+                    "tall"
+                  ]
+                },
+                "gap": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "small",
+                    "medium",
+                    "large"
+                  ]
+                },
+                "align": {
+                  "type": "string",
+                  "enum": [
+                    "start",
+                    "center",
+                    "end",
+                    "stretch"
+                  ]
+                }
+              },
+              "required": [
+                "kind",
+                "backdrop"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
                   "const": "split"
                 },
                 "ratio": {
@@ -797,6 +907,83 @@
             }
           ]
         },
+        "scroll": {
+          "type": "object",
+          "properties": {
+            "pin": {
+              "default": true,
+              "type": "boolean"
+            },
+            "distance": {
+              "default": 1,
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 2
+            },
+            "start": {
+              "default": 0,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.95
+            },
+            "end": {
+              "default": 1,
+              "type": "number",
+              "minimum": 0.05,
+              "maximum": 1
+            },
+            "from": {
+              "type": "object",
+              "properties": {
+                "y": {
+                  "default": 0,
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 80
+                },
+                "scale": {
+                  "default": 1,
+                  "type": "number",
+                  "minimum": 0.85,
+                  "maximum": 1.15
+                },
+                "opacity": {
+                  "default": 1,
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 1
+                }
+              }
+            },
+            "to": {
+              "type": "object",
+              "properties": {
+                "y": {
+                  "default": 0,
+                  "type": "number",
+                  "minimum": -80,
+                  "maximum": 80
+                },
+                "scale": {
+                  "default": 1,
+                  "type": "number",
+                  "minimum": 0.85,
+                  "maximum": 1.15
+                },
+                "opacity": {
+                  "default": 1,
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 1
+                }
+              }
+            }
+          },
+          "required": [
+            "from",
+            "to"
+          ]
+        },
         "children": {
           "minItems": 1,
           "maxItems": 24,
@@ -809,6 +996,20 @@
                   "type": {
                     "type": "string",
                     "const": "heading"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
                   },
                   "effect": {
                     "type": "string",
@@ -897,6 +1098,20 @@
                     "type": "string",
                     "const": "text"
                   },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
                   "effect": {
                     "type": "string",
                     "enum": [
@@ -938,6 +1153,20 @@
                   "type": {
                     "type": "string",
                     "const": "image"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
                   },
                   "effect": {
                     "type": "string",
@@ -982,6 +1211,20 @@
                     "type": "string",
                     "const": "button"
                   },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
                   "effect": {
                     "type": "string",
                     "enum": [
@@ -1021,6 +1264,20 @@
                     "type": "string",
                     "const": "stat"
                   },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
                   "effect": {
                     "type": "string",
                     "enum": [
@@ -1049,6 +1306,20 @@
                   "type": {
                     "type": "string",
                     "const": "divider"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
                   }
                 },
                 "required": [
@@ -1135,6 +1406,20 @@
                       ]
                     }
                   },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
                   "effect": {
                     "type": "string",
                     "enum": [
@@ -1155,6 +1440,20 @@
                   "type": {
                     "type": "string",
                     "const": "video"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
                   },
                   "effect": {
                     "type": "string",
@@ -1233,7 +1532,523 @@
                 "properties": {
                   "type": {
                     "type": "string",
+                    "const": "prose"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "body": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "mdx"
+                  }
+                },
+                "required": [
+                  "type",
+                  "body"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "list"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "ordered": {
+                    "default": false,
+                    "type": "boolean"
+                  },
+                  "items": {
+                    "minItems": 1,
+                    "maxItems": 24,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "zellijReference": "inline"
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "items"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "quote"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "text": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "inline"
+                  },
+                  "author": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required": [
+                  "type",
+                  "text",
+                  "author"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "icon"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "size": {
+                    "default": "medium",
+                    "type": "string",
+                    "enum": [
+                      "small",
+                      "medium",
+                      "large"
+                    ]
+                  }
+                },
+                "required": [
+                  "type",
+                  "name",
+                  "label"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "code"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "title": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "language": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9_+-]+$"
+                  }
+                },
+                "required": [
+                  "type",
+                  "title",
+                  "code"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "table"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "caption": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "rowLabel": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "columns": {
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "rows": {
+                    "minItems": 1,
+                    "maxItems": 40,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "label": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "cells": {
+                          "minItems": 1,
+                          "maxItems": 8,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "zellijReference": "inline"
+                          }
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "cells"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "caption",
+                  "rowLabel",
+                  "columns",
+                  "rows"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "disclosure"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "summary": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "body": {
+                    "type": "string",
+                    "minLength": 1,
+                    "zellijReference": "inline"
+                  },
+                  "open": {
+                    "default": false,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "type",
+                  "summary",
+                  "body"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "carousel"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "items": {
+                    "minItems": 2,
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "title": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "body": {
+                          "type": "string",
+                          "zellijReference": "inline"
+                        },
+                        "image": {
+                          "type": "string",
+                          "zellijReference": "asset"
+                        },
+                        "alt": {
+                          "default": "",
+                          "type": "string"
+                        },
+                        "href": {
+                          "type": "string",
+                          "zellijReference": "href"
+                        }
+                      },
+                      "required": [
+                        "title"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "label",
+                  "items"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const": "gallery"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
+                  },
+                  "effect": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "reveal"
+                    ]
+                  },
+                  "label": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "columns": {
+                    "default": 3,
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 4
+                  },
+                  "items": {
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "image": {
+                          "type": "string",
+                          "minLength": 1,
+                          "zellijReference": "asset"
+                        },
+                        "alt": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "caption": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "image",
+                        "alt"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "label",
+                  "items"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
                     "const": "group"
+                  },
+                  "place": {
+                    "type": "string",
+                    "enum": [
+                      "top-start",
+                      "top-center",
+                      "top-end",
+                      "center-start",
+                      "center",
+                      "center-end",
+                      "bottom-start",
+                      "bottom-center",
+                      "bottom-end"
+                    ]
                   },
                   "effect": {
                     "type": "string",
@@ -1315,6 +2130,115 @@
                         "properties": {
                           "kind": {
                             "type": "string",
+                            "const": "layers"
+                          },
+                          "backdrop": {
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "const": "image"
+                                  },
+                                  "src": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "alt": {
+                                    "default": "",
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "src"
+                                ]
+                              },
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "kind": {
+                                    "type": "string",
+                                    "const": "video"
+                                  },
+                                  "src": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "poster": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  }
+                                },
+                                "required": [
+                                  "kind",
+                                  "src",
+                                  "poster",
+                                  "label"
+                                ]
+                              }
+                            ]
+                          },
+                          "tone": {
+                            "default": "dark",
+                            "type": "string",
+                            "enum": [
+                              "dark",
+                              "light"
+                            ]
+                          },
+                          "scrim": {
+                            "default": 0.65,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                          },
+                          "height": {
+                            "default": "medium",
+                            "type": "string",
+                            "enum": [
+                              "compact",
+                              "medium",
+                              "tall"
+                            ]
+                          },
+                          "gap": {
+                            "type": "string",
+                            "enum": [
+                              "none",
+                              "small",
+                              "medium",
+                              "large"
+                            ]
+                          },
+                          "align": {
+                            "type": "string",
+                            "enum": [
+                              "start",
+                              "center",
+                              "end",
+                              "stretch"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "backdrop"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "kind": {
+                            "type": "string",
                             "const": "split"
                           },
                           "ratio": {
@@ -1349,6 +2273,83 @@
                           "kind"
                         ]
                       }
+                    ]
+                  },
+                  "scroll": {
+                    "type": "object",
+                    "properties": {
+                      "pin": {
+                        "default": true,
+                        "type": "boolean"
+                      },
+                      "distance": {
+                        "default": 1,
+                        "type": "number",
+                        "minimum": 0.25,
+                        "maximum": 2
+                      },
+                      "start": {
+                        "default": 0,
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 0.95
+                      },
+                      "end": {
+                        "default": 1,
+                        "type": "number",
+                        "minimum": 0.05,
+                        "maximum": 1
+                      },
+                      "from": {
+                        "type": "object",
+                        "properties": {
+                          "y": {
+                            "default": 0,
+                            "type": "number",
+                            "minimum": -80,
+                            "maximum": 80
+                          },
+                          "scale": {
+                            "default": 1,
+                            "type": "number",
+                            "minimum": 0.85,
+                            "maximum": 1.15
+                          },
+                          "opacity": {
+                            "default": 1,
+                            "type": "number",
+                            "minimum": 0.5,
+                            "maximum": 1
+                          }
+                        }
+                      },
+                      "to": {
+                        "type": "object",
+                        "properties": {
+                          "y": {
+                            "default": 0,
+                            "type": "number",
+                            "minimum": -80,
+                            "maximum": 80
+                          },
+                          "scale": {
+                            "default": 1,
+                            "type": "number",
+                            "minimum": 0.85,
+                            "maximum": 1.15
+                          },
+                          "opacity": {
+                            "default": 1,
+                            "type": "number",
+                            "minimum": 0.5,
+                            "maximum": 1
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "from",
+                      "to"
                     ]
                   },
                   "surface": {
@@ -1392,6 +2393,20 @@
                             "type": {
                               "type": "string",
                               "const": "heading"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
                             },
                             "effect": {
                               "type": "string",
@@ -1480,6 +2495,20 @@
                               "type": "string",
                               "const": "text"
                             },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
                             "effect": {
                               "type": "string",
                               "enum": [
@@ -1521,6 +2550,20 @@
                             "type": {
                               "type": "string",
                               "const": "image"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
                             },
                             "effect": {
                               "type": "string",
@@ -1565,6 +2608,20 @@
                               "type": "string",
                               "const": "button"
                             },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
                             "effect": {
                               "type": "string",
                               "enum": [
@@ -1604,6 +2661,20 @@
                               "type": "string",
                               "const": "stat"
                             },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
                             "effect": {
                               "type": "string",
                               "enum": [
@@ -1632,6 +2703,20 @@
                             "type": {
                               "type": "string",
                               "const": "divider"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
                             }
                           },
                           "required": [
@@ -1718,6 +2803,20 @@
                                 ]
                               }
                             },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
                             "effect": {
                               "type": "string",
                               "enum": [
@@ -1738,6 +2837,20 @@
                             "type": {
                               "type": "string",
                               "const": "video"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
                             },
                             "effect": {
                               "type": "string",
@@ -1816,7 +2929,523 @@
                           "properties": {
                             "type": {
                               "type": "string",
+                              "const": "prose"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "body": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "mdx"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "body"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "list"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "ordered": {
+                              "default": false,
+                              "type": "boolean"
+                            },
+                            "items": {
+                              "minItems": 1,
+                              "maxItems": 24,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1,
+                                "zellijReference": "inline"
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "items"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "quote"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "text": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "inline"
+                            },
+                            "author": {
+                              "type": "string",
+                              "minLength": 1
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "text",
+                            "author"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "icon"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "name": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "size": {
+                              "default": "medium",
+                              "type": "string",
+                              "enum": [
+                                "small",
+                                "medium",
+                                "large"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "name",
+                            "label"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "code"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "title": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "code": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "language": {
+                              "type": "string",
+                              "pattern": "^[a-zA-Z0-9_+-]+$"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "title",
+                            "code"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "table"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "caption": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "rowLabel": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "columns": {
+                              "minItems": 1,
+                              "maxItems": 8,
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "minLength": 1
+                              }
+                            },
+                            "rows": {
+                              "minItems": 1,
+                              "maxItems": 40,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "label": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "cells": {
+                                    "minItems": 1,
+                                    "maxItems": 8,
+                                    "type": "array",
+                                    "items": {
+                                      "type": "string",
+                                      "zellijReference": "inline"
+                                    }
+                                  }
+                                },
+                                "required": [
+                                  "label",
+                                  "cells"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "caption",
+                            "rowLabel",
+                            "columns",
+                            "rows"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "disclosure"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "summary": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "body": {
+                              "type": "string",
+                              "minLength": 1,
+                              "zellijReference": "inline"
+                            },
+                            "open": {
+                              "default": false,
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "summary",
+                            "body"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "carousel"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "items": {
+                              "minItems": 2,
+                              "maxItems": 12,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "title": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "body": {
+                                    "type": "string",
+                                    "zellijReference": "inline"
+                                  },
+                                  "image": {
+                                    "type": "string",
+                                    "zellijReference": "asset"
+                                  },
+                                  "alt": {
+                                    "default": "",
+                                    "type": "string"
+                                  },
+                                  "href": {
+                                    "type": "string",
+                                    "zellijReference": "href"
+                                  }
+                                },
+                                "required": [
+                                  "title"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "label",
+                            "items"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
+                              "const": "gallery"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
+                            },
+                            "effect": {
+                              "type": "string",
+                              "enum": [
+                                "none",
+                                "reveal"
+                              ]
+                            },
+                            "label": {
+                              "type": "string",
+                              "minLength": 1
+                            },
+                            "columns": {
+                              "default": 3,
+                              "type": "integer",
+                              "minimum": 2,
+                              "maximum": 4
+                            },
+                            "items": {
+                              "minItems": 1,
+                              "maxItems": 12,
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "image": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "zellijReference": "asset"
+                                  },
+                                  "alt": {
+                                    "type": "string",
+                                    "minLength": 1
+                                  },
+                                  "caption": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "image",
+                                  "alt"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "type",
+                            "label",
+                            "items"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "type": {
+                              "type": "string",
                               "const": "group"
+                            },
+                            "place": {
+                              "type": "string",
+                              "enum": [
+                                "top-start",
+                                "top-center",
+                                "top-end",
+                                "center-start",
+                                "center",
+                                "center-end",
+                                "bottom-start",
+                                "bottom-center",
+                                "bottom-end"
+                              ]
                             },
                             "effect": {
                               "type": "string",
@@ -1898,6 +3527,115 @@
                                   "properties": {
                                     "kind": {
                                       "type": "string",
+                                      "const": "layers"
+                                    },
+                                    "backdrop": {
+                                      "anyOf": [
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "kind": {
+                                              "type": "string",
+                                              "const": "image"
+                                            },
+                                            "src": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "alt": {
+                                              "default": "",
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "kind",
+                                            "src"
+                                          ]
+                                        },
+                                        {
+                                          "type": "object",
+                                          "properties": {
+                                            "kind": {
+                                              "type": "string",
+                                              "const": "video"
+                                            },
+                                            "src": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "poster": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "label": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            }
+                                          },
+                                          "required": [
+                                            "kind",
+                                            "src",
+                                            "poster",
+                                            "label"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    "tone": {
+                                      "default": "dark",
+                                      "type": "string",
+                                      "enum": [
+                                        "dark",
+                                        "light"
+                                      ]
+                                    },
+                                    "scrim": {
+                                      "default": 0.65,
+                                      "type": "number",
+                                      "minimum": 0,
+                                      "maximum": 1
+                                    },
+                                    "height": {
+                                      "default": "medium",
+                                      "type": "string",
+                                      "enum": [
+                                        "compact",
+                                        "medium",
+                                        "tall"
+                                      ]
+                                    },
+                                    "gap": {
+                                      "type": "string",
+                                      "enum": [
+                                        "none",
+                                        "small",
+                                        "medium",
+                                        "large"
+                                      ]
+                                    },
+                                    "align": {
+                                      "type": "string",
+                                      "enum": [
+                                        "start",
+                                        "center",
+                                        "end",
+                                        "stretch"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "kind",
+                                    "backdrop"
+                                  ]
+                                },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "kind": {
+                                      "type": "string",
                                       "const": "split"
                                     },
                                     "ratio": {
@@ -1932,6 +3670,83 @@
                                     "kind"
                                   ]
                                 }
+                              ]
+                            },
+                            "scroll": {
+                              "type": "object",
+                              "properties": {
+                                "pin": {
+                                  "default": true,
+                                  "type": "boolean"
+                                },
+                                "distance": {
+                                  "default": 1,
+                                  "type": "number",
+                                  "minimum": 0.25,
+                                  "maximum": 2
+                                },
+                                "start": {
+                                  "default": 0,
+                                  "type": "number",
+                                  "minimum": 0,
+                                  "maximum": 0.95
+                                },
+                                "end": {
+                                  "default": 1,
+                                  "type": "number",
+                                  "minimum": 0.05,
+                                  "maximum": 1
+                                },
+                                "from": {
+                                  "type": "object",
+                                  "properties": {
+                                    "y": {
+                                      "default": 0,
+                                      "type": "number",
+                                      "minimum": -80,
+                                      "maximum": 80
+                                    },
+                                    "scale": {
+                                      "default": 1,
+                                      "type": "number",
+                                      "minimum": 0.85,
+                                      "maximum": 1.15
+                                    },
+                                    "opacity": {
+                                      "default": 1,
+                                      "type": "number",
+                                      "minimum": 0.5,
+                                      "maximum": 1
+                                    }
+                                  }
+                                },
+                                "to": {
+                                  "type": "object",
+                                  "properties": {
+                                    "y": {
+                                      "default": 0,
+                                      "type": "number",
+                                      "minimum": -80,
+                                      "maximum": 80
+                                    },
+                                    "scale": {
+                                      "default": 1,
+                                      "type": "number",
+                                      "minimum": 0.85,
+                                      "maximum": 1.15
+                                    },
+                                    "opacity": {
+                                      "default": 1,
+                                      "type": "number",
+                                      "minimum": 0.5,
+                                      "maximum": 1
+                                    }
+                                  }
+                                }
+                              },
+                              "required": [
+                                "from",
+                                "to"
                               ]
                             },
                             "surface": {
@@ -1975,6 +3790,20 @@
                                       "type": {
                                         "type": "string",
                                         "const": "heading"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
                                       },
                                       "effect": {
                                         "type": "string",
@@ -2063,6 +3892,20 @@
                                         "type": "string",
                                         "const": "text"
                                       },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
                                       "effect": {
                                         "type": "string",
                                         "enum": [
@@ -2104,6 +3947,20 @@
                                       "type": {
                                         "type": "string",
                                         "const": "image"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
                                       },
                                       "effect": {
                                         "type": "string",
@@ -2148,6 +4005,20 @@
                                         "type": "string",
                                         "const": "button"
                                       },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
                                       "effect": {
                                         "type": "string",
                                         "enum": [
@@ -2187,6 +4058,20 @@
                                         "type": "string",
                                         "const": "stat"
                                       },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
                                       "effect": {
                                         "type": "string",
                                         "enum": [
@@ -2215,6 +4100,20 @@
                                       "type": {
                                         "type": "string",
                                         "const": "divider"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
                                       }
                                     },
                                     "required": [
@@ -2301,6 +4200,20 @@
                                           ]
                                         }
                                       },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
                                       "effect": {
                                         "type": "string",
                                         "enum": [
@@ -2321,6 +4234,20 @@
                                       "type": {
                                         "type": "string",
                                         "const": "video"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
                                       },
                                       "effect": {
                                         "type": "string",
@@ -2399,7 +4326,523 @@
                                     "properties": {
                                       "type": {
                                         "type": "string",
+                                        "const": "prose"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "body": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "mdx"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "body"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "list"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "ordered": {
+                                        "default": false,
+                                        "type": "boolean"
+                                      },
+                                      "items": {
+                                        "minItems": 1,
+                                        "maxItems": 24,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "minLength": 1,
+                                          "zellijReference": "inline"
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "items"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "quote"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "text": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "inline"
+                                      },
+                                      "author": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "text",
+                                      "author"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "icon"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "name": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "size": {
+                                        "default": "medium",
+                                        "type": "string",
+                                        "enum": [
+                                          "small",
+                                          "medium",
+                                          "large"
+                                        ]
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "name",
+                                      "label"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "code"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "title": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "code": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "language": {
+                                        "type": "string",
+                                        "pattern": "^[a-zA-Z0-9_+-]+$"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "title",
+                                      "code"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "table"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "caption": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "rowLabel": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "columns": {
+                                        "minItems": 1,
+                                        "maxItems": 8,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "string",
+                                          "minLength": 1
+                                        }
+                                      },
+                                      "rows": {
+                                        "minItems": 1,
+                                        "maxItems": 40,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "label": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "cells": {
+                                              "minItems": 1,
+                                              "maxItems": 8,
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string",
+                                                "zellijReference": "inline"
+                                              }
+                                            }
+                                          },
+                                          "required": [
+                                            "label",
+                                            "cells"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "caption",
+                                      "rowLabel",
+                                      "columns",
+                                      "rows"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "disclosure"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "summary": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "body": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "zellijReference": "inline"
+                                      },
+                                      "open": {
+                                        "default": false,
+                                        "type": "boolean"
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "summary",
+                                      "body"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "carousel"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "items": {
+                                        "minItems": 2,
+                                        "maxItems": 12,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "title": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "body": {
+                                              "type": "string",
+                                              "zellijReference": "inline"
+                                            },
+                                            "image": {
+                                              "type": "string",
+                                              "zellijReference": "asset"
+                                            },
+                                            "alt": {
+                                              "default": "",
+                                              "type": "string"
+                                            },
+                                            "href": {
+                                              "type": "string",
+                                              "zellijReference": "href"
+                                            }
+                                          },
+                                          "required": [
+                                            "title"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "label",
+                                      "items"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
+                                        "const": "gallery"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
+                                      },
+                                      "effect": {
+                                        "type": "string",
+                                        "enum": [
+                                          "none",
+                                          "reveal"
+                                        ]
+                                      },
+                                      "label": {
+                                        "type": "string",
+                                        "minLength": 1
+                                      },
+                                      "columns": {
+                                        "default": 3,
+                                        "type": "integer",
+                                        "minimum": 2,
+                                        "maximum": 4
+                                      },
+                                      "items": {
+                                        "minItems": 1,
+                                        "maxItems": 12,
+                                        "type": "array",
+                                        "items": {
+                                          "type": "object",
+                                          "properties": {
+                                            "image": {
+                                              "type": "string",
+                                              "minLength": 1,
+                                              "zellijReference": "asset"
+                                            },
+                                            "alt": {
+                                              "type": "string",
+                                              "minLength": 1
+                                            },
+                                            "caption": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "image",
+                                            "alt"
+                                          ]
+                                        }
+                                      }
+                                    },
+                                    "required": [
+                                      "type",
+                                      "label",
+                                      "items"
+                                    ]
+                                  },
+                                  {
+                                    "type": "object",
+                                    "properties": {
+                                      "type": {
+                                        "type": "string",
                                         "const": "group"
+                                      },
+                                      "place": {
+                                        "type": "string",
+                                        "enum": [
+                                          "top-start",
+                                          "top-center",
+                                          "top-end",
+                                          "center-start",
+                                          "center",
+                                          "center-end",
+                                          "bottom-start",
+                                          "bottom-center",
+                                          "bottom-end"
+                                        ]
                                       },
                                       "effect": {
                                         "type": "string",
@@ -2481,6 +4924,115 @@
                                             "properties": {
                                               "kind": {
                                                 "type": "string",
+                                                "const": "layers"
+                                              },
+                                              "backdrop": {
+                                                "anyOf": [
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "kind": {
+                                                        "type": "string",
+                                                        "const": "image"
+                                                      },
+                                                      "src": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "alt": {
+                                                        "default": "",
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "kind",
+                                                      "src"
+                                                    ]
+                                                  },
+                                                  {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "kind": {
+                                                        "type": "string",
+                                                        "const": "video"
+                                                      },
+                                                      "src": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "poster": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "label": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "kind",
+                                                      "src",
+                                                      "poster",
+                                                      "label"
+                                                    ]
+                                                  }
+                                                ]
+                                              },
+                                              "tone": {
+                                                "default": "dark",
+                                                "type": "string",
+                                                "enum": [
+                                                  "dark",
+                                                  "light"
+                                                ]
+                                              },
+                                              "scrim": {
+                                                "default": 0.65,
+                                                "type": "number",
+                                                "minimum": 0,
+                                                "maximum": 1
+                                              },
+                                              "height": {
+                                                "default": "medium",
+                                                "type": "string",
+                                                "enum": [
+                                                  "compact",
+                                                  "medium",
+                                                  "tall"
+                                                ]
+                                              },
+                                              "gap": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "none",
+                                                  "small",
+                                                  "medium",
+                                                  "large"
+                                                ]
+                                              },
+                                              "align": {
+                                                "type": "string",
+                                                "enum": [
+                                                  "start",
+                                                  "center",
+                                                  "end",
+                                                  "stretch"
+                                                ]
+                                              }
+                                            },
+                                            "required": [
+                                              "kind",
+                                              "backdrop"
+                                            ]
+                                          },
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                              "kind": {
+                                                "type": "string",
                                                 "const": "split"
                                               },
                                               "ratio": {
@@ -2515,6 +5067,83 @@
                                               "kind"
                                             ]
                                           }
+                                        ]
+                                      },
+                                      "scroll": {
+                                        "type": "object",
+                                        "properties": {
+                                          "pin": {
+                                            "default": true,
+                                            "type": "boolean"
+                                          },
+                                          "distance": {
+                                            "default": 1,
+                                            "type": "number",
+                                            "minimum": 0.25,
+                                            "maximum": 2
+                                          },
+                                          "start": {
+                                            "default": 0,
+                                            "type": "number",
+                                            "minimum": 0,
+                                            "maximum": 0.95
+                                          },
+                                          "end": {
+                                            "default": 1,
+                                            "type": "number",
+                                            "minimum": 0.05,
+                                            "maximum": 1
+                                          },
+                                          "from": {
+                                            "type": "object",
+                                            "properties": {
+                                              "y": {
+                                                "default": 0,
+                                                "type": "number",
+                                                "minimum": -80,
+                                                "maximum": 80
+                                              },
+                                              "scale": {
+                                                "default": 1,
+                                                "type": "number",
+                                                "minimum": 0.85,
+                                                "maximum": 1.15
+                                              },
+                                              "opacity": {
+                                                "default": 1,
+                                                "type": "number",
+                                                "minimum": 0.5,
+                                                "maximum": 1
+                                              }
+                                            }
+                                          },
+                                          "to": {
+                                            "type": "object",
+                                            "properties": {
+                                              "y": {
+                                                "default": 0,
+                                                "type": "number",
+                                                "minimum": -80,
+                                                "maximum": 80
+                                              },
+                                              "scale": {
+                                                "default": 1,
+                                                "type": "number",
+                                                "minimum": 0.85,
+                                                "maximum": 1.15
+                                              },
+                                              "opacity": {
+                                                "default": 1,
+                                                "type": "number",
+                                                "minimum": 0.5,
+                                                "maximum": 1
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "from",
+                                          "to"
                                         ]
                                       },
                                       "surface": {
@@ -2558,6 +5187,20 @@
                                                 "type": {
                                                   "type": "string",
                                                   "const": "heading"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
                                                 },
                                                 "effect": {
                                                   "type": "string",
@@ -2646,6 +5289,20 @@
                                                   "type": "string",
                                                   "const": "text"
                                                 },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
                                                 "effect": {
                                                   "type": "string",
                                                   "enum": [
@@ -2687,6 +5344,20 @@
                                                 "type": {
                                                   "type": "string",
                                                   "const": "image"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
                                                 },
                                                 "effect": {
                                                   "type": "string",
@@ -2731,6 +5402,20 @@
                                                   "type": "string",
                                                   "const": "button"
                                                 },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
                                                 "effect": {
                                                   "type": "string",
                                                   "enum": [
@@ -2770,6 +5455,20 @@
                                                   "type": "string",
                                                   "const": "stat"
                                                 },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
                                                 "effect": {
                                                   "type": "string",
                                                   "enum": [
@@ -2798,6 +5497,20 @@
                                                 "type": {
                                                   "type": "string",
                                                   "const": "divider"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
                                                 }
                                               },
                                               "required": [
@@ -2884,6 +5597,20 @@
                                                     ]
                                                   }
                                                 },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
                                                 "effect": {
                                                   "type": "string",
                                                   "enum": [
@@ -2904,6 +5631,20 @@
                                                 "type": {
                                                   "type": "string",
                                                   "const": "video"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
                                                 },
                                                 "effect": {
                                                   "type": "string",
@@ -2975,6 +5716,508 @@
                                                 "type",
                                                 "src",
                                                 "label"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "prose"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "body": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "mdx"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "body"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "list"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "ordered": {
+                                                  "default": false,
+                                                  "type": "boolean"
+                                                },
+                                                "items": {
+                                                  "minItems": 1,
+                                                  "maxItems": 24,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "zellijReference": "inline"
+                                                  }
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "items"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "quote"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "text": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "inline"
+                                                },
+                                                "author": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "text",
+                                                "author"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "icon"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "name": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "size": {
+                                                  "default": "medium",
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "small",
+                                                    "medium",
+                                                    "large"
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "name",
+                                                "label"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "code"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "title": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "code": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "language": {
+                                                  "type": "string",
+                                                  "pattern": "^[a-zA-Z0-9_+-]+$"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "title",
+                                                "code"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "table"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "caption": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "rowLabel": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "columns": {
+                                                  "minItems": 1,
+                                                  "maxItems": 8,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "string",
+                                                    "minLength": 1
+                                                  }
+                                                },
+                                                "rows": {
+                                                  "minItems": 1,
+                                                  "maxItems": 40,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "label": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "cells": {
+                                                        "minItems": 1,
+                                                        "maxItems": 8,
+                                                        "type": "array",
+                                                        "items": {
+                                                          "type": "string",
+                                                          "zellijReference": "inline"
+                                                        }
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "label",
+                                                      "cells"
+                                                    ]
+                                                  }
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "caption",
+                                                "rowLabel",
+                                                "columns",
+                                                "rows"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "disclosure"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "summary": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "body": {
+                                                  "type": "string",
+                                                  "minLength": 1,
+                                                  "zellijReference": "inline"
+                                                },
+                                                "open": {
+                                                  "default": false,
+                                                  "type": "boolean"
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "summary",
+                                                "body"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "carousel"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "items": {
+                                                  "minItems": 2,
+                                                  "maxItems": 12,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "title": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "body": {
+                                                        "type": "string",
+                                                        "zellijReference": "inline"
+                                                      },
+                                                      "image": {
+                                                        "type": "string",
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "alt": {
+                                                        "default": "",
+                                                        "type": "string"
+                                                      },
+                                                      "href": {
+                                                        "type": "string",
+                                                        "zellijReference": "href"
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "title"
+                                                    ]
+                                                  }
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "label",
+                                                "items"
+                                              ]
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "type": {
+                                                  "type": "string",
+                                                  "const": "gallery"
+                                                },
+                                                "place": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "top-start",
+                                                    "top-center",
+                                                    "top-end",
+                                                    "center-start",
+                                                    "center",
+                                                    "center-end",
+                                                    "bottom-start",
+                                                    "bottom-center",
+                                                    "bottom-end"
+                                                  ]
+                                                },
+                                                "effect": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    "none",
+                                                    "reveal"
+                                                  ]
+                                                },
+                                                "label": {
+                                                  "type": "string",
+                                                  "minLength": 1
+                                                },
+                                                "columns": {
+                                                  "default": 3,
+                                                  "type": "integer",
+                                                  "minimum": 2,
+                                                  "maximum": 4
+                                                },
+                                                "items": {
+                                                  "minItems": 1,
+                                                  "maxItems": 12,
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "image": {
+                                                        "type": "string",
+                                                        "minLength": 1,
+                                                        "zellijReference": "asset"
+                                                      },
+                                                      "alt": {
+                                                        "type": "string",
+                                                        "minLength": 1
+                                                      },
+                                                      "caption": {
+                                                        "type": "string"
+                                                      }
+                                                    },
+                                                    "required": [
+                                                      "image",
+                                                      "alt"
+                                                    ]
+                                                  }
+                                                }
+                                              },
+                                              "required": [
+                                                "type",
+                                                "label",
+                                                "items"
                                               ]
                                             }
                                           ]

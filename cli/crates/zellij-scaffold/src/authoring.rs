@@ -566,6 +566,9 @@ impl Section {
                     }
                 }
             }
+            if rules["composeConstraints"] == true {
+                validate_composition(&self.value, false)?;
+            }
             if let Some(rule) = rules.get("alignedRows") {
                 let count = self.value[rule["columns"].as_str().unwrap()]
                     .as_array()
@@ -863,4 +866,53 @@ mod tests {
         assert!(media.set("scrim", "false").is_err());
         media.set("scrim", "0.5").unwrap();
     }
+}
+
+/// Mirrors the engine's declared composer cross-field contract.
+fn validate_composition(node: &Value, inside_stage: bool) -> Result<()> {
+    let scroll = node.get("scroll");
+    if let Some(scroll) = scroll {
+        if inside_stage
+            || scroll["start"].as_f64().unwrap_or(0.0) >= scroll["end"].as_f64().unwrap_or(1.0)
+        {
+            return Err(invalid("scroll stages cannot nest and require start < end"));
+        }
+    }
+    if node["type"] == "table" {
+        let columns = node["columns"].as_array().unwrap();
+        let unique: std::collections::HashSet<_> = columns
+            .iter()
+            .map(|column| column.as_str().unwrap())
+            .collect();
+        if unique.len() != columns.len()
+            || !node["rows"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|row| row["cells"].as_array().unwrap().len() == columns.len())
+        {
+            return Err(invalid(
+                "table columns must be unique and every row must have one cell per column",
+            ));
+        }
+    }
+    if let Some(children) = node["children"].as_array() {
+        let layers = node["layout"]["kind"] == "layers";
+        let mut places = std::collections::HashSet::new();
+        for child in children {
+            if layers {
+                if !places.insert(child["place"].as_str().unwrap_or("center")) {
+                    return Err(invalid(
+                        "layer children need distinct places; use a group to share a place",
+                    ));
+                }
+            } else if child.get("place").is_some() {
+                return Err(invalid(
+                    "place is only valid directly inside a layers layout",
+                ));
+            }
+            validate_composition(child, inside_stage || scroll.is_some())?;
+        }
+    }
+    Ok(())
 }
