@@ -1558,7 +1558,7 @@
                   "body": {
                     "type": "string",
                     "minLength": 1,
-                    "zellijReference": "mdx"
+                    "zellijReference": "markdown"
                   }
                 },
                 "required": [
@@ -2955,7 +2955,7 @@
                             "body": {
                               "type": "string",
                               "minLength": 1,
-                              "zellijReference": "mdx"
+                              "zellijReference": "markdown"
                             }
                           },
                           "required": [
@@ -4352,7 +4352,7 @@
                                       "body": {
                                         "type": "string",
                                         "minLength": 1,
-                                        "zellijReference": "mdx"
+                                        "zellijReference": "markdown"
                                       }
                                     },
                                     "required": [
@@ -5749,7 +5749,7 @@
                                                 "body": {
                                                   "type": "string",
                                                   "minLength": 1,
-                                                  "zellijReference": "mdx"
+                                                  "zellijReference": "markdown"
                                                 }
                                               },
                                               "required": [

@@ -4,9 +4,10 @@ import { z } from 'zod';
 export const assetReferenceSchema = z.string().meta({ zellijReference: 'asset' });
 export const hrefReferenceSchema = z.string().meta({ zellijReference: 'href' });
 export const inlineReferenceSchema = z.string().meta({ zellijReference: 'inline' });
+export const markdownReferenceSchema = z.string().meta({ zellijReference: 'markdown' });
 export const mdxReferenceSchema = z.string().meta({ zellijReference: 'mdx' });
 
-export type ReferenceKind = 'asset' | 'href' | 'inline' | 'mdx';
+export type ReferenceKind = 'asset' | 'href' | 'inline' | 'mdx' | 'markdown';
 export interface SchemaReference { kind: ReferenceKind; value: string; field: string }
 type Shape = {
   const?: unknown;

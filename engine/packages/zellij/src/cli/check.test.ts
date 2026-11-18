@@ -310,3 +310,20 @@ it('checks references for the selected composition node, not every union alterna
   expect(result.ok).toBe(false);
   expect(result.errors.join('\n')).toContain('/not-a-rendered-link');
 });
+
+it('checks composed Markdown as rendered, with local footnotes and no MDX or implicit heading anchors', async () => {
+  const prose = {type: 'prose', body: '## Read\n\nA note[^care]. {plain text}\n\n[^care]: Read [the guide](/manual#start).\n\n![Study](assets/study.svg)\n\n[Download](assets/study.svg)\n\n<img src="missing.svg" />'};
+  const section = {type: 'compose', version: 1, label: 'Notes', children: [prose, prose]};
+  const contentDir = await fixture({...HOME, ...GUIDE, 'sections/hero.yaml': JSON.stringify(section), 'assets/study.svg': '<svg/>'});
+  const good = await check({contentDir, deep: true, strict: true});
+  expect(good.errors).toEqual([]);
+  expect(good.warnings).toEqual([]);
+  expect(good.ok).toBe(true);
+  const broken = {...section, children: [{type: 'prose', body: prose.body + '\n\n[Missing](/lost)\n\n[Not an anchor](#read)\n\n![Missing](assets/absent.svg)'}]};
+  await writeFile(path.join(contentDir, 'sections/hero.yaml'), JSON.stringify(broken));
+  const result = await check({contentDir, deep: true, strict: true});
+  expect(result.errors).toHaveLength(3);
+  expect(result.errors?.join('\n')).toContain('no page resolves');
+  expect(result.errors?.join('\n')).toContain('no anchor #read');
+  expect(result.errors?.join('\n')).toContain('cannot read asset');
+});

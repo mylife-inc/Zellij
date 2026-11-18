@@ -1,4 +1,6 @@
 import path from 'node:path';
+import type { Element, Root } from 'hast';
+import { composeMarkdown, safeComposeUrl } from '../content/compose-markdown';
 import { realpath, stat } from 'node:fs/promises';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
@@ -68,6 +70,7 @@ export async function deepCheck(site: Site, contentDir: string): Promise<DeepChe
     for (const ref of schemaReferences(schema, value)) {
       const location = `${where} › ${ref.field}`;
       if (ref.kind === 'mdx') scanMdx(ref.value, location, route, stack);
+      else if (ref.kind === 'markdown') scanMarkdown(ref.value, location, route);
       else if (ref.kind === 'inline') {
         for (const href of inlineLinks(ref.value)) references.push({ kind: 'href', value: href, where: location, route });
       } else references.push({ kind: ref.kind, value: ref.value, where: location, route });
@@ -76,6 +79,27 @@ export async function deepCheck(site: Site, contentDir: string): Promise<DeepChe
   function addSection(section: AnySection, where: string, route?: string, stack: string[] = []): void {
     const schema = getSection(section.type)?.schema;
     if (schema) addSchema(section, schema, where, route, stack);
+  }
+  function scanMarkdown(body: string, where: string, route?: string): void {
+    const tree = composeMarkdown(body, 'compose-check-');
+    const elements: Element[] = [];
+    function visit(node: Root | Element | Root['children'][number]): void {
+      if (node.type === 'element') elements.push(node);
+      if ('children' in node) node.children.forEach(visit);
+    }
+    visit(tree);
+    // Footnote IDs are local to a rendering instance. They are not stable
+    // authored route anchors; headings intentionally emit no IDs here.
+    const localIds = new Set(elements.map(node => node.properties.id).filter(Boolean));
+    for (const node of elements) {
+      const image = node.tagName === 'img';
+      const value = image ? node.properties.src : node.tagName === 'a' ? node.properties.href : undefined;
+      if (typeof value !== 'string' || !safeComposeUrl(value)) continue;
+      if (!image && value.startsWith('#') && localIds.has(value.slice(1))) continue;
+      const kind = value.startsWith(`${ASSET_PUBLIC_PREFIX}/`) ? 'url'
+        : image || value.startsWith('assets/') ? 'asset' : 'href';
+      references.push({kind, value, where, route});
+    }
   }
   function scanMdx(body: string, where: string, route?: string, stack: string[] = []): void {
     let tree: Ast;

@@ -213,6 +213,8 @@ thumbnails/captions. `prose` supports ordinary Markdown; raw HTML/JSX markup is
 dropped and expressions are never evaluated. H1 syntax becomes H2 so a prose
 block cannot take ownership of the page heading. Prose headings have no automatic
 anchor IDs; use heading nodes and section IDs for the surrounding structure.
+Footnotes stay local to each prose block, so separate blocks may reuse the same
+footnote label. Deep checking uses these same plain-Markdown rules.
 Use `markdown-prose` as a separate section when you need the engine's MDX components.
 
 <SectionPreview example="compose-content" />

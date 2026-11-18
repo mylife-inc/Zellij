@@ -11,6 +11,11 @@ for (const route of ['compose-layers', 'compose-content']) {
       await img.scrollIntoViewIfNeeded();
       await expect.poll(() => img.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
     }
+    // Loading a lazy rail image can scroll its container; capture the initial card.
+    for (const track of await page.locator('.zellij-compose-carousel .zellij-carousel-track').all()) {
+      await track.evaluate(el => el.scrollTo({left: 0, behavior: 'instant'}));
+      await expect.poll(() => track.evaluate(el => el.scrollLeft)).toBe(0);
+    }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     if (route === 'compose-layers') {
       const layout = page.locator('#layered-study [data-layout="layers"]');

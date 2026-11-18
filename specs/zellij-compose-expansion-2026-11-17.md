@@ -82,3 +82,11 @@ substitutes for browser acceptance.
   initially rejected a helper after the test module; moving it before the module
   resolves that warning. Warnings-denied Clippy and native/engine authoring parity
   now pass. The engine passes 510 tests and workspace types.
+
+- First full CI run `44221389302` caught deep validation still using the MDX
+  reference annotation for plain prose. That incorrectly treated local footnotes
+  as global anchors and would misinterpret braces/HTML. The run was cancelled
+  after diagnosis. Plain prose now has its own Markdown annotation; rendering and
+  deep checking share a parser. Regression tests cover repeated footnotes, literal
+  braces, dropped HTML, real route/asset errors and absent heading anchors. This
+  fixes validation semantics rather than suppressing duplicate-ID diagnostics.
