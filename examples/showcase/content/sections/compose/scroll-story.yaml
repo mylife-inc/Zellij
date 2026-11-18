@@ -1,0 +1,35 @@
+type: compose
+version: 1
+label: From a line to a form
+id: composed-story
+motion: expressive
+children:
+  - type: heading
+    level: 1
+    text: An idea takes shape.
+    scale: display
+  - type: text
+    size: lead
+    text: Three moments in a quiet transformation. Follow the fold, or take the story at your own pace.
+  - type: story
+    label: The folding study
+    distance: 1
+    scenes:
+      - heading: Start with possibility.
+        body: A simple sheet. An open question. Every useful object begins with a little room to imagine.
+        media: {kind: image, src: assets/compose-study.svg, alt: Three folded paper forms in warm light}
+      - heading: Follow the fold.
+        body: Three sheets in copper, slate and gold move over a warm paper background. Scroll to follow the fold. There is no speech or music.
+        media:
+          kind: video
+          src: assets/compose-motion.mp4
+          poster: assets/compose-study.svg
+          label: Three sheets folding into place
+          start: 0.1
+          end: 1.9
+          tracks: [{src: assets/compose-motion.en.vtt, srclang: en, label: English}]
+          transcript: "#composed-story"
+      - heading: Keep what matters.
+        body: The result is quiet, clear, and ready to become part of an everyday ritual.
+        media: {kind: image, src: assets/choice-silver.svg, alt: A silver speaker with a fine woven grille}
+        cta: {label: Explore the composition, href: /compose}

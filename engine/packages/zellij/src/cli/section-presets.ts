@@ -4,6 +4,15 @@ import '../sections/schemas';
 
 /** Presets expand once into ordinary authored YAML; rendering has no preset lookup. */
 const presets: Record<string, { description: string; section: Record<string, unknown> }> = {
+  'scroll-story': { description: 'Ordered image scenes with optional pinning and complete reading fallbacks.', section: {
+    type: 'compose', version: 1, label: 'A story in chapters', motion: 'expressive', children: [
+      {type: 'heading', text: 'Follow the idea.'},
+      {type: 'story', label: 'From idea to detail', scenes: [
+        {heading: 'Start with a clear idea.', body: 'Introduce the thought that shaped your product.', media: {kind: 'image', src: 'assets/replace-me.svg', alt: 'Describe the starting idea'}},
+        {heading: 'Bring the details into focus.', body: 'Show how that idea becomes a useful detail.', media: {kind: 'image', src: 'assets/replace-me.svg', alt: 'Describe the finished detail'}, cta: {label: 'Explore more', href: '#'}},
+      ]},
+    ],
+  } },
   'product-selector': { description: 'Labelled product finishes with synchronized illustrations, facts and actions.', section: {
     type: 'compose', version: 1, label: 'Choose your finish', children: [
       {type: 'heading', text: 'Find your point of view.'},

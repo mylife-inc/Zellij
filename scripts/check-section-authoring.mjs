@@ -117,10 +117,20 @@ try {
       assert.notEqual(spawnSync(binary,['ns','compose','--set-json','children=' + JSON.stringify([bad])]).status,0);
     }
   }
+  const story = {type:'story',label:'A story',scenes:[
+    {heading:'One',body:'First',media:{kind:'image',src:'assets/a.svg',alt:'A'}},
+    {heading:'Two',body:'Next',media:{kind:'video',src:'assets/v.mp4',poster:'assets/a.svg',label:'V',start:0.2,end:1.8}},
+  ]};
+  const storyArgs = ['ns','compose','--set-json','children=' + JSON.stringify([story])];
+  getSection('compose').schema.parse(YAML.parse(execFileSync(binary,[...storyArgs,'--set','children.0.scenes.1.media.end=1.9'],{encoding:'utf8'})));
+  for (const extra of [
+    ['--set','children.0.scenes.1.media.end=0.1'], ['--set-json','scroll={"from":{},"to":{}}'],
+    ['--set-json','layout={"kind":"layers","backdrop":{"kind":"image","src":"assets/a.svg"}}'],
+  ]) assert.notEqual(spawnSync(binary,[...storyArgs,...extra]).status,0);
   const prompt = spawnSync(binary, ['ns', '--interactive'], { input: 'hero\nAuthored interactively\n\n', encoding: 'utf8', timeout: 10000 });
   assert.equal(prompt.status, 0, prompt.stderr);
   assert.match(prompt.stderr, /Section type/);
   assert.equal(YAML.parse(prompt.stdout).headline, 'Authored interactively');
   getSection('hero').schema.parse(YAML.parse(prompt.stdout));
-  console.log('All 25 authored section types and six editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
+  console.log('All 25 authored section types and seven editable presets, complete JSON replacements, scalar refinements, optional-field removal, Unicode text, nested arrays, media choices, pricing and interactive output pass the engine schemas.');
 } finally { await rm(temporary, { recursive: true, force: true }); }

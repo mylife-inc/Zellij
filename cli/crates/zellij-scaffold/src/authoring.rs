@@ -595,7 +595,7 @@ impl Section {
                 }
             }
             if rules["composeConstraints"] == true {
-                validate_composition(&self.value, false)?;
+                validate_composition(&self.value, false, false)?;
             }
             if let Some(rule) = rules.get("alignedRows") {
                 let count = self.value[rule["columns"].as_str().unwrap()]
@@ -703,13 +703,28 @@ fn yaml_value(out: &mut String, value: &Value, indent: usize) {
 }
 
 /// Mirrors the engine's declared composer cross-field contract.
-fn validate_composition(node: &Value, inside_stage: bool) -> Result<()> {
+fn validate_composition(node: &Value, inside_stage: bool, inside_layers: bool) -> Result<()> {
     let scroll = node.get("scroll");
     if let Some(scroll) = scroll {
         if inside_stage
             || scroll["start"].as_f64().unwrap_or(0.0) >= scroll["end"].as_f64().unwrap_or(1.0)
         {
             return Err(invalid("scroll stages cannot nest and require start < end"));
+        }
+    }
+    if node["type"] == "story" {
+        if inside_stage || inside_layers {
+            return Err(invalid(
+                "stories cannot nest inside scroll stages or layer layouts",
+            ));
+        }
+        for scene in node["scenes"].as_array().unwrap() {
+            let media = &scene["media"];
+            if media["kind"] == "video"
+                && media["start"].as_f64().unwrap_or(0.0) >= media["end"].as_f64().unwrap()
+            {
+                return Err(invalid("story video segments require start < end"));
+            }
         }
     }
     if node["type"] == "selector" || node["type"] == "explorer" {
@@ -770,7 +785,11 @@ fn validate_composition(node: &Value, inside_stage: bool) -> Result<()> {
                     "place is only valid directly inside a layers layout",
                 ));
             }
-            validate_composition(child, inside_stage || scroll.is_some())?;
+            validate_composition(
+                child,
+                inside_stage || scroll.is_some(),
+                inside_layers || layers,
+            )?;
         }
     }
     Ok(())

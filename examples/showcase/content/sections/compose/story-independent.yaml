@@ -1,0 +1,22 @@
+type: compose
+version: 1
+label: A second perspective
+id: independent-story
+motion: expressive
+children:
+  - type: group
+    surface: inverted
+    padding: medium
+    radius: large
+    children:
+      - type: story
+        label: A second perspective
+        mediaSide: start
+        distance: 0.5
+        scenes:
+          - heading: A warmer perspective.
+            body: Copper catches the afternoon light. A different material tells a different story.
+            media: {kind: image, src: assets/choice-copper.svg, alt: A copper speaker}
+          - heading: Quiet after dark.
+            body: The same shape, expressed in a deeper tone. Consider the details from another point of view.
+            media: {kind: image, src: assets/choice-night.svg, alt: A midnight speaker}

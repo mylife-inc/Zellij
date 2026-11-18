@@ -3,6 +3,16 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: composer scroll stories under implementation (source rc.11)**
+
+The next approved increment adds ordered `story` scenes with images or silent,
+scroll-controlled direct-file video segments, a local reading control and
+complete native/no-JS/print/motion fallbacks. Engine/native authoring share scene
+bounds and reject nesting in layer layouts or scroll stages. A `scroll-story`
+preset expands to editable YAML. See [the contract](specs/zellij-compose-stories-2026-11-18.md).
+Verification and merge are pending. Public rc.10 and production hosting are
+unchanged; controlled section reuse remains next, followed by rc.11 publication.
+
 **2026-11-18: composer selectors and feature explorers verified (source rc.11)**
 
 PR [#204](https://github.com/mylife-inc/Zellij/pull/204) adds independent product

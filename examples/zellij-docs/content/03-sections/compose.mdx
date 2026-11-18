@@ -20,7 +20,7 @@ zel ns compose --out content/sections/intro.yaml
 
 <Callout type="info" title="Next candidate: source 0.2.0-rc.11">
 Video, caption tracks, transcripts, container-aware layouts, layers, semantic
-content nodes, selectors/explorers and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
+content nodes, selectors/explorers, scroll stories and configurable scroll stages below are new in source rc.11. They need a matching rc.11 CLI
 and engine build; the published rc.10 candidate does not include them yet.
 </Callout>
 
@@ -169,6 +169,7 @@ element with captions and a transcript. Backdrops are decorative.
 | `code` (rc.11) | Required `title` and literal `code`; optional `language` class. Selectable code, with no execution or automatic syntax highlighting. |
 | `table` (rc.11) | Required `caption`, `rowLabel`, 1–8 unique `columns`, and 1–40 `rows` with `label` and one inline-Markdown `cells` value per column. |
 | `selector` (rc.11) | Single-choice product variants; segmented controls or labelled colour swatches. See below. |
+| `story` (rc.11) | Ordered scenes with images or scroll-controlled video segments. See below. |
 | `explorer` (rc.11) | Feature panels with horizontal tabs or a vertical feature list. See below. |
 | `disclosure` (rc.11) | Required plain `summary` and inline-Markdown `body`; `open` defaults to false. Native keyboard-operable details. |
 | `carousel` (rc.11) | Required `label` and 2–12 `items`; each has `title` and optional inline-Markdown `body`, `image`, `alt`, `href`. |
@@ -391,9 +392,84 @@ Stages activate only when both the viewport and available container are at least
 760px wide and the content fits below the navigation bar. Long content, resizing,
 reduced motion, forced colors, print, missing observer APIs and no-JavaScript
 output retain ordinary readable content without extra scroll space. These are
-bounded single stages, not a multi-scene timeline or a video scrubbing system.
+bounded single stages. For an ordered narrative with video segments, use `story` below.
 
 <SectionPreview example="compose-scroll" />
+
+## Scroll stories and video scrubbing (source rc.11)
+
+Use a `story` node to compose 2–8 ordered scenes. Each scene pairs a heading and
+inline Markdown body with an image or a direct video file. On wide screens with
+`motion: expressive`, the scene stays below the navigation bar while the reader
+scrolls through it. Its video seeks through the authored segment, then the next
+scene arrives in normal page flow. Scrolling back reverses the same segment.
+
+```yaml
+type: compose
+version: 1
+label: An idea takes shape
+motion: expressive
+children:
+  - type: story
+    label: From sketch to detail
+    distance: 1
+    scenes:
+      - heading: Start with a line.
+        body: Every detail begins with a clear idea.
+        media:
+          kind: image
+          src: assets/sketch.svg
+          alt: A pencil sketch of the product
+      - heading: Follow the transformation.
+        body: Scroll to see the idea take shape.
+        media:
+          kind: video
+          src: assets/process.mp4
+          poster: assets/process-poster.svg
+          label: The product taking shape
+          start: 0.5
+          end: 4
+          transcript: /guide/process
+        cta: {label: Explore the details, href: /guide}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `label` | Accessible name of this story. |
+| `sceneHeadingLevel` | 2–4, default 3. Scene headings cannot introduce another H1. |
+| `distance` | 0.5–2 extra viewport heights per pinned scene, default 1. |
+| `mediaSide` | `end` (default) or `start`; narrow layouts retain copy before media. |
+| `scenes` | 2–8 objects in reading order, each with `heading`, `body` and `media`. |
+| Image media | `kind: image`, `src` and descriptive `alt`. |
+| Video media | `kind: video`, direct-file `src`, required `poster`, `label`, `start` and `end` in seconds. `start` defaults to 0; `end` is required. Both are at most 3600, and `0 <= start < end`. |
+| Video accessibility | Optional `tracks` and `transcript` use the [video node fields](#video-inside-a-composition). Describe all meaningful action in the scene body; scrubbing is silent. |
+| Scene `cta` | Optional `label`, `href` and `style` (`primary`, `secondary`, or `ghost`; default `secondary`). |
+
+The media uses a contained 16:10 frame. There is no autoplay, scroll capture,
+scroll snapping, overlapping text, or shared state between stories. Seeks wait
+for metadata and coalesce while a previous seek finishes; the most recent
+scroll position wins. Scrubbing needs a browser-decodable, seekable video file.
+MP4 with frequent keyframes and fast-start metadata usually works well; the
+hosting server must support the file's delivery needs. YouTube/Vimeo embeds,
+live streams, audio synchronization and arbitrary keyframe timelines are not
+supported. Invalid duration or media errors switch the story to its reading
+layout; poster, scene text, native video controls and file/transcript links remain.
+
+Pinning requires both the viewport and the story's available width to be at
+least 760px, with every scene's copy and media fitting beneath the navigation.
+Otherwise the story remains sequential. Reduced motion, forced colors, printing,
+missing observer APIs and JavaScript-disabled pages also keep the reading layout.
+The **Read without scroll effects** button disables the enhancement for that
+story until reload. Keyboard scrolling or focus within a story also returns it
+to ordinary flow. No keyboard action waits for an animation. Native video controls
+allow normal playback in the reading layout; they play the full source video.
+
+Stories can sit in ordinary nested groups, grids or splits. They cannot be placed
+inside a `scroll` stage or a `layers` layout, including through intermediate
+groups. They have no `place` or `effect` field. Use the scene's content fields;
+arbitrary nested composer nodes inside a scene remain outside this contract.
+
+<SectionPreview example="compose-story" />
 
 ## Authoring and checking
 
@@ -425,14 +501,15 @@ zel ns compose --preset split-story --out content/sections/story.yaml
 ```
 
 The rc.10 presets are `product-hero`, `split-story`, `feature-cards` and
-`media-accordion`. Source rc.11 adds `product-selector` and `feature-explorer`:
+`media-accordion`. Source rc.11 adds `product-selector`, `feature-explorer` and `scroll-story`:
 
 ```bash
 zel ns compose -p product-selector --out content/sections/finishes.yaml
 zel ns compose -p feature-explorer --out content/sections/features.yaml
+zel ns compose -p scroll-story --out content/sections/story.yaml
 ```
 
-These six source presets use the same authoring workflow. Each expands into an ordinary composition with editable
+These seven source presets use the same authoring workflow. Each expands into an ordinary composition with editable
 content and layout. No preset reference remains in the generated file. They
 work offline and accept the same `--set`, `--set-json`, `--count`, `--unset`
 and `--interactive` editing options as other sections. Use `--out` when inferring
@@ -456,7 +533,8 @@ is already supported by `gradient.effect: reveal`.
 | Video nodes, WebVTT captions, transcript links and layouts responsive to their containing space | Implemented in source rc.11; not yet published |
 | Image/video backdrops and nine distinct foreground placements | Implemented in source rc.11; not yet published |
 | Single sticky/unpinned stages, authored ranges and bounded transforms | Implemented in source rc.11; not yet published |
-| Multi-scene scroll stories, video scrubbing and arbitrary timelines | Not implemented |
+| Ordered pinned story scenes and direct-file video segment scrubbing | Implemented in source rc.11; not yet published |
+| Arbitrary keyframe timelines, overlapping scene transitions and audio-synchronized animation | Not implemented |
 | Block Markdown, icons, lists, quotes, code, tables, disclosures, carousels and galleries | Implemented in source rc.11; not yet published |
 | MDX execution and arbitrary existing sections as children | Not implemented |
 | Independent selectors (segmented/swatches), feature explorers (tabs/list) and two matching presets | Implemented in source rc.11; not yet published |

@@ -4,6 +4,7 @@ import { assetReferenceSchema, hrefReferenceSchema, inlineReferenceSchema, markd
 import { satisfiesAuthoringRules } from './authoring-rules';
 import { mediaAccordionNodeSchema } from './media-accordion-schema';
 import { selectorNodeSchema, explorerNodeSchema } from './choice-schema';
+import { storyNodeSchema } from './story-schema';
 import { videoFields } from './video-schema';
 
 const spacing = z.enum(['none', 'small', 'medium', 'large']);
@@ -50,6 +51,7 @@ const leaves = [
   z.object({ type: z.literal('divider'), place: placement.optional() }),
   mediaAccordionNodeSchema.extend(common),
   selectorNodeSchema.extend(common), explorerNodeSchema.extend(common),
+  storyNodeSchema,
   z.object({ type: z.literal('video'), ...common, ...videoFields,
     label: z.string().min(1), caption: inlineReferenceSchema.optional() }),
   z.object({ type: z.literal('prose'), ...common, body: markdownReferenceSchema.min(1) }),
@@ -81,7 +83,7 @@ export const composeSchema = baseSectionSchema.extend({
   type: z.literal('compose'), version: z.literal(1), label: z.string().min(1),
   layout: composeLayoutSchema.optional(), scroll: composeScrollSchema.optional(), children: z.array(nodes(COMPOSE_GROUP_DEPTH)).min(1).max(24),
 }).refine(value => satisfiesAuthoringRules('compose', value), {
-  message: 'Invalid composition: check node/heading limits, layer placement, table cells, choice IDs/labels/initial selection/swatches, scroll ranges and nested stages.',
+  message: 'Invalid composition: check node/heading limits, layer placement, table cells, choice IDs/labels/initial selection/swatches, story video ranges, scroll ranges and nested stages.',
 });
 export type ComposeSection = z.infer<typeof composeSchema>;
 

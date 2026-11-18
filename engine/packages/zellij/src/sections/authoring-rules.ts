@@ -38,9 +38,13 @@ export function satisfiesAuthoringRules(type: string, section: Record<string, un
 }
 
 /** Cross-field rules are also enforced by native section authoring. */
-function validComposition(node: Record<string, unknown>, insideStage = false): boolean {
+function validComposition(node: Record<string, unknown>, insideStage = false, insideLayers = false): boolean {
   const scroll = node.scroll as Record<string, number> | undefined;
   if (scroll && (insideStage || (scroll.start ?? 0) >= (scroll.end ?? 1))) return false;
+  if (node.type === 'story') {
+    if (insideStage || insideLayers) return false;
+    if (!(node.scenes as {media: {kind: string; start?: number; end?: number}}[]).every(scene => scene.media.kind !== 'video' || (scene.media.start ?? 0) < scene.media.end!)) return false;
+  }
   if (node.type === 'selector' || node.type === 'explorer') {
     const items = node.items as {id: string; label: string; swatch?: string}[];
     if (new Set(items.map(item => item.id)).size !== items.length || new Set(items.map(item => item.label)).size !== items.length) return false;
@@ -61,7 +65,7 @@ function validComposition(node: Record<string, unknown>, insideStage = false): b
       if (places.has(place)) return false;
       places.add(place);
     } else if (child.place !== undefined) return false;
-    if (!validComposition(child, insideStage || Boolean(scroll))) return false;
+    if (!validComposition(child, insideStage || Boolean(scroll), insideLayers || layers)) return false;
   }
   return true;
 }

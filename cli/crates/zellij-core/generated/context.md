@@ -408,7 +408,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `layout` | object { kind, gap, align } \| object { kind, columns, gap, align } \| object { kind, backdrop, tone, scrim, height, gap, align } \| object { kind, ratio, gap, align } |  |
 | `scroll` | object { pin, distance, start, end, from, to } |  |
-| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
+| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, label, sceneHeadingLevel, distance, mediaSide, scenes } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
 
 **`layout (option 1)`**
 
@@ -648,6 +648,26 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 
 | field | type | |
 | --- | --- | --- |
+| `type` | `"story"` | **required** |
+| `label` | string | **required** |
+| `sceneHeadingLevel` | integer | default `3` |
+| `distance` | number | default `1` |
+| `mediaSide` | `start` \| `end` | default `"end"` |
+| `scenes` | list of object { heading, body, media, cta } (min 2, max 8) | **required** |
+
+**`children (option 10).scenes`**
+
+| field | type | |
+| --- | --- | --- |
+| `heading` | string | **required** |
+| `body` | string | **required** |
+| `media` | object { kind, src, alt } \| object { kind, src, poster, tracks, transcript, label, start, end } | **required** |
+| `cta` | object { label, href, style } |  |
+
+**`children (option 11)`**
+
+| field | type | |
+| --- | --- | --- |
 | `type` | `"video"` | **required** |
 | `place` | `top-start` \| `top-center` \| `top-end` \| `center-start` \| `center` \| `center-end` \| `bottom-start` \| `bottom-center` \| `bottom-end` |  |
 | `effect` | `none` \| `reveal` |  |
@@ -658,7 +678,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `caption` | string |  |
 
-**`children (option 10).tracks`**
+**`children (option 11).tracks`**
 
 | field | type | |
 | --- | --- | --- |
@@ -667,7 +687,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `srclang` | string | **required** |
 | `label` | string | **required** |
 
-**`children (option 11)`**
+**`children (option 12)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -676,7 +696,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `effect` | `none` \| `reveal` |  |
 | `body` | string | **required** |
 
-**`children (option 12)`**
+**`children (option 13)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -686,7 +706,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `ordered` | boolean | default `false` |
 | `items` | list of string (min 1, max 24) | **required** |
 
-**`children (option 13)`**
+**`children (option 14)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -696,7 +716,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `text` | string | **required** |
 | `author` | string | **required** |
 
-**`children (option 14)`**
+**`children (option 15)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -707,7 +727,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `size` | `small` \| `medium` \| `large` | default `"medium"` |
 
-**`children (option 15)`**
+**`children (option 16)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -718,7 +738,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `code` | string | **required** |
 | `language` | string |  |
 
-**`children (option 16)`**
+**`children (option 17)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -730,14 +750,14 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `columns` | list of string (min 1, max 8) | **required** |
 | `rows` | list of object { label, cells } (min 1, max 40) | **required** |
 
-**`children (option 16).rows`**
+**`children (option 17).rows`**
 
 | field | type | |
 | --- | --- | --- |
 | `label` | string | **required** |
 | `cells` | list of string (min 1, max 8) | **required** |
 
-**`children (option 17)`**
+**`children (option 18)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -748,7 +768,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `body` | string | **required** |
 | `open` | boolean | default `false` |
 
-**`children (option 18)`**
+**`children (option 19)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -758,7 +778,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `items` | list of object { title, body, image, alt, href } (min 2, max 12) | **required** |
 
-**`children (option 18).items`**
+**`children (option 19).items`**
 
 | field | type | |
 | --- | --- | --- |
@@ -768,7 +788,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `alt` | string | default `""` |
 | `href` | string |  |
 
-**`children (option 19)`**
+**`children (option 20)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -779,7 +799,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `columns` | integer | default `3` |
 | `items` | list of object { image, alt, caption } (min 1, max 12) | **required** |
 
-**`children (option 19).items`**
+**`children (option 20).items`**
 
 | field | type | |
 | --- | --- | --- |
@@ -787,7 +807,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `alt` | string | **required** |
 | `caption` | string |  |
 
-**`children (option 20)`**
+**`children (option 21)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -799,9 +819,9 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `surface` | `plain` \| `tinted` \| `inverted` \| `accent` | default `"plain"` |
 | `padding` | `none` \| `small` \| `medium` \| `large` | default `"none"` |
 | `radius` | `none` \| `medium` \| `large` | default `"none"` |
-| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
+| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, label, sceneHeadingLevel, distance, mediaSide, scenes } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
 
-**`children (option 20).layout (option 1)`**
+**`children (option 21).layout (option 1)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -809,7 +829,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `gap` | `none` \| `small` \| `medium` \| `large` |  |
 | `align` | `start` \| `center` \| `end` \| `stretch` |  |
 
-**`children (option 20).layout (option 2)`**
+**`children (option 21).layout (option 2)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -818,7 +838,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `gap` | `none` \| `small` \| `medium` \| `large` |  |
 | `align` | `start` \| `center` \| `end` \| `stretch` |  |
 
-**`children (option 20).layout (option 3)`**
+**`children (option 21).layout (option 3)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -830,7 +850,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `gap` | `none` \| `small` \| `medium` \| `large` |  |
 | `align` | `start` \| `center` \| `end` \| `stretch` |  |
 
-**`children (option 20).layout (option 4)`**
+**`children (option 21).layout (option 4)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -839,7 +859,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `gap` | `none` \| `small` \| `medium` \| `large` |  |
 | `align` | `start` \| `center` \| `end` \| `stretch` |  |
 
-**`children (option 20).scroll`**
+**`children (option 21).scroll`**
 
 | field | type | |
 | --- | --- | --- |
@@ -850,7 +870,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `from` | object { y, scale, opacity } | **required** |
 | `to` | object { y, scale, opacity } | **required** |
 
-**`children (option 20).children (option 1)`**
+**`children (option 21).children (option 1)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -863,7 +883,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `weight` | `regular` \| `semibold` \| `bold` | default `"bold"` |
 | `gradient` | object { colors, effect } |  |
 
-**`children (option 20).children (option 2)`**
+**`children (option 21).children (option 2)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -874,7 +894,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `size` | `small` \| `body` \| `lead` | default `"body"` |
 | `tone` | `normal` \| `muted` | default `"normal"` |
 
-**`children (option 20).children (option 3)`**
+**`children (option 21).children (option 3)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -886,7 +906,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `ratio` | `landscape` \| `square` \| `portrait` | default `"landscape"` |
 | `caption` | string |  |
 
-**`children (option 20).children (option 4)`**
+**`children (option 21).children (option 4)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -897,7 +917,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `href` | string | **required** |
 | `style` | `primary` \| `secondary` \| `ghost` | default `"primary"` |
 
-**`children (option 20).children (option 5)`**
+**`children (option 21).children (option 5)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -907,14 +927,14 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `value` | string | **required** |
 | `label` | string | **required** |
 
-**`children (option 20).children (option 6)`**
+**`children (option 21).children (option 6)`**
 
 | field | type | |
 | --- | --- | --- |
 | `type` | `"divider"` | **required** |
 | `place` | `top-start` \| `top-center` \| `top-end` \| `center-start` \| `center` \| `center-end` \| `bottom-start` \| `bottom-center` \| `bottom-end` |  |
 
-**`children (option 20).children (option 7)`**
+**`children (option 21).children (option 7)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -928,7 +948,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `place` | `top-start` \| `top-center` \| `top-end` \| `center-start` \| `center` \| `center-end` \| `bottom-start` \| `bottom-center` \| `bottom-end` |  |
 | `effect` | `none` \| `reveal` |  |
 
-**`children (option 20).children (option 8)`**
+**`children (option 21).children (option 8)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -944,7 +964,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `place` | `top-start` \| `top-center` \| `top-end` \| `center-start` \| `center` \| `center-end` \| `bottom-start` \| `bottom-center` \| `bottom-end` |  |
 | `effect` | `none` \| `reveal` |  |
 
-**`children (option 20).children (option 9)`**
+**`children (option 21).children (option 9)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -960,7 +980,18 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `place` | `top-start` \| `top-center` \| `top-end` \| `center-start` \| `center` \| `center-end` \| `bottom-start` \| `bottom-center` \| `bottom-end` |  |
 | `effect` | `none` \| `reveal` |  |
 
-**`children (option 20).children (option 10)`**
+**`children (option 21).children (option 10)`**
+
+| field | type | |
+| --- | --- | --- |
+| `type` | `"story"` | **required** |
+| `label` | string | **required** |
+| `sceneHeadingLevel` | integer | default `3` |
+| `distance` | number | default `1` |
+| `mediaSide` | `start` \| `end` | default `"end"` |
+| `scenes` | list of object { heading, body, media, cta } (min 2, max 8) | **required** |
+
+**`children (option 21).children (option 11)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -974,7 +1005,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `caption` | string |  |
 
-**`children (option 20).children (option 11)`**
+**`children (option 21).children (option 12)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -983,7 +1014,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `effect` | `none` \| `reveal` |  |
 | `body` | string | **required** |
 
-**`children (option 20).children (option 12)`**
+**`children (option 21).children (option 13)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -993,7 +1024,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `ordered` | boolean | default `false` |
 | `items` | list of string (min 1, max 24) | **required** |
 
-**`children (option 20).children (option 13)`**
+**`children (option 21).children (option 14)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1003,7 +1034,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `text` | string | **required** |
 | `author` | string | **required** |
 
-**`children (option 20).children (option 14)`**
+**`children (option 21).children (option 15)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1014,7 +1045,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `size` | `small` \| `medium` \| `large` | default `"medium"` |
 
-**`children (option 20).children (option 15)`**
+**`children (option 21).children (option 16)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1025,7 +1056,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `code` | string | **required** |
 | `language` | string |  |
 
-**`children (option 20).children (option 16)`**
+**`children (option 21).children (option 17)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1037,7 +1068,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `columns` | list of string (min 1, max 8) | **required** |
 | `rows` | list of object { label, cells } (min 1, max 40) | **required** |
 
-**`children (option 20).children (option 17)`**
+**`children (option 21).children (option 18)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1048,7 +1079,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `body` | string | **required** |
 | `open` | boolean | default `false` |
 
-**`children (option 20).children (option 18)`**
+**`children (option 21).children (option 19)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1058,7 +1089,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `label` | string | **required** |
 | `items` | list of object { title, body, image, alt, href } (min 2, max 12) | **required** |
 
-**`children (option 20).children (option 19)`**
+**`children (option 21).children (option 20)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1069,7 +1100,7 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `columns` | integer | default `3` |
 | `items` | list of object { image, alt, caption } (min 1, max 12) | **required** |
 
-**`children (option 20).children (option 20)`**
+**`children (option 21).children (option 21)`**
 
 | field | type | |
 | --- | --- | --- |
@@ -1081,9 +1112,11 @@ There are 25. Every section also accepts the shared fields `id` (URL anchor), `b
 | `surface` | `plain` \| `tinted` \| `inverted` \| `accent` | default `"plain"` |
 | `padding` | `none` \| `small` \| `medium` \| `large` | default `"none"` |
 | `radius` | `none` \| `medium` \| `large` | default `"none"` |
-| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
+| `children` | list of object { type, place, effect, text, level, scale, weight, gradient } \| object { type, place, effect, text, size, tone } \| object { type, place, effect, image, alt, ratio, caption } \| object { type, place, effect, label, href, style } \| object { type, place, effect, value, label } \| object { type, place } \| object { type, label, mediaSide, ratio, fit, itemHeadingLevel, items, place, effect } \| object { type, label, initial, itemHeadingLevel, mediaSide, ratio, fit, presentation, items, place, effect } \| object { type, label, sceneHeadingLevel, distance, mediaSide, scenes } \| object { type, place, effect, src, poster, tracks, transcript, label, caption } \| object { type, place, effect, body } \| object { type, place, effect, ordered, items } \| object { type, place, effect, text, author } \| object { type, place, effect, name, label, size } \| object { type, place, effect, title, code, language } \| object { type, place, effect, caption, rowLabel, columns, rows } \| object { type, place, effect, summary, body, open } \| object { type, place, effect, label, items } \| object { type, place, effect, label, columns, items } \| object { type, place, effect, layout, scroll, surface, padding, radius, children } (min 1, max 24) | **required** |
 
-Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider, media-accordion, video, prose (plain Markdown), list, quote, icon, code, table, disclosure, carousel, gallery, selector, explorer and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns), split or layers with an image/video backdrop; grids/splits collapse below 760px of available container width, and mobile/print retain source order. Video requires a label and src; poster, caption, WebVTT tracks and transcript are optional. Self-hosted videos use native controls without JavaScript; external embeds require a play action and retain a source link. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. `label` names the page rail. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths. Layers use distinct named places for direct children; use a group to share a place. Root/group scroll settings accept start < end, bounded from/to transforms, optional pin and distance; stages cannot nest and require expressive motion plus wide, viewport-fitting content. Tables require unique columns and matching cells. Prose drops raw HTML, never executes MDX and renders H1 as H2. Galleries retain image links without JavaScript; native disclosures and scrollable carousels retain reading fallbacks. Selectors (segmented or labelled swatches) and explorers (horizontal tabs or vertical lists) share 2–8 finite panels with unique IDs and labels, an optional matching initial ID, subordinate headings, inline body, optional image/facts/CTA; swatches require every colour. Controls enhance sequential no-JS/print output without animation. Arbitrary embedded sections and MDX execution remain unsupported.
+Version 1: `children` accepts heading, text (inline Markdown), image, button, stat, divider, media-accordion, video, prose (plain Markdown), list, quote, icon, code, table, disclosure, carousel, gallery, selector, explorer, story and group. Groups use the same child vocabulary; at most three groups may nest along a path. A section has at most 128 elements and one level-1 heading. Layouts are stack, grid (2–4 columns), split or layers with an image/video backdrop; grids/splits collapse below 760px of available container width, and mobile/print retain source order. Video requires a label and src; poster, caption, WebVTT tracks and transcript are optional. Self-hosted videos use native controls without JavaScript; external embeds require a play action and retain a source link. Heading gradients may reveal with viewport visibility; no-JS/reduced-motion output remains readable. `label` names the page rail. Use `zel new section compose --set-json` to supply complete children, then refine scalar paths. Layers use distinct named places for direct children; use a group to share a place. Root/group scroll settings accept start < end, bounded from/to transforms, optional pin and distance; stages cannot nest and require expressive motion plus wide, viewport-fitting content. Tables require unique columns and matching cells. Prose drops raw HTML, never executes MDX and renders H1 as H2. Galleries retain image links without JavaScript; native disclosures and scrollable carousels retain reading fallbacks. Selectors (segmented or labelled swatches) and explorers (horizontal tabs or vertical lists) share 2–8 finite panels with unique IDs and labels, an optional matching initial ID, subordinate headings, inline body, optional image/facts/CTA; swatches require every colour. Controls enhance sequential no-JS/print output without animation. Stories have 2–8 ordered heading/body/media/CTA scenes; expressive wide layouts pin fitting scenes and silently scrub direct-file video segments. Video start defaults to 0 and must be less than end (both at most 3600 seconds); a poster and label are required. Native controls, all text and links remain in no-JS/print/reading fallbacks. Stories cannot nest inside layers or scroll stages. Arbitrary embedded sections and MDX execution remain unsupported.
+
+Preset **scroll-story**: Ordered image scenes with optional pinning and complete reading fallbacks. Generate with `zel ns -p scroll-story`; add `--out section.yaml` to save. Presets expand into editable YAML, with no runtime dependency on the catalog.
 
 Preset **product-selector**: Labelled product finishes with synchronized illustrations, facts and actions. Generate with `zel ns -p product-selector`; add `--out section.yaml` to save. Presets expand into editable YAML, with no runtime dependency on the catalog.
 

@@ -7,6 +7,7 @@ import { Reveal } from '../../motion/reveal';
 import { GradientReveal } from '../../motion/gradient-reveal';
 import { MediaAccordionContent } from './media-accordion';
 import { VideoContent } from './video-content';
+import { StoryContent } from './story-content';
 import { ChoiceContent } from './choice-content';
 import { ComposeContent } from './compose-content';
 import { ComposeBackdropMedia } from './compose-backdrop';
@@ -49,6 +50,7 @@ function Node({ node, basePath, motion, titleGradient }: {
     </figure>; break;
     case 'button': content = <div className="zellij-compose-action"><CtaLink cta={node} /></div>; break;
     case 'stat': content = <dl className="zellij-compose-stat"><dt>{node.label}</dt><dd>{node.value}</dd></dl>; break;
+    case 'story': content = <StoryContent node={node} basePath={basePath} motion={motion} />; break;
     case 'selector': case 'explorer': content = <ChoiceContent node={node} basePath={basePath} />; break;
     case 'prose': case 'list': case 'quote': case 'icon': case 'code': case 'table': case 'disclosure': case 'carousel': case 'gallery':
       content = <ComposeContent node={node} basePath={basePath} />; break;
@@ -57,8 +59,8 @@ function Node({ node, basePath, motion, titleGradient }: {
     case 'video': content = <VideoContent {...node} basePath={basePath} composed
       caption={node.caption ? <InlineMarkdown text={node.caption} /> : undefined} />; break;
   }
-  if (node.type !== 'divider' && node.effect === 'reveal') content = <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal>;
-  return node.place ? <div className="zellij-compose-placement" data-place={node.place}>{content}</div> : content;
+  if (node.type !== 'divider' && node.type !== 'story' && node.effect === 'reveal') content = <Reveal motion={motion} className="zellij-compose-reveal">{content}</Reveal>;
+  return node.type !== 'story' && node.place ? <div className="zellij-compose-placement" data-place={node.place}>{content}</div> : content;
 }
 
 function Layout({ layout, basePath, children }: { layout?: ComposeLayout; basePath: string; children: ReactNode }) {
