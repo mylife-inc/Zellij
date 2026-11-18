@@ -60,3 +60,29 @@ rule enforcing the strict bound in both engine and native code. This keeps the
 native schema allowlist explicit. Deep checking also caught an unresolved
 showcase transcript route; the clip now links to its actual authored scene
 and includes its complete silent-motion description.
+
+## First hosted run
+
+Source `88af13f` passes 520 engine tests, 815 Rust tests (five hosted-only cases
+ignored), 21 native authoring cases, 20 release-policy guards, strict checks,
+workspace types, formatting, Clippy and actual CLI/engine parity for all 25
+section types and seven presets. Documentation preservation also passes.
+
+Full run `44363366370` passes 496 showcase cases and fails nine new assertions
+(three cases across three browser projects). Focused run `44363433317` passes
+96 cases and fails the same nine without retries. The track assertion omitted
+the asset version query string; the delayed/failing-network route matchers also
+omitted it, so they did not intercept requests. Correct those URL matches and
+wait for actual seek completion before inspecting the decoded frame. The full
+run was cancelled after retaining evidence; no runtime correction was needed
+for these test failures. Hosted acceptance is pending a corrected run.
+
+Visual review also found that the pinned scene's inset omitted the announcement
+bar. The story now measures the full sticky header and observes size changes,
+with a browser assertion that the copy clears the header. A WebKit dark-mode
+capture showed faint inherited body text; new computed-colour assertions check
+that concern before accepting the captures.
+
+| Before | After | Why |
+| --- | --- | --- |
+| Pin inset used only the navigation-height token | Inset includes the actual sticky header and its announcement bar | Keep every scene line below visible chrome |

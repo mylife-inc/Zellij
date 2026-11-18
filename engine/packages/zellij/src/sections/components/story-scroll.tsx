@@ -28,6 +28,7 @@ export function StoryScroll({ label, distance, mediaSide, motion, children }: {
     const loaded = new Set<HTMLVideoElement>();
     const forced = matchMedia('(forced-colors: active)');
     const print = matchMedia('print');
+    const header = document.querySelector<HTMLElement>('.zellij-header');
     let enabled = false, frame = 0, top = 0, travel = 0;
     const fail = () => setOff(true);
     const seek = (video: HTMLVideoElement) => {
@@ -61,10 +62,10 @@ export function StoryScroll({ label, distance, mediaSide, motion, children }: {
       targets.clear();
     };
     const measure = () => {
-      box.style.setProperty('--zellij-story-top', 'calc(var(--zellij-nav-height) + 1.5rem)');
-      // The measuring probe is independent of the current pinning state.
-      const probe = box.querySelector<HTMLElement>('.zellij-story-copy');
-      top = probe ? parseFloat(getComputedStyle(probe).top) || 80 : 80;
+      // Include announcement bars and any resized sticky header content.
+      const headerHeight = header && ['sticky', 'fixed'].includes(getComputedStyle(header).position) ? header.offsetHeight : 0;
+      top = headerHeight + 1.5 * (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16);
+      box.style.setProperty('--zellij-story-top', `${top}px`);
       travel = innerHeight * distance;
       const parts = scenes.map(scene => [...scene.children] as HTMLElement[]);
       const fits = innerWidth >= 760 && box.clientWidth >= 760 && !forced.matches && !print.matches &&
@@ -83,6 +84,7 @@ export function StoryScroll({ label, distance, mediaSide, motion, children }: {
     const focus = () => { if (enabled) setOff(true); };
     const resize = new ResizeObserver(measure);
     resize.observe(box);
+    if (header) resize.observe(header);
     for (const scene of scenes) for (const part of scene.children) resize.observe(part);
     const intersection = new IntersectionObserver(entries => {
       for (const entry of entries) { if (entry.isIntersecting) near.add(entry.target); else near.delete(entry.target); }
