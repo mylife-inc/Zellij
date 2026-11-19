@@ -10,6 +10,11 @@
     {"id": "product-launch", "version": "0.1.0", "sha256": "8cc300198cad8e6e22a86c30f0b3c6adedb9e65d8603a198894671c0257a4f38"},
     {"id": "software-platform", "version": "0.1.0", "sha256": "2a1f1e0d916dc2807edbbb8cdf8d8ee77122c175e0bb744d39e6aebbfb6d24a4"},
     {"id": "creative-studio", "version": "0.1.0", "sha256": "efdd8825d27038047bf0603b6207a455039559345ac8d8169f8942f434b31d61"},
-    {"id": "api-platform", "version": "0.1.0", "sha256": "08c24a826e1e89ff1deb63fd02e7c10d886a108c80f18854fbefe8b2111f7fc5"}
+    {"id": "api-platform", "version": "0.1.0", "sha256": "08c24a826e1e89ff1deb63fd02e7c10d886a108c80f18854fbefe8b2111f7fc5"},
+    {"id":"product-studio","version":"0.1.1","sha256":"d7334e7826526b9e9b6eed4a534d8dfb219f45e98480362d6ada3dfa7064063f"},
+    {"id":"product-launch","version":"0.1.1","sha256":"2beb0aff4b006b5d30796088a4b82f949a4909c8ab0c485a78285cf164a89a3d"},
+    {"id":"software-platform","version":"0.1.1","sha256":"c997dd28bd0bc166ece3e5aa0d352e52ef51386d473083cbbdc822a99c81890d"},
+    {"id":"creative-studio","version":"0.1.1","sha256":"cd466b6f20de000855be26cb48bdd8b646436af2156d9b6a5618bd8fea2df070"},
+    {"id":"api-platform","version":"0.1.1","sha256":"8b5956182065f75d3a40f645e232e007aaeb48e72f216a1d66d5273c3ad81618"}
   ]
 }
