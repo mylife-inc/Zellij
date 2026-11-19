@@ -3,6 +3,21 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: rc.11 published and verified; channel/docs migration in progress**
+
+Immutable tag `1f8232b` publishes the completed composer expansion and nine
+editable presets. All 37 jobs in release run `44423006473` pass, including
+12 public-download/image jobs. Both release repositories have 27 byte-identical
+assets. All nine template archive identities are unchanged. The 224 website
+captures and 46 public PDFs/420 page captures match reviewed source content and
+pixels. Native installations and all eight image variants/architectures contain
+the exact tagged authoring model and presets. See [release evidence](specs/evidence/zellij-rc11-release-2026-11-18.json).
+
+Managed lifecycle/real upgrades, documentation/consumer CI and scoped rc.10
+retirement are in progress. No rc.10 artifact has been removed. Production-domain
+migration and live-provider verification remain deferred. WinGet and additional
+installation channels are separate backlog work; no stable 1.0 or zero-bug claim.
+
 **2026-11-18: rc.11 release preparation**
 
 Continue from verified merge `0d25d84`. The candidate contains the completed

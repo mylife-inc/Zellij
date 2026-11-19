@@ -1,5 +1,13 @@
 # Zellij release channels and candidate procedure
 
+**2026-11-18: v0.2.0-rc.11 is published and publicly verified.** Immutable tag
+`1f8232b` passes all 37 jobs in `44423006473`, including 12 final-public-artifact
+checks. Both repositories have 27 byte-identical assets and retain all nine
+current template archive hashes. All 224 website captures and 46 PDFs/420 page
+captures match reviewed source content and pixels. Managed upgrades and active
+guide/consumer migration are in progress; rc.10 retirement awaits their gates.
+See [the evidence](evidence/zellij-rc11-release-2026-11-18.json).
+
 **2026-11-18: rc.11 preparation.** The source implementation is verified at
 `0d25d84`; publication remains pending. GitHub withdrew the development-only
 picomatch advisory on November 18. Full and production audits now report zero
