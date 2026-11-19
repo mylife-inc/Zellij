@@ -3,6 +3,32 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: rich offline renderer — local implementation**
+
+The user clarified that a double-click handoff must retain the rich website,
+not the native manual presentation. `zel build --target file` now exports the
+shared rich components with a classic-script hydration runtime, local route
+links, search and diagrams. See [implementation and evidence](specs/zellij-rich-file-export-2026-11-19.md).
+Implementation **`053fbfc`** lives in `engine/packages/zellij/src/offline`; the container invokes
+`zellij export-offline` before staged publication. Old images fail a capability
+guard. Static HTTP output and the native portable manual remain separate targets.
+
+The private handoff now has one editable Markdown collection inside its Next
+project, one rich `site` folder, generation scripts and four native binaries.
+No private content or artifacts enter this repository. Its local pinned engine
+makes rich file builds usable with the already verified rc.11 native binaries;
+this is not a public release or a claim about stock rc.11. Windows/ARM execution
+was not tested. The linked-heading defect below is fixed in current source;
+its original report and workaround are retained as dated history. Fixing commit: `053fbfc`.
+
+Validation: 53 scoped engine tests, typecheck/package build, 153 Rust tests
+(five existing ignored), docs strict/deep check, and a new 16-route public
+file-browser acceptance in Chromium/WebKit. Private acceptance covers 200 routes,
+64 diagrams, 60 theme/mode states across both browsers, menu/mobile interactions
+and homepage pixel parity against HTTP. A real old-image failure preserves output.
+Public release, installation-channel updates and live-provider checks remain
+outside this local handoff change.
+
 **2026-11-19: theme-responsive consumer presentation — authoring clarification**
 
 A private consumer now omits the fixed `overrides.accent` so runtime theme
