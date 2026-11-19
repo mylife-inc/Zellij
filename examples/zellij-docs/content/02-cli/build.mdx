@@ -28,6 +28,7 @@ zel build ./content --target image --tag acme-docs:v2
 | Target | Input | Output and requirements |
 | --- | --- | --- |
 | `portable` | A plain Markdown folder | HTML with relative links and local support files. Double-click `index.html`; no server required. |
+| `file` (next update after rc.11) | Structured Zellij YAML/MDX content | The rich website with local navigation, search, menus, themes and diagrams. Double-click `index.html`; a container runtime is needed only to build. |
 | `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
 | `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
@@ -65,7 +66,7 @@ docs/                         published-docs/
 The generated folder can be moved, copied to another computer, opened directly,
 or served by an ordinary HTTP file server. Keep the complete folder together.
 Navigation, breadcrumbs, previous/next links, heading anchors, offline search,
-local images, bundled fonts, syntax highlighting, and all 14 Zellij themes work
+local images, bundled fonts, syntax highlighting, and all 15 Zellij themes work
 without an HTTP server. Content and ordinary navigation remain available with
 JavaScript disabled; search and theme controls need JavaScript.
 
@@ -222,7 +223,7 @@ after an edit. Only pages with mindmaps load their small stylesheet, and it is
 removed from the export when the last mindmap is removed.
 
 This is Zellij's YAML `mindmap` syntax. Mermaid's `mindmap` grammar belongs inside
-a `mermaid` fence, which remains source code in the portable target.
+a `mermaid` fence; enable Mermaid as described below to render it.
 
 ### Mermaid diagrams
 
@@ -268,6 +269,35 @@ successful rebuild, in the browser.
 <div id="what-you-get" className="zellij-legacy-anchor" />
 <div id="what-it-actually-does" className="zellij-legacy-anchor" />
 
+## Rich offline website (next update after rc.11)
+
+```bash title="terminal"
+zel build docs/zellij --target file
+```
+
+This target reuses the rich renderer's sections, typography, navigation, theme
+picker and guide components. It writes each route to `route/index.html`, rewrites
+local links and assets, and bundles the browser runtime and search data. Extract
+or copy the **whole output folder**, then double-click its `index.html`. No local
+server, browser extension or relaxed browser security setting is required.
+The same folder can also be served over HTTP.
+
+Building requires a compatible engine and Docker/Podman, as with hosted `static`
+builds. Older engine images fail with a capability message before rendering;
+released rc.11 does not include the `file` target. A failed build preserves the
+previous output. The native `portable` renderer remains the lightweight manual
+option and does not reproduce rich YAML sections.
+
+Search, theme controls, menus, local diagrams and section interactions run from
+bundled classic scripts. Analytics and development polling are omitted. Remote
+videos, external links and other externally hosted resources still need their
+original services; exporting does not download them. Next server routes and
+arbitrary custom React application code are outside this content-engine target.
+
+For an editable Next wrapper, build with `ZELLIJ_OUTPUT=export`, then run
+`npx zellij export-offline` in that wrapper. This transforms its generated `out/`
+folder; it uses the same command as the Rust CLI's container build.
+
 ## Hosted static website
 
 `--target static` renders structured YAML/MDX content through the container
@@ -299,7 +329,8 @@ it supports both portable and hosted sites. See [image commands](/cli/image).
 
 ## Output ownership
 
-Both file targets require output outside the content source (`content/` for a configured site). It must be new, empty,
+Folder outputs (`portable`, `static`, and the forthcoming `file` target) require
+output outside the content source (`content/` for a configured site). It must be new, empty,
 or a previous Zellij export containing its `.zellij-output` ownership marker.
 Keep authored files outside generated output: rebuilding replaces the export
 as a whole and removes obsolete generated pages.
@@ -313,8 +344,8 @@ output directory; do not add the marker by hand.
 | Option | Meaning | Default |
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit legacy input | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
-| `--target <portable\|static\|image>` | Explicit output target | Configured renderer; legacy inference otherwise |
-| `--out <path>` | Output folder for `portable` or `static` | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy static: `./dist` |
+| `--target <portable\|static\|file\|image>` | Explicit output target; `file` needs the next update after rc.11 | Configured renderer; legacy inference otherwise |
+| `--out <path>` | Output folder for `portable`, `static`, or the forthcoming `file` target | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy hosted: `./dist` |
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |

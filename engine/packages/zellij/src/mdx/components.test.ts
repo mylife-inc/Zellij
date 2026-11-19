@@ -59,3 +59,16 @@ it.each(['', '/products/docs'])('renders public asset links under basePath %j wi
   expect(html).toContain('href="#part"');
   expect(html).toContain('href="https://example.com/notes.txt" target="_blank" rel="noreferrer noopener"');
 }, 30_000);
+
+
+it('keeps authored heading links beside the permalink, never inside another anchor', async () => {
+  const { content } = await compileMDX({
+    source: '## Read [the guide](/guide) **now**\n\n### [External](https://example.com)\n',
+    components: mdxComponents(), options: await mdxOptions(),
+  });
+  const html = renderToStaticMarkup(content);
+  expect(html).toContain('href="/guide"');
+  expect(html).toContain('aria-label="Link to this heading"');
+  expect(html).not.toMatch(/<a\b[^>]*>(?:(?!<\/a>)[\s\S])*<a\b/);
+  expect(html.match(/class="zellij-heading-anchor"/g)).toHaveLength(2);
+});

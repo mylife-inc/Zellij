@@ -66,8 +66,8 @@ Zellij development commands
     zrelease-watch      Follow the release CI is running
     zlog [workflow]     Why the last run failed — the log, not the annotation
     zrerun [workflow]   Re-run just the failed jobs
-    zdocs-publish [on|off]
-                        Whether releases publish the docs site. No argument reports.
+    zdocs-publish [on|off|run|status]
+                        Control the independent docs workflow. No argument reports.
     znetlify            Build and deploy the docs site by hand
 
   Housekeeping
@@ -268,8 +268,6 @@ _zsecret_exists() {
     --jq ".[] | select(.name == \"$1\") | .name" 2>/dev/null | grep -q .
 }
 
-# Is the documentation site allowed to publish? Reports, and with an argument
-# sets. Separated from zrelease so it can be answered without cutting one.
 # Re-run only the jobs that failed, once the cause has been dealt with.
 #
 #     zrerun                 the last Release run
@@ -289,32 +287,30 @@ zrerun() {
 
 zdocs-publish() {
   command -v gh >/dev/null || _zdie "The GitHub CLI (gh) is not installed" || return 1
-
   case "${1:-status}" in
     on|true|yes)
-      gh variable set DEPLOY_DOCS --body true --repo "$(_zrepo)" || return 1
-      _zsay "The next release will publish the docs to $ZELLIJ_SITE_DOMAIN"
+      gh workflow enable docs.yml --repo "$(_zrepo)" || return 1
+      _zsay "Documentation publication from main is enabled"
       ;;
     off|false|no)
-      gh variable set DEPLOY_DOCS --body false --repo "$(_zrepo)" || return 1
-      _zsay "Releases will build the docs but not publish them"
+      gh workflow disable docs.yml --repo "$(_zrepo)" || return 1
+      _zsay "The documentation workflow is disabled"
+      ;;
+    run)
+      gh workflow run docs.yml --ref main --repo "$(_zrepo)" || return 1
+      _zsay "Documentation validation and publication requested from main"
       ;;
     status)
-      local v; v="$(_zvar DEPLOY_DOCS)"
-      printf '  DEPLOY_DOCS          %s\n' "${v:-unset}"
-      printf '  NETLIFY_AUTH_TOKEN   %s\n' "$(_zsecret_exists NETLIFY_AUTH_TOKEN && echo set || echo missing)"
-      printf '  NETLIFY_SITE_ID      %s\n' "$(_zsecret_exists NETLIFY_SITE_ID && echo set || echo missing)"
-      printf '  %-20s %s\n' "$ZELLIJ_SITE_DOMAIN" \
-        "$(dig +short "$ZELLIJ_SITE_DOMAIN" 2>/dev/null | head -1 || echo 'does not resolve')"
+      gh workflow view docs.yml --repo "$(_zrepo)" || return 1
+      printf '  NETLIFY_DOCS_PRODUCTION_TOKEN  %s\n' "$(_zsecret_exists NETLIFY_DOCS_PRODUCTION_TOKEN && echo set || echo missing)"
       ;;
-    *) _zdie "Usage: zdocs-publish [on|off|status]" ;;
+    *) _zdie "Usage: zdocs-publish [on|off|run|status]" ;;
   esac
 }
 
-# Everything about a release that is settled outside this repository: whether
-# CI may publish the site, whether it has the credentials to. Checked here
-# because a tag is the wrong place to discover a missing repository variable —
-# by then the version number is spent.
+# Repository access is needed before creating an immutable release tag.
+# Documentation credentials and publication are independent of CLI releases.
+
 _zrelease_preflight() {
   local err
   if ! err="$(gh repo view "$(_zrepo)" --json name 2>&1 >/dev/null)"; then
@@ -332,27 +328,7 @@ EOF
     return 1
   fi
 
-  # Candidates must not prompt for or enable production docs publication.
-  case "${1:-}" in *-*) return 0 ;; esac
 
-  local deploy; deploy="$(_zvar DEPLOY_DOCS)"
-  [ "$deploy" = "true" ] && return 0
-
-  if ! _zsecret_exists NETLIFY_AUTH_TOKEN || ! _zsecret_exists NETLIFY_SITE_ID; then
-    _zwarn "Netlify credentials are not in the repository secrets — the site will be built, not published."
-    return 0
-  fi
-
-  printf '\033[1;33m?\033[0m Publish the documentation site to %s with this release? [y/N] ' \
-    "$ZELLIJ_SITE_DOMAIN"
-  local reply; read -r reply
-  case "$reply" in
-    [yY]*)
-      gh variable set DEPLOY_DOCS --body true --repo "$(_zrepo)" || return 1
-      _zsay "DEPLOY_DOCS=true"
-      ;;
-    *) _zwarn "Leaving it off. The site will be built and not published." ;;
-  esac
 }
 
 zrelease() {
@@ -382,11 +358,7 @@ zrelease() {
   git -C "$ZELLIJ_ROOT" tag -a "$version" -m "$version" || return 1
   git -C "$ZELLIJ_ROOT" push origin "$version" || return 1
 
-  local docs_dest="built, not published"
-  case "$version" in
-    *-*) docs_dest="built, not published (prerelease)" ;;
-    *) [ "$(_zvar DEPLOY_DOCS)" = "true" ] && docs_dest="→ $ZELLIJ_SITE_DOMAIN" ;;
-  esac
+  local docs_dest="built; publication runs independently from main"
 
   cat <<EOF
 

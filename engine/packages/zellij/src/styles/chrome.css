@@ -294,11 +294,11 @@
 }
 
 /*
- * Mega panels span the whole bar, Apple-style. Making the item a static box
+ * All desktop panels span the whole bar. Making the item a static box
  * hands the panel's containing block to the sticky header, so it can stretch
  * edge to edge while still opening flush beneath the bar.
  */
-.zellij-nav-item[data-mega='true'] {
+.zellij-nav-item {
   position: static;
 }
 
@@ -362,27 +362,29 @@
   transform-origin: top center;
 }
 
-/* A short list stays a compact panel — but flush against the bar. */
-.zellij-dropdown {
+/* Flat lists and grouped menus share the same viewport-wide band. */
+.zellij-dropdown,
+.zellij-mega-panel {
   left: 0;
-  min-width: 15rem;
-  padding: 0.5rem;
-  border: 1px solid var(--zellij-border);
-  border-top: none;
-  border-radius: 0 0 var(--zellij-radius) var(--zellij-radius);
-  box-shadow: 0 16px 32px -18px color-mix(in srgb, var(--zellij-fg) 26%, transparent);
-}
-
-.zellij-nav-item[data-nav-index='more'] .zellij-dropdown {
-  left: auto;
   right: 0;
-  max-width: calc(100vw - 2rem);
+  width: 100%;
+  padding: 2.25rem 0 3rem;
+  border-bottom: 1px solid var(--zellij-border);
+  max-height: calc(100dvh - var(--zellij-nav-height) - 2rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
-.zellij-nav-item[data-nav-index='more'] > .zellij-dropdown,
-.zellij-nav-item[data-nav-index='more'] > .zellij-mega-panel {
-  max-height: calc(100dvh - 8rem);
-  overflow-y: auto;
+.zellij-dropdown > ul {
+  list-style: none;
+  margin-block: 0;
+  padding-block: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 0.75rem 2rem;
+  max-width: var(--zellij-container);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
 }
 
 /*
@@ -390,14 +392,6 @@
  * it should read as the header unfurling, not as a card floating over the page.
  * Only a closing hairline separates it from the content below.
  */
-.zellij-mega-panel {
-  left: 0;
-  right: 0;
-  width: 100%;
-  padding: 2.25rem 0 3rem;
-  border-bottom: 1px solid var(--zellij-border);
-}
-
 .zellij-mega-panel .zellij-mega-groups {
   /* Keep long groups readable within the page measure; the bar itself uses
      the full viewport to reserve room for navigation and controls. */
@@ -412,13 +406,16 @@
 @keyframes zellij-menu-in {
   from {
     opacity: 0;
-    transform: scaleY(0.96) translateY(-2px);
+    clip-path: inset(0 0 100%);
   }
   to {
     opacity: 1;
-    transform: scaleY(1) translateY(0);
+    clip-path: inset(0);
   }
 }
+
+[data-zellij-motion='none'] .zellij-dropdown,
+[data-zellij-motion='none'] .zellij-mega-panel { animation: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .zellij-dropdown,
@@ -427,7 +424,6 @@
   }
 }
 
-.zellij-dropdown ul,
 .zellij-mega-group ul {
   list-style: none;
   margin: 0;
@@ -436,11 +432,15 @@
 
 .zellij-dropdown-link {
   display: block;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem;
   border-radius: calc(var(--zellij-radius) * 0.5);
   color: var(--zellij-fg);
   text-decoration: none;
-  font-size: 0.9375rem;
+  font-family: var(--zellij-font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .zellij-dropdown-link:hover,
@@ -1211,7 +1211,8 @@
 
 /*
  * The chip carries its own `data-zellij-theme`, so it fills with that theme's
- * accent. The ring is drawn in that theme's background, which is what tells a
+ * original palette, independent of site accent overrides. The ring is drawn
+ * in that theme's background, which is what tells a
  * light theme apart from a dark one at 14px.
  */
 .zellij-theme-chip {
@@ -1219,10 +1220,10 @@
   height: 0.875rem;
   flex-shrink: 0;
   border-radius: 999px;
-  background: var(--zellij-accent);
+  background: var(--zellij-preview-accent, var(--zellij-accent));
   box-shadow:
-    0 0 0 2px var(--zellij-bg),
-    0 0 0 3px color-mix(in srgb, var(--zellij-fg) 22%, transparent);
+    0 0 0 2px var(--zellij-preview-bg, var(--zellij-bg)),
+    0 0 0 3px color-mix(in srgb, var(--zellij-preview-fg, var(--zellij-fg)) 22%, transparent);
 }
 
 /* Not flex-grow: the tick should sit beside the name it confirms, rather than

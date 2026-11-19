@@ -121,7 +121,8 @@ and eight reusable built-in sections. Nine editable presets are available with
 deferred provider/runner checks. This is a preview, not a stable 1.0 release.
 
 Maintainers: see the [release procedure](specs/zel-release-procedure.md) for
-candidate channels, pinned installation, and stable documentation publication.
+candidate channels and pinned installation. The [documentation publishing guide](specs/zellij-docs-deployment.md)
+explains automatic updates from `main`, manual runs and rollback.
 
 ## The examples
 

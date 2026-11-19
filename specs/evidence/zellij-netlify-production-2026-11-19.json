@@ -1,0 +1,131 @@
+{
+  "date": "2026-11-19",
+  "authorization": "User explicitly authorized production deployment to zellij.shebka.net on Netlify.",
+  "production": {
+    "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+    "domain": "zellij.shebka.net",
+    "deploy_id": "6aff4d3001a5a3ee682b3ff2",
+    "previous_deploy_id": "6aff4b3a9697c531bab4dd19",
+    "original_rollback_deploy_id": "6a7cb3dc45caa1c8e95f9c03",
+    "published_at": "2026-11-19T19:26:20.633Z",
+    "source_commit": "e341880d5a08a16c0f525e69a9c497a816dd660d",
+    "action": "promoted the verified draft; no rebuild or domain change"
+  },
+  "artifact": {
+    "source_commit": "e341880d5a08a16c0f525e69a9c497a816dd660d",
+    "files": 588,
+    "article_html_unchanged": 59,
+    "favicon_metadata_present": true,
+    "conventional_favicon_present": true,
+    "authored_assets_unchanged": true,
+    "zip_sha256": "265132d92a32f8f8652035229e1fa965c68c1329e4a8d2e67606dafd49c99396"
+  },
+  "backup": {
+    "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+    "domain": "zellij.shebka.net",
+    "previous_deploy_id": "6a7cb3dc45caa1c8e95f9c03",
+    "files": 589,
+    "bytes": 26341511,
+    "sha256": "f605a953e8ee1dd70562f78bba1b4302905ded181f8caf2b090ff25dec71895b",
+    "all_file_digests_verified": true
+  },
+  "backup_directory": "backups/zellij-netlify-2026-11-19",
+  "backup_archive": "previous-production-files.zip",
+  "local_preservation": {
+    "passed": true,
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_authored_images": 29,
+    "current_repository_links": true,
+    "console_and_page_errors": 0
+  },
+  "production_verification": {
+    "deploy_id": "6aff4d3001a5a3ee682b3ff2",
+    "domain": "zellij.shebka.net",
+    "api_verified_files": 588,
+    "provider_generated_files": 1,
+    "api_path_case_normalization_verified": true,
+    "all_file_digests_match_reviewed_artifact": true,
+    "http_checks": [
+      {
+        "route": "/",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/build",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/templates",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/books",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/sections/compose",
+        "status": 200,
+        "expected_content": true
+      }
+    ]
+  },
+  "browser": {
+    "draft_and_production": true,
+    "browser": "Chrome, visible browser window",
+    "routes": [
+      "/",
+      "/cli",
+      "/cli/build",
+      "/sections/compose",
+      "/cli/templates",
+      "/cli/books"
+    ],
+    "checks": [
+      "home hydration",
+      "normal client navigation",
+      "search result navigation",
+      "theme switch",
+      "composer example visible",
+      "template and book references",
+      "explicit icon metadata",
+      "conventional favicon status and bytes"
+    ],
+    "console_and_page_errors": 0
+  },
+  "limits": [
+    "A rapid headless draft crawl received HTTP 403 at /guide/motion and was stopped; it is not recorded as a complete remote browser pass.",
+    "Complete local preservation and all-file production digest checks passed. Live browser acceptance covers the listed flows, not every route or browser.",
+    "No CLI release or installation-channel update is part of this documentation publication."
+  ],
+  "history": [
+    {
+      "deploy_id": "6aff48270fbd64f43f474911",
+      "source_commit": "8168d797b86f6915bb141e2340cd3bfff5ebe355",
+      "result": "Documentation published; Chrome reported the missing conventional favicon."
+    },
+    {
+      "deploy_id": "6aff4b3a9697c531bab4dd19",
+      "source_commit": "1b6356025219f9cbefdc61a4cc64e4e8a97cec01",
+      "result": "Explicit icon metadata passed draft checks; production Chrome still requested /favicon.ico."
+    },
+    {
+      "deploy_id": "6aff4d3001a5a3ee682b3ff2",
+      "source_commit": "e341880d5a08a16c0f525e69a9c497a816dd660d",
+      "result": "Added a conventional ICO containing the unchanged existing PNG logo; final draft and production browser checks passed."
+    }
+  ],
+  "unchanged": [
+    "existing production project/account",
+    "custom domain and DNS",
+    "separate zel-stage project",
+    "old Netlify deploy retained",
+    "private client documentation outside this repository"
+  ]
+}

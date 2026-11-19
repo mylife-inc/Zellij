@@ -64,6 +64,57 @@ test.describe('dropdown and mega panel', () => {
     await expect(page).toHaveURL(/\/lumen-3-pro#buy$/);
   });
 
+  test('flat menus fill the viewport with a keyboard-accessible grid', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('/');
+    const trigger = page.getByRole('button', { name: 'Shop', exact: true });
+    await trigger.focus();
+    await page.keyboard.press('ArrowDown');
+    const panel = page.locator('.zellij-dropdown');
+    await expect(panel.locator('a').first()).toBeFocused();
+    await expect.poll(() => panel.evaluate(element => {
+      const bounds = element.getBoundingClientRect();
+      const header = document.querySelector('.zellij-header')!.getBoundingClientRect();
+      return Math.abs(bounds.left) < 1 && Math.abs(bounds.right - document.documentElement.clientWidth) < 1 &&
+        Math.abs(bounds.top - header.bottom) < 4;
+    })).toBe(true);
+    const links = await panel.locator('a').evaluateAll(elements => elements.map(element => element.getBoundingClientRect().x));
+    expect(new Set(links).size).toBeGreaterThan(1);
+    await expect(panel.locator('ul')).toHaveCSS('display', 'grid');
+    await page.keyboard.press('Escape');
+    await expect(panel).toBeHidden();
+    await expect(trigger).toBeFocused();
+  });
+
+  test('desktop panel entrance respects reduced motion and the site motion setting', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    await openPanel(page, 'Shop', '.zellij-dropdown');
+    await expect(page.locator('.zellij-dropdown')).toHaveCSS('animation-name', 'none');
+    await page.keyboard.press('Escape');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.locator('html').evaluate(element => element.setAttribute('data-zellij-motion', 'none'));
+    await openPanel(page, 'Explore', '.zellij-mega-panel');
+    await expect(page.locator('.zellij-mega-panel')).toHaveCSS('animation-name', 'none');
+  });
+
+  test('tall panels remain scrollable below the actual header in a short viewport', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 240 });
+    await page.goto('/');
+    const trigger = page.getByRole('button', { name: 'Explore', exact: true });
+    await trigger.focus();
+    await page.keyboard.press('ArrowDown');
+    const panel = page.locator('.zellij-mega-panel');
+    await expect(panel.locator('a').first()).toBeFocused();
+    await expect.poll(() => panel.evaluate(element => {
+      const bounds = element.getBoundingClientRect();
+      return bounds.bottom <= window.innerHeight - 15 && element.scrollHeight > element.clientHeight;
+    })).toBe(true);
+    await page.keyboard.press('Shift+Tab');
+    await expect(panel.locator('a').last()).toBeFocused();
+    await expect(panel.locator('a').last()).toBeInViewport();
+  });
+
   test('opens a mega panel with grouped, described links and icons', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Explore' }).click();
@@ -277,15 +328,9 @@ test.describe('mobile drawer', () => {
     await expect(drawer).toBeFocused();
   });
 
-  /*
-   * Closing puts focus back wherever it was, which is the trigger when the
-   * trigger had it. On WebKit a tap focuses nothing, so there is nothing to
-   * restore and the assertion would be about Safari's pointer model rather than
-   * about the drawer. The keyboard path it protects — Enter on the button,
-   * which does focus it — is Chromium's to demonstrate.
-   */
-  test('returns focus to the trigger on close', async ({ page, browserName }) => {
-    test.skip(browserName === 'webkit', 'Safari does not focus a button on tap');
+  // Pointer activation must also restore the trigger in WebKit, which does
+  // not natively focus buttons on tap.
+  test('returns focus to the trigger on close', async ({ page }) => {
     await page.goto('/');
 
     const trigger = page.getByRole('button', { name: 'Open navigation' });

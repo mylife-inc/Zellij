@@ -1,6 +1,14 @@
 # Netlify migration and content-preservation review — 2026-11-02
 
-Status: **staging is public at https://zel-stage.netlify.app; both CLI draft
+**Current follow-up — 2026-11-19:** The user authorized publication and the
+reviewed documentation is now deployed to the existing production project at
+https://zellij.shebka.net/. A full original-deploy backup is retained. The domain,
+account and separate staging project were preserved. No transfer or deletion was
+needed. See [deployment checks and recovery evidence](zellij-netlify-production-2026-11-19.md).
+The statuses and prerequisite list below describe the earlier migration review;
+the dated production record supersedes their pending-publication statements.
+
+Historical status on 2026-11-02: **staging is public at https://zel-stage.netlify.app; both CLI draft
 deployments and their HTTP/browser checks passed.** Full-docs content checks pass,
 but a Netlify HTML-injection hydration error remains under investigation. The
 user created the project and set its visibility/credentials; the agent created

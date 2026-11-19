@@ -228,6 +228,7 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     fs::write(root.join("site/index.html"), "previous export").unwrap();
     for args in [
         vec!["build", "content", "--target", "static", "--out", "site"],
+        vec!["build", "content", "--target", "file", "--out", "site"],
         vec!["build", "content", "--target", "image"],
         vec!["check", "content"],
         vec!["watch", "content"],

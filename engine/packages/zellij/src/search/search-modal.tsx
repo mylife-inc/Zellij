@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 
 import { useFocusTrap } from '../chrome/hooks';
-import { SEARCH_INDEX_PATH } from '../content/paths';
+import { loadSearchIndex } from './load-index';
 import type { SearchEntry } from './build-index';
 
 interface Loaded {
@@ -80,14 +80,10 @@ export function SearchModal({ basePath }: { basePath: string }) {
 
     void (async () => {
       try {
-        const [module, response] = await Promise.all([
+        const [module, entries] = await Promise.all([
           import('flexsearch'),
-          fetch(`${basePath}${SEARCH_INDEX_PATH}`, {
-            signal: controller.signal,
-            ...(process.env.NODE_ENV === 'development' ? { cache: 'no-store' as const } : {}),
-          }),
+          loadSearchIndex(basePath, controller.signal),
         ]);
-        if (!response.ok) throw new Error(`index request failed: ${response.status}`);
 
         // FlexSearch ships both a named `Index` and a default namespace, and
         // which one survives depends on the bundler's ESM interop. Accept
@@ -99,7 +95,6 @@ export function SearchModal({ basePath }: { basePath: string }) {
         const FlexIndex = namespace.Index ?? namespace.default?.Index;
         if (!FlexIndex) throw new Error('flexsearch: no Index export');
 
-        const entries = (await response.json()) as SearchEntry[];
         if (cancelled) return;
 
         const index = new FlexIndex({ tokenize: 'forward' });

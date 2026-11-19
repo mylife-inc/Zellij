@@ -1,7 +1,234 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-19: independent documentation CI — implementation under verification**
+
+The user approved automatic publication after the direct production deployment.
+`.github/workflows/docs.yml` validates relevant PR changes and publishes relevant
+`main` pushes or manual-main runs independently of CLI versions. Its build job
+runs strict/deep content checks, a static export preserving authored images and
+the full local browser preservation gate. The publishing job uses dedicated
+`NETLIFY_DOCS_PRODUCTION_TOKEN`, verifies the existing project/domain and source
+ancestry, checks a draft before promotion, and retains previous-deploy receipts.
+The release workflow and `zdocs-publish` helper no longer use `DEPLOY_DOCS` or the
+staging secrets for production. See [the publishing guide](specs/zellij-docs-deployment.md).
+
+All 39 local publication/release-policy tests, workflow lint, shell syntax,
+pinned-client installation and read-only live HTTP checks pass. Implementation
+is pushed on `codex/docs-auto-deploy` (initial commit `c24b862`). PR creation was
+attempted but the GitHub connector returned HTTP 403, "Resource not accessible
+by integration"; the local `gh` login is also absent. The user has been asked to
+run `gh auth login --hostname github.com --web` as `mylife-inc`. No PR was created,
+no production secret was changed and no automatic deployment has run yet.
+
+After login: verify the GitHub account, set only `NETLIFY_DOCS_PRODUCTION_TOKEN`
+using the already working local Netlify login without displaying its token,
+create the PR from the pushed branch, wait for all required CI, merge, and verify
+the first automatic production run. Existing staging secrets stay unchanged.
+The branch includes the 12 previously local navigation/offline/documentation
+commits so main will match the source now live. The current production site
+remains the successful direct deployment recorded below. Do not infer completion
+of the CI rollout from the new workflow files.
+
+**2026-11-19: documentation CI authentication and first hosted run**
+
+The earlier authentication block is resolved. The user's interactive terminal
+sets `XDG_CONFIG_HOME=/Users/hamid/Dev/config`; non-interactive maintenance
+commands must set `GH_CONFIG_DIR=/Users/hamid/Dev/config/gh`. Account `mylife-inc`
+has Admin access. Dedicated `NETLIFY_DOCS_PRODUCTION_TOKEN` is configured from
+the working local Netlify login without exposing its value; staging secrets
+remain unchanged. [PR #210](https://github.com/mylife-inc/Zellij/pull/210) targets
+main from `codex/docs-auto-deploy`.
+
+The first documentation workflow `44602927331` passed validation, production
+build and browser preservation; production publication correctly skipped on the
+PR. General CI `44602927256` found a stale generated portable stylesheet in the
+schema job. The embedded schema itself matches. Regeneration adds the 135 theme
+preview declarations introduced by the navigation fix, preserving every previous
+CSS byte when those new declarations are removed. Native documentation tests
+pass (91 passed, 0 ignored); generated wrapper, theme and Mermaid checks pass.
+A new CI run is required on the correction before merging. The first automatic
+production deployment remains pending at this checkpoint.
+
+**2026-11-19: macOS declaration-build heap in hosted CI**
+
+The corrected documentation workflow `44603977683` passes on `be11908`, and the
+portable-theme drift is resolved in general CI. That run (`44603977358`) exposed
+`ERR_WORKER_OUT_OF_MEMORY` during tsup declaration emission in Portable docs
+(macos-latest). The public ARM macOS runner has 7 GB RAM; tsup's declaration
+worker used Node's implicit heap limit. The portable matrix's engine-build step
+now sets `NODE_OPTIONS=--max-old-space-size=4096`; no application runtime limit
+or generated declaration output is changed. A local worker probe confirms the
+setting is inherited, and the complete engine build and workflow lint pass.
+Hosted macOS confirmation remains required on the updated commit.
+
+**2026-11-19: public documentation deployed to the existing Netlify project**
+
+The user explicitly authorized publication after the local review below.
+`https://zellij.shebka.net/` now serves source `e341880`
+(reviewed docs `8168d79`, explicit icon `1b63560`, conventional favicon `e341880`)
+from deploy `6aff4d3001a5a3ee682b3ff2`. This supersedes the pending-review and
+production-cutover restrictions in older dated entries. The existing account,
+project and domain remain in place; `zel-stage` and private client content are
+untouched. No CLI version, GitHub publication or installation channel changed.
+
+A complete verified backup of the 589-file old production deployment is retained
+locally and the old Netlify deploy remains available. Final Next export, local
+preservation (46 old + 13 new routes, 282 heading IDs, 82 mappings, 29 identical
+images), all 588 artifact-file digests and normal
+Chrome draft/production flows pass. Live navigation, search, themes, templates,
+books and icons have no captured console/page errors. A rapid headless draft
+crawl stopped on provider HTTP 403; this is not a full remote-route browser pass.
+See [deployment and recovery evidence](specs/zellij-netlify-production-2026-11-19.md).
+
+**2026-11-19: local documentation review before production deployment**
+
+The user wants to inspect the local documentation before updating
+`zellij.shebka.net`. The current docs wrapper is built and previewed at
+`http://localhost:4320`; deployment remains pending that review. Do not treat
+starting this local preview as authorization to publish the reviewed site yet.
+The source is `examples/zellij-docs/content`; restart a built preview with
+`npm run start -w @shebka/zellij-docs -- --hostname 127.0.0.1`.
+
+The homepage now reports the actual 25 section types, 15 themes and nine
+templates instead of stale counts and an unsupported blanket Lighthouse score.
+Its FAQ describes the CLI/template/import workflow. The build reference includes
+the forthcoming `file` target in its option table, corrects the theme count and
+clarifies opt-in Mermaid mindmaps. Released rc.11 and post-rc.11 features remain
+explicitly distinguished. Strict/deep validation passes for 59 content routes
+and 33 examples; the production build and crawl of 61 URLs/112 anchor links pass.
+Chrome/WebKit checks pass for six independent review routes, search and normal
+client navigation. Initial scripted probes exposed a search-readiness race and
+WebKit prefetch cancellation diagnostics during successive forced navigations;
+the final probes wait for search readiness and isolate full-page visits. No
+engine change was made for those test diagnostics.
+This preview does not imply a complete publication audit or a new CLI release.
+
+**2026-11-19: AI authoring guide for the private handoff**
+
+The user requested a root `zellij-context.md` so a client's AI editor can
+understand and update the delivered documentation. The private package now
+includes that guide and a README prompt telling the AI to read it explicitly.
+It explains the Markdown/presentation source split, metadata and stable anchors,
+route/asset conventions, chapter navigation, rich composition recipes, bundled
+schemas, theme tokens, exact generation commands and verification boundaries.
+It also explains that the pinned handoff engine/helper must stay together and
+that generated output and historical evidence are not editable sources.
+
+The examples were checked against the current schemas and local source paths;
+the bundled native strict check passes. This is a private handoff documentation
+addition, not a new CLI-generated context feature. Private text and artifacts
+remain outside this repository. Future handoff automation can generalize the
+pattern without copying client content.
+
+**2026-11-19: offline headings duplicated on scroll — fixed locally**
+
+Fixing commit **`8021a66`** preserves absent React keys when decoding the rich
+offline element tree. Passing `key: null` had converted an absent key into the
+literal string `"null"`, causing sibling collisions and duplicated content when
+reveal animations updated their state. The source and initial HTML contained
+one heading; the live page could show three without raising a browser error.
+The initial file-export checks below did not exercise this failure sufficiently.
+
+A failing-before/passing-after regression covers absent versus literal keys.
+The file acceptance harness now scrolls section headers into view and compares
+their text against the generated HTML before and after reveal transitions.
+Validation: 54 scoped tests, typecheck/package build, 16 showcase routes in
+Chromium/WebKit and private homepage interaction checks in both browsers on
+desktop/mobile. The private engine and site were rebuilt; source Markdown and
+native binaries remain unchanged. This remains local work, not a public release.
+See the [dated follow-up](specs/zellij-rich-file-export-2026-11-19.md#follow-up-duplicated-headings-during-scroll).
+
+**2026-11-19: rich offline renderer — local implementation**
+
+The user clarified that a double-click handoff must retain the rich website,
+not the native manual presentation. `zel build --target file` now exports the
+shared rich components with a classic-script hydration runtime, local route
+links, search and diagrams. See [implementation and evidence](specs/zellij-rich-file-export-2026-11-19.md).
+Implementation **`053fbfc`** lives in `engine/packages/zellij/src/offline`; the container invokes
+`zellij export-offline` before staged publication. Old images fail a capability
+guard. Static HTTP output and the native portable manual remain separate targets.
+
+The private handoff now has one editable Markdown collection inside its Next
+project, one rich `site` folder, generation scripts and four native binaries.
+No private content or artifacts enter this repository. Its local pinned engine
+makes rich file builds usable with the already verified rc.11 native binaries;
+this is not a public release or a claim about stock rc.11. Windows/ARM execution
+was not tested. The linked-heading defect below is fixed in current source;
+its original report and workaround are retained as dated history. Fixing commit: `053fbfc`.
+
+Validation: 53 scoped engine tests, typecheck/package build, 153 Rust tests
+(five existing ignored), docs strict/deep check, and a new 16-route public
+file-browser acceptance in Chromium/WebKit. Private acceptance covers 200 routes,
+64 diagrams, 60 theme/mode states across both browsers, menu/mobile interactions
+and homepage pixel parity against HTTP. A real old-image failure preserves output.
+Public release, installation-channel updates and live-provider checks remain
+outside this local handoff change.
+
+**2026-11-19: theme-responsive consumer presentation — authoring clarification**
+
+A private consumer now omits the fixed `overrides.accent` so runtime theme
+selection controls primary buttons and gradients. Its composition uses
+`gradient.colors: [accent, fg]` and `background: glow`; both are existing engine
+capabilities. Literal hex stops and explicit brand overrides intentionally stay
+fixed. The public theme guide now explains this distinction with a small recipe.
+The consumer's footer no longer displays its assembly date, and all 18 drawer
+destinations use existing semantic vector icons on desktop/mobile. No client
+content or artifact is stored here; native CLI and bundled engine are unchanged.
+
+The strict two-edition rebuild passes; all 200 rich footers are checked. Chrome
+and WebKit each pass 15 themes × 2 modes for heading/glow/button colours, plus
+icon/navigation/mobile checks. Original content, binaries, engine and helpers
+remain byte-identical. A scripted WebKit resize followed immediately by forced
+navigation exposed cancelled-prefetch diagnostics; a settled probe and independent
+mobile page pass. No engine change was made for that test-timing diagnostic.
+These are local presentation/docs updates, not a public release or deployment.
+
+**2026-11-18: full-width desktop panels and theme previews — local fix**
+
+Implementation `0a71408` makes flat menus and More overflow span the header,
+with responsive grids, a downward reveal, reduced-motion support and scrolling
+within the actual space below the header. Nested groups retain headed columns.
+Theme chips now use original-palette preview tokens, independently of site
+accent overrides. WebKit pointer activation explicitly focuses the mobile
+trigger so closing restores it reliably; its obsolete browser skip is removed.
+The menu/theme guides describe the next engine update rather than claiming that
+released rc.11 already includes these changes.
+
+Validation: 75 targeted engine tests, typecheck/package build, production
+showcase build, docs checks (59 routes/33 examples), and 127 browser cases with
+89 device-specific skips, no failures and no retries on the final source.
+The initial entrance overlap, missing local WebKit revision and subsequent
+focus failure are retained in [the implementation record](specs/zellij-navigation-panels-2026-11-18.md)
+and [evidence](specs/evidence/zellij-navigation-panels-2026-11-18.json).
+Source is committed locally on `codex/full-width-navigation-theme-swatches`;
+no public push, release or production deployment was performed. The native CLI
+remains rc.11. Private consumer data remains outside this repository, with a
+bundled patched Linux amd64 engine for reproducible local builds. Consumer
+acceptance verifies four full-width grouped menus, 15 light/dark preview colours,
+retained brand overrides, mobile back/close/focus and no captured page errors in
+Chrome and WebKit; both editions rebuild with strict checks. The separate
+linked-heading defect below remains open.
+
+**2026-11-18: private documentation handoff acceptance — pending core fix**
+
+A local real-project handoff uses released rc.11 native Markdown plus a private
+adapter to its inert `.zeldoc.json` format for a richer website. Client content,
+artifacts and evidence remain outside this repository and must not be published.
+The adapter is not a new supported CLI command. The portable guide renderer
+expects the document body to supply its own H1; `GuidePageView` only injects
+`page.title` for ordinary MDX guides.
+
+Browser acceptance found a general rc.11 defect: `mdx/components.tsx` wraps H2–H4
+children in a self-link even if they already contain a link, producing nested
+anchors and React hydration error 418. Removing the heading ID is insufficient
+because `rehype-slug` recreates it. The private adapter keeps heading text/IDs
+and presents destination links in a following paragraph. **The core defect is
+still open**: fix the heading component and add linked-heading browser coverage
+before the next release. Reproduce with `## [Reference](/reference)`; no client
+material is needed. No core implementation or release was changed for that initial import.
 
 **2026-11-18: rc.11 distribution and scoped rc.10 retirement complete**
 

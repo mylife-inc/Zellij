@@ -13,6 +13,11 @@ The theme picker in the bar above changes it live. That is the fastest way to
 understand what a theme actually does here — every page on this site restyles,
 including this one.
 
+The next engine update after rc.11 fixes the picker's colour dots when a site
+sets `overrides.accent`. Each dot shows its theme's original light/dark palette;
+choosing a theme still retains the site's configured brand overrides. This fixes
+rc.11's behaviour where the brand accent could make every dot the same colour.
+
 <div id="the-fourteen" className="zellij-legacy-anchor" />
 
 ## The fifteen
@@ -148,6 +153,27 @@ overrides:
 Values are validated before they reach the stylesheet. They come from a config
 file rather than a request, but they are interpolated into CSS, so they are
 checked rather than trusted.
+
+### Keep colours responsive to theme selection
+
+An `overrides.accent` value deliberately keeps the same brand colour across
+all selected themes. Leave `accent` and `accentForeground` unset when primary
+buttons should use each theme's palette. For a heading gradient that changes
+with the theme, use token names such as `accent` and `fg`; literal hex colours
+remain fixed. The `glow` background creates a soft radial spot from the active
+accent and follows light/dark mode too:
+
+```yaml title="sections/home/hero.yaml"
+type: hero
+headline: Explore the documentation
+titleGradient: [accent, fg]
+background: glow
+cta:
+  - { label: Get started, href: /guide, style: primary }
+```
+
+The same `background: glow` works on a `compose` section, where a heading can
+use `gradient: { colors: [accent, fg] }`.
 
 ## The runtime picker
 

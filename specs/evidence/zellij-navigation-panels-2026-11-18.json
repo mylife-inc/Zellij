@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-18",
+  "scope": "Full-width desktop panels, independent theme swatches, WebKit mobile trigger focus",
+  "source_branch": "codex/full-width-navigation-theme-swatches",
+  "dependencies": "Existing lockfile restored with npm ci --ignore-scripts; Next 16.4.6; no lockfile changes",
+  "unit": {
+    "command": "npm test --workspace @shebka/zellij -- themes.test.ts chrome/nav-bar.test.tsx chrome/nav-overflow.test.ts",
+    "files": 3,
+    "passed": 75
+  },
+  "typecheck": "passed",
+  "engine_build": "passed",
+  "showcase_production_build": "passed",
+  "documentation_check": {
+    "status": "passed",
+    "routes": 59,
+    "validated_examples": 33
+  },
+  "browser": {
+    "specs": [
+      "nav.spec.ts",
+      "theme.spec.ts",
+      "header-layout.spec.ts",
+      "mobile-navigation.spec.ts"
+    ],
+    "workers": 2,
+    "retries": 0,
+    "stats": {
+      "startTime": "2026-11-19T06:51:05.569Z",
+      "duration": 213777.43,
+      "expected": 127,
+      "skipped": 89,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "projects": {
+      "desktop": {
+        "passed": 57,
+        "skipped": 7
+      },
+      "desktop-safari": {
+        "passed": 24
+      },
+      "mobile": {
+        "passed": 24,
+        "skipped": 40
+      },
+      "mobile-safari": {
+        "passed": 22,
+        "skipped": 42
+      }
+    },
+    "notes": [
+      "Chrome channel used for Chromium projects; matching Playwright WebKit installed.",
+      "Device-specific skips are retained; the obsolete WebKit pointer-focus skip was removed."
+    ]
+  },
+  "diagnostics": [
+    {
+      "run": "initial",
+      "passed": 79,
+      "skipped": 72,
+      "failed": 62,
+      "causes": "61 missing-WebKit launch errors; 1 panel entrance overlap, corrected."
+    },
+    {
+      "run": "before-focus-correction",
+      "passed": 125,
+      "skipped": 90,
+      "failed": 1,
+      "cause": "WebKit pointer activation did not focus hamburger; corrected before final run."
+    }
+  ],
+  "publication": "No public release, push or deployment in this task."
+}

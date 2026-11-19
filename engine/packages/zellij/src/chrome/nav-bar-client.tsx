@@ -597,7 +597,12 @@ export function NavBarClient({ model }: { model: NavModel }) {
             className="zellij-hamburger"
             aria-label="Open navigation"
             aria-expanded={drawerOpen}
-            onClick={() => setDrawerOpen(true)}
+            onClick={(event) => {
+              // WebKit does not focus buttons on pointer activation. Give the
+              // drawer trap a stable trigger to restore when the panel closes.
+              event.currentTarget.focus({ preventScroll: true });
+              setDrawerOpen(true);
+            }}
           >
             <svg
               width="22"
@@ -665,26 +670,24 @@ function NavItem({
 
   useLayoutEffect(() => {
     const panel = panelRef.current;
-    if (!open || itemKey !== 'more' || item.mega || !panel) return;
-    const position = () => {
-      panel.style.right = '0px';
-      const bounds = panel.getBoundingClientRect();
-      const inset = 16;
-      const offset = Math.min(0, bounds.left - inset)
-        + Math.max(0, bounds.right - document.documentElement.clientWidth + inset);
-      panel.style.right = `${offset}px`;
+    const header = panel?.closest('header');
+    if (!open || !panel || !header) return;
+    // Bound every panel to the actual space below the header, including a
+    // wrapped/dismissed announcement and a short or resized viewport.
+    const size = () => {
+      panel.style.maxHeight = `${Math.max(0, window.innerHeight - header.getBoundingClientRect().bottom - 16)}px`;
     };
-    position();
-    const observer = new ResizeObserver(position);
-    observer.observe(panel);
-    const list = panel.parentElement?.parentElement;
-    if (list) observer.observe(list);
-    window.addEventListener('resize', position);
+    size();
+    const observer = new ResizeObserver(size);
+    observer.observe(header);
+    window.addEventListener('resize', size);
+    window.addEventListener('scroll', size, { passive: true });
     return () => {
       observer.disconnect();
-      window.removeEventListener('resize', position);
+      window.removeEventListener('resize', size);
+      window.removeEventListener('scroll', size);
     };
-  }, [open, itemKey, item.mega]);
+  }, [open]);
 
   useEffect(() => {
     if (!open || !focusPanelOnOpen.current) return;

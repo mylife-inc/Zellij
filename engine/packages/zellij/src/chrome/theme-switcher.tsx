@@ -12,9 +12,8 @@ import type { ThemeOption } from './nav-model';
  * the page (see `emitThemeCss` under `nav.themeSwitcher`), so the whole site
  * repaints from CSS with no re-render and no request.
  *
- * Each card carries `data-zellij-theme` itself, which means it is painted by
- * the very rules it represents — the preview cannot drift from the real thing,
- * because it *is* the real thing.
+ * Each colour chip carries `data-zellij-theme` and uses the original palette
+ * preview tokens. Site brand overrides still apply to the selected theme.
  */
 export function ThemeSwitcher({
   themes,
@@ -105,10 +104,6 @@ export function ThemeSwitcher({
             <ul className="zellij-theme-grid">
               {themes.map((theme) => (
                 <li key={theme.name}>
-                  {/*
-                    The card declares the theme it previews, so every token it
-                    paints with — colour, type, radius — comes from that theme.
-                  */}
                   <button
                     type="button"
                     className="zellij-theme-card"
@@ -118,10 +113,8 @@ export function ThemeSwitcher({
                     onClick={() => choose(theme.name)}
                   >
                     {/*
-                      A chip, not a mock-up. It carries the theme it names, so
-                      it fills with that theme's accent and rings itself in that
-                      theme's background — enough to identify a theme at a
-                      glance, in a fraction of the space a preview would take.
+                      The original accent and background identify each theme,
+                      even when site branding overrides its active colours.
                     */}
                     <span
                       className="zellij-theme-chip"

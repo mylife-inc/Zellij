@@ -7,8 +7,8 @@
 # because a release is a decision, and every commit to main is not one.
 #
 # GITHUB_TOKEN covers this repository and GHCR. The optional shared release
-# repository needs RELEASES_GITHUB_TOKEN. Production docs additionally require
-# a stable version, DEPLOY_DOCS=true and both Netlify secrets.
+# repository needs RELEASES_GITHUB_TOKEN. Documentation publication is handled
+# independently from main by docs.yml; version tags only build the site.
 name: Release
 
 on:
@@ -251,22 +251,6 @@ jobs:
     needs: verify
     runs-on: ubuntu-latest
 
-    # Two facts, neither of them a secret.
-    #
-    # `HAS_NETLIFY` is the *answer* to whether the credentials exist, not the
-    # credentials — the comparison happens before the value is bound, so this
-    # job carries a boolean. Putting the token here instead would hand it to
-    # `npm ci` and every install script in the dependency tree, for the sake of
-    # an `if` condition. The token is bound in the one step that deploys.
-    #
-    # `DEPLOY_DOCS` is a repository variable, and the deploy is off until it is
-    # set to `true`. Having the credentials on hand is not the same as being
-    # ready to publish — a domain still has to be pointed, and the first release
-    # should not be the thing that discovers it has not been.
-    env:
-      HAS_NETLIFY: ${{ secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
-      DEPLOY_DOCS: ${{ vars.DEPLOY_DOCS }}
-
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -283,37 +267,8 @@ jobs:
           ZELLIJ_OUTPUT: export
         run: npm run build
 
-      # Skipped rather than failed when the secrets are absent: a release that
-      # produced binaries and images is still a release, and someone cloning
-      # this repository has no Netlify site to deploy to.
-      - name: Deploy to Netlify
-        if: needs.verify.outputs.stable == 'true' && env.DEPLOY_DOCS == 'true' && env.HAS_NETLIFY == 'true'
-        working-directory: examples/zellij-docs
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-          RELEASE: ${{ github.ref_name }}
-        run: |
-          npx --yes netlify-cli@latest deploy \
-            --prod --dir out \
-            --message "Release $RELEASE"
-
-      # The site is built either way, so a release that publishes binaries and
-      # images is still a release, and the build itself still proves the content
-      # exports cleanly.
-      - name: Say why the site was not deployed
-        if: needs.verify.outputs.stable != 'true' || env.DEPLOY_DOCS != 'true' || env.HAS_NETLIFY != 'true'
-        env:
-          STABLE: ${{ needs.verify.outputs.stable }}
-        run: |
-          echo "::notice::The site was built but not deployed."
-          if [ "$STABLE" != "true" ]; then
-            echo "Prereleases build documentation but never deploy production docs."
-          elif [ "$DEPLOY_DOCS" != "true" ]; then
-            echo "Set the repository variable DEPLOY_DOCS=true to publish it."
-          else
-            echo "Set NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID in the repository secrets."
-          fi
+      - name: Documentation publishes independently
+        run: echo "Production documentation is published from main by docs.yml, independently of CLI releases."
 
   # ------------------------------------------------------------------ publish
   publish:

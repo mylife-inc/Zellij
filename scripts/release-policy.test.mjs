@@ -228,7 +228,9 @@ test('workflow effects are gated by the checked release policy', () => {
   assert.equal(jobs.verify.outputs.stable, '${{ steps.policy.outputs.stable }}');
   assert.match(jobs.verify.steps.find(s => s.id === 'policy').run, /package-native.*--check-version[\s\S]*release-policy\.mjs outputs/);
   for (const job of [jobs.docs, jobs.publish, jobs.manifests]) assert.ok(job.needs.includes('verify'));
-  assert.equal(step(jobs.docs, 'Deploy to Netlify').if, "needs.verify.outputs.stable == 'true' && env.DEPLOY_DOCS == 'true' && env.HAS_NETLIFY == 'true'");
+  assert.equal(step(jobs.docs, 'Deploy to Netlify'), undefined);
+  assert.ok(step(jobs.docs, 'Documentation publishes independently'));
+  assert.doesNotMatch(JSON.stringify(jobs.docs), /NETLIFY_AUTH_TOKEN|NETLIFY_SITE_ID|DEPLOY_DOCS/);
   assert.equal(step(jobs.publish, 'Keep the installer current in the releases repository').if, "needs.verify.outputs.stable == 'true' && env.HAS_RELEASES_TOKEN == 'true'");
   for (const release of jobs.publish.steps.filter(s => s.uses?.startsWith('softprops/action-gh-release'))) {
     assert.equal(release.with.prerelease, '${{ needs.verify.outputs.prerelease }}');

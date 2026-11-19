@@ -32,6 +32,15 @@ function paletteVars(palette: Palette): string[] {
   ];
 }
 
+/** Swatches show the built-in palette even when site branding overrides it. */
+function previewVars(palette: Palette): string[] {
+  return [
+    `--zellij-preview-accent: ${palette.accent};`,
+    `--zellij-preview-bg: ${palette.bg};`,
+    `--zellij-preview-fg: ${palette.fg};`,
+  ];
+}
+
 function structuralVars(theme: ThemeTokens): string[] {
   return [
     `--zellij-font-heading: ${theme.fonts.heading};`,
@@ -152,8 +161,8 @@ function emitAllThemes(config: SiteConfig): string {
     // Structural tokens — fonts, geometry, motion — do not vary by colour mode,
     // so they are emitted once. Repeating them in each mode block roughly
     // trebled the stylesheet, and it is inlined in <head> on every page.
-    const base = [...structuralVars(theme), ...paletteVars(theme.light), ...overrides].join('');
-    const dark = [...paletteVars(theme.dark), ...overrides].join('');
+    const base = [...structuralVars(theme), ...paletteVars(theme.light), ...overrides, ...previewVars(theme.light)].join('');
+    const dark = [...paletteVars(theme.dark), ...overrides, ...previewVars(theme.dark)].join('');
 
     blocks.push(`:root${self},${self}{${base}}`);
     blocks.push(

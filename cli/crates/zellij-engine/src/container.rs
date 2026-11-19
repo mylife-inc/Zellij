@@ -40,6 +40,7 @@ pub struct ContainerEngine {
 
 enum ExportLayout {
     Flat,
+    File,
     Deployment,
     Preview,
 }
@@ -521,12 +522,17 @@ impl ContainerEngine {
         mode: BuildMode,
         options: &crate::BuildOptions,
     ) -> Result<()> {
-        if mode != BuildMode::Static {
+        if !matches!(mode, BuildMode::Static | BuildMode::File) {
             return Err(Error::NoEngine {
-                reason: "only --target static is implemented so far".into(),
+                reason: "this engine method supports --target static or --target file".into(),
             });
         }
-        self.prepare_export(content, out, ExportLayout::Flat, options)?
+        let layout = if mode == BuildMode::File {
+            ExportLayout::File
+        } else {
+            ExportLayout::Flat
+        };
+        self.prepare_export(content, out, layout, options)?
             .publish()
     }
 }
@@ -627,7 +633,7 @@ impl ContainerEngine {
             ExportLayout::Preview => {
                 r#"node -e 'const fs = require("node:fs"); const p = require("./node_modules/@shebka/zellij/deployment-config.cjs").resolveContentLocation().basePath || ""; fs.cpSync("/app/out", "/out", {recursive:true}); fs.writeFileSync("/out/.zellij-deployment.json", JSON.stringify(p));'"#
             }
-            ExportLayout::Flat => "cp -a out/. /out/",
+            ExportLayout::Flat | ExportLayout::File => "cp -a out/. /out/",
         };
         let feature_step = options
             .features
@@ -639,12 +645,20 @@ impl ContainerEngine {
             format!("node {ENGINE_CLI} check {WRAPPER_CONTENT} || exit {CONTENT_INVALID}; ")
         };
         let guard = options.guard();
+        let (file_guard, file_export) = if matches!(layout, ExportLayout::File) {
+            (
+                r#"node -e 'if(require("/opt/zellij/package.json").zellij?.fileExportVersion!==1){console.error("This engine does not support rich file exports; choose a current ZELLIJ_IMAGE.");process.exit(2)}' || exit 95; "#,
+                "node node_modules/@shebka/zellij/bin/zellij.mjs export-offline && ",
+            )
+        } else {
+            ("", "")
+        };
         let script = guarded(
             WRAPPER_CONTENT,
             &format!(
-                "{guard}{check}{feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
+                "{file_guard}{guard}{check}{feature_step}npm install --install-links --no-audit --no-fund --loglevel=error && \
                  npm run build && \
-                 {copy}{handback}"
+                 {file_export}{copy}{handback}"
             ),
         );
 

@@ -130,11 +130,11 @@ test.describe('measured overflow', () => {
     await expect(nav.locator('[data-nav-index="more"] > button')).toBeFocused();
   });
 
-  test('keeps a compact More panel inside either viewport edge', async ({ page }) => {
+  test('keeps a flat More panel full width below the header', async ({ page }) => {
     await page.goto('/');
     await page.addStyleTag({ content: '.zellij-nav-link, .zellij-nav-probe-label { font-size: 1.25rem; }' });
     // Reserve enough centered space for the three non-leaf items, leaving the
-    // final leaf links in a compact More panel. A hard-coded viewport instead
+    // final leaf links in a flat More panel. A hard-coded viewport instead
     // selects a mega panel when branding or utility widths change.
     const width = await page.locator('.zellij-nav-inner').evaluate(bar => {
       const probes = [...bar.querySelectorAll('.zellij-nav-measure > li')].map(item => item.getBoundingClientRect().width);
@@ -148,21 +148,15 @@ test.describe('measured overflow', () => {
     await page.setViewportSize({ width, height: 900 });
     const more = page.locator('[data-nav-index="more"]');
     await expect(more).toHaveAttribute('data-mega', 'false');
-    // Exercise both anchor extremes independently of the fixture's short labels.
-    for (const edge of ['left', 'right']) {
-      await more.evaluate((item, edge) => {
-        item.setAttribute('style', `position: absolute; top: 0; ${edge}: 1rem;`);
-      }, edge);
-      await more.locator('button').focus();
-      await page.keyboard.press('ArrowDown');
-      const panel = more.locator('.zellij-dropdown');
-      await expect(panel).toBeVisible();
-      await expect.poll(() => panel.evaluate((element) => {
-        const bounds = element.getBoundingClientRect();
-        return bounds.left >= 15 && bounds.right <= document.documentElement.clientWidth - 15;
-      })).toBe(true);
-      await page.keyboard.press('Escape');
-    }
+    await more.locator('button').focus();
+    await page.keyboard.press('ArrowDown');
+    const panel = more.locator('.zellij-dropdown');
+    await expect(panel).toBeVisible();
+    await expect.poll(() => panel.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return Math.abs(bounds.left) < 1 && Math.abs(bounds.right - document.documentElement.clientWidth) < 1;
+    })).toBe(true);
+    await page.keyboard.press('Escape');
   });
 
   test('closes a mobile drawer and releases scroll lock when resized to desktop', async ({ page }) => {

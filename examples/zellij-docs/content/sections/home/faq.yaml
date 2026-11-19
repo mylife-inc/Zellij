@@ -4,18 +4,21 @@ heading: Reasonable questions
 items:
   - question: Is this a static site generator?
     answer: >-
-      No — it is a package your Next.js app imports. There is no scaffolding
-      step and nothing is generated into your repo, so upgrading is a version
-      bump rather than a merge.
+      Yes. The `zel` CLI builds portable Markdown documentation or rich
+      websites from structured content. The shared Next.js engine can also
+      be used in an editable wrapper application. Choose the output that
+      matches how you want to distribute the site.
   - question: Do I have to write React?
     answer: >-
-      No. A wrapper app is three files and under thirty lines, and none of it
-      changes as your site grows. Everything after that is YAML and Markdown.
+      No. Start from a website or book template with `zel create`, then edit
+      YAML and Markdown. The CLI handles the build; an editable Next.js
+      wrapper is available when you need application-level customization.
   - question: What if I already have MkDocs content?
     answer: >-
-      Markdown is Markdown. Point a guide folder at it, add a `_sidebar.yaml`,
-      and it renders. The PayOS site in this repo was converted from MkDocs
-      sources with a script that only translates admonition syntax.
+      Use `zel convert` to import the documentation and navigation. MkDocs,
+      Docusaurus, VitePress, Jekyll, Hugo and Sphinx have dedicated importers.
+      Review the conversion report for extensions or dynamic configuration
+      that need manual changes.
   - question: Can I add my own section type?
     answer: >-
       Yes — `registerSection` takes a schema and a component. Built-ins use the

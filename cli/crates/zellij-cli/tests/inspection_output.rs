@@ -176,7 +176,7 @@ fn formats_and_targets_have_stable_identifiers_and_descriptions() {
             .iter()
             .map(|t| t["id"].as_str().unwrap())
             .collect::<Vec<_>>(),
-        ["static", "image", "portable"]
+        ["static", "image", "portable", "file"]
     );
     let human = String::from_utf8(success(run(temp.path(), &["list", "targets"]))).unwrap();
     for entry in entries {
