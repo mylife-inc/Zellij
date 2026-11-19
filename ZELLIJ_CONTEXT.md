@@ -3,6 +3,23 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: AI authoring guide for the private handoff**
+
+The user requested a root `zellij-context.md` so a client's AI editor can
+understand and update the delivered documentation. The private package now
+includes that guide and a README prompt telling the AI to read it explicitly.
+It explains the Markdown/presentation source split, metadata and stable anchors,
+route/asset conventions, chapter navigation, rich composition recipes, bundled
+schemas, theme tokens, exact generation commands and verification boundaries.
+It also explains that the pinned handoff engine/helper must stay together and
+that generated output and historical evidence are not editable sources.
+
+The examples were checked against the current schemas and local source paths;
+the bundled native strict check passes. This is a private handoff documentation
+addition, not a new CLI-generated context feature. Private text and artifacts
+remain outside this repository. Future handoff automation can generalize the
+pattern without copying client content.
+
 **2026-11-19: offline headings duplicated on scroll — fixed locally**
 
 Fixing commit **`8021a66`** preserves absent React keys when decoding the rich
