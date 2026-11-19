@@ -70,7 +70,7 @@ try {
   }
   if (binary) {
     const output = path.join(root, 'site');
-    execFileSync(binary, ['build', content, '--out', output], { cwd: root, stdio: 'inherit' });
+    execFileSync(binary, ['build', content, '--target', 'static', '--out', output], { cwd: root, stdio: 'inherit' });
     const html = await readFile(path.join(output, 'manual/intro.html'), 'utf8');
     assert(html.includes('id="start-here"'));
     assert(html.includes('/manual/nested/detail?mode=full#details'));

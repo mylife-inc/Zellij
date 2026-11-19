@@ -19,8 +19,9 @@ zel doctor --cwd ../my-product --site-root docs/manual --json
 
 The report includes the binary version and platform, selected site root,
 configuration file, renderer, content and default output paths, layout, and
-preview port. Hosted sites also report the selected container client, connection
-and local engine image status.
+preview port. In the next update after rc.11, rich sites report their standalone
+renderer version, platform, cache path and whether an initial download is needed.
+Doctor verifies an existing cache but never downloads or executes it.
 
 ## Site selection
 
@@ -32,8 +33,9 @@ configuration file and uses its parent as the site root. These share the
 content, legacy flat portable configurations, and raw Markdown folders.
 
 A **portable web-only** site does not need a container runtime: doctor skips every runtime
-probe, even when container endpoint variables are set. For a **hosted** site it
-checks the runtime as described below. Without a configuration or explicit path,
+probe, even when container endpoint variables are set. For a **hosted** site,
+current source diagnoses the default rich file build, which also needs no
+container. Released rc.11 instead probes the container. Without a configuration or explicit path,
 legacy hosted content can still be discovered. If no site is found, doctor
 retains its runtime-only diagnostic behavior; a product README alone does not
 select a portable site. Pass `.` explicitly to diagnose a raw Markdown folder.
@@ -50,6 +52,7 @@ not write configuration, generate output, pull images or start services.
 | Operation | Container runtime required? |
 | --- | --- |
 | Portable web-only `build` / `view`, `check`, `pdf --check` and static-file `serve` | No |
+| Rich `build` / `build --target file` (next update after rc.11) | No; downloads a private renderer once, then uses the verified cache |
 | Portable book PDF generation (rc.6+) | Yes; `--pdf` or saved `pdf.enabled: true` opts in |
 | Implemented scaffolding, `explain`, `list`, `context`, `detect`, `convert` | No |
 | `publish --dry-run` | No; resolves a saved plan without validation or credential checks |
@@ -62,8 +65,9 @@ not write configuration, generate output, pull images or start services.
 
 A container command that cannot find a usable runtime stops with **exit code
 4**, before starting its container operation. Portable commands remain usable.
-`zel` does not install software, start a daemon, change renderer, or send the
-work to a remote service as a fallback.
+`zel` does not install a container runtime, start a daemon, change renderer, or
+send content to a remote build service as a fallback. The rich `file` target
+downloads its private renderer package; rendering itself happens locally.
 
 <div id="the-socket-line" className="zellij-legacy-anchor" />
 
@@ -127,8 +131,10 @@ registry credential or mounted directory will work.
 
 ## The engine image
 
-For hosted sites and runtime-only diagnostics, the report shows the configured
-image and whether inspection found it locally.
+For runtime-only diagnostics outside a site, the report shows the configured
+image and whether inspection found it locally. Rich-site diagnostics describe
+the standalone build cache instead; use `zel version` to inspect the configured
+image without a runtime.
 A failed inspection is reported as not pulled; a timeout or an unavailable
 inspection is reported as unknown. This check never pulls an image.
 

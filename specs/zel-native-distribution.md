@@ -1,5 +1,18 @@
 # Native package and installer contract
 
+**rc.12 preparation (2026-11-19):** The proposed rich `file` builder uses separate
+versioned renderer packages. First use downloads a SHA-256-checked archive from
+`mylife-inc/releases` at `zellij-v<CLI version>`; later builds reuse a validated
+cache, including offline. These packages include a private Node 24 runtime and
+the compiled shared renderer. Users install only `zel`. No Node/npm/Python,
+container, archive utility or Next compilation is required on their machine.
+The six native jobs now package and exercise both artifacts with an empty PATH;
+public acceptance repeats the builds from both release repositories. Publication
+and hosted verification remain pending. See
+[the standalone builder record](zellij-standalone-rich-build-2026-11-19.md).
+
+The historical rc.1 status below is retained as the original distribution baseline.
+
 Status: published in candidate
 [0.2.0-rc.1](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.1).
 [Public-artifact acceptance passed](https://github.com/mylife-inc/Zellij/actions/runs/41548199714)

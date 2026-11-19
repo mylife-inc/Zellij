@@ -1,12 +1,19 @@
 ---
 title: zel build
-description: Build portable Markdown documentation, a hosted Zellij website, or a container image.
+description: Build a rich double-click website, portable Markdown documentation, a hosted export, or a container image.
 ---
 
 <Callout type="tip" title="Available in candidate 0.2.0-rc.11">
 The portable target runs entirely inside `zel`. It needs no Docker, Node, or
 network connection. The existing `static` and `image` targets use the container
 engine. Use `zel list targets` to inspect the available outputs and prerequisites.
+</Callout>
+
+<Callout type="tip" title="Next update after rc.11: rich builds without a container">
+For a rich site (`renderer: hosted`), `zel build` now selects the `file` target.
+It downloads a matching renderer once and caches it. No separately installed
+Docker, Node.js, npm or Python is needed. These changes are in current source;
+released rc.11 still uses the earlier build path.
 </Callout>
 
 ```bash title="terminal"
@@ -28,7 +35,7 @@ zel build ./content --target image --tag acme-docs:v2
 | Target | Input | Output and requirements |
 | --- | --- | --- |
 | `portable` | A plain Markdown folder | HTML with relative links and local support files. Double-click `index.html`; no server required. |
-| `file` (next update after rc.11) | Structured Zellij YAML/MDX content | The rich website with local navigation, search, menus, themes and diagrams. Double-click `index.html`; a container runtime is needed only to build. |
+| `file` (next update after rc.11) | Structured Zellij YAML/MDX content | The rich website with local navigation, search, menus, themes and diagrams. Double-click `index.html`. Downloads a verified renderer once; no separately installed build tools. |
 | `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
 | `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
@@ -38,7 +45,7 @@ renderer and reads `content/`; output defaults to its `site/` or `build.out`.
 An explicit target must match a versioned site's renderer (`image` uses hosted).
 
 For explicit legacy inputs, a flat `zel.yaml` selects portable Markdown;
-otherwise recognized hosted markers select `static`, and plain Markdown selects
+otherwise recognized hosted markers select `file`, and plain Markdown selects
 `portable`. An explicit target can override raw-folder inference. Portable
 legacy input is read directly and outputs to a sibling `<folder>-site` by default.
 
@@ -282,21 +289,61 @@ or copy the **whole output folder**, then double-click its `index.html`. No loca
 server, browser extension or relaxed browser security setting is required.
 The same folder can also be served over HTTP.
 
-Building requires a compatible engine and Docker/Podman, as with hosted `static`
-builds. Older engine images fail with a capability message before rendering;
-released rc.11 does not include the `file` target. A failed build preserves the
-previous output. The native `portable` renderer remains the lightweight manual
-option and does not reproduce rich YAML sections.
+The first build downloads the renderer matching the CLI version and operating
+system from the shared `mylife-inc/releases` GitHub release. Its package includes a private Node runtime,
+the prepared rendering engine, styles, fonts and browser code. It does not
+install Node system-wide, run npm, invoke a container, or compile a Next.js app.
+The native CLI download stays small; the renderer is stored separately and
+shared by all sites built with that CLI version. Build only trusted MDX: authored
+expressions execute locally with your user permissions.
+
+Later builds use the cache, including when disconnected. To require a cached
+engine explicitly:
+
+```bash title="terminal"
+zel build docs/zellij --offline
+```
+
+`--offline` fails before downloading when the matching engine is absent. It
+applies to rich `file` builds. Archived renderer downloads are SHA-256 verified;
+cached files are checked before execution. Failed validation, downloads, rendering
+or cache-integrity checks preserve the previous output. `--features` selects
+maths/diagrams as before; both are available by default in the standalone engine.
+`--base-path`, `--site-url` and `--no-check` remain available without editing source.
+
+The cache is `~/Library/Caches/zellij/engines` on macOS,
+`$XDG_CACHE_HOME/zellij/engines` (or `~/.cache/zellij/engines`) on Linux, and
+`%LOCALAPPDATA%\zellij\engines` on Windows. `ZEL_ENGINE_CACHE` overrides it.
+For a disconnected handoff, include a previously populated cache for the
+recipient's platform and CLI version, set `ZEL_ENGINE_CACHE` to that directory,
+then run with `--offline`. `zel doctor` reports the cache location and readiness
+without downloading anything. A CLI upgrade uses its own versioned cache;
+an older cached engine is never silently substituted.
+
+Packages cover x64 and ARM64 macOS, Windows and GNU/Linux. The CLI's Linux
+build baseline is Ubuntu 22.04/glibc 2.35; Alpine/musl is not supported. The
+private Node runtime requires macOS 13.5 or newer. Native CI tests Ubuntu 22.04,
+macOS 15, Windows Server 2022 x64 and Windows 11 ARM64; it does not establish
+compatibility with every earlier operating-system release.
+Advanced mirrors can use `ZEL_ENGINE_BASE_URL` to select an HTTPS release-asset
+directory with matching archives and `.sha256` files; this explicitly trusts
+the mirror's executable packages. Loopback HTTP is allowed for local testing.
+
+Released rc.11 does not include this builder. The native `portable` renderer
+remains the lightweight manual option and does not reproduce rich YAML sections.
 
 Search, theme controls, menus, local diagrams and section interactions run from
 bundled classic scripts. Analytics and development polling are omitted. Remote
 videos, external links and other externally hosted resources still need their
 original services; exporting does not download them. Next server routes and
 arbitrary custom React application code are outside this content-engine target.
+Standard Zellij section styles are precompiled; adding arbitrary Tailwind utility
+classes to authored content does not compile additional CSS. Use supported
+section properties and theme tokens, or an editable wrapper for custom app CSS.
 
 For an editable Next wrapper, build with `ZELLIJ_OUTPUT=export`, then run
 `npx zellij export-offline` in that wrapper. This transforms its generated `out/`
-folder; it uses the same command as the Rust CLI's container build.
+folder; the standalone builder shares that export implementation.
 
 ## Hosted static website
 

@@ -491,7 +491,15 @@ fn hosted_folder_build_selects_features_before_install_and_preserves_previous_ex
     stage.publish().unwrap();
     for features in ["all", "none"] {
         let out = command(root)
-            .args(["build", "--features", features, "--out", "owned-output"])
+            .args([
+                "build",
+                "--target",
+                "static",
+                "--features",
+                features,
+                "--out",
+                "owned-output",
+            ])
             .output()
             .unwrap();
         assert_eq!(out.status.code(), Some(3), "{out:?}");

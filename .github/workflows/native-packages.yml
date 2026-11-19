@@ -15,7 +15,7 @@ jobs:
   package:
     name: Package and install (${{ matrix.target }})
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -58,9 +58,39 @@ jobs:
       - name: Windows upgrade lock recovery and preservation
         if: runner.os == 'Windows'
         run: cargo test --manifest-path cli/Cargo.toml --locked --release -p zellij-cli --bin zel maintenance::upgrade::tests
+      - run: npm ci
+      - name: Compile the shared rich renderer once for distribution
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          npm run build --workspace @shebka/zellij
+          node scripts/build-standalone-engine.mjs
+      - name: Package the private runtime and verify tool-free builds
+        env:
+          TARGET: ${{ matrix.target }}
+        shell: bash
+        run: |
+          case "$TARGET" in
+            x86_64-apple-darwin) platform=darwin-x64 ;;
+            aarch64-apple-darwin) platform=darwin-arm64 ;;
+            x86_64-unknown-linux-gnu) platform=linux-x64 ;;
+            aarch64-unknown-linux-gnu) platform=linux-arm64 ;;
+            x86_64-pc-windows-msvc) platform=win-x64 ;;
+            aarch64-pc-windows-msvc) platform=win-arm64 ;;
+          esac
+          node scripts/package-standalone-engine.mjs "$platform"
+          binary="cli/target/$TARGET/release/zel"
+          case "$TARGET" in *-windows-msvc) binary="$binary.exe" ;; esac
+          node scripts/check-standalone-engine.mjs "$binary"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: renderer-${{ matrix.target }}
+          path: dist/renderer-packages/*
+          if-no-files-found: error
+          retention-days: 14
       - uses: actions/upload-artifact@v7
         with:
           name: binary-${{ matrix.target }}
-          path: dist/*
+          path: dist/zel-v*
           if-no-files-found: error
           retention-days: 14

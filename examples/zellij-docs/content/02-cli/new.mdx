@@ -43,8 +43,10 @@ requires Node and npm.
 </CardGrid>
 
 Choose `portable` for ordinary Markdown documentation that also opens directly
-from disk. Choose `docs` for the hosted engine's MDX and page sections. Its build
-and development preview use a container. [Build targets](/cli/build) explain
+from disk. Choose `docs` for the rich engine's MDX and page sections. In the next
+update after rc.11 its default build downloads a renderer once and produces a
+rich double-click website without installed build tools. Development previews
+and explicit HTTP exports still use a container. [Build targets](/cli/build) explain
 the output differences; [deployment](/cli/deploy) lists supported providers and
 their account prerequisites.
 
@@ -214,12 +216,13 @@ A local SVG and a tiny sample MP4 are included under `content/assets/`, so the
 examples have no missing media or external media downloads. The video is only
 a short gray clip; replace the sample media and copy before publishing.
 `--guide` also adds the normal guide, its links and its menu item. This produces
-25 routes, or 26 with the guide.
+27 routes, or 28 with the guide.
 
 Creation is native and needs no Node, Docker or network. The generated site uses
-the hosted renderer: `zel check --strict --deep`, `zel dev` and `zel build` use
-their normal hosted runtime requirements. Use `new portable` for Markdown
-output that opens directly from disk.
+the rich renderer: `zel check --strict --deep` and `zel dev` use their normal
+hosted runtime requirements. Current-source `zel build` downloads and caches
+its own renderer; the result opens directly from disk. Released rc.11 still
+uses the container build path. `new portable` is the native Markdown alternative.
 
 `--full` conflicts with `--minimal`. Existing-directory and `--force` rules are
 the same as the ordinary starter; text and binary destinations are all checked

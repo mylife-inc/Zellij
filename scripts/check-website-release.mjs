@@ -41,7 +41,7 @@ try {
     assert(manifest, `Released catalog must include ${id}`);
     const site = path.join(root, id);
     run(['create', site, '-t', `${id}@${manifest.version}`, '--offline']);
-    run(['build', site]);
+    run(['build', site, '--target', 'static']);
     await serve(path.join(site, 'site'), url => checkWebsiteTemplate(browser, url, manifest, captures));
     records.push({ id, version: manifest.version, pages: ['', id === 'product-launch' ? 'design' : id === 'software-platform' ? 'workflow' : id === 'api-platform' ? 'models' : 'work', 'guide', 'guide/customize'] });
   }
@@ -63,7 +63,7 @@ try {
     ] }] },
     { name: 'Design', page: 'design' },
   ]));
-  run(['build', site]);
+  run(['build', site, '--target', 'static']);
   await serve(path.join(site, 'site'), async url => {
     for (const mode of ['light', 'dark']) {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: mode, reducedMotion: 'reduce' });

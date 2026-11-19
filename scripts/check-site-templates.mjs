@@ -87,7 +87,7 @@ for(const {manifest} of catalog.templates){
       retained(authored,parsed,`${manifest.id}/${file}`);
     }
     await run(process.execPath,[path.join(repo,'engine/packages/zellij/bin/zellij.mjs'),'check',path.join(site,'content'),'--strict','--deep']);
-    if(flags.includes('--build'))await run(zel,['build',site]);
+    if(flags.includes('--build'))await run(zel,['build',site,'--target','static']);
   }
 }
 if(flags.includes('--browser')){

@@ -3,6 +3,26 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: standalone rich build — implementation under verification**
+
+The user approved rich double-click generation without separately installed
+Docker, Node.js, npm or Python, while keeping the CLI small. Branch
+`codex/standalone-rich-build` prepares rc.12: hosted `zel build` defaults to the
+`file` target and downloads a version/platform-matched renderer into a private
+cache. It contains official Node 24 plus the precompiled shared engine, styles,
+fonts and classic browser runtime. No Next build or package installation runs
+on the user's machine. Cached builds accept `--offline`; corrupt downloads or
+cache files fail before execution, and failed builds preserve the previous site.
+Explicit `--target static`, development/check and image operations keep their
+container paths. Portable Markdown remains native Rust.
+
+The local CLI download/cache/offline/failure-preservation test and Chromium/WebKit
+file:// crawl pass on Mac Intel for 16 showcase routes. Expanded all-section,
+checksum and six-platform checks are still running/pending. rc.11 is still the
+public CLI; neither rc.12 nor renderer packages have been published yet. Do not
+claim this feature is available from existing installers until release acceptance
+passes. See [architecture, scope and evidence](specs/zellij-standalone-rich-build-2026-11-19.md).
+
 **2026-11-19: automatic production documentation deployment — completed**
 
 [PR #210](https://github.com/mylife-inc/Zellij/pull/210) merged as

@@ -10,8 +10,10 @@ subcommands of the same binary.
 It is a native executable with **no Node dependency**. The commands that
 describe the content model read a schema compiled into the binary. The commands
 that scaffold, check, build and preview portable Markdown run natively too.
-Hosted YAML/MDX builds run the engine in a container, so nothing on your machine
-needs npm, a Node version, or a lockfile for those container commands.
+In the next update after rc.11, rich YAML/MDX `zel build` downloads a verified
+renderer once, then generates a double-click website without separately installed
+Docker, Node.js, npm or Python. The renderer is cached outside the CLI. Hosted
+development and explicit `--target static`/image builds still use a container.
 `zel new app` can also create an editable local wrapper; running that wrapper
 requires Node and npm. Use `zel new portable` for a Markdown
 starter that opens directly from disk after building.
@@ -281,8 +283,11 @@ keep their distinct meanings; they are not interchangeable site selectors.
 Commands that only read the content model — `explain`, `list`, `context`,
 `detect`, `convert`, `new`, `fmt` — are pure Rust and need nothing installed.
 
-Hosted `check`, `watch`, `dev`, `view` and `build` commands run the Next.js
-engine in a container from a public image. Portable `build`, `check`, `watch`, `dev` and `view` run
+Hosted `check`, `watch`, `dev`, `view`, and explicit `build --target static` or
+`build --target image` commands run the Next.js engine in a container from a
+public image. Current-source rich `build` defaults to the downloaded `file`
+renderer and needs no container; released rc.11 retains the earlier build path.
+Portable `build`, `check`, `watch`, `dev` and `view` run
 natively and need no external tools. `serve` and `view` use a native local
 HTTP server; `view` can invoke the system browser launcher. Configured image
 publication uses the container runtime. Netlify deployment is native for portable
@@ -298,6 +303,8 @@ candidates. No software is installed and no renderer is changed automatically.
 zel doctor
 ```
 
-tells you whether a container runtime is present and which image it would use.
+reports the selected site's prerequisites. In current source, a rich site's
+default build reports renderer-cache readiness; outside a site it reports
+container-runtime availability.
 You never write a Dockerfile, and you never see one unless you ask for it with
 [`zel image dockerfile`](/cli/image#zel-image-dockerfile).
