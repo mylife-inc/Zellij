@@ -184,10 +184,25 @@ async function main(mode, input, output) {
   // Confirm the journal can be written before any remote mutation.
   await writeFile(output, JSON.stringify(report, null, 2) + '\n');
   try {
-    // Preparation only: the impossible gate keeps execution disabled until all
-    // exact rc.11 replacement run IDs and source commits have been recorded.
+    // Recheck every exact replacement run and tested source before deletion.
     for (const [repository, run, head] of [
-      ["mylife-inc/Zellij", 0, "REPLACEMENT_GATES_PENDING"]
+      ["mylife-inc/Zellij", 44415698968, "f913d167e428f73f82f992322735d39edc518fcd"],
+      ["mylife-inc/Zellij", 44426799314, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44423006473, "1f8232bcc1f029ec2aac7769c3ec2d0beb527c99"],
+      ["mylife-inc/homebrew-tap", 44426470234, "2973058fa8c54ca4ef89b241121dd3a6ea420ef2"],
+      ["mylife-inc/homebrew-tap", 44426755437, "2973058fa8c54ca4ef89b241121dd3a6ea420ef2"],
+      ["mylife-inc/scoop-bucket", 44426479590, "2d103294cb8e55348059a2a19aca08a44d0425b6"],
+      ["mylife-inc/scoop-bucket", 44427411622, "2d103294cb8e55348059a2a19aca08a44d0425b6"],
+      ["mylife-inc/Zellij", 44426799413, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44426799150, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44426799196, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44426799145, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44426799222, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44426799223, "d1daba6b0327a17b8fc0674769739c26eebb5325"],
+      ["mylife-inc/Zellij", 44415370224, "0d25d843112e2369dfddc161576ce685d0c26c85"],
+      ["mylife-inc/Zellij", 44431833376, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"],
+      ["mylife-inc/Zellij", 44431836843, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"],
+      ["mylife-inc/Zellij", 44432039714, "79de857b2f5f0d19cfec189907b6f2db02ff25e6"]
     ]) {
       const r = api(`repos/${repository}/actions/runs/${run}`);
       assert(r.status === 'completed' && r.conclusion === 'success' && r.head_sha === head, 'Replacement acceptance gate changed');
