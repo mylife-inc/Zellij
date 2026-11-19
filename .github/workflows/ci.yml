@@ -229,7 +229,12 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Theme presentation applies within its own scope
         run: node scripts/check-theme-scoping.mjs
-      - run: npm run build --workspace @shebka/zellij
+      - name: Build engine declarations within the macOS runner budget
+        # The 7 GB ARM macOS runner's default worker heap can exhaust while
+        # tsup emits the complete schema declarations. Keep the limit explicit.
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: npm run build --workspace @shebka/zellij
       - name: Native section authoring follows the engine schemas
         run: node scripts/check-section-authoring.mjs
 

@@ -52,6 +52,18 @@ pass (91 passed, 0 ignored); generated wrapper, theme and Mermaid checks pass.
 A new CI run is required on the correction before merging. The first automatic
 production deployment remains pending at this checkpoint.
 
+**2026-11-19: macOS declaration-build heap in hosted CI**
+
+The corrected documentation workflow `44603977683` passes on `be11908`, and the
+portable-theme drift is resolved in general CI. That run (`44603977358`) exposed
+`ERR_WORKER_OUT_OF_MEMORY` during tsup declaration emission in Portable docs
+(macos-latest). The public ARM macOS runner has 7 GB RAM; tsup's declaration
+worker used Node's implicit heap limit. The portable matrix's engine-build step
+now sets `NODE_OPTIONS=--max-old-space-size=4096`; no application runtime limit
+or generated declaration output is changed. A local worker probe confirms the
+setting is inherited, and the complete engine build and workflow lint pass.
+Hosted macOS confirmation remains required on the updated commit.
+
 **2026-11-19: public documentation deployed to the existing Netlify project**
 
 The user explicitly authorized publication after the local review below.
