@@ -10,7 +10,8 @@ The latter two start at template version 0.1.0 and require CLI/engine rc.8 or
 later. They set `book.edition` for coordinated
 web/print layouts and include citations, glossary and index examples. No artwork,
 font or runtime dependency is added.
-The product starters remain at template version 0.1.0. Book-classic 0.2.0
+Product-docs remains at template version 0.1.0. Product-studio 0.1.1 requires
+CLI rc.12 and documents the standalone rich builder. Book-classic 0.2.0
 requires CLI/engine 0.2.0-rc.6 and replaces the earlier reading-only starter in
 the bundled catalog; previously published 0.1.0 archives remain immutable.
 

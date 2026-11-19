@@ -114,8 +114,8 @@ far right. On phones, sections open their own menu view with Back and Close.
 The `kie` theme and `api-platform` starter are also included: `zel create my-api -t api-platform`.
 The catalog contains nine starters; existing template versions remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.12.md) cover the expanded section
-composer: video, layers, semantic content, product selectors, scroll stories
+The [candidate notes](specs/releases/v0.2.0-rc.12.md) describe standalone rich builds.
+The section composer supports video, layers, semantic content, product selectors, scroll stories
 and eight reusable built-in sections. Nine editable presets are available with
 `zel presets`; generate one with `zel ns -p product-overview --out content/sections/overview.yaml`. See the
 [release evidence](specs/evidence/zellij-rc11-release-2026-11-18.json) and
