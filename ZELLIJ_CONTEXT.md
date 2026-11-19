@@ -3,6 +3,50 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: full-width desktop panels and theme previews — local fix**
+
+Implementation `0a71408` makes flat menus and More overflow span the header,
+with responsive grids, a downward reveal, reduced-motion support and scrolling
+within the actual space below the header. Nested groups retain headed columns.
+Theme chips now use original-palette preview tokens, independently of site
+accent overrides. WebKit pointer activation explicitly focuses the mobile
+trigger so closing restores it reliably; its obsolete browser skip is removed.
+The menu/theme guides describe the next engine update rather than claiming that
+released rc.11 already includes these changes.
+
+Validation: 75 targeted engine tests, typecheck/package build, production
+showcase build, docs checks (59 routes/33 examples), and 127 browser cases with
+89 device-specific skips, no failures and no retries on the final source.
+The initial entrance overlap, missing local WebKit revision and subsequent
+focus failure are retained in [the implementation record](specs/zellij-navigation-panels-2026-11-18.md)
+and [evidence](specs/evidence/zellij-navigation-panels-2026-11-18.json).
+Source is committed locally on `codex/full-width-navigation-theme-swatches`;
+no public push, release or production deployment was performed. The native CLI
+remains rc.11. Private consumer data remains outside this repository, with a
+bundled patched Linux amd64 engine for reproducible local builds. Consumer
+acceptance verifies four full-width grouped menus, 15 light/dark preview colours,
+retained brand overrides, mobile back/close/focus and no captured page errors in
+Chrome and WebKit; both editions rebuild with strict checks. The separate
+linked-heading defect below remains open.
+
+**2026-11-18: private documentation handoff acceptance — pending core fix**
+
+A local real-project handoff uses released rc.11 native Markdown plus a private
+adapter to its inert `.zeldoc.json` format for a richer website. Client content,
+artifacts and evidence remain outside this repository and must not be published.
+The adapter is not a new supported CLI command. The portable guide renderer
+expects the document body to supply its own H1; `GuidePageView` only injects
+`page.title` for ordinary MDX guides.
+
+Browser acceptance found a general rc.11 defect: `mdx/components.tsx` wraps H2–H4
+children in a self-link even if they already contain a link, producing nested
+anchors and React hydration error 418. Removing the heading ID is insufficient
+because `rehype-slug` recreates it. The private adapter keeps heading text/IDs
+and presents destination links in a following paragraph. **The core defect is
+still open**: fix the heading component and add linked-heading browser coverage
+before the next release. Reproduce with `## [Reference](/reference)`; no client
+material is needed. No core implementation or release was changed for that initial import.
+
 **2026-11-18: rc.11 distribution and scoped rc.10 retirement complete**
 
 The expanded composer and nine editable presets are released as `v0.2.0-rc.11`
