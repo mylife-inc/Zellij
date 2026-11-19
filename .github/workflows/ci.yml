@@ -610,6 +610,24 @@ jobs:
           test -s "$work/site/_zellij/assets/replace-me.mp4"
 
 
+  rich-file-export:
+    name: Rich website without HTTP
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace @shebka/zellij
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run build --workspace @shebka/zellij-showcase
+        env:
+          ZELLIJ_OUTPUT: export
+      - run: node scripts/check-rich-file-export.mjs
+
   e2e:
     name: Showcase end to end
     runs-on: ubuntu-latest

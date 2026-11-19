@@ -112,7 +112,6 @@ impl Manifest {
         )?;
         ensure(
             self.outputs.contains(&Output::Web)
-                && (self.renderer == Renderer::Portable || !self.outputs.contains(&Output::File))
                 && self.outputs.len()
                     == self
                         .outputs

@@ -70,6 +70,13 @@ function parseFlags(args) {
 }
 
 switch (command) {
+  case 'export-offline': {
+    if (rest.length) throw new Error('export-offline runs on the current wrapper app and its out folder; no arguments are supported.');
+    process.env.NODE_ENV = 'production';
+    const { exportOffline } = await import('../dist/offline/export.js');
+    await exportOffline();
+    break;
+  }
   case 'sync-assets':
   case 'search-index':
   case 'prepare':

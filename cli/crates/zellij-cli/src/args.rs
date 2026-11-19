@@ -362,7 +362,7 @@ pub(crate) enum Command {
         #[command(flatten)]
         pdf: PdfSelection,
 
-        /// Output: use the configured renderer, or infer it for explicit legacy content; see `zel list targets`.
+        /// Output: portable (native manual), static (rich HTTP site), file (rich double-click site), or image.
         #[arg(long)]
         target: Option<String>,
 

@@ -28,6 +28,7 @@ zel build ./content --target image --tag acme-docs:v2
 | Target | Input | Output and requirements |
 | --- | --- | --- |
 | `portable` | A plain Markdown folder | HTML with relative links and local support files. Double-click `index.html`; no server required. |
+| `file` (next update after rc.11) | Structured Zellij YAML/MDX content | The rich website with local navigation, search, menus, themes and diagrams. Double-click `index.html`; a container runtime is needed only to build. |
 | `static` | Structured Zellij YAML/MDX content | A Next static export for an HTTP static host. Requires a container runtime to build. |
 | `image` | Structured Zellij YAML/MDX content | A container that serves the website on port 3000. Requires a container runtime. |
 
@@ -267,6 +268,35 @@ successful rebuild, in the browser.
 <div id="static--the-html-already-exists" className="zellij-legacy-anchor" />
 <div id="what-you-get" className="zellij-legacy-anchor" />
 <div id="what-it-actually-does" className="zellij-legacy-anchor" />
+
+## Rich offline website (next update after rc.11)
+
+```bash title="terminal"
+zel build docs/zellij --target file
+```
+
+This target reuses the rich renderer's sections, typography, navigation, theme
+picker and guide components. It writes each route to `route/index.html`, rewrites
+local links and assets, and bundles the browser runtime and search data. Extract
+or copy the **whole output folder**, then double-click its `index.html`. No local
+server, browser extension or relaxed browser security setting is required.
+The same folder can also be served over HTTP.
+
+Building requires a compatible engine and Docker/Podman, as with hosted `static`
+builds. Older engine images fail with a capability message before rendering;
+released rc.11 does not include the `file` target. A failed build preserves the
+previous output. The native `portable` renderer remains the lightweight manual
+option and does not reproduce rich YAML sections.
+
+Search, theme controls, menus, local diagrams and section interactions run from
+bundled classic scripts. Analytics and development polling are omitted. Remote
+videos, external links and other externally hosted resources still need their
+original services; exporting does not download them. Next server routes and
+arbitrary custom React application code are outside this content-engine target.
+
+For an editable Next wrapper, build with `ZELLIJ_OUTPUT=export`, then run
+`npx zellij export-offline` in that wrapper. This transforms its generated `out/`
+folder; it uses the same command as the Rust CLI's container build.
 
 ## Hosted static website
 

@@ -446,7 +446,7 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
             );
             Ok(())
         }
-        "static" => build(dir, target, out, hosted_options),
+        "static" | "file" => build(dir, target, out, hosted_options),
         "image" => {
             if out.is_some() {
                 return Err(zellij_core::Error::InvalidArgument(
@@ -471,6 +471,7 @@ fn build(
 
     let mode = match target {
         "static" => BuildMode::Static,
+        "file" => BuildMode::File,
         "image" => BuildMode::Image,
         other => {
             zellij_core::diagnosticln!("error: no target called \"{other}\"");
@@ -553,7 +554,8 @@ fn build(
             // ships, search engines get an empty index, and nobody finds out
             // for months.
             let sitemap = out.join("sitemap.xml");
-            if let Ok(body) = std::fs::read_to_string(&sitemap)
+            if mode != BuildMode::File
+                && let Ok(body) = std::fs::read_to_string(&sitemap)
                 && !body.contains("<loc>")
             {
                 zellij_core::statusln!();
@@ -567,7 +569,14 @@ fn build(
             }
 
             zellij_core::statusln!();
-            zellij_core::statusln!("  Serve it from any static host.");
+            if mode == BuildMode::File {
+                zellij_core::statusln!(
+                    "  Open {} directly in your browser; no server is required.",
+                    out.join("index.html")
+                );
+            } else {
+                zellij_core::statusln!("  Serve it from any static host.");
+            }
             Ok(())
         }
     }
@@ -955,6 +964,10 @@ fn list_targets(as_json: bool) -> zellij_core::Result<()> {
         (
             "portable",
             "A Markdown folder rendered natively. Open index.html without a server.",
+        ),
+        (
+            "file",
+            "The rich YAML/MDX website, including menus and themes. Open index.html without a server; building requires the container engine.",
         ),
     ];
     if as_json {

@@ -35,11 +35,13 @@ pub fn configured_image(image: Option<&str>) -> String {
         .unwrap_or_else(|| DEFAULT_IMAGE.to_owned())
 }
 
-/// What `zel build` produces. Two, not four — see the CLI spec §3.5.
+/// What a hosted `zel build` produces.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BuildMode {
     /// A folder of HTML, CSS and JS, for a CDN.
     Static,
+    /// The rich site with relative file links and bundled browser runtime.
+    File,
     /// A container running the site on a port.
     Image,
 }

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactNode } from 'react';
+import { Children, isValidElement, type AnchorHTMLAttributes, type ImgHTMLAttributes, type ReactNode } from 'react';
 
 import { Callout } from './callout';
 import { Mermaid } from './mermaid';
@@ -45,9 +45,21 @@ function MdxLink({ href, children, basePath, ...rest }: AnchorHTMLAttributes<HTM
  * Headings get a hover anchor so readers can link to any section. Ids come from
  * rehype-slug, matching the TOC.
  */
+function containsLink(children: ReactNode): boolean {
+  return Children.toArray(children).some(child => isValidElement<{ href?: unknown; children?: ReactNode }>(child) &&
+    (typeof child.props.href === 'string' || containsLink(child.props.children)));
+}
+
 function heading(Tag: 'h2' | 'h3' | 'h4') {
   return function Heading({ id, children }: { id?: string; children?: ReactNode }) {
     if (!id) return <Tag>{children}</Tag>;
+    if (containsLink(children)) return (
+      <Tag id={id} className="zellij-heading">
+        {children}<a className="zellij-heading-anchor" href={`#${encodeURIComponent(id)}`} aria-label="Link to this heading">
+          <span className="zellij-heading-mark" aria-hidden="true">#</span>
+        </a>
+      </Tag>
+    );
     return (
       <Tag id={id} className="zellij-heading">
         <a className="zellij-heading-anchor" href={`#${encodeURIComponent(id)}`}>
