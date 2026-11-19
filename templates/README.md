@@ -1,7 +1,7 @@
 # Zellij template catalog
 
 This is the authored source for the catalog bundled in `zel` and attached to
-CLI releases. It is independent of `examples/`. The rc.11 catalog contains nine
+CLI releases. It is independent of `examples/`. The rc.12 catalog contains nine
 starters. The five existing starters are:
 `product-docs` (portable handbook), `product-studio` (hosted product landing page),
 `book-classic` (portable book publication with optional LuaLaTeX PDF),
@@ -25,20 +25,21 @@ The catalog also includes three website starters introduced in rc.9 at template 
 These are original designs with local SVG art, not copies of Apple, Linear,
 Stripe or another company's assets. They use the existing engine sections;
 no React, external fonts, tracking, image services or new dependencies are added.
-They require CLI/engine rc.9 or later, including the bento heading contrast fix.
+Their current 0.1.1 revisions require CLI rc.12 and retain the bento heading contrast fix.
 Create them by ID, for example `zel create my-website -t product-launch`.
-Use the release's matching engine when building. Local paths are also supported:
+The rich builder downloads the matching renderer once. Local templates are also supported:
 
 ```sh
 zel create my-website -t ./templates/product-launch --offline
 ```
 
-All three have hosted output, HTTP viewing, light/dark theme controls, an editable
-second landing page and a customization guide. They are not portable direct-file
-or PDF templates. Creation works offline; builds need the matching engine and a
-supported container runtime. Real signup, purchase and contact services belong
+All three have rich double-click output, optional HTTP viewing, light/dark theme
+controls, an editable second landing page and a customization guide. They do not
+configure PDF output. Creation works offline; builds reuse a renderer downloaded
+once and need no separately installed Docker, Node.js, npm or Python. Explicit
+static exports and live development still use a container. Real signup, purchase and contact services belong
 to the author's product. The sample buttons point to functioning local pages.
-All five previously published template archives remain byte-identical.
+Earlier published identities retain their original bytes; README updates use new versions.
 
 Each catalog directory has `template.yaml` and `files/`. Files under `files/`
 become the created site. Its layout must use `zel.yaml`, `content/` and generated
@@ -102,7 +103,7 @@ matching CLI and source. It emits `templates-catalog.json` and deterministic
 regular `template.yaml`/`files/…` entries. SHA-256 values are in the catalog;
 archive URLs are relative filenames so identical assets work in both the source
 release and the public `mylife-inc/releases` mirror. The native `SHA256SUMS`
-remains the native-package inventory. Node and Python are packaging tools, not
+also covers the separate renderer archives. Node and Python are packaging tools, not
 requirements for template users.
 
 Catalog JSON is `{schema: 1, release: "v…", templates: [{manifest, archive:
@@ -136,8 +137,9 @@ at the far right. The mobile header uses the complete navigation drawer.
 
 ## API platform in rc.10
 
-`api-platform` 0.1.0 uses the new `kie` theme, with a wide introduction, pricing,
+`api-platform` uses the `kie` theme, with a wide introduction, pricing,
 model cards, integration steps and a code example. Its four pages and original
-SVG artwork use no remote assets or services. CLI and engine rc.10 or later are required;
-the published rc.11 catalog includes nine starters. All eight earlier archives
-remain byte-identical. The API, plans and product names are fictional examples.
+SVG artwork use no remote assets or services. Its current 0.1.1 revision requires
+CLI rc.12; the design uses features introduced in engine rc.10. The rc.12 catalog
+includes nine starters. New template versions update build instructions without
+rewriting older archive identities. The API, plans and product names are fictional examples.

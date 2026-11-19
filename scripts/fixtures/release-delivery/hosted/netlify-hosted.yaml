@@ -6,6 +6,6 @@ publish:
 ci:
   branch: main
   workflow: acceptance-netlify-hosted.yml
-  zel-version: 0.2.0-rc.11
+  zel-version: 0.2.0-rc.12
   triggers: [pull_request, manual]
   production: false

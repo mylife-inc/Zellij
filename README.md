@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.11](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.11)
+[Candidate 0.2.0-rc.12](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.12)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -75,8 +75,9 @@ scoop install mylife-inc/zel
 ```
 
 Use `scoop update; scoop update zel` for that installation; `zel upgrade` preserves
-package-manager ownership. Use the release's matching engine images for
-hosted sites; web-only portable builds need no container runtime. See the
+package-manager ownership. Rich `zel build` downloads and caches its renderer;
+portable web builds run natively. Neither needs installed build tools. Explicit
+static/image builds and development use the release's matching container images. See the
 [native distribution contract](specs/zel-native-distribution.md) for tested OS
 versions, commands and limits.
 
@@ -105,15 +106,15 @@ and native validation. See the
 The website catalog includes `product-launch`, `software-platform`
 and `creative-studio`. Each includes two landing pages, two guide pages and local
 artwork. Run `zel create my-site -t product-launch`, edit `content/`, then
-`zel build my-site`. Current source downloads and caches its rich renderer;
-released rc.11 still requires a supported container runtime. The menu centers on desktop,
+`zel build my-site`. It downloads and caches its rich renderer, then generates
+a website that opens by double-clicking `site/index.html`. The menu centers on desktop,
 company branding stays at the far left, and search/theme controls stay at the
 far right. On phones, sections open their own menu view with Back and Close.
 
 The `kie` theme and `api-platform` starter are also included: `zel create my-api -t api-platform`.
 The catalog contains nine starters; existing template versions remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.11.md) cover the expanded section
+The [candidate notes](specs/releases/v0.2.0-rc.12.md) cover the expanded section
 composer: video, layers, semantic content, product selectors, scroll stories
 and eight reusable built-in sections. Nine editable presets are available with
 `zel presets`; generate one with `zel ns -p product-overview --out content/sections/overview.yaml`. See the
@@ -200,12 +201,11 @@ deployed.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. Current source builds rich double-click websites with a downloaded,
+shipping it. Candidate rc.12 builds rich double-click websites with a downloaded,
 verified renderer cached separately from the small CLI: no Docker, Node.js, npm
 or Python installation is required. `zel build` selects this for rich sites;
 `zel build --offline` requires the matching cache to be present. Explicit
-`--target static` and image commands retain their container workflow. Released
-rc.11 predates this standalone builder. Commands that describe Zellij's content
+`--target static` and image commands retain their container workflow. Commands that describe Zellij's content
 model read the schema compiled into the native binary.
 
 ```bash
