@@ -154,6 +154,27 @@ Values are validated before they reach the stylesheet. They come from a config
 file rather than a request, but they are interpolated into CSS, so they are
 checked rather than trusted.
 
+### Keep colours responsive to theme selection
+
+An `overrides.accent` value deliberately keeps the same brand colour across
+all selected themes. Leave `accent` and `accentForeground` unset when primary
+buttons should use each theme's palette. For a heading gradient that changes
+with the theme, use token names such as `accent` and `fg`; literal hex colours
+remain fixed. The `glow` background creates a soft radial spot from the active
+accent and follows light/dark mode too:
+
+```yaml title="sections/home/hero.yaml"
+type: hero
+headline: Explore the documentation
+titleGradient: [accent, fg]
+background: glow
+cta:
+  - { label: Get started, href: /guide, style: primary }
+```
+
+The same `background: glow` works on a `compose` section, where a heading can
+use `gradient: { colors: [accent, fg] }`.
+
 ## The runtime picker
 
 ```yaml title="site.yaml"

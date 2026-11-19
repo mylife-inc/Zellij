@@ -1,7 +1,26 @@
 # Zellij — durable project context
 
-Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
+Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
+
+**2026-11-19: theme-responsive consumer presentation — authoring clarification**
+
+A private consumer now omits the fixed `overrides.accent` so runtime theme
+selection controls primary buttons and gradients. Its composition uses
+`gradient.colors: [accent, fg]` and `background: glow`; both are existing engine
+capabilities. Literal hex stops and explicit brand overrides intentionally stay
+fixed. The public theme guide now explains this distinction with a small recipe.
+The consumer's footer no longer displays its assembly date, and all 18 drawer
+destinations use existing semantic vector icons on desktop/mobile. No client
+content or artifact is stored here; native CLI and bundled engine are unchanged.
+
+The strict two-edition rebuild passes; all 200 rich footers are checked. Chrome
+and WebKit each pass 15 themes × 2 modes for heading/glow/button colours, plus
+icon/navigation/mobile checks. Original content, binaries, engine and helpers
+remain byte-identical. A scripted WebKit resize followed immediately by forced
+navigation exposed cancelled-prefetch diagnostics; a settled probe and independent
+mobile page pass. No engine change was made for that test-timing diagnostic.
+These are local presentation/docs updates, not a public release or deployment.
 
 **2026-11-18: full-width desktop panels and theme previews — local fix**
 
