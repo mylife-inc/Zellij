@@ -10,16 +10,24 @@ YAML files and the Markdown guide; no React is required. Images live in
 company branding, palettes, navigation, motion and artwork replacement.
 
 ```sh
-zel check --strict
 zel build
-zel view --watch
+zel build --offline
 ```
 
-Requires CLI and engine rc.9 or later, plus a supported container runtime for
-hosted builds. Serve the result over HTTP; this is not a direct-file or PDF
-starter. Creation is offline. The template receipt records original checksums
-without preventing edits. No external assets or extra dependencies are needed.
+Creation is offline. The template receipt records original checksums without
+preventing edits. No external artwork needs to be downloaded.
 
 All businesses, product names, interfaces and projects here are fictional
 demonstrations. This is an original design, not a copy of another brand's site.
 Replace the sample identity and content before publishing.
+
+Requires CLI rc.12 or later. `zel build` downloads a verified renderer once,
+then generates the rich website without separately installed Docker, Node.js,
+npm or Python. Double-click `site/index.html`; keep the complete `site/` folder
+together. Later builds can use `zel build --offline` with the cached renderer.
+`zel serve` optionally serves the existing output over HTTP.
+
+Optional live development (`zel view --watch`), explicit `--target static` HTTP
+exports, image commands and standalone `zel check` still use a supported
+container runtime and matching engine. Normal `zel build` validates content
+automatically. This template does not configure PDF output.

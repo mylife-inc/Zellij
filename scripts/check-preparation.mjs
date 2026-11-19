@@ -68,7 +68,7 @@ try {
   if (mode === '--export') {
     assert(binary, 'Pass a zel binary before --export');
     const exported = path.join(root, 'exported');
-    execFileSync(path.resolve(binary), ['build', content, '--out', exported], { stdio: 'inherit' });
+    execFileSync(path.resolve(binary), ['build', content, '--target', 'static', '--out', exported], { stdio: 'inherit' });
     const actual = JSON.parse(await readFile(path.join(exported, '_zellij/search-index.json'), 'utf8'));
     assert.deepEqual(actual, entries);
     for (const entry of actual) {

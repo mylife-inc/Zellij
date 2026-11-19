@@ -15,6 +15,7 @@ Object.assign(env, { PATH: bin, CONTAINER_CONNECTION: 'build-fixture' });
 const read = name => readFile(path.join(root, name), 'utf8');
 const write = async (name, value) => { const file = path.join(root, name); await mkdir(path.dirname(file), { recursive: true }); await writeFile(file, value); };
 const run = (args, status = 0, extra = {}) => {
+  if (['build', 'b'].includes(args[0]) && args[1] === 'hosted' && !args.includes('--target')) args = [...args, '--target', 'static'];
   const result = spawnSync(zel, args, { cwd: root, env: { ...env, ...extra }, encoding: 'utf8', timeout: 30000 });
   assert.equal(result.status, status, `${args.join(' ')}\n${result.stdout}\n${result.stderr}\n${result.error ?? ''}`);
   return result;

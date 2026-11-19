@@ -9,10 +9,10 @@ import { chromium, webkit, expect } from '@playwright/test';
 const repo = path.resolve(import.meta.dirname, '..');
 const temp = await mkdtemp(path.join(os.tmpdir(), 'zellij file 日本 '));
 const output = path.join(temp, 'site');
-await cp(path.join(repo, 'examples/showcase/out'), output, { recursive: true });
+await cp(process.env.ZELLIJ_FILE_SOURCE ?? path.join(repo, 'examples/showcase/out'), output, { recursive: true });
 const exporter = pathToFileURL(path.join(repo, 'engine/packages/zellij/dist/offline/export.js')).href;
 const code = `import {exportOffline} from ${JSON.stringify(exporter)}; await exportOffline(process.cwd(), ${JSON.stringify(output)});`;
-const result = spawnSync(process.execPath, ['--input-type=module', '-e', code], {
+const result = process.env.ZELLIJ_FILE_SOURCE ? { status: 0 } : spawnSync(process.execPath, ['--input-type=module', '-e', code], {
   cwd: path.join(repo, 'examples/showcase'), env: { ...process.env, NODE_ENV: 'production' }, stdio: 'inherit',
 });
 assert.equal(result.status, 0, 'file export failed');
@@ -53,6 +53,14 @@ try {
         await expect.poll(() => headers.allTextContents()).toEqual(expectedHeaders);
       }
       await page.goto(url('/'));
+      await expect(page.locator('.zellij-header')).toHaveCSS('position', 'sticky');
+      await expect(page.locator('body')).not.toHaveCSS('font-family', '"Times New Roman"');
+      const toggle = page.getByRole('button', { name: 'Switch to dark theme', exact: true });
+      if (await toggle.count()) {
+        await toggle.click();
+        await expect(page.locator('html')).toHaveAttribute('data-zellij-mode', 'dark');
+        await page.getByRole('button', { name: 'Switch to light theme', exact: true }).click();
+      }
       await page.locator('[data-zellij-search-trigger]').first().click();
       await page.getByRole('dialog').getByRole('searchbox').fill(entries[0].title);
       await expect(page.locator('.zellij-search-result').first()).toBeVisible();

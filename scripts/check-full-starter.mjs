@@ -46,7 +46,7 @@ for (const [guide, interactive] of [[false, false], [true, false], [true, true]]
   if (mode && interactive) {
     const output = path.join(root, 'exported');
     run(zel, ['check', site, '--strict', '--deep']);
-    run(zel, ['build', site, '--out', output]);
+    run(zel, ['build', site, '--target', 'static', '--out', output]);
     for (const name of ['index', 'examples', 'guide', ...schema.sectionTypes.map(type => `example-${type}`)]) {
       const html = await readFile(path.join(output, name + '.html'), 'utf8');
       assert.match(html, /<!DOCTYPE html>/i);

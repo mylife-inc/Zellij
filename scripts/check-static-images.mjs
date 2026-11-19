@@ -168,7 +168,7 @@ try {
     const selection = prefix ? 'none' : 'all';
     // Reuse the export across all -> none to catch stale rendered output.
     const overrides = ['--base-path', prefix || '/', '--site-url', 'https://static.example', ...(prefix ? ['--no-check'] : [])];
-    run(['build', 'hosted', '--features', selection, '--out', 'hosted-output', ...overrides], { ZELLIJ_IMAGE: enabledBase });
+    run(['build', 'hosted', '--target', 'static', '--features', selection, '--out', 'hosted-output', ...overrides], { ZELLIJ_IMAGE: enabledBase });
     const html = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
     assert.equal(html.includes('<mjx-container'), selection === 'all');
     run(['image', 'static', 'hosted', '--tag', tag, '--features', selection, ...overrides], { ZELLIJ_IMAGE: enabledBase });
@@ -185,7 +185,7 @@ try {
     stdio: ['pipe', 'inherit', 'inherit'], timeout: 120_000,
   });
   const previous = await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8');
-  assert.throws(() => execFileSync(zel, ['build', 'hosted', '--features', 'none', '--out', 'hosted-output'], {
+  assert.throws(() => execFileSync(zel, ['build', 'hosted', '--target', 'static', '--features', 'none', '--out', 'hosted-output'], {
     cwd: root, env: { ...process.env, ZELLIJ_IMAGE: incompatibleBase }, encoding: 'utf8', timeout: 120_000,
   }), error => error.status === 3 && error.stderr.includes('does not support explicit feature selection'));
   assert.equal(await readFile(path.join(root, 'hosted-output/manual.html'), 'utf8'), previous);

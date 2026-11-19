@@ -93,6 +93,9 @@ fn inspect(input: Option<&SiteInput>, report: &mut Value) -> Result<()> {
             report["image"] = json!({ "reference": crate::pdf::IMAGE, "status": "not_checked" });
             return Ok(());
         }
+        report["runtime"] = json!({ "status": "not_required" });
+        report["rich_engine"] = crate::rich_build::inspect_cache()?;
+        return Ok(());
     }
     report["runtime"] = json!({ "status": "unavailable" });
     let engine = zellij_engine::ContainerEngine::detect(None)?;
@@ -142,7 +145,19 @@ fn human(report: &Value) {
     let runtime = &report["runtime"];
     match runtime["status"].as_str() {
         Some("not_required") => {
-            zellij_core::reportln!("  · not required for portable web-only sites; not probed")
+            if report["site"]["renderer"] == "hosted" {
+                zellij_core::reportln!("  · not required for rich file builds; not probed");
+                zellij_core::reportln!(
+                    "  Rich renderer: {} ({})",
+                    text(&report["rich_engine"]["status"]),
+                    text(&report["rich_engine"]["cache"])
+                );
+                zellij_core::reportln!(
+                    "  Explicit static/image builds and hosted development still use a container."
+                );
+            } else {
+                zellij_core::reportln!("  · not required for portable web-only sites; not probed");
+            }
         }
         Some("available") => {
             zellij_core::reportln!(

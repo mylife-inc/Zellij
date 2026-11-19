@@ -10,7 +10,7 @@ const oldImage = `zel-old-overrides:${process.pid}-${Date.now()}`;
 const source = 'name: Hosted overrides\nbasePath: /authored\nsiteUrl: https://authored.example\n';
 const siteFile = path.join(root, 'content/site.yaml');
 const output = path.join(root, 'site');
-const run = (flags, extra = {}) => spawnSync(zel, ['build', '.', '--features', 'none', ...flags], { cwd: root, env: { ...process.env, ...extra }, encoding: 'utf8', timeout: 600000 });
+const run = (flags, extra = {}) => spawnSync(zel, ['build', '.', '--target', 'static', '--features', 'none', ...flags], { cwd: root, env: { ...process.env, ...extra }, encoding: 'utf8', timeout: 600000 });
 const success = result => assert.equal(result.status, 0, `${result.stdout}\n${result.stderr}`);
 const read = file => readFile(path.join(output, file), 'utf8');
 try {

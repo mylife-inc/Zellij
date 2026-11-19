@@ -75,6 +75,15 @@ fn requires_docker(options: &CiOptions) -> bool {
         )
 }
 
+// Delivery verification must exercise the same HTTP export as publication,
+// independently of the interactive CLI's rich double-click default.
+fn html_target(options: &CiOptions) -> &'static str {
+    match options.renderer {
+        zellij_core::site::Renderer::Hosted => "static",
+        zellij_core::site::Renderer::Portable => "portable",
+    }
+}
+
 // These generators target Linux runners with GNU coreutils. Bound both the
 // initial wait and termination; never switch image stores when Docker fails.
 const DOCKER_PREFLIGHT: &str = "timeout --kill-after=5s 60s docker info || { echo 'The configured Docker runtime is unavailable. Check the runner daemon and endpoint; no alternate runtime was selected.' >&2; exit 1; }\n";
@@ -410,7 +419,10 @@ pub fn github(options: &CiOptions) -> Result<String> {
             )
         }
         Publish::LegacyImage => format!("zel image next {selector} --tag zel-ci-check:local"),
-        _ => format!("zel build {selector} --out \"$RUNNER_TEMP/zellij-site\""),
+        _ => format!(
+            "zel build {selector} --target {} --out \"$RUNNER_TEMP/zellij-site\"",
+            html_target(options)
+        ),
     };
     steps.push(json!({"name":"Build without publishing", "run":format!("{build}{platform_flag}{features_flag}{override_flags}")}));
     let mut jobs = json!({"verify": {"runs-on":runner, "timeout-minutes":30, "steps": steps}});
@@ -690,6 +702,26 @@ mod tests {
             features: None,
             overrides: BuildOverrides::default(),
             build_args: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn delivery_checks_select_http_output_instead_of_the_interactive_file_default() {
+        use zellij_core::site::Renderer;
+        for (renderer, expected) in [
+            (Renderer::Hosted, "static"),
+            (Renderer::Portable, "portable"),
+        ] {
+            let mut opts = options(Publish::Nothing);
+            opts.renderer = renderer;
+            opts.version = "0.2.0-rc.12".into();
+            for generate in [github, gitlab, circle] {
+                let workflow = generate(&opts).unwrap();
+                assert!(
+                    workflow.contains(&format!("--target {expected} --out")),
+                    "{workflow}"
+                );
+            }
         }
     }
 

@@ -36,6 +36,7 @@ mod pdf;
 mod preview;
 mod published_image;
 mod railway;
+mod rich_build;
 mod s3;
 mod site_authoring;
 mod templates;
@@ -161,6 +162,7 @@ fn main() {
         },
         Command::Build {
             pdf,
+            offline,
             ref dir,
             ref target,
             ref out,
@@ -183,6 +185,7 @@ fn main() {
             platform,
             hosted_options: &overrides.options(features),
             pdf: pdf.selected(),
+            offline,
         }),
         Command::Image { ref action } => match action {
             ImageAction::Static(SiteImageArgs {
@@ -386,11 +389,12 @@ fn report_empty_mount(err: &zellij_core::Error) {
 fn default_target(dir: &SiteInput) -> zellij_core::Result<&'static str> {
     Ok(match zellij_core::site::Site::load(dir)?.renderer {
         zellij_core::site::Renderer::Portable => "portable",
-        zellij_core::site::Renderer::Hosted => "static",
+        zellij_core::site::Renderer::Hosted => "file",
     })
 }
 
 struct BuildInvocation<'a> {
+    offline: bool,
     dir: Option<&'a SiteInput>,
     target: Option<&'a str>,
     out: Option<&'a str>,
@@ -402,6 +406,7 @@ struct BuildInvocation<'a> {
 }
 fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     let BuildInvocation {
+        offline,
         dir,
         target,
         out,
@@ -436,6 +441,11 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
     if target != "image" {
         hosted_options.require_no_image_args()?;
     }
+    if offline && target != "file" {
+        return Err(zellij_core::Error::InvalidArgument(
+            "--offline applies to rich file builds".into(),
+        ));
+    }
     match target {
         "portable" => {
             images::require_native_options(hosted_options)?;
@@ -446,7 +456,13 @@ fn build_dispatch(request: BuildInvocation<'_>) -> zellij_core::Result<()> {
             );
             Ok(())
         }
-        "static" | "file" => build(dir, target, out, hosted_options),
+        "file" => {
+            let content = resolve_content(dir)?;
+            let site = zellij_core::site::Site::load(dir)?;
+            let output = out.map(Utf8PathBuf::from).unwrap_or(site.output);
+            rich_build::build(&content, &output, hosted_options, offline)
+        }
+        "static" => build(dir, target, out, hosted_options),
         "image" => {
             if out.is_some() {
                 return Err(zellij_core::Error::InvalidArgument(
@@ -967,7 +983,7 @@ fn list_targets(as_json: bool) -> zellij_core::Result<()> {
         ),
         (
             "file",
-            "The rich YAML/MDX website, including menus and themes. Open index.html without a server; building requires the container engine.",
+            "The rich YAML/MDX website with menus and themes. Open index.html without a server. Downloads a verified renderer once; no Docker, Node.js or Python installation. Cached builds support --offline.",
         ),
     ];
     if as_json {

@@ -39,7 +39,8 @@ export function scoopManifest(tag, checksums) {
       prerelease ? `This installs development preview ${version}.` : `This installs Zellij ${version}.`,
       'Update with: scoop update zel',
       'Portable Markdown builds need no container runtime.',
-      `For hosted builds, select the matching engine: $env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:${version}'`,
+      'Rich file builds download their own verified renderer once.',
+      `For explicit static/image builds and hosted development: $env:ZELLIJ_IMAGE = 'ghcr.io/mylife-inc/zellij-base:${version}'`,
     ],
   };
 }

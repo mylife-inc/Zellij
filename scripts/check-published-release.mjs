@@ -44,6 +44,11 @@ try {
     if (!previous) execFileSync(process.execPath, ['scripts/check-native-install.mjs', destination, destination], {
       env: { ...env, TARGET: target }, stdio: 'inherit', timeout: 600000,
     });
+    if (existsSync('scripts/check-standalone-engine.mjs')) {
+      execFileSync(process.execPath, ['scripts/check-standalone-engine.mjs', binary], {
+        env: { ...env, ZEL_TEST_ENGINE_BASE_URL: result.base }, stdio: 'inherit', timeout: 600000,
+      });
+    }
     if (existsSync('templates/catalog.yaml')) {
       const templates = await verifyPublishedTemplates(binary, result.base, path.join(root, `templates-${source.name}`));
       if (previousTemplates) assert.deepEqual(templates, previousTemplates, 'Template archives/catalogs disagree between release repositories');

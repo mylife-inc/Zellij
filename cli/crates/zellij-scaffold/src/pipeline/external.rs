@@ -295,7 +295,8 @@ fn script(
             ));
         } else {
             s.push_str(&format!(
-                "zel build {selector} --out \"$ZEL_WORK/site\"{flags}\n"
+                "zel build {selector} --target {} --out \"$ZEL_WORK/site\"{flags}\n",
+                html_target(options)
             ));
         }
         return Ok(s);

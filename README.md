@@ -105,7 +105,8 @@ and native validation. See the
 The website catalog includes `product-launch`, `software-platform`
 and `creative-studio`. Each includes two landing pages, two guide pages and local
 artwork. Run `zel create my-site -t product-launch`, edit `content/`, then
-`zel build my-site` with a supported container runtime. The menu centers on desktop,
+`zel build my-site`. Current source downloads and caches its rich renderer;
+released rc.11 still requires a supported container runtime. The menu centers on desktop,
 company branding stays at the far left, and search/theme controls stay at the
 far right. On phones, sections open their own menu view with Back and Close.
 
@@ -199,9 +200,13 @@ deployed.
 
 [`cli/`](cli) is `zel`: one native binary for scaffolding a content folder,
 converting one from another documentation tool, validating it, building it and
-shipping it. It needs no Node — the commands that build use the container, and
-the ones that describe Zellij's own content model read a schema the engine
-generates and the binary compiles in.
+shipping it. Current source builds rich double-click websites with a downloaded,
+verified renderer cached separately from the small CLI: no Docker, Node.js, npm
+or Python installation is required. `zel build` selects this for rich sites;
+`zel build --offline` requires the matching cache to be present. Explicit
+`--target static` and image commands retain their container workflow. Released
+rc.11 predates this standalone builder. Commands that describe Zellij's content
+model read the schema compiled into the native binary.
 
 ```bash
 zel explain bento-grid      # every field, with a worked example

@@ -366,6 +366,10 @@ pub(crate) enum Command {
         #[arg(long)]
         target: Option<String>,
 
+        /// Build without downloading the rich renderer; requires an already populated cache.
+        #[arg(long)]
+        offline: bool,
+
         #[arg(long)]
         out: Option<String>,
 

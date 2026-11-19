@@ -23,7 +23,10 @@ fn command(root: &Path) -> Command {
         executable
     };
     let mut command = Command::new(executable);
-    command.current_dir(root).env("PATH", root.join("bin"));
+    command
+        .current_dir(root)
+        .env("PATH", root.join("bin"))
+        .env("ZEL_ENGINE_CACHE", root.join("engine-cache"));
     for variable in [
         "DOCKER_CONTEXT",
         "DOCKER_HOST",
@@ -197,16 +200,17 @@ fn doctor_reports_hosted_site_even_when_runtime_is_unavailable() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
     content(root);
-    let legacy = doctor_report(root, &["doctor"], 4);
+    let legacy = doctor_report(root, &["doctor"], 0);
     assert_eq!(legacy["site"]["renderer"], "hosted");
     assert_eq!(legacy["site"]["layout"], "legacy");
     assert!(Path::new(legacy["site"]["content"].as_str().unwrap()).ends_with("content"));
     assert!(Path::new(legacy["site"]["output"].as_str().unwrap()).ends_with("dist"));
     fs::write(root.join("zel.yaml"), "version: 1\nrenderer: hosted\n").unwrap();
-    let versioned = doctor_report(root, &["doctor"], 4);
+    let versioned = doctor_report(root, &["doctor"], 0);
     assert_eq!(versioned["site"]["layout"], "versioned");
-    assert_eq!(versioned["runtime"]["status"], "unavailable");
-    assert_eq!(versioned["error"]["kind"], "runtime");
+    assert_eq!(versioned["runtime"]["status"], "not_required");
+    assert_eq!(versioned["rich_engine"]["status"], "download_required");
+    assert!(!root.join("engine-cache").exists());
     assert!(Path::new(versioned["site"]["output"].as_str().unwrap()).ends_with("site"));
 }
 
@@ -228,7 +232,6 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
     fs::write(root.join("site/index.html"), "previous export").unwrap();
     for args in [
         vec!["build", "content", "--target", "static", "--out", "site"],
-        vec!["build", "content", "--target", "file", "--out", "site"],
         vec!["build", "content", "--target", "image"],
         vec!["check", "content"],
         vec!["watch", "content"],
@@ -248,7 +251,6 @@ fn container_commands_fail_with_exit_four_before_touching_content_or_output() {
         vec!["c", "content"],
         vec!["ir", "test:latest"],
         vec!["ip", "test:latest"],
-        vec!["doctor"],
     ] {
         let output = command(root).args(&args).output().unwrap();
         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -502,10 +504,9 @@ fn explicit_broken_endpoint_is_not_replaced_and_client_errors_do_not_leak_secret
 
 #[cfg(unix)]
 #[test]
-fn hosted_doctor_json_reports_local_image_and_redacts_selected_endpoint() {
+fn outside_site_doctor_json_reports_local_image_and_redacts_selected_endpoint() {
     let temp = tempfile::tempdir().unwrap();
     let root = temp.path();
-    content(root);
     runtime(
         root,
         "docker",

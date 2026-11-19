@@ -86,6 +86,38 @@ jobs:
     permissions:
       contents: read
 
+  standalone-browser:
+    name: Rich standalone file website
+    needs: native-packages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: binary-x86_64-unknown-linux-gnu
+          path: ${{ runner.temp }}/standalone-cli
+      - uses: actions/download-artifact@v8
+        with:
+          name: renderer-x86_64-unknown-linux-gnu
+          path: dist/renderer-packages
+      - name: Exercise the packaged CLI and downloaded renderer without system tools
+        env:
+          ZEL_STANDALONE_RESULT: ${{ runner.temp }}/rich-file-site
+        run: |
+          tar -xzf "$RUNNER_TEMP"/standalone-cli/zel-v*-x86_64-unknown-linux-gnu.tar.gz -C "$RUNNER_TEMP/standalone-cli"
+          node scripts/check-standalone-engine.mjs "$RUNNER_TEMP/standalone-cli/zel"
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Verify double-click navigation, themes, search and sections without networking
+        env:
+          ZELLIJ_FILE_SOURCE: ${{ runner.temp }}/rich-file-site
+        run: node scripts/check-rich-file-export.mjs
+
   homebrew:
     needs: native-packages
     uses: ./.github/workflows/homebrew.yml
@@ -531,7 +563,7 @@ jobs:
           zel="$PWD/cli/target/debug/zel"
           work=$(mktemp -d)
           "$zel" new docs "$work/content" --name Acme --guide
-          "$zel" build "$work/content" --out "$work/site"
+          "$zel" build "$work/content" --target static --out "$work/site"
           test -s "$work/site/index.html"
           test -f "$work/site/.zellij-output"
           cp "$work/site/index.html" "$work/previous.html"
@@ -540,7 +572,7 @@ jobs:
           # The previous export must survive this late build failure too.
           cp "$work/content/content/01-guide/index.mdx" "$work/guide.mdx"
           printf '\n<Callout>\n' >> "$work/content/content/01-guide/index.mdx"
-          if "$zel" build "$work/content" --out "$work/site"; then
+          if "$zel" build "$work/content" --target static --out "$work/site"; then
             echo '::error::Unclosed MDX component unexpectedly built'
             exit 1
           fi
@@ -550,7 +582,7 @@ jobs:
           cp "$work/guide.mdx" "$work/content/content/01-guide/index.mdx"
           printf 'type: hero\nheadline: Updated site\n' > "$work/content/content/sections/home/hero.yaml"
           printf 'obsolete\n' > "$work/site/obsolete.html"
-          "$zel" build "$work/content" --out "$work/site"
+          "$zel" build "$work/content" --target static --out "$work/site"
           grep -q 'Updated site' "$work/site/index.html"
           test ! -e "$work/site/obsolete.html"
 
@@ -561,7 +593,7 @@ jobs:
           set -euo pipefail
           work=$(mktemp -d)
           node scripts/check-section-templates.mjs cli/target/debug/zel "$work/content"
-          cli/target/debug/zel build "$work/content" --out "$work/site"
+          cli/target/debug/zel build "$work/content" --target static --out "$work/site"
           test -s "$work/site/index.html"
           node --input-type=module - "$work/site/wizard.html" "$work/site/structured.html" <<'NODE'
           import assert from 'node:assert/strict';

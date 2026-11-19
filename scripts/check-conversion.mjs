@@ -73,7 +73,7 @@ async function checkLinkedAssets(format, source, copiedContent, copiedSite, vari
   await assert.rejects(stat(path.join(content, 'assets')), {code:'ENOENT'});
   if (mode === '--export' && format === 'mkdocs') {
     const output = path.join(root, 'linked-site');
-    execFileSync(zel, ['build', destination, '--out', output], {stdio:'inherit'});
+    execFileSync(zel, ['build', destination, '--target', 'static', '--out', output], {stdio:'inherit'});
     const exported = await readFile(path.join(output, 'guide.html'), 'utf8');
     assert(exported.includes(`src="${base}media/logo.svg"`));
     assert(exported.includes(`href="${base}media/Q3%20Report.pdf"`));
@@ -235,7 +235,7 @@ values = {description = 'Inherited collection description'}
   }
   if (mode === '--export') {
     const output = path.join(root, `${variant}-site`);
-    execFileSync(zel, ['build', destination, '--out', output], { stdio: 'inherit' });
+    execFileSync(zel, ['build', destination, '--target', 'static', '--out', output], { stdio: 'inherit' });
     const html = await readFile(path.join(output, 'guide.html'), 'utf8');
     for (const reference of [
       `href="/products/docs${referenceUrl}?view=all#install"`,
@@ -331,7 +331,7 @@ values = {weight = 0.5}
   }
   if (mode === '--export') {
     const output = path.join(root, 'jekyll-sorting-site');
-    execFileSync(zel, ['build', destination, '--out', output], {stdio:'inherit'});
+    execFileSync(zel, ['build', destination, '--target', 'static', '--out', output], {stdio:'inherit'});
     const html = await readFile(path.join(output, 'guide/lessons/d-first.html'), 'utf8');
     const links = [...html.matchAll(/<a\b[^>]*>/g)]
       .map(([tag]) => tag.includes('zellij-guide-sidebar-link') ? tag.match(/href="([^"]+)"/)?.[1] : null)
@@ -619,7 +619,7 @@ Searchable installation with **strong** and \`\`inline_{code}\`\`.
   assert.equal(await readFile(path.join(content,'assets/imported/docs/media/chart%20.svg'),'utf8'),asset);
   if (mode === '--export') {
     const output = path.join(root,'sphinx-site');
-    execFileSync(zel,['build',content,'--out',output],{stdio:'inherit'});
+    execFileSync(zel,['build',content,'--target','static','--out',output],{stdio:'inherit'});
     const home = await readFile(path.join(output,'guide.html'),'utf8');
     const reference = await readFile(path.join(output,'guide/setup/api-reference.html'),'utf8');
     const cafe = await readFile(path.join(output,'guide/cafe.html'),'utf8');

@@ -1,0 +1,91 @@
+/** Real CLI download/cache/build acceptance; no external tools on the child's PATH. */
+import { spawn, execFileSync } from 'node:child_process';
+import { createServer } from 'node:http';
+import { mkdtemp, mkdir, readFile, writeFile, cp, rm, readdir } from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import assert from 'node:assert/strict';
+const repo = path.resolve(import.meta.dirname, '..');
+const binary = path.resolve(process.argv[2] ?? `cli/target/debug/zel${process.platform === 'win32' ? '.exe' : ''}`);
+const target = JSON.parse(execFileSync(binary, ['version', '--json'], { encoding: 'utf8' })).cli.target;
+const platform = `${target.includes('windows') ? 'win' : target.includes('darwin') ? 'darwin' : 'linux'}-${target.startsWith('aarch64') ? 'arm64' : 'x64'}`;
+const version = (await readFile(path.join(repo, 'cli/Cargo.toml'), 'utf8')).match(/^version = "([^"]+)"/m)[1];
+const directory = path.resolve(process.argv[3] ?? 'dist/renderer-packages');
+const archive = `zel-renderer-v${version}-${platform}.tar.gz`;
+const publicBase = process.env.ZEL_TEST_ENGINE_BASE_URL;
+const downloads = new Map(publicBase ? [] : await Promise.all([archive, archive + '.sha256'].map(async name => [name, await readFile(path.join(directory, name))])));
+const root = await mkdtemp(path.join(os.tmpdir(), 'zel rich 日本 '));
+const requests = [];
+const server = createServer((req,res) => {
+  requests.push(req.url);const data = downloads.get(decodeURIComponent(req.url.slice(1)));
+  res.writeHead(data ? 200 : 404);res.end(data ?? 'not found');
+});
+await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+const env = { ...process.env, PATH: path.join(root, 'empty-path'), ZEL_ENGINE_CACHE: path.join(root, 'cache'), ZEL_ENGINE_BASE_URL: publicBase ?? `http://127.0.0.1:${server.address().port}` };
+await mkdir(env.PATH);await cp(path.join(repo, 'examples/showcase/content'), path.join(root, 'content'), { recursive: true });
+await writeFile(path.join(root, 'zel.yaml'), 'version: 1\nrenderer: hosted\n');
+async function run(args, code = 0, overrides = {}) {
+  return new Promise((resolve,reject) => {
+    const child = spawn(binary, args, { cwd: root, env: { ...env, ...overrides }, windowsHide: true });let output = '';
+    child.stdout.on('data', d => output += d);child.stderr.on('data', d => output += d);
+    child.on('error', reject);child.on('exit', status => {
+      try { assert.equal(status, code, `${args.join(' ')}\n${output}`);resolve(output); } catch(error) { reject(error); }
+    });
+  });
+}
+try {
+  assert.match(await run(['build', '--offline'], 2), /not cached/);
+  assert.equal(requests.length, 0);
+  const doctor = JSON.parse(await run(['doctor', '--json']));
+  assert.equal(doctor.runtime.status, 'not_required');assert.equal(doctor.rich_engine.status, 'download_required');
+  if (!publicBase) {
+    const checksum = downloads.get(archive + '.sha256');
+    downloads.set(archive + '.sha256', Buffer.from(`${'0'.repeat(64)}  ${archive}\n`));
+    assert.match(await run(['build'], 2), /checksum mismatch/);
+    assert.equal((await readdir(env.ZEL_ENGINE_CACHE)).length, 0);
+    downloads.set(archive + '.sha256', checksum); requests.length = 0;
+  }
+  await run(['build']);assert.equal(requests.length, publicBase ? 0 : 2);
+  const before = await readFile(path.join(root, 'site/index.html'));
+  const manifest = JSON.parse(await readFile(path.join(root, 'site/_zellij/file/manifest.json')));
+  assert.equal(manifest.pages, 16);
+  assert.match(before.toString(), /file\/styles\.css/);
+  await new Promise(resolve => server.close(resolve));
+  await run(['build', '--offline']);
+  assert.equal(requests.length, publicBase ? 0 : 2);
+  assert((await readFile(path.join(root, 'site/index.html'))).equals(before));
+  await run(['new', 'docs', 'full', '--full', '--guide']);
+  const guide = path.join(root, 'full/content/01-guide/index.mdx');
+  await writeFile(guide, await readFile(guide, 'utf8') + '\n## Local maths\n\n$$\n\\sum_{k=1}^{n} k = \\frac{n(n+1)}{2}\n$$\n');
+  await run(['build', 'full', '--offline']);
+  const complete = JSON.parse(await readFile(path.join(root, 'full/site/_zellij/file/manifest.json')));
+  assert.equal(complete.pages, 28, 'Every built-in section and the math guide must render');
+  assert.match(await readFile(path.join(root, 'full/site/guide/index.html'), 'utf8'), /<mjx-container/,
+    'MathJax must run from the packaged engine without resolving system packages');
+  const pageList = path.join(root, 'full/content/pages.yaml');
+  const authoredPages = await readFile(pageList, 'utf8');
+  await writeFile(pageList, authoredPages.replace('- name: home', '- name: home\n  route: /../escape'));
+  assert.match(await run(['build', 'full', '--offline', '--no-check'], 3), /offline route/);
+  assert(!(await readdir(path.join(root, 'full'))).includes('escape'), 'An authored route must not write outside the staged output');
+  await writeFile(pageList, authoredPages);
+  await run(['build', '--offline', '--base-path', '/manual', '--site-url', 'https://docs.example.test', '--out', 'prefix-site']);
+  const prefixed = await readFile(path.join(root, 'prefix-site/index.html'), 'utf8');
+  assert.match(prefixed, /rel="canonical" href="https:\/\/docs\.example\.test\/manual\/"/);
+  assert.match(prefixed, /href="\.\/_zellij\/file\/styles\.css"/);
+  const content = path.join(root, 'content/site.yaml');const original = await readFile(content);
+  await writeFile(content, 'broken: [');await run(['build', '--offline'], 3);
+  assert((await readFile(path.join(root, 'site/index.html'))).equals(before));await writeFile(content, original);
+  const cached = path.join(env.ZEL_ENGINE_CACHE, `${version}-${platform}`);
+  const originalStyles = await readFile(path.join(cached, 'engine/styles.css'));
+  await writeFile(path.join(cached, 'engine/styles.css'), 'tampered');
+  assert.match(await run(['build', '--offline'], 2), /integrity verification/);
+  assert((await readFile(path.join(root, 'site/index.html'))).equals(before));
+  // Restore exactly the publisher's bytes, then produce an artifact for file:// QA.
+  await writeFile(path.join(cached, 'engine/styles.css'), originalStyles);
+  if (process.env.ZEL_STANDALONE_RESULT) {
+    await mkdir(process.env.ZEL_STANDALONE_RESULT, { recursive: true });
+    await cp(path.join(root, 'prefix-site'), process.env.ZEL_STANDALONE_RESULT, { recursive: true });
+  }
+  assert.equal((await readdir(root)).some(n => n.startsWith('.zel-build-')), false);
+  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
+} finally { server.close();await rm(root, { recursive: true, force: true }); }

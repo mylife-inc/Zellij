@@ -11,7 +11,10 @@ pub fn check(
     let dir = &selected;
     // Invalid configuration is reported through the native check's structured
     // diagnostics, preserving --json's one-report/no-stderr contract.
-    let automatic = crate::default_target(dir).unwrap_or("portable");
+    let automatic = match crate::default_target(dir).unwrap_or("portable") {
+        "file" => "static", // Rich validation retains its existing explicit engine path.
+        target => target,
+    };
     match target.unwrap_or(automatic) {
         "static" if as_json => return hosted_json(dir, options),
         "static" => return crate::check(dir, options),
