@@ -25,7 +25,10 @@ export function decode(value: Wire): unknown {
       if (typeof type === 'string' && typeof props.srcSet === 'string') {
         props.srcSet = props.srcSet.replace(/(^|,\s*)(\/[^,\s]+)/g, (_, prefix: string, url: string) => prefix + fileHref(url));
       }
-      return createElement(type as ElementType, { ...props, key: value[2] });
+      // React coerces an explicitly supplied null key to the string "null".
+      // Keep unkeyed siblings unkeyed, otherwise state updates reconcile them
+      // against the same key and can leave duplicated headings/content behind.
+      return createElement(type as ElementType, { ...props, ...(value[2] === null ? {} : { key: value[2] }) });
     }
   }
 }

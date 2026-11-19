@@ -2,7 +2,7 @@
 import { mkdtemp, cp, readFile, rm } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { pathToFileURL } from 'node:url';
+import { pathToFileURL, fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import { chromium, webkit, expect } from '@playwright/test';
@@ -37,6 +37,20 @@ try {
         await page.waitForFunction(() => [...document.images].every(image => image.complete));
         assert.deepEqual(await page.evaluate(() => [...document.images].filter(image => !image.naturalWidth).map(image => image.src)), [], route);
         await expect(page.locator('h1')).toHaveCount(1);
+        // A successful hydration is not enough: reveal state updates used to
+        // duplicate unkeyed headings without raising a browser exception.
+        const html = await readFile(fileURLToPath(page.url()), 'utf8');
+        const expectedHeaders = await page.evaluate(html => Array.from(
+          new DOMParser().parseFromString(html, 'text/html').querySelectorAll('.zellij-section-header'),
+          header => header.textContent), html);
+        const headers = page.locator('.zellij-section-header');
+        await expect.poll(() => headers.allTextContents()).toEqual(expectedHeaders);
+        for (let index = 0; index < await headers.count(); index++) {
+          if (!await headers.nth(index).isVisible()) continue;
+          await headers.nth(index).evaluate(header => header.scrollIntoView({ block: 'center', behavior: 'instant' }));
+          await expect(headers.nth(index)).toHaveAttribute('data-zellij-reveal', 'in');
+        }
+        await expect.poll(() => headers.allTextContents()).toEqual(expectedHeaders);
       }
       await page.goto(url('/'));
       await page.locator('[data-zellij-search-trigger]').first().click();
