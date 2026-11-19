@@ -3,6 +3,29 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-18: rc.11 published and verified; channel/docs migration in progress**
+
+Immutable tag `1f8232b` publishes the completed composer expansion and nine
+editable presets. All 37 jobs in release run `44423006473` pass, including
+12 public-download/image jobs. Both release repositories have 27 byte-identical
+assets. All nine template archive identities are unchanged. The 224 website
+captures and 46 public PDFs/420 page captures match reviewed source content and
+pixels. Native installations and all eight image variants/architectures contain
+the exact tagged authoring model and presets. See [release evidence](specs/evidence/zellij-rc11-release-2026-11-18.json).
+
+Homebrew `2973058` and Scoop `2d10329` publish the exact verified recipes.
+All eight public lifecycle cases and eight real rc.10-to-rc.11 managed upgrades
+pass, along with the standalone upgrade and byte comparison. The shared install
+guide is `b587467`. Documentation PR #208 passes all 32 CI jobs in `44426799314`
+and six build-only consumers on `d1daba6`. Its first Showcase job timed out during
+Ubuntu dependency downloads before tests; only that job was retried on unchanged
+source, retaining the other 31 successful jobs. The final follow-up adds records only.
+Preservation retains all original routes, heading IDs, mappings and images without
+captured browser errors. Merge, replacement acceptance images and scoped rc.10
+retirement follow. No rc.10 artifact has been removed. Production-domain migration
+and live-provider verification remain deferred. WinGet and additional installation
+channels remain separate work; no stable 1.0 or zero-bug claim.
+
 **2026-11-18: rc.11 release preparation**
 
 Continue from verified merge `0d25d84`. The candidate contains the completed

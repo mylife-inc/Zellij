@@ -63,7 +63,7 @@ and no browser library. They work offline with JavaScript disabled. Enable
 runtime. Diagram source stays readable without JavaScript; Mermaid grammar errors
 are reported in the browser, while native checks validate input limits.
 
-[Candidate 0.2.0-rc.10](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.10)
+[Candidate 0.2.0-rc.11](https://github.com/mylife-inc/Zellij/releases/tag/v0.2.0-rc.11)
 provides native x64 and ARM64 downloads for GNU/Linux, macOS and Windows, with
 pinned shell/PowerShell installers and checksums. Homebrew installation is
 `brew install mylife-inc/tap/zel`. Windows users can install through the owned
@@ -109,12 +109,14 @@ artwork. Run `zel create my-site -t product-launch`, edit `content/`, then
 company branding stays at the far left, and search/theme controls stay at the
 far right. On phones, sections open their own menu view with Back and Close.
 
-rc.10 adds the `kie` theme and `api-platform` starter: `zel create my-api -t api-platform`.
+The `kie` theme and `api-platform` starter are also included: `zel create my-api -t api-platform`.
 The catalog contains nine starters; existing template versions remain unchanged.
 
-The [candidate notes](specs/releases/v0.2.0-rc.10.md) cover multilingual printing,
-print styling, Kie and the shared theme/card fixes. See the
-[release evidence](specs/evidence/zellij-rc10-release-2026-11-17.json) and
+The [candidate notes](specs/releases/v0.2.0-rc.11.md) cover the expanded section
+composer: video, layers, semantic content, product selectors, scroll stories
+and eight reusable built-in sections. Nine editable presets are available with
+`zel presets`; generate one with `zel ns -p product-overview --out content/sections/overview.yaml`. See the
+[release evidence](specs/evidence/zellij-rc11-release-2026-11-18.json) and
 [completion ledger](specs/zel-cli-completion-2026-11-11.md) for verification and
 deferred provider/runner checks. This is a preview, not a stable 1.0 release.
 

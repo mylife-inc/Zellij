@@ -1,5 +1,35 @@
 # Product expansion: branding, composition, templates, books and installation
 
+**2026-11-18: rc.11 published and verified; migration in progress**
+
+The immutable rc.11 tag is `1f8232b`, following preparation PR #207 and all
+32 source CI jobs in `44415698968`. Normal release preflight passes 817 Rust
+and 527 engine tests; full and production dependency audits report zero findings.
+All 37 jobs in release run `44423006473` pass, including all 12 checks of the
+final public downloads and images. Both repositories have 27 byte-identical
+assets. All 224 public website captures and 46 PDFs/420 page captures match the
+reviewed source content and pixels. Together, the managed channels pass eight
+public lifecycle cases and eight actual rc.10-to-rc.11 upgrades; the standalone upgrade
+also matches the verified archive bytes. Documentation PR #208 passes all 32
+source CI jobs and six build-only consumers on `d1daba6`. Merge, replacement
+acceptance images and scoped rc.10 retirement follow; see [the release evidence](evidence/zellij-rc11-release-2026-11-18.json).
+
+The composer now includes responsive nested layouts, direct/provider video,
+caption/transcript links, layered backdrops, semantic content, selectors,
+feature explorers, bounded scroll stages and video stories, and inline reuse of
+eight built-in section types. Nine editable presets ship in the CLI's embedded
+authoring model. Technical/study books, shared web/PDF publication, equations,
+citations, glossary/index, print styles and five print languages are implemented;
+the nine current website/book archive identities remain unchanged.
+
+Homebrew, Scoop and native installers are the owned delivery channels. WinGet
+and additional package channels remain separate work. Production-domain migration,
+Fly/S3 and external CI-runner verification remain deferred; Vercel live acceptance
+remains explicitly user-deferred after payment was required. Broader importer
+fidelity, unrestricted MDX/animation composition and other documented limits are
+not silently promoted to supported features. The active composition guide states
+its bounds and reading fallbacks; no zero-bug or stable 1.0 claim is made.
+
 **2026-11-17: multilingual books, Kie theme and card contrast verified**
 
 Source rc.10 now supports Arabic RTL and French/German/Spanish print with pinned
