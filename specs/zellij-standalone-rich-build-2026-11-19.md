@@ -94,3 +94,22 @@ Each job adds and verifies its platform's official runtime and executes the real
 CLI against the resulting package. This removes six redundant npm/TypeScript
 builds, including a slow npm installation on the first Windows ARM64 runner;
 it does not substitute cross-compilation for native runtime acceptance.
+
+The route/metadata and image-version corrections are committed in `80119b6`.
+The Linux-built artifact from corrected CI `44625255756` also builds all 59
+documentation routes on Mac; Chromium and WebKit report zero captured page
+errors, failed assets or HTTP requests, and the homepage is visually checked.
+
+Distribution review found old container-only wording in Homebrew/Scoop hints
+and five rich template READMEs. The hints are corrected. `product-studio`,
+`product-launch`, `software-platform`, `creative-studio` and `api-platform` gain
+new 0.1.1 identities requiring CLI rc.12; no published 0.1.0 bytes are rewritten.
+Only their manifest version/minimum CLI and README instructions change; authored
+website content and artwork are unchanged. All nine templates pass deterministic
+packaging, local/bundled/remote parity, cache and strict-content acceptance.
+All 26 distribution-policy/formula tests pass. Final CI must include these
+documentation-bearing archive changes before tagging rc.12.
+
+All six native package jobs in `44625255756` now pass, including Windows ARM64,
+using the same Linux-compiled renderer. This is successful pre-publication
+platform evidence for `80119b6`, not a final-source or public-release result.
