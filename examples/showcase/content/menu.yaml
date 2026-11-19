@@ -1,13 +1,13 @@
 - { name: Lumen 3 Pro, page: lumen-3-pro }
 
-# A compact dropdown.
+# A flat list, presented as a full-width grid.
 - name: Shop
   items:
     - { name: Lumen 3 Pro, page: lumen-3-pro }
     - { name: Trade in, url: "/lumen-3-pro#trade" }
     - { name: Compare models, url: "/lumen-3-pro#buy" }
 
-# A child with its own `items` makes this a full-width panel.
+# Children with their own `items` form headed columns in the full-width panel.
 - name: Explore
   items:
     - name: The product

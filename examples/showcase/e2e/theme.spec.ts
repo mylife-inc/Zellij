@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { emitThemeCss, THEMES } from '../../../engine/packages/zellij/src/themes/emit';
+import { siteConfigSchema } from '../../../engine/packages/zellij/src/config/schema';
 
 /**
  * Covers spec §6 and §11.3: the active theme drives every visual token, dark
@@ -163,6 +165,28 @@ test.describe('theme switcher', () => {
         }),
       )
       .toEqual(expect.objectContaining({ distinct: true }));
+  });
+
+  test('site accent overrides do not recolour theme previews in any colour mode', async ({ page }) => {
+    await page.goto('/');
+    await page.addStyleTag({ content: emitThemeCss(siteConfigSchema.parse({
+      name: 'Brand override regression', theme: 'cupertino', nav: { themeSwitcher: true },
+      overrides: { accent: '#482A86' },
+    })) });
+    await openSwitcher(page);
+    for (const [mode, palette, system] of [['light', 'light', 'dark'], ['dark', 'dark', 'light'], ['system', 'light', 'light'], ['system', 'dark', 'dark']] as const) {
+      await page.emulateMedia({ colorScheme: system });
+      await page.locator('html').evaluate((element, value) => element.setAttribute('data-zellij-mode', value), mode);
+      for (const [name, theme] of Object.entries(THEMES)) {
+        const hex = theme[palette].accent.slice(1);
+        const rgb = `rgb(${[0, 2, 4].map(offset => parseInt(hex.slice(offset, offset + 2), 16)).join(', ')})`;
+        await expect(page.locator(`.zellij-theme-chip[data-zellij-theme="${name}"]`)).toHaveCSS('background-color', rgb);
+      }
+      expect(await page.locator('html').evaluate(element => getComputedStyle(element).getPropertyValue('--zellij-accent').trim())).toBe('#482A86');
+    }
+    await page.locator('.zellij-theme-card').filter({ hasText: 'Forest' }).click();
+    await expect(page.locator('html')).toHaveAttribute('data-zellij-theme', 'forest');
+    expect(await page.locator('html').evaluate(element => getComputedStyle(element).getPropertyValue('--zellij-accent').trim())).toBe('#482A86');
   });
 
   test('restyles the whole site when a theme is chosen', async ({ page }) => {
