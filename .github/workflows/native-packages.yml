@@ -12,8 +12,33 @@ permissions:
   contents: read
 
 jobs:
+  renderer:
+    name: Compile shared rich renderer
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Compile the shared rich renderer once for all platforms
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: |
+          npm run build --workspace @shebka/zellij
+          node scripts/build-standalone-engine.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: standalone-engine
+          path: dist/standalone-engine/
+          if-no-files-found: error
+          retention-days: 14
+
   package:
     name: Package and install (${{ matrix.target }})
+    needs: renderer
     runs-on: ${{ matrix.os }}
     timeout-minutes: 45
     strategy:
@@ -58,13 +83,10 @@ jobs:
       - name: Windows upgrade lock recovery and preservation
         if: runner.os == 'Windows'
         run: cargo test --manifest-path cli/Cargo.toml --locked --release -p zellij-cli --bin zel maintenance::upgrade::tests
-      - run: npm ci
-      - name: Compile the shared rich renderer once for distribution
-        env:
-          NODE_OPTIONS: --max-old-space-size=4096
-        run: |
-          npm run build --workspace @shebka/zellij
-          node scripts/build-standalone-engine.mjs
+      - uses: actions/download-artifact@v8
+        with:
+          name: standalone-engine
+          path: dist/standalone-engine
       - name: Package the private runtime and verify tool-free builds
         env:
           TARGET: ${{ matrix.target }}

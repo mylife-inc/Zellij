@@ -310,6 +310,8 @@ cached files are checked before execution. Failed validation, downloads, renderi
 or cache-integrity checks preserve the previous output. `--features` selects
 maths/diagrams as before; both are available by default in the standalone engine.
 `--base-path`, `--site-url` and `--no-check` remain available without editing source.
+Routes must map to safe portable file paths: traversal, Windows device names,
+URL delimiters and case-insensitive route collisions fail before pages are written.
 
 The cache is `~/Library/Caches/zellij/engines` on macOS,
 `$XDG_CACHE_HOME/zellij/engines` (or `~/.cache/zellij/engines`) on Linux, and

@@ -12,6 +12,8 @@ import { syncAssets } from '../cli/sync-assets';
 import { writeSearchIndex } from '../cli/write-search-index';
 import { check } from '../cli/check';
 import { exportOffline } from './export';
+import { assetHref } from '../content/asset-href';
+import { validateOfflineRoutes } from './validate-routes';
 
 const escape = (value: unknown) => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
 
@@ -38,6 +40,7 @@ async function main() {
   await cp(path.join(bundled, 'FONT-LICENSES.txt'), path.join(resources, 'FONT-LICENSES.txt'));
   await cp(path.join(bundled, 'files'), path.join(resources, 'files'), { recursive: true });
   const { site } = await loadZellijRuntime({ appRoot });
+  validateOfflineRoutes(site.routes);
   const pages = createZellijPages({ appRoot });
   const shell = await createZellijRootLayout({ appRoot })({ children: null });
   const { children, ...attributes } = shell.props;
@@ -57,8 +60,8 @@ async function main() {
       if (value) head += `<meta property="${property}" content="${escape(value)}">`;
     }
     if (site.config.ogImage) {
-      const asset = site.config.basePath + '/_zellij/assets/' + site.config.ogImage.replace(/^\/+/, '');
-      const image = /^https?:\/\//.test(site.config.ogImage) ? site.config.ogImage : site.config.siteUrl ? new URL(asset, site.config.siteUrl).href : asset;
+      const asset = assetHref(site.config.ogImage, site.config.basePath);
+      const image = site.config.siteUrl ? new URL(asset, site.config.siteUrl).href : asset;
       head += `<meta property="og:image" content="${escape(image)}"><meta name="twitter:image" content="${escape(image)}">`;
     }
     const file = path.join(output, route.slice(1), 'index.html');

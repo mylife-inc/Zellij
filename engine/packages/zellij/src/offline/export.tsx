@@ -12,6 +12,7 @@ import { fileHref, setFileLocation } from './location';
 import { FileRedirect } from './navigation';
 import { featureEnabled } from '../../feature-config.cjs';
 import { Analytics } from '../chrome/analytics';
+import { validateOfflineRoutes } from './validate-routes';
 
 const escapeAttribute = (value: string) => value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 function rewriteMarkup(html: string) {
@@ -38,6 +39,7 @@ export async function exportOffline(appRoot = process.cwd(), output = path.join(
   const inventory = await files(root); // reject nested symlinks before the first write
   const { site } = await loadZellijRuntime({ appRoot });
   const routes = [...site.routes];
+  validateOfflineRoutes(routes);
   const pages = createZellijPages({ appRoot });
   const layout = createZellijRootLayout({ appRoot });
   const runtimeDir = path.join(root, '_zellij', 'file');
@@ -49,9 +51,6 @@ export async function exportOffline(appRoot = process.cwd(), output = path.join(
   await writeFile(path.join(runtimeDir, 'search-index.js'), `window.__zellijSearchIndex=${jsonForScript(search)};\n`);
   let count = 0;
   for (const route of routes) {
-    if (!route.startsWith('/') || route.includes('\\') || route.split('/').some(p => p === '..' || p === '.')) {
-      throw new Error(`Unsafe offline route: ${route}`);
-    }
     const location = { route, basePath: site.config.basePath, routes };
     setFileLocation(location);
     const file = path.join(root, route.slice(1), 'index.html');

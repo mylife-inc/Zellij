@@ -62,6 +62,16 @@ try {
   assert.equal(complete.pages, 28, 'Every built-in section and the math guide must render');
   assert.match(await readFile(path.join(root, 'full/site/guide/index.html'), 'utf8'), /<mjx-container/,
     'MathJax must run from the packaged engine without resolving system packages');
+  const pageList = path.join(root, 'full/content/pages.yaml');
+  const authoredPages = await readFile(pageList, 'utf8');
+  await writeFile(pageList, authoredPages.replace('- name: home', '- name: home\n  route: /../escape'));
+  assert.match(await run(['build', 'full', '--offline', '--no-check'], 3), /offline route/);
+  assert(!(await readdir(path.join(root, 'full'))).includes('escape'), 'An authored route must not write outside the staged output');
+  await writeFile(pageList, authoredPages);
+  await run(['build', '--offline', '--base-path', '/manual', '--site-url', 'https://docs.example.test', '--out', 'prefix-site']);
+  const prefixed = await readFile(path.join(root, 'prefix-site/index.html'), 'utf8');
+  assert.match(prefixed, /rel="canonical" href="https:\/\/docs\.example\.test\/manual\/"/);
+  assert.match(prefixed, /href="\.\/_zellij\/file\/styles\.css"/);
   const content = path.join(root, 'content/site.yaml');const original = await readFile(content);
   await writeFile(content, 'broken: [');await run(['build', '--offline'], 3);
   assert((await readFile(path.join(root, 'site/index.html'))).equals(before));await writeFile(content, original);
@@ -74,8 +84,8 @@ try {
   await writeFile(path.join(cached, 'engine/styles.css'), originalStyles);
   if (process.env.ZEL_STANDALONE_RESULT) {
     await mkdir(process.env.ZEL_STANDALONE_RESULT, { recursive: true });
-    await cp(path.join(root, 'site'), process.env.ZEL_STANDALONE_RESULT, { recursive: true });
+    await cp(path.join(root, 'prefix-site'), process.env.ZEL_STANDALONE_RESULT, { recursive: true });
   }
   assert.equal((await readdir(root)).some(n => n.startsWith('.zel-build-')), false);
-  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, failedBuildPreservedSite: true, tamperRejected: true, systemTools: false }));
+  console.log(JSON.stringify({ platform, initialDownloads: requests.length, pages: manifest.pages, completeStarterPages: complete.pages, cachedOfflineBuild: true, failedBuildPreservedSite: true, tamperRejected: true, routeTraversalRejected: true, metadataOverrides: true, systemTools: false }));
 } finally { server.close();await rm(root, { recursive: true, force: true }); }

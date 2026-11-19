@@ -58,3 +58,39 @@ results are pending and must be recorded before claiming release readiness.
 The local compressed Mac Intel renderer is approximately 48.1 MB. It is separate
 from the native CLI archive. Measure final published sizes before reporting them.
 No claim of universal OS compatibility or zero bugs is made.
+
+## Local and initial hosted verification update
+
+Implementation commits `becc1ed` and `d4e9b9e` are under review in
+[PR #211](https://github.com/mylife-inc/Zellij/pull/211). The complete local Rust
+workspace passes 820 tests with five existing hosted-only tests ignored; Clippy
+and types pass. Engine tests pass 537 cases, plus three new route-safety cases.
+The standalone driver now covers the 28-route full starter (25 section types
+and a math guide), checksum rejection, cache tampering, failed-output retention,
+route traversal and base-path/site-URL overrides. Its child PATH is empty.
+Chromium and WebKit pass the 16-route prefixed showcase and the complete
+59-route documentation with zero captured page errors, failed assets or HTTP
+requests. The documentation's Openers page intentionally demonstrates two
+additional H1s; its local crawl expects those three authored headings.
+
+Testing the real documentation exposed MathJax's dynamic package-version lookup
+inside a bundled module. The publication compiler now defines MathJax's supported
+`PACKAGE_VERSION` constant from its installed package. The new full-starter math
+assertion requires rendered MathJax SVG, so a silent optional-library fallback
+cannot pass. Runtime and font licenses are included in the renderer distribution;
+font licenses also accompany the generated website.
+
+Initial CI `44623359389` passes the standalone download/cache/full-section tests
+on Linux x64/ARM64, Windows x64 and macOS ARM64 at this checkpoint. Remaining
+native jobs are pending. The Engine job correctly caught the standalone image
+recipe still selecting rc.11 after the workspace bump; the recipe is corrected
+to rc.12 and all 20 local release-policy tests pass. The next run must pass on
+the updated final source, including route preflight and shared OG asset resolution.
+No release or production publication has occurred for this feature.
+
+The final packaging workflow compiles the platform-independent JavaScript/CSS
+once on Linux, then supplies those identical files to all six native jobs.
+Each job adds and verifies its platform's official runtime and executes the real
+CLI against the resulting package. This removes six redundant npm/TypeScript
+builds, including a slow npm installation on the first Windows ARM64 runner;
+it does not substitute cross-compilation for native runtime acceptance.

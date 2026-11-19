@@ -23,6 +23,12 @@ public CLI; neither rc.12 nor renderer packages have been published yet. Do not
 claim this feature is available from existing installers until release acceptance
 passes. See [architecture, scope and evidence](specs/zellij-standalone-rich-build-2026-11-19.md).
 
+Local verification has expanded to 820 Rust tests, 537 engine tests plus three
+route-safety regressions, the 28-route full starter including math, and browser
+crawls of all 59 documentation routes. PR #211 contains the implementation.
+Initial hosted CI catches a stale image-recipe version pin; the corrected pin
+and final route/asset safeguards require a new green run before merge/release.
+
 **2026-11-19: automatic production documentation deployment — completed**
 
 [PR #210](https://github.com/mylife-inc/Zellij/pull/210) merged as
