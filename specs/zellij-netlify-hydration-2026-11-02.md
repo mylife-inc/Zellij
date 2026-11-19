@@ -1,6 +1,15 @@
 # Netlify staging hydration reproduction — 2026-11-02
 
-Status: **diagnosed, unresolved**. This report is prepared for review/support;
+**Current follow-up — 2026-11-19:** The rebuilt documentation is now live on the
+existing production domain. Normal Chrome checks on the final draft and public
+site capture no hydration/console/page errors during home, CLI, search, composer,
+theme, template and book flows. This verifies the current engine remedy in those
+live flows; it is not a claim that Netlify changed its annotation or that every
+remote route/browser was tested. A rapid headless crawl stopped on HTTP 403.
+See [publication evidence](zellij-netlify-production-2026-11-19.md). The original
+failure, controlled remedy and test history below are retained unchanged.
+
+Historical status on 2026-11-02: **diagnosed, unresolved**. This report is prepared for review/support;
 the user subsequently reports filing the bug and emailing support@netlify.com.
 A provider response is pending. No production deployment or domain changed.
 

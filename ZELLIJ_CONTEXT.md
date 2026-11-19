@@ -3,6 +3,25 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: public documentation deployed to the existing Netlify project**
+
+The user explicitly authorized publication after the local review below.
+`https://zellij.shebka.net/` now serves source `e341880`
+(reviewed docs `8168d79`, explicit icon `1b63560`, conventional favicon `e341880`)
+from deploy `6aff4d3001a5a3ee682b3ff2`. This supersedes the pending-review and
+production-cutover restrictions in older dated entries. The existing account,
+project and domain remain in place; `zel-stage` and private client content are
+untouched. No CLI version, GitHub publication or installation channel changed.
+
+A complete verified backup of the 589-file old production deployment is retained
+locally and the old Netlify deploy remains available. Final Next export, local
+preservation (46 old + 13 new routes, 282 heading IDs, 82 mappings, 29 identical
+images), all 588 artifact-file digests and normal
+Chrome draft/production flows pass. Live navigation, search, themes, templates,
+books and icons have no captured console/page errors. A rapid headless draft
+crawl stopped on provider HTTP 403; this is not a full remote-route browser pass.
+See [deployment and recovery evidence](specs/zellij-netlify-production-2026-11-19.md).
+
 **2026-11-19: local documentation review before production deployment**
 
 The user wants to inspect the local documentation before updating
