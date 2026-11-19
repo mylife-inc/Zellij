@@ -3,6 +3,24 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: independent documentation CI — implementation under verification**
+
+The user approved automatic publication after the direct production deployment.
+`.github/workflows/docs.yml` validates relevant PR changes and publishes relevant
+`main` pushes or manual-main runs independently of CLI versions. Its build job
+runs strict/deep content checks, a static export preserving authored images and
+the full local browser preservation gate. The publishing job uses dedicated
+`NETLIFY_DOCS_PRODUCTION_TOKEN`, verifies the existing project/domain and source
+ancestry, checks a draft before promotion, and retains previous-deploy receipts.
+The release workflow and `zdocs-publish` helper no longer use `DEPLOY_DOCS` or the
+staging secrets for production. See [the publishing guide](specs/zellij-docs-deployment.md).
+
+Local publication/release-policy tests, workflow lint and read-only live HTTP
+checks pass. Hosted CI, production credential setup and the first automatic
+publication are pending at this checkpoint; do not infer deployment completion
+from the new files. The locally published navigation/offline/doc changes are
+included in the same PR so GitHub starts with the current production source.
+
 **2026-11-19: public documentation deployed to the existing Netlify project**
 
 The user explicitly authorized publication after the local review below.

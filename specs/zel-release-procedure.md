@@ -1,5 +1,10 @@
 # Zellij release channels and candidate procedure
 
+**Documentation publication — 2026-11-19:** Production documentation now has its
+own `docs.yml` workflow, independent of release tags. See the
+[documentation publishing guide](zellij-docs-deployment.md). Earlier dated
+release records below retain their original publication policy and outcomes.
+
 **Current rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
 Scoop and verified guides are published. Documentation PR #208 merges as
 `79de857`. All source/release/public-artifact, managed lifecycle/upgrade and
@@ -191,9 +196,9 @@ migration and live acceptance on other providers remain separate tasks.
 
 | Build | Image tags, before feature suffix | GitHub release | Production docs and shared installer scripts |
 | --- | --- | --- | --- |
-| `main` branch | `main` | None | Unchanged |
+| `main` branch | `main` | None | Relevant docs changes deploy after documentation checks; installer scripts unchanged |
 | `v0.2.0-rc.1` example | `0.2.0-rc.1` only | Prerelease, never latest | Unchanged; docs still built |
-| `v0.2.0` example | `0.2.0`, `0.2`, `latest` | Stable | Installer scripts updated; docs deploy only when enabled and credentials exist |
+| `v0.2.0` example | `0.2.0`, `0.2`, `latest` | Stable | Installer scripts updated; docs built but publication remains independent |
 
 All four image variants follow this rule: no suffix, `-maths`, `-diagrams`,
 and `-all`. Container versions omit the leading `v`. Release assets in this
@@ -327,10 +332,11 @@ to their exact documentation commit without changing assets or release tags.
 After candidate acceptance, commit the stable workspace version and run the
 same review/CI process before creating its new stable tag. The release workflow
 builds and publishes that version; it does not turn a candidate tag into stable.
-Stable production docs require `DEPLOY_DOCS=true`, `NETLIFY_AUTH_TOKEN` and
-`NETLIFY_SITE_ID`. A candidate never deploys production docs even when all three
-are present. Coordinate docs publication with the corresponding native release
-so the website does not advertise commands absent from the stable executable.
+Stable and candidate tags build documentation but do not publish it. The
+independent `docs.yml` workflow publishes from `main` using the dedicated
+`NETLIFY_DOCS_PRODUCTION_TOKEN` secret. The old `DEPLOY_DOCS` variable is no longer
+used. Label forthcoming functionality clearly so documentation updates do not
+claim commands are available in an older published executable.
 
 `scripts/publish.sh image` and `release` enforce the same candidate policy.
 `zrelease-local` delegates publication to that helper, but remains an emergency

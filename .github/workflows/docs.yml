@@ -1,0 +1,108 @@
+name: Deploy documentation
+
+on:
+  push:
+    branches: [main]
+    paths: &docs_paths
+      - 'examples/zellij-docs/**'
+      - 'engine/packages/zellij/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/docs.yml'
+      - 'scripts/publish-docs*'
+      - 'scripts/check-docs-preservation*'
+      - 'scripts/browser-failure-state.mjs'
+      - 'scripts/install.sh'
+      - 'specs/evidence/zellij-production-comparison-2026-11-02.json'
+      - 'specs/evidence/zellij-legacy-heading-aliases-2026-11-02.json'
+  pull_request:
+    paths: *docs_paths
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Validate and build documentation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node --test scripts/publish-docs.test.mjs
+      - run: npm run build --workspace @shebka/zellij
+      - name: Validate authored documentation
+        run: node engine/packages/zellij/bin/zellij.mjs check examples/zellij-docs/content --deep --strict
+      - name: Build with the preserved authored images
+        working-directory: examples/zellij-docs
+        env:
+          ZELLIJ_OUTPUT: export
+        run: |
+          node ../../engine/packages/zellij/bin/zellij.mjs prepare
+          node ../../node_modules/next/dist/bin/next build --webpack
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Verify routes, bookmarks, assets, hydration and search
+        env:
+          ZELLIJ_BROWSER_DIAGNOSTICS: ${{ runner.temp }}/documentation-diagnostics
+        run: node scripts/check-docs-preservation.mjs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: documentation-site
+          path: examples/zellij-docs/out/
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: documentation-diagnostics
+          path: ${{ runner.temp }}/documentation-diagnostics/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  publish:
+    name: Publish production documentation
+    needs: build
+    if: github.repository == 'mylife-inc/Zellij' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: documentation-production
+      url: https://zellij.shebka.net
+    concurrency:
+      group: zellij-documentation-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - uses: actions/download-artifact@v8
+        with:
+          name: documentation-site
+          path: ${{ runner.temp }}/documentation-site
+      - name: Install the pinned deployment client without production credentials
+        run: npm install --prefix "$RUNNER_TEMP/netlify-client" --ignore-scripts --no-audit --no-fund netlify-cli@27.0.2
+      - name: Verify the destination, upload a draft and promote the checked artifact
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_DOCS_PRODUCTION_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          NETLIFY_CLI: ${{ runner.temp }}/netlify-client/node_modules/.bin/netlify
+          DOCS_OUTPUT: ${{ runner.temp }}/documentation-site
+          DOCS_RECEIPT: ${{ runner.temp }}/documentation-publication.json
+        run: node scripts/publish-docs.mjs
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: documentation-publication
+          path: ${{ runner.temp }}/documentation-publication.json
+          if-no-files-found: ignore
+          retention-days: 90
