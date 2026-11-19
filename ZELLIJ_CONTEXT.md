@@ -3,7 +3,34 @@
 Last refreshed: **2026-11-18**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
-**2026-11-18: rc.11 published and verified; channel/docs migration in progress**
+**2026-11-18: rc.11 distribution and scoped rc.10 retirement complete**
+
+The expanded composer and nine editable presets are released as `v0.2.0-rc.11`
+at `1f8232b`. All 37 release jobs, 32 documentation CI jobs, six build-only
+consumers, eight managed lifecycle cases and eight actual managed upgrades pass.
+The standalone upgrade matches the public binary. All 224 public website captures
+and 46 PDFs/420 page captures match reviewed source content and pixels.
+PR #208 merges guides and consumer pins as `79de857`; both release pages link to
+the verified merged guides. Homebrew, Scoop and the shared install guide are current.
+
+Replacement publications `44431833376`/`44431836843` and fresh-pull HTTP
+`44432039714` pass. PR #209's policy `85f1c31` and committed plans `d77a2cf`
+pass 13 image guards, seven native guards and the live read-only preflight.
+After 17 exact replacement gates, owner execution removes two rc.10 releases,
+54 assets, two tags and 26 image versions without a failed deletion. All 39
+current manifest nodes, 3,771 excluded build-history versions and both CodeSeal
+releases remain intact. Post-cleanup inventory `44433078378`, HTTP `44433082092` and
+fresh anonymous downloads pass; both Zellij channels retain only rc.11 with
+27 byte-identical assets each. See [release evidence](specs/evidence/zellij-rc11-release-2026-11-18.json)
+and [retirement evidence](specs/evidence/zellij-rc11-image-retirement-2026-11-18.json).
+
+Production-domain migration and live-provider verification stay deferred.
+WinGet and additional installation channels remain separate backlog work.
+The composer has explicit authoring and animation limits; arbitrary section
+embedding, executable MDX and unrestricted timelines remain unsupported.
+No stable 1.0 or zero-undiscovered-bugs claim. Do not reuse the completed plans.
+
+**Earlier 2026-11-18 publication checkpoint — channel/docs migration**
 
 Immutable tag `1f8232b` publishes the completed composer expansion and nine
 editable presets. All 37 jobs in release run `44423006473` pass, including

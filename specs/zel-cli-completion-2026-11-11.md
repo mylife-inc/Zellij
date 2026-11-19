@@ -1,6 +1,17 @@
 # CLI completion gates — 2026-11-11
 
-**2026-11-18: rc.11 published and verified; migration in progress**
+**Current rc.11 distribution status — 2026-11-18.** The candidate, Homebrew,
+Scoop and verified guides are published. Documentation PR #208 merges as
+`79de857`. All source/release/public-artifact, managed lifecycle/upgrade and
+consumer checks pass. PR #209 completes reviewed rc.10 retirement: two releases,
+54 assets, two tags and 26 image versions removed; all 39 current manifests,
+3,771 excluded build-history versions and both CodeSeal releases retained.
+Independent inventory `44433078378`, fresh-pull HTTP `44433082092` and fresh anonymous
+public downloads pass. See [retirement evidence](evidence/zellij-rc11-image-retirement-2026-11-18.json).
+Production hosting and live providers remain deferred; additional installation
+channels remain separate work. No stable 1.0 or zero-bug claim.
+
+**Earlier 2026-11-18 publication checkpoint — migration in progress**
 
 The immutable rc.11 tag is `1f8232b`, following preparation PR #207 and all
 32 source CI jobs in `44415698968`. Normal release preflight passes 817 Rust
