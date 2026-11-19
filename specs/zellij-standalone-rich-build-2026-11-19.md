@@ -121,3 +121,10 @@ of the new interactive default, and do not download an unrelated renderer during
 container acceptance. A regression covers both renderers in all three generators.
 New rich sites and template creation now suggest `zel build` first; live
 development is explicitly optional and retains its container prerequisite.
+
+CI `44627745387` correctly detects saved acceptance-workflow drift after the
+generator change in `3ae872f`. Regenerate the four affected verification commands
+through `prepare-delivery-acceptance.mjs --write`, retaining their public rc.11
+execution pins until rc.12 is actually published. The local drift check and
+workflow lint pass after regeneration. This is a saved-fixture correction; no
+provider deployment is performed.

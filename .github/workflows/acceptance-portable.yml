@@ -31,7 +31,7 @@ jobs:
     - name: Validate documentation
       run: zel check --config "$SITE_CONFIG" --strict --deep
     - name: Build without publishing
-      run: zel build --config "$SITE_CONFIG" --out "$RUNNER_TEMP/zellij-site"
+      run: zel build --config "$SITE_CONFIG" --target portable --out "$RUNNER_TEMP/zellij-site"
     timeout-minutes: 30
 name: Documentation (acceptance-portable.yml)
 on:
