@@ -72,3 +72,32 @@ handoff before a public CLI release; it is not a claim that stock rc.11 has the
 new target. Full regeneration was executed on Intel macOS. Windows/ARM native
 execution and a public release remain separate checks. No client material belongs
 in public tests, commits, images or release artifacts.
+
+## Follow-up: duplicated headings during scroll
+
+Fixing commit: **`8021a66`**.
+
+A consumer found a section heading displayed three times. The authored section
+and generated HTML contained one copy. `decode()` had always passed the wire
+key to `createElement`, including `null` for unkeyed elements. React converts an
+explicit null key to the string `"null"`; unrelated siblings therefore collided
+during reveal state updates. This could duplicate visible content without a
+browser exception. The decoder now omits the key property when it is absent,
+while preserving an explicitly authored literal `"null"` key.
+
+The initial acceptance results above remain historical evidence, but their
+initial viewport comparisons and error checks did not cover this state-driven
+duplication. A new unit regression failed on the original decoder and passes on
+the fix. The public file-browser harness compares section header text against
+the source HTML before and after scrolling every visible header into view.
+
+Verification: 54 scoped engine tests, TypeScript/package build, and all 16
+showcase routes in Chromium and WebKit pass. The consumer homepage also passes
+in both browsers at desktop and mobile sizes with HTTP blocked: repeated scrolls,
+audience tabs, theme switching and search retain exactly one copy of each
+authored heading. The local client engine archive and generated site were
+rebuilt. A fresh offline crawl also passes all 200 consumer routes and 64
+diagrams with no missing images, failed requests or page errors. Checksums
+confirm all 443 files in the editable source collection and all four native
+binaries are unchanged. No private content was added to the public regression
+fixtures.

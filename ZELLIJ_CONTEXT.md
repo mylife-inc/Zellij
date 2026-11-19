@@ -3,6 +3,24 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: offline headings duplicated on scroll — fixed locally**
+
+Fixing commit **`8021a66`** preserves absent React keys when decoding the rich
+offline element tree. Passing `key: null` had converted an absent key into the
+literal string `"null"`, causing sibling collisions and duplicated content when
+reveal animations updated their state. The source and initial HTML contained
+one heading; the live page could show three without raising a browser error.
+The initial file-export checks below did not exercise this failure sufficiently.
+
+A failing-before/passing-after regression covers absent versus literal keys.
+The file acceptance harness now scrolls section headers into view and compares
+their text against the generated HTML before and after reveal transitions.
+Validation: 54 scoped tests, typecheck/package build, 16 showcase routes in
+Chromium/WebKit and private homepage interaction checks in both browsers on
+desktop/mobile. The private engine and site were rebuilt; source Markdown and
+native binaries remain unchanged. This remains local work, not a public release.
+See the [dated follow-up](specs/zellij-rich-file-export-2026-11-19.md#follow-up-duplicated-headings-during-scroll).
+
 **2026-11-19: rich offline renderer — local implementation**
 
 The user clarified that a double-click handoff must retain the rich website,
