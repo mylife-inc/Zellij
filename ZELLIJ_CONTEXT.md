@@ -32,6 +32,26 @@ commits so main will match the source now live. The current production site
 remains the successful direct deployment recorded below. Do not infer completion
 of the CI rollout from the new workflow files.
 
+**2026-11-19: documentation CI authentication and first hosted run**
+
+The earlier authentication block is resolved. The user's interactive terminal
+sets `XDG_CONFIG_HOME=/Users/hamid/Dev/config`; non-interactive maintenance
+commands must set `GH_CONFIG_DIR=/Users/hamid/Dev/config/gh`. Account `mylife-inc`
+has Admin access. Dedicated `NETLIFY_DOCS_PRODUCTION_TOKEN` is configured from
+the working local Netlify login without exposing its value; staging secrets
+remain unchanged. [PR #210](https://github.com/mylife-inc/Zellij/pull/210) targets
+main from `codex/docs-auto-deploy`.
+
+The first documentation workflow `44602927331` passed validation, production
+build and browser preservation; production publication correctly skipped on the
+PR. General CI `44602927256` found a stale generated portable stylesheet in the
+schema job. The embedded schema itself matches. Regeneration adds the 135 theme
+preview declarations introduced by the navigation fix, preserving every previous
+CSS byte when those new declarations are removed. Native documentation tests
+pass (91 passed, 0 ignored); generated wrapper, theme and Mermaid checks pass.
+A new CI run is required on the correction before merging. The first automatic
+production deployment remains pending at this checkpoint.
+
 **2026-11-19: public documentation deployed to the existing Netlify project**
 
 The user explicitly authorized publication after the local review below.
