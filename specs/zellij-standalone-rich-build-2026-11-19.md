@@ -3,6 +3,17 @@
 Status: rc.12 implementation in progress, based on main `fbcb558`. No public
 renderer assets have been published. rc.11 is unchanged.
 
+Final-source CI `44628797826` at `d3cc2d5` passed 34 of 35 jobs, including all
+six native renderer packages, the actual packaged Linux file-browser test,
+Homebrew/Scoop and the engine/site/book checks. Its final CLI integration job
+found four inline HTTP-export invocations that still relied on the old default:
+the preservation test attempted to download the not-yet-published rc.12 renderer
+and received 404. These invocations now explicitly select `--target static`,
+including the following all-section template export. No application code changes
+were needed. A new complete CI run is required before merge and publication.
+The prepared rc.12 public guides also pass a separate 59-route Chromium/WebKit
+file crawl using the exact earlier CI-built shared renderer; they are not live yet.
+
 The user requires the complete rich website, opened through `file://`, from
 Markdown/MDX/YAML and `zel.yaml`, with only `zel` installed. The CLI stays small;
 a separate renderer is downloaded on first use and shared across sites. It is

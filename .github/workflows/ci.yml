@@ -563,7 +563,7 @@ jobs:
           zel="$PWD/cli/target/debug/zel"
           work=$(mktemp -d)
           "$zel" new docs "$work/content" --name Acme --guide
-          "$zel" build "$work/content" --out "$work/site"
+          "$zel" build "$work/content" --target static --out "$work/site"
           test -s "$work/site/index.html"
           test -f "$work/site/.zellij-output"
           cp "$work/site/index.html" "$work/previous.html"
@@ -572,7 +572,7 @@ jobs:
           # The previous export must survive this late build failure too.
           cp "$work/content/content/01-guide/index.mdx" "$work/guide.mdx"
           printf '\n<Callout>\n' >> "$work/content/content/01-guide/index.mdx"
-          if "$zel" build "$work/content" --out "$work/site"; then
+          if "$zel" build "$work/content" --target static --out "$work/site"; then
             echo '::error::Unclosed MDX component unexpectedly built'
             exit 1
           fi
@@ -582,7 +582,7 @@ jobs:
           cp "$work/guide.mdx" "$work/content/content/01-guide/index.mdx"
           printf 'type: hero\nheadline: Updated site\n' > "$work/content/content/sections/home/hero.yaml"
           printf 'obsolete\n' > "$work/site/obsolete.html"
-          "$zel" build "$work/content" --out "$work/site"
+          "$zel" build "$work/content" --target static --out "$work/site"
           grep -q 'Updated site' "$work/site/index.html"
           test ! -e "$work/site/obsolete.html"
 
@@ -593,7 +593,7 @@ jobs:
           set -euo pipefail
           work=$(mktemp -d)
           node scripts/check-section-templates.mjs cli/target/debug/zel "$work/content"
-          cli/target/debug/zel build "$work/content" --out "$work/site"
+          cli/target/debug/zel build "$work/content" --target static --out "$work/site"
           test -s "$work/site/index.html"
           node --input-type=module - "$work/site/wizard.html" "$work/site/structured.html" <<'NODE'
           import assert from 'node:assert/strict';
