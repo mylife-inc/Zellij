@@ -399,7 +399,8 @@ output directory; do not add the marker by hand.
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
-| `--features <selection>` | Complete math/diagram selection for this invocation | Portable configuration, or hosted engine-image selection |
+| `--features <selection>` | Complete math/diagram selection for this invocation | Both enabled for `file`; portable configuration or engine-image selection for other targets |
+| `--offline` | Require an already cached renderer; `file` target only | Matching renderer downloaded if absent |
 | `--base-path <path>` | Hosted deployment prefix; `/` clears it | Authored `basePath` |
 | `--site-url <origin>` | Hosted public HTTP(S) origin for canonical URLs and SEO metadata | Authored `siteUrl` |
 | `--no-check` | Skip the separate hosted validation preflight | Preflight enabled |
