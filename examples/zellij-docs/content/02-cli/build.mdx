@@ -379,7 +379,7 @@ it supports both portable and hosted sites. See [image commands](/cli/image).
 
 ## Output ownership
 
-Folder outputs (`portable`, `static`, and the forthcoming `file` target) require
+Folder outputs (`portable`, `static`, and `file`) require
 output outside the content source (`content/` for a configured site). It must be new, empty,
 or a previous Zellij export containing its `.zellij-output` ownership marker.
 Keep authored files outside generated output: rebuilding replaces the export
@@ -395,7 +395,7 @@ output directory; do not add the marker by hand.
 | --- | --- | --- |
 | `[dir]` | Configured site or explicit legacy input | `./zel.yaml`, then `./docs/zellij/zel.yaml` |
 | `--target <portable\|static\|file\|image>` | Explicit output target | Configured renderer; legacy inference otherwise |
-| `--out <path>` | Output folder for `portable`, `static`, or the forthcoming `file` target | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy hosted: `./dist` |
+| `--out <path>` | Output folder for `portable`, `static`, or `file` | Configured `build.out` or `site/`; legacy portable: sibling `<input-name>-site`; legacy hosted: `./dist` |
 | `--name <text>` | Portable site's header name | `zel.yaml` name, otherwise input folder name |
 | `--theme <name>` | Portable theme; see `zel list themes` | `zel.yaml` theme, otherwise `cupertino` |
 | `--tag <name:version>` | Image tag, image target only | Existing image naming policy |
