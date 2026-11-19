@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-19",
+  "authorization": "User approved independent automatic GitHub Actions publication to the existing production Netlify site.",
+  "pull_request": "https://github.com/mylife-inc/Zellij/pull/210",
+  "tested_head": "a59b8304d96a803b3aa6e8247a9dc9cd35269b8d",
+  "merge": {
+    "mergeCommit": {
+      "oid": "c4c2bb4bb22f9a8a4148ef9742823bf159cbd6cd"
+    },
+    "mergedAt": "2026-11-19T20:50:55Z",
+    "state": "MERGED",
+    "url": "https://github.com/mylife-inc/Zellij/pull/210"
+  },
+  "merge_tree_identical_to_tested_head": true,
+  "checks": {
+    "local_publication_release_policy_tests": 39,
+    "native_documentation_tests": {
+      "passed": 91,
+      "ignored": 0
+    },
+    "general_pr_ci": {
+      "run": 44605947631,
+      "conclusion": "success",
+      "jobs_passed": 33
+    },
+    "pr_documentation": {
+      "run": 44605947651,
+      "build": "success",
+      "publication": "skipped as intended on pull requests"
+    },
+    "automatic_documentation": {
+      "run": 44612823122,
+      "event": "push",
+      "ref": "refs/heads/main",
+      "conclusion": "success",
+      "jobs_passed": 2
+    },
+    "main_images": {
+      "run": 44612823252,
+      "conclusion": "success",
+      "jobs_passed": 13
+    },
+    "duplicate_main_ci": {
+      "run": 44612823176,
+      "status_at_recording": "in_progress",
+      "not_claimed_complete": true
+    }
+  },
+  "resolved_ci_findings": [
+    {
+      "run": 44602927256,
+      "finding": "Generated portable theme previews were stale",
+      "fixing_commit": "be1190838991a3972844a3551aba3b5186303878",
+      "verification_run": 44605947631
+    },
+    {
+      "run": 44603977358,
+      "finding": "macOS declaration worker exhausted the default heap",
+      "fixing_commit": "a59b8304d96a803b3aa6e8247a9dc9cd35269b8d",
+      "verification_run": 44605947631
+    }
+  ],
+  "publication_receipt": {
+    "source": "c4c2bb4bb22f9a8a4148ef9742823bf159cbd6cd",
+    "site_id": "91774174-d4c2-41b5-aa4b-ac61eeadbf51",
+    "domain": "zellij.shebka.net",
+    "deploy_id": "6aff622de7f414ee8b4d4a38",
+    "previous_deploy_id": "6aff4d3001a5a3ee682b3ff2",
+    "preview": "https://6aff622de7f414ee8b4d4a38--zellij-docs.netlify.app",
+    "state": "verified",
+    "published_at": "2026-11-19T20:55:19.419Z"
+  },
+  "preservation": {
+    "original_routes": 46,
+    "added_routes": 13,
+    "original_heading_ids": 282,
+    "compatibility_mappings": 82,
+    "byte_identical_images": 29,
+    "repository_links_current": true,
+    "captured_browser_errors": 0,
+    "non_framework_paths_retained_from_direct_deploy": 411
+  },
+  "workflow_http_checks": {
+    "draft_and_production": true,
+    "routes": [
+      "/",
+      "/cli",
+      "/cli/build",
+      "/cli/templates",
+      "/cli/books",
+      "/sections/compose"
+    ],
+    "byte_compared_assets": [
+      "favicon.ico",
+      "_zellij/assets/logo.png"
+    ]
+  },
+  "independent_production_verification": {
+    "deploy_id": "6aff622de7f414ee8b4d4a38",
+    "domain": "zellij.shebka.net",
+    "api_verified_files": 587,
+    "provider_generated_files": 1,
+    "api_path_case_normalization_verified": true,
+    "all_file_digests_match_reviewed_artifact": true,
+    "http_checks": [
+      {
+        "route": "/",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/build",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/templates",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/cli/books",
+        "status": 200,
+        "expected_content": true
+      },
+      {
+        "route": "/sections/compose",
+        "status": 200,
+        "expected_content": true
+      }
+    ]
+  },
+  "browser": {
+    "browser": "Chrome, visible browser window",
+    "origin": "https://zellij.shebka.net",
+    "routes": [
+      "/",
+      "/cli",
+      "/cli/build",
+      "/sections/compose",
+      "/cli/templates",
+      "/cli/books"
+    ],
+    "checks": [
+      "home hydration",
+      "client navigation",
+      "rich offline guide",
+      "search result navigation",
+      "compose example visible",
+      "theme switch",
+      "templates and books",
+      "explicit icon metadata",
+      "conventional favicon status and bytes"
+    ],
+    "captured_console_and_page_errors": 0
+  },
+  "local_archive": {
+    "directory": "backups/zellij-netlify-2026-11-19/automatic-ci-44612823122",
+    "archive": "documentation-site.zip",
+    "files": 587,
+    "bytes": 28958393,
+    "sha256": "a1a09b7d969c97075fa17254a91e7ddddbc560c0bcf0f578510c56bef4b65973",
+    "zip_crc_verified": true
+  },
+  "limits": [
+    "Complete preservation checks ran on the local CI export; live Chrome testing covers the recorded flows, not every route or browser.",
+    "No new CLI version was released.",
+    "Duplicate main-push CI was not yet complete at this checkpoint."
+  ],
+  "unchanged": [
+    "production Netlify account/project/domain",
+    "staging credentials and project",
+    "private client documentation"
+  ]
+}

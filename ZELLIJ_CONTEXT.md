@@ -3,6 +3,39 @@
 Last refreshed: **2026-11-19**. Initial review baseline: local `main` at
 `6356b05deaddf5421b24d7c8a1e30f868d4923c0`.
 
+**2026-11-19: automatic production documentation deployment — completed**
+
+[PR #210](https://github.com/mylife-inc/Zellij/pull/210) merged as
+`c4c2bb4bb22f9a8a4148ef9742823bf159cbd6cd` after all 33 general CI jobs
+(`44605947631`) and documentation validation (`44605947651`) passed on
+`a59b830`. The merge tree is identical to that tested head. This checkpoint
+supersedes the pending authentication, hosted verification and rollout entries
+below, which remain as history.
+
+The merge automatically triggered [Deploy documentation run 44612823122](https://github.com/mylife-inc/Zellij/actions/runs/44612823122).
+Both build and publication passed. The checked draft was promoted to the existing
+`zellij.shebka.net` production project as deploy `6aff622de7f414ee8b4d4a38`
+at `2026-11-19T20:55:19.419Z`; receipt state is `verified`. The previous deploy
+`6aff4d3001a5a3ee682b3ff2` remains the immediate recovery target. Every one of the
+587 artifact files matches Netlify's production inventory. Chrome navigation,
+search, theme switching, compose, templates, books and favicon checks passed
+with no captured console/page errors. Full route/heading/image preservation
+passed on the runner; live browser coverage is limited to the recorded flows.
+
+Fixing commits `be1190838991a3972844a3551aba3b5186303878` (regenerated portable
+theme previews) and `a59b8304d96a803b3aa6e8247a9dc9cd35269b8d` (explicit declaration
+build heap) both have green hosted confirmation, including macOS. The existing
+main-image workflow `44612823252` also passed all 13 jobs. A separate duplicate
+main-push CI run (`44612823176`) was still in progress when the rollout evidence
+was recorded; completion claims here refer to the passing PR run and production
+workflow, not that duplicate run.
+
+Relevant main changes now publish automatically, independently of CLI releases;
+manual rebuilds use Actions → Deploy documentation → Run workflow → main.
+The dedicated production secret is configured and staging secrets are unchanged.
+See [the publishing guide](specs/zellij-docs-deployment.md) and
+[completed rollout evidence](specs/zellij-docs-ci-2026-11-19.md).
+
 **2026-11-19: independent documentation CI — implementation under verification**
 
 The user approved automatic publication after the direct production deployment.
