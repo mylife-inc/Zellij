@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mkdtemp, mkdir, writeFile, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm, chmod, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import yaml from 'js-yaml';
@@ -144,4 +144,36 @@ test('workflow exposes credentials only after validated build and never publishe
   assert.match(build, /check examples\/zellij-docs\/content --deep --strict/);
   assert.match(build, /next build --webpack/);
   assert.match(build, /check-docs-preservation\.mjs/);
+});
+
+
+test('the actual child-process boundary uploads only a draft outside the checkout', async t => {
+  const dir = await mkdtemp(path.join(tmpdir(), 'zellij-docs-client-'));
+  t.after(() => rm(dir, { recursive: true, force: true }));
+  const client = path.join(dir, 'netlify');
+  await writeFile(client, `#!${process.execPath}
+const fs = require('node:fs');
+fs.writeFileSync(${JSON.stringify(path.join(dir, 'arguments.json'))}, JSON.stringify({args:process.argv.slice(2),cwd:process.cwd()}));
+console.log(JSON.stringify({site_id:${JSON.stringify(siteId)},deploy_id:${JSON.stringify(draftId)},deploy_url:${JSON.stringify(`https://${draftId}--zellij-docs.netlify.app`)}}));
+`);
+  await chmod(client, 0o755);
+  const f = fixture(); f.deploy = undefined; f.env.NETLIFY_CLI = client; f.env.RUNNER_TEMP = dir;
+  await publish(f);
+  const recorded = JSON.parse(await readFile(path.join(dir, 'arguments.json'), 'utf8'));
+  assert.equal(recorded.cwd, await realpath(dir));
+  assert(recorded.args.includes('--draft'));
+  assert(recorded.args.includes('--no-build'));
+  assert(!recorded.args.includes('--prod'));
+  assert.equal(recorded.args[recorded.args.indexOf('--site') + 1], siteId);
+  assert.equal(recorded.args[recorded.args.indexOf('--message') + 1], `Zellij documentation ${source}`);
+  assert(!recorded.args.includes(f.env.NETLIFY_AUTH_TOKEN));
+});
+
+test('a failed live check retains a published receipt and never silently retries or rolls back', async () => {
+  const f = fixture();
+  f.check = async origin => { if (origin === `https://${domain}`) throw Error('Live HTTP check failed'); };
+  await assert.rejects(publish(f), /Live HTTP check failed/);
+  assert.deepEqual(f.receipts.map(r => r.state), ['draft-verified', 'published']);
+  assert.equal(f.receipts[1].previous_deploy_id, previous);
+  assert.equal(f.calls.filter(c => c[1] === 'POST').length, 1);
 });

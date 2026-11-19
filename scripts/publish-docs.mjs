@@ -113,6 +113,7 @@ export async function publish({ env = process.env, netlify, github, deploy, chec
   const preview = new URL(draft.deploy_url);
   assert.equal(preview.protocol, 'https:');
   assert.equal(preview.hostname, `${draft.deploy_id}--${original.name}.netlify.app`, 'Unexpected draft origin');
+  assert.equal(preview.port, '', 'Unexpected draft port');
   assert.equal(preview.pathname, '/');
   assert(!preview.username && !preview.password && !preview.search && !preview.hash);
   await check(preview.origin, env.DOCS_OUTPUT);

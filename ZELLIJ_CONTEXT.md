@@ -15,11 +15,22 @@ ancestry, checks a draft before promotion, and retains previous-deploy receipts.
 The release workflow and `zdocs-publish` helper no longer use `DEPLOY_DOCS` or the
 staging secrets for production. See [the publishing guide](specs/zellij-docs-deployment.md).
 
-Local publication/release-policy tests, workflow lint and read-only live HTTP
-checks pass. Hosted CI, production credential setup and the first automatic
-publication are pending at this checkpoint; do not infer deployment completion
-from the new files. The locally published navigation/offline/doc changes are
-included in the same PR so GitHub starts with the current production source.
+All 39 local publication/release-policy tests, workflow lint, shell syntax,
+pinned-client installation and read-only live HTTP checks pass. Implementation
+is pushed on `codex/docs-auto-deploy` (initial commit `c24b862`). PR creation was
+attempted but the GitHub connector returned HTTP 403, "Resource not accessible
+by integration"; the local `gh` login is also absent. The user has been asked to
+run `gh auth login --hostname github.com --web` as `mylife-inc`. No PR was created,
+no production secret was changed and no automatic deployment has run yet.
+
+After login: verify the GitHub account, set only `NETLIFY_DOCS_PRODUCTION_TOKEN`
+using the already working local Netlify login without displaying its token,
+create the PR from the pushed branch, wait for all required CI, merge, and verify
+the first automatic production run. Existing staging secrets stay unchanged.
+The branch includes the 12 previously local navigation/offline/documentation
+commits so main will match the source now live. The current production site
+remains the successful direct deployment recorded below. Do not infer completion
+of the CI rollout from the new workflow files.
 
 **2026-11-19: public documentation deployed to the existing Netlify project**
 
