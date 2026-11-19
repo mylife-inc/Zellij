@@ -269,7 +269,7 @@ pub(crate) fn create(args: &NewSiteArgs) -> Result<()> {
     install::create(bundle, target, args.name.as_deref(), &args.set)?;
     zellij_core::statusln!("✓ {}", args.dir);
     zellij_core::statusln!(
-        "  Edit content/ and zel.yaml. From inside this folder, run `zel check` or `zel view`."
+        "  Edit content/ and zel.yaml. From inside this folder, run `zel build`, then open the generated index.html."
     );
     Ok(())
 }

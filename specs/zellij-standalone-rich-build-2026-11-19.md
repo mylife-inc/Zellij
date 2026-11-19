@@ -113,3 +113,11 @@ documentation-bearing archive changes before tagging rc.12.
 All six native package jobs in `44625255756` now pass, including Windows ARM64,
 using the same Linux-compiled renderer. This is successful pre-publication
 platform evidence for `80119b6`, not a final-source or public-release result.
+
+Final integration review also makes generated GitHub/GitLab/CircleCI delivery
+checks choose `--target static` for hosted sites or `--target portable` for native
+sites. They therefore continue checking the HTTP publication path, independently
+of the new interactive default, and do not download an unrelated renderer during
+container acceptance. A regression covers both renderers in all three generators.
+New rich sites and template creation now suggest `zel build` first; live
+development is explicitly optional and retains its container prerequisite.
